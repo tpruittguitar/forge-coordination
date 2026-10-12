@@ -1,0 +1,71 @@
+# Applies edit requests that AI lanes CREATE (create-only lanes can still change existing files).
+# A request is a new JSON file in edit-requests/:
+#   {"target": "ACCESS_LOG.md", "mode": "append" | "replace", "content": "...", "base_blob_sha": "<optional; reject if target changed>", "requested_by": "CHATGPT <run id>"}
+# The Action validates it, applies it, records the result in edit-requests/applied/ or edit-requests/rejected/, and commits.
+name: apply-edit-requests
+on:
+  push:
+    paths: ["edit-requests/*.json"]
+permissions:
+  contents: write
+  issues: write
+concurrency:
+  group: apply-edit-requests
+  cancel-in-progress: false
+jobs:
+  apply:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Apply requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -euo pipefail
+          git config user.name "forge-apply-bot"
+          git config user.email "forge-apply-bot@users.noreply.github.com"
+          mkdir -p edit-requests/applied edit-requests/rejected
+          shopt -s nullglob
+          for f in edit-requests/*.json; do
+            name=$(basename "$f")
+            verdict=$(python3 - "$f" <<'PY'
+          import json, os, subprocess, sys
+          f = sys.argv[1]
+          try:
+              r = json.load(open(f, encoding="utf-8"))
+          except Exception as e:
+              print(f"REJECT bad JSON: {e}"); sys.exit()
+          t, mode, content = r.get("target"), r.get("mode"), r.get("content")
+          if not (isinstance(t, str) and isinstance(content, str) and mode in ("append", "replace") and r.get("requested_by")):
+              print("REJECT missing or invalid target/mode/content/requested_by"); sys.exit()
+          p = os.path.normpath(t)
+          if p.startswith("..") or os.path.isabs(p) or p.startswith(".github") or p.startswith("edit-requests"):
+              print(f"REJECT target not allowed: {t}"); sys.exit()
+          base = r.get("base_blob_sha")
+          if base:
+              cur = subprocess.run(["git", "rev-parse", f"HEAD:{p}"], capture_output=True, text=True).stdout.strip()
+              if cur != base:
+                  print(f"REJECT stale base_blob_sha (current {cur or 'missing'})"); sys.exit()
+          if mode == "append":
+              old = open(p, encoding="utf-8").read() if os.path.exists(p) else ""
+              if old and not old.endswith("\n"):
+                  old += "\n"
+              new = old + content
+          else:
+              new = content
+          os.makedirs(os.path.dirname(p) or ".", exist_ok=True)
+          open(p, "w", encoding="utf-8").write(new)
+          print(f"APPLIED {mode} to {p}")
+          PY
+            )
+            echo "$name: $verdict"
+            if [[ "$verdict" == APPLIED* ]]; then dest=edit-requests/applied; else dest=edit-requests/rejected; fi
+            git mv "$f" "$dest/$name"
+            printf '%s\n' "$verdict" > "$dest/${name%.json}.result.txt"
+            git add -A
+            git commit -q -m "APPLY-BOT $name: $verdict"
+            if [[ "$verdict" == REJECT* ]]; then
+              gh issue create --title "Edit request rejected: $name" --body "$verdict" || true
+            fi
+          done
+          git push
