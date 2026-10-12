@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-12.1
+VERSION=2026-10-12.2
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -328,3 +328,15 @@ RECORDED_BY=ChatGPT at Tim's request; drafted by Claude
 5. History rows are recorded even when the employer or title would be Never-Consider today. They are terminal rows and are never pursued.
 6. Applies to every lane and every future handoff. FORGE_APPLICATION_WRITER_GOFER drains the 353 held items from EVIDENCE_HANDOFF_ARCHIVE_20261011T1826Z (Drive 1i2rMVCaYWyoLYoOCoHYFgU3N3bcXr-S7) in batches of 25, up to 4 batches per run, then handles new evidence the same way.
 END APPLICATION RECORD AMENDMENT
+
+GITHUB CUTOVER AMENDMENT -- TIM DIRECTIVE 2026-10-12 (VERSION 2026-10-12.2)
+AUTHORIZED_BY=Tim (chat 2026-10-12 13:48 ET plan approval; 15:37 ET "Proceed" on Stage 2)
+RECORDED_BY=Claude
+1. LOCATION. This file now lives on GitHub: https://github.com/tpruittguitar/forge-coordination/blob/main/control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt (raw: https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt). The Drive copy 1IcyEulnhEoY_aYHO8XvpNln7Nxztw9fW is SUPERSEDED from cutover. Never read it for live work.
+2. RECEIPTS. Every AI_REASON_RUN_RECEIPT is a NEW file in forge-coordination/receipts/, same naming as before, .txt. Wherever this file says to create or update a receipt in AI_Coordination, create files in receipts/ instead. To update, create a new _CHECKPOINTn or _TERMINAL file; never edit an earlier receipt. Commit message starts with PROVIDER and RUN_ID.
+3. DIRECTIVES AND HANDOVERS. New ones go in forge-coordination/directives/. Existing ones are copied there (MANIFEST.txt).
+4. UNCHANGED, STILL ON DRIVE. Master, WRITER_QUEUE and processed/RESULT files, receipt index, WRITER_FREEZE, scoring model, canonical rules, STANDARD, WRITER_ACCESS_DIRECTIVE_V9 and EVIDENCE_HANDOFF_* files. Writer payloads still go to the Drive WRITER_QUEUE.
+5. CHANGING THIS FILE. Claude, or Tim, on Tim's instruction, edits it in place on GitHub. Other lanes propose changes through proposals/ or edit-requests/ (README.md).
+6. LANE RULES. forge-coordination README.md: commit labels, create-only, edit requests, backup branches.
+7. FALLBACK. If GitHub cannot be reached in a run, write the receipt to Drive AI_Coordination as before and state GITHUB_UNREACHABLE in it. Never HARD_BLOCK on GitHub alone.
+END GITHUB CUTOVER AMENDMENT

@@ -34,6 +34,14 @@ REV-003  Every application and rejection is recorded (standing rule + Writer bat
   Then: gofer drains the 353 over its next runs; future cases flow automatically.
   Risk: Medium (Writer write path). Claude recommends building ahead of the batch because records are being withheld now.
 
+REV-004  Writer FLEX derivation: apply Tim's three degree-wording rulings
+  Asked: Tim 2026-10-12 12:55 ET (ruling recorded in FORGE_DIRECTIVE_Feasibility_Priority_and_FLEX_Rulings_2026-10-12.txt, Drive 1emz-TUoI4Be5RwXwj25dWR_3mWGTBcWt)
+  What: (a) "Bachelor's ... preferred, or equivalent [combination of] education and experience" -> HIGH_FLEX (now UNKNOWN/0). (b) Hard engineering degree with no experience alternative ("Bachelor's or Master's degree in engineering"; tiered BS/MS/PhD) -> NO_FLEX (now SOFT_FLEX/30). (c) "B.S. in <field> or an equivalent technical field" -> NO_FLEX; "equivalent" modifies the field, not experience (now HIGH_FLEX/90).
+  Tests: regression cases Metromont V2I-63F7539979C4, Virnig V2I-0C42328E067C, Scout Motors V2I-2D06DA97CBD7, Vertex V2I-B8F994FA0E98, Shield AI V2I-BF897A68FE50.
+  After deploy: re-score rows whose stored DEGREE_TEXT matches (a)-(c).
+  Why: oldest open blocker (first reported 2026-10-11 10:32 ET); FLEX feeds the geography gates, so wrong classes move roles across the line.
+  Risk: Medium (Writer scoring path). Ships with the next batch.
+
 ==================================================================
 CANDIDATES (suggested by Claude; Tim decides)
 ==================================================================
