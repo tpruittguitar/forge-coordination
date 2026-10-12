@@ -1,0 +1,101 @@
+AI_REASON_RUN_RECEIPT
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+PROVIDER=CHATGPT
+RUN_ID=FORGE-EMAIL-CHATGPT-20261012-1755ET
+RECEIPT_KIND=TERMINAL
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+COVERAGE_STATUS=PARTIAL
+COMPLETED_AT_ET=2026-10-12 18:00 ET
+
+AUTHORITY
+ENTRY_VERSION=2026-10-12.2
+ENTRY_FINGERPRINT=fnv1a64-7f7c6dbbbdcbd5f2
+CONTROL_VERSION=2026-10-12.2
+CONTROL_FINGERPRINT=fnv1a64-4f5af4b8bbd7deb9
+README_FINGERPRINT=fnv1a64-2202f0efa3418048
+DRIVE_STANDARD_VERSION=2026-10-11.1
+CANONICAL_RULES_STATUS=ACTIVE
+CANONICAL_RULES_VERSION=RULES_V4_20261007
+WRITER_DIRECTIVE=V9 ACTIVE
+SCORING_AUTHORITY=2026-10-04.1 rev20
+LANE_OWNER=ChatGPT email discovery
+CONFLICT_STATUS=NONE
+WRITER_GATE=PASS
+WRITER_FREEZE=false
+STALE_PENDING_GT_20M=0
+STALE_PROCESSING_GT_8M=0
+
+SCOPE
+EMAIL_WINDOW_ET=2026-10-12 14:55:27 through 2026-10-12 17:55:27
+QUERY_FAMILIES_PLANNED=6
+QUERY_FAMILIES_RUN=6
+QUERY_FAMILIES_NOT_RUN=0
+PAGE_COUNT=6
+PAGINATION_EXHAUSTED=YES
+EMAILS_FOUND=4
+EMAILS_BODY_VERIFIED=4
+EMAILS_UNEXAMINED=0
+FETCH_FAILED=0
+JOB_LINKS_FOUND=11
+JOBS_EXTRACTED=11
+JOBS_NOT_EXTRACTED=0
+TARGET_UPDATES=15
+ELIGIBLE_SCOPE_CARDS=11
+TARGET_SHORTFALL_REASON=Eligible scoped cards exhausted after all 11 were dispositioned.
+
+PRODUCTION
+GROSS_FOUND=11
+EXISTING=4
+OFF_TARGET=3
+NEW_ADMISSIBLE=2
+SUBMITTED_TO_WRITER=2
+WRITER_ACCEPTED=1
+NC_EXCLUDED=0
+VERIFIED_MASTER=1
+NEW_VERIFIED_UPDATES=1
+HISTORICAL_RECONCILIATIONS=0
+WRITER_PENDING=0
+WRITER_FAILED=1
+UNACCOUNTED=0
+CARRY_FORWARD_THIS_RUN=3
+CARRY_FORWARD_PREEXISTING=2
+CARRY_FORWARD_TOTAL=5
+
+BATCH B01
+MESSAGE_IDS=1a1321ade8cee5f4,1a131ad0210811df,1a131baf0a67faa2,1a13187c4357678b
+DISPOSITION_01=Confidential | Director of Operations | Scranton PA | LinkedIn 4478320806 | WRITER_HOLD AMBIGUOUS_MATCH against V2F-C6E22146E72F; resolve employer/requisition/location identity; do not replay.
+DISPOSITION_02=Sierra Space | Sr Director, Production Operations - Satellite and Spacecraft | LinkedIn 4450784563 | EXISTING protected APPLIED V2L-SIERRASPACE-R26041.
+DISPOSITION_03=WHOOP | Vice President, Hardware Quality | LinkedIn 4460547584 | WRITTEN and independently verified V2I-EF056B055742.
+DISPOSITION_04=Intuitive Machines | Director, High Volume Production | LinkedIn 4448461682 | EXISTING protected APPLIED V2S-INTUITIVEMACHINES-DIRHVP-R23964.
+DISPOSITION_05=TIME Manufacturing | Director NA Quality | LinkedIn 4477238883 | HOLD identity/location ambiguity versus V2I-42B6683456D5; resolve req/location before submission.
+DISPOSITION_06=Entegris | Senior Director, MN Operations | LinkedIn 4475856547 | EXISTING V2I-B15FFDB92E0F.
+DISPOSITION_07=Nissan | Business Operations Lead | LinkedIn 4432954376 | OFF_TARGET corporate business operations/level.
+DISPOSITION_08=Tennova North Knoxville Medical Center | Director of Admissions | Glassdoor 1010292675338 | OFF_TARGET healthcare.
+DISPOSITION_09=Renew Clinic Knoxville | Director of Operations & Community Development | Glassdoor 1010288968000 | OFF_TARGET healthcare/nonmanufacturing and posted $60k-$70k.
+DISPOSITION_10=ResourceTek | Vice President of Manufacturing | Glassdoor 1010287280487 | EXISTING protected APPLIED V2E-FA121EBEEB88.
+DISPOSITION_11=Howmet Aerospace | title and job URL unavailable in alert body | HOLD insufficient identity/provenance; inspect signed-in Glassdoor match page or await explicit alert.
+
+WRITER
+REQUEST_ID=FORGE-EMAIL-CHATGPT-20261012-1755ET-B01
+QUEUE_FILE_ID=1SqPj9WJXvyEuOKc7bZxp0QNFU0lpmWof
+RESULT_FILE_ID=10TTKHynQ7k35JXsv3tfa_IexWrVL85Zs
+WRITE_ID=W-20261012215934306-18d6ed
+REQUEST_TERMINAL_STATUS=SUCCESS
+REQUEST_RECEIPT_STATUS=COMPLETE
+RESULT_1=Confidential WRITE_FAILED AMBIGUOUS_MATCH EMPLOYER_TITLE_NEEDS_LOCATION
+RESULT_2=WHOOP SCOUT_INTAKE_WRITTEN PRIMARY_ID V2I-EF056B055742 INV 1815
+MASTER_READBACK=PASS
+MASTER_ROWS=1296
+MASTER_END_MARKER=1296 rows
+MASTER_EXACT_ROW=V2I-EF056B055742 | WHOOP | Vice President, Hardware Quality | SCOUT_INTAKE
+
+CARRY_FORWARD
+OWNER=FORGE_APPLICATION_WRITER_GOFER for candidate-specific identity exceptions
+CURRENT_1=Confidential LinkedIn 4478320806: resolve actual employer/requisition/location against V2F-C6E22146E72F.
+CURRENT_2=TIME Manufacturing LinkedIn 4477238883: determine whether Westlake TX role is distinct from Bethlehem PA V2I-42B6683456D5.
+CURRENT_3=Howmet Aerospace Glassdoor alert: recover exact title and initiating job URL.
+PREEXISTING_1=Hunter Engineering unresolved candidate.
+PREEXISTING_2=Anonymous Glassdoor employer unresolved candidate.
+NEXT_RUN_ACTION=Start with carry-forward reconciliation, then process the next declared email window. Never blind replay the completed Writer request.
+
+COMPLETION_REASON=All 11 eligible scoped cards were examined and dispositioned, one new canonical row was fully verified, but three current candidate identities remain unresolved; therefore the run is PARTIAL_WITH_WORK rather than SUCCESS.
