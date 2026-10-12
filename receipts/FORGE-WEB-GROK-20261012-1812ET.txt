@@ -1,0 +1,37 @@
+AI_REASON_RUN_RECEIPT
+TASK_KEY=FORGE_WEB_CAREER_DISCOVERY
+PROVIDER=Grok
+RUN_ID=FORGE-WEB-GROK-20261012-1812ET
+CONTROL_VERSION=2026-10-12.2
+CONTROL_SHA256_NOTE=BODY_SHA256 from header not reproduced; treated as historical
+START_TIME=2026-10-12 18:12 ET
+STATUS=PARTIAL_WITH_WORK
+
+FILES_READ:
+- FORGE_AUTOMATION_ENTRY.txt (GitHub raw)
+- FORGE_AUTOMATION_CONTROL_ACTIVE.txt VERSION=2026-10-12.2 (GitHub raw)
+- forge-coordination README.md (GitHub)
+- FORGE_AUTOMATION_STANDARD_AND_HISTORY.txt (Drive 1MvxfIWDXQ_ZfkBgslu6B_EBWg-4iDqYy) FUNCTIONAL sections applied
+- TIM_PIPELINE_RULES_CANONICAL (Drive 1uuIopBY2Et-leu_tOdxnWAJJLniKwk08rdLCypuM2BE) RULES_V4
+
+PLANNED: Cover Shield AI and Anduril careers/ATS for Director+/Head/VP manufacturing, quality, production leadership. Target 15 but minimum 2 companies.
+
+EXECUTED:
+- Searched Shield AI Lever jobs.lever.co/shieldai
+- Identified relevant: Director of Production (R4782) Dallas TX, Head of Aircraft Production (R6147) Seattle WA, Head of Aircraft Quality (R6146) Seattle
+- Searched Anduril: Director of Manufacturing Engineering Imaging Waltham MA ($220-292k)
+- Tesla quick scan: no clear Director+ manufacturing/quality leadership open matching target in recent results
+
+CANDIDATES_SCREENED:
+1. Shield AI | Director of Production (R4782) | Dallas, TX | On-site | https://jobs.lever.co/shieldai/8b747653-dba8-4133-9056-eeedc162dbcd | pay $190k-$290k | req R4782 | 2026-10-12 timestamp | source Lever | disposition: NEW_PLAUSIBLE (pending exact master dedupe; strategic employer)
+2. Shield AI | Head of Aircraft Production (R6147) | Seattle, WA | On-site | https://jobs.lever.co/shieldai/9675e116-f0a0-4b56-932d-12ea6649e941 | pay unknown | req R6147 | disposition: NEW_PLAUSIBLE (pending dedupe)
+3. Shield AI | Head of Aircraft Quality (R6146) | Seattle, WA | On-site | Lever URL from search | pay $260k-$390k | disposition: NEW_PLAUSIBLE
+4. Anduril | Director of Manufacturing Engineering, Imaging | Waltham, MA | On-site | aggregator sources | pay $220k-$292k | disposition: NEW_PLAUSIBLE (pending first-party URL and dedupe)
+
+NO_WRITE: Writer submission deferred pending full master/queue dedupe and row_readback; no direct mutation.
+CARRY_FORWARD: Full exact-row check against live master for above PRIMARY_IDs/URLs/reqs; first-party Anduril careers page deep scrape; additional companies (Tesla, SpaceX, Blue Origin, Path Robotics) next run.
+NEXT_OWNER=Grok FORGE_WEB_CAREER_DISCOVERY
+NEXT_ACTION=Dedupe candidates via row_readback or master search, submit admissible new via WRITER_QUEUE plain-text JSON if not existing, update receipt.
+TERMINAL_STATUS=PARTIAL_WITH_WORK
+END_TIME=2026-10-12 18:25 ET approx
+END RECEIPT
