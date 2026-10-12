@@ -12,6 +12,7 @@ HOW IT WORKS:
 QUEUED (Tim requested; not built yet)
 ==================================================================
 REV-001  Refresh panel waits for the queue on its own
+  Status: BUILT 2026-10-12 in release 2026-10-12-B, foreman-cockpit PR #98 (branch release/2026-10-12-B, commit 4028ffb). Awaiting Tim merge + Writer/Explorer deploy.
   Asked: Tim 2026-10-11 19:28 ET
   Where: Settings > Scoring & FLEX > Review refresh (Refresh stored policy values)
   What: While the Writer queue is busy, show "Ready when the queue clears (N waiting, M unverified)" instead of red X lines. Re-check every Writer status poll. When Queued = 0 and Unverified = 0, enable "Apply refresh to N rows" automatically. Never apply automatically; Tim still clicks Apply.
@@ -19,6 +20,7 @@ REV-001  Refresh panel waits for the queue on its own
   Risk: Low (frontend only; the existing safety checks stay the same).
 
 REV-002  Put "waiting on my ruling" back in easy reach (regression from PR #92)
+  Status: BUILT 2026-10-12 in release 2026-10-12-B, foreman-cockpit PR #98 (branch release/2026-10-12-B, commit 4028ffb). Awaiting Tim merge + Writer/Explorer deploy.
   Asked: Tim 2026-10-11 19:43 ET ("can't find things waiting on my ruling")
   Where: Pipeline section tab row + queue-head tiles
   What: Add tabs Review queue (preset NEEDS_TIM) · Decline candidates (DECLINE_CANDIDATES) · My rulings (RULED) to the Pipeline tab row. Make the "Needs decision" tile count the whole Review queue, not only BUCKET=TIM_DECISION_REQUIRED (it showed 0 while items were waiting). Optional: a "Waiting on Tim" list of gofer HELD items read from the latest gofer receipt.
@@ -35,12 +37,20 @@ REV-003  Every application and rejection is recorded (standing rule + Writer bat
   Risk: Medium (Writer write path). Claude recommends building ahead of the batch because records are being withheld now.
 
 REV-004  Writer FLEX derivation: apply Tim's three degree-wording rulings
+  Status: BUILT 2026-10-12 in release 2026-10-12-B, foreman-cockpit PR #98 (branch release/2026-10-12-B, commit 9349b49). Awaiting Tim merge + Writer/Explorer deploy.
   Asked: Tim 2026-10-12 12:55 ET (ruling recorded in FORGE_DIRECTIVE_Feasibility_Priority_and_FLEX_Rulings_2026-10-12.txt, Drive 1emz-TUoI4Be5RwXwj25dWR_3mWGTBcWt)
   What: (a) "Bachelor's ... preferred, or equivalent [combination of] education and experience" -> HIGH_FLEX (now UNKNOWN/0). (b) Hard engineering degree with no experience alternative ("Bachelor's or Master's degree in engineering"; tiered BS/MS/PhD) -> NO_FLEX (now SOFT_FLEX/30). (c) "B.S. in <field> or an equivalent technical field" -> NO_FLEX; "equivalent" modifies the field, not experience (now HIGH_FLEX/90).
   Tests: regression cases Metromont V2I-63F7539979C4, Virnig V2I-0C42328E067C, Scout Motors V2I-2D06DA97CBD7, Vertex V2I-B8F994FA0E98, Shield AI V2I-BF897A68FE50.
   After deploy: re-score rows whose stored DEGREE_TEXT matches (a)-(c).
   Why: oldest open blocker (first reported 2026-10-11 10:32 ET); FLEX feeds the geography gates, so wrong classes move roles across the line.
   Risk: Medium (Writer scoring path). Ships with the next batch.
+
+REV-005  Writer reads and saves policy (rules, scoring model) from GitHub forge-policy behind a switch
+  Asked: Tim 2026-10-12 13:48 ET (approved GitHub migration plan, Stage 3)
+  Status: BUILT 2026-10-12 in release 2026-10-12-B, foreman-cockpit PR #98 (commit 91ab17e). Awaiting Tim merge + deploy. Inactive until Tim sets Script Property POLICY_SOURCE=GITHUB.
+  What: Drive stays the default. POLICY_SOURCE=GITHUB reads rules/TIM_PIPELINE_RULES_CANONICAL.txt and scoring/PIPELINE_SCORING_MODEL.json from tpruittguitar/forge-policy. Saves need GITHUB_POLICY_TOKEN (fine-grained PAT, forge-policy Contents read/write), use the file SHA (conflict, never overwrite), commit as "TIM ...", verify by readback. A GitHub read failure never falls back to Drive.
+  Then: copy rules + scoring model into forge-policy, verify byte-for-byte, set the properties, run checkPolicySource, rename Drive copies SUPERSEDED_, update CONTROL.
+  Risk: Medium (policy read path). No behaviour change until the switch is set.
 
 ==================================================================
 CANDIDATES (suggested by Claude; Tim decides)
