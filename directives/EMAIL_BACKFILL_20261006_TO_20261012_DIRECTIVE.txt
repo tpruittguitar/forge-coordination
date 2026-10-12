@@ -1,0 +1,44 @@
+DIRECTIVE: EMAIL ALERT BACKFILL, 2026-10-06 THROUGH 2026-10-12
+AUTHORIZED_BY=Tim (chat 2026-10-12 19:55 ET: asked for a ChatGPT prompt to run the backfill)
+RECORDED_BY=Claude
+OWNER=ChatGPT, under TASK_KEY FORGE_EMAIL_DISCOVERY
+EVIDENCE=handoffs/EMAIL_COVERAGE_FINDINGS_CLAUDE_20261012.txt
+GOVERNING_RULES=CONTROL VERSION 2026-10-12.3 including the EMAIL MAILBOX COVERAGE AMENDMENT. Everything else in CONTROL, canonical rules, Writer directive and scoring stays in force. This directive adds scope and a cursor. It changes no rule.
+
+SCOPE
+1. Alert emails from the sender families in the amendment, received from 2026-10-06 00:00 ET through the start of the regular rolling window. About 35 alert emails arrive per day, so expect roughly 250 emails.
+2. Order: newest first, so live postings come first. Stop when the cursor passes 2026-10-06 00:00 ET.
+3. The regular 3-hour window runs as usual and has priority. Backfill uses spare capacity in the same run after the regular window is dispositioned, and it may also run as its own scheduled run when Tim starts it.
+
+PER-EMAIL METHOD
+4. Open each email body. Extract and preserve every initiating job URL before filtering (existing rule).
+5. Headline job: every email gets a disposition for the job named in its subject line.
+6. Digest emails (LinkedIn, Indeed, Lensa, Glassdoor, The Ladders): disposition every job whose title is Director, VP, Head, Senior Director, Senior Manager, General Manager, Plant Manager or Chief level in manufacturing, quality, operations, supply chain or engineering, plus any job the canonical rules would admit. The remaining listed jobs are recorded as out of scope by count, with no row.
+7. For each candidate in scope: check the live master and in-flight Writer requests for an existing row first. Protected states (APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection) stay untouched. Check posting liveness at the link, since alerts can be days old. A closed posting is recorded per the canonical rules. Submit plausible new records through Writer queue as intake with unknown fields permitted, including GMAIL_MESSAGE_ID, SOURCE_URL, DISCOVERED_AT_ET and DISCOVERY_SOURCE=EMAIL_ALERT:<domain>. Use requestIds that carry the run ID so a replay is idempotent.
+8. Batches of up to five emails. Target 15 distinct candidate dispositions per run, and continue up to four batches per run while capacity allows.
+
+KNOWN MISSING HEADLINE JOBS (first test targets; report the outcome of each by name)
+  Red Frog Solutions | Vice President Operations
+  Ichor Systems | Director PMO - NPI/NPD
+  Alternative Futures Group | Chief Quality Officer (Nashville)
+  Harris & Co Executive Search | Manufacturing Director (Huntsville)
+  Brown Precision | CNC Shop President / General Manager
+  Redwire | General Manager, Vice President
+  Infosoft, Inc. | Manufacturing Engineering & Facilities Director
+  Stellantis | Manager, Manufacturing Engineering
+  Avantor | Senior Director, Global Engineering
+  Flowers Foods | VP of Quality and Food Safety
+  WHOOP | VP Hardware Quality
+  Owens Corning | Operations Leader
+  Siemens | Order Engineering Manager
+  Apptronik | Product Quality Manager
+Hunter Engineering stays under its identity hold with the gofer.
+
+CURSOR AND RECEIPT
+9. Every receipt carries BACKFILL_CURSOR=<ET timestamp of the oldest email fully dispositioned>, BACKFILL_EMAILS_DONE, BACKFILL_EMAILS_REMAINING_ESTIMATE, plus the fields in the amendment (EMAIL_FAMILY_COUNTS, EMAIL_SELFTEST_24H_COUNT, EMAIL_NEWEST_ALERT_SEEN). The next run starts from the cursor of the last receipt.
+10. Report, per run: emails opened, job links extracted, gross candidates, existing, new admissible, submitted, verified, held, failed, out-of-scope count, and the outcome of each known-missing job reached so far.
+11. If the self-test returns 0, set RUN_TERMINAL_STATUS=BLOCKED_MAILBOX_VISIBILITY and stop.
+
+DONE WHEN
+12. The cursor passes 2026-10-06 00:00 ET and every known-missing job has an outcome. Write a final receipt with BACKFILL_STATUS=COMPLETE. Claude then reconciles counts against Gmail.
+END DIRECTIVE
