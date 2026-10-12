@@ -13,6 +13,7 @@ QUEUED (Tim requested; not built yet)
 ==================================================================
 REV-001  Refresh panel waits for the queue on its own
   Status: SHIPPED 2026-10-12 16:44 ET, foreman-cockpit PR #98 (66bf0a6), Writer version 55 live; checkPolicySource verified (source DRIVE).
+  Re-score: DONE 2026-10-12 17:17-17:25 ET together with REV-006 (see REV-006 and receipts/AI_REASON_CHANGE_RECORD_CLAUDE_REV006_RESCORE_20261012.txt).
   Asked: Tim 2026-10-11 19:28 ET
   Where: Settings > Scoring & FLEX > Review refresh (Refresh stored policy values)
   What: While the Writer queue is busy, show "Ready when the queue clears (N waiting, M unverified)" instead of red X lines. Re-check every Writer status poll. When Queued = 0 and Unverified = 0, enable "Apply refresh to N rows" automatically. Never apply automatically; Tim still clicks Apply.
@@ -21,6 +22,7 @@ REV-001  Refresh panel waits for the queue on its own
 
 REV-002  Put "waiting on my ruling" back in easy reach (regression from PR #92)
   Status: SHIPPED 2026-10-12 16:44 ET, foreman-cockpit PR #98 (66bf0a6), Writer version 55 live; checkPolicySource verified (source DRIVE).
+  Re-score: DONE 2026-10-12 17:17-17:25 ET together with REV-006 (see REV-006 and receipts/AI_REASON_CHANGE_RECORD_CLAUDE_REV006_RESCORE_20261012.txt).
   Asked: Tim 2026-10-11 19:43 ET ("can't find things waiting on my ruling")
   Where: Pipeline section tab row + queue-head tiles
   What: Add tabs Review queue (preset NEEDS_TIM) · Decline candidates (DECLINE_CANDIDATES) · My rulings (RULED) to the Pipeline tab row. Make the "Needs decision" tile count the whole Review queue, not only BUCKET=TIM_DECISION_REQUIRED (it showed 0 while items were waiting). Optional: a "Waiting on Tim" list of gofer HELD items read from the latest gofer receipt.
@@ -38,6 +40,7 @@ REV-003  Every application and rejection is recorded (standing rule + Writer bat
 
 REV-004  Writer FLEX derivation: apply Tim's three degree-wording rulings
   Status: SHIPPED 2026-10-12 16:44 ET, foreman-cockpit PR #98 (66bf0a6), Writer version 55 live; checkPolicySource verified (source DRIVE).
+  Re-score: DONE 2026-10-12 17:17-17:25 ET together with REV-006 (see REV-006 and receipts/AI_REASON_CHANGE_RECORD_CLAUDE_REV006_RESCORE_20261012.txt).
   Asked: Tim 2026-10-12 12:55 ET (ruling recorded in FORGE_DIRECTIVE_Feasibility_Priority_and_FLEX_Rulings_2026-10-12.txt, Drive 1emz-TUoI4Be5RwXwj25dWR_3mWGTBcWt)
   What: (a) "Bachelor's ... preferred, or equivalent [combination of] education and experience" -> HIGH_FLEX (now UNKNOWN/0). (b) Hard engineering degree with no experience alternative ("Bachelor's or Master's degree in engineering"; tiered BS/MS/PhD) -> NO_FLEX (now SOFT_FLEX/30). (c) "B.S. in <field> or an equivalent technical field" -> NO_FLEX; "equivalent" modifies the field, not experience (now HIGH_FLEX/90).
   Tests: regression cases Metromont V2I-63F7539979C4, Virnig V2I-0C42328E067C, Scout Motors V2I-2D06DA97CBD7, Vertex V2I-B8F994FA0E98, Shield AI V2I-BF897A68FE50.
@@ -54,9 +57,9 @@ REV-005  Writer reads and saves policy (rules, scoring model) from GitHub forge-
 
 REV-006  Degree named only in preferred wording is SOFT_FLEX
   Asked: Tim 2026-10-12 16:56 ET (also confirmed: stated degree with no experience alternative stays NO_FLEX)
-  Status: BUILT 2026-10-12, foreman-cockpit PR #99 (branch release/2026-10-12-C). Awaiting Tim merge + Writer deploy.
+  Status: SHIPPED 2026-10-12, foreman-cockpit PR #99 (merged by Tim), Writer version 56 live. BULK RE-SCORE DONE 2026-10-12 17:12-17:25 ET: 241 rows in 5 batches (50/50/50/50/41), each ONE master commit, all SUCCESS; every row's FLEX_CLASS verified against a fresh master readback (241/241). Details: receipts/AI_REASON_CHANGE_RECORD_CLAUDE_REV006_RESCORE_20261012.txt
   What: pipeline-policy.js / PipelinePolicy.gs. A degree stated outside the preferred clause stays hard; recorded STRICT holds are kept. 395 tests pass.
-  After deploy: rows reclassify on their next write carrying DEGREE_TEXT (309 rows differ from the pre-release code; list sent to Tim).
+  After deploy: rows reclassify on their next write carrying DEGREE_TEXT (309 rows differed from the pre-release code; list sent to Tim). 241 re-scored now; 66 decided/terminal rows (APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD) deliberately NOT touched.
 
 ==================================================================
 CANDIDATES (suggested by Claude; Tim decides)

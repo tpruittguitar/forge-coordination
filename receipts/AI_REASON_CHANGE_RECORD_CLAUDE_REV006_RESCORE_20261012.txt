@@ -1,0 +1,37 @@
+AI_REASON_CHANGE_RECORD
+PROVIDER=Claude (Foreman / Writer code owner)
+TASK=REV-004 / REV-006 bulk re-score of rows whose FLEX class changed under the new Writer code
+AUTHORIZED_BY=Tim, chat 2026-10-12 ("Bulk re-score: now"), after rulings (a)(b)(c) and the two REV-006 answers (preferred-only degree = SOFT_FLEX; stated degree with no experience alternative and no word "required" = NO_FLEX)
+WRITER=Apps Script version 56 live (REV-004 + REV-005 + REV-006); policy source DRIVE; rules RULES_V4_20261007; scoring model 2026-10-04.1 rev 20
+
+WHAT CHANGED
+- 241 master rows re-submitted through WRITER_QUEUE as ENRICH rulings carrying each row's own stored DEGREE_TEXT/DEGREE_REQ verbatim (no new research, no edited wording). The Writer re-derived FLEX_CLASS/FLEX_MODIFIER and recomputed scores.
+- 5 batch files, one master commit each: REV006_RESCORE_20261012_B1of5..B5of5 (50/50/50/50/41). Writer IDs for B2-B5: W-20261012211324755-a2e158, W-20261012211820969-1d1951, W-20261012212310052-eb9f4b, W-20261012212457307-16086b. All RESULT files: processed/, terminalStatus SUCCESS.
+- requestId = REV006-RESCORE-20261012-<PRIMARY_ID> (idempotent). ENRICH_SOURCE on each row is now CLAUDE:REV006-RESCORE-20261012-<PRIMARY_ID>.
+- Net effect on the 241: FLEX_CLASS changed on 176 rows (UNKNOWN->NO_FLEX 75, SOFT->NO 27, HIGH->NO 20, NO->SOFT 20, UNKNOWN->SOFT 19, UNKNOWN->HIGH 9, HIGH->SOFT 4, SOFT->HIGH 2). OVERALL/ADJUSTED_FIT changed on 234. PURSUIT_STATUS changed on 170 (NEEDS_EVIDENCE->LOW_ADJUSTED_FIT 75, CHECK_PAY_AND_TITLE->LOW_ADJUSTED_FIT 48, NEEDS_EVIDENCE->CHECK_PAY_AND_TITLE 27, LOW_ADJUSTED_FIT->CHECK_PAY_AND_TITLE 20).
+- Ruled examples confirmed in the master: Metromont V2I-63F7539979C4 UNKNOWN->HIGH_FLEX (+90); Virnig V2I-0C42328E067C UNKNOWN->HIGH_FLEX; Shield AI V2I-BF897A68FE50 HIGH->NO_FLEX (-60); Vertex V2I-B8F994FA0E98 SOFT->NO_FLEX (-60).
+
+WHAT WAS NOT CHANGED
+- 66 decided/terminal rows (APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD) were excluded on purpose.
+- Bucket, state, identity and application-history cells (the fixed cells) unchanged on all 241 rows.
+- No row outside the 241 differs from the pre-re-score master (1295 rows before and after).
+- Rules, scoring model and policy files untouched.
+
+VERIFICATION
+- Fresh master readback after batch 5: FLEX_CLASS matches the expected class on 241/241 rows. A diff against the pre-re-score master shows changes only on the 241 ids.
+- Writer-side independent verification (receipt/index confirmation) is still reported PENDING on each RESULT file; Claude has not seen it close. Watch for it on the next Writer executions.
+
+RISKS / OPEN
+- ENRICH overwrote ENRICH_SOURCE / ENRICH_UPDATED_AT on all 241 rows (earlier provenance, e.g. FORGE:FORGE-ENRICH-FEASIBILITY-..., GROK:..., is gone from the row; it still exists in earlier receipts).
+- Three stored degree texts were normalized by the Writer (curly apostrophes to straight; one DEGREE_REQ also changed text).
+- The note "REV-006 re-score from stored degree text" is carried in the Writer receipts/events, not in the row.
+- Score and pursuit-status moves are large (170 rows). Spot-check anything Tim was about to act on.
+- Writer build label still shows commit "unknown" (cosmetic).
+
+OBSERVED TIMING (answer to "should the Writer be quicker?")
+- Per batch: about 42-100 s of Writer time for 41-50 rows (B2 45 s, B3 46 s, B4 100 s, B5 42 s) plus 25-51 s queue wait. 241 rows took 5 commits instead of 241 single-file writes. The gain comes from batching; nothing in releases B/C changed Writer speed.
+
+NEXT
+- Tim: decide whether to also re-score the 66 excluded rows (not recommended; they are decided).
+- Claude: confirm Writer independent verification closes; report if it does not.
+END
