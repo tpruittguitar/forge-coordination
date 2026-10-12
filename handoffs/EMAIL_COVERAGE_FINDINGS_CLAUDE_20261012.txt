@@ -33,10 +33,12 @@ Headline jobs with no master row (company | title | alert sender | date):
 2026-10-12 headline jobs with no master row: WHOOP VP Hardware Quality; Owens Corning Operations Leader; Siemens Order Engineering Manager; Apptronik Product Quality Manager; Nissan Business Operations Lead (low relevance).
 Excluded from the missing list: Hunter Engineering Quality Director (the 17:02 receipt carries it as a protected identity conflict).
 
+FACT 5 (added 18:25 ET) - Run FORGE-EMAIL-CHATGPT-20261012-1755ET (window 14:55-17:55 ET, ran under CONTROL 2026-10-12.2, before the amendment) found EMAILS_FOUND=4 and JOB_LINKS_FOUND=11, dispositioned all 11 (4 existing, 2 submitted to Writer, 1 verified, 3 carry-forward). It saw ResourceTek (Glassdoor) from the 19:12Z alert. So the connector can read the alert mail. The 17:02 ET zero is not a standing block. Remaining causes to test: a transient connector or indexing failure, or a query defect in that one run. The 17:02 run overlapped 14:55-17:02 ET with this run and found none of it.
+
 LIMITS
 - Headline-only matching is a lower bound. Digest emails list several jobs each.
 - Some missing jobs may be deliberate screens on location, level or industry. Claude has not verified whether any policy screen drops a job without leaving a row.
-- INFERENCE (unverified): the ChatGPT Gmail connector does not surface Updates-tab mail, or applies a filter that hides it.
+- INFERENCE (unverified): the 17:02 ET zero came from a transient connector or indexing failure or from a query defect in that run. FACT 5 rules out a permanent Updates-tab block.
 
 OPEN DECISIONS FOR TIM
 - Backfill of 2026-10-06 through 2026-10-12 alert emails, by which lane.
