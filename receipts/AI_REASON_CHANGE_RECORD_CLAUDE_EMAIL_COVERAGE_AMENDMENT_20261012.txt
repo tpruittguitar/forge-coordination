@@ -1,0 +1,26 @@
+AI_REASON CHANGE RECORD
+PROVIDER=CLAUDE
+RUN_ID=CLAUDE-EMAIL-COVERAGE-AMENDMENT-20261012-1815ET
+AUTHORITY=Tim, chat 2026-10-12 17:40 ET (audit request) and 18:04 ET (put the fix in the shared instruction file). CONTROL item 5 (GITHUB CUTOVER AMENDMENT) lets Claude edit CONTROL in place on Tim's instruction.
+
+WHAT CHANGED
+1. control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt: VERSION 2026-10-12.2 -> 2026-10-12.3; appended EMAIL MAILBOX COVERAGE AMENDMENT (whole-mailbox search, named sender families, 24-hour visibility self-test, zero-result proof, receipt counts, headline-job disposition, precedence over the old "exhaust the eligible window with proof" wording).
+2. control/FORGE_AUTOMATION_ENTRY.txt: VERSION 2026-10-12.3; READ ORDER step 1 names the new amendment.
+3. handoffs/EMAIL_COVERAGE_FINDINGS_CLAUDE_20261012.txt (new): evidence and missing-job list.
+
+WHY
+The 17:02 ET ChatGPT run reported zero alert emails and COVERAGE_STATUS=COMPLETE while Gmail held at least four alert emails in its window. A headline-job spot check shows 19 of 29 present in the master for Oct 10-11. Rule text in CONTROL did not tell a lane to search Updates-tab mail or to prove its mailbox view works before accepting a zero.
+
+WHAT WAS NOT CHANGED
+No master write. No Writer or scoring change. No Gmail change. No change to the other lanes' task text. No backfill started. The 6 query families and the 15-disposition target stay as they were.
+
+VERIFICATION
+Diff reviewed before commit. Gmail message IDs and times in the handoff file were read from Gmail on 2026-10-12. Master matching run on the 17:25 ET post-rescore master copy.
+
+RISKS / OPEN
+- The cause is an inference. The first run under 2026-10-12.3 shows whether the self-test passes. If the ChatGPT connector cannot read Updates-tab mail, the lane will report BLOCKED_MAILBOX_VISIBILITY and Tim needs to change the connector scope or move the lane.
+- The BODY_SHA256 in the CONTROL header stays a declared historical value (see WRITER ROW_READBACK AMENDMENT item 5).
+- Backfill of Oct 6-12 is undecided.
+
+NEXT
+Tim pastes the diagnostic message into ChatGPT (optional now that the amendment exists). Claude reads the next FORGE_EMAIL_DISCOVERY terminal receipt and checks EMAIL_SELFTEST_24H_COUNT.

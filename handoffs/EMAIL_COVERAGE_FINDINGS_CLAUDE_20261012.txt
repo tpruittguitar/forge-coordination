@@ -1,0 +1,44 @@
+EMAIL COVERAGE FINDINGS
+PROVIDER=CLAUDE
+CREATED_AT_ET=2026-10-12 18:15
+TRIGGER=Tim 2026-10-12 17:40 ET: "I wonder if I have historical gaps in my email that haven't been seen?"
+READ_ONLY_AUDIT=YES (no master write, no Gmail change)
+FEEDS=EMAIL MAILBOX COVERAGE AMENDMENT in control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt (VERSION 2026-10-12.3)
+
+FACT 1 - ChatGPT run FORGE-EMAIL-CHATGPT-20261012-1702ET (window 14:02-17:02 ET = 18:02-21:02Z)
+Receipt: ELIGIBLE_JOB_ALERT_EMAILS_FOUND=0, mailbox crosscheck found 2 messages (GitHub deploy notice, Inkbox sign-in alert), COVERAGE_STATUS=COMPLETE.
+Gmail (read by Claude through the Gmail connector) held these alert emails in that window:
+  1a13160bedec51d6  phil@ziprecruiter.com        18:29Z  "E & E Manufacturing Inc is looking for candidates like you!" (Packaging Engineer, Athens TN)
+  1a13187c4357678b  info@glassdoor.com           19:12Z  "Now hiring: Vice President of Manufacturing at ResourceTek" (already APPLIED, row 742)
+  1a131ad0210811df  jobalerts-noreply@linkedin.com 19:53Z "Nissan Motor Corporation - Business Operations Lead"
+  1a131baf0a67faa2  noreply@glassdoor.com        20:08Z  "New jobs in Oak Ridge, TN. Apply Now."
+All four carry labels CATEGORY_UPDATES and INBOX.
+
+FACT 2 - Alert volume (messages from the sender families, UTC date): 2026-10-10 = 38, 2026-10-11 = 39, 2026-10-12 = 34 by 20:08Z.
+
+FACT 3 - Master capture of email-sourced rows by discovery date (master of 2026-10-12 17:25 ET, 1295 rows, 883 email-sourced): 10-09 = 74, 10-10 = 13, 10-11 = 29, 10-12 = 323 (backlog load). No master row stores GMAIL_MESSAGE_ID, so message-to-row matching uses company and title.
+
+FACT 4 - Headline-job spot check, alert emails dated 2026-10-10 and 2026-10-11: 19 of 29 headline jobs are in the master (66%).
+Headline jobs with no master row (company | title | alert sender | date):
+  Red Frog Solutions | Vice President Operations | LinkedIn | 10-10
+  Ichor Systems | Director PMO - NPI/NPD | LinkedIn | 10-10
+  Alternative Futures Group | Chief Quality Officer (Nashville) | Lensa | 10-10
+  Harris & Co Executive Search | Manufacturing Director (Huntsville) | LinkedIn | 10-10
+  Brown Precision | CNC Shop President / General Manager | Glassdoor | 10-10
+  Redwire | General Manager, Vice President | LinkedIn | 10-11
+  Infosoft, Inc. | Manufacturing Engineering & Facilities Director | LinkedIn | 10-11
+  Stellantis | Manager, Manufacturing Engineering | LinkedIn | 10-11
+  Avantor | Senior Director, Global Engineering | Indeed | 10-11
+  Flowers Foods | VP of Quality and Food Safety | Lensa | 10-11
+2026-10-12 headline jobs with no master row: WHOOP VP Hardware Quality; Owens Corning Operations Leader; Siemens Order Engineering Manager; Apptronik Product Quality Manager; Nissan Business Operations Lead (low relevance).
+Excluded from the missing list: Hunter Engineering Quality Director (the 17:02 receipt carries it as a protected identity conflict).
+
+LIMITS
+- Headline-only matching is a lower bound. Digest emails list several jobs each.
+- Some missing jobs may be deliberate screens on location, level or industry. Claude has not verified whether any policy screen drops a job without leaving a row.
+- INFERENCE (unverified): the ChatGPT Gmail connector does not surface Updates-tab mail, or applies a filter that hides it.
+
+OPEN DECISIONS FOR TIM
+- Backfill of 2026-10-06 through 2026-10-12 alert emails, by which lane.
+- Whether FORGE_EMAIL_DISCOVERY needs a manual diagnostic run to confirm the connector fix.
+END EMAIL COVERAGE FINDINGS

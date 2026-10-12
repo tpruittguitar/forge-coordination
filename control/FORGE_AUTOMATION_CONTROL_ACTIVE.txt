@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-12.2
+VERSION=2026-10-12.3
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -340,3 +340,18 @@ RECORDED_BY=Claude
 6. LANE RULES. forge-coordination README.md: commit labels, create-only, edit requests, backup branches.
 7. FALLBACK. If GitHub cannot be reached in a run, write the receipt to Drive AI_Coordination as before and state GITHUB_UNREACHABLE in it. Never HARD_BLOCK on GitHub alone.
 END GITHUB CUTOVER AMENDMENT
+
+
+EMAIL MAILBOX COVERAGE AMENDMENT -- TIM DIRECTIVE 2026-10-12 (VERSION 2026-10-12.3)
+AUTHORIZED_BY=Tim (chat 2026-10-12 18:04 ET, asked that the mailbox coverage fix live in the shared instruction file)
+RECORDED_BY=Claude
+APPLIES_TO=FORGE_EMAIL_DISCOVERY (any provider that runs it)
+EVIDENCE: Run FORGE-EMAIL-CHATGPT-20261012-1702ET reported ELIGIBLE_JOB_ALERT_EMAILS_FOUND=0 and COVERAGE_STATUS=COMPLETE for 14:02-17:02 ET. Tim's Gmail held at least four job-alert emails in that window (ZipRecruiter 18:29Z, Glassdoor 19:12Z, LinkedIn 19:53Z, Glassdoor 20:08Z). All of Tim's alert mail carries Gmail label CATEGORY_UPDATES. A spot check of the headline job in each alert email on 2026-10-10 and 2026-10-11 found 19 of 29 in the master. Details: handoffs/EMAIL_COVERAGE_FINDINGS_CLAUDE_20261012.txt.
+1. WHOLE-MAILBOX SEARCH. Run every query across the whole mailbox. Use no category:, in:inbox or label filter. Alert mail sits in the Updates tab and archived alert mail counts. If the connector hides any tab or label from search, report the hidden tab or label by name in the receipt.
+2. SENDER FAMILIES (minimum set, matched by sender): LinkedIn (jobalerts-noreply@linkedin.com, jobs-noreply@linkedin.com), Indeed (donotreply@jobalert.indeed.com), Glassdoor (noreply@glassdoor.com, info@glassdoor.com), ZipRecruiter (phil@ziprecruiter.com, alerts@ziprecruiter.com), Lensa (jobalert@lensa.com, lensa24@lensa.com, aggregated@lensa.com), The Ladders (jobs@my.theladders.com), plus employer and recruiter alert senders. Every message from these senders in the window is an alert email, whatever its content quality.
+3. VISIBILITY SELF-TEST. At the start of every run, query the sender families over the last 24 hours (newer_than:1d). Tim's mailbox receives about 30 or more alert emails per day, so a result of 0 means the mailbox view is broken. In that case set RUN_TERMINAL_STATUS=BLOCKED_MAILBOX_VISIBILITY, report it under the Automation Production Contract, and never report COVERAGE_STATUS=COMPLETE.
+4. ZERO-RESULT PROOF. A window with zero alert emails may be reported COMPLETE only when all of the following hold: the self-test in item 3 returned more than 0; a whole-mailbox listing of the window (no sender filter) was read and every message in it was opened or classified; and the receipt states the timestamp of the newest alert email seen by the self-test. A 3-hour window with zero alerts across all families is unusual. Re-run it once with in:anywhere before concluding.
+5. COUNTS IN THE RECEIPT. Add EMAIL_FAMILY_COUNTS=<family>:<messages in window>,... , EMAIL_SELFTEST_24H_COUNT=<n> and EMAIL_NEWEST_ALERT_SEEN=<timestamp>.
+6. HEADLINE JOB. Every alert email gets a disposition for its headline job (the job named in the subject line) in addition to the existing rule to extract and preserve all initiating URLs before filtering. An alert email with no headline job in scope still receives a recorded disposition.
+7. PRECEDENCE. This amendment replaces the wording "or exhaust the eligible window with proof" in the FORGE_EMAIL_DISCOVERY minimum production requirement with the proof defined in item 4.
+END EMAIL MAILBOX COVERAGE AMENDMENT
