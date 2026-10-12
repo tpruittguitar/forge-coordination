@@ -1,0 +1,111 @@
+FORGE LANE HANDOVER -- CLAUDE TO GROK
+TASK_KEYS=FORGE_ENRICH_STRATEGIC, FORGE_ENRICH_FEASIBILITY
+EFFECTIVE=2026-10-12 morning ET, on Tim's directive (chat 2026-10-12 08:32 ET)
+AUTHORIZED_BY=Tim
+RECORDED_BY=Claude
+FORMAT=plain text by design. Do not convert to Google Docs.
+
+0. WHAT THIS FILE IS
+A handover packet. It carries state, cursors, holds and known defects so Grok can start both lanes without re-discovering them. It carries NO lane policy. Lane policy lives only in FORGE_AUTOMATION_CONTROL_ACTIVE.txt (Drive 1IcyEulnhEoY_aYHO8XvpNln7Nxztw9fW). Where this file and the control differ, the control wins.
+
+1. OWNERSHIP STATUS (read this first)
+- Claude's scheduled tasks for both keys are DISABLED:
+  FORGE_ENRICH_STRATEGIC -- disabled 2026-10-11 23:05 ET; last run 2220ET COMPLETE.
+  FORGE_ENRICH_FEASIBILITY -- disabled 2026-10-12 08:33 ET; last run 0735ET COMPLETE.
+  Neither is deleted. Claude will not run either key unless Tim reassigns it back.
+- BLOCKER UNTIL FIXED: the PROVIDER ASSIGNMENTS block in the control file still reads
+  FORGE_ENRICH_STRATEGIC=Claude and FORGE_ENRICH_FEASIBILITY=Claude.
+  That block is the ONLY source of lane ownership. Grok must not run these keys until it reads =Grok there.
+  Claude's connector cannot edit the control file in place. ChatGPT (in-place edit authority) or Tim applies the change in section 7.
+- After the control reads =Grok, every Grok run under these keys is authorized lane work.
+
+2. GROK NATIVE AUTOMATIONS (thin launchers only, per ENTRY and Production Contract)
+Create two Grok scheduled tasks. Name them per FORGE_DIRECTIVE_Grok_Task_Naming_Registry_2026-09-05 (next unused GROK-NN number, never reuse a retired number) and add both to GROK_TASK_REGISTRY. Suggested lane/output tokens: ENRICH_STRATEGIC_WRITER and ENRICH_FEASIBILITY_WRITER.
+Schedules (America/New_York, hourly, unchanged slots):
+  FORGE_ENRICH_STRATEGIC   at :20
+  FORGE_ENRICH_FEASIBILITY at :35
+Prompt text, verbatim, one per task (change only TASK_KEY):
+  PROVIDER=Grok
+  TASK_KEY=FORGE_ENRICH_STRATEGIC
+  INSTRUCTIONS=Google Drive file 1lDJuUFtAm5JrmQXXBl8bEt3p1pp4NZ5S (FORGE_AUTOMATION_ENTRY.txt). Read it fresh at the start of every run and follow it.
+Do not paste lane policy into the Grok prompt.
+
+3. READ ORDER EVERY RUN (from ENTRY v2026-10-11.2; re-read ENTRY itself in case it changed)
+1 FORGE_AUTOMATION_CONTROL_ACTIVE.txt 1IcyEulnhEoY_aYHO8XvpNln7Nxztw9fW
+2 FORGE_AUTOMATION_STANDARD_AND_HISTORY.txt 1MvxfIWDXQ_ZfkBgslu6B_EBWg-4iDqYy (FUNCTIONAL sections only)
+3 Canonical rules 1uuIopBY2Et-leu_tOdxnWAJJLniKwk08rdLCypuM2BE (text/plain export only)
+4 WRITER_ACCESS_DIRECTIVE_V9 1VHxnJqmwlJxsW_-aXm0IJiBvmETIxktN9yQHl_Bf_Rw; WRITER_FREEZE.json 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S; PIPELINE_RECEIPT_INDEX.json 1Fv_XQc-2cz2B2jWWP7Aapmd0KlHiGBLk; WRITER_QUEUE 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7
+5 PIPELINE_SCORING_MODEL.json 18l2Gc_SQNK5oKIegPFWgxIqoiXei-vKh (LIVE: TIM_WEIGHTED_JOB_RATING 2026-10-04.1 rev20; VNext is research only)
+6 V2_CURRENT_POPULATION_MASTER.txt 1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8 (read only; Writer is sole mutator). If the runtime cannot decode the full master, use row_readback (control: WRITER ROW_READBACK AMENDMENT).
+
+4. NAMING (keeps provenance clean across the handover)
+Run ID / requestId:  FORGE-ENRICH-STRATEGIC-GROK-YYYYMMDD-HHMMET-NN
+                     FORGE-ENRICH-FEASIBILITY-GROK-YYYYMMDD-HHMMET-NN
+Receipts (AI_Coordination, text/plain, conversion disabled):
+  AI_REASON_RUN_RECEIPT_FORGE_ENRICH_STRATEGIC_GROK_<YYYYMMDD>_<HHMMET>[_CHECKPOINTn|_TERMINAL].txt
+  AI_REASON_RUN_RECEIPT_FORGE_ENRICH_FEASIBILITY_GROK_<YYYYMMDD>_<HHMMET>[_CHECKPOINTn|_TERMINAL].txt
+Never write receipts or payloads as Google Docs. Read back stored mimeType after create.
+
+5. FIRST-RUN CHECKLIST (each lane)
+a. Confirm control PROVIDER ASSIGNMENTS shows =Grok for your key. If not: write a HARD_BLOCKED receipt naming this exact blocker and stop.
+b. Collision control (control item 7) is ACTIVE for the handover window: before claiming any PRIMARY_ID, check WRITER_QUEUE root, processed/ RESULT files from the last 2 hours and PIPELINE_RECEIPT_INDEX.json; skip anything in flight under a CLAUDE token. Expected: none after 08:20 ET for these lanes, but verify.
+c. Reconcile the predecessor terminal receipts listed in section 6 before new work. They are COMPLETE; record them as HISTORICAL_RECONCILIATION, never as your NEW_VERIFIED_UPDATES.
+d. Strategic and feasibility are now both Grok. Partition by disjoint deterministic PRIMARY_ID sets or explicit claims; do not let both Grok lanes research the same ID in the same hour.
+e. Acceptance (control PROOF/ACCEPTANCE): one COMPLETE or PARTIAL_WITH_WORK terminal receipt per lane with Writer RESULT + receipt-index COMPLETE + fresh exact-row readback for each write. Running is not proof.
+
+6. LANE STATE AT HANDOVER
+
+6A. FORGE_ENRICH_STRATEGIC
+Last Claude terminal: AI_REASON_RUN_RECEIPT_FORGE_ENRICH_STRATEGIC_CLAUDE_20261011_2220ET_TERMINAL.txt (Drive 1HPSZuD9omKVy9zyB6z5hI2Gp4e4mdsCO). COMPLETE, 22 NEW_VERIFIED_UPDATES.
+Lane gap: no strategic run 2026-10-11 23:20 ET through handover (~9 h). Pool may have grown from Grok web intake and email discovery.
+Unresolved first: reconcile 2120ET terminal (AI_REASON_RUN_RECEIPT_FORGE_ENRICH_STRATEGIC_CLAUDE_20261011_2120ET_TERMINAL.txt, Drive 12Hca552OmJBguaqnKxuduZ6V0gv6G490) and its holds V2I-A8E8CFAF1DD8, V2I-4B1070360A66, V2I-C83924DD7CA4, V2I-041361833F2A.
+Carry-forward cursor (38 at 2220ET; re-check each against live master, feasibility may since have touched some):
+  Lensa: Kaiser BECE2DA8E056, CHS E2BE33232EB5, SOLV E93E2827DCFF, Spower CF03E4691985, Nearmap 771E37FB5813, Accenture 5BEBFC6DBB21, Wonderful 47BF7F070EE0, Deckers 752D50180D3F, Qcells A511F9467371, Oracle 69E4353D60C3
+  Ladders: ATE 0822B7ACD99A, White Cap C5EA0A3EF380, Fleet 2D22501D7571, MatX C611BCB90F80, Symbotic A80FACDC8BFD
+  Jacobs TSC cluster (identity check first): DBDE3647AF1F, FC3CC85B5BF8, 1C2C6ADC1582
+  Other: Sedgwick 66339CF1DBE3, Lucky Strike 560269E834F1, WarrCloud F3A0D4B15153, Prime Data Centers A29761D00268, Franke FD4107DA31F7, FBSPL 1F20BD36105A, Fluor 192A785618E7, SRNS 4DD846363D47, Godshall 22F6C0F9DF8A, Vertiv 2512B4E52279, Carvana Heath DEFC42C0EE20, StreetID 5B65E01B3624, Proper Voltage 5AE199305B73, Performance Staffing 9E79455821C3, CMT 206FCDC87114, 66182987B101
+  Possible Never-Consider review, not researched: Abbott 258E3523D5C1, GSK 30AA23046144, Vertex B8F994FA0E98, Weaver Popcorn CF7B9A950115
+  (All IDs carry the V2I- prefix.)
+Open holds owned by this lane:
+  V2I-438EE4DF7C67 Trident Mfg Director of Manufacturing, Pingree Grove IL -- JD says Class I/II medical device contract manufacturer; possible NC-002. Next: Writer/Tim NC adjudication.
+  V2I-2E42896476D2 Ash Grove Dir Multi-Site Ops -- same CRH req 529035 as V2I-E0AA8B75621C. Next: gofer DUPLICATE ruling; survivor proposal V2I-E0AA8B75621C.
+  Oldest unresolved: V2I-EE78ABCA329E (JD never retrieved; anti-spin -- change method, do not repeat the same fetch).
+Identity note: Mayroad V2I-24EE07D65315 and V2I-4EBA2608DFE4 share JD and pay but have separate reqs and towns. Not duplicates; do not merge.
+
+6B. FORGE_ENRICH_FEASIBILITY
+Last Claude terminal: AI_REASON_RUN_RECEIPT_FORGE_ENRICH_FEASIBILITY_CLAUDE_20261012_0735ET_TERMINAL.txt (Drive 1-0WEl-lBby6_-TjEO8ymfbXk0g1vOhFE). COMPLETE, 17 NEW_VERIFIED_UPDATES. Eligible pool was 156 at its start.
+EVIDENCE_HANDOFF_COMP files: none unconsumed newer than 2026-10-11T18:22Z at 0735ET. Grok now owns consuming them (control PROVIDER ASSIGNMENTS: feasibility reads unprocessed COMP files each run and records consumed IDs).
+Carry-forward cursor, in order:
+  1. Glassdoor rows not yet read: Baxter D28B9FE01228 (no jl), Samuel Son 4B98655B3D33 (jl 1010276422177), Cumberland Additive EE78ABCA329E (1010273546336), SL America 1E1F1EA9D291 (1010281425811), Mitsubishi 047834CC9FAC (1010287397702), Malibu Boats A97EFD518588 (1010291773563), Kauffman A0F7ACB0DE1E (1010289878192), IMS F9312B2BFD27 (1010285925025), Servi-Sure 224A5F3BDDA9 (1010289795649), Imagine Group C1243FB9F7F8 (1010286130830)
+  2. Prime Data Centers A29761D00268 (Indeed jk 5702470b8360ff66; last attempt HTTP 429)
+  3. Lensa rows (14) and LinkedIn rows (64 remaining): resolve employer, then first-party Greenhouse/Lever/Ashby board or Glassdoor
+  4. Workday cluster (~35 rows): Claude's runtime could not render these. Grok's page-opening ability is the reason for this handover; this is the highest-value backlog for Grok.
+  (All IDs carry the V2I- prefix.)
+Open holds (no write made):
+  Anduril V2I-6F9337550CDB (Indeed c7c8fb6614a46e7c) and V2I-B1A1AC2A3753 (Indeed 20cf841eb87aae31): possible semantic duplicate -- same body, $220K-$292K, Costa Mesa onsite. Next: match Anduril Greenhouse req IDs before any write to either row.
+  Nox Metals V2I-825D6A958815 and V2I-A7FCF4815688, Genesis AI V2I-71C53EE457ED, Standard Bots V2I-4FE4FC185D1D: absent from Ashby listed board but job URLs still render. Liveness ambiguous (possibly unlisted).
+  Joby V2I-03EBFAEE8746: iCIMS JS shell, title only. Ford V2I-3E85BD23D15D: apply.ford.com robots-disallowed for Claude.
+Source pacing learned: Indeed and Glassdoor rate-limit; keep to 6 fetches per burst. Ashby/Lever public board APIs and Greenhouse boards API worked via page fetch.
+
+7. EXACT CONTROL-FILE CHANGE NEEDED (for ChatGPT or Tim to apply in place to 1IcyEulnhEoY_aYHO8XvpNln7Nxztw9fW; keep Drive ID)
+In PROVIDER ASSIGNMENTS -- TIM DIRECTIVE 2026-10-11, replace these two lines:
+  FORGE_ENRICH_STRATEGIC=Claude
+  FORGE_ENRICH_FEASIBILITY=Claude
+with:
+  FORGE_ENRICH_STRATEGIC=Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-11 23:05 ET; handover FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt)
+  FORGE_ENRICH_FEASIBILITY=Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-12 08:33 ET; same handover file)
+Bump VERSION to 2026-10-12.1. Read back after save.
+
+8. KNOWN DEFECTS GROK INHERITS (do not attempt to fix in-lane)
+- FLEX derivation (Writer-owned; oldest blocker, first reported 2026-10-11 10:32 ET). Submit DEGREE_TEXT verbatim, never paraphrase, and report mis-derivations:
+  (a) "degree ... preferred, or equivalent ... experience" derives UNKNOWN/0, expected HIGH_FLEX (Metromont, Virnig).
+  (b) hard Bachelor's/Master's engineering degree derives SOFT_FLEX/30, expected NO_FLEX (Scout Motors, Vertex).
+  (c) Shield AI V2I-BF897A68FE50 shows HIGH_FLEX/90 on "B.S. EE or equivalent technical field"; true class NO_FLEX.
+  (d) hard degree without the word "required" derives UNKNOWN/0.
+  Owner: Writer maintainer (Claude) / Tim.
+- Writer throughput ~1.5-2 min per request; one file per job record backs the queue up (strategic 2220ET waited 38 min). Prefer homogeneous multi-record ENRICH batches where the Writer directive allows, rather than one file per ID.
+- Control text cites Writer build 30f8d38; RESULT files show later builds (42654c9, 3c2b26f). ENRICH behaviour unchanged. Record the observed build in each receipt.
+
+9. WHAT CLAUDE KEEPS
+FORGE_APPLICATION_WRITER_GOFER (:50) and Writer code ownership. Claude does not research or write under either enrichment key from this handover forward.
+END HANDOVER

@@ -1,0 +1,55 @@
+FORGE PLAN - MOVE SHARED FILES FROM DRIVE TO GITHUB
+APPROVED_BY=Tim (chat 2026-10-12 13:48 ET)
+WRITTEN_BY=Claude (Foreman / Writer code owner)
+STATUS=APPROVED, EXECUTION GATED (see Gate 0)
+FORMAT=plain text. Do not convert to Google Docs.
+UNTIL CUTOVER: Drive files in AI_Coordination remain the only live authorities. This plan changes nothing by itself.
+
+0. WHY
+Drive cannot do in-place edits for Claude, and ChatGPT's in-place edit failed 2026-10-12 ~13:05 ET. Every control change now routes through Tim.
+GitHub access test 2026-10-12 (repo tpruittguitar/forge-access-test, every SHA verified by Claude against git log):
+  Claude chat: T1-T4 PASS (ee10744, 669afb7)
+  Grok chat: PASS (a45375b, 7998917). Grok "scheduled" run (3b75a0a, b621112) was a chat reply by Grok's own T5, so background mode is UNTESTED.
+  ChatGPT chat: PASS (3a9ac60, a1dcc0b, c2c4a83, b7d27ad). ChatGPT background scheduled run: T2 PASS (bfe8544, 13:36 ET, started 3 min late); T3 outcome pending at time of writing.
+Tim rulings 2026-10-12: repos may be PUBLIC; optimal functionality is the top priority; keep foreman-cockpit (it is the live Explorer + Writer source, Cloudflare Pages deploy, latest 3c2b26f PR #96).
+
+1. DESIGN
+Repo A  tpruittguitar/forge-policy        PUBLIC. Writers: Tim, Claude only.
+  rules, geo floors, scoring model, FLEX classes, salary estimation, Never-Consider list, other standing policy.
+Repo B  tpruittguitar/forge-coordination  PUBLIC. Writers: Claude, Grok, ChatGPT, Tim.
+  ENTRY, CONTROL, STANDARD, directives, handovers, run receipts, evidence handoffs, revision log, policy-mirror/ (read-only copy of Repo A).
+Repo C  tpruittguitar/foreman-cockpit     unchanged. Writer Apps Script + Pipeline Explorer code. Optional rename later after checking the Cloudflare Pages link.
+Master + WRITER_QUEUE stay on Drive until the Writer is ported. Possible later move to a database.
+
+Why two repos: all three AIs commit as tpruittguitar, so GitHub cannot tell them apart by identity, and free plans cannot enforce branch rules by author. Each AI connector's repository list is the enforcement boundary: Repo A is left off the Grok and ChatGPT lists.
+
+2. CODE-ENFORCED CHECKS (GitHub Actions in Repo B; no AI steps added to any lane)
+  a. policy-sync: on every push to Repo A, copy its files into Repo B policy-mirror/.
+  b. mirror-guard: on any push to Repo B that edits policy-mirror/ outside policy-sync, restore the mirror and open a GitHub issue (GitHub emails Tim on new issues).
+  c. receipt-lint (later): receipt naming, required fields, RUN_TERMINAL_STATUS present. Opens an issue on failure.
+Gofer instructions are NOT changed by this plan (Tim 2026-10-12: no added steps for gofer).
+
+3. COMMIT RULES (all lanes, written into CONTROL at cutover)
+  - Commit message starts with PROVIDER and RUN_ID, e.g. "GROK FORGE-ENRICH-FEASIBILITY-GROK-20261012-1435ET: <what>". Commit author is always tpruittguitar; the message is the only lane label.
+  - Edits to an existing file must pass the file's current SHA (stale writes are rejected).
+  - Receipts: one new file per run. Never edit another lane's receipt.
+  - Single-owner files: CONTROL and ENTRY are changed only on Tim's instruction.
+  - Every reported SHA must be real; Claude spot-checks SHAs against git log.
+
+4. GATES AND ORDER
+  Gate 0  Both Grok and ChatGPT pass T1-T4 as true BACKGROUND scheduled runs, verified in git log. Confirm each connector is a GitHub App with per-repository selection (github.com/settings/installations). If a connector can only be granted all repos (OAuth app at github.com/settings/applications), Repo A protection becomes detect-and-alert (mirror-guard style issue on Repo A pushes) and Tim decides whether that is acceptable.
+  Stage 1 Create Repo A and Repo B. Set connector repo lists: Claude A+B+C, Grok B, ChatGPT B.
+  Stage 2 Copy coordination text files from AI_Coordination to Repo B (ENTRY, CONTROL, STANDARD, active directives, handovers, revision log). Verify byte-for-byte (sha256) against Drive. Then one CONTROL change points every lane at Repo B, and native automation prompts get the new pointer. Drive copies are renamed SUPERSEDED_<name> and left read-only.
+  Stage 3 Writer + Explorer read policy from Repo A (raw.githubusercontent.com, public, no token). Tests + Writer deploy in one batched release (revision-log rule). Then copy policy files to Repo A, verify, cut over, rename Drive copies SUPERSEDED_.
+  Stage 4 Master + queue: separate plan later.
+  Cleanup Delete tpruittguitar/forge-access-test after Gate 0 (Tim action; Claude cannot delete repos).
+
+5. ROLLBACK
+Each stage is reversible until the Drive copies are renamed: point CONTROL back at the Drive IDs. After renaming, rename back. No Drive file is deleted by this plan.
+
+6. RISKS
+  - Public repos expose salary floors, FLEX rules, Never-Consider and company names. Tim accepted this 2026-10-12.
+  - Connector scope (Gate 0) is unverified.
+  - The Writer reads policy from Drive today. Stage 3 must ship before policy moves, or scoring silently uses stale copies.
+  - A lane on an old prompt keeps reading Drive after cutover. The SUPERSEDED_ rename makes that visible.
+END PLAN

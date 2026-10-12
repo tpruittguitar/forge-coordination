@@ -1,0 +1,25 @@
+FORGE PLAN ADDENDUM 1 - CONNECTOR SCOPE RULING
+AMENDS: FORGE_PLAN_GitHub_Migration_2026-10-12.txt (Drive 1df8UmNMDZCtT6Rh08pnEWvoJOM_9Dagj). Where they differ, this addendum wins.
+RULED_BY=Tim, chat 2026-10-12 13:56 ET. RECORDED_BY=Claude.
+FORMAT=plain text. Do not convert to Google Docs.
+
+RULING
+All three AI GitHub connectors (Claude, Grok, ChatGPT) keep "All repositories" access.
+Reason (Tim): when Claude runs out of usage, Grok and ChatGPT must be able to do Claude's work, including Writer code and policy changes.
+
+EFFECT ON THE PLAN
+- Section 1: repo-level write separation is withdrawn. forge-policy and foreman-cockpit are writable by all three AIs.
+- Gate 0 connector-scope check: closed (all-repos accepted).
+- Two repos are kept anyway (forge-policy, forge-coordination) so policy and lane traffic stay separate and alerts stay targeted.
+
+REPLACEMENT CONTROLS (convention + code alerts; no AI lane steps added; gofer unchanged)
+1. MAIN-BRANCH RULE for forge-policy and foreman-cockpit:
+   - Claude commits to main directly (normal owner).
+   - Grok and ChatGPT, when covering for Claude, commit to a branch named backup/<provider>-<YYYYMMDD-HHMM> and open a pull request. Tim merges in the GitHub web UI.
+   - Reason: Cloudflare Pages deploys Pipeline Explorer to production only from main. Branch pushes get preview deploys only, so a bad backup change cannot reach the live Explorer or Writer source until Tim merges.
+2. ALARM ACTION on forge-policy and foreman-cockpit main: on any push to main whose commit message does not start with "CLAUDE " or "TIM ", open a GitHub issue titled "Unreviewed push to main" listing the commit SHA, message and changed files. GitHub emails Tim.
+3. Commit label rule from plan section 3 stands: every commit message starts with PROVIDER and RUN_ID.
+
+KNOWN LIMIT
+Detection only for main. The labels can be faked, and nothing technically blocks a direct push to main on a free plan. The branch rule depends on Grok and ChatGPT following instructions. Tim accepted this tradeoff for backup coverage.
+END ADDENDUM

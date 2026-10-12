@@ -1,0 +1,33 @@
+FORGE DIRECTIVE - TIM RULINGS 2026-10-12 12:55 ET
+RECORDED_BY=Claude (Foreman / Writer code owner)
+AUTHORIZED_BY=Tim (chat 2026-10-12 12:55 ET)
+FORMAT=plain text. Do not convert to Google Docs.
+SCOPE=FORGE_ENRICH_FEASIBILITY work priority; Writer FLEX derivation.
+
+RULING 1 - FEASIBILITY RUN PRIORITY (Option B)
+Each FORGE_ENRICH_FEASIBILITY run works in this order:
+  1. Unconsumed EVIDENCE_HANDOFF_COMP files, oldest first:
+     - EVIDENCE_HANDOFF_COMP_20261011T182259Z_APPLIED_PAY_19 (1FauS4iPdCCYqH96XaePsa1x3ojgtlJha)
+     - PAY_143 (14mAn3p-fWhKH5VPacebouzuzgZAWIR8W)
+  2. Then the Workday cluster (~35 rows, handover FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12 section 6B item 4).
+  3. Then the remaining handover 6B cursor.
+Conditions:
+  - Submit COMP rows as homogeneous multi-record ENRICH batches where WRITER_ACCESS_DIRECTIVE_V9 allows (handover section 8), not one file per PRIMARY_ID.
+  - Before each submission, check processed/ for a RESULT naming that PRIMARY_ID from the same day; skip if present. V2L-IEM-4377408009 is already written (writeId W-20261012164019617-208898).
+  - Record consumed COMP file IDs and the PRIMARY_IDs consumed from each in the terminal receipt.
+
+RULING 2 - FLEX CLASSIFICATION (all three approved as proposed)
+  (a) "Bachelor's ... preferred, or equivalent [combination of] education and experience" -> HIGH_FLEX.
+      Examples: Metromont V2I-63F7539979C4, Virnig V2I-0C42328E067C. Writer currently derives UNKNOWN/0.
+  (b) Hard engineering degree with no experience alternative ("Bachelor's or Master's degree in engineering"; tiered BS/MS/PhD) -> NO_FLEX.
+      Examples: Scout Motors V2I-2D06DA97CBD7, Vertex V2I-B8F994FA0E98. Writer currently derives SOFT_FLEX/30.
+  (c) "B.S. in <field> or an equivalent technical field" -> NO_FLEX. "Equivalent" modifies the field of study, not experience.
+      Example: Shield AI V2I-BF897A68FE50. Writer currently derives HIGH_FLEX/90.
+Implementation owner: Claude (Writer code). Ships in the next batched Pipeline Explorer/Writer release per Tim's 2026-10-11 batching rule, then a re-score of affected rows.
+Lane behavior until shipped: keep submitting DEGREE_TEXT verbatim. Do not hand-set FLEX fields to work around the Writer.
+
+REVISION LOG ENTRY (for PIPELINE_EXPLORER_REVISION_LOG.txt, 15CwvViYl6TemHMR2cbd_PFrpbhROvWU_; Claude's connector cannot edit it in place)
+  2026-10-12 | Writer FLEX derivation | Implement Tim rulings (a) HIGH_FLEX, (b) NO_FLEX, (c) NO_FLEX per this directive; add regression cases Metromont, Virnig, Scout Motors, Vertex, Shield AI; re-score touched rows after deploy | Status: QUEUED for next batch
+
+SUPERSEDES: the "Writer fix or Tim ruling" open item in handover section 8 and the 0735ET feasibility terminal FLEX findings (a)-(c). Those are now ruled.
+END DIRECTIVE

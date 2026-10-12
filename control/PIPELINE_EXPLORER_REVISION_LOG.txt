@@ -1,0 +1,63 @@
+PIPELINE EXPLORER + WRITER REVISION LOG
+OWNER=Tim (decides what goes into each release). MAINTAINED_BY=Claude.
+STARTED=2026-10-11 19:28 ET
+PURPOSE: Collect requested changes, then build and ship them together as one release instead of one at a time.
+HOW IT WORKS:
+- New requests are added under QUEUED with an ID (REV-###), who asked, and the date.
+- Nothing in QUEUED is built until Tim says "build the release" (or names specific REV IDs).
+- When a release ships, its items move to SHIPPED with the PR number, commit and date.
+- Items Claude suggests but Tim has not asked for stay under CANDIDATES until Tim promotes or drops them.
+
+==================================================================
+QUEUED (Tim requested; not built yet)
+==================================================================
+REV-001  Refresh panel waits for the queue on its own
+  Asked: Tim 2026-10-11 19:28 ET
+  Where: Settings > Scoring & FLEX > Review refresh (Refresh stored policy values)
+  What: While the Writer queue is busy, show "Ready when the queue clears (N waiting, M unverified)" instead of red X lines. Re-check every Writer status poll. When Queued = 0 and Unverified = 0, enable "Apply refresh to N rows" automatically. Never apply automatically; Tim still clicks Apply.
+  Why: The refresh is blocked whenever lanes are writing; Tim had to keep checking back.
+  Risk: Low (frontend only; the existing safety checks stay the same).
+
+REV-002  Put "waiting on my ruling" back in easy reach (regression from PR #92)
+  Asked: Tim 2026-10-11 19:43 ET ("can't find things waiting on my ruling")
+  Where: Pipeline section tab row + queue-head tiles
+  What: Add tabs Review queue (preset NEEDS_TIM) · Decline candidates (DECLINE_CANDIDATES) · My rulings (RULED) to the Pipeline tab row. Make the "Needs decision" tile count the whole Review queue, not only BUCKET=TIM_DECISION_REQUIRED (it showed 0 while items were waiting). Optional: a "Waiting on Tim" list of gofer HELD items read from the latest gofer receipt.
+  Why: The four-section menu removed the rail's Decision queue entry; the remaining path (All live > View & filters > Review queue) is hidden.
+  Risk: Low (frontend only). Claude recommends shipping ahead of the batch because it fixes a regression.
+
+REV-003  Every application and rejection is recorded (standing rule + Writer batch support)
+  Status: WRITER PART SHIPPED 2026-10-11 21:09 ET (PR #95, 42654c9, Writer v53; rollback v52). POLICY PART SHIPPED 2026-10-11 21:31 ET: control file VERSION 2026-10-11.6 (built by ChatGPT, uploaded by Tim, same Drive ID; Claude verified sha256 ca0dceba...5cd73117, only line 2 changed, 11 lines appended). Next: gofer drains the 353 held items in batches of 25.
+  Asked: Tim 2026-10-11 19:47 ET ("if I had a rejection, it was important enough to apply for and needs to be in the record ... our solution must address these and future cases")
+  Problem: 353 application/rejection records from Grok's Archive handoff (EVIDENCE_HANDOFF_ARCHIVE_20261011T1826Z) are held because (a) PROVIDER ASSIGNMENTS says handoff jobs absent from the master are "never inserted as a new row", and (b) upsert_application takes one event per write and the Writer allows one master write per execution (353 writes ~ 12 h of queue).
+  Writer part: batch upsert_application, up to 25 events in ONE master commit. Per event, today's rules: update the matched row; insert a protected APPLIED / REJECTED_BY_EMPLOYER row (ANTI_RESURRECTION=YES) when no match; ambiguous identity holds only that event with possible matches. Idempotent via UPSERT_KEY. Tests + Writer deploy; rollback v52.
+  Policy part (Tim pastes into FORGE_AUTOMATION_CONTROL_ACTIVE after the Writer part is live): every application/rejection is recorded; supersedes "never inserted as a new row" for application/rejection evidence; batched <=25; SOURCE_URL = posting URL else Gmail message link; Never-Consider does not block history rows; applies to all lanes and future handoffs.
+  Then: gofer drains the 353 over its next runs; future cases flow automatically.
+  Risk: Medium (Writer write path). Claude recommends building ahead of the batch because records are being withheld now.
+
+==================================================================
+CANDIDATES (suggested by Claude; Tim decides)
+==================================================================
+CAND-01  System panel: stop calling a normal backlog CRITICAL
+  QUEUE_BACKLOG shows CRITICAL at 9 waiting / 15 min. Align with the 45-min "act" line on the throughput graph: CRITICAL only when the oldest request is 45+ min or the backlog stops shrinking for 2 checks.
+CAND-02  System panel: "FRONTEND CHECK UNAVAILABLE"
+  The build check cannot run from the browser. Either make it work (read the deployed build stamp) or hide it.
+CAND-03  Writer per-step timing (writerTimings)
+  Fill in read / parse / write / read-back / receipt timings for each request, so slow steps are measured as the master grows. Writer deploy.
+CAND-04  Batch the enrichment/gofer submissions
+  Submit one batch file per run instead of one file per candidate (about 7x more records per Writer slot). Needs a control-file change from Tim.
+CAND-05  Repo housekeeping
+  Add .gitattributes (eol=lf) so Windows checkouts match the repo; make writer-transport-cli.test.js tolerate the Windows fsync EPERM; add the missing final newline to apps-script/PipelineEvidence.gs.
+CAND-06  Review the 6 older open PRs (#6, #31, #42 DO-NOT-MERGE, #66, #72, #73)
+  Report which are still worth merging, which conflict with today's changes, and which to close.
+
+==================================================================
+SHIPPED (for reference; 2026-10-11)
+==================================================================
+PR #88  0f5b1ca  Writer v49: Indeed pagead URLs not identity; lock timeout defers instead of failing
+PR #89  7af88a8  Layout toolbar docked in the header (no longer covers the job panel)
+PR #90  64c6043  Writer v51: read-only queue_stats
+PR #91  1cb8e69  Writer throughput graphs (System > Dashboard)
+PR #92  9584953  Four-section menu: Pipeline / Intake / System / Settings
+PR #93  30f8d38  Writer v52: read-only row_readback (+ control file VERSION 2026-10-11.5, applied by Tim)
+PR #94  9aaec51  Numbers paired with graphics (sparklines, share bars, progress bar)
+PR #95  42654c9  Writer v53: batch upsert_application (<=25 per commit); Gmail/Outlook links are evidence only (REV-003 Writer part)
