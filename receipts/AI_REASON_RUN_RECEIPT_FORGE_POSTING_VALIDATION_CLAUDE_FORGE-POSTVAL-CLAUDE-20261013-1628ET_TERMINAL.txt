@@ -1,0 +1,21 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1628ET
+STATUS=PARTIAL
+FILES_READ: ENTRY VERSION=2026-10-13.5; CONTROL VERSION=2026-10-13.5 (full); README.md (sha 5d990a6); WORKLIST_FORGE_POSTING_VALIDATION.txt (generated 2026-10-13T20:29:02Z, master modified 20:04:17Z, 295 eligible, 40 shown); WRITER_FREEZE.json (frozen=false).
+ROWS_EVALUATED=8 (worklist rows 6, 13, 22, 23, 27, 31, 34, 37; searched by exact company/title/location)
+LIVE=0
+CLOSED=0
+UNCONFIRMED=8 (not stamped; see WRITTEN)
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=295 eligible at worklist stamp (no change from this run)
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=HARD LIMIT: this runtime's web search returned only aggregator or undated pages (VC job boards, ev.careers, ihireengineering, state job boards), no employer first-party page with the exact requisition for any row evaluated; WebFetch on the one candidate page (Anduril via jobs.generalcatalyst.com) returned SERVER_ERROR. Rows 1-5, 14-21, 28 are Lensa email-tracking redirects, rows 6-13, 22-23, 27, 29-33, 40 are LinkedIn, rows 24-26, 34-39 are Indeed, row 12 is Glassdoor, all unreadable from Claude's tools. No qualifying evidence under ATS LIVENESS CHECKER AMENDMENT item 4 (aggregator results undated, so not LIVE_SECONDARY), so no UNCONFIRMED stamps were written: a stamp would only hide these rows from the worklist for 7 days with no new information. Unreadable source is not evidence of closure; no CLOSED stamp.
+WRITER_SUBMISSIONS=0 (no queue files created). WRITER_QUEUE was not touched.
+GITHUB_REACHABLE=YES
+NEXT_ACTION: rows with an identifiable employer ATS (Tesla, Stryker, Anduril, Entegris REQ 4467927687, Sierra Space, Rivian, Intuitive Machines, Electrolux, Hyve, Graphcore/L3Harris/Millennium) need a runtime that can fetch employer career pages (WebFetch failed this run) or the PC-side runner from ATS LIVENESS CHECKER AMENDMENT item 10.
