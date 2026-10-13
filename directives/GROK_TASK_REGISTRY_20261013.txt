@@ -30,3 +30,12 @@ Two hourly tasks (GROK-TEMP-FOREMAN-RANK-BRIEF, GROK-TEMP-CLAUDE-ENRICH-COORD) w
 TARGET STATE
 Enabled: FORGE_GROK_LANE_ROTATION | hourly :10 ET | prompt in NATIVE_PROMPTS_20261013_GROK_ROTATION.txt
 Everything above: disabled.
+
+CONFIRMED BY GROK 2026-10-13 01:03 ET (reported to Tim; recorded by Claude)
+Enabled (exactly one Forge task):
+  FORGE_GROK_LANE_ROTATION | hourly at :10 America/New_York, all 24 hours | enabled | prompt per NATIVE_PROMPTS_20261013_GROK_ROTATION.txt
+Disabled, not deleted:
+  FORGE_WEB_CAREER_DISCOVERY (was hourly :10), FORGE_ENRICH_STRATEGIC (was hourly :20), FORGE_ENRICH_FEASIBILITY (was hourly :35)
+  All GROK-0X, GROK-TEMP-* and forge-github-bg-scheduled-test* tasks listed above
+Grok scheduled starts: 24 per day (from ~120 before the 2026-10-13 reset, counting the two hourly GROK-TEMP tasks).
+First rotation run: 01:10 ET -> FORGE_ENRICH_STRATEGIC (strategic worklist: 18 rows).
