@@ -1,0 +1,19 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=CLAUDE
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-0528ET
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+FILES_READ=ENTRY VERSION 2026-10-13.3; CONTROL VERSION 2026-10-13.3; README.md; WORKLIST_FORGE_POSTING_VALIDATION (generated 2026-10-13T09:07:17Z, ELIGIBLE_TOTAL=346, fresh); WRITER_FREEZE.json (frozen=false); WRITER_ACCESS_DIRECTIVE_V9
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=346 (per worklist; unchanged)
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=HARD_BLOCKED: this unattended runtime cannot read posting pages. WebFetch on worklist rows 1-3 (Anduril Greenhouse URLs) returned PROVENANCE_REQUIRED (permission request not answered). No curl or other workaround was used, per the web content restrictions. WebSearch returned only aggregator title listings with no liveness, requisition or date evidence for the exact rows, which does not meet item 6 (no LIVE or CLOSED stamp without page evidence; unreadable source is not evidence of closure). No Writer submissions made.
+NEXT_ACTION=Tim: pre-approve WebFetch for the job-board domains (boards.greenhouse.io, job-boards.greenhouse.io, indeed, ziprecruiter, glassdoor, lensa) in this routine's permission settings, or allow WebFetch without prompts for this scheduled task. Next hourly run resumes from worklist top.
