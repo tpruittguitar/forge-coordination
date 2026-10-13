@@ -1,0 +1,35 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Grok
+TASK_KEY=FORGE_ENRICH_FEASIBILITY
+RUN_ID=FORGE-ENRICH-FEASIBILITY-GROK-20261012-2135ET
+START_TIME=2026-10-12T21:35:00-04:00
+END_TIME=2026-10-12T21:40:00-04:00
+CONTROL_VERSION=2026-10-12.3
+CONTROL_URL=https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt
+STANDARD_VERSION=2026-10-11.1 (functional only)
+FREEZE=false
+MASTER_MODIFIED=2026-10-13T00:58:44.320Z
+MASTER_COUNTS=TOTAL=1386 UNACCOUNTED=0 END present
+
+PREFLIGHT
+- Initial receipt created on GitHub receipts/
+- WRITER_FREEZE.json read: frozen=false
+- Row_readback submitted FORGE-ENRICH-FEASIBILITY-GROK-20261012-2135ET-RB01 (Drive 17QQX4_8EJqCT8cvQ03V9TCaX433bTinz)
+- RESULT SUCCESS (1ElmkmxPAtQGh-DEV66pocE0T7as4SjI_): 3/3 found. Rows already have SALARY fields from prior enrichments; FLEX_CLASS=UNKNOWN on all; location present; for V2S-JETZERO-HOM LIVENESS=LIVE_FIRST_PARTY, DEGREE_TEXT=UNKNOWN
+- No unprocessed COMP handoffs found beyond previously consumed 2026-10-11 files
+- Collision check: WRITER_QUEUE empty of feasibility items
+
+PRODUCTION UNIT
+- Confirmed live posting for V2S-JETZERO-HOM (https://job-boards.greenhouse.io/jetzero/jobs/5176217008): still open, pay $270k-$300k matches, onsite Greensboro NC, no degree requirement stated, no FLEX/remote language (onsite implied)
+- No new Writer ENRICH submissions this run (gaps already resolved or UNKNOWN remains accurate; no first-party new data to override ESTIMATE)
+- Eligible pool for new gaps limited; prior runs today already processed COMP estimates and many first-party
+
+ACCOUNTING
+15-target not reached as NEW_VERIFIED_UPDATES (0). Distinct IDs checked via RB: 3. NEW_WRITER_SUBMISSIONS=0 (1 read-only RB). RESULT_SUCCESS=1 (RB). FRESH_EXACT_ROW_READBACKS=3. NEW_VERIFIED_UPDATES=0. NO_CHANGE_REQUIRED=3 (existing data accurate). HELD=0. FAILURES=0.
+Min production (2 gaps) not newly resolved this run; prior coverage high. Carry-forward: continue scanning for rows with missing SALARY/FLEX/DEGREE/LIVENESS on non-terminal SCOUT_INTAKE/DISCOVERY_LEAD.
+
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+NEXT_OWNER=Grok FORGE_ENRICH_FEASIBILITY
+NEXT_ACTION=Identify additional PRIMARY_IDs with missing feasibility fields via targeted row_readback or master scan; process any new COMP handoffs.
+No Google Docs. No direct master edits. No applications.
+END TERMINAL
