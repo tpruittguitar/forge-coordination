@@ -1,0 +1,23 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1128ET
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+VERSIONS_READ=ENTRY 2026-10-13.3; CONTROL 2026-10-13.3; README (forge-coordination); WORKLIST_FORGE_POSTING_VALIDATION generated 2026-10-13T15:19:04Z (master modified 14:58:59Z, 1449 rows, eligible 359, shown 40); WRITER_FREEZE frozen=false
+PREFLIGHT=Drive worklist and freeze readable. Writer queue, receipt index and row_readback not exercised because no row reached a write.
+BLOCKER=Page-fetch gate. WebFetch on the first two worklist URLs (Blue Origin Workday R53294; Indeed jk=4939ec4c8cc7f8e5) returned PROVENANCE_REQUIRED: the permission request went unanswered in this unattended run. WebSearch returned only third-party aggregator listings for Blue Origin R53294 with no page content, which is not liveness evidence. Per item 6, an unreadable source is not evidence of closure, and no employer-ATS content could be read.
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=359 (worklist eligible total)
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=HARD_BLOCKED: WebFetch needs per-URL approval that cannot be given in a scheduled run; no alternative evidence route available. Nothing written to the Writer queue; no stamps guessed.
+NEXT_OWNER=Tim
+NEXT_ACTION=Allow WebFetch for job-board and ATS domains (or pre-approve it) for the scheduled Claude runtime, then the next :28 run proceeds top-down from the worklist.
+ANTI_SPIN=If the same block recurs next run, this lane will need a changed method (tool permission) rather than a retry.
