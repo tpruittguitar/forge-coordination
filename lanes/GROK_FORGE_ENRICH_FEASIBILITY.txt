@@ -1,5 +1,5 @@
 GROK LANE BRIEF -- FORGE_ENRICH_FEASIBILITY
-VALID_FOR_ENTRY_VERSION=2026-10-13.3
+VALID_FOR_ENTRY_VERSION=2026-10-13.4
 Read lanes/COMMON_GROK.txt first.
 
 WORKLIST
@@ -17,7 +17,7 @@ ENRICH fields (these are the keys the Explorer reads):
   DEGREE_TEXT: the posting's degree sentence, verbatim (DEGREE_TEXT=NOT_STATED when the posting itself names no degree). DEGREE_REQ: REQUIRED, PREFERRED or NOT_STATED. DEGREE_EVIDENCE_URL and DEGREE_ASOF.
   FLEX: the Writer derives FLEX_CLASS from DEGREE_TEXT, so verbatim DEGREE_TEXT is the key deliverable. Add FLEX_BASIS (one line) using Tim's rulings: "degree preferred, or equivalent education and experience" = HIGH_FLEX; no degree mentioned = HIGH_FLEX; degree named only as preferred = SOFT_FLEX; hard engineering degree with no experience alternative = NO_FLEX; "B.S. in X or equivalent technical field" = NO_FLEX (there "equivalent" modifies the field of study).
   LOCATION_NOTE / WORK_ARRANGEMENT: onsite, hybrid or remote as stated.
-  LIVENESS (when you opened the page): LIVE_EMPLOYER_ATS, LIVE_EMPLOYER, LIVE_AGGREGATOR or CLOSED (closed needs evidence), with LIVENESS_ASOF and LIVENESS_EVIDENCE_URL.
+  LIVENESS (when you opened the page): LIVE_EMPLOYER_ATS (employer ATS or careers page shows it open), LIVE_SECONDARY (a dated secondary job page within 30 days; put the page date in LIVENESS_NOTE) or CLOSED (closed needs evidence of closure; a blocked page is never closure), with LIVENESS_ASOF, LIVENESS_EVIDENCE_URL and LIVENESS_METHOD. Rows with ATS_CHECK_RESULT=LIVE or CLOSED were stamped by the Writer ATS checker; do not re-stamp their liveness.
 No scoring, no bucket changes, no declines.
 Cannot finish a row: ENRICH with FEASIBILITY_ATTEMPT_ASOF=YYYY-MM-DD and ENRICH_NOTE=<what was tried>, then take the next row.
 Pacing: Indeed and Glassdoor rate-limit; at most 6 fetches from either in a row.

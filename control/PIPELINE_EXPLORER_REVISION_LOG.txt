@@ -11,6 +11,13 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-007  Writer ATS liveness checker (verification plan items 1, 2, 4, 5)
+  Status: BUILT 2026-10-13, foreman-cockpit branch rev/ats-liveness-checker (batch 2026-10-13-E), PR pending Tim's merge; then deploy.
+  Asked: Tim 2026-10-13 14:47 ET ("Implement everything else"; JobSpy item deferred, reminder 16:47 ET)
+  What: Writer checks posting liveness, pay and degree text through public ATS APIs (Workday, Greenhouse, Lever, Ashby, Oracle HCM CX sites, SmartRecruiters, BambooHR) every 30 minutes, up to 25 rows, as one ENRICH batch per run. The posting-validation worklist keeps only the residue. Control VERSION 2026-10-13.4 adds the ATS LIVENESS CHECKER AMENDMENT (liveness tiers, evidence contract mapping).
+  Why: First-party APIs settled 5 of 6 rows in the 2026-10-13 test with zero AI tokens; AI time goes to rows only a browser or search can settle.
+  Risk: Medium (automatic master writes). Mitigation: CLOSED only on positive evidence, title check, no state fields, normal Writer verification, dry-run action before the first batch.
+
 REV-001  Refresh panel waits for the queue on its own
   Status: SHIPPED 2026-10-12 16:44 ET, foreman-cockpit PR #98 (66bf0a6), Writer version 55 live; checkPolicySource verified (source DRIVE).
   Re-score: DONE 2026-10-12 17:17-17:25 ET together with REV-006 (see REV-006 and receipts/AI_REASON_CHANGE_RECORD_CLAUDE_REV006_RESCORE_20261012.txt).

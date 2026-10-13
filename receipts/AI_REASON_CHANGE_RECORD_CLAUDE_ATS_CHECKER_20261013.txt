@@ -1,0 +1,32 @@
+AI_REASON CHANGE RECORD -- Writer ATS liveness checker
+PROVIDER=Claude
+DATE=2026-10-13 ET
+AUTHORIZED_BY=Tim, chat 2026-10-13 14:47 ET: "Remind me of #3 in two hours. Implement everything else"
+CONTEXT=Verification-method consolidation the same afternoon (Grok ideas, ChatGPT audit "Forge -- Additional Job-Posting Verification Methods", Claude 9-row live test). Plan items: 1 Writer ATS checker, 2 AI lanes get residue only, 3 JobSpy trial (deferred), 4 three liveness tiers, 5 evidence contract mapped to master fields.
+
+WHAT CHANGED
+- foreman-cockpit branch rev/ats-liveness-checker (batch 2026-10-13-E): apps-script/PipelineAts.gs (new), Automation.gs (tick hook), Code.gs (GET ats_check), PipelineWorklists.gs (posting-validation residue rule), tests/ats-checker.test.js (11 tests), docs/REVISION_LOG.md.
+- forge-coordination: CONTROL VERSION 2026-10-13.4 with ATS LIVENESS CHECKER AMENDMENT; ENTRY VERSION 2026-10-13.4; Grok briefs VALID_FOR_ENTRY_VERSION 2026-10-13.4; Grok feasibility brief liveness line updated to the tiers; REV-007 in the revision log.
+
+WHY
+- Structured ATS APIs answer liveness, pay and degree text deterministically. In the test, 5 of 6 first-party rows were settled with no AI judgment. Moving that work into the Writer removes it from AI lanes and their token budgets (Grok at 80% weekly usage).
+
+DESIGN DECISIONS
+- One batch ENRICH file per run through WRITER_QUEUE: reuses identity checks, receipts and three-proof verification; no second write path.
+- Closure only on positive evidence from proven per-posting endpoints. Errors, blocks and absences never move LIVENESS.
+- Title-overlap check guards against a stored URL that points at a different posting.
+- DEGREE_TEXT filled only where the row has no posting-based degree evidence, to avoid regex-extracted text overriding verified text; ATS_DEGREE_TEXT always kept as evidence.
+- Pay written as PAY_POSTED per Tim's standing rule that newer employer data replaces older stored values; ambiguous or malformed ranges skipped.
+- Oracle sites named by text (e.g. CentrusEnergyCareers) are not mapped to a CX code; those stay with the AI lane.
+
+NOT CHANGED
+- Buckets, dispositions, application state, Tim rulings, scoring, FLEX rules, lane ownership.
+
+VERIFICATION
+- npm test 423 pass / 0 fail.
+- Live fetch from Apps Script not yet run (build workspace cannot reach ATS hosts). First step after deploy: Writer GET action=ats_check&dry=1, review the plan, then let the tick run.
+
+OPEN
+- Merge + deploy by Tim.
+- JobSpy trial decision (reminder 16:47 ET).
+- iCIMS has no adapter; JSON-LD JobPosting extraction is untested and was not built.
