@@ -17,7 +17,7 @@ PER-EMAIL METHOD
 7. For each candidate in scope: check the live master and in-flight Writer requests for an existing row first. Protected states (APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection) stay untouched. Check posting liveness at the link, since alerts can be days old. A closed posting is recorded per the canonical rules. Submit plausible new records through Writer queue as intake with unknown fields permitted, including GMAIL_MESSAGE_ID, SOURCE_URL, DISCOVERED_AT_ET and DISCOVERY_SOURCE=EMAIL_ALERT:<domain>. Use requestIds that carry the run ID so a replay is idempotent.
 8. Batches of up to five emails. Target 15 distinct candidate dispositions per run, and continue up to four batches per run while capacity allows.
 
-KNOWN MISSING HEADLINE JOBS (first test targets; report the outcome of each by name)
+KNOWN MISSING HEADLINE JOBS (report the outcome of each by name; as of 2026-10-12 21:50 ET the master holds 11 of 14, still absent: Alternative Futures Group CQO, Brown Precision CNC Shop President/GM, Flowers Foods VP Quality and Food Safety; Stellantis Manager Manufacturing Engineering needs an exact check)
   Red Frog Solutions | Vice President Operations
   Ichor Systems | Director PMO - NPI/NPD
   Alternative Futures Group | Chief Quality Officer (Nashville)
@@ -34,11 +34,12 @@ KNOWN MISSING HEADLINE JOBS (first test targets; report the outcome of each by n
   Apptronik | Product Quality Manager
 Hunter Engineering stays under its identity hold with the gofer.
 
-CURSOR AND RECEIPT
-9. Every receipt carries BACKFILL_CURSOR=<ET timestamp of the oldest email fully dispositioned>, BACKFILL_EMAILS_DONE, BACKFILL_EMAILS_REMAINING_ESTIMATE, plus the fields in the amendment (EMAIL_FAMILY_COUNTS, EMAIL_SELFTEST_24H_COUNT, EMAIL_NEWEST_ALERT_SEEN). The next run starts from the cursor of the last receipt.
-10. Report, per run: emails opened, job links extracted, gross candidates, existing, new admissible, submitted, verified, held, failed, out-of-scope count, and the outcome of each known-missing job reached so far.
-11. If the self-test returns 0, set RUN_TERMINAL_STATUS=BLOCKED_MAILBOX_VISIBILITY and stop.
+CURSOR AND RECEIPT (REVISED 2026-10-12 21:55 ET, version 2)
+9. The cursor is an ET calendar day. Work one ET day at a time, newest first: 2026-10-12, 10-11, 10-10, 10-09, 10-08, 10-07, 10-06. A day is COMPLETE when every alert email of that ET day has been opened and every email has a recorded disposition for its headline job and for each in-scope job listed in its body (item 6). Submissions to the Writer for a day may be queued across several runs. Do not require a contiguous email sequence. Do not restart a day that a prior receipt marked COMPLETE.
+10. Every receipt carries BACKFILL_DAYS_COMPLETED=<list of ET dates>, BACKFILL_DAY_IN_PROGRESS=<ET date>, BACKFILL_DAY_EMAILS_TOTAL, BACKFILL_DAY_EMAILS_DONE, plus the amendment fields (EMAIL_FAMILY_COUNTS, EMAIL_SELFTEST_24H_COUNT, EMAIL_NEWEST_ALERT_SEEN). Known counts for planning: 10-06=45, 10-07=56, 10-08=48, 10-09=47, 10-10=44, 10-11=41, 10-12=34 (315 total, from the BACKFILL13 receipt). The next run reads the last receipt of this directive for the day in progress and resumes there. If that receipt cannot be read, use the BACKFILL13 receipt and the master to rebuild the state, then continue. Never run a new investigation instead of working through emails.
+11. Per run: open and disposition at least 10 alert emails from the day in progress, in batches of five, and queue the new in-scope candidates to the Writer. Report: emails opened, job links extracted, gross candidates, existing, new admissible, submitted, verified, held, failed, out-of-scope count, and the outcome of each known-missing job reached so far.
+12. If the self-test returns 0, set RUN_TERMINAL_STATUS=BLOCKED_MAILBOX_VISIBILITY and stop.
 
 DONE WHEN
-12. The cursor passes 2026-10-06 00:00 ET and every known-missing job has an outcome. Write a final receipt with BACKFILL_STATUS=COMPLETE. Claude then reconciles counts against Gmail.
+13. All seven ET days are COMPLETE and every known-missing job has an outcome. Write a final receipt with BACKFILL_STATUS=COMPLETE. Claude then reconciles counts against Gmail.
 END DIRECTIVE
