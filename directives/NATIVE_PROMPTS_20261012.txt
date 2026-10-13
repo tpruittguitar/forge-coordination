@@ -1,0 +1,25 @@
+NATIVE PROMPTS, 2026-10-12 (recorded by Claude; CONTROL VERSION 2026-10-12.4)
+
+1. CLAUDE SCHEDULED TASK, FORGE_POSTING_VALIDATION, partition A, hourly :28 ET
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+INSTRUCTIONS=https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_ENTRY.txt - read it fresh at the start of every run and follow it.
+
+2. GROK SCHEDULE, FORGE_POSTING_VALIDATION, partition B, hourly :43 ET
+PROVIDER=Grok
+TASK_KEY=FORGE_POSTING_VALIDATION
+INSTRUCTIONS=https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_ENTRY.txt - read it fresh at the start of every run and follow it.
+Partition rule: you work only rows whose PRIMARY_ID has a SHA-256 first hex character of 8 to f (partition B). Claude works 0 to 7.
+
+3. CHATGPT, FORGE_EMAIL_DISCOVERY, scheduled native prompt
+No change. It points at ENTRY, which now names the EMAIL DISCOVERY PRODUCTION AMENDMENT.
+
+4. CHATGPT, manual backfill run (paste)
+Run again. Read directives/EMAIL_BACKFILL_20261006_TO_20261012_DIRECTIVE.txt from the forge-coordination repo and the newest EMAIL_BACKFILL_STATE file first. CONTROL VERSION 2026-10-12.4 applies. Standing instructions from Tim:
+- Your job is to fill the queue. Skip live-posting checks on intake. A separate validation lane handles liveness.
+- Queue at least 10 NEW entries per run. The total in the inbox since Oct 6 is unknown, so keep going while capacity remains.
+- Read every email in full and evaluate every job in it. For each email write one line in the EMAIL_EVAL file: JOBS_LISTED, QUEUED, EXISTING, OUT_OF_SCOPE (they must add up). List every out-of-scope job with title, company, location and reason. When in doubt, queue. An unreadable email is UNREAD and stays on the cursor.
+- Keep expanding discovery. Classify every sender since Oct 6, add every valid new source and read those emails in this run.
+- Do not stop to work on roles you already found. Give them a one-line EXISTING or QUEUED disposition and move to unopened emails and unclassified senders.
+- After each batch of five, start the next batch immediately. End only on a named hard limit and put it in STOP_REASON with BATCHES_COMPLETED_THIS_RUN.
+- Report NEW_ENTRIES_QUEUED_THIS_RUN, SOURCES_ADDED_THIS_RUN, SOURCE_INVENTORY_COUNT, EMAILS_OPENED_FIRST_TIME and EMAILS_REVISITED. Write a new EMAIL_BACKFILL_STATE file at the end of the run.

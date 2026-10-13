@@ -1,0 +1,38 @@
+AI_REASON_CHANGE_RECORD
+PROVIDER=Claude
+RUN_ID=CLAUDE-CONTROL-20261012-2230ET
+AUTHORIZED_BY=Tim (chat 2026-10-12 21:46 to 22:03 ET)
+CONTROL_VERSION=2026-10-12.3 -> 2026-10-12.4
+
+WHAT CHANGED
+1. CONTROL: appended EMAIL DISCOVERY PRODUCTION AMENDMENT (fill the queue, full reading of every email with per-email EVAL log, floor of 10 new entries per run, do-not-stop rule with STOP_REASON, expand discovery with sender inventory, new receipt fields).
+2. CONTROL: appended POSTING VALIDATION LANE AMENDMENT (new TASK_KEY FORGE_POSTING_VALIDATION, Claude partition A hourly :28 ET, Grok partition B hourly :43 ET, deterministic SHA-256 partition of PRIMARY_ID, floor 20 rows per run).
+3. CONTROL: added one FORGE_POSTING_VALIDATION line to PROVIDER ASSIGNMENTS (the only source of lane ownership).
+4. ENTRY: VERSION .4 and READ ORDER step 1 names both new amendments.
+5. directives/EMAIL_BACKFILL_20261006_TO_20261012_DIRECTIVE.txt: GOVERNING_RULES now names CONTROL .4.
+6. New file directives/NATIVE_PROMPTS_20261012.txt: the native-schedule prompts for the validation lane and the ChatGPT paste block.
+
+WHY
+FACT: Early ChatGPT backfill runs (BACKFILL01 to 03) ended PARTIAL_WITH_WORK with 7 days remaining and listed liveness checks and verification as remaining work.
+FACT: Tim reported production rose once he told the lane to drop validation and focus on discovery.
+FACT: Master snapshot 2026-10-12 22:00 ET, 1387 rows: 948 SCOUT_INTAKE rows; 328 of them need validation (no LIVENESS field, or UNVERIFIED or UNCONFIRMED); partition A 177, partition B 151.
+FACT: The only existing liveness owner was FORGE_ENRICH_FEASIBILITY (Grok, hourly :35) with a floor of two gaps per run.
+INFERENCE: At two gaps per run the backlog never clears, so validation needs its own lane.
+INFERENCE: Digest handling that recorded out-of-scope jobs "by count, with no row" is how good roles went unseen.
+
+WHAT DID NOT CHANGE
+No master write. No Writer change. Canonical rules, scoring model, protected states, anti-resurrection and the other five lanes are unchanged. The EMAIL MAILBOX COVERAGE AMENDMENT stays in force.
+
+VERIFICATION
+CONTROL, ENTRY and directive diffs reviewed before commit. Remote state checked after push (see run log). Scheduled-task creation and first-run results are checked in later receipts.
+
+RISKS
+1. With no liveness check at intake, dead postings will reach the master until FORGE_POSTING_VALIDATION closes them. Watch the CLOSED ratio in its first receipts.
+2. The partition rule depends on every provider hashing the exact PRIMARY_ID text. A provider that cannot compute SHA-256 stops and reports instead of guessing.
+3. Writer liveness route: the lane uses the route FORGE_ENRICH_FEASIBILITY uses. If that route cannot write LIVENESS fields for SCOUT_INTAKE rows, the first batch will HELD and Claude amends.
+4. Grok schedule has to be created by Tim in the Grok app. Until it exists, partition B has no owner.
+5. Full reading of every email lowers emails per run. The backfill will take many runs.
+
+NEXT
+Check the first Claude run (22:28 ET) and the first Grok run (23:43 ET after Tim sets it up). Sample the first EVAL files against Gmail. Reconcile the combined validation backlog after six runs.
+END AI_REASON_CHANGE_RECORD
