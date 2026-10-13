@@ -1,0 +1,21 @@
+AI_REASON_RUN_RECEIPT — PREFLIGHT
+RUN_ID=FORGE-EMAIL-CHATGPT-20261013-0759ET-BACKFILL29
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+PROVIDER=ChatGPT
+STATUS=IN_PROGRESS
+ENTRY_VERSION=2026-10-13.3
+ENTRY_SHA=55a693c6c6026d4dff831d4baf650a6a83fad07c
+CONTROL_VERSION=2026-10-13.3
+CONTROL_SHA=abee9137911d88728ce85ae383efd371a3d7b35c
+STANDARD_VERSION=2026-10-11.1
+STANDARD_BODY_SHA256=0a4421d49566538295649d91ea01ad833077b30efbd5c7f43c70b45b3b857d90
+RULES=RULES_V4_20261007 ACTIVE
+WRITER=WRITER_ACCESS_DIRECTIVE_V9_2026-10-02 ACTIVE
+SCORING=TIM_WEIGHTED_JOB_RATING 2026-10-04.1
+GATE=PASS_DRIVE_ONLY; frozen=false; receipt_index.pending=0; queue PROCESSING=0
+MASTER_READ=1438 rows; modified 2026-10-13T11:16:47.587Z
+PLANNED_CURRENT_WINDOW_ET=2026-10-13 04:59:07 through 07:59:07
+PLANNED_QUERY_FAMILIES=job-board/employer/recruiter alert discovery; full-mailbox sender classification; exact carry-forward message IDs
+PLANNED_BATCHES=opened-but-undispositioned first, then current window, then unexamined backfill; maximum 5 emails per batch
+CARRY_FORWARD_IN=22
+NEXT_ACTION=Resume exact carried message IDs, disposition every visible job, submit admissible candidates via Writer, verify RESULT+COMPLETE+fresh master readback, then persist terminal state.
