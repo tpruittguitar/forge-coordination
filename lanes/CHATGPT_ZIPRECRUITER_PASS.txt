@@ -1,5 +1,5 @@
 CHATGPT ZIPRECRUITER PASS -- weekly step inside FORGE_WEB_CAREER_DISCOVERY
-VALID_FOR_ENTRY_VERSION=2026-10-13.7
+VALID_FOR_ENTRY_VERSION=2026-10-13.8
 SOURCE=CONTROL 2026-10-13.7 (ZIPRECRUITER PASS AMENDMENT, AGENCY POSTING AMENDMENT). CONTROL stays the authority; this file is its digest.
 
 WHEN
@@ -15,7 +15,12 @@ Local (location "Cleveland, TN", country_admin_code US, radius_miles 200, senior
  9 Director manufacturing   10 Plant Manager
 Check each response's search_url: it must show location=United+States for searches 1-8. If it names a city, record LOCATION_ANCHORED=<city> in the receipt and retry once with the explicit location. Echo the conversation_id from the first result in every later call of the run.
 
-QUICK SCREEN (title and company only)
+SONICJOBS TRIAL (4 ISO weeks: 2026W42 to 2026W45; stop after 2026W45 unless CONTROL extends it)
+After the ZipRecruiter searches, run three SonicJobs searches with the same nationwide filters (location United States set explicitly, $180K floor, last 7 days, full time where supported): Director of Manufacturing, Vice President of Manufacturing, Plant Manager. Read 20 results each. Same quick screen and agency rule. Intake rows carry SOURCE_PROVIDER=SonicJobs and DISCOVERY_SOURCE "ChatGPT SonicJobs trial"; SOURCE_URL = the listing link SonicJobs returns, exactly as returned (if it returns none, use the SonicJobs job page URL; never build one). Never use any SonicJobs apply, submit or account workflow.
+A role found by both connectors goes to the Writer once, under ZipRecruiter, and counts as OVERLAP.
+Receipt adds: SONICJOBS_RESULTS_SEEN, SONICJOBS_KEPT, SONICJOBS_ONLY (kept roles ZipRecruiter did not return), OVERLAP, SONICJOBS_SUBMITTED.
+Success test at the end of 2026W45: an average of 3 or more SONICJOBS_ONLY roles a week that the Writer writes as new (not EXISTING_MATCH, not Never-Consider). Claude reports the result to Tim.
+
 Keep: Director / Head / VP / GM / Plant Manager over manufacturing, production, operations or quality in a manufacturing business, plus Sr Manager at a priority employer named in the web discovery brief.
 Drop: sales, clinical, medical, restaurant, retail, construction-site, software-only and engineer-level roles. A salary range that only reaches 180000 at its top is a lead; keep it.
 Agency postings (staffing, recruiting, executive search, placement firms): follow the AGENCY POSTING digest in COMMON_GROK.txt: at most two searches to name the client; not named means COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the posting states. Each agency posting is its own opportunity.
