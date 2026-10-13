@@ -1,0 +1,22 @@
+AI_REASON CHANGE RECORD
+RUN_ID=CONTROL-20261013-0100ET
+PROVIDER=Claude
+AUTHORIZED_BY=Tim (00:24 ET goal: Grok every 4 hours to cut usage; 00:29 ET "Implement 1-5"); trigger: Grok report 00:51 ET that its scheduler rejects INTERVAL=4
+
+CHANGED
+- CONTROL -> 2026-10-13.3: new GROK ROTATION AMENDMENT; PROVIDER ASSIGNMENTS GROK SCHEDULE line; GROK CADENCE schedule and EFFICIENCY item 1 schedule marked superseded.
+- ENTRY -> 2026-10-13.3: rotation TASK_KEY rule in GROK LANES block.
+- lanes/*.txt: VALID_FOR_ENTRY_VERSION 2026-10-13.3 (no content change).
+- directives/GROK_TASK_REGISTRY_20261013.txt (Grok's reported inventory), directives/NATIVE_PROMPTS_20261013_GROK_ROTATION.txt.
+
+REASONING
+- With hourly as the floor, three hourly lane tasks = 72 starts/day. One hourly task rotating lanes = 24 working starts/day, each lane every 3 hours. Strategic and feasibility never share an hour.
+- Considered: 18 daily tasks (6 per lane) to reach every 4 hours. Rejected: task-count risk and 18 prompts to keep in sync.
+- Considered: hourly tasks with a skip gate. Rejected for now: each skipped start still spins up a Grok run; usage cost of an empty run unknown.
+
+NOT CHANGED
+- Lane briefs content, worklists, Writer, POSTVAL with Claude, other providers.
+
+RISKS
+- Rotation depends on Grok reading the hour correctly in America/New_York. Receipts carry RUN_ID with HHMMET; Claude checks the lane matches the hour in the first day's receipts.
+- 24/day is above the 18/day planned. Rest-hour option recorded in amendment item 5.

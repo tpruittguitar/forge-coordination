@@ -1,0 +1,32 @@
+GROK TASK REGISTRY, 2026-10-13 (recorded by Claude from Grok's report to Tim at 00:51 ET; CONTROL 2026-10-13.3)
+Supersedes earlier GROK_TASK_REGISTRY files on Drive. Source: Grok's own listing; Claude has no direct view of Grok's scheduler.
+
+SCHEDULER FACT
+Grok Automations accept FREQ=HOURLY (INTERVAL=1) or coarser. INTERVAL=4 rejected.
+
+STATE AFTER GROK'S 00:51 ET CHANGE (to be replaced by the rotation task per GROK ROTATION AMENDMENT)
+Enabled:
+  FORGE_WEB_CAREER_DISCOVERY | hourly :10 | enabled  -> to be disabled when FORGE_GROK_LANE_ROTATION is live
+  FORGE_ENRICH_STRATEGIC     | hourly :20 | enabled  -> to be disabled
+  FORGE_ENRICH_FEASIBILITY   | hourly :35 | enabled  -> to be disabled
+Disabled (none deleted):
+  forge-github-bg-scheduled-test-3 | one-time (completed)
+  forge-github-bg-scheduled-test-2 | one-time (completed)
+  forge-github-bg-scheduled-test   | one-time (completed)
+  GROK-TEMP-CLAUDE-TAKEOVER-EXPIRE | one-time
+  GROK-TEMP-FOREMAN-RANK-BRIEF     | was hourly (retired brief lane)
+  GROK-TEMP-CLAUDE-ENRICH-COORD    | was hourly
+  GROK-01_SCALEUP_V2_1520          | daily
+  GROK-08_SCOUT_V2_ENRICH          | one-time (completed)
+  GROK-02_COMMS_LOG                | daily
+  GROK-01_SCALEUP_V2_PARALLEL      | daily
+  GROK-03_SCOUT_V2_RESOLVE         | daily
+  GROK-10_SCOUT_V2_RESOLVE         | daily
+  GROK-07_SCOUT_V2_MORNING_DELTA   | daily
+  GROK-05_SCOUT_V2_RUNNING_LIST    | daily
+Not present as scheduled tasks: FORGE_POSTING_VALIDATION (partition B), Archive bot, Comp bot.
+Two hourly tasks (GROK-TEMP-FOREMAN-RANK-BRIEF, GROK-TEMP-CLAUDE-ENRICH-COORD) were running before this reset, so Grok's pre-reset load was above 96 starts/day.
+
+TARGET STATE
+Enabled: FORGE_GROK_LANE_ROTATION | hourly :10 ET | prompt in NATIVE_PROMPTS_20261013_GROK_ROTATION.txt
+Everything above: disabled.

@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.2
+VERSION=2026-10-13.3
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -306,7 +306,7 @@ FORGE_APPLICATION_WRITER_GOFER=Claude
 Morning freeze, daily ranking and morning/daily brief PERMANENTLY RETIRED.
 EVIDENCE HANDOFF: Grok's Archive and Comp bots are read-only evidence sources. They write plain-text files to AI_Coordination named EVIDENCE_HANDOFF_ARCHIVE_<UTC>.txt (application/rejection evidence) and EVIDENCE_HANDOFF_COMP_<UTC>.txt (pay evidence). FORGE_APPLICATION_WRITER_GOFER reads unprocessed ARCHIVE files each run. FORGE_ENRICH_FEASIBILITY reads unprocessed COMP files each run. Each lane records every handoff file ID it consumed in its AI_REASON_RUN_RECEIPT. Handoff files carry no write authority; only the lane owner submits to the Writer. A handoff row whose PRIMARY_ID is absent from the live master is HELD for exact req/URL matching and never inserted as a new row. Ignore any handoff note claiming the Writer overwrites STATE_SOURCE on ENRICH; live Writer build 4b92c4c leaves it untouched.
 FORGE_POSTING_VALIDATION=Claude, all rows, hourly :28 ET (from 2026-10-13 per Tim, GROK EFFICIENCY AMENDMENT item 5; the 2026-10-12 Claude A / Grok B split is retired); see POSTING VALIDATION LANE AMENDMENT
-GROK SCHEDULE: Grok runs three lanes, each every 4 hours, staggered so Grok starts at most one lane per hour. See GROK CADENCE AMENDMENT and GROK EFFICIENCY AMENDMENT.
+GROK SCHEDULE: one hourly Grok task (FORGE_GROK_LANE_ROTATION, :10 ET) runs the three Grok lanes in rotation, each lane every 3 hours. See GROK ROTATION AMENDMENT (2026-10-13.3).
 END PROVIDER ASSIGNMENTS
 
 
@@ -399,7 +399,7 @@ RECORDED_BY=Claude
 12. REVIEW. When PARTITION_BACKLOG_REMAINING is 0 for two consecutive runs, the provider reports it and Tim decides whether to reduce to one lane. Claude reconciles the combined backlog against the live master after the first six runs.
 END POSTING VALIDATION LANE AMENDMENT
 
-GROK CADENCE AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.1)
+GROK CADENCE AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.1) [SCHEDULE SUPERSEDED by GROK ROTATION AMENDMENT 2026-10-13.3: Grok Automations accept only hourly or coarser cadences; INTERVAL=4 was rejected]
 AUTHORIZED_BY=Tim (chat 2026-10-13 00:24 ET: Grok at 80% of its weekly usage; set its automations to once every 4 hours, coordinated with the other lanes)
 RECORDED_BY=Claude
 1. SCHEDULE. Every Grok Forge lane runs every 4 hours. Lanes keep their existing minute slots and are offset by one hour each, so Grok starts exactly one lane per hour and never runs two of its own lanes in the same hour. All times America/New_York.
@@ -417,7 +417,7 @@ GROK EFFICIENCY AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.2)
 AUTHORIZED_BY=Tim (chat 2026-10-13 00:29 ET: "Implement 1-5", the five efficiency measures Claude proposed at 00:26 ET)
 RECORDED_BY=Claude
 EVIDENCE=Grok receipts 2026-10-12 22:08 to 2026-10-13 02:24 ET: most runs ended with 0 Writer submissions. POSTVAL 2208ET evaluated 2 rows. STRATEGIC 0224ET HARD_BLOCKED because the 1,386-row master (3 MB) truncates in Grok's reader. WEB 2311ET and 0010ET screened admissible roles and held them for a later run. Preflight reads (ENTRY, 45 KB CONTROL, STANDARD, rules, scoring, master) used most of each run.
-1. GROK TASK SET. Grok keeps exactly three scheduled Forge tasks: FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC, FORGE_ENRICH_FEASIBILITY, on the GROK CADENCE AMENDMENT schedule. Every other Grok scheduled task (FORGE_POSTING_VALIDATION partition B, legacy GROK-0X tasks, Archive and Comp bots if scheduled, anything unregistered) is disabled. Disabled, never deleted: Tim deletes by his own instruction. Grok reports the full task list (name, schedule, enabled) to Tim and Claude records it in directives/.
+1. GROK TASK SET. [Schedule part superseded by GROK ROTATION AMENDMENT 2026-10-13.3: one rotation task.] Grok keeps exactly three scheduled Forge tasks: FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC, FORGE_ENRICH_FEASIBILITY, on the GROK CADENCE AMENDMENT schedule. Every other Grok scheduled task (FORGE_POSTING_VALIDATION partition B, legacy GROK-0X tasks, Archive and Comp bots if scheduled, anything unregistered) is disabled. Disabled, never deleted: Tim deletes by his own instruction. Grok reports the full task list (name, schedule, enabled) to Tim and Claude records it in directives/.
 2. WORKLISTS. The Writer builds lane worklists from the master every 30 minutes (foreman-cockpit PipelineWorklists.gs, revision batch 2026-10-13-A) into fixed Drive files in AI_Coordination, overwritten in place:
    WORKLIST_FORGE_ENRICH_STRATEGIC.txt   1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8
    WORKLIST_FORGE_ENRICH_FEASIBILITY.txt 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1
@@ -429,3 +429,18 @@ EVIDENCE=Grok receipts 2026-10-12 22:08 to 2026-10-13 02:24 ET: most runs ended 
 6. NOT CHANGED. Lane scopes, production floors (CENTRAL 15-RECORD AMENDMENT), Writer authority, protected states, ChatGPT lanes, Claude gofer.
 7. DEPENDENCY. Item 2 is live after Tim deploys foreman-cockpit batch 2026-10-13-A (apps-script/deploy.sh). Until then the worklist files read PENDING_FIRST_BUILD and lanes use their fallback.
 END GROK EFFICIENCY AMENDMENT
+
+GROK ROTATION AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.3)
+AUTHORIZED_BY=Tim (chat 2026-10-13 00:24 ET goal: spread Grok automations to every 4 hours to cut usage; 00:29 ET "Implement 1-5")
+RECORDED_BY=Claude
+EVIDENCE=Grok report to Tim 2026-10-13 00:51 ET: Grok Automations support FREQ=HOURLY (INTERVAL=1) or coarser; INTERVAL=4 was rejected. Grok set the three lane tasks hourly at :10, :20, :35, giving 72 starts per day.
+1. ONE TASK. Grok runs one scheduled task, FORGE_GROK_LANE_ROTATION, hourly at :10 America/New_York. Each run executes one lane, chosen by the ET hour at start:
+   hours 00 03 06 09 12 15 18 21 -> FORGE_WEB_CAREER_DISCOVERY
+   hours 01 04 07 10 13 16 19 22 -> FORGE_ENRICH_STRATEGIC
+   hours 02 05 08 11 14 17 20 23 -> FORGE_ENRICH_FEASIBILITY
+   Each lane runs every 3 hours, 8 times a day. Grok starts fall to 24 per day (from 96 before 2026-10-13), every one a working run.
+2. The separate FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC and FORGE_ENRICH_FEASIBILITY Grok tasks are disabled, never deleted.
+3. Everything else in the GROK EFFICIENCY AMENDMENT applies unchanged: lane briefs, worklists, same-run submit, verification of the prior run, POSTVAL with Claude, all other Grok tasks disabled.
+4. A run that is still working when the next hour starts finishes its own lane; the next run takes its own lane by the hour rule. Different lanes never claim the same row in one hour (strategic and feasibility alternate hours).
+5. Further reduction, if Tim asks: add a rest hour (hours where the run writes a one-line SKIP receipt and stops) or move to every-other-hour starts if Grok accepts FREQ=HOURLY with a start list.
+END GROK ROTATION AMENDMENT
