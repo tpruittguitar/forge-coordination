@@ -1,0 +1,21 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1730ET
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+FILES_READ: ENTRY VERSION=2026-10-13.6; CONTROL VERSION=2026-10-13.6 (via GitHub MCP, blob read at commit a0de4ef); README.md sha 5d990a6; WORKLIST_FORGE_POSTING_VALIDATION.txt modified 2026-10-13T21:00:09Z (fresh, 40 shown of 295 eligible); WRITER_FREEZE.json frozen=false (2026-10-05).
+NOT_READ: STANDARD, canonical rules, scoring model, PIPELINE_RECEIPT_INDEX (not needed for ENRICH liveness stamp; collision check done on WRITER_QUEUE root, no files modified since 19:00Z).
+ROWS_EVALUATED=9 (worklist rows 1-40 are LinkedIn, Indeed, Lensa and ZipRecruiter tracking URLs, all unreadable; employer-route search attempted)
+LIVE=1 (V2I-E98F988559AB Millennium Space Systems, Leader of Manufacturing - Harness, El Segundo; Boeing ATS JR2026521409, posted 2026-10-12, closes 2026-10-27; method EMPLOYER_PAGE)
+CLOSED=0
+UNCONFIRMED=8 (no stamp written; searches found no exact company/title/location match): Entegris (Aurora IL), Stryker (Cary IL Director Mfg Eng), Intuitive (Palo Alto Director HVP), Amgen (IVD Sr Mgr; only Washington DC/Lisbon listings found), Sierra Space (page redirected, not confirmed), Hyve Solutions (Reno), Graphcore (Austin, builtin listings only, not employer), Insmed/others untouched.
+WRITTEN=1 (WRITER_QUEUE file CLAUDE_FORGE-POSTVAL-CLAUDE-20261013-1730ET-B01.json, Drive 1tGBpVuP7aH0G_dZDMrDjbrcbVt-YGhPF)
+RESULT=RESULT__CLAUDE_FORGE-POSTVAL-CLAUDE-20261013-1730ET-B01.json, Drive 1WxdOEVFkBKFxiohPIcMlNmZJnv0-ynbH, terminalStatus=SUCCESS, writeId W-20261013213127721-91c201, writerBuild d121893, verification=PENDING. Fields changed: LIVENESS, LIVENESS_ASOF, LIVENESS_EVIDENCE_URL, LIVENESS_METHOD, REQ_ID. RESULT shows "after" row carrying LIVENESS=LIVE_EMPLOYER_ATS.
+VERIFIED=0 (no COMPLETE receipt-index entry or separate row_readback seen this run; not claimed)
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=294 eligible per worklist header (not reduced materially this run)
+BATCHES_COMPLETED_THIS_RUN=1
+STOP_REASON=Named limit: remaining worklist rows are LinkedIn/Indeed/Lensa/ZipRecruiter-only and Claude's tools cannot read those pages; web search returned no exact employer posting for the other rows tried; run ended after evidence ran out within this session's capacity. Production floor of 10 rows not met in writes; 9 evaluated.
+NOTE: Workday ERROR_403 rows and employer routes are the productive path; worklist top-40 is dominated by unreadable aggregator links, which explains the 0-write result of the 1628ET run.
