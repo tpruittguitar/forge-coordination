@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.10
+VERSION=2026-10-13.11
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -305,7 +305,7 @@ FORGE_ENRICH_FEASIBILITY=Claude (temporary from 2026-10-13 15:15 ET per Tim, GRO
 FORGE_APPLICATION_WRITER_GOFER=Claude
 Morning freeze, daily ranking and morning/daily brief PERMANENTLY RETIRED.
 EVIDENCE HANDOFF: Grok's Archive and Comp bots are read-only evidence sources. They write plain-text files to AI_Coordination named EVIDENCE_HANDOFF_ARCHIVE_<UTC>.txt (application/rejection evidence) and EVIDENCE_HANDOFF_COMP_<UTC>.txt (pay evidence). FORGE_APPLICATION_WRITER_GOFER reads unprocessed ARCHIVE files each run. FORGE_ENRICH_FEASIBILITY reads unprocessed COMP files each run. Each lane records every handoff file ID it consumed in its AI_REASON_RUN_RECEIPT. Handoff files carry no write authority; only the lane owner submits to the Writer. A handoff row whose PRIMARY_ID is absent from the live master is HELD for exact req/URL matching and never inserted as a new row. Ignore any handoff note claiming the Writer overwrites STATE_SOURCE on ENRICH; live Writer build 4b92c4c leaves it untouched.
-FORGE_POSTING_VALIDATION=Claude, all rows, hourly :28 ET (from 2026-10-13 per Tim, GROK EFFICIENCY AMENDMENT item 5; the 2026-10-12 Claude A / Grok B split is retired); see POSTING VALIDATION LANE AMENDMENT
+FORGE_POSTING_VALIDATION=ChatGPT, every 2 hours (from 2026-10-13 18:07 ET per Tim, POSTING VALIDATION TO CHATGPT AMENDMENT; Claude keeps its hourly :28 task until ChatGPT's first verified receipt, then Claude disables it). Previously: Claude, all rows, hourly :28 ET (from 2026-10-13 per Tim, GROK EFFICIENCY AMENDMENT item 5; the 2026-10-12 Claude A / Grok B split is retired); see POSTING VALIDATION LANE AMENDMENT
 GROK SCHEDULE: one hourly Grok task (FORGE_GROK_LANE_ROTATION, :10 ET) runs the three Grok lanes in rotation, each lane every 3 hours. See GROK ROTATION AMENDMENT (2026-10-13.3).
 END PROVIDER ASSIGNMENTS
 
@@ -521,3 +521,14 @@ EVIDENCE=Claude test 2026-10-13 17:39-17:42 ET with TinyFish fetch_content (rend
 9. WRITER (foreman-cockpit batch 2026-10-13-G, PR #107). The Writer ATS checker reads Workday rows through TinyFish's Fetch REST API when Workday blocks Google (6 rows per run, 300 URLs per UTC day, CLOSED only on a token-bearing URL Workday reports missing). Takes effect when Tim merges and deploys and sets the script property TINYFISH_API_KEY. Until then items 2 and 3 above cover Workday in the AI lanes.
    LIVE 2026-10-13 18:00 ET: Writer version 62 (PR #107), TINYFISH_API_KEY set by Tim. AI lanes leave Workday rows to the Writer unless ATS_CHECK_RESULT is not LIVE or CLOSED (ATS LIVENESS CHECKER AMENDMENT item 5).
 END TINYFISH VERIFICATION AMENDMENT
+
+POSTING VALIDATION TO CHATGPT AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.11)
+AUTHORIZED_BY=Tim (chat 2026-10-13 18:07 ET: "I think we need to move another automation over to ChatGPT while we can")
+RECORDED_BY=Claude
+EVIDENCE=Claude weekly usage 64% at 2026-10-13 15:41 ET with its own page projecting run-out Wednesday evening (credits off); ChatGPT weekly 47% (reset Tue Oct 20) with 2 of 5 scheduled-task slots used (Email Discovery, Web Discovery). Claude's choice of lane: FORGE_POSTING_VALIDATION is Claude's most frequent task (24 runs a day), mechanical, and smaller since the Writer reads Greenhouse, Lever, Ashby, Oracle CX and (from Writer v62) Workday itself; ChatGPT reads the remaining LinkedIn and job-board pages through TinyFish (ChatGPT live-chat test 2026-10-13 17:48 ET). The gofer stays with Claude (application writing); the rotation returns to Grok when Grok's usage resets.
+1. OWNER. FORGE_POSTING_VALIDATION moves to ChatGPT. Procedure: lanes/CHATGPT_FORGE_POSTING_VALIDATION.txt (digest of the POSTING VALIDATION LANE AMENDMENT with the TinyFish and agency rules).
+2. CADENCE. Every 2 hours (12 runs a day), to stay inside ChatGPT's 5-hour usage window (exhausted once on 2026-10-13). Minute chosen by ChatGPT away from :40 (Web Discovery).
+3. CUTOVER. Claude's task (trig_01XESwmbe9JnCSjUP5VTqwUe, hourly :28) keeps running until ChatGPT's first receipt with VERIFIED >= 1, then Claude disables it and records the time here. Until then both may run; item 10 of the POSTING VALIDATION LANE AMENDMENT (skip rows in flight) prevents double work.
+4. FALLBACK. If ChatGPT's runs stop or its usage runs out, Claude re-enables its task on Tim's instruction.
+5. NOT CHANGED. Lane rules, Writer authority, protected states, the other lanes.
+END POSTING VALIDATION TO CHATGPT AMENDMENT
