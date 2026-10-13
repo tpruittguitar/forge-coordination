@@ -1,0 +1,54 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1235ET
+STATUS=PARTIAL_WITH_WORK
+ENTRY_VERSION_READ=2026-10-13.3 (raw GitHub via MCP get_file_contents, main, blob 55a693c)
+CONTROL_VERSION_READ=2026-10-13.3 (blob abee9137)
+README_READ=yes (blob 5d990a6)
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION.txt generated 2026-10-13T16:21:04Z (fresh, <6h), ELIGIBLE_TOTAL=377, SHOWN=40
+WRITER_FREEZE=frozen:false (read)
+COLLISION_CHECK=WRITER_QUEUE root held only a HOLD__ gofer file and processed/failed folders; no in-flight POSTVAL work
+
+ROWS_EVALUATED=10
+LIVE=5
+CLOSED=0
+UNCONFIRMED=5
+WRITTEN=10 queue files submitted (B01-B10), one PRIMARY_ID each, Drive WRITER_QUEUE, text/plain, conversion disabled
+VERIFIED=0 (Writer RESULT, receipt-index COMPLETE and row_readback not yet available at submit time; next run verifies as VERIFIED_PRIOR_RUN)
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=367 eligible after these 10 (377 minus 10, pre-Writer)
+BATCHES_COMPLETED_THIS_RUN=1 (10 rows)
+STOP_REASON=Session tool budget for this scheduled run; remaining rows are LinkedIn rows (runtime cannot read; employer-route needed) and Lensa tracking links; no row was marked CLOSED without evidence.
+
+ROWS
+V2I-7CD4931B24A1 Perdue Plant Manager Accomac VA: LIVE_EMPLOYER_ATS, REQ_ID 75574, https://www.perduecareers.com/job/accomac/plant-manager/45893/79197006144 (Apply button, no closed notice)
+V2I-72D22DE97CAA Peak Industrial Director of Regional Operations Lubbock: LIVE_AGGREGATOR, https://www.indeed.com/viewjob?jk=728137b4a6b1bc8b (Apply now; employer posting not located)
+V2I-476B4DC64B7F Shield AI Director PM Europe/Africa V-BAT: LIVE_AGGREGATOR, https://www.indeed.com/viewjob?jk=cadcc44143bf1260 (Apply on company site; employer Lever entry not located; Lever index fetch was permission-blocked)
+V2I-3A11314BB16A Shield AI Sr Mgr PM International (R6163): LIVE_EMPLOYER_ATS, https://jobs.lever.co/shieldai/4d3e233b-afc2-4ead-bfaa-042400f81d9b
+V2I-E86C41E7FA33 BWXT Logistics Manager Oak Ridge: LIVE_EMPLOYER_ATS, REQ_ID 57126, https://careers.bwxt.com/job/Oak-Ridge-Logistics-Manager-TN/1436659400/ (posted Oct 5 2026, base $86,450-$136,000 shown; pay/date not written this run)
+V2I-73D54D293673 Blue Origin R53294: UNCONFIRMED. Tried: Workday URL (page body empty to reader), web search (aggregators only, zerogtalent listing page did not show R53294). Unreadable page is not closure evidence.
+V2I-25524E63F85C Swagelok North Texas Production Manager: UNCONFIRMED. Tried: Indeed search URL, web search. No posting found.
+V2I-3027D540AB4E Biery Cheese Maintenance Director: UNCONFIRMED. Tried: web search. No posting found.
+V2I-B468EFE27CC5 Align Production Systems Director Eng Quality Processes: UNCONFIRMED. Tried: web search. No posting found.
+V2I-B9DB759E145C 24X National Exchange Director Operational Excellence Projects: UNCONFIRMED. Tried: Indeed fetch (tool error), web search. No posting found.
+UNCONFIRMED rows also carry LIVENESS_ATTEMPT_ASOF=2026-10-13.
+
+QUEUE FILE IDS
+B01 1nzf3X6kEQ1bH6EQh9XObf8d0EjKRly58
+B02 1oPmlBrOR644Dp5AQPxImoRBAnI7RmWDK
+B03 1DyVHsKZsZdeROqG7bJSG39jNBHInpwp0
+B04 1mhsww3b_O4lT2-5TMra-wtI1ewbxkmBU
+B05 14sb9TR1mkWsoikp3t7cg7IQLZTdv22Yk
+B06 1mdmgHcWWVWk2uCGDzT5trN4lnjdFgi6n
+B07 1hKnoRmKTWjb91Nypq0kecEqV77rfWixz
+B08 1WG_OLB_tJMmEx2ZWszX9zQMoeCnAsXgx
+B09 1d437kzVutsVN8pQ181E-XoqVc_7eIF5s
+B10 15V5JOyKilzCod8d3izA0QQBg1zQnX8zO
+
+SKIPS (named reasons)
+Rows 1-5 (Lensa tracking links, no employer identifiers) and LinkedIn rows 11-16, 20-23, 26, 30-32, 39-40: skipped this run, source not readable by this runtime; employer-route lookup deferred.
+Rows 24, 27-29, 33-35, 37-38: skipped this run for capacity.
+END RECEIPT
