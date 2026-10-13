@@ -1,0 +1,24 @@
+AI_REASON CHANGE RECORD
+RUN_ID=CONTROL-20261013-0045ET
+PROVIDER=Claude
+AUTHORIZED_BY=Tim (chat 2026-10-13 00:24 ET)
+REQUEST=Grok at 80% of weekly usage. Move Grok automations to once every 4 hours, coordinated with other lanes; update coordination files.
+
+CHANGED
+- control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt: VERSION 2026-10-12.6 -> 2026-10-13.1. New GROK CADENCE AMENDMENT. PROVIDER ASSIGNMENTS posting-validation line and POSTING VALIDATION item 2 updated to the Grok 4-hour cadence.
+- control/FORGE_AUTOMATION_ENTRY.txt: VERSION -> 2026-10-13.1; READ ORDER item 1 names the GROK CADENCE AMENDMENT.
+- directives/NATIVE_PROMPTS_20261013_GROK_CADENCE.txt: new; Grok schedules and task body.
+
+NOT CHANGED
+- Claude and ChatGPT schedules, lane policy, production floors, Writer route, partitions, Drive files (Drive copies of CONTROL/ENTRY are already SUPERSEDED).
+- BODY_SHA256 header left as is, matching prior .5 and .6 edits.
+
+REASONING
+- Grok held four lanes at 24 runs each = 96 starts/day. At 4-hour cadence: 24/day (-75%).
+- Each lane keeps its minute slot (:10 :20 :35 :43). Hours are offset by one per lane so Grok starts one lane per hour. Result: no two Grok lanes in the same hour, Feasibility and Posting Validation (both touch liveness) never share an hour, and no new adjacency with Claude :28/:50 or ChatGPT slots.
+- Observed waste in Grok receipts 2026-10-12/13: most runs end with 0 Writer submissions (WEB 2311ET and 0010ET, FEASIBILITY 2335ET, POSTVAL 2208ET with 2 rows evaluated, STRATEGIC 0224ET HARD_BLOCKED because the 1,386-row master truncates in Grok's reader). Preflight reading (ENTRY + 45 KB CONTROL + STANDARD + rules + master) consumes most of each run. Efficiency proposals are given to Tim in chat; none applied.
+
+RISKS
+- POSTVAL partition B backlog (151 rows at 22:00 ET snapshot) at ~2 rows per run and 6 runs/day will not clear. Tim decision pending on reassigning or work-list fix.
+- Grok scheduler may not support a fixed-minute 4-hour cadence; fallback recorded in the native prompts file.
+- Grok tasks outside the four lanes (Archive, Comp, legacy GROK-0X) are unknown to Claude and may be a large share of usage.

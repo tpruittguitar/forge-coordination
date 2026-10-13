@@ -1,0 +1,17 @@
+NATIVE PROMPTS, 2026-10-13 (recorded by Claude; CONTROL VERSION 2026-10-13.1, GROK CADENCE AMENDMENT)
+Supersedes the Grok schedule in NATIVE_PROMPTS_20261012.txt item 2. Claude and ChatGPT prompts unchanged.
+Task bodies are unchanged; only the schedules move. All times America/New_York.
+
+GROK TASK SCHEDULES
+FORGE_WEB_CAREER_DISCOVERY    every 4 h at :10 from 00:10   (00:10 04:10 08:10 12:10 16:10 20:10)
+FORGE_ENRICH_STRATEGIC        every 4 h at :20 from 01:20   (01:20 05:20 09:20 13:20 17:20 21:20)
+FORGE_ENRICH_FEASIBILITY      every 4 h at :35 from 02:35   (02:35 06:35 10:35 14:35 18:35 22:35)
+FORGE_POSTING_VALIDATION (B)  every 4 h at :43 from 03:43   (03:43 07:43 11:43 15:43 19:43 23:43)
+
+TASK BODY (each Grok task, TASK_KEY varies)
+PROVIDER=Grok
+TASK_KEY=<lane key>
+INSTRUCTIONS=https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_ENTRY.txt - read it fresh at the start of every run and follow it.
+(FORGE_POSTING_VALIDATION adds: Partition rule: you work only rows whose PRIMARY_ID has a SHA-256 first hex character of 8 to f (partition B). Claude works 0 to 7.)
+
+FALLBACK if Grok's scheduler cannot express "every 4 hours at a fixed minute": six daily tasks per lane would exceed sensible task counts. Use the closest supported setting and report it; Claude records the actual schedule here.

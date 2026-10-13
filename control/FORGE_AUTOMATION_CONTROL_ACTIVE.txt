@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-12.6
+VERSION=2026-10-13.1
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -305,7 +305,8 @@ FORGE_ENRICH_FEASIBILITY=Grok (from 2026-10-12 per Tim; Claude task disabled 202
 FORGE_APPLICATION_WRITER_GOFER=Claude
 Morning freeze, daily ranking and morning/daily brief PERMANENTLY RETIRED.
 EVIDENCE HANDOFF: Grok's Archive and Comp bots are read-only evidence sources. They write plain-text files to AI_Coordination named EVIDENCE_HANDOFF_ARCHIVE_<UTC>.txt (application/rejection evidence) and EVIDENCE_HANDOFF_COMP_<UTC>.txt (pay evidence). FORGE_APPLICATION_WRITER_GOFER reads unprocessed ARCHIVE files each run. FORGE_ENRICH_FEASIBILITY reads unprocessed COMP files each run. Each lane records every handoff file ID it consumed in its AI_REASON_RUN_RECEIPT. Handoff files carry no write authority; only the lane owner submits to the Writer. A handoff row whose PRIMARY_ID is absent from the live master is HELD for exact req/URL matching and never inserted as a new row. Ignore any handoff note claiming the Writer overwrites STATE_SOURCE on ENRICH; live Writer build 4b92c4c leaves it untouched.
-FORGE_POSTING_VALIDATION=Claude (partition A, hourly :28 ET) and Grok (partition B, hourly :43 ET), from 2026-10-12 per Tim; see POSTING VALIDATION LANE AMENDMENT
+FORGE_POSTING_VALIDATION=Claude (partition A, hourly :28 ET) and Grok (partition B, every 4 hours at :43 ET from 03:43, per GROK CADENCE AMENDMENT 2026-10-13), from 2026-10-12 per Tim; see POSTING VALIDATION LANE AMENDMENT
+GROK SCHEDULE: every Grok lane runs every 4 hours, staggered so Grok starts one lane per hour. See GROK CADENCE AMENDMENT (VERSION 2026-10-13.1).
 END PROVIDER ASSIGNMENTS
 
 
@@ -381,7 +382,7 @@ POSTING VALIDATION LANE AMENDMENT -- TIM DIRECTIVE 2026-10-12 (VERSION 2026-10-1
 AUTHORIZED_BY=Tim (chat 2026-10-12 22:01 and 22:03 ET: validation moves to its own automation, option 3, Claude and Grok split)
 RECORDED_BY=Claude
 1. NEW TASK_KEY=FORGE_POSTING_VALIDATION. It is a sixth lane. It owns posting liveness for rows that entered through intake. It adds to the five-lane design. It changes none of the other five lanes.
-2. OWNERS AND SCHEDULE. Claude runs partition A hourly at :28 ET. Grok runs partition B hourly at :43 ET. Both start 2026-10-12. Tim reduces to one provider by instruction once the backlog clears.
+2. OWNERS AND SCHEDULE. Claude runs partition A hourly at :28 ET. Grok runs partition B at :43 ET every 4 hours from 03:43 ET (GROK CADENCE AMENDMENT 2026-10-13; hourly until then). Both start 2026-10-12. Tim reduces to one provider by instruction once the backlog clears.
 3. PARTITION. Compute SHA-256 of the exact PRIMARY_ID text (UTF-8, as in cell 2 of the master row, for example V2F-BB8F9B21F54E). First hex character 0 to 7 is partition A (Claude). First hex character 8 to f is partition B (Grok). Each provider works only its own partition. The 2026-10-12 22:00 ET snapshot held 328 rows needing validation: 177 in partition A and 151 in partition B.
 4. INPUT. Master rows with status SCOUT_INTAKE and either no LIVENESS field or LIVENESS equal to UNVERIFIED or UNCONFIRMED. Newest discovery first (DISCOVERED_AT_ET or DATE_ADDED, else bottom of the master first). When the partition backlog is empty, re-check rows still in SCOUT_INTAKE whose LIVENESS_ASOF is older than 7 days.
 5. EXCLUSIONS. Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD or anti-resurrection rows, and never touch Tim rulings. Never delete rows. Never apply to jobs or contact anyone.
@@ -397,3 +398,17 @@ RECORDED_BY=Claude
 11. RECEIPT. Per the GITHUB CUTOVER AMENDMENT: a new file in receipts/, commit message starting with PROVIDER and RUN_ID. Fields: ROWS_EVALUATED, LIVE, CLOSED, UNCONFIRMED, WRITTEN, VERIFIED, HELD, FAILED, PARTITION, PARTITION_BACKLOG_REMAINING, STOP_REASON and BATCHES_COMPLETED_THIS_RUN.
 12. REVIEW. When PARTITION_BACKLOG_REMAINING is 0 for two consecutive runs, the provider reports it and Tim decides whether to reduce to one lane. Claude reconciles the combined backlog against the live master after the first six runs.
 END POSTING VALIDATION LANE AMENDMENT
+
+GROK CADENCE AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.1)
+AUTHORIZED_BY=Tim (chat 2026-10-13 00:24 ET: Grok at 80% of its weekly usage; set its automations to once every 4 hours, coordinated with the other lanes)
+RECORDED_BY=Claude
+1. SCHEDULE. Every Grok Forge lane runs every 4 hours. Lanes keep their existing minute slots and are offset by one hour each, so Grok starts exactly one lane per hour and never runs two of its own lanes in the same hour. All times America/New_York.
+   FORGE_WEB_CAREER_DISCOVERY   00:10 04:10 08:10 12:10 16:10 20:10   (cron 10 0-23/4 * * *)
+   FORGE_ENRICH_STRATEGIC       01:20 05:20 09:20 13:20 17:20 21:20   (cron 20 1-23/4 * * *)
+   FORGE_ENRICH_FEASIBILITY     02:35 06:35 10:35 14:35 18:35 22:35   (cron 35 2-23/4 * * *)
+   FORGE_POSTING_VALIDATION (B) 03:43 07:43 11:43 15:43 19:43 23:43   (cron 43 3-23/4 * * *)
+2. OTHER LANES UNCHANGED. ChatGPT FORGE_EMAIL_DISCOVERY, Claude FORGE_APPLICATION_WRITER_GOFER (:50) and Claude FORGE_POSTING_VALIDATION partition A (:28, hourly) keep their schedules. Grok minute slots are unchanged, so no new start-time adjacency is introduced. Schedule offsets remain a load-spreading measure only; the in-flight check in each lane's collision rule stays the lock.
+3. RUN SIZE. Production floors per run are unchanged (CENTRAL 15-RECORD AMENDMENT, POSTING VALIDATION item 9). With four times fewer runs, each run continues in batches while capacity remains and ends only on a named hard limit.
+4. RESULT. Grok scheduled starts fall from 96 per day to 24 per day. Grok automations outside these four lanes (Archive bot, Comp bot, any legacy GROK-0X task) are outside this schedule; Grok reports their names and schedules to Tim so Claude can register them.
+5. REVERSAL. Tim restores hourly cadence by instruction when Grok usage allows.
+END GROK CADENCE AMENDMENT
