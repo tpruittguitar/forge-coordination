@@ -1,0 +1,26 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=CLAUDE
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261012-2337ET
+PARTITION=A
+CONTROL_VERSION_READ=2026-10-12.6 (github blob a8c2c40de49f9c63308ca7c906fae01e3554f32a); ENTRY VERSION=2026-10-12.6 (blob a243030d...); README read
+WRITER_FREEZE=frozen:false (file 1VlPBKYQ..., at 2026-10-05)
+MASTER_READ=V2_CURRENT_POPULATION_MASTER.txt modified 2026-10-13T03:05:20Z, TOTAL=1399, SCOUT_INTAKE=713
+PARTITION_A_BACKLOG_AT_START=187 rows (SCOUT_INTAKE with no LIVENESS or UNVERIFIED/UNCONFIRMED); all-partition=342
+ROWS_EVALUATED=14 (employer ATS pages readable via Exa fetch: Lever, Greenhouse, Workday(Watts), Ashby, Rippling, Workable)
+LIVE=14 (LIVE_EMPLOYER_ATS)
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=14 (Writer SUCCESS B15-B28, one PRIMARY_ID each)
+VERIFIED=14 by fresh full-master readback at 2026-10-13T04:2xZ (LIVENESS=LIVE_EMPLOYER_ATS; LIVENESS_ASOF=2026-10-12 on all 14). Receipt-index COMPLETE entries were NOT independently read this run; RESULT files carried verification=PENDING. Treat as WRITTEN + master-readback-confirmed, index COMPLETE unchecked.
+HELD=1: V2I-BDE5E0966CA1 TerraPower (ATS page title "Manager, Fuel Fabrication" differs from master "Fuel Fabrication Senior Manager"; identity ambiguity, not stamped)
+SKIPPED_UNREADABLE=Workday pages for Hexcel, SNC, Northrop (x2), RTX, GE Appliances, Clayton, Blue Origin returned empty to the runtime (CRAWL_EMPTY_CONTENT). Not treated as closure. Carry forward via employer-posting route.
+FAILED=14 first-attempt files B01-B14: Writer REJECTED_SCHEMA, zero mutations (see DEFECT).
+DEFECT=POSTING VALIDATION LANE AMENDMENT item 7 PAYLOAD EXAMPLE is wrong. Writer requires fields nested: {"action":"ruling","ruling":{"primaryId":...,"requestId":...,"kind":"ENRICH","actor":"CLAUDE","fields":{...}}}. The flat form in the amendment is rejected with "ruling fields must be nested". Proposed fix: update the example (Tim/Claude owner of CONTROL). Grok partition B should be warned.
+DRIVE_FILES=queue CLAUDE_FORGE-POSTVAL-CLAUDE-20261012-2337ET-B15..B28.json; RESULT files in processed/
+PIPELINE_NOTES=Writer processed ~1 file per 1-2 min under contention; 14 files took ~25 min.
+PARTITION_BACKLOG_REMAINING=173 (187 less 14), LinkedIn-sourced rows (102) need employer-posting route
+STOP_REASON=Writer queue throughput (single-file ENRICH at 1-2 min each) and wall-clock; production floor of 10 rows met
+BATCHES_COMPLETED_THIS_RUN=2 evaluation batches (22 URLs fetched, 14 stamped)
+NEXT_OWNER_ACTION=Claude next run :28 ET: continue partition A, newest first; readable ATS rows first (Ashby, Greenhouse, Lever, Rippling, Workable, Indeed); resolve Workday rows via alternate readers or employer route. Consider batch action for Writer throughput if authorized.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
