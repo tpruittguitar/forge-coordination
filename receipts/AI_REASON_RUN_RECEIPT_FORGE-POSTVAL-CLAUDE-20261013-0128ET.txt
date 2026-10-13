@@ -1,0 +1,28 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=CLAUDE
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-0128ET
+RUN_STARTED_ET=2026-10-13 01:29
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+STOP_REASON=Runtime cannot open posting pages. WebFetch returned PROVENANCE_REQUIRED (permission request unanswered, unattended scheduled run) for 4 of 4 attempts: SpaceX Greenhouse 8870838002, Indeed jk=7f0c99c854291c0e, Indeed jk=7bbab19f9a9cda34, LinkedIn 4448461682. Per tool rules no curl/python fallback was used. No page evidence obtained, so no LIVENESS value is assignable (an unreadable page is not evidence of closure).
+FILES_READ:
+- ENTRY VERSION=2026-10-13.3 (GitHub, get_file_contents, main sha 64ac7e2)
+- CONTROL VERSION=2026-10-13.3 (GitHub)
+- README.md (GitHub)
+- WORKLIST_FORGE_POSTING_VALIDATION.txt GENERATED_AT_UTC=2026-10-13T05:28:08Z, MASTER_ROWS=1416, ELIGIBLE_TOTAL=345, SHOWN=40 (fresh, under 6h)
+- WRITER_FREEZE.json frozen=false (at 2026-10-05)
+- WRITER_ACCESS_DIRECTIVE_V9 (read)
+NOT READ (not needed, no write attempted): STANDARD, canonical rules, scoring model, master, receipt index.
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=345
+BATCHES_COMPLETED_THIS_RUN=0
+WRITER_QUEUE_FILES_CREATED=0
+NEEDED_TO_UNBLOCK: pre-approve WebFetch for job-board and employer ATS domains (indeed.com, linkedin.com, greenhouse.io, workday, ashby, lever, etc.) for scheduled runs, or provide another page-reading tool (e.g. a connected fetch/browser connector) in this routine's environment.
