@@ -1,0 +1,24 @@
+AI_REASON_RUN_RECEIPT TERMINAL
+PROVIDER=CLAUDE
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-0628ET
+STARTED_UTC=2026-10-13T10:29Z
+ENTRY_VERSION_READ=2026-10-13.3
+CONTROL_VERSION_READ=2026-10-13.3
+WORKLIST=generated 2026-10-13T10:09:05Z, ELIGIBLE_TOTAL=341, fresh
+WRITER_FREEZE=frozen:false
+GITHUB_REACHABLE=yes (checkpoint1 receipt create failed on missing branch arg; retried with branch=main; no checkpoint1 file exists)
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=341 (worklist total; not reduced)
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=HARD LIMIT: this scheduled run has no one to approve outbound page fetches. WebFetch on https://www.linkedin.com/jobs/view/4477569866 (worklist row 3) returned PROVENANCE_REQUIRED (permission request withdrawn, unanswered). WebSearch is the only open web route; searches for rows 4 (Eli Lilly, Huntsville) and 8 (Intuitive Machines, Palo Alto) returned only aggregator listings and no employer first-party posting matching exact company, title, location and requisition, so no liveness evidence was obtained. Per item 6, unreadable pages are not closure evidence, and no stamp was written without evidence.
+NEXT_ACTION=Tim: allow WebFetch (or an unattended fetch route such as Fetch/TinyFish/Exa/Nimble connectors) for this routine, or reconnect the missing connectors. Until then each hourly run will repeat this block (anti-spin rule).
