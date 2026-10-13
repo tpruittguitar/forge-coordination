@@ -1,0 +1,32 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1330ET
+ENTRY_VERSION_READ=2026-10-13.3 (blob sha 55a693c6c6026d4dff831d4baf650a6a83fad07c)
+CONTROL_VERSION_READ=2026-10-13.3 (blob sha abee9137911d88728ce85ae383efd371a3d7b35c)
+README_READ=yes (blob sha 5d990a660a03ac31696dcddbdd7fda56dc1c3ebc)
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION.txt, generated 2026-10-13T17:23:05Z (fresh); ELIGIBLE_TOTAL=370 SHOWN=40; master rows 1470
+WRITER_FREEZE=frozen:false (file dated 2026-10-05)
+NOT_READ_THIS_RUN=STANDARD_AND_HISTORY, canonical rules, scoring model, master, receipt index, queue listing (stopped before any write was possible)
+SOURCES_TRIED=
+ - Glassdoor partner listing (row 1, V2I-3C8B8E20D204): WebFetch ROBOTS_DISALLOWED
+ - LinkedIn view 4478033436 (row 9, V2I-6E216968C18E): WebFetch ROBOTS_DISALLOWED
+ - Tesla careers search (row 9): page returned no listing content
+ - WebSearch for Tesla row 9, Intuitive row 37, Eli Lilly row 33: only third-party aggregators, no employer ATS entry found
+ - Mediabistro aggregator page for Eli Lilly Sr Director Supply Chain and Logistics, Huntsville (row 33): no closed notice, but no current-status statement and no employer apply URL; aggregator-only, not enough for a LIVENESS value
+ROWS_EVALUATED=0 (6 rows attempted, none reached evidence sufficient for LIVE, CLOSED or UNCONFIRMED)
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+WRITER_SUBMISSIONS=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=370
+BATCHES_COMPLETED_THIS_RUN=0
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+STOP_REASON=Same blocker as run 1029ET (second consecutive run, anti-spin rule). Claude's runtime cannot open posting pages: Glassdoor and LinkedIn are robots-blocked, and employer ATS search pages return no listing content. WebSearch returns only aggregators, which are not liveness evidence. No row was marked CLOSED or UNCONFIRMED because an unreadable source is not evidence of closure.
+NEXT_OWNER_ACTION=Tim: give this lane a working fetch route for employer ATS and job-board pages (for example allow WebFetch for indeed.com, ziprecruiter.com, lensa.com, myworkdayjobs.com, greenhouse.io and employer career hosts for the scheduled routine), or reassign the lane. Until then each hourly run will repeat this outcome.
+END RECEIPT
