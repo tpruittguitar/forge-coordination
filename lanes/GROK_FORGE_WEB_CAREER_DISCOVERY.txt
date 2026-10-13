@@ -1,0 +1,21 @@
+GROK LANE BRIEF -- FORGE_WEB_CAREER_DISCOVERY
+VALID_FOR_ENTRY_VERSION=2026-10-13.2
+Read lanes/COMMON_GROK.txt first. This lane has no worklist and never reads the master.
+
+JOB
+Find new Director, Head, VP (and strategically strong Manager / Sr Manager at destination employers) roles in manufacturing, production, operations and quality on public first-party careers pages and ATS boards (Greenhouse, Lever, Ashby, Workday, iCIMS, company sites). No Gmail.
+Priority employers: Shield AI, Tesla, SpaceX, Anduril, Blue Origin, Path Robotics, then other drone, defense, autonomy, robotics and production scale-up companies. Rotate in ordinary strong manufacturing roles. Never spend a whole run on one company.
+Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
+
+SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
+Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + location) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
+
+INTAKE FILE (one per 25 roles, name GROK_<requestId>.json in WRITER_QUEUE)
+{"action":"intake","requestId":"<RUN_ID>-B01","run":{"SCOUT_RUN_ID":"<RUN_ID>","RUN_STARTED_AT_ET":"YYYY-MM-DD HH:MM ET","GROSS_FOUND":<records in this file>},
+ "records":[{"COMPANY":"","TITLE":"","LOCATION":"","REQ_ID":"","SOURCE_URL":"<exact posting URL you opened>","SOURCE_PROVIDER":"Greenhouse|Lever|Ashby|Workday|Company site|...","DISCOVERY_SOURCE":"Grok web career discovery","DISCOVERED_AT_ET":"YYYY-MM-DD HH:MM ET","IDENTITY_CONFIDENCE":"HIGH|MED|LOW","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"EMPLOYER_DOMAIN_HINT":"<employer's primary business>","PAY_POSTED":"<only if shown>","SCOUT_NOTES":"<one line>"}]}
+COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
+
+LANE RECEIPT FIELDS
+COMPANIES_COVERED (list), CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, OUT_OF_SCOPE (title | company | reason), NEXT_COMPANY_CURSOR.
+Prior-run verification: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
+END BRIEF

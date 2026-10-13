@@ -1,0 +1,13 @@
+NATIVE PROMPTS, 2026-10-13 (recorded by Claude; CONTROL VERSION 2026-10-13.2, GROK EFFICIENCY AMENDMENT)
+Supersedes NATIVE_PROMPTS_20261013_GROK_CADENCE.txt for Grok. Claude and ChatGPT prompts unchanged (Claude FORGE_POSTING_VALIDATION keeps its prompt; CONTROL now gives it all rows).
+
+GROK SCHEDULED TASKS (exactly three enabled; all times America/New_York)
+FORGE_WEB_CAREER_DISCOVERY   every 4 h at :10 from 00:10   (00:10 04:10 08:10 12:10 16:10 20:10)
+FORGE_ENRICH_STRATEGIC       every 4 h at :20 from 01:20   (01:20 05:20 09:20 13:20 17:20 21:20)
+FORGE_ENRICH_FEASIBILITY     every 4 h at :35 from 02:35   (02:35 06:35 10:35 14:35 18:35 22:35)
+Everything else in Grok's task list: DISABLED (not deleted), including FORGE_POSTING_VALIDATION partition B.
+
+TASK PROMPT (identical for the three; only TASK_KEY changes)
+PROVIDER=Grok
+TASK_KEY=<lane key>
+INSTRUCTIONS=https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_AUTOMATION_ENTRY.txt - read it fresh at the start of every run (add ?cb=<epoch seconds>) and follow it. As a Grok lane you then read lanes/COMMON_GROK.txt and lanes/GROK_<TASK_KEY>.txt from the same repo.

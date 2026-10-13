@@ -1,0 +1,30 @@
+AI_REASON CHANGE RECORD
+RUN_ID=CONTROL-20261013-0130ET
+PROVIDER=Claude
+AUTHORIZED_BY=Tim (chat 2026-10-13 00:29 ET: "Implement 1-5")
+
+CHANGED
+- control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt -> 2026-10-13.2: new GROK EFFICIENCY AMENDMENT (items 1-7); PROVIDER ASSIGNMENTS posting-validation line (Claude, all rows); POSTING VALIDATION items 2 and 3 amended (partition retired, worklist); GROK CADENCE table marks the POSTVAL row retired; Grok starts 18/day.
+- control/FORGE_AUTOMATION_ENTRY.txt -> 2026-10-13.2: GROK LANES block ahead of READ ORDER; amendment list.
+- lanes/COMMON_GROK.txt, lanes/GROK_FORGE_WEB_CAREER_DISCOVERY.txt, lanes/GROK_FORGE_ENRICH_STRATEGIC.txt, lanes/GROK_FORGE_ENRICH_FEASIBILITY.txt: new lane briefs (about 11 KB total versus about 45 KB CONTROL plus Drive reads).
+- directives/NATIVE_PROMPTS_20261013_GROK_EFFICIENCY.txt: Grok task set and prompt.
+- Drive AI_Coordination: three new plain-text worklist files (IDs in the amendment), content PENDING_FIRST_BUILD.
+- foreman-cockpit branch rev/2026-10-13-lane-worklists: PipelineWorklists.gs, queue-tick hook, GET refresh_worklists, tests, REVISION_LOG batch 2026-10-13-A. npm test 399/399. Not merged, not deployed.
+
+NOT CHANGED
+- Lane scopes, floors, Writer authority, protected states, ChatGPT lanes, Claude gofer, Claude scheduled-task prompts.
+- No Grok task changed by Claude (Claude has no access); Tim pastes the prompt.
+
+REASONING
+1 Stray tasks: Grok's September registry had ~10 GROK-0X tasks; none appear in the current lane set. Disable, not delete (reversible; deletion needs Tim).
+2 Worklists: Grok cannot read the 3 MB master (STRATEGIC 0224ET HARD_BLOCKED). The Writer already reads the master each tick, so it builds the lists; zero AI usage.
+3 Briefs: each Grok run read ~45 KB CONTROL plus STANDARD, rules, scoring and master before working. Briefs carry only what each lane uses. ENTRY version gate falls back to full CONTROL on drift.
+4 Same-run submit: Writer intake already dedupes and adjudicates Never-Consider (SCOUT_INTAKE_CONTRACT, WRITER_ACCESS), so the web lane's master check and holds were waste. Batches of 25 per file cut Writer slots (~1.5-2 min each). Verification moves to the next run start; the three-proof standard stays.
+5 POSTVAL: Grok B ran 2 rows per run at 151 backlog; at 6 runs/day it would not clear. Claude's hourly task takes all rows with a worklist.
+FLEX guidance in the feasibility brief follows pipeline-policy.js (not-stated = HIGH_FLEX; preferred-only = SOFT_FLEX, batch 2026-10-12-C) and Tim's 2026-10-12 rulings.
+
+RISKS
+- Worklists stay PENDING until Tim deploys the Writer; lanes use fallback cursors meanwhile.
+- Claude POSTVAL also managed 2 rows in its first run (LinkedIn robots block, no payload example at the time; example added in .6). Watch the next Claude runs.
+- Verification lag: WRITTEN rows are verified one Grok run later (up to 4 h).
+- Brief drift: guarded by VALID_FOR_ENTRY_VERSION.

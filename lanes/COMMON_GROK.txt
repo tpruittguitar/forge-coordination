@@ -1,0 +1,43 @@
+GROK LANE BRIEF -- COMMON PART (every Grok lane reads this file and its own lane brief)
+VALID_FOR_ENTRY_VERSION=2026-10-13.2
+SOURCE=CONTROL 2026-10-13.2 (GROK EFFICIENCY AMENDMENT). CONTROL stays the authority; these briefs are its digest for Grok.
+If the version number after VERSION= in ENTRY differs from VALID_FOR_ENTRY_VERSION, follow ENTRY's full READ ORDER before working.
+
+WHAT TO READ EACH RUN (nothing else unless your lane brief names it)
+1. ENTRY (the pointer in your task prompt). Check its VERSION line only.
+2. This file and your lane brief, from GitHub raw with ?cb=<epoch seconds>.
+3. Your lane's worklist on Drive (lane brief gives the ID), when the lane has one.
+4. WRITER_FREEZE.json, Drive 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S. frozen=true: research and receipt still happen; no Writer submissions.
+Do not read the master, STANDARD, canonical rules, scoring model or the full CONTROL. The worklist and the Writer cover what those reads used to provide.
+
+WRITER (all writes go here, never to the master)
+Queue folder WRITER_QUEUE, Drive 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7. One plain-text file per batch, conversion disabled, name GROK_<requestId>.json.
+A file holds up to 25 requests of ONE kind (all ENRICH rulings, or one intake). Batch form:
+{"action":"batch","requests":[{"action":"ruling","ruling":{"primaryId":"V2I-...","kind":"ENRICH","actor":"GROK","requestId":"<RUN_ID>-B01-01","fields":{...}}}, ...]}
+Fields: upper-case keys. Never send COMPANY, TITLE, LOCATION, REQ, BUCKET, DISPOSITION, PRIMARY_ID, STATE_SOURCE or STATE_UPDATED_AT in fields.
+Results appear as RESULT__<file name> in processed (1kVgPtqqUtxoRyTC72Wb59kInHJMZGV0a) or failed (1hMcqUNYe5m6yjHmYkbdd9CcvqOwgEzZ1).
+
+SUBMIT, THEN KEEP WORKING
+Submit each batch as soon as it is ready and move on. Do not wait for RESULT files during the run.
+
+VERIFY LAST RUN AT THE START OF THIS RUN
+1. Read your previous receipt for this lane in forge-coordination/receipts/ (newest file with your lane token). Take its WRITTEN request IDs.
+2. Read their RESULT__ files. SUCCESS: keep. FAILED or HOLD: record the reason; do not resubmit blindly.
+3. For SUCCESS IDs, put one row_readback file in the queue: {"action":"row_readback","requestId":"<RUN_ID>-RB","primaryIds":[up to 25 IDs]}. Read its RESULT near the end of this run.
+4. VERIFIED_PRIOR_RUN = IDs with write RESULT SUCCESS, a COMPLETE entry in PIPELINE_RECEIPT_INDEX.json (Drive 1Fv_XQc-2cz2B2jWWP7Aapmd0KlHiGBLk) and a matching row_readback.
+
+WHEN A ROW CANNOT BE FINISHED
+Submit an ENRICH with your lane's attempt stamp (lane brief names it, value YYYY-MM-DD) and a short note field. The worklist then moves that row to the end for 3 days, so the next run does not repeat it.
+
+NEVER
+Edit the master directly. Apply to jobs. Contact anyone. Change a row in APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD or with ANTI_RESURRECTION=YES (the worklist already leaves them out). Claim VERIFIED without the three proofs above.
+
+KEEP GOING
+Work in batches until capacity runs out. End only on a named hard limit (tool budget, time limit, connector error, empty worklist) and name it in STOP_REASON.
+
+RECEIPT (last step, short)
+New file forge-coordination/receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. Commit message starts "GROK <RUN_ID>:".
+Fields: PROVIDER=Grok, TASK_KEY, RUN_ID, ENTRY_VERSION, BRIEF_VERSION, WORKLIST_GENERATED_AT, WRITER_FREEZE, plus your lane fields, WRITTEN_REQUEST_IDS, VERIFIED_PRIOR_RUN, HELD (ID + reason), STOP_REASON, BATCHES_COMPLETED_THIS_RUN, NEXT.
+RUN_ID format: FORGE-<LANE>-GROK-YYYYMMDD-HHMMET (LANE = WEB, ENRICH-STRATEGIC, ENRICH-FEASIBILITY).
+GitHub unreachable: write the receipt to Drive AI_Coordination (1DhaxVZSTRNQfJlWSMilmBomx__VUjmO7) with GITHUB_UNREACHABLE.
+END COMMON

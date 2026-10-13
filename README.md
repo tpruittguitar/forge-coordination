@@ -10,6 +10,7 @@ Plan: `FORGE_PLAN_GitHub_Migration_2026-10-12.txt` + `_ADDENDUM_1` (Drive, AI_Co
 | `handoffs/` | Evidence handoffs (COMP, ARCHIVE, email findings) | Producing lane |
 | `directives/` | Tim rulings and directives, plain text | Claude or Tim, on Tim's instruction |
 | `proposals/` | Proposed policy or control changes awaiting Tim | Any lane |
+| `lanes/` | Per-lane briefs (digests of CONTROL) read by Grok lanes | Claude, on Tim's instruction |
 | `edit-requests/` | Requests to change an existing file (see below) | Any lane |
 
 ## Rules for every lane

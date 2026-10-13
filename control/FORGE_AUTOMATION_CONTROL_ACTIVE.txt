@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.1
+VERSION=2026-10-13.2
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -305,8 +305,8 @@ FORGE_ENRICH_FEASIBILITY=Grok (from 2026-10-12 per Tim; Claude task disabled 202
 FORGE_APPLICATION_WRITER_GOFER=Claude
 Morning freeze, daily ranking and morning/daily brief PERMANENTLY RETIRED.
 EVIDENCE HANDOFF: Grok's Archive and Comp bots are read-only evidence sources. They write plain-text files to AI_Coordination named EVIDENCE_HANDOFF_ARCHIVE_<UTC>.txt (application/rejection evidence) and EVIDENCE_HANDOFF_COMP_<UTC>.txt (pay evidence). FORGE_APPLICATION_WRITER_GOFER reads unprocessed ARCHIVE files each run. FORGE_ENRICH_FEASIBILITY reads unprocessed COMP files each run. Each lane records every handoff file ID it consumed in its AI_REASON_RUN_RECEIPT. Handoff files carry no write authority; only the lane owner submits to the Writer. A handoff row whose PRIMARY_ID is absent from the live master is HELD for exact req/URL matching and never inserted as a new row. Ignore any handoff note claiming the Writer overwrites STATE_SOURCE on ENRICH; live Writer build 4b92c4c leaves it untouched.
-FORGE_POSTING_VALIDATION=Claude (partition A, hourly :28 ET) and Grok (partition B, every 4 hours at :43 ET from 03:43, per GROK CADENCE AMENDMENT 2026-10-13), from 2026-10-12 per Tim; see POSTING VALIDATION LANE AMENDMENT
-GROK SCHEDULE: every Grok lane runs every 4 hours, staggered so Grok starts one lane per hour. See GROK CADENCE AMENDMENT (VERSION 2026-10-13.1).
+FORGE_POSTING_VALIDATION=Claude, all rows, hourly :28 ET (from 2026-10-13 per Tim, GROK EFFICIENCY AMENDMENT item 5; the 2026-10-12 Claude A / Grok B split is retired); see POSTING VALIDATION LANE AMENDMENT
+GROK SCHEDULE: Grok runs three lanes, each every 4 hours, staggered so Grok starts at most one lane per hour. See GROK CADENCE AMENDMENT and GROK EFFICIENCY AMENDMENT.
 END PROVIDER ASSIGNMENTS
 
 
@@ -382,8 +382,8 @@ POSTING VALIDATION LANE AMENDMENT -- TIM DIRECTIVE 2026-10-12 (VERSION 2026-10-1
 AUTHORIZED_BY=Tim (chat 2026-10-12 22:01 and 22:03 ET: validation moves to its own automation, option 3, Claude and Grok split)
 RECORDED_BY=Claude
 1. NEW TASK_KEY=FORGE_POSTING_VALIDATION. It is a sixth lane. It owns posting liveness for rows that entered through intake. It adds to the five-lane design. It changes none of the other five lanes.
-2. OWNERS AND SCHEDULE. Claude runs partition A hourly at :28 ET. Grok runs partition B at :43 ET every 4 hours from 03:43 ET (GROK CADENCE AMENDMENT 2026-10-13; hourly until then). Both start 2026-10-12. Tim reduces to one provider by instruction once the backlog clears.
-3. PARTITION. Compute SHA-256 of the exact PRIMARY_ID text (UTF-8, as in cell 2 of the master row, for example V2F-BB8F9B21F54E). First hex character 0 to 7 is partition A (Claude). First hex character 8 to f is partition B (Grok). Each provider works only its own partition. The 2026-10-12 22:00 ET snapshot held 328 rows needing validation: 177 in partition A and 151 in partition B.
+2. OWNERS AND SCHEDULE. Claude runs the lane hourly at :28 ET over all rows (from 2026-10-13, GROK EFFICIENCY AMENDMENT item 5). Until then Claude ran partition A and Grok partition B. Both start 2026-10-12. Tim reduces to one provider by instruction once the backlog clears.
+3. PARTITION. [Retired 2026-10-13: Claude works every row; Claude takes rows from WORKLIST_FORGE_POSTING_VALIDATION.txt, Drive 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0, top-down when it is fresh (under 6 hours), else uses item 4. Historical text follows.] Compute SHA-256 of the exact PRIMARY_ID text (UTF-8, as in cell 2 of the master row, for example V2F-BB8F9B21F54E). First hex character 0 to 7 is partition A (Claude). First hex character 8 to f is partition B (Grok). Each provider works only its own partition. The 2026-10-12 22:00 ET snapshot held 328 rows needing validation: 177 in partition A and 151 in partition B.
 4. INPUT. Master rows with status SCOUT_INTAKE and either no LIVENESS field or LIVENESS equal to UNVERIFIED or UNCONFIRMED. Newest discovery first (DISCOVERED_AT_ET or DATE_ADDED, else bottom of the master first). When the partition backlog is empty, re-check rows still in SCOUT_INTAKE whose LIVENESS_ASOF is older than 7 days.
 5. EXCLUSIONS. Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD or anti-resurrection rows, and never touch Tim rulings. Never delete rows. Never apply to jobs or contact anyone.
 6. WORK. For each row, open the SOURCE_URL or posting URL. When it is missing or dead, find the employer first-party posting or ATS entry by exact company, title, location and requisition ID. Assign LIVENESS using the master's existing vocabulary (LIVE_EMPLOYER_ATS, LIVE_EMPLOYER, LIVE_AGGREGATOR, AGGREGATOR_LISTED, CLOSED, UNCONFIRMED), with LIVENESS_ASOF and LIVENESS_EVIDENCE_URL. When the posting page shows requisition ID, pay, location, work arrangement or posting date, record them as additional fields. The lane does no deep job-description analysis and no scoring. The enrichment lanes own those. A source page the provider cannot read (robots block, login wall, tool failure) is not evidence of closure. For those rows resolve the role through the employer first-party posting or ATS (exact company, title, location, requisition ID), which also earns the stronger LIVE_EMPLOYER_ATS value. When no employer posting is found, assign UNCONFIRMED with a note naming what was tried. CLOSED requires evidence that the posting is closed or removed.
@@ -406,9 +406,26 @@ RECORDED_BY=Claude
    FORGE_WEB_CAREER_DISCOVERY   00:10 04:10 08:10 12:10 16:10 20:10   (cron 10 0-23/4 * * *)
    FORGE_ENRICH_STRATEGIC       01:20 05:20 09:20 13:20 17:20 21:20   (cron 20 1-23/4 * * *)
    FORGE_ENRICH_FEASIBILITY     02:35 06:35 10:35 14:35 18:35 22:35   (cron 35 2-23/4 * * *)
-   FORGE_POSTING_VALIDATION (B) 03:43 07:43 11:43 15:43 19:43 23:43   (cron 43 3-23/4 * * *)
+   FORGE_POSTING_VALIDATION (B) 03:43 07:43 11:43 15:43 19:43 23:43   (cron 43 3-23/4 * * *)  [retired 2026-10-13.2; lane moved to Claude]
 2. OTHER LANES UNCHANGED. ChatGPT FORGE_EMAIL_DISCOVERY, Claude FORGE_APPLICATION_WRITER_GOFER (:50) and Claude FORGE_POSTING_VALIDATION partition A (:28, hourly) keep their schedules. Grok minute slots are unchanged, so no new start-time adjacency is introduced. Schedule offsets remain a load-spreading measure only; the in-flight check in each lane's collision rule stays the lock.
 3. RUN SIZE. Production floors per run are unchanged (CENTRAL 15-RECORD AMENDMENT, POSTING VALIDATION item 9). With four times fewer runs, each run continues in batches while capacity remains and ends only on a named hard limit.
-4. RESULT. Grok scheduled starts fall from 96 per day to 24 per day. Grok automations outside these four lanes (Archive bot, Comp bot, any legacy GROK-0X task) are outside this schedule; Grok reports their names and schedules to Tim so Claude can register them.
+4. RESULT. Grok scheduled starts fall from 96 per day to 24 per day (18 per day from 2026-10-13.2). Grok automations outside these four lanes (Archive bot, Comp bot, any legacy GROK-0X task) are outside this schedule; Grok reports their names and schedules to Tim so Claude can register them.
 5. REVERSAL. Tim restores hourly cadence by instruction when Grok usage allows.
 END GROK CADENCE AMENDMENT
+
+GROK EFFICIENCY AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.2)
+AUTHORIZED_BY=Tim (chat 2026-10-13 00:29 ET: "Implement 1-5", the five efficiency measures Claude proposed at 00:26 ET)
+RECORDED_BY=Claude
+EVIDENCE=Grok receipts 2026-10-12 22:08 to 2026-10-13 02:24 ET: most runs ended with 0 Writer submissions. POSTVAL 2208ET evaluated 2 rows. STRATEGIC 0224ET HARD_BLOCKED because the 1,386-row master (3 MB) truncates in Grok's reader. WEB 2311ET and 0010ET screened admissible roles and held them for a later run. Preflight reads (ENTRY, 45 KB CONTROL, STANDARD, rules, scoring, master) used most of each run.
+1. GROK TASK SET. Grok keeps exactly three scheduled Forge tasks: FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC, FORGE_ENRICH_FEASIBILITY, on the GROK CADENCE AMENDMENT schedule. Every other Grok scheduled task (FORGE_POSTING_VALIDATION partition B, legacy GROK-0X tasks, Archive and Comp bots if scheduled, anything unregistered) is disabled. Disabled, never deleted: Tim deletes by his own instruction. Grok reports the full task list (name, schedule, enabled) to Tim and Claude records it in directives/.
+2. WORKLISTS. The Writer builds lane worklists from the master every 30 minutes (foreman-cockpit PipelineWorklists.gs, revision batch 2026-10-13-A) into fixed Drive files in AI_Coordination, overwritten in place:
+   WORKLIST_FORGE_ENRICH_STRATEGIC.txt   1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8
+   WORKLIST_FORGE_ENRICH_FEASIBILITY.txt 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1
+   WORKLIST_FORGE_POSTING_VALIDATION.txt 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0
+   Each lists up to 40 eligible rows (protected states excluded), the eligibility rule, eligible total and master stamp. A worklist satisfies PROVEN METHOD step (2) for its lane. Lanes take rows top-down. A row a lane cannot finish gets an attempt stamp (STRATEGIC_ATTEMPT_ASOF, FEASIBILITY_ATTEMPT_ASOF, LIVENESS_ATTEMPT_ASOF) via ENRICH, which moves it to the end of the list for 3 days. A worklist older than 6 hours or still PENDING_FIRST_BUILD is not used; the lane brief names the fallback.
+3. LANE BRIEFS. Grok lanes read lanes/COMMON_GROK.txt and lanes/GROK_<TASK_KEY>.txt in this repo, plus their worklist and WRITER_FREEZE.json, and nothing else. For Grok these replace ENTRY READ ORDER items 1 and 3 to 7 (CONTROL, STANDARD, rules, Writer directive, scoring, master) while the brief's VALID_FOR_ENTRY_VERSION equals ENTRY's VERSION; on a mismatch the Grok lane reads the full CONTROL. Briefs are digests of this file and never add policy. Whoever changes ENTRY's VERSION reviews the briefs and updates VALID_FOR_ENTRY_VERSION in the same commit.
+4. SUBMIT IN THE SAME RUN. FORGE_WEB_CAREER_DISCOVERY submits every plausible role as intake in the run that finds it. The Writer's own duplicate matching (intake key, requisition, canonical URL, employer + title + location) and Never-Consider adjudication replace the lane's master check. Holding an admissible role for a later run is a defect. All Grok lanes submit homogeneous batches of up to 25 requests per queue file and do not wait for RESULT files during the run; each run verifies the previous run's writes first (RESULT, receipt-index COMPLETE, row_readback) and reports them as VERIFIED_PRIOR_RUN. This changes when verification happens; the three-proof standard for VERIFIED is unchanged.
+5. POSTING VALIDATION TO CLAUDE. FORGE_POSTING_VALIDATION is Claude's alone from 2026-10-13, all rows, hourly :28 ET, using its worklist (POSTING VALIDATION LANE AMENDMENT items 2 and 3 as amended). Grok's partition B task is disabled under item 1.
+6. NOT CHANGED. Lane scopes, production floors (CENTRAL 15-RECORD AMENDMENT), Writer authority, protected states, ChatGPT lanes, Claude gofer.
+7. DEPENDENCY. Item 2 is live after Tim deploys foreman-cockpit batch 2026-10-13-A (apps-script/deploy.sh). Until then the worklist files read PENDING_FIRST_BUILD and lanes use their fallback.
+END GROK EFFICIENCY AMENDMENT
