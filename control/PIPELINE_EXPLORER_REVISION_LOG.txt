@@ -11,6 +11,13 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-008  AI usage panel with projected run-out day + scheduled usage reader + PC keep-alive
+  Status: BUILT 2026-10-13, foreman-cockpit branch rev/ai-usage-panel (eb2b3bc, batch 2026-10-13-F), PR pending Tim's merge (Explorer deploys on merge). Reader task trig_015gQd3iNBRZ9MdQPheTMcQn live (02:05/08:05/14:05/20:05 ET, bound to TIMMAY). Keep-alive installed on TIMMAY as task "Forge PC Keep-Alive".
+  Asked: Tim 2026-10-13 ("B now")
+  What: Pipeline > System shows one bar per AI usage window (Claude weekly/session, Grok weekly/bot, ChatGPT weekly/5-hour) with exact %, reset time, projected run-out time and a text verdict (RUNS OUT / OUT BEFORE RESET / LASTS TO RESET). Data: usage/AI_USAGE_READINGS.jsonl in this repo, appended by the reader task from the three usage pages via Chrome (lanes/CLAUDE_AI_USAGE_READER.txt). Explorer re-reads at most every 10 min. tools/forge-pc-keepalive.ps1 keeps the PC awake on AC power, keeps the Claude app running minimized, and opens Chrome minimized near reader times.
+  Why: Usage pinch across all three providers; Tim needs the shutdown day without opening three settings pages.
+  Risk: Low. Reader is read-only on usage pages (no Buy/Upgrade/toggles/sign-in). Projection is a straight-line estimate; marked UNKNOWN with fewer than 2 readings 2 h apart.
+
 REV-007  Writer ATS liveness checker (verification plan items 1, 2, 4, 5)
   Status: BUILT 2026-10-13, foreman-cockpit branch rev/ats-liveness-checker (batch 2026-10-13-E), PR pending Tim's merge; then deploy.
   Asked: Tim 2026-10-13 14:47 ET ("Implement everything else"; JobSpy item deferred, reminder 16:47 ET)
