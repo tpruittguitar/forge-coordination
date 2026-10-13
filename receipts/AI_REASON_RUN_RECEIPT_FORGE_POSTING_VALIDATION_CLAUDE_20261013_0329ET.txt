@@ -1,0 +1,22 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-0330ET
+STATUS=PARTIAL_WITH_WORK
+FILES_READ=ENTRY VERSION 2026-10-13.3 (blob 55a693c6); CONTROL VERSION 2026-10-13.3 (blob abee9137); README (blob 5d990a66); WORKLIST_FORGE_POSTING_VALIDATION GENERATED_AT_UTC=2026-10-13T07:01:01Z (fresh, ELIGIBLE_TOTAL=350); WRITER_FREEZE frozen=false; WRITER_QUEUE root held only an unrelated HOLD__ file (no collisions).
+NOT_READ=STANDARD, canonical rules, WRITER_ACCESS_DIRECTIVE_V9 (payload format taken from POSTING VALIDATION amendment item 7). Receipt index not checked per row; queue root and worklist rows were the collision check.
+ROWS_EVALUATED=9
+LIVE=0
+CLOSED=0
+AGGREGATOR_LISTED=7 (worklist rows 7,8,9,18,19,20,21: Indeed page showed Apply button, no expired notice, no posting date; not treated as LIVE)
+UNCONFIRMED=0
+SKIPPED_UNREADABLE=2 (row 4 LinkedIn robots-disallowed; row 17 Indeed rc/clk robots-disallowed; employer route not completed)
+WRITTEN=7 (ENRICH files B01-B07 in WRITER_QUEUE, text/plain, conversion disabled)
+VERIFIED=0 (no RESULT, receipt index COMPLETE or row_readback yet; verify next run)
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=approx 343 of 350 eligible at worklist stamp
+BATCHES_COMPLETED_THIS_RUN=1
+STOP_REASON=Hard limit: WebFetch proxy returned HTTP 429 rate limit (instructed not to refetch) after the first 15 fetches. Floor of 10 rows not reached.
+NOTES=Employer-route search for SiMa AI2557 found no first-party posting (Greenhouse fetch failed; search returned nothing relevant). One Google Doc created by mistake (conversion not disabled) was trashed immediately, id 1N9giVq9u9A-gzZttPTia0H_eucI409XyRMfXUbT9xvA, never Writer-processed. Rows 10-17, 22-40 not attempted.
