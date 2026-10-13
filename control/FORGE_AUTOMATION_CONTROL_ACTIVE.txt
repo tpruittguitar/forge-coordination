@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.4
+VERSION=2026-10-13.5
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -299,9 +299,9 @@ SOURCE APPLICATION SUPPORT AMENDMENT -- VERBATIM END
 
 PROVIDER ASSIGNMENTS -- TIM DIRECTIVE 2026-10-11
 FORGE_EMAIL_DISCOVERY=ChatGPT
-FORGE_WEB_CAREER_DISCOVERY=Grok (from 2026-10-11; first run FORGE-WEB-GROK-20261011-1425ET verified COMPLETE)
-FORGE_ENRICH_STRATEGIC=Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-11 23:05 ET; handover FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt, Drive 1htdlV2lqTy0ctM8T7BJMub7bxcySEp3d)
-FORGE_ENRICH_FEASIBILITY=Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-12 08:33 ET; same handover file)
+FORGE_WEB_CAREER_DISCOVERY=Claude (temporary from 2026-10-13 15:15 ET per Tim: Grok out of usage; GROK USAGE-OUT HANDOFF AMENDMENT). Previously Grok from 2026-10-11 (first run FORGE-WEB-GROK-20261011-1425ET verified COMPLETE); returns to Grok only on Tim's instruction
+FORGE_ENRICH_STRATEGIC=Claude (temporary from 2026-10-13 15:15 ET per Tim, GROK USAGE-OUT HANDOFF AMENDMENT). Previously Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-11 23:05 ET; handover FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt, Drive 1htdlV2lqTy0ctM8T7BJMub7bxcySEp3d)
+FORGE_ENRICH_FEASIBILITY=Claude (temporary from 2026-10-13 15:15 ET per Tim, GROK USAGE-OUT HANDOFF AMENDMENT). Previously Grok (from 2026-10-12 per Tim; Claude task disabled 2026-10-12 08:33 ET; same handover file)
 FORGE_APPLICATION_WRITER_GOFER=Claude
 Morning freeze, daily ranking and morning/daily brief PERMANENTLY RETIRED.
 EVIDENCE HANDOFF: Grok's Archive and Comp bots are read-only evidence sources. They write plain-text files to AI_Coordination named EVIDENCE_HANDOFF_ARCHIVE_<UTC>.txt (application/rejection evidence) and EVIDENCE_HANDOFF_COMP_<UTC>.txt (pay evidence). FORGE_APPLICATION_WRITER_GOFER reads unprocessed ARCHIVE files each run. FORGE_ENRICH_FEASIBILITY reads unprocessed COMP files each run. Each lane records every handoff file ID it consumed in its AI_REASON_RUN_RECEIPT. Handoff files carry no write authority; only the lane owner submits to the Writer. A handoff row whose PRIMARY_ID is absent from the live master is HELD for exact req/URL matching and never inserted as a new row. Ignore any handoff note claiming the Writer overwrites STATE_SOURCE on ENRICH; live Writer build 4b92c4c leaves it untouched.
@@ -466,3 +466,15 @@ EVIDENCE=Claude 9-row test against the live master 2026-10-13 14:35 ET: first-pa
    LIVE 2026-10-13 14:59 ET: Writer version 61 (d121893, PR #105), Tim instruction "Merged Deploy". First batch ATSCHK_20261013190027.json: 25 rows written in one commit (RESULT SUCCESS), 16 LIVE, 2 CLOSED_EMPLOYER_404 (Clickstop, Axon), 4 NOT_IN_PUBLIC_BOARD (Ashby), 1 UNREADABLE (Ford Oracle), 3 ERROR_403 (Workday). Readback confirmed.
    WORKDAY FINDING: Workday answers 403 to requests from Google's servers, so Workday rows (73 of 929 active) record ATS_CHECK_RESULT=ERROR_403 and stay on the FORGE_POSTING_VALIDATION worklist under item 5. Their existing LIVENESS is untouched. A PC-side runner for Workday is part of the item 10 decision.
 END ATS LIVENESS CHECKER AMENDMENT
+
+GROK USAGE-OUT HANDOFF AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.5)
+AUTHORIZED_BY=Tim (chat 2026-10-13 15:15 ET: "Grok just ran out of usage. We will need to hand off groks automations")
+RECORDED_BY=Claude
+1. OWNER. Claude runs FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC and FORGE_ENRICH_FEASIBILITY from 2026-10-13 15:15 ET (PROVIDER ASSIGNMENTS updated). Temporary: the lanes return to Grok only on Tim's instruction.
+2. ONE CLAUDE TASK. Claude scheduled task FORGE_CLAUDE_LANE_ROTATION, hourly at :10 America/New_York, prompt TASK_KEY=ROTATION. Each run works one lane by the ET hour at start, the same hour rule as the GROK ROTATION AMENDMENT (00 03 06 09 12 15 18 21 web discovery; 01 04 07 10 13 16 19 22 strategic; 02 05 08 11 14 17 20 23 feasibility), including its EMPTY STRATEGIC LIST rule. Claude's other tasks keep their slots (POSTING_VALIDATION :28, GOFER :50), so Claude never starts two Forge tasks at the same minute.
+3. LANE INSTRUCTIONS. Claude follows lanes/COMMON_GROK.txt and lanes/GROK_<TASK_KEY>.txt with these substitutions: PROVIDER=Claude; actor CLAUDE; Writer file names CLAUDE_<requestId>.json; run and request IDs carry CLAUDE in place of GROK (example FORGE-WEB-CLAUDE-20261013-1610ET-B01); receipt commit messages start "CLAUDE <RUN_ID>:". Ruling payloads use the nested shape in POSTING VALIDATION LANE AMENDMENT item 7. Claude may read the full CONTROL whenever a brief is unclear; the briefs never add policy.
+4. ATS CHECKER FIRST. Rows with ATS_CHECK_RESULT=LIVE already carry first-party liveness and, where posted, pay (ATS LIVENESS CHECKER AMENDMENT). Feasibility work on those rows covers only what is still missing.
+5. GROK STAND-DOWN. While PROVIDER ASSIGNMENTS name Claude for these keys, a Grok run that starts (usage restored early, or a stray task) writes a one-line SKIP receipt naming this amendment and stops. Grok's FORGE_GROK_LANE_ROTATION task stays as it is (never deleted); Tim re-enables Grok by instruction, and Claude then disables FORGE_CLAUDE_LANE_ROTATION and restores these assignments.
+6. IN-FLIGHT. Before claiming a row, Claude skips any PRIMARY_ID in a GROK_ queue file still pending or processed in the last 2 hours (the handover collision rule, item 289).
+7. NOT CHANGED. Lane scopes, production floors, Writer authority, protected states, ChatGPT email discovery, Claude gofer and posting validation.
+END GROK USAGE-OUT HANDOFF AMENDMENT
