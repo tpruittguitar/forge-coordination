@@ -1,0 +1,26 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=CLAUDE
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1430ET
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+FILES_READ=ENTRY VERSION=2026-10-13.3 (blob 55a693c6); CONTROL VERSION=2026-10-13.3 (blob abee9137); README.md (blob 5d990a66); WRITER_FREEZE.json frozen=false; WRITER_ACCESS_DIRECTIVE_V9; WORKLIST_FORGE_POSTING_VALIDATION.txt GENERATED_AT_UTC=2026-10-13T18:25:03Z (fresh), ELIGIBLE_TOTAL=373, SHOWN=40
+SKIPPED_READS=STANDARD, canonical rules, scoring, full master (worklist + row_readback route; no scoring in this lane)
+COLLISION_CHECK=WRITER_QUEUE root had no in-flight files at 18:29Z; no PIPELINE_RECEIPT_INDEX read (not needed, queue empty)
+ROWS_EVALUATED=10 (worklist rows 1,2,3,4,5,24,25,26,28,36)
+LIVE=1 (row 1 Pregis, LIVE_AGGREGATOR; Glassdoor page readable, no closure notice, 'Sign in to apply', req 1010287583204, pay $180K base employer-provided estimate; fetch tool said cached snapshot; no employer ATS posting found)
+CLOSED=0
+UNCONFIRMED=9 (rows 2,3,4,5,24,25,26,28,36)
+WRITTEN=1 accepted so far (B11 RESULT SUCCESS, verification PENDING, WRITE_ID=W-20261013183407898-900a28); 9 more submitted and still in queue at receipt time (B12 to B20)
+VERIFIED=0 (no COMPLETE receipt-index entry or row_readback yet)
+HELD=0
+FAILED=10 first-pass files B01-B10 (REJECTED_SCHEMA, zero mutations): payload example in POSTING VALIDATION LANE AMENDMENT item 7 is flat; Writer build 057fde2 requires fields nested under a 'ruling' key. Resubmitted as B11-B20 with nested shape and new requestIds.
+SKIPPED_ROWS=rows 6-23, 27, 29-35, 37-40 not reached: 17 are LinkedIn URLs (robots-blocked) with employer-route search returning nothing useful, 9 are Lensa/ZipRecruiter redirect links; rows 22 skipped (Glassdoor, robots-blocked, not attempted via employer route). No named hard limit other than run-time spent on Writer schema rejection and tool limits.
+TOOL_LIMITS=LinkedIn and Glassdoor partner URLs ROBOTS_DISALLOWED for WebFetch; WebSearch returned aggregators only; employer career pages (L3Harris, Lilly, Kenco Workday) not searchable via fetch tool
+STOP_REASON=TOOL_LIMITS: employer ATS routes unreadable for most rows; Writer queue processes about one file per 10-50 s
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=at least 363 of ELIGIBLE_TOTAL=373 (10 handled this run, 1 positive)
+BATCHES_COMPLETED_THIS_RUN=2 (first rejected, second accepted-in-progress)
+WRITE_FILE_IDS=B11 1p2oOWIJhCLWBXRaC2JWqdd53VO16N7hj; B12 1qvZdlqrrB_w3ZU85osAPapQbUiuRv5vw; B13 16TV9lYetD9vnrn39vDHRY_TxQlLi3Y5R; B14 1iFtGHmNpGP-VlVBEXiyuJm0cOAqHGzOL; B15 1y7Mvhbw92vfjV47eyzmpk97LsPqP_tF3; B16 1I_KK-OvTrgKaTY9A04XqVqtNXEZROCwK; B17 1_xNbNGhxpE0MFRVaU6U6_qK2A8KAz-dJ; B18 1u1ubRpGa3U_jFMB0xJo6bZnnceo1_yiu; B19 1g5AH5mrQwUkmrh9KV3O0MPUFjOQAwVnf; B20 1pN_L4-yH1vxxPphtzb9qZ2JtIj1Qk2Sh
+NEXT_ACTION=Next hourly run: reconcile RESULT files for B12-B20 and verify B11-B20 with row_readback before claiming VERIFIED; then continue worklist from row 6.
+UNVERIFIED_FIELD_NOTE=LIVENESS_NOTE was used as an extra field on UNCONFIRMED rows; B11 shows no such field because it was not sent. Confirm the Writer accepts LIVENESS_NOTE in the B12-B20 RESULT files.
+GITHUB=reachable
