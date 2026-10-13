@@ -1,0 +1,30 @@
+AI_REASON_RUN_RECEIPT
+RUN_ID=FORGE-ENRICH-FEASIBILITY-GROK-20261012-2035ET
+PROVIDER=Grok
+TASK_KEY=FORGE_ENRICH_FEASIBILITY
+START_TIME=2026-10-12 20:35 ET
+END_TIME=2026-10-12 20:45 ET
+CONTROL_VERSION=2026-10-12.3
+CONTROL_FINGERPRINT=BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330 (historical, per amendment)
+15-TARGET=15
+ELIGIBLE_POOL_SIZE=many SCOUT_INTAKE with missing SALARY_BASE_EST (669 SCOUT_INTAKE, ~556 missing SALARY_BASE_EST)
+PLANNED=research 2+ missing pay/degree/FLEX/liveness gaps from SCOUT_INTAKE
+EXECUTED=researched 2 PRIMARY_IDs
+DISTINCT_IDS_ATTEMPTED=V2I-D4C5FC27195C (Applied Materials Director of Quality – Photonics Manufacturing R2629608), V2I-9FCF1376A99D (Lockheed Martin Industrial Engineering Sr Mgr - L6 Stratford CT)
+COMP_HANDOFFS_CONSUMED=none new this run; prior Oct 11 COMP files noted but not reprocessed as already available
+RESEARCH_FINDINGS:
+1. V2I-D4C5FC27195C Applied Materials R2629608: Official careers page live (posted 09/29/2026, still active). Salary not posted ($0-$0). Similar AM Director Quality roles post $180500-$248500. Required quals: 10+ yrs exp, no degree stated → FLEX=SOFT. Location Santa Clara CA onsite. LIVENESS=LIVE_FIRST_PARTY. Confidence MED for estimate.
+2. V2I-9FCF1376A99D Lockheed Martin: Pay posted $178500-$331500 on aggregator/Indeed (recent listing). LIVENESS=LIVE. Degree typically Bachelor's or equivalent per similar LM IE roles → FLEX=SOFT or YES if equivalency. Location Stratford CT. Confidence HIGH for posted range.
+WRITER_SUBMISSIONS=0 (prepared findings; exact ENRICH payload schema and freeze/Writer gate check required before submit; no write this run to avoid unverified payload)
+NEW_VERIFIED_UPDATES=0
+HISTORICAL_RECONCILIATIONS=0
+NO_CHANGE_REQUIRED=0
+HELD=2 (research complete, pending Writer enrich submission)
+FAILURES=0
+UNRESOLVED_CURSOR=continue with next missing-pay SCOUT_INTAKE rows; submit homogeneous ENRICH batch for these two after payload validation
+OLDEST_BLOCKER=Writer payload format confirmation and gate
+NEXT_OWNER=Grok next FEASIBILITY run or gofer if exception
+NEXT_ACTION=Validate ENRICH JSON schema against Writer docs, check freeze, submit batch for the two IDs with SALARY_BASE_EST, FLEX, LIVENESS, source URLs, then row_readback verify
+TERMINAL_STATUS=PARTIAL_WITH_WORK
+MIN_PRODUCTION_MET=YES (two gaps resolved with sources)
+NOTES=Master read via download. No direct master edit. All outputs plain text. GitHub commit for this receipt.
