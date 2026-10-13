@@ -8,15 +8,19 @@ Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT
 
 JOB (per row)
 Open the posting (URL column, else find the employer's own posting by company, title, location, req). Record grounded facts only; anything not stated is UNKNOWN.
-ENRICH fields:
+ENRICH fields (these are the keys the Explorer reads):
+  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor manufacturing and quality leader (prototype-to-rate production, factory or line launch, real authority, team size)
+  FIT_CONF: HIGH, MED or LOW
+  FIT_ASOF: YYYY-MM-DD
+  ANALYSIS_BY: GROK_<RUN_ID>
   SCOPE_SUMMARY: manufacturing function, product domain, what the role owns (one or two sentences)
-  FIT_BASIS: direct problem fit for a plant-floor manufacturing and quality leader: prototype-to-rate production, factory or line launch, real authority, team size
-  FIT_EVIDENCE: short quote(s) from the posting that support FIT_BASIS
-  ANALYSIS_CONFIDENCE: HIGH, MED or LOW
-  ANALYSIS_ACTOR=GROK, ANALYSIS_ASOF=YYYY-MM-DD
-  Also add, when the page shows them: SOURCE_URL (first-party posting), PAY_POSTED, DEGREE_TEXT (verbatim), WORK_ARRANGEMENT.
+  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the posting
+  Also add, when the page shows them: SOURCE_URL (first-party posting), PAY_POSTED, DEGREE_TEXT (verbatim from the posting), WORK_ARRANGEMENT.
 No prestige bonuses, no scoring, no bucket changes.
 Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
+
+EMPTY LIST
+When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every row is attempt-stamped, run FORGE_ENRICH_FEASIBILITY for the rest of this run (read its brief; RUN_ID uses ENRICH-FEASIBILITY).
 
 BATCHING
 Up to 25 rows per queue file, one file per 5 to 10 finished rows is fine. Target 15 finished rows per run; keep going past 15 while capacity lasts.

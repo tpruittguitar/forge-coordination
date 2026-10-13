@@ -3,19 +3,19 @@ VALID_FOR_ENTRY_VERSION=2026-10-13.3
 Read lanes/COMMON_GROK.txt first.
 
 WORKLIST
-WORKLIST_FORGE_ENRICH_FEASIBILITY.txt, Drive 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1. Rebuilt by the Writer every 30 minutes. NEED column says what each row is missing (SALARY, DEGREE, FLEX).
+WORKLIST_FORGE_ENRICH_FEASIBILITY.txt, Drive 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1. Rebuilt by the Writer every 30 minutes. NEED column says what each row is missing: SALARY (no pay the Explorer can read) and/or DEGREE (no degree evidence from the posting itself; "not stated in alert" is alert text and does not count).
 Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
 Also each run: read any EVIDENCE_HANDOFF_COMP_*.txt in AI_Coordination newer than the last one your receipts list as consumed; use its pay evidence for matching rows and list the file IDs as COMP_HANDOFFS_CONSUMED.
 
 JOB (per row, fill what NEED lists, plus anything else the page shows)
 Open the employer's own posting first (Workday, Greenhouse, Lever, Ashby, iCIMS, company site); job boards only when no employer posting exists.
-ENRICH fields:
-  SALARY_BASE_EST: posted base range, e.g. $180000-$230000
+ENRICH fields (these are the keys the Explorer reads):
+  SALARY_BASE_LOW and SALARY_BASE_HIGH: posted base range as numbers, e.g. 180000 and 230000; SALARY_MIDPOINT: their average
   SALARY_BASIS: EMPLOYER_POSTED, THIRD_PARTY_ESTIMATE or FORGE-ESTIMATE
   SALARY_SOURCE: URL; SALARY_ASOF: YYYY-MM-DD; SALARY_CONF: HIGH, MED or LOW
   No posted pay: make a good-faith FORGE-ESTIMATE from at least 3 anchors (at least one employer-posted range for a similar role), set SALARY_BASIS=FORGE-ESTIMATE and SALARY_NOTE=<anchors>. Never leave a row stalled for pay alone.
-  DEGREE_TEXT: the posting's degree sentence, verbatim. DEGREE_REQ: REQUIRED, PREFERRED or NOT_STATED.
-  FLEX: the Writer derives it from DEGREE_TEXT, so DEGREE_TEXT verbatim is what matters most (DEGREE_TEXT=NOT_STATED when the posting names no degree). Also send your FLEX class with a one-line FLEX_BASIS and FLEX_ASOF, using Tim's rulings: "degree preferred, or equivalent education and experience" = HIGH_FLEX; no degree mentioned = HIGH_FLEX; degree named only as preferred = SOFT_FLEX; hard engineering degree with no experience alternative = NO_FLEX; "B.S. in X or equivalent technical field" = NO_FLEX (there "equivalent" modifies the field of study).
+  DEGREE_TEXT: the posting's degree sentence, verbatim (DEGREE_TEXT=NOT_STATED when the posting itself names no degree). DEGREE_REQ: REQUIRED, PREFERRED or NOT_STATED. DEGREE_EVIDENCE_URL and DEGREE_ASOF.
+  FLEX: the Writer derives FLEX_CLASS from DEGREE_TEXT, so verbatim DEGREE_TEXT is the key deliverable. Add FLEX_BASIS (one line) using Tim's rulings: "degree preferred, or equivalent education and experience" = HIGH_FLEX; no degree mentioned = HIGH_FLEX; degree named only as preferred = SOFT_FLEX; hard engineering degree with no experience alternative = NO_FLEX; "B.S. in X or equivalent technical field" = NO_FLEX (there "equivalent" modifies the field of study).
   LOCATION_NOTE / WORK_ARRANGEMENT: onsite, hybrid or remote as stated.
   LIVENESS (when you opened the page): LIVE_EMPLOYER_ATS, LIVE_EMPLOYER, LIVE_AGGREGATOR or CLOSED (closed needs evidence), with LIVENESS_ASOF and LIVENESS_EVIDENCE_URL.
 No scoring, no bucket changes, no declines.

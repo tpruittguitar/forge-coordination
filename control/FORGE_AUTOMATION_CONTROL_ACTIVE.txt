@@ -428,6 +428,7 @@ EVIDENCE=Grok receipts 2026-10-12 22:08 to 2026-10-13 02:24 ET: most runs ended 
 5. POSTING VALIDATION TO CLAUDE. FORGE_POSTING_VALIDATION is Claude's alone from 2026-10-13, all rows, hourly :28 ET, using its worklist (POSTING VALIDATION LANE AMENDMENT items 2 and 3 as amended). Grok's partition B task is disabled under item 1.
 6. NOT CHANGED. Lane scopes, production floors (CENTRAL 15-RECORD AMENDMENT), Writer authority, protected states, ChatGPT lanes, Claude gofer.
 7. DEPENDENCY. Item 2 is live after Tim deploys foreman-cockpit batch 2026-10-13-A (apps-script/deploy.sh). Until then the worklist files read PENDING_FIRST_BUILD and lanes use their fallback.
+   LIVE 2026-10-13 00:57 ET: Writer version 58 (c149fc7, batches 2026-10-13-A and A2), Tim instruction "DEPLOY" 00:52 ET. First build: 1,408 rows; strategic 18, feasibility 452, posting validation 337 eligible.
 END GROK EFFICIENCY AMENDMENT
 
 GROK ROTATION AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.3)
@@ -442,5 +443,6 @@ EVIDENCE=Grok report to Tim 2026-10-13 00:51 ET: Grok Automations support FREQ=H
 2. The separate FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC and FORGE_ENRICH_FEASIBILITY Grok tasks are disabled, never deleted.
 3. Everything else in the GROK EFFICIENCY AMENDMENT applies unchanged: lane briefs, worklists, same-run submit, verification of the prior run, POSTVAL with Claude, all other Grok tasks disabled.
 4. A run that is still working when the next hour starts finishes its own lane; the next run takes its own lane by the hour rule. Different lanes never claim the same row in one hour (strategic and feasibility alternate hours).
+6. EMPTY STRATEGIC LIST. When the strategic worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row carries a recent STRATEGIC_ATTEMPT_ASOF, the strategic-hour run works FORGE_ENRICH_FEASIBILITY for the rest of that run under a FEASIBILITY RUN_ID. Recorded 2026-10-13 after the first live build showed 18 strategic rows against 452 feasibility rows.
 5. Further reduction, if Tim asks: add a rest hour (hours where the run writes a one-line SKIP receipt and stops) or move to every-other-hour starts if Grok accepts FREQ=HOURLY with a start list.
 END GROK ROTATION AMENDMENT
