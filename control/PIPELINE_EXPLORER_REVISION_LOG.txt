@@ -12,7 +12,7 @@ HOW IT WORKS:
 QUEUED (Tim requested; not built yet)
 ==================================================================
 REV-009  Writer reads Workday through TinyFish
-  Status: BUILT 2026-10-13, foreman-cockpit PR #107 (batch 2026-10-13-G), pending Tim's merge, deploy and script property TINYFISH_API_KEY.
+  Status: SHIPPED 2026-10-13 18:00 ET, foreman-cockpit PR #107 (80630d6), Writer version 62 live; TINYFISH_API_KEY set by Tim. Dry run 18:00 ET: 6 Workday rows read through TinyFish with no errors, all 6 Blue Origin rows CLOSED_EMPLOYER_404 (Claude spot-checked R70681: Workday 'doesn't exist' page and no search hit; a known-live posting R67034 without location segment loads normally). Follow-up PR #108 (batch H): posting date in the bold field layout.
   Asked: Tim 2026-10-13 17:46 ET ("Yes" to the Writer option)
   What: When Workday blocks the Writer (403 from Google), the ATS checker reads the public job page through TinyFish's free Fetch API; stored URLs without the requisition token are resolved through the site's own search. 6 rows per run, 300 URLs per UTC day.
   Why: 73 active Workday rows could not be checked automatically; this moves them off the AI posting-validation lane at no AI or TinyFish cost.
