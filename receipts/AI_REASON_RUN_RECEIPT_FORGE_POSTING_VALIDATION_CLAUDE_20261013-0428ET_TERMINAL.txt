@@ -1,0 +1,21 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-0428ET
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+VERSIONS_READ=ENTRY 2026-10-13.3 (GitHub blob, SHA 55a693c6); CONTROL 2026-10-13.3 (SHA abee9137); README (SHA 5d990a66); WRITER_FREEZE frozen=false; WORKLIST generated 2026-10-13T08:04:32Z (fresh, ELIGIBLE_TOTAL=346, SHOWN=40); WRITER_ACCESS_DIRECTIVE_V9 read
+QUEUE_CHECK=WRITER_QUEUE root held only a HOLD__FORGE_GOFER file from 2026-10-12; nothing in flight for posting validation
+BLOCKER=This scheduled runtime has no way to open posting pages. WebFetch on boards.greenhouse.io (worklist rows 1-3) returned PROVENANCE_REQUIRED: the permission request went unanswered because nobody was present. Fetching by curl or other means is not permitted. WebSearch returned only third-party aggregator listings (thrivecap, generalcatalyst) with no page content, which is not liveness evidence.
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=346
+STOP_REASON=Page reads denied, so no row can be classified. No LIVENESS stamps were guessed or submitted; no Writer files created.
+BATCHES_COMPLETED_THIS_RUN=0
+NEXT_ACTION=Tim: allow WebFetch for ATS domains (greenhouse.io, job-boards.greenhouse.io, workday, ashby, etc.) for scheduled Claude runs, or approve another page-reading route. Next run at :28 retries.
