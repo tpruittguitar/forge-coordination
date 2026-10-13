@@ -1,0 +1,26 @@
+AI_REASON CHECK RECORD
+RUN_ID=CHECK-20261013-0715ET
+PROVIDER=Claude
+SCOPE=Receipts and Writer RESULTs 2026-10-13 01:00-07:15 ET after GROK ROTATION / EFFICIENCY amendments
+
+GROK RUNS (lane vs ET-hour rule: all correct)
+01:11 STRATEGIC 6 submitted (RESULT FAILED as batch: 5 applied, Ash Grove V2I-2E42896476D2 rejected "URL must be a usable http(s)" link)
+01:18 STRATEGIC 4 submitted, SUCCESS. Second strategic run in hour 01 (likely fired at task creation); re-enriched 3 rows from 01:11.
+02:14 FEASIBILITY 1 submitted, SUCCESS (Indeed blocked, Jobvite unreadable)
+03:15 WEB 4 intakes: 3 INSERTED, 1 EXISTING_MATCH (Blue Origin R67034, CLOSED_DEAD)
+04:10 STRATEGIC 9 submitted + 3 stamped, SUCCESS x3 batches; stopped with capacity left (rollover rule not applied)
+05:14 FEASIBILITY 5 submitted, SUCCESS x2
+06:12 WEB 3 intakes: 1 INSERTED (Blue Origin Dir Mfg Eng R53294), 2 EXISTING_MATCH
+Worklists refreshed about hourly (05:28Z, 05:59Z, 07:01Z, 08:04Z, 09:07Z, 10:09Z). Strategic 18 -> 12 -> ~0 pending.
+Read lists followed: receipts cite ENTRY 2026-10-13.3, brief version, worklist stamp; no master reads reported.
+
+DEFECTS FOUND AND FIXED
+D1 Writer dedupe gap: 03:15 WEB inserted Anduril VP Production Mission Systems / Frontier Systems / Connected Warfare (V2I-7506B47A8EAD, V2I-1F7FCDC7D808, V2I-121F69D9A93E) duplicating archived DECLINED_BY_TIM rows V2S-ANDURIL-VPPROD-MS-5199174007, V2S-ANDURIL-VPPROD-FRON-5218932007, V2L-ANDURIL-VPCONNECTEDWARFARE-5173257007 (same Greenhouse job ids). Fix: foreman-cockpit f57fb58, Writer v59 (ATS job id matching, state-name normalization), 405/405 tests. The three rows themselves are not yet ruled DUPLICATE (Tim decision: the Writer stamps TIM_RULING on DUPLICATE).
+D2 VERIFIED_PRIOR_RUN wrong in most receipts (runs cited 2026-10-12 receipts as "prior"). Fix: COMMON brief defines the prior run lookup.
+D3 Strategic rollover not used at 04:10. Fix: strategic brief makes rollover mandatory, second RUN_ID and receipt.
+D4 Bad SOURCE_URL failed a batch. Fix: COMMON brief URL rule.
+D5 Web intake REQ_ID carried internal reqs. Fix: web brief asks for the ATS job number.
+
+OPEN (Tim)
+O1 Claude FORGE_POSTING_VALIDATION: 5 of 6 runs HARD_BLOCKED (01:28 02:28 04:28 05:28 06:28): WebFetch PROVENANCE_REQUIRED, unanswered in unattended runs. 03:29 run wrote 7 then hit HTTP 429. Lane produced 7 rows in 6 hours.
+O2 DUPLICATE rulings for the three Anduril rows.

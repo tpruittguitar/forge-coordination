@@ -19,8 +19,8 @@ ENRICH fields (these are the keys the Explorer reads):
 No prestige bonuses, no scoring, no bucket changes.
 Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
 
-EMPTY LIST
-When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every row is attempt-stamped, run FORGE_ENRICH_FEASIBILITY for the rest of this run (read its brief; RUN_ID uses ENRICH-FEASIBILITY).
+EMPTY LIST, KEEP GOING
+When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or you have finished or attempt-stamped every listed row in this run, do not stop: read lanes/GROK_FORGE_ENRICH_FEASIBILITY.txt and its worklist and work feasibility rows for the rest of this run. Submit those under a second RUN_ID FORGE-ENRICH-FEASIBILITY-GROK-<same date/time> and write a second receipt for it. STOP_REASON "worklist processed" with capacity left is a defect.
 
 BATCHING
 Up to 25 rows per queue file, one file per 5 to 10 finished rows is fine. Target 15 finished rows per run; keep going past 15 while capacity lasts.

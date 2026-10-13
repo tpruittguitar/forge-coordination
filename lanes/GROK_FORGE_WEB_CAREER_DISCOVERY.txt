@@ -12,7 +12,7 @@ Every plausible role you find goes to the Writer as intake in the same run. The 
 
 INTAKE FILE (one per 25 roles, name GROK_<requestId>.json in WRITER_QUEUE)
 {"action":"intake","requestId":"<RUN_ID>-B01","run":{"SCOUT_RUN_ID":"<RUN_ID>","RUN_STARTED_AT_ET":"YYYY-MM-DD HH:MM ET","GROSS_FOUND":<records in this file>},
- "records":[{"COMPANY":"","TITLE":"","LOCATION":"","REQ_ID":"","SOURCE_URL":"<exact posting URL you opened>","SOURCE_PROVIDER":"Greenhouse|Lever|Ashby|Workday|Company site|...","DISCOVERY_SOURCE":"Grok web career discovery","DISCOVERED_AT_ET":"YYYY-MM-DD HH:MM ET","IDENTITY_CONFIDENCE":"HIGH|MED|LOW","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"EMPLOYER_DOMAIN_HINT":"<employer's primary business>","PAY_POSTED":"<only if shown>","SCOUT_NOTES":"<one line>"}]}
+ "records":[{"COMPANY":"","TITLE":"","LOCATION":"","REQ_ID":"<ATS job number from the URL: Greenhouse job id, Workday R-number; else the posted req>","SOURCE_URL":"<exact posting URL you opened>","SOURCE_PROVIDER":"Greenhouse|Lever|Ashby|Workday|Company site|...","DISCOVERY_SOURCE":"Grok web career discovery","DISCOVERED_AT_ET":"YYYY-MM-DD HH:MM ET","IDENTITY_CONFIDENCE":"HIGH|MED|LOW","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"EMPLOYER_DOMAIN_HINT":"<employer's primary business>","PAY_POSTED":"<only if shown>","SCOUT_NOTES":"<one line>"}]}
 COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
 
 LANE RECEIPT FIELDS
