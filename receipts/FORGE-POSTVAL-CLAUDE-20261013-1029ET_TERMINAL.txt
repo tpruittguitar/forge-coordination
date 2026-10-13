@@ -1,0 +1,28 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-1029ET
+ENTRY_VERSION_READ=2026-10-13.3
+CONTROL_VERSION_READ=2026-10-13.3 (blob sha abee9137911d88728ce85ae383efd371a3d7b35c, read via GitHub)
+README_READ=yes (blob sha 5d990a660a03ac31696dcddbdd7fda56dc1c3ebc)
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION.txt, generated 2026-10-13T14:17:08Z (fresh, under 6h); ELIGIBLE_TOTAL=362 SHOWN=40; master rows 1449, master modified 2026-10-13T13:01:34Z
+WRITER_FREEZE=frozen:false (read, file dated 2026-10-05)
+WRITER_DIRECTIVE_V9=read; scheduled-runtime transport is WRITER_QUEUE first
+NOT_READ_THIS_RUN=STANDARD_AND_HISTORY, canonical rules, scoring model, master, receipt index, queue listing (stopped before any write was possible)
+ROWS_EVALUATED=0
+LIVE=0
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+WRITER_SUBMISSIONS=0
+PARTITION=ALL
+PARTITION_BACKLOG_REMAINING=362 (unchanged)
+BATCHES_COMPLETED_THIS_RUN=0
+RUN_TERMINAL_STATUS=HARD_BLOCKED
+STOP_REASON=WebFetch of posting pages (Workday, Indeed, BWXT ATS tried on rows 21, 2, 10) returned PROVENANCE_REQUIRED: the permission request for each URL went unanswered in this unattended run, so no posting page could be opened. Per WRITER_ACCESS_DIRECTIVE_V9 the blocked fetch is not repeated and no curl or other workaround is used. One WebSearch (Blue Origin R53294, row 21) returned only third-party aggregator listings (zerogtalent, scoutify, jobtarget), which are not evidence of liveness or closure, so no LIVENESS value was assigned. An unreadable source is not evidence of closure, so no row was marked CLOSED or UNCONFIRMED.
+NEXT_OWNER_ACTION=Tim: allow WebFetch for posting domains (indeed.com, glassdoor.com, ziprecruiter.com, lensa.com, myworkdayjobs.com, employer ATS hosts) for the scheduled routine, or give an alternate fetch route. Next hourly run retries from worklist top.
+NOTE=Worklist rows are mostly LinkedIn (not readable by Claude; employer-posting route only) plus Indeed, Glassdoor, Lensa, ZipRecruiter and one Workday row.
+END RECEIPT
