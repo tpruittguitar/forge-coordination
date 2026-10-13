@@ -461,4 +461,6 @@ EVIDENCE=Claude 9-row test against the live master 2026-10-13 14:35 ET: first-pa
 8. NOT CHANGED. Lane ownership, Writer authority, protected states, scoring, FLEX rules (a DEGREE_TEXT written under item 2 is classified by the existing rules; a Tim FLEX lock still wins), Grok and ChatGPT lanes.
 9. DEPENDENCY. Items 1, 2, 3, 5 and 7 take effect when Tim merges and deploys foreman-cockpit batch 2026-10-13-E. Item 4 applies to every lane now.
 10. DEFERRED. JobSpy (open-source LinkedIn/Indeed/Glassdoor search) for LinkedIn-only and Indeed-only rows, run on Tim's PC: trial pending Tim's decision (reminder set 16:47 ET).
+   LIVE 2026-10-13 14:59 ET: Writer version 61 (d121893, PR #105), Tim instruction "Merged Deploy". First batch ATSCHK_20261013190027.json: 25 rows written in one commit (RESULT SUCCESS), 16 LIVE, 2 CLOSED_EMPLOYER_404 (Clickstop, Axon), 4 NOT_IN_PUBLIC_BOARD (Ashby), 1 UNREADABLE (Ford Oracle), 3 ERROR_403 (Workday). Readback confirmed.
+   WORKDAY FINDING: Workday answers 403 to requests from Google's servers, so Workday rows (73 of 929 active) record ATS_CHECK_RESULT=ERROR_403 and stay on the FORGE_POSTING_VALIDATION worklist under item 5. Their existing LIVENESS is untouched. A PC-side runner for Workday is part of the item 10 decision.
 END ATS LIVENESS CHECKER AMENDMENT
