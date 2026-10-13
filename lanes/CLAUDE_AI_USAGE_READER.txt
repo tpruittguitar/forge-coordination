@@ -1,0 +1,16 @@
+CLAUDE AI USAGE READER -- lane brief (scheduled task "Forge — AI usage reader", 02:05 08:05 14:05 20:05 America/New_York)
+AUTHORIZED_BY=Tim 2026-10-13 15:54 ET ("B now": usage bar chart with projected run-out in the Pipeline Explorer, PC keep-alive, reader)
+PURPOSE: read each AI's usage page in Tim's Chrome and append the numbers to usage/AI_USAGE_READINGS.jsonl in this repo. The Pipeline Explorer System panel draws the bars and run-out projection from that file. Read-only on every website: never click Buy, Upgrade, credits, toggles or settings; never sign in or type passwords.
+
+STEPS
+1. Load the Claude in Chrome tools in one ToolSearch call (tabs_context_mcp, tabs_create_mcp, navigate, get_page_text, computer, tabs_close_mcp). If Chrome or the extension does not answer, write one line per provider with status CHROME_UNAVAILABLE (step 4) and stop.
+2. tabs_context_mcp, then open ONE new tab and use it for all three pages:
+   a. https://claude.ai/settings/usage  -> "This week" (meter weekly, label "weekly (all models)", windowHours 168) and "Current session" (meter session, label "current session", windowHours 5).
+   b. https://grok.com/?_s=usage        -> "Weekly SuperGrok Limit" (meter weekly, label "weekly SuperGrok", windowHours 168) and "Weekly Grok Bot Limit" (meter bot, label "weekly Grok Bot", windowHours 168).
+   c. https://chatgpt.com/settings/usage?tab=overview -> "Weekly limit" (meter weekly, label "weekly (Codex/Work/agents)", windowHours 168) and "5-hour limit" (meter 5-hour, label "5-hour (Codex/Work/agents)", windowHours 5). ChatGPT shows percent LEFT: usedPct = 100 - left.
+   For each page: navigate, wait 3 seconds, get_page_text. If the numbers are not in the text (pages can render late or inside a dialog), take ONE screenshot at scale 0.5 and zoom on the usage panel. If a page shows a sign-in screen, record status SIGN_IN_NEEDED for that provider and move on.
+3. Convert every reset time to an absolute UTC ISO time using the run's current time (America/New_York): "Resets Sunday 12:00 PM" = the next Sunday 12:00 ET; "Resets in 6d 9h" = now + that; "October 19, 2026 at 4:30 AM" = that ET time.
+4. Append one JSON object per meter, one per line, no spaces needed:
+   {"at":"<UTC ISO now>","provider":"CLAUDE|GROK|CHATGPT","meter":"...","label":"...","usedPct":<number>,"resetsAt":"<UTC ISO>","windowHours":<168|5>,"status":"OK|SIGN_IN_NEEDED|CHROME_UNAVAILABLE|UNREADABLE","source":"<page> via Chrome"}
+   Clone tpruittguitar/forge-coordination (add_repo with push access, git clone --depth 1), append the lines to usage/AI_USAGE_READINGS.jsonl, keep only the newest 600 lines, commit "CLAUDE USAGE-READER <YYYYMMDD-HHMMET>: <n> readings", fetch + rebase + push, verify with git ls-remote.
+5. Close the tab you opened. No receipt file is needed; the commit is the record. Keep the run short: no other pages, no analysis.
