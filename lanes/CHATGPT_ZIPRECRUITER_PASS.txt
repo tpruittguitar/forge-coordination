@@ -7,13 +7,13 @@ Run this pass once per ISO week (Monday 00:00 ET start), in the first ChatGPT FO
 No new ChatGPT scheduled task is used (ChatGPT has 5 task slots).
 
 SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
-Nationwide (no location), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
+Nationwide: location "United States" and country_admin_code "US" set explicitly on every call (an omitted location lets the connector anchor to the user's city: ChatGPT test 2026-10-13 17:33 ET returned 6 Cleveland-TN-area results; Claude test with "United States" returned 905 nationwide), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
  1 Director of Manufacturing   2 Vice President of Manufacturing   3 Head of Manufacturing
  4 VP of Operations manufacturing   5 Director of Operations manufacturing   6 Plant Manager
  7 Director of Quality manufacturing   8 Director of Production
 Local (location "Cleveland, TN", country_admin_code US, radius_miles 200, seniority_classes SENIOR, max_posted_minutes_ago 10080, no salary filter, so unposted pay is kept):
  9 Director manufacturing   10 Plant Manager
-Echo the conversation_id from the first result in every later call of the run.
+Check each response's search_url: it must show location=United+States for searches 1-8. If it names a city, record LOCATION_ANCHORED=<city> in the receipt and retry once with the explicit location. Echo the conversation_id from the first result in every later call of the run.
 
 QUICK SCREEN (title and company only)
 Keep: Director / Head / VP / GM / Plant Manager over manufacturing, production, operations or quality in a manufacturing business, plus Sr Manager at a priority employer named in the web discovery brief.
