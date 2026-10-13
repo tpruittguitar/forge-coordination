@@ -11,6 +11,13 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-009  Writer reads Workday through TinyFish
+  Status: BUILT 2026-10-13, foreman-cockpit PR #107 (batch 2026-10-13-G), pending Tim's merge, deploy and script property TINYFISH_API_KEY.
+  Asked: Tim 2026-10-13 17:46 ET ("Yes" to the Writer option)
+  What: When Workday blocks the Writer (403 from Google), the ATS checker reads the public job page through TinyFish's free Fetch API; stored URLs without the requisition token are resolved through the site's own search. 6 rows per run, 300 URLs per UTC day.
+  Why: 73 active Workday rows could not be checked automatically; this moves them off the AI posting-validation lane at no AI or TinyFish cost.
+  Risk: Low-medium (automatic master writes). Mitigation: CLOSED only on a token-bearing URL Workday reports missing; no guessing between same-title postings; outages defer rows; dry run first.
+
 REV-008  AI usage panel with projected run-out day + scheduled usage reader + PC keep-alive
   Status: SHIPPED 2026-10-13 16:08 ET, foreman-cockpit PR #106 (eba7b1c, batch 2026-10-13-F); Cloudflare production deploy verified (pipeline-ai-usage.js served). Reader task trig_015gQd3iNBRZ9MdQPheTMcQn live (02:05/08:05/14:05/20:05 ET, bound to TIMMAY). Keep-alive installed on TIMMAY as task "Forge PC Keep-Alive".
   Asked: Tim 2026-10-13 ("B now")

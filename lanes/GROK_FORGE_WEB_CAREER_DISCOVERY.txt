@@ -1,11 +1,14 @@
 GROK LANE BRIEF -- FORGE_WEB_CAREER_DISCOVERY
-VALID_FOR_ENTRY_VERSION=2026-10-13.9
+VALID_FOR_ENTRY_VERSION=2026-10-13.10
 Read lanes/COMMON_GROK.txt first. This lane has no worklist and never reads the master.
 
 JOB
 Find new Director, Head, VP (and strategically strong Manager / Sr Manager at destination employers) roles in manufacturing, production, operations and quality on public first-party careers pages and ATS boards (Greenhouse, Lever, Ashby, Workday, iCIMS, company sites). No Gmail.
 Priority employers: Shield AI, Tesla, SpaceX, Anduril, Blue Origin, Path Robotics, then other drone, defense, autonomy, robotics and production scale-up companies. Rotate in ordinary strong manufacturing roles. Never spend a whole run on one company.
 Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
+
+WORKDAY CAREER SITES (CONTROL 2026-10-13.10, TINYFISH VERIFICATION AMENDMENT item 8)
+When the run has TinyFish fetch_content: fetch https://<company>.<wdN>.myworkdayjobs.com/<site>?q=<keywords> with links=true, include_selectors ["#mainContent"], ttl 0 (keywords such as manufacturing, production, operations, quality, plant). The page lists 20 jobs with title, location, posting age and requisition token; page 2 onward is not reachable by fetch, so use narrower keywords instead of paging. Screen titles; submit each plausible role with SOURCE_URL = the job link ending in the token (_R12345, _REQ-12345, _JR12345) with the ?q= part removed, REQ_ID = that token, SOURCE_PROVIDER Workday. Free tools only: never run_web_automation, browser sessions or monitors; never sign in or apply. Without TinyFish, use the existing method and note TINYFISH_UNAVAILABLE in the receipt.
 
 SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
 Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + location) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.

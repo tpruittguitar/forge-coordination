@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.9
+VERSION=2026-10-13.10
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -516,5 +516,7 @@ EVIDENCE=Claude test 2026-10-13 17:39-17:42 ET with TinyFish fetch_content (rend
 4. INDEED ROWS. Indeed blocks TinyFish fetch (401). No change: Indeed-only rows keep the existing method.
 5. UNAVAILABLE. If the TinyFish tools are absent in a run, write TINYFISH_UNAVAILABLE in the receipt and use the existing method. Claude's scheduled tasks were created before TinyFish was connected (2026-10-13 17:38 ET); the first FORGE_POSTING_VALIDATION receipt after that time shows whether they have it.
 6. RECEIPT adds TINYFISH_FETCHES, TINYFISH_LIVE, TINYFISH_CLOSED, TINYFISH_UNCONFIRMED.
-7. NOT CHANGED. The Writer ATS checker (Apps Script cannot use TinyFish's MCP tools), liveness tier definitions, Writer authority, protected states.
+7. NOT CHANGED. Liveness tier definitions, Writer authority, protected states.
+8. WEB DISCOVERY (VERSION 2026-10-13.10; ChatGPT test 2026-10-13 17:48 ET: TinyFish fetch of the Blue Origin Workday search page returned titles, locations, posting age, requisition IDs and full job links). FORGE_WEB_CAREER_DISCOVERY may read Workday career sites with TinyFish fetch_content: https://<company>.<wdN>.myworkdayjobs.com/<site>?q=<keywords>, links=true, include_selectors ["#mainContent"]. Workday search is loose (a "manufacturing" query returned 1,170 jobs incl. software roles): screen titles as usual. Submit the job URL ending in the requisition token with the ?q= part removed; REQ_ID = that token. Procedure: lanes/GROK_FORGE_WEB_CAREER_DISCOVERY.txt.
+9. WRITER (foreman-cockpit batch 2026-10-13-G, PR #107). The Writer ATS checker reads Workday rows through TinyFish's Fetch REST API when Workday blocks Google (6 rows per run, 300 URLs per UTC day, CLOSED only on a token-bearing URL Workday reports missing). Takes effect when Tim merges and deploys and sets the script property TINYFISH_API_KEY. Until then items 2 and 3 above cover Workday in the AI lanes.
 END TINYFISH VERIFICATION AMENDMENT
