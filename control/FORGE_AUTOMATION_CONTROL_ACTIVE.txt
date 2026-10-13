@@ -1,5 +1,5 @@
 FORGE AUTOMATION CONTROL ACTIVE
-VERSION=2026-10-13.6
+VERSION=2026-10-13.7
 EFFECTIVE=2026-10-11 13:34 America/New_York (directive date; exact authorization minute unverified)
 SOURCE_IDS=184eYQNQSusshflKXXyad5VapO8zzR6Qhqzp4rjGSpOc,1M2ZPLZ95k5asbMcLwNenVbxpSANSUcNi
 BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
@@ -491,3 +491,13 @@ APPLIES TO every discovery lane (email, web, ZipRecruiter or any job board), FOR
 5. LIVENESS AND CLOSURE. For an agency row, the agency's own job page or ATS is that row's first-party source. Open there = LIVE_EMPLOYER_ATS for that row (LIVENESS_NOTE "agency page"). A 404/410, a closed or filled flag, or removal from the agency's own board = CLOSED (positive evidence; LIVENESS_METHOD names the agency page). A dated job-board copy (ZipRecruiter, LinkedIn, Indeed) within 30 days = LIVE_SECONDARY. The client's posting state never opens or closes the agency row, and the agency row never opens or closes the client row.
 6. NOT CHANGED. Writer code, scoring weights, Never-Consider rules, protected states, application records.
 END AGENCY POSTING AMENDMENT
+
+ZIPRECRUITER PASS AMENDMENT -- TIM DIRECTIVE 2026-10-13 (VERSION 2026-10-13.7)
+AUTHORIZED_BY=Tim (chat 2026-10-13 17:30 ET: "ChatGPT also has that plug in", following Claude's proposal of a weekly ZipRecruiter spot-check)
+RECORDED_BY=Claude
+EVIDENCE=Claude ZipRecruiter test 2026-10-13 17:19 ET: nationwide Director/VP of Manufacturing searches with senior, full-time and salary filters returned 9 of 10 on-target results (820 and 533 total matches); local searches within 150 miles of Chattanooga returned 0 of 10 on-target. 5 of the 9 on-target results were agency postings (see AGENCY POSTING AMENDMENT). Results carry title, company, location, salary range, days since posting and a ZipRecruiter redirect link; no employer ATS link and no description.
+1. OWNER AND CADENCE. ChatGPT runs a ZipRecruiter pass once per ISO week as the first step of its first FORGE_WEB_CAREER_DISCOVERY run of the week. No new scheduled task. Procedure: lanes/CHATGPT_ZIPRECRUITER_PASS.txt.
+2. SCOPE. Ten searches (eight nationwide titles with senior, full-time, $180K-floor, last-7-days filters; two local searches within 200 miles of Cleveland TN without a salary filter), 20 results each, quick title screen, intake to the Writer. Rows enter as ordinary SCOUT_INTAKE with SOURCE_PROVIDER=ZipRecruiter; liveness tiering and posting validation apply as for any job-board source.
+3. FALLBACK. If ChatGPT's web discovery runs stop, or Grok takes web discovery back, the pass stays with whichever provider has the ZipRecruiter connector; Claude has it too. Reassignment only on Tim's instruction.
+4. NOT CHANGED. Writer code, scoring, gates, Never-Consider, lane ownership, ChatGPT email discovery.
+END ZIPRECRUITER PASS AMENDMENT

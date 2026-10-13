@@ -1,0 +1,29 @@
+CHATGPT ZIPRECRUITER PASS -- weekly step inside FORGE_WEB_CAREER_DISCOVERY
+VALID_FOR_ENTRY_VERSION=2026-10-13.7
+SOURCE=CONTROL 2026-10-13.7 (ZIPRECRUITER PASS AMENDMENT, AGENCY POSTING AMENDMENT). CONTROL stays the authority; this file is its digest.
+
+WHEN
+Run this pass once per ISO week (Monday 00:00 ET start), in the first ChatGPT FORGE_WEB_CAREER_DISCOVERY run of that week, before the usual careers-page work. Check receipts/ for a file named FORGE-ZIPR-CHATGPT-<this ISO week, e.g. 2026W42>*.txt; if one exists, skip this pass. Runs only when the ZipRecruiter connector (search_jobs) is available in the run; if it is not, write SKIPPED_NO_CONNECTOR in the web discovery receipt and continue the normal run.
+No new ChatGPT scheduled task is used (ChatGPT has 5 task slots).
+
+SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
+Nationwide (no location), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
+ 1 Director of Manufacturing   2 Vice President of Manufacturing   3 Head of Manufacturing
+ 4 VP of Operations manufacturing   5 Director of Operations manufacturing   6 Plant Manager
+ 7 Director of Quality manufacturing   8 Director of Production
+Local (location "Cleveland, TN", country_admin_code US, radius_miles 200, seniority_classes SENIOR, max_posted_minutes_ago 10080, no salary filter, so unposted pay is kept):
+ 9 Director manufacturing   10 Plant Manager
+Echo the conversation_id from the first result in every later call of the run.
+
+QUICK SCREEN (title and company only)
+Keep: Director / Head / VP / GM / Plant Manager over manufacturing, production, operations or quality in a manufacturing business, plus Sr Manager at a priority employer named in the web discovery brief.
+Drop: sales, clinical, medical, restaurant, retail, construction-site, software-only and engineer-level roles. A salary range that only reaches 180000 at its top is a lead; keep it.
+Agency postings (staffing, recruiting, executive search, placement firms): follow the AGENCY POSTING digest in COMMON_GROK.txt: at most two searches to name the client; not named means COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the posting states. Each agency posting is its own opportunity.
+
+INTAKE (same file format and Writer route as the web discovery brief; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
+SOURCE_URL = the job_redirect_url from search_jobs exactly as returned. SOURCE_PROVIDER = ZipRecruiter. DISCOVERY_SOURCE = "ChatGPT ZipRecruiter weekly pass". PAY_POSTED = "<min>-<max> (ZipRecruiter listing)" when the result has a salary. POSTING_DATE = run date minus days_ago. LOCATION, COMPANY and TITLE exactly as returned. REQ_ID blank. INITIAL_UNKNOWN_FIELDS lists what the result lacks (DEGREE_TEXT always; REQ_ID; PAY when null).
+Do not check the master: the Writer dedupes (EXISTING_MATCH) and applies Never-Consider.
+
+RECEIPT (receipts/FORGE-ZIPR-CHATGPT-<ISO week>-<YYYYMMDD-HHMMET>.txt, commit message starting "CHATGPT FORGE-ZIPR")
+SEARCHES_RUN, RESULTS_SEEN, KEPT, DROPPED (title | company | reason, one line each), AGENCY_ROWS, CLIENT_NAMED, SUBMITTED_TO_WRITER, REQUEST_IDS, STOP_REASON. The next weekly pass reports PRIOR_RUN_OUTCOMES from the intake RESULT.
+END
