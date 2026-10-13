@@ -24,6 +24,9 @@ WHERE TO WRITE
 - Writer payloads: Drive WRITER_QUEUE, unchanged.
 - Every GitHub commit message starts with PROVIDER and RUN_ID.
 
+CACHE NOTE (added 2026-10-12.4)
+raw.githubusercontent.com caches each file for up to 5 minutes. Append a changing query string to every raw URL (for example ?cb=<current epoch seconds>) and record the VERSION line you read in the receipt. If your TASK_KEY is missing from the PROVIDER ASSIGNMENTS block, re-read with a new cb value, or read the same file from the github.com blob URL, before reporting HARD_BLOCKED. A HARD_BLOCKED receipt for this reason names both attempts.
+
 HOW TO READ
 GitHub and Drive plain-text files are authoritative as stored. Canonical rules or other legacy Google Doc authorities may be read only by raw text/plain export, never by markdown reader or as Writer payload.
 
