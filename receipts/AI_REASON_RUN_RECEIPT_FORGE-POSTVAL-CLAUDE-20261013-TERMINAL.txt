@@ -1,0 +1,28 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261013-A
+CONTROL_VERSION=2026-10-12.5 (read via GitHub MCP, ref main; ENTRY blob f8d5a02f, CONTROL blob 90558857)
+PARTITION=A
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+MASTER_SNAPSHOT=1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8 modified 2026-10-13T00:58:44Z, 1386 rows (END marker present); WRITER_FREEZE frozen=false
+SCOUT_INTAKE_ROWS=700; PARTITION_A_NEEDING_VALIDATION=178
+
+ROWS_EVALUATED=2
+LIVE=2 (aggregator/board level only)
+CLOSED=0
+UNCONFIRMED=0
+WRITTEN=0
+VERIFIED=0
+HELD=2
+FAILED=0
+PARTITION_BACKLOG_REMAINING=178
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=SOURCE_BLOCK: linkedin.com returns ROBOTS_DISALLOWED to this runtime (3 of 3 attempts: 4476370469, 4474414512, 4477881648). Per amendment item 6 this is not closure evidence. Employer-ATS resolution via web search returned no first-party postings for John Zink, Emerson, GE HealthCare. Floor of 10 not reached. No Writer submission: the ENRICH liveness payload schema is not documented in the files read and no prior Claude ENRICH example was found in the queue; not guessing a schema.
+
+EVALUATED (proposed, NOT written):
+- V2I-9C35916D78B9 | MetOx International | Head of Manufacturing | proposed LIVENESS=AGGREGATOR_LISTED | ASOF=2026-10-13 | EVIDENCE_URL=https://jobs.elementalimpact.com/companies/metox-international-2/jobs/91462515-head-of-manufacturing | notes: Houston TX, posted Aug 28 2026, no pay/req shown, body says Vice President Manufacturing; not a first-party ATS. HELD: find employer ATS (greenhouse metoxinternationalinc) for LIVE_EMPLOYER_ATS.
+- V2I-3FBF991C9C6D | SpaceX | Director, Starlink Production (Assembly) | LinkedIn 4476370469 unreadable. SpaceX greenhouse job 8870838002 is open (Apply form present, no pay/req/date shown). HELD: possible duplicate of V2I-53C2E4F15430 (same title, Bastrop TX, SpaceX greenhouse 8870838002); needs identity check before any liveness stamp or dedupe.
+
+NEXT: partition A newest-first cursor starts at V2I-B152B13196D1 (John Zink), V2I-34639C615BE0, V2I-7C78A904D09B, V2I-A6BE40952255, V2I-273116B7CBF2. Needs (a) ENRICH liveness payload example for Claude route, (b) a runtime that can read linkedin.com or an employer-ATS lookup tool. NEXT_OWNER=Tim/Claude interactive.
+END RECEIPT
