@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION (ET hour 12 -> STRATEGIC, worklist empty -> FEASIBILITY under EMPTY STRATEGIC LIST rule)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-1211ET
+ENTRY_VERSION=2026-10-13.11
+BRIEF_VERSION=2026-10-13.11 (VALID_FOR_ENTRY_VERSION matched)
+CONTROL_VERSION_READ=2026-10-13.11
+WORKLIST_GENERATED_AT=2026-10-14T15:46:33.560Z (fresh)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=515 (40 shown)
+ROWS_RESEARCHED=11 (worklist rows 1,2,8,9,25,26,30,31,34,38,39; all via TinyFish fetch_content)
+ROWS_SUBMITTED=11 research + 2 attempt-stamp = 13 requests
+QUEUE_FILE=CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-1211ET-B01.json (Drive 1w4COXfcJ7u0NHsq1TSmdTmr56IDW13i5, WRITER_QUEUE). RESULT not seen before this receipt; nothing claimed written or verified.
+POSTED_PAY_SUBMITTED=5: V2I-6C4F967BB315 Anduril 111-147K (employer), V2I-6E7035099D29 Movement 140-175K (recruiter, LinkedIn), V2I-530B1ABDE695 Judge Group 250-270K (agency), V2I-CF882BE76023 Entegris 172-250K (employer text on LinkedIn).  (4 distinct posted-pay rows + see estimates; count 4)
+ESTIMATES_MADE=2 (LOW conf, anchors in SALARY_NOTE): V2I-516DA6E1378B Allen Control Systems 115-145K; V2I-4D209A62BC06 FXI 200-250K
+DEGREE_SUBMITTED=11 (verbatim DEGREE_TEXT). FLEX_BASIS HIGH_FLEX: Allen, GM (HS diploma), L3Harris, Malibu. SOFT_FLEX: Anduril, Rogers. Class left to Writer: FXI, Judge, Entegris, Ingersoll (bachelor's required, no experience alternative).
+LIVENESS_STAMPED=7 (6 LIVE_SECONDARY from LinkedIn '3 days ago': Movement, Rogers, FXI, GM, L3Harris; plus LIVE_EMPLOYER_ATS Anduril Greenhouse and Allen Ashby pages). Not stamped (no page age): Judge, Entegris, Ingersoll, Malibu.
+ATTEMPT_STAMPED=2: V2I-9EED65EEC987 Shermco (LinkedIn page header only), V2I-06D0666C2E26 Quovis (bot_blocked 999).
+SALARY_STILL_NEEDED (no pay on page, estimate not made): V2I-B8678A0A398A Rogers, V2I-7414E12E1642 Ingersoll Rand, V2I-E8953FF7E02E GM, V2I-4CCD497E5347 L3Harris, V2I-CA5CD50A85AE Malibu.
+NOT_ATTEMPTED: row 28 Graphcore V2I-AC56CFBFD756 (LinkedIn 429); ZipRecruiter/Lensa/Indeed/Glassdoor redirect rows 3-5,7,10-20,27,32,33,35-37,40 (rows 3,4,7,11 ziprecruiter/lensa redirects; others Indeed/Glassdoor); rows 6, 21-23 LinkedIn not fetched this run.
+COMP_HANDOFFS_CONSUMED=none checked this run
+WRITTEN_REQUEST_IDS=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-1211ET-B01-01 .. -B01-13
+VERIFIED_PRIOR_RUN=Run FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0911ET-B01: RESULT__ SUCCESS (BATCH_RULING_SINGLE_COMMIT) and 25 request IDs COMPLETE in PIPELINE_RECEIPT_INDEX. Its row_readback (-RB, 14 ids of the 0010ET run) RESULT SUCCESS, 14 found. Row_readback for the 15 research IDs of the 0911ET run queued as CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-1211ET-RB.json (Drive 1BzmS7i2zbHDIW3whRopvU4QlOeLWic_r); RESULT not read this run. 0911ET research rows therefore not claimed VERIFIED until that readback is read.
+HELD=none
+IN_FLIGHT_CHECK=Not re-listed; Grok out of usage.
+NOTES=Mistake caught: one TinyFish call included a non-worklist LinkedIn URL (4478012345) by error; its result was discarded and nothing from it was used.
+TOOLS=TinyFish fetch_content and search (free tools only).
+STOP_REASON=run effort budget; LinkedIn 429/999 on 2 of 10 fetches; worklist not empty.
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT=First read RESULT__ for 1211ET-B01 and 1211ET-RB. Then work worklist rows 3-7, 10-24, 27, 28 (Graphcore retry), 29 onward; supply salary estimates for the five SALARY_STILL_NEEDED rows; 3-day-stamped rows go last.
