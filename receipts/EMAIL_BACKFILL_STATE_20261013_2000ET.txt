@@ -1,0 +1,75 @@
+EMAIL BACKFILL DURABLE STATE
+UPDATED_BY_RUN=FORGE-EMAIL-CHATGPT-20261013-2000ET-BACKFILL34
+UPDATED_AT_UTC=2026-10-14T00:11:31Z
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+ENTRY_VERSION=2026-10-13.11
+CONTROL_VERSION=2026-10-13.11
+DAY_CERTIFICATION=NOT_COMPLETE
+
+BACKFILL_DAYS_COMPLETED=NONE
+BACKFILL_DAY_IN_PROGRESS=2026-10-12
+BACKFILL_DAY_EMAILS_TOTAL=34
+BACKFILL_DAY_EMAILS_DONE=UNKNOWN
+LAST_EMAIL_MESSAGE_ID_DISPOSITIONED=1a137b5acf965ce0
+LAST_RUN_ID=FORGE-EMAIL-CHATGPT-20261013-2000ET-BACKFILL34
+QUEUE_REQUEST_IDS_PENDING=NONE
+SOURCE_INVENTORY_COUNT=>=13
+UNCLASSIFIED_SENDERS_REMAINING=UNKNOWN
+
+LATEST_COVERED_WINDOW_ET=2026-10-13T17:00:00-04:00..2026-10-13T20:00:28-04:00
+WINDOW_QUERY_FAMILIES=9/9
+WINDOW_PAGINATION_EXHAUSTED=YES
+WINDOW_SEARCH_PAGES=9
+WINDOW_MESSAGES_FOUND=30
+WINDOW_MESSAGES_BODY_VERIFIED=30
+WINDOW_MESSAGES_UNEXAMINED=0
+WINDOW_FETCH_FAILED=0
+WINDOW_ALERT_MESSAGES=8
+WINDOW_JOB_SLOTS_EXTRACTED=64
+WINDOW_UNIQUE_VISIBLE_IDENTITIES=47
+WINDOW_GROSS_PLAUSIBLE=13
+WINDOW_NEW_MASTER_ROWS=7
+WINDOW_EXISTING_RECONCILED=14
+WINDOW_IDENTITY_HELD=3
+WINDOW_OUT_OF_SCOPE=23
+WINDOW_PROVIDER_HIDDEN=>=104
+EMAIL_SELFTEST_24H_COUNT=42
+EMAIL_NEWEST_ALERT_SEEN=LinkedIn at 2026-10-13T19:53:05-04:00
+SEARCH_ANOMALY=whole-window epoch query returned old Ladders message 1a1377875ee84dd6; previously covered and excluded from current production
+
+APPLICATION_STATUS_OBSERVED=Anduril application receipt message 1a13770ddab7876e appeared as overlap; already canonical and previously handled; no competing write
+
+CURRENT_RUN_WRITER_REQUEST=FORGE-EMAIL-CHATGPT-20261013-2000ET-BACKFILL34-B01
+CURRENT_RUN_RESULT=SUCCESS
+CURRENT_RUN_RECEIPT_INDEX=COMPLETE at 2026-10-14T00:07:10.585Z
+CURRENT_RUN_WRITE_ID=W-20261014000619703-dffa05
+CURRENT_RUN_PRIMARY_IDS=V2I-08AF99323F4F,V2I-032653F226FC,V2I-1572C17221CB,V2I-E1E80DBCD06C,V2I-6C6EDF73D9E3,V2I-2412838A633C,V2I-F0E1C969E3E5
+CURRENT_MASTER_COUNTS=TOTAL=1516;UNACCOUNTED=0
+CURRENT_MASTER_END=END V2_CURRENT_POPULATION_MASTER (1516 rows)
+
+OPEN_PROVIDER_HIDDEN_JOB_OBLIGATIONS=>=354
+HIDDEN_001=message 1a12e3e1a968b08b; provider LinkedIn; hidden 14; status BLOCKED_AUTH_WALL; owner Forge; next action authenticated provider recovery if supported
+HIDDEN_002=message 1a12dd04325a8652; provider LinkedIn; hidden 17; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_003=message 1a12d6abfdb0b4e5; provider Lensa; hidden 186; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery from original message/links
+HIDDEN_004=message 1a135f7aac273172; provider LinkedIn; hidden minimum 24; status BLOCKED_AUTH_WALL; owner Forge; next action authenticated provider recovery if supported
+HIDDEN_005=message 1a13665848e063e1; provider LinkedIn; hidden 1; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_006=message 1a137413c85dfab7; provider LinkedIn; hidden 8; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_007=message 1a137af237f135b2; provider LinkedIn; hidden 7; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_008=message 1a137af1f82b1846; provider LinkedIn; hidden 8; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_009=message 1a137af1e0e559e4; provider LinkedIn; hidden 23; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_010=message 1a137af1dde43b54; provider LinkedIn; hidden 19; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_011=message 1a137af1beaa94fb; provider LinkedIn; hidden 13; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_012=message 1a137af1bd8d5815; provider LinkedIn; hidden minimum 24; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+HIDDEN_013=message 1a137af1a6685b7e; provider LinkedIn; hidden 10; status PENDING_PROVIDER_HIDDEN; owner Forge; next action provider recovery
+
+OPEN_IDENTITY_OBLIGATIONS=4
+IDENTITY_001=Artisan VP of Operations; prior candidate identity remains ambiguous; owner Forge; next action exact company/job identity evidence before intake
+IDENTITY_002=JOB-LI-4450789459 Sierra Space; candidates V2E-93F684405300 APPLIED and V2F-92F1E1559B32 DECLINED_BY_TIM; owner Forge; next action exact identity reconciliation; never replay blindly
+IDENTITY_003=JOB-LI-4420978330 Anduril Industries; candidates V2L-ANDURIL-DOQ-5131489007 DECLINED_BY_TIM and V2F-C2AD934F04CE DUPLICATE; owner Forge; next action exact identity reconciliation; never replay blindly
+IDENTITY_004=JOB-LI-4451066339 Collins Aerospace; candidates V2I-3819C935295E SCOUT_INTAKE and V2F-F5F594869BE2 DECLINED_BY_TIM; owner Forge; next action exact identity reconciliation; never replay blindly
+
+CARRY_FORWARD_TOTAL_MINIMUM=>=358
+CARRY_FORWARD_NOTE=provider-hidden obligations are per-message slots and may overlap across digests; count is not asserted unique
+NEXT_RUN_START=cover the new three-hour window, then resume the earliest unresolved provider-hidden obligation
+COVERAGE_STATUS=PARTIAL_WITH_WORK
+STOP_REASON=current window exhausted and Writer batch fully verified; remaining work is provider-hidden/auth-wall or identity-ambiguous
