@@ -1,0 +1,99 @@
+AI_REASON_RUN_RECEIPT
+AUTHORITY
+RUN_ID=FORGE-EMAIL-CHATGPT-20261014-0259ET-BACKFILL38
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+ENTRY_VERSION=2026-10-13.11
+ENTRY_BLOB_SHA=858b5021812e6b4f54fd25c3fbcaac15097277e4
+CONTROL_VERSION=2026-10-13.11
+CONTROL_BLOB_SHA=ec1485e71465557fff5e6c429e995eec54e8f245
+COMMON_STANDARD_VERSION=2026-10-11.1
+COMMON_STANDARD_SHA256=0a4421d49566538295649d91ea01ad833077b30efbd5c7f43c70b45b3b857d90
+RULES_VERSION=RULES_V4_20261007
+WRITER_DIRECTIVE=V9_2026-10-02
+SCORING_MODEL=TIM_WEIGHTED_JOB_RATING 2026-10-04.1 rev20
+WRITER_BUILD=30cbd58
+MASTER_ID=1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8
+MASTER_END=1553
+GATE=DRIVE_ONLY_CLEAR
+FREEZE=false
+RECEIPT_INDEX_PENDING_AT_PREFLIGHT=0
+QUEUE_PROCESSING_STALE=0
+
+ATTEMPT_ID=FORGE-EMAIL-CHATGPT-20261014-0259ET-BACKFILL38
+START_SCOPE_ET=2026-10-13T23:56:35-04:00/2026-10-14T02:59:12-04:00 plus durable carry-forward
+PLANNED_WORK=Nine whole-mailbox/sender-family queries, pagination exhaustion, inspect every scoped message in batches of at most five, reconcile visible job identities against live master/archive/queue, submit admissible candidates, verify Writer and master.
+WORK_PERFORMED=Fresh authority/gate/archive/master read; nine Gmail query families; all eight scoped bodies opened in two bounded batches; five alert bodies yielded 56 visible jobs and 20 provider-hidden slots; all visible jobs dispositioned; ten admissible identities submitted in one homogeneous intake batch; fresh queue/index/master reconciliation proved the request remains unprocessed and absent from master.
+MANUAL_EXPLORER_REQUESTS_FOUND=0
+APPLICATION_EVENTS_FOUND=0
+EMAILS_FOUND=8
+EMAILS_BODY_VERIFIED=8
+EMAILS_OPENED_FIRST_TIME=8
+EMAILS_UNEXAMINED=0
+FETCH_FAILED=0
+QUERY_FAMILIES_PLANNED=9
+QUERY_FAMILIES_RUN=9
+QUERY_FAMILIES_NOT_RUN=0
+PAGE_COUNT=9
+PAGINATION_EXHAUSTED=YES
+EMAIL_FAMILY_COUNTS=LinkedIn:1,Indeed:1,Glassdoor:1,ZipRecruiter:0,Lensa:0,Ladders:0,OtherValidAlert:2
+EMAIL_SELFTEST_24H_COUNT=42
+EMAIL_NEWEST_ALERT_SEEN=2026-10-14T02:28:03-04:00
+POST_CURSOR_EMAILS=8
+DISCOVERY_PLANNED=0
+DISCOVERY_RUN=0
+DISCOVERY_NOT_RUN=0
+DISCOVERY_FAILED=0
+JOB_LINKS_FOUND_THIS_RUN=76
+JOBS_EXTRACTED_THIS_RUN=56
+JOBS_NOT_EXTRACTED_THIS_RUN=20
+GROSS_FOUND_THIS_RUN=10
+EXISTING_THIS_RUN=7
+NC_EXCLUDED_THIS_RUN=2
+IDENTITY_HOLDS_THIS_RUN=6
+OFF_TARGET_EXCLUDED_THIS_RUN=31
+NEW_ADMISSIBLE_THIS_RUN=10
+NEW_ENTRIES_QUEUED_THIS_RUN=10
+SUBMITTED_TO_WRITER_THIS_RUN=10
+WRITER_ACCEPTED_THIS_RUN=0
+VERIFIED_MASTER_THIS_RUN=0
+WRITER_TRANSPORT_BLOCKED=0
+WRITER_PENDING=10
+WRITER_FAILED_RECORDS=0
+SOURCES_ADDED_THIS_RUN=1
+SOURCE_ADDED=jobseekers@email.ihire.com
+SOURCE_INVENTORY_COUNT=UNKNOWN
+
+BATCH_1_MESSAGES=1a13918bf261d9a0,1a13901c9fab45af,1a138f8b0fa88216,1a138efa45ef1c02,1a138e5682874a3a
+BATCH_2_MESSAGES=1a138a95544762fa,1a13896dd19d2a2c,1a13895338572cbf
+EMAIL_EVAL_GLASSDOOR=1a13918bf261d9a0 visible=9 queued=0 existing=0 nc=0 identity_hold=0 off_target=9 hidden=0 balanced=YES
+EMAIL_EVAL_IHIRE=1a13901c9fab45af visible=10 queued=0 existing=0 nc=0 identity_hold=5 off_target=5 hidden=0 balanced=YES
+EMAIL_EVAL_LINKEDIN=1a138f8b0fa88216 visible=6 queued=4 existing=1 nc=1 identity_hold=0 off_target=0 hidden=20 balanced=YES
+EMAIL_EVAL_INDEED=1a138a95544762fa visible=27 queued=5 existing=6 nc=1 identity_hold=1 off_target=14 hidden=0 balanced=YES
+EMAIL_EVAL_GKN=1a13895338572cbf visible=4 queued=1 existing=0 nc=0 identity_hold=0 off_target=3 hidden=0 balanced=YES
+VISIBLE_JOB_BALANCE=56=10_queued+7_existing+2_nc+6_identity_hold+31_off_target
+PROVIDER_HIDDEN_THIS_RUN=20
+
+REQUEST_ID=FORGE-EMAIL-CHATGPT-20261014-0259ET-BACKFILL38-B01
+QUEUE_FILE_ID=1t2dAC9LZouQuGGiT0x1X066b71at4X8P
+QUEUE_UPLOAD_SHA256=2a7cc639f69ffb98a377309a8c77e23711f01d46c7efeaab13df7200523995b9
+REQUEST_STATE=PENDING_QUEUE_UNPROCESSED
+RESULT_FILE=NONE
+RECEIPT_INDEX=ABSENT
+MASTER_EXACT_READBACK=0_OF_10
+MASTER_COUNTS=TOTAL=1553 SCOUT_INTAKE=866 UNACCOUNTED=0
+NO_BLIND_REPLAY=true
+
+CARRY_FORWARD_MIN=412
+CARRY_FORWARD_READBACK=PENDING_THIS_RECEIPT
+UNFINISHED_PROVIDER_HIDDEN_MIN=400
+UNFINISHED_IDENTITY_HOLDS=12
+OLDEST_BLOCKER=Historical provider-hidden digest remainder; authenticated provider view-all is unavailable to this runtime.
+STOP_REASON=BOUNDED_RUN_END_WITH_WRITER_QUEUE_PENDING; current visible three-hour window fully reconciled.
+BATCHES_COMPLETED_THIS_RUN=2
+RUN_STATUS=PARTIAL_WITH_WORK
+COVERAGE_STATUS=PARTIAL
+TERMINAL_REASON=All scoped bodies and 56 visible jobs were reconciled and ten admissible candidates were queued; the Writer has not yet picked up the request, 20 new LinkedIn slots are provider-hidden, and durable identity/provider backlog remains.
+NEXT_OWNER=FORGE_EMAIL_DISCOVERY
+NEXT_ACTION=At next run reconcile request FORGE-EMAIL-CHATGPT-20261014-0259ET-BACKFILL38-B01 before any replay; if processed, require RESULT, COMPLETE index, and exact-row master readback; resume provider-hidden/identity holds only through authorized evidence paths; then process the next rolling window.
+MORNING_BRIEF_PUBLISHED=NO
+FREEZE_MODIFIED=NO
