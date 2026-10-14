@@ -1,0 +1,24 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION (hour rule: ET hour 21 -> FORGE_ENRICH_FEASIBILITY)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261013-2110ET
+ENTRY_VERSION=2026-10-13.11
+CONTROL_VERSION_READ=2026-10-13.11
+BRIEF_VERSION=2026-10-13.11 (COMMON_GROK.txt, GROK_FORGE_ENRICH_FEASIBILITY.txt; VALID_FOR_ENTRY_VERSION matched)
+WORKLIST_GENERATED_AT=2026-10-14T01:08:21.030Z (fresh)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=521 (40 shown)
+ROWS_RESEARCHED=15 (rows 1-5,7(R71195 via 6),22-27,31,32,19 of worklist; see below)
+ROWS_SUBMITTED=18 (one queue file, CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261013-2110ET-B01.json, Drive id 1A03L0Mkua0018vLoixsPmfzDJO0yow5n, in WRITER_QUEUE)
+FINISHED_WITH_PAY_OR_DEGREE=9: V2I-62FC688D87C8, V2I-24BFF7BBF399 (pay is FORGE-ESTIMATE), V2I-44329764890F, V2I-FEEEE17B94BF, V2I-4E1C57408E5C, V2I-88FC25E00BD4, V2I-15D81C1F8B72; partial: V2I-33C15EB0425B (pay only), V2I-938A376CEEE8 (pay floor only)
+ESTIMATES_MADE=1 (V2I-24BFF7BBF399, anchors in SALARY_NOTE)
+ATTEMPT_STAMPED=V2I-790C3F5CA8C4, V2I-33C15EB0425B, V2I-75875348CC3C, V2I-F3FB7112CD8D, V2I-43D3E6D9DA3A, V2I-A60FA0E6A57D, V2I-22256E4EAED7, V2I-1815FF023A2C, V2I-86E3D228DC6E, V2I-0BA8BD5287F9, V2I-938A376CEEE8
+COMP_HANDOFFS_CONSUMED=none checked this run (not read)
+WRITTEN_REQUEST_IDS=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261013-2110ET-B01-01 .. -B01-18
+VERIFIED_PRIOR_RUN=none. No earlier CLAUDE feasibility receipt exists in receipts/ (Claude's first feasibility run; last feasibility receipt is GROK 20261013-1712ET, not Claude's to verify). No row_readback queued this run.
+HELD=none
+IN_FLIGHT_CHECK=Not performed against GROK_ queue files (Grok out of usage per amendment item 5; none expected).
+LIVENESS_NOTE=Stamps written only where the employer page was read open (Lever, Workday CXS canApply/posted, Carrier, iCIMS, Ashby) or a dated secondary page (ilocatum.com, 'Posted 1 week ago'). Rows were not checked against ATS_CHECK_RESULT beforehand; the Writer ATS checker may already hold liveness for some Workday/Lever/Ashby rows.
+TOOLS=TinyFish fetch_content (free) only. Workday CXS answered 403 for 3 Blue Origin rows, tesla.com bot_blocked, careers.se.com 404 (not treated as closure), CACI and Foundry Head of Supply Chain returned no posting text.
+STOP_REASON=Session context/time budget for one run; worklist not empty (rows 8-18, 20, 21, 28(done) 30, 33-40 untouched; LinkedIn, ZipRecruiter and Lensa-redirect rows not attempted).
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT=Resume worklist at row 8 (Daikin Applied V2I-E1E80DBCD06C) and skip stamped IDs above; LinkedIn rows need TinyFish fetch; Lensa and ZipRecruiter redirect rows need the redirect followed. Read RESULT__CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261013-2110ET-B01.json and queue a row_readback for SUCCESS IDs at the start of the next Claude feasibility run (hour 03 ET).
