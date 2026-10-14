@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION (ET hour 09 -> FEASIBILITY)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0911ET
+ENTRY_VERSION=2026-10-13.11
+BRIEF_VERSION=2026-10-13.11 (VALID_FOR_ENTRY_VERSION matched; COMMON_GROK + GROK_FORGE_ENRICH_FEASIBILITY read, Claude substitutions per GROK USAGE-OUT HANDOFF AMENDMENT item 3)
+CONTROL_VERSION_READ=2026-10-13.11
+WORKLIST_GENERATED_AT=2026-10-14T13:08:06.106Z (fresh, read 13:11Z)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=528 (40 shown)
+ROWS_RESEARCHED=15
+ROWS_SUBMITTED=15 research rows + 10 attempt-stamp rows = 25 requests
+QUEUE_FILE=CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0911ET-B01.json (Drive 1MEGpdk4Lf6bJMNrYvzrNky3x8GtjZMd_, WRITER_QUEUE); RESULT__ file landed in processed (Drive 178RwLB0VU6FMkc_vr5Sda2t03h-fCxcg) at 13:18:58Z; its contents could not be read back by the Drive connector (empty text), so terminal status is NOT confirmed by this run.
+POSTED_PAY_SUBMITTED=8: V2I-7A4598D5C19F 220-250K, V2I-E62A1AE3D747 211-276.64K, V2I-56B141DADD41 129.1-193.5K, V2I-FB9A9CF896F4 160-230K, V2I-E4C3BA211D35 100-120K, V2I-AE6B9498C206 250.253-305.864K, V2I-4AEB33CBF419 180-200K (agency or employer-stated on LinkedIn page; all EMPLOYER_POSTED/HIGH). Seven more rows carry FORGE-ESTIMATE (below).
+ESTIMATES_MADE=7 (all LOW conf, >=3 anchors in SALARY_NOTE): V2I-033AEF9CE89D, V2I-E1427CD226A0, V2I-BF4ED8C74090, V2I-E394FDA14388, V2I-42F6C250A7E4, V2I-E773CB186C35, V2I-B87B6C238152, V2I-C166816EA9E7 (8 ids listed; count 8)
+DEGREE_SUBMITTED=15 (verbatim DEGREE_TEXT from posting; NOT_STATED where posting silent)
+LIVENESS_STAMPED=14 (12 LIVE_SECONDARY from LinkedIn page age; 1 LIVE_EMPLOYER_ATS GKN careers page; 1 LIVE_EMPLOYER_ATS Blue Origin Workday R73315 via TINYFISH_FETCH:WORKDAY). V2I-E4C3BA211D35 not stamped (no age line on page).
+FLAGS_FOR_TIM: V2I-56B141DADD41 (ITT) degree/equivalency wording ambiguous, FLEX_BASIS says lean HIGH_FLEX. V2I-AE6B9498C206 and V2I-4AEB33CBF419 require an any-field bachelor's with no experience alternative; class left to Writer. Many rows are agency postings, client unnamed (AGENCY POSTING AMENDMENT applied: COMPANY unchanged, noted in ENRICH_NOTE).
+ATTEMPT_STAMPED=10: V2I-5EB95F067DA0 (LinkedIn empty page), V2I-2B4F0A59FAE3 (Workday empty_content, not closure), V2I-AACFD58666D6 and V2I-3BBA501610A5 (Glassdoor bot_blocked), V2I-467B8E4DA18A (Tesla), V2I-C7A91F8D9580, V2I-F079E97821B7, V2I-FD2285FE8309, V2I-C2EE1353530D, V2I-42FBC220209E (Indeed 401, not fetched).
+NOT_ATTEMPTED=LinkedIn 429 after retries: V2I-6E7035099D29 (row 30), V2I-B8678A0A398A (row 31), V2I-6E698D976502 (row 27 SiMa). ZipRecruiter/Lensa redirect rows 19, 20, 26, 28, 34-38 and Indeed search-URL rows 39-40 not attempted.
+COMP_HANDOFFS_CONSUMED=none checked this run
+WRITTEN_REQUEST_IDS=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0911ET-B01-01 .. -B01-25
+VERIFIED_PRIOR_RUN=PARTIAL. Prior run FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0010ET-B01: RESULT__ read, terminalStatus SUCCESS, action BATCH_RULING_SINGLE_COMMIT (14 rows). PIPELINE_RECEIPT_INDEX not read. row_readback queued as CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-0911ET-RB.json (Drive 1-lGIUO14dZzVo1mogfPJvuootOFlRGP6) for the 14 ids; its RESULT not seen before this receipt. Nothing is claimed VERIFIED.
+HELD=none
+IN_FLIGHT_CHECK=Grok is out of usage; queue root held only this run's files; no GROK_ files seen.
+TOOLS=TinyFish fetch_content and search (free tools only). LinkedIn returned HTTP 429 on roughly a third of fetches; batches of 3 still hit it.
+STOP_REASON=LinkedIn 429 rate limiting plus run effort budget; worklist not empty.
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT=First: read RESULT__ for the 0911ET-B01 and -RB files and PIPELINE_RECEIPT_INDEX, then claim VERIFIED where all three proofs hold. Then work worklist rows 30, 31, 27 (LinkedIn retry), 19/20/26/28 (ZipRecruiter redirects), 34-38 (Lensa), 24 Imperium after attempt window, and the 3-day-stamped rows go last.
