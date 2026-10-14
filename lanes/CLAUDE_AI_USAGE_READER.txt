@@ -1,9 +1,9 @@
-CLAUDE AI USAGE READER -- lane brief (scheduled task "Forge — AI usage reader", 02:05 08:05 14:05 20:05 America/New_York)
+CLAUDE AI USAGE READER -- lane brief (scheduled task "Forge AI Usage Reader", every 3 h at :05 America/New_York; runs on Tim's PC so Claude in Chrome is available)
 AUTHORIZED_BY=Tim 2026-10-13 15:54 ET ("B now": usage bar chart with projected run-out in the Pipeline Explorer, PC keep-alive, reader)
 PURPOSE: read each AI's usage page in Tim's Chrome and append the numbers to usage/AI_USAGE_READINGS.jsonl in this repo. The Pipeline Explorer System panel draws the bars and run-out projection from that file. Read-only on every website: never click Buy, Upgrade, credits, toggles or settings; never sign in or type passwords.
 
 STEPS
-1. Load the Claude in Chrome tools in one ToolSearch call (tabs_context_mcp, tabs_create_mcp, navigate, get_page_text, computer, tabs_close_mcp). If Chrome or the extension does not answer, write one line per provider with status CHROME_UNAVAILABLE (step 4) and stop.
+1. Load the Claude in Chrome tools in one ToolSearch call (tabs_context_mcp, tabs_create_mcp, navigate, get_page_text, computer, tabs_close_mcp). If the Chrome tools are missing or Chrome does not answer, do NOT stop yet: write one line per provider with status CHROME_UNAVAILABLE and usedPct null, then do step 4 in full (clone, append, commit, push). A run that ends without a commit is a defect; the Explorer can only show a failure that reaches the file.
 2. tabs_context_mcp, then open ONE new tab and use it for all three pages:
    a. https://claude.ai/settings/usage  -> "This week" (meter weekly, label "weekly (all models)", windowHours 168) and "Current session" (meter session, label "current session", windowHours 5).
    b. https://grok.com/?_s=usage        -> "Weekly SuperGrok Limit" (meter weekly, label "weekly SuperGrok", windowHours 168) and "Weekly Grok Bot Limit" (meter bot, label "weekly Grok Bot", windowHours 168).
@@ -14,3 +14,5 @@ STEPS
    {"at":"<UTC ISO now>","provider":"CLAUDE|GROK|CHATGPT","meter":"...","label":"...","usedPct":<number>,"resetsAt":"<UTC ISO>","windowHours":<168|5>,"status":"OK|SIGN_IN_NEEDED|CHROME_UNAVAILABLE|UNREADABLE","source":"<page> via Chrome"}
    Clone tpruittguitar/forge-coordination (add_repo with push access, git clone --depth 1), append the lines to usage/AI_USAGE_READINGS.jsonl, keep only the newest 600 lines, commit "CLAUDE USAGE-READER <YYYYMMDD-HHMMET>: <n> readings", fetch + rebase + push, verify with git ls-remote.
 5. Close the tab you opened. No receipt file is needed; the commit is the record. Keep the run short: no other pages, no analysis.
+
+CHANGE 2026-10-14 15:35 ET (Claude, Tim reported meters not updating): scheduled runs since creation committed nothing; the task ran cloud-only with no Chrome and step 1 told it to stop before writing. Task recreated to require Tim's PC; step 1 now always commits a status line.
