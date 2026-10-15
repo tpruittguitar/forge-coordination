@@ -1,0 +1,49 @@
+CHATGPT — PIPELINE EXPLORER v1.5.1 SECOND HCI / DOCTRINE REVIEW
+2026-10-15 16:52 ET | STATUS: PROPOSED | Tim final authority | review only; no product code or doctrine changed.
+SOURCES: v1.5.1 self-contained spec and token file in forge-coordination/proposals; predecessor ChatGPT v1.5 29-finding review; governing Drive AI Change Rationale v1.1 read in first review. PDF v1.5.1 visual pages were not independently rendered in this pass; no claim of visual PDF verification. FACT denotes source-stated or mathematical; INFERENCE denotes engineering risk; OPINION denotes disposition.
+
+OVERALL: Major improvement. Conditional HCI approval of design direction, NOT implementation authorization and NOT an assertion that WCAG 2.2 AA is already achieved. Eight prior blocker topics are meaningfully addressed on paper subject to findings below. B-01..B-17 are binding and not relitigated. Prior v1.2 motion exception not found; governing rationale v1.1 plus Tim's explicit B-07, B-15..B-17 authority apply.
+
+NUMBERED FINDINGS
+
+01 BLOCKER — §3.1, HF-16, percentile rank algorithm and token cutoffs. FACT: rank defined as fraction strictly below plus half of ties; bands assigned by rank >= .90/.65/.20; score cutoffs also computed P90/P65/P20; ties 'always higher band'. These are conflicting assignment methods in tied distributions. All N jobs with identical score would each rank .50 (MID), while P90 score cutoff equals that same score and >= cutoff classifies ALL TOP. FIX: choose exactly one formal ranking algorithm and publish test cases (all tied, boundary ties, small N, N=40, scores missing, 90th percentile tie, cohort changes). If rank-based, define deterministic midrank assignment and explain ties cannot always move higher while preserving quantile proportions; if cutoff-based, explicitly specify quantile interpolation and that a tie may enlarge the top band beyond 10%. Use the same algorithm across table, map, compare, phone.
+
+02 BLOCKER — §9 vs tokens §8 grid at 125% zoom. FACT: minimum content tracks are 980+640+440=2060 CSS px; chrome/grid overhead 146 = 2206 CSS px. At 2560 physical pixels /125% = 2048 CSS px, so at least 158px horizontal overflow before any scrollbar. Yet §9 acceptance states 125% supports 11 columns without clipping. FIX: define 125% adaptation (allow horizontal scroll for 11-column table in its own area while keeping map/side usable, or collapse a noncritical pane) and a realistic responsive acceptance gate. Do not claim zero overflow at 125% under current minmax.
+
+03 SHOULD-FIX — HF-15 §7.1 / M-10. FACT: selection M-10 score ring runs to 600ms, leaving only 100ms within 700ms for input data access/paint at p95, whereas prior live selection was ~550–700ms. The paper timeline ignores data computation, browser scheduling and paint. FIX: instrument real end-to-end p95 under worst-case 600+ rows; cancel old transitions and prioritize final data at frame 1; dynamically shorten/skip decoration when computation consumes budget rather than asserting parallel animation makes it pass.
+
+04 SHOULD-FIX — §3.1 snapshot/model revision handling. FACT: snapshot says modelRev+populationRev+N+cuts+asOf, refresh for evidence changes, but lacks evidenceRevision/dataRevision or cohort membership hash. INFERENCE: scores can change without model/population version increment (FLEX evidence updates), leaving cutoffs tagged ambiguously. FIX: add scoredEvidenceRev/dataRev and population eligibility checksum, one immutable snapshot id; define publish/refresh invalidation and cross-device consistency.
+
+05 SHOULD-FIX — HF-03 §4.1 Undo. FACT: receipt/version and verified inverse specified, but undo when another action occurs on same job is not separately specified from shared-model CAS. FIX: require per-job expectedVersion on inverse; if changed, show diff/conflict, never overwrite application/rejection state; retry same idempotency key only for same logical attempt.
+
+06 SHOULD-FIX — T-06/§4.1 versus HF-04. FACT: HF-04 acceptance says '0 writes on job open', while opening leads to debounced seen-state write. These are consistent only under a narrow definition of immediate write, not literal 0 writes caused by open. FIX: distinguish 'zero synchronous network mutations on selection' from 'asynchronous, idempotent seen-state sync' in acceptance and instrumentation. A seen-state sync is still a write; don't relabel it read-only globally.
+
+07 SHOULD-FIX — HF-15 'every loop stops within 5 s' vs B-16/M-15 auto-running ticker. FACT: default continuous ticker will restart/continue beyond 5 seconds, conflicting with unqualified no-loops-over-5s acceptance. FIX: define <=5s maximum specifically for autonomous attention pulses/breathing, exempt separately controllable ticker under B-16 or segment ticker into finite chunks with Pause/Hide. WCAG 2.2.2 controls must remain visible while it operates.
+
+08 SHOULD-FIX — B-15 and WCAG 2.3.3. FACT: OS reduced-motion preference only opens a one-time prompt, the in-app setting remains OFF until a response. INFERENCE: interaction-triggered nonessential selection/materialization may animate on first encounter despite preference; a nonblocking prompt may be overlooked. FIX within Tim decision: prominent immediately available motion toggle from first load and no animations that obscure keyboard focus; include WCAG 2.3.3 test with default and prompted preference. Do not silently change Tim's OFF-by-default ruling.
+
+09 SHOULD-FIX — HF-16 acceptance contradiction. FACT: HF-16 states '0 radar/ring/cluster elements' while B-17 explicitly preserves reticle circle r22 and dashed circle r31 and tokens add pin halo and stale ring. FIX: replace '0 ring elements' with '0 radar, range, ping, expanding or distance-encoding rings'; explicitly allow static targeting/halo marks.
+
+10 SHOULD-FIX — tokens §1 vs §2: FACT: 'One colour = one meaning everywhere' survives at token top despite §3.2 contract meaning=colour+glyph+word+position and semantic reuse (Amber for waiting, HOLD, UPPER, SHARED). FIX: change obsolete token prose to 'Never colour alone; semantic cue = colour + word + glyph' without altering colours.
+
+11 SHOULD-FIX — tokens §4 receipt copy vs §4.1. FACT: 'Undo = republish rev N-1' remains a blanket display rule, while current revision diff/CAS and no blind rollback are mandatory. FIX: label 'Restore selected settings as NEW revision after reviewing current changes' rather than promising unconditional rev N-1. For per-job Undo, say 'reverse confirmed decision' with state verification.
+
+12 SHOULD-FIX — §3.2 and tokens focus. FACT: 2px white focus ring token is given, but :focus-visible global selector and Void offset may be clipped by overflow-hidden table rows/scroll areas; focus order does not fully define focus interaction for map pins and accessible virtualized rows. FIX: verify rendered focus visible at 100/125/150%, scroll focused controls into view, define arrow-key navigation and pin keyboard alternatives; include screenshots + keyboard-only tests.
+
+13 MINOR — §3.1 min N=40. FACT: N<40 hides percentile bands. OPINION: arbitrary but transparent and implementable. FIX: retain as a proposed heuristic but validate against real cohort volatility; N=39/40 boundary should not cause misleading colour flips without explanation.
+
+14 MINOR — §7.1 ticker volume. FACT: <=1 line/4 s while moving at 40px/s can still present long lines whose reading duration exceeds 4s. FIX: prevent replaced content before readable, preserve pause position, use duration tied to content length, and expose an accessible static event history.
+
+15 MINOR — PDF visual verification. FACT: v1.5.1 PDF 72pp referenced but not visually validated here; the spec claims old 82 STRONG mockup fixed. FIX: perform final page-render audit, especially hover card, camera overlays, colour-vision mockups, and 2560 layout before implementation signoff.
+
+PREVIOUS EIGHT BLOCKER DISPOSITION:
+C01 population: substantially addressed, but new mathematical rank contradiction #01.
+C02 dynamic tokens: percentile rank tokens corrected; affected by #01.
+C03 selection budget: concurrent shorter animations designed; performance proof outstanding #03.
+C04 ticker controls: addressed by B-16 with explicit Pause/Resume/Hide.
+C05 infinite breathe: capped <=5s.
+C06 decision receipts/Undo: much improved; per-record race case #05.
+C07 seen sync: cross-device batch sync; definition contradiction #06.
+C08 full reduced-motion catalog: addressed for M01..M19; Tim default B-15 governs, test issue #08.
+
+DOCTRINE: v1.1 rationale's functional cinematic motion/attention-budget and accessibility floor do not need revision; no append requested or made. B-15/16/17 are project-specific Tim rulings, not general doctrine. Overall OPINION: CONDITIONAL ACCEPT OF VISUAL DIRECTION; BLOCK IMPLEMENTATION GATE pending findings #01 and #02 and explicit review of #03-#12. STATUS remains PROPOSED. 
