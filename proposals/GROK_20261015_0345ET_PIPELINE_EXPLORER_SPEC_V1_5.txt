@@ -1,0 +1,393 @@
+PIPELINE EXPLORER — IMPLEMENTATION SPEC v1.5 (plain text)
+==========================================================
+Author: GROK (Grok Bot, for Tim Pruitt) · Date: 2026-10-15 03:45 ET · Supersedes v1.4 (v1.4 files unchanged)
+Source of truth: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (60 pp; uploaded by Tim),
+  read-only code check of tpruittguitar/foreman-cockpit main @ 6a64a37 (PR #115), and the published
+  scoring model PIPELINE_SCORING_MODEL.json (rev 24).
+Design tokens: proposals/GROK_20261015_0345ET_PIPELINE_EXPLORER_DESIGN_TOKENS_V1_5.txt
+STATUS: SPEC ONLY. PROPOSED — NOT AUTHORIZED. NOTHING HAS BEEN BUILT OR DEPLOYED. No app code changed.
+  Implementation requires Tim's go-ahead. Code changes go to foreman-cockpit on a
+  backup/<provider>-<time> branch with a PR; Tim merges (Cloudflare deploys from main).
+SCOPE: UI that lets TIM make shared model / rule changes safely IS in scope. AGENTS changing the
+  shared scoring model or the canonical rules (forge-policy, COMPENSATION_GEOGRAPHY, DEGREE_FLEX)
+  is OUT of scope in every phase.
+
+C. CHANGES IN v1.5 (reviewer findings relayed by Tim, 2026-10-15)
+------------------------------------------------------------------
+#  Item                         What changed                                          Where           Code check
+1  Re-baseline on main          Inventory was pre-#113. Verified: one-button updates  §2, §2.1, HF-03 confirmed (note A)
+   (PRs #111–#115)              with progress + readback, one-job score tester, OPEN
+                                preset default, culture = Target Companies tier,
+                                APPLIED / REJECTED_BY_EMPLOYER protected from decline,
+                                selection lag fixed. FLEX weight (model) separated
+                                from FLEX policy modifiers (rules). Modifiers affect
+                                ADJUSTED_FIT and PURSUIT_STATUS only; FLEX class
+                                scores fixed 80/62/30/0. "NO_FLEX -60" example removed.
+2  Scope model                  All scoring inputs = ONE shared, revision-numbered     §2, HF-19, T-04, confirmed; rev 24 =
+                                model (save_scoring_model). LOCAL only for display /   T-12, T-13      35/30/15/10/5/5/0/0
+                                columns / layout / map mode / seen-state / drafts.
+                                "70 local + 30 FLEX" and LOCAL badges on D-G removed.
+                                Honest total = all rows, all SHARED. Undo = republish
+                                previous revision.
+3  Writer timings               All latency-window / outage-window wording removed.   HF-03, §5, M-12 waitLock(30000);
+                                Writes are synchronous, take seconds; 30 s lock;                      retries 8/15/30/45 s
+                                auto-retry 8/15/30/45 s. Queued = "waiting for
+                                Writer lock".
+4  Dynamic score colours        Percentile bands: top 10% green, next 25% amber,      §3, HF-16       band() still fixed in
+                                next 45% grey, bottom 20% clay. Display-only. STRICT                  code (proposal only)
+                                HOLD separate. Cut-points are tokens. Mockups: top
+                                ~76, P90 ~61, median ~48.
+5  Glyph / colour conflicts     Close ✕, Decline ⊖, failed ⊗, hard block ⊘, low band  §3              —
+                                ▽. Red = failed / hard block only. Changed marker =
+                                white Δ (not cyan). Muted text large type only.
+6  ◌ aimed at evidence          ◌ = stale STORED EVIDENCE, not model revision (scores  HF-19, T-01..03 scoreRow() live
+                                are live). Anduril 77 -> 72 -> 59 shown as a change-
+                                strip event with cause (FLEX evidence HIGH -> NO).
+7  Opening a job writes         Confirmed: openRow() -> syncStateUp(). T-06 stands.   T-06            confirmed
+8  Plan contradiction           Scope clarified (header above).                       header, §5      —
+9  Architecture before motion   New Phase 1B Architecture & Performance before any     §5, T-25..T-28  —
+                                motion or layout work.
+10 Undeployed Writer script     Phase 0 discrepancy + HF-01 dependency.               §5 Ph0, HF-01   not visible in repo
+11 Motion limits                Never blocks input; never hides true state; selection HF-15, §8        —
+                                settles <= 0.7 s; p95 frame <= 16.7 ms; Reduce-motion
+                                toggle off by default; nothing flashes > 3/s.
+Note A — where the review and the code differ:
+  (1) SCORING_MODEL.md in foreman-cockpit still lists FLEX modifiers +15/+6/-10 as defaults; the
+      canonical DEGREE_FLEX policy shown on the scoring page is HIGH 90 · SOFT 70 · NO -60 · STRICT -100.
+      Either way modifiers only feed ADJUSTED_FIT / PURSUIT_STATUS (scoreRow uses the fixed class score),
+      so the doc is stale, not the score. SCORING_MODEL.md also lists salary 160/220/320 (code default).
+  (2) Rev 24 weights are experience 35 and title 5; code DEFAULT_WEIGHTS are 40 and 0. Rev 24 governs.
+  (3) The Writer-redeploy gap cannot be seen in the repo; taken as reported.
+  (4) Percentile bands are a v1.5 proposal; band() in code is still fixed.
+Withdrawn in v1.5: "100% = 70 local + 30 shared FLEX"; LOCAL badges on scoring cards D-G; fixed
+  80/65 bands; ✕ for anything but Close; cyan changed marker; recalc-progress ◌; Writer latency /
+  outage windows; ambiguous "shared-model changes out of scope".
+
+0. HOW TO USE THIS DOCUMENT
+---------------------------
+Self-contained: an implementer needs no PDF. Work strictly in phase order. No phase starts until the
+previous phase's gate is reviewed with Tim. NO motion or layout work before the Phase 1B gate.
+HF-14 timing (Phase 0) is re-run at the end of every phase.
+
+1. BINDING DECISIONS (Tim; do not relitigate)
+---------------------------------------------
+B-01 Dense 11-column table STAYS as the desktop default (a 6-column idea was rejected).
+B-02 Map stays prominent ("I LOVE my map"): permanent centre panel.
+B-03 Map shows ONLY the selected job; with no selection, the jobs in the current filtered set.
+     Current behaviour is design authority. Animated auto-fit replaces the old 600% zoom.
+B-04 Military targeting look kept: reticle / lock-on, grid, coordinates, corner brackets.
+     NO radar sweep, NO range rings, NO clusters, NO dense-area boost. Lint against --pe-motion-radar.
+B-05 Fullscreen map: fills workspace BELOW the tab bar; always-visible "✕ Close" + Esc; never traps.
+B-06 Scoring page (Settings › Flex policy & scoring, route t=scoring) is a GENERAL scoring page;
+     the geo heat map is only one part of it. Retain and enhance; it is the scoring authority UI.
+B-07 Rich animation wherever it makes a little sense: sliding, scrolling, sweeping, materializing —
+     within the hard motion limits (HF-15).
+B-08 Desktop primary target 2560 x 1440.
+B-09 Separate mobile redesign for iPhone 18 Pro: portrait, landscape, and desktop-mode switch.
+B-10 Mobile: generous perimeter padding; no buttons near edges or corners.
+B-11 Camera / Dynamic Island keep-out: TOP in portrait; LEFT or RIGHT side in landscape (both rotations).
+B-12 Duplicate tabs / cards / entry points are consolidated (see T-11).
+B-13 Futuristic military HUD theme, black / neutral grey, no blue-tinted charcoal.
+B-14 One-button updates with progress + Writer readback (already on main, #112). Keep.
+
+2. CURRENT STATE (re-baselined against main @ 6a64a37, PRs #111–#115)
+---------------------------------------------------------------------
+App: one hash-routed page. Scoring view = t=scoring.
+Verified in code:
+  - One-button updates: "Update weights & salary", "Update geo scores", "Update FLEX weight",
+    "Update FLEX policy" — each with a progress bar and Writer readback (#112).
+  - Score tester: pick one job, move every setting, see its rating live, save as ruling model (#112).
+  - OPEN preset is the default view (applied / closed filtered out) (#111).
+  - Culture score = Target Companies tier: P1 100 · P2 90 · P3 75 · WATCH 60 · unlisted/PAUSED 40 ·
+    hidden recruiter client = UNKNOWN (#111).
+  - APPLIED / REJECTED_BY_EMPLOYER protected: decision panel shows application evidence and blocks
+    decline (applicationEvidence_, #115).
+  - Selection lag fixed: memoized scoring config, 32 s -> ~0.55–0.7 s (#113).
+  - Writer (apps-script/Code.gs) is synchronous: waitLock(30000), refuses when busy; client
+    gsPostRetryBusy_ retries at 8 / 15 / 30 / 45 s (#114). Writes land in seconds.
+  - openRow() sets seen-state and calls syncStateUp() — opening a job writes.
+  - scoreRow() computes scores live from the published model; Writer rejects score-output fields.
+  - Stale copy: weights card says it "ranks the current rows on this browser" — but every Update
+    button publishes to the shared model. History: "restores the settings of revision X as a new
+    revision" (Undo path already exists).
+Not verifiable from repo: the updated Writer Apps Script is not yet deployed; Writer-stamped values
+  use the old formula until redeployed (Phase 0 discrepancy; HF-01 dependency).
+
+2.1 PUBLISHED MODEL rev 24 (PIPELINE_SCORING_MODEL.json, modelVersion 2026-10-14.1,
+    published 2026-10-14 10:34 PM ET). ALL fields below are ONE shared model.
+  Weights (sum 100):     experience 35 · flex 30 · compensation 15 · geo 10 · title 5 · culture 5 ·
+                         ats 0 · ownership 0      (code DEFAULT_WEIGHTS: 40/30/15/10/0/5/0/0)
+  Salary curve:          floor 190,000 -> 0 · target 240,000 -> 50 · ceiling 300,000 -> 100, with
+                         state net-value factors (code default 160k/220k/320k).
+  Geo:                   IDW power 6; 20 control points, 5 hard (Cleveland TN 100, Gulf Shores 100,
+                         Tampa 90, New York 0, Chicago 0).
+  FLEX class component:  FIXED — HIGH 80 · SOFT 62 · NO 30 · STRICT 0 · UNKNOWN 50.
+  FLEX policy:           flexPolicy null in the model. Modifiers live in canonical rules (DEGREE_FLEX:
+                         HIGH 90 · SOFT 70 · NO -60 · STRICT -100) and affect ADJUSTED_FIT and
+                         PURSUIT_STATUS only — never the opportunity rating.
+  History:               PIPELINE_SCORING_MODEL_HISTORY.jsonl. Undo = republish previous revision.
+Scoring page cards (all scoring inputs SHARED):
+  A FLEX weight (model, 30) + FLEX policy (rules; modifiers above). B VNext backtest gate: NOT READY.
+  C Shared model: rev 24; stored FLEX evidence 185 of 603 stamped under an older rule.
+  D Ranking weights · E Salary curve · F Geo heat map · G Score tester — all SHARED.
+  LOCAL only: display / columns / layout / map mode / seen-state / drafts.
+Known issues (each mapped to a task in §6):
+  - Weights card lists 70 with FLEX 30 on another card; copy claims "this browser" (stale).
+  - Evidence-driven score changes show no cause (Anduril Head of Production 77 -> 72 -> 59 =
+    FLEX evidence HIGH -> NO); 185 stale stored evidence values unmarked.
+  - Counts disagree across views: Applied 84 vs 26; Declined by Tim 0/56/57 and Employer rejected
+    0/2/7 (Trends · Scout results · Buckets); intake 0 vs 138; "0 need you" vs 50.
+  - Writer banner / pill flaps "unreachable" on load.
+  - Opening a job writes (openRow -> syncStateUp).
+  - Fullscreen map has no close control (traps on My rulings empty state).
+  - Duplicates: Settings tabs + cards, ⚙ vs Writer connection, three System-drawer triggers,
+    Schedules / Health top tabs, duplicate "Pay & location" tab.
+  - Console TypeErrors at pipeline lines 1320 / 1326 (re-verify in Phase 0).
+  - Compact toggle does nothing. Source names not normalised (LinkedIn/LINKEDIN, Indeed/INDEED).
+  - Unknown paths silently redirect to /pipeline.
+  - SCORING_MODEL.md modifier defaults stale (note A).
+
+3. PALETTE, BANDS, GLYPHS (tokens only; lint rejects raw hex outside the token file)
+-----------------------------------------------------------------------------------
+Base:   --pe-void #000000 · --pe-hull #0B0B0B · --pe-plate #141414 · --pe-raised #1E1E1E ·
+        --pe-seam #2A2A2A · --pe-gridline #3A3A3A
+Text:   primary #E6E6E2 · secondary #A3A39E · muted #6B6B66 (3.9:1 — LARGE TEXT ONLY; small
+        metadata uses secondary)
+Signal (one colour = one meaning):
+        HUD Green   #4ADE80  fits rules · confirmed · Pursue · top band
+        Amber       #F2B33D  flex question · waiting for Writer lock · Hold · upper band
+        Alert Red   #FF4D3D  failed write · hard block — ONLY (never a low score)
+        Target Cyan #38E1D6  selection / lock-on / writing (live only; never "changed")
+        Olive       #8A8F7A  ◌ stale stored evidence · discovery / unverified
+        Terminal Grey #5A5A5A closed · Decline (always with a word)
+Percentile score bands (display-only; recomputed when the model or eligible population changes):
+        ▲ Top 10%   #4ADE80  >= cut-top   (example 61 = P90)
+        ◆ Next 25%  #F2B33D  >= cut-upper (example 54)
+        ● Next 45%  #8E8E89  >= cut-low   (example 38)
+        ▽ Bottom 20% #D9826B (Clay)
+        STRICT / hard block shows ⊘ HOLD separately, never as a band. Table, ring and pins share one
+        band from the single score record. Mockup population: top ~76, P90 ~61, median ~48.
+Glyphs (one glyph = one meaning):
+        ✕ Close · ⊖ Decline · ⊗ failed write · ⊘ hard block / HOLD · ▲ ◆ ● ▽ bands ·
+        ◷ waiting for Writer lock · ⟳ writing · ✓ confirmed · Δ changed (white #E6E6E2 + neutral
+        wipe) · ◌ stale stored evidence · ⚠ confirm shared publish.
+WCAG 2.2 AA contrast; visible focus; logical keyboard order; shortcuts in a help overlay.
+
+4. REQUIREMENTS HF-01..HF-19 (priority · phase · acceptance)
+------------------------------------------------------------
+HF-01 One score, one meaning (P0, Ph1 + 1B). Single scoring record {value, score type, model rev,
+  evidence status}; queue, detail, map, compare render from one selector; one display name;
+  alternative/historical scores labelled. Memo keyed on model revision; invalidate on republish.
+  DEPENDENCY: Writer Apps Script redeploy (Writer-stamped values use the old formula until then).
+  ACCEPT: identical value + band for same job/type/revision in every view (100%).
+HF-02 Counts that reconcile (P0, Ph1). Counter registry: population, filters, window, source for every
+  tile/header count; tiles clickable and filter queue to exactly that population; scope labels
+  (live / cohort / archive; "Applied – all time" vs "Applied – this view").
+  ACCEPT: every counter matches its documented query; tile click count == rows shown.
+HF-03 Decisions that show the truth (P0, Ph1). One click starts a write (no Save for routine decisions).
+  States: waiting for Writer lock -> writing -> confirmed | failed | superseded; idempotency key per
+  decision; receipt + Undo under buttons. Writer is synchronous: a write lands in seconds; 30 s script
+  lock; busy refusals auto-retry at 8 / 15 / 30 / 45 s; queued reads "◷ Waiting for Writer lock · N s"
+  with the next retry. Failed (⊗) keeps payload + Retry. Decline (⊖) separated from Pursue, reason code
+  required. APPLIED / REJECTED_BY_EMPLOYER stay protected (#115).
+  ACCEPT: fault injection (timeout, 5xx, duplicate ack, lock busy): 0 false successes, 0 dropped, 0 dupes.
+HF-04 Behavioral surprises (P1, Ph1–2). Fix TypeErrors 1320/1326; Compact works or is removed;
+  Settings shows ONE shared scoring model vs local display preferences; shared publishes warn +
+  confirm; duplicates removed; Writer banner debounced (2 failed checks or 20 s grace; health = worst
+  current fault); opening a job never writes.
+  ACCEPT: console clean across 5 task scripts; 0 false-alarm banners on load; 0 writes on job open.
+HF-05 Context preservation + conflict guard (P1, Ph2). Refresh keeps selected job, filters, sort,
+  scroll; new/changed rows get a white Δ + neutral wipe (never cyan), never silent reorder; evidence
+  updates state their cause; decision carries record version seen at open, mismatch -> warn +
+  superseded, never overwrite. ACCEPT: selection retained after refresh 100%.
+HF-06 Navigation (P1, Ph2). Map permanent panel; fullscreen below tab bar with ✕ Close + Esc; auto-fit;
+  selection synced with queue; rail pushes (never overlays) content; pin toggle with visible ⇤ Unpin.
+  ACCEPT: close found unaided by Tim; 0 overlay-covered content.
+HF-07 Density preserved (P2, Ph3). 11-column default; adjustable widths; column priority; no horizontal
+  overflow for title, company, location, score, posted pay, age. ACCEPT: 0 priority-column overflow.
+HF-08 Readable labels (P2, Ph3). SALARY_BASE_EST -> "Base pay (est.)"; FLEX_CLASS -> "Degree flex";
+  RESOLVED/APPLIED_CONFIRMED -> "Applied – confirmed". Raw codes only in Layer 4 (debug detail).
+HF-09 Score rationale (P2, Ph3). One plain-English line by every score; breakdown + uncertainty one
+  click away. Fit & Score shows FLEX as the fixed class score (NO = 30); -60 is an ADJUSTED_FIT
+  modifier, not a scoring input. ACCEPT: score drivers understood <= 10 s median.
+HF-10 Change summary (P2, Ph3). Strip "Since your last review: N new · N scores changed (with cause,
+  e.g. FLEX evidence HIGH -> NO) · N Writer retries needed · N stale evidence", each item clickable.
+HF-11 Chart integrity (P2, Ph3). Case-insensitive source normalisation; persist decline reason codes.
+HF-12 Personalization (P3, Ph4). Learns from overrides; advisory, explains itself, reversible; never
+  alters canonical rules or the shared model, applies to jobs, or decides.
+HF-13 Phone scope (P2, Track M). Layer-1 counts, change summary, queue, selected job, decide/undo.
+  Targets >= 44 pt. Rule/settings editing desktop only.
+HF-14 Baseline first (P0, Ph0). Time 5 tasks on current build before any change; repeat each phase.
+HF-15 Motion system (P2, Ph2–3; limits enforced from Ph1B). Named duration/easing tokens; catalog
+  M-01..M-19 (§7); no radar. HARD LIMITS: never blocks input · never hides true state · job selection
+  settles in <= 0.7 s total (data + materialize + ring + lock-on + auto-fit) · p95 frame <= 16.7 ms ·
+  Reduce-motion toggle in Local preferences, OFF by default · nothing flashes more than 3 times per
+  second (WCAG 2.3.1). Write-state motion driven ONLY by state-machine events.
+  ACCEPT: 0 input blocked; selection <= 0.7 s; p95 frame <= 16.7 ms; <= 3 flashes/s; every animation
+  maps to a token; write-state motion never precedes the state event.
+HF-16 Map panel — Tim's rule (P1, Ph2–3). Selected job, else filtered set; pins coloured by percentile
+  band (▲ ◆ ● ▽; ⊘ HOLD separate) with glyph + word in hover card; ◌ olive ring for stale evidence;
+  two-way selection sync; animated auto-fit; fullscreen with ✕ + Esc; targeting look kept.
+  ACCEPT: pin set == filtered rows (or the selected job) 100%; sync 100%; 0 radar/ring/cluster elements.
+HF-17 2560 x 1440 layout (P2, Ph3). Rail 56 px (push) + three zones: table 1112 · map 800 ·
+  workspace/job drawer 508; sub-tabs, KPI tiles, change strip, event ticker.
+  ACCEPT: 11/11 columns and >= 30 rows visible, no horizontal scroll, 0 clipped priority cells.
+HF-18 Mobile redesign (P2, Track M). iPhone 18 Pro (assumed 402 x 874 pt — lay out from safe-area
+  insets). Portrait: cards with swipe decisions + haptics (35% threshold; Decline needs long-press +
+  confirm), tab bar, full-bleed map + bottom sheet. Landscape: split view. Desktop-mode switch with
+  state persisting both ways. Perimeter: 24 pt side padding beyond safe area, 36 pt in corner zones,
+  controls >= 16 pt above the home indicator; camera keep-out top (portrait), left or right
+  (landscape). Targets >= 44 pt.
+  ACCEPT: Undo 100%; state kept across switch 100%; 0 tap targets in keep-out zones (all orientations).
+HF-19 Scoring page + geo map (P1, Ph1–3). All eight weights are ONE shared model: one table, one row
+  per weight, all SHARED, total = visible sum (rev 24: 35 · 30 · 15 · 10 · 5 · 5 · 0 · 0 = 100). FLEX
+  weight (model) shown separately from FLEX policy modifiers (rules; ADJUSTED_FIT / PURSUIT_STATUS
+  only). Every one-button update is a shared publish: ⚠ confirm naming the new revision + impact,
+  Writer receipt with readback, Undo = republish previous revision. Live impact preview ("N scores
+  change, M cross a percentile band, largest Δ"), extending the #112 score tester. ◌ only on stale
+  stored evidence (185/603); evidence-driven changes in the change strip with cause. Salary curve
+  drawn (190k/240k/300k -> 0/50/100). Geo map in targeting style with click-to-add, drag-to-move,
+  keyboard nudge, table<->map sync. COMPENSATION_GEOGRAPHY / DEGREE_FLEX authority notes with
+  conflict ⚠. Remove stale "this browser" copy.
+  ACCEPT: total = visible sum, all SHARED 100%; 0 LOCAL badges on scoring inputs; preview = actual
+  change; ◌ on 100% of stale evidence; shared publishes with confirm + receipt + undo 100%.
+
+5. PHASES
+---------
+PHASE 0 — BASELINE (HF-14). No product changes.
+  Script 5 tasks: (a) find job needing action, (b) state main score drivers, (c) disposition a simple job,
+  (d) reconcile Applied count, (e) find previously selected job after refresh. >= 3 sessions; record time,
+  errors, extra navigation, scrolling, 1–7 ease. Snapshot score/band/label for 20 jobs across table,
+  detail, map, compare. Snapshot every counter + apparent query. Capture console, selection latency,
+  raw codes visible, Writer lock refusals and retry counts per session.
+  DISCREPANCY (v1.5): Writer Apps Script redeploy outstanding — Writer-stamped values on the old
+  formula; logged as an HF-01 dependency. Also log SCORING_MODEL.md stale modifier defaults.
+  Gate: discrepancy register signed off by Tim.
+
+PHASE 1 — DATA INTEGRITY (HF-01, 02, 03, 04, 19) — FIRST, DATA FIXES ONLY. Tasks T-01..T-07 + T-17.
+  1. Honest weights: one all-SHARED table summing to 100 (rev 24) on Settings and in Fit & Score; fix
+     stale "this browser" copy (T-04).
+  2. Stale evidence: record carries model rev + evidence status; ◌ on the 185 stale evidence values;
+     evidence-change events with cause (Anduril 77 -> 72 -> 59, FLEX HIGH -> NO); no rating change
+     without an event (T-01..T-03).
+  3. Cross-view counts: counter registry + scope labels; reconcile Applied 84/26, Declined 0/56/57,
+     Employer rejected 0/2/7, intake 0/138, "0 need you"/50 (T-05).
+  4. Writer banner flapping: debounce (2 failed checks or 20 s grace) (T-07).
+  5. Opening a job writes (openRow -> syncStateUp): seen-state local-only, or batched-explicit +
+     receipted; footer "unverified" opens receipts (T-06).
+  6. Decision state machine (waiting for lock / writing / confirmed / failed / superseded) + receipts +
+     Undo + idempotency; Decline reason code; respect protected states (T-17). Fix TypeErrors.
+  Gate: cross-view consistency 100%; counter reconciliation 100%; fault injection 0/0/0; console clean;
+  ◌ on 100% stale evidence; weights total = visible sum, all SHARED; selection <= 0.7 s.
+
+PHASE 1B — ARCHITECTURE & PERFORMANCE (HF-01, 03, 15 limits). T-25..T-28. Before ANY motion or layout.
+  Single scoring-record selector module (memo keyed on model revision); counter registry as code with
+  unit tests; write state machine as one module (motion subscribes to its events only); migrate browser
+  tests to main (#111–#115) incl. protected states and score tester; performance + flash budget in CI
+  (selection <= 0.7 s end to end, p95 frame <= 16.7 ms, concurrent-animation caps 12 desktop / 6 phone,
+  no layout-property animation, <= 3 flashes/s). No visual changes in this phase.
+  Gate: browser tests green on main; selection <= 0.7 s p95 over 50 selections; p95 frame <= 16.7 ms in
+  a scripted motion trace; Tim reviews.
+
+PHASE 2 — WORKFLOW + MAP RULE + MOTION CORE (HF-04, 05, 06, 15, 16, 19). T-08..T-14, T-20..T-22, T-24.
+  Compact fix/remove; context preservation + conflict guard; map permanent panel (selected / filtered)
+  with animated auto-fit, clusters removed; fullscreen ✕ + Esc; rail push + Unpin; dedupe entry points;
+  scope badges (SHARED on scoring cards A–G, target companies, rules; LOCAL only on display / columns /
+  layout / map mode / seen-state / drafts); shared-change guard (Undo = republish previous revision);
+  impact preview; path aliases + not-found notice; bulk actions separated with confirm + count +
+  receipt; single Writer connection entry, credentials only behind explicit reveal; radar purge;
+  motion tokens + core transitions (within HF-15 limits).
+
+PHASE 3 — COGNITIVE + VISUAL + 2560 (HF-07..11, 15, 17, 19). T-14..T-16, T-18, T-19.
+  11-column readable 2560 preset, readable labels, rationale line, change strip with causes, percentile
+  bands, glyph set, source normalisation, full motion catalog, palette tokens via one token file,
+  scoring page redesign (salary curve chart, geo map editing, authority notes).
+
+PHASE 4 — ADAPTIVE (HF-12). Log overrides vs recommendation with persisted reason codes; opt-in,
+  explainable, reversible personalisation subordinate to canonical rules and Tim's decisions.
+
+TRACK M — MOBILE (HF-13, HF-18). T-23. Starts after Phase 2 gate, parallel with Phase 3.
+  Inset tokens; camera keep-out both orientations; lifted bottom controls; simulator check both
+  landscape rotations; HF-14 tasks timed on phone.
+
+Cross-cutting: Writer timing is seconds (30 s lock; retries 8/15/30/45 s) — "waiting for Writer lock"
+is not a fault until retries are exhausted. Writer redeploy is a dependency for HF-01. Bulk bot updates
+summarised in change strip / ticker, not individually animated. Further layout changes need Tim's
+explicit approval. UI for Tim's shared changes is in scope; agents changing the model or rules is not.
+
+6. TASK REGISTER
+----------------
+T-01 scoring record carries model rev + evidence status; ◌ only on stale stored evidence (HF-01/19, Ph1)
+T-02 stale-evidence count (185/603) in Settings card C, System drawer, KPI strip; refresh progress (Ph1)
+T-03 evidence-change events with cause in change strip (Anduril 77->72->59: FLEX HIGH->NO) (Ph1)
+T-04 honest weights: one table of 8 SHARED rows = 100 (rev 24); fix stale "this browser" copy (Ph1)
+T-05 counter registry + scope labels (Ph1)
+T-06 job open never writes (openRow -> syncStateUp confirmed); seen-state local-only or
+     batched-explicit + receipted; footer unverified -> receipts (Ph1)
+T-07 Writer banner debounce; health = worst current fault (Ph1)
+T-08 fullscreen map below tab bar, ✕ Close + Esc, never traps (Ph2)
+T-09 map = selected else filtered; animated auto-fit; remove clusters + dense-area boost (Ph2)
+T-10 rail pin toggle with ⇤ Unpin; push content (Ph2)
+T-11 dedupe: Settings tabs/cards, ⚙ -> Settings, one drawer entry, System top tabs, "Pay & location" (Ph2)
+T-12 scope badges: SHARED on scoring cards A–G, target companies, rules; LOCAL only on display /
+     columns / layout / map mode / seen / drafts (Ph2)
+T-13 shared-change guard: ⚠ confirm + Writer receipt + Undo = republish previous revision (every
+     one-button update, policy, registry, rules) (Ph2)
+T-14 impact preview before publish: N change, M cross a percentile band, largest Δ (extends #112) (Ph2–3)
+T-15 geo map: targeting look, click-to-add, drag-to-move, keyboard nudge, sync (Ph3)
+T-16 salary curve chart + authority notes + conflict ⚠ (Ph3)
+T-17 one-click decisions, receipts, per-decision Undo, Decline (⊖) reason code; respect APPLIED /
+     REJECTED_BY_EMPLOYER protection (Ph1–2)
+T-18 readable labels; 11-column 2560 preset (Ph3)
+T-19 source normalisation; persist decline reasons (Ph3)
+T-20 path aliases + not-found notice (Ph2)
+T-21 bulk actions separated + confirm + count + receipt (Ph2)
+T-22 single Writer connection entry; credentials behind explicit reveal (Ph2)
+T-23 mobile inset tokens, keep-out, simulator rotations (Track M)
+T-24 radar purge incl. --pe-motion-radar lint (Ph2)
+T-25 single scoring-record selector + counter registry as modules (Ph1B)
+T-26 write state machine module (waiting for lock / writing / confirmed / failed / superseded) (Ph1B)
+T-27 browser-test migration to main (#111–#115) incl. protected states + score tester (Ph1B)
+T-28 perf + flash budget in CI: selection <= 0.7 s, p95 frame <= 16.7 ms, <= 3 flashes/s (Ph1B)
+
+7. MOTION CATALOG (tokens; GPU-only; within HF-15 hard limits; honour Reduce motion)
+------------------------------------------------------------------------------------
+G1 never blocks input · G2 never hides true state · G3 60 fps GPU-only, p95 <= 16.7 ms · G4 Reduce
+motion toggle, off by default · G5 meaning conserved · G6 <= 3 flashes/s · G7 selection <= 0.7 s total.
+M-01 HUD boot-up: grid fades in -> panels slide from edges -> corner brackets draw (no radar step).
+M-02 Panel slide-in: from nearest edge, translate 24 px + fade.
+M-03 Job detail: scanline mask sweeps top->bottom with pixel-dissolve fade-in (counts toward G7).
+M-04 Map auto-fit: smooth pan + zoom to selected job or filtered set (counts toward G7).
+M-05 Map lock-on: brackets collapse 2x->1x, reticle rotates 90°, crosshairs settle.
+M-06 Pin drop: 12 px drop with snap overshoot, 240 ms. No ping rings.
+M-07 KPI roll-up: digits roll, 800 ms; final value written at once for assistive tech.
+M-08 Changed-row wipe: neutral white-grey wipe left->right, settles into a white Δ marker. Never cyan.
+M-09 Row stagger: rise 6 px + fade, 18 ms step, max 30 rows.
+M-10 Score ring draws 0 -> value, 600 ms ease-out; number shown immediately.
+M-11 Tab slide horizontally in tab order, 240 ms.
+M-12 Writer write states (seconds scale): ◷ waiting for Writer lock = amber breathe + "N s", next
+     retry 8/15/30/45 s · ⟳ writing = cyan sweep (typically 1–5 s) · ✓ confirmed = single green pulse
+     after readback · ⊗ failed = one shake 3 x 4 px 300 ms, then steady red + Retry.
+M-13 Toast receipt slides up from action bar; stacks; failures never auto-dismiss.
+M-14 Hover glow: 1 px cyan trace once around border, 120 ms.
+M-15 Event ticker scrolls left at 40 px/s; pauses on hover/focus.
+M-16 Map fullscreen fills workspace below tab bar; ✕ always visible.
+M-17 Mobile swipe: card tracks finger, action colour reveals, springs back below threshold.
+M-18 Publish progress: bar under the one-button update fills write -> readback (800 ms per step);
+     ◌ clears on a row when its evidence is refreshed.
+M-19 Panel loading: corner brackets draw + one scanline pass, label "ACQUIRING…".
+
+8. ACCEPTANCE TARGETS (proposed, not research findings)
+-------------------------------------------------------
+Cross-view score consistency 100% · counter reconciliation 100% · false successful-write indications 0 ·
+unrecoverable failed decisions 0 · find job needing action <= 5 s median · understand drivers <= 10 s ·
+disposition simple job <= 15 s · selection retained after refresh 100% · priority-column overflow 0 ·
+WCAG 2.2 AA pass · input blocked by animation 0 · frame p95 <= 16.7 ms · map<->queue sync 100% ·
+11/11 columns + >= 30 rows at 2560x1440 · state kept across desktop-mode switch 100% · weights total =
+visible sum, all SHARED 100% · stale evidence ◌ 100% · shared publishes with confirm+receipt+undo 100% ·
+map pin set == filtered rows / selected job 100% · tap targets in keep-out zones 0 · Writer false-alarm
+banners on load 0 · v1.5: job selection settles (incl. motion) <= 0.7 s · flashes per second <= 3 ·
+scoring inputs badged LOCAL 0 · glyphs with more than one meaning 0.
+
+END — spec only; nothing built or deployed. Status: PROPOSED.
+PDF: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (60 pp; binary, uploaded separately by Tim).

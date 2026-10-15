@@ -1,0 +1,217 @@
+PIPELINE EXPLORER — DESIGN TOKENS & VISUAL ELEMENTS v1.5 (plain text)
+=====================================================================
+Author: GROK (Grok Bot, for Tim Pruitt) · 2026-10-15 03:45 ET · supersedes the v1.4 tokens file (unchanged)
+Extracted from proposals/Pipeline_Explorer_Proposal_v1.5.pdf (Sections 10–13, 11.6, 16, 18) and its
+build sources (gen15.py, bands.py, desk.py, scoring.py, mapsvg.py, mobile.py). Companion to
+proposals/GROK_20261015_0345ET_PIPELINE_EXPLORER_SPEC_V1_5.txt.
+v1.5 changes: percentile score bands (tokens for colours + cut-points); distinct glyphs for Close /
+Decline / failed / hard block / low band; red = failed write or hard block only; changed marker white
+(not cyan); ◌ = stale stored evidence; muted text large type only; motion hard-limit tokens;
+Writer states in seconds.
+STATUS: PROPOSED — NOT AUTHORIZED. Nothing built or deployed. Mobile sizes are ASSUMED iPhone 18 Pro values.
+
+1. THEME RULES
+--------------
+- Futuristic military HUD. Black / neutral grey only; NO blue-tinted charcoal.
+- Emphasis by contrast, weight, spacing; restrained status colour. One colour = one meaning everywhere.
+- Signals are ACCENTS: 2-3 px left bar or border, never a background fill (exception: primary buttons).
+- Nothing glows at rest. Glow only on focus, processing, edge traces, lock-on.
+- Components reference tokens only; lint rejects raw hex, raw durations, raw easings, and any radar token.
+
+2. COLOURS (name · hex · role · contrast on Void)
+-------------------------------------------------
+Base surfaces
+  Void       #000000  page background                          1.0:1
+  Hull       #0B0B0B  panels, table header, popover/hover cards 1.1:1
+  Plate      #141414  cards, rows, stat tiles                   1.1:1
+  Raised     #1E1E1E  hover / selected row, bar-chart track     1.3:1
+  Seam       #2A2A2A  borders (1 px)                            1.5:1
+  Gridline   #3A3A3A  map grid, input/button outline, header rule 1.8:1
+Text
+  Primary    #E6E6E2  body, values, titles      16.8:1 (Plate 14.7:1)
+  Secondary  #A3A39E  labels, supporting text    8.3:1 (Plate 7.3:1)
+  Muted      #6B6B66  LARGE TEXT ONLY (>= 24 px, or >= 18.66 px bold), 3.9:1 (Plate 3.4:1);
+                       small metadata uses Secondary
+Signal
+  HUD Green      #4ADE80  fits rules · confirmed · Pursue · top band   12.1:1
+  Amber Caution  #F2B33D  flex question · waiting for Writer lock · Hold · upper band · SHARED badge  11.3:1
+  Alert Red      #FF4D3D  failed write (⊗) · hard block / HOLD (⊘) — ONLY. Never a low score, never Decline.
+                          (also camera keep-out hatch in mockup overlays)
+  Target Cyan    #38E1D6  selection · focus · links · writing (⟳) · lock-on reticle — live only;
+                          never the "changed" marker
+  Olive          #8A8F7A  discovery / unverified · ◌ stale stored evidence
+  Terminal Grey  #5A5A5A  closed · Decline (⊖); dots & bars only (3.0:1), always with a word label
+  Changed        #E6E6E2  Δ marker + neutral wipe (white, not cyan)
+Percentile score bands (v1.5; display-only; recomputed when the model or eligible population changes)
+  ▲ Top 10%      #4ADE80  score >= --pe-band-cut-top   (example 61 = P90)
+  ◆ Next 25%     #F2B33D  score >= --pe-band-cut-upper (example 54)
+  ● Next 45%     #8E8E89  score >= --pe-band-cut-low   (example 38)
+  ▽ Bottom 20%   #D9826B  Clay — deliberately not red
+  ⊘ HOLD         #FF4D3D  STRICT / hard block, shown separately, never a band
+  Mockup population: top ~76 · P90 ~61 · median ~48 · bottom ~31.
+Mockup-only supporting neutrals (from build sources; candidates for tokens)
+  #050505  map / chart field background
+  #0A0A0A  state fill on map (fill-opacity .55)
+  #7A7A76  state outlines on map (stroke 1.6)
+  #8E8E89  state abbreviation labels on map (opacity .55, mono 24)
+  #161616  map graticule minor line (0.8 px) · #262626 major line (1.2 px)
+  #1c1c1c  row divider inside tables / lists
+Geo heat map gradient (geo-preference field only, labelled 0–100 with a legend; not a job-score band): IDW-interpolated cells blended Alert Red (#FF4D3D, score 0) -> Amber (#F2B33D, 50)
+  -> HUD Green (#4ADE80 / #6bd572 at 100); cell layer opacity .62; legend bar 200 x 10 at opacity .8.
+Glow: 0 0 6px rgba(56,225,214,0.40).
+Shading for overlays: Hull at .95–.96 opacity (rgba(11,11,11,.95)).
+
+3. TYPOGRAPHY
+-------------
+  Labels: "IBM Plex Mono", ui-monospace, monospace — UPPERCASE, letter-spacing .12em
+          (buttons .06em; table headers .08em).
+  UI / numbers / titles: "Inter", system-ui, sans-serif. Heavy numbers weight 650.
+  Desktop sizes used (2560 mockup): table body 14 px; table header mono 11 px; card titles mono 13 px;
+  card body 13–14 px; field labels mono 10.5–11 px; buttons mono 11.5 px; stat values 22–26 px / 650;
+  score in row 16 px / 650; stale-evidence ◌ mono 9.5 px; map labels mono 12 (reticle) / 10.5 (readouts).
+  Glyph vocabulary (one glyph = one meaning): ✕ Close · ⊖ Decline · ⊗ failed write · ⊘ hard block /
+  HOLD · ▲ top · ◆ upper · ● mid · ▽ low · ◷ waiting for Writer lock · ⟳ writing · ✓ confirmed ·
+  Δ changed · ◌ stale evidence · ◉ selected / lock-on · ⚠ confirm shared publish · ⤢ fullscreen ·
+  ⇤ unpin · ▾ dropdown. Score deltas use +n / −n text, not ▲▼ (reserved for bands).
+
+4. SHAPE, SPACING, LAYOUT
+-------------------------
+  Border 1px solid Seam; radius 2px (HUD is squared); signal bar 2px (tokens) / 3px (cards in mockups).
+  Desktop 2560 x 1440: margin 20; gutter 16 (column-gap 12 for rail); rail 56 (push);
+  table 1112 · map 800 · workspace 508. Rows (grid template): header 56 · sub-tabs 44 · KPI tiles 96 ·
+  change strip 40 · main 1068 · ticker 36. Table header row 36, data rows 32 (>= 30 rows visible).
+  Cards: header 44 high, padding 0 14; body padding 10 14; card gap 10. Inputs: 1px Gridline, padding 4–8.
+  Buttons: padding 9 12. Kinds: neutral (1px Gridline, Primary text) · primary (Cyan fill, black text,
+  650) · shared-confirm (Amber fill, black text) · ghost (Gridline border, Secondary text).
+  Receipt row: 3px left bar Green on Plate, padding 7 10; "Undo" in Cyan underlined (offset 3px);
+  shared-model receipts: "Undo = republish rev N-1".
+  Scope badges: SHARED = Amber (all scoring cards A–G); LOCAL = Secondary text (display / columns /
+  layout / map mode / seen-state / drafts only); mono uppercase in the card header.
+  Score bands: ▲ TOP 10% green · ◆ NEXT 25% amber · ● MID 45% grey · ▽ LOW 20% clay; ⊘ HOLD red
+  separate; ◌ olive beside a score only when its stored evidence is stale (score itself stays opaque).
+  Writer states: ◷ Waiting for lock · N s (amber) · ⟳ Writing (cyan) · ✓ Confirmed · N s (green) ·
+  ⊗ Failed · Retry (red).
+  Weight bars: 7 px track Raised, fill Cyan at opacity .6.
+  Phone targets: min 44 pt; Pursue/Hold 52 pt.
+
+5. MAP TARGETING ELEMENTS (Section 13)
+--------------------------------------
+  Field #050505; states fill #0A0A0A .55, outline #7A7A76.
+  Graticule 1° minor (#161616) / 5° major (#262626) with edge coordinates.
+  Panel HUD corner brackets: Secondary #A3A39E, 2 px stroke, arm length 34, inset 10.
+  Centre-of-view crosshair: Secondary at .35 opacity, short ticks (4–12 px from centre).
+  Lock-on reticle (Cyan): ring r22 stroke 1.6; outer dashed ring r31 opacity .35 (dash 2/4);
+    4 crosshair ticks from r26 to r46; 4 corner brackets at ±38 with arm 11, stroke 2;
+    label "◉ LOCK · JOB-xxxx" mono 12 letter-spacing .12em; readouts mono 10.5: lat/long (Primary),
+    "RNG nnn MI · BRG nnn° FROM HOME" (Secondary).
+  Pins: halo r10 band colour opacity .4; core r5.5 percentile-band colour with 1.5 px black stroke.
+    Stale-evidence pins get an olive ring. HOLD pins carry ⊘.
+  Hover card: Hull .95 fill, Cyan .7 1px border, title Inter 600 12, sub mono Secondary.
+  Filtered-set fit box: Cyan dashed rect (8/6) opacity .55.
+  Controls: + / − / FIT / layers, RECENTER, RESET, legend, Home; zoom readout.
+  Fullscreen: fills workspace below tab bar; "✕ Close · Esc" top-right, always visible.
+  FORBIDDEN: radar sweep, range rings, ping rings, clusters, dimmed filtered-out pins, dense-area boost.
+  Geo control points (scoring page): ○ soft, ◆ hard override; selected point gets a 0.8-scale reticle;
+    drag ghost = dashed Primary circle r6.5 opacity .45.
+
+6. MOTION (Section 12)
+----------------------
+Durations: instant 0 · fast 120 (hover/press/focus) · base 240 (panel/tab/toast) · lock 320 ·
+  materialize 400 · sweep 600 · roll 800 · boot 1200 total · breathe 1600 loop · fit 600 · stagger 18/row (cap 30).
+Easings: out cubic-bezier(.16,1,.3,1) · in (.7,0,.84,0) · inout (.65,0,.35,1) · snap (.34,1.56,.64,1) · linear.
+Catalog M-01..M-19: boot (grid fade -> panels slide -> brackets draw; input live at t=0) · panel slide
+  24 px + fade · job-detail scanline + pixel dissolve · map auto-fit · lock-on (brackets 2x->1x, reticle
+  rotates 90°) · pin drop 12 px snap 240 · KPI roll 800 · changed-row neutral wipe → white Δ · row stagger 6 px · score
+  ring draw 600 · tab slide 240 · Writer states in seconds (◷ amber breathe 1600 + "N s", retries
+  8/15/30/45 s; ⟳ cyan writing; ✓ single green pulse; ⊗ one red shake 3 x 4 px 300 ms then steady + Retry) · toast receipt slide-up · hover 1 px cyan trace 120 · ticker 40 px/s,
+  pause on hover · map fullscreen · mobile swipe (35% threshold, spring back) · publish progress bar (write → readback) ·
+  panel loading brackets + scanline "ACQUIRING…".
+Hard limits G1–G7: never blocks input; never hides true state (final values in DOM immediately; write
+  motion only from state-machine events); p95 frame <= 16.7 ms, animate transform/opacity/filter/small
+  stroke-dashoffset only; Reduce motion toggle (off by default: loops -> 0, slides -> fast fades,
+  fit -> 120 ms); colour follows meaning; nothing flashes > 3x/s (WCAG 2.3.1); job selection settles in
+  <= 0.7 s total (--pe-select-budget).
+
+7. MOBILE (iPhone 18 Pro, ASSUMED 402 x 874 pt; layout from env(safe-area-inset-*), not constants)
+---------------------------------------------------------------------------------------------------
+  Portrait safe area top 62 / bottom 34; side padding 24 beyond safe area; corner zones (top/bottom
+  96 pt) inset 36; top padding 12 below safe top; controls lifted 16 above home indicator (end >= 50 pt
+  above bottom); tab bar 64 high (y 760–824); Dynamic Island 126 x 37, keep-out = island + 16 clearance.
+  Landscape safe sides 62 (island side OR other) / bottom 21; padding 20 beyond -> content x 82..792,
+  symmetric 82 pt both rotations. Display corner radius ~55.
+  Keep-out overlay in mockups: Red hatch (45°, 8 px pattern, fill .07, stroke .55) for camera; Amber
+  dashed (6/4) for corner zones; Cyan dashed (5/4) safe-area line.
+  Segmented controls 36 high, Hull .95 background, selected segment Cyan fill black text.
+
+8. CSS CUSTOM PROPERTIES (drop-in token file)
+---------------------------------------------
+:root {
+  /* Base surfaces */
+  --pe-void: #000000; --pe-hull: #0B0B0B; --pe-plate: #141414;
+  --pe-raised: #1E1E1E; --pe-seam: #2A2A2A; --pe-gridline: #3A3A3A;
+  --pe-field: #050505; --pe-divider: #1c1c1c;
+  --pe-map-grid-minor: #161616; --pe-map-grid-major: #262626;
+  --pe-map-state-fill: #0A0A0A; --pe-map-state-stroke: #7A7A76; --pe-map-state-label: #8E8E89;
+  /* Text */
+  --pe-text-primary: #E6E6E2; --pe-text-secondary: #A3A39E;
+  --pe-text-muted: #6B6B66;  /* large text only */
+  /* Signal */
+  --pe-green: #4ADE80; --pe-amber: #F2B33D; --pe-red: #FF4D3D;
+  --pe-cyan: #38E1D6; --pe-olive: #8A8F7A; --pe-terminal: #5A5A5A;
+  /* red = failed write / hard block only */
+  /* Percentile bands (display-only; cut-points recomputed, example values) */
+  --pe-band-top:   #4ADE80;  /* top 10% */
+  --pe-band-upper: #F2B33D;  /* next 25% */
+  --pe-band-mid:   #8E8E89;  /* next 45% */
+  --pe-band-low:   #D9826B;  /* bottom 20% (Clay) */
+  --pe-band-hold:  var(--pe-red);  /* STRICT / hard block, outside bands */
+  --pe-band-cut-top: 61; --pe-band-cut-upper: 54; --pe-band-cut-low: 38;
+  /* Scope & markers */
+  --pe-scope-shared: var(--pe-amber); --pe-scope-local: var(--pe-text-secondary);
+  --pe-changed: #E6E6E2;              /* Δ marker, never cyan */
+  --pe-stale-evidence: var(--pe-olive);
+  --pe-state-waiting: var(--pe-amber); --pe-state-writing: var(--pe-cyan);
+  --pe-state-confirmed: var(--pe-green); --pe-state-failed: var(--pe-red);
+  --pe-keepout: var(--pe-red);
+  /* Shape, glow, type */
+  --pe-border: 1px solid var(--pe-seam); --pe-radius: 2px; --pe-bar: 2px;
+  --pe-glow: 0 0 6px rgba(56,225,214,0.40);
+  --pe-font-label: "IBM Plex Mono", ui-monospace, monospace;
+  --pe-font-ui: "Inter", system-ui, sans-serif;
+  --pe-label-tracking: .12em;
+  --pe-target-min: 44pt; --pe-target-decision: 52pt;
+  /* Motion */
+  --pe-motion-instant: 0ms; --pe-motion-fast: 120ms; --pe-motion-base: 240ms;
+  --pe-motion-lock: 320ms; --pe-motion-materialize: 400ms; --pe-motion-sweep: 600ms;
+  --pe-motion-roll: 800ms; --pe-motion-boot: 1200ms; --pe-motion-breathe: 1600ms;
+  --pe-motion-fit: 600ms; --pe-motion-stagger: 18ms;
+  /* Motion hard limits */
+  --pe-select-budget: 700ms; --pe-frame-p95: 16.7ms; --pe-flash-max: 3; /* per second */
+  /* Writer timing (client retry schedule; display only) */
+  --pe-writer-lock: 30s; --pe-writer-retry-1: 8s; --pe-writer-retry-2: 15s;
+  --pe-writer-retry-3: 30s; --pe-writer-retry-4: 45s;
+  --pe-ease-out: cubic-bezier(.16,1,.3,1); --pe-ease-in: cubic-bezier(.7,0,.84,0);
+  --pe-ease-inout: cubic-bezier(.65,0,.35,1); --pe-ease-snap: cubic-bezier(.34,1.56,.64,1);
+  --pe-ease-linear: linear;
+  /* Breakpoints */
+  --pe-bp-desktop-2560: 2560px; --pe-bp-desktop-1920: 1920px; --pe-bp-desktop-1440: 1440px;
+  --pe-bp-phone-portrait: 402pt; --pe-bp-phone-landscape: 874pt;
+  /* Layout @2560 */
+  --pe-margin: 20px; --pe-gutter: 16px; --pe-col-rail: 56px; --pe-col-table: 1112px;
+  --pe-col-map: 800px; --pe-col-work: 508px; --pe-row-h: 32px; --pe-row-h-header: 36px;
+  /* Mobile perimeter */
+  --pe-pad-side: 24pt; --pe-pad-corner: 36pt; --pe-pad-top: 12pt; --pe-lift-bottom: 16pt;
+  --pe-island-clear: 16pt; --pe-pad-land: 20pt;
+}
+@media (min-width: 2560px) { .cockpit { grid-template-columns: var(--pe-col-rail) var(--pe-col-table) var(--pe-col-map) var(--pe-col-work); } }
+@media (max-width: 440px) and (orientation: portrait)   { .app { --layout: mobile-portrait; } }
+@media (max-height: 440px) and (orientation: landscape) { .app { --layout: mobile-landscape; } }
+.app[data-desktop-mode] { --layout: desktop-2560; }
+[data-reduce-motion] { --pe-motion-breathe: 0ms; --pe-motion-fit: 120ms; }
+.app { padding: calc(env(safe-area-inset-top) + var(--pe-pad-top))
+                calc(env(safe-area-inset-right) + var(--pe-pad-side))
+                calc(env(safe-area-inset-bottom) + var(--pe-lift-bottom))
+                calc(env(safe-area-inset-left) + var(--pe-pad-side)); }
+
+END — tokens proposed only; nothing deployed. Status: PROPOSED.
+PDF: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (60 pp; uploaded separately by Tim).
