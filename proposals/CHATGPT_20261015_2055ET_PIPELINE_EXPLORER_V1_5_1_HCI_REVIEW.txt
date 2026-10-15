@@ -1,0 +1,40 @@
+CHATGPT — PIPELINE EXPLORER v1.5.1 HCI / DOCTRINE REVIEW
+DATE: 2026-10-15 20:55 ET
+STATUS: PROPOSED — REVIEW ONLY; TIM HAS FINAL AUTHORITY.
+SCOPE: Self-contained spec GROK_20261015_1650ET_PIPELINE_EXPLORER_SPEC_V1_5_1.txt + tokens GROK_20261015_1650ET_PIPELINE_EXPLORER_DESIGN_TOKENS_V1_5_1.txt from forge-coordination main; v1.5 PDF (60 pp) extracted and rendered-page checked (page 33); Google Drive governing rationale v1.1. No v1.5.1 PDF located in repo or Drive. No code or deployment authorized.
+EVIDENCE CLASS: FACT = stated source or calculated contrast; INFERENCE = foreseeable implementation/usability risk; OPINION = recommendation/judgment.
+DOCTRINE PRECEDENCE: AI Change Rationale — UI Design Reference Doctrine (v1.1) governs. Spec correctly declines to cite an unverified v1.2 Pipeline Explorer motion exception; motion authority = binding B-07 + B-15..B-17. Doctrine permits purposeful cinematic/HUD motion under accessibility floor, cognitive-cost test, and ambiguity default. Binding Tim decisions remain binding.
+
+FINDINGS (numbered; severity / reference / evidence / proposed correction):
+
+01. SHOULD-FIX — Source-of-truth inconsistency. FACT: Spec header and tokens declare "Source of truth: proposals/Pipeline_Explorer_Proposal_v1.5.1.pdf (72 pp; uploaded by Tim)". FACT: Repo tree contains only Pipeline_Explorer_Proposal_v1.5.pdf (60 pp, 4 MB); Drive search returns none. FACT: Page 33 of the available PDF still shows the residual hover card "82 ✓ STRONG · $230K est." (contradicts v1.5.1 text fix to "◆ UPPER · 57 · rank 9 of 412 eligible open · 14:32"). INFERENCE: Implementers or later reviewers will treat the stale PDF as visual authority and re-introduce the fixed-score adjective. FIX: Either commit the claimed 72 pp v1.5.1 PDF (with all residual mock data updated) or demote the PDF to "illustrative only" and declare the plain-text spec + tokens the sole source of truth. Until then, treat any PDF visual that conflicts with the text as non-binding.
+
+02. MINOR — B-15 reduced-motion default vs accessibility floor. FACT: Doctrine Section 7A (v1.1) requires pausable/reducible ambient motion as a hard constraint. FACT: Spec B-15 and §7.2 implement a full per-M reduced-motion table, loops ≤ 5 s, and an in-app toggle OFF by default; OS prefers-reduced-motion triggers a one-time prompt, never silent override. INFERENCE: A user who dismisses the prompt (or never sees it) continues to receive full motion, including the 40 px/s ticker and amber breathe. OPINION: Acceptable under Tim's binding override, but the prompt must be non-dismissible until an explicit choice is recorded, and the choice must be re-prompted on OS preference change. No doctrine amendment required.
+
+03. SHOULD-FIX — Amber multi-meaning residual (WCAG 1.4.1 residual risk). FACT: Tokens and §3 still assign Amber Caution #F2B33D to flex question, waiting-for-lock, Hold, upper band, and SHARED badge. FACT: Spec §3 and §3.2 correctly state "meaning = colour + glyph + word + position". INFERENCE: Under protan/deutan or low-light conditions, Amber vs Clay (#D9826B) or Amber vs green can collapse; the Phase 3 CVD/greyscale gate is necessary but not yet executed. FIX: Keep colours (Tim binding); require the word + glyph on every Amber instance in the table, hover cards, and change strip (already partially specified); add an explicit "Amber is not a unique semantic" note in the tokens file so later implementers do not re-assert one-colour-one-meaning.
+
+04. MINOR — Selection budget concurrency verification. FACT: §7.1 now schedules fit 300 ms and lock-on 240 ms in parallel, with frame-1 final values and ≤ 700 ms p95 end-to-end budget (T-28 CI). INFERENCE: Concurrent map pan/zoom + reticle rotation + scanline + row stagger can still exceed the 16.7 ms frame budget or produce visual collision on 600+ rows even if the total wall time stays under 700 ms. FIX: Add an explicit "no overlapping destructive transforms" rule and require the Phase 1B performance gate to capture frame times under concurrent selection, not just total duration.
+
+05. MINOR — Ticker 2.2.2 residual on pure keyboard/touch. FACT: B-16 and §7.1 supply visible Pause/Resume + Hide, keyboard- and touch-operable, ≥ 24 px, persisted, and freeze-while-decision-open. INFERENCE: If the Pause control is only in the ticker chrome and the ticker itself is off-screen or low-contrast under zoom, a keyboard-only user may not discover it before the 40 px/s scroll has already passed. FIX: Also expose the Pause/Hide state in the global Local preferences and as a keyboard shortcut listed in the help overlay (already planned for other shortcuts).
+
+06. MINOR — Clay vs Alert Red pairwise discriminability. FACT: Background contrast of Clay #D9826B and Alert Red #FF4D3D both exceed 4.5:1 on Void/Plate (prior calculation ~6–7:1). FACT: They are not required to be pairwise distinguishable by hue alone because glyph + word (LOW vs HOLD) is mandatory. INFERENCE: Still worth confirming in the Phase 3 CVD screenshots that the Clay/red pair does not become confusable when the glyph is small (9.5–11 px). No change required if the Phase 3 gate includes that pair.
+
+07. MINOR — Tokens vs spec motion duration alignment. FACT: Tokens set --pe-motion-fit: 300ms, --pe-motion-lock: 240ms, --pe-loop-max: 5s, --pe-select-budget: 700ms; spec §7 matches. No contradiction found. No fix required.
+
+08. MINOR — Hover-card residual confirmed only in v1.5 PDF. FACT: Spec C1 item 22 and §3.1 correctly replace the old "82 ✓ STRONG" language. FACT: Available PDF page 33 still contains it. Covered by finding 01. No additional action if PDF is demoted.
+
+CLAUDE CLAIMS ASSESSED (v1.5.1 disposition):
+- Percentile population: RESOLVED (fixed eligible OPEN minus STRICT, §3.1).
+- Cut-point tokens as ranks: RESOLVED (P90/P65/P20, runtime score cuts).
+- Selection budget sequential overrun: RESOLVED by concurrency + shortened durations + CI measurement.
+- Local-only seen-state: RESOLVED (debounced batch sync, server authoritative).
+- Ticker hover-only: RESOLVED by explicit Pause/Resume + Hide (B-16).
+- One colour = one meaning: REFUTED as absolute; now correctly compound semantics.
+- 82 ✓ STRONG residual: CONFIRMED in v1.5 PDF; claimed fixed in text only (finding 01).
+
+MOTION EXCEPTION / DOCTRINE COVERAGE:
+No permanent doctrine amendment is required or recommended. The v1.5.1 catalog (M-01..M-19) with G1–G7 hard limits, full §7.2 reduced-motion equivalents, loop cap, flash scheduler, and Tim's three binding overrides (B-15, B-16, B-17) sits inside the v1.1 cost-benefit and accessibility-floor rules. Ambiguity default is not triggered because each motion has a named mechanism (state visibility, change detection, spatial relationship, or operator-requested targeting aesthetic). Status remains PROPOSED.
+
+FINAL ASSESSMENT (OPINION): Direction is sound and the majority of prior blockers are closed in text. Do not begin Phase 1B implementation until finding 01 (PDF vs text source-of-truth) is resolved and the Phase 1B architecture/performance gate (T-25..T-28) has been reviewed with Tim. Keep all binding decisions (dense table, permanent centre map, targeting look without radar/rings, rich constrained motion, separate iPhone, black/neutral HUD, one-button readback, display-only percentile bands). No doctrine change; no rationale append required.
+
+ACCESSIBILITY BASIS: W3C WCAG 2.2 SC 1.4.1, 1.4.3, 1.4.11, 2.2.2, 2.3.1, 2.4.3, 2.4.7, 2.4.11, 2.5.8. Contrast figures from prior review (sRGB luminance on opaque backgrounds); Phase 3 gates must re-measure on real composites and CVD simulations.
