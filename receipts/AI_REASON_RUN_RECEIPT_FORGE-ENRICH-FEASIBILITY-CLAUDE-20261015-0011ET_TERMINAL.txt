@@ -1,0 +1,26 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION (ET hour 00 -> STRATEGIC list empty -> FEASIBILITY per GROK ROTATION AMENDMENT item 6)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261015-0011ET
+ENTRY_VERSION=2026-10-13.11
+BRIEF_VERSION=2026-10-13.11 (VALID_FOR_ENTRY_VERSION matched)
+WORKLIST_GENERATED_AT=2026-10-15T04:12:56.647Z (re-read; first read 03:40Z)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=510 (40 shown)
+ROWS_RESEARCHED=10 (LinkedIn postings fetched via TinyFish fetch_content: worklist rows 2,3,8,19,20,22,26,27,32,33; row 40 returned 429)
+ROWS_SUBMITTED=10 ENRICH rulings
+QUEUE_FILE=CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261015-0011ET-B01.json (Drive 1DWAAGEmGbuim-QPgSNoFkI3Atl3c-EGW, WRITER_QUEUE). RESULT not read this run; nothing claimed written or verified.
+POSTED_PAY_SUBMITTED=2: V2I-0FD9C894CD1E Tesla Fremont 156-276K (Tesla text on LinkedIn, plus cash and stock); V2I-F0FC5006D081 Eli Lilly 163,500-239,800 (range shown in posting body; base-vs-total label not seen, conf MED)
+ESTIMATES_MADE=8 FORGE-ESTIMATE, SALARY_NOTE lists anchors in each: V2I-E9D63BD0741A Ingersoll Rand Davidson 165-220K (LOW); V2I-D12740E56AC7 Index Search 125-165K (LOW); V2I-B8678A0A398A Rogers 100-140K (LOW); V2I-7414E12E1642 IR Area Ops 115-160K (LOW); V2I-E8953FF7E02E GM Group Leader 70-90K (LOW); V2I-4CCD497E5347 L3Harris 150-210K (LOW); V2I-CA5CD50A85AE Malibu 90-125K (LOW); V2I-C6AFE206281D CMC 102.1-153.1K (MED, from CMC's own posted Plant Manager Jessup MD range). Brief wants one employer-posted anchor per estimate; GM and L3Harris estimates have none for the same role (stated in notes), so treat as weakest.
+DEGREE_SUBMITTED=6 verbatim DEGREE_TEXT: Lilly, Rogers (re-sent, same text), IR Area Ops (re-sent), GM (HS diploma, HIGH_FLEX), L3Harris (experience in lieu, HIGH_FLEX), Malibu (equivalent experience, HIGH_FLEX). Tesla Fremont degree text seen (Bachelor's ME/IE/Manufacturing Eng/Materials/Robotics or related) but not submitted; Writer class left unset.
+LIVENESS_STAMPED=7 LIVE_SECONDARY from LinkedIn page-age lines (Tesla Fremont 4d, Lilly 2d, IR Davidson 2d, IR Area Ops 3d, L3Harris 4d, Malibu 4d). Not stamped: Rogers and GM (no age line in text read), Index Search and CMC (stamped by 2111ET run).
+ATTEMPT_STAMPED=0
+HELD=none
+NOT_ATTEMPTED=Worklist rows 1,4-7,9-18,21,23-25,28-31,34-40 (ZipRecruiter/Lensa/Indeed/Glassdoor redirect URLs, plus LinkedIn row 40 429). Intuitive Machines V2I-8E5A4E599437 retry next run.
+COMP_HANDOFFS_CONSUMED=none checked this run
+IN_FLIGHT_CHECK=WRITER_QUEUE listing since 2026-10-14 22:00Z showed no GROK_ files and no pending files at start.
+VERIFIED_PRIOR_RUN=2111ET-B01 write RESULT: SUCCESS. The 2111ET-RB readback RESULT (13 requested, 13 found, 0 invalid) covers the 1211ET-B01 IDs; their ENRICH content (salary, degree, FLEX_BASIS, liveness) is visible in the master lines. PIPELINE_RECEIPT_INDEX COMPLETE check NOT performed, so three-proof VERIFIED is withheld for both.
+GAP_NOTED=Salary estimates for Rogers, IR Area Ops, GM, L3Harris, Malibu, Index, IR Davidson and CMC close the SALARY_STILL_NEEDED list from the 2111ET receipt.
+TOOLS=TinyFish fetch_content and search (free), Google Drive connector, GitHub contents API. LinkedIn fetches returned similar-jobs blocks; only the posting body above them was used.
+STOP_REASON=run effort budget; remaining worklist rows are ZipRecruiter/Lensa/Indeed/Glassdoor redirects needing employer-page lookups; worklist not empty.
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT=Read RESULT__ for this run's B01 and queue a row_readback for its 10 IDs. Then work rows 1,4-7,9-18,21,23-25,28-31,34-40 (employer pages first for named companies: Nexoval, Red Frog, Wood-Mizer, PTubes, Kenco, Refresco), retry V2I-8E5A4E599437 Intuitive Machines.
