@@ -1,0 +1,30 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION (ET hour 21 -> FEASIBILITY per GROK USAGE-OUT HANDOFF AMENDMENT item 2)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-2111ET
+ENTRY_VERSION=2026-10-13.11
+BRIEF_VERSION=2026-10-13.11 (VALID_FOR_ENTRY_VERSION matched COMMON_GROK and GROK_FORGE_ENRICH_FEASIBILITY)
+CONTROL_VERSION_READ=2026-10-13.11 (read via GitHub contents API, not raw URL; same main branch)
+WORKLIST_GENERATED_AT=2026-10-15T01:04:07.554Z (fresh, about 7 minutes old)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=513 (40 shown)
+ROWS_RESEARCHED=9 (worklist rows 2,3,4,22,23,26,29,40 fetched OK or header-only; rows 24,8,20,25 failed on fetch)
+ROWS_SUBMITTED=12 requests: 7 research rows + 5 attempt-stamps
+QUEUE_FILE=CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-2111ET-B01.json (Drive 1Zx3uzuEZTC6vvt2xdW9OdIqSpbe7wq0V, WRITER_QUEUE). State at receipt time: PROCESSING. RESULT not seen; nothing claimed written or verified.
+POSTED_PAY_SUBMITTED=2: V2I-6E216968C18E Tesla Palo Alto 156-276K (employer text on LinkedIn, plus cash and stock); V2I-E86C41E7FA33 BWXT Oak Ridge 86,450-136,000 (employer careers page)
+ESTIMATES_MADE=1 (LOW conf, 4 anchors in SALARY_NOTE): V2I-AC56CFBFD756 Graphcore 160-215K
+DEGREE_SUBMITTED=7 (verbatim DEGREE_TEXT). FLEX_BASIS: SOFT_FLEX for Ingersoll Rand V2I-E9D63BD0741A (preferred section only) and CMC V2I-C6AFE206281D (HS diploma required, bachelor's strongly preferred). Class left to Writer (bachelor's required, no experience alternative): Tesla x2, Index Search, Graphcore, BWXT.
+LIVENESS_STAMPED=6: 5 LIVE_SECONDARY from LinkedIn page ages (Tesla Palo Alto 4d, Index Search 2d, Graphcore 4d, CMC 2d); 1 LIVE_EMPLOYER_ATS (BWXT careers page). Not stamped (no page age line): Tesla Fremont V2I-0FD9C894CD1E, Ingersoll V2I-E9D63BD0741A.
+ATTEMPT_STAMPED=5: V2I-CB7DD260404D ACME (LinkedIn header only), V2I-6E698D976502 SiMa (999 bot_blocked), V2I-55CEDB728CB1 Tesla Fremont mgr (429), V2I-72D22DE97CAA Peak Industrial (Indeed 401), V2I-476B4DC64B7F Shield AI (Indeed 401). None is closure.
+SALARY_STILL_NEEDED (no pay on page, estimate not made): Tesla Fremont V2I-0FD9C894CD1E, Ingersoll V2I-E9D63BD0741A, Index Search V2I-D12740E56AC7, CMC V2I-C6AFE206281D; plus carry-forward from 1211ET run: Rogers, Ingersoll Area Ops, GM, L3Harris, Malibu.
+NOT_ATTEMPTED: worklist rows 1,5,6,7,9-19,21,27,28,30-39 (ZipRecruiter/Lensa/Indeed/Glassdoor redirect URLs, plus LinkedIn rows 10,27,30,34,35 already read last run without pay).
+COMP_HANDOFFS_CONSUMED=none checked this run
+WRITTEN_REQUEST_IDS=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-2111ET-B01-01 .. -B01-12 (queued, not confirmed written)
+VERIFIED_PRIOR_RUN=Run FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-1211ET-B01: RESULT__ SUCCESS (BATCH_RULING_SINGLE_COMMIT, 13 records, writeId W-20261014161549495-721115, verification field PENDING in RESULT). Its 0911ET-research readback (1211ET-RB) RESULT SUCCESS, 15 requested, 15 found, 0 invalid. PIPELINE_RECEIPT_INDEX COMPLETE check NOT performed this run, so the three-proof VERIFIED claim is withheld for the 1211ET-B01 IDs. Row_readback for those 13 IDs queued as CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261014-2111ET-RB.json (Drive 11IULYlaa9KKHD_bR4Rg_PXPcts9jKz5q); RESULT not read this run.
+GAP_NOTED=No Claude feasibility or strategic receipts exist in receipts/ for the 15:10 ET and 18:10 ET rotation slots of 2026-10-14 (newest strategic Claude receipt 1211ET). Cause not investigated.
+HELD=none
+IN_FLIGHT_CHECK=Not re-listed; Grok out of usage until about 2026-10-19 04:30 ET per control.
+NOTES=Fetched BWXT employer careers page via http (redirected to https). LinkedIn fetches returned similar-jobs lists; only the posting body above the similar-jobs block was used for pay, degree and arrangement; page-age figures were read from the header line of each posting. Graphcore anchors are LinkedIn-displayed pay ranges for Austin roles.
+TOOLS=TinyFish fetch_content (free), Google Drive connector, GitHub contents API.
+STOP_REASON=run effort budget; LinkedIn 429/999 and Indeed 401 on 4 of 13 fetches; worklist not empty.
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT=Read RESULT__ for 2111ET-B01 and 2111ET-RB. Then work worklist rows 5-7, 9-19, 21, 27-28, 30-39 (employer pages first; Workday/Greenhouse/Lever searches for named companies such as Nexoval, Red Frog, Wood-Mizer, PTubes, Kenco, Refresco), retry Tesla Fremont manager V2I-55CEDB728CB1 after 3 days, and supply salary estimates for SALARY_STILL_NEEDED rows.
