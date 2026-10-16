@@ -1,0 +1,43 @@
+FORGE WRITER INCIDENT HANDOFF
+RUN_ID=FORGE-EMAIL-CHATGPT-20261016-0003ET
+INCIDENT=PIPELINE_RECEIPT_INDEX_ZERO_BYTE
+SEVERITY=WRITE_BLOCKING_ALL_WRITER_LANES
+OWNER=FORGE_APPLICATION_WRITER_GOFER / Writer operator
+NEXT_ACTION=Restore PIPELINE_RECEIPT_INDEX.json from an authoritative valid state or regenerate it through the Writer's governed repair procedure; then verify readable JSON, reconcile failed requests/results, and re-enable submissions.
+
+EVIDENCE:
+PIPELINE_RECEIPT_INDEX_ID=1Fv_XQc-2cz2B2jWWP7Aapmd0KlHiGBLk
+PIPELINE_RECEIPT_INDEX_OBSERVED_SIZE_BYTES=0
+PIPELINE_RECEIPT_INDEX_LAST_MODIFIED=2026-10-16T01:02:44.283Z
+RAW_DOWNLOAD_PROOF=Drive raw fetch returned a zero-byte file.
+WRITER_FREEZE_ID=1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S
+WRITER_FREEZE=false
+QUEUE_PROCESSING_OLDER_THAN_8_MINUTES=0
+
+FAILED_REQUEST:
+REQUEST_ID=FORGE-EMAIL-CHATGPT-20261015-2057ET-CURRENT-B01
+RESULT_FILE_ID=1gitdhQzOFcUpAtT-eKtZWEUQHN5lg8C9
+RESULT_TERMINAL=FAILED
+RESULT_ERROR=receipt index unreadable (fail closed): Unexpected end of JSON input
+WRITER_BUILD=30cbd58
+RECORD_RESULTS=null
+MASTER_MUTATION=NONE
+
+SYSTEMIC_CONFIRMATION:
+Later unrelated Writer work also reached the failed folder while the index remained empty, including CHATGPT_FORGE-WEB-CHATGPT-20261015-2345ET-B02 and CHATGPT_FORGE-WEB-CHATGPT-20261015-1742ET-B01 plus ATSCHK requests. This confirms the failure is not specific to the email payload.
+
+CURRENT_RUN_IMPACT:
+CURRENT_EMAILS_BODY_VERIFIED=11
+CURRENT_VISIBLE_JOB_OCCURRENCES=152
+CURRENT_NEW_ADMISSIBLE_HELD=38
+CURRENT_HIDDEN_LINKEDIN_MINIMUM=48
+CURRENT_SUBMITTED_TO_WRITER=0
+CURRENT_DIRECT_MASTER_WRITES=0
+CURRENT_CARRY_FORWARD=receipts/EMAIL_BACKFILL_STATE_20261016_0003ET.txt
+CURRENT_EVALUATION=receipts/EMAIL_EVAL_2026-10-16_FORGE-EMAIL-CHATGPT-20261016-0003ET.txt
+
+SAFETY:
+No direct index overwrite, freeze change, master mutation, or blind request replay was attempted. Repair must preserve request idempotency and reconcile RESULT__, receipt/index, and fresh master state before any remainder submission.
+
+ANTI_SPIN=Escalated the repeated gate failure through a dedicated Writer-owner handoff after the second affected Forge email run.
+HANDOFF_STATUS=OPEN
