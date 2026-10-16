@@ -1,0 +1,14 @@
+FORGE EMAIL TO GOFER APPLICATION-EVENT HANDOFF
+RUN_ID=FORGE-EMAIL-CHATGPT-20261016-1800ET
+CREATED_AT_ET=2026-10-16 18:00 ET
+OWNER_NEXT=GOFER_APPLICATION_STATUS
+STATE=READY_FOR_OWNER_REVIEW
+WRITER_MUTATION_BY_FORGE=NO
+
+EVENTS=2
+N|PROPOSED_STATE|GMAIL_MESSAGE_ID|EVENT_DATE_ET|SENDER|SUBJECT|COMPANY|ROLE|EVIDENCE
+1|REJECTED_BY_EMPLOYER|1a1466cc749e6241|2026-10-16 16:34:55 ET|no-reply@us.greenhouse-mail.io|Thank you for applying to Anduril Industries, Timothy!|Anduril Industries|Deputy Head of Production, Connected Warfare|Body says Anduril made the decision not to move forward with the application.
+2|REJECTED_BY_EMPLOYER|1a146164c1f1c591|2026-10-16 15:00:21 ET|no-reply@us.greenhouse-mail.io|Application Update: Vice President of Quality|Zone 5 Technologies|Vice President of Quality|Body says openings for this position have been filled.
+
+IDENTITY_RULE=Gofer must prove one exact canonical identity per event before any upsert_application. Preserve protected states; no guessing.
+NEXT_ACTION=Gofer reconcile each message against the live master/archive, then submit one stable APPSTATE request per proven event and verify RESULT__, COMPLETE receipt/index, and exact-row master readback.
