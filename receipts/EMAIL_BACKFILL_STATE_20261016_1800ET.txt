@@ -1,0 +1,121 @@
+EMAIL BACKFILL / CARRY-FORWARD STATE
+RUN_ID=FORGE-EMAIL-CHATGPT-20261016-1800ET
+PROVIDER=ChatGPT
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+STATE=PARTIAL_WITH_WORK
+CREATED_AT_ET=2026-10-16 18:00 ET
+
+AUTHORITY
+ENTRY_VERSION=2026-10-13.11
+ENTRY_BLOB_SHA=858b5021812e6b4f54fd25c3fbcaac15097277e4
+CONTROL_VERSION=2026-10-13.11
+CONTROL_BLOB_SHA=ec1485e71465557fff5e6c429e995eec54e8f245
+CONTROL_BODY_SHA256=e370b98d197a373ae4cbfe49c589976af45711e55492f8f6d7218e7b55db7330
+STANDARD_VERSION=2026-10-11.1
+STANDARD_BODY_SHA256=0a4421d49566538295649d91ea01ad833077b30efbd5c7f43c70b45b3b857d90
+RULESET_VERSION=4
+POLICY_VERSION=RULES_V4_20261007
+WRITER_DIRECTIVE=V9_ACTIVE
+SCORING_VERSION=2026-10-14.1
+SCORING_REVISION=24
+
+CHAIN
+PREDECESSOR=receipts/EMAIL_BACKFILL_STATE_20261016_1457ET.txt
+PREDECESSOR_SHA=e6fcae82f8725824c9a927da4883f64379840790
+PREDECESSOR_HELD=90
+DELTA_HELD_CURRENT_WINDOW=7
+DELTA_EXISTING_MASTER=14
+DELTA_OUT_OF_SCOPE=5
+DELTA_PROPOSED_NC=0
+CUMULATIVE_UNSUBMITTED_HELD=97
+PROVIDER_HIDDEN_PREDECESSOR=22
+PROVIDER_HIDDEN_CURRENT=11
+PROVIDER_HIDDEN_CUMULATIVE=33
+CHAIN_DEDUPLICATION=Current visible candidates were checked against the fresh live master, terminal archive, and predecessor state. No current HELD_NEW identity was present in those authorities.
+
+GATE
+TYPE=DRIVE_ONLY
+WRITER_FREEZE=false
+RECEIPT_INDEX_BYTES=0
+RECEIPT_INDEX_STATE=UNREADABLE_EMPTY
+QUEUE_ROOT_PROCESSING=0
+WRITES_ALLOWED=NO
+BLOCKER=WRITER_RECEIPT_INDEX_CORRUPTION
+INCIDENT_HANDOFF=handoffs/FORGE_WRITER_RECEIPT_INDEX_CORRUPTION_20261016_0003ET.txt
+WRITER_REQUEST_IDS=NONE
+WRITER_RESULTS=NONE
+MASTER_WRITE_EFFECTS=NONE
+
+CURRENT_WINDOW
+WINDOW_START_ET=2026-10-16 14:57:48 ET
+WINDOW_END_ET=2026-10-16 18:00:11 ET
+QUERY=after:1792177068 before:1792188011 -in:spam -in:trash
+QUERY_FAMILIES_PLANNED=9
+QUERY_FAMILIES_RUN=9
+QUERY_FAMILIES_NOT_RUN=0
+EMAIL_SEARCH_PAGE_COUNT=11
+PAGINATION_EXHAUSTED=YES
+EMAILS_FOUND=14
+EMAILS_BODY_VERIFIED=14
+EMAILS_UNEXAMINED=0
+FETCH_FAILED=0
+BATCHES_COMPLETED=3
+ALERT_MESSAGES=6
+STATUS_MESSAGES=2
+NONLANE_MESSAGES=6
+JOBS_CLAIMED_OR_VISIBLE=37
+JOB_LINKS_FOUND=26
+JOBS_EXTRACTED=26
+JOBS_NOT_EXTRACTED=11
+GROSS_FOUND=26
+EXISTING_MASTER=14
+NC_EXCLUDED=0
+NEW_ADMISSIBLE=7
+SUBMITTED_TO_WRITER=0
+WRITER_ACCEPTED=0
+VERIFIED_MASTER=0
+WRITER_PENDING=0
+WRITER_FAILED=0
+APPLICATION_EVENTS_HANDED_OFF=2
+APPLICATION_HANDOFF=handoffs/FORGE_EMAIL_TO_GOFER_APP_EVENTS_20261016_1800ET.txt
+
+CURRENT_CANDIDATES
+N|MESSAGE_ID|PROVIDER|COMPANY|TITLE|LOCATION|IDENTITY|DISPOSITION|INITIATING_URL
+1|1a146b44f779cd7d|LinkedIn|Valmet|Quality & Continuous Improvement Manager|Florence, AL|JOB-LI-4479202543|HELD_NEW|https://www.linkedin.com/comm/jobs/view/4479202543/?trackingId=RbxMMB4FAKiMuD5UrNKetw%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_0_jobid_4479202543_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_0_jobid_4479202543_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+2|1a146b44f779cd7d|LinkedIn|Minth North America, Inc.|Quality System Manager|Lewisburg, TN|JOB-LI-4476787140|EXISTING_MASTER|https://www.linkedin.com/comm/jobs/view/4476787140/?trackingId=NNuBVjBormGQFTX06Cq3BQ%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_1_jobid_4476787140_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_1_jobid_4476787140_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+3|1a146b44f779cd7d|LinkedIn|Kunin|VP of Manufacturing|Chattanooga, TN|JOB-LI-4479286459|EXISTING_MASTER_TITLE_LOCATION|https://www.linkedin.com/comm/jobs/view/4479286459/?trackingId=AncuOZfnyrZ%2BGew%2FPPmv9Q%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_2_jobid_4479286459_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_2_jobid_4479286459_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+4|1a146b44f779cd7d|LinkedIn|L3Harris Technologies|Manager, Quality Management|Huntsville, AL|JOB-LI-4479277312|EXISTING_MASTER|https://www.linkedin.com/comm/jobs/view/4479277312/?trackingId=Jvx5uMmpCR%2FVgSwcMzHpfw%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_3_jobid_4479277312_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_3_jobid_4479277312_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+5|1a146b44f779cd7d|LinkedIn|Leidos|Branch Manager - Materials and Process|Huntsville, AL|JOB-LI-4476630243|EXISTING_MASTER|https://www.linkedin.com/comm/jobs/view/4476630243/?trackingId=XpSGvh%2FSLPoALnPFIRj%2BlA%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_4_jobid_4476630243_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_4_jobid_4476630243_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+6|1a146b44f779cd7d|LinkedIn|Kent Scientific Corporation|Senior Manufacturing Engineer|Nashville, TN|JOB-LI-4479209003|OUT_OF_SCOPE_IC|https://www.linkedin.com/comm/jobs/view/4479209003/?trackingId=cYbfsJms6dh13BLk%2BmNB2g%3D%3D&refId=96r0X%2B80bQLIvUp0JYtHlQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BhfI5OETnQdCG4N9ADaxEEQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0ct48jqoTxNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_5_jobid_4479209003_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_5_jobid_4479209003_ssid_16046956876_fmid_5yvbc~mvbi7ouk~de-null-5yvbc~mvbi7ouk~de-null-null&eid=5yvbc-mvbi7ouk-de&otpToken=YzZkMzM2YTU5N2UxOTAzYzU1NTYwNzFhMjA1ZjM3ODY0ODY1MGMzYjdiYWNjZThhMjI3ZWFkMzQ2NjY3MGU4NWQ5YWRiMmUyNDAyNTY2YjM5NWE0NTVkYWM5NmVlZDVkZWRhNzU1MjEyM2Q2NTA4MDQxYjFjNWFiMzljY2YxM2Y1OTYxNjVmZGNhNDJmNiwyLDE%3D
+7|1a1467f42ca0959b|Vanderbilt|Vanderbilt University|Director, Media, Entertainment & Sports Career Pathway|Nashville, TN|JOB-ORACLE-VANDERBILT-10009028|OUT_OF_SCOPE_FUNCTION|https://ecsr.fa.us2.oraclecloud.com:443/hcmUI/CandidateExperience/en/sites/CX_1/job/10009028/?utm_medium=career+site&utm_source=job+alert
+8|1a1466cd0bc059bf|Glassdoor|Cirrus Aircraft|Director Flight Operations|Alcoa, TN|JOB-GLASSDOOR-1010297202606|OUT_OF_SCOPE_FUNCTION|https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=58&guid=000001a145f34578833e48e945db33fd&src=GD_JOB_AD&t=MJA&vt=e&ja=425208633&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_a6e22b31&cb=1792182897177&jobListingId=1010297202606&jrtk=5-yul1-0-1k536phl7l51k800-8dc292e0cc17ccb8&tgt=GD_JOB_VIEW&utm_medium=email&utm_source=jobalert&utm_campaign=jobAlertAlert&utm_content=ja-jobpos1-agept-1010297202606&ja=425208633
+9|1a1466cd0bc059bf|Glassdoor|Tennova North Knoxville Medical Center|Director of Admissions|Powell, TN|JOB-GLASSDOOR-1010292675338|OUT_OF_SCOPE_FUNCTION|https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=58&guid=000001a145f34578833e48e945db33fd&src=GD_JOB_AD&t=MJA&vt=e&ja=425208633&uido=25B689974B0D0BFE1C35058ABF7493D6&ea=1&cs=1_d857c7c1&cb=1792182897177&jobListingId=1010292675338&jrtk=5-yul1-0-1k536phl7l51k800-7a151bab28abeb99&tgt=GD_JOB_VIEW&utm_medium=email&utm_source=jobalert&utm_campaign=jobAlertAlert&utm_content=ja-jobpos2-age4d-1010292675338&ja=425208633
+10|1a146550b0eb4632|iHireQualityControl|SJS Executives LLC|Construction Quality Control Manager|Saint Cloud, MN|JOB-IHIRE-542952355|OUT_OF_SCOPE_CONSTRUCTION|https://www.ihirequalitycontrol.com/jobs/view/542952355
+11|1a146550b0eb4632|iHireQualityControl|Olgoonik Corporation|Quality Control Manager Colorado Springs|Denver, CO|JOB-IHIRE-542612414|EXISTING_MASTER|https://www.ihirequalitycontrol.com/jobs/view/542612414
+12|1a146550b0eb4632|iHireQualityControl|ALPLA Inc.|Quality Manager|Coralville, IA|JOB-IHIRE-542572309|EXISTING_MASTER|https://www.ihirequalitycontrol.com/jobs/view/542572309
+13|1a146550b0eb4632|iHireQualityControl|MedStar Radiology Network|Radiology Quality Control Manager|Bel Air, MD|JOB-IHIRE-537109911|EXISTING_MASTER|https://www.ihirequalitycontrol.com/jobs/view/537109911
+14|1a146550b0eb4632|iHireQualityControl|Resource Hub Consulting|Quality Assurance Manager|San Antonio, TX|JOB-IHIRE-542660471|EXISTING_MASTER|https://www.ihirequalitycontrol.com/jobs/view/542660471
+15|1a146550b0eb4632|iHireQualityControl|General Equipment & Supply|Quality Control Manager|Simpsonville, SC|JOB-IHIRE-542093664|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542093664
+16|1a146550b0eb4632|iHireQualityControl|ALPLA Inc.|Quality Manager|Vandalia, OH|JOB-IHIRE-541766656|HELD_NEW|https://www.ihirequalitycontrol.com/candidate/jobs/view/541766656
+17|1a146550b0eb4632|iHireQualityControl|Employer not stated|Design Quality Control Manager|Nashville, TN|JOB-IHIRE-542820463|HELD_NEW_IDENTITY_REVIEW|https://www.ihirequalitycontrol.com/candidate/jobs/view/542820463
+18|1a146550b0eb4632|iHireQualityControl|Employer not stated|Quality Control Manager|Cordele, GA|JOB-IHIRE-542429223|HELD_NEW_IDENTITY_REVIEW|https://www.ihirequalitycontrol.com/candidate/jobs/view/542429223
+19|1a146550b0eb4632|iHireQualityControl|Employer not stated|Quality Assurance/Quality Control Manager|San Diego, CA|JOB-IHIRE-542601728|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542601728
+20|1a146550b0eb4632|iHireQualityControl|Employer not stated|Traveling Quality Control Manager - Federal/Commercial Projects|Texas|JOB-IHIRE-542530202|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542530202
+21|1a146550b0eb4632|iHireQualityControl|Employer not stated|Quality Control Manager - Power Market|Lenexa, KS|JOB-IHIRE-542190261|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542190261
+22|1a146550b0eb4632|iHireQualityControl|Employer not stated|Traveling Quality Control Manager - Steel - $100K-$125K|Atlanta, GA|JOB-IHIRE-542688122|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542688122
+23|1a146550b0eb4632|iHireQualityControl|Employer not stated|Quality Control Manager USGS|Herndon, VA|JOB-IHIRE-542020998|EXISTING_MASTER|https://www.ihirequalitycontrol.com/candidate/jobs/view/542020998
+24|1a146550b0eb4632|iHireQualityControl|Employer not stated|Quality Assurance/Quality Control Manager|Baton Rouge, LA|JOB-IHIRE-542040052|HELD_NEW_IDENTITY_REVIEW|https://www.ihirequalitycontrol.com/candidate/jobs/view/542040052
+25|1a14646729e0e14f|LinkedIn|Great Plains Manufacturing, Inc.|Die & Tooling Manager|Assaria, KS|JOB-LI-4476690289|HELD_NEW|https://www.linkedin.com/comm/jobs/view/4476690289/?trackingId=qO4y4bLS2KJh2TQhfK2Xzw%3D%3D&refId=%2ByyoZROZp0g5SQotCsIr%2Bg%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BCRtOn6q0QOOin9eCmU6lQA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1DISrT_uFFNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_0_jobid_4476690289_ssid_16046956852_fmid_5yvbc~mvbdxdcx~ic&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_0_jobid_4476690289_ssid_16046956852_fmid_5yvbc~mvbdxdcx~ic-null-5yvbc~mvbdxdcx~ic-null-null&eid=5yvbc-mvbdxdcx-ic&otpToken=ZDhkYmQ5OTFmN2M4MmYyMzViNGFlYzZkZWQ3YjIwYmY2YTdkYjBhMTYwYTVhN2Y1YWMzN2VmOTNhNTNlZTQxMDExNWQ2YzI4ODQwYTMzOTRkYTVhZWI3YTcyOTQzZmJjMzczMjlkMzMxYjBkYThmYzFmNTQxMmM5NzQ0ZjYyNWQ3MjBlNGEzYWFmN2FhZiwyLDE%3D
+26|1a14646729e0e14f|LinkedIn|Blue Origin|Manager, GSE & Tooling|Greater Seattle Area|JOB-LI-4452067152|HELD_NEW|https://www.linkedin.com/comm/jobs/view/4452067152/?trackingId=0hPudPWu8QptYZ9jj4%2BcZQ%3D%3D&refId=%2ByyoZROZp0g5SQotCsIr%2Bg%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BCRtOn6q0QOOin9eCmU6lQA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1DISrT_uFFNIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_1_jobid_4452067152_ssid_16046956852_fmid_5yvbc~mvbdxdcx~ic&trkEmail=eml-email_job_alert_digest_01-primary_job_list-0-company_logo_1_jobid_4452067152_ssid_16046956852_fmid_5yvbc~mvbdxdcx~ic-null-5yvbc~mvbdxdcx~ic-null-null&eid=5yvbc-mvbdxdcx-ic&otpToken=ZDhkYmQ5OTFmN2M4MmYyMzViNGFlYzZkZWQ3YjIwYmY2YTdkYjBhMTYwYTVhN2Y1YWMzN2VmOTNhNTNlZTQxMDExNWQ2YzI4ODQwYTMzOTRkYTVhZWI3YTcyOTQzZmJjMzczMjlkMzMxYjBkYThmYzFmNTQxMmM5NzQ0ZjYyNWQ3MjBlNGEzYWFmN2FhZiwyLDE%3D
+
+BATCH_CHECKPOINTS
+B01|MESSAGES=1a146b44f779cd7d,1a1469bc9040d3ed,1a1469b5b9e70b20,1a1468ecce7c71c9,1a1467f42ca0959b|BODY_VERIFIED=5|JOBS=7|HELD=1|EXISTING=4|OUT=2|STATUS=0
+B02|MESSAGES=1a1466d905e28e7e,1a1466d74d0e9523,1a1466cd0bc059bf,1a1466cc749e6241,1a146550b0eb4632|BODY_VERIFIED=5|JOBS=17|HELD=4|EXISTING=10|OUT=3|STATUS=1
+B03|MESSAGES=1a14646729e0e14f,1a1462bad5b53f0a,1a1461a96cc374c7,1a146164c1f1c591|BODY_VERIFIED=4|JOBS=2|HELD=2|EXISTING=0|OUT=0|STATUS=1
+
+COVERAGE
+CURRENT_WINDOW_STATUS=PARTIAL
+CURRENT_WINDOW_REASON=All 14 messages and all 26 visible job cards were examined, but LinkedIn claimed 17 jobs while only 6 were visible in one digest; 11 provider-hidden jobs remain unresolved.
+CARRY_FORWARD_STATE=SYNC_PENDING_READBACK
+OWNER_NEXT=FORGE_EMAIL_DISCOVERY
+NEXT_ACTION=At the next run, recheck Writer gate first. If healthy, reconcile the 97-item cumulative chain against master/archive/queue and submit independently completable homogeneous batches with terminal Writer and fresh master readback. Retry the 33 provider-hidden slots only with a supported source surface; never infer missing identities and never blind replay.
