@@ -1,0 +1,18 @@
+# Proposed: foreman-cockpit/.github/workflows/tests.yml
+# Runs the existing suite on every PR. Visible check; not set as required (Tim merges and sees the result).
+# Verified locally 2026-10-17: 66 files, 455 tests pass in ~7.5 s on Node 22, no dependency install needed.
+name: tests
+on:
+  pull_request:
+  push:
+    branches: [main]
+jobs:
+  node-test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+      - run: node --test tests/*.test.js
