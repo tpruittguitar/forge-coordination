@@ -1,0 +1,167 @@
+PIPELINE EXPLORER v1.5 / v1.5.1 — CLAUDE REVIEW SESSION SUMMARY (plain text)
+=============================================================================
+Author: CLAUDE (for Tim Pruitt) · Session: 2026-10-17 02:45–03:45 ET · Status: REVIEW + PROPOSED FIX. NOTHING DEPLOYED.
+Applies to: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (SHA-256 49ea099d…; Drive 1Nfg4yFU_jB36aiFYmQQHdwvq7liSBxe6),
+  proposals/GROK_20261015_1650ET_PIPELINE_EXPLORER_SPEC_V1_5_1.txt, ..._DESIGN_TOKENS_V1_5_1.txt,
+  code read-only at tpruittguitar/foreman-cockpit main @ 16e7f18 (PR #116, unchanged as of this session).
+Method: four-AI debate (Claude, ChatGPT, Grok, Gemini) plus direct code reads and executed tests. Tim governs.
+
+0. TIM RULINGS RECORDED THIS SESSION
+------------------------------------
+R-1  Pipeline_Explorer_Proposal_v1.5.pdf (60 pp) is the VISUAL AUTHORITY.
+     The v1.5.1 spec cites a 72-page v1.5.1 PDF that is absent from the repo; that citation is void.
+     Working split (proposed, needs Tim confirmation): PDF governs layout, look, composition;
+     later dated text rulings govern data semantics, motion, accessibility.
+R-2  All AI responses in English only.
+
+1. SPEC ERRORS FOUND (v1.5.1 spec + tokens) — FIX IN A v1.5.2 BEFORE BUILD
+--------------------------------------------------------------------------
+E-01 125% zoom cannot fit: viewport 2048 leaves 1902 px; track minimums 980+640+440 = 2060 (overflow ~158 px).
+E-02 HF-17 fixed widths 1112+800+508 = 2420 exceed §9 equation (2414 − S). Tokens' fixed-px grid has no gaps.
+E-03 CSS `pt` used as iOS points. 1 iOS pt = 1 CSS px; CSS pt = 1.333 px. All mobile tokens 33% too large.
+E-04 --pe-bp-* custom properties cannot be used inside @media; `.app{--layout:…}` switches nothing.
+E-05 Stagger: 18 ms/row × 30-row cap = 540 ms, exceeds --pe-stagger-max 250 ms.
+E-06 Percentile tie rule conflicts with midrank formula. Fix: band on (below + equal)/N.
+E-07 Spec's code claim wrong: band() in pipeline-scoring.js:57 and PipelineScoring.gs:57 uses
+     90/75/60/40 with five labels (PRIORITY..NO-GO), not "75/50" or "80/65".
+E-08 Seen-state sync needs Writer-side changes the spec does not list (see §2).
+E-09 Undo defined three ways (§2.1, tokens, §4.1). Keep §4.1 (new revision with current baseRevision).
+E-10 Self-violations: geo gradient uses Alert Red for score 0 ("red = failed/hard block only");
+     ◆ means both UPPER band and hard geo control point; Amber carries six meanings.
+E-11 Ticker 40 px/s has no token; the spec's own lint would reject it.
+E-12 Motion already ships (pipeline-motion.js, tests/motion.browser.js); Phase 0 should inventory it.
+E-13 T-14 listed in Phase 2 and Phase 3. v1.5 PDF page 33 still shows the retired hover card
+     ("82 ✓ STRONG · $230K est."); needs an errata entry.
+Scope concern (open): 19 requirements, 28 tasks, 19 motions for a tool whose purpose ends at an accepted offer.
+
+2. LIVE DEFECT FOUND IN CODE — STATE WRITE PATH (highest priority)
+-----------------------------------------------------------------
+FACT  pipeline.html:1345 openRow() sets seen and calls syncStateUp().
+FACT  pipeline.html:956 syncStateUp() posts the WHOLE {seen, rulings, incidents} blob after 1.5 s;
+      errors swallowed by an empty .catch.
+FACT  Code.gs:168 doPost routes action 'state' straight to writeState_ (no LockService, bypasses dispatchWrite_)
+      and returns {ok:true} regardless. Code.gs:2673 writeState_ overwrites the file wholesale.
+FACT  gsPost (pipeline.html:691–702) RESOLVES {ok:false} on server failure; syncStateUp only handles rejection,
+      so every server-reported state failure is invisible today.
+FACT  Rulings are also written to the master via action 'ruling' with readback (pipeline.html:1331);
+      the state file holds a mirror of rulings. Event incidents (pipeline-incidents.js:195) and their
+      acknowledgements exist ONLY in the state file.
+RISK  A stale tab (phone, old session) that opens any job overwrites the shared state: in-flight rulings,
+      seen marks, event incidents and acknowledgements can be lost silently. Two simultaneous posts interleave.
+
+3. CONTAINMENT FIX (designed, tested in isolation, NOT deployed)
+---------------------------------------------------------------
+Server (Code.gs):
+  - mergeState_: ignore incoming rulings; union seen (keep max); union event incidents by id, never delete;
+    status follows the client's own rule (only ACTIVE yields to a later known state; equal status -> higher
+    attempts); unknown status never replaces a known one; eventIds unioned and deduplicated.
+  - writeState_: LockService wait 30 s; refuse unreadable/non-object stored file (STATE_UNREADABLE, no write);
+    write PIPELINE_EXPLORER_STATE.json.prev with prior content first; write merged state; read back
+    (STATE_READBACK_MISMATCH on mismatch).
+  - doPost: `if (req.action==='state') return out_(writeState_(req.state||{}));`
+  - Porting: paste functions as plain declarations; drop the `require` line (Apps Script shared global scope).
+    Requires V8 runtime (Object.assign).
+Client (pipeline.html):
+  - openRow() stops calling syncStateUp().
+  - syncStateUp() sends {seen, incidents} only.
+  - Check `.then(r => r.ok)`; visible pill: ◷ pending / ⊗ failed / ✓ synced HH:MM.
+  - Local revision counter: increment on every change, record revision sent, show ✓ only when confirmed
+    revision == current revision (prevents a false ✓ when changes happen mid-flight).
+  - localStorage already holds all seen/incidents and every post carries the full set, so no separate queue.
+Evidence:
+  - 12 merge tests + 7 failure-injection wrapper tests = 19/19 pass (lock timeout, corrupt file, non-object file,
+    missing file, normal write, Drive write failure, readback mismatch).
+  - Parity vs client PipelineIncidents.merge(): 0 of 64 status/attempt combinations differ.
+    (First run differed in 8/64; Claude's earlier "forward-only rank" claim was wrong and was corrected.)
+  - Claude's first wrapper draft parsed a corrupt file as {} and would have overwritten everything; corrected.
+Gates before merge (agreed by all four AIs):
+  G-1 Independent invariant tests written by a second author who has not read the implementation.
+  G-2 Deploy against a COPY of the state file; inject unreadable file + stale legacy blob; confirm ok:false
+      responses and .prev copies.
+  G-3 Separate deploy from the outstanding scoring-formula Writer redeploy, each with its own rollback.
+  G-4 Tim merges.
+Ready-to-paste for ChatGPT (G-1):
+  "Write independent acceptance tests for a server function mergeState_(current, incoming) that merges
+   PIPELINE_EXPLORER_STATE.json. Do not read any proposed implementation. Express each requirement as a
+   literal expected outcome: (1) incoming rulings never change stored rulings; (2) a stale payload cannot
+   remove any seen key or incident id; (3) an ACKNOWLEDGED_UNRESOLVED incident never changes status due to
+   incoming data; (4) an ACTIVE incident never takes an unknown status; (5) an unreadable stored file causes
+   a refusal with no write. Use synthetic IDs only (ACME-n, JOB-A…). Output a single node:test file."
+
+4. CONFIDENTIALITY FINDING (Tim decision; repos are public by Tim's 2026-10-12 decision)
+----------------------------------------------------------------------------------------
+FACT  The v1.5 PDF in this public repo names a real target employer with role and score history.
+FACT  foreman-cockpit tests/ contain rows labeled "Live case" with a real employer, real ATS job id and
+      Tim's disposition; tests/fixtures contain salary estimates; the spec publishes the salary curve and
+      geo points. Git history keeps all of it; replacing a file does not remove it.
+Options for Tim: keep public (current decision), or make both repos private
+  (Settings > Danger Zone > Change visibility), then confirm the next Cloudflare deploy still succeeds.
+Standing fixture rule proposed either way: fixtures synthetic by construction (ACME-n, JOB-A, round pay);
+  CI checks the positive pattern; no denylist (a denylist file would itself publish the target list).
+
+5. OPEN ITEMS FOR TOMORROW
+--------------------------
+Tim decisions:
+  D-1 Push access for Claude to foreman-cockpit (backup/claude-<time> branch + draft PR for the fix).
+  D-2 A copy of PIPELINE_EXPLORER_STATE.json in Drive (enables damage diff, real-shape test, G-2).
+  D-3 Repo visibility (keep public or make private).
+  D-4 Should a recovery verified on one device clear an acknowledged obligation on all devices?
+      Today: no. The fix keeps no.
+  D-5 Confirm the R-1 authority split (PDF = appearance; text = semantics, motion, accessibility).
+  D-6 Scope: how much of the 19/28/19 plan to build. Phase 4 (adaptive) is the natural cut.
+  D-7 Branch protection on foreman-cockpit main (require PR) so agents cannot push to main.
+Not yet done:
+  - Diff current state file against PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS for pre-existing loss.
+  - Independent invariant tests (G-1). Real-Drive verification (G-2).
+  - Spec v1.5.2 with E-01..E-13 + errata sheet for the v1.5 PDF.
+  - Phase 0 baseline; Phase 1 data fixes (T-05 counter registry, T-17 decision state machine).
+  - ChatGPT reported admin/push on both repos through its connector; not verified by Claude.
+Recommended order: snapshot (D-2) -> branch + draft PR -> G-1 -> G-2 -> Tim merge -> formula redeploy ->
+  spec v1.5.2 -> Phase 0 -> Phase 1 -> Phase 1B -> visual phases against the v1.5 PDF.
+
+APPENDIX A — stateMerge.js (proposed; tested)
+---------------------------------------------
+var STATUS_RANK = { ACTIVE: 0, ACKNOWLEDGED: 1, ACKNOWLEDGED_UNRESOLVED: 1, RECOVERED: 2 };
+function mergeState_(cur, inc) {
+  cur = cur || {}; inc = inc || {};
+  var out = { seen: {}, rulings: cur.rulings || {}, incidents: { v: 1, incidents: {} } };
+  var cs = cur.seen || {}, is = inc.seen || {};
+  Object.keys(cs).forEach(function (k) { out.seen[k] = cs[k]; });
+  Object.keys(is).forEach(function (k) { var v = Number(is[k]) || 0; if (!(k in out.seen) || v > out.seen[k]) out.seen[k] = v; });
+  var ci = (cur.incidents && cur.incidents.incidents) || {}, ii = (inc.incidents && inc.incidents.incidents) || {};
+  Object.keys(ci).forEach(function (k) { out.incidents.incidents[k] = ci[k]; });
+  Object.keys(ii).forEach(function (k) {
+    var r = ii[k], l = out.incidents.incidents[k];
+    if (!r || r.kind !== 'event') return;
+    if (!l) { out.incidents.incidents[k] = r; return; }
+    var pick = l;
+    if (l.status === 'ACTIVE' && r.status !== 'ACTIVE' && STATUS_RANK.hasOwnProperty(r.status)) pick = r;
+    else if (r.status === l.status && (r.attempts || 0) > (l.attempts || 0)) pick = r;
+    if (pick !== l) {
+      var ids = (l.eventIds || []).concat(r.eventIds || []).filter(function (x, n, a) { return a.indexOf(x) === n; });
+      out.incidents.incidents[k] = Object.assign({}, pick, { eventIds: ids, attempts: Math.max(l.attempts || 0, r.attempts || 0) });
+    }
+  });
+  return out;
+}
+
+APPENDIX B — writeStateCore_ (proposed; tested with injected storage and lock)
+------------------------------------------------------------------------------
+function writeStateCore_(store, lock, name, incoming) {
+  lock.wait(30000);                                   // throws on timeout -> nothing written
+  try {
+    var raw = store.read(name); if (raw == null || raw === '') raw = '{}';
+    var cur; try { cur = JSON.parse(raw); } catch (e) { return { ok: false, error: 'STATE_UNREADABLE' }; }
+    if (!cur || typeof cur !== 'object' || Array.isArray(cur)) return { ok: false, error: 'STATE_UNREADABLE' };
+    store.write(name + '.prev', raw);                 // recovery copy first
+    var next = JSON.stringify(mergeState_(cur, incoming || {}));
+    store.write(name, next);
+    var back = store.read(name);
+    if (back !== next) return { ok: false, error: 'STATE_READBACK_MISMATCH' };
+    return { ok: true };
+  } finally { lock.release(); }
+}
+Apps Script wiring: store.read = Drive file getBlob().getDataAsString(); store.write = findOrCreate_(name).setContent;
+  lock.wait = LockService.getScriptLock().waitLock; lock.release = releaseLock.
+
+END — review and proposal only. No code changed in foreman-cockpit. Nothing deployed.
