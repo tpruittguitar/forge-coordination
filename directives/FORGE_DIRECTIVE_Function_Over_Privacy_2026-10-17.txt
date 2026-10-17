@@ -11,8 +11,13 @@ RULE
    in files, fixtures, tests, proposals, receipts, or UI.
 5. Real data in test fixtures is allowed.
 
-NOT AFFECTED
+NOT AFFECTED (these are FUNCTION; keep them)
 - Data-integrity work (preventing lost or overwritten records, verified writes, receipts) is function and continues.
+- Writer state-write mechanisms: script lock, refuse-on-unreadable file, .prev recovery copy, readback, real
+  ok/false results. Each one prevents lost rulings, seen marks, or incident acknowledgements.
+- Pipeline Explorer phase gates: cross-view consistency 100%, counter reconciliation 100%, fault injection
+  0 false successes / 0 dropped / 0 duplicates, selection <= 0.7 s p95, frame p95 <= 16.7 ms, WCAG 2.2 AA.
+- Automated tests and the CI that runs them.
 - Tim's authority to merge and approve is unchanged.
 
 SUPERSEDES
