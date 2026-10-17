@@ -92,23 +92,19 @@ Ready-to-paste for ChatGPT (G-1):
    incoming data; (4) an ACTIVE incident never takes an unknown status; (5) an unreadable stored file causes
    a refusal with no write. Use synthetic IDs only (ACME-n, JOB-A…). Output a single node:test file."
 
-4. CONFIDENTIALITY FINDING (Tim decision; repos are public by Tim's 2026-10-12 decision)
-----------------------------------------------------------------------------------------
-FACT  The v1.5 PDF in this public repo names a real target employer with role and score history.
-FACT  foreman-cockpit tests/ contain rows labeled "Live case" with a real employer, real ATS job id and
-      Tim's disposition; tests/fixtures contain salary estimates; the spec publishes the salary curve and
-      geo points. Git history keeps all of it; replacing a file does not remove it.
-Options for Tim: keep public (current decision), or make both repos private
-  (Settings > Danger Zone > Change visibility), then confirm the next Cloudflare deploy still succeeds.
-Standing fixture rule proposed either way: fixtures synthetic by construction (ACME-n, JOB-A, round pay);
-  CI checks the positive pattern; no denylist (a denylist file would itself publish the target list).
+4. PRIVACY — CLOSED BY TIM RULING 2026-10-17 03:48 ET
+------------------------------------------------------
+Ruling: repos stay public; no privacy redaction, name hiding, or security-driven complexity anywhere in
+Forge. Optimize for function. See directives/FORGE_DIRECTIVE_Function_Over_Privacy_2026-10-17.txt.
+Earlier confidentiality finding and the synthetic-fixture rule are WITHDRAWN. Real data in fixtures is fine.
+The state-write fix in §3 is a data-integrity fix (prevents lost rulings, seen marks, incidents) and stays.
 
 5. OPEN ITEMS FOR TOMORROW
 --------------------------
 Tim decisions:
   D-1 Push access for Claude to foreman-cockpit (backup/claude-<time> branch + draft PR for the fix).
   D-2 A copy of PIPELINE_EXPLORER_STATE.json in Drive (enables damage diff, real-shape test, G-2).
-  D-3 Repo visibility (keep public or make private).
+  D-3 CLOSED 2026-10-17: repos stay public (function over privacy ruling).
   D-4 Should a recovery verified on one device clear an acknowledged obligation on all devices?
       Today: no. The fix keeps no.
   D-5 Confirm the R-1 authority split (PDF = appearance; text = semantics, motion, accessibility).
