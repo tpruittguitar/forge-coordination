@@ -6,9 +6,8 @@ Applies to: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (SHA-256 49ea099d…; 
   code read-only at tpruittguitar/foreman-cockpit main @ 16e7f18 (PR #116, unchanged as of this session).
 Method: four-AI debate (Claude, ChatGPT, Grok, Gemini) plus direct code reads and executed tests. Tim governs.
 RECORD TYPE: review record. Test counts below are DEVELOPER EVIDENCE (author-written); independent tests
-  (gate G-1) are pending. Appendices A–B are a dated snapshot and the only durable copy of the proposed code
-  until a foreman-cockpit backup/claude-<time> branch exists. Once that branch exists, the branch is the
-  authority for the code, and this file gets a pointer line to it with the appendices marked superseded.
+  (gate G-1) are pending. Proposed code + tests: proposals/CLAUDE_20261017_STATE_FIX/ (single copy until a
+  foreman-cockpit backup/claude-<time> branch exists; then the branch is the authority).
 
 0. TIM RULINGS RECORDED THIS SESSION
 ------------------------------------
@@ -122,49 +121,10 @@ Not yet done:
 Recommended order: snapshot (D-2) -> branch + draft PR -> G-1 -> G-2 -> Tim merge -> formula redeploy ->
   spec v1.5.2 -> Phase 0 -> Phase 1 -> Phase 1B -> visual phases against the v1.5 PDF.
 
-APPENDIX A — stateMerge.js (proposed; tested)
----------------------------------------------
-var STATUS_RANK = { ACTIVE: 0, ACKNOWLEDGED: 1, ACKNOWLEDGED_UNRESOLVED: 1, RECOVERED: 2 };
-function mergeState_(cur, inc) {
-  cur = cur || {}; inc = inc || {};
-  var out = { seen: {}, rulings: cur.rulings || {}, incidents: { v: 1, incidents: {} } };
-  var cs = cur.seen || {}, is = inc.seen || {};
-  Object.keys(cs).forEach(function (k) { out.seen[k] = cs[k]; });
-  Object.keys(is).forEach(function (k) { var v = Number(is[k]) || 0; if (!(k in out.seen) || v > out.seen[k]) out.seen[k] = v; });
-  var ci = (cur.incidents && cur.incidents.incidents) || {}, ii = (inc.incidents && inc.incidents.incidents) || {};
-  Object.keys(ci).forEach(function (k) { out.incidents.incidents[k] = ci[k]; });
-  Object.keys(ii).forEach(function (k) {
-    var r = ii[k], l = out.incidents.incidents[k];
-    if (!r || r.kind !== 'event') return;
-    if (!l) { out.incidents.incidents[k] = r; return; }
-    var pick = l;
-    if (l.status === 'ACTIVE' && r.status !== 'ACTIVE' && STATUS_RANK.hasOwnProperty(r.status)) pick = r;
-    else if (r.status === l.status && (r.attempts || 0) > (l.attempts || 0)) pick = r;
-    if (pick !== l) {
-      var ids = (l.eventIds || []).concat(r.eventIds || []).filter(function (x, n, a) { return a.indexOf(x) === n; });
-      out.incidents.incidents[k] = Object.assign({}, pick, { eventIds: ids, attempts: Math.max(l.attempts || 0, r.attempts || 0) });
-    }
-  });
-  return out;
-}
-
-APPENDIX B — writeStateCore_ (proposed; tested with injected storage and lock)
-------------------------------------------------------------------------------
-function writeStateCore_(store, lock, name, incoming) {
-  lock.wait(30000);                                   // throws on timeout -> nothing written
-  try {
-    var raw = store.read(name); if (raw == null || raw === '') raw = '{}';
-    var cur; try { cur = JSON.parse(raw); } catch (e) { return { ok: false, error: 'STATE_UNREADABLE' }; }
-    if (!cur || typeof cur !== 'object' || Array.isArray(cur)) return { ok: false, error: 'STATE_UNREADABLE' };
-    store.write(name + '.prev', raw);                 // recovery copy first
-    var next = JSON.stringify(mergeState_(cur, incoming || {}));
-    store.write(name, next);
-    var back = store.read(name);
-    if (back !== next) return { ok: false, error: 'STATE_READBACK_MISMATCH' };
-    return { ok: true };
-  } finally { lock.release(); }
-}
-Apps Script wiring: store.read = Drive file getBlob().getDataAsString(); store.write = findOrCreate_(name).setContent;
-  lock.wait = LockService.getScriptLock().waitLock; lock.release = releaseLock.
+APPENDICES — MOVED
+------------------
+Code and tests now live in proposals/CLAUDE_20261017_STATE_FIX/ (runnable: 19 tests + 64-case parity
+script + README). That folder is the single copy until a foreman-cockpit backup branch exists.
+Previous inline appendices removed 2026-10-17 to keep one source; prior text remains in git history.
 
 END — review and proposal only. No code changed in foreman-cockpit. Nothing deployed.
