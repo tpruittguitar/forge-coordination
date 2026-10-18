@@ -11,6 +11,11 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-010  Writer receipt index restore + move to GitHub
+  Asked: Tim 2026-10-17 20:28 ET ("Move it to GitHub", master later to a database; new repo forge-writer-state)
+  Status: RESTORE SHIPPED 2026-10-17 22:06 ET, foreman-cockpit 0c9173a, Writer version 66. PIPELINE_RECEIPT_INDEX.json had been 0 bytes since 2026-10-16 01:02:44Z (every Writer write failed closed for ~45 h). restore_receipt_index restored the 01:01:41Z version (5,120 requests, 1 pending), backup copy Drive 14UrUfxVyjWdLf4oDByz3rq2z6zeYrJQt, readback 4,019,561 chars matched; the pending write W-20261016010135268-1bdebd then verified COMPLETE and the index saved again normally. MOVE TO GITHUB: waiting for Tim to create tpruittguitar/forge-writer-state (session cannot create public repos).
+  What (move): Writer reads/writes the index in forge-writer-state with blob-SHA conditional writes; prune old COMPLETE entries; refuse empty or unparseable saves.
+
 REV-009  Writer reads Workday through TinyFish
   Status: SHIPPED 2026-10-13 18:00 ET, foreman-cockpit PR #107 (80630d6), Writer version 62 live; TINYFISH_API_KEY set by Tim. Dry run 18:00 ET: 6 Workday rows read through TinyFish with no errors, all 6 Blue Origin rows CLOSED_EMPLOYER_404 (Claude spot-checked R70681: Workday 'doesn't exist' page and no search hit; a known-live posting R67034 without location segment loads normally). Follow-up PR #108 (fb84fb9, batch H: posting date in the bold field layout) live as Writer version 63 at 18:05 ET.
   Asked: Tim 2026-10-13 17:46 ET ("Yes" to the Writer option)
