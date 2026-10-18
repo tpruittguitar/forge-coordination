@@ -1,0 +1,71 @@
+GROK ADVERSARIAL VISUAL QA · GOLDEN FRAME F02 · 2026-10-18 18:24 ET
+Repo: tpruittguitar/foreman-cockpit branch backup/claude-20261018-1805ET
+Compared: tests/visual/golden/F02_2560x1440.png vs tests/visual/reference/p40_2560x1440.png (PDF p40 1:1)
+Against: tests/visual/golden/F02.NOTES.txt
+Visual owner confirmation requested per NOTES.
+
+EXECUTIVE VERDICT
+All observed differences are accounted for in F02.NOTES.txt (D1–D9, V-01..V-20, A1–A2, F1, X1–X4). No additional must-fix differences found. Frame is consistent with its own data model and stated rulings. No internal numeric contradictions. Colour-vision simulation shows no state that becomes unreadable or depends on colour alone.
+
+KEY FINDINGS
+- Measured match zones (rail 56 · table 1112 · map 801 · drawer 508; header/tabs/KPI/strip/main/ticker) hold; residual pixel differences are concentrated in data-driven regions (table rows, drawer content, map pins) as expected under D1.
+- All listed data, ruling, accessibility, font, and approximation differences confirmed present and correctly described.
+- No unlisted textual or structural differences of consequence. Minor rendering approximations (X1–X4) remain as noted.
+
+DIFFERENCES NOT LISTED IN NOTES
+None. Every material difference observed (content, numbers, labels, symbols, layout constraints) matches an entry in F02.NOTES.txt with its stated reason. Pixel-level residuals outside those reasons are within the ±3 px measured-match tolerance or are the named approximations (X1–X4).
+
+Format required: region · PDF shows · frame shows · must-fix / accept
+(no entries)
+
+COLOUR-VISION AND GREYSCALE CHECK
+Viewed frame under:
+- Greyscale
+- Deuteranopia simulation
+- Protanopia simulation
+
+Findings:
+- All primary text, KPI values, table cell content, drawer score/breakdown, map readouts, and status labels remain legible.
+- Band indicators use shapes (▲ ◆ ● ▽) per V-09, not colour alone. Legend and table both use the shape system.
+- Decline uses Secondary grey ⊖ (V-01), not red. Hold uses ⊡ (V-02).
+- Needs-decision is conveyed by Primary text in table, KPI value, and drawer chip (V-04). The cyan border on the active KPI tile is a secondary cue only; the text state is independent of colour.
+- No state becomes unreadable. No critical distinction depends on colour alone.
+- Minimum 11 px floor (A1) and 24 px target size (A2) hold under the simulations.
+
+NUMERIC CONSISTENCY (same screen)
+No contradictions found.
+- REVIEW QUEUE = 50 (header, tabs, strip, table header) consistent.
+- Needs-decision KPI = 28 (fixture count) vs queue 50 — explained by D2.
+- Writer pill “1 WAITING · 1 FAILED” matches KPI 1/1 — explained by D5.
+- LANE QUEUE 2 vs “◷ 1 waiting for lock” — two distinct queues, explained by D6.
+- Bands header N 48 · P90 72 · P65 61 · P20 51 matches drawer “rank 1 of 48” and score 76 — explained by D3/D4/D9.
+- Drawer Δ +4 matches selected table row — explained by D4.
+- Ring 76 % and breakdown Σ 76.0 = 76, plus COVERAGE 100 % · FACTOR 1.00 — explained by D4.
+- HOME = Cleveland, TN · 127 MI · 304° — explained by D7.
+- JOBS 578, DECLINE CANDIDATES 9, STALE EVIDENCE 185, Δ 12 new / Δ 4 evidence — internally consistent with fixture and stated model rev 24.
+
+WHAT IS STRONG
+- Explicit NOTES file that enumerates every intentional deviation with ruling or data reason.
+- Shape-based (not colour-based) band system and primary-text state cues.
+- Self-hosted fonts matching PDF glyph sizes.
+- Measured zone and position match within stated tolerance.
+- Internal numeric consistency once the listed data rules are applied.
+
+WHAT IS WEAK / RISKY
+- X1–X4 remain approximations (score-ring ticks, gradients, map geometry, unnamed tokens for row stripe and KPI glow). Acceptable for golden frame but should be ruled or named before production.
+- Map uses real us-atlas + 1° graticule vs unknown PDF outline geometry (X2).
+- Page margins 23/16/22/17 — intentional? (X3).
+- Active KPI cyan glow and alternating row colours not yet named tokens (X4).
+
+HIDDEN IMPLICATIONS
+- Because data is live-computed (D1), golden frames will drift from the PDF whenever the fixture or scoring model changes. The NOTES mechanism is the correct control; keep it updated on every rebuild.
+- Colour-independent design is solid. No further CVD work required for F02.
+
+RECOMMENDED NEXT ACTIONS
+1. Grok Bot (visual owner) confirm or re-rule each D/V/A/F/X item in F02.NOTES.txt as requested.
+2. Answer the open question in NOTES: when the app opens, is the top job selected (F01 = F02 with no lock-on) or does the drawer show empty? If empty, F01 needs a drawing.
+3. Name or drop the unnamed tokens for alternating rows and active KPI glow (X4).
+4. Accept current frame as golden once the above confirmations are recorded. No must-fix visual defects outside the documented list.
+
+QUESTIONS / EVIDENCE NEEDED
+None for this QA. All required comparisons completed against the supplied PNG pair, NOTES, and word-box measurements.
