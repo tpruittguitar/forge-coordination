@@ -1,0 +1,273 @@
+PIPELINE EXPLORER v1.5 / v1.5.1 — CLAUDE CRITIQUE + MULTI-AI IMPLEMENTATION PLAN (plain text)
+=============================================================================================
+Author: CLAUDE (for Tim Pruitt) · 2026-10-18 15:30 ET · Status: CRITIQUE + PLAN. NOTHING BUILT OR DEPLOYED.
+Reviewed: proposals/Pipeline_Explorer_Proposal_v1.5.pdf (60 pp, sha256 49ea099d…, visual authority per R-1),
+  GROK_20261015_1650ET_PIPELINE_EXPLORER_SPEC_V1_5_1.txt, ..._DESIGN_TOKENS_V1_5_1.txt,
+  CHATGPT_20261015_2055ET_..._V1_5_1_HCI_REVIEW.txt, CLAUDE_20261017_0345ET_..._REVIEW_SESSION.txt,
+  control/PIPELINE_EXPLORER_REVISION_LOG.txt; code read-only at foreman-cockpit main @ 26d931a (PR #118);
+  Drive doctrine: "AI Change Rationale - UI Design Reference Doctrine (v1.1)" (read first, governs) and
+  "HCI UX Psychological Principles - Summary & Reference (v1.1)".
+Method: PDF pages 26–45 rendered at 110–300 dpi and inspected; pages 38/40/42 exported to SVG and every
+  fill/stroke colour counted; contrast computed (WCAG 2.x relative luminance); code paths traced.
+Labels: FACT = verified in a named source · INFERENCE = foreseeable consequence · OPINION = recommendation.
+Tim has final authority. Binding decisions B-01..B-17 are not relitigated here.
+
+-----------------------------------------------------------------------------------------------
+0. BOTTOM LINE
+-----------------------------------------------------------------------------------------------
+- The direction is sound and the binding decisions hold together. The data-integrity-first phase order is right.
+- The proposal cannot yet be built "exactly": the visual authority (v1.5 PDF) contradicts the v1.5.1 text in
+  at least 9 places and contradicts ITSELF in at least 6 (section 3). An implementer copying the PDF would ship
+  red Decline buttons, a Hold button wearing the Writer-lock glyph, bands on HOLD rows, a score breakdown that
+  does not add up, and colour-only map pins.
+- Exactness needs three things the proposal lacks: (a) one ruled conflict register, (b) approved golden frames
+  rendered from one self-consistent fixture, (c) automated token / geometry / pixel / motion checks against
+  those frames. Section 5 builds all three before any visual code.
+- The live state-write defect from 2026-10-17 is still in main (FACT: Code.gs:171 and pipeline.html:956 unchanged).
+  It stays first in line.
+
+-----------------------------------------------------------------------------------------------
+1. WHAT IS STRONG (keep)
+-----------------------------------------------------------------------------------------------
+- Phase order: baseline -> data integrity -> architecture/performance -> visuals. Motion locked out until 1B.
+- Percentile bands as display-only relative rank, separated from score, fit and HOLD (§3.1).
+- Decision state machine with readback-only confirmation and fault-injection acceptance (HF-03, §4.1).
+- Reduced-motion table per animation (§7.2); hard motion limits G1–G7; selection budget measured in CI.
+- Neutral black palette: computed contrast for Primary/Secondary/signal colours passes AA on all four surfaces
+  (FACT, section 2.4 table). Glyph vocabulary is the right idea.
+- Grid equation in §9 (v1.5.1) is the correct way to state layout.
+
+-----------------------------------------------------------------------------------------------
+2. CRITIQUE — NEW FINDINGS (N-xx). Prior findings E-01..E-14 (2026-10-17) remain open and are not repeated.
+-----------------------------------------------------------------------------------------------
+2.1 Where Grok Bot misread how the app works
+N-01 FACT  Score breakdown does not match the scoring function. pipeline-scoring.js:67 scoreRow(): overall =
+     round( (Σ w·s over KNOWN parts / Σ w over KNOWN parts) × (0.7 + 0.3 × coverage) ). Unknown parts drop out
+     and lower confidence. PDF p40 drawer: parts sum to 31.5+24+10.5+9+4.5+3.8 = 83.3; header says "Σ 100% = 86";
+     ring says 76. Three different numbers for one job. FIX: breakdown shows normalized contribution
+     (w·s/Σw_known) plus a coverage line ("coverage 100% · factor 1.00") so points sum to the ring exactly.
+     Mock numbers must be produced by scoreRow(), never typed.
+N-02 FACT  "Writer is synchronous; queued = waiting for Writer lock" conflates two queues. Explorer posts go direct
+     with busy retries (pipeline.html:754 gsPostRetryBusy_). Lane writes go through the Writer queue
+     (Code.gs header: WRITER_QUEUE applied ~every minute; queue_stats). The mock change strip "2 queued" and
+     KPI "Writer waiting/failed" mix both. FIX: two labelled counters — "◷ my decisions waiting for lock"
+     and "lane queue N · oldest M min" (ties to CAND-01).
+N-03 FACT  Per-decision Undo already exists (pipeline.html:1317 action undo_ruling; Code.gs action list).
+     T-17 is written as new work. FIX: T-17 = wrap existing undo_ruling in the state machine + readback.
+N-04 FACT  Current motion module auto-honours OS reduced motion (pipeline-motion.js: matchMedia
+     prefers-reduced-motion). B-15 replaces that with a one-time prompt. Binding; flagging that this removes
+     an existing behaviour. Keep ChatGPT 2055ET finding 02 (forced choice; re-prompt on OS change).
+N-05 FACT  Fonts are not delivered. Tokens name Inter + IBM Plex Mono; the app loads neither (current stacks:
+     -apple-system/Segoe UI and ui-monospace). On Tim's Windows PC "system-ui" renders Segoe UI.
+     INFERENCE: glyph widths change, so column fits, truncation and line breaks will not match the mockup.
+     FIX: self-host Inter + IBM Plex Mono (both SIL OFL) as woff2 with font-display:block for the HUD labels.
+N-06 FACT  Mock data is not one dataset. Same jobs differ between views: Ridgeline VP Operations 61 TOP (p40)
+     vs 57 UPPER (p42); Ironbark Plant Manager 58 vs 48; Vantor Head of Production 66 vs 63. Table claims
+     "SORT: SCORE ↓" while rows run 35, 31, 67, 66…. Writer pill reads "WRITER IDLE" while KPI shows 1 waiting /
+     1 failed. FIX: one fixture, scored by scoreRow(), used for every golden frame.
+
+2.2 Accessibility floor failures in the proposal itself (doctrine 7A is a constraint, so these are not optional)
+N-07 FACT  Input and neutral/ghost button outlines use Gridline #3A3A3A: 1.62:1 on Plate, 1.73 on Hull.
+     WCAG 1.4.11 and doctrine 7A require 3:1 for component boundaries. Missed by all prior reviews.
+     FIX: --pe-outline #6B6B66 (3.44 on Plate, 3.11 on Raised). Seam #2A2A2A stays for passive dividers.
+N-08 FACT  Muted #6B6B66 has 828 fill/stroke uses on the desktop mockup (SVG colour census, p40); visual
+     inspection shows it on the 11 px mono column headers and small sub-labels. Spec restricts Muted to >= 24 px. FIX: small labels -> Secondary.
+     Visible effect: header row and labels brighten. Golden frames show the corrected look.
+N-09 FACT  Map pins encode band by colour only (p33, p40: round dots in green/amber/grey/clay). Green #4ADE80 vs
+     Amber #F2B33D luminance ratio 1.07:1; Clay vs Red 1.15:1. Hover-card words do not cover the at-a-glance
+     view. FIX: pin core takes the band shape (▲ ◆ ● ▽, ⊘ for HOLD) at 11 px; halo keeps colour.
+N-10 FACT  Minimum text size conflicts: p39 "Minimum anywhere 11 px" vs tokens ◌ 9.5 px, field labels 10.5 px,
+     map readouts 10.5 px. FIX: 11 px floor everywhere.
+
+2.3 Internal contradictions (PDF vs PDF, PDF vs text). Full list with recommended rulings in section 3.
+
+2.4 Measured contrast (FACT; text colours vs surface)
+                Void   Hull   Plate  Raised
+     Primary    16.78  15.73  14.72  13.32
+     Secondary   8.29   7.77   7.27   6.58
+     Muted       3.92   3.67   3.44   3.11   large text / non-text only
+     Green      12.05  11.30  10.57   9.57
+     Amber      11.29  10.58   9.91   8.96
+     Red         6.38   5.98   5.60   5.07
+     Cyan       12.91  12.10  11.32  10.25
+     Olive       6.29   5.90   5.52   4.99
+     Clay        7.36   6.89   6.45   5.84
+     Terminal    3.04   2.85   2.67   2.42   decoration only (correct in spec)
+     Gridline    1.85   1.73   1.62   1.47   FAILS as a control boundary (N-07)
+
+2.5 Scope (OPINION). 19 requirements, 28 tasks, 19 motions. Phase 4 (adaptive) has no acceptance test tied to
+     getting hired; recommend cutting it (D-6). Everything else serves the "exact look" goal or data truth.
+
+-----------------------------------------------------------------------------------------------
+3. LOOK-AND-FEEL CONFLICT REGISTER (V-xx) — Tim rules once; rulings freeze the visual contract
+-----------------------------------------------------------------------------------------------
+Rule proposed for the split (D-5, pending since 10-17): PDF governs layout, proportions, composition, surfaces,
+type scale. Dated text governs semantics, colour meaning, glyph meaning, motion timing, accessibility.
+#     Element                   PDF shows                         Text / other page says           Recommended
+V-01  Decline button            Red border, red ⊖, red word       Red = failed/hard block only;    Secondary grey ⊖ + word
+                                (p40, p42)                        p28 Decline #A3A39E; p27 says    (p28). Red stays scarce.
+                                                                  Terminal Grey
+V-02  Hold button glyph         ◷ Hold (p40, p42)                 ◷ = waiting for Writer lock      New glyph ⊡ Hold (unused)
+V-03  HOLD rows in table        "35 ▽ ⊘HOLD", "55 ◆ ⊘HOLD"        HOLD shows ⊘ only, never a band  ⊘ HOLD, score in Secondary
+V-04  "Needs decision" bucket   Cyan text; KPI 50 in cyan         Cyan = live/selection only,      Primary text; KPI tile
+      + Needs-decision KPI                                        "never used for status" (p27)    keeps cyan border only
+                                                                                                    when it is the active filter
+V-05  Writing state ⟳           Cyan (p28)                        p27: cyan never for status       Keep cyan for ⟳ (it is live)
+                                                                                                    and amend p27 wording
+V-06  Lock-on duration          320 ms snap (p29, p31)            240 ms (v1.5.1 text)             240 ms (text governs motion)
+V-07  Auto-fit on selection     600 ms (p29, p31, p33; map        300 ms selection / 600 ms        300 / 600
+                                header "AUTO-FIT 600 MS" p40)     filtered set (text)
+V-08  Ticker controls           Pause on hover only (p31)         B-16 Pause/Resume + Hide         B-16 (binding)
+V-09  Map pins                  Colour-only dots                  Doctrine 7A                      Shape-coded cores (N-09)
+V-10  Control outlines          #3A3A3A 1 px                      7A 3:1                           #6B6B66 (N-07)
+V-11  Small labels              Muted #6B6B66 at 11 px            Muted large only                 Secondary (N-08)
+V-12  KPI value size            p39 says 40/650; tokens 22–26     —                                Measure from p40 vector
+                                                                                                    in golden frame; Tim approves
+V-13  Map height                p39 "Map 800 × 1024"              main row 1068                    Map fills main row (1068)
+V-14  Zone widths               Fixed 1112/800/508 = 2420         §9: T+M+K = 2414 − S             §9 flex tracks (E-02)
+V-15  125 % zoom                Track minimums 2060 px            Available 1902 px (E-01)         Depends on D-9 (Tim's
+                                                                                                    Windows scaling)
+V-16  Score breakdown           Points don't sum (N-01)           scoreRow()                       Normalized points + coverage
+V-17  Mobile sizes              "44pt" in CSS (= 58.7 px)         iOS pt = CSS px (E-03)           All mobile tokens in px
+V-18  Geo heat map 0 colour     Alert Red at score 0 (p37, p38)   Red = failed/hard block (E-10)   Clay -> Amber -> Green ramp,
+                                                                                                    hard 0 points keep ⊘
+V-19  Page 33 hover card        "82 ✓ STRONG · $230K est."        v1.5.1 fix (E-13)                "◆ UPPER · 57 · rank 9 of 412
+                                                                                                    eligible open · 14:32"
+V-20  Bands header              "P90 61 · P65 54 · P20 38"        §3.1 needs N + as-of             Add "N 412 · as of HH:MM"
+
+-----------------------------------------------------------------------------------------------
+4. HOW EXACTNESS IS ENFORCED (the visual contract)
+-----------------------------------------------------------------------------------------------
+4.1 Authorities after rulings: (1) tokens.css — the only file with colour, size, duration, easing values;
+    (2) golden frames — approved native-resolution PNGs per screen state; (3) geometry table — named element
+    boxes per viewport; (4) spec v1.5.2 text for semantics and motion. Any disagreement is a defect in code.
+4.2 Golden frames are built by rendering static HTML that uses tokens.css and the fixture, with the PDF v1.5 vector
+    pages (SVG export) as the composition reference and section 3 rulings applied. Tim approves each frame by
+    looking at it; approved frames are frozen in git (foreman-cockpit tests/visual/golden/).
+    Frame list (desktop 2560×1440 @1x and @2x): F01 review queue default · F02 job selected (drawer + lock-on)
+    · F03 map fullscreen · F04 decision waiting/confirmed/failed receipts · F05 scoring page · F06 geo map
+    editing · F07 change strip + ticker states · F08 2048 (125 %) · F09 1707 (150 %).
+    Mobile 402×874 @3x: M01 queue · M02 detail · M03 map + sheet · M04 landscape camera-left · M05 landscape
+    camera-right · M06 desktop mode.
+4.3 Automated checks on every PR (Playwright, existing harness pattern in tests/*.browser.js):
+    a. Token check: computed style of ~60 named elements equals the token value exactly (colour, font-family,
+       size, weight, letter-spacing, border, radius). Lint: no raw hex/duration/easing outside tokens.css.
+    b. Geometry check: bounding boxes of zones, columns, tiles, buttons within ±1 CSS px per viewport;
+       no horizontal scroll; tap targets clear of safe-area keep-outs.
+    c. Pixel check: screenshot vs golden, fixture data, animations frozen at end state, fonts self-hosted;
+       fail above 0.2 % differing pixels (threshold is an estimate; calibrate it on the first run).
+    d. Motion check: document.getAnimations() duration/easing equal tokens; selection trace <= 700 ms p95
+       over 50 selections; p95 frame <= 16.7 ms; <= 3 flashes/s.
+4.4 Human checks: Tim on the real iPhone and the real 2560 monitor at each visual gate; Grok adversarial
+    side-by-side review (golden vs build) and CVD/greyscale/low-light review at the Phase 3 gate.
+
+-----------------------------------------------------------------------------------------------
+5. IMPLEMENTATION PLAN — MULTI-AI
+-----------------------------------------------------------------------------------------------
+5.1 Lanes (by strength and remaining usage)
+  CLAUDE (Claude Code, foreman-cockpit backup/claude-<time> branches) — critical path and integration:
+     spec v1.5.2 + errata; tokens.css consolidation (5 CSS files -> one token source); golden-frame generator;
+     module extraction from pipeline.html so lanes can work in parallel; scoring-record selector; write state
+     machine; merge-readiness review of every Codex PR.
+  CHATGPT / CODEX (backup/chatgpt-<time> branches) — independent verification and harness:
+     G-1 independent state-merge tests (prompt already in the 10-17 record); visual test harness (4.3 a–d);
+     counter registry T-05 with tests; Phase 0 instrumentation (timings, console, selection latency);
+     CI workflow (D-8).
+  GROK BOT (small allotment) — author intent only: two short questions (prompt 6.2). No code, no review.
+  GROK (after 04:00 ET reset) — adversarial visual QA: golden vs build side-by-side per frame; CVD/greyscale/
+     low-light at Phase 3; motion recordings vs catalog. Buy more only if Phase 3 QA cycles run out (OPINION:
+     not needed before Phase 2).
+  TIM — rulings (section 7), golden-frame approval, HF-14 timed sessions, real-device iPhone + monitor checks,
+     merges.
+5.2 File ownership while lanes run in parallel (prevents merge collisions in the 2,356-line pipeline.html)
+  Claude: pipeline.html, tokens.css, pipeline-ui-*.css, new pipeline-score-record.js, pipeline-write-state.js,
+          apps-script/Code.gs (state fix).
+  Codex: tests/visual/**, tests/*-independent.test.js, new pipeline-counters.js + tests, .github/workflows/**,
+         scripts/baseline-*.cjs.
+  Shared files change only through the owner. Each lane writes an AI_REASON receipt in forge-coordination.
+5.3 Stages (each gate reviewed with Tim; nothing starts before its entry condition)
+  S0  NOW — rulings + contract inputs
+      Tim: answer section 7. Grok Bot: prompt 6.2. Codex: G-1 tests (prompt 6.1a).
+      Claude: spec v1.5.2 (E-01..E-14, N-01..N-10, V-rulings) committed to forge-coordination.
+      Gate: v1.5.2 accepted by Tim.
+  S1  State-write fix (from 10-17 record): branch + draft PR -> G-1 pass -> G-2 on a copy of the state file
+      -> Tim merges -> Writer deploy; then the outstanding scoring-formula Writer redeploy (G-3: separate,
+      own rollback). Owner Claude; tests Codex.
+  S2  Phase 0 baseline (HF-14). Codex instruments; Tim runs 3 timed sessions of the 5 tasks (~15 min each);
+      Claude assembles the discrepancy register. Gate: Tim signs the register.
+  S3  Visual contract (new; runs in parallel with S2 because it touches no product code)
+      Claude: fixture (one dataset, scored by scoreRow), tokens.css, static golden-frame pages, PNG renders.
+      Codex: harness 4.3 a–d running against the golden pages themselves (proves the harness).
+      Grok: review frames vs PDF composition + rulings (prompt 6.3) after reset.
+      Gate: Tim approves every frame F01–F09, M01–M06 on his own monitor and phone.
+  S4  Phase 1 data integrity (T-01..T-07, T-17) + Phase 1B architecture (T-25..T-28).
+      Claude: score-record selector, write state machine, module extraction, T-06 seen-state (absorbs S1 client
+      half), T-07 banner debounce. Codex: T-05 counter registry, T-27 browser-test migration, T-28 perf CI.
+      Gate: spec Phase 1 + 1B gates; harness green on non-visual checks.
+  S5  Phase 2 + 3 visual build against frozen frames, screen by screen in frame order F01 -> F09.
+      Claude builds; Codex keeps the harness and adds per-frame geometry; Grok QA per frame.
+      Gate per frame: token + geometry + pixel + motion checks pass, Grok QA has no open must-fix,
+      Tim signs on the real monitor.
+  S6  Track M (after S5 F01–F04): mobile frames M01–M06; Tim on real iPhone both rotations.
+  Phase 4 adaptive: cut unless Tim keeps it (D-6).
+5.4 Risks
+  R1 Usage exhaustion mid-stage. Mitigation: stages are small and receipt-logged; any lane can resume from
+     the receipt (connectors set to All repositories).
+  R2 Pixel tests flaky across machines. Mitigation: self-hosted fonts, frozen animations, fixed DPR, run in
+     CI Linux Chromium only; Tim's eye is the final check.
+  R3 Golden frames encode a wrong ruling. Mitigation: frames carry the V-ruling IDs in their filenames;
+     a changed ruling regenerates only affected frames.
+  R4 This chat session cannot push to foreman-cockpit (read-only clone). Claude's code work needs a Claude Code
+     session with push (D-1) or goes via Codex.
+
+-----------------------------------------------------------------------------------------------
+6. READY-TO-PASTE MESSAGES
+-----------------------------------------------------------------------------------------------
+6.1a ChatGPT / Codex (now):
+"Repo tpruittguitar/foreman-cockpit. Create branch backup/chatgpt-<YYYYMMDD-HHMM>ET. Write independent acceptance
+tests for a server function mergeState_(current, incoming) that merges PIPELINE_EXPLORER_STATE.json. Do NOT read
+forge-coordination/proposals/CLAUDE_20261017_STATE_FIX/ or any proposed implementation. Express each requirement as
+a literal expected outcome: (1) incoming rulings never change stored rulings; (2) a stale payload cannot remove any
+seen key or incident id; (3) an ACKNOWLEDGED_UNRESOLVED incident never changes status due to incoming data; (4) an
+ACTIVE incident never takes an unknown status; (5) an unreadable stored file causes a refusal with no write. Output
+one node:test file tests/state-merge-independent.test.js that requires ../apps-script/stateMerge.js (it does not
+exist yet; tests must fail until it does). Open a draft PR. Commit message starts 'CHATGPT FORGE-PE-G1-CHATGPT-
+<time>ET:'. Write a receipt to forge-coordination/receipts/."
+
+6.1b ChatGPT / Codex (start after Tim approves v1.5.2):
+"Repo tpruittguitar/foreman-cockpit, branch backup/chatgpt-<time>ET. Read forge-coordination/proposals/
+CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt sections 4 and 5. Build the visual
+test harness under tests/visual/ using the Playwright pattern in tests/mobile.browser.js (mocked Writer, fixture):
+(a) computed-style token checks for a named-element list read from tests/visual/elements.json; (b) bounding-box
+geometry checks ±1 CSS px at 2560×1440, 2048×1152, 1707×960 and 402×874@3x; (c) screenshot diff vs PNGs in
+tests/visual/golden/ with animations frozen and a configurable threshold; (d) getAnimations() duration/easing vs
+tokens.css. Do not edit pipeline.html, any pipeline-ui-*.css, or tokens.css (Claude owns them). Draft PR + receipt."
+
+6.2 Grok Bot (small, one message):
+"Grok Bot: two questions about your Pipeline Explorer v1.5 PDF (forge-coordination/proposals). Answer in plain
+text, under 300 words, and commit the answer as forge-coordination/proposals/GROK_<YYYYMMDD_HHMM>ET_PE_V1_5_
+INTENT_ANSWERS.txt. (1) Do you still have the build sources named in your tokens file (gen151.py, bands.py,
+desk.py, scoring.py, mapsvg.py, mobile.py) or the HTML they produced? If yes, commit them unchanged to
+forge-coordination/proposals/GROK_PE_V1_5_BUILD_SOURCES/. If no, say so. (2) For each item, was the PDF drawing
+intentional or a leftover: Decline drawn red; Hold using ◷; ▽/◆ shown next to ⊘HOLD rows; 'Needs decision' in
+cyan; drawer breakdown summing to 83.3 with ring 76 and header 86. One word each (intentional / leftover) plus
+one line of reason."
+
+6.3 Grok (after the 04:00 ET reset; when golden frames exist):
+"Grok: adversarial visual QA. Compare each PNG in foreman-cockpit tests/visual/golden/ against the matching page of
+forge-coordination/proposals/Pipeline_Explorer_Proposal_v1.5.pdf (F01/F02 -> p40, F05/F06 -> p38 and p37,
+F03 -> p33, M01–M02 -> p42, M03 -> p43, M04–M05 -> p44, M06 -> p45) and against the V-rulings in
+CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt section 3 (as ruled by Tim). List
+every difference as: frame · region · PDF shows · frame shows · ruling ID or 'unruled' · must-fix / accept.
+Ignore differences the rulings require. Commit as forge-coordination/proposals/GROK_<time>ET_PE_GOLDEN_QA.txt."
+
+-----------------------------------------------------------------------------------------------
+7. DECISIONS FOR TIM (asked directly in chat as well)
+-----------------------------------------------------------------------------------------------
+D-5  Confirm the split: PDF = layout/composition/surfaces/type; text = meaning/glyphs/motion/accessibility.
+D-6  Cut Phase 4 (adaptive)?
+D-9  (new) Windows display scaling on the 2560×1440 monitor: 100 %, 125 % or 150 %? Decides V-15 and F08/F09.
+D-10 (new) Approve V-01..V-20 recommendations as a block, or name the ones to change.
+D-1, D-2, D-7, D-8 from 2026-10-17 remain open (push access, state-file copy, branch protection, test workflow).
+
+END — critique and plan only. No code changed in foreman-cockpit. Nothing deployed.
