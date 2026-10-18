@@ -1,0 +1,44 @@
+SOURCE: Grok Bot (look owner) summary block, pasted by Tim into Claude chat 2026-10-18 19:20 ET. Copied verbatim below; full package (verdict .txt, 9 PNGs, src/) not yet uploaded.
+
+GROK → CLAUDE · PE FRAME VERDICT F02 R3 · 2026-10-18 19:10 ET
+Status: PROPOSED. Authority: Oct 15 v1.5 PDF p40 (Tim ruled 18:45 ET). Look owner: Grok.
+Package (Tim uploads to forge-coordination): proposals/GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3.txt + proposals/GROK_20261018_1910ET_PE_OCT15_PAGES/ (9 PNGs + src/). Do not commit to foreman-cockpit from this package; golden files there stay yours.
+
+(1) VERDICT: NOT PASS. 16 corrections. Withdrawn from r2: Q1 re-grid, C-01 amber header pill, C-06. Meaning rulings V-01..V-20, R-1..R-8 stand.
+C-01 Frame: padding 20 all sides (r3 has 23/16/22/17). Rows 56/44/96/40/1068/36, 12 px gaps (r3 sums 1441). Map column 800, not 801.
+C-02 Table grid, 11 columns (r3 merges SCORE+Δ into 10): 6 px bar · SCORE 64 · Δ 36 · TITLE 184 · COMPANY 112 · LOCATION 112 · BUCKET 104 · BASE EST 72 · DEGREE FLEX 84 · EXP FIT 56 · AGE 36 · WRITE STATE 1fr; 8 px gaps, 12 px right pad.
+C-03 Rows: stripes #0B0B0B (first) / #070707. Selected: fill #1E1E1E, inset rgba(56,225,214,.35), 6 px cyan bar. New row: fade across full row, reaching 0 at 55%.
+C-04 Cells: location, exp fit, age = Secondary grey. Unknown flex, Scout intake, Discovery lead = olive. Band glyph and Δ 11 px. HOLD tag border #4a1d18.
+C-05 Drawer chips back to p40 coloured badges: NEEDS DECISION primary text on #17403d border; HIGH FLEX #4ADE80 on #1f4a2c; $245K EST. and NASHVILLE olive on #3a3d33.
+C-06 Ring: r 54, stroke 8. 12 ticks, 2 px #3A3A3A, r54→61. Arc uses the job's band colour (r3 always green).
+C-07 Breakdown: grid 150/44/1fr/56, bars 8 px. Ownership "? unknown" with no points (not 0.0). Header "Σ <known weight>% KNOWN = <sum> → <score>".
+C-08 Fixture bug: build-fixture.cjs rounding only adds tenths, so rows can sum past the score (JOB-0431: 69.2 vs 69). Fixed version in src/.
+C-09 Waiting receipt: rgba(242,179,61,.16) → #141414 at 70%.
+C-10 Screen gate: FAIL = amber (r3 always green).
+C-11 KPI tiles: none active while the table shows the full queue.
+C-12 Map cursor readout: "CURSOR —" when no pointer.
+C-13 Map bottom: 84 px band for legend and buttons; move AL/GA labels so nothing overlaps.
+C-14 Lock readout flips to the left of the reticle near the right edge.
+C-15 L-2: typed times, retry counts, source, etc. move into the fixture.
+C-16 Header Writer pill: "● WRITER LOCK BUSY · ◷ 1 WAITING · ⊗ 1 FAILED · REFRESH 0:42", dot in the worst state's colour. Remove COMPARE from the header (its sub-tab already shows 0/3).
+
+(2) Q1–Q4
+Q1 Header: Writer pill is the only bordered element and carries my decisions (waiting/failed). All else is p40 mono 12 px grey text: "LANE QUEUE n · OLDEST m MIN", "LANES 10 OK", "LAST SYNC hh:mm". Seen sync shows only on failure ("⊗ SEEN MARKS NOT SAVING"). A segment in trouble gets a coloured glyph and turns primary; red first, then amber. Overflow folds whole into "+N MORE ▾"; words never cut. Board shows 4 header states (page Q1_M05_M06_HEADER_STATUS).
+Q2 M-01..M-07 redrawn in Oct 15 look. M-02: 67 · UPPER · #7 of 49 · coverage 95%. M-03: 72 · closed · not ranked. M-04: 69 · applied · not ranked. M-01 = 17:47 Needs-you snapshot, counts recomputed from fixture: 28 needs decision, 9 decline, 1 closed still active, bell 5. Phone M-01 at 402x874@3x.
+Q3 Use p40 source values, not PDF measurements: padding 20; tints #0B0B0B / #070707; receipt rgba(242,179,61,.16) → #141414 at 70%; new-row rgba(230,230,226,.10) → 0 at 55%.
+Q4 See F01.
+
+(3) F01 OPENING STATE: EMPTY DRAWER (F01 ≠ F02). Map shows the filtered set: 47 pins in 27 places, 3 remote with no pin. Drawer shows band shares of N 48 (10/27/44/19%), buckets totalling 50, next 3 jobs, decision receipts. Reasons: auto-select would hide 46 of 47 pins on every open; lock-on means Tim chose; P/H keys must never act on an unchosen job; ↓ Enter opens the top job in two keys. R-8: several jobs in one city = one pin + "×n".
+
+Renders: rev3's own HTML/CSS/tokens plus src/oct15.js + oct15.css; numbers from rev3 scoreRow fixture (model rev 24) via src/build-oct15.cjs.
+
+FOR TIM (drawn as p40 until he rules):
+T-5 p40 map state labels 2.55:1, below 3:1. Proposed #6B6B66 at full opacity = 3.67:1.
+T-6 Stale-evidence bar denominator is a typed 603 and overlaps its caption. Compute the denominator or drop the bar.
+T-10 BUCKET 104 cuts off "Decline candidate" (needs 108.8). Proposed AGE 36→30, BUCKET 104→110, same total.
+T-8 v1.5 phone labels are 8.5–9.5 px; M-01 phone drawn at the 11 px minimum.
+T-7 Writer doesn't report its Apps Script version, so the build line can't show it.
+T-4 Range rings in the brief conflict with v1.5's ban; not drawn.
+T-1..T-3 still open (T-3: new header counters wait on counter registry entries).
+
+Note for Claude: in the fixture, culture is unknown for any row without an explicit culture score (no target-company list loaded), and agency detection only matches certain company names.
