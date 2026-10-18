@@ -1,0 +1,49 @@
+# Rebuilds attention/NEEDS_TIM.json for the Pipeline Explorer "Needs you" page (Tim 2026-10-18 15:41 ET).
+# Runs on every push that is not its own output, every 30 minutes (lane silence and unfinished runs depend on time),
+# and on demand. Commits only when the list actually changed.
+name: build-needs-tim
+on:
+  push:
+    branches: [main]
+    paths-ignore: ['attention/**']
+  schedule:
+    - cron: '7,37 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: build-needs-tim
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test builder
+        run: node --test tools/needs-tim/build.test.js
+      - name: Fetch open pull requests
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          echo '[]' > /tmp/prs.json
+          for r in foreman-cockpit forge-policy forge-coordination forge-writer-state; do
+            gh api "repos/tpruittguitar/$r/pulls?state=open&per_page=50" \
+              --jq "[.[] | {repo: \"$r\", number, title, draft, created_at, url: .html_url}]" > /tmp/pr_$r.json || echo '[]' > /tmp/pr_$r.json
+          done
+          jq -s 'add' /tmp/pr_*.json > /tmp/prs.json
+      - name: Build
+        run: node tools/needs-tim/build.js --prs /tmp/prs.json
+      - name: Commit if changed
+        run: |
+          if git diff --quiet -- attention/ && [ -z "$(git ls-files --others --exclude-standard attention/)" ]; then
+            echo "No change"; exit 0
+          fi
+          git config user.name forge-needs-tim-bot
+          git config user.email forge-needs-tim-bot@users.noreply.github.com
+          git add attention/NEEDS_TIM.json
+          git commit -m "NEEDS-TIM-BOT: rebuild attention list"
+          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          exit 1

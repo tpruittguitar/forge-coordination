@@ -1,0 +1,510 @@
+{
+ "schema": "forge.needs-tim.v1",
+ "builtAt": "2026-10-18T19:56:30.403Z",
+ "sourceCommit": "",
+ "counts": {
+  "total": 14,
+  "BLOCKING": 0,
+  "ACTION": 8,
+  "WATCH": 6,
+  "DECIDE": 8,
+  "JOBS": 4,
+  "FAILED": 1,
+  "UPKEEP": 1
+ },
+ "items": [
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "POSTVAL lane has gone quiet (usually reports every 1.4 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
+   "at": "2026-10-15T20:16:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "gofer-held:Novo Executive Search Operations Director / VP Ops Designate (LinkedIn Gmail 1a1",
+   "section": "JOBS",
+   "level": "ACTION",
+   "title": "Application record held: Novo Executive Search Operations Director / VP Ops Designate (LinkedIn Gmail 1a14acffa7d33818)",
+   "detail": "LinkedIn 'Your application to...' email, body text stripped; template id hints application_rejected but outcome not readable. Row V2I-033AEF9CE89D is SCOUT_INTAKE. No state asserted. Next: read email body in HTML or ask Tim.",
+   "action": "Tell Claude the outcome (applied / rejected / not mine) so the gofer can record it.",
+   "source": "receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt",
+   "at": "2026-10-18T14:50:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "ask:ASK-20261018-01",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Auterion: P2 or Watch?",
+   "detail": "The Target Companies registry in forge-policy lists Auterion as P2 (seed recommendation, TC-016). The 2026-10-17 priority-employer amendment in CONTROL puts Auterion on the secondary watch list with no priority (software-heavy autonomy stack, low manufacturing ownership). Web discovery reads the registry, so today Auterion is searched at least daily as P2.",
+   "blocks": "Which tier web discovery uses for Auterion.",
+   "options": [
+    "Keep P2",
+    "Change to WATCH"
+   ],
+   "recommended": "Change to WATCH (low manufacturing ownership).",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-01.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-01.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-01",
+   "links": [
+    {
+     "label": "Watchlist analysis",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_1602ET_AUSA_DEFENSE_TECH_WATCHLIST.txt"
+    },
+    {
+     "label": "forge-policy rules (search TC-016)",
+     "url": "https://github.com/tpruittguitar/forge-policy/blob/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-03",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Copy of PIPELINE_EXPLORER_STATE.json for the state-write fix (D-2)",
+   "detail": "The state-write fix (lost rulings / seen marks / incidents risk) needs a copy of the live state file to test against (gate G-2) and to check for damage already done. Claude can make the copy in Drive itself.",
+   "blocks": "Gate G-2 of the state-write fix, which blocks its merge.",
+   "options": [
+    "Yes, Claude makes the copy",
+    "No"
+   ],
+   "recommended": "Yes.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-03.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-03.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-03",
+   "links": [
+    {
+     "label": "10-17 review record §5",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_0345ET_PIPELINE_EXPLORER_V1_5_REVIEW_SESSION.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-06",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Branch protection on foreman-cockpit main (D-7)",
+   "detail": "Today any AI with push access can push straight to main, which Cloudflare deploys immediately. Protection makes every change go through a pull request you merge.",
+   "blocks": "Safety of every deploy.",
+   "options": [
+    "Turn it on",
+    "Leave it off"
+   ],
+   "recommended": "Turn it on: require a pull request before merging, no approvals required (you merge your own).",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-06.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-06.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-06",
+   "links": [
+    {
+     "label": "Branch settings",
+     "url": "https://github.com/tpruittguitar/foreman-cockpit/settings/branches"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-08",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Make asks/ the one place every lane posts questions for you (CONTROL amendment)",
+   "detail": "Lanes write \"Tim must decide\" in six different ways inside receipts today, so the Needs you page has to guess. This amendment tells every lane: when you need Tim, create one file in forge-coordination asks/open/ (format in asks/README.md) in the same run, and keep writing NEXT_OWNER in the receipt as now. CONTROL changes only on your instruction.",
+   "blocks": "Completeness of the Needs you page.",
+   "options": [
+    "Approve the amendment",
+    "Not now"
+   ],
+   "recommended": "Approve.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-08.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-08.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-08",
+   "links": [
+    {
+     "label": "asks/README.md",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/README.md"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-09",
+   "section": "JOBS",
+   "level": "ACTION",
+   "title": "Ashley Furniture, Senior Director Mfg Ops: rejected or applied?",
+   "detail": "Two emails the same day (2026-07-29): a rejection at 20:55Z (Gmail 19fafa969b08e5bb) and an application confirmation at 23:31Z (Gmail 19fb038228f51c3e). The gofer will not override a REJECTED record on its own (archive items 21 and 22).",
+   "blocks": "Recording this application in the master; the gofer carries it as a hold every run.",
+   "options": [
+    "Applied, then rejected (record REJECTED)",
+    "Applied, still open (record APPLIED)",
+    "Not mine / ignore"
+   ],
+   "recommended": "",
+   "action": "Answer in chat; Claude records it and the gofer applies it next run.",
+   "source": "asks/open/ASK-20261018-09.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-09.json",
+   "at": "2026-10-18T16:00:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-09",
+   "links": [
+    {
+     "label": "Gofer receipt 14:50 ET",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-10",
+   "section": "JOBS",
+   "level": "ACTION",
+   "title": "Harmattan AI, VP Manufacturing: did you apply?",
+   "detail": "The master row V2I-AB4A9958A9AE says DECLINED_BY_TIM, but Gmail 1a08db0e558aaeda (2026-09-10) is an application confirmation. The gofer will not override your decline on its own (archive item 130).",
+   "blocks": "Recording this application; the gofer carries it as a hold every run.",
+   "options": [
+    "I applied (record APPLIED)",
+    "I declined; the email is wrong (keep DECLINED)"
+   ],
+   "recommended": "",
+   "action": "Answer in chat; Claude records it and the gofer applies it next run.",
+   "source": "asks/open/ASK-20261018-10.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-10.json",
+   "at": "2026-10-18T16:00:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-10",
+   "links": [
+    {
+     "label": "Gofer receipt 14:50 ET",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt"
+    }
+   ]
+  },
+  {
+   "id": "run-unfinished:POSTVAL|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "POSTVAL · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: CHECKPOINT. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
+   "at": "2026-10-15T20:16:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "gofer-held:Tesla Sr. Manager, Production Engineering, Solar Manufacturing 283760 (Gmail 1a1",
+   "section": "JOBS",
+   "level": "WATCH",
+   "title": "Application record held: Tesla Sr. Manager, Production Engineering, Solar Manufacturing 283760 (Gmail 1a14dc7dda743fda)",
+   "detail": "Writer held: only candidate V2F-D1819DCF161C is REJECTED_BY_EMPLOYER (Brookshire), not found in my master snapshot; may be a different req. Protected state not overridden. Next: read that row's req; if different, resend with LOCATION to force a protected insert; else route to Tim.",
+   "action": "The gofer checks this first; it comes to you only if that check fails.",
+   "source": "receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt",
+   "at": "2026-10-18T14:50:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "ask:ASK-20261018-02",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Stage 4: plan moving the master and Writer queue off Drive?",
+   "detail": "Policy, receipts and the receipt index are on GitHub. The master and WRITER_QUEUE are still on Drive; the GitHub migration plan says \"Stage 4 Master + queue: separate plan later\". ChatGPT recorded this as an open Tim decision on 2026-10-17. Drive is where several stuck states originate (zero-byte index 10-16, Drive in-place edit failures).",
+   "blocks": "Nothing today; it sets when the Stage 4 plan gets written.",
+   "options": [
+    "Write the plan now (no build)",
+    "After the Pipeline Explorer work",
+    "Not needed"
+   ],
+   "recommended": "Write the plan now; build after the state-write fix and Phase 1.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-02.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-02.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-02",
+   "links": [
+    {
+     "label": "GitHub migration plan",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/directives/FORGE_PLAN_GitHub_Migration_2026-10-12.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-04",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Recovery seen on one device: clear it everywhere? (D-4)",
+   "detail": "When a Writer incident shows verified recovery on your phone, should the acknowledged obligation clear on the desktop too? Today it does not, and the planned fix keeps it that way.",
+   "blocks": "Nothing urgent; the fix ships with the current behavior.",
+   "options": [
+    "Keep: per device",
+    "Clear everywhere"
+   ],
+   "recommended": "Keep per device until the decision state machine (Phase 1) lands.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-04.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-04.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-04",
+   "links": [
+    {
+     "label": "10-17 review record §5",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_0345ET_PIPELINE_EXPLORER_V1_5_REVIEW_SESSION.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-05",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Phase 4 (adaptive suggestions): keep or cut? (D-6)",
+   "detail": "Phase 4 would log every time you overrule the score (hold a top job, pursue a low one) with your reason code, then offer suggestions such as \"you declined 8 of 10 Chicago roles scoring above 70; lower Chicago geo?\". Advisory only, opt-in, reversible; it never changes the shared model or rules by itself.",
+   "blocks": "Nothing; it is the last phase.",
+   "options": [
+    "Cut",
+    "Keep, after Phase 3",
+    "Keep only the reason-code logging"
+   ],
+   "recommended": "Keep only the reason-code logging (already in Phase 3, T-19); cut the suggestion engine.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-05.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-05.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-05",
+   "links": [
+    {
+     "label": "Plan §2.5 and §7",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261018-07",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Add an automatic test run to foreman-cockpit pull requests (D-8)",
+   "detail": "A GitHub Action that runs the 455+ unit tests on every pull request (about 8 s) and shows a green/red check. Visible only; it does not block merging.",
+   "blocks": "Catching broken code before you merge.",
+   "options": [
+    "Add it",
+    "Not now"
+   ],
+   "recommended": "Add it, in the state-write fix PR.",
+   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261018-07.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-07.json",
+   "at": "2026-10-18T15:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261018-07",
+   "links": [
+    {
+     "label": "10-17 review record §5",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_0345ET_PIPELINE_EXPLORER_V1_5_REVIEW_SESSION.txt"
+    }
+   ]
+  }
+ ],
+ "lanes": [
+  {
+   "lane": "EMAIL",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-18T15:02:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-1502ET_TERMINAL.txt",
+   "runs7d": 68,
+   "usualGapHours": 3,
+   "overdue": false
+  },
+  {
+   "lane": "EMAIL",
+   "provider": "UNKNOWN",
+   "lastAt": "2026-10-16T18:00:00-04:00",
+   "lastStatus": "PARTIAL",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
+   "runs7d": 3,
+   "usualGapHours": 27,
+   "overdue": false
+  },
+  {
+   "lane": "ENRICH-FEASIBILITY",
+   "provider": "CLAUDE",
+   "lastAt": "2026-10-18T12:11:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
+   "runs7d": 17,
+   "usualGapHours": 6,
+   "overdue": false
+  },
+  {
+   "lane": "ENRICH-FEASIBILITY",
+   "provider": "GROK",
+   "lastAt": "2026-10-13T17:12:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261013-1712ET_TERMINAL.txt",
+   "runs7d": 16,
+   "usualGapHours": 3,
+   "overdue": false
+  },
+  {
+   "lane": "ENRICH-STRATEGIC",
+   "provider": "CLAUDE",
+   "lastAt": "2026-10-18T12:11:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-CLAUDE-20261018-1211ET_TERMINAL.txt",
+   "runs7d": 9,
+   "usualGapHours": 12,
+   "overdue": false
+  },
+  {
+   "lane": "ENRICH-STRATEGIC",
+   "provider": "GROK",
+   "lastAt": "2026-10-13T10:15:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261013-1015ET_TERMINAL.txt",
+   "runs7d": 12,
+   "usualGapHours": 1.4,
+   "overdue": false
+  },
+  {
+   "lane": "GOFER-SOURCEFIX",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-17T23:56:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-SOURCEFIX-CHATGPT-20261017-2356ET_TERMINAL.txt",
+   "runs7d": 1,
+   "usualGapHours": null,
+   "overdue": false
+  },
+  {
+   "lane": "GOFER",
+   "provider": "CLAUDE",
+   "lastAt": "2026-10-18T14:50:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt",
+   "runs7d": 4,
+   "usualGapHours": 2,
+   "overdue": false
+  },
+  {
+   "lane": "HANDOFF",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-17T23:02:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-HANDOFF-CHATGPT-20261017-2302ET_TERMINAL.txt",
+   "runs7d": 1,
+   "usualGapHours": null,
+   "overdue": false
+  },
+  {
+   "lane": "INDEX-CUTOVER",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-17T23:29:00-04:00",
+   "lastStatus": "COMPLETE",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET_TERMINAL.txt",
+   "runs7d": 2,
+   "usualGapHours": 0.2,
+   "overdue": false
+  },
+  {
+   "lane": "INDEX",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-17T23:05:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INDEX-CHATGPT-20261017-2305ET_TERMINAL.txt",
+   "runs7d": 1,
+   "usualGapHours": null,
+   "overdue": false
+  },
+  {
+   "lane": "POSTVAL",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-15T20:16:00-04:00",
+   "lastStatus": "UNFINISHED",
+   "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
+   "runs7d": 4,
+   "usualGapHours": 4,
+   "overdue": true
+  },
+  {
+   "lane": "POSTVAL",
+   "provider": "CLAUDE",
+   "lastAt": "2026-10-13T18:34:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261013-1834ET_STANDDOWN.txt",
+   "runs7d": 21,
+   "usualGapHours": 1,
+   "overdue": true
+  },
+  {
+   "lane": "POSTVAL",
+   "provider": "GROK",
+   "lastAt": "2026-10-12T22:08:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/FORGE_POSTING_VALIDATION_GROK_20261012_2208ET.txt",
+   "runs7d": 2,
+   "usualGapHours": 0,
+   "overdue": true
+  },
+  {
+   "lane": "WEB",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-18T05:46:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-CHATGPT-20261018-0546ET_TERMINAL.txt",
+   "runs7d": 3,
+   "usualGapHours": 24.1,
+   "overdue": false
+  },
+  {
+   "lane": "WEB",
+   "provider": "GROK",
+   "lastAt": "2026-10-13T18:12:00-04:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-GROK-20261013-1812ET_TERMINAL.txt",
+   "runs7d": 13,
+   "usualGapHours": 3,
+   "overdue": false
+  }
+ ],
+ "dismissed": [
+  {
+   "id": "run-next-owner:INDEX|CHATGPT",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INDEX-CHATGPT-20261017-2305ET_TERMINAL.txt",
+   "by": "CLAUDE",
+   "reason": "Verified done: PR #117 merged 2026-10-18 03:03Z, PR #118 merged 03:14Z, tpruittguitar/forge-writer-state exists, receipt-index cutover COMPLETE (FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET). Gofer receipts pushed at 00:50, 12:53, 14:50 ET, so the gofer push works. Auterion and Stage 4 moved to ASK-20261018-01/02."
+  },
+  {
+   "id": "run-tim-decisions:HANDOFF|CHATGPT",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-HANDOFF-CHATGPT-20261017-2302ET_TERMINAL.txt",
+   "by": "CLAUDE",
+   "reason": "Verified done: PR #117 merged 2026-10-18 03:03Z, PR #118 merged 03:14Z, tpruittguitar/forge-writer-state exists, receipt-index cutover COMPLETE (FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET). Gofer receipts pushed at 00:50, 12:53, 14:50 ET, so the gofer push works. Auterion and Stage 4 moved to ASK-20261018-01/02."
+  },
+  {
+   "id": "run-next-owner:HANDOFF|CHATGPT",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-HANDOFF-CHATGPT-20261017-2302ET_TERMINAL.txt",
+   "by": "CLAUDE",
+   "reason": "Verified done: PR #117 merged 2026-10-18 03:03Z, PR #118 merged 03:14Z, tpruittguitar/forge-writer-state exists, receipt-index cutover COMPLETE (FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET). Gofer receipts pushed at 00:50, 12:53, 14:50 ET, so the gofer push works. Auterion and Stage 4 moved to ASK-20261018-01/02."
+  },
+  {
+   "id": "run-next-owner:GOFER-SOURCEFIX|CHATGPT",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-SOURCEFIX-CHATGPT-20261017-2356ET_TERMINAL.txt",
+   "by": "CLAUDE",
+   "reason": "Verified done: PR #117 merged 2026-10-18 03:03Z, PR #118 merged 03:14Z, tpruittguitar/forge-writer-state exists, receipt-index cutover COMPLETE (FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET). Gofer receipts pushed at 00:50, 12:53, 14:50 ET, so the gofer push works. Auterion and Stage 4 moved to ASK-20261018-01/02."
+  }
+ ]
+}
