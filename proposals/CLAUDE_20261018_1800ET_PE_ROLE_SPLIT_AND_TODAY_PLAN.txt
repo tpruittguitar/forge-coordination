@@ -1,0 +1,131 @@
+PIPELINE EXPLORER v1.5 — ROLE SPLIT (GROK BOT OWNS LOOK AND FEEL) + MISSED IMPROVEMENTS + TODAY'S PLAN
+=====================================================================================================
+Author: CLAUDE for Tim Pruitt · 2026-10-18 18:00 ET · Status: PLAN. Supersedes section 5.1 lanes of
+CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt. Sections 2-4 of that file stay in force.
+Trigger: Tim 17:54 ET — "keep grok bot as control of the look and feel of the gui. im very satisfied with the look in
+its proposal"; more Grok and Grok Bot usage available; execute today.
+Labels: FACT · INFERENCE · OPINION.
+
+-----------------------------------------------------------------------------------------------
+1. AUTHORITY AFTER TODAY'S RULING
+-----------------------------------------------------------------------------------------------
+- GROK BOT = look-and-feel owner. Owns the v1.5 PDF, the tokens file, and every visual call: colour use, type,
+  spacing, composition, glyph drawing, motion feel. Approves every golden frame and every built screen.
+- Two hard limits apply to every owner, Grok Bot included, and only Tim can waive them:
+  L-1 Accessibility floor (doctrine 7A, WCAG 2.2 AA): 3:1 control outlines (N-07), 4.5:1 small text (N-08),
+      no colour-only state (N-09), 11 px text floor (N-10).
+  L-2 Data truth: every number on screen comes from the live code path (scoreRow, counter registry, Writer
+      readback). A drawing may never show a number the app cannot produce (N-01, N-06, V-16, V-19, V-20).
+- V-01..V-20 (approved provisionally by Tim 15:41 ET) become Grok Bot's to confirm or re-rule. Any re-ruling that
+  touches L-1 or L-2 comes back to Tim. Claude flags L-1/L-2 conflicts; Claude makes no visual calls.
+- Tim breaks ties and approves on his own monitor and phone.
+
+-----------------------------------------------------------------------------------------------
+2. IMPROVEMENTS THE PROPOSAL MISSED (new; the N-xx and E-xx lists stay open)
+-----------------------------------------------------------------------------------------------
+FACT = the proposal (spec v1.5.1, 2026-10-15) has no screen or rule for these; most exist in the live app since then.
+M-01 Needs you page (REV-011, live). No v1.5 drawing. The bell, badge, four sections (Decide / Jobs / Failed /
+     Upkeep), copy-answer buttons and phone layout all need a frame (F10, M07). Highest-traffic maintenance screen.
+M-02 Agency postings. FACT: COMPANY = the agency, CLIENT_EMPLOYER often stays unknown forever (Tim ruling 8,
+     REV-014). Spec mentions "hidden recruiter client = UNKNOWN" for scoring only. Missing: row and drawer treatment
+     ("via <Agency> · client unknown"), culture-score UNKNOWN shown with ◌, and no hold or warning colour for it.
+M-03 Closed / dead postings (LIVENESS = CLOSED_*). Zero mentions. Missing: row state, drawer banner, history
+     preset look, and the rule that Start never shows them (REV-011 behaviour must survive the redesign).
+M-04 "The email rules." FACT: a Gmail confirmation records APPLIED even over a Tim decline (REV-014). Missing: a
+     drawer state that shows where APPLIED came from (email evidence link vs Tim click) and the date.
+M-05 State-sync health (REV-017, live). Missing: a HUD indicator for a failed seen/incident sync (today it shows
+     only on Needs you). Pairs with the two-queue fix N-02 (my decisions waiting vs lane queue).
+M-06 Lane health. Quiet lanes and unfinished runs exist on Needs you; the HUD has no glanceable "automation OK /
+     N lanes quiet" pill. One pill, links to Needs you.
+M-07 Writer build stamp. writer_status now reports build commit/PR; Settings > Writer should show it (one line).
+M-08 Stale spec facts. FACT: Writer redeployed 2026-10-18 (version 69, e7389ed) carries every Writer change on main,
+     so the Phase 0 "Writer redeploy outstanding" discrepancy is closed; T-06 is half done (writes now merge;
+     the open-job write still needs debouncing).
+M-09 (OPINION, scope question for Tim) After-apply tracking: interview / follow-up / recruiter reply. Zero
+     mentions. Recommend: defer until after S5; record as a candidate only.
+
+-----------------------------------------------------------------------------------------------
+3. WHO DOES WHAT (by strength)
+-----------------------------------------------------------------------------------------------
+GROK BOT — art director and visual owner. Designs; does not write product code.
+  - Answers the intent questions (build sources; intentional vs leftover drawings).
+  - Confirms or re-rules V-01..V-20 inside L-1/L-2.
+  - Designs the missing states M-01..M-07 in v1.5 style (PNG pages + token additions).
+  - Approves golden frames and each built screen (pass / corrections list).
+GROK — adversarial checker. Side-by-side golden vs Grok Bot drawing vs build; colour-blind, greyscale and
+  low-light review; motion vs catalog. Never designs.
+CHATGPT / CODEX — tests and measurement. Visual harness (token, geometry, pixel, motion checks), counter
+  registry, Phase 0 instrumentation, CI workflow. Independent of Claude's code.
+CLAUDE — engineer and integrator. Fixture scored by scoreRow; tokens.css transcribed exactly from Grok Bot's
+  tokens; golden-frame HTML rendered with the real CSS; spec v1.5.2 functional errata; all product code;
+  merge review; Writer.
+TIM — two decisions, three paste-ins, Phase 0 timed sessions, frame approval, merges.
+
+File ownership (unchanged from the 15:30 plan, plus): Grok Bot owns forge-coordination/proposals/GROK_* and
+tests/visual/design/ (its PNGs); Claude transcribes from them and never edits them.
+
+-----------------------------------------------------------------------------------------------
+4. TODAY (2026-10-18, ET)
+-----------------------------------------------------------------------------------------------
+18:05  Tim: answer Q-1, Q-2 in chat; paste the Grok Bot and Codex messages (section 5).
+18:10-20:00 parallel:
+  Grok Bot  intent answers + V confirmations (fast); then M-01..M-07 designs.
+  Codex     visual harness against tests/visual/golden/ (works on placeholder PNGs until frames land).
+  Claude    fixture (one dataset, scored by scoreRow) -> tokens.css -> golden HTML F01 (queue default) and
+            F02 (job selected) at 2560x1440 -> PNG renders; spec v1.5.2 errata (M-08 + REV-011/014/017).
+  Tim       Phase 0 timed sessions (3 x ~15 min, script in chat), any time tonight.
+20:00  Claude posts F01/F02 PNGs. Tim pastes the Grok Bot review message and the Grok QA message.
+20:30  Grok Bot verdict + Grok differences list -> Claude corrects.
+21:00  Tim views F01/F02 on the 2560 monitor. Gate S3a: F01/F02 approved by Grok Bot and Tim.
+After gate: F10 (Needs you) from Grok Bot's design, then F03-F07; product build (S4) starts tomorrow.
+Nothing ships to the live app today. Risk: Grok Bot's build sources are gone -> Claude measures from the PDF
+vector export (method already proven on p38/40/42); costs about one hour.
+
+-----------------------------------------------------------------------------------------------
+5. MESSAGES — see chat for the ready-to-paste copies (same text).
+-----------------------------------------------------------------------------------------------
+5.1 GROK BOT (now)
+"Grok Bot: Tim has made you the owner of the Pipeline Explorer look and feel. Your v1.5 PDF is the visual authority.
+Read forge-coordination/proposals/CLAUDE_20261018_1800ET_PE_ROLE_SPLIT_AND_TODAY_PLAN.txt (sections 1-2) and
+CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt (sections 2-3). Then do four things and
+commit the results to forge-coordination/proposals/ as GROK_<YYYYMMDD_HHMM>ET_PE_LOOK_OWNER_*.
+(1) Build sources: if you still have gen151.py, bands.py, desk.py, scoring.py, mapsvg.py, mobile.py or their HTML,
+commit them unchanged to proposals/GROK_PE_V1_5_BUILD_SOURCES/. If not, say so.
+(2) Intent: for each, intentional or leftover, one line why: Decline drawn red; Hold using ◷; ▽/◆ next to ⊘HOLD;
+'Needs decision' in cyan; drawer breakdown 83.3 vs ring 76 vs header 86.
+(3) V-01..V-20: for each, CONFIRM or RE-RULE with your alternative. Two limits bind you: L-1 accessibility
+floor (3:1 control outlines, 4.5:1 small text, no colour-only state, 11 px minimum) and L-2 every number must be one
+the app computes. A re-ruling that breaks L-1 or L-2 goes to Tim.
+(4) Design the missing states M-01..M-07 in the v1.5 style: Needs you page desktop 2560x1440 and phone 402x874;
+agency row + drawer with client unknown; closed-posting row + drawer banner; drawer showing APPLIED from email
+evidence; HUD pills for state-sync failure, the two queue counters, lane health; Writer build line in Settings.
+Deliver PNG pages plus a text file of any new tokens (name, value, use). Reuse existing tokens wherever possible."
+
+5.2 CHATGPT / CODEX (now)
+"Repo tpruittguitar/foreman-cockpit, new branch backup/chatgpt-<YYYYMMDD-HHMM>ET from main. Read
+forge-coordination/proposals/CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt sections 4
+and 5, and CLAUDE_20261018_1800ET_PE_ROLE_SPLIT_AND_TODAY_PLAN.txt. Build the visual test harness under tests/visual/
+with the Playwright pattern in tests/needs-tim.browser.js (mocked Writer, fixture): (a) computed-style token checks
+for a named-element list in tests/visual/elements.json against values parsed from tokens.css; (b) bounding-box
+geometry checks +/-1 CSS px at 2560x1440 and 402x874@3x from tests/visual/geometry.json; (c) screenshot diff vs PNGs
+in tests/visual/golden/ (animations frozen, fonts loaded, threshold configurable, default 0.2 %); (d)
+document.getAnimations() duration/easing vs tokens.css. Ship it working against a placeholder golden page you
+create under tests/visual/sample/. Do not edit pipeline.html, pipeline-*.css, tokens.css or tests/visual/golden/
+(Claude owns them) or tests/visual/design/ (Grok Bot). Add an npm script test:visual. PR title starts
+'REV-018 · '. Commit label 'CHATGPT FORGE-PE-HARNESS-CHATGPT-<time>ET:'. Add the REV-018 line to
+forge-coordination/control/CHANGE_REGISTER.txt and write a receipt to forge-coordination/receipts/."
+
+5.3 GROK BOT (after Claude posts F01/F02, ~20:00)
+"Grok Bot: golden frames F01 and F02 are in foreman-cockpit tests/visual/golden/ (branch named in the latest
+Claude receipt). Compare each against your v1.5 PDF p40 and your answers in GROK_*_PE_LOOK_OWNER_*. Verdict per
+frame: PASS, or a numbered corrections list (region · what you see · what it must be · token or measurement).
+Commit as forge-coordination/proposals/GROK_<time>ET_PE_FRAME_VERDICT_F01_F02.txt."
+
+5.4 GROK (after Claude posts F01/F02, ~20:00)
+"Grok: adversarial visual QA. Compare foreman-cockpit tests/visual/golden/F01*.png and F02*.png against
+forge-coordination/proposals/Pipeline_Explorer_Proposal_v1.5.pdf page 40 and Grok Bot's GROK_*_PE_LOOK_OWNER_*
+rulings. List every difference: frame · region · PDF shows · frame shows · ruling ID or 'unruled' · must-fix /
+accept. Then view both frames in greyscale and with deuteranopia and protanopia simulation and list any state
+that becomes unreadable. Commit as forge-coordination/proposals/GROK_<time>ET_PE_GOLDEN_QA_F01_F02.txt."
+
+END
