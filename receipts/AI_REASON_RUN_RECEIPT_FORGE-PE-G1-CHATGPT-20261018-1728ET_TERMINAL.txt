@@ -1,0 +1,35 @@
+PROVIDER=ChatGPT
+TASK_KEY=FORGE_PE_G1_INDEPENDENT_STATE_MERGE_TESTS
+RUN_ID=FORGE-PE-G1-CHATGPT-20261018-1728ET
+REV=REV-016
+DATE_ET=2026-10-18
+RUN_TERMINAL_STATUS=COMPLETE
+SCOPE=Independent tests only; red-by-design acceptance handoff, not an implemented fix.
+REPO=tpruittguitar/foreman-cockpit
+BASE_COMMIT=93e357d922dd730bcdbe61c96003bda5a28c34b9
+BRANCH=backup/chatgpt-20261018-1728ET
+COMMIT=d8ed9a63fc18105e15fc3f11bfb46c7ffae0be5f
+PR=https://github.com/tpruittguitar/foreman-cockpit/pull/120
+PR_TITLE=REV-016 · Independent state-merge tests
+PR_STATE=OPEN_DRAFT
+FILE=tests/state-merge-independent.test.js
+CHANGED_FILES_IN_FOREMAN_PR=1
+MODULE_REQUIRED=../apps-script/stateMerge.js (absent; no implementation or fallback added)
+EXPORT_CONTRACT=Named mergeState_(current,incoming), direct merged-state return; null/undefined stored state refuses by throwing.
+EXPECTED_1=Incoming rulings leave the literal stored rulings map unchanged, including overwrite/delete/insertion attempts.
+EXPECTED_2=Stale empty/partial/omitted maps retain literal seen keys V2I-A,V2I-B and incident ids incident-ack,incident-active.
+EXPECTED_3=Stored incident-ack stays ACKNOWLEDGED_UNRESOLVED regardless of incoming status/recovery timestamps.
+EXPECTED_4=Stored incident-active stays ACTIVE for unknown/missing/wrong-type incoming statuses.
+EXPECTED_5=Unreadable stored file refuses with ok=false, zero writes and unchanged bytes.
+COVERAGE=25 declared acceptance cases. The no-write cases execute existing production Code.gs doPost in a VM with fault-injected Drive storage, not a test-local save imitation.
+INDEPENDENCE=This task did not read forge-coordination/proposals/CLAUDE_20261017_STATE_FIX/ or any proposed implementation. Expected outcomes came from Tim's five requirements. Existing deployed-source files were read only for state shape and real POST/storage integration.
+READ_CONTEXT=foreman-cockpit package.json; production apps-script/Code.gs; pipeline.html state serialization; production pipeline-incidents.js shape/status declarations; existing test conventions and writer-world helper. No helper implementation is copied into the new tests.
+SYNTAX_CHECK=node --check tests/state-merge-independent.test.js; EXIT=0
+TEST_COMMAND=node --test tests/state-merge-independent.test.js
+TEST_EXIT=1
+TEST_RESULT=EXPECTED_RED; MODULE_NOT_FOUND for ../apps-script/stateMerge.js; one test-file load failure, zero passing cases.
+LIMITATION=The 25 declared cases did not execute because the required module is missing. They are not claimed passing. No live Apps Script, Drive, master, Writer or pipeline-state mutation occurred.
+CHANGE_REGISTER=control/CHANGE_REGISTER.txt REV-016 -> foreman-cockpit #120 OPEN (draft); registered atomically with this receipt.
+NEXT_OWNER=Implementation author; Tim reviews/merges.
+NEXT_ACTION=Implement the required module and real server persistence integration separately, then run these independent tests unchanged and inspect every literal assertion.
+STOP_REASON=Authorized tests-only deliverable, draft PR and coordination record completed.
