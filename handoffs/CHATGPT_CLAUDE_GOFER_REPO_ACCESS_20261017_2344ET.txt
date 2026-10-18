@@ -1,0 +1,38 @@
+CLAUDE GOFER REPOSITORY ACCESS -- TIM ACTION AND NEXT-RUN VERIFICATION
+CREATED_BY=CHATGPT FORGE-GOFER-BACKFILL-CHATGPT-20261017-2344ET
+TASK=FORGE_APPLICATION_WRITER_GOFER
+PROVIDER=CLAUDE
+SCHEDULE=Existing hourly :50 schedule; do not change schedule or ownership.
+STATUS=Awaiting Tim's Claude task repository/source configuration. ChatGPT backfill does not prove the Claude scheduled sandbox can push.
+
+REPORTED_BLOCKER
+Git proxy refuses forge-coordination because it is not in the scheduled session's authorized repository set. Public raw reads and clone success are not proof of push access. The sandbox GH_TOKEN is invalid and add_repo is unavailable. Do not invent an add_repo tool or work around the proxy.
+
+TIM CONFIGURATION
+Open the existing task in Claude's Scheduled tasks view. Current Anthropic documentation calls cloud tasks Routines (https://claude.ai/code/routines); open FORGE_APPLICATION_WRITER_GOFER and use its edit control. In the repository/source selector (current docs: Select repositories), attach tpruittguitar/forge-coordination, preserving existing sources and schedule. Where a permission selector exists, require write/push. Do not assume a separate write toggle exists: effective push access also depends on the connected GitHub identity/app permissions.
+If GitHub is not connected, complete Claude's GitHub connection/onboarding flow first. In GitHub Settings > Applications > Installed GitHub Apps (https://github.com/settings/installations), configure Claude's app for tpruittguitar and include forge-coordination in its selected repositories; retain existing selections. If app setup requests permissions, ensure repository Contents write is granted. Return to Claude and attach the repo to this specific task; app installation alone does not establish the task's authorized repository set.
+Check other Claude scheduled tasks that write forge-coordination receipts (for example a configured FORGE-POSTVAL-CLAUDE task). If one successfully pushes, compare/copy its repository attachment and GitHub connection configuration into GOFER, without changing lane ownership, schedule or source scope.
+
+REQUIRED NEXT :50 RUN CHECK
+1. Start a NEW scheduled execution after saving the repo/source configuration; do not infer the existing failed sandbox gained new credentials.
+2. The run must create its own new receipt under forge-coordination/receipts/ using the normal repository-sources/proxy credential mechanism.
+3. Its commit message must start exactly: CLAUDE FORGE-GOFER-CLAUDE-<runid>:
+4. Push must succeed. Report a real commit SHA, then verify that SHA and the new receipt are present on GitHub. A local commit, successful public read/clone, stale Drive fallback, or ChatGPT backfill is not proof.
+5. If proxy authorization still fails, preserve the exact error and route task/source configuration back to Tim. Do not put a personal access token in the prompt, Drive, repo or lane notes. Use the repository-source mechanism only.
+6. Source-backed git push is the decisive test. gh auth status alone may still report the invalid GH_TOKEN; do not substitute that CLI token for the proxy/source credential.
+
+BACKFILL
+Run FORGE-GOFER-CLAUDE-20261017-2253ET terminal receipt copied byte-for-byte from Drive 1OA_DTnfbcLTgCiTJKy7yuetFxPbfwVZq to receipts/FORGE_GOFER_CLAUDE_20261017_2253ET.txt.
+Backfill commit: 06846e5 (ChatGPT, not Claude runtime verification).
+Terminal bytes: 4410; sha256: 2f2d6e703c68721740d4f66d52a8e2aa37408f230c41e7a198e6c1b1ff32e66f.
+Opening Drive file 1T9NjhMGGWEQvbu8hkWEHK6-D_E9WYity was fetched, matched to the same run, and is already referenced by OPENING_RECEIPT_FILE_ID in the unchanged terminal receipt.
+The historical receipt's pending statuses and old blocker text are preserved, not rewritten as current observations.
+
+SEPARATE OPEN ITEMS -- NOT RESOLVED BY REPOSITORY ACCESS OR BACKFILL
+- W-20261018025604614-1f68f0: 13 accepted application updates need a COMPLETE receipt-index entry and fresh exact-row readback; do not blind-replay.
+- Archive item 17 (Anduril Deputy Head of Production) and items 21/22 (Ashley Furniture same-day rejected/applied conflict): Tim ruling required.
+- Archive cursor: 361 of 386 items remain, next item 26. These figures are carried from the historical receipt, not a fresh archive recount.
+
+UI EVIDENCE AND LIMITS
+Official documentation: https://code.claude.com/docs/en/routines and https://code.claude.com/docs/en/claude-code-on-the-web, fetched 2026-10-17.
+The current docs name Routines, a name-menu Edit control and Select repositories. Tim's installed app UI was not inspected, so exact labels for an older Scheduled tasks screen and any write-permission selector are not asserted.
