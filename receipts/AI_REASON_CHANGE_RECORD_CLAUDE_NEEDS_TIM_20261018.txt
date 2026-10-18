@@ -1,0 +1,45 @@
+AI_REASON CHANGE RECORD — CLAUDE — FORGE-NEEDS-TIM-CLAUDE-20261018-1615ET
+Requested by Tim 2026-10-18 15:41 ET: "a page dedicated to all these waiting for me questions and decisions ... plus a
+list of unresolved failures in writing or performing automation runs ... a list of things for me to do to keep the system
+running ... include job decisions holding up processing. also when a job is applied, rejected or dead it shouldn't be
+shown on opening page at the start."
+
+WHAT CHANGED
+forge-coordination (main, commits 7a86fd8 + bot 5f119c4):
+- asks/README.md, asks/open/ASK-20261018-01..10.json (Auterion tier, Stage 4 plan, D-2, D-4, D-6, D-7, D-8, CONTROL
+  amendment for asks/, Ashley Furniture 21/22, Harmattan 130), asks/resolved/ASK-20261017-D1.json (push access exists),
+  asks/resolved/DISMISS-20261018-01.json (4 receipt items verified done: PR #117/#118 merged, forge-writer-state exists,
+  index cutover COMPLETE, gofer push working).
+- tools/needs-tim/build.js + build.test.js (12 tests); .github/workflows/build-needs-tim.yml (push + every 30 min,
+  commits attention/NEEDS_TIM.json only when the list changes); attention/NEEDS_TIM.json.
+foreman-cockpit (branch backup/claude-20261018-1615ET, PR #119, NOT merged, NOT deployed):
+- pipeline-needs-tim.js (new), pipeline.html (Needs you view, bell + badge, presets TIM_DECISION / DEAD_POSTINGS,
+  terminalJob_ treats LIVENESS=CLOSED_* as dead except APPLIED, start always opens Open roles), pipeline-navigation.js
+  (System › Needs you tab; leaving Intake returns to Open roles), tests/needs-tim.test.js, tests/needs-tim.browser.js,
+  tests/scoring-20261014.test.js (old one-time-migration assertion replaced by Tim's new start rule).
+
+WHAT DID NOT CHANGE
+- CONTROL, ENTRY, lane briefs, policy, Writer code, master: untouched. Lanes do not yet write asks/ (needs Tim's
+  approval, ASK-20261018-08); the builder reads receipts as they are written today.
+- No other AI's file edited.
+
+WHY THIS DESIGN
+- No canonical place for "items for Tim" existed; lanes record outcomes under six keys and Tim-needs in free text.
+  The builder reads what exists; the asks/ register gives a clean channel going forward; dismissals keep the list honest
+  without editing other lanes' receipts (a dismissal holds only while the same source file raises the item).
+- Lane silence is judged per lane across providers so lanes handed between AIs are not false alarms.
+- Output is stable between runs (no elapsed-time text) so the 30-min schedule commits only real changes.
+
+VERIFICATION
+- Builder run on the real repo: 21 items after the first Action run (including 7 open PRs). Builder tests 12/12.
+- Action run 39161054546: success; bot commit 5f119c4.
+- foreman-cockpit: npm test 486/486; tests/needs-tim.browser.js pass (2560×1440 and 402×874@3x); screenshots inspected.
+
+OPEN / RISKS
+- Older foreman-cockpit browser tests (ui, mobile, map, incidents, ...) time out on unmodified main too: they load
+  without ?src=writer and do not mock /api/structured. Pre-existing; not fixed here.
+- Handoff "open" detection treats any later receipt that names the handoff file as closing it; a receipt that only cites
+  it as still broken also hides it. Acceptable today (the cited index incident is resolved), noted for refinement.
+- Unauthenticated GitHub API: usage panel ~30/h + this list ~12/h per IP; raw CDN fallback on 403.
+- forge-coordination PR #1 (ChatGPT instruction packets) under independent review; its interaction with build-needs-tim
+  and asks/ is part of that review.
