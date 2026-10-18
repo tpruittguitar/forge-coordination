@@ -1,0 +1,31 @@
+FORGE CHANGE REGISTER — one numbering for every change, in every repo (Tim 2026-10-18 17:16 ET: "I just want consistency")
+OWNER=Tim. MAINTAINED_BY=Claude; every AI adds its own line.
+RULE: Every change gets the next REV number, whichever repo it lands in (foreman-cockpit, forge-coordination, forge-policy,
+  forge-writer-state). The PR title starts with it: "REV-016 · <what it does>". Add the change's line here in the same PR
+  (for a direct commit, in the same commit). Take the highest REV below + 1. GitHub's own PR numbers count separately per
+  repo and are shared with issues, so they never line up; REV is the number to use.
+Status: QUEUED · OPEN (PR waiting for Tim) · MERGED · LIVE (deployed/in use) · CLOSED (not merged).
+Detail for each REV stays in control/PIPELINE_EXPLORER_REVISION_LOG.txt (app/Writer) or the linked PR.
+
+REV      DATE        REPO                 PR / COMMIT   STATUS   WHAT
+REV-001  2026-10-12  foreman-cockpit      #98           LIVE     Refresh panel waits for the Writer queue on its own
+REV-002  2026-10-12  foreman-cockpit      #98           LIVE     "Waiting on my ruling" tabs back in reach (Review queue, Decline candidates, My rulings)
+REV-003  2026-10-11  foreman-cockpit      #95           LIVE     Every application and rejection is recorded (batch upsert_application)
+REV-004  2026-10-12  foreman-cockpit      #98           LIVE     Writer FLEX derivation follows Tim's three degree-wording rulings
+REV-005  2026-10-12  foreman-cockpit      #98           LIVE     Writer reads/saves policy from GitHub forge-policy (default since 10-17, eda7326)
+REV-006  2026-10-12  foreman-cockpit      #99           LIVE     Degree named only in preferred wording is SOFT_FLEX
+REV-007  2026-10-13  foreman-cockpit      #105          LIVE     Writer ATS liveness checker
+REV-008  2026-10-13  foreman-cockpit      #106          LIVE     AI usage panel with projected run-out day
+REV-009  2026-10-13  foreman-cockpit      #107, #108    LIVE     Writer reads Workday through TinyFish
+REV-010  2026-10-17  foreman-cockpit      0c9173a, #118 LIVE     Writer receipt index restored and moved to GitHub (forge-writer-state)
+REV-011  2026-10-18  foreman-cockpit      #119          LIVE     Needs you page; opening page hides applied / rejected / dead jobs
+                     forge-coordination   7a86fd8 …     LIVE       (repo half: asks/ register, Needs-you builder + Action)
+REV-012  2026-10-18  forge-coordination   #1            LIVE     Lane instruction packets: one short packet per lane (ChatGPT; ~90% less reading for most lanes)
+REV-013  2026-10-18  forge-coordination   #2            LIVE     Packet fixes: Tim's agency and standing rules restored; steps that could stop lanes removed
+REV-014  2026-10-18  forge-coordination   #3            OPEN     Tim rulings 10-18: asks/ is the one inbox; agency rows never delayed; the email rules applied/declined; REV numbering rule for every AI
+REV-015  2026-10-18  forge-policy         383f3b8       LIVE     Auterion target-company tier P2 -> WATCH (Tim ruling)
+
+EARLIER PRs WITHOUT A REV NUMBER (merged before this register; listed so nothing is missing)
+foreman-cockpit #86 #87 #88 #89 #90 #91 #92 #93 #94 (2026-10-11) · #96 #97 (10-12) · #100 #103 #104 #109 (10-13) ·
+  #111 #112 #113 #114 #115 #116 (10-15) · #117 (10-18). Still open from before: #6, #31, #42 (DO NOT MERGE), #66, #72, #73
+  (on the Needs-you page under "Keep the system running").
