@@ -1,0 +1,54 @@
+REV-018 — VISUAL CONTRACT HARNESS DELIVERY RECEIPT
+RUN_ID: FORGE-PE-HARNESS-CHATGPT-20261018-1803ET
+AUTHOR: CHATGPT / CODEX
+STATUS: COMPLETE — PRs awaiting review/merge; nothing deployed
+DATE: 2026-10-18 (America/New_York)
+APP_REPO: tpruittguitar/foreman-cockpit
+APP_BASE: main e7389ed
+APP_BRANCH: backup/chatgpt-20261018-1800ET
+APP_COMMIT: be11708
+APP_PR: https://github.com/tpruittguitar/foreman-cockpit/pull/122
+COORDINATION_BRANCH: backup/chatgpt-20261018-1800ET
+
+AI_REASON
+User requested the independent REV-018 visual harness from the 18:00 role-split plan.
+Read sections 4 and 5 of CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt
+and all of CLAUDE_20261018_1800ET_PE_ROLE_SPLIT_AND_TODAY_PLAN.txt, including Tim's rulings.
+The latter assigns Grok Bot visual authority, Claude product engineering/golden assets,
+and ChatGPT independent tests. No product visual choices or approved frames changed.
+
+DELIVERED
+- npm run test:visual; Playwright runner under tests/visual/.
+- Named-element computed style checks from elements.json against PostCSS-parsed root tokens,
+  normalized in an isolated browser document independent of the page's CSS variable overrides.
+- geometry.json viewport boxes: +/-1 CSS px at 2560x1440@1x and 402x874@3x, plus overflow check.
+- Screenshot comparison against PNGs in configurable goldenDir (default tests/visual/golden/).
+  Default maximum difference 0.2 percent; VISUAL_DIFF_PERCENT overrides it. Dimensions must match.
+  Fonts/images awaited, finite animations frozen at end, browser clock paused, caret hidden.
+- document.getAnimations() duration/easing contracts; missing and unlisted animations fail.
+- Sample-only HTML/tokens/PNG baselines under tests/visual/sample/ demonstrate a working contract
+  before Claude's assets arrive. Ordinary runs do not update baselines. Bootstrap is sample-only.
+- Existing master.sample.txt fixture and mocked Writer following needs-tim.browser.js pattern.
+  External traffic blocked/mocked; Writer POST fails; fixed time, locale and timezone.
+- Readme covers frame handoff, environment, artifacts, threshold semantics and limitations.
+- Negative browser verification independently changes token, box, motion and PNG inputs.
+
+VALIDATION
+Linux Chromium 151.0.7922.173, Playwright 1.61.1, Node installed in managed workspace.
+PIPELINE_CHROMIUM=/usr/bin/chromium npm run test:visual
+  desktop PASS; phone PASS; both 0.0000 percent differing pixels.
+PIPELINE_CHROMIUM=/usr/bin/chromium node --test tests/visual/harness.test.cjs
+  2 tests PASS, including all four intended regression failures and 0.2 percent boundary.
+npm test: 521 PASS, 0 failures.
+git diff --check: PASS.
+
+OWNERSHIP / LIMITS
+No edits to pipeline.html, pipeline-*.css, root tokens.css, tests/visual/golden/ or tests/visual/design/.
+Root tokens.css and real approved frames do not yet exist on the starting app main.
+Sample baselines are placeholders, not approved visual authority. Native phone PNG is 1206x2622.
+Use the same browser/OS/fonts for baseline generation and comparison. Token parser accepts
+unconditional top-level :root declarations, with conflicting duplicates rejected.
+Animations must be present in the ready fixture state; infinite effects require a finite fixture state.
+Latency p95, frame budget, flash frequency, raw-value lint, CI wiring and real-device approvals
+are separate work, not claimed complete by this scoped harness delivery.
+No merge or deployment performed. Claude and Tim review/merge the app and coordination PRs.
