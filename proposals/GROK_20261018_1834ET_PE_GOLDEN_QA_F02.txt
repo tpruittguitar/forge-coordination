@@ -1,0 +1,77 @@
+GROK ADVERSARIAL VISUAL QA · GOLDEN FRAME F02 · 2026-10-18 18:34 ET
+Repo: tpruittguitar/foreman-cockpit branch backup/claude-20261018-1805ET
+Compared against:
+- tests/visual/reference/p40_2560x1440.png (PDF p40 1:1)
+- forge-coordination/proposals/GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/P03_M02_AGENCY_CLIENT_UNKNOWN_2560x1440.png
+- forge-coordination/proposals/GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/P06_M05_M06_HUD_PILLS_2560x1440.png
+- tests/visual/golden/F02.NOTES.txt
+Ignore differences that NOTES lists with a reason. List every other difference.
+
+EXECUTIVE VERDICT
+Most differences from the PDF are accounted for in F02.NOTES.txt. Against the look-owner pages and updated V-rulings (GROK_20261018_1830ET_PE_LOOK_OWNER_INTENT_AND_V_RULINGS.txt), three material differences exist that are not covered by NOTES reasons and should be treated as must-fix before F02 is accepted as golden. Colour-vision simulations pass. No internal numeric contradictions.
+
+KEY FINDINGS
+- PDF-aligned differences (data, zones, accessibility floor, fonts) remain as previously measured and listed in NOTES.
+- Look-owner pages (P03, P06) and the accompanying V-rulings introduce updated composition rules that F02 (built earlier) does not yet fully reflect.
+- Colour-independent design holds under greyscale / deuteranopia / protanopia.
+
+DIFFERENCES NOT LISTED IN NOTES (or not fully covered by a NOTES reason)
+region · reference shows · frame shows · must-fix / accept
+
+1. Hold decision glyph (drawer / controls) · Look owner V-02 RE-RULE + P03/P06: inline-SVG pause bars (two vertical bars) + word “Hold” (or text fallback ‖); never ⊡ · Frame shows ⊡ Hold · must-fix
+   Reason: V-02 was re-ruled; ⊡ is not in Inter/IBM Plex Mono and carries no meaning. Pause bars read as “hold”. NOTES listed the provisional ⊡ version; the look-owner ruling supersedes it.
+
+2. Map header annotation · Look owner V-07: drop “AUTO-FIT 300 MS” text (designer annotation, not an app-reported value; L-2) · Frame shows “AUTO-FIT 300 MS” in map header · must-fix
+   Reason: Explicitly called out as annotation to remove. NOTES listed the 300 ms timing as confirmed; the “drop the text” clause is new.
+
+3. HUD / header pills and queue counters · Look owner P06 + N-02 / Rulings: distinct pills with full state sentences (e.g. “MY DECISIONS - 1 WAITING FOR LOCK”, “LANE QUEUE - 14 - OLDEST 23 MIN”, “SEEN SYNC - …”, “LANES - 10 REPORTING · 1 LANE QUIET”); colour only on 3 px left bar + glyph; word always states the state; two queue counters never summed · Frame shows compact “WRITER · 1 WAITING · 1 FAILED” and “LANE QUEUE 2” plus strip “◷ 1 waiting for lock” · must-fix
+   Reason: P06 is the composition reference for M-05/M-06 HUD pills. F02’s simpler forms predate the look-owner page set. NOTES D5/D6 explain the PDF mismatch but do not cover the look-owner pill format.
+
+4. Score breakdown footer format (drawer) · Look owner V-16 exact format examples: “Σ 100% = 79.6 · coverage 100% × factor 1.000 = 80” (or with known/unknown) and header “ring = N”; points sum exactly · Frame shows “COVERAGE 100 % · FACTOR 1.00” and “Σ 76.0 = 76” · accept (with note)
+   Reason: Spirit and arithmetic match D4 / V-16; only presentation density differs. NOTES already records the footer addition. Minor formatting can be tightened later.
+
+No other material differences found outside NOTES-listed items and the three must-fix above.
+
+COLOUR-VISION AND GREYSCALE CHECK
+Frame viewed under greyscale, deuteranopia simulation, and protanopia simulation.
+- All primary text, KPI values, table content, drawer score/breakdown, map readouts, and status labels remain legible.
+- Band indicators remain shape-coded (▲ ◆ ● ▽) per V-09; colour is not the sole cue.
+- Decline remains Secondary grey ⊖ (V-01); no red reliance.
+- Needs-decision remains Primary text (V-04).
+- No state becomes unreadable. No critical distinction depends on colour alone.
+- 11 px floor and interactive target sizes hold.
+
+NUMERIC CONSISTENCY (same screen)
+No contradictions found.
+- REVIEW QUEUE 50 consistent across header/tabs/strip/table.
+- Needs-decision 28 vs queue 50 explained (D2).
+- Writer 1/1 matches pill (D5).
+- LANE QUEUE 2 vs “1 waiting for lock” are distinct (D6); look-owner P06 reinforces never summing them.
+- Bands N 48 / P90 72 / P65 61 / P20 51 match “rank 1 of 48” and score 76 (D3/D4/D9).
+- Drawer Δ +4 matches selected row (D4).
+- Ring 76 = breakdown Σ 76.0 (D4).
+- HOME Cleveland TN · 127 MI · 304° (D7).
+All other KPIs internally consistent with fixture + model rev 24.
+
+WHAT IS STRONG
+- NOTES file still provides a clear baseline for PDF deviations.
+- Shape-based bands and primary-text state cues survive colour-vision simulation.
+- Numeric consistency holds once listed data rules are applied.
+- Look-owner pages give a concrete composition target for the remaining HUD and glyph items.
+
+WHAT IS WEAK / RISKY
+- F02 was generated against provisional V-rulings; the 18:30 ET look-owner delivery re-ruled V-02 and clarified V-07 and HUD composition. These three items are now out of date.
+- Unnamed tokens for row stripe and KPI glow (X4) and map geometry approximations (X2) remain.
+
+HIDDEN IMPLICATIONS
+- Accepting F02 as golden without applying the look-owner re-rulings will embed the old ⊡ Hold glyph and the designer annotation into the visual contract.
+- The two queue counters must stay visually distinct (never summed) — P06 makes this explicit.
+
+RECOMMENDED NEXT ACTIONS
+1. Update F02 (and F01 if applicable) to use pause-bar Hold glyph (V-02 re-rule), remove “AUTO-FIT 300 MS” text (V-07), and align header/strip pills to the P06 composition and state sentences.
+2. Confirm the breakdown footer format against V-16 exact examples; tighten if desired.
+3. Re-render golden frames after the above, then re-QA.
+4. Visual owner confirm the remaining provisional items in NOTES once the must-fix items are closed.
+
+QUESTIONS / EVIDENCE NEEDED
+None for this pass. Comparisons completed against the PDF, P03, P06, NOTES, and word-box measurements.
