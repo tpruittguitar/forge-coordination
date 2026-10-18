@@ -1,0 +1,33 @@
+EMAIL_BACKFILL_STATE
+RUN_ID=FORGE-EMAIL-CHATGPT-20261018-1502ET
+STATUS=PARTIAL_CARRY_FORWARD
+OWNER=NEXT_FORGE_EMAIL_DISCOVERY_RUN
+PREVIOUS_CARRY_FORWARD=750
+RESOLVED_PRIOR_B01_VERIFICATION=5
+RESOLVED_B02_INSERTS=7
+PRIOR_REMAINDER_AFTER_RESOLUTION=738
+CURRENT_PROVIDER_HIDDEN_MINIMUM=39
+CURRENT_VISIBLE_CONFLICTS=1
+TOTAL_CARRY_FORWARD=778
+
+UNRESOLVED_BREAKDOWN
+- 262 earlier governed obligations preserved from the pre-1202ET checkpoint chain.
+- 275 provider-hidden obligations from the 1202ET run.
+- 196 visible candidates extracted at 1202ET but not yet deterministically reconciled.
+- 2 Blue Origin ambiguity holds from FORGE-EMAIL-CHATGPT-20261018-1202ET-B01. Owner=gofer; do not replay.
+- 3 Lensa SOURCE_URL_IDENTITY_CONFLICT holds from FORGE-EMAIL-CHATGPT-20261018-1202ET-B02: Eaton Quality Operations Leader; Barnes Aerospace Global Quality Leader; Collins Aerospace Global Supplier Quality & Development Lead. Owner=gofer; do not replay.
+- At least 39 provider-hidden LinkedIn jobs from messages 1a150254d89b7d20 and 1a14fcfea06c1dbe.
+- 1 Tesla INTAKE_KEY_IDENTITY_CONFLICT from FORGE-EMAIL-CHATGPT-20261018-1502ET-B01: Head of Project Controls, North America R&D, Factory & Refinery Infrastructure. Owner=gofer; do not replay.
+
+RESOLVED_THIS_RUN
+- Prior B01 receipt reconciled COMPLETE; five exact rows freshly read back.
+- Prior B02 submitted once: seven rows COMPLETE and freshly read back; three identity conflicts preserved.
+- Current window B01 submitted once: four rows COMPLETE and freshly read back; one identity conflict preserved.
+
+RESUME_ORDER
+1. Fresh-read authority, GitHub receipt index, freeze, queue root and master.
+2. Start with the 196 extracted-but-unreconciled visible candidates from the 1202ET run, earliest Gmail message first, in batches of no more than five emails.
+3. Preserve all six conflict/ambiguity holds for gofer; never replay them.
+4. Continue provider-hidden obligations only when a provider renders the missing cards.
+
+PERSISTENCE=THIS_FILE_IS_THE_GOVERNED_CREATE_ONLY_CARRY_FORWARD
