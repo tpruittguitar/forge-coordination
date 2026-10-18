@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-18T20:53:00.885Z",
- "sourceCommit": "73af1ae4ea336f86d105e294479dc97f73ba9d00",
+ "builtAt": "2026-10-18T20:58:47.076Z",
+ "sourceCommit": "79d2a1a8eb49c184b59d860991d263cc39c42834",
  "counts": {
-  "total": 20,
+  "total": 14,
   "BLOCKING": 0,
-  "ACTION": 9,
-  "WATCH": 11,
-  "DECIDE": 10,
-  "JOBS": 2,
+  "ACTION": 5,
+  "WATCH": 9,
+  "DECIDE": 5,
+  "JOBS": 0,
   "FAILED": 1,
-  "UPKEEP": 7
+  "UPKEEP": 8
  },
  "items": [
   {
@@ -38,157 +38,24 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "ask:ASK-20261018-01",
+   "id": "ask:ASK-20261018-12",
    "section": "DECIDE",
    "level": "ACTION",
-   "title": "Auterion: P2 or Watch?",
-   "detail": "The Target Companies registry in forge-policy lists Auterion as P2 (seed recommendation, TC-016). The 2026-10-17 priority-employer amendment in CONTROL puts Auterion on the secondary watch list with no priority (software-heavy autonomy stack, low manufacturing ownership). Web discovery reads the registry, so today Auterion is searched at least daily as P2.",
-   "blocks": "Which tier web discovery uses for Auterion.",
-   "options": [
-    "Keep P2",
-    "Change to WATCH"
-   ],
-   "recommended": "Change to WATCH (low manufacturing ownership).",
-   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261018-01.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-01.json",
-   "at": "2026-10-18T15:55:00-04:00",
+   "title": "Turn on branch protection for foreman-cockpit main (you approved; needs your click)",
+   "detail": "You said yes (ASK-20261018-06). GitHub refuses this setting from the AI session, so it takes one minute on GitHub.",
+   "blocks": "Nothing; until then any AI with access could push straight to the live app.",
+   "options": [],
+   "recommended": "",
+   "action": "1) Open https://github.com/tpruittguitar/foreman-cockpit/settings/branches  2) Add classic branch protection rule  3) Branch name pattern: main  4) Tick \"Require a pull request before merging\"; set Required approvals to 0  5) Leave \"Do not allow bypassing\" unticked so you can still merge  6) Create. Then tell Claude \"done\".",
+   "source": "asks/open/ASK-20261018-12.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-12.json",
+   "at": "2026-10-18T16:55:00-04:00",
    "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-01",
-   "links": [
-    {
-     "label": "Watchlist analysis",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_1602ET_AUSA_DEFENSE_TECH_WATCHLIST.txt"
-    },
-    {
-     "label": "forge-policy rules (search TC-016)",
-     "url": "https://github.com/tpruittguitar/forge-policy/blob/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-03",
-   "section": "DECIDE",
-   "level": "ACTION",
-   "title": "Copy of PIPELINE_EXPLORER_STATE.json for the state-write fix (D-2)",
-   "detail": "The state-write fix (lost rulings / seen marks / incidents risk) needs a copy of the live state file to test against (gate G-2) and to check for damage already done. Claude can make the copy in Drive itself.",
-   "blocks": "Gate G-2 of the state-write fix, which blocks its merge.",
-   "options": [
-    "Yes, Claude makes the copy",
-    "No"
-   ],
-   "recommended": "Yes.",
-   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261018-03.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-03.json",
-   "at": "2026-10-18T15:55:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-03",
-   "links": [
-    {
-     "label": "10-17 review record §5",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_0345ET_PIPELINE_EXPLORER_V1_5_REVIEW_SESSION.txt"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-06",
-   "section": "DECIDE",
-   "level": "ACTION",
-   "title": "Branch protection on foreman-cockpit main (D-7)",
-   "detail": "Today any AI with push access can push straight to main, which Cloudflare deploys immediately. Protection makes every change go through a pull request you merge.",
-   "blocks": "Safety of every deploy.",
-   "options": [
-    "Turn it on",
-    "Leave it off"
-   ],
-   "recommended": "Turn it on: require a pull request before merging, no approvals required (you merge your own).",
-   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261018-06.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-06.json",
-   "at": "2026-10-18T15:55:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-06",
+   "askId": "ASK-20261018-12",
    "links": [
     {
      "label": "Branch settings",
      "url": "https://github.com/tpruittguitar/foreman-cockpit/settings/branches"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-08",
-   "section": "DECIDE",
-   "level": "ACTION",
-   "title": "Make asks/ the one place every lane posts questions for you (CONTROL amendment)",
-   "detail": "Lanes write \"Tim must decide\" in six different ways inside receipts today, so the Needs you page has to guess. This amendment tells every lane: when you need Tim, create one file in forge-coordination asks/open/ (format in asks/README.md) in the same run, and keep writing NEXT_OWNER in the receipt as now. CONTROL changes only on your instruction.",
-   "blocks": "Completeness of the Needs you page.",
-   "options": [
-    "Approve the amendment",
-    "Not now"
-   ],
-   "recommended": "Approve.",
-   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261018-08.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-08.json",
-   "at": "2026-10-18T15:55:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-08",
-   "links": [
-    {
-     "label": "asks/README.md",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/README.md"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-09",
-   "section": "JOBS",
-   "level": "ACTION",
-   "title": "Ashley Furniture, Senior Director Mfg Ops: rejected or applied?",
-   "detail": "Two emails the same day (2026-07-29): a rejection at 20:55Z (Gmail 19fafa969b08e5bb) and an application confirmation at 23:31Z (Gmail 19fb038228f51c3e). The gofer will not override a REJECTED record on its own (archive items 21 and 22).",
-   "blocks": "Recording this application in the master; the gofer carries it as a hold every run.",
-   "options": [
-    "Applied, then rejected (record REJECTED)",
-    "Applied, still open (record APPLIED)",
-    "Not mine / ignore"
-   ],
-   "recommended": "",
-   "action": "Answer in chat; Claude records it and the gofer applies it next run.",
-   "source": "asks/open/ASK-20261018-09.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-09.json",
-   "at": "2026-10-18T16:00:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-09",
-   "links": [
-    {
-     "label": "Gofer receipt 14:50 ET",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-10",
-   "section": "JOBS",
-   "level": "ACTION",
-   "title": "Harmattan AI, VP Manufacturing: did you apply?",
-   "detail": "The master row V2I-AB4A9958A9AE says DECLINED_BY_TIM, but Gmail 1a08db0e558aaeda (2026-09-10) is an application confirmation. The gofer will not override your decline on its own (archive item 130).",
-   "blocks": "Recording this application; the gofer carries it as a hold every run.",
-   "options": [
-    "I applied (record APPLIED)",
-    "I declined; the email is wrong (keep DECLINED)"
-   ],
-   "recommended": "",
-   "action": "Answer in chat; Claude records it and the gofer applies it next run.",
-   "source": "asks/open/ASK-20261018-10.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-10.json",
-   "at": "2026-10-18T16:00:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-10",
-   "links": [
-    {
-     "label": "Gofer receipt 14:50 ET",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE_GOFER_CLAUDE_20261018_1450ET.txt"
     }
    ]
   },
@@ -202,6 +69,18 @@
    "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261018-1655ET_TERMINAL.txt",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261018-1655ET_TERMINAL.txt",
    "at": "2026-10-18T16:55:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "pr:forge-coordination#3",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #3: CLAUDE: Tim rulings 10-18 — asks/ inbox, agency rows never delayed, email rules applied/declined",
+   "detail": "Open since 2026-10-18. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #3",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/3",
+   "at": "2026-10-18T20:58:38Z",
    "raisedBy": "CLAUDE"
   },
   {
@@ -328,32 +207,6 @@
    ]
   },
   {
-   "id": "ask:ASK-20261018-05",
-   "section": "DECIDE",
-   "level": "WATCH",
-   "title": "Phase 4 (adaptive suggestions): keep or cut? (D-6)",
-   "detail": "Phase 4 would log every time you overrule the score (hold a top job, pursue a low one) with your reason code, then offer suggestions such as \"you declined 8 of 10 Chicago roles scoring above 70; lower Chicago geo?\". Advisory only, opt-in, reversible; it never changes the shared model or rules by itself.",
-   "blocks": "Nothing; it is the last phase.",
-   "options": [
-    "Cut",
-    "Keep, after Phase 3",
-    "Keep only the reason-code logging"
-   ],
-   "recommended": "Keep only the reason-code logging (already in Phase 3, T-19); cut the suggestion engine.",
-   "action": "Answer in chat with the option you want; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261018-05.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-05.json",
-   "at": "2026-10-18T15:55:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-05",
-   "links": [
-    {
-     "label": "Plan §2.5 and §7",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt"
-    }
-   ]
-  },
-  {
    "id": "ask:ASK-20261018-07",
    "section": "DECIDE",
    "level": "WATCH",
@@ -375,31 +228,6 @@
     {
      "label": "10-17 review record §5",
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CLAUDE_20261017_0345ET_PIPELINE_EXPLORER_V1_5_REVIEW_SESSION.txt"
-    }
-   ]
-  },
-  {
-   "id": "ask:ASK-20261018-11",
-   "section": "DECIDE",
-   "level": "WATCH",
-   "title": "Agency posting where the client is already known at intake: file it under the client, or under the agency?",
-   "detail": "Your 10-13 agency rule has two parts that disagree in one case. Item 1: a client named in the posting (or found by two quick searches) is the employer, so the row is filed under the client. Item 3: an agency posting and the client's own posting are separate opportunities and must never be merged. Filed under the client, the Writer can match the agency posting to the client's own posting as the same row, merging the two avenues you said are distinct. Lanes keep doing item 1 until you rule.",
-   "blocks": "Nothing stops; it decides whether agency and client postings can collapse into one row.",
-   "options": [
-    "COMPANY = agency, client recorded in CLIENT_EMPLOYER (keeps both avenues separate)",
-    "COMPANY = client (item 1 as written)"
-   ],
-   "recommended": "COMPANY = agency with CLIENT_EMPLOYER: it guarantees the two avenues stay separate rows, which is what item 3 protects.",
-   "action": "Answer in chat; Claude updates the agency rule packet through a PR you merge.",
-   "source": "asks/open/ASK-20261018-11.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261018-11.json",
-   "at": "2026-10-18T16:55:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261018-11",
-   "links": [
-    {
-     "label": "CONTROL agency amendment 2026-10-13",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt"
     }
    ]
   }
