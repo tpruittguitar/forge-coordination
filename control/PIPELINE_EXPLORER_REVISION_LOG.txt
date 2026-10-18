@@ -11,6 +11,12 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-017  Explorer state writes merge, never overwrite (includes REV-016 independent tests by ChatGPT)
+  Asked: review 2026-10-17 section 2 (stale tab could erase seen marks, incident acks, rulings mirror); Tim approved plan 2026-10-18 ("next with step by step")
+  Status: SHIPPED 2026-10-18 17:45 ET. foreman-cockpit PR #121 merged by Tim (e7389ed); Writer deployed from Tim's PC as version 69. G-2 live check PASS before deploy and again after (seen 704, rulings 30, incidents 173, 356,637 bytes, unchanged). writer_status reports build e7389ed / PR 121.
+  What: Writer writeState_ takes a lock, refuses an unreadable file, keeps a .prev copy, merges (StateMerge.gs), reads back. Browser sends seen + incidents only; a failed sync shows on Needs you.
+  Risk: Low. Rollback: redeploy Writer version 68; .prev file holds the prior state.
+
 REV-011  Needs you page + opening page hides applied / rejected / dead jobs
   Asked: Tim 2026-10-18 15:41 ET ("this page will be the one place I can go to know what maintenance needs my attention"; "when a job is applied, rejected or dead it shouldn't be shown on opening page at the start")
   Status: SHIPPED 2026-10-18 16:28 ET, foreman-cockpit PR #119 merged by Tim (93e357d); production foreman-cockpit.pages.dev serves pipeline-needs-tim.js (verified 16:30 ET). Repo half live on forge-coordination main (asks/, tools/needs-tim/, build-needs-tim Action).
