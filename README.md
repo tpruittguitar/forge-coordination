@@ -1,7 +1,9 @@
 # forge-coordination
 
 Shared working area for the Forge pipeline lanes (Claude, Grok, ChatGPT). Public by Tim's decision (2026-10-12).
-Plan: `FORGE_PLAN_GitHub_Migration_2026-10-12.txt` + `_ADDENDUM_1` (Drive, AI_Coordination). Until the Stage 2 cutover, the Drive files remain the live authorities; nothing here is live yet.
+Live instructions are on GitHub. Native tasks enter through [ENTRY](control/FORGE_AUTOMATION_ENTRY.txt), read [the current manifest](runtime/current.json), and load exactly one generated lane packet. Current operational sources are in `policy/current/`; CONTROL and STANDARD are historical references, not worker read dependencies. Business policy remains in `forge-policy`; the live receipt index is in `forge-writer-state`. Master, queue, freeze and processed RESULT files remain on Drive.
+
+Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_RUNTIME.md). A repository update does not prove native task adoption or change schedules.
 
 ## Folders
 | Folder | What goes here | Who writes |
@@ -10,20 +12,23 @@ Plan: `FORGE_PLAN_GitHub_Migration_2026-10-12.txt` + `_ADDENDUM_1` (Drive, AI_Co
 | `handoffs/` | Evidence handoffs (COMP, ARCHIVE, email findings) | Producing lane |
 | `directives/` | Tim rulings and directives, plain text | Claude or Tim, on Tim's instruction |
 | `proposals/` | Proposed policy or control changes awaiting Tim | Any lane |
-| `lanes/` | Per-lane briefs (digests of CONTROL) read by Grok lanes | Claude, on Tim's instruction |
+| `policy/current/` | Current common rules, lane procedures, provider adapters and registry | Reviewed instruction PR on Tim's instruction |
+| `runtime/` | Generated manifest and immutable release packets | Build script; never hand edit |
+| `lanes/` | Generated legacy pointers; standalone Claude usage reader | Build script / authorized maintainer |
+| `state/` | Generated discovery hints; never live Writer state | Receipt-index Action |
 | `edit-requests/` | Requests to change an existing file (see below) | Any lane |
 
 ## Rules for every lane
-1. **Label every commit.** The message starts with PROVIDER and RUN_ID, e.g. `GROK FORGE-ENRICH-FEASIBILITY-GROK-20261012-1435ET: ...`. Every commit's author shows as `tpruittguitar`, so the label is the only way to tell lanes apart.
+1. **Label every AI commit.** Start with PROVIDER and RUN_ID, e.g. `GROK FORGE-ENRICH-FEASIBILITY-GROK-20261012-1435ET: ...`. Existing APPLY-BOT and new INDEX-BOT labels identify mechanical workflow commits.
 2. **Create, do not edit.** Lanes write new files (receipts, handoffs, proposals). Never edit another lane's file.
-3. **To change an existing file**, either edit it directly (passing its current SHA), or create an edit request: a new file `edit-requests/<PROVIDER>_<YYYYMMDD_HHMM>ET.json`:
+3. **Existing files require explicit scope.** Instruction/code changes use reviewed PRs. Edit requests may update only authorized `proposals/` or `usage/` targets: create `edit-requests/<PROVIDER>_<YYYYMMDD_HHMM>ET.json`:
    ```json
-   {"target": "path/to/file", "mode": "append", "content": "text to add\n",
-    "base_blob_sha": "<current SHA of the target, optional but recommended>",
+   {"target": "proposals/example.txt", "mode": "append", "content": "text to add\n",
+    "base_blob_sha": "<required current blob SHA when target exists>",
     "requested_by": "<PROVIDER> <RUN_ID>"}
    ```
-   `mode` is `append` or `replace`. The `apply-edit-requests` Action applies it within about a minute, moves it to `edit-requests/applied/` (or `rejected/` with the reason), and opens an issue on any rejection.
-4. **Single-owner files** (CONTROL, ENTRY, once moved) change only on Tim's instruction.
+   `mode` is `append` or `replace`. The Action rejects authority/generated-state/immutable-evidence targets, applies allowed revisions, moves requests to `applied/` or `rejected/`, and opens an issue on rejection. Claimed `requested_by` is attribution, not approval authority.
+4. **Instruction sources and generated releases** change only on Tim's instruction through a reviewed PR. Run `python scripts/build_runtime.py`, tests, then `python scripts/build_runtime.py --check`; commit source and generated outputs together. Tim merges. Never rewrite a published release.
 5. **Report only real SHAs.** Claude spot-checks reported SHAs against `git log`.
 
 ## Related repos

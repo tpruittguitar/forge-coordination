@@ -1,34 +1,6 @@
-CHATGPT LANE BRIEF -- FORGE_POSTING_VALIDATION
-VALID_FOR_ENTRY_VERSION=2026-10-17.2
-SOURCE=CONTROL 2026-10-13.11 (POSTING VALIDATION LANE AMENDMENT, ATS LIVENESS CHECKER AMENDMENT, TINYFISH VERIFICATION AMENDMENT, POSTING VALIDATION TO CHATGPT AMENDMENT). CONTROL stays the authority; this brief is its digest.
-If the version after VERSION= in control/FORGE_AUTOMATION_ENTRY.txt differs from VALID_FOR_ENTRY_VERSION, read the full CONTROL before working.
-
-JOB
-Confirm whether job postings in the master are still open and record what the posting page shows. No scoring, no deep job-description analysis, no applications, no contacting anyone.
-
-INPUT (in this order)
-1. WORKLIST_FORGE_POSTING_VALIDATION.txt, Drive 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0, top-down, when it is under 6 hours old. The Writer rebuilds it every 30 minutes and already leaves out rows its own ATS checker owns (Greenhouse, Lever, Ashby, Oracle CX, and Workday through TinyFish).
-2. If the worklist is stale or missing: master rows (V2_CURRENT_POPULATION_MASTER.txt, Drive 1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8) in SCOUT_INTAKE with no LIVENESS or LIVENESS UNVERIFIED/UNCONFIRMED, newest first; skip rows whose ATS_CHECK_RESULT is LIVE or CLOSED.
-3. WRITER_FREEZE.json, Drive 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S. frozen=true: do the research and the receipt, submit nothing.
-Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection rows or Tim rulings. Before claiming a row, skip anything in the WRITER_QUEUE root or in a RESULT file from the last 2 hours.
-
-HOW TO CHECK A ROW
-- Use TinyFish fetch_content (free) when available: up to 10 URLs per call, ttl 0, per_url_timeout_ms 60000. Never run_web_automation, browser sessions or monitors; never sign in, apply, submit a form or attempt a CAPTCHA.
-- Employer ATS or careers page open = LIVE_EMPLOYER_ATS. Workday: a page with the title and "job requisition id" = open; "The page you are looking for doesn't exist" on a URL ending in the requisition token (_R12345, _REQ-12345, _JR12345) = CLOSED; on a URL without the token, search the site (https://<host>/<site>?q=<title words>, links=true) and fetch the matching job link.
-- LinkedIn job page (https://www.linkedin.com/jobs/view/<id>) with a posted age and no closed notice = LIVE_SECONDARY, LIVENESS_NOTE "LinkedIn page, posted <age>, read <date>". "No longer accepting applications" = CLOSED for a row whose only source is that LinkedIn posting.
-- Indeed blocks TinyFish: find the employer posting by exact company, title, location and requisition ID instead.
-- Agency postings (EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY): the agency's own page is the first-party source for that row (open = LIVE_EMPLOYER_ATS, agency closed it = CLOSED). The client's posting never opens or closes the agency row.
-- A page you cannot read (block, login wall, tool failure, 403) is never evidence of closure. Try the employer route; if nothing qualifies, UNCONFIRMED with a note naming what was tried.
-- Record REQ_ID, pay, location, work arrangement and posting date only when the page shows them, verbatim.
-
-WRITER SUBMISSION
-Plain-text JSON file in WRITER_QUEUE (Drive 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7), conversion disabled, name CHATGPT_<requestId>.json. Up to 25 rows per file, nested shape:
-{"action":"batch","requestId":"FORGE-POSTVAL-CHATGPT-<YYYYMMDD>-<HHMM>ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-POSTVAL-CHATGPT-<YYYYMMDD>-<HHMM>ET-B01-R01","primaryId":"V2I-XXXXXXXXXXXX","kind":"ENRICH","actor":"CHATGPT","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"YYYY-MM-DD","LIVENESS_EVIDENCE_URL":"https://...","LIVENESS_METHOD":"TINYFISH_FETCH:WORKDAY"}}}]}
-LIVENESS_METHOD values: TINYFISH_FETCH:<SITE>, EMPLOYER_PAGE, SECONDARY_PAGE. Verify with the Writer RESULT file and a row_readback before reporting VERIFIED.
-
-PRODUCTION
-At least 10 rows per run, then continue in batches of 10 while capacity remains. A run never stops on an unreadable row; skip it and note it. PARTIAL_WITH_WORK only with a named hard limit in STOP_REASON.
-
-RECEIPT
-New file receipts/FORGE-POSTVAL-CHATGPT-<YYYYMMDD>-<HHMM>ET.txt in tpruittguitar/forge-coordination, commit message starting "CHATGPT FORGE-POSTVAL". Fields: ROWS_EVALUATED, LIVE, CLOSED, UNCONFIRMED, WRITTEN, VERIFIED, HELD, FAILED, TINYFISH_FETCHES (or TINYFISH_UNAVAILABLE), BACKLOG_REMAINING, STOP_REASON, BATCHES_COMPLETED_THIS_RUN, REQUEST_IDS.
-END BRIEF
+LEGACY POINTER; generated, do not edit.
+Use control/FORGE_AUTOMATION_ENTRY.txt VERSION 2026-10-18.1.
+PROVIDER remains the actual executing provider; TASK_KEY=FORGE_POSTING_VALIDATION.
+Read the fresh runtime/current.json manifest and only its selected immutable packet.
+This file grants no ownership and adds no full CONTROL/STANDARD read or cached fallback.
+ZipRecruiter is a conditional weekly addon inside the ChatGPT web-discovery packet.

@@ -1,0 +1,23 @@
+LANE PROCEDURE -- FORGE_WEB_CAREER_DISCOVERY
+
+JOB
+Find new Director, Head, VP (and strategically strong Manager / Sr Manager at destination employers) roles in manufacturing, production, operations and quality on public first-party careers pages and ATS boards (Greenhouse, Lever, Ashby, Workday, iCIMS, company sites). No Gmail.
+Priority employers (CONTROL POLICY ON GITHUB AMENDMENT 2026-10-17.2 item 3): read https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt?cb=<epoch seconds> at the start of every run and record its SOURCE line in the receipt. Cover every P1 company every run, P2 at least daily, P3 in weekly rotation, WATCH when convenient, PAUSED never; use each listed careers URL when it is not UNKNOWN. Then other drone, defense, autonomy, robotics and production scale-up companies. Rotate in ordinary strong manufacturing roles. Never spend a whole run on one company.
+Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
+
+WORKDAY CAREER SITES (CONTROL 2026-10-13.10, TINYFISH VERIFICATION AMENDMENT item 8)
+With TinyFish fetch_content, read https://<company>.<wdN>.myworkdayjobs.com/<site>?q=<keywords> using the shared tool settings. Keywords: manufacturing, production, operations, quality, plant. Search shows 20 jobs; use narrower keywords when later pages are inaccessible. Screen titles. SOURCE_URL is the opened link ending in requisition token (_R12345/_REQ-12345/_JR12345), remove ?q=; REQ_ID is that token; SOURCE_PROVIDER=Workday. Missing TinyFish: TINYFISH_UNAVAILABLE, use another permitted method.
+
+SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
+Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + location) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
+
+INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed COMPANY, TITLE, LOCATION, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES; DISCOVERY_SOURCE="{{PROVIDER}} web career discovery". REQ_ID is the ATS number from the URL, else the posted requisition, else unknown.
+COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
+
+LANE RECEIPT FIELDS
+COMPANIES_COVERED (list), CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, OUT_OF_SCOPE (title | company | reason), NEXT_COMPANY_CURSOR.
+Prior-run verification: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
+END BRIEF
+
+CONDITIONAL WEEKLY ADDON: In ChatGPT's first web-discovery run of each ISO week (Monday 00:00 America/New_York), fetch ZIPRECRUITER_WEEKLY from this same release manifest and follow it before ordinary careers work. Inspect current week's receipt/state to avoid duplicate work; START alone is not completion. Missing ZipRecruiter connector: SKIPPED_NO_CONNECTOR and continue ordinary discovery. Other providers do not take over this addon without Tim.

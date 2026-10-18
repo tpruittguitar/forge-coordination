@@ -1,0 +1,34 @@
+RELEASE_ID=4ac576a7cc0ad5a5af29
+PARENT_TASK=FORGE_WEB_CAREER_DISCOVERY
+CHATGPT ZIPRECRUITER PASS -- weekly step inside FORGE_WEB_CAREER_DISCOVERY
+
+WHEN
+Run once per ISO week (Monday 00:00 ET), before ordinary work in the first ChatGPT web-discovery run. Read this week's FORGE-ZIPR-CHATGPT-<ISO week>*.txt receipt via state/latest.json hint or scoped listing. A completed terminal receipt skips the pass; START alone never proves completion. Resume durable partial search/request cursors rather than repeating completed pages or submissions. Missing search_jobs: SKIPPED_NO_CONNECTOR in the web receipt and continue ordinary work.
+No new ChatGPT scheduled task is used (ChatGPT has 5 task slots).
+
+SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
+Nationwide: location "United States" and country_admin_code "US" set explicitly on every call (an omitted location lets the connector anchor to the user's city: ChatGPT test 2026-10-13 17:33 ET returned 6 Cleveland-TN-area results; Claude test with "United States" returned 905 nationwide), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
+ 1 Director of Manufacturing   2 Vice President of Manufacturing   3 Head of Manufacturing
+ 4 VP of Operations manufacturing   5 Director of Operations manufacturing   6 Plant Manager
+ 7 Director of Quality manufacturing   8 Director of Production
+Local (location "Cleveland, TN", country_admin_code US, radius_miles 200, seniority_classes SENIOR, max_posted_minutes_ago 10080, no salary filter, so unposted pay is kept):
+ 9 Director manufacturing   10 Plant Manager
+Check each response's search_url: it must show location=United+States for searches 1-8. If it names a city, record LOCATION_ANCHORED=<city> in the receipt and retry once with the explicit location. Echo the conversation_id from the first result in every later call of the run.
+
+SONICJOBS TRIAL (4 ISO weeks: 2026W42 to 2026W45; stop after 2026W45 unless an approved current release extends it)
+After the ZipRecruiter searches, run three SonicJobs searches with the same nationwide filters (location United States set explicitly, $180K floor, last 7 days, full time where supported): Director of Manufacturing, Vice President of Manufacturing, Plant Manager. Read 20 results each. Same quick screen and agency rule. Intake rows carry SOURCE_PROVIDER=SonicJobs and DISCOVERY_SOURCE "ChatGPT SonicJobs trial"; SOURCE_URL = the listing link SonicJobs returns, exactly as returned (if it returns none, use the SonicJobs job page URL; never build one). Never use any SonicJobs apply, submit or account workflow.
+A role found by both connectors goes to the Writer once, under ZipRecruiter, and counts as OVERLAP.
+Receipt adds: SONICJOBS_RESULTS_SEEN, SONICJOBS_KEPT, SONICJOBS_ONLY (kept roles ZipRecruiter did not return), OVERLAP, SONICJOBS_SUBMITTED.
+Success test at the end of 2026W45: an average of 3 or more SONICJOBS_ONLY roles a week that the Writer writes as new (not EXISTING_MATCH, not Never-Consider). Claude reports the result to Tim.
+
+Keep: Director / Head / VP / GM / Plant Manager over manufacturing, production, operations or quality in a manufacturing business, plus Sr Manager at a P1 company in https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt.
+Drop: sales, clinical, medical, restaurant, retail, construction-site, software-only and engineer-level roles. A salary range that only reaches 180000 at its top is a lead; keep it.
+Agency postings (staffing, recruiting, executive search, placement firms): follow the agency rules in your parent web-discovery packet: at most two searches to name the client; not named means COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the posting states. Each agency posting is its own opportunity.
+
+INTAKE (same intake schema and Writer route as your parent web-discovery packet; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
+SOURCE_URL = the job_redirect_url from search_jobs exactly as returned. SOURCE_PROVIDER = ZipRecruiter. DISCOVERY_SOURCE = "ChatGPT ZipRecruiter weekly pass". PAY_POSTED = "<min>-<max> (ZipRecruiter listing)" when the result has a salary. POSTING_DATE = run date minus days_ago. LOCATION, COMPANY and TITLE exactly as returned. REQ_ID blank. INITIAL_UNKNOWN_FIELDS lists what the result lacks (DEGREE_TEXT always; REQ_ID; PAY when null).
+Do not check the master: the Writer dedupes (EXISTING_MATCH) and applies Never-Consider.
+
+RECEIPT (receipts/FORGE-ZIPR-CHATGPT-<ISO week>-<YYYYMMDD-HHMMET>.txt, commit message starting "CHATGPT FORGE-ZIPR")
+SEARCHES_RUN, RESULTS_SEEN, KEPT, DROPPED (title | company | reason, one line each), AGENCY_ROWS, CLIENT_NAMED, SUBMITTED_TO_WRITER, REQUEST_IDS, STOP_REASON. The next weekly pass reports PRIOR_RUN_OUTCOMES from the intake RESULT.
+END

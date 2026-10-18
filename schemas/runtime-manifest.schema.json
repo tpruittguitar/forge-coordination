@@ -1,0 +1,31 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "title": "Forge runtime manifest v1",
+  "type": "object",
+  "required": ["schema_version", "release_id", "policy_revision", "base_url", "writer_minimum", "external_rules", "rotations", "lanes", "addons"],
+  "properties": {
+    "schema_version": {"const": 1},
+    "release_id": {"type": "string", "pattern": "^[0-9a-f]{20}$"},
+    "policy_revision": {"type": "string"},
+    "base_url": {"type": "string", "pattern": "^https://raw\\.githubusercontent\\.com/tpruittguitar/forge-coordination/main/runtime/releases/[0-9a-f]{20}/$"},
+    "writer_minimum": {"type": "object"},
+    "external_rules": {"type": "object", "required": ["repository", "path", "blob_sha"]},
+    "rotations": {"type": "object"},
+    "lanes": {
+      "type": "object", "minProperties": 6, "maxProperties": 6,
+      "additionalProperties": {
+        "type": "object", "required": ["owner", "file", "sha256", "blob_sha", "estimated_tokens"],
+        "properties": {
+          "owner": {"enum": ["ChatGPT", "Claude", "Grok"]},
+          "file": {"type": "string", "pattern": "^FORGE_[A-Z_]+\\.txt$"},
+          "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
+          "blob_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},
+          "estimated_tokens": {"type": "integer", "minimum": 1}
+        },
+        "additionalProperties": false
+      }
+    },
+    "addons": {"type": "object"}
+  },
+  "additionalProperties": false
+}
