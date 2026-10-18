@@ -1,0 +1,48 @@
+CLAUDE GOFER REPOSITORY SOURCE FIX -- SAVED CONFIGURATION VERIFIED
+PROVIDER=CHATGPT
+RUN_ID=FORGE-GOFER-SOURCEFIX-CHATGPT-20261017-2356ET
+TASK_KEY=USER_DIRECTED_CLAUDE_GOFER_SOURCE_AUTHORIZATION
+USER_AUTHORITY=Tim asked ChatGPT to perform the repo-source configuration fix directly. Desktop Commander device TIMMAY was used with Tim's normal Claude account sign-in.
+ROUTINE_ID=trig_019T6TN2s6xHaufZ98FkKHdU
+ROUTINE_NAME=Forge — FORGE_APPLICATION_WRITER_GOFER (Claude, every 2 h :50 ET — halved 2026-10-13)
+ROUTINE_URL=https://claude.ai/code/routines/trig_019T6TN2s6xHaufZ98FkKHdU
+ROOT_CAUSE=No repository sources were attached to GOFER. Public raw reads and manual clone did not authorize proxy credential injection for push.
+COMPARISON_ROUTINES=CLAUDE_LANE_ROTATION (trig_01Ta1QP7TFiwk1Ca8pJ6RbnT) and disabled FORGE_POSTING_VALIDATION (trig_01XESwmbe9JnCSjUP5VTqwUe) already had forge-coordination attached. Their settings were read only.
+CHANGE=Added only https://github.com/tpruittguitar/forge-coordination to GOFER through the supported Claude routine RemoteTrigger update mechanism. Copied the existing repo descriptor; no new task was created and no other task was edited.
+UPDATE_RESPONSE=HTTP 200
+NATIVE_UPDATED_AT=2026-10-18T04:01:38.749281Z
+JOB_SOURCE_PATH=job_config.ccr.session_context.sources
+JOB_SOURCE_VALUE=[{"git_repository":{"url":"https://github.com/tpruittguitar/forge-coordination"}}]
+DERIVED_SOURCE_PATH=session_request.config.sources
+DERIVED_SOURCE_VALUE=[{"type":"git_repository","url":"https://github.com/tpruittguitar/forge-coordination","sparse_checkout_paths":[],"sparse_checkout_exclude_patterns":[]}]
+PAYLOAD_PROTECTION=The API replaces job_config as a whole, so the full saved object was copied programmatically with only the source entry added. Removing that one addition reproduced the original exactly; JSON round-trip validated. A separate get readback matched the expected payload.
+ORIGINAL_JOB_CONFIG_SHA256=65223c3e4683c499b8bf9d84efd2eaa25c05fa551f591bfae04479e3e6133bfa
+INDEPENDENT_CHECK=ChatGPT executed local JSON comparisons on the before/after supported-tool outputs. job_config changed only by adding sources. Derived session_request changed only at config.sources. Prompt, model, environment, connector/tool lists, system prompts, MCP config and permission mode remained identical.
+CADENCE=CRON_TZ=America/New_York 50 */2 * * *
+CADENCE_NOTE=The native task actually runs EVERY TWO HOURS at :50, not hourly as initially reported. It was preserved, not corrected or rescheduled.
+ENABLED=true (unchanged)
+ENVIRONMENT=env_011111111111111111111117 (unchanged)
+MODEL=claude-sonnet-5-5 (unchanged)
+PERMISSION_MODE=Existing bypassPermissions setting preserved; no permission-mode change was made.
+NEXT_RUN_UTC=2026-10-18T04:50:00Z
+NEXT_RUN_ET=2026-10-18 00:50 America/New_York
+BOOKKEEPING_OBSERVATION=The readback's server-maintained last_run representation was null where the earlier read had an object. No run was triggered or deleted through this operation; next_run_at and enabled/cron are unchanged. The prior response remains in the local audit snapshot. This observation is not used as runtime success proof.
+CREDENTIALS=No PAT, GH_TOKEN change, credential value copying, Drive credential file, repo credential file or prompt credential was used. Repo authorization remains through Claude's server-side connection/source mechanism. Source descriptors expose no separate push/write permission field; actual scheduled push remains the decisive verification.
+CONFIGURATION_STATUS=FIXED_AND_READBACK_CONFIRMED
+SCHEDULED_PUSH_VERIFICATION=PENDING_NEXT_FRESH_RUN
+NEW_WRITER_SUBMISSIONS=0
+PRODUCTION_MASTER_MUTATIONS=0
+OTHER_ROUTINE_MUTATIONS=0
+
+REQUIRED NEXT RUN VERIFICATION
+At the next fresh scheduled run (00:50 ET 2026-10-18), GOFER must push its own new receipt under forge-coordination/receipts/, with commit message starting CLAUDE FORGE-GOFER-CLAUDE-<runid>: and report a real SHA present on GitHub. A local commit, clone, source selection or the earlier ChatGPT backfill alone does not prove runtime push success. If the proxy still refuses, record the exact error and return it to Tim; never introduce a PAT workaround.
+
+SUPERSESSION
+This note supersedes the Awaiting Tim configuration status and reported hourly cadence in handoffs/CHATGPT_CLAUDE_GOFER_REPO_ACCESS_20261017_2344ET.txt. That earlier note and the backfilled historical receipt remain unchanged.
+OPEN ITEMS SEPARATE FROM THIS FIX
+W-20261018025604614-1f68f0 still requires assessment through COMPLETE plus exact-row readback before any replay; no write verification was performed here. Tim's archive rulings on 17/21/22 and the historically reported 361 remaining archive items are not resolved by adding a repository source.
+NEXT_OWNER=CLAUDE GOFER scheduled run; Tim if native proxy authorization remains blocked
+NEXT_ACTION=Produce and verify the next native CLAUDE receipt push; preserve all existing lane and Writer contracts.
+
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+TERMINAL_REASON=Source configuration fixed and independently compared; actual scheduled push verification awaits the next native run.
