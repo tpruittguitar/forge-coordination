@@ -30,7 +30,7 @@ VERIFY LAST RUN AT THE START OF THIS RUN
 1. Find your previous run: list forge-coordination/receipts/, keep files whose name contains your lane token with GROK (FORGE-WEB-GROK, FORGE-ENRICH-STRATEGIC-GROK, FORGE-ENRICH-FEASIBILITY-GROK, with - or _), take the newest RUN_ID time before yours. In the rotation that run is about 3 hours old, never a 2026-10-12 file. Take its WRITTEN_REQUEST_IDS.
 2. Read their RESULT__ files. SUCCESS: keep. FAILED or HOLD: record the reason; do not resubmit blindly.
 3. For SUCCESS IDs, put one row_readback file in the queue: {"action":"row_readback","requestId":"<RUN_ID>-RB","primaryIds":[up to 25 IDs]}. Read its RESULT near the end of this run.
-4. VERIFIED_PRIOR_RUN = IDs with write RESULT SUCCESS, a COMPLETE entry in PIPELINE_RECEIPT_INDEX.json (Drive 1Fv_XQc-2cz2B2jWWP7Aapmd0KlHiGBLk) and a matching row_readback.
+4. VERIFIED_PRIOR_RUN = IDs with write RESULT SUCCESS, a COMPLETE entry in PIPELINE_RECEIPT_INDEX.json (GitHub tpruittguitar/forge-writer-state; REV-010. Use fresh Writer receipt_index/request_result or cache-busted GitHub raw; old Drive index is superseded, never a live fallback) and a matching row_readback.
 
 WHEN A ROW CANNOT BE FINISHED
 Submit an ENRICH with your lane's attempt stamp (lane brief names it, value YYYY-MM-DD) and a short note field. The worklist then moves that row to the end for 3 days, so the next run does not repeat it.
