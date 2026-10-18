@@ -1,0 +1,31 @@
+LANE PROCEDURE -- FORGE_ENRICH_FEASIBILITY
+
+WORKLIST
+WORKLIST_FORGE_ENRICH_FEASIBILITY.txt, Drive 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1. Rebuilt by the Writer every 30 minutes. NEED column says what each row is missing: SALARY (no pay the Explorer can read) and/or DEGREE (no degree evidence from the posting itself; "not stated in alert" is alert text and does not count).
+Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
+Also each run: read any EVIDENCE_HANDOFF_COMP_*.txt in AI_Coordination newer than the last one your receipts list as consumed; use its pay evidence for matching rows and list the file IDs as COMP_HANDOFFS_CONSUMED.
+
+JOB (per row, fill what NEED lists, plus anything else the page shows)
+Open the employer's own posting first (Workday, Greenhouse, Lever, Ashby, iCIMS, company site); job boards only when no employer posting exists.
+ENRICH fields (these are the keys the Explorer reads):
+  SALARY_BASE_LOW and SALARY_BASE_HIGH: posted base range as numbers, e.g. 180000 and 230000; SALARY_MIDPOINT: their average
+  SALARY_BASIS: EMPLOYER_POSTED, THIRD_PARTY_ESTIMATE or FORGE-ESTIMATE
+  SALARY_SOURCE: URL; SALARY_ASOF: YYYY-MM-DD; SALARY_CONF: HIGH, MED or LOW
+  No posted pay: make a good-faith FORGE-ESTIMATE from at least 3 anchors (at least one employer-posted range for a similar role), set SALARY_BASIS=FORGE-ESTIMATE and SALARY_NOTE=<anchors>. Never leave a row stalled for pay alone.
+  DEGREE_TEXT: the posting's degree sentence, verbatim (DEGREE_TEXT=NOT_STATED when the posting itself names no degree). DEGREE_REQ: REQUIRED, PREFERRED or NOT_STATED. DEGREE_EVIDENCE_URL and DEGREE_ASOF.
+  FLEX: the Writer derives FLEX_CLASS from DEGREE_TEXT, so verbatim DEGREE_TEXT is the key deliverable. Add FLEX_BASIS (one line) using Tim's rulings: "degree preferred, or equivalent education and experience" = HIGH_FLEX; no degree mentioned = HIGH_FLEX; degree named only as preferred = SOFT_FLEX; hard engineering degree with no experience alternative = NO_FLEX; "B.S. in X or equivalent technical field" = NO_FLEX (there "equivalent" modifies the field of study).
+  LOCATION_NOTE / WORK_ARRANGEMENT: onsite, hybrid or remote as stated.
+  LIVENESS (when you opened the page): LIVE_EMPLOYER_ATS (employer ATS or careers page shows it open), LIVE_SECONDARY (a dated secondary job page within 30 days; put the page date in LIVENESS_NOTE) or CLOSED (closed needs evidence of closure; a blocked page is never closure), with LIVENESS_ASOF, LIVENESS_EVIDENCE_URL and LIVENESS_METHOD. Rows with ATS_CHECK_RESULT=LIVE or CLOSED were stamped by the Writer ATS checker; do not re-stamp their liveness.
+No scoring, no bucket changes, no declines.
+Cannot finish a row: ENRICH with FEASIBILITY_ATTEMPT_ASOF=YYYY-MM-DD and ENRICH_NOTE=<what was tried>, then take the next row.
+Pacing: Indeed and Glassdoor rate-limit; at most 6 fetches from either in a row.
+
+BATCHING
+Up to 25 rows per queue file. Target 15 finished rows per run; keep going while capacity lasts.
+
+FALLBACK (no fresh worklist)
+Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6B (Workday first). Check each ID with row_readback before working it.
+
+LANE RECEIPT FIELDS
+WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ESTIMATES_MADE, ATTEMPT_STAMPED, COMP_HANDOFFS_CONSUMED, NEXT.
+END BRIEF

@@ -1,24 +1,6 @@
-GROK LANE BRIEF -- FORGE_WEB_CAREER_DISCOVERY
-VALID_FOR_ENTRY_VERSION=2026-10-17.2
-Read lanes/COMMON_GROK.txt first. This lane has no worklist and never reads the master.
-
-JOB
-Find new Director, Head, VP (and strategically strong Manager / Sr Manager at destination employers) roles in manufacturing, production, operations and quality on public first-party careers pages and ATS boards (Greenhouse, Lever, Ashby, Workday, iCIMS, company sites). No Gmail.
-Priority employers (CONTROL POLICY ON GITHUB AMENDMENT 2026-10-17.2 item 3): read https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt?cb=<epoch seconds> at the start of every run and record its SOURCE line in the receipt. Cover every P1 company every run, P2 at least daily, P3 in weekly rotation, WATCH when convenient, PAUSED never; use each listed careers URL when it is not UNKNOWN. Then other drone, defense, autonomy, robotics and production scale-up companies. Rotate in ordinary strong manufacturing roles. Never spend a whole run on one company.
-Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
-
-WORKDAY CAREER SITES (CONTROL 2026-10-13.10, TINYFISH VERIFICATION AMENDMENT item 8)
-When the run has TinyFish fetch_content: fetch https://<company>.<wdN>.myworkdayjobs.com/<site>?q=<keywords> with links=true, include_selectors ["#mainContent"], ttl 0 (keywords such as manufacturing, production, operations, quality, plant). The page lists 20 jobs with title, location, posting age and requisition token; page 2 onward is not reachable by fetch, so use narrower keywords instead of paging. Screen titles; submit each plausible role with SOURCE_URL = the job link ending in the token (_R12345, _REQ-12345, _JR12345) with the ?q= part removed, REQ_ID = that token, SOURCE_PROVIDER Workday. Free tools only: never run_web_automation, browser sessions or monitors; never sign in or apply. Without TinyFish, use the existing method and note TINYFISH_UNAVAILABLE in the receipt.
-
-SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
-Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + location) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
-
-INTAKE FILE (one per 25 roles, name GROK_<requestId>.json in WRITER_QUEUE)
-{"action":"intake","requestId":"<RUN_ID>-B01","run":{"SCOUT_RUN_ID":"<RUN_ID>","RUN_STARTED_AT_ET":"YYYY-MM-DD HH:MM ET","GROSS_FOUND":<records in this file>},
- "records":[{"COMPANY":"","TITLE":"","LOCATION":"","REQ_ID":"<ATS job number from the URL: Greenhouse job id, Workday R-number; else the posted req>","SOURCE_URL":"<exact posting URL you opened>","SOURCE_PROVIDER":"Greenhouse|Lever|Ashby|Workday|Company site|...","DISCOVERY_SOURCE":"Grok web career discovery","DISCOVERED_AT_ET":"YYYY-MM-DD HH:MM ET","IDENTITY_CONFIDENCE":"HIGH|MED|LOW","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"EMPLOYER_DOMAIN_HINT":"<employer's primary business>","PAY_POSTED":"<only if shown>","SCOUT_NOTES":"<one line>"}]}
-COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
-
-LANE RECEIPT FIELDS
-COMPANIES_COVERED (list), CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, OUT_OF_SCOPE (title | company | reason), NEXT_COMPANY_CURSOR.
-Prior-run verification: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
-END BRIEF
+LEGACY POINTER; generated, do not edit.
+Use control/FORGE_AUTOMATION_ENTRY.txt VERSION 2026-10-18.1.
+PROVIDER remains the actual executing provider; TASK_KEY=FORGE_WEB_CAREER_DISCOVERY.
+Read the fresh runtime/current.json manifest and only its selected immutable packet.
+This file grants no ownership and adds no full CONTROL/STANDARD read or cached fallback.
+ZipRecruiter is a conditional weekly addon inside the ChatGPT web-discovery packet.

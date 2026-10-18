@@ -39,9 +39,17 @@ jobs:
           if not (isinstance(t, str) and isinstance(content, str) and mode in ("append", "replace") and r.get("requested_by")):
               print("REJECT missing or invalid target/mode/content/requested_by"); sys.exit()
           p = os.path.normpath(t)
-          if p.startswith("..") or os.path.isabs(p) or p.startswith(".github") or p.startswith("edit-requests"):
+          # Authoritative instructions/generated state and immutable evidence use
+          # direct reviewed changes, never a self-declared requested_by string.
+          if p.startswith("..") or os.path.isabs(p) or p.split(os.sep)[0] not in ("proposals", "usage"):
               print(f"REJECT target not allowed: {t}"); sys.exit()
+          root = os.path.realpath(".")
+          resolved = os.path.realpath(p)
+          if os.path.commonpath([root, resolved]) != root or os.path.islink(p):
+              print(f"REJECT target escapes checkout: {t}"); sys.exit()
           base = r.get("base_blob_sha")
+          if os.path.exists(p) and not base:
+              print("REJECT existing target requires base_blob_sha"); sys.exit()
           if base:
               cur = subprocess.run(["git", "rev-parse", f"HEAD:{p}"], capture_output=True, text=True).stdout.strip()
               if cur != base:
