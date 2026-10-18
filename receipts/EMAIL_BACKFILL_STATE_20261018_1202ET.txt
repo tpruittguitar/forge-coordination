@@ -1,0 +1,28 @@
+EMAIL_BACKFILL_STATE
+RUN_ID=FORGE-EMAIL-CHATGPT-20261018-1202ET
+STATUS=PARTIAL_CARRY_FORWARD
+OWNER=NEXT_FORGE_EMAIL_DISCOVERY_RUN
+PREVIOUS_CARRY_FORWARD=262
+CURRENT_VISIBLE_UNVERIFIED_OR_UNRESOLVED=213
+CURRENT_PROVIDER_HIDDEN=275
+TOTAL_CARRY_FORWARD=750
+
+CURRENT_VISIBLE_BREAKDOWN
+- 5 rows inserted by Writer request FORGE-EMAIL-CHATGPT-20261018-1202ET-B01 and confirmed in a fresh master read, but receipt-index state remained PENDING_DELIVERY/INDEPENDENT_READBACK when the Drive connector transport closed. Reconcile only; do not replay.
+- 2 Blue Origin candidates were held by Writer as ambiguous exact-identity matches. Owner=gofer. Resolve employer/requisition evidence; never replay the same identities blindly.
+- 10 admissible records are staged locally for batch B02 but were not submitted because the preceding batch had not reached independently observable COMPLETE. Earliest next action: re-read freeze/index/queue, reconcile B01, then submit only if B01 is COMPLETE and transport/gate remain healthy.
+- 196 additional unique visible candidates remain for deterministic dedupe/classification/admission.
+- 275 jobs were provider-hidden and not extractable from the email bodies: LinkedIn 18 + LinkedIn 21 + Lensa 114 + Lensa 122.
+
+PRIOR_CARRY_FORWARD
+- Preserve all 262 obligations from receipts/EMAIL_BACKFILL_STATE_20261018_0902ET.txt.
+- Preserve four prior ambiguity holds and five prior Lensa source-URL conflict holds under gofer ownership; never replay.
+
+RESUME_ORDER
+1. Fresh-read authority and Writer gate.
+2. Reconcile B01 receipt index and fresh master without replay.
+3. If COMPLETE and gate/transport are healthy, submit staged B02 once; reconcile result, COMPLETE index, and fresh exact-row master readback.
+4. Continue current visible candidates from earliest unresolved message in batches of no more than five emails.
+5. Continue prior carry-forward, preserving stable message IDs and source URLs.
+
+PERSISTENCE=THIS_FILE_IS_THE_GOVERNED_CREATE_ONLY_CARRY_FORWARD
