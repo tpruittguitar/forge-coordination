@@ -1,0 +1,95 @@
+PIPELINE EXPLORER — LOOK OWNER: NEW AND CHANGED TOKENS (plain text)
+====================================================================
+Author: GROK BOT (look-and-feel owner) · 2026-10-18 18:30 ET · Status: PROPOSED (visual contract input for tokens.css)
+Base: proposals/GROK_20261015_1650ET_PIPELINE_EXPLORER_DESIGN_TOKENS_V1_5_1.txt. Everything not listed here is unchanged.
+Source of the values: the V-rulings in GROK_20261018_1830ET_PE_LOOK_OWNER_INTENT_AND_V_RULINGS.txt and pages P01–P07 in
+GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/. Existing tokens are reused wherever possible (listed under REUSED).
+Format: name · value · use · (contrast where it matters; Plate / Raised unless noted)
+
+1. NEW TOKENS
+-------------
+Colour / outline
+  --pe-outline            #6B6B66            border of every input, button, pill, interactive chip (V-10)
+                                             (Void 3.92 · Hull 3.67 · Plate 3.44 · Raised 3.11)
+  --pe-closed             var(--pe-text-secondary)  posting-closed text, ∅ glyph, banner bar (M-03) (7.27 / 6.58)
+  --pe-unknown            var(--pe-text-secondary)  "? unknown" component / evidence (M-02)
+  --pe-info-bar           var(--pe-outline)  3 px left bar of neutral info banners (agency banner, M-02)
+  --pe-nt-blocking        var(--pe-red)      Needs-you BLOCKING level: left bar + "⊘ BLOCKING" word (5.60 on Plate)
+  --pe-nt-action          var(--pe-amber)    Needs-you ACTION level: left bar + "▸ ACTION" word (9.91)
+  --pe-nt-watch           var(--pe-text-secondary) Needs-you WATCH word; its left bar uses --pe-outline
+  --pe-badge-text         #000000            text on the bell badge, on amber (11.29) and on red (6.38) — never white
+Glyphs (meaning = colour + glyph + word + position)
+  --pe-glyph-hold         SVG pause bars (2 × 3.2 × 12 px, gap 4.4); text fallback "‖" U+2016   Hold decision (V-02)
+  --pe-glyph-closed       "∅" U+2205         posting closed (LIVENESS=CLOSED_*) (M-03)
+  --pe-glyph-unknown      "?"                unknown component / evidence (M-02); ◌ stays stale-evidence only
+  --pe-glyph-soft         "≈" U+2248         amber evidence line (soft / estimated), replaces ◷ and ◆ there
+  --pe-glyph-email        "@"                applied-source chip "@ Email evidence" (M-04)
+  --pe-glyph-nt-blocking  "⊘" · --pe-glyph-nt-action "▸" · --pe-glyph-nt-watch "○"   Needs-you levels (app vocabulary)
+  --pe-glyph-svg-set      ◷ ◌ ⟳ ✕ ▸ and the bell: ship as inline SVG (not in Inter / IBM Plex Mono; N-05)
+Type
+  --pe-text-min           11px               floor for any text, desktop and phone (N-10, L-1)
+  --pe-kpi-value          38px / 650 / line-height 1.05 (Inter)   KPI and Needs-you count tiles (V-12)
+  --pe-kpi-label          12px mono, Secondary                    tile label
+  --pe-pill-text          12px mono, letter-spacing .08em, uppercase   HUD pills (M-05/M-06)
+  --pe-build-line         12px mono, letter-spacing .04em, no uppercase  Writer build line (M-07)
+Shape / size
+  --pe-pill-h             32px               HUD pill height (desktop; >= 24 px target)
+  --pe-pill-bar           3px                pill left bar (state colour); = --pe-bar-card
+  --pe-pill-pad           0 10px 0 9px
+  --pe-pill-gap           12px               between pills; fixed order: Writer · Seen sync · My decisions ·
+                                             Lane queue · Lanes (position is part of meaning)
+  --pe-pill-collapse-bp   2200px             below this width pills show glyph + count; full sentence = accessible name
+  --pe-chip-h             20px · padding 2px 7px · 11px mono · border --pe-outline   neutral chips
+  --pe-col-score          112px              table SCORE track (fits "nn ▲ UPPER" and "nn ⊘ HOLD") (V-03)
+  --pe-col-company        140px              table COMPANY track (fits "via <agency>")
+  --pe-map-canvas-h       1024px             map canvas under the 44 px card header inside the 1068 main row (V-13)
+  --pe-nt-col-w           1fr ×4             Needs-you desktop: Decide | Jobs | Failed | Upkeep columns
+                                             (601 px each at 2560); lane heartbeat 330 px row below
+  --pe-nt-card-pad        10px 12px · gap 8px · 1 px Seam border + 3 px level bar on Plate
+  --pe-nt-watch-row-h     34px               one-line WATCH rows (draft PRs) on Needs you
+  --pe-target-phone       44px               phone tap target (CSS px; V-17 replaces 44pt)
+  --pe-target-decision-phone 52px            phone Pursue / Hold (CSS px)
+Motion
+  --pe-pill-change        var(--pe-motion-fast)   120 ms single fade when a pill changes state; pills never flash
+  (◷ waiting pulse in a pill follows --pe-loop-max 5 s, then steady + seconds counter)
+
+2. CHANGED TOKENS / RULES
+-------------------------
+  --pe-target-min / --pe-target-decision   44pt / 52pt  ->  44px / 52px (V-17)
+  Decline (⊖)                     Secondary text + --pe-outline border (was red in the v1.5 PDF; V-01)
+  Ticker control                  "Pause ticker" / "Resume ticker" + "Hide", words only (was "❚❚ Pause"; V-02/V-08)
+  Map header                      no timing text ("AUTO-FIT 300 MS" removed; V-07)
+  Breakdown footer                "Σ known W% = R · coverage C% × factor F = N"; points largest-remainder rounded (V-16)
+  Hover card                      "◆ UPPER · 58 · #66 of 419 eligible open · 18:30" (live values; V-19)
+  Bands header                    "BANDS · N 419 ELIGIBLE OPEN · P90 61 · P65 52 · P20 38 · REV 24 · AS OF 18:30" (V-20)
+  Map pin core                    band glyph ▲ ◆ ● ▽ / ⊘ at 11 px instead of a plain dot (V-09)
+  Muted #6B6B66                   text >= 24 px only; as --pe-outline it is a non-text colour (V-10/V-11)
+  Seam / Gridline                 passive dividers only, never a control boundary (V-10)
+
+3. REUSED (no new value)
+------------------------
+  Surfaces Void/Hull/Plate/Raised/Seam · Primary/Secondary · Green (✓ confirmed, Applied banner) · Amber (◷ waiting,
+  ▸ attention) · Red (⊗ failed, ⊘ blocking/hold) · Cyan (selection, links, ⟳ in flight) · Olive (◌ stale evidence) ·
+  band colours + ranks · --pe-bar-card 3px · --pe-focus-ring · --pe-loop-max · --pe-motion-fast · mobile perimeter
+  tokens · v1.5 tab bar (floating, inset 36, radius 16, 64 high).
+
+4. CSS DROP-IN (additions only)
+-------------------------------
+:root {
+  --pe-outline: #6B6B66;
+  --pe-closed: var(--pe-text-secondary); --pe-unknown: var(--pe-text-secondary); --pe-info-bar: var(--pe-outline);
+  --pe-nt-blocking: var(--pe-red); --pe-nt-action: var(--pe-amber); --pe-nt-watch: var(--pe-text-secondary);
+  --pe-badge-text: #000000;
+  --pe-text-min: 11px; --pe-kpi-value: 38px; --pe-kpi-weight: 650;
+  --pe-pill-h: 32px; --pe-pill-bar: 3px; --pe-pill-gap: 12px; --pe-pill-collapse-bp: 2200px;
+  --pe-col-score: 112px; --pe-col-company: 140px; --pe-map-canvas-h: 1024px;
+  --pe-nt-watch-row-h: 34px; --pe-target-phone: 44px; --pe-target-decision-phone: 52px;
+  --pe-pill-change: var(--pe-motion-fast);
+}
+.pe-pill { height: var(--pe-pill-h); border: 1px solid var(--pe-outline); border-left-width: var(--pe-pill-bar);
+  font: 400 12px/1 var(--pe-font-label); letter-spacing: .08em; text-transform: uppercase; color: var(--pe-text-secondary); }
+.pe-pill[data-state="warn"] { border-left-color: var(--pe-amber); color: var(--pe-text-primary); }
+.pe-pill[data-state="fail"] { border-left-color: var(--pe-red);   color: var(--pe-text-primary); }
+.pe-pill[data-state="live"] { border-left-color: var(--pe-cyan);  color: var(--pe-text-primary); }
+
+END — proposed; nothing built or deployed.

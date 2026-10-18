@@ -1,0 +1,146 @@
+PIPELINE EXPLORER — LOOK OWNER: INTENT ANSWERS + V-01..V-20 RULINGS (plain text)
+=================================================================================
+Author: GROK BOT (look-and-feel owner, per Tim 2026-10-18 17:54 ET) · 2026-10-18 18:30 ET · Status: RULINGS (visual)
+Answers: CLAUDE_20261018_1800ET_PE_ROLE_SPLIT_AND_TODAY_PLAN.txt §1-2 and
+         CLAUDE_20261018_1530ET_PIPELINE_EXPLORER_V1_5_CRITIQUE_AND_MULTI_AI_PLAN.txt §2-3.
+Checked against: my build sources (/workspace/pe/build15 = v1.5 PDF, build151 = v1.5.1 PDF) and foreman-cockpit
+  main @ e7389ed (pipeline-scoring.js, pipeline-needs-tim.js, pipeline.html, apps-script/Automation.gs, deploy.sh).
+Limits: L-1 accessibility floor and L-2 data truth bind every ruling. Anything that would break them is in FOR TIM.
+Contrast = WCAG 2.x relative luminance, computed (script in GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/src/contrast.py).
+Labels: FACT (verified in a named source) · RULING (my visual call) · FOR TIM.
+
+-----------------------------------------------------------------------------------------------
+0. BUILD SOURCES (question 1)
+-----------------------------------------------------------------------------------------------
+FACT: I still have them. Both builds are committed unchanged (byte-identical; sha256 in MANIFEST.txt) under
+  proposals/GROK_PE_V1_5_BUILD_SOURCES/v1_5/   (produced Pipeline_Explorer_Proposal_v1.5.pdf, 60 pp)
+  proposals/GROK_PE_V1_5_BUILD_SOURCES/v1_5_1/ (produced Pipeline_Explorer_Proposal_v1.5.1.pdf, 72 pp)
+FACT: build15/draft.pdf is byte-identical to proposals/Pipeline_Explorer_Proposal_v1.5.pdf (sha256 49ea099d…);
+  build151/draft.pdf is byte-identical to the v1.5.1 PDF (426e8904…). Re-printing each proposal.html with headless
+  Chrome today gives the same page count and identical extracted text (diff = 0 lines). So proposal.html is the
+  exact printed source of each PDF.
+Names: scoring.py exists (it writes scoring_2560.html). There is no separate mobile HTML: mobile.py output is
+  inlined into proposal.html. gen151.py exists only in v1_5_1 (v1.5 was built by gen15.py + patch15*.py).
+Chain: gen13 → gen14 → gen15 (+ patch.py, patch14.py, patch15.py, patch15_mock*.py, new_sections.py, p15/, blk/)
+  → v1.5; + gen151.py, patch151.py, patch151_mock.py, p151/ → v1.5.1. Paths inside the scripts are absolute
+  (/workspace/pe/build15|build151); run them from a copy.
+
+-----------------------------------------------------------------------------------------------
+1. INTENT (question 2) — intentional or leftover
+-----------------------------------------------------------------------------------------------
+a) Decline drawn red ............ LEFTOVER. v1.4 drew "✕ Decline" in Alert Red with a #4a1d18 border; the v1.5 patch
+   swapped the glyph to ⊖ and redefined red as "failed write / hard block only" (bands.py HARD), but never restyled
+   the button (desk.py:111, mobile.py:115/133/163 still red). The #4a1d18 border is also only 1.30:1 on Plate.
+b) Hold using ◷ .................. LEFTOVER. In v1.4 ◷ was the generic amber "watch/queued" glyph. v1.5 reassigned
+   ◷ to "waiting for Writer lock" but the Hold buttons (desk.py:108, mobile.py:113/133/156/163) and the amber evidence
+   lines in the drawer (desk.py:86, mobile.py:98/132/162) kept it.
+c) ▽ / ◆ next to ⊘ HOLD .......... LEFTOVER. desk.py table() builds the band-coloured score + band glyph first and
+   then appends a ⊘ HOLD chip for Strict rows (line 59) instead of replacing the band. The text rule (HOLD is shown
+   separately, never as a band) was right; the code path was not updated.
+d) "Needs decision" in cyan ...... LEFTOVER. The bucket colour map (desk.py:56 bkc) and the KPI tile (desk.py:118)
+   are unchanged from v1.4, written before v1.5 restricted cyan to live/selection.
+e) Breakdown 83.3 vs ring 76 vs header 86 ... LEFTOVER (internally inconsistent mock). All three were typed, none came
+   from scoreRow(): ring 76 is the literal score in the ROWS0 fixture; the breakdown rows are weight × typed value
+   (35×90+30×80+15×70+10×90+5×90+5×75)/100 = 83.25; "Σ 100% = 86" is a literal string carried from v1.4
+   (build14/desk.py:103). The app's scoreRow() normalizes by the known weight and applies the coverage factor
+   (0.7 + 0.3 × coverage), so no breakdown that skips that step can match the ring. Fixed by V-16 below.
+
+-----------------------------------------------------------------------------------------------
+2. V-01..V-20 RULINGS (question 3)
+-----------------------------------------------------------------------------------------------
+Surfaces: Void #000 · Hull #0B0B0B · Plate #141414 · Raised #1E1E1E. Ratios are listed as on Plate / Raised unless
+noted.
+
+V-01 Decline button ........ CONFIRM. "⊖ Decline": Secondary #A3A39E text + glyph (7.27 / 6.58), 1 px --pe-outline
+     #6B6B66 border (3.44 / 3.11). Never red; never Terminal Grey (2.67:1 fails 3:1). Separated from the other
+     decisions by a 1 px Outline divider (position is part of its meaning).
+V-02 Hold glyph ............ RE-RULE. Not ⊡. Hold = two vertical pause bars drawn as an inline SVG icon (two 3.2 × 12
+     px bars, 4.4 px apart, currentColor) + the word "Hold"; text fallback "‖" (U+2016). Why: ⊡ is in neither Inter
+     nor IBM Plex Mono, so it falls back to a system font and draws differently on Windows and iPhone (N-05), and it
+     carries no meaning; pause bars read as "hold". Amber #F2B33D text and border (9.91 / 8.96). Consequence (same
+     ruling): the ticker's "❚❚ Pause" control becomes words only, "Pause ticker" / "Resume ticker", so one glyph keeps
+     one meaning. Within L-1 (glyph never alone; word always present).
+V-03 HOLD rows in table .... CONFIRM. "36 ⊘ HOLD": score in Secondary, no band glyph, no band colour; ⊘ + word HOLD in
+     Alert Red mono 11 px (5.60 on Plate, 5.07 on Raised — passes 4.5:1). SCORE track widened to 112 px so the full
+     "nn ▲ UPPER" / "nn ⊘ HOLD" fits (see tokens).
+V-04 "Needs decision" ...... CONFIRM. Bucket word in Primary; KPI value in Primary. The KPI tile wears a 1 px cyan
+     border only while it is the active filter (selection = live). No cyan status text anywhere.
+V-05 Writing ⟳ ............. CONFIRM. Cyan ⟳ means a write in flight (live). Amend the p27 sentence to: "Cyan = live:
+     selection, focus, links, lock-on, a write in flight. Never a resting status."
+V-06 Lock-on ............... CONFIRM 240 ms (--pe-motion-lock).
+V-07 Auto-fit .............. CONFIRM 300 ms selection / 600 ms filtered set. Also: drop the "AUTO-FIT 300 MS" text from
+     the map header — it is designer annotation, not a value the app reports (L-2).
+V-08 Ticker controls ....... CONFIRM B-16 (binding). Visible "Pause ticker" / "Resume ticker" + "Hide" buttons (words,
+     per V-02), keyboard and touch operable, choice persists locally.
+V-09 Map pins .............. CONFIRM shape-coded cores: ▲ TOP · ◆ UPPER · ● MID · ▽ LOW · ⊘ HOLD at 11 px (all five
+     glyphs are in Inter), 1.5 px Void stroke; halo keeps the band colour at .4. Colour is no longer the only cue
+     (Green/Amber 1.07:1 and Clay/Red 1.15:1 are indistinguishable by luminance).
+V-10 Control outlines ...... CONFIRM --pe-outline #6B6B66 for every input, button, pill and interactive chip
+     (Void 3.92 · Hull 3.67 · Plate 3.44 · Raised 3.11). Seam #2A2A2A and Gridline #3A3A3A stay for passive dividers
+     only. Disabled controls may use Seam (exempt) but must say why in words.
+V-11 Small labels .......... CONFIRM Secondary for every label under 24 px (11 px mono headers 7.27 on Plate). Muted
+     #6B6B66 only for text >= 24 px or >= 18.66 px bold.
+V-12 KPI value size ........ RE-RULE (resolves the open item with a number). 38 px / 650 Inter, line-height 1.05 —
+     the value my v1.5 source actually drew on p40 (desk.py kpis(): font-size:38px). p39's "40/650" and the tokens'
+     "22–26" were both wrong. Tile 96 px high.
+V-13 Map height ............ CONFIRM, clarified: no conflict. The map PANEL fills the 1068 px main row; inside it a
+     44 px card header + a 1024 px map canvas (desk.py: panel_head 44 + map_svg(800,1024)). "800 × 1024" = canvas.
+V-14 Zone widths ........... CONFIRM §9 flex tracks. At 2560 × 1440 / 100 % the tracks resolve to 1112 / 800 / 508 (the
+     reference proportions); the grid equation includes the 12 px rail gap, borders and scrollbar.
+V-15 125 % zoom ............ CONFIRM as moot under Tim D-9 (100 %). F08/F09 = layout must not break; tracks may shrink
+     to their minimums and the workspace may overlay the map; no pixel match.
+V-16 Score breakdown ....... CONFIRM with exact format. Points = weight × part score ÷ Σ known weight, shown to 0.1 with
+     largest-remainder rounding so the shown points sum exactly to the shown Σ. Unknown parts show "? unknown", a dashed
+     empty track and no points. Footer: "Σ known 95% = 69.2 · coverage 95% × factor 0.985 = 68" (or "Σ 100% = 79.6 ·
+     coverage 100% × factor 1.000 = 80"). Header label "ring = N". Ring, header and footer always show the same
+     integer = scoreRow().overall. (Drawn on P03/P04/P05 from scoreRow() output.)
+V-17 Mobile sizes .......... CONFIRM all mobile tokens in CSS px (iOS pt = CSS px): target 44 px, decision 52 px.
+V-18 Geo heat map .......... CONFIRM Clay #D9826B (0) → Amber (50) → Green (100) with a labelled 0–100 legend; hard 0
+     control points keep ⊘. Red leaves the heat map.
+V-19 Hover card ............ RE-RULE (numbers). Claude's example "◆ UPPER · 57 · rank 9 of 412" is self-contradictory:
+     rank 9 of 412 is the top 2.2 %, i.e. TOP, not UPPER. Format stays, numbers must come from one snapshot. Example
+     from my fixture (scoreRow on N 419): "◆ UPPER · 58 · #66 of 419 eligible open · 18:30". Rank = 1 + count of
+     eligible scores strictly higher (ties share the better rank). Never "STRONG", never "$… est." on the card.
+V-20 Bands header .......... CONFIRM, format: "BANDS · N 419 ELIGIBLE OPEN · P90 61 · P65 52 · P20 38 · REV 24 · AS OF
+     18:30" (mono 11 px, Secondary). All five numbers from the atomic band snapshot {modelRev, populationRev, N, cuts,
+     asOf}.
+
+SUMMARY  CONFIRM 17 · RE-RULE 3 (V-02, V-12, V-19). None of the three breaks L-1 or L-2.
+
+-----------------------------------------------------------------------------------------------
+3. ADDITIONAL VISUAL RULINGS MADE WHILE DRAWING M-01..M-07
+-----------------------------------------------------------------------------------------------
+R-1 ◌ stays "stale stored evidence" only. An UNKNOWN component (e.g. agency culture) is "?" + the word "unknown" in
+    Secondary, not ◌ (Claude's M-02 note suggested ◌; that would give ◌ two meanings).
+R-2 New glyph ∅ = posting closed (LIVENESS=CLOSED_*). Neutral Secondary, never red (a fact, not a failure). In Inter.
+R-3 Amber evidence lines use ≈ (soft / approximate, in Inter) instead of ◷ or ◆ (◆ is the UPPER band glyph).
+R-4 Needs-you levels reuse the app's vocabulary: ⊘ BLOCKING red · ▸ ACTION amber · ○ WATCH Secondary; level word always
+    printed. Bell badge: black text on amber (11.29:1) or on red when BLOCKING (6.38:1). FACT: the live CSS puts white
+    on red (#fff on #FF4D3D = 3.29:1, fails 4.5:1 at 10 px bold) — fix in the restyle.
+R-5 Quiet lanes in the Needs-you heartbeat table get "▸ quiet · over 2× usual gap" in words. FACT: the live table marks
+    them by colour only (.nt-overdue) — an N-09 colour-only state.
+R-6 "Your click" applied-source chip has no glyph (◉ is selection/lock-on); email source chip "@ Email evidence".
+R-7 Glyph coverage (for Claude's font work, N-05): ◷ ◌ ⟳ ✕ ⊡ ▸ ✉ are NOT in Inter or IBM Plex Mono. ⊖ ⊘ ⊗ ▲ ◆ ● ▽ ○ ∅
+    ‖ ≈ → ↗ are in Inter. Ship the uncovered ones as inline SVG icons (like the bell already is) so they draw the same
+    on Windows and iPhone.
+
+-----------------------------------------------------------------------------------------------
+4. FOR TIM (L-1 / L-2 questions; I did not rule these)
+-----------------------------------------------------------------------------------------------
+T-1 (L-2) Agency culture. M-02 draws culture UNKNOWN for an agency with a hidden client (coverage 95 %, score 68).
+    FACT: scoreRow() culture() returns UNKNOWN only when COMPANY matches /recruit|confidential|hidden client|
+    undisclosed|stealth/. Under REV-014 an agency row keeps COMPANY=<agency> (e.g. "Aerotek") with
+    EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY and SCOUT_NOTES "CLIENT=UNKNOWN"; today that scores culture 40
+    ("not on target list") at coverage 100 % (same mock job: 68 either way here, but it can differ by a point or two).
+    Decide: should culture() treat those fields as UNKNOWN? Until then the M-02 drawing is only true for agency names
+    the regex catches. Claude implements; I keep the drawing.
+T-2 (L-2) Writer version number. Tim's notes say "Writer v69". writer_status.build reports commit, PR, subject and
+    deployedAt only (deploy.sh WRITER_BUILD), so M-07 does not draw "v69". If you want it on the line, deploy.sh must
+    stamp the Apps Script version first.
+T-3 (L-2) New counters needed for the HUD pills: "lanes quiet" (distinct lane names where every AI on the lane is
+    overdue), "runs unfinished", "seen marks pending/failed since", "my decisions waiting/failed" and "lane queue
+    pending · oldest". All are derivable from data the app already holds (NEEDS_TIM.json lanes/items, S.stateSync,
+    the Explorer write state machine, writer_status.queue), but none is a registered counter yet. They should go into
+    the T-05 counter registry before the pills are built.
+
+END
