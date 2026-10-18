@@ -1,0 +1,81 @@
+GROK ADVERSARIAL VISUAL QA · GOLDEN FRAME F02 REVISION 2 · 2026-10-18 18:42 ET
+Repo: tpruittguitar/foreman-cockpit commit ca22e58 (branch backup/claude-20261018-1805ET, draft PR #123)
+Compared against:
+- tests/visual/reference/p40_2560x1440.png (PDF p40 1:1)
+- forge-coordination/proposals/GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/P03_M02_AGENCY_CLIENT_UNKNOWN_2560x1440.png
+- forge-coordination/proposals/GROK_20261018_1830ET_PE_LOOK_OWNER_PAGES/P06_M05_M06_HUD_PILLS_2560x1440.png
+- tests/visual/golden/F02.NOTES.txt (revision 2)
+Ignore differences that NOTES lists with a reason. List every other difference.
+
+EXECUTIVE VERDICT
+Revision 2 applies the prior must-fix items (V-02 pause-bars Hold, V-07 timing text removed, P06-style header pills, V-16 footer). Remaining differences from the references are either listed in the revision-2 NOTES (as applied rulings or open owner questions Q1–Q5) or are minor presentation residuals within the stated approximations. Colour-vision simulations pass. No internal numeric contradictions. Frame is ready for look-owner confirmation of the open questions.
+
+KEY FINDINGS
+- Prior must-fixes from the 1834 ET QA are closed: Hold uses pause-bars SVG + word (V-02); map header no longer shows “300 MS” timing (V-07); header pills follow P06 order and state sentences (Writer · Seen sync · My decisions · Lane queue · Lanes + Needs you); breakdown footer matches V-16 exact format “Σ 100% = 76.0 · coverage 100% × factor 1.000 = 76” and “RING = 76”.
+- Data numbers remain fixture-driven (D1–D8) as restated in revision-2 NOTES.
+- Open items in NOTES (write-state column width/truncation Q1, receipts block Q2, KPI/strip look Q3, X1–X4 Q4, LOCKED ON MAP Q5) are questions for the look owner, not unlisted defects.
+
+DIFFERENCES NOT LISTED IN NOTES (or not fully covered by a NOTES reason)
+region · reference shows · frame shows · must-fix / accept
+
+1. Map zoom control label · Look owner V-07 drops the designer annotation “AUTO-FIT 300 MS” · Frame shows “ZOOM · AUTO-FIT” (no “300 MS”) in map header area · accept
+   Reason: Timing text is gone. Residual “AUTO-FIT” appears as part of a zoom control label, not the forbidden annotation. Consistent with V-07 intent.
+
+2. Write-state column truncation · Look owner table grid (V-03) + NOTES Q1 · Frame truncates “◷ Waiting for lock · 8 s”, “✓ Confirmed · 3 s”, “⊗ Failed · Retry” to glyph + few letters in the 52 px column · accept (pending owner ruling)
+   Reason: Explicitly raised as Q1 in revision-2 NOTES. Not an unlisted defect; awaits re-rule or confirmation of glyph-first truncation.
+
+3. Receipts block in drawer · Look owner P03 has no receipts block; NOTES Q2 · Frame keeps p40’s three receipts (waiting / confirmed / failed) under the decision row · accept (pending owner ruling)
+   Reason: Explicitly raised as Q2. Composition choice left open.
+
+4. KPI tiles and change strip · Look owner pages draw Needs-you tiles; NOTES Q3 · Frame keeps p40’s KPI tiles and change strip · accept (pending owner ruling)
+   Reason: Explicitly raised as Q3.
+
+5. LOCKED ON MAP in drawer head · Look owner drawer() drops it; NOTES Q5 · Frame keeps “· LOCKED ON MAP” · accept (pending owner ruling)
+   Reason: Explicitly raised as Q5.
+
+No other material differences found. All prior must-fixes are closed. X1–X4 remain as open approximations per NOTES Q4.
+
+COLOUR-VISION AND GREYSCALE CHECK
+Frame viewed under greyscale, deuteranopia simulation, and protanopia simulation.
+- All primary text, KPI values, table content, drawer score/breakdown (“RING = 76”, Σ footer), map readouts, header pills, and status labels remain legible.
+- Band indicators remain shape-coded (▲ TOP / ◆ UPPER / etc.) per V-09; colour is not the sole cue.
+- Decline remains Secondary grey ⊖ (V-01); Hold remains pause-bars + word (V-02).
+- Needs-decision remains Primary text (V-04).
+- No state becomes unreadable. No critical distinction depends on colour alone.
+- 11 px floor and interactive target sizes hold.
+
+NUMERIC CONSISTENCY (same screen)
+No contradictions found.
+- REVIEW QUEUE 50 consistent.
+- Needs-decision 28 vs queue 50 (D2).
+- Header pills: Writer idle / Seen sync · 23:41 / ⊗ 1 decision failed · Retry / Lane queue · 2 · oldest 4 min / Lanes · 10 reporting — match D5/D6 and P06 style; two queues distinct.
+- Bands header “BANDS · N 48 ELIGIBLE OPEN · P90 72 · P65 61 · P20 51 · REV 24 · AS OF 23:41” matches drawer “▲ TOP · #1 OF 48 ELIGIBLE OPEN” and score 76 (V-19/V-20/D3/D4).
+- Drawer Δ +4 matches selected table row (D4).
+- RING = 76 = Σ 100% = 76.0 · coverage 100% × factor 1.000 = 76 (V-16).
+- HOME Cleveland TN · 127 MI · 304° (D7).
+All other KPIs consistent with fixture + model rev 24.
+
+WHAT IS STRONG
+- Prior must-fix items fully applied and verified in word boxes and OCR.
+- Header pills now match P06 composition and state sentences.
+- Breakdown footer and RING label match V-16 exactly.
+- Shape-based bands, primary-text states, and pause-bar Hold survive colour-vision simulation.
+- NOTES revision 2 clearly documents applied rulings and remaining owner questions.
+
+WHAT IS WEAK / RISKY
+- Write-state column is tight (Q1); truncation is visible. Owner should confirm or widen.
+- Receipts block, KPI/strip look, and LOCKED ON MAP remain composition choices (Q2/Q3/Q5).
+- X1–X4 approximations (ring ticks, gradients, margins, unnamed row tokens) still open (Q4).
+
+HIDDEN IMPLICATIONS
+- Once the look owner answers Q1–Q5, the golden frame can be locked. No further visual defects block acceptance.
+- The two queue counters remain visually distinct, as required.
+
+RECOMMENDED NEXT ACTIONS
+1. Look owner answer Q1–Q5 in NOTES revision 2 (write-state widths, receipts, KPI/strip, X-items, LOCKED ON MAP).
+2. If Q1 requires a grid tweak, re-render and spot-check the WRITE STATE column.
+3. Accept F02 revision 2 as golden once the open questions are closed or explicitly waived.
+4. No further adversarial defects identified against the current references.
+
+QUESTIONS / EVIDENCE NEEDED
+None for this pass. The open questions are already listed in F02.NOTES.txt revision 2 for the look owner.
