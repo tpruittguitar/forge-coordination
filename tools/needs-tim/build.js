@@ -10,7 +10,9 @@ const fs = require('fs'), path = require('path');
 const PROVIDERS = ['CLAUDE', 'CHATGPT', 'GROK'];
 const LANE_ALIAS = { 'POSTING-VALIDATION': 'POSTVAL', 'WEB-CAREER-DISCOVERY': 'WEB', 'EMAIL-DISCOVERY': 'EMAIL' };
 const UNFINISHED = /^(IN_PROGRESS|STARTED|PENDING|PREFLIGHT|ACTIVE|QUEUED_PENDING_WRITER)$/;
-const BLOCKED = /^(HARD_BLOCKED|FAILED|FAILED_NO_WORK|FAILED_WITH_\w+)$/;
+/* BLOCKED_* includes the 2026-10-18 instruction-runtime codes (BLOCKED_AUTHORITY, PAYLOAD_VALIDATION_BLOCKED) and older
+   lane codes (WRITER_TRANSPORT_BLOCKED, BLOCKED_MAILBOX_VISIBILITY). */
+const BLOCKED = /^(HARD_BLOCKED|FAILED|FAILED_NO_WORK|FAILED_WITH_\w+|BLOCKED_\w+|\w+_BLOCKED)$/;
 const H = 3600000, DAY = 24 * H;
 
 /* US Eastern offset for a local ET date: EDT from the 2nd Sunday of March to the 1st Sunday of November. */

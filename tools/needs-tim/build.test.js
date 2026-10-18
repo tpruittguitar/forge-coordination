@@ -120,3 +120,13 @@ test('an unreadable ask file is reported, never silently skipped', () => {
   const r = build({ root: repo({ 'asks/open/BAD.json': '{not json' }), now: NOW });
   assert.ok(r.items.some(i => i.id === 'ask-unreadable:BAD.json'));
 });
+
+test('instruction-runtime block codes (BLOCKED_AUTHORITY etc.) are blocking failures', () => {
+  ['BLOCKED_AUTHORITY', 'PAYLOAD_VALIDATION_BLOCKED', 'WRITER_TRANSPORT_BLOCKED', 'BLOCKED_MAILBOX_VISIBILITY'].forEach(code => {
+    const r = build({ root: repo({ ['receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-1700ET_TERMINAL.txt']: 'RUN_TERMINAL_STATUS=' + code + '\nSTOP_REASON=packet hash unavailable\n' }), now: '2026-10-18T18:00:00-04:00' });
+    const it = r.items.find(i => i.id === 'run-blocked:EMAIL|CHATGPT');
+    assert.ok(it && it.level === 'BLOCKING', code);
+  });
+  const ok = build({ root: repo({ 'receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-1700ET_TERMINAL.txt': 'RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK\n' }), now: '2026-10-18T18:00:00-04:00' });
+  assert.ok(!ok.items.some(i => i.id.indexOf('run-blocked') === 0));
+});
