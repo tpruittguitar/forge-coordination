@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=ROTATION -> FEASIBILITY (strategic list empty, EMPTY STRATEGIC LIST rule)
+RUN_ID=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET
+ENTRY_VERSION=2026-10-17.2
+BRIEF_VERSION=2026-10-17.2
+CONTROL_VERSION_READ=2026-10-17.2 (ASSIGNMENTS and GROK USAGE-OUT HANDOFF AMENDMENT read; remainder not re-read per brief)
+WORKLIST_GENERATED_AT=2026-10-18T16:00:02.856Z (fresh)
+WRITER_FREEZE=frozen=false
+WORKLIST_ELIGIBLE_TOTAL=608 (40 shown)
+ROWS_RESEARCHED=13 (worklist rows 1-4, 22 via employer Greenhouse/Ashby pages; rows 9-13 plus 17,18,19,21 via LinkedIn public pages through TinyFish fetch_content; rows 20 and 13-Dallas hit HTTP 429 and were not worked)
+ROWS_SUBMITTED=13 (B01: 10 rulings, B02: 3 rulings)
+SALARY_WRITTEN=3 (V2I-B162C9A84488 Virtium 165000-180000; V2I-5BC161496562 Aurora Washington 189000-303000; V2I-57911598953F STV 132709-151667; all EMPLOYER_POSTED text on LinkedIn copy, CONF MED)
+DEGREE_WRITTEN=10 (verbatim DEGREE_TEXT or NOT_STATED: 14D247CAA233, B18CBE46AC18, E0CF4294A8D1, 8085BA113B00, A640739FD438, B162C9A84488, 5BC161496562, 077331E21D12, 57911598953F, 71D3E2E01CFD, FAB0F47AB26C)
+ESTIMATES_MADE=0 (no employer-posted similar-role anchor gathered)
+ATTEMPT_STAMPED=9 (14D247CAA233, B18CBE46AC18, E0CF4294A8D1, 8085BA113B00, A640739FD438, 077331E21D12, 32FD9B18C7B4, 71D3E2E01CFD, FAB0F47AB26C, 8F1877790643 as V2I- ids; includes rows still missing pay)
+COMP_HANDOFFS_CONSUMED=none checked
+IN_FLIGHT_CHECK=not performed (Grok stood down)
+LIVENESS=not stamped this run (no ATS_CHECK_RESULT visibility in worklist)
+WRITER_QUEUE_FILES=CLAUDE_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET-B01.json (Drive 1TK8ATCh1t7m2aAZ1seXBtUtgyCXTazPT), -B02.json (Drive 1xtZcptBih8pxtiRoio6JF3EBI7XEmuWB), -RB.json row_readback of prior run (Drive 1Ll1a0BfGCW9w3a_f-4MABP-jNBNM-r_q)
+WRITTEN_REQUEST_IDS=FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET-B01-01..10, -B02-01..03 (QUEUED ONLY; RESULT, receipt-index COMPLETE and row_readback NOT yet seen)
+PRIOR_RUN_CHECK=Prior Claude feasibility run 20261018-0011ET B01: RESULT__ terminalStatus SUCCESS, 8 records, writeId W-20261018041419941-186fc0, verification PENDING. Row_readback queued as -RB for its 8 ids.
+VERIFIED_PRIOR_RUN=NOT CLAIMED (write RESULT SUCCESS seen; COMPLETE index entry and row_readback RESULT not yet checked)
+HELD=none
+FINDINGS: Greenhouse (Apptronik, Vulcan x2, SpaceX) and Ashby (ATP) employer pages show no pay. LinkedIn public pages through TinyFish carried provider pay for Virtium, Aurora, STV. PulseForge and Voss LinkedIn pages returned no description. Aurora range may be shared across locations; applied to the Washington DC row only (Dallas row 2DF5992FBB16 not fetched, 429).
+LIMITS: LinkedIn rate limit (429) after ~10 fetches; Indeed rc/clk, Glassdoor partner, ladders and talent.com tracking links (rows 5-8, 14-16, 23-40) not attempted.
+STOP_REASON=connector/rate limit: LinkedIn HTTP 429 and remaining rows are tracking redirect links on boards not yet tried
+BATCHES_COMPLETED_THIS_RUN=2
+NEXT=Next feasibility run: read RESULT__ for B01/B02 and RB; then Aurora Dallas V2I-2DF5992FBB16 (copy Washington pay only if its own page shows it), Mott MacDonald V2I-C96D2534C436 (LinkedIn 4480118241), then rows 5-8, 14-16 and 23-40; resubmit Tesla V2I-75875348CC3C and CACI V2I-86E3D228DC6E degree rulings from the 20261017-2111ET receipt NEXT.
