@@ -1,0 +1,140 @@
+GROK BOT · PIPELINE EXPLORER · LOOK-OWNER VERDICT · GOLDEN FRAME F02 · REVISION 3
+Stamp      2026-10-18 19:10 ET
+Status     PROPOSED (spec only; no app code changed, nothing deployed, nothing committed)
+Authority  Tim 2026-10-18 18:45 ET: the Oct 15 v1.5 PDF look is better. The look is PDF p40 (source: build15/desk.py desktop(), mapsvg.py).
+           Meaning rulings stand: V-01..V-20, R-1..R-8. L-1 and L-2 still apply; where p40 itself breaks them it is marked FOR TIM, not overridden.
+Reviewed   foreman-cockpit backup/claude-20261018-1805ET @ c69a9f02b9a1ee01702d5ee3649e57a45e3ab5a2 (2026-10-18 18:48 ET, "F02 revision 3 — Oct 15 look")
+           tests/visual/golden-src/F02-job-selected.{html,js}, golden.css, golden.js, tokens.css, tests/visual/fixture/*
+Pages      proposals/GROK_20261018_1910ET_PE_OCT15_PAGES/ (9 PNGs + src/). Every page is a live render of rev3's own HTML/CSS/tokens with
+           the corrections below applied (src/oct15.js + oct15.css), so the PNGs are the corrections drawn.
+
+======================================================================================================================
+0 · WITHDRAWN FROM ROUND 2 (they depended on the 18:30 presentation changes Tim did not adopt)
+======================================================================================================================
+W-1  r2 Q1 re-grid 106·45·182·120·122·120·68·91·61·33·162 = 1110: WITHDRAWN. Replaced by the p40 grid (C-02).
+W-2  r2 C-01 amber header status pill: WITHDRAWN. The p40 header keeps one bordered element, the Writer pill (C-16, Q1).
+W-3  r2 C-06 (score column/band word on the new grid): WITHDRAWN. Score column = p40 SCORE 64 with the band glyph only, no band word.
+W-4  Also not adopted, as Tim ruled: header status pills, band word in the score cell, teal weight bars, sentence-case rail labels, grey chips.
+Kept: every MEANING ruling (V-01 Decline Secondary, V-02 pause bars on Hold, V-03 HOLD tag, V-04 Needs decision text in Primary, V-09 band-shape
+pin core, V-11 Muted only for large text, V-16 breakdown adds up / unknown = "? unknown", V-19 rank, V-20 N + as-of, R-7 icons, R-8 pin ×n).
+
+======================================================================================================================
+1 · VERDICT: CORRECTIONS (16). Not a PASS.
+    Rev3's header, rail, KPI tiles, strip, map plate and drawer structure are the p40 look; the table grid, row fills, drawer badges, ring,
+    breakdown grid, receipt tint and frame padding drift from the p40 source values. Format: region · what I see · what it must be · token.
+======================================================================================================================
+C-01 FRAME · padding 23/16/22/17, header row 57, map column 801; rows sum to 1441 px (22+57+56+12+96+12+40+12+1068+13+36+17) ·
+     p40: padding 20 on all four sides; rows 56 / [12] 44 / 96 / 40 / 1068 / 36 with 12 px gaps (= 1440); columns 56 | 12 | 1112 | 16 | 800 | 16 | 508 (= 2560) ·
+     --pe-pad-*: 20px; --pe-row-header: 56px; --pe-col-map: 800px; .app rows 56 56 12 96 12 40 12 1068 12 36 (sub-tab row 56 = 12 gap as padding-top + 44).
+C-02 TABLE GRID · 10 columns (SCORE+Δ merged in one 125 px cell under "SCORE Δ"), no bar column, widths 193/120/120/122/70/95/60/44/1fr; notes say "11 COLUMNS dropped" ·
+     p40 COLS: bar 6 | SCORE 64 | Δ 36 | TITLE 184 | COMPANY 112 | LOCATION 112 | BUCKET 104 | BASE EST 72 | DEGREE FLEX 84 | EXP FIT 56 | AGE 36 | WRITE STATE 1fr (=144);
+     gap 8; padding-right 12; header 36 px, rows 32 px. 11 data columns + the 6 px state bar; SCORE, BASE EST, EXP FIT, AGE right-aligned. Panel meta says "11 COLUMNS" again ·
+     colgroup 6/72/44/192/120/120/112/80/92/64/44/1fr with td padding-left 8 (bar cell 0), last cell padding-right 12 = 1110.
+C-03 TABLE ROWS · stripes #070707/#0D0D0D; selected = 1 px solid cyan outline; new row = tint on the first three cells only (440 px) ·
+     p40: even i (first row) #0B0B0B, odd #070707; selected #1E1E1E + inset 0 0 0 1px rgba(56,225,214,.35) + 6 px #38E1D6 bar;
+     new = linear-gradient(90deg, rgba(230,230,226,.10), rgba(230,230,226,0) 55%) across the whole row + 6 px #E6E6E2 bar ·
+     --pe-row-a #0B0B0B, --pe-row-b #070707; gradient sized to the row (1110 px) and offset per cell.
+C-04 TABLE CELL COLOURS / SIZES · LOCATION, EXP FIT, AGE in Primary; Unknown flex, Scout intake, Discovery lead in Secondary; band glyph 10 px; HOLD tag border red ·
+     p40: LOCATION / EXP FIT / AGE Secondary #A3A39E, BASE EST Primary; Unknown flex + Scout intake + Discovery lead olive #8A8F7A (5.9:1 on rows);
+     band glyph 11 px (L-1; p40 drew 9.5), Δ 11 px mono letter-spacing 0 (L-1; p40 10.5; at .04em "Δ NEW" clips by 1 px in 36 px), HOLD tag 11 px, border #4a1d18.
+C-05 DRAWER BADGES · all four chips grey outline (#6B6B66), HIGH FLEX bright green border ("grey chips", not adopted) ·
+     p40 badge(): mono 11 px .08em, padding 2 7, 1 px border, gap 6 — NEEDS DECISION Primary text (V-04) on cy border #17403d; HIGH FLEX #4ADE80 / #1f4a2c;
+     $245K EST. and NASHVILLE olive #8A8F7A / #3a3d33; ✓ CURRENT #4ADE80 / #1f4a2c. Kinds for other rows: local #A3A39E / #3A3A3A, shared #F2B33D / #4a3a17, red #FF4D3D / #4a1d18.
+C-06 RING · R53 sw9, ticks in Void drawn inside the arc (r 43–47, invisible), arc colour hard-coded band-top ·
+     p40 ring(R=54, sw=8): 124 px box, track #1E1E1E, arc = the row's band colour, 12 ticks every 30°, 2 px #3A3A3A from r 54 to r 61 (crossing the outer edge), value 42 px / 650 in the band colour.
+C-07 BREAKDOWN · grid 170 | 32 | 200 | 1fr, bar 7 px; Ownership row shows "0.0" though ownership is unknown; header "Σ 100% = 76" ·
+     p40 grid 150 | 44 | 1fr | 56, gap 8, bar 8 px on #1E1E1E; weight % in Secondary (V-11: p40 #6B6B66 at 13 px is 3.67:1);
+     unknown part (V-16): "? Ownership", dashed 1 px #6B6B66 empty track, "UNKNOWN" mono 11 px in the points column, no points;
+     header "Σ <known weight>% KNOWN = <sum> → <ring>" so it stays true below 100 % coverage (M-02: Σ 95% KNOWN = 67.0 → 67). Footer: Σ · coverage × factor = ring · rev.
+C-08 FIXTURE ROUNDING (L-2 / V-16) · build-fixture.cjs breakdown() only ADDS tenths. When raw × factor rounds down, the floored tenths already exceed the ring
+     and the rows add past it: JOB-0431 (scoreRow 69) sums 69.2. F02's JOB-0412 happens to be exact ·
+     after the add pass, remove tenths from the smallest remainders while rest < 0 (done in src/build-oct15.cjs; JOB-0431 → 27.2 + 18.5 + 6.0 + 9.1 + 4.5 + 3.7 = 69.0).
+C-09 WAITING RECEIPT · gradient rgba(242,179,61,.32) → .06 · p40: linear-gradient(90deg, rgba(242,179,61,.16), #141414 70%) + 3 px #F2B33D bar ·
+     --pe-tint-wait-start .16; end = --pe-plate at 70 %. (Amber text on the .16 tint 7.24:1.)
+C-10 SCREEN GATE · value always drawn green · PASS = green "✓ PASS"; FAIL = amber ▸ + Primary "FAIL"; UNKNOWN = Secondary "? UNKNOWN" (scoreRow returns FAIL for the agency row).
+C-11 KPI · NEEDS DECISION tile drawn active (cyan border + glow) while the table shows all 50 review-queue rows across five buckets ·
+     no tile is active on REVIEW QUEUE; a tile is active only when its filter is on (meaning, not look). When active, p40 glow 0 0 10px rgba(56,225,214,.35) (rev3 --pe-glow 6px .40).
+C-12 MAP HUD · "CURSOR 35.21°N 085.93°W" with no pointer in the frame (typed) · "CURSOR — · ZOOM AUTO-FIT" until the pointer is over the map (L-2).
+C-13 MAP BOTTOM (p40 leftovers, minimal fix) · legend over "AL", "089°W" under the bottom-left bracket, "GA" under the zoom stack ·
+     84 px HUD band at the bottom (rgba(11,11,11,.92), 1 px #2A2A2A top): legend at bottom 52; RESET / RECENTER / ⤢ FULLSCREEN at bottom 14 (right 16 / 96 / 188);
+     zoom stack ◈ + FIT − at bottom 206 / 172 / 142 / 108; longitude labels at H − 94; AL label (312, 900), GA (690, 900). No other map change.
+C-14 LOCK READOUT · drawn at sx + 50 always; for any job east of x ≈ 500 (Knoxville) the three lines run off the canvas · flip to the left of the reticle (right-aligned) when sx > W − 300.
+C-15 TYPED VALUES IN F02-job-selected.js (L-2) · "· hybrid", "LinkedIn", "computed 23:38", "(evidence: salary posted)", "auto-retry 2/4 in 15 s", "readback 3 s", "4 retries",
+     "Waiting for lock · 8 s", "Confirmed · 3 s", "REFRESH 0:42", Writer state · move each to a fixture field (src/build-oct15.cjs adds fx.oct15.writer / receipts / selected / closed / applied)
+     and render from it. (The stale-evidence bar's 603 is FOR TIM T-6.)
+C-16 HEADER (Q1) · pill "WRITER · 1 WAITING · 1 FAILED · REFRESH 0:42" with an amber dot while one write has FAILED; hdr-meta "LANE QUEUE 2 · LAST SYNC · COMPARE · 0/3" ·
+     "● WRITER LOCK BUSY · ◷ 1 WAITING · ⊗ 1 FAILED · REFRESH 0:42" — state word always, glyph in the state colour, dot = worst state (red here);
+     then p40 text "LANE QUEUE 2 · OLDEST 4 MIN   LANES 10 OK   LAST SYNC 23:41"; COMPARE leaves the header (sub-tab COMPARE 0/3 carries it); full rule in Q1.
+     search / brand / crumb / pill / controls flex-shrink 0 so the line never squeezes the search field.
+Unchanged and correct vs p40 (with meaning rulings): rail (uppercase 11 px labels, 3 px cyan active bar), brand/crumb/search, KPI tiles 38 px / 650, change strip,
+panel heads, Hold pause bars, Decline Secondary, receipts structure, ticker PAUSE TICKER · HIDE, map plate, reticle, legend glyphs ▲◆●▽, HOME at Cleveland TN (RNG 127 MI · BRG 304°).
+
+======================================================================================================================
+2 · ANSWERS TO F02.NOTES Q1–Q4
+======================================================================================================================
+Q1 · P06 information in the Oct 15 header language → PNG Q1_M05_M06_HEADER_STATUS (four live header renders at 1:1 + rule table). One bordered element only (the p40 Writer pill);
+     everything else is p40 header text: IBM Plex Mono 12 px, header tracking, Secondary #A3A39E. No pills, boxes, bars or accents.
+     · MY DECISIONS live inside the Writer pill: "◷ n WAITING" (amber glyph), "⊗ n FAILED" (red glyph); dot = worst state (green idle / amber waiting or busy / red failed or not answering).
+     · SEEN SYNC: silent when saving; on failure "⊗ SEEN MARKS NOT SAVING · SINCE 18:12" (Primary words, red glyph).
+     · LANE QUEUE: "LANE QUEUE n · OLDEST m MIN"; ▸ amber + Primary when oldest ≥ 30 min.
+     · LANE HEALTH: "LANES 10 OK"; else "▸ n LANE QUIET · n RUN UNFINISHED".
+     · LAST SYNC hh:mm stays last.
+     · Order: red, then amber, then normal (LANE QUEUE · LANES · LAST SYNC). Whole segments that do not fit the 536 px between the pill and COMPACT ▾ fold into "+N MORE ▾" (opens Needs you); words never truncate.
+     · Counters for seen sync, lane queue and lane health are not in the counter registry yet (T-3): until they are, a segment is not drawn rather than drawn with a typed number.
+Q2 · M-01..M-07 redrawn in the Oct 15 look → 7 PNGs (M-05/M-06 = the Q1 page). Real scoreRow numbers: rev3 fixture rows + one scenario row per page from src/build-oct15.cjs
+     (pipeline-scoring.js scoreRow, model rev 24). M-02 JOB-0588 67 ◆ UPPER #7 of 49, coverage 95 %, factor 0.985, culture "? unknown";
+     M-03 JOB-0381 72, closed, not ranked (N stays 48); M-04 JOB-0431 69, applied, not ranked; F01/F02 N 48, cuts 72/61/51, TOP 5 · UPPER 13 · MID 21 · LOW 9 · HOLD 2.
+     M-01 uses the Needs-you snapshot of P01 (NEEDS_TIM 17:47 ET + live checks, clock 18:30 ET); job counts recomputed from the fixture: 28 needs decision, 9 decline, 1 closed still active;
+     "ready to apply" is 0 in the fixture so that card is not drawn; badge = 0 blocking + 5 act on = 5.
+Q3 · Margins and tints: do not use the re-raster measurements; the p40 source values are:
+     padding 20 / 20 / 20 / 20 (not 23/16/22/17); rows 56 / 44 / 96 / 40 / 1068 / 36 with 12 px gaps;
+     row tints #0B0B0B (first row, even index) / #070707 (not #070707 / #0D0D0D);
+     waiting receipt linear-gradient(90deg, rgba(242,179,61,.16), #141414 70%) with a 3 px #F2B33D bar;
+     new-row fade linear-gradient(90deg, rgba(230,230,226,.10), rgba(230,230,226,0) 55%) over the whole row with a 6 px #E6E6E2 bar. (C-01, C-03, C-09.)
+Q4 · Opening state → see 3.
+
+======================================================================================================================
+3 · F01 OPENING STATE: EMPTY DRAWER (ruling unchanged), redrawn in p40 styling → PNG F01_EMPTY_DRAWER
+======================================================================================================================
+Why: the map default is the filtered set (auto-select would hide 46 of 47 pins); lock-on must mean a deliberate choice; P / H must never act on a job Tim did not pick;
+the live app already has the no-selection state (restoreMapOverview_ sets S.focus = null); ↓ then Enter opens the top job.
+Drawn: p40 header (one Writer pill), uppercase rail, p40 grid, no selected row, no active KPI; map FILTERED VIEW · 50 with band-shape pins, ×n stack tags (R-8), HOME, 1°/5° graticule,
+"CURSOR — · ZOOM AUTO-FIT (FILTERED SET)", 47 PINS · 27 PLACES · 3 REMOTE (NO PIN); drawer "○ JOB DRAWER · NO JOB SELECTED", bands with counts and largest-remainder shares of N 48
+(10 / 27 / 44 / 19 %, HOLD outside), buckets Σ 50, NEXT UP top 3 with Open ›, key hints, MY DECISIONS · WRITER receipts. Bars use p40 band colours; no grey chips; no teal bars.
+
+======================================================================================================================
+4 · FOR TIM (p40 itself breaks L-1 / L-2, or a choice only Tim can make). Drawn as p40 unless noted.
+======================================================================================================================
+T-5  Map state labels: p40 #8E8E89 at .55 opacity on Hull = 2.55:1 for 24 px text (L-1 needs 3:1). Proposed: #6B6B66 at full opacity = 3.67:1. Drawn as p40.
+T-6  STALE EVIDENCE bar: width = 185 / 603 with 603 typed (p40 typed 69 %), and the bar overlaps the caption. Proposed: denominator from a registered counter, or drop the bar. Drawn as p40.
+T-10 p40 grid truncates a state word: BUCKET 104 px vs "Decline candidate" 108.8 px at 13 px (3 of 30 visible rows ellipsize; p40 overflowed into BASE EST).
+     Measured on the p40 grid: Δ NEW 35.3/36 ✓, WRITE STATE 139/144 ✓, TITLE and COMPANY ellipsize (names, full text in the drawer). Proposed: AGE 36 → 30, BUCKET 104 → 110
+     (same 11 columns, same total). Drawn as p40.
+T-8  v1.5 mobile labels are 8.5–9.5 px (L-1 11 px). The M-01 phone is drawn at 11 px minimum, as rev3 already did for the rail (N-10). Confirm.
+T-7  Writer build line: the Apps Script version number is not in writer_status.build, so it is not drawn; deploy.sh must add it if Tim wants it.
+T-4  Chattanooga range rings in the brief vs v1.5/v1.5.1 B-04/B-17 and mapsvg.py ("NO radar sweep, NO range rings, NO clusters"). Not drawn.
+T-1..T-3 still open from rounds 1–2 (T-3: seen-sync, lane-queue and lane-health counters are not in the registry; Q1 segments wait for them).
+
+======================================================================================================================
+5 · NOTES FOR CLAUDE (not look calls)
+======================================================================================================================
+N-a  model-rev24.json has no targetCompanies, so scoreRow returns culture unknown ("Target company list not loaded") for every row without CULTURE_SCORE. With the live list, the
+     recruiter regex gives "Employer hidden behind recruiter" only for names matching /recruit|confidential|hidden client|undisclosed|stealth/; an agency named e.g. "Aerotek" scores
+     culture 40 at 100 % coverage. M-02 is honest only once culture() also reads EMPLOYER_PRIMARY_BUSINESS = RECRUITING_AGENCY / CLIENT = UNKNOWN.
+N-b  Band population used here: eligible OPEN rows minus HOLD; closed and applied rows get band NONE and no rank (v1.5.1 §3). build-fixture.cjs has no liveness or applied field yet.
+
+======================================================================================================================
+6 · PACKAGE
+======================================================================================================================
+proposals/GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3.txt  (this file)
+proposals/GROK_20261018_1910ET_PE_OCT15_PAGES/
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_F02_CORRECTED_2560x1440.png           F02 with C-01..C-16 applied
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_F01_EMPTY_DRAWER_2560x1440.png        Q4 / F01 opening state
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_Q1_M05_M06_HEADER_STATUS_2560x1440.png Q1 · M-05 · M-06 (P06 information)
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M01_NEEDS_YOU_DESKTOP_2560x1440.png   M-01 desktop
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M01_NEEDS_YOU_PHONE_402x874@3x.png    M-01 phone, 1206 x 2622, v1.5 mobile look
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M02_AGENCY_CLIENT_UNKNOWN_2560x1440.png M-02
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M03_CLOSED_POSTING_2560x1440.png      M-03 (History preset)
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M04_APPLIED_EMAIL_EVIDENCE_2560x1440.png M-04
+  GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_M07_SETTINGS_WRITER_BUILD_2560x1440.png M-07
+  src/  page sources, scenario fixtures and builder (see src/README.txt)

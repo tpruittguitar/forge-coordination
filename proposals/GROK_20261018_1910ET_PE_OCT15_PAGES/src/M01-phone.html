@@ -1,0 +1,78 @@
+<!doctype html>
+<!-- Grok Bot · M-01 Needs you · phone 402 x 874 pt (render @3x) · v1.5 mobile look (build15/mobile.py) · PROPOSED 2026-10-18
+     v1.5 mobile values: safe top 62, pad 24, first row y 74, tab bar 760-824 (corner inset 36), home indicator 140 x 5.
+     L-1 applied: every text >= 11 px (v1.5 drew 8.5-9.5 px labels; FOR TIM T-8). -->
+<html><head><meta charset="utf-8"><title>M-01 · Needs you · phone</title>
+<link rel="stylesheet" href="../../../tokens.css">
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{width:402px;height:874px;background:#000;overflow:hidden}
+body{font-family:var(--pe-font-ui);color:#E6E6E2;-webkit-font-smoothing:antialiased}
+.mono{font-family:var(--pe-font-label);text-transform:uppercase;letter-spacing:.06em}
+.scr{position:absolute;inset:0;border-radius:55px;overflow:hidden;background:#000}
+.sb{position:absolute;top:0;left:0;right:0;height:54px;display:flex;justify-content:space-between;align-items:center;padding:6px 34px 0 40px;font-size:16px;font-weight:600}
+.isl{position:absolute;top:11px;left:138px;width:126px;height:37px;background:#000;border-radius:20px;border:1px solid #222}
+.hdr{position:absolute;left:24px;right:24px;top:74px;height:44px;display:flex;align-items:center;justify-content:space-between}
+.back{color:#38E1D6;font-size:17px}
+.concept{background:#F2B33D;color:#000;font-family:var(--pe-font-label);font-size:11px;font-weight:700;padding:3px 6px;letter-spacing:.04em;white-space:nowrap}
+.ib{border:1px solid #6B6B66;height:44px;min-width:44px;display:flex;align-items:center;justify-content:center;position:relative;color:#E6E6E2}
+.ib .n{position:absolute;top:-7px;right:-7px;background:#F2B33D;color:#000;font-size:11px;font-weight:700;min-width:20px;height:20px;border-radius:10px;display:flex;align-items:center;justify-content:center;padding:0 5px}
+.ttl{position:absolute;left:24px;right:24px;top:126px;display:flex;justify-content:space-between;align-items:center;height:44px}
+.ttl .t{font-family:var(--pe-font-label);font-size:17px;letter-spacing:.12em}
+.btn{border:1px solid #6B6B66;height:44px;display:flex;align-items:center;padding:0 12px;font-family:var(--pe-font-label);font-size:12px;letter-spacing:.06em;text-transform:uppercase;color:#E6E6E2;white-space:nowrap}
+.cnt{position:absolute;left:24px;right:24px;top:178px;font-size:14px;color:#A3A39E}
+.cnt b{color:#E6E6E2;font-weight:600}
+.sub{position:absolute;left:24px;right:24px;top:200px;font-size:12px;color:#A3A39E}
+.ks{position:absolute;left:24px;right:24px;top:224px;display:flex;gap:6px}
+.kt{flex:1;background:#0B0B0B;border:1px solid #2A2A2A;padding:6px 8px;min-height:58px}
+.kt.on{border-color:#38E1D6;box-shadow:0 0 8px rgba(56,225,214,.35)}
+.kt .l{font-family:var(--pe-font-label);font-size:11px;color:#A3A39E;letter-spacing:.04em;white-space:nowrap;text-transform:uppercase}
+.kt .v{font-size:23px;font-weight:650;line-height:1.15}
+.ban{position:absolute;left:24px;right:24px;top:292px;background:#141414;border-left:3px solid #FF4D3D;padding:8px 12px;font-size:13px;line-height:18px}
+.ban .s{color:#A3A39E}
+.list{position:absolute;left:24px;right:24px;top:354px;bottom:122px;overflow:hidden;-webkit-mask-image:linear-gradient(#000 90%,transparent)}
+.card{background:#141414;border:1px solid #2A2A2A;border-left:3px solid #6B6B66;padding:10px 12px;margin-bottom:8px}
+.card.action{border-left-color:#F2B33D}.card.blocking{border-left-color:#FF4D3D}
+.card .lv{font-family:var(--pe-font-label);font-size:11px;letter-spacing:.1em;color:#A3A39E}
+.card.action .lv{color:#F2B33D}
+.card .t{font-size:16px;font-weight:620;line-height:1.3;margin-top:2px}
+.card .d{font-size:13px;color:#A3A39E;line-height:1.4;margin-top:4px}
+.card .d b{color:#E6E6E2;font-weight:600}
+.card .f{display:flex;gap:8px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.card .m{margin-left:auto;font-family:var(--pe-font-label);font-size:11px;color:#A3A39E;letter-spacing:.02em}
+.hint{position:absolute;left:24px;right:24px;top:334px;display:flex;justify-content:space-between;font-family:var(--pe-font-label);font-size:11px;color:#A3A39E;letter-spacing:.04em;text-transform:uppercase}
+.tb{position:absolute;left:36px;right:36px;top:760px;height:64px;background:rgba(14,14,14,.97);border:1px solid #2A2A2A;border-radius:16px;display:flex;box-shadow:0 -6px 24px rgba(0,0,0,.7)}
+.tb div{flex:1;text-align:center;color:#A3A39E;padding-top:9px;position:relative}
+.tb .g{font-size:21px;line-height:1}.tb .w{font-size:11px;margin-top:4px}
+.tb .bd{position:absolute;top:4px;left:58%;background:#38E1D6;color:#000;font-size:11px;font-weight:700;padding:0 5px;border-radius:8px}
+.home{position:absolute;bottom:8px;left:131px;width:140px;height:5px;border-radius:3px;background:#E6E6E2;opacity:.85}
+</style></head><body><div class="scr" id="scr"></div>
+<script>
+(function(){
+  function J(u){var x=new XMLHttpRequest();x.open('GET',u,false);x.send(null);return JSON.parse(x.responseText);}
+  function esc(s){return String(s==null?'':s).replace(/[&<>"]/g,function(c){return{'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c];});}
+  var fx=J('fx-closed.json'),NY=J('needs-you.json'),C=fx.counters;
+  var closed=fx.rows.filter(function(r){return r.liveness!=='OPEN'&&r.bucket!=='APPLIED';}).length;
+  var live={'live:jobs-decide':[C.needsDecision,C.needsDecision+' jobs waiting for your decision'],'live:jobs-ready':[0,''],'live:jobs-decline':[C.declineCandidates,C.declineCandidates+' AI decline recommendations waiting for your OK'],'live:jobs-dead-active':[closed,closed+' closed posting still filed as active']};
+  var items=NY.items.filter(function(i){return !live[i.id]||live[i.id][0]>0;}).map(function(i){return live[i.id]?Object.assign({},i,{title:live[i.id][1]}):i;});
+  var cnt={BLOCKING:0,ACTION:0,WATCH:0};items.forEach(function(i){cnt[i.level]++;});
+  var failed=items.filter(function(i){return i.section==='FAILED';}).length;
+  var act=items.filter(function(i){return i.level!=='WATCH'&&i.id!=='live:state-sync';});
+  var GL={BLOCKING:'⊘',ACTION:'▸',WATCH:'○'};
+  function card(i){var f=[];if(i.go||i.live)f.push('<span class="btn">Open →</span>');if(i.sourceUrl)f.push('<span class="btn">Source ↗</span>');if(!i.live&&(i.section==='DECIDE'||i.section==='JOBS'))f.push('<span class="btn">Copy answer</span>');
+    return '<div class="card '+i.level.toLowerCase()+'"><div class="lv">'+GL[i.level]+' '+i.level+'</div><div class="t">'+esc(i.title)+'</div>'+(i.action?'<div class="d"><b>What to do:</b> '+esc(i.action)+'</div>':'')+'<div class="f">'+f.join('')+'<span class="m">'+esc(i.meta)+'</span></div></div>';}
+  var bell='<svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M6 16V11a6 6 0 0 1 12 0v5l1.5 2h-15z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg>';
+  var tabs=[['☰','Queue'],['◎','Map'],['△','Changes'],['⌕','Search']].map(function(t){return '<div><div class="g">'+t[0]+'</div><div class="w">'+t[1]+'</div>'+(t[1]==='Changes'?'<span class="bd">'+fx.sinceLastReview.newRows+'</span>':'')+'</div>';}).join('');
+  document.getElementById('scr').innerHTML=
+   '<div class="sb"><span>'+NY.asOf+'</span><svg width="66" height="14" viewBox="0 0 66 14"><g fill="#E6E6E2"><rect x="0" y="9" width="3" height="4" rx="1"/><rect x="5" y="6" width="3" height="7" rx="1"/><rect x="10" y="3" width="3" height="10" rx="1"/><rect x="15" y="0" width="3" height="13" rx="1"/></g><rect x="36" y="1" width="25" height="12" rx="3" fill="none" stroke="#E6E6E2" stroke-opacity=".6"/><rect x="38" y="3" width="17" height="8" rx="1.5" fill="#E6E6E2"/><rect x="62" y="5" width="2" height="4" rx="1" fill="#E6E6E2" fill-opacity=".6"/></svg></div><div class="isl"></div>'+
+   '<div class="hdr"><span class="back">‹ Queue</span><span style="display:flex;gap:10px;align-items:center"><span class="concept">CONCEPT — MOCK DATA</span><span class="ib">'+bell+'<span class="n">'+(cnt.BLOCKING+cnt.ACTION)+'</span></span></span></div>'+
+   '<div class="ttl"><span class="t">NEEDS YOU</span><span class="btn">⟳ Refresh</span></div>'+
+   '<div class="cnt">⊘ '+cnt.BLOCKING+' blocking · <span style="color:#F2B33D">▸</span> <b>'+cnt.ACTION+' to act on</b> · ○ '+cnt.WATCH+' to watch</div>'+
+   '<div class="sub">Repo list changed 43 min ago · live Writer checked 12 s ago</div>'+
+   '<div class="ks"><div class="kt"><div class="l">All</div><div class="v">'+items.length+'</div></div><div class="kt on"><div class="l">▸ Act on</div><div class="v" style="color:#F2B33D">'+cnt.ACTION+'</div></div><div class="kt"><div class="l">○ Watch</div><div class="v">'+cnt.WATCH+'</div></div><div class="kt"><div class="l">⊗ Failed</div><div class="v" style="color:#FF4D3D">'+failed+'</div></div></div>'+
+   '<div class="ban"><span style="color:#FF4D3D">⊗</span> <b>Seen marks not saving</b> <span class="s">· since 18:12 · this phone keeps them and resends</span></div>'+
+   '<div class="hint" style="top:352px"><span>Filter: ▸ act on · '+act.length+' + 1 above</span><span>Oldest first</span></div>'+
+   '<div class="list" style="top:374px">'+act.map(card).join('')+'</div>'+
+   '<div class="tb">'+tabs+'</div><div class="home"></div>';
+}());
+</script></body></html>
