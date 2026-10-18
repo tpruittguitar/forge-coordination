@@ -1,0 +1,22 @@
+AI_REASON_RUN_RECEIPT
+PROVIDER=ChatGPT
+RUN_ID=FORGE-INDEX-CUTOVER-CHATGPT-20261017-2315ET
+TASK_KEY=USER_DIRECTED_REV_010_CUTOVER
+ENTRY_VERSION=2026-10-17.2 (fresh raw read)
+USER_AUTHORITY=User explicitly authorized finishing deployment and cutover after merge. No approval is pending.
+MERGED_CODE=26d931a74c778804abfabf7cd541c84e987fba3b (PR118 confirmed MERGED)
+PLANNED=Deploy merged Writer if authorized runtime access exists; run frozen/locked migration and fresh readbacks.
+EXECUTED=Fetched merged main, inspected deployment client and runtime readiness, checked available deployment/browser tools and GitHub workflows, read live ping/receipt_index/writer_status.
+LIVE_BUILD=0c9173a
+MIGRATION_ACTION_DEPLOYED=False
+LIVE_INDEX_COUNTS={"COMPLETE": 5252, "FALSE_COMPLETE": 5}
+LIVE_PENDING_COUNT=0
+LIVE_UNVERIFIED={"count": 0, "oldestWrittenAt": ""}
+LIVE_QUEUE={"pending": 0, "oldestPendingAt": "", "processing": [], "hold": []}
+LIVE_FREEZE=null
+HARD_BLOCKER=No clasp login file or executable in this workspace, no configured runtime credentials/outbound identity, and no callable Apps Script deployment or browser connector. Live Writer still serves old code without migration action.
+GITHUB_DEPLOYMENT_CHECK=Only unreviewed-push-alarm workflow found. Actions-secret metadata read returned HTTP403 Resource not accessible by integration; no alternate deployment credential established.
+NEXT_OWNER=Tim or Claude with existing clasp login
+NEXT_ACTION=Deploy merged foreman-cockpit main using apps-script/deploy.sh; set Script Property GITHUB_WRITER_STATE_TOKEN to dedicated Contents read/write token for forge-writer-state. Leave RECEIPT_INDEX_SOURCE unset/DRIVE. Then this chat can perform the guarded cutover per docs/RECEIPT_INDEX_GITHUB_CUTOVER.md.
+PRODUCTION_MUTATIONS=0; Writer was not frozen, source was not switched, seed was not substituted for live state.
+RUN_TERMINAL_STATUS=HARD_BLOCKED
