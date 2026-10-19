@@ -1,0 +1,23 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_APPLICATION_WRITER_GOFER
+RUN_ID=FORGE-GOFER-CLAUDE-20261019-1650ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=6c6c1104fcbc54a0434b0e13adcb717ca4be2eafd58d73fd6f69afe4ae1414af (recomputed, matches manifest)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-19.3
+RULES_BLOB_UNCHECKED (forge-policy out of session scope)
+GATE=WRITER_FREEZE.json frozen=false (Tim 2026-10-18T03:29Z). writer_status/row_readback/receipt_index unavailable here.
+CONNECTORS=Drive, Gmail OK. No computer access.
+ASKS=asks/resolved read; none new for this lane. Unresolved opens 02,04,07 not held by this lane.
+QUEUE=WRITER_QUEUE root: only processed/failed folders (no pending). processed: RESULT__CLAUDE_FORGE-POSTVAL-...-1630ET-B01 (posting-validation lane, not gofer). failed: only Grok test. No new EVIDENCE_HANDOFF_ARCHIVE.
+NEW EVIDENCE: Re:Build Manufacturing "Value Stream Leader" APPLIED 2026-10-05 (Gmail 1a10cbad568c2ab4 Greenhouse confirmation + LinkedIn 1a10cba59e6179da). No prior record found in repo receipts. Submitted upsert_application.
+WRITTEN_REQUEST_IDS=FORGE-GOFER-CLAUDE-20261019-1650ET-B01 (Drive file 15FWabsOEKzwBCQ6RcQRMFupu-ftMuYV0, 2026-10-19T20:51Z) -> SUBMITTED, not WRITER_ACCEPTED/VERIFIED
+PENDING_VERIFICATION: above B01; W-20261019045318429-19eb8d Novo V2I-033AEF9CE89D; W-20261019025243352-1c036b Ashley V2E-A8D1AFA75EF5; W-20261019025356271-16945d Harmattan V2I-AB4A9958A9AE (no readback route)
+HOLDS: Tesla 286230, Tesla 283760 (Tim), Muon (no role), AMETEK item 12, archive items 17,32,53,59,117,175,258,262,265,363,366. New: LinkedIn "application viewed by Re:Build" 1a155b21629640a7 (10-19) and 1a12820be588ccdc (10-10) name no role; not matched, no event. Stealth Robotics LinkedIn draft = not an application.
+COUNTS: dispositions 3 (Re:Build submitted; 2 role-less held); failures 0
+OLDEST_BLOCKER=Tesla req proof (2026-10-18); readback for 4 writes
+NEXT_OWNER=CLAUDE GOFER next run: check RESULT for B01 in processed/failed, then receipt-index/row_readback when a route exists
+NOT_DONE=No applications, outreach, master/index edits.
+STOP_REASON=no further actionable evidence
+BATCHES_COMPLETED_THIS_RUN=1 (submitted)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
