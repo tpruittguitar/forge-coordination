@@ -1,0 +1,32 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-0430ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=22eea53906119ea9252c
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA fetched=4b1bced351c5d73591d8b96f0c63e52c7dc51f04 matches manifest lane.blob_sha)
+SOURCE_VERSIONS=manifest blob 1896b9928841f1bae081e5351b2f614589900430; worklist GENERATED_AT_UTC=2026-10-19T08:08:06Z (fresh, 21 min); forge-coordination main c127b571; RULES_BLOB_UNCHECKED (forge-policy metadata not read; no policy interpretation needed)
+GATE=WRITER_FREEZE frozen=false (at 2026-10-18T03:29Z by TIM); queue root had no in-flight files; no overlap with prior Claude batch 0230ET-B01
+RESOLVED_ASKS=none held by this lane
+
+ROWS_EVALUATED=12
+LIVE=8 (LIVE_EMPLOYER_ATS 4: V2I-D00C3D8E7A23 Sanmina, V2I-34F99496D7B4 Cascades, V2I-4D91F7B54EA4 Moog, V2I-05D9E7B9CAE4 McCarthy Tire; LIVE_SECONDARY 4: V2I-759CAA9EBA00 Eaton, V2I-3BBD5FE87B94 Fives, V2I-E158B3E05754 TotalEnergies, V2I-077331E21D12 Cleo Robotics)
+CLOSED=0
+UNCONFIRMED=4 (not written):
+  V2I-8F1877790643 Voss Recruitment: LinkedIn bot_blocked (999), employer route not tried
+  V2I-5C508290FA80 Overhead Door VP&GM Horton: Oracle CX page empty_content; only search snippets (Mar 26 2026) seen
+  V2I-3E7E88269CF3 Cloyes Director of Operations: cloyes.com/careers lists no such opening on fetched text but ADP list not read; no positive closure evidence
+  V2I-00B1FC6BEDE4 Slate Auto FVY Sr Manager: LinkedIn slug URL redirected with expired_jd_redirect; row source is Glassdoor, Workday not read; not positive closure
+HELD=1: V2I-234EDA23285A Cascades Tissue Group (same Greenpac Niagara Falls posting as Cascades row; company-name identity differs, left to Writer dedupe, not stamped)
+WRITTEN=8
+VERIFIED=0 (no receipt-index / row_readback route in this runtime)
+WRITER_ACCEPTED=8 (RESULT SUCCESS, terminalStatus SUCCESS, BATCH_RULING_SINGLE_COMMIT, 8/8 rows ok, finished 2026-10-19T08:33:22Z)
+FAILED=0
+TINYFISH_FETCHES=3 fetch calls (13 URLs) + 8 searches
+BACKLOG_REMAINING=~274 of 286 eligible (rows 1-3, 7-8, 10-11, 13-20, 22-24, 26, 28-31, 34-37 on worklist untouched: ZipRecruiter/ladders/lensa redirect URLs are truncated, no employer page found)
+STOP_REASON=PARTIAL_WITH_WORK: single 10+ row batch completed; remaining worklist rows have truncated aggregator redirect URLs and need per-row employer searches; run ended after first batch
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-0430ET-B01 (R01-R08); queue file id 1Ymws7Jw5Mtuk2u4BjJjZwJFf7pyHqdEW; result file id 1JaUaEDxbV7d4PVqUG-JReGeSGtw-iNG6
+PENDING_VERIFICATION=all 8 IDs await receipt-index COMPLETE + row_readback (NEXT_OWNER=gofer)
+NOTES=LinkedIn published_date metadata for TotalEnergies/Eaton (10-09/10-02) conflicted with page age text ("1 day"/"2 days"); page age text used. McCarthy Tire row V2I-05D9E7B9CAE4 appears to be a second row for the same posting as earlier 0230ET batch evidence (different primaryId); Writer dedupe owns.
+NEXT_OWNER=gofer (verification) / next Claude POSTVAL run
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
