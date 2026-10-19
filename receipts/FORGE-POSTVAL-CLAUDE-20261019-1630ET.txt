@@ -1,0 +1,26 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-1630ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA f33105b6580698a24a005d2ba6ac11d468a84caa matches manifest lane.blob_sha)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-19.3; worklist GENERATED_AT_UTC=2026-10-19T20:03:05Z; RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false; queue root empty of pending files; no row in recent processed RESULT overlaps
+ASKS_RESOLVED_READ=listing only; none held by this lane
+ROWS_EVALUATED=14
+LIVE=7 (LIVE_SECONDARY, LinkedIn pages: V2I-696B86287F07, V2I-B63860130613, V2I-8A3E88D0AF5D, V2I-E82DEB5ED82C, V2I-55BCE9514C9E, V2I-24375E5AC668, V2I-BFDC6523FF5D)
+CLOSED=0
+UNCONFIRMED=7 (V2I-3EFD33CE7482 LinkedIn 429 x2; V2I-B96ABE6B628A LinkedIn page dated 2026-08-03, older than 30d; V2I-AE74FB5DFFB0 LinkedIn stub page without job body; V2I-3E7E88269CF3 Cloyes careers page does not list role, not closure evidence; V2I-82FD9E3C531B HeiQ careers page shows no listings; V2I-F387633920D9 Butcher Gem board role seen only in search snippet; V2I-59C5D3B12606 Forward Air LinkedIn 429)
+WRITTEN=7 submitted (WRITER_ACCEPTED not yet known)
+VERIFIED=0 (no RESULT, receipt-index COMPLETE or row_readback available in this run)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 fetch_content calls (10+4+4 URLs), 4 search calls
+BACKLOG_REMAINING=~229 of 236 eligible; worklist rows 1-30 carry truncated ZipRecruiter/Indeed/Glassdoor/Ladders/Talent tracking-redirect URLs (Indeed blocks TinyFish), employer-route lookup only tried for 4 of them
+STOP_REASON=Truncated redirect URLs in worklist rows 1-30 and LinkedIn 429 rate limits; employer-route search not completed for remaining rows
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-1630ET-B01 (R01-R07); Drive file 1aTG7YkRcHQUCMaETq9UzWdMfYsIfttTN in WRITER_QUEUE
+PENDING=B01 awaiting Writer RESULT, receipt-index COMPLETE and row_readback
+NEXT_OWNER=gofer / next POSTING_VALIDATION run: verify B01
+NEXT_ACTION=Verify B01 triple proof; suggest worklist emit untruncated URLs
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
