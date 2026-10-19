@@ -1,0 +1,28 @@
+COMPANY PREFERENCE BOOST · QUEUED (REV-040) · parked by Tim 2026-10-19 03:18 ET: "save this for later"
+Owner: Tim. Builder: Claude (foreman-cockpit). Not started.
+
+TIM BLOCK (verbatim, 02:43 ET; replaces the 02:40 block)
+- Build on Companies Priority (pipeline-scoring.js:58-66 culture), not Source rank (display/sort only, never scored).
+- Add tier "DREAM" above P1 (DREAM 100 · P1 90 · P2 80 · P3 70 · Watch 60 · unlisted 40) and raise the culture/company weight so a
+  DREAM company ranks above an otherwise equal job. Propose the weight with numbers and show the new rank of Shield AI rows before merge.
+- Seed Shield AI = DREAM. Match on a normalised name (Shield AI, Shield AI Inc., shield.ai).
+- Keep the stated rule: priority never overrides a pay hold, FLEX, scope or a hard no. It only raises rank among jobs that pass.
+- Drawer/Companies show "COMPANY DREAM" in words (no colour-only state, 11 px minimum). Editable on Companies, re-scores right away.
+
+CONTEXT GIVEN WITH IT
+"Source rank" on the Companies page is a stored number used for sorting (rank 1 first, blanks last); nothing in the app sets it and it
+does not affect any job's score. Priority (P1/P2/P3/Watch) does, but is worth at most about 3 points today, so even a P1 company's jobs
+cannot rise to the top.
+
+CLAUDE CHECK (2026-10-19 03:20 ET, read-only, against main fac6f15 / forge-policy 71c3aad)
+FACT  pipeline-scoring.js TARGET_TIER = {P1:100, P2:90, P3:75, WATCH:60}; unlisted named employer 40; agency with hidden client UNKNOWN.
+FACT  Published scoring model rev 26: culture weight 5 (of 100). P1 vs unlisted = 60 points x 5% = 3 points on the weighted mean
+      (before the confidence factor), matching "about 3 points".
+FACT  pipeline-target-companies.js uses source_rank only for sorting (sort key line 64; new rows default 0). Not read by scoring.
+FACT  Canonical rules TARGET_COMPANY TC-007 Shield AI: priority P1, aliases ["ShieldAI"]. The block's names to match: Shield AI,
+      Shield AI Inc. (companyKey already strips "inc"), shield.ai (add as alias).
+NOTE  The block re-values existing tiers: P1 100 -> 90, P2 90 -> 80, P3 75 -> 70 (Watch 60 and unlisted 40 unchanged). Every
+      P1/P2/P3 job's culture part drops; call this out with numbers when built.
+NOTE  Tiers live in the canonical rules (SECTION=TARGET_COMPANIES, priority field) and the derived digest
+      (forge-policy derived/TARGET_COMPANIES_PRIORITY.txt, read by lanes). DREAM must be accepted by the rules parser, the digest
+      Action, the Companies editor and the lane packets that read the digest.
