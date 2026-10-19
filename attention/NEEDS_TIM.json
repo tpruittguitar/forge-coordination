@@ -1,14 +1,14 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-19T22:54:08.208Z",
- "sourceCommit": "459c2bd866e76727ec1988b25efe8bb050a86c28",
+ "builtAt": "2026-10-19T22:55:55.397Z",
+ "sourceCommit": "db09e539b778f4541316869865087dbaaf595cf8",
  "counts": {
-  "total": 15,
+  "total": 17,
   "BLOCKING": 0,
-  "ACTION": 3,
+  "ACTION": 5,
   "WATCH": 12,
-  "DECIDE": 3,
-  "JOBS": 0,
+  "DECIDE": 4,
+  "JOBS": 1,
   "FAILED": 2,
   "UPKEEP": 10
  },
@@ -48,6 +48,39 @@
    "sourceUrl": "https://github.com/tpruittguitar/foreman-cockpit/pull/146",
    "at": "2026-10-19T22:53:55Z",
    "raisedBy": ""
+  },
+  {
+   "id": "ask:ASK-20261019-CLAUDE-1855",
+   "section": "JOBS",
+   "level": "ACTION",
+   "title": "Anduril Deputy Head of Production, Altius (applied 10-19): Writer refuses to record it because a rejected row matches",
+   "detail": "Anduril confirmed your new application 2026-10-19 17:22 ET (Gmail 1a1560b17e0a7ce0). Writer holds it twice (even with force:true) because it matches a REJECTED_BY_EMPLOYER row. The 10-16 rejection email (Gmail 1a1466cc749e6241) names Deputy Head of Production, Connected Warfare, a different role; an Aug 25 Altius application was rejected ~Aug 28 per the sender's notes. Greenhouse job 5220654007. The gofer does not send a third identical request.",
+   "blocks": "Application record for the 10-19 Altius application (not in master/index).",
+   "options": [
+    "Writer owner: add a supported way to record a re-application over REJECTED_BY_EMPLOYER (honor force with new-application evidence)",
+    "Record as a new protected ANTI_RESURRECTION row instead",
+    "Leave unrecorded"
+   ],
+   "recommended": "First option; evidence is a dated employer confirmation after the rejection.",
+   "action": "Answer in chat; the AI records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261019-CLAUDE-1855.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261019-CLAUDE-1855.json",
+   "at": "2026-10-19T18:55:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261019-CLAUDE-1855",
+   "links": []
+  },
+  {
+   "id": "run-next-owner:GOFER|CLAUDE",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "GOFER · CLAUDE — next step is yours",
+   "detail": "CLAUDE GOFER: row_readback/receipt-index confirm when route exists; Tim/Writer owner: ASK-20261019-CLAUDE-1855; Tim: Tesla 283760",
+   "action": "CLAUDE GOFER: row_readback/receipt-index confirm when route exists; Tim/Writer owner: ASK-20261019-CLAUDE-1855; Tim: Tesla 283760",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261019-1855ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261019-1855ET_TERMINAL.txt",
+   "at": "2026-10-19T18:55:00-04:00",
+   "raisedBy": "CLAUDE"
   },
   {
    "id": "pr:foreman-cockpit#6",
@@ -328,10 +361,10 @@
   {
    "lane": "GOFER",
    "provider": "CLAUDE",
-   "lastAt": "2026-10-19T16:50:00-04:00",
+   "lastAt": "2026-10-19T18:55:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261019-1650ET_TERMINAL.txt",
-   "runs7d": 16,
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261019-1855ET_TERMINAL.txt",
+   "runs7d": 17,
    "usualGapHours": 2,
    "overdue": false
   },
