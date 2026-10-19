@@ -1,0 +1,40 @@
+FORGE DIRECTIVE -- AUTOMATION REALLOCATION (REV-021) · Tim 2026-10-18 · recorded by Claude (Foreman)
+AUTHORITY: Tim's reallocation order 2026-10-18 19:09 ET; Grok cadence choice (A, one hourly task with rest hours) 20:28 ET.
+
+RULINGS
+1. Gemini is removed from Forge: roster, assignments, fallback chains. Checked: no Gemini in registry, manifest, adapters, lane packets,
+   Grok's 18 tasks or ChatGPT's 22 tasks (ChatGPT inventory 2026-10-18 20:30 ET). Only a historical mention in a 10-17 proposal, left as history.
+2. FORGE_WEB_CAREER_DISCOVERY, FORGE_ENRICH_STRATEGIC, FORGE_ENRICH_FEASIBILITY return to Grok.
+3. FORGE_POSTING_VALIDATION is Claude's. (Tim's order said "remains with Claude"; the live owner was ChatGPT since the 10-13 18:07 amendment,
+   and ChatGPT's task has been disabled since 2026-10-16 04:27 ET. Claude reads the order as Claude ownership.)
+4. Claude owns the eight-row Writer accounting reconciliation. Lead: ChatGPT Email Discovery run 2026-10-18 18:08 ET reported
+   "8 inserts present, Writer accounting failure, strict verified count 0".
+5. FORGE_EMAIL_DISCOVERY stays ChatGPT.
+6. ZipRecruiter weekly pass (and its SonicJobs trial) stays ChatGPT as its own lane FORGE_ZIPRECRUITER_WEEKLY. It used ChatGPT's ZipRecruiter
+   connector inside ChatGPT's web-discovery task, which leaves ChatGPT; the build rule ties an addon to its parent's owner.
+
+PRIOR STATE (runtime release 3302de5a60ce0eada8f7)
+ WEB=ChatGPT · STRATEGIC=Claude · FEASIBILITY=Claude · POSTVAL=ChatGPT · EMAIL=ChatGPT · GOFER=Claude · ZipRecruiter=addon in ChatGPT web.
+ Grok rotation map: hourly, lane = hour mod 3. Grok adapter: stood down.
+TARGET STATE (this release)
+ WEB=Grok · STRATEGIC=Grok · FEASIBILITY=Grok · POSTVAL=Claude · EMAIL=ChatGPT · GOFER=Claude · FORGE_ZIPRECRUITER_WEEKLY=ChatGPT.
+ Grok rotation map: hour mod 4 = 0 web, 1 strategic, 2 feasibility, 3 rest (no mapping). Each lane every 4 hours (Tim 2026-10-13 cadence).
+
+SCHEDULES
+ Grok: FORGE_GROK_LANE_ROTATION (taskId 44516293-913e-40b7-82b4-aa4e2f2678a4), every 60 min at :10, window 00:10-23:10 ET, ENABLED 20:28 ET.
+   Prompt stops before any read on hours 03 07 11 15 19 23. Grok's scheduler cannot express a 4-hour interval (FREQ=HOURLY allows INTERVAL=1
+   only; BYHOUR lists collapse to once daily). All 17 other Grok tasks disabled, none deleted.
+ Claude: FORGE_CLAUDE_LANE_ROTATION trig_01Ta1QP7TFiwk1Ca8pJ6RbnT (00/09/12/21 :10 ET) stays enabled until each Grok lane has a verified run;
+   after this release its runs resolve to Grok-owned lanes and SKIP (owner mismatch), so there is no overlap. Then Claude disables it.
+   FORGE_POSTING_VALIDATION trig_01XESwmbe9JnCSjUP5VTqwUe: Claude re-enables after merge, every 2 h at :28 ET.
+ ChatGPT: Email Discovery unchanged (every 3 h). Web Discovery (05:40 11:40 17:40 23:40) keeps firing and SKIPs after merge; ChatGPT disables it
+   after Grok's first verified web run. Posting Validation already disabled. New weekly task FORGE_ZIPRECRUITER_WEEKLY, Monday 01:00 ET.
+
+CUTOVER CONTROL
+ The manifest owner check is the lease: a provider that does not own the lane writes a one-line SKIP receipt and stops. Ownership moves only when
+ this release merges. Old tasks are disabled only after the new owner has a verified run (receipt + Writer result). Missing evidence = UNKNOWN.
+
+VERIFICATION EVIDENCE (filled in as it arrives)
+ Grok first verified run per lane: WEB=UNKNOWN · STRATEGIC=UNKNOWN · FEASIBILITY=UNKNOWN
+ Claude POSTVAL first verified run: UNKNOWN · ChatGPT ZIPR weekly task created: UNKNOWN
+END

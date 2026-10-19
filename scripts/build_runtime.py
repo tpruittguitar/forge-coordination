@@ -12,7 +12,8 @@ ROOT = Path(__file__).resolve().parents[1]
 RAW = 'https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/'
 PROVIDERS = {'ChatGPT': 'CHATGPT', 'Claude': 'CLAUDE', 'Grok': 'GROK'}
 TASKS = {'FORGE_EMAIL_DISCOVERY', 'FORGE_WEB_CAREER_DISCOVERY', 'FORGE_ENRICH_STRATEGIC',
-         'FORGE_ENRICH_FEASIBILITY', 'FORGE_APPLICATION_WRITER_GOFER', 'FORGE_POSTING_VALIDATION'}
+         'FORGE_ENRICH_FEASIBILITY', 'FORGE_APPLICATION_WRITER_GOFER', 'FORGE_POSTING_VALIDATION',
+         'FORGE_ZIPRECRUITER_WEEKLY'}
 FORBIDDEN = {'COMPANY', 'TITLE', 'LOCATION', 'REQ', 'BUCKET', 'DISPOSITION', 'PRIMARY_ID', 'STATE_SOURCE', 'STATE_UPDATED_AT'}
 
 
@@ -187,7 +188,7 @@ def build(root=ROOT):
         'GROK_FORGE_ENRICH_FEASIBILITY.txt': 'FORGE_ENRICH_FEASIBILITY',
         'GROK_FORGE_WEB_CAREER_DISCOVERY.txt': 'FORGE_WEB_CAREER_DISCOVERY',
         'CHATGPT_FORGE_POSTING_VALIDATION.txt': 'FORGE_POSTING_VALIDATION',
-        'CHATGPT_ZIPRECRUITER_PASS.txt': 'FORGE_WEB_CAREER_DISCOVERY',
+        'CHATGPT_ZIPRECRUITER_PASS.txt': 'FORGE_ZIPRECRUITER_WEEKLY',
     }
     for filename, task in legacy.items():
         target = task or 'your assigned TASK_KEY (ROTATION resolves through the manifest)'
@@ -197,7 +198,7 @@ def build(root=ROOT):
             'PROVIDER remains the actual executing provider; TASK_KEY=' + target + '.\n'
             'Read the fresh runtime/current.json manifest and only its selected immutable packet.\n'
             'This file grants no ownership and adds no full CONTROL/STANDARD read or cached fallback.\n'
-            'ZipRecruiter is a conditional weekly addon inside the ChatGPT web-discovery packet.\n'
+            'ZipRecruiter is its own weekly ChatGPT lane, FORGE_ZIPRECRUITER_WEEKLY (REV-021).\n'
         ).encode()
     return outputs, manifest
 
