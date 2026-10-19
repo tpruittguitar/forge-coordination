@@ -55,7 +55,8 @@ S-4 Compensation (REV-036, REV-037): PAY WORTH replaces the fixed salary curve. 
 S-5 Company preference (REV-046): culture tier DREAM 100 · P1 90 · P2 80 · P3 70 · WATCH 60 · unlisted 40, plus overall
     boosts DREAM +10 and P1 +3 (model setting companyBoost), capped at 100; PAUSED scores 40 like unlisted. The boost
     changes the opportunity rating, so the rank and the band() label follow it; fit and FLEX stay as scored
-    (pipeline-scoring.js scoreRow). Line 186 tier list is
+    (pipeline-scoring.js scoreRow). No decision reads the boost: PURSUIT_STATUS (PipelinePolicy.assess), the pay hold and
+    the FLEX decisions are worked out before it is added (REV-046; pipeline-scoring.js:67–69, 128–129; Code.gs:1860). Line 186 tier list is
     replaced. The boost is added after the coverage factor; the drawer breakdown shows it as its own line so the total
     reads to the ring.
 S-6 Agency postings (REV-020, Tim T-1): culture and the target-list check use CLIENT_EMPLOYER when it is named; with the
@@ -78,7 +79,7 @@ S-10 Map (REV-050, REV-052, REV-031): no job open = filtered view fitted to its 
     latitude labels never sit on a state name; no FULLSCREEN button on the HUD band (Q7-c). MAP-1 popup shows the job's
     fields; jobs at one place merge into one pin marked ×n; on the phone a tap opens a bottom sheet (REV-031).
 S-12 Writer status re-checks 8 s after a failed read (was 60 s) (REV-058).
-S-13 Decision keys (per Grok Bot audit; not re-verified by Claude): 1 Pursue · 2 Hold · 3 Decline · 4 Research; key hints
+S-13 Decision keys (pipeline.html:1365, 1474): 1 Pursue · 2 Hold · 3 Decline · 4 Research; key hints
     shown on 1 and 2 only; Hold and Research both prepare MANUAL_RESEARCH.
 S-11 D-3 / HF-10 change since last review (REV-053..REV-060): built; see §6.
 
@@ -264,7 +265,8 @@ O-3 CLOSED by Grok Bot 18:39 ET (E-10 re-ruled).
 11 T-6 → round(stale ÷ jobs × 100) · 12 S-4 → SALARY RULE + PAY_WORTH option B · 13 decision keys → S-13 ·
 14 Q6-b, Q6-d (S-9), Q7-a, Q7-c (S-10), Q9-d + 13 px (D3-4) · 15 REV-025/028/029/031/036/046/020/058 → S-6, S-8, S-9,
 S-10, S-12, S-4, S-5 · 16 Tim R-1 → TR-1 · 17 amber re-ruled → E-10, B-4, B-5.
-Claude re-verified 1, 2, 5, 7, 10 in code at fdf17a7. 13 and the bucket / Screen gate details of 17 are recorded from the
+Claude re-verified 1, 2, 5, 7, 10 and 13 in code at fdf17a7. The bucket / Screen gate details of 17 are recorded from the
 Grok Bot audit without a separate Claude check.
+Revision 3, 18:50 ET: Grok Bot confirmed revision 2 (d51de6c); S-5 adds that no decision reads the boost; S-13 cites code.
 
 END — errata only. No code changed by this sheet.
