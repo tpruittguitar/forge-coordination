@@ -1,0 +1,52 @@
+PROVIDER=Claude
+TASK_KEY=EIGHT_ROW_WRITER_ACCOUNTING_RECONCILIATION (Tim order 2026-10-18 19:09 ET, item 4 / G)
+RUN_ID=FORGE-RECON8-CLAUDE-20261018-2045ET
+SCOPE=read-only investigation; no Writer write, no master change, no replay
+
+ORIGINAL REQUEST
+REQUEST_ID=FORGE-EMAIL-CHATGPT-20261018-1758ET-B01 (ChatGPT FORGE_EMAIL_DISCOVERY run FORGE-EMAIL-CHATGPT-20261018-1758ET)
+REQUEST_FILE=Drive 1gBZ0PK4bjPFB4J-yKSbQue1_vCFfGiLG · RESULT_FILE=Drive 1vMpxoEcGiE5YO2a3sdZP7yKWe_JR4r-P (read by Claude 20:41 ET)
+WRITE_ID=W-20261018220431118-175610 · Writer build e7389ed · executed 2026-10-18T22:04:38Z
+RECORDS_SUBMITTED=10 · run.GROSS_FOUND declared=52
+
+EIGHT CANONICAL ROW KEYS (RESULT outcome INSERTED, bucket SCOUT_INTAKE)
+V2I-54CC9711AE6D  Anduril Industries | Deputy Head of Production, Connected Warfare | Ashville, OH | JOB-LI-4472032431
+V2I-EBB4BC23FBEA  Stryker | Senior Manufacturing Engineering Manager | Chandler, AZ | JOB-LI-4479355142
+V2I-396D1486B42C  AFL | Manufacturing Director | Duncan, SC | JOB-LI-4480584236
+V2I-63D610A98E6E  Adecco (agency, CLIENT=UNKNOWN) | Director of Quality, Aerospace & Defense Manufacturing | Rock Hill, SC | JOB-LI-4479301185
+V2I-4724C8D0C8BA  Amazon | Sr. Operations Manager | West Columbia, SC | JOB-LI-4471822178
+V2I-A5129802C860  The Campbell's Company | Associate Director, Site Operational Excellence | Charlotte, NC | JOB-LI-4480302006
+V2I-79DF776FEF14  VirtualVocations | Vice President of Quality | Remote | Lensa
+V2I-2B2914AF9464  ENFRA LLC | Data Center Quality Director - Regional Leader | Nashville, TN | Lensa
+
+EVIDENCE
+Receipt index (forge-writer-state PIPELINE_RECEIPT_INDEX.json @ 5327e50, 19:08 ET checkpoint): request s=COMPLETE, verified at 2026-10-18T22:05:05Z,
+  write W-20261018220431118-175610, 8 INSERT items = the 8 IDs above. pending=0.
+Each of the 8 IDs appears in exactly one request in the whole index (no second insert anywhere).
+Writer identity check per row: NO_SUPPORTED_MATCH (no pre-existing row for the same posting). RESULT counts line: TOTAL=1832, UNACCOUNTED=0.
+ChatGPT receipt: MASTER_READBACK_AFTER_COMPLETE=YES (not independently re-read here: the master is 4 MB and the shell cannot reach Drive or the Writer;
+  the index's own post-write verification is the independent proof).
+
+CLASSIFICATION
+CORRECTLY_APPLIED=8 (all eight)
+MISSING=0 · PARTIAL=0 · DUPLICATED=0
+HELD_NOT_FAILED=2 (Writer outcome AMBIGUOUS_MATCH, counted as WRITE_FAILED; nothing written, correctly):
+  JOB-LI-4477731985 Blue Origin | Director - Manufacturing, Ops & Assembly Electric Propulsion | Hutto, TX
+  JOB-LI-4477738532 Blue Origin | same title | Greater Seattle Area
+  candidates both: V2I-A848F8CE9E78 (DUPLICATE, Central Texas, Workday R73101) and V2I-AB4185F4D66E (DECLINED_BY_TIM, Central, TX)
+  Owner: ChatGPT FORGE_EMAIL_DISCOVERY carry-forward (its NEXT_ACTION already names them).
+
+WHY THE REQUEST SAYS FAILED
+The writes succeeded. Only run accounting failed: the Writer counts GROSS_FOUND against the records it adjudicates
+(apps-script/Code.gs runCounters_: accounted = NEVER_CONSIDER_EXCLUDED + SCOUT_INTAKE_WRITTEN + DISCOVERY_LEAD_WRITTEN + EXISTING_MATCH + WRITE_FAILED = 10).
+The lane declared run.GROSS_FOUND=52, its whole visible-link count, including 4 EXISTING and 18 OUT_OF_SCOPE it disposed itself in EMAIL_EVAL.
+52 - 10 = 42 DISCOVERY_UNACCOUNTED -> RUN_ACCOUNTING=INCOMPLETE -> ok=false. The 12:02 ET run declared GROSS_FOUND=records and returned SUCCESS.
+Cause: the email packet line "GROSS_FOUND reconciles all candidate dispositions" reads both ways. Fix: REV-022 (packet wording).
+
+RECOVERABLE THROUGH THE WRITER?
+No correction is needed in the master or the index. The Writer has no action that amends a past run's counters, and resubmitting the 42 lane-disposed
+links as records would insert out-of-scope rows. reconcile_intake_receipt does not apply (the index already holds COMPLETE for this request).
+Nothing replayed.
+
+RUN_TERMINAL_STATUS=COMPLETE
+OPEN_ITEMS=2 Blue Origin ambiguity holds (ChatGPT email lane) · REV-022 packet wording (PR, Tim merges)
