@@ -1,8 +1,11 @@
-CHATGPT ZIPRECRUITER PASS -- weekly step inside FORGE_WEB_CAREER_DISCOVERY
+LANE PROCEDURE -- FORGE_ZIPRECRUITER_WEEKLY (ChatGPT's own weekly task; REV-021, Tim 2026-10-18: web discovery moved to Grok, this pass stays with ChatGPT)
 
 WHEN
-Run once per ISO week (Monday 00:00 ET), before ordinary work in the first ChatGPT web-discovery run. Read this week's FORGE-ZIPR-CHATGPT-<ISO week>*.txt receipt via state/latest.json hint or scoped listing. A completed terminal receipt skips the pass; START alone never proves completion. Resume durable partial search/request cursors rather than repeating completed pages or submissions. Missing search_jobs: SKIPPED_NO_CONNECTOR in the web receipt and continue ordinary work.
-No new ChatGPT scheduled task is used (ChatGPT has 5 task slots).
+One scheduled ChatGPT task, Monday 01:00 America/New_York, TASK_KEY=FORGE_ZIPRECRUITER_WEEKLY. Run once per ISO week. Read this week's FORGE-ZIPR-CHATGPT-<ISO week>*.txt receipt via state/latest.json hint or scoped listing. A completed terminal receipt means stop with a one-line SKIP receipt; START alone never proves completion. Resume durable partial search/request cursors; never repeat completed pages or submissions. Missing search_jobs: SKIPPED_NO_CONNECTOR receipt and stop.
+
+INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed COMPANY, TITLE, LOCATION, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES. COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link.
+Submit every kept role in this run. The Writer removes duplicates (EXISTING_MATCH) and applies Never-Consider; do not check the master.
 
 SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
 Nationwide: location "United States" and country_admin_code "US" set explicitly on every call (an omitted location lets the connector anchor to the user's city: ChatGPT test 2026-10-13 17:33 ET returned 6 Cleveland-TN-area results; Claude test with "United States" returned 905 nationwide), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
@@ -21,9 +24,9 @@ Success test at the end of 2026W45: an average of 3 or more SONICJOBS_ONLY roles
 
 Keep: Director / Head / VP / GM / Plant Manager over manufacturing, production, operations or quality in a manufacturing business, plus Sr Manager at a P1 company in https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt.
 Drop: sales, clinical, medical, restaurant, retail, construction-site, software-only and engineer-level roles. A salary range that only reaches 180000 at its top is a lead; keep it.
-Agency postings (staffing, recruiting, executive search, placement firms): follow the agency rules in your parent web-discovery packet: at most two searches to name the client; not named means COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the posting states. Each agency posting is its own opportunity.
+Agency postings (staffing, recruiting, executive search, placement firms): follow the agency rules in AGENCY_AND_TOOLS above: at most two searches to name the client; not named means COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the posting states. Each agency posting is its own opportunity.
 
-INTAKE (same intake schema and Writer route as your parent web-discovery packet; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
+INTAKE (schema and Writer route as INTAKE FILE above; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
 SOURCE_URL = the job_redirect_url from search_jobs exactly as returned. SOURCE_PROVIDER = ZipRecruiter. DISCOVERY_SOURCE = "ChatGPT ZipRecruiter weekly pass". PAY_POSTED = "<min>-<max> (ZipRecruiter listing)" when the result has a salary. POSTING_DATE = run date minus days_ago. LOCATION, COMPANY and TITLE exactly as returned. REQ_ID blank. INITIAL_UNKNOWN_FIELDS lists what the result lacks (DEGREE_TEXT always; REQ_ID; PAY when null).
 Do not check the master: the Writer dedupes (EXISTING_MATCH) and applies Never-Consider.
 

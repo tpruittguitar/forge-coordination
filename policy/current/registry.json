@@ -1,13 +1,17 @@
 {
   "schema_version": 1,
-  "policy_revision": "2026-10-18.1",
+  "policy_revision": "2026-10-18.2",
   "legacy_entry_version": "2026-10-17.2",
   "source_basis": {
     "coordination_commit": "4a4c9c760cf33667cb384e6bac3e7121b9c8299b",
     "policy_audit_commit": "3fced69ea8123f39b24791ec50cff8078f2e95cb"
   },
   "runtime_schema": 1,
-  "external_rules": {"repository": "tpruittguitar/forge-policy", "path": "rules/TIM_PIPELINE_RULES_CANONICAL.txt", "blob_sha": "3cefd9eb7b362621a0015a5f43554c710da60998"},
+  "external_rules": {
+    "repository": "tpruittguitar/forge-policy",
+    "path": "rules/TIM_PIPELINE_RULES_CANONICAL.txt",
+    "blob_sha": "3cefd9eb7b362621a0015a5f43554c710da60998"
+  },
   "writer_minimum": {
     "version": 68,
     "capabilities": [
@@ -44,32 +48,26 @@
       "0": "FORGE_WEB_CAREER_DISCOVERY",
       "1": "FORGE_ENRICH_STRATEGIC",
       "2": "FORGE_ENRICH_FEASIBILITY",
-      "3": "FORGE_WEB_CAREER_DISCOVERY",
-      "4": "FORGE_ENRICH_STRATEGIC",
-      "5": "FORGE_ENRICH_FEASIBILITY",
-      "6": "FORGE_WEB_CAREER_DISCOVERY",
-      "7": "FORGE_ENRICH_STRATEGIC",
-      "8": "FORGE_ENRICH_FEASIBILITY",
-      "9": "FORGE_WEB_CAREER_DISCOVERY",
-      "10": "FORGE_ENRICH_STRATEGIC",
-      "11": "FORGE_ENRICH_FEASIBILITY",
+      "4": "FORGE_WEB_CAREER_DISCOVERY",
+      "5": "FORGE_ENRICH_STRATEGIC",
+      "6": "FORGE_ENRICH_FEASIBILITY",
+      "8": "FORGE_WEB_CAREER_DISCOVERY",
+      "9": "FORGE_ENRICH_STRATEGIC",
+      "10": "FORGE_ENRICH_FEASIBILITY",
       "12": "FORGE_WEB_CAREER_DISCOVERY",
       "13": "FORGE_ENRICH_STRATEGIC",
       "14": "FORGE_ENRICH_FEASIBILITY",
-      "15": "FORGE_WEB_CAREER_DISCOVERY",
-      "16": "FORGE_ENRICH_STRATEGIC",
-      "17": "FORGE_ENRICH_FEASIBILITY",
-      "18": "FORGE_WEB_CAREER_DISCOVERY",
-      "19": "FORGE_ENRICH_STRATEGIC",
-      "20": "FORGE_ENRICH_FEASIBILITY",
-      "21": "FORGE_WEB_CAREER_DISCOVERY",
-      "22": "FORGE_ENRICH_STRATEGIC",
-      "23": "FORGE_ENRICH_FEASIBILITY"
+      "16": "FORGE_WEB_CAREER_DISCOVERY",
+      "17": "FORGE_ENRICH_STRATEGIC",
+      "18": "FORGE_ENRICH_FEASIBILITY",
+      "20": "FORGE_WEB_CAREER_DISCOVERY",
+      "21": "FORGE_ENRICH_STRATEGIC",
+      "22": "FORGE_ENRICH_FEASIBILITY"
     }
   },
   "lanes": {
     "FORGE_ENRICH_STRATEGIC": {
-      "owner": "Claude",
+      "owner": "Grok",
       "token": "ENRICH-STRATEGIC",
       "source": "FORGE_ENRICH_STRATEGIC.txt",
       "max_estimated_tokens": 4000,
@@ -78,7 +76,7 @@
       ]
     },
     "FORGE_ENRICH_FEASIBILITY": {
-      "owner": "Claude",
+      "owner": "Grok",
       "token": "ENRICH-FEASIBILITY",
       "source": "FORGE_ENRICH_FEASIBILITY.txt",
       "max_estimated_tokens": 4000,
@@ -87,7 +85,7 @@
       ]
     },
     "FORGE_WEB_CAREER_DISCOVERY": {
-      "owner": "ChatGPT",
+      "owner": "Grok",
       "token": "WEB",
       "source": "FORGE_WEB_CAREER_DISCOVERY.txt",
       "max_estimated_tokens": 4000,
@@ -96,7 +94,7 @@
       ]
     },
     "FORGE_POSTING_VALIDATION": {
-      "owner": "ChatGPT",
+      "owner": "Claude",
       "token": "POSTVAL",
       "source": "FORGE_POSTING_VALIDATION.txt",
       "max_estimated_tokens": 4000,
@@ -121,16 +119,18 @@
       "examples": [
         "application.json"
       ]
-    }
-  },
-  "addons": {
-    "ZIPRECRUITER_WEEKLY": {
+    },
+    "FORGE_ZIPRECRUITER_WEEKLY": {
       "owner": "ChatGPT",
-      "parent": "FORGE_WEB_CAREER_DISCOVERY",
-      "source": "ZIPRECRUITER_WEEKLY.txt",
-      "max_estimated_tokens": 1600
+      "token": "ZIPR",
+      "source": "FORGE_ZIPRECRUITER_WEEKLY.txt",
+      "max_estimated_tokens": 5000,
+      "examples": [
+        "intake.json"
+      ]
     }
   },
+  "addons": {},
   "provenance": [
     {
       "path": "control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt",
