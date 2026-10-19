@@ -28,7 +28,7 @@ SCHEDULES
    after this release its runs resolve to Grok-owned lanes and SKIP (owner mismatch), so there is no overlap. Then Claude disables it.
    FORGE_POSTING_VALIDATION trig_01XESwmbe9JnCSjUP5VTqwUe: Claude re-enables after merge, every 2 h at :28 ET.
  ChatGPT: Email Discovery unchanged (every 3 h). Web Discovery (05:40 11:40 17:40 23:40) keeps firing and SKIPs after merge; ChatGPT disables it
-   after Grok's first verified web run. Posting Validation already disabled. New weekly task FORGE_ZIPRECRUITER_WEEKLY, Monday 01:00 ET.
+   after Grok's first verified web run (verified 00:37 ET 2026-10-19; Paste 3 handed to Tim). Posting Validation already disabled. New weekly task FORGE_ZIPRECRUITER_WEEKLY, Monday 01:00 ET.
 
 CUTOVER CONTROL
  The manifest owner check is the lease: a provider that does not own the lane writes a one-line SKIP receipt and stops. Ownership moves only when
@@ -43,7 +43,10 @@ VERIFICATION EVIDENCE (filled in as it arrives)
  2026-10-18 21:13 ET Grok FEASIBILITY: request FORGE-ENRICH-FEASIBILITY-GROK-20261018-2113ET-B01-R01 on V2I-2B2914AF9464 (ENFRA) — Writer
    STATE_CHANGE_RECEIPT READBACK_VERIFIED=YES, COMPLETION_STATUS=COMPLETE, write W-20261019011716346-694ef4 (Writer receipts read by Claude via
    Tim's PC 21:28 ET). VERIFIED.
- Grok first verified run per lane: WEB=UNKNOWN (first web hour 00:10 ET) · STRATEGIC=VERIFIED (empty worklist) · FEASIBILITY=VERIFIED
+ 2026-10-19 00:12 ET Grok WEB: run FORGE-WEB-CAREER-DISCOVERY-GROK-20261019-0012ET, 6 Shield AI roles submitted (B01). Writer INTAKE_RECEIPT
+   (read 00:37 ET via Tim's PC): GROSS_FOUND 6 = accounted 6, RUN_ACCOUNTING=RECONCILED, COMPLETION_STATUS=COMPLETE; EXISTING_MATCH 4,
+   WRITE_FAILED 2 (held), 0 new rows. P1 coverage partial (Tesla access denied, SpaceX/Anduril JS limits). VERIFIED end to end.
+ Grok first verified run per lane: WEB=VERIFIED · STRATEGIC=VERIFIED (empty worklist) · FEASIBILITY=VERIFIED
  2026-10-18 21:28 ET: Claude disabled FORGE_CLAUDE_LANE_ROTATION trig_01Ta1QP7TFiwk1Ca8pJ6RbnT (renamed RETIRED, not deleted). Its lanes are
    Grok's and verified; it could only SKIP.
  2026-10-18 21:03 ET ChatGPT email run: Writer counters GROSS_FOUND=10 = accounted 10, RUN_ACCOUNTING=RECONCILED (REV-022 fix confirmed).
