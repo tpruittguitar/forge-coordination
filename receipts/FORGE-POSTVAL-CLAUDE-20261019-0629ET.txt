@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-0629ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=22eea53906119ea9252c
+POLICY_REVISION=2026-10-19.1
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA of fetched packet = 4b1bced351c5d73591d8b96f0c63e52c7dc51f04, matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED (forge-policy rules directory metadata not read this run)
+SOURCE_VERSIONS=manifest blob 1896b9928841f1bae081e5351b2f614589900430; worklist generated 2026-10-19T10:13:46Z (master modified 10:12:21Z, 1872 rows, ELIGIBLE_TOTAL=277, SHOWN=40)
+GATE=WRITER_FREEZE frozen=false (read 06:29 ET); writer_status not available in this runtime; WRITER_QUEUE root had no pending files (folders processed/failed only)
+RESOLVED_ASKS=none held by this lane
+TINYFISH_FETCHES=9 fetch calls (13 URLs), 8 searches
+ROWS_EVALUATED=12
+LIVE=6 (LIVE_EMPLOYER_ATS): V2I-234EDA23285A Cascades; V2I-82CF8F0773A8 Alstom; V2I-82F422744A05 GlobalFoundries (Workday JR-2605630); V2I-2260B42C5B26 SpaceX (spacex.com jobs list); V2I-48A369B3AD1F Advance Auto (Workday R-0614907 open, Posted 3 Days Ago; the jobs.advanceautoparts.com copy of the same req showed a 'filled' page, conflicting, not used as closure); V2I-54E01F7DBF11 Suddath (Workday R12210 Director, Operations, '2 Locations' incl. Virtual TX; Coppell location not confirmed on page)
+CLOSED=0
+UNCONFIRMED=6 (not written): V2I-3E7E88269CF3 Cloyes (careers page lists no Director of Operations; Indeed/SimplyHired copies recent; absence on a short list is not closure); V2I-5C508290FA80 Overhead Door (Oracle CX page returned empty_content); V2I-4E0C5CB72E98 Blue Origin (careers search is JS-rendered, no list returned); V2I-59C5D3B12606 Forward Air (careers page has no job list; secondary copies only); V2I-7C708DBCCD90 Williams Company (recruiter posting; careersinfood page HTTP 503); V2I-00B1FC6BEDE4 Slate Auto (no employer ATS page found; secondary copies only)
+NOT_ATTEMPTED=remaining worklist rows (22 ZipRecruiter/Indeed/Lensa/Ladders/Glassdoor/Talent redirect rows, 2 truncated-URL staffing rows etc.); worklist URLs are truncated at ~200 chars ending in '~', so aggregator links cannot be fetched directly
+WRITTEN=6
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-0629ET-B01 (R01..R06), Drive file CLAUDE_FORGE-POSTVAL-CLAUDE-20261019-0629ET-B01.json id 1Q11AhtG9qNQ-kg3WiONB_n2R-xUgviCB in WRITER_QUEUE
+VERIFIED=0 (RESULT, receipt-index COMPLETE and row_readback not available to this run; no writer tools/index access)
+VERIFIED_PRIOR_RUN=0; prior batch 00:30 ET (REV-030, 13 LinkedIn rows) still unverified from here
+HELD=6 UNCONFIRMED rows above
+FAILED=0
+BACKLOG_REMAINING=about 271 eligible rows
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-0629ET-B01
+STOP_REASON=Run stopped after one batch of 6 confirmed rows plus 6 attempted; remaining worklist rows are aggregator redirects with truncated URLs requiring per-row employer-site searches; no named hard limit reached (runtime scope choice)
+NEXT_OWNER=Gofer/Writer for B01 verification (RESULT, receipt index COMPLETE, row_readback); Claude posting-validation next run continues worklist from row 1 skipping the 12 above
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
