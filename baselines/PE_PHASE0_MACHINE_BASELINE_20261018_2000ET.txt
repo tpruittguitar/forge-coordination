@@ -1,22 +1,9 @@
 PIPELINE EXPLORER · PHASE 0 MACHINE BASELINE (live app, before the redesign) · 2026-10-18 20:00 ET (00:00:33Z) · CLAUDE
 Asked: Tim 19:58 ET, "you do it" (the timed sessions). The human half (Tim timing five tasks) is not done; this is the machine half.
 How: headless Chrome on Tim's PC, 2560 x 1440, https://foreman-cockpit.pages.dev/pipeline.html (main @ 909962d), live Writer (v70) read access.
-Read-only: every non-GET request was blocked, so nothing was written (one blocked, see F-1). Script: %TEMP%\pe_baseline\baseline.cjs.
-
-FACT (measured)
- Page DOM ready ............ 779 ms
- First table rows .......... 4,552 ms (master download + parse + score)
- Rows on start ............. 1,136 (preset OPEN, sort OVERALL_RATING desc; REV-011 opening-page rule holds: start hash p=OPEN)
- Job selection (20 jobs, click -> 2 animation frames): p50 355 ms · p95 460 ms · max 467 ms   (spec target <= 700 ms end to end)
- Page errors ............... 0
- Console errors ............ 1 ("Failed to load resource: net::ERR_FAILED" = the blocked POST below)
- Counters as shown (raw text): "Needs decision 41" · "Applied 323" / "All Applied 323" · "Interviews 14d 0" · "Current View 1136" ·
-   "Active Work 1136" · "Scout Intake 1011" · "Ready 0" · "AI discover missing data 0"
- Build pill reads "BUILD · local · #122".
-
-FINDINGS
- F-1 On load the page POSTs to /api/structured/admin/import-from-writer (Cloudflare function). Opening the Explorer triggers an admin
-     import write. Blocked here. Owner Claude to trace: expected, or a write that should only run on demand.
+Read-only: every non-GET request was blocked, so nothing was written (one blocked, see F-1 On load the page POSTs to /api/structured/admin/import-from-writer (blocked here). Traced: pipeline.html importStructuredFromWriter_
+     rebuilds the Cloudflare cached copy of the master from the Writer before reading (comment dated 2026-10-15). It refreshes a cache;
+     the master and the Writer are not changed. Expected behaviour. Cost: it is part of the 4.5 s to first rows.
  F-2 "Current View 1136" equals "Active Work 1136" while "Scout Intake" alone is 1011: the OPEN view is mostly scout-intake rows.
      Feeds the counter registry (T-05).
  F-3 Selection is within budget today (p95 460 ms). The redesign's motion must keep p95 <= 700 ms.
