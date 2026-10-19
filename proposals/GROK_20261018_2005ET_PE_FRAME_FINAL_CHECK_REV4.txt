@@ -1,0 +1,102 @@
+PIPELINE EXPLORER · GOLDEN FRAME FINAL CHECK · REV 4
+=====================================================
+Status         : FINAL CHECK · VERDICT PASS (FRAMES APPROVED) · BUILD items only · PROPOSED
+Author         : Grok Bot (look-and-feel owner)
+Stamp          : 2026-10-18 20:05 ET
+Source commit  : tpruittguitar/foreman-cockpit 4194cf911b5b17791468e297fa35235fc289099b
+                 (branch backup/claude-20261018-1805ET, PR #123, "REV-019 · Golden F02 revision 4 + F01 empty drawer")
+                 tests/visual/golden/F02_2560x1440.png
+                 tests/visual/golden/F01_2560x1440.png
+                 tests/visual/golden/F02.NOTES.txt (rev 4 header)
+Live pages     : https://backup-claude-20261018-1805e.foreman-cockpit.pages.dev/tests/visual/golden-src/F02-job-selected
+                 https://backup-claude-20261018-1805e.foreman-cockpit.pages.dev/tests/visual/golden-src/F01-empty
+                 (both HTTP 200; served oct15.js is byte-identical to the commit, sha1 b9f2c4a2…)
+Reference pages: proposals/GROK_20261018_1910ET_PE_OCT15_PAGES/GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_F02_CORRECTED_2560x1440.png
+                 proposals/GROK_20261018_1910ET_PE_OCT15_PAGES/GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3_F01_EMPTY_DRAWER_2560x1440.png
+                 (verdict: proposals/GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3.txt, forge-coordination 0586f51)
+Ruling         : forge-coordination a6cee13 (Tim, 19:23 ET) · last golden-frame round
+Judged against : C-01..C-16 and Q1–Q4 only. Tim-ruled deltas T-1..T-10 are accepted and not flagged.
+
+VERDICT: PASS
+-------------
+No FRAME items. F02 rev 4 and F01 are approved as golden frames. Every remaining item below is BUILD
+(fix in the real app). None is a regression, and none is an unapplied R3 item.
+
+METHOD
+------
+1. Source diff. Rev 4 golden-src/oct15.js, oct15.css, F01-empty.html, F02-job-selected.html and
+   fixture/build-oct15.cjs were compared with my R3 page sources.
+   - oct15.css and build-oct15.cjs are identical.
+   - The HTML differs only in relative paths.
+   - oct15.js differs only in:
+     T-6  stale bar = round(staleEvidence / jobs × 100)
+     T-10 colgroup BUCKET 118 (110 content) / AGE 38 (30 content); row total unchanged, WRITE STATE stays 164
+     T-5  state-label fill-opacity .55 removed; tokens.css --pe-map-state-label #6B6B66
+     the map-f01 fixture path
+   - build-fixture.cjs carries the C-08 floor-give-back fix.
+2. Fixture reproducibility. Re-running build-oct15.cjs at 4194cf9 reproduces fx-base, fx-agency,
+   fx-closed and fx-applied byte-for-byte, and they equal mine. Base: JOB-0412 76 TOP #1, coverage 100,
+   Σ 76.0 (L-2 holds).
+3. Pixel diff. Pillow/numpy, max-channel |Δ| > 48, split into 9 regions.
+   F02: 44,885 px total, of which 33,295 are in the table: the T-10 shift moves BASE EST onward ~6 px.
+   F01: 42,571 px total, 33,429 of them in the table.
+   The other regions are anti-aliasing (Playwright Chromium vs my headless Chrome):
+   header 967 · subtabs 296 · KPIs 666 · strip ~450 · map 835 / 700 · ticker 3,160 · rail 122.
+   The drawer counts (5,086 F02 / 2,782 F01) are glyph anti-aliasing plus the T-6 bar.
+   Every differing region was inspected at zoom (golden over mine over mask).
+4. Live measure (?measure) of the rev 4 pages.
+   - BUCKET "Decline candidate" 108.8 in 110: not truncated.
+   - AGE "10h" 24.7 in 30: not truncated.
+   - Header segments fit: brand 196, crumb 199, search 340, status 547, meta 504, controls 556;
+     "LANE QUEUE 2 · OLDEST 4 MIN" is 234 wide.
+5. T-5 check. KY label pixel is #6B6B66 in the golden (mine #52524F at .55); 3.67:1 as ruled.
+
+CHECKLIST (R3 items as applied in rev 4)
+----------------------------------------
+C-01..C-16  APPLIED. All are adopted unchanged from my renderer; the only differences are T-5, T-6 and T-10.
+            - Header fold and flex-shrink: no overflow.
+            - Δ column: letter-spacing 0, "Δ NEW" fits.
+            - C-08 breakdown: "Σ 100% KNOWN = 76.0 → 76", Ownership UNKNOWN.
+            - C-13: lat/lon labels at H−94.
+            - Drawer chips, ring and receipts match the reference pixel for pixel, apart from anti-aliasing.
+Q1–Q4       APPLIED as answered in R3.
+F01         APPLIED: EMPTY DRAWER. "No job selected" instruction, FILTERED VIEW badge, bands 5/13/21/9/2,
+            9 NO ELIGIBLE OPEN line, BLOCKERS 38/10/0/0/0, NEXT UP top 3 with Open, writer panel with
+            1 WAITING / 1 FAILED. Map shows FILTERED VIEW · 38 JOBS with the segmented control on FILTERED.
+            Matches my F01 reference apart from T-5 and anti-aliasing.
+Accepted (not flagged): T-1 yes · T-2/T-7 no Apps Script version on build line · T-3 yes · T-4 no range
+            rings · T-5 #6B6B66 full opacity · T-6 stale bar from jobs · T-8 phone 11 px min · T-10 BUCKET 110 / AGE 30.
+
+ITEMS (region · what I see · what it must be · mark)
+----------------------------------------------------
+1. Map, bottom-left graticule · BUILD
+   See: the "33°N" latitude label at x≈8 and the "089°W" longitude label (C-13 baseline H−94) touch
+        and read as "33°N089°W". The same is in my R3 pages, so this is not a regression.
+   Must: keep at least 8 px between the lat and lon labels. Skip any lat label whose box intersects
+         the lon label row, or start the lon labels after the lat label column (x ≥ 48).
+
+2. Map corner brackets · BUILD
+   See: the top-right bracket runs under the SELECTED JOB / FILTERED VIEW segmented control, and the
+        bottom-left bracket is hidden under the 84 px HUD/legend band. Both are inherited.
+   Must: put all four brackets above the overlays, or inset them by the overlay extents, so each
+         corner is visible. The 3:1 outline rule (L-1) applies to brackets that are shown.
+
+3. KPI strip, STALE EVIDENCE tile · BUILD
+   See: the computed bar (T-6) still crosses the caption "FLEX class stamped under older rule";
+        descenders touch the 3 px bar.
+   Must: leave at least 4 px between the bar and the caption baseline. Move the bar to bottom 4 px,
+         or raise the caption. The value stays computed from jobs (T-6, L-2).
+
+4. Table, TITLE / COMPANY cells · BUILD
+   See: long names are ellipsised as designed. Measured: TITLE 1 row ("Director, Manufacturing Ops"
+        193.1 in 192), COMPANY 14 rows (max "Sablewood Manufacturing" 173.2 in 120).
+   Must: in the app, give each ellipsised cell a native title / tooltip with the full name, and make
+         sure keyboard focus reveals the full text (L-1 / no hidden meaning). The frame is correct as is.
+
+5. Golden renderer · BUILD (process note)
+   See: rev 4 renders with Playwright Chromium; the reference renders with headless Chrome. About 9–11k
+        px of glyph anti-aliasing noise falls outside the table.
+   Must: CI visual diffs compare against the golden only with the same pinned Playwright Chromium build
+         and the same font files. No re-render of the frames is needed.
+
+No item is FRAME. Golden frames F01 and F02 are final.
