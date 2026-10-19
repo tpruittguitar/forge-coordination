@@ -1,0 +1,219 @@
+PIPELINE EXPLORER — SPEC v1.5.2 FUNCTIONAL ERRATA (plain text)
+================================================================
+Author: CLAUDE (for Tim Pruitt) · 2026-10-19 18:15 ET · REV-061 · Status: PROPOSED. Gate S0: Tim accepts.
+Amends: proposals/GROK_20261015_1650ET_PIPELINE_EXPLORER_SPEC_V1_5_1.txt (v1.5.1). v1.5.2 = v1.5.1 + this sheet.
+  Where this sheet and v1.5.1 differ, this sheet governs. Line numbers below are v1.5.1 line numbers.
+Sources: CLAUDE_20261017_0345ET_..._REVIEW_SESSION.txt (E-01..E-14), CLAUDE_20261018_1530ET_..._CRITIQUE_AND_MULTI_AI_PLAN.txt
+  (N-01..N-10, V-01..V-20, Tim rulings D-5/D-6/D-9/D-10), CLAUDE_20261018_1800ET_PE_ROLE_SPLIT_AND_TODAY_PLAN.txt (M-01..M-09,
+  Tim rulings Q-1/Q-2, T-1..T-10, 18:45 look ruling, 19:23 frame cap), GROK_20261018_1830ET_PE_LOOK_OWNER_INTENT_AND_V_RULINGS.txt
+  (Grok Bot V-rulings, R-1..R-7), control/CHANGE_REGISTER.txt (REV-011..REV-060).
+Code checked read-only: foreman-cockpit main @ fdf17a7 (PR #145) for every "IN CODE" status below.
+Scope: FUNCTIONAL text only (meaning, data, numbers, states, motion timing, accessibility). Look and composition belong to
+  Grok Bot and the Oct 15 v1.5 PDF; this sheet records Grok Bot's visual rulings by reference and adds none of its own.
+Labels: FACT = verified in a named source or in code · INFERENCE · ASSUMPTION · OPINION.
+Status words per item: IN CODE (FACT, built and on main) · RULED (decided, not built) · OPEN (needs a decision).
+
+-----------------------------------------------------------------------------------------------
+0. AUTHORITY (replaces v1.5.1 lines 3–16 "Source of truth")
+-----------------------------------------------------------------------------------------------
+A-1 Visual authority = proposals/Pipeline_Explorer_Proposal_v1.5.pdf (Oct 15, 60 pp, sha256 49ea099d…). Tim 10-17 R-1;
+    Tim 10-18 18:45 ET "oct 15 look better". The 72-page v1.5.1 PDF citation (line 4) is void.
+A-2 Split (Tim D-5, 10-18 15:41 ET): the PDF governs layout, proportions, composition, surfaces, type scale. Dated text
+    governs meaning, colour semantics, glyphs, motion timing, accessibility.
+A-3 Look owner = Grok Bot (Tim 10-18 17:54 ET). Its V-rulings and R-1..R-7 stand; its 18:30 ET presentation changes are not
+    adopted (18:45 ruling). Golden F02 rev 4 was the last frame round (Tim 19:23 ET); the real screens are QA'd from here.
+A-4 Two limits bind every owner and only Tim waives them: L-1 accessibility floor (3:1 control outlines, 4.5:1 small text,
+    no colour-only state, 11 px text floor); L-2 data truth (every number on screen comes from the live code path).
+A-5 Status line (line 11) is superseded: building is authorized and under way (PE build steps 1–9, REV-024..REV-060).
+    Every change still goes through a backup/<provider>-<time> branch, a REV number and a PR; Tim merges.
+A-6 Phase 4 (adaptive, HF-12) is CUT (Tim D-6, 10-18 16:55 ET). Reason-code logging stays in Phase 3 (T-19).
+A-7 Display target: 2560 × 1440 CSS px at 100 % Windows scaling (Tim D-9). 125 % / 150 % are secondary checks: layout must
+    not break; no pixel match.
+A-8 After-apply tracking (interview, follow-up, recruiter reply) is out of this redesign (Tim Q-2). M-09 stays a candidate.
+
+-----------------------------------------------------------------------------------------------
+1. CURRENT STATE (replaces v1.5.1 §2 lines 178–237 and §2.1 lines 205–222; FACT unless marked)
+-----------------------------------------------------------------------------------------------
+S-1 Writer: deployed build PR #140 (a43c095), 2026-10-19 13:25 ET, as the System panel's LIVE CODE line reports. Every
+    Writer change on main is deployed. The Phase 0 discrepancy "Writer redeploy outstanding" (lines 202–203, 311, 408–409,
+    461) is CLOSED (M-08). HF-01's "DEPENDENCY: Writer Apps Script redeploy" (line 311) is removed.
+S-2 State file (REV-017): action 'state' goes through mergeState_ under the script lock; seen = union keep max; incoming
+    rulings ignored (rulings live in the master); incidents unioned by id; .prev copy + readback. "Opening a job
+    overwrites the shared state" (line 193, 229) no longer happens.
+S-3 Published model: rev 26 (published 2026-10-19 03:03 ET, as the System panel's SCORING line reports). ASSUMPTION: rev 26
+    weights not re-read for this sheet. The rev 24 numbers in v1.5.1 (lines 205–217, 373, 379) are history. Every number
+    that depends on the model is read from the published model at run time; the spec quotes no live weights.
+S-4 Compensation (REV-036, REV-037): PAY WORTH replaces the fixed salary curve. PAY_WORTH comes from Tim's geo map (need
+    $180k at geo 100 rising to $300k at geo 0) and is the compensation score. Estimated pay counts as pay with +1 priority
+    (REV-035). Lines 209–210, 379 ("Salary curve 190k/240k/300k") and T-16 "salary curve chart" now mean the PAY WORTH
+    curve and its geo inputs.
+S-5 Company preference (REV-046): culture tier DREAM 100 · P1 90 · P2 80 · P3 70 · WATCH 60 · unlisted 40, plus overall
+    boosts DREAM +10 and P1 +3 (model setting companyBoost), capped at 100. Line 186 tier list is replaced. The boost is
+    added after the coverage factor; the drawer breakdown shows it as its own line so the total reads to the ring.
+S-6 Agency postings (REV-020, Tim T-1): culture scores on a named CLIENT_EMPLOYER; with the client unnamed it is UNKNOWN.
+    An agency row is never held or delayed for it (REV-014).
+S-7 Needs you page (REV-011): one page for every decision, failed write, failed run and upkeep item waiting on Tim; the
+    opening view hides applied / rejected / dead jobs.
+S-8 Percentile bands (REV-025, pipeline-bands.js) are live and display-only; the scoring band label from band()
+    (90/75/60/40, PRIORITY..NO-GO, pipeline-scoring.js:60) still exists for the Writer's PURSUIT logic (E-07).
+S-9 Desktop layout (REV-049): at viewport >= 2300 × 900 the main row is table | map | drawer (tokens --pe-col-table 1112,
+    --pe-col-map 801, --pe-col-work 508) with a draggable splitter; below that the stacked list-over-map layout stays.
+S-10 Map (REV-050, REV-052): no job open = filtered view fitted to its pins; with 20+ pins the outer 5 % per side is
+    trimmed and the head meta counts "k OUTSIDE VIEW"; latitude labels never sit on a state name.
+S-11 D-3 / HF-10 change since last review (REV-053..REV-060): built; see §6.
+
+-----------------------------------------------------------------------------------------------
+2. E-01..E-14 (10-17 review) — corrected text
+-----------------------------------------------------------------------------------------------
+E-01 §9 line 564–565, 125 % zoom. Tracks cannot fit at 2048 (minimums 2060 > 1902). Under A-7 this is a secondary check:
+     at 2048 the layout falls back to the stacked desktop layout (S-9). RULED; IN CODE (stacked below 2300 × 900).
+E-02 HF-17 line 362 fixed 1112 / 800 / 508 vs §9 equation. Read HF-17 as the reference proportions at 2560 × 1440; the
+     tracks are the §9 flex tracks (V-14). Built ratio 1112 : 801 with the drawer fixed at 508. IN CODE.
+E-03 Mobile units (HF-13 line 350, HF-18 lines 365–370, §3.2 line 299). Every "pt" reads "CSS px" (1 iOS pt = 1 CSS px):
+     targets 44 px, decision controls 52 px, side padding 24 px beyond the safe area, 36 px corner zones, 16 px above the
+     home indicator (V-17). RULED.
+E-04 Breakpoints: custom properties cannot drive @media. Breakpoints are literal media queries; one query string is shared
+     by CSS and JS (pipeline-pane-split.js WIDE). RULED; IN CODE for the three-column layout.
+E-05 M-09 stagger (line 513, 531): per-row step = min(--pe-motion-stagger 18 ms, --pe-stagger-max 250 ms ÷ rows animated);
+     off above 30 rows and for bursts. Total never exceeds 250 ms. RULED.
+E-06 §3.1 line 271–272 rank and ties. Replace with the rule in code (pipeline-bands.js): population sorted ascending;
+     cut(q) = sorted[min(n−1, ceil(q·n))]; a score equal to a cut takes the higher band; rank = 1 + count of eligible
+     scores strictly higher (ties share the better rank). Hover and header text: "#rank of N eligible open · HH:MM" (V-19).
+     IN CODE.
+E-07 Lines 89–90, 114–116, 139. band() uses 90/75/60/40 with five labels (PRIORITY / STRONG / WATCH / WEAK / NO-GO); the
+     "75/50" and "80/65" figures in those lines are wrong and are deleted. On screen the percentile bands (S-8) govern colour and glyph; band() labels never appear as a band.
+     FACT for the code; RULED for the screen.
+E-08 §4.1 seen-state Writer changes: done by REV-017 (S-2). IN CODE (Writer side). Client side see §7 T-06.
+E-09 Undo: one definition. §4.1 (line 394–398) governs: restore as a NEW revision sent with the CURRENT baseRevision,
+     diff first. Delete the other two wordings (line 108–109 "Undo = republish previous revision", line 217, T-13 line 482,
+     HF-19 line 376) or read them as §4.1. RULED.
+E-10 Self-violations (§3 lines 245–258, HF-19 geo map): geo heat map ramp Clay 0 → Amber 50 → Green 100, red leaves the
+     heat map, hard control points keep ⊘ (V-18). ◆ means the UPPER band only. Amber evidence lines use ≈ (R-3). OPEN:
+     amber still carries Hold, waiting-for-lock, flex question, UPPER band and soft evidence; each has its own glyph and
+     word (‖ Hold, ◷, flex word, ◆, ≈), which meets L-1. Grok Bot to confirm that this many amber uses is acceptable.
+E-11 Ticker speed 40 px/s (line 534 context, PDF) has no token. Add --pe-ticker-speed: 40px/s to tokens.css when the ticker
+     is built; the lint rejects any raw speed. RULED (not built; no ticker yet).
+E-12 Motion already ships (pipeline-motion.js, tests/motion.browser.js). Phase 0 inventories it; the catalog §7 maps every
+     existing animation to an M-id or removes it. RULED.
+E-13 T-14 is listed once, Phase 2–3. The page-33 hover card follows V-19 (§4 below). RULED.
+E-14 T-22 (line 493) and Phase 2 (line 445): delete "credentials only behind explicit reveal". T-22 = "single Writer
+     connection entry". Function over privacy (Tim 10-17). RULED.
+
+-----------------------------------------------------------------------------------------------
+3. N-01..N-10 (10-18 critique) — corrected text
+-----------------------------------------------------------------------------------------------
+N-01 HF-09 / drawer breakdown. Points = weight × part score ÷ Σ known weight × coverage factor (0.7 + 0.3 × coverage),
+     rounded to 0.1 by largest remainder so the shown points sum to the shown Σ; company boost on its own line (S-5);
+     ring, header and footer show the same integer = scoreRow().overall (V-16). IN CODE (pipeline-breakdown.js).
+N-02 HF-03 lines 319–322, §5 cross-cutting line 460. Two queues, two counters: "◷ my decisions waiting for the Writer
+     lock" (Explorer posts, busy retries 8/15/30/45 s) and "lane queue N · oldest M min" (Writer queue, applied about
+     every minute, queue_stats). The "queued = waiting for Writer lock" sentence (line 112–113, 321) applies to the first
+     only. RULED; counters go into the T-05 registry (Tim T-3).
+N-03 T-17 (line 487). Undo per decision already exists (action undo_ruling). T-17 = wrap undo_ruling in the write state
+     machine with readback. RULED.
+N-04 B-15 removes the current OS-driven reduced motion (pipeline-motion.js matchMedia). Binding. On first run with the OS
+     setting on, show the one-time prompt; re-prompt when the OS setting changes. RULED.
+N-05 Fonts: self-host Inter and IBM Plex Mono (SIL OFL) as woff2. IN CODE (REV-019 fonts/). Glyphs outside both fonts
+     (◷ ◌ ⟳ ✕ ▸ ✉) ship as inline SVG icons (R-7). RULED for the icons.
+N-06 One fixture scored by scoreRow() for every golden frame and test. IN CODE (REV-019 fixture, rev 24).
+N-07 Control outlines --pe-outline #6B6B66 (3:1 floor); Seam / Gridline for passive dividers only (V-10). IN CODE (token).
+N-08 Small labels under 24 px use Secondary; Muted only for >= 24 px or >= 18.66 px bold (V-11). RULED.
+N-09 Map pins: band shape at the core (▲ ◆ ● ▽ ⊘), halo keeps colour (V-09). IN CODE (REV-031 band pins).
+N-10 11 px text floor everywhere, phone included (T-8). Lines 292 (9.5 px ◌), token field labels 10.5 px and map
+     readouts 10.5 px rise to 11 px. RULED; SYS-1 (REV-032) applied it to the System panel.
+
+-----------------------------------------------------------------------------------------------
+4. V-01..V-20 (final rulings; visual calls are Grok Bot's, recorded here so the text and the frames agree)
+-----------------------------------------------------------------------------------------------
+V-01 Decline: Secondary ⊖ + word, --pe-outline border, never red; a divider sets it apart.
+V-02 Hold: two pause bars (inline SVG) + "Hold", fallback ‖ (U+2016), amber. Ticker controls become words
+     "Pause ticker" / "Resume ticker" (line 534 "❚❚ Pause / ▶ Resume" is replaced).
+V-03 HOLD rows: "nn ⊘ HOLD", score in Secondary, no band glyph or colour; SCORE track 112 px. IN CODE (--pe-col-score).
+V-04 "Needs decision": Primary text; the KPI tile wears a cyan border only while it is the active filter.
+V-05 Cyan = live: selection, focus, links, lock-on, a write in flight. Never a resting status (amends §3 line 249).
+V-06 Lock-on 240 ms. V-07 Auto-fit 300 ms selection / 600 ms filtered set; no "AUTO-FIT n MS" text in the map header.
+V-08 Ticker per B-16 with word controls (V-02). V-09 shape-coded pins (N-09). V-10 outlines (N-07). V-11 labels (N-08).
+V-12 KPI value 38 px / 650 Inter, line-height 1.05; tile 96 px. V-13 map panel = 44 px head + canvas filling the row.
+V-14 flex tracks (E-02). V-15 moot under A-7. V-16 breakdown (N-01). V-17 mobile px (E-03). V-18 geo ramp (E-10).
+V-19 Hover card "◆ UPPER · 58 · #66 of 419 eligible open · 18:30" format; numbers from one band snapshot; rank per E-06;
+     never "STRONG" or "$… est.". Replaces the C1 row 22 text (line 67–68).
+V-20 Bands header "BANDS · N <n> ELIGIBLE OPEN · P90 <c> · P65 <c> · P20 <c> · REV <r> · AS OF HH:MM", all from the
+     atomic snapshot.
+Also binding from Grok Bot: R-1 ◌ = stale stored evidence only; UNKNOWN = "?" + "unknown". R-2 ∅ = posting closed, neutral.
+R-3 ≈ for amber evidence lines. R-4 Needs-you levels ⊘ BLOCKING / ▸ ACTION / ○ WATCH, word always printed; badge black on
+amber or on red. R-5 quiet lanes say so in words. R-6 applied-source chips "Your click" / "@ Email evidence". R-7 SVG icons.
+Tim T-4..T-10 defaults (19:23 ET, from GROK_20261018_1910ET_PE_FRAME_VERDICT_F02_R3.txt): T-4 range rings stay banned;
+T-5 map state labels #6B6B66 at full opacity (3.67:1 on Hull, 24 px); T-6 stale-evidence bar denominator from a counter,
+never typed; T-7 no Apps Script version on the build line; T-8 11 px phone minimum; T-10 AGE 30 / BUCKET 110 px.
+
+-----------------------------------------------------------------------------------------------
+5. MISSING STATES M-01..M-08 (spec had no rule; now part of v1.5.2)
+-----------------------------------------------------------------------------------------------
+M-01 Needs you page (S-7) is a required screen: F10 desktop, M07 phone. HF-13 phone scope adds it.
+M-02 Agency rows: "via <Agency> · client unknown"; culture "? unknown" (R-1); no hold, no warning colour (S-6, REV-014).
+M-03 Closed / dead postings (LIVENESS = CLOSED_*): ∅ + "Posting closed" row state and drawer banner (R-2); never on the
+     opening view (REV-011).
+M-04 APPLIED evidence: the drawer names the source ("@ Email evidence" + link + date, or "Your click" + date). A Gmail
+     confirmation records APPLIED even over a Tim decline (REV-014).
+M-05 HUD state-sync pill: seen / review-record sync status with the counts below (§6 D3-6). Pairs with N-02.
+M-06 Lane health pill: "automation OK" or "N lanes quiet", links to Needs you. Counts from NEEDS_TIM.json (Tim T-3: browser
+     derivation only, no new Writer calls, no lane work, no writes).
+M-07 Settings › Writer line: commit, PR, deploy time; no Apps Script version (Tim T-2). IN CODE (System panel LIVE CODE).
+M-08 Stale spec facts: closed by S-1..S-6.
+
+-----------------------------------------------------------------------------------------------
+6. HF-10 CHANGE SUMMARY AS BUILT (D-3; REV-053..REV-060) — replaces HF-10 line 344–345 detail and adds to §4.1
+-----------------------------------------------------------------------------------------------
+D3-1 A review record per job = what Tim saw when he last opened it or marked it seen: {s overall, t time, p eight part
+     scores (−1 unknown), b company boost, r model revision, bl 1 = baseline}. Written only after the published model is
+     loaded (a default-model score is never stored as "what Tim saw"). Tim 10-19 11:0x ET: stored in the Writer state
+     (same on every device). IN CODE.
+D3-2 Store: PIPELINE_EXPLORER_STATE.json "reviewed". Merge on both sides (StateMerge.gs and pipeline-review.js, tested
+     against each other): union by job id; a real review beats a baseline; otherwise the larger t wins (tie keeps stored);
+     nothing removed; malformed records dropped. IN CODE.
+D3-3 Baseline once per device: every seen job without a record gets one at its seen time, marked bl. Baselines never count
+     as "your last review" and never replace a real review. FACT (Grok 10-19 16:17 ET): Writer holds reviewed 1832, bl 1820.
+D3-4 Display: table ▲n / ▼n on SCORE (glyph carries direction, L-1) with "+n since you opened it <time> · <cause>"; drawer
+     line "▲ +n since you last opened it <time> · <cause>" ("since baseline", "No change", "First review of this job");
+     strip "SINCE YOUR LAST REVIEW · <time> │ Δ n new │ Δ n score changes (▲u ▼d) · e.g. <cause> │ ⊗ n write failed │
+     ◷ n waiting for the Writer", each non-zero item filters the queue. Causes are computed from the two score records
+     (parts moved, largest weighted move first, then boost and model revision). Desktop only; phone strip with Track M
+     (Grok Q9-c). IN CODE.
+D3-5 Sync rules (replace §4.1 seen-state "e.g. 10 s or 20 marks" with these, which apply to seen marks and review records
+     alike): one state write at a time per device; review records at most 400 per write, the next once the Writer confirms
+     a kept count; a record is done only when the Writer's answer carries a reviewed count; a failed write is followed by a
+     read of the Writer state, and records the Writer already holds (same or better) are done; lock-timeout answers retry
+     at most every 60 s without limit while records wait; other failures retry 5 s / 15 s / 45 s / 2 min / 5 min; a failed
+     state read retries 3 s / 10 s / 30 s / 1 min, then every 2 min; returning to the page sends at once. IN CODE.
+D3-6 Status: System › REVIEW RECORDS and the top of Incident History show "N on this device (B baseline) · P waiting to
+     send · baseline result or reason · last send result (✓ / ⊗ + error) · SEND NOW". IN CODE. M-05's HUD pill reads the
+     same values.
+
+-----------------------------------------------------------------------------------------------
+7. TASK REGISTER CHANGES (v1.5.1 §6)
+-----------------------------------------------------------------------------------------------
+T-04 remaining scope badges + Fit & Score parity: OPEN (not re-verified for this sheet).
+T-05 counter registry adds the HUD counters of N-02, M-05, M-06 (Tim T-3). OPEN.
+T-06 seen-state: Writer merge done (REV-017); sync rules D3-5 apply. Still open: "click is read-only" — FACT openRow()
+     (pipeline.html:1542) sets S.seen and the sync posts after the 1.5 s debounce. OPEN (decide: keep the debounced
+     write, or batch per §4.1).
+T-14 one listing, Phase 2–3 (E-13).
+T-16 = PAY WORTH curve chart + geo inputs + authority notes (S-4).
+T-17 = undo_ruling inside the write state machine (N-03).
+T-22 = single Writer connection entry (E-14).
+T-23 mobile insets in CSS px (E-03).
+New T-29 icons: ◷ ◌ ⟳ ✕ ▸ ✉ and the Hold bars as inline SVG (R-7, V-02).
+New T-30 ticker speed token (E-11) when the ticker is built.
+Phase 0 discrepancy list: remove "Writer redeploy outstanding" (S-1); keep "SCORING_MODEL.md stale modifier defaults"
+     (not re-verified for this sheet).
+
+-----------------------------------------------------------------------------------------------
+8. OPEN — FOR TIM (asked in chat as well)
+-----------------------------------------------------------------------------------------------
+O-1 Accept v1.5.2 = v1.5.1 + this sheet (gate S0)?
+O-2 T-06: opening a job writes the seen mark 1.5 s later (one merged write; REV-017 makes it safe). Keep it, or move seen
+    marks to a slower batch (spec §4.1 "10 s or 20 marks")? OPINION: keep; it is merged, cheap, and keeps NEW markers in
+    step across devices.
+O-3 E-10 amber load: ask Grok Bot to confirm the five amber uses, each with its own glyph and word.
+
+END — errata only. No code changed by this sheet.
