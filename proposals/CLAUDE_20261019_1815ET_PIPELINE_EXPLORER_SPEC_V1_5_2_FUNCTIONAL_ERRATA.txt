@@ -1,6 +1,6 @@
 PIPELINE EXPLORER — SPEC v1.5.2 FUNCTIONAL ERRATA (plain text)
 ================================================================
-Author: CLAUDE (for Tim Pruitt) · 2026-10-19 18:15 ET · REV-061 · Status: PROPOSED. Gate S0: Tim accepts.
+Author: CLAUDE (for Tim Pruitt) · 2026-10-19 18:15 ET · REV-061 · Status: ACCEPTED by Tim 2026-10-19 18:55 ET (gate S0 passed).
 Revision 2, 18:50 ET: Grok Bot audit vs fdf17a7 (Tim relay 18:39 ET), findings 1–17 applied; see §9.
 Amends: proposals/GROK_20261015_1650ET_PIPELINE_EXPLORER_SPEC_V1_5_1.txt (v1.5.1). v1.5.2 = v1.5.1 + this sheet.
   Where this sheet and v1.5.1 differ, this sheet governs. Line numbers below are v1.5.1 line numbers.
@@ -228,9 +228,8 @@ D3-6 Status: System › REVIEW RECORDS and the top of Incident History show "N o
 -----------------------------------------------------------------------------------------------
 T-04 remaining scope badges + Fit & Score parity: OPEN (not re-verified for this sheet).
 T-05 counter registry adds the HUD counters of N-02, M-05, M-06 (Tim T-3). OPEN.
-T-06 seen-state: Writer merge done (REV-017); sync rules D3-5 apply. Still open: "click is read-only" — FACT openRow()
-     (pipeline.html:1542) sets S.seen and the sync posts after the 1.5 s debounce. OPEN (decide: keep the debounced
-     write, or batch per §4.1).
+T-06 seen-state: CLOSED. Writer merge done (REV-017); sync rules D3-5 apply; openRow() (pipeline.html:1542) sets S.seen and
+     the sync posts after the 1.5 s debounce, kept by Tim's ruling O-2 (18:55 ET).
 T-14 one listing, Phase 2–3 (E-13).
 T-16 = PAY WORTH curve chart + geo inputs + authority notes (S-4).
 T-17 = undo_ruling inside the write state machine (N-03).
@@ -250,10 +249,9 @@ Phase 0 discrepancy list: remove "Writer redeploy outstanding" (S-1); keep "SCOR
 -----------------------------------------------------------------------------------------------
 8. OPEN — FOR TIM (asked in chat as well)
 -----------------------------------------------------------------------------------------------
-O-1 Accept v1.5.2 = v1.5.1 + this sheet (gate S0)?
-O-2 T-06: opening a job writes the seen mark 1.5 s later (one merged write; REV-017 makes it safe). Keep it, or move seen
-    marks to a slower batch (spec §4.1 "10 s or 20 marks")? OPINION: keep; it is merged, cheap, and keeps NEW markers in
-    step across devices.
+O-1 ACCEPTED. Tim 18:55 ET: "Accept v1.5.2." v1.5.2 = v1.5.1 + this sheet governs from now on.
+O-2 RULED KEEP. Tim 18:55 ET: "Keep." Opening a job saves the seen mark after the 1.5 s debounce as one merged write;
+    §4.1's "10 s or 20 marks" batch is withdrawn. T-06 closes on the Writer side; the open-job write stays by ruling.
 O-3 CLOSED by Grok Bot 18:39 ET (E-10 re-ruled).
 
 -----------------------------------------------------------------------------------------------
