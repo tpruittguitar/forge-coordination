@@ -1,0 +1,33 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-1431ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+POLICY_REVISION=2026-10-19.3
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; fetched via GitHub connector, blob SHA f33105b6580698a24a005d2ba6ac11d468a84caa matches manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main@543638e3effde9e80b53028c866624601c497b77; worklist generated 2026-10-19T17:59:03Z
+RULES_BLOB_UNCHECKED (no policy interpretation needed this run)
+GATE=WRITER_FREEZE frozen=false (read fresh); WRITER_QUEUE root empty before submit; writer_status not available in this runtime
+RESOLVED_ASKS=none held by this lane
+
+ROWS_EVALUATED=10
+LIVE=10 (LIVE_EMPLOYER_ATS=2: V2I-159B6D7FCA48 Lever, V2I-094897474A65 PacifiCorp; LIVE_SECONDARY=8)
+CLOSED=0
+UNCONFIRMED=0 written; 1 held, not written: V2I-CA3BA86931CA (Panasonic careers page title matched but body did not render; search snippet 2 days ago)
+WRITTEN=10 (SUBMITTED to WRITER_QUEUE, file CLAUDE_FORGE-POSTVAL-CLAUDE-20261019-1431ET-B01.json, Drive id 1D6gegW8XGgYUbxPhbpZcTHTFBxf4p2Lh, 4361 bytes, plain text)
+VERIFIED=0 (RESULT / receipt-index COMPLETE / row_readback not yet observable this run; NOT labeled complete)
+HELD=1 (above)
+FAILED=0
+TINYFISH_FETCHES=4 fetch calls (18 URLs; 1 LinkedIn 429, 6 Indeed 401) + 8 searches
+BACKLOG_REMAINING=236 of ELIGIBLE_TOTAL=246 (30 rows left in the 40-row worklist shown)
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-1431ET-B01 (R01-R10)
+PENDING_WRITES=FORGE-POSTVAL-CLAUDE-20261019-1431ET-B01 (awaiting RESULT, receipt-index COMPLETE, row_readback)
+ROWS_B01=V2I-B7189D4BB204, V2I-E2BA60B6A3EF, V2I-B2F0CF77D569, V2I-F9EAD4E79698, V2I-159B6D7FCA48, V2I-320E50579AF9, V2I-094897474A65, V2I-BA4F3620A4FE, V2I-303686A2EDBA, V2I-06211B571FF7
+
+CURSOR=worklist position 29-30 and 31-36 partly done via employer-search; next unworked rows by position: 1-3, 4-28 (except 23,24,29,30,35,36 done), 31-34
+OLDEST_BLOCKER=Worklist URLs for ZipRecruiter/Indeed/Talent/Ladders/Glassdoor/Lensa rows are truncated by the Writer (end in "~"), so they cannot be fetched; Indeed viewjob returns 401 to TinyFish. Rows need employer-site search by company+title+location (done for 6 this run).
+STOP_REASON=Named limits: truncated aggregator URLs in worklist and Indeed 401 make remaining rows employer-search-only; run ended after first batch of 10 without a further batch.
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run (verify B01 first: RESULT, receipt index, row_readback), then continue the worklist
+NEXT_ACTION=Verify B01; continue by employer search. Suggest to Tim/Writer maintainer: have the worklist keep the full URL or an Indeed jk so viewjob links are usable.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
