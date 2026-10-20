@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-2030ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=ec06d2d4fdc613218841d823c197c30105c488544b98860f86789aa7bf456bc6 (matches manifest)
+FREEZE=frozen:false (WRITER_FREEZE.json, 2026-10-18T03:29Z); WRITER_STATUS=not available in this runtime; WRITER_QUEUE root empty at start
+WORKLIST=generated 2026-10-20T00:11:02Z (fresh), ELIGIBLE_TOTAL=255 SHOWN=40
+RESOLVED_ASKS=none held by this lane
+ROWS_EVALUATED=10
+LIVE=3 (V2I-3EFD33CE7482 Boeing LinkedIn; V2I-B96ABE6B628A Reserves Network LinkedIn; V2I-24F25BEF100F MedStar iHire) all LIVE_SECONDARY
+CLOSED=0
+UNCONFIRMED=7
+  V2I-E7F1F7E908C0, V2I-4B2B27817FD3, V2I-65CF594E4857 (Tesla careers: bot_blocked, not closure)
+  V2I-C2ACB0E64D73 (iHire page shows Expired/removed 3 days ago; secondary-only source, packet allows closure-on-removal only for LinkedIn sole source, so held UNCONFIRMED; Writer/Tim may rule)
+  V2I-95E045E7F744 (iHire page undated, cannot qualify as dated LIVE_SECONDARY)
+  V2I-CA3BA86931CA (Panasonic careers page is JS-rendered, no job body; search shows listing 2 days ago via secondary only)
+  V2I-BF3B5DCD9390 (Rivian: LinkedIn 429; Indeed blocked; secondary search hits show recent)
+WRITTEN=3 (SUBMITTED, not WRITER_ACCEPTED)
+VERIFIED=0 (RESULT/receipt-index/row_readback not checked this run)
+HELD=0 FAILED=0
+TINYFISH_FETCHES=4 fetch calls (13 URLs) + 3 searches
+BACKLOG_REMAINING=245 of 255 eligible (rows 1-4, 6-8, 10-12 etc unattempted; worklist URLs for ZipRecruiter/Indeed/Lensa/Ladders/Glassdoor are truncated with "~" and unfetchable)
+STOP_REASON=Run time/effort scope: 10-row minimum met; remaining worklist rows are redirect/aggregator URLs truncated in the worklist, require employer-site search per row
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-2030ET-B01 (R01-R03); Drive file 1NY93sNmToYKPFLxmsj4gY4MIJjXCUuN2
+PENDING=B01 awaiting Writer processing; next run verify via request_result, receipt_index, row_readback
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
