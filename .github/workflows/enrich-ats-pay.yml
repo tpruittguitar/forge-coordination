@@ -1,0 +1,52 @@
+# REV-116 (Tim 2026-10-20 18:09-18:21 ET): pay and degree enrichment off the Writer. Reads jobs from the Cloudflare structured
+# copy, takes pay from the posting first (employer ATS, then LinkedIn / Indeed / ZipRecruiter postings), estimates from
+# employer-posted comparables only after the posting was read, and hands the Writer at most 2 batches of 25 rows per run.
+# tools/enrich-ats-pay/config.json "submit": false = dry run (report only, Writer untouched).
+name: enrich-ats-pay
+on:
+  schedule:
+    - cron: '40 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: enrich-ats-pay
+  cancel-in-progress: false
+jobs:
+  enrich:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: tpruittguitar/foreman-cockpit
+          path: _fc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+        run: node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js
+      - name: Enrich
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+        run: node tools/enrich-ats-pay/run.js
+      - name: Commit report and ledger
+        run: |
+          mkdir -p /tmp/out && cp state/enrich-ats-pay*.json /tmp/out/
+          git config user.name forge-ats-pay-bot
+          git config user.email forge-ats-pay-bot@users.noreply.github.com
+          # Same retry shape as build-needs-tim (REV-104): each retry starts from the latest main and re-copies only these files.
+          for i in 1 2 3 4 5 6; do
+            git add state/enrich-ats-pay*.json
+            git diff --cached --quiet && { echo "No change"; exit 0; }
+            git commit -q -m "ATS-PAY-BOT: enrichment report"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp /tmp/out/* state/
+          done
+          exit 1
