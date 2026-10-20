@@ -43,7 +43,17 @@ jobs:
           fi
           git config user.name forge-needs-tim-bot
           git config user.email forge-needs-tim-bot@users.noreply.github.com
-          git add attention/NEEDS_TIM.json
-          git commit -m "NEEDS-TIM-BOT: rebuild attention list"
-          for i in 1 2 3; do git pull --rebase -q && git push -q && exit 0; sleep 5; done
+          # Other lanes and bots push to main in bursts (run #367, 2026-10-20 13:11 UTC, lost every retry during a ChatGPT
+          # commit burst). The list is derived from main, so each retry starts from the latest main and rebuilds it:
+          # no rebase can be left half done, and an unchanged list ends the step quietly.
+          for i in 1 2 3 4 5 6; do
+            git add attention/NEEDS_TIM.json
+            git diff --cached --quiet -- attention/ && { echo "No change after refresh"; exit 0; }
+            git commit -q -m "NEEDS-TIM-BOT: rebuild attention list"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/needs-tim/build.js --prs /tmp/prs.json
+          done
           exit 1
