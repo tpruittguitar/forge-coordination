@@ -1,0 +1,106 @@
+AI_REASON_RUN_RECEIPT
+TASK_KEY: FORGE_EMAIL_DISCOVERY
+RUN_ID: FORGE-EMAIL-CHATGPT-20261020-0259ET
+PROVIDER: CHATGPT
+RUN_TERMINAL_STATUS: PARTIAL_WITH_WORK
+STOP_REASON: BLOCKED_AFFECTED_NEW_WRITES_WRITER_PROVENANCE_READBACK_MISMATCH
+
+AUTHORITY_READBACK:
+- entry: control/FORGE_AUTOMATION_ENTRY.txt
+- entry_version: 2026-10-18.1
+- entry_blob: f5eb00f84c42926e19a2a8afbdce46752fb05510
+- manifest: runtime/current.json
+- manifest_blob: 45517b2bc21f2bf1cd96558ebd193b2561ce24dc
+- release_id: 6c9a306f27775baada47
+- policy_revision: 2026-10-19.3
+- lane_packet: runtime/releases/6c9a306f27775baada47/FORGE_EMAIL_DISCOVERY.txt
+- lane_packet_blob: 0a26aeeba2efe4cb057d3b1f3943d4685df28607
+- lane_packet_sha256: f5743128bc4fbcf18590e86284d4769eda9987bf60a770d195172be7d9186ee7
+- canonical_rules_blob: 1633977287001ddf0f4aa21b98d630b5710b6222
+- authority_integrity: PASS
+- prior_email_terminal: receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261020-0002ET_TERMINAL.txt
+- prior_email_state: receipts/EMAIL_BACKFILL_STATE_20261020_0002ET.txt
+
+GATE:
+- FREEZE: false
+- WRITER_PENDING: 0
+- WRITER_FAILED_THIS_LANE: 0
+- WRITER_TRANSPORT_BLOCKED: NO
+- WRITER_GATE: BLOCKED_AFFECTED_NEW_WRITES
+- blocker: Current Writer exact-row readback truncates SOURCE_URL/INITIATING_URL at 400 characters and omits GMAIL_MESSAGE_ID. The prior durable email state requires independently verified repair before new email-intake submission. No repair evidence was found in this run.
+- bypass_attempted: NO
+- master_direct_edit: NO
+- writer_request_ids_this_run: NONE
+- verified_master_rows_this_run: 0
+
+SCOPE_AND_COVERAGE:
+- scoped_window_et: 2026-10-19 23:59:49 through 2026-10-20 02:59:49
+- query_families_planned: 17
+- query_families_run: 17
+- query_families_not_run: 0
+- page_count: 18
+- pagination_exhausted: YES
+- emails_found: 29
+- emails_body_verified: 29
+- emails_unexamined: 0
+- fetch_failed: 0
+- body_batches_completed: 6
+- alert_emails_evaluated: 7
+- discovery_planned: mailbox alert and application evidence review only
+- discovery_run: mailbox alert and application evidence review only
+- discovery_not_run: 0
+- discovery_failed: 0
+- coverage_status_current_visible_window: COMPLETE
+- coverage_status_overall: PARTIAL
+- reason_overall_partial: inherited hidden/backfill obligations remain and affected new Writer intake is blocked
+
+CANDIDATE_ACCOUNTING:
+- jobs_listed: 60
+- job_links_found: 60
+- job_links_extracted: 60
+- job_links_not_extracted: 0
+- gross_found: 60
+- new_admissible: 5
+- existing_or_current_run_duplicate: 5
+- out_of_scope: 50
+- nc_excluded_subset_of_out_of_scope: 6
+- identity_held: 1
+- submitted_to_writer: 0
+- writer_accepted: 0
+- verified_master: 0
+- new candidates preserved:
+  - JOB-INDEED-d943a614dac56ca1 | Amphenol and its Affiliated Companies | Engineering Director, AGMS | Saint Marys, PA
+  - JOB-INDEED-e4750fc5b9cb321b | Interstate Batteries | Market General Manager II | North Augusta, SC
+  - job-sparrow-company-director-of-engineering-seffner-fl | Sparrow Company | Director of Engineering | Seffner, FL
+  - job-koch-director-of-operations-cincinnati-oh | Koch | Director of Operations | Cincinnati, OH
+  - job-ciresimorek-director-of-operations-knoxville-tn | CiresiMorek | Director of Operations | Knoxville, TN | HELD_EXACT_IDENTITY
+- exact message IDs, timestamps, initiating URLs, opaque redirects, and dispositions: receipts/EMAIL_CANDIDATE_LEDGER_FORGE-EMAIL-CHATGPT-20261020-0259ET.json
+- all 60 listing dispositions: receipts/EMAIL_EVAL_2026-10-20_FORGE-EMAIL-CHATGPT-20261020-0259ET.txt
+
+APPLICATION_EVIDENCE:
+- clear confirmation emails: 7
+- employers: RimePro; Leidos; CX2; Oracle; Apptronik; Blue Origin; Hadrian
+- reconciliation: Already handled by receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261020-0255ET_TERMINAL.txt; no duplicate handoff or state request created by this lane.
+- application_state_writes_this_lane: 0
+
+MASTER_AND_ARCHIVE_READBACK:
+- master_sha256: 552b21c50e62277ced0e16c06602e5366e2bc08fe0cc2a1004a5db6bdef840cc
+- master_modified: 2026-10-20T06:54:32.953Z
+- master_counts: TOTAL=1923 READY_TO_PURSUE=0 DECLINED_BY_TIM=90 MANUAL_RESEARCH=44 BLOCKED=0 TIM_DECISION_REQUIRED=0 APPLIED=335 REJECTED_BY_EMPLOYER=194 DUPLICATE=30 CLOSED_DEAD=26 SCOUT_INTAKE=1117 DISCOVERY_LEAD=85 INVALID_DISCOVERY=2 UNACCOUNTED=0
+- terminal_archive_sha256: 6b5f381f7ba3ba29647309c67b922a333db488dfbaaba37b7ac797ddff909533
+
+DURABLE_CHECKPOINT:
+- candidate_ledger: receipts/EMAIL_CANDIDATE_LEDGER_FORGE-EMAIL-CHATGPT-20261020-0259ET.json
+- evaluation: receipts/EMAIL_EVAL_2026-10-20_FORGE-EMAIL-CHATGPT-20261020-0259ET.txt
+- email_state: receipts/EMAIL_BACKFILL_STATE_20261020_0259ET.txt
+- source_inventory: receipts/EMAIL_SOURCE_INVENTORY_FORGE-EMAIL-CHATGPT-20261020-0259ET.txt
+- support_artifact_readback: PASS
+- state_latest_readback: PASS
+- carry_forward_minimum: 1509
+- source_inventory_count: 15
+- sources_added: 2 (PostJobFree; inform.theladders)
+- checkpoint_sync: SYNCED
+
+NEXT_OWNER_AND_ACTION:
+- Writer maintainer: repair full provenance persistence/readback so SOURCE_URL and INITIATING_URL are not truncated and GMAIL_MESSAGE_ID survives exact-row readback; independently verify before clearing the affected gate.
+- Forge email lane: after repair verification, reconcile the five preserved candidates against fresh master/archive/queue, submit admissible exact identities through Writer, verify RESULT/COMPLETE/exact-row readback, and continue inherited backfill from the earliest unfinished obligation.
