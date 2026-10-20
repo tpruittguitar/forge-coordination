@@ -1,0 +1,45 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-1030ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (GitHub blob SHA f33105b6580698a24a005d2ba6ac11d468a84caa matches manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main bb19f2102f94f4db24bd73ff22559eb03dadef0e; worklist generated 2026-10-20T14:21:41Z (master rows 1923, eligible 247, shown 40)
+RULES_BLOB_CHECK=RULES_BLOB_UNCHECKED (forge-policy not read this run)
+GATE=WRITER_FREEZE frozen=false; WRITER_QUEUE root empty (no in-flight files); Writer status not queried
+COVERAGE=worklist rows 1,2,3,4,21,25,31,35,36,37,38,39,40
+ROWS_EVALUATED=13
+LIVE=4
+CLOSED=0
+UNCONFIRMED=9
+WRITTEN=4 (submitted, not accepted/verified)
+VERIFIED=0
+HELD=9
+FAILED=0
+TINYFISH_FETCHES=12 URLs (fetch_content ttl 0) + 12 searches
+BACKLOG_REMAINING=about 234 of 247 eligible
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-1030ET-B01 (R01-R04); Drive file 1abQfPvRjiin8dKjqiO4_x7QfgwPW56fK CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-1030ET-B01.json
+BATCHES_COMPLETED_THIS_RUN=1
+
+LIVE (submitted):
+V2I-BA3724B11B5B Nationwide Business Delivery Manager Quality (UAT): LIVE_EMPLOYER_ATS, careers.nationwide.com page open, applications accepted until 10/22/2026, EMPLOYER_PAGE
+V2I-F546D967E595 Sarah Cannon Research Institute Research Quality Manager: LIVE_EMPLOYER_ATS, SCRI Workday lists JR0154704 Remote TN posted 17 days ago, TINYFISH_FETCH:WORKDAY
+V2I-3759AD5DD47D East Point Energy Asset Manager: LIVE_SECONDARY, LinkedIn posted 2026-10-15, no closed notice
+V2I-59C5D3B12606 Forward Air Site Manager Contract Logistics: LIVE_SECONDARY, LinkedIn posted 2026-10-13, no closed notice
+
+UNCONFIRMED (held, nothing submitted):
+V2I-792E6CB9D865, V2I-384E7E9FD5EC (VirtualVocations, lensa email redirects resolve to google.com; no employer found)
+V2I-42EDD3186699 Tesla (indeed bot_blocked; tesla.com job 287018 bot_blocked; block is not closure)
+V2I-B97CB10FEAAC Ardent Manager of Process Improvement (jobs.ardenthealth.com/careers/jobs/141513 loads but body text not returned; no posting content seen)
+V2I-AF0AE5E3934D BSA Health System Manager of Process Improvement (appears to be the same Ardent posting; identity unresolved)
+V2I-E03035B69417 Level 3 Communications Manager Quality Management (search matches L3Harris Huntsville; company identity mismatch, not resolved here)
+V2I-2B7C94FAB589 Staxmatic VP Operations (indeed/glassdoor blocked; only search snippets, no page read)
+V2I-01C75124DD00, V2I-E3F1F4EC575B CareStar Quality Improvement Lead/Leader (aggregators only; employer page not found)
+
+NOTES: ZipRecruiter, Indeed and lensa redirect links give no evidence. Remaining worklist rows 5-20, 22-24, 26-30, 32-34 not reached.
+CHANGE_REGISTER: not updated this run (no append tool; full rewrite of the shared register judged riskier than a late line). NEXT_REV would be REV-103; add: Claude posting-validation receipt 10:30 ET: 13 evaluated, 4 LIVE submitted (B01), 9 UNCONFIRMED held; not yet verified.
+PENDING=B01 write acceptance, receipt-index COMPLETE and row_readback unverified (no Writer readback route in this runtime)
+NEXT_OWNER=Claude posting validation / gofer for verification
+NEXT_ACTION=verify B01 next run; continue worklist rows 5 onward
+STOP_REASON=PARTIAL_WITH_WORK: this run's tool/time budget used; most remaining rows are Indeed/ZipRecruiter/lensa redirects blocked to TinyFish (bot_blocked)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
