@@ -52,3 +52,24 @@ test('estimate follows COMPENSATION_ESTIMATION: comparables share level and func
   assert.deepStrictEqual([two.low, two.high, two.conf, two.n], [155000, 195000, 'MED', 2]);
   assert.strictEqual(L.postedAnchor({ PRIMARY_ID: 'E' }, { SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_BASE_LOW: 1e5, SALARY_BASE_HIGH: 2e5 }), null);
 });
+
+test('Grok Bot QA: a sign-in or bot-check page is not a read posting, so it cannot unlock an estimate', () => {
+  const row = { COMPANY: 'Acme Robotics', TITLE: 'Director of Quality Engineering' };
+  const wall = '<div>' + 'Sign in to view more jobs. Join now to see who you know. '.repeat(10) + '</div>';
+  assert.strictEqual(L.parseAggregator('linkedin', wall, row).wall, true);
+  const real = '<div>' + 'Acme Robotics is hiring a Director of Quality Engineering to lead the plant quality team. '.repeat(6) + 'Base pay range $150,000.00/yr - $190,000.00/yr</div>';
+  const ok = L.parseAggregator('linkedin', real, row);
+  assert.strictEqual(ok.wall, undefined); assert.deepStrictEqual(ok.pay, { low: 150000, high: 190000 });
+  const other = '<div>' + 'Globex is hiring a Senior Accountant for the finance team in Springfield. '.repeat(8) + '</div>';
+  assert.strictEqual(L.parseAggregator('linkedin', other, row).wall, true, 'a different job is not this posting');
+});
+test('Grok Bot QA: 3+ tight same-region comparables reach HIGH; Head of = director band', () => {
+  const mk = (id, lo, hi, loc) => L.postedAnchor({ PRIMARY_ID: id, COMPANY: 'C', TITLE: 'Director, Quality', LOCATION: loc }, { SALARY_BASIS: 'EMPLOYER_POSTED', SALARY_BASE_LOW: lo, SALARY_BASE_HIGH: hi });
+  const row = { PRIMARY_ID: 'X', TITLE: 'Director of Quality', LOCATION: 'Dayton, OH' };
+  const tight = L.estimate(row, [mk('A', 150000, 190000, 'Detroit, MI'), mk('B', 155000, 195000, 'Columbus, OH'), mk('C', 160000, 200000, 'Chicago, IL')]);
+  assert.strictEqual(tight.conf, 'HIGH');
+  const loose = L.estimate(row, [mk('A', 110000, 130000, 'Detroit, MI'), mk('B', 155000, 195000, 'Columbus, OH'), mk('C', 220000, 260000, 'Chicago, IL')]);
+  assert.strictEqual(loose.conf, 'MED');
+  assert.strictEqual(L.level('Head of Manufacturing'), 3); assert.strictEqual(L.level('VP Operations'), 4);
+});
+
