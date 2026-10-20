@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_APPLICATION_WRITER_GOFER
+RUN_ID=FORGE-GOFER-CLAUDE-20261020-1300ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=863e5a39dd1663ed6e54
+PACKET_SHA256=e7fbbc54e6c09e53e51f9b950525ad868a8c3b91e625e9d4d807ccaa17076ecb (recomputed, matches lane.sha256; blob 556b5bc0 matches)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-20.1; repo main a1cd223 (local clone == origin/main; raw URL fetch blocked by provenance, read via clone)
+RULES_BLOB_UNCHECKED (forge-policy outside session scope; no policy interpretation needed)
+GATE=WRITER_FREEZE.json read fresh: frozen=false. writer_status/row_readback/receipt_index unavailable in this runtime.
+CONNECTORS=Drive and Gmail available. No computer access (scheduled cloud run).
+ASKS=asks/resolved: no new items for this lane. ASK-20261019-CLAUDE-1855 (Altius) still open; see below, now superseded in effect by employer rejection.
+INHERITED=1051ET receipt carried forward.
+WORK
+- WRITER_QUEUE root: no pending request files. AI_Coordination: no new EVIDENCE_HANDOFF files.
+- Gmail newer_than:1d: 27 threads. New since 1051ET: (1) Anduril rejection 1a15a0bb15ee18bc 2026-10-20 16:01Z for Deputy Head of Production, Altius (the 10-19 re-application). (2) RTX 1a15a1b246cf7baa 16:18Z: HireVue on-demand interview invite for 01881982 Sr Mgr Mission and Quality Assurance, due within 48h. Not an application/rejection event; RTX row V2E-634127C8D870 already submitted (W-20261020065428005-1480a3). TIM ACTION: complete HireVue by about 2026-10-22 16:18Z.
+- Anduril Altius REJECTED event: B01 (file 1DWNNtSVek-dgKNPXVGOuVOSuD) RESULT SUCCESS, HOLD EMPLOYER_TITLE_NEEDS_LOCATION, one possible match V2S-ANDURIL-ALTIUS-13697 [REJECTED_BY_EMPLOYER] Ashville OH. B02 (file 1MLZpy6mFSZXyr_15YvHhLoA24VMz8iHY) resent once with TARGET_PRIMARY_ID: HOLD ARCHIVED_MATCH (row is in terminal archive; needs restore_archived). restore_archived is not authorized to the gofer; not attempted, no further retry.
+- Net: no state written. Altius is already REJECTED_BY_EMPLOYER in the archive row, so the record's state is correct; only the 10-20 event date is unrecorded. Tim ask ASK-20261019-CLAUDE-1855 is largely moot (re-application was rejected 10-20); if the Writer owner wants dated re-application events retained, that needs archive-restore support.
+WRITTEN_REQUEST_IDS=FORGE-GOFER-CLAUDE-20261020-1300ET-B01, -B02 (both HOLD, 0 written)
+PENDING_VERIFICATION (unchanged, not VERIFIED): W-20261020065428005-1480a3 (7 rows); W-20261019045318429-19eb8d Novo V2I-033AEF9CE89D; W-20261019025243352-1c036b Ashley V2E-A8D1AFA75EF5; W-20261019025356271-16945d Harmattan V2I-AB4A9958A9AE.
+VERIFIED_THIS_RUN=none. VERIFIED_PRIOR_RUN=none.
+HELD: Anduril Altius (archived match), CX2, Leidos, Apptronik, Blue Origin, Oracle, Reynolds 2026-4234, Tesla 286230, Tesla 283760 (Tim decision), Muon, Re:Build, AMETEK item 12, archive items 17,32,53,59,117,175,258,262,265,363,366.
+COUNTS: new dispositions 2 (Anduril Altius rejection HELD archived; RTX HireVue noted, no write); failures 0.
+OLDEST_BLOCKER=Tesla req proof (since 2026-10-18 14:50 ET); readback/index for 4 writes (since 2026-10-19 02:52 ET)
+NEXT_OWNER=CLAUDE GOFER: row_readback + receipt-index confirm when a route exists; Tim: RTX HireVue (48h), Tesla Houston phone-screen (msg 1a15761a307b3151), Tesla 283760, Altius ask (optional now).
+NOT_DONE=No applications, outreach, direct master/index edits, protected-state overrides, restore_archived.
+STOP_REASON=remaining items need readback/identity grounding or authority unavailable in this runtime
+BATCHES_COMPLETED_THIS_RUN=2 (both HOLD)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
