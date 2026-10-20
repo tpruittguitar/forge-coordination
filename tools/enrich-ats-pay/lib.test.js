@@ -17,7 +17,7 @@ test('degree: required, preferred, not stated', () => {
   assert.strictEqual(L.degreeFromText('Lead the plant.').req, 'NOT_STATED');
   assert.strictEqual(L.degreeFromText("Experience Requirements Bachelor's degree in a science-related field (experience may substitute)").req, 'PREFERRED');
   const long = L.degreeFromText('Develop dashboards '.repeat(30) + 'BS Mechanical Engineering or equivalent related experience ' + 'Minimum 6 years '.repeat(30));
-  assert.ok(long.text.length <= 224, long.text.length); assert.match(long.text, /BS Mechanical Engineering/); assert.strictEqual(long.req, 'PREFERRED');
+  assert.ok(long.text.length <= 500, long.text.length); assert.match(long.text, /BS Mechanical Engineering/); assert.strictEqual(long.req, 'PREFERRED');
 });
 test('ATS URLs map to public APIs', () => {
   assert.strictEqual(L.atsApi('https://jobs.lever.co/shieldai/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b').kind, 'lever');
@@ -71,5 +71,14 @@ test('Grok Bot QA: 3+ tight same-region comparables reach HIGH; Head of = direct
   const loose = L.estimate(row, [mk('A', 110000, 130000, 'Detroit, MI'), mk('B', 155000, 195000, 'Columbus, OH'), mk('C', 220000, 260000, 'Chicago, IL')]);
   assert.strictEqual(loose.conf, 'MED');
   assert.strictEqual(L.level('Head of Manufacturing'), 3); assert.strictEqual(L.level('VP Operations'), 4);
+});
+
+test('Grok Bot QA 19:32: the degree sentence is verbatim; the bachelor clause decides REQUIRED vs PREFERRED', () => {
+  const html = '<ul><li>10+ years in manufacturing</li><li>B.S. in Mechanical Engineering required; MBA preferred</li></ul><p>Strong leader.</p>';
+  const t = L.parseAts('greenhouse', { content: html.replace(/</g, '&lt;').replace(/>/g, '&gt;'), pay_input_ranges: [] }).text;
+  assert.deepStrictEqual(L.degreeFromText(t), { text: 'B.S. in Mechanical Engineering required; MBA preferred', req: 'REQUIRED' });
+  assert.deepStrictEqual(L.degreeFromText("Requirements: Bachelor's degree in Engineering. 10 years experience."), { text: "Requirements: Bachelor's degree in Engineering.", req: 'REQUIRED' });
+  assert.strictEqual(L.degreeFromText("Bachelor's degree or equivalent experience. Lead teams.").req, 'PREFERRED');
+  assert.strictEqual(L.degreeFromText("Bachelor's degree in Engineering, master's preferred.").req, 'REQUIRED');
 });
 
