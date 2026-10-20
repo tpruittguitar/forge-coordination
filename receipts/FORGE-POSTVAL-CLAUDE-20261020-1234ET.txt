@@ -1,0 +1,25 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-1234ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=863e5a39dd1663ed6e54
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (connector blob SHA 7fd1b45007128ab5aacf7e04601cd8720bfcc81b matches manifest lane.blob_sha)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-20.1; worklist generated 2026-10-20T16:25:06Z; RULES_BLOB_UNCHECKED (not needed for this lane)
+GATE=WRITER_FREEZE frozen=false (read fresh); writer_status tool not available, queue root had no pending files; no recent RESULT overlapping worklist rows
+ROWS_EVALUATED=20
+LIVE=14 (13 LIVE_SECONDARY via LinkedIn, 1 LIVE_EMPLOYER_ATS via Paylocity)
+CLOSED=4 (Schneider careers 404, Foundry Robotics Ashby, Allen Control Systems Ashby, Truenorth LinkedIn no-longer-accepting)
+UNCONFIRMED=2 (Jacuzzi Workable empty_content; Voltava LinkedIn page dated 2025-09-29, older than 30 days)
+WRITTEN=18 (SUBMITTED to WRITER_QUEUE, file CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-1234ET-B01.json, Drive 1tffLG6NCy9_bPrnu9A73hhOTtqzF07kc)
+VERIFIED=0 (RESULT / receipt-index / row_readback not yet available this run; pending)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=20 URLs in 2 calls
+BACKLOG_REMAINING=223 of 243 eligible; rows 1-17 etc. are redirect-wrapper URLs (lensa/indeed/ziprecruiter/ladders/glassdoor) not checkable without qualifying employer route, skipped by named reason
+STOP_REASON=Tool/time limit: run ended after one verified-ready batch; verification of B01 pending Writer execution. Remaining checkable rows (e.g. W/ Indeed/Lensa wrappers) need employer-site lookup.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-1234ET-B01 (R01-R18)
+PENDING=B01 all 18 rows: awaiting RESULT, receipt-index COMPLETE, row_readback
+NEXT_OWNER=Gofer (verification) / next POSTING_VALIDATION run
+NEXT_ACTION=Verify B01 via row_readback after receipt-index COMPLETE
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
