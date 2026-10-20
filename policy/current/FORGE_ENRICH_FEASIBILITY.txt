@@ -1,5 +1,11 @@
 LANE PROCEDURE -- FORGE_ENRICH_FEASIBILITY
 
+FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, VERIFICATION AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
+Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
+Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
+Per row: at most 2 fetches (the worklist URL or the employer posting, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
+Status: RESULT/verification is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+
 WORKLIST
 WORKLIST_FORGE_ENRICH_FEASIBILITY.txt, Drive 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1. Rebuilt by the Writer every 30 minutes. NEED column says what each row is missing: SALARY (no pay the Explorer can read) and/or DEGREE (no degree evidence from the posting itself; "not stated in alert" is alert text and does not count).
 Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
@@ -24,7 +30,7 @@ BATCHING
 Up to 25 rows per queue file. Target 30 finished rows per run (Tim 2026-10-20); keep going while capacity lasts. A FORGE-ESTIMATE counts as pay.
 
 FALLBACK (no fresh worklist)
-Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6B (Workday first). Check each ID with row_readback before working it.
+Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6B (Workday first). No row_readback (FAST PATH).
 
 LANE RECEIPT FIELDS
 WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ESTIMATES_MADE, ATTEMPT_STAMPED, COMP_HANDOFFS_CONSUMED, NEXT.
