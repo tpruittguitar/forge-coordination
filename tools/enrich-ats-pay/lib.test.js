@@ -15,6 +15,9 @@ test('degree: required, preferred, not stated', () => {
   assert.strictEqual(L.degreeFromText("Bachelor's degree in Engineering required.").req, 'REQUIRED');
   assert.strictEqual(L.degreeFromText("BS preferred or equivalent experience.").req, 'PREFERRED');
   assert.strictEqual(L.degreeFromText('Lead the plant.').req, 'NOT_STATED');
+  assert.strictEqual(L.degreeFromText("Experience Requirements Bachelor's degree in a science-related field (experience may substitute)").req, 'PREFERRED');
+  const long = L.degreeFromText('Develop dashboards '.repeat(30) + 'BS Mechanical Engineering or equivalent related experience ' + 'Minimum 6 years '.repeat(30));
+  assert.ok(long.text.length <= 224, long.text.length); assert.match(long.text, /BS Mechanical Engineering/); assert.strictEqual(long.req, 'PREFERRED');
 });
 test('ATS URLs map to public APIs', () => {
   assert.strictEqual(L.atsApi('https://jobs.lever.co/shieldai/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b').kind, 'lever');

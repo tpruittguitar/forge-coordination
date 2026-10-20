@@ -32,8 +32,10 @@ function degreeFromText(text) {
   const t = String(text || ''); if (!t.trim()) return null;
   const m = t.match(DEG_RE);
   if (!m) return { text: 'NOT_STATED', req: 'NOT_STATED' };
-  const s = m[0].replace(/\s+/g, ' ').trim().slice(0, 400);
-  const req = /\b(preferred|or equivalent|equivalent experience|a plus|nice to have|desired)\b/i.test(s) ? 'PREFERRED' : 'REQUIRED';
+  // stripped pages often lose sentence breaks: keep a window around the degree word, not the whole run-on paragraph
+  const full = m[0].replace(/\s+/g, ' ').trim(), at = Math.max(0, full.search(new RegExp(m[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')));
+  const s = (at > 60 ? '…' : '') + full.slice(Math.max(0, at - 60), at + 160).trim() + (at + 160 < full.length ? '…' : '');
+  const req = /\b(preferred|or equivalent|equivalent (work )?experience|in lieu of|may substitute|a plus|nice to have|desired)\b/i.test(full.slice(Math.max(0, at - 60), at + 220)) ? 'PREFERRED' : 'REQUIRED';
   return { text: s, req };
 }
 /* ATS posting URL -> JSON API URL (public, read-only). Workday needs a POST; left to the lanes. */
