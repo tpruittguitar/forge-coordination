@@ -1,0 +1,26 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-1630ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=863e5a39dd1663ed6e54
+PACKET_SHA256=3ac1322ef97518b1f3f01bf0530c262b7568c7a8b6e3d3d6069abe95fb3b9852 (verified; git blob 7fd1b450 matches lane.blob_sha)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-20.1; worklist generated 2026-10-20T20:01:06Z; forge-coordination main 6d3811c0
+RULES_BLOB_UNCHECKED (forge-policy rules metadata not read this run; no policy interpretation needed)
+GATE=WRITER_FREEZE frozen=false (read fresh); Writer status tool not used; asks/resolved has no items held by this lane
+ROWS_EVALUATED=17 (worklist rows 29..80 subset: LinkedIn rows 41-47, 52, 61-65, 71, 73, 74, 79)
+LIVE=3 (LIVE_SECONDARY: V2I-389FBE27CE45, V2I-560269E834F1, V2I-66339CF1DBE3)
+CLOSED=2 (V2I-8F0A6A551621, V2I-8E63BCB1DB00; LinkedIn "No longer accepting applications")
+UNCONFIRMED=12 (7 pages with no posted age or closed notice; 4 expired_jd_redirect + 1 bot_blocked-then-redirect, held as UNCONFIRMED because only the "No longer accepting" notice is a defined closure signal; Tim may want to rule that expired_jd_redirect counts as removal)
+WRITTEN=17 submitted to WRITER_QUEUE as CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-1630ET-B01.json (Drive 1m3Mxbu7Ez7j3IzKWVN8HUWwHzeDHDMkf, 6965 bytes)
+VERIFIED=0 (SUBMITTED only; no RESULT, receipt-index COMPLETE or row_readback yet)
+VERIFIED_PRIOR_RUN=not checked (prior RESULT__CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-0634ET-B01.json exists in processed)
+HELD=0
+FAILED=0 (unreadable: Indeed viewjob 401 on V2I-FD2285FE8309; skipped)
+TINYFISH_FETCHES=2 calls, 20 URLs
+BACKLOG_REMAINING=187 of 204 eligible per worklist; most remaining rows are Indeed/ZipRecruiter/Lensa/Glassdoor tracking redirects that need employer-route searches
+STOP_REASON=PARTIAL_WITH_WORK: run ended after one batch; non-LinkedIn rows need employer-site search not completed this run
+BATCHES_COMPLETED_THIS_RUN=1
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-1630ET-B01 (R01..R17)
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run
+NEXT_ACTION=verify B01 via request_result/receipt_index/row_readback; continue worklist
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
