@@ -3,8 +3,8 @@
    checked, done off the Writer. Pure functions here; run.js does the network. */
 
 const LEVELS = [
-  [4, /\b(chief|svp|evp|senior vice president|executive vice president|vice president|vp|head of)\b/i],
-  [3, /\b(senior director|sr\.? director|executive director)\b/i],
+  [4, /\b(chief|svp|evp|senior vice president|executive vice president|vice president|vp)\b/i],
+  [3, /\b(senior director|sr\.? director|executive director|head of)\b/i],
   [2, /\b(director|plant manager|general manager|site (leader|lead))\b/i],
   [1, /\b(senior manager|sr\.? manager|manager)\b/i],
 ];
@@ -88,9 +88,12 @@ function estimate(row, anchors) {
   const local = same.filter(a => R && a.region === R);
   const use = (local.length >= 2 ? local : same).slice(0, 7);
   const low = Math.round(median(use.map(a => a.low)) / 1000) * 1000, high = Math.round(median(use.map(a => a.high)) / 1000) * 1000;
-  const close = local.length >= 2;
-  const conf = use.length >= 3 && close ? 'MED' : use.length === 2 && close ? 'MED' : 'LOW';
-  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, ids: use.map(a => a.id), basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}` };
+  // COMPENSATION_ESTIMATION: 1 comparable LOW; 2 LOW, MED when close; 3+ strong anchors may go higher.
+  // close = same region; strong = same region and the comparables' midpoints within 20% of their median.
+  const close = local.length >= 2, mids = use.map(a => (a.low + a.high) / 2), med = median(mids);
+  const tight = med > 0 && (Math.max.apply(null, mids) - Math.min.apply(null, mids)) / med <= 0.2;
+  const conf = use.length >= 3 && close && tight ? 'HIGH' : use.length >= 2 && close ? 'MED' : 'LOW';
+  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}` };
 }
 /* Tim 2026-10-20 18:21 ET: pay shown on an aggregator posting (LinkedIn, Indeed, ZipRecruiter) is posting pay and comes
    before any estimate. Pay the site itself labels as its own estimate is THIRD_PARTY_ESTIMATE; it still beats FORGE-ESTIMATE. */
@@ -101,8 +104,20 @@ function aggregatorPage(url) {
   if (/ziprecruiter\.com\/(c|jobs|k)\//i.test(u)) return { kind: 'ziprecruiter', id: u, page: u, fetch: u };
   return null;
 }
-function parseAggregator(kind, html) {
+/* Grok Bot QA 2026-10-20 19:20 ET: a sign-in or bot-check page is not a read posting. It counts only when it carries the
+   row's own job content (company or most of the title words) and no wall markers. */
+const WALL_RE = /\b(sign in to|join now|log in to|captcha|verify you are (a )?human|security check|access denied|unusual activity|enable javascript)\b/i;
+function looksLikePosting(text, row) {
+  const t = String(text || '').toLowerCase(); if (t.length < 400) return false;
+  const words = s => String(s || '').toLowerCase().replace(/[^a-z0-9 ]+/g, ' ').split(/\s+/).filter(w => w.length > 2 && !/^(the|and|for|inc|llc|corp|company|group|senior|director|manager|head|vice|president)$/.test(w));
+  const co = words(row && row.COMPANY), ti = words(row && row.TITLE);
+  const coHit = co.length && t.includes(co[0]), tiHits = ti.filter(w => t.includes(w)).length;
+  const content = coHit || (ti.length && tiHits >= Math.ceil(ti.length * 0.6));
+  return !!content && !(WALL_RE.test(t) && t.length < 3000);
+}
+function parseAggregator(kind, html, row) {
   const text = strip(html || ''); if (text.length < 200) return null;
+  if (row && !looksLikePosting(text, row)) return { wall: true, pay: null, basis: null, text: '' };
   const pay = payFromText(text); let basis = null;
   if (pay) {
     const at = text.search(RANGE_RE), near = text.slice(Math.max(0, at - 120), at + 160);
@@ -110,4 +125,4 @@ function parseAggregator(kind, html) {
   }
   return { pay, basis, text };
 }
-module.exports = { level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator };
+module.exports = { level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };

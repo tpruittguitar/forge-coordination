@@ -7,9 +7,9 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
-const LEDGER = path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
-const DRY = process.argv.includes('--dry') || !CONFIG.submit;
+const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
 const sleep = ms => new Promise(r => setTimeout(r, process.env.ENRICH_TEST_FAST ? 0 : ms));
 async function get(url, opts) { const r = await fetch(url, opts); if (!r.ok) { const e = new Error(url.replace(/key=[^&]+/, 'key=…') + ' HTTP ' + r.status); e.status = r.status; throw e; } return r; }
@@ -39,8 +39,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
-  const requests = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {} });
+  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
+  const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
   for (const r of list) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
     if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
@@ -65,9 +65,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       aggFetches++; stats.agg_tried[agg.kind] = (stats.agg_tried[agg.kind] || 0) + 1;
       try {
         await sleep(CONFIG.aggregatorGapMs);
-        const parsed = L.parseAggregator(agg.kind, await (await get(agg.fetch, { headers: { 'user-agent': CONFIG.userAgent, accept: 'text/html' } })).text());
-        blocked[agg.kind] = 0;
-        if (parsed) {
+        const parsed = L.parseAggregator(agg.kind, await (await get(agg.fetch, { headers: { 'user-agent': CONFIG.userAgent, accept: 'text/html' } })).text(), r);
+        if (parsed && parsed.wall) { stats.agg_wall[agg.kind] = (stats.agg_wall[agg.kind] || 0) + 1; blocked[agg.kind] = (blocked[agg.kind] || 0) + 1; }   // sign-in / bot page: not read, no estimate
+        else blocked[agg.kind] = 0;
+        if (parsed && !parsed.wall) {
           checked = true; stats.agg_read[agg.kind] = (stats.agg_read[agg.kind] || 0) + 1;
           if (n.includes('SALARY') && parsed.pay) { postedPay = parsed.pay; stats.agg_pay[agg.kind] = (stats.agg_pay[agg.kind] || 0) + 1; Object.assign(f, { SALARY_BASE_LOW: parsed.pay.low, SALARY_BASE_HIGH: parsed.pay.high, SALARY_MIDPOINT: Math.round((parsed.pay.low + parsed.pay.high) / 2), SALARY_BASIS: parsed.basis, SALARY_SOURCE: agg.page, SALARY_ASOF: today, SALARY_CONF: parsed.basis === 'EMPLOYER_POSTED' ? 'HIGH' : 'MED', SALARY_NOTE: 'pay shown on the ' + agg.kind + ' posting' }); }
           const d = n.includes('DEGREE') && !f.DEGREE_REQ && L.degreeFromText(parsed.text);
@@ -79,7 +80,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF');
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
-      else { const est = L.estimate(r, anchors); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'comparables:' + est.ids.join(','), SALARY_ESTIMATE_BASIS: est.basis + (checked ? '; employer posting read, no pay stated' : '; posting checked by a lane, no pay'), SALARY_UNCERTAINTY: est.conf === 'LOW' ? 'wide: few or distant comparables' : 'moderate' }); } }
+      else { const est = L.estimate(r, anchors); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'comparables:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + ' employer-posted comparable(s) [' + est.ids.join(', ') + ']; ' + est.basis + (checked ? '; this posting read, no pay stated' : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); estSamples.length < 5 && estSamples.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (!Object.keys(f).length) { ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
@@ -87,18 +88,36 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   stats.planned = requests.length;
   if (!DRY) for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
-    const batch = requests.slice(b * 25, b * 25 + 25), requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
+    let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
     try {
+      // Grok Bot QA: the structured copy can lag; re-read these rows from the Writer (read-only, no lock) and drop what a lane
+      // filled in meanwhile, so posted pay is never overwritten by an estimate.
+      const rb = await (await get(`${conn.PipelineConnection.url}?action=row_readback&key=${encodeURIComponent(key)}&ids=${batch.map(q => q.ruling.primaryId).join(',')}`)).json();
+      if (!rb.ok) throw new Error('row_readback: ' + (rb.error || 'not ok'));
+      const now = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) now[x.primaryId] = W.parseRows(x.line)[0]; });
+      batch = batch.filter(q => {
+        const cur = now[q.ruling.primaryId]; if (!cur) { stats.guard_dropped++; return false; }
+        const left = needsOf(cur), f = q.ruling.fields;
+        if (!/SALARY/.test(left)) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);
+        if (!/DEGREE/.test(left)) Object.keys(f).filter(k => /^DEGREE_/.test(k)).forEach(k => delete f[k]);
+        const keep = Object.keys(f).some(k => k !== 'FEASIBILITY_ATTEMPT_ASOF'); if (!keep) stats.guard_dropped++;
+        return keep;
+      });
+      if (!batch.length) continue;
       const res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json();
       const results = res.results || [];
       batch.forEach((q, i) => { const ok = results[i] && results[i].ok; if (ok) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else stats.writer_failed++; });
+      stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
     } catch (e) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); break; }
-    stats.submitted += batch.length; await sleep(CONFIG.batchGapMs);
+    await sleep(CONFIG.batchGapMs);
   }
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })) }), null, 1) + '\n');
+  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples });
+  const strip_ = o => JSON.stringify(Object.assign({}, o, { at: '', run: '' }));
+  const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
+  if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
 })().catch(e => { console.error(e.message); process.exit(1); });
