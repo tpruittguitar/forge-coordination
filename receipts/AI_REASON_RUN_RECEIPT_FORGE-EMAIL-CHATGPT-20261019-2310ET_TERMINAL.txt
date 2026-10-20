@@ -1,0 +1,34 @@
+PROVIDER=ChatGPT
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+RUN_ID=FORGE-EMAIL-CHATGPT-20261019-2310ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=f5743128bc4fbcf18590e86284d4769eda9987bf60a770d195172be7d9186ee7
+SOURCE_VERSIONS=policy 2026-10-19.3; rules blob 1633977287001ddf0f4aa21b98d630b5710b6222 (matched); Writer build a43c095; initial receipt-index dfdb24b9caa3f98cef8bbbf591a228e508d12163; previous state 6c2f2352dc571e726b4def1de4136bca3e86e86b
+FREEZE=false (fresh read); initial Writer queue/unverified=0/0; live index readable (prior zero-length blocker recovered)
+GATE=BLOCKED_AFFECTED_NEW_WRITES: WRITER_PROVENANCE_READBACK_MISMATCH
+PLANNED=regular rolling 3h first, then inherited backfill to Oct 6; full backlog not exhausted
+QUERY_COVERAGE=7 family 24h self-tests + 7 family rolling queries + whole-mailbox initial + inherited-window/retry; every returned next-page token null; inherited response inconsistency retained (29 then 61); no exhaustion claim
+EMAIL_FAMILY_COUNTS_24H=LinkedIn 21; Indeed 6; Glassdoor 8; ZipRecruiter 1; Lensa 11; Ladders 3; broad employer/recruiter 90
+EMAIL_SELFTEST_24H_COUNT=50 known-family results (includes notices/non-alerts); EMAIL_NEWEST_ALERT_SEEN=2026-10-19 23:03:48 ET Indeed
+EMAILS_FOUND=91 distinct regular/inherited-window metadata messages; EMAILS_BODY_VERIFIED=25 of those plus 9 older reopens = 34 full bodies; EMAILS_UNEXAMINED=66 of 91 bodies (metadata-classified non-alerts included)
+EMAIL_ALERTS_VISIBLE_EVALUATED=16 (6 regular + 10 newer backlog); 18 inherited candidate rechecks separate; 8 extra source bodies durably captured with incomplete accounting
+JOB_LINKS_EXTRACTED=163 evaluated occurrences / 145 distinct company-title-location keys; new fresh occurrences=145 (95 regular, 50 backlog); inherited rechecks=18
+JOBS_NOT_SHOWN=122 minimum newly evaluated alerts + 460 prior provider-hidden retained; 30+ alerts leave upper bound unknown; new evaluated gross minimum=267, not a complete denominator
+DISPOSITIONS=45 admitted + 10 Writer identity-held + 31 existing + 61 out-of-scope + 13 pre-intake identity-held + 3 linked sightings = 163 occurrences; 8 proposed NC occurrences; no unshown/held item counted excluded
+NEW_ENTRIES_QUEUED_THIS_RUN=55 candidate records (28 regular, 13 backlog, 14 inherited), 4 files; Writer admitted 45; RESULT SUCCESS batches=4; Writer held/failed identity records=10; no replay or repair
+WRITTEN_REQUEST_IDS=FORGE-EMAIL-CHATGPT-20261019-2310ET-B01,FORGE-EMAIL-CHATGPT-20261019-2310ET-B02,FORGE-EMAIL-CHATGPT-20261019-2310ET-B03,FORGE-EMAIL-CHATGPT-20261019-2310ET-B04
+RESULT_PENDING_RECORDS=0; INDEPENDENT_COMPLETE_PENDING=NONE
+IDENTITY_ROW_READBACK_MATCHES=45; VERIFIED_THIS_RUN=0 full intended-field verification; VERIFIED_PRIOR_RUN=0
+PROOF_BLOCKER=Writer master truncates SOURCE_URL/INITIATING_URL to 400 chars and omits GMAIL_MESSAGE_ID. Full initiating URLs/message provenance preserved in original request files, RESULT source objects and immutable candidate ledgers. Identity-only readbacks are not claimed as full verification.
+SOURCES_ADDED_THIS_RUN=3 (PostJobFree, Experteer, valid iHireQualityControl alert); SOURCE_INVENTORY_COUNT=13
+CARRY_FORWARD=prior reported 1494 retained by immutable reference, not recomputed or cleared; 12 older admissible keys, original 4 identity holds, provider-hidden/source-captured/unread obligations remain; no day/watermark advanced
+STATE_FILE=receipts/EMAIL_BACKFILL_STATE_20261019_2310ET.txt
+PROOFS=receipts/WRITER_VERIFICATION_FORGE-EMAIL-CHATGPT-20261019-2310ET.json; original checkpoint cb81944400f751a60747ba032afbd9a680968695 independently read back
+NEXT_OWNER=FORGE_APPLICATION_WRITER_GOFER / Writer maintainer for provenance mismatch; FORGE_EMAIL_DISCOVERY for remaining mailbox/candidate carry
+NEXT_ACTION=Reconcile existing writes without replay, repair provenance through Writer only, then resume newest unfinished alerts and prior carry
+OLDEST_BLOCKER=older carry since at least prior 09:04 ET; current positive provenance mismatch discovered ~23:28 ET
+STOP_REASON=positive intended-field readback mismatch blocks affected new writes; restricted provider view-all and unfinished source accounting retained; bounded queue-processing attempt returned BUSY, retry timed out (actual writes reconciled by exact IDs)
+BATCHES_COMPLETED_THIS_RUN=4 submitted/result-accounted, 0 fully verified
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+SUPPORT_PERSISTENCE=SYNCED; final support commit 2443f292d8a06a472934077c7593250d2a80bee5; all six evidence/state artifacts independently read back exactly
