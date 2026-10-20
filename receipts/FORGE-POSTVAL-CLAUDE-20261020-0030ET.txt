@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-0030ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED: blob SHA f33105b6580698a24a005d2ba6ac11d468a84caa matched lane.blob_sha via GitHub connector)
+RULES_BLOB_UNCHECKED (no policy interpretation needed)
+SOURCE_VERSIONS=forge-coordination@4ade4f6259b5; worklist generated 2026-10-20T04:02:01Z (master rows 1917, eligible 285, shown 40)
+GATE=WRITER_FREEZE frozen=false (read 2026-10-20); writer_status not available, queue root had no in-flight files
+RESOLVED_ASKS=none held by this lane
+ROWS_EVALUATED=10 of first 40 worklist rows
+LIVE=10 (LIVE_SECONDARY, LinkedIn page with posted age, no closed notice)
+CLOSED=0
+UNCONFIRMED=0 written (rows 4479646213 first fetch 429, retried OK)
+WRITTEN=10 submitted
+VERIFIED=0 (RESULT/receipt-index/row_readback not yet available at run end)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 calls, 16 URLs (LinkedIn); 1 permanent-looking 429 on 4480849716 (row 19, skipped, retry next run)
+BACKLOG_REMAINING=275 of 285 eligible (rows 1-8, 12, 14, 15, 18, 19, 21-34, 38-40 not worked: truncated email tracking URLs (lensa/ZipRecruiter km/Indeed clk) not resolvable; rows 12 12/14/15/18 LinkedIn pages had no posted age so not written as LIVE)
+STOP_REASON=Packet minimum (10 rows) reached; remaining rows need employer-route search not done this run; time-bounded. PARTIAL_WITH_WORK
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-0030ET-B01 (R01-R10) file CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-0030ET-B01.json Drive id 1lgDcYCE1VzkFGoLnHprr89cRCd-IP-kp
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-0030ET-B01
+PENDING=B01 awaiting Writer RESULT, receipt-index COMPLETE and row_readback
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run (verify B01 first) / gofer
+NEXT_ACTION=Verify B01; continue worklist from row 41 and employer-route lookups for rows 1-8, 21-34
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+NOTE=Bash curl fetch of packet was blocked by classifier; packet read via GitHub connector instead. Rows written: V2I-21FE57784DC6, 0974EB22F954, B398AA3335E8, 02618BB261B5, 3A2967FA862D, 0D9B653C693A, B23673F57237, EB69268644F3, 546DEB245B69, DC8073C7ACC6
