@@ -57,3 +57,15 @@ test('submit: rows are re-read from the Writer first; pay a lane wrote meanwhile
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('an unchanged dry run leaves the report byte for byte (no hourly commit)', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev121-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  fs.writeFileSync(master, MASTER);
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  const run = () => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1' }), stdio: 'pipe', timeout: 60000 });
+  try {
+    fs.rmSync(report, { force: true }); run(); const first = fs.readFileSync(report, 'utf8');
+    run(); assert.strictEqual(fs.readFileSync(report, 'utf8'), first);
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+

@@ -27,16 +27,24 @@ function payFromText(text) {
   const lo = num(m[1]), hi = num(m[2]); if (!(lo >= 40000 && hi >= lo && hi <= 2000000)) return null;
   return { low: lo, high: hi };
 }
-const DEG_RE = /[^.\n]*\b(bachelor'?s?|master'?s?|b\.?s\.?|b\.?a\.?|m\.?s\.?|mba|ph\.?d|associate'?s? degree|degree)\b[^.\n]*/i;
+/* Grok Bot QA 2026-10-20 19:32 ET: policy asks for the degree sentence verbatim. strip() keeps block breaks as newlines, so a
+   sentence ends at a newline, a bullet, or ". " before a capital (not after a B.S. / M.S. style abbreviation). */
+const DEG_WORD_RE = /\b(bachelor'?s?|master'?s?|b\.\s?s\.?|b\.\s?a\.?|m\.\s?s\.?|bs|ba|ms|mba|ph\.?\s?d\.?|associate'?s? degree|degree)(?![a-z])/i;
+function sentences(text) {
+  return String(text || '').split(/\n+|\s*[•·▪●]\s*|(?<!\b[A-Za-z]\.[A-Za-z])(?<!\b[A-Z])(?<=[.!?])\s+(?=[A-Z0-9(])/).map(x => x.replace(/[ \t]+/g, ' ').trim()).filter(Boolean);
+}
 function degreeFromText(text) {
   const t = String(text || ''); if (!t.trim()) return null;
-  const m = t.match(DEG_RE);
-  if (!m) return { text: 'NOT_STATED', req: 'NOT_STATED' };
-  // stripped pages often lose sentence breaks: keep a window around the degree word, not the whole run-on paragraph
-  const full = m[0].replace(/\s+/g, ' ').trim(), at = Math.max(0, full.search(new RegExp(m[1].replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), 'i')));
-  const s = (at > 60 ? '…' : '') + full.slice(Math.max(0, at - 60), at + 160).trim() + (at + 160 < full.length ? '…' : '');
-  const req = /\b(preferred|or equivalent|equivalent (work )?experience|in lieu of|may substitute|a plus|nice to have|desired)\b/i.test(full.slice(Math.max(0, at - 60), at + 220)) ? 'PREFERRED' : 'REQUIRED';
-  return { text: s, req };
+  const hit = sentences(t).find(x => DEG_WORD_RE.test(x));
+  if (!hit) return { text: 'NOT_STATED', req: 'NOT_STATED' };
+  // verbatim; only a runaway block (a page with no sentence breaks) is cut, around the degree words
+  let s = hit;
+  if (hit.length > 500) { const at = hit.search(DEG_WORD_RE), a = Math.max(0, at - 150); s = (a ? '…' : '') + hit.slice(a, a + 498) + (a + 498 < hit.length ? '…' : ''); }
+  // judge the bachelor-level clause: "B.S. required; MBA preferred" is a required degree
+  const FLEX = /\b(preferred|or equivalent|equivalent (work )?experience|in lieu of|may substitute|a plus|nice to have|desired)\b/i;
+  const clauses = hit.split(/;|,\s*(?=(?:an?\s+)?(?:master|mba|m\.\s?s|ms|ph\.?\s?d|advanced|graduate))/i);
+  const base = clauses.find(c => /\b(bachelor|b\.\s?[sa]\b|bs\b|ba\b|associate|four-year|4-year|undergraduate)/i.test(c)) || hit;
+  return { text: s, req: FLEX.test(base) ? 'PREFERRED' : 'REQUIRED' };
 }
 /* ATS posting URL -> JSON API URL (public, read-only). Workday needs a POST; left to the lanes. */
 function atsApi(url) {
@@ -47,7 +55,7 @@ function atsApi(url) {
   m = u.match(/jobs\.ashbyhq\.com\/([^/?#]+)\/([0-9a-f-]{36})/i); if (m) return { kind: 'ashby', api: `https://api.ashbyhq.com/posting-api/job-board/${m[1]}?includeCompensation=true`, id: m[2], page: u };
   return null;
 }
-function strip(html) { return String(html || '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&amp;/g, '&').replace(/&nbsp;/g, ' ').replace(/<[^>]+>/g, ' ').replace(/\s+/g, ' '); }
+function strip(html) { return String(html || '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;|&#x27;|&rsquo;/g, "'").replace(/&quot;/g, '"').replace(/<\s*(br|\/p|\/li|\/div|\/h[1-6]|\/tr|li)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/[ \t\r\f\v]+/g, ' ').replace(/ *\n[\n ]*/g, '\n').trim(); }
 /* parse an ATS API response into {pay, text} */
 function parseAts(kind, j, id) {
   if (kind === 'lever') {

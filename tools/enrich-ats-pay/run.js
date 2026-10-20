@@ -116,7 +116,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples });
-  const strip_ = o => JSON.stringify(Object.assign({}, o, { at: '', run: '' }));
+  // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
+  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
