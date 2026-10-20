@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-1830ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=a2581e8f994f970d59d5
+POLICY_REVISION=2026-10-20.2
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA 222699c09508d6e919136c15713392f8a49b2300 matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED
+SOURCE_VERSIONS=forge-coordination@5d04a0b396d9a31ca2004ed482df1d295f103bac; worklist generated 2026-10-20T22:05:09Z
+GATE=WRITER_FREEZE frozen=false (at 2026-10-18T03:29Z); writer_status not available to this runtime; WRITER_QUEUE root had no pending files; no in-flight conflicts
+ASKS_RESOLVED_HELD_BY_LANE=none
+
+ROWS_EVALUATED=16
+LIVE=2 (LIVE_SECONDARY: V2I-75F150125D32, V2I-7DB00AD05CAD)
+CLOSED=5 (V2I-41CA38B42858, V2I-D6B2C1C0483E, V2I-57D275244968, V2I-F3122B80B1F2, V2I-42C749FD0F1F; LinkedIn expired_jd_redirect or "No longer accepting applications"; worklist shows LinkedIn as sole source)
+UNCONFIRMED=9 (no write): V2I-0A1376323BAE (LinkedIn page, no age or closed notice); V2I-F3C38FB0CA56 (Ladders copy dated 2026-08-19, over 30 days); V2I-5BEBFC6DBB21 (Simplify INACTIVE flag only, not employer evidence; Accenture posting says deadline 11/14/26); V2I-2E42896476D2 (Tallo 410, secondary only); V2I-A0A1376323BAE n/a; V2I-A2E2D7285948 (LinkedIn bot_blocked 999); V2I-E4116D341CD9 and V2I-4383F67AAAFA (Glassdoor bot_blocked); V2I-FD2285FE8309 (Indeed 401); V2I-AD6D262E6FAA (ZipRecruiter bot_blocked)
+WRITTEN=7
+VERIFIED=0 (SUBMITTED only; no receipt-index or row_readback access in this runtime)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 calls, 16 URLs
+BACKLOG_REMAINING=about 180 (ELIGIBLE_TOTAL=187 minus 7 written). Most remaining worklist URLs are Indeed, Lensa, ZipRecruiter or Glassdoor tracking redirects that block TinyFish.
+STOP_REASON=Below the 10-row minimum. Remaining worklist rows are on blocked sources (Indeed/Glassdoor/ZipRecruiter/Lensa redirects) with no employer-route evidence available this run; no run-level hard limit otherwise.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-1830ET-B01 (R01-R07); Drive file CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-1830ET-B01.json id 1_eHOahdGMkcl07a2c9pYtc7QjNObUCCg
+PENDING=B01 awaiting Writer RESULT, receipt-index COMPLETE and row_readback
+NEXT_OWNER=Claude (next FORGE_POSTING_VALIDATION run or gofer) to verify B01 effects
+NEXT_ACTION=Verify B01; consider an employer-route method for Lensa/Indeed rows
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
