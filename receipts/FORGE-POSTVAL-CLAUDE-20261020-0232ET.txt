@@ -1,0 +1,30 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-0232ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED: GitHub connector blob SHA f33105b6580698a24a005d2ba6ac11d468a84caa matched lane.blob_sha)
+RULES_BLOB_UNCHECKED (no policy interpretation needed)
+SOURCE_VERSIONS=forge-coordination@8891f8ab60a9 (manifest policy_revision 2026-10-19.3); worklist generated 2026-10-20T06:08:10Z (master rows 1917, eligible 272, shown 40)
+GATE=WRITER_FREEZE frozen=false (read 2026-10-20 06:29Z); writer_status not available; WRITER_QUEUE root had no in-flight files at start
+RESOLVED_ASKS=none held by this lane
+ROWS_EVALUATED=17 worklist rows touched; 9 written
+LIVE=9 (LIVE_EMPLOYER_ATS 3: Universal Orlando 667922, Anduril Operations Lead, Gather AI; LIVE_SECONDARY 6: LinkedIn x5 [McCrometer, CAE, Yamaha, Hyundai MOBIS, Angelus Block], Dice x1 [Airgain])
+CLOSED=0
+UNCONFIRMED=0 written. Not written, no qualifying evidence: Rivian Sr Mgr Enterprise Systems (employer page JS-rendered/empty, third-party copy 404 is not closure); Kickmaker PM (LinkedIn shows "No longer accepting applications" but row source is Indeed so not CLOSED per rule; held for employer-route); Cloyes Director of Operations and Quantum-Systems Ops PM (not on employer list, list stale/partial, not positive closure); Staxmatic, Howmet, Butcher, Alloy Precision (no dated or employer confirmation fetched)
+WRITTEN=9 submitted
+VERIFIED=0 this run (RESULT/receipt-index/row_readback not yet available at run end)
+HELD=1 (Kickmaker V2I-9C402DDC5913: LinkedIn closed notice, employer-route needed)
+FAILED=0
+TINYFISH_FETCHES=9 fetch calls, about 27 URLs; 1 LinkedIn 429 x2 on first pass, retried OK; Glassdoor bot_blocked; talent.com 404; 13 search calls
+BACKLOG_REMAINING=263 of 272 eligible
+STOP_REASON=9 of the 10-row minimum written: remaining worklist rows (1-5, 8, 15, 17-21, 23-40 except noted) carry truncated email-tracking URLs (lensa/ZipRecruiter km/Indeed clk) that cannot be resolved and employer-route searches returned no fetchable employer posting within this run's time budget. PARTIAL_WITH_WORK
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-0232ET-B01 (R01-R09) file CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-0232ET-B01.json Drive id 1W9d-BSBi85NwjJCf_iz2IwxlfVM3h5Gs
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-0232ET-B01
+ROWS_WRITTEN=V2I-06C0E89F2158, V2I-520D6FC7516D, V2I-9674AB311D55, V2I-B66C50D5F1D3, V2I-438EFA54381D, V2I-250D920609AB, V2I-B11DBCC8943E, V2I-8FD53307C7D9, V2I-7C70BF486E47
+PRIOR_RUN=FORGE-POSTVAL-CLAUDE-20261020-0030ET-B01: RESULT file present in processed (Drive 1b7ilFpj6W1_ONcDuY2sBE43v5acoVVel); acceptance only, receipt-index COMPLETE and row_readback NOT checked this run, so not VERIFIED
+PENDING=0232ET-B01 awaiting Writer RESULT, receipt-index COMPLETE and row_readback; 0030ET-B01 awaiting receipt-index and row_readback verification
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run (verify 0030ET-B01 and 0232ET-B01 first) / gofer
+NEXT_ACTION=Verify both batches; continue from remaining worklist with employer-route lookups; retry Rivian and Kickmaker
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
