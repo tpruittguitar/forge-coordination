@@ -67,7 +67,8 @@ class ReleaseTests(unittest.TestCase):
         # Claude's temporary rotation now resolves to Grok-owned lanes, so a Claude run skips (no overlap)
         self.assertEqual(r.select_task(self.manifest,'Claude','ROTATION',0),('FORGE_ENRICH_STRATEGIC',False))
 
-    def test_every_hour_of_grok_rotation_each_lane_every_four_hours(self):
+    def test_grok_rotation_discovery_paused_enrichment_in_its_hours(self):
+        # 2026-10-20 (Tim 11:10 ET): FORGE_WEB_CAREER_DISCOVERY paused; its hours (0,4,8,12,16,20) run enrichment, alternating
         seen={}
         for h in range(24):
             if h%4==3:
@@ -75,9 +76,12 @@ class ReleaseTests(unittest.TestCase):
                 continue
             task,owned=r.select_task(self.manifest,'Grok','ROTATION',h)
             self.assertTrue(owned)
-            self.assertEqual(task,['FORGE_WEB_CAREER_DISCOVERY','FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'][h%4])
+            self.assertNotEqual(task,'FORGE_WEB_CAREER_DISCOVERY',h)
+            want=['FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'][(h//4)%2] if h%4==0 else ['','FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'][h%4]
+            self.assertEqual(task,want,h)
             seen.setdefault(task,[]).append(h)
-        for hours in seen.values(): self.assertEqual(len(hours),6); self.assertTrue(all(b-a==4 for a,b in zip(hours,hours[1:])))
+        self.assertEqual(sorted(seen),['FORGE_ENRICH_FEASIBILITY','FORGE_ENRICH_STRATEGIC'])
+        self.assertEqual([len(seen[k]) for k in sorted(seen)],[9,9])
         for h in range(0,24,3):
             self.assertFalse(r.select_task(self.manifest,'Claude','ROTATION',h)[1])
 

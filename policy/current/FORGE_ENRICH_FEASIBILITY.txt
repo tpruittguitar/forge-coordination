@@ -21,7 +21,7 @@ Cannot finish a row: ENRICH with FEASIBILITY_ATTEMPT_ASOF=YYYY-MM-DD and ENRICH_
 Pacing: Indeed and Glassdoor rate-limit; at most 6 fetches from either in a row.
 
 BATCHING
-Up to 25 rows per queue file. Target 15 finished rows per run; keep going while capacity lasts.
+Up to 25 rows per queue file. Target 30 finished rows per run (Tim 2026-10-20); keep going while capacity lasts. A FORGE-ESTIMATE counts as pay.
 
 FALLBACK (no fresh worklist)
 Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6B (Workday first). Check each ID with row_readback before working it.

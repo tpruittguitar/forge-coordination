@@ -21,7 +21,7 @@ EMPTY LIST, KEEP GOING
 When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. Verify the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-{{ACTOR}}-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
 
 BATCHING
-Up to 25 rows per queue file, one file per 5 to 10 finished rows is fine. Target 15 finished rows per run; keep going past 15 while capacity lasts.
+Up to 25 rows per queue file, one file per 5 to 10 finished rows is fine. Target 30 finished rows per run (Tim 2026-10-20); keep going past 30 while capacity lasts.
 
 FALLBACK (no fresh worklist)
 Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6A. Check each ID with row_readback before working it. Do not stop merely because the master is too large.
