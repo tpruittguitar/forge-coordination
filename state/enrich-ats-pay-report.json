@@ -1,6 +1,6 @@
 {
- "at": "2026-10-20T22:37:23.192Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261020T2234Z",
+ "at": "2026-10-20T23:32:18.270Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261020T2329Z",
  "dry": true,
  "rows": 1923,
  "eligible": 663,
@@ -9,26 +9,42 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 24,
- "estimates": 36,
- "estimate_waiting_for_posting": 26,
+ "degree": 26,
+ "estimates": 37,
+ "estimate_waiting_for_posting": 27,
  "skipped_recent": 0,
  "submitted": 0,
+ "guard_dropped": 0,
  "writer_ok": 0,
  "writer_failed": 0,
  "remainder": 0,
  "agg_tried": {
-  "indeed": 21,
-  "linkedin": 39
+  "indeed": 3,
+  "linkedin": 41,
+  "ziprecruiter": 1
  },
  "agg_read": {
-  "linkedin": 39
+  "linkedin": 40
  },
  "agg_pay": {
   "linkedin": 11
  },
  "agg_failed": {
-  "indeed": 21
+  "indeed": 3,
+  "ziprecruiter": 1
+ },
+ "agg_errors": {
+  "indeed": [
+   "401",
+   "401",
+   "401"
+  ],
+  "ziprecruiter": [
+   "403"
+  ]
+ },
+ "agg_wall": {
+  "linkedin": 1
  },
  "nothing_found": 42,
  "planned": 50,
@@ -44,7 +60,7 @@
     "SALARY_ASOF": "2026-10-20",
     "SALARY_CONF": "HIGH",
     "SALARY_NOTE": "pay shown on the linkedin posting",
-    "DEGREE_TEXT": "Develop dashboards for information visualization and decision-making improvements Analyze data to pin-point root cause of defects and production challenges Skills and Experience: BS Mechanical, Electrical, Manufacturing Engineering or equivalent related experience Minimum 6 years of experience in high volume complex assembly or advanced manufacturing environment as a leader Experience implementing",
+    "DEGREE_TEXT": "…of defects and production challenges Skills and Experience: BS Mechanical, Electrical, Manufacturing Engineering or equivalent related experience Minimum 6 years of experience in high volume complex assembly or advanced…",
     "DEGREE_REQ": "PREFERRED",
     "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4417399784",
     "DEGREE_ASOF": "2026-10-20",
@@ -76,15 +92,14 @@
     "DEGREE_REQ": "REQUIRED",
     "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4479138907",
     "DEGREE_ASOF": "2026-10-20",
-    "SALARY_BASE_LOW": 252000,
-    "SALARY_BASE_HIGH": 382000,
-    "SALARY_MIDPOINT": 317000,
+    "SALARY_BASE_LOW": 225000,
+    "SALARY_BASE_HIGH": 293000,
+    "SALARY_MIDPOINT": 259000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-10-20",
-    "SALARY_SOURCE": "comparables:V2S-JETZERO-HOM,V2I-7506B47A8EAD,V2I-1F7FCDC7D808,V2I-121F69D9A93E",
-    "SALARY_ESTIMATE_BASIS": "4 employer-posted comparable(s), level 4 MFG any region; employer posting read, no pay stated",
-    "SALARY_UNCERTAINTY": "wide: few or distant comparables",
+    "SALARY_SOURCE": "comparables:V2S-JETZERO-HOM,V2S-TRUEANOMALY-SRDIR-NPI",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 2 employer-posted comparable(s) [V2S-JETZERO-HOM, V2S-TRUEANOMALY-SRDIR-NPI]; 2 employer-posted comparable(s), level 3 MFG any region; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-20"
    }
   },
@@ -118,11 +133,99 @@
     "SALARY_CONF": "HIGH",
     "SALARY_NOTE": "pay shown on the linkedin posting",
     "DEGREE_TEXT": "Experience Requirements Bachelor’s degree in a science-related field (experience may substitute for degree)",
-    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_REQ": "PREFERRED",
     "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4450183916",
     "DEGREE_ASOF": "2026-10-20",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-20"
    }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "id": "V2I-F380AA46235A",
+   "company": "Harper Harrison",
+   "title": "Head of Production",
+   "location": "Los Angeles Metropolitan Area",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4479138907/?trackingId=A%2FEA7iNUPZaVfHxkZeIZeg%3D%3D&refId=fWHAl4fFJtRb4Yx7fMPIlA%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BO1LFEusqSVuF7xt7W15ptw%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2i3SB8P6-pQIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_3_jobid_4479138907_ssid_15980302732_fmid_5yvbc~mvehdq9m~lf&trkEmail=",
+   "est": [
+    225000,
+    293000,
+    "LOW"
+   ],
+   "comparables": [
+    "V2S-JETZERO-HOM",
+    "V2S-TRUEANOMALY-SRDIR-NPI"
+   ]
+  },
+  {
+   "id": "V2I-91088D8D55A8",
+   "company": "Antenna Research Associates",
+   "title": "Quality, Director",
+   "location": "Laurel, MD",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480177532/?trackingId=NKcIbfzYgfY9j7C3CJ4Ljg%3D%3D&refId=Ze5czFO%2FBgCoF0B7HsgnXQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3B0XiwrsdCRneho0HP%2BerdLQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2i3SB8P6-pQIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_4_jobid_4480177532_ssid_16046956804_fmid_5yvbc~mvehdq9l~6f&trkEmai",
+   "est": [
+    160000,
+    197000,
+    "MED"
+   ],
+   "comparables": [
+    "V2F-AFCBBC5522B9",
+    "V2I-A9BA67414A87"
+   ]
+  },
+  {
+   "id": "V2I-80FEDA3A37AB",
+   "company": "Otis Elevator Co.",
+   "title": "Director, Supplier Quality, Americas",
+   "location": "Florence, SC",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4479196861/?trackingId=XyfhMHcYExs1m7GX3dEceA%3D%3D&refId=Ze5czFO%2FBgCoF0B7HsgnXQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3B0XiwrsdCRneho0HP%2BerdLQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2i3SB8P6-pQIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_0_jobid_4479196861_ssid_16046956804_fmid_5yvbc~mvehdq9l~6f&trkEmai",
+   "est": [
+    160000,
+    197000,
+    "MED"
+   ],
+   "comparables": [
+    "V2F-AFCBBC5522B9",
+    "V2I-A9BA67414A87"
+   ]
+  },
+  {
+   "id": "V2I-396D1486B42C",
+   "company": "AFL",
+   "title": "Manufacturing Director",
+   "location": "Duncan, SC",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480584236/",
+   "est": [
+    165000,
+    216000,
+    "MED"
+   ],
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
+  },
+  {
+   "id": "V2I-8A8C1B0C106C",
+   "company": "BLOX",
+   "title": "Director of Manufacturing Launch",
+   "location": "Bessemer, AL",
+   "posting": "https://www.linkedin.com/jobs/view/4461108235",
+   "est": [
+    165000,
+    216000,
+    "MED"
+   ],
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
   }
  ]
 }
