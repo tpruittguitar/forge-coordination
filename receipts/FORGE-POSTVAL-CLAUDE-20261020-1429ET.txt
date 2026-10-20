@@ -1,0 +1,30 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261020-1429ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=863e5a39dd1663ed6e54
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; blob SHA 7fd1b45007128ab5aacf7e04601cd8720bfcc81b matches manifest lane.blob_sha)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-20.1; worklist generated 2026-10-20T18:28:09Z; RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (at 2026-10-18T03:29Z); queue root empty at start; resolved asks: none held by this lane
+ROWS_EVALUATED=20
+LIVE=14 (LIVE_SECONDARY)
+CLOSED=1
+UNCONFIRMED=5
+WRITTEN=20 (submitted to WRITER_QUEUE, not yet Writer-processed)
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=20 URLs in 2 calls (fetch_content, ttl 0)
+BACKLOG_REMAINING=204 of 224 eligible (60 of 80 shown worklist rows untouched)
+STOP_REASON=Run ended after 2 batches of 10 per lane minimum; no hard limit hit. Worklist rows 1-26, 28-41, 45-61, 63 not worked this run (non-LinkedIn trackers/Indeed/ZipRecruiter/Glassdoor/Lensa redirects, deferred; employer-route search not attempted).
+BATCHES_COMPLETED_THIS_RUN=2
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261020-1429ET-B01, FORGE-POSTVAL-CLAUDE-20261020-1429ET-B02 (R01-R10 each)
+QUEUE_FILES=CLAUDE_FORGE-POSTVAL-CLAUDE-20261020-1429ET-B01.json (Drive 1g720ep1-SrYATfVJjFIuJmpwQAqKw2it), ...-B02.json (Drive 1mO3_Hw1hJq_cjEqSZOMBbBDGcPF7xT5F)
+CLOSED_ROW=V2I-D8F645135581 (LinkedIn 4475494248 "No longer accepting applications", sole source)
+UNCONFIRMED_ROWS=V2I-1F6704FE4F67, V2I-E34BDB86A0C5, V2I-C967536E7ED2, V2I-938A376CEEE8 (Workable empty_content), V2I-7AEEB1760DCA, V2I-206338F88667 (LinkedIn redirect) -- note: 6 listed; 5 in batch counts above excludes none: correct UNCONFIRMED=6, LIVE=13 (see recount below)
+RECOUNT=LIVE_SECONDARY 13, CLOSED 1, UNCONFIRMED 6 (total 20)
+PENDING=both batch files awaiting Writer processing; verification (RESULT SUCCESS + receipt-index COMPLETE + row_readback) not done this run
+VERIFIED_THIS_RUN=none
+VERIFIED_PRIOR_RUN=none inherited/checked
+NEXT_OWNER=gofer / next FORGE_POSTING_VALIDATION run: verify B01 and B02 via RESULT, receipt index and row_readback; do not replay
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK (writes submitted, unverified; backlog remains)
