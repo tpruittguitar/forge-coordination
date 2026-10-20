@@ -1,0 +1,33 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261019-2230ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6c9a306f27775baada47
+POLICY_REVISION=2026-10-19.3
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; fetched via GitHub connector, blob sha f33105b6580698a24a005d2ba6ac11d468a84caa equals manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination@95e0714a2918a3f219bbe2c4764d521144ae14d8; worklist generated 2026-10-20T02:17:07Z
+RULES_BLOB_UNCHECKED (forge-policy rules directory metadata not read this run)
+GATE=WRITER_FREEZE frozen=false (at 2026-10-18T03:29:08Z); WRITER_QUEUE root empty at start (no in-flight requests); writer_status/row_readback/receipt_index not available in this runtime
+ASKS_RESOLVED_READ=none held by this lane
+
+ROWS_EVALUATED=11
+LIVE=3 (LIVE_SECONDARY: V2I-4E0C5CB72E98, V2I-2859283FE234, V2I-E7F1F7E908C0)
+CLOSED=0
+UNCONFIRMED=8 (V2I-BF3B5DCD9390, V2I-177D2C4DA98B, V2I-D27254735BEC, V2I-CA3BA86931CA, V2I-4B2B27817FD3, V2I-65CF594E4857, V2I-C2ACB0E64D73, V2I-95E045E7F744)
+WRITTEN=11 submitted to WRITER_QUEUE (Drive file 1nlDIIIr-peZ2KsRoLoYiU-ppbieGPQcP, name CLAUDE_FORGE-POSTVAL-CLAUDE-20261019-2230ET-B01.json); WRITER_ACCEPTED not yet confirmed
+VERIFIED=0 (VERIFIED_THIS_RUN=0, VERIFIED_PRIOR_RUN=none inherited; no RESULT/receipt-index/row_readback available yet)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 fetch calls (15 URLs) + 9 searches; tesla.com and linkedin Rivian/LG returned bot_blocked (not closure)
+BACKLOG_REMAINING=240 of 251 eligible per worklist (29 listed rows not evaluated: rows 1-14, 16-21, 24-26, 35-40 of the top 40 are truncated ZipRecruiter/Indeed/Lensa/Glassdoor/Ladders/Talent tracker redirects with no usable full URL and no employer route tried; row 13/14 etc. need employer-site search by company+title)
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-2230ET-B01 (R01-R11)
+PENDING=request FORGE-POSTVAL-CLAUDE-20261019-2230ET-B01 / file 1nlDIIIr-peZ2KsRoLoYiU-ppbieGPQcP awaiting Writer RESULT, receipt-index COMPLETE and row_readback
+NOTES=Panasonic employer page resolved with matching title but body did not render -> UNCONFIRMED. iHire Resource Hub copy shows Expired/removed 3 days ago, but it is a secondary board copy of an agency row -> UNCONFIRMED, not CLOSED; agency own page not checked. Blue Origin Workday R70818 is Program Manager III (different title), not used.
+CURSOR=worklist row 34 of 40 evaluated out of order; next unevaluated: rows 1-14 via employer search
+OLDEST_BLOCKER=none
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run / gofer for verification of the pending request
+NEXT_ACTION=verify B01 (RESULT, receipt-index COMPLETE, row_readback) then continue worklist via employer-route search
+STOP_REASON=Named limit: remaining worklist rows are truncated tracker redirect URLs; Indeed/LinkedIn/Tesla block TinyFish; run stopped after one batch of 11 (minimum 10 met) without further viable employer-route candidates in capacity
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261019-2230ET-B01
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
