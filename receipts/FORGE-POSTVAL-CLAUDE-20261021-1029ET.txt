@@ -1,0 +1,37 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261021-1029ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (GitHub blob SHA 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination@bba6172f; rules blob 1633977287001ddf0f4aa21b98d630b5710b6222 matches external_rules.blob_sha; worklist generated 2026-10-21T14:04:05Z
+GATE=WRITER_FREEZE frozen=false; Writer status/receipt index not queried (no writer_status route); queue root held no request files
+ASKS_RESOLVED_CHECKED=none held by this lane
+
+ROWS_EVALUATED=16 (10 + 6 URLs fetched, tracking-redirect rows counted)
+LIVE=2
+CLOSED=0
+UNCONFIRMED=14
+WRITTEN=0
+VERIFIED=0
+HELD=2 (submission held, see below)
+FAILED=0
+TINYFISH_FETCHES=16 URLs in 2 calls
+BACKLOG_REMAINING=127 of 129 eligible (80 shown)
+BATCHES_COMPLETED_THIS_RUN=0
+
+LIVE_READY_NOT_SUBMITTED (LIVE_SECONDARY, LIVENESS_ASOF=2026-10-21, METHOD=TINYFISH_FETCH:LINKEDIN, no closed notice):
+V2I-D8FDA55EFBB3 Workspire Director of QA/QC Atlanta | https://www.linkedin.com/jobs/view/4476789010 | posted 1 week ago; pay $170,000-$200,000
+V2I-3BBA4BB65ABB GE Vernova Wind Advanced Manufacturing Engineering Leader Greenville SC | https://www.linkedin.com/jobs/view/4476784763 | posted Oct 07 2026 per text
+Intended request: FORGE-POSTVAL-CLAUDE-20261021-1029ET-B01 (R01, R02). Not in queue; nothing pending.
+
+UNCONFIRMED notes: V2I-B6BD08210AF8 jobsearcher archived record dated Oct 8, no closure evidence. V2I-678BB438ABCC jobsnear page is KRUSH Tech Inc, row says Organic Krush: company mismatch, held. Lensa/Ladders redirects resolved to google.com. Indeed viewjob/search 401. Glassdoor/ZipRecruiter bot_blocked. LinkedIn 4477830314 bot_blocked (999), 4474341133 login_required. Blocks are not closure.
+
+WRITER_TRANSPORT_BLOCKED: Drive connector create_file converted the plain-text JSON into a Google Doc (mimeType google-apps.document, size 1) and offers no conversion-off option. Doc file 1DENhqMw7Ac8X5Kv0OOfqlnlc6iY5_X3Hcv4KaQ3e4- U was trashed by this run before the Writer could process it. No direct Writer route available. Not retried.
+
+OLDEST_BLOCKER=Drive create_file cannot write non-converted text/plain JSON to WRITER_QUEUE
+NEXT_OWNER=gofer / Tim (a Drive upload route with conversion disabled, or a direct Writer route, for Claude scheduled runs)
+NEXT_ACTION=Submit the two rows above (fresh fetch recommended) once a supported route exists
+STOP_REASON=WRITER_TRANSPORT_BLOCKED plus most worklist sources blocked to TinyFish (Indeed 401, Glassdoor/ZipRecruiter blocked, tracking redirects)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261021-1029ET-B01 (not submitted)
