@@ -1,17 +1,17 @@
 {
- "at": "2026-10-21T06:21:53.966Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261021T0619Z",
+ "at": "2026-10-21T07:06:12.060Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261021T0702Z",
  "dry": true,
  "rows": 1778,
- "eligible": 637,
- "anchors": 82,
+ "eligible": 635,
+ "anchors": 84,
  "ats_rows": 25,
  "ats_read": 22,
  "ats_failed": 1,
  "posted_pay": 0,
- "degree": 28,
- "estimates": 36,
- "estimate_waiting_for_posting": 19,
+ "degree": 25,
+ "estimates": 38,
+ "estimate_waiting_for_posting": 20,
  "skipped_recent": 0,
  "submitted": 0,
  "guard_dropped": 0,
@@ -20,25 +20,40 @@
  "remainder": 0,
  "agg_tried": {
   "indeed": 3,
-  "linkedin": 30
+  "linkedin": 31
  },
  "agg_read": {
   "linkedin": 30
  },
  "agg_pay": {
-  "linkedin": 8
+  "linkedin": 6
  },
  "agg_failed": {
-  "indeed": 3
+  "indeed": 3,
+  "linkedin": 1
  },
  "agg_errors": {
   "indeed": [
    "401",
    "401",
    "401"
+  ],
+  "linkedin": [
+   "429"
   ]
  },
  "agg_wall": {},
+ "est_same_employer": 2,
+ "est_comparables": 36,
+ "boards_read": 16,
+ "boards_failed": 0,
+ "bls": {
+  "OK": 25,
+  "ABOVE": 1,
+  "BELOW": 0,
+  "NO_BLS": 12
+ },
+ "bls_queries": 10,
  "ats_candidates": 88,
  "ats_by_kind": {
   "workday": 37,
@@ -53,7 +68,7 @@
    "403"
   ]
  },
- "nothing_found": 20,
+ "nothing_found": 21,
  "ats_need_salary": 17,
  "ats_pay_seen": 5,
  "planned": 50,
@@ -68,7 +83,7 @@
     "SALARY_CONF": "MED",
     "SALARY_ASOF": "2026-10-21",
     "SALARY_SOURCE": "comparables:V2I-C34EA0D4F632,V2I-08AF99323F4F,V2I-5BC161496562",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 3 employer-posted comparable(s) [V2I-C34EA0D4F632, V2I-08AF99323F4F, V2I-5BC161496562]; 3 employer-posted comparable(s), level 2 OPS same region S; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 3 employer-posted comparable(s) [V2I-C34EA0D4F632, V2I-08AF99323F4F, V2I-5BC161496562]; 3 employer-posted comparable(s), level 2 OPS same region S; BLS TX 111021 P25-P90 $64K-$265K; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
@@ -82,21 +97,21 @@
     "SALARY_CONF": "MED",
     "SALARY_ASOF": "2026-10-21",
     "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; BLS SC 113051 P25-P90 $100K-$205K; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
   {
    "id": "V2I-83433D08489D",
    "fields": {
-    "SALARY_BASE_LOW": 165000,
-    "SALARY_BASE_HIGH": 216000,
-    "SALARY_MIDPOINT": 190500,
+    "SALARY_BASE_LOW": 186000,
+    "SALARY_BASE_HIGH": 260000,
+    "SALARY_MIDPOINT": 223000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "MED",
     "SALARY_ASOF": "2026-10-21",
-    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
+    "SALARY_SOURCE": "same-employer:V2I-A848F8CE9E78",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 1 same-employer posted range(s) [V2I-A848F8CE9E78]; same employer, 1 posted range(s) for level 2 MFG roles: Director Manufacturing, Ops & Assembly – Electric Propulsion (TX) $203K-$284K x0.92 BLS state ratio; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: moderate, same-employer range(s) for a similar role",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
@@ -110,7 +125,7 @@
     "SALARY_CONF": "MED",
     "SALARY_ASOF": "2026-10-21",
     "SALARY_SOURCE": "comparables:V2S-MAYBELL-DIR-MFG-5415157008,V2I-B8E84E47C2F8,V2I-8E5A4E599437,V2I-CF442CBFC904",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 4 employer-posted comparable(s) [V2S-MAYBELL-DIR-MFG-5415157008, V2I-B8E84E47C2F8, V2I-8E5A4E599437, V2I-CF442CBFC904]; 4 employer-posted comparable(s), level 2 MFG same region W; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 4 employer-posted comparable(s) [V2S-MAYBELL-DIR-MFG-5415157008, V2I-B8E84E47C2F8, V2I-8E5A4E599437, V2I-CF442CBFC904]; 4 employer-posted comparable(s), level 2 MFG same region W; BLS AZ 113051 P25-P90 $101K-$199K; this posting read, no pay stated; uncertainty: moderate, same-region comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
@@ -138,6 +153,9 @@
     252000,
     "MED"
    ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "3 employer-posted comparable(s), level 2 OPS same region S",
    "comparables": [
     "V2I-C34EA0D4F632",
     "V2I-08AF99323F4F",
@@ -156,6 +174,9 @@
     216000,
     "MED"
    ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region S",
    "comparables": [
     "V2F-D400EE31A881",
     "V2I-14D26C98673B",
@@ -172,16 +193,15 @@
    "location": "Merritt Island, FL",
    "posting": "https://www.linkedin.com/jobs/view/4450797384",
    "est": [
-    165000,
-    216000,
+    186000,
+    260000,
     "MED"
    ],
+   "source": "SAME_EMPLOYER",
+   "bls": "OK",
+   "basis_detail": "same employer, 1 posted range(s) for level 2 MFG roles: Director Manufacturing, Ops & Assembly – Electric Propulsion (TX) $203K-$284K x0.92 BLS state ratio",
    "comparables": [
-    "V2F-D400EE31A881",
-    "V2I-14D26C98673B",
-    "V2I-A307A66AA27E",
-    "V2I-6454CEAC0B71",
-    "V2I-4EF458B3894B"
+    "V2I-A848F8CE9E78"
    ]
   },
   {
@@ -196,6 +216,9 @@
     235000,
     "MED"
    ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "4 employer-posted comparable(s), level 2 MFG same region W",
    "comparables": [
     "V2S-MAYBELL-DIR-MFG-5415157008",
     "V2I-B8E84E47C2F8",
@@ -215,6 +238,9 @@
     216000,
     "MED"
    ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region S",
    "comparables": [
     "V2F-D400EE31A881",
     "V2I-14D26C98673B",
