@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-21T06:19:21.152Z",
- "sourceCommit": "6fe7afa0207e038c5eeb7ba3c874da856611536c",
+ "builtAt": "2026-10-21T06:32:03.317Z",
+ "sourceCommit": "9f2b8c0ce3884ab9f1bb778955fa08c889c26468",
  "counts": {
-  "total": 8,
+  "total": 9,
   "BLOCKING": 0,
   "ACTION": 3,
-  "WATCH": 5,
+  "WATCH": 6,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 2,
-  "UPKEEP": 1
+  "UPKEEP": 2
  },
  "items": [
   {
@@ -157,6 +157,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
    "at": "2026-10-19T00:59:00-04:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:ENRICH-STRATEGIC",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "ENRICH-STRATEGIC lane has gone quiet (usually reports every 6.6 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt (GROK, status COMPLETE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
+   "at": "2026-10-20T13:10:00-04:00",
+   "raisedBy": "GROK"
   }
  ],
  "lanes": [
@@ -208,7 +220,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 7,
    "usualGapHours": 12,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ENRICH-STRATEGIC",
@@ -218,7 +230,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
    "runs7d": 6,
    "usualGapHours": 8,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "FORGE-ENRICH-FEASIBILITY",
@@ -303,10 +315,10 @@
   {
    "lane": "POSTVAL",
    "provider": "CLAUDE",
-   "lastAt": "2026-10-21T00:29:00-04:00",
+   "lastAt": "2026-10-21T02:28:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261021-0029ET.txt",
-   "runs7d": 27,
+   "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261021-0228ET.txt",
+   "runs7d": 28,
    "usualGapHours": 2,
    "overdue": false
   },
