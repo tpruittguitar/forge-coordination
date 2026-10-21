@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_APPLICATION_WRITER_GOFER
+RUN_ID=FORGE-GOFER-CLAUDE-20261020-2051ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=a2581e8f994f970d59d5
+PACKET_SHA256=d32ed79118aa58b334faed855a31dabe1a240215ec642aeaf1292f1ba8c43845 (recomputed, matches manifest lane sha256)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-20.2; repo main 0c2115a
+RULES_BLOB_UNCHECKED (forge-policy outside session repo scope; no policy interpretation needed)
+GATE=WRITER_FREEZE.json fresh: frozen=false (Tim 2026-10-18T03:29Z). writer_status/row_readback/receipt_index unavailable in this runtime (no direct Writer route).
+CONNECTORS=Drive and Gmail available. 6 other connectors missing (expired sign-in); not needed. No computer access (scheduled cloud run). TinyFish not used.
+ASKS: asks/resolved has no new item for this lane. ASK-20261019-CLAUDE-1855 (Anduril Altius re-application) still open; not re-asked.
+WORK
+- Gmail since 2026-10-19: 13 application confirmations (Oracle 333250, CX2, Leidos, RimePro, Hadrian [ZR+Ashby, 1 event], Top Dog Engineers, Swagelok NorCal, Fetzner Exec Recruiting, DIRECT Staffing, Reynolds 2026-4234, RTX 01881982, Apptronik, Blue Origin) and 1 Anduril rejection (Deputy Head of Production, Altius, 10-20 16:01Z).
+- Submitted 1 upsert_application batch (14 events) to WRITER_QUEUE, plain text JSON, conversion disabled: CLAUDE_FORGE-GOFER-CLAUDE-20261020-2051ET-B01.json (Drive 1c8neySqcum2JWN5EqRLmTzXTls3ThKys). Status SUBMITTED only; NOT WRITER_ACCEPTED, NOT VERIFIED.
+- Agency-like rows (Top Dog, Fetzner, DIRECT) recorded with COMPANY=agency, no client search (packet rule).
+- Anduril Altius REJECTED 10-20 event sent: idempotent against existing rejected row, and note the 10-19 APPLIED for Altius remains unrecorded (open ask).
+- Not application events (no write): Muon Space 1a1574600a0114c2 (no role named, HELD); TopResume "20 applications ready" (not an application); ZipRecruiter "viewed"/"still interested"; LinkedIn Stealth Robotics draft; Tesla phone-screen follow-up 1a15761a307b3151 (Quality Engineering Manager, Solar) and Collins/RTX HireVue digital interview 1a15a914942ef9ee (Sr Mgr Mission and Quality Assurance 01881982) are interview invitations -> Tim attention.
+- ENRICH bulk verify: processed/ ENRICH results since last gofer receipt (Grok 0510/0918/1810 ET B01) seen; receipt_index/row_readback unavailable, so ENRICH_VERIFIED=none, ENRICH_FAILED=not determinable (UNVERIFIED, carried).
+WRITTEN_REQUEST_IDS=FORGE-GOFER-CLAUDE-20261020-2051ET-B01 (E01..E14), SUBMITTED
+PENDING: FORGE-GOFER-CLAUDE-20261020-2051ET-B01 file 1c8neySqcum2JWN5EqRLmTzXTls3ThKys; prior W-20261019045318429-19eb8d Novo V2I-033AEF9CE89D; W-20261019025243352-1c036b Ashley V2E-A8D1AFA75EF5; W-20261019025356271-16945d Harmattan V2I-AB4A9958A9AE
+VERIFIED_THIS_RUN=none; VERIFIED_PRIOR_RUN=none
+HOLDS unchanged: Tesla 286230, Tesla 283760 (REJECTED_BY_EMPLOYER; Tim decision), Muon (no role), AMETEK item 12, archive items 17,32,53,59,117,175,258,262,265,363,366, Anduril Altius APPLIED 10-19.
+COUNTS: new dispositions 14 events + 6 no-event dispositions; failures 0. No new EVIDENCE_HANDOFF_ARCHIVE seen (AI_Coordination listing partial, first page only).
+OLDEST_BLOCKER=Tesla req proof (since 2026-10-18 14:50 ET); index/readback for prior 3 writes (since 2026-10-19 02:52 ET)
+NEXT_OWNER=CLAUDE GOFER (next run): inspect processed/failed for RESULT of FORGE-GOFER-CLAUDE-20261020-2051ET-B01, then receipt-index + row_readback if a route exists; Tim: Tesla 283760 decision, Altius ask, interview invites (Tesla Houston phone screen, Collins HireVue).
+NOT_DONE=No applications, outreach, direct master/index edits, or protected-state overrides.
+STOP_REASON=capacity of inspectable evidence exhausted; verification route unavailable
+BATCHES_COMPLETED_THIS_RUN=1 (submitted)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
