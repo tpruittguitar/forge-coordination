@@ -1,6 +1,6 @@
 {
- "at": "2026-10-21T12:31:00.533Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261021T1225Z",
+ "at": "2026-10-21T13:03:33.252Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261021T1257Z",
  "dry": false,
  "rows": 1658,
  "eligible": 583,
@@ -10,10 +10,10 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 31,
- "estimates": 33,
- "estimate_waiting_for_posting": 26,
- "skipped_recent": 102,
+ "degree": 45,
+ "estimates": 9,
+ "estimate_waiting_for_posting": 21,
+ "skipped_recent": 183,
  "submitted": 47,
  "guard_dropped": 3,
  "writer_ok": 47,
@@ -21,46 +21,48 @@
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 55,
+  "linkedin": 52,
+  "ziprecruiter": 1,
   "indeed": 3
  },
  "agg_read": {
   "linkedin": 50
  },
  "agg_pay": {
-  "linkedin": 12
+  "linkedin": 8
  },
  "agg_failed": {
-  "linkedin": 3,
-  "indeed": 3
+  "ziprecruiter": 1,
+  "indeed": 3,
+  "linkedin": 2
  },
  "agg_errors": {
-  "linkedin": [
-   "404",
-   "404",
-   "429"
+  "ziprecruiter": [
+   "403"
   ],
   "indeed": [
    "401",
    "401",
    "401"
+  ],
+  "linkedin": [
+   "404",
+   "429"
   ]
  },
- "agg_wall": {
-  "linkedin": 2
- },
+ "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 33,
- "boards_read": 7,
+ "est_comparables": 9,
+ "boards_read": 4,
  "boards_failed": 0,
  "bls": {
-  "OK": 21,
+  "OK": 6,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 12
+  "NO_BLS": 3
  },
  "bls_queries": 0,
- "est_shared_low": 32,
+ "est_shared_low": 9,
  "ats_candidates": 65,
  "ats_by_kind": {
   "workday": 26,
@@ -68,37 +70,33 @@
   "ashby": 10,
   "lever": 2
  },
- "skipped_closed": 19,
+ "skipped_closed": 28,
  "ats_unconfirmed": 0,
- "nothing_found": 34,
+ "nothing_found": 61,
  "upgraded": 0,
  "planned": 50,
  "sample": [
   {
-   "id": "V2I-5C3A5CAF161B",
+   "id": "V2I-8FD08775E4B6",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4465169281",
-    "DEGREE_ASOF": "2026-10-21",
-    "SALARY_BASE_LOW": 180000,
-    "SALARY_BASE_HIGH": 213000,
-    "SALARY_MIDPOINT": 196500,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-10-21",
-    "SALARY_SOURCE": "comparables:V2F-1F8BE86B4D17,V2I-465AB3277083,V2I-4AEB33CBF419,V2I-08AF99323F4F,V2I-2DF5992FBB16,V2I-5BC161496562,V2I-C34EA0D4F632",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2F-1F8BE86B4D17, V2I-465AB3277083, V2I-4AEB33CBF419, V2I-08AF99323F4F, V2I-2DF5992FBB16, V2I-5BC161496562, V2I-C34EA0D4F632]; 7 employer-posted comparable(s), level 2 OPS any region; range shared by 11 eligible roles from the same comparables, so LOW; BLS state wage n/a; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
   {
-   "id": "V2I-E6B8F91FA8E7",
+   "id": "V2I-206338F88667",
    "fields": {
-    "DEGREE_TEXT": "Note : A Bachelor's degree in Engineering, Chemistry, or Physics is required.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4467200524",
-    "DEGREE_ASOF": "2026-10-21",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
+   }
+  },
+  {
+   "id": "V2I-83E79BC8C491",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
+   }
+  },
+  {
+   "id": "V2I-355F5430BB87",
+   "fields": {
     "SALARY_BASE_LOW": 165000,
     "SALARY_BASE_HIGH": 216000,
     "SALARY_MIDPOINT": 190500,
@@ -106,45 +104,17 @@
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-10-21",
     "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; range shared by 24 eligible roles from the same comparables, so LOW; BLS GA 113051 P25-P90 $99K-$194K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; range shared by 24 eligible roles from the same comparables, so LOW; BLS TN 113051 P25-P90 $92K-$199K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   },
   {
-   "id": "V2I-C08E445CF168",
+   "id": "V2I-EE602C8597AF",
    "fields": {
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4466932855",
+    "DEGREE_TEXT": "B.S. degree (M.S. preferred) in Electrical Engineering or a related technical discipline.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4474600328",
     "DEGREE_ASOF": "2026-10-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
-   }
-  },
-  {
-   "id": "V2I-8D4F5DB0E763",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Engineering (Mechanical, Industrial, Aerospace, Manufacturing, or related discipline).",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4476868414",
-    "DEGREE_ASOF": "2026-10-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
-   }
-  },
-  {
-   "id": "V2I-9C35916D78B9",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Materials Science, Manufacturing, Operations, or a related technical discipline.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4458047015",
-    "DEGREE_ASOF": "2026-10-21",
-    "SALARY_BASE_LOW": 225000,
-    "SALARY_BASE_HIGH": 293000,
-    "SALARY_MIDPOINT": 259000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-10-21",
-    "SALARY_SOURCE": "comparables:V2S-JETZERO-HOM,V2S-TRUEANOMALY-SRDIR-NPI",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 2 employer-posted comparable(s) [V2S-JETZERO-HOM, V2S-TRUEANOMALY-SRDIR-NPI]; 2 employer-posted comparable(s), level 3 MFG any region; range shared by 12 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-21"
    }
   }
@@ -152,36 +122,11 @@
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-5C3A5CAF161B",
-   "company": "CiresiMorek",
-   "title": "Director of Operations",
-   "location": "Kentucky, United States",
-   "posting": "https://www.linkedin.com/jobs/view/4465169281",
-   "est": [
-    180000,
-    213000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "NO_BLS",
-   "basis_detail": "7 employer-posted comparable(s), level 2 OPS any region; range shared by 11 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2F-1F8BE86B4D17",
-    "V2I-465AB3277083",
-    "V2I-4AEB33CBF419",
-    "V2I-08AF99323F4F",
-    "V2I-2DF5992FBB16",
-    "V2I-5BC161496562",
-    "V2I-C34EA0D4F632"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-E6B8F91FA8E7",
-   "company": "Lightera",
+   "id": "V2I-355F5430BB87",
+   "company": "Dana Incorporated",
    "title": "Plant Manager",
-   "location": "Norcross, GA",
-   "posting": "https://www.linkedin.com/jobs/view/4467200524",
+   "location": "Crossville, TN",
+   "posting": "https://www.linkedin.com/jobs/view/4467768316/",
    "est": [
     165000,
     216000,
@@ -200,64 +145,86 @@
   },
   {
    "basis": "POSTING_READ",
-   "id": "V2I-9C35916D78B9",
-   "company": "MetOx International",
-   "title": "Head of Manufacturing",
-   "location": "Houston, TX",
-   "posting": "https://www.linkedin.com/jobs/view/4458047015",
+   "id": "V2I-B66C50D5F1D3",
+   "company": "Yamaha Motor Corporation, USA",
+   "title": "Division Manager - Marine Innovation Engineering",
+   "location": "Kennesaw, GA",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4463636870/?trackingId=xjfCl2mEN3Pa2qGVjRGOsw%3D%3D&refId=UKgb9rzc9Nm28J6V6hQafg%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BIEyuq53aTeqjX56PWt7iSQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2CN8IY2IUVScs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_4_jobid_4463636870_ssid_15980302732_fmid_5yvbc~mvfwtk8u~2y&trkEmail=em",
    "est": [
-    225000,
-    293000,
+    156000,
+    276000,
     "LOW"
    ],
    "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "2 employer-posted comparable(s), level 3 MFG any region; range shared by 12 eligible roles from the same comparables, so LOW",
+   "bls": "NO_BLS",
+   "basis_detail": "1 employer-posted comparable(s), level 1 ENG any region; range shared by 16 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2S-JETZERO-HOM",
-    "V2S-TRUEANOMALY-SRDIR-NPI"
+    "V2I-6E216968C18E"
    ]
   },
   {
    "basis": "POSTING_READ",
-   "id": "V2I-273116B7CBF2",
-   "company": "Emerson",
-   "title": "Global Manufacturing Operations Director",
-   "location": "Novi, MI",
-   "posting": "https://www.linkedin.com/jobs/view/4477881648",
+   "id": "V2I-438EFA54381D",
+   "company": "Hyundai MOBIS North America Electrified Powertrain, LLC",
+   "title": "Production Manager - Battery Modules",
+   "location": "Ellabell, GA",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480849716/?trackingId=0eSaKRL3B1tJThZQNZzUcA%3D%3D&refId=F5S2nqMURFwswdooSO9%2F8Q%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3Bfx4%2BKSXdSh6%2BYJzw0po0jQ%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2CN8IY2IUVScs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_5_jobid_4480849716_ssid_16046957060_fmid_5yvbc~mvfwtk8t~rr&trkEm",
    "est": [
-    213000,
-    260000,
+    129000,
+    204000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "2 employer-posted comparable(s), level 2 MFG same region MW; range shared by 11 eligible roles from the same comparables, so LOW",
+   "basis_detail": "5 employer-posted comparable(s), level 1 MFG any region; range shared by 47 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-AE6B9498C206",
-    "V2I-B96ABE6B628A"
+    "V2I-970FFE6D69CC",
+    "V2I-56B141DADD41",
+    "V2I-75B11E3A2B5B",
+    "V2I-6C4F967BB315",
+    "V2I-EB69268644F3"
    ]
   },
   {
    "basis": "POSTING_READ",
-   "id": "V2I-74EA21E03337",
-   "company": "Sila Nanotechnologies, Inc.",
-   "title": "Director of Cell Equipment and Manufacturing Engineering",
-   "location": "Alameda, CA",
-   "posting": "https://www.linkedin.com/jobs/view/4476213154",
+   "id": "V2I-546DEB245B69",
+   "company": "AISIN World Corp. of America",
+   "title": "Manufacturing Engineering Manager",
+   "location": "Cibolo, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480870958/?trackingId=%2BpVdwk%2B%2BjU4JL%2Br88o2U7w%3D%3D&refId=7VWJp%2BcTl28IoaeaR%2FsJNQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BE%2B89%2FYnFTQmSrYRKz9GI8w%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=0cnguhSOiNScs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_2_jobid_4480870958_ssid_16046956820_fmid_5yvbc~mvg13vq",
    "est": [
-    184000,
-    235000,
+    129000,
+    204000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "4 employer-posted comparable(s), level 2 MFG same region W; range shared by 6 eligible roles from the same comparables, so LOW",
+   "basis_detail": "5 employer-posted comparable(s), level 1 MFG any region; range shared by 47 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2S-MAYBELL-DIR-MFG-5415157008",
-    "V2I-8E5A4E599437",
-    "V2I-CF442CBFC904",
-    "V2I-B8E84E47C2F8"
+    "V2I-970FFE6D69CC",
+    "V2I-56B141DADD41",
+    "V2I-75B11E3A2B5B",
+    "V2I-6C4F967BB315",
+    "V2I-EB69268644F3"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-D2A460A412B3",
+   "company": "SBT",
+   "title": "Senior Director, NPI",
+   "location": "San Francisco Bay Area",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4479630472/?trackingId=9G3mM4qKypQtIpyW9XW0UQ%3D%3D&refId=mJqxdqtFsIm5lRtxZLrDjA%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3Bb%2FsoPzodR52VTE4%2BXGs%2F6w%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=2i3SB8P6-pQIs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_2_jobid_4479630472_ssid_16118950260_fmid_5yvbc~mvehdq9l~fs&trkEm",
+   "est": [
+    172000,
+    250000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "NO_BLS",
+   "basis_detail": "1 employer-posted comparable(s), level 3 OTHER any region; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-CF882BE76023"
    ]
   }
  ],
