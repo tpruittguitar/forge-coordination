@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-21T19:07:16.708Z",
- "sourceCommit": "c2b18a17139bb32a8a6e5e1564a1ccca0d97ea1f",
+ "builtAt": "2026-10-21T19:34:49.322Z",
+ "sourceCommit": "93df236b251f7285a32f1d602eec4b39317c11b6",
  "counts": {
-  "total": 8,
+  "total": 9,
   "BLOCKING": 0,
   "ACTION": 2,
-  "WATCH": 6,
+  "WATCH": 7,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 2,
-  "UPKEEP": 1
+  "UPKEEP": 2
  },
  "items": [
   {
@@ -157,6 +157,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
    "at": "2026-10-20T13:10:00-04:00",
    "raisedBy": "GROK"
+  },
+  {
+   "id": "lane-overdue:ENRICH-FEASIBILITY",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "ENRICH-FEASIBILITY lane has gone quiet (usually reports every 3.4 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt (GROK, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
+   "at": "2026-10-21T08:18:00-04:00",
+   "raisedBy": "GROK"
   }
  ],
  "lanes": [
@@ -188,7 +200,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 13,
    "usualGapHours": 6,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ENRICH-FEASIBILITY",
@@ -198,7 +210,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
    "runs7d": 18,
    "usualGapHours": 3.4,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ENRICH-STRATEGIC",
