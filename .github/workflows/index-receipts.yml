@@ -33,6 +33,8 @@ jobs:
             python scripts/index_receipts.py
             git add state/latest.json
             if git diff --cached --quiet; then exit 0; fi
+            # REV-137: a change that is only the source_commit stamp is not new information (26 of 81 commits on 2026-10-20/21)
+            if ! git diff --cached -U0 | grep '^[-+]' | grep -v '^[-+][-+]' | grep -qv '"source_commit"'; then echo "Only the source_commit stamp changed"; exit 0; fi
             git commit -m "INDEX-BOT RECEIPT-HINTS: refresh immutable receipt pointers"
             if git push origin HEAD:main; then exit 0; fi
           done
