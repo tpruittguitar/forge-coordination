@@ -145,6 +145,9 @@ function build(opts) {
   });
 
   /* 2b. lane silence: judged per lane across providers, so a lane handed from one AI to another is not "overdue" */
+  /* REV-155: a lane Tim paused (control/PAUSED_LANES.json) is quiet on purpose; it is marked paused, never "gone quiet". */
+  let paused = {};
+  try { const pj = JSON.parse(read(path.join(root, 'control', 'PAUSED_LANES.json')) || '{}'); Object.keys(pj.lanes || {}).forEach(k => { paused[normLane(k)] = pj.lanes[k]; }); } catch (e) { paused = {}; }
   const byLane = {};
   Object.keys(runs).forEach(k => { const r = runs[k]; (byLane[r.lane] = byLane[r.lane] || []).push(r); });
   Object.keys(byLane).sort().forEach(ln => {
@@ -153,6 +156,7 @@ function build(opts) {
     if (recent.length < 4) return;
     const gaps = []; for (let i = Math.max(1, rs.length - 6); i < rs.length; i++) gaps.push((Date.parse(rs[i].at) - Date.parse(rs[i - 1].at)) / H);
     const med = median(gaps), sinceH = (now - Date.parse(last.at)) / H, limit = Math.max(2 * med, 6);
+    if (paused[ln]) { lanes.filter(l => l.lane === ln).forEach(l => { l.paused = paused[ln].since || true; }); return; }
     if (med == null || sinceH <= limit) return;
     lanes.filter(l => l.lane === ln).forEach(l => { l.overdue = true; });
     add({ id: 'lane-overdue:' + ln, section: 'UPKEEP', level: sinceH > 4 * Math.max(med, 3) ? 'ACTION' : 'WATCH', title: ln + ' lane has gone quiet (usually reports every ' + (Math.round(med * 10) / 10) + ' h)', detail: 'Last receipt ' + last.file.replace(/^receipts[\\/]/, '') + ' (' + last.provider + ', status ' + (last.body.status || 'unstated') + '). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.', action: 'Check the lane\'s scheduled task and its AI usage; restart it if stopped.', source: last.file, sourceUrl: ghUrl('forge-coordination', last.file), at: last.at, raisedBy: last.provider });

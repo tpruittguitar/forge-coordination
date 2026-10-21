@@ -130,3 +130,15 @@ test('instruction-runtime block codes (BLOCKED_AUTHORITY etc.) are blocking fail
   const ok = build({ root: repo({ 'receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-1700ET_TERMINAL.txt': 'RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK\n' }), now: '2026-10-18T18:00:00-04:00' });
   assert.ok(!ok.items.some(i => i.id.indexOf('run-blocked') === 0));
 });
+
+test('REV-155: a lane in control/PAUSED_LANES.json is marked paused, never reported as gone quiet', () => {
+  const files = {};
+  ['0100', '0400', '0700', '1000', '1300'].forEach(t => { files['receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261017-' + t + 'ET_TERMINAL.txt'] = 'RUN_STATUS=COMPLETE\n'; });
+  const quiet = build({ root: repo(files), now: NOW });
+  assert.ok(quiet.items.some(i => i.id === 'lane-overdue:ENRICH-FEASIBILITY'), 'without a pause the silent lane is flagged');
+  files['control/PAUSED_LANES.json'] = { lanes: { 'ENRICH_FEASIBILITY': { since: '2026-10-17T14:00:00-04:00', by: 'Tim' } } };
+  const r = build({ root: repo(files), now: NOW });
+  assert.ok(!r.items.some(i => i.id === 'lane-overdue:ENRICH-FEASIBILITY'));
+  const lane = (r.lanes || []).find(l => l.lane === 'ENRICH-FEASIBILITY');
+  assert.ok(lane && lane.paused, 'lane row says paused');
+});
