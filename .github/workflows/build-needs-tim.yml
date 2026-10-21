@@ -5,7 +5,8 @@ name: build-needs-tim
 on:
   push:
     branches: [main]
-    paths-ignore: ['attention/**']
+    # REV-137: bot-only outputs (receipt index hints, ATS pay report) never change the list; skip the rerun they caused.
+    paths-ignore: ['attention/**', 'state/latest.json', 'state/enrich-ats-pay*.json']
   schedule:
     - cron: '7,37 * * * *'
   workflow_dispatch: {}
