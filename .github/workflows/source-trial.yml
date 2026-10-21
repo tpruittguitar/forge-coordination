@@ -1,0 +1,64 @@
+# REV-156 (Tim 2026-10-21 18:09 ET): one-off, read-only trial of employer job boards and JobSpy for Tim's three role
+# families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md}; nothing is sent to the Writer.
+name: source-trial
+on:
+  workflow_dispatch: {}
+  pull_request:
+    paths: ['tools/source-trial/**', '.github/workflows/source-trial.yml']   # a PR run reads real sources, keeps the report as an artifact, never pushes
+permissions:
+  contents: write
+concurrency:
+  group: source-trial
+  cancel-in-progress: false
+jobs:
+  trial:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: tpruittguitar/foreman-cockpit
+          path: _fc
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: JobSpy
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          pip install -q python-jobspy || echo "pip install failed"
+          python tools/source-trial/jobspy_run.py tools/source-trial/config.json /tmp/jobspy.json
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
+      - name: Trial
+        env:
+          TRIAL_FC_DIR: ${{ github.workspace }}/_fc
+          TRIAL_JOBSPY_FILE: /tmp/jobspy.json
+        run: node tools/source-trial/run.js
+      - name: Keep the report as a run artifact (any branch)
+        uses: actions/upload-artifact@v4
+        with:
+          name: source-trial-report
+          path: state/source-trial-report.*
+      - name: Commit report (main only; a PR-branch run never pushes)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p /tmp/out && cp state/source-trial-report.* /tmp/out/
+          git config user.name forge-source-trial-bot
+          git config user.email forge-source-trial-bot@users.noreply.github.com
+          for i in 1 2 3 4 5 6; do
+            git add state/source-trial-report.*
+            git diff --cached --quiet && { echo "No change"; exit 0; }
+            git commit -q -m "SOURCE-TRIAL-BOT: source trial report"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp /tmp/out/* state/
+          done
+          exit 1
