@@ -1,0 +1,26 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261021-1630ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (read 2026-10-21); writer_status not available, queue root had no pending files
+WORKLIST=generated 2026-10-21T20:16Z (fresh), 80 shown of 122 eligible
+ROWS_EVALUATED=16
+LIVE=3 (V2I-8B9E083D1583, V2I-DEFC42C0EE20 as LIVE_SECONDARY; V2I-F3A0D4B15153 is CLOSED, so LIVE=2)
+CLOSED=1 (V2I-F3A0D4B15153, LinkedIn expired_jd_redirect)
+UNCONFIRMED=9 written (V2I-8B3AD076FDC5, V2I-42FBC220209E, V2I-B9DB759E145C, V2I-ACF2F2EF1194, V2I-8DAC03DE9091, V2I-206FCDC87114, V2I-9E79455821C3, V2I-8712FDF84CC8, V2I-B6BD08210AF8)
+WRITTEN=12 (SUBMITTED to WRITER_QUEUE file 1q6N2tFN_GYpAuTTvUcnDxld6sx8T3OUR, CLAUDE_FORGE-POSTVAL-CLAUDE-20261021-1630ET-B01.json; WRITER_ACCEPTED not yet confirmed)
+VERIFIED=0 (no RESULT / receipt-index COMPLETE / row_readback available this run; next owner verifies)
+HELD=1 (V2I-678BB438ABCC: fetched page is KRUSH Tech Inc, Austin, company differs from row company Organic Krush)
+SKIPPED_UNREADABLE=3 (V2I-792E6CB9D865 lensa redirect resolved to google.com; V2I-C5EA0A3EF380 ladders redirect same; V2I-5C0B67725631 ZipRecruiter bot_blocked)
+FAILED=0
+TINYFISH_FETCHES=16 URLs in 2 calls
+BACKLOG_REMAINING=approx 106 of 122 eligible; remaining worklist rows are mostly email-tracker/Indeed/ZipRecruiter redirect URLs TinyFish cannot resolve
+PRIOR_RUN_PENDING=FORGE-POSTVAL-CLAUDE-20261021-1429ET-B01 (3 rows, in processed folder, not independently verified by this run)
+STOP_REASON=hard limit: remaining worklist URLs are blocked or unresolvable redirects (Indeed 401, ZipRecruiter/Glassdoor/JobLeads bot_blocked, lensa/ladders redirect to google.com); no employer routes derivable without further search
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261021-1630ET-B01 (R01-R12)
+NEXT_OWNER=Writer/gofer: verify B01 (RESULT, receipt-index COMPLETE, row_readback)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
