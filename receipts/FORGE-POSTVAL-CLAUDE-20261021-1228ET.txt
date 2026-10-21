@@ -1,0 +1,32 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261021-1228ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; fetched blob SHA 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main e5c3a66c; worklist generated 2026-10-21T16:08:08Z
+GATE=WRITER_FREEZE frozen=false; WRITER_QUEUE root had no pending files; no resolved asks held by this lane
+RULES_BLOB_UNCHECKED (no forge-policy directory metadata read this run)
+ROWS_EVALUATED=13
+LIVE=3 (V2I-6FC6C96FE687 Grifols, V2I-D8FDA55EFBB3 Workspire, V2I-3BBA4BB65ABB GE Vernova; all LIVE_SECONDARY via LinkedIn, no closed notice)
+CLOSED=0
+UNCONFIRMED=10 (not written)
+  - V2I-B6BD08210AF8 CrossFire: jobsearcher page dated 2026-10-08 but labeled "Archived job record"; not treated as live
+  - V2I-678BB438ABCC Organic Krush: page shows company KRUSH Tech Inc (Austin), company mismatch; HELD, no evidence claimed
+  - V2I-8B3AD076FDC5, V2I-42FBC220209E, V2I-F079E97821B7, V2I-B9DB759E145C: Indeed 401 blocked
+  - V2I-F3A0D4B15153 WarrCloud: LinkedIn comm URL login_required
+  - V2I-ACF2F2EF1194, V2I-8DAC03DE9091: Glassdoor bot_blocked
+  - V2I-FF72365AEF87: ZipRecruiter bot_blocked
+  Blocks are not closure. Employer-site route not attempted this run.
+NOTE V2I-6FC6C96FE687: LinkedIn page shows Ohio (Cleveland) location; master shows Tennessee. Liveness only written; location not touched, for review.
+WRITTEN=3 (Drive file CLAUDE_FORGE-POSTVAL-CLAUDE-20261021-1228ET-B01.json, id 1xnkeXrdMwWBzcsir-32NgpPslteur8Qd)
+VERIFIED=0 (no RESULT/receipt-index/row_readback available this run; writes are SUBMITTED, pending)
+HELD=1 FAILED=0
+TINYFISH_FETCHES=2 calls (13 URLs)
+BACKLOG_REMAINING=~116 of 129 eligible (80 shown)
+STOP_REASON=Time-boxed run; remaining worklist rows (rows 1-5, 8-9, 11, 13-18, 20-27, 29-56 etc.) mostly ZipRecruiter/Indeed/Lensa redirects likely bot-blocked; not exhausted
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261021-1228ET-B01 (R01-R03)
+PENDING=B01 awaiting Writer processing; verify next run
+NEXT_OWNER=Claude (FORGE_POSTING_VALIDATION) / gofer for verification
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
