@@ -7,7 +7,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
-const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json');
+const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
@@ -34,12 +34,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
+  // REV-140 (Tim 2026-10-21 03:30 ET): roles archived after they closed still carry valid employer-posted pay; they stay comparables.
+  let archiveText = '';
+  if (process.env.ENRICH_MASTER_FILE) archiveText = process.env.ENRICH_ARCHIVE_FILE ? fs.readFileSync(process.env.ENRICH_ARCHIVE_FILE, 'utf8') : '';   // tests only
+  else { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : ''; } catch (e) { archiveText = ''; } }
+  const liveIds = new Set(anchors.map(a => a.id)), archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n').map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
+  archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   const fresh = id => { const t = ledger.submitted[id] || ledger.tried[id]; return t && Date.now() - Date.parse(t) < CONFIG.resubmitHours * 3600e3; };
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
@@ -87,10 +93,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const shareKey = e => e && e.ids.slice().sort().join(',');
   const shared = {}; list.forEach(r => { if (!/SALARY/.test(needsOf(r))) return; const e = L.estimate(r, anchors), k = shareKey(e); if (k) shared[k] = (shared[k] || 0) + 1; });
   stats.est_shared_low = 0;
-  async function estimateFor(r) {
+  async function estimateFor(r, opts) {
+    opts = opts || {};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
     let comps = L.sameEmployerAnchors(r, anchors);
-    if (!comps.length) { const b = L.boardOf(r.p) || boardByCo[L.normCo(r.COMPANY)]; if (b) comps = L.similarPostings(r, await employerPostings(b, r)); }
+    if (!comps.length) {
+      // REV-140: same-employer pay postings found by any earlier run are remembered (Workday search results vary run to run)
+      const co = L.normCo(r.COMPANY), b = L.boardOf(r.p) || boardByCo[co];
+      const fresh = b && !opts.noNetwork ? await employerPostings(b, r) : [];
+      rememberPostings(co, fresh);
+      comps = L.similarPostings(r, fresh.concat(remembered(co)).filter((x, i, a) => a.findIndex(y => y.page === x.page && y.title === x.title) === i));
+    }
     let est = null;
     if (comps.length) {
       const med = {}; const home = rowState ? await blsWages(rowState, soc) : null;
@@ -98,12 +111,23 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null);
       if (est) stats.est_same_employer++;
     }
+    if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
     return est;
   }
+  const empCache = fs.existsSync(EMPLOYER_CACHE) ? JSON.parse(fs.readFileSync(EMPLOYER_CACHE, 'utf8')) : { employers: {} }; empCache.employers = empCache.employers || {};
+  function rememberPostings(co, list) {
+    if (!co) return; const day = new Date().toISOString().slice(0, 10);
+    list.filter(x => x.pay && x.state).forEach(x => {
+      const e = empCache.employers[co] = empCache.employers[co] || [];
+      const i = e.findIndex(y => y.page === x.page && y.title === x.title), rec = { title: x.title, location: x.location || '', state: x.state, pay: x.pay, page: x.page, seen: day };
+      if (i >= 0) e[i] = rec; else e.push(rec);
+    });
+  }
+  const remembered = co => (empCache.employers[co] || []).filter(x => Date.now() - Date.parse(x.seen) < 60 * 864e5);
   // REV-136: every eligible row with a readable ATS posting goes first (employer-posted pay beats aggregators and estimates);
   // the worklist order is kept within each group. ats_candidates counts the whole eligible list, not just the rows reached.
   const atsOf = new Map(list.map(r => [r, L.atsFor(r.p)])); stats.ats_candidates = list.filter(r => atsOf.get(r)).length;
@@ -180,6 +204,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!Object.keys(f).length) { ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
+  // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
+  // archive or remembered postings; no new network). Posted pay and anything a lane wrote are never touched.
+  const upgradeIds = new Set(); stats.upgraded = 0;
+  const weak = r => val(r, 'SALARY_BASIS') === 'FORGE-ESTIMATE' && val(r, 'SALARY_CONF') === 'LOW' && /^comparables:/.test(val(r, 'SALARY_SOURCE'));
+  for (const r of rows) {
+    if (requests.length >= CONFIG.maxBatches * 25 || stats.upgraded >= (CONFIG.maxUpgradesPerRun || 10)) break;
+    if (!weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
+    const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER') continue;
+    stats.upgraded++; upgradeIds.add(r.PRIMARY_ID);
+    requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'same-employer:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
+    estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
+  }
   stats.planned = requests.length;
   if (!DRY) for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
     let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
@@ -192,7 +228,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       batch = batch.filter(q => {
         const cur = now[q.ruling.primaryId]; if (!cur) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
-        if (!/SALARY/.test(left)) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);
+        if (!/SALARY/.test(left) && !(upgradeIds.has(q.ruling.primaryId) && weak(cur))) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);   // an upgrade goes in only while the row still holds the weak estimate
         if (!/DEGREE/.test(left)) Object.keys(f).filter(k => /^DEGREE_/.test(k)).forEach(k => delete f[k]);
         const keep = Object.keys(f).some(k => k !== 'FEASIBILITY_ATTEMPT_ASOF'); if (!keep) stats.guard_dropped++;
         return keep;
@@ -213,6 +249,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
+  fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
