@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-21T22:19:11.066Z",
- "sourceCommit": "cc8d3df6eb1c828b057d7c393d9aca6eef480d1f",
+ "builtAt": "2026-10-21T22:19:31.114Z",
+ "sourceCommit": "da2b4f779239e4d138b5236bc5a69fca2eb8d8a2",
  "counts": {
-  "total": 12,
+  "total": 8,
   "BLOCKING": 0,
-  "ACTION": 4,
-  "WATCH": 8,
+  "ACTION": 2,
+  "WATCH": 6,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 2,
-  "UPKEEP": 5
+  "UPKEEP": 1
  },
  "items": [
   {
@@ -35,18 +35,6 @@
    "links": []
   },
   {
-   "id": "lane-overdue:ENRICH-STRATEGIC",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "ENRICH-STRATEGIC lane has gone quiet (usually reports every 6.6 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt (GROK, status COMPLETE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
-   "at": "2026-10-20T13:10:00-04:00",
-   "raisedBy": "GROK"
-  },
-  {
    "id": "run-next-owner:GOFER|CLAUDE",
    "section": "DECIDE",
    "level": "ACTION",
@@ -57,18 +45,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261021-1651ET_TERMINAL.txt",
    "at": "2026-10-21T16:51:00-04:00",
    "raisedBy": "CLAUDE"
-  },
-  {
-   "id": "pr:forge-coordination#29",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "forge-coordination PR #29: REV-155 · Grok enrichment paused (Tim 18:05 ET); Needs-you shows paused lanes as paused",
-   "detail": "Open since 2026-10-21. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-coordination #29",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/29",
-   "at": "2026-10-21T22:11:37Z",
-   "raisedBy": ""
   },
   {
    "id": "run-unfinished:POSTVAL|CHATGPT",
@@ -171,30 +147,6 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "lane-overdue:WEB",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "WEB lane has gone quiet (usually reports every 18.2 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt (GROK, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt",
-   "at": "2026-10-20T04:10:00-04:00",
-   "raisedBy": "GROK"
-  },
-  {
-   "id": "lane-overdue:ENRICH-FEASIBILITY",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "ENRICH-FEASIBILITY lane has gone quiet (usually reports every 3.4 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt (GROK, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
-   "at": "2026-10-21T08:18:00-04:00",
-   "raisedBy": "GROK"
-  },
-  {
    "id": "lane-overdue:EMAIL",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -236,7 +188,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 13,
    "usualGapHours": 6,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-21T18:07:00-04:00"
   },
   {
    "lane": "ENRICH-FEASIBILITY",
@@ -246,7 +199,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
    "runs7d": 18,
    "usualGapHours": 3.4,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-21T18:07:00-04:00"
   },
   {
    "lane": "ENRICH-STRATEGIC",
@@ -256,7 +210,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 6,
    "usualGapHours": 12,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-21T18:07:00-04:00"
   },
   {
    "lane": "ENRICH-STRATEGIC",
@@ -266,7 +221,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
    "runs7d": 6,
    "usualGapHours": 8,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-21T18:07:00-04:00"
   },
   {
    "lane": "FORGE-ENRICH-FEASIBILITY",
@@ -396,7 +352,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-CHATGPT-20261018-0546ET_TERMINAL.txt",
    "runs7d": 3,
    "usualGapHours": 24.1,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-20T11:10:00-04:00"
   },
   {
    "lane": "WEB",
@@ -406,7 +363,8 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt",
    "runs7d": 4,
    "usualGapHours": 6.5,
-   "overdue": true
+   "overdue": false,
+   "paused": "2026-10-20T11:10:00-04:00"
   },
   {
    "lane": "ZIPR",
