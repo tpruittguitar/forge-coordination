@@ -39,7 +39,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
@@ -82,6 +82,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const v = id => { const e = blsCache.series[id]; return e && Number.isFinite(e.v) ? e.v : null; };
     return v(ids[0]) && v(ids[2]) ? { state, soc, p25: v(ids[0]), median: v(ids[1]), p90: v(ids[2]) } : null;
   }
+  // Tim 2026-10-21 03:10 ET: a comparables range that 3+ eligible roles would share (same comparable set) is too generic to be
+  // MED: it goes in at LOW. Counted over the whole eligible list (pure, no network) so the rule does not depend on run order.
+  const shareKey = e => e && e.ids.slice().sort().join(',');
+  const shared = {}; list.forEach(r => { if (!/SALARY/.test(needsOf(r))) return; const e = L.estimate(r, anchors), k = shareKey(e); if (k) shared[k] = (shared[k] || 0) + 1; });
+  stats.est_shared_low = 0;
   async function estimateFor(r) {
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
     let comps = L.sameEmployerAnchors(r, anchors);
@@ -93,7 +98,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null);
       if (est) stats.est_same_employer++;
     }
-    if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; } }
+    if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
@@ -195,7 +200,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (!batch.length) continue;
       const res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json();
       const results = res.results || [];
-      batch.forEach((q, i) => { const ok = results[i] && results[i].ok; if (ok) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else stats.writer_failed++; });
+      // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
+      // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
+      const committed = res.mode === 'BATCH_RULING_SINGLE_COMMIT' || !!res.writeId;
+      batch.forEach((q, i) => { const it = results[i] || {}; const saved = it.ok && (committed || it.mode === 'ALREADY_APPLIED'); if (saved) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else if (it.ok) stats.writer_not_written++; else stats.writer_failed++; });
+      if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
     } catch (e) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); break; }

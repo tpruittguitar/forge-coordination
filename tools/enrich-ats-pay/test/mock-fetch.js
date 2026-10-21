@@ -12,7 +12,7 @@ globalThis.fetch = async (url, opts) => {
     const W = JSON.parse(fs.readFileSync(process.env.ENRICH_TEST_WRITER_ROWS, 'utf8'));
     let body;
     if (/action=row_readback/.test(url)) { const ids = decodeURIComponent(url.match(/ids=([^&]*)/)[1]).split(','); body = { ok: true, rows: ids.map(id => W[id] ? { primaryId: id, found: true, matches: 1, line: W[id] } : { primaryId: id, found: false, matches: 0 }) }; }
-    else { const req = JSON.parse(opts.body); fs.appendFileSync(process.env.ENRICH_TEST_POSTS, JSON.stringify(req) + '\n'); body = { ok: true, results: req.requests.map(() => ({ ok: true })) }; }
+    else { const req = JSON.parse(opts.body); fs.appendFileSync(process.env.ENRICH_TEST_POSTS, JSON.stringify(req) + '\n'); body = process.env.ENRICH_TEST_WRITER_MODE === 'RETRY' ? { ok: true, mode: 'BATCH_RULING_RETRY', error: 'master changed', results: req.requests.map(() => ({ ok: true, mode: 'PLANNED' })) } : { ok: true, mode: 'BATCH_RULING_SINGLE_COMMIT', writeId: 'W-TEST', results: req.requests.map(() => ({ ok: true })) }; }
     return { ok: true, status: 200, json: async () => body, text: async () => JSON.stringify(body) };
   }
   if (/\/jobs\/404\?/.test(url)) return { ok: false, status: 404, json: async () => ({}), text: async () => '' };   // posting taken down
