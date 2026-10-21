@@ -98,7 +98,7 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
   ].join('\n') + '\n');
   fs.writeFileSync(archive, r2(9, 'V2I-00000000A001', 'Archived Co', 'Plant Manager', 'Canton, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=165000; SALARY_BASE_HIGH=205000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS') + '\n');
   const today = new Date().toISOString().slice(0, 10);
-  fs.writeFileSync(emp, JSON.stringify({ employers: { zeta: [{ title: 'Plant Manager', location: 'Seattle, WA', state: 'WA', pay: { low: 190000, high: 240000 }, page: 'https://example.com/zeta/1', seen: today }] } }));
+  fs.writeFileSync(emp, JSON.stringify({ employers: { zeta: [{ title: 'Plant Manager', location: 'Seattle, WA', state: 'WA', pay: { low: 190000, high: 240000 }, page: 'https://example.com/zeta/1', seen: today }], oldco: [{ title: 'Plant Manager', location: 'Austin, TX', state: 'TX', pay: { low: 150000, high: 180000 }, page: 'https://example.com/old/1', seen: '2026-01-01' }] } }));
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
   try {
     cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
@@ -108,6 +108,26 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
     assert.strictEqual(by['V2I-00000000Z001'].source, 'SAME_EMPLOYER'); assert.match(by['V2I-00000000Z001'].basis_detail, /Plant Manager \(WA\) \$190K-\$240K/);
     assert.strictEqual(out.upgraded, 1); assert.strictEqual(by['V2I-00000000U001'].basis, 'UPGRADE'); assert.strictEqual(by['V2I-00000000U001'].source, 'SAME_EMPLOYER');
     assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.zeta.length, 1, 'cache kept, not duplicated');
+    assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.oldco, undefined, 'entries older than 60 days are pruned');
+    assert.strictEqual(out.est_same_employer, 1, 'the upgrade is counted only in upgraded');
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Grok QA #23: a same-employer estimate the BLS check drops to LOW does not replace a comparables LOW', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev140b-')), master = path.join(dir, 'master.txt'), bls = path.join(dir, 'bls.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+  fs.writeFileSync(master, [
+    r2(2, 'V2I-00000000U001', 'Upsilon', 'Plant Manager', 'Toledo, OH', 'SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=comparables:V2I-X; SALARY_BASE_LOW=150000; SALARY_BASE_HIGH=190000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+    r2(3, 'V2I-00000000U002', 'Upsilon', 'Plant Manager', 'Lima, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=175000; SALARY_BASE_HIGH=215000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+  ].join('\n') + '\n');
+  const at = new Date().toISOString(), s = id => ({ v: id.endsWith('12') ? 60000 : id.endsWith('13') ? 80000 : 100000, year: '2025', at });   // OH P90 $100K: a $195K mid is > 1.5x P90
+  fs.writeFileSync(bls, JSON.stringify({ series: Object.fromEntries(['12', '13', '15'].map(d => ['OEUS3900000000000113051' + d, s('OEUS3900000000000113051' + d)])) }));
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  try {
+    cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: bls, ENRICH_EMPLOYER_CACHE: path.join(dir, 'emp.json') }), stdio: 'pipe', timeout: 60000 });
+    const out = JSON.parse(fs.readFileSync(report, 'utf8'));
+    assert.strictEqual(out.upgraded, 0, 'LOW for LOW is no upgrade');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 

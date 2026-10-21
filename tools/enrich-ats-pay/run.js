@@ -109,12 +109,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const med = {}; const home = rowState ? await blsWages(rowState, soc) : null;
       for (const c of comps.slice(0, 5)) if (c.state && c.state !== rowState && !med[c.state]) { const w = await blsWages(c.state, soc); med[c.state] = w && w.median; }
       est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null);
-      if (est) stats.est_same_employer++;
+      if (est && !opts.noNetwork) stats.est_same_employer++;   // the upgrade pass counts only in `upgraded`
     }
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est) return null;
-    const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); stats.bls[chk.flag]++;
+    const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); if (!opts.noNetwork) stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
     return est;
   }
@@ -211,7 +211,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const r of rows) {
     if (requests.length >= CONFIG.maxBatches * 25 || stats.upgraded >= (CONFIG.maxUpgradesPerRun || 10)) break;
     if (!weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
-    const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER') continue;
+    const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER' || est.conf === 'LOW') continue;   // LOW for LOW is no upgrade
     stats.upgraded++; upgradeIds.add(r.PRIMARY_ID);
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'same-employer:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
@@ -249,6 +249,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
+  Object.keys(empCache.employers).forEach(co => { const e = empCache.employers[co].filter(x => Date.now() - Date.parse(x.seen) < 60 * 864e5).sort((a, b) => String(b.seen).localeCompare(String(a.seen))).slice(0, 50); if (e.length) empCache.employers[co] = e; else delete empCache.employers[co]; });   // Grok QA #23: prune > 60 d, newest 50 per employer
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
