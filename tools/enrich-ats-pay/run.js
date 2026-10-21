@@ -7,7 +7,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
-const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
@@ -41,6 +41,64 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
+  // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
+  const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
+  const boards = {}; let boardFetches = 0;
+  Object.assign(stats, { est_same_employer: 0, est_comparables: 0, boards_read: 0, boards_failed: 0, bls: { OK: 0, ABOVE: 0, BELOW: 0, NO_BLS: 0 }, bls_queries: 0 });
+  async function employerPostings(b, row) {
+    const key = b.kind === 'workday' ? b.key + '|' + row.TITLE : b.key;
+    if (boards[key]) return boards[key];
+    if (boardFetches >= (CONFIG.maxBoardFetches || 20)) return [];
+    boardFetches++; boards[key] = [];
+    try {
+      const q = L.boardListRequest(b, row.TITLE); await sleep(CONFIG.fetchGapMs);
+      const res = await get(q.url, { method: q.method, headers: Object.assign({ accept: 'application/json' }, q.body ? { 'content-type': 'application/json' } : {}), body: q.body });
+      let list = L.parseBoard(b, await res.json());
+      if (b.kind === 'workday') {   // pay sits on the job page: read up to 3 similar postings, pay-transparency states first
+        const L0 = L.level(row.TITLE), F0 = L.func(row.TITLE);
+        const cand = list.filter(x => x.detail && L.level(x.title) === L0 && L.func(x.title) === F0).sort((a, c) => (L.PAY_TRANSPARENCY.indexOf(c.state) >= 0) - (L.PAY_TRANSPARENCY.indexOf(a.state) >= 0)).slice(0, 3);
+        for (const x of cand) { try { await sleep(CONFIG.fetchGapMs); const d = await (await get(x.detail, { headers: { accept: 'application/json' } })).json(); const info = d && d.jobPostingInfo; if (info) { x.pay = L.payFromText(L.parseAts('workday', d).text); if (!x.state) x.state = L.stateFrom(info.location || ''); } } catch (e) {} }
+        list = cand;
+      }
+      boards[key] = list; stats.boards_read++;
+    } catch (e) { stats.boards_failed++; }
+    return boards[key];
+  }
+  const blsCache = fs.existsSync(BLS_CACHE) ? JSON.parse(fs.readFileSync(BLS_CACHE, 'utf8')) : { series: {} }; blsCache.series = blsCache.series || {};
+  // Grok Bot QA #21: cache finite numbers only (BLS suppresses some cells with "-" or "*"); retry a missing value after 7 days;
+  // count queries per UTC day in the cache and stop at 20 (BLS v1 allows 25 a day; the job runs hourly).
+  async function blsWages(state, soc) {
+    const ids = ['12', '13', '15'].map(dt => L.blsSeries(state, soc, dt)); if (!ids[0]) return null;
+    const day = new Date().toISOString().slice(0, 10); if (!blsCache.daily || blsCache.daily.day !== day) blsCache.daily = { day, queries: 0 };
+    const age = id => blsCache.series[id] ? Date.now() - Date.parse(blsCache.series[id].at) : Infinity;
+    const stale = ids.filter(id => { const e = blsCache.series[id]; return !e || (Number.isFinite(e.v) ? age(id) > 180 * 864e5 : age(id) > 7 * 864e5); });
+    if (stale.length && stats.bls_queries < (CONFIG.blsMaxQueries || 10) && blsCache.daily.queries < (CONFIG.blsMaxPerDay || 20)) {
+      stats.bls_queries++; blsCache.daily.queries++;
+      try {
+        const j = await (await get('https://api.bls.gov/publicAPI/v1/timeseries/data/', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ seriesid: stale }) })).json();
+        if (j && j.status === 'REQUEST_SUCCEEDED') ((j.Results && j.Results.series) || []).forEach(x => { const d = (x.data || [])[0], v = d ? Number(String(d.value).replace(/,/g, '')) : NaN; blsCache.series[x.seriesID] = Number.isFinite(v) && v > 0 ? { v, year: d.year, at: new Date().toISOString() } : { v: null, at: new Date().toISOString() }; });
+      } catch (e) {}
+    }
+    const v = id => { const e = blsCache.series[id]; return e && Number.isFinite(e.v) ? e.v : null; };
+    return v(ids[0]) && v(ids[2]) ? { state, soc, p25: v(ids[0]), median: v(ids[1]), p90: v(ids[2]) } : null;
+  }
+  async function estimateFor(r) {
+    const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
+    let comps = L.sameEmployerAnchors(r, anchors);
+    if (!comps.length) { const b = L.boardOf(r.p) || boardByCo[L.normCo(r.COMPANY)]; if (b) comps = L.similarPostings(r, await employerPostings(b, r)); }
+    let est = null;
+    if (comps.length) {
+      const med = {}; const home = rowState ? await blsWages(rowState, soc) : null;
+      for (const c of comps.slice(0, 5)) if (c.state && c.state !== rowState && !med[c.state]) { const w = await blsWages(c.state, soc); med[c.state] = w && w.median; }
+      est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null);
+      if (est) stats.est_same_employer++;
+    }
+    if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; } }
+    if (!est) return null;
+    const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); stats.bls[chk.flag]++;
+    est.conf = chk.conf; est.bls = chk;
+    return est;
+  }
   // REV-136: every eligible row with a readable ATS posting goes first (employer-posted pay beats aggregators and estimates);
   // the worklist order is kept within each group. ats_candidates counts the whole eligible list, not just the rows reached.
   const atsOf = new Map(list.map(r => [r, L.atsFor(r.p)])); stats.ats_candidates = list.filter(r => atsOf.get(r)).length;
@@ -111,7 +169,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
-      else { const est = L.estimate(r, anchors); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'comparables:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + ' employer-posted comparable(s) [' + est.ids.join(', ') + ']; ' + est.basis + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], comparables: est.ids }); } }
+      else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: (est.source === 'SAME_EMPLOYER' ? 'same-employer:' : 'comparables:') + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (!Object.keys(f).length) { ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
@@ -146,10 +204,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
+  fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
-  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
+  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));

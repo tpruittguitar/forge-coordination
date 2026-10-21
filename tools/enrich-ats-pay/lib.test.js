@@ -100,3 +100,37 @@ test('REV-136: ATS links found in any posting field, API forms and Workday', () 
   assert.match(L.parseAts('workday', info).text, /Bachelor's degree/);
   assert.strictEqual(L.parseAts('workday', {}), null);
 });
+
+test('REV-138: same-employer source, board parsing, BLS series and cross-check', () => {
+  assert.strictEqual(L.normCo('Blue Origin, LLC'), L.normCo('Blue Origin'));
+  // Grok Bot QA #21: foreign and ambiguous locations are not US states
+  assert.deepStrictEqual(['Toronto, ON, CA', 'Bangalore, IN', 'Munich, DE', 'Remote OR Hybrid', 'Mexico City, Mexico', 'London, United Kingdom', 'Remote'].map(L.stateFrom), ['', '', '', '', '', '', '']);
+  assert.deepStrictEqual(['Kent, WA', 'US-CA-Irvine', 'Seattle, Washington, United States', 'Austin, TX 78701', 'Indianapolis, IN', 'Dover, DE, US', 'Costa Mesa, CA', 'London, KY', 'Paris, TX'].map(L.stateFrom), ['WA', 'CA', 'WA', 'TX', 'IN', 'DE', 'CA', 'KY', 'TX']);
+  assert.deepStrictEqual(L.boardOf({ ATS_POSTING_URL: 'https://job-boards.greenhouse.io/anduril/jobs/4567890' }), { kind: 'greenhouse', key: 'greenhouse:anduril', board: 'anduril' });
+  const wd = L.boardOf({ SOURCE_URL: 'https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Seattle-WA/Director_R1' });
+  assert.deepStrictEqual([wd.kind, wd.tenant, wd.site], ['workday', 'blueorigin', 'BlueOrigin']);
+  const q = L.boardListRequest(wd, 'Manufacturing Director - Lunar Tanks');
+  assert.strictEqual(q.method, 'POST'); assert.match(q.url, /\/wday\/cxs\/blueorigin\/BlueOrigin\/jobs$/); assert.strictEqual(JSON.parse(q.body).searchText, 'Manufacturing Lunar Tanks');
+  const gh = L.parseBoard({ kind: 'greenhouse' }, { jobs: [
+    { title: 'Director of Manufacturing', location: { name: 'Costa Mesa, CA' }, content: '&lt;p&gt;Base pay $200,000 - $260,000&lt;/p&gt;', absolute_url: 'u1' },
+    { title: 'Director, Manufacturing', location: { name: 'Atlanta, GA' }, content: 'no pay', absolute_url: 'u2' },
+    { title: 'Technician', location: { name: 'Seattle, WA' }, content: '$60,000 - $80,000', absolute_url: 'u3' }] });
+  assert.deepStrictEqual(gh.map(x => x.state), ['CA', 'GA', 'WA']);
+  const row = { PRIMARY_ID: 'X', COMPANY: 'Anduril', TITLE: 'Director of Manufacturing Operations', LOCATION: 'Huntsville, AL' };
+  const sim = L.similarPostings(row, gh); assert.deepStrictEqual(sim.map(x => x.page), ['u1'], 'same level and function, with pay');
+  assert.deepStrictEqual(L.similarPostings(row, [{ title: 'Director of Manufacturing', location: 'Toronto, ON, CA', state: L.stateFrom('Toronto, ON, CA'), pay: { low: 200000, high: 250000 } }]), [], 'a posting abroad is never a comparable');
+  const est = L.sameEmployerEstimate(row, sim, st => st === 'CA' ? 0.8 : null);
+  assert.deepStrictEqual([est.low, est.high, est.conf, est.source], [160000, 208000, 'MED', 'SAME_EMPLOYER']);
+  assert.match(est.basis, /Director of Manufacturing \(CA\) \$200K-\$260K x0\.80 BLS state ratio/);
+  assert.strictEqual(L.sameEmployerEstimate(row, sim, () => 0.5).low, 150000, 'state ratio floored at 0.75');
+  const anchors = [{ id: 'A1', co: 'Anduril Industries', title: 'Director, Manufacturing', low: 190000, high: 240000, level: 2, func: 'MFG', state: 'CA' },
+    { id: 'A2', co: 'Other Co', title: 'Director, Manufacturing', low: 150000, high: 190000, level: 2, func: 'MFG', state: 'AL' }];
+  assert.deepStrictEqual(L.sameEmployerAnchors({ PRIMARY_ID: 'X', COMPANY: 'Anduril Industries, Inc.', TITLE: 'Director of Manufacturing' }, anchors).map(a => a.id), ['A1']);
+  assert.strictEqual(L.socOf('Plant Manager'), '113051'); assert.strictEqual(L.socOf('Director, Supply Chain'), '113071');
+  assert.strictEqual(L.blsSeries('TN', '113051', '12'), 'OEUS470000000000011305112'); assert.strictEqual(L.blsSeries('XX', '113051', '12'), null);
+  const w = { state: 'AL', soc: '113051', p25: 90000, median: 120000, p90: 180000 };
+  assert.deepStrictEqual([L.blsCheck({ mid: 200000, high: 230000, conf: 'MED' }, w).flag, L.blsCheck({ mid: 200000, high: 230000, conf: 'MED' }, w).conf], ['OK', 'MED']);
+  assert.deepStrictEqual([L.blsCheck({ mid: 300000, high: 330000, conf: 'HIGH' }, w).flag, L.blsCheck({ mid: 300000, high: 330000, conf: 'HIGH' }, w).conf], ['ABOVE', 'MED']);
+  assert.deepStrictEqual([L.blsCheck({ mid: 80000, high: 85000, conf: 'MED' }, w).flag, L.blsCheck({ mid: 80000, high: 85000, conf: 'MED' }, w).conf], ['BELOW', 'LOW']);
+  assert.strictEqual(L.blsCheck({ mid: 1, high: 1, conf: 'MED' }, null).flag, 'NO_BLS');
+});
