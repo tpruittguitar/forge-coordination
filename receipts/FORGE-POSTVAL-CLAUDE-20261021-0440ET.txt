@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261021-0440ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+POLICY_REVISION=2026-10-21.1
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; fetched via GitHub connector, blob SHA 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read this run)
+NOTE=entry/manifest/packet read via GitHub connector (raw.githubusercontent WebFetch permission not answered); same files, main branch.
+GATE=WRITER_FREEZE frozen=false (read fresh); queue root had no pending files; writer_status/row_readback/receipt_index tools not available in this runtime.
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION generated 2026-10-21T08:25Z (fresh), ELIGIBLE_TOTAL=146 SHOWN=80
+
+ROWS_EVALUATED=14
+LIVE=3 (V2I-55CEDB728CB1 Tesla; V2I-9EED65EEC987 Shermco; V2I-CF882BE76023 Entegris; all LIVE_SECONDARY via LinkedIn)
+CLOSED=1 (V2I-2240DC6A4C1C Activ8, LinkedIn expired_jd_redirect, sole source)
+UNCONFIRMED=10 (V2I-9024464A0E3C Hyve: LinkedIn page undated, metadata 2026-08-25 >30d; Indeed viewjob HTTP 401: V2I-8B3AD076FDC5, V2I-42FBC220209E, V2I-F079E97821B7, V2I-B9DB759E145C, V2I-2C880B989A0E, V2I-A29761D00268, V2I-D97C99896D2C, V2I-B697FE2E3F55; Glassdoor bot_blocked: V2I-ACF2F2EF1194). Block/401 is never closure; no write submitted for these.
+WRITTEN=4 (submitted)
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=16 URLs in 2 calls (fetch_content, ttl 0, 60000ms)
+BACKLOG_REMAINING=~132 of 146 eligible
+STOP_REASON=Remaining worklist URLs are truncated tracking redirects (lensa/ziprecruiter/indeed clk/glassdoor partner, worklist truncates with ~), Indeed viewjob returns 401 to TinyFish, Glassdoor bot_blocked, Indeed search-page URLs; no employer route found within run. Named hard limit: source blocking/truncated URLs. Verification tools unavailable.
+BATCHES_COMPLETED_THIS_RUN=1 (submitted, unverified)
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261021-0440ET-B01 (R01-R04); Drive file 1sxKluPh0cBggptMkOhY-Vh4DLgLG1Sqi in WRITER_QUEUE
+PENDING=B01 SUBMITTED, awaiting Writer RESULT, receipt-index COMPLETE and row_readback; next run/gofer must verify. Not labeled COMPLETE.
+NEXT_OWNER=gofer / next FORGE_POSTING_VALIDATION run (verify B01)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
