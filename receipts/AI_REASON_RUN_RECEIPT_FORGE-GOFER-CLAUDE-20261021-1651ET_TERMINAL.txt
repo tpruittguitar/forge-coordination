@@ -1,0 +1,35 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_APPLICATION_WRITER_GOFER
+RUN_ID=FORGE-GOFER-CLAUDE-20261021-1651ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=378935ad2efb26090fa05b02ac19aeca505fe06487eb35537526cdaeac614a4b (lane.sha256; fetched GitHub blob SHA 8d3974e matches lane.blob_sha; local sha256 not recomputed)
+SOURCE_VERSIONS=manifest policy_revision 2026-10-21.1; repo main 4e5b905; Writer build 79ffb25
+RULES_BLOB_UNCHECKED (forge-policy outside session repo scope; no policy interpretation needed)
+GATE=WRITER_FREEZE.json fresh: frozen=false (at 2026-10-18T03:29Z). writer_status/row_readback/receipt_index: no transport in this runtime.
+CONNECTORS=Drive and Gmail available. No computer access (scheduled cloud run).
+ASKS=resolved files unchanged (12 incl. DISMISS); ASK-20261019-CLAUDE-1855 still open, not re-asked.
+WORK
+- Queue root had no files (only processed/ and failed/); no in-flight gofer request. No new EVIDENCE_HANDOFF_ARCHIVE (only 20261011T1826Z; cursor unchanged).
+- Gmail newer_than:1d found 4 new events not in prior receipts:
+  E-Oracle REJECTED: msg 1a16016084ede332, noreply@oracle.com, "Thank you for your application to Oracle", 2026-10-21T20:10Z, Director, Commissioning QA/QC req 333250.
+  E-Apera APPLIED: msg 1a15f9968541f6b4, LinkedIn, 2026-10-21T17:54Z, Director of Continuous Improvement, Illinois (job 4474482945).
+  E-AveryPoint APPLIED: msg 1a15f900f740ef93, LinkedIn, 2026-10-21T17:43Z, VP Operations High Growth High Mix (search firm posting, client unknown; job 4451935782).
+  E-CraigWire APPLIED: msg 1a1600850749f998, LinkedIn, 2026-10-21T19:55Z, Director of Quality & Continuous Improvement, Douglasville GA (job 4482147460).
+- B01 (file CLAUDE_FORGE-GOFER-CLAUDE-20261021-1651ET-B01.json, Drive 1PR0x4ZE55zV3wtZTg6QSB_YVcBqEhon9): RESULT SUCCESS, writeId W-20261021205238229-1bd282. Apera CREATE V2E-FC4618252B03; Craig Wire CREATE V2E-8E6B3833122C; Oracle HOLD (EMPLOYER_TITLE_NEEDS_LOCATION, possible V2I-5EE0DD07FA49); Avery Point HOLD (SOURCE_URL_NEEDS_IDENTITY_EVIDENCE, possible V2I-75F150125D32).
+- Identity grounding from a fresh master read (read-only, identity only): V2I-75F150125D32 INTAKE_KEY=LI-4451935782 and SOURCE_URL linkedin.com/jobs/view/4451935782 = exact LinkedIn job ID of the Gmail confirmation. V2I-5EE0DD07FA49 is the sole Oracle row titled Director, Commissioning QA/QC, already APPLIED (TIM_APPLIED_2026-10-20); Oracle application confirmation 1a157ad276bbccb5 (10-20) names the same title and req 333250. The row lacks REQ_ID and location is unconfirmed (Nashville vs Abilene mirror), so grounding is employer+title+same-req confirmation chain, not row REQ_ID.
+- B02 (file CLAUDE_FORGE-GOFER-CLAUDE-20261021-1651ET-B02.json, Drive 155-6avAqbpD4XPmLjYOhfu47jr1B__UE): only the two held items, with TARGET_PRIMARY_ID, new request IDs. RESULT SUCCESS, writeId W-20261021205535613-17c25d, 2 UPDATE, held 0: Oracle REJECTED_BY_EMPLOYER -> V2I-5EE0DD07FA49; Avery Point APPLIED -> V2I-75F150125D32. Master counts line after B02: APPLIED=344, REJECTED_BY_EMPLOYER=36.
+WRITES: 2 batches (B01, B02).
+WRITTEN_REQUEST_IDS=FORGE-GOFER-CLAUDE-20261021-1651ET-B01-E01..E04 (E02,E04 created; E01,E03 held), FORGE-GOFER-CLAUDE-20261021-1651ET-B02-E01..E02 (updated)
+STATUS=WRITER_ACCEPTED (RESULT SUCCESS) for Apera V2E-FC4618252B03, Craig Wire V2E-8E6B3833122C, Oracle V2I-5EE0DD07FA49, Avery Point V2I-75F150125D32. Apera and Craig Wire rows were also seen in a fresh master read (informal, not row_readback). NOT VERIFIED: no receipt_index COMPLETE and no row_readback route.
+ENRICH BULK VERIFY (REV-115): not executable, no receipt_index/row_readback route. ENRICH_VERIFIED=none; ENRICH_FAILED=none observed.
+PENDING_VERIFICATION: this run's W-20261021205238229-1bd282 and W-20261021205535613-17c25d (V2E-FC4618252B03, V2E-8E6B3833122C, V2I-5EE0DD07FA49, V2I-75F150125D32); prior 1055ET-B01 W-20261021145317817-15a948 (V2E-A0570E2656B3, V2E-2F6FAA4663FF); 0451ET-B01; 2251ET-B01; Novo; Ashley; Harmattan; Grok ENRICH RESULT-only batches.
+VERIFIED_THIS_RUN=none. VERIFIED_PRIOR_RUN=none.
+HELD (unchanged): CX2, Leidos, Apptronik, Blue Origin, Reynolds 2026-4234, Anduril Altius (ASK-20261019-CLAUDE-1855), Tesla 286230, Tesla 283760 (Tim), Muon, Re:Build, AMETEK item 12, archive items 17,32,53,59,117,175,258,262,265,363,366, RTX/Collins HireVue (Tim). Oracle hold resolved this run (rejection recorded against V2I-5EE0DD07FA49).
+COUNTS: new dispositions 4 distinct (Oracle, Apera, Avery Point, Craig Wire); failures 0; held 0 after B02.
+OLDEST_BLOCKER=Tesla req proof (since 2026-10-18 14:50 ET); readback/index transport (since 2026-10-19 02:52 ET)
+NEXT_OWNER=Writer owner/Tim: row_readback + receipt_index route; Tim: Tesla 283760, ASK-20261019-CLAUDE-1855, RTX/Collins HireVue. Next gofer run: new Gmail evidence only.
+NOT_DONE=No applications, outreach, direct master/index edits, protected-state overrides, blind retries. No client research on the Avery Point agency row (not required).
+STOP_REASON=all new evidence dispositioned; verification transport unavailable
+BATCHES_COMPLETED_THIS_RUN=2
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK (writes accepted, unverified)
