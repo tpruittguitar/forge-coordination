@@ -145,7 +145,7 @@ function build(opts) {
   });
 
   /* 2b. lane silence: judged per lane across providers, so a lane handed from one AI to another is not "overdue" */
-  /* REV-154: a lane Tim paused (control/PAUSED_LANES.json) is quiet on purpose; it is marked paused, never "gone quiet". */
+  /* REV-155: a lane Tim paused (control/PAUSED_LANES.json) is quiet on purpose; it is marked paused, never "gone quiet". */
   let paused = {};
   try { const pj = JSON.parse(read(path.join(root, 'control', 'PAUSED_LANES.json')) || '{}'); Object.keys(pj.lanes || {}).forEach(k => { paused[normLane(k)] = pj.lanes[k]; }); } catch (e) { paused = {}; }
   const byLane = {};

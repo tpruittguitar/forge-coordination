@@ -131,7 +131,7 @@ test('instruction-runtime block codes (BLOCKED_AUTHORITY etc.) are blocking fail
   assert.ok(!ok.items.some(i => i.id.indexOf('run-blocked') === 0));
 });
 
-test('REV-154: a lane in control/PAUSED_LANES.json is marked paused, never reported as gone quiet', () => {
+test('REV-155: a lane in control/PAUSED_LANES.json is marked paused, never reported as gone quiet', () => {
   const files = {};
   ['0100', '0400', '0700', '1000', '1300'].forEach(t => { files['receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261017-' + t + 'ET_TERMINAL.txt'] = 'RUN_STATUS=COMPLETE\n'; });
   const quiet = build({ root: repo(files), now: NOW });
