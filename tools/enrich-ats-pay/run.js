@@ -34,7 +34,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
-  const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.gone = ledger.gone || {};
+  const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {};
   const fresh = id => { const t = ledger.submitted[id] || ledger.tried[id]; return t && Date.now() - Date.parse(t) < CONFIG.resubmitHours * 3600e3; };
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
@@ -46,15 +46,19 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const atsOf = new Map(list.map(r => [r, L.atsFor(r.p)])); stats.ats_candidates = list.filter(r => atsOf.get(r)).length;
   stats.ats_by_kind = {}; list.forEach(r => { const a = atsOf.get(r); if (a) stats.ats_by_kind[a.kind] = (stats.ats_by_kind[a.kind] || 0) + 1; });
   // Grok Bot QA #19: at most CONFIG.atsFirstPerRun ATS rows jump the queue, so top-priority non-ATS rows (Shield AI) still get
-  // the rest of the 2 x 25 cap; a posting found gone (Workday 403, Greenhouse/Lever/Ashby 404) is not retried for 7 days.
-  const goneRecent = id => ledger.gone[id] && Date.now() - Date.parse(ledger.gone[id]) < 7 * 864e5;
-  const first = list.filter(r => atsOf.get(r) && !goneRecent(r.PRIMARY_ID)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
+  // the rest of the 2 x 25 cap.
+  // Liveness belongs to the Writer's ATS checker (foreman-cockpit apps-script/PipelineAts.gs: rechecks every active ATS row every
+  // 1-3 days, closes only on a proven per-posting answer, writes LIVENESS through the Writer). This bot never decides a posting is
+  // gone: a row the checker already marked CLOSED is skipped; a 403/404 here is reported (ats_unconfirmed_rows) and the row still
+  // gets its aggregator read and estimate.
+  const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
+  const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
   const ordered = first.concat(list.filter(r => !firstSet.has(r)));
-  stats.ats_gone = 0; stats.skipped_gone = 0; const goneRows = [];
+  stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
     if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
-    if (goneRecent(r.PRIMARY_ID)) { stats.skipped_gone++; continue; }   // waits for a closed / liveness check, not an hourly retry
+    if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
     let checked = false, postedPay = null;
     if (api) {
@@ -70,10 +74,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           if (d) { stats.degree++; Object.assign(f, { DEGREE_TEXT: d.text, DEGREE_REQ: d.req, DEGREE_EVIDENCE_URL: api.page, DEGREE_ASOF: today }); }
         }
       } catch (e) {
-        if ((e.status === 403 && api.kind === 'workday') || e.status === 404) {   // posting taken down (live Workday cxs GET = 200 without headers; a closed req = 403)
-          stats.ats_gone++; ledger.gone[r.PRIMARY_ID] = new Date().toISOString(); ledger.tried[r.PRIMARY_ID] = ledger.gone[r.PRIMARY_ID];
-          goneRows.length < 50 && goneRows.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, posting: api.page, status: e.status });   // no timestamp: an unchanged dry run must not rewrite the report
-          continue;
+        if ((e.status === 403 && api.kind === 'workday') || e.status === 404) {   // maybe taken down, maybe a bad address: not decided here
+          stats.ats_unconfirmed++;
+          unconfirmedRows.length < 50 && unconfirmedRows.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, posting: api.page, status: e.status, checker: val(r, 'ATS_CHECK_RESULT') || 'not checked', checkerAsOf: val(r, 'ATS_CHECK_ASOF').slice(0, 10) });   // no run timestamp: an unchanged dry run must not rewrite the report
         }
         stats.ats_failed++; const k = api.kind; (stats.ats_errors = stats.ats_errors || {})[k] = stats.ats_errors[k] || []; stats.ats_errors[k].length < 3 && stats.ats_errors[k].push(String(e.status || e.message).slice(0, 60)); }
     }
@@ -130,10 +133,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     } catch (e) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); break; }
     await sleep(CONFIG.batchGapMs);
   }
-  for (const k of ['submitted', 'tried', 'gone']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
+  for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_gone_rows: goneRows });
+  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
   const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
