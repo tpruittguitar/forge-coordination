@@ -176,6 +176,33 @@ test('QA REV-139: on BATCH_RULING_RETRY ("master changed") ok:true items are not
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('REV-153: a batch refused with WRITE_FENCE waits and goes again; still fenced = deferred, never failed', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev153-')), master = path.join(dir, 'master.txt'), rows = path.join(dir, 'writer.json'), posts = path.join(dir, 'posts.jsonl'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  fs.writeFileSync(master, MASTER);
+  const byId = {}; MASTER.trim().split('\n').forEach(l => { byId[l.split(' | ')[1]] = l; });
+  fs.writeFileSync(rows, JSON.stringify(byId));
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  const run = mode => { fs.rmSync(posts, { force: true }); fs.rmSync(ledger, { force: true }); cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_EMPLOYER_CACHE: path.join(os.tmpdir(), 'rev140-emp-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: ledger, ENRICH_TEST_WRITER_MODE: mode }), stdio: 'pipe', timeout: 60000 });
+    return { out: JSON.parse(fs.readFileSync(report, 'utf8')), led: JSON.parse(fs.readFileSync(ledger, 'utf8')), posts: fs.readFileSync(posts, 'utf8').trim().split('\n').map(JSON.parse) }; };
+  try {
+    let r = run('FENCE_ONCE');
+    const n = r.posts[0].requests.length;
+    assert.ok(n > 0);
+    assert.strictEqual(r.posts.length, 2, 'the fenced batch is sent again');
+    assert.deepStrictEqual(r.posts[1].requests, r.posts[0].requests);
+    assert.strictEqual(r.posts[1].requestId, r.posts[0].requestId, 'same requestId: the Writer cannot apply it twice');
+    assert.strictEqual(r.out.writer_fenced, 1); assert.strictEqual(r.out.writer_ok, n); assert.strictEqual(r.out.writer_failed, 0);
+    r = run('FENCE');
+    assert.strictEqual(r.posts.length, 5, 'first try + fenceRetries (4)');
+    assert.strictEqual(r.out.writer_failed, 0, 'a fenced batch wrote nothing and failed nothing');
+    assert.strictEqual(r.out.writer_ok, 0); assert.strictEqual(r.out.writer_deferred, n);
+    assert.match(r.out.writer_error, /not yet independently verified/);
+    r.posts[0].requests.forEach(q => assert.strictEqual(r.led.submitted[q.ruling.primaryId], undefined, 'goes again next run'));
+    assert.strictEqual(JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')).batchGapMs >= 125000, true, 'batches sit past the Writer 120 s verify grace');
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('an unchanged dry run leaves the report byte for byte (no hourly commit)', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev121-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);
