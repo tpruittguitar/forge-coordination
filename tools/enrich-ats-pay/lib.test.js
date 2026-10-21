@@ -82,3 +82,21 @@ test('Grok Bot QA 19:32: the degree sentence is verbatim; the bachelor clause de
   assert.strictEqual(L.degreeFromText("Bachelor's degree in Engineering, master's preferred.").req, 'REQUIRED');
 });
 
+
+test('REV-136: ATS links found in any posting field, API forms and Workday', () => {
+  const wd = L.atsApi('https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Seattle-WA/Director-Manufacturing_R12345?source=x');
+  assert.strictEqual(wd.kind, 'workday');
+  assert.strictEqual(wd.api, 'https://blueorigin.wd5.myworkdayjobs.com/wday/cxs/blueorigin/BlueOrigin/job/Seattle-WA/Director-Manufacturing_R12345');
+  assert.strictEqual(wd.page, 'https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Seattle-WA/Director-Manufacturing_R12345');
+  assert.strictEqual(L.atsApi('https://acme.wd1.myworkdayjobs.com/Careers/job/Austin/Plant-Manager_JR1').api, 'https://acme.wd1.myworkdayjobs.com/wday/cxs/acme/Careers/job/Austin/Plant-Manager_JR1');
+  assert.strictEqual(L.atsApi('https://boards-api.greenhouse.io/v1/boards/anduril/jobs/4567890').page, 'https://job-boards.greenhouse.io/anduril/jobs/4567890');
+  assert.strictEqual(L.atsApi('https://api.lever.co/v0/postings/shieldai/0f1e2d3c-4b5a-6978-8a9b-0c1d2e3f4a5b').kind, 'lever');
+  const p = { SOURCE_URL: 'https://www.linkedin.com/jobs/view/1', ATS_POSTING_URL: 'https://job-boards.greenhouse.io/anduril/jobs/4567890' };
+  assert.strictEqual(L.atsFor(p).key, 'ATS_POSTING_URL');
+  assert.strictEqual(L.atsFor({ SOURCE_URL: 'https://www.linkedin.com/jobs/view/1', LIVENESS_EVIDENCE_URL: 'https://boards-api.greenhouse.io/v1/boards/a/jobs/9' }).kind, 'greenhouse');
+  assert.strictEqual(L.atsFor({ SOURCE_URL: 'https://www.linkedin.com/jobs/view/1' }), null);
+  const info = { jobPostingInfo: { jobDescription: '<p>Requires a Bachelor&#39;s degree.</p><p>Pay range: $165,000 - $210,000 per year</p>' } };
+  assert.deepStrictEqual(L.parseAts('workday', info).pay, { low: 165000, high: 210000 });
+  assert.match(L.parseAts('workday', info).text, /Bachelor's degree/);
+  assert.strictEqual(L.parseAts('workday', {}), null);
+});

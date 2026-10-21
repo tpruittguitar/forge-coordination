@@ -41,10 +41,15 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
-  for (const r of list) {
+  // REV-136: every eligible row with a readable ATS posting goes first (employer-posted pay beats aggregators and estimates);
+  // the worklist order is kept within each group. ats_candidates counts the whole eligible list, not just the rows reached.
+  const atsOf = new Map(list.map(r => [r, L.atsFor(r.p)])); stats.ats_candidates = list.filter(r => atsOf.get(r)).length;
+  stats.ats_by_kind = {}; list.forEach(r => { const a = atsOf.get(r); if (a) stats.ats_by_kind[a.kind] = (stats.ats_by_kind[a.kind] || 0) + 1; });
+  const ordered = list.filter(r => atsOf.get(r)).concat(list.filter(r => !atsOf.get(r)));
+  for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
     if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
-    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = L.atsApi(url), f = {};
+    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
     let checked = false, postedPay = null;
     if (api) {
       stats.ats_rows++;
