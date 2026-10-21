@@ -31,7 +31,7 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
     assert.strictEqual(by['V2I-00000000000C'].SALARY_CONF, 'MED');
     assert.match(by['V2I-00000000000C'].SALARY_NOTE, /FORGE-ESTIMATE from 2 employer-posted comparable\(s\) \[V2I-00000000000E, V2I-00000000000F\].*this posting read, no pay stated; uncertainty: moderate/);
     assert.strictEqual(by['V2I-00000000000C'].SALARY_ESTIMATE_BASIS, undefined);
-    assert.deepStrictEqual(out.estimate_samples.map(x => x.id), ['V2I-00000000000C']);
+    assert.deepStrictEqual(out.estimate_samples.map(x => [x.id, x.basis]), [['V2I-00000000000C', 'POSTING_READ']]);
     assert.strictEqual(by['V2I-00000000000D'], undefined, 'posting never read: no estimate');
     assert.strictEqual(out.estimate_waiting_for_posting, 2, 'D (never read) and G (ATS 404 unconfirmed, no aggregator read): Tim 2026-10-20 rule, an estimate only after a posting was read');
     // REV-136 (Grok Bot QA #19): the ATS link is found in ATS_POSTING_URL; a taken-down posting is reported, not retried or estimated
@@ -40,6 +40,28 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
     assert.strictEqual(out.ats_candidates, 4); assert.strictEqual(out.ats_unconfirmed, 1);
     assert.deepStrictEqual(out.ats_unconfirmed_rows.map(x => [x.id, x.status, x.checker]), [['V2I-00000000000G', 404, 'not checked']]);
     assert.strictEqual(out.skipped_closed, 1, 'a row the checker closed is skipped');
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Tim 2026-10-21 02:15 ET: 2 failed posting reads on different days allow an estimate marked NO_POSTING_READ; 1 does not', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev136-')), master = path.join(dir, 'master.txt'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  fs.writeFileSync(master, MASTER);
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  const run = () => { cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_LEDGER: ledger }), stdio: 'pipe', timeout: 60000 }); return JSON.parse(fs.readFileSync(report, 'utf8')); };
+  try {
+    fs.writeFileSync(ledger, JSON.stringify({ submitted: {}, tried: {}, failedReads: {} }));
+    let out = run();
+    assert.ok(!out.estimate_samples.some(x => x.id === 'V2I-00000000000G'), '1 failed read: still waiting'); assert.strictEqual(out.estimates_no_posting_read, undefined);
+    const yesterday = new Date(Date.now() - 864e5).toISOString().slice(0, 10);
+    fs.writeFileSync(ledger, JSON.stringify({ submitted: {}, tried: {}, failedReads: { 'V2I-00000000000G': { dates: [yesterday], n: 1 } } }));
+    out = run();
+    const g = out.estimate_samples.find(x => x.id === 'V2I-00000000000G');
+    assert.ok(g, '2 failed reads on different days: estimated'); assert.strictEqual(g.basis, 'NO_POSTING_READ'); assert.strictEqual(out.estimates_no_posting_read, 1);
+    fs.writeFileSync(ledger, JSON.stringify({ submitted: {}, tried: {}, failedReads: { 'V2I-00000000000G': { dates: [new Date().toISOString().slice(0, 10)], n: 1 } } }));
+    out = run();
+    assert.ok(!out.estimate_samples.some(x => x.id === 'V2I-00000000000G'), 'two reads on the same day count once');
+    assert.strictEqual(out.skipped_closed, 1, 'a CLOSED row is still skipped');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
