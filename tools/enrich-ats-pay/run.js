@@ -65,17 +65,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     return boards[key];
   }
   const blsCache = fs.existsSync(BLS_CACHE) ? JSON.parse(fs.readFileSync(BLS_CACHE, 'utf8')) : { series: {} }; blsCache.series = blsCache.series || {};
+  // Grok Bot QA #21: cache finite numbers only (BLS suppresses some cells with "-" or "*"); retry a missing value after 7 days;
+  // count queries per UTC day in the cache and stop at 20 (BLS v1 allows 25 a day; the job runs hourly).
   async function blsWages(state, soc) {
     const ids = ['12', '13', '15'].map(dt => L.blsSeries(state, soc, dt)); if (!ids[0]) return null;
-    const stale = ids.filter(id => !blsCache.series[id] || Date.now() - Date.parse(blsCache.series[id].at) > 180 * 864e5);
-    if (stale.length && stats.bls_queries < (CONFIG.blsMaxQueries || 10)) {
-      stats.bls_queries++;
+    const day = new Date().toISOString().slice(0, 10); if (!blsCache.daily || blsCache.daily.day !== day) blsCache.daily = { day, queries: 0 };
+    const age = id => blsCache.series[id] ? Date.now() - Date.parse(blsCache.series[id].at) : Infinity;
+    const stale = ids.filter(id => { const e = blsCache.series[id]; return !e || (Number.isFinite(e.v) ? age(id) > 180 * 864e5 : age(id) > 7 * 864e5); });
+    if (stale.length && stats.bls_queries < (CONFIG.blsMaxQueries || 10) && blsCache.daily.queries < (CONFIG.blsMaxPerDay || 20)) {
+      stats.bls_queries++; blsCache.daily.queries++;
       try {
         const j = await (await get('https://api.bls.gov/publicAPI/v1/timeseries/data/', { method: 'POST', headers: { 'content-type': 'application/json' }, body: JSON.stringify({ seriesid: stale }) })).json();
-        ((j && j.Results && j.Results.series) || []).forEach(x => { const d = (x.data || [])[0]; blsCache.series[x.seriesID] = { v: d ? +d.value : null, year: d ? d.year : '', at: new Date().toISOString() }; });
+        if (j && j.status === 'REQUEST_SUCCEEDED') ((j.Results && j.Results.series) || []).forEach(x => { const d = (x.data || [])[0], v = d ? Number(String(d.value).replace(/,/g, '')) : NaN; blsCache.series[x.seriesID] = Number.isFinite(v) && v > 0 ? { v, year: d.year, at: new Date().toISOString() } : { v: null, at: new Date().toISOString() }; });
       } catch (e) {}
     }
-    const v = id => blsCache.series[id] && blsCache.series[id].v;
+    const v = id => { const e = blsCache.series[id]; return e && Number.isFinite(e.v) ? e.v : null; };
     return v(ids[0]) && v(ids[2]) ? { state, soc, p25: v(ids[0]), median: v(ids[1]), p90: v(ids[2]) } : null;
   }
   async function estimateFor(r) {
@@ -204,7 +208,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
-  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
+  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));

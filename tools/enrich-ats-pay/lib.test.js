@@ -103,6 +103,9 @@ test('REV-136: ATS links found in any posting field, API forms and Workday', () 
 
 test('REV-138: same-employer source, board parsing, BLS series and cross-check', () => {
   assert.strictEqual(L.normCo('Blue Origin, LLC'), L.normCo('Blue Origin'));
+  // Grok Bot QA #21: foreign and ambiguous locations are not US states
+  assert.deepStrictEqual(['Toronto, ON, CA', 'Bangalore, IN', 'Munich, DE', 'Remote OR Hybrid', 'Mexico City, Mexico', 'London, United Kingdom', 'Remote'].map(L.stateFrom), ['', '', '', '', '', '', '']);
+  assert.deepStrictEqual(['Kent, WA', 'US-CA-Irvine', 'Seattle, Washington, United States', 'Austin, TX 78701', 'Indianapolis, IN', 'Dover, DE, US', 'Costa Mesa, CA', 'London, KY', 'Paris, TX'].map(L.stateFrom), ['WA', 'CA', 'WA', 'TX', 'IN', 'DE', 'CA', 'KY', 'TX']);
   assert.deepStrictEqual(L.boardOf({ ATS_POSTING_URL: 'https://job-boards.greenhouse.io/anduril/jobs/4567890' }), { kind: 'greenhouse', key: 'greenhouse:anduril', board: 'anduril' });
   const wd = L.boardOf({ SOURCE_URL: 'https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Seattle-WA/Director_R1' });
   assert.deepStrictEqual([wd.kind, wd.tenant, wd.site], ['workday', 'blueorigin', 'BlueOrigin']);
@@ -115,6 +118,7 @@ test('REV-138: same-employer source, board parsing, BLS series and cross-check',
   assert.deepStrictEqual(gh.map(x => x.state), ['CA', 'GA', 'WA']);
   const row = { PRIMARY_ID: 'X', COMPANY: 'Anduril', TITLE: 'Director of Manufacturing Operations', LOCATION: 'Huntsville, AL' };
   const sim = L.similarPostings(row, gh); assert.deepStrictEqual(sim.map(x => x.page), ['u1'], 'same level and function, with pay');
+  assert.deepStrictEqual(L.similarPostings(row, [{ title: 'Director of Manufacturing', location: 'Toronto, ON, CA', state: L.stateFrom('Toronto, ON, CA'), pay: { low: 200000, high: 250000 } }]), [], 'a posting abroad is never a comparable');
   const est = L.sameEmployerEstimate(row, sim, st => st === 'CA' ? 0.8 : null);
   assert.deepStrictEqual([est.low, est.high, est.conf, est.source], [160000, 208000, 'MED', 'SAME_EMPLOYER']);
   assert.match(est.basis, /Director of Manufacturing \(CA\) \$200K-\$260K x0\.80 BLS state ratio/);

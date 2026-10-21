@@ -161,10 +161,18 @@ function atsFor(p) { for (const k of ATS_URL_KEYS) { const a = atsApi(String(p[k
 const PAY_TRANSPARENCY = ['CA', 'CO', 'CT', 'DC', 'HI', 'IL', 'MA', 'MD', 'ME', 'MN', 'NJ', 'NY', 'VA', 'VT', 'WA'];
 const STATE_NAMES = { alabama: 'AL', alaska: 'AK', arizona: 'AZ', arkansas: 'AR', california: 'CA', colorado: 'CO', connecticut: 'CT', delaware: 'DE', 'district of columbia': 'DC', florida: 'FL', georgia: 'GA', hawaii: 'HI', idaho: 'ID', illinois: 'IL', indiana: 'IN', iowa: 'IA', kansas: 'KS', kentucky: 'KY', louisiana: 'LA', maine: 'ME', maryland: 'MD', massachusetts: 'MA', michigan: 'MI', minnesota: 'MN', mississippi: 'MS', missouri: 'MO', montana: 'MT', nebraska: 'NE', nevada: 'NV', 'new hampshire': 'NH', 'new jersey': 'NJ', 'new mexico': 'NM', 'new york': 'NY', 'north carolina': 'NC', 'north dakota': 'ND', ohio: 'OH', oklahoma: 'OK', oregon: 'OR', pennsylvania: 'PA', 'rhode island': 'RI', 'south carolina': 'SC', 'south dakota': 'SD', tennessee: 'TN', texas: 'TX', utah: 'UT', vermont: 'VT', virginia: 'VA', washington: 'WA', 'west virginia': 'WV', wisconsin: 'WI', wyoming: 'WY' };
 const STATE_FIPS = { AL: '01', AK: '02', AZ: '04', AR: '05', CA: '06', CO: '08', CT: '09', DE: '10', DC: '11', FL: '12', GA: '13', HI: '15', ID: '16', IL: '17', IN: '18', IA: '19', KS: '20', KY: '21', LA: '22', ME: '23', MD: '24', MA: '25', MI: '26', MN: '27', MS: '28', MO: '29', MT: '30', NE: '31', NV: '32', NH: '33', NJ: '34', NM: '35', NY: '36', NC: '37', ND: '38', OH: '39', OK: '40', OR: '41', PA: '42', RI: '44', SC: '45', SD: '46', TN: '47', TX: '48', UT: '49', VT: '50', VA: '51', WA: '53', WV: '54', WI: '55', WY: '56' };
-/** Two-letter state in free location text ("Kent, WA", "Seattle, Washington, United States", "US-CA-Irvine"), or ''. */
+/** US state of a free location text ("Kent, WA", "Seattle, Washington, United States", "US-CA-Irvine"), or ''.
+ *  Grok Bot QA #21: a text that names another country is not a US state ("Toronto, ON, CA", "Bangalore, IN", "Munich, DE");
+ *  only ", XX" and "-XX-" tokens count as codes (so "Remote OR Hybrid" is not Oregon). */
+const NON_US_RE = /\b(canada|india|germany|deutschland|mexico|m[ée]xico|united kingdom|england|scotland|wales|ireland|china|japan|korea|singapore|taiwan|philippines|vietnam|thailand|malaysia|indonesia|australia|new zealand|brazil|argentina|chile|colombia|costa rica|france|spain|italy|netherlands|belgium|switzerland|austria|poland|czech|hungary|romania|sweden|norway|denmark|finland|israel|turkey|uae|united arab emirates|saudi|qatar|south africa|egypt|morocco|puerto rico)\b|\b(uk|gbr|deu|ind|mex|can|chn|jpn)\b/i;
+/* a foreign city next to a code that is also a country code ("Bangalore, IN", "Munich, DE"); "London, KY" stays Kentucky */
+const FOREIGN_CITY_RE = /\b(bangalore|bengaluru|pune|hyderabad|chennai|mumbai|delhi|gurgaon|gurugram|noida|munich|m[üu]nchen|berlin|frankfurt|stuttgart|hamburg|toronto|vancouver|montreal|montr[ée]al|calgary|ottawa|mississauga|monterrey|guadalajara|tijuana|ju[áa]rez|quer[ée]taro|london|manchester|shanghai|shenzhen|beijing|tokyo|seoul|sydney|melbourne|paris|madrid|barcelona|milan|amsterdam|dublin|tel aviv|krak[óo]w|warsaw|prague|budapest|bucharest|s[ãa]o paulo)\b/i, AMBIGUOUS_CODES = ['AL', 'AR', 'CA', 'CO', 'DE', 'GA', 'ID', 'IL', 'IN', 'MA', 'ME', 'MN', 'MT', 'NE', 'PA', 'SD', 'VA'];
+const CA_PROVINCE_RE = /(^|[,\s-])(AB|BC|MB|NB|NL|NS|NT|NU|ON|PE|QC|SK|YT)\s*,\s*(CA|CAN|Canada)\b/;
 function stateFrom(loc) {
-  const t = String(loc || ''), re = /(?:^|[^A-Za-z])([A-Z]{2})(?=$|[^A-Za-z])/g; let m;
-  while ((m = re.exec(t))) if (STATE_FIPS[m[1]] && m[1] !== 'US') return m[1];
+  const t = String(loc || '');
+  if (!t.trim() || NON_US_RE.test(t) || CA_PROVINCE_RE.test(t)) return '';
+  const re = /(?:,\s*|\bUS-|-)([A-Z]{2})(?=\s*(?:$|[,\-(]|\s+\d{5}|\s+(?:US|USA|United States)\b))/g; let m;
+  while ((m = re.exec(t))) if (STATE_FIPS[m[1]]) return AMBIGUOUS_CODES.indexOf(m[1]) >= 0 && FOREIGN_CITY_RE.test(t) ? '' : m[1];
   const low = t.toLowerCase(); for (const n of Object.keys(STATE_NAMES).sort((a, b) => b.length - a.length)) if (new RegExp('\\b' + n + '\\b').test(low)) return STATE_NAMES[n];
   return '';
 }
@@ -204,7 +212,7 @@ function parseBoard(b, j) {
 /** Postings of the same employer that are the same kind of role (same level and function), with pay, transparency states first. */
 function similarPostings(row, postings) {
   const L = level(row.TITLE), F = func(row.TITLE);
-  return postings.filter(x => x.pay && level(x.title) === L && func(x.title) === F && x.pay.low >= 40000)
+  return postings.filter(x => x.pay && x.state && level(x.title) === L && func(x.title) === F && x.pay.low >= 40000)   // a posting with no US state (abroad, remote, unknown) is never a comparable
     .sort((a, b) => (PAY_TRANSPARENCY.indexOf(b.state) >= 0) - (PAY_TRANSPARENCY.indexOf(a.state) >= 0));
 }
 /** Step 1 estimate. comps: [{ title, state, pay, page, id? }]. ratio(fromState) -> BLS median(row state)/median(fromState) or null. */
