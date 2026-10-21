@@ -67,6 +67,26 @@ test('Tim 2026-10-21 02:15 ET: 2 failed posting reads on different days allow an
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('Tim 2026-10-21 03:10 ET: a comparables range shared by 3+ eligible roles goes in at LOW; same-employer estimates are unaffected', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev139-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+  const read = 'FEASIBILITY_ATTEMPT_ASOF=2026-10-20; DATE_ADDED=2026-10-19';   // posting already checked by a lane: estimate allowed
+  fs.writeFileSync(master, [
+    r2(1, 'V2I-0000000000S1', 'Zeta', 'Plant Manager', 'Akron, OH', read), r2(2, 'V2I-0000000000S2', 'Kappa', 'Plant Manager', 'Toledo, OH', read),
+    r2(3, 'V2I-0000000000S3', 'Lambda', 'Plant Manager', 'Dayton, OH', read),
+    r2(4, 'V2I-0000000000P1', 'Omega', 'Plant Manager', 'Columbus, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=160000; SALARY_BASE_HIGH=200000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+    r2(5, 'V2I-0000000000P2', 'Sigma', 'Plant Manager', 'Detroit, MI', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=170000; SALARY_BASE_HIGH=210000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+  ].join('\n') + '\n');
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  try {
+    cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(dir, 'bls.json') }), stdio: 'pipe', timeout: 60000 });
+    const out = JSON.parse(fs.readFileSync(report, 'utf8'));
+    assert.strictEqual(out.est_shared_low, 3);
+    out.estimate_samples.filter(x => /^V2I-0000000000S/.test(x.id)).forEach(x => { assert.strictEqual(x.est[2], 'LOW'); assert.match(x.basis_detail, /range shared by 3 eligible roles/); });
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('submit: rows are re-read from the Writer first; pay a lane wrote meanwhile is never overwritten', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev119-')), master = path.join(dir, 'master.txt'), rows = path.join(dir, 'writer.json'), posts = path.join(dir, 'posts.jsonl'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);

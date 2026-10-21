@@ -82,6 +82,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const v = id => { const e = blsCache.series[id]; return e && Number.isFinite(e.v) ? e.v : null; };
     return v(ids[0]) && v(ids[2]) ? { state, soc, p25: v(ids[0]), median: v(ids[1]), p90: v(ids[2]) } : null;
   }
+  // Tim 2026-10-21 03:10 ET: a comparables range that 3+ eligible roles would share (same comparable set) is too generic to be
+  // MED: it goes in at LOW. Counted over the whole eligible list (pure, no network) so the rule does not depend on run order.
+  const shareKey = e => e && e.ids.slice().sort().join(',');
+  const shared = {}; list.forEach(r => { if (!/SALARY/.test(needsOf(r))) return; const e = L.estimate(r, anchors), k = shareKey(e); if (k) shared[k] = (shared[k] || 0) + 1; });
+  stats.est_shared_low = 0;
   async function estimateFor(r) {
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
     let comps = L.sameEmployerAnchors(r, anchors);
@@ -93,7 +98,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null);
       if (est) stats.est_same_employer++;
     }
-    if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; } }
+    if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
