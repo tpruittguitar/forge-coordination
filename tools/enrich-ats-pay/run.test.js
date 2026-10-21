@@ -21,17 +21,19 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
   try {
     cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
-      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1' }), stdio: 'pipe', timeout: 60000 });
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json') }), stdio: 'pipe', timeout: 60000 });
     const out = JSON.parse(fs.readFileSync(report, 'utf8')), by = {};
     out.sample.forEach(s => { by[s.id] = s.fields; });
     assert.strictEqual(out.dry, true); assert.strictEqual(out.writer_ok, 0);
     assert.deepStrictEqual([by['V2I-00000000000A'].SALARY_BASIS, by['V2I-00000000000A'].SALARY_BASE_LOW, by['V2I-00000000000A'].DEGREE_REQ], ['EMPLOYER_POSTED', 170000, 'REQUIRED']);
     assert.deepStrictEqual([by['V2I-00000000000B'].SALARY_BASIS, by['V2I-00000000000B'].SALARY_BASE_HIGH, by['V2I-00000000000B'].SALARY_SOURCE], ['EMPLOYER_POSTED', 190000, 'https://www.linkedin.com/jobs/view/4012345678']);
     assert.strictEqual(by['V2I-00000000000C'].SALARY_BASIS, 'FORGE-ESTIMATE');
-    assert.strictEqual(by['V2I-00000000000C'].SALARY_CONF, 'MED');
-    assert.match(by['V2I-00000000000C'].SALARY_NOTE, /FORGE-ESTIMATE from 2 employer-posted comparable\(s\) \[V2I-00000000000E, V2I-00000000000F\].*this posting read, no pay stated; uncertainty: moderate/);
+    // REV-138: the comparables are the same employer (Acme), so step 1 applies; BLS is offline in the test (NO_BLS, conf unchanged)
+    assert.strictEqual(by['V2I-00000000000C'].SALARY_CONF, 'HIGH');
+    assert.match(by['V2I-00000000000C'].SALARY_SOURCE, /^same-employer:V2I-00000000000E,V2I-00000000000F$/);
+    assert.match(by['V2I-00000000000C'].SALARY_NOTE, /FORGE-ESTIMATE from 2 same-employer posted range\(s\) \[V2I-00000000000E, V2I-00000000000F\]; same employer, 2 posted range\(s\).*BLS state wage n\/a; this posting read, no pay stated; uncertainty: narrow/);
     assert.strictEqual(by['V2I-00000000000C'].SALARY_ESTIMATE_BASIS, undefined);
-    assert.deepStrictEqual(out.estimate_samples.map(x => [x.id, x.basis]), [['V2I-00000000000C', 'POSTING_READ']]);
+    assert.deepStrictEqual(out.estimate_samples.map(x => [x.id, x.basis, x.source, x.bls]), [['V2I-00000000000C', 'POSTING_READ', 'SAME_EMPLOYER', 'NO_BLS']]);
     assert.strictEqual(by['V2I-00000000000D'], undefined, 'posting never read: no estimate');
     assert.strictEqual(out.estimate_waiting_for_posting, 2, 'D (never read) and G (ATS 404 unconfirmed, no aggregator read): Tim 2026-10-20 rule, an estimate only after a posting was read');
     // REV-136 (Grok Bot QA #19): the ATS link is found in ATS_POSTING_URL; a taken-down posting is reported, not retried or estimated
@@ -48,7 +50,7 @@ test('Tim 2026-10-21 02:15 ET: 2 failed posting reads on different days allow an
   fs.writeFileSync(master, MASTER);
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
   const run = () => { cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
-    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_LEDGER: ledger }), stdio: 'pipe', timeout: 60000 }); return JSON.parse(fs.readFileSync(report, 'utf8')); };
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_LEDGER: ledger }), stdio: 'pipe', timeout: 60000 }); return JSON.parse(fs.readFileSync(report, 'utf8')); };
   try {
     fs.writeFileSync(ledger, JSON.stringify({ submitted: {}, tried: {}, failedReads: {} }));
     let out = run();
@@ -75,7 +77,7 @@ test('submit: rows are re-read from the Writer first; pay a lane wrote meanwhile
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
   try {
     cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
-      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: path.join(dir, 'ledger.json') }), stdio: 'pipe', timeout: 60000 });
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: path.join(dir, 'ledger.json') }), stdio: 'pipe', timeout: 60000 });
     const sent = fs.readFileSync(posts, 'utf8').trim().split('\n').map(JSON.parse), reqs = sent.flatMap(b => b.requests), by = {};
     reqs.forEach(q => { by[q.ruling.primaryId] = q.ruling.fields; });
     assert.strictEqual(sent.length, 1); assert.strictEqual(sent[0].action, 'batch');
@@ -92,7 +94,7 @@ test('an unchanged dry run leaves the report byte for byte (no hourly commit)', 
   fs.writeFileSync(master, MASTER);
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
   const run = () => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
-    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1' }), stdio: 'pipe', timeout: 60000 });
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json') }), stdio: 'pipe', timeout: 60000 });
   try {
     fs.rmSync(report, { force: true }); run(); const first = fs.readFileSync(report, 'utf8');
     run(); assert.strictEqual(fs.readFileSync(report, 'utf8'), first);
