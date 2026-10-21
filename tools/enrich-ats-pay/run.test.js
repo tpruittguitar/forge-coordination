@@ -11,6 +11,7 @@ const MASTER = [
   row(4, 'V2I-00000000000D', 'Director of Quality', 'Canton, OH', 'SOURCE_URL=https://example.com/careers/9; DATE_ADDED=2026-10-16'),
   row(5, 'V2I-00000000000E', 'Director, Quality', 'Detroit, MI', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=150000; SALARY_BASE_HIGH=190000; SALARY_MIDPOINT=170000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
   row(6, 'V2I-00000000000F', 'Director, Quality', 'Columbus, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=160000; SALARY_BASE_HIGH=200000; SALARY_MIDPOINT=180000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+  row(7, 'V2I-00000000000G', 'Director of Quality', 'Lima, OH', 'SOURCE_URL=https://www.linkedin.com/jobs/view/9; ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/404; DATE_ADDED=2026-10-15'),
 ].join('\n') + '\n';
 
 test('dry run: ATS pay, then aggregator pay, estimate only after the posting was read', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
@@ -32,6 +33,10 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
     assert.deepStrictEqual(out.estimate_samples.map(x => x.id), ['V2I-00000000000C']);
     assert.strictEqual(by['V2I-00000000000D'], undefined, 'posting never read: no estimate');
     assert.strictEqual(out.estimate_waiting_for_posting, 1);
+    // REV-136 (Grok Bot QA #19): the ATS link is found in ATS_POSTING_URL; a taken-down posting is reported, not retried or estimated
+    assert.strictEqual(out.ats_candidates, 3); assert.strictEqual(out.ats_gone, 1);
+    assert.deepStrictEqual(out.ats_gone_rows.map(x => [x.id, x.status]), [['V2I-00000000000G', 404]]);
+    assert.strictEqual(by['V2I-00000000000G'], undefined, 'no estimate for a posting that is gone');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
