@@ -53,6 +53,11 @@ function atsApi(url) {
   m = u.match(/(?:boards|job-boards)\.greenhouse\.io\/([^/?#]+)\/jobs\/(\d+)/i) || u.match(/greenhouse\.io\/embed\/job_app\?.*for=([^&]+).*token=(\d+)/i);
   if (m) return { kind: 'greenhouse', api: `https://boards-api.greenhouse.io/v1/boards/${m[1]}/jobs/${m[2]}?pay_transparency=true`, page: u };
   m = u.match(/jobs\.ashbyhq\.com\/([^/?#]+)\/([0-9a-f-]{36})/i); if (m) return { kind: 'ashby', api: `https://api.ashbyhq.com/posting-api/job-board/${m[1]}?includeCompensation=true`, id: m[2], page: u };
+  // REV-136: the API forms lanes stored as liveness evidence, and Workday (the most common ATS in the eligible rows)
+  m = u.match(/boards-api\.greenhouse\.io\/v1\/boards\/([^/?#]+)\/jobs\/(\d+)/i); if (m) return { kind: 'greenhouse', api: `https://boards-api.greenhouse.io/v1/boards/${m[1]}/jobs/${m[2]}?pay_transparency=true`, page: `https://job-boards.greenhouse.io/${m[1]}/jobs/${m[2]}` };
+  m = u.match(/api\.lever\.co\/v0\/postings\/([^/?#]+)\/([0-9a-f-]{36})/i); if (m) return { kind: 'lever', api: `https://api.lever.co/v0/postings/${m[1]}/${m[2]}`, page: `https://jobs.lever.co/${m[1]}/${m[2]}` };
+  m = u.match(/^https?:\/\/([a-z0-9-]+)\.(wd\d+)\.myworkdayjobs\.com\/(?:[a-z]{2}-[A-Z]{2}\/)?([^/?#]+)\/job\/([^?#]+)/i);
+  if (m && !/^wday$/i.test(m[3])) return { kind: 'workday', api: `https://${m[1]}.${m[2]}.myworkdayjobs.com/wday/cxs/${m[1]}/${m[3]}/job/${m[4].replace(/\/+$/, '')}`, page: u.split(/[?#]/)[0] };
   return null;
 }
 function strip(html) { return String(html || '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;|&#x27;|&rsquo;/g, "'").replace(/&quot;/g, '"').replace(/<\s*(br|\/p|\/li|\/div|\/h[1-6]|\/tr|li)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/[ \t\r\f\v]+/g, ' ').replace(/ *\n[\n ]*/g, '\n').trim(); }
@@ -69,6 +74,11 @@ function parseAts(kind, j, id) {
     let pay = null; const r = (j.pay_input_ranges || [])[0];
     if (r && r.min_cents && r.max_cents) pay = { low: r.min_cents / 100, high: r.max_cents / 100 };
     return { pay: pay || payFromText(text), text };
+  }
+  if (kind === 'workday') {
+    const info = j && j.jobPostingInfo; if (!info) return null;
+    const text = strip(info.jobDescription);
+    return { pay: payFromText(text), text };
   }
   if (kind === 'ashby') {
     const job = (j.jobs || []).find(x => x.id === id); if (!job) return null;
@@ -133,4 +143,8 @@ function parseAggregator(kind, html, row) {
   }
   return { pay, basis, text };
 }
-module.exports = { level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
+/** REV-136: the first field on a row that names a readable ATS posting (rows keep the ATS link in ATS_POSTING_URL more often
+ *  than in SOURCE_URL, which is usually the LinkedIn / Indeed alert). */
+const ATS_URL_KEYS = ['ATS_POSTING_URL', 'SOURCE_URL', 'SOURCE', 'COMPANY_SOURCE_URL', 'DIRECT_JOB_URL', 'INITIATING_URL', 'LIVENESS_EVIDENCE_URL'];
+function atsFor(p) { for (const k of ATS_URL_KEYS) { const a = atsApi(String(p[k] == null ? '' : p[k]).trim()); if (a) return Object.assign({ key: k }, a); } return null; }
+module.exports = { atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };

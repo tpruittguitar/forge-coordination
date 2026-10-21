@@ -15,6 +15,7 @@ globalThis.fetch = async (url, opts) => {
     else { const req = JSON.parse(opts.body); fs.appendFileSync(process.env.ENRICH_TEST_POSTS, JSON.stringify(req) + '\n'); body = { ok: true, results: req.requests.map(() => ({ ok: true })) }; }
     return { ok: true, status: 200, json: async () => body, text: async () => JSON.stringify(body) };
   }
+  if (/\/jobs\/404\?/.test(url)) return { ok: false, status: 404, json: async () => ({}), text: async () => '' };   // posting taken down
   if (!(url in R)) throw new Error('offline: ' + url);
   const body = R[url];
   return { ok: true, status: 200, json: async () => body, text: async () => (typeof body === 'string' ? body : JSON.stringify(body)) };

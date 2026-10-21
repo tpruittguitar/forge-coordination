@@ -5,7 +5,8 @@
 name: enrich-ats-pay
 on:
   schedule:
-    - cron: '40 * * * *'
+    - cron: '17 * * * *'      # REV-136: off the top-of-hour rush; ':40' fired on schedule only once in 5 h
+    - cron: '47 */3 * * *'   # fallback if GitHub drops the hourly run (concurrency group keeps runs single-file)
   workflow_dispatch: {}
 permissions:
   contents: write

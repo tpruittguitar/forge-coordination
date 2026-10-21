@@ -34,18 +34,33 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
-  const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {};
+  const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   const fresh = id => { const t = ledger.submitted[id] || ledger.tried[id]; return t && Date.now() - Date.parse(t) < CONFIG.resubmitHours * 3600e3; };
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
-  for (const r of list) {
+  // REV-136: every eligible row with a readable ATS posting goes first (employer-posted pay beats aggregators and estimates);
+  // the worklist order is kept within each group. ats_candidates counts the whole eligible list, not just the rows reached.
+  const atsOf = new Map(list.map(r => [r, L.atsFor(r.p)])); stats.ats_candidates = list.filter(r => atsOf.get(r)).length;
+  stats.ats_by_kind = {}; list.forEach(r => { const a = atsOf.get(r); if (a) stats.ats_by_kind[a.kind] = (stats.ats_by_kind[a.kind] || 0) + 1; });
+  // Grok Bot QA #19: at most CONFIG.atsFirstPerRun ATS rows jump the queue, so top-priority non-ATS rows (Shield AI) still get
+  // the rest of the 2 x 25 cap.
+  // Liveness belongs to the Writer's ATS checker (foreman-cockpit apps-script/PipelineAts.gs: rechecks every active ATS row every
+  // 1-3 days, closes only on a proven per-posting answer, writes LIVENESS through the Writer). This bot never decides a posting is
+  // gone: a row the checker already marked CLOSED is skipped; a 403/404 here is reported (ats_unconfirmed_rows) and the row still
+  // gets its aggregator read and estimate.
+  const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
+  const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
+  const ordered = first.concat(list.filter(r => !firstSet.has(r)));
+  stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
+  for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
     if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
-    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = L.atsApi(url), f = {};
-    let checked = false, postedPay = null;
+    if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
+    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
+    let checked = false, postedPay = null, atsUnconfirmed = false;
     if (api) {
       stats.ats_rows++;
       try {
@@ -53,11 +68,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const parsed = L.parseAts(api.kind, await (await get(api.api, { headers: { accept: 'application/json' } })).json(), api.id);
         if (parsed) {
           stats.ats_read++; checked = true; postedPay = parsed.pay;
+          if (parsed.pay) stats.ats_pay_seen = (stats.ats_pay_seen || 0) + 1; if (n.includes('SALARY')) stats.ats_need_salary = (stats.ats_need_salary || 0) + 1;   // REV-136 report: is pay missing from postings or not needed?
           if (n.includes('SALARY') && parsed.pay) { stats.posted_pay++; Object.assign(f, { SALARY_BASE_LOW: parsed.pay.low, SALARY_BASE_HIGH: parsed.pay.high, SALARY_MIDPOINT: Math.round((parsed.pay.low + parsed.pay.high) / 2), SALARY_BASIS: 'EMPLOYER_POSTED', SALARY_SOURCE: api.page, SALARY_ASOF: today, SALARY_CONF: 'HIGH' }); }
           const d = n.includes('DEGREE') && L.degreeFromText(parsed.text);
           if (d) { stats.degree++; Object.assign(f, { DEGREE_TEXT: d.text, DEGREE_REQ: d.req, DEGREE_EVIDENCE_URL: api.page, DEGREE_ASOF: today }); }
         }
-      } catch (e) { stats.ats_failed++; }
+      } catch (e) {
+        if ((e.status === 403 && api.kind === 'workday') || e.status === 404) {   // maybe taken down, maybe a bad address: not decided here
+          stats.ats_unconfirmed++; atsUnconfirmed = true;
+          unconfirmedRows.length < 50 && unconfirmedRows.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, posting: api.page, status: e.status, checker: val(r, 'ATS_CHECK_RESULT') || 'not checked', checkerAsOf: val(r, 'ATS_CHECK_ASOF').slice(0, 10) });   // no run timestamp: an unchanged dry run must not rewrite the report
+        }
+        stats.ats_failed++; const k = api.kind; (stats.ats_errors = stats.ats_errors || {})[k] = stats.ats_errors[k] || []; stats.ats_errors[k].length < 3 && stats.ats_errors[k].push(String(e.status || e.message).slice(0, 60)); }
     }
     // Tim 2026-10-20 18:21 ET: an aggregator posting (LinkedIn, Indeed, ZipRecruiter) with pay counts as posting pay
     const agg = L.aggregatorPage(url);
@@ -77,10 +98,20 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       } catch (e) { stats.agg_failed[agg.kind] = (stats.agg_failed[agg.kind] || 0) + 1; blocked[agg.kind] = (blocked[agg.kind] || 0) + 1; (stats.agg_errors[agg.kind] = stats.agg_errors[agg.kind] || []).length < 3 && stats.agg_errors[agg.kind].push(String(e.status || e.message).slice(0, 80)); }   // 3 failures in a row: skip that site for the rest of the run (run 1: Indeed failed 21 of 21)
     }
     // Tim 2026-10-20 18:17 ET: salary from the posting first; estimate only once the posting was checked and shows none
-    const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF');
+    // Tim ruling 2026-10-21 02:15 ET: a row may be estimated without a posting read after 2 failed reads on different days
+    // (ATS answer unconfirmed, or the Writer checker says NOT_IN_PUBLIC_BOARD / NOT_FOUND / ERROR / UNREADABLE) with no readable
+    // aggregator posting. Dates live in the ledger (persisted on live runs only); CLOSED rows were skipped above.
+    let noPostingRead = false;
+    if (n.includes('SALARY') && !postedPay && !checked && (atsUnconfirmed || /^(NOT_IN_PUBLIC_BOARD|NOT_FOUND|ERROR|UNREADABLE)/.test(val(r, 'ATS_CHECK_RESULT')))) {
+      const fr = ledger.failedReads[r.PRIMARY_ID] = ledger.failedReads[r.PRIMARY_ID] || { dates: [] };
+      if (fr.dates.indexOf(today) < 0) fr.dates.push(today);
+      fr.dates = fr.dates.slice(-5); fr.n = fr.dates.length;
+      noPostingRead = fr.n >= 2 && !val(r, 'FEASIBILITY_ATTEMPT_ASOF');
+    }
+    const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
-      else { const est = L.estimate(r, anchors); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'comparables:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + ' employer-posted comparable(s) [' + est.ids.join(', ') + ']; ' + est.basis + (checked ? '; this posting read, no pay stated' : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); estSamples.length < 5 && estSamples.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], comparables: est.ids }); } }
+      else { const est = L.estimate(r, anchors); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'comparables:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + ' employer-posted comparable(s) [' + est.ids.join(', ') + ']; ' + est.basis + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (!Object.keys(f).length) { ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
@@ -113,9 +144,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     await sleep(CONFIG.batchGapMs);
   }
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
+  for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples });
+  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
   const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
