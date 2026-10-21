@@ -109,6 +109,29 @@ test('submit: rows are re-read from the Writer first; pay a lane wrote meanwhile
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('QA REV-139: on BATCH_RULING_RETRY ("master changed") ok:true items are not counted as saved and are resubmitted next run', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev139-retry-')), master = path.join(dir, 'master.txt'), rows = path.join(dir, 'writer.json'), posts = path.join(dir, 'posts.jsonl'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  fs.writeFileSync(master, MASTER);
+  const byId = {}; MASTER.trim().split('\n').forEach(l => { byId[l.split(' | ')[1]] = l; });
+  fs.writeFileSync(rows, JSON.stringify(byId));
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  const run = mode => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: ledger, ENRICH_TEST_WRITER_MODE: mode }), stdio: 'pipe', timeout: 60000 });
+  const ids = () => fs.readFileSync(posts, 'utf8').trim().split('\n').map(JSON.parse).flatMap(b => b.requests).map(q => q.ruling.primaryId).sort();
+  try {
+    run('RETRY');
+    const first = ids(), out = JSON.parse(fs.readFileSync(report, 'utf8')), led = JSON.parse(fs.readFileSync(ledger, 'utf8'));
+    assert.ok(first.length > 0);
+    assert.strictEqual(out.writer_ok, 0, 'nothing was written'); assert.strictEqual(out.writer_not_written, first.length); assert.strictEqual(out.writer_retry, 1);
+    first.forEach(id => assert.strictEqual(led.submitted[id], undefined, id + ' must not be marked submitted'));
+    fs.rmSync(posts, { force: true });
+    run('COMMIT');
+    assert.deepStrictEqual(ids(), first, 'the same rows go again on the next run instead of waiting 48 h');
+    const out2 = JSON.parse(fs.readFileSync(report, 'utf8')), led2 = JSON.parse(fs.readFileSync(ledger, 'utf8'));
+    assert.strictEqual(out2.writer_ok, first.length); first.forEach(id => assert.ok(led2.submitted[id], id + ' saved after a committed batch'));
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('an unchanged dry run leaves the report byte for byte (no hourly commit)', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev121-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);
