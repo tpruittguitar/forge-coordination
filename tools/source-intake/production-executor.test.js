@@ -43,3 +43,19 @@ test('protected canary cannot pass if Writer inserts a row',()=>{
  const out=checkCanaryOutcome({expectedOutcome:'PROTECTED_NOOP',record:{},result,receipt,readbacks:[]});
  assert.equal(out.status,'HOLD');assert.equal(out.reason,'PROTECTED_NOT_NOOP');assert.equal(out.scaleUpAllowed,false);
 });
+
+test('canary rejects missing identity fields before network access',async()=>{
+ const base=i=>({record:{COMPANY:'Acme '+i,TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/job/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'});
+ for(const field of ['COMPANY','TITLE','LOCATION','SOURCE_URL']){
+  const rows=Array.from({length:5},(_,i)=>base(i));rows[0].record[field]='';
+  let calls=0;
+  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++;throw Error('network')} ,transport:async()=>{calls++;throw Error('Writer')}}),/exactly 5 reviewed/);
+  assert.equal(calls,0,'no network allowed for '+field);
+ }
+});
+test('canary rejects malformed source URLs before any switch or Writer call',async()=>{
+ const rows=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme '+i,TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'javascript:alert(1)'},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
+ let calls=0;
+ await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/exactly 5 reviewed/);
+ assert.equal(calls,0);
+});
