@@ -13,6 +13,17 @@ test('REV-156 families: Tim\'s three leadership families only', () => {
   Object.keys(cases).forEach(t => assert.strictEqual(T.family(t), cases[t], t));
 });
 
+test('REV-160 senior leadership title and level cases', () => {
+  assert.strictEqual(T.family('Senior Manager, Manufacturing Operations'), 'MFG_PROD');
+  assert.strictEqual(T.family('Sr. Manager Quality'), 'QUALITY');
+  assert.strictEqual(T.family('Senior Staff Manufacturing Engineer'), 'MFG_ENG');
+  assert.strictEqual(T.family('Principal Production Engineer'), 'MFG_ENG');
+  assert.strictEqual(T.family('Senior Staff Software Engineer'), null);
+  assert.strictEqual(T.level('Senior Staff Manufacturing Engineer'), 'SR_STAFF');
+  assert.strictEqual(T.level('Senior Manager, Quality'), 'SR_MANAGER');
+  assert.strictEqual(T.level('Director of Manufacturing'), 'DIRECTOR_PLUS');
+});
+
 test('REV-156 US places, novelty against the master, board roots, slug probes, priority digest', () => {
   assert.strictEqual(T.usPlace('Tampa, FL'), 'FL'); assert.strictEqual(T.usPlace('Remote'), 'REMOTE_US'); assert.strictEqual(T.usPlace('Munich, Germany'), ''); assert.strictEqual(T.usPlace('United States'), 'US');
   const idx = T.masterIndex([{ COMPANY: 'Acme Inc', TITLE: 'Sr. Director of Quality', p: { SOURCE_URL: 'https://job-boards.greenhouse.io/acme/jobs/111?gh_src=x' } }]);

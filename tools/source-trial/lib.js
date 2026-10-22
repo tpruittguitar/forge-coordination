@@ -4,7 +4,7 @@
 const P = require('../enrich-ats-pay/lib.js');
 
 /* Tim 18:09 ET: "quality leadership, manufacturing and production leadership and manufacturing engineering leadership". */
-const LEADER_RE = /\b(director|head of|head,|vice president|vp\b|v\.p\.|svp|evp|chief\b|plant manager|general manager|site (?:lead|leader|director)|plant leader)\b/i;
+const LEADER_RE = /\b(director|head of|head,|vice president|vp\b|v\.p\.|svp|evp|chief\b|plant manager|general manager|site (?:lead|leader|director)|plant leader|senior manager|sr\.? manager|senior staff|sr\.? staff|staff engineer|principal engineer)\b/i;
 const NOT_LEADER_RE = /\b(assistant|associate|intern|coordinator|specialist|analyst|technician|administrator)\b/i;
 const MFG_ENG_RE = /\b(manufacturing engineering|manufacturing engineer|process engineering|industrial engineering|production engineering)\b/i;
 const QUALITY_RE = /\bquality\b/i;
@@ -81,4 +81,10 @@ function parsePriority(text) {
   return out;
 }
 
-module.exports = { family, usPlace, normTitle, normUrl, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority };
+function level(title) {
+  const t = String(title || '');
+  if (/\b(senior staff|sr\.? staff|staff engineer|principal engineer)\b/i.test(t)) return 'SR_STAFF';
+  if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
+  return 'DIRECTOR_PLUS';
+}
+module.exports = { level, family, usPlace, normTitle, normUrl, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority };
