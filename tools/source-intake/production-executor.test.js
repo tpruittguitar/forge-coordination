@@ -31,8 +31,10 @@ test('canary insert requires matching complete receipt and exact readback',()=>{
  const receipt={status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-123',op:'INSERT'}]}};
  const readbacks=[{primaryId:'V2I-123',found:true,matches:1,line:'1 | V2I-123 | Acme | Director | SCOUT_INTAKE | OPEN | P1 | R1 | Austin, TX | NOTES'}];
  assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt,readbacks}).status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
- assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,TITLE:'Wrong'},result,receipt,readbacks}).status,'INSERT_IDENTITY_MISMATCH');
- assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt:{...receipt,durable:false},readbacks}).status,'RECEIPT_NOT_DURABLE_AND_BOUND');
+ const mismatch=checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,TITLE:'Wrong'},result,receipt,readbacks});
+ assert.equal(mismatch.status,'HOLD');assert.equal(mismatch.reason,'INSERT_IDENTITY_MISMATCH');
+ const pending=checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt:{...receipt,durable:false},readbacks});
+ assert.equal(pending.status,'HOLD');assert.equal(pending.reason,'RECEIPT_NOT_DURABLE_AND_BOUND');
 });
 test('protected canary cannot pass if Writer inserts a row',()=>{
  const {checkCanaryOutcome}=require('./canary-accounting');
