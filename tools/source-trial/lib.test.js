@@ -18,6 +18,9 @@ test('REV-160 senior leadership title and level cases', () => {
   assert.strictEqual(T.family('Sr. Manager Quality'), 'QUALITY');
   assert.strictEqual(T.family('Senior Staff Manufacturing Engineer'), 'MFG_ENG');
   assert.strictEqual(T.family('Principal Production Engineer'), 'MFG_ENG');
+  assert.strictEqual(T.family('Principal Manufacturing Engineer'), 'MFG_ENG');
+  assert.strictEqual(T.family('Principal Software Engineer'), null);
+  assert.strictEqual(T.level('Principal Production Engineer'), 'SR_STAFF');
   assert.strictEqual(T.family('Senior Staff Software Engineer'), null);
   assert.strictEqual(T.level('Senior Staff Manufacturing Engineer'), 'SR_STAFF');
   assert.strictEqual(T.level('Senior Manager, Quality'), 'SR_MANAGER');
