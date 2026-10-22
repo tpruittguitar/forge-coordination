@@ -83,7 +83,7 @@ function parsePriority(text) {
 
 function level(title) {
   const t = String(title || '');
-  if (/\b(senior staff|sr\.? staff|staff engineer|principal engineer)\b/i.test(t)) return 'SR_STAFF';
+  if (/\b(senior staff|sr\.? staff|staff engineer|principal(?:\s+(?:manufacturing|production|process|industrial))?\s+engineer)\b/i.test(t)) return 'SR_STAFF';
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
