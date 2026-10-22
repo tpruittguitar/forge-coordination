@@ -8,8 +8,8 @@ on:
 permissions:
   contents: write
 concurrency:
-  group: source-trial
-  cancel-in-progress: false
+  group: source-trial-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 jobs:
   trial:
     runs-on: ubuntu-latest
@@ -20,6 +20,13 @@ jobs:
         with:
           repository: tpruittguitar/foreman-cockpit
           path: _fc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -29,13 +36,6 @@ jobs:
         run: |
           pip install -q python-jobspy || echo "pip install failed"
           python tools/source-trial/jobspy_run.py tools/source-trial/config.json /tmp/jobspy.json
-      - uses: actions/setup-node@v4
-        with:
-          node-version: '22'
-      - name: Test
-        env:
-          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
       - name: Trial
         env:
           TRIAL_FC_DIR: ${{ github.workspace }}/_fc
