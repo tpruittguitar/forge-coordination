@@ -10,7 +10,7 @@ function loadPriority(url=PRIORITY_URL){return new Promise((resolve,reject)=>{ht
 const WRONG_FUNCTION=/\b(accounting|finance|sales|marketing|human resources|talent acquisition|corporate operations|commercial operations|business development|information technology|cybersecurity)\b/i;
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const et=at=>new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(at)).replace(',','')+' ET';
-const priority=(j,registry)=>registry?.[P.normCo(j.company)]||(/^(DREAM|P[123])$/i.test(j.tier||'')?j.tier.toUpperCase():'UNKNOWN');
+const priority=(j,registry)=>registry?.[P.normCo(j.company)]||registry?.[norm(j.company)]||(/^(DREAM|P[123])$/i.test(j.tier||'')?j.tier.toUpperCase():'UNKNOWN');
 function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date().toISOString(),targetRegistry={}}={}){
  if(!Array.isArray(report.new_roles))throw Error('new_roles must be array');
  if(!/^[A-Z0-9_-]+$/.test(runId))throw Error('invalid runId');
