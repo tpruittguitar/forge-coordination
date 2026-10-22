@@ -42,3 +42,18 @@ test('receipt COMPLETE never claims exact-row verification',()=>{
  assert.equal(classifyReceipt({requestId:'ABC',status:'PENDING'},'ABC'),'PENDING_VERIFICATION');
  assert.equal(classifyReceipt({requestId:'DIFFERENT',status:'COMPLETE',durable:true},'ABC'),'PENDING_VERIFICATION');
 });
+
+test('exact-row consistency remains unverified pending trusted readback provenance',()=>{
+ const {verifyExactRow,stableId}=require('./transaction-preflight');
+ const record={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',REQ_ID:'REQ-21',SOURCE_URL:'https://example.com/jobs/123'};
+ const proposal={record,identityHash:stableId(record)};
+ const receipt={requestId:'SOURCE-REQ-21',status:'COMPLETE',durable:true};
+ const masterRows=[{PRIMARY_ID:'V2I-123',...record}];
+ const x=verifyExactRow(proposal,{receipt,requestId:'SOURCE-REQ-21',masterRows});
+ assert.equal(x.status,'CONSISTENT_PENDING_PROVENANCE_VALIDATION');assert.equal(x.verified,false);
+ assert.equal(x.matchedPrimaryId,'V2I-123');
+ assert.equal(verifyExactRow(proposal,{receipt,requestId:'WRONG',masterRows}).verified,false);
+ assert.equal(verifyExactRow(proposal,{receipt,requestId:'SOURCE-REQ-21',masterRows:[]}).status,'ROW_NOT_FOUND');
+ assert.equal(verifyExactRow(proposal,{receipt,requestId:'SOURCE-REQ-21',masterRows:[...masterRows,...masterRows]}).status,'AMBIGUOUS_READBACK');
+ assert.throws(()=>verifyExactRow({...proposal,identityHash:'ALTERED'},{receipt,requestId:'SOURCE-REQ-21',masterRows}),/identity changed/);
+});
