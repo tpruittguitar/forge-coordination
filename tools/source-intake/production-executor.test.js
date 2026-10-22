@@ -1,6 +1,8 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const {requestId,fetchRelease,runCanary}=require('./production-executor');
+// In-memory recorder for tests; production uses canary-cli's fsync'd file recorder.
+const memRecorder=(store={})=>({store,check:async()=>true,record:async(rid,r)=>{store[rid]=JSON.parse(JSON.stringify(r))},read:async rid=>store[rid]});
 test('deterministic request IDs survive a replay',()=>{
  const r={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/role'};
  assert.equal(requestId(r),requestId({...r}));
@@ -15,7 +17,7 @@ test('no writes when batch is not exactly five reviewed records',async()=>{
 test('an unavailable live kill switch fails before any Writer call',async()=>{
  const records=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
  let writerCalls=0;
- await assert.rejects(()=>runCanary(records,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>({ok:false}),transport:async()=>{writerCalls++}}),/switch unavailable/);
+ await assert.rejects(()=>runCanary(records,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',recorder:memRecorder(),switchTransport:async()=>({ok:false}),transport:async()=>{writerCalls++}}),/switch unavailable/);
  assert.equal(writerCalls,0);
 });
 
@@ -147,7 +149,7 @@ function mockWriter({index={},result={},readback={},post={},archiveText=ARCHIVE_
   return {ok:true,json:async()=>d};
  };
 }
-const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:ENABLED,transport,...extra});
+const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:ENABLED,transport,recorder:memRecorder(),...extra});
 const durable=(rid,items)=>({found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{items}});
 
 test('protected candidate without an exact archived match never reaches Writer POST',async()=>{
@@ -300,4 +302,46 @@ test('existing no-op accounting rejects any receipt item regardless of op name',
  const out=checkCanaryOutcome({expectedOutcome:'EXISTING_MATCH',record:{COMPANY:'A',TITLE:'D',LOCATION:'X'},result:{results:[{result:'EXISTING_MATCH',PRIMARY_ID:'V2I-1'}]},
   receipt:{status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1',op:'REPLACE'}]}},readbacks:[{primaryId:'V2I-1',found:true,matches:1,line:'1 | V2I-1 | A | D | B | OPEN | P | R | X | N'}]});
  assert.equal(out.reason,'UNEXPECTED_ROW_WRITE');
+});
+
+// ---- Independent-QA remediation: durable Writer-response recording, kill-switch scope ----
+test('no recorder: BLOCKED before any switch or Writer call',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']);let calls=0;
+ const count=async()=>{calls++;throw Error('network')};
+ await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count}),/durable Writer-response recorder required/);
+ await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count,recorder:{check:async()=>true,record:async()=>{}}}),/durable Writer-response recorder required/,'a recorder that cannot read back is not durable');
+ assert.equal(calls,0);
+});
+test('recorder that fails its write/read-back check: BLOCKED before any network',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']);let calls=0;
+ const count=async()=>{calls++;throw Error('network')};
+ for(const check of [async()=>false,async()=>{throw Error('disk full')},async()=>'yes'])
+  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count,recorder:{...memRecorder(),check}}),/failed its write\/read-back check/);
+ assert.equal(calls,0);
+});
+test('recorder failure after an accepted POST halts UNKNOWN with the response attached and no further POST',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
+ for(const broken of [{...memRecorder(),record:async()=>{throw Error('EIO')}},{...memRecorder(),read:async()=>({tampered:true})}]){
+  const log=[];const err=await runCanary(rows,opts(mockWriter({},log),{recorder:broken})).catch(e=>e);
+  assert.match(err.message,/UNKNOWN: Writer response not durably recorded/);
+  assert.equal(log.filter(x=>x==='POST').length,1,'no retry and no next case');
+  assert.equal(err.outcomes[0].status,'UNKNOWN');assert.equal(err.outcomes[0].reason,'RESPONSE_NOT_DURABLY_RECORDED');
+  assert.equal(err.outcomes[0].writerResult.receipt.REQUEST_ID,rid,'response kept for manual persistence');
+ }
+});
+test('every Writer response is recorded and read back before classification',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record),rec=memRecorder(),order=[];
+ const spy={check:rec.check,record:async(r,x)=>{order.push('record');return rec.record(r,x)},read:async r=>{order.push('read');return rec.read(r)}};
+ const log=[];const writer=mockWriter({},log),w=async(u,o)=>{const res=await writer(u,o);if(o.method==='POST')order.push('POST');return res};
+ await runCanary(rows,opts(w,{recorder:spy})).catch(e=>e);
+ assert.deepEqual(order,['POST','record','read']);assert.equal(rec.store[rid].receipt.REQUEST_ID,rid);
+});
+test('kill switch turned off between cases stops the next case; it cannot recall a POST already made',async()=>{
+ const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);let reads=0;
+ const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'}:{enabled:false,mode:'DISABLED',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+ const log=[];const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
+  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
+ const err=await runCanary(rows,opts(writer,{switchTransport:sw})).catch(e=>e);
+ assert.match(err.message,/release switch not enabled/);
+ assert.equal(log.filter(x=>x==='POST').length,1,'case 1 was already posted and is accounted; case 2 never posts');
 });

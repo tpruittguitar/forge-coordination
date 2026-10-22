@@ -6,6 +6,10 @@
  *   node tools/source-intake/canary-cli.js snapshot after --state S.json --candidates C.json
  *   node tools/source-intake/canary-cli.js finalize --state S.json --candidates C.json
  * The Writer key comes only from FORGE_WRITER_KEY and is never written to the state file.
+ * Every Writer response is fsync'd into the state file and read back from disk before the executor classifies it.
+ * Stopping: set control/SOURCE_INTAKE_RELEASE.json enabled=false on main. That stops the NEXT case; a POST already in
+ * flight completes or fails on its own, and its request must be reconciled (receipt index, then `run` again) before
+ * anything else. Never re-submit a case by hand.
  */
 const fs=require('node:fs'),crypto=require('node:crypto');
 const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
@@ -14,7 +18,15 @@ const {reconcileCanaryBatch}=require('./canary-accounting');
 const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED']);
 const hashOf=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function loadState(path){try{return JSON.parse(fs.readFileSync(path,'utf8'))}catch(e){if(e.code==='ENOENT')return null;throw Error('BLOCKED: canary state unreadable')}}
-function saveState(path,state){const tmp=path+'.tmp';fs.writeFileSync(tmp,JSON.stringify(state,null,1));fs.renameSync(tmp,path)}
+function saveState(path,state){const tmp=path+'.tmp',fd=fs.openSync(tmp,'w');try{fs.writeFileSync(fd,JSON.stringify(state,null,1));fs.fsyncSync(fd)}finally{fs.closeSync(fd)}fs.renameSync(tmp,path)}
+// Durable recorder backed by the state file: every write is fsync'd and every read comes back from disk.
+function fileRecorder(statePath,state){
+ return {
+  check:async()=>{const probe=crypto.randomUUID();state.recorderProbe={probe,at:new Date().toISOString()};saveState(statePath,state);return loadState(statePath)?.recorderProbe?.probe===probe},
+  record:async(rid,result)=>{state.results[rid]=result;saveState(statePath,state)},
+  read:async rid=>loadState(statePath)?.results?.[rid]
+ };
+}
 function bound(state,candidates){
  if(!state)throw Error('BLOCKED: no canary state; take the before snapshot first');
  if(state.candidatesHash!==hashOf(candidates))throw Error('BLOCKED: candidates changed since the before snapshot');
@@ -39,9 +51,8 @@ async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport}){
 async function run({statePath,candidates,key,transport,switchTransport}){
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
- const persist=(rid,result)=>{state.results[rid]=result;saveState(statePath,state)};
  try{
-  const outcomes=await runCanary(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,onWriterResult:persist});
+  const outcomes=await runCanary(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state)});
   if(outcomes.length!==5||outcomes.some(x=>!ACCOUNTED.has(x.status)))throw Error('BLOCKED: canary returned without five accounted cases');
   state.outcomes=outcomes;state.completedAt=new Date().toISOString();saveState(statePath,state);
   return {status:'ALL_CASES_ACCOUNTED',outcomes};
@@ -74,4 +85,4 @@ async function main(argv=process.argv.slice(2)){
  console.log(JSON.stringify(out,(k,v)=>k==='writerResult'?undefined:v,1));
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={snapshot,run,finalize,hashOf};
+module.exports={snapshot,run,finalize,hashOf,fileRecorder};

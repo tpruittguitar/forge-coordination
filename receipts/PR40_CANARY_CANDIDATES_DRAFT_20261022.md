@@ -14,15 +14,15 @@ Machine-readable draft: `receipts/PR40_CANARY_CANDIDATES_DRAFT_20261022.json` (c
 
 ## The five cases (proposed run order: no-ops first, then inserts)
 
-| # | Expected | Role | Writer dry-run | Why this case |
+| # | Expected | Role | Writer dry-run PREDICTION (nothing written) | Why this case |
 |---|---|---|---|---|
 | 1 | EXISTING_MATCH | BETA Technologies · Director of Supplier Quality · South Burlington, VT · REQ 4418953009 | EXISTING_MATCH → `V2I-9E30CCE0E70B` (SCOUT_INTAKE) by REQ_ID | Plain live master row; posting re-found by the 05:00Z board read |
 | 2 | PROTECTED_NOOP | Anduril Industries · Deputy Head of Production, Autonomous Airpower (Fury) · Ashville, OH · REQ `GH-4962385007 / internal Req 5577` | EXISTING_MATCH → `V2S-ANDURIL-FURY-5577` (archive, REJECTED_BY_EMPLOYER) by REQ_ID; **without the archive the Writer would re-insert it** | Real resurfacing: posting still live (Greenhouse, updated 10-21) and listed as NEW in the 05:00Z trial |
 | 3 | EXISTING_MATCH | Outrider · Senior Manager, Autonomous Vehicle Assembly Operations · Henderson, CO · REQ 5392330008 | EXISTING_MATCH → `V2I-029CE63ACABD` (APPLIED) by REQ_ID | Protected applicant state in the live master; posting re-found by the board read |
-| 4 | NEW | Anduril Industries · Director of Production, Optics · Waltham, MA · Greenhouse 5268363007 | SCOUT_INTAKE_WRITTEN (predicted `V2I-AF684747501B`) | Director+, defense hardware; live posting updated 10-21 |
-| 5 | NEW | nVent · Director of Manufacturing Automation · St Louis Park, MN · Workday R19232 | SCOUT_INTAKE_WRITTEN (predicted `V2I-5B22F294C802`) | Director+, industrial electrical manufacturer; live posting (30+ days) |
+| 4 | NEW | Anduril Industries · Director of Production, Optics · Waltham, MA · Greenhouse 5268363007 | Predicted insertion as SCOUT_INTAKE (dry run only; not written; the real PRIMARY_ID is assigned at write time) | Director+, defense hardware; live posting updated 10-21 |
+| 5 | NEW | nVent · Director of Manufacturing Automation · St Louis Park, MN · Workday R19232 | Predicted insertion as SCOUT_INTAKE (dry run only; not written; the real PRIMARY_ID is assigned at write time) | Director+, industrial electrical manufacturer; live posting (30+ days) |
 
-**Approving 4 and 5 means two real SCOUT_INTAKE rows will be added to your master.** No Never Consider rule or review flag fired in the dry run for any case.
+**Correction (2026-10-22, independent QA):** every result above is a dry-run prediction from the Writer's `planIntake`, not a Writer transaction. Cases 4 and 5 are predicted insertions; only the live canary's COMPLETE receipts and exact row readbacks can show they were inserted. **Running the canary with 4 and 5 will add two real SCOUT_INTAKE rows to your master.** No Never Consider rule or review flag fired in the dry run for any case.
 
 ## Evidence per case (for your review)
 1. **BETA Technologies** — electric aircraft and charging infrastructure manufacturer. Evidence: https://www.beta.team/ · master row `V2I-9E30CCE0E70B`.
@@ -42,6 +42,15 @@ Of 142 provisional NEW roles in the 05:00Z trial, the Writer would treat **12 as
 
 ## To approve (what changes in the JSON)
 For each case you approve: set `evidenceVerified: true`, `evidenceSource: "INDEPENDENT_VERIFIED"`, `businessEvidenceApproved: true`, and `reviewedNeverConsider: false` stays `false` only if you confirm the employer is not a Never Consider business. `rulesHash` is bound to the rules above; the executor re-reads live rules and refuses a mismatch.
+
+## Operating procedure (binding for the live run)
+- **Durable recorder:** `canary-cli.js run` passes an fsync'd file recorder to the executor. The executor refuses to start unless the recorder passes a write/read-back check, and records and re-reads every Writer response before acting on it. If recording fails after a POST, the run halts UNKNOWN with the response attached; save it and reconcile — never retry by hand.
+- **Kill switch scope:** setting `enabled=false` on `main` stops the **next** case. It cannot cancel a POST already in flight; that request must be reconciled through the receipt index (then `run` again) before anything else.
+- **No blind retries:** any UNKNOWN or HOLD stops the canary; resume only with `canary-cli.js run`, which re-verifies from the receipt index first.
+- **Re-check first:** re-run the read-only pull and dry run immediately before arming the switch.
+
+## Pre-arm re-check (2026-10-22 23:32 UTC, read-only)
+All five predictions held on a fresh pull (master 1,677 rows, archive 785, rules hash unchanged): cases 1–3 predicted no-ops on the intended IDs; cases 4–5 predicted insertions. Executor gate with this file stopped at the disabled switch with zero Writer calls. These are predictions, not transactions.
 
 ## Before the run (not done; nothing executed)
 1. The kill switch is read from `main`; `control/SOURCE_INTAKE_RELEASE.json` exists only on the PR #40 branch. PR #40 must be merged (or the file placed on `main`) and set to `enabled: true, mode: "CANARY"` by you.
