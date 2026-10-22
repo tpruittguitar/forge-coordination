@@ -9,7 +9,7 @@ const priority=(j,registry)=>registry?.[norm(j.company)]||(/^DREAM|P[123]$/i.tes
 function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date().toISOString(),targetRegistry={}}={}){
  if(!Array.isArray(report.new_roles))throw Error('new_roles must be array');
  if(!/^[A-Z0-9_-]+$/.test(runId))throw Error('invalid runId');
- const at=et(discoveredAt);const known={urls:new Set(),ids:new Set(),keys:new Set()};
+ const at=et(discoveredAt);const known={urls:new Set(),ids:new Set(),keys:new Map()};
  const rows=report.new_roles.map((j,i)=>{
   const url=L.normUrl(j.url), id=L.atsId(j.url), k=L.identityKey(j.company,j.title,j.location);
   const tier=priority(j,targetRegistry);
@@ -17,9 +17,9 @@ function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date()
   if(j.status&&j.status!=='NEW')verdict='EXISTING_OR_PROTECTED';
   else if(!j.company||!j.title||!j.url)verdict='MISSING_IDENTITY';
   else if(WRONG_FUNCTION.test(j.title))verdict='WRONG_FUNCTION';
-  else if(known.urls.has(url)||(id&&known.ids.has(norm(j.company)+'|'+id))||known.keys.has(k))verdict='DUPLICATE_IN_REPORT';
+  else if(known.urls.has(url)||(id&&known.ids.has(norm(j.company)+'|'+id))||(known.keys.has(k)&&(!id||!known.keys.get(k)||known.keys.get(k)===id)))verdict='DUPLICATE_IN_REPORT';
   else {
-   known.urls.add(url);known.keys.add(k);if(id)known.ids.add(norm(j.company)+'|'+id);
+   known.urls.add(url);known.keys.set(k,id);if(id)known.ids.add(norm(j.company)+'|'+id);
   }
   // No text-only industry exclusion. Writer decides based on canonical NC rules + employer core-business evidence.
   const industry='NEVER_CONSIDER_REVIEW';
