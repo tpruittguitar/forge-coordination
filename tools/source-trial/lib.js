@@ -9,10 +9,10 @@ const NOT_LEADER_RE = /\b(assistant|associate|intern|coordinator|specialist|anal
 const MFG_ENG_RE = /\b(manufacturing engineering|manufacturing engineer|process engineering|process engineer|industrial engineering|industrial engineer|production engineering|production engineer)\b/i;
 const TRANSFORM_RE = /\b(npi|new product introduction|new product development|continuous improvement|operational excellence|industrializ\w*|commissioning)\b/i;
 const LAUNCH_RE = /\b(launch|ramp(?:-?up)?)\b/i;
-const LAUNCH_CONTEXT_RE = /\b(manufactur\w*|production|product|plant|factory|assembly|industrializ\w*|npi)\b/i;
+const LAUNCH_CONTEXT_RE = /\b(manufactur\w*|production|plant|factory|assembly|industrializ\w*|npi)\b/i;
 const QUALITY_RE = /\bquality\b/i;
 const MFG_PROD_RE = /\b(manufactur\w*|production|plant|factory|assembly|fabrication|operations|ops)\b/i;
-const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
+const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission operations|mission control|mission director|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
 
 /** Title -> 'QUALITY' | 'MFG_PROD' | 'MFG_ENG' | null. Only leadership titles in Tim's three families count. */
 function family(title) {
@@ -51,8 +51,15 @@ function atsId(url) {
   return m ? m[1].toLowerCase() : '';
 }
 const PROTECTED_RE = /\b(applied|rejected(?:_by_employer)?|declined(?:_by_tim)?|withdrawn|interviewed)\b/i;
-const rowState = r => [r.STATUS,r.APP_STATE,r.APPLICATION_STATE,r.DISPOSITION, ...(r.p ? [r.p.STATUS,r.p.APP_STATE,r.p.APPLICATION_STATE,r.p.DISPOSITION] : [])].filter(Boolean).join(' ');
-const locKey = loc => String(usPlace(loc) || '').toUpperCase();
+const rowState = r => ['DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
+const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => /^(true|yes|1|locked|protected)$/i.test(String(v || ''))));
+const locKey = loc => {
+  const raw = String(loc || '').trim(), state = usPlace(raw);
+  if (!state) return '';
+  const city = raw.split(',')[0].replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return city && !/^(united states|usa|us|[a-z]{2})$/.test(city) && city !== raw.toLowerCase().trim().replace(/[^a-z0-9]+/g,' ').trim() || (city && raw.includes(','))
+    ? city + ',' + state : state;
+};
 const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
 function masterIndex(rows) {
   const keys = new Map(), urls = new Map(), reqIds = new Map(), locations = new Map(), companies = new Set();
@@ -60,7 +67,7 @@ function masterIndex(rows) {
     const co = P.normCo(r.COMPANY || (r.p && r.p.COMPANY)), ti = normTitle(r.TITLE || (r.p && r.p.TITLE));
     const status = PROTECTED_RE.test(rowState(r)) ? 'EXISTING_PROTECTED' : 'EXISTING';
     if (co) companies.add(co);
-    const put = (map, key) => { if (key) map.set(key, map.get(key) === 'EXISTING_PROTECTED' ? 'EXISTING_PROTECTED' : status); };
+    const put = (map, key) => { if (key) map.set(key, (map.get(key) === 'EXISTING_PROTECTED' || status === 'EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : status); };
     put(keys, co && ti ? co + '|' + ti : '');
     put(locations, co && ti ? identityKey(co, ti, r.LOCATION || (r.p && r.p.LOCATION)) : '');
     const p = r.p || {};
@@ -69,7 +76,7 @@ function masterIndex(rows) {
       put(urls, normUrl(url));
       const id = atsId(url); if (id) put(reqIds, co + '|' + id);
     });
-    for (const k of ['REQ_ID','REQUISITION_ID','ATS_REQ_ID','JOB_ID']) {
+    for (const k of ['REQ','REQ_ID','REQUISITION_ID','ATS_REQ_ID','JOB_ID']) {
       const id = String(p[k] || r[k] || '').trim().toLowerCase();
       if (id) put(reqIds, co + '|' + id);
     }
