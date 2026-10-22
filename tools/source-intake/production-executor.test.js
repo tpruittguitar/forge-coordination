@@ -67,20 +67,23 @@ test('five-case count reconciliation holds without independent authenticated mas
 test('five-case count reconciliation proves exact new ID set and protects archived no-op',()=>{
  const {reconcileCanaryBatch}=require('./canary-accounting');
  const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'Company '+n,TITLE:'Director '+n,LOCATION:'Austin TX',REQ_ID:'REQ'+n});
- const before=[row('V2I-1',1),row('V2A-2',2),row('V2I-3',3)];
+ // The protected role lives only in the terminal archive, never in the current master.
+ const archived={...row('V2A-2',2),ARCHIVED_TERMINAL:true};
+ const before=[row('V2I-1',1),row('V2I-3',3)];
  const after=[...before,row('V2I-4',4),row('V2I-5',5)];
  const cases=[1,2,3,4,5].map(n=>({
    expectedOutcome:n===2?'PROTECTED_NOOP':n===1?'EXISTING_MATCH':n===3?'EXISTING_MATCH':'NEW',
    record:row('',n),primaryId:'V2I-'+n,
-   protectedBefore:n===2?before[1]:undefined,
+   protectedPrimaryId:n===2?'V2A-2':undefined,
    accounting:{status:n===2||n===1||n===3?'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS':'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',
     primaryId:n===2?'V2A-2':'V2I-'+n}
  }));
  const snapshot=rows=>({source:'WRITER',authenticated:true,rows});
- const ok=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot(after)});
+ const archive=snapshot([archived]);
+ const ok=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot(after),archiveBefore:archive,archiveAfter:archive});
  assert.equal(ok.status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');
  assert.equal(ok.verified,false);assert.equal(ok.scaleUpAllowed,false);
- const contaminated=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot([...after,row('V2I-X',6)])});
+ const contaminated=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot([...after,row('V2I-X',6)]),archiveBefore:archive,archiveAfter:archive});
  assert.equal(contaminated.reason,'INSERTED_ID_SET_MISMATCH');
 });
 
@@ -113,4 +116,121 @@ test('complete index is required before request_result and row readback',async()
  const output=await inspectReceipt({COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/job/a'},{key:'fixture',transport});
  assert.deepEqual(calls,['receipt_index','request_result','row_readback']);
  assert.deepEqual(output.primaryIds,['V2I-123']);assert.equal(output.verified,false);
+});
+
+// ---- QA remediation regressions (archive guard, verified resume, archive-aware reconciliation) ----
+const RULES_RAW='RULES v1';
+const RULES_HASH=require('node:crypto').createHash('sha256').update(RULES_RAW).digest('hex');
+const ARCHIVE_TEXT='V2_TERMINAL_ARCHIVE\n1 | V2A-9 | Co0 | Dir | ARCHIVE | REJECTED | P | R0 | TX | N';
+const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Dir',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
+ evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
+ reviewedNeverConsider:false,expectedOutcome:kind,protectedPrimaryId:'V2A-9',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
+function mockWriter({index={},result={},readback={},archiveText=ARCHIVE_TEXT}={},log=[]){
+ return async(url,o)=>{
+  const u=new URL(url),action=o.method==='POST'?'POST':u.searchParams.get('action'),rid=u.searchParams.get('requestId');log.push(action);
+  const d={ok:true};
+  if(action==='writer_status')Object.assign(d,{freeze:null,level:'OK',errors:[]});
+  else if(action==='receipt_index')Object.assign(d,{source:'GITHUB',exists:true,sha:'s',request:index[rid]||null});
+  else if(action==='rules')Object.assign(d,{rules:{status:'ACTIVE',rules:[1],raw:RULES_RAW,id:'r'}});
+  else if(action==='archive')Object.assign(d,{archiveId:'A',mode:'MIGRATED',text:archiveText});
+  else if(action==='request_result')Object.assign(d,result[rid]);
+  else if(action==='row_readback')Object.assign(d,readback[rid]);
+  else if(action==='POST')Object.assign(d,{WRITE_ACCEPTED:true,writeId:'W1',results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-NEW'}]});
+  else throw Error('unapproved operation '+action);
+  return {ok:true,json:async()=>d};
+ };
+}
+const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:ENABLED,transport,...extra});
+const durable=(rid,items)=>({found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{items}});
+
+test('protected candidate without an exact archived match never reaches Writer POST',async()=>{
+ const log=[],rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);rows[0].protectedPrimaryId='V2A-MISSING';
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
+ assert.deepEqual(log,['archive']);
+});
+test('protected candidate with identity mismatch in archive never reaches Writer POST',async()=>{
+ const log=[],rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);rows[0].record.TITLE='Other';
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
+ assert.ok(!log.includes('POST'));
+});
+test('proven archived protected candidate proceeds to one POST, then halts with captured Writer result',async()=>{
+ const log=[];
+ const err=await runCanary(canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']),opts(mockWriter({},log))).catch(e=>e);
+ assert.match(err.message,/HOLD: Writer accepted/);
+ assert.equal(log.filter(x=>x==='POST').length,1);
+ assert.equal(err.outcomes[0].status,'PENDING_VERIFICATION');assert.equal(err.outcomes[0].writerResult.results[0].PRIMARY_ID,'V2I-NEW');
+});
+test('resume accounts a verified COMPLETE case without re-POSTing and advances to the next case',async()=>{
+ const rows=canary(['NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW','NEW']);rows[1].record.COMPANY='Co0';rows[1].record.SOURCE_URL='https://example.com/p';
+ const rid=requestId(rows[0].record),items=[{pid:'V2I-100',op:'INSERT'}],log=[];
+ const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
+  readback:{[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
+ const priorResults={[rid]:{ok:true,WRITE_ACCEPTED:true,results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-100'}]}};
+ const err=await runCanary(rows,opts(writer,{priorResults})).catch(e=>e);
+ assert.match(err.message,/HOLD: Writer accepted/);
+ assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
+ assert.equal(err.outcomes[0].accounting.status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
+ assert.equal(err.outcomes[0].accounting.verified,false);
+ assert.equal(err.outcomes[1].status,'PENDING_VERIFICATION');
+ assert.equal(log.filter(x=>x==='POST').length,1,'only the next case is posted');
+});
+test('resume holds without captured Writer result, on pending state, or on receipt binding mismatch',async()=>{
+ const rows=canary(['NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW','NEW']);
+ const rid=requestId(rows[0].record),items=[{pid:'V2I-100',op:'INSERT'}];
+ const prior={[rid]:{results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-100'}]}};
+ const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const cases=[
+  [{index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},readback:rb},{},/existing or uncertain request/],
+  [{index:{[rid]:{s:'PENDING',items}}},prior,/existing or uncertain request/],
+  [{index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable('FORGE-SOURCE-OTHER',items)},readback:rb},prior,/RECEIPT_NOT_DURABLE/],
+  [{index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,[{pid:'V2I-999'}])},readback:rb},prior,/INDEX_RESULT_ID_MISMATCH/]
+ ];
+ for(const [state,priorResults,pattern] of cases){
+  const log=[];
+  await assert.rejects(()=>runCanary(rows,opts(mockWriter(state,log),{priorResults})),pattern);
+  assert.ok(!log.includes('POST'),'no POST');
+  if(state.index[rid].s!=='COMPLETE')assert.ok(!log.includes('request_result'),'pending index never requests result');
+ }
+});
+test('protected resume proves the role stayed archived and absent from master',async()=>{
+ const rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);
+ const rid=requestId(rows[0].record);
+ const base={index:{[rid]:{s:'COMPLETE',items:[]}},result:{[rid]:durable(rid,[])}};
+ const priorResults={[rid]:{results:[{result:'EXISTING_MATCH',PRIMARY_ID:'V2A-9'}]}};
+ const absent={[rid]:{rows:[],master:{endMarkerPresent:true},requested:1,found:0}};
+ const log=[];
+ const err=await runCanary(rows,opts(mockWriter({...base,readback:absent},log),{priorResults})).catch(e=>e);
+ assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
+ assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
+ assert.equal(log.filter(x=>x==='POST').length,1);
+ const resurrected={[rid]:{rows:[{primaryId:'V2A-9',found:true,matches:1,line:'1 | V2A-9 | Co0 | Dir | S | OPEN | P | R0 | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const log2=[];
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({...base,readback:resurrected},log2),{priorResults})),/PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN/);
+ assert.ok(!log2.includes('POST'));
+});
+test('reconciliation requires archive snapshots and rejects resurrection or restoration of the protected role',()=>{
+ const {reconcileCanaryBatch}=require('./canary-accounting');
+ const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'C'+n,TITLE:'T'+n,LOCATION:'L'});
+ const snap=rows=>({source:'WRITER',authenticated:true,rows});
+ const archived={...row('V2A-2',2),ARCHIVED_TERMINAL:true};
+ const before=[row('V2I-1',1)],after=[...before,row('V2I-4',4),row('V2I-5',5),row('V2I-6',6)];
+ const cases=[{expectedOutcome:'EXISTING_MATCH',record:row('',1),accounting:{status:'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS',primaryId:'V2I-1'}},
+  {expectedOutcome:'PROTECTED_NOOP',record:row('',2),protectedPrimaryId:'V2A-2',accounting:{status:'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS',primaryId:'V2A-2'}},
+  ...[4,5,6].map(n=>({expectedOutcome:'NEW',record:row('',n),accounting:{status:'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',primaryId:'V2I-'+n}}))];
+ const run=(b,a,ab,aa)=>reconcileCanaryBatch({cases,before:snap(b),after:snap(a),archiveBefore:ab&&snap(ab),archiveAfter:aa&&snap(aa)});
+ assert.equal(run(before,after,[archived],[archived]).status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');
+ assert.equal(run(before,after).reason,'INDEPENDENT_ARCHIVE_SNAPSHOTS_REQUIRED');
+ assert.equal(run(before,after,[archived],[]).reason,'ARCHIVED_PROTECTION_NOT_PROVEN');
+ assert.equal(run(before,[...after,row('V2A-2',2)],[archived],[archived]).reason,'INSERTED_ID_SET_MISMATCH');
+ assert.equal(run([...before,row('V2A-2',2)],[...after,row('V2A-2',2)],[archived],[archived]).reason,'PROTECTED_ROLE_IN_MASTER');
+ assert.equal(run(before,after,[{...archived,TITLE:'X'}],[archived]).reason,'ARCHIVE_IDENTITY_MISMATCH');
+});
+test('accounting rejects a receipt bound to a different request ID',()=>{
+ const {checkCanaryOutcome}=require('./canary-accounting');
+ const out=checkCanaryOutcome({expectedOutcome:'NEW',record:{COMPANY:'A',TITLE:'D',LOCATION:'X'},requestId:'FORGE-SOURCE-MINE',
+  result:{results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-1'}]},
+  receipt:{requestId:'FORGE-SOURCE-OTHER',status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1'}]}},
+  readbacks:[{primaryId:'V2I-1',found:true,matches:1,line:'1 | V2I-1 | A | D | B | OPEN | P | R | X | N'}]});
+ assert.equal(out.reason,'RECEIPT_REQUEST_ID_MISMATCH');
 });

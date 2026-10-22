@@ -1,13 +1,17 @@
 'use strict';
 /* Production Writer executor; never enabled by default, never automatically retries writes. */
 const crypto=require('node:crypto');
-const {read}=require('./writer-reader');
+const {read,fetchAuthenticatedArchive}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
-const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
+const {checkCanaryOutcome}=require('./canary-accounting');
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
 const SWITCH='https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/SOURCE_INTAKE_RELEASE.json';
 function requestId(record){return 'FORGE-SOURCE-'+stableId(record)}
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
+const validPid=x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x||'');
+const norm=x=>String(x??'').trim().toLowerCase();
+const sameIdentity=(row,record)=>norm(row.COMPANY)===norm(record.COMPANY)&&norm(row.TITLE)===norm(record.TITLE)&&
+ norm(row.LOCATION)===norm(record.LOCATION)&&(!record.REQ_ID||norm(row.REQ_ID)===norm(record.REQ_ID));
 async function fetchRelease(fetcher=globalThis.fetch){
  const response=await fetcher(SWITCH,{headers:{'Cache-Control':'no-store'},signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw Error('BLOCKED: release switch unavailable');
@@ -25,11 +29,11 @@ async function preflight(record,{key,transport=globalThis.fetch}={}){
  ]);
  if(status.data.freeze!=null||String(status.data.level||'').toUpperCase()!=='OK'||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer freeze/health');
  if(index.data.source!=='GITHUB'||index.data.exists!==true||!index.data.sha)throw Error('BLOCKED: receipt index authority');
- if(index.data.request) return {rid,mode:'EXISTING_REQUEST_HOLD',state:index.data.request.s||'UNKNOWN'};
+ if(index.data.request) return {rid,mode:'EXISTING_REQUEST_HOLD',state:index.data.request.s||'UNKNOWN',entry:index.data.request};
  if(!rules.data.rules||rules.data.rules.status!=='ACTIVE'||!Array.isArray(rules.data.rules.rules)||!rules.data.rules.rules.length||!rules.data.rules.raw||!rules.data.rules.id)throw Error('BLOCKED: canonical rules unavailable');
  return {rid,mode:'READY_FOR_WRITER_ADJUDICATION',rulesHash:sha(rules.data.rules.raw)};
 }
-async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId}={}){
+async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={}}={}){
  if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
@@ -37,28 +41,73 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  const unique=new Set(records.map(x=>requestId(x.record)));
  if(unique.size!==5)throw Error('BLOCKED: repeated candidate identity');
  const outcomes=[];
+ const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
  for(const candidate of records){
   await fetchRelease(switchTransport); // fresh kill switch before each write
-  // Protected roles must be proven in the authenticated terminal archive before submission.\n  if(candidate.expectedOutcome==='PROTECTED_NOOP'){\n   const archive=await fetchAuthenticatedArchive({key,transport});\n   const match=archive.rows.filter(r=>r.ARCHIVED_TERMINAL&&r.PRIMARY_ID===candidate.protectedPrimaryId&&\n    String(r.COMPANY).trim().toLowerCase()===String(candidate.record.COMPANY).trim().toLowerCase()&&\n    String(r.TITLE).trim().toLowerCase()===String(candidate.record.TITLE).trim().toLowerCase()&&\n    String(r.LOCATION).trim().toLowerCase()===String(candidate.record.LOCATION).trim().toLowerCase()&&\n    (!candidate.record.REQ_ID||String(r.REQ_ID).trim().toLowerCase()===String(candidate.record.REQ_ID).trim().toLowerCase()));\n   if(match.length!==1)throw Error('BLOCKED: protected archive identity unproven');\n  }
+  // Protected roles must be proven in the authenticated terminal archive before submission.
+  if(candidate.expectedOutcome==='PROTECTED_NOOP'){
+   const archive=await fetchAuthenticatedArchive({key,transport});
+   const match=archive.rows.filter(r=>r.ARCHIVED_TERMINAL&&r.PRIMARY_ID===candidate.protectedPrimaryId&&sameIdentity(r,candidate.record));
+   if(match.length!==1)halt('BLOCKED: protected archive identity unproven');
+  }
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
-  if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});throw Error('BLOCKED: existing or uncertain request; reconcile before retry')}
+  if(pre.mode==='EXISTING_REQUEST_HOLD'){
+   // Resume only a case whose earlier accepted POST is now proven by fresh authenticated reads.
+   if(pre.state!=='COMPLETE'||!Object.hasOwn(priorResults,rid)){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode,state:pre.state});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
+   let accounting;
+   try{accounting=await verifyAcceptedCase(candidate,rid,priorResults[rid],pre.entry,{key,transport})}
+   catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message});halt(e.message)}
+   outcomes.push({requestId:rid,status:'RESUMED_ACCOUNTED',accounting});
+   continue;
+  }
+  if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
   // Prior review must be bound to the exact canonical rules fetched from Writer now.
   // A caller-provided industry label or boolean alone cannot authorize intake.
   if(!candidate.rulesHash||candidate.rulesHash!==pre.rulesHash||candidate.businessEvidenceApproved!==true)
-    throw Error('BLOCKED: independent employer-business review not bound to fresh canonical rules');
+    halt('BLOCKED: independent employer-business review not bound to fresh canonical rules');
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId,GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:candidate.primaryBusiness||''}]};
   let response;
   try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(60000)}); }
-  catch {throw Error('UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry')}
+  catch {halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry')}
   let result;
-  try{result=await response.json()}catch{throw Error('UNKNOWN: Writer response invalid; reconcile before retry')}
-  if(!response.ok||result.ok!==true||result.WRITE_ACCEPTED!==true)throw Error('UNKNOWN: Writer transaction not conclusively accepted; reconcile before retry');
-  outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null});
+  try{result=await response.json()}catch{halt('UNKNOWN: Writer response invalid; reconcile before retry')}
+  if(!response.ok||result.ok!==true||result.WRITE_ACCEPTED!==true)halt('UNKNOWN: Writer transaction not conclusively accepted; reconcile before retry');
+  // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
+  outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null,writerResult:result});
   // No next job while current transaction is unverified. Reconciliation is a separate execution.
-  throw Error('HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding');
+  halt('HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding');
  }
  return outcomes;
+}
+// READ-ONLY proof for a previously accepted case. Called only after receipt_index reports COMPLETE.
+async function verifyAcceptedCase(candidate,rid,prior,indexEntry,{key,transport}={}){
+ const hold=reason=>{throw Error('HOLD: resumed case not verified ('+reason+')')};
+ if(!prior||!Array.isArray(prior.results)||prior.results.length!==1||!prior.results[0]?.PRIMARY_ID)hold('CAPTURED_WRITER_RESULT_REQUIRED');
+ const primaryId=prior.results[0].PRIMARY_ID;
+ const detail=(await read('request_result',{key,transport,requestId:rid})).data;
+ if(!detail.found||detail.source!=='index'||detail.requestId!==rid||detail.status!=='COMPLETE'||detail.durable!==true)hold('RECEIPT_NOT_DURABLE');
+ const a=Array.isArray(indexEntry?.items)?indexEntry.items.map(x=>x?.pid):null,b=Array.isArray(detail.entry?.items)?detail.entry.items.map(x=>x?.pid):null;
+ if(!a||!b||a.length!==b.length||a.length>25||a.some((v,i)=>!validPid(v)||v!==b[i]))hold('INDEX_RESULT_ID_MISMATCH');
+ let readbacks;
+ if(candidate.expectedOutcome==='PROTECTED_NOOP'){
+  // An archived no-op stays in the terminal archive and must not reappear in the current master.
+  if(primaryId!==candidate.protectedPrimaryId||!validPid(primaryId))hold('PROTECTED_ID_MISMATCH');
+  const master=(await read('row_readback',{key,transport,requestId:rid,primaryIds:[primaryId]})).data;
+  if(master.master?.endMarkerPresent!==true||master.requested!==1||master.found!==0)hold('PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN');
+  const archive=await fetchAuthenticatedArchive({key,transport});
+  readbacks=archive.rows.filter(r=>r.ARCHIVED_TERMINAL&&r.PRIMARY_ID===primaryId).map(r=>({primaryId:r.PRIMARY_ID,found:true,matches:1,line:r.RAW_ROW}));
+ }else{
+  const ids=a.length?a:[primaryId];
+  if(ids.some(x=>!validPid(x)))hold('RECEIPT_IDS_UNBOUND');
+  const rb=(await read('row_readback',{key,transport,requestId:rid,primaryIds:ids})).data;
+  if(!Array.isArray(rb.rows)||rb.master?.endMarkerPresent!==true||rb.requested!==ids.length||rb.found!==ids.length||rb.rows.length!==ids.length||
+     rb.rows.some((x,i)=>x.primaryId!==ids[i]||!x.found||x.matches!==1))hold('EXACT_ROW_READBACK_MISSING');
+  readbacks=rb.rows;
+ }
+ const accounting=checkCanaryOutcome({expectedOutcome:candidate.expectedOutcome,record:candidate.record,result:prior,receipt:detail,readbacks,requestId:rid});
+ if(accounting.status==='HOLD')hold(accounting.reason);
+ return accounting;
 }
 // READ-ONLY reconciliation. NEVER call request_result while receipt-index is pending:
 // the Writer's request_result verification path may itself mutate the index.
@@ -76,4 +125,4 @@ async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport
  const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:unique})).data;
  return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:unique,readback:back,verified:false};
 }
-module.exports={requestId,fetchRelease,preflight,runCanary,inspectReceipt};
+module.exports={requestId,fetchRelease,preflight,runCanary,verifyAcceptedCase,inspectReceipt};

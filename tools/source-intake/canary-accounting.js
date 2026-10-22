@@ -2,7 +2,10 @@
 /* Pure receipt accounting. A Writer response alone is never durable proof. */
 const NOOP=new Set(['EXISTING_MATCH','NEVER_CONSIDER_EXCLUDED']);
 const INSERT=new Set(['SCOUT_INTAKE_WRITTEN','DISCOVERY_LEAD_WRITTEN']);
-function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks}={}){
+const norm=x=>String(x??'').trim().toLowerCase();
+const sameIdentity=(row,record)=>norm(row.COMPANY)===norm(record.COMPANY)&&norm(row.TITLE)===norm(record.TITLE)&&
+ norm(row.LOCATION)===norm(record.LOCATION)&&(!record.REQ_ID||norm(row.REQ_ID)===norm(record.REQ_ID));
+function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,requestId}={}){
  const held=(reason)=>({status:'HOLD',reason,verified:false,scaleUpAllowed:false});
  if(!result||!Array.isArray(result.results)||result.results.length!==1)return held('RESPONSE_NOT_EXACTLY_ONE');
  const outcome=result.results[0];
@@ -13,6 +16,7 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks}={}
  if(expectedOutcome==='PROTECTED_NOOP'&&kind!=='EXISTING_MATCH')return held('PROTECTED_NOT_NOOP');
  if(expectedOutcome==='NEW'&&!INSERT.has(kind))return held('NEW_NOT_INSERTED');
  if(!receipt||receipt.status!=='COMPLETE'||!receipt.durable||!Array.isArray(receipt.entry?.items))return held('RECEIPT_NOT_DURABLE_AND_BOUND');
+ if(requestId!==undefined&&receipt.requestId!==requestId)return held('RECEIPT_REQUEST_ID_MISMATCH');
  const pids=receipt.entry.items.map(x=>x.pid).filter(Boolean);
  if(!Array.isArray(readbacks))return held('READBACK_MISSING');
  if(kind==='EXISTING_MATCH'){
@@ -37,12 +41,15 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks}={}
 
 // Independent snapshot reconciliation never trusts a Writer response as a row-count oracle.
 // Both snapshots must come from authenticated, complete Writer master acquisitions.
-function reconcileCanaryBatch({cases:casesInput,before,after}={}){
+function reconcileCanaryBatch({cases:casesInput,before,after,archiveBefore,archiveAfter}={}){
  const hold=reason=>({status:'HOLD',reason,verified:false,scaleUpAllowed:false});
  if(!Array.isArray(casesInput)||casesInput.length!==5)return hold('FIVE_CASES_REQUIRED');
  if(!before||!after||before.authenticated!==true||after.authenticated!==true||
     before.source!=='WRITER'||after.source!=='WRITER'||!Array.isArray(before.rows)||!Array.isArray(after.rows))
    return hold('INDEPENDENT_WRITER_SNAPSHOTS_REQUIRED');
+ if(!archiveBefore||!archiveAfter||archiveBefore.authenticated!==true||archiveAfter.authenticated!==true||
+    archiveBefore.source!=='WRITER'||archiveAfter.source!=='WRITER'||!Array.isArray(archiveBefore.rows)||!Array.isArray(archiveAfter.rows))
+   return hold('INDEPENDENT_ARCHIVE_SNAPSHOTS_REQUIRED');
  const index=rows=>{
   const map=new Map();
   for(const row of rows){if(!row?.PRIMARY_ID||map.has(row.PRIMARY_ID))return null;map.set(row.PRIMARY_ID,row)}
@@ -63,21 +70,23 @@ function reconcileCanaryBatch({cases:casesInput,before,after}={}){
  if(expectedIds.some(x=>!x)||new Set(expectedIds).size!==expectedIds.length||
     inserted.length!==newCases.length||inserted.some(x=>!expectedIds.includes(x)))
    return hold('INSERTED_ID_SET_MISMATCH');
- const norm=x=>String(x??'').trim().toLowerCase();
  for(const x of casesInput){
-  const id=x.accounting.primaryId||x.primaryId;
+  const id=x.accounting.primaryId||x.primaryId,record=x.record||{};
+  if(x.expectedOutcome==='PROTECTED_NOOP'){
+   // A protected no-op stays archived in both snapshots and must never be resurrected into the master.
+   if(!id||id!==x.protectedPrimaryId)return hold('ARCHIVED_PROTECTION_NOT_PROVEN');
+   if(a.has(id)||b.has(id))return hold('PROTECTED_ROLE_IN_MASTER');
+   const was=archiveBefore.rows.filter(r=>r?.ARCHIVED_TERMINAL===true&&r.PRIMARY_ID===id);
+   const now=archiveAfter.rows.filter(r=>r?.ARCHIVED_TERMINAL===true&&r.PRIMARY_ID===id);
+   if(was.length!==1||now.length!==1)return hold('ARCHIVED_PROTECTION_NOT_PROVEN');
+   if(!sameIdentity(was[0],record)||!sameIdentity(now[0],record))return hold('ARCHIVE_IDENTITY_MISMATCH');
+   continue;
+  }
   if(!id||!b.has(id))return hold('CASE_ID_NOT_IN_MASTER');
   if(x.expectedOutcome!=='NEW'&&!a.has(id))return hold('NOOP_CREATED_NEW_ROW');
-  const row=b.get(id),record=x.record||{};
-  if(norm(row.COMPANY)!==norm(record.COMPANY)||norm(row.TITLE)!==norm(record.TITLE)||
-    norm(row.LOCATION)!==norm(record.LOCATION)||
-    (record.REQ_ID&&norm(row.REQ_ID)!==norm(record.REQ_ID)))
-   return hold('MASTER_IDENTITY_MISMATCH');
-  if(x.expectedOutcome==='PROTECTED_NOOP'&&
-     (!x.protectedBefore||x.protectedBefore.PRIMARY_ID!==id))
-   return hold('ARCHIVED_PROTECTION_NOT_PROVEN');
+  if(!sameIdentity(b.get(id),record))return hold('MASTER_IDENTITY_MISMATCH');
  }
  return {status:'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA',verified:false,scaleUpAllowed:false,
-   beforeCount:a.size,afterCount:b.size,insertedIds:inserted};
+   beforeCount:a.size,afterCount:b.size,insertedIds:inserted,archiveBeforeCount:archiveBefore.rows.length,archiveAfterCount:archiveAfter.rows.length};
 }
 module.exports={checkCanaryOutcome,reconcileCanaryBatch};

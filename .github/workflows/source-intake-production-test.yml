@@ -3,11 +3,11 @@ on:
   push:
     paths:
       - 'tools/source-intake/**'
+      - 'control/SOURCE_INTAKE_RELEASE.json'
       - '.github/workflows/source-intake-production-test.yml'
+  # Every PR commit is tested, including docs/receipt-only commits that move the QA candidate head.
   pull_request:
-    paths:
-      - 'tools/source-intake/**'
-      - '.github/workflows/source-intake-production-test.yml'
+  workflow_dispatch:
 jobs:
   test:
     runs-on: ubuntu-latest
@@ -16,4 +16,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/source-intake/production-executor.test.js
+      - run: node --test tools/source-intake/*.test.js
+      - name: Release switch must stay disabled on this branch
+        run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');if(c.enabled!==false||c.mode!=='DISABLED')process.exit(1)"
