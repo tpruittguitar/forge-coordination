@@ -19,7 +19,7 @@ function family(title) {
   const t = String(title || '');
   if (!LEADER_RE.test(t) || NOT_LEADER_RE.test(t) || OFF_TOPIC_RE.test(t)) return null;
   if (MFG_ENG_RE.test(t)) return 'MFG_ENG';
-  if (QUALITY_RE.test(t)) return 'QUALITY';
+  if (QUALITY_RE.test(t) || /\bmission assurance\b/i.test(t)) return 'QUALITY';
   if (/\bcustomer\b/i.test(t)) return null;
   if (TRANSFORM_RE.test(t) || (LAUNCH_RE.test(t) && LAUNCH_CONTEXT_RE.test(t))) return 'MFG_PROD';
   if (/\bgm[\s,]+plant\b/i.test(t)) return 'MFG_PROD';
