@@ -26,3 +26,19 @@ test('reject injected Writer reader overrides and mismatched audit inputs',async
  const {preview,audit}=fixture();audit.rows[0].url='https://evil.example.com';
  assert.throws(()=>eligibleFromAudit(audit,preview),/divergence/);
 });
+
+test('transaction preflight creates stable identities but no writer payloads',()=>{
+ const {prepareRequests,stableId}=require('./transaction-preflight');
+ const {preview,audit}=fixture();const decision=eligibleFromAudit(audit,preview);
+ const a=prepareRequests(decision,{runId:'FORGE-SOURCE-20261022-01',sourceRunId:'FORGE-SOURCE-20261022'});
+ const z=prepareRequests(decision,{runId:'FORGE-SOURCE-20261022-01',sourceRunId:'FORGE-SOURCE-20261022'});
+ assert.deepEqual(a.proposed,z.proposed);
+ assert.equal(a.proposed[0].identityHash,stableId(preview.rows[0].record));
+ assert.equal(a.writerPayloads.length,0);assert.equal(a.writerSubmissions,0);
+});
+test('receipt COMPLETE never claims exact-row verification',()=>{
+ const {classifyReceipt}=require('./transaction-preflight');
+ assert.equal(classifyReceipt({requestId:'ABC',status:'COMPLETE',durable:true},'ABC'),'COMPLETE_PENDING_EXACT_ROW_READBACK');
+ assert.equal(classifyReceipt({requestId:'ABC',status:'PENDING'},'ABC'),'PENDING_VERIFICATION');
+ assert.equal(classifyReceipt({requestId:'DIFFERENT',status:'COMPLETE',durable:true},'ABC'),'PENDING_VERIFICATION');
+});
