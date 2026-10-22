@@ -14,3 +14,27 @@ The snapshot must be an **authorized, current, canonical master** export, not a 
 The legacy `foreman-cockpit/netlify/functions/master.js` endpoint returns HTTP 410 and explicitly states public master access is disabled; it directs callers to the **authenticated Writer**. A copy from `/api/structured` or `state/source-trial-report.json` is not an authoritative canonical Writer master snapshot. This CLI accepts a caller-supplied timestamp, which is only a freshness assertion, **not proof of source, authority or a protected-state read**. A malicious or mistaken caller can label old data as recent.
 
 Before live intake: provide an approved, authenticated, read-only Writer snapshot with source identity, verified extraction timestamp, schema/version and full protected-state columns; independently verify counts/identity against Writer; then apply final Writer-side admission and receipt/readback. Do not use the read-only admission output as authorization to submit, even when it says `REVIEW_REQUIRED`.
+
+## Follow-up integration contract
+
+The new `auditAuthenticated` function **does not implement the Cockpit HTTP transport**. It accepts two dependency-injected readers solely for testable integration, requiring results identifying a Writer-origin authenticated master read and a Writer-origin authenticated archive read. The flags in those results are assertions from the reader, **not cryptographic proof**; they do not make caller-supplied data trustworthy. Do not use this method with caller-provided JSON as a production gate. Independent QA must inspect and approve the actual authenticated Cockpit reader implementation, its response schemas, authenticated source identity and protection coverage.
+
+Both reads are mandatory and fail closed. Their actual audit acquisition times are measured inside the function, and the audit will not run if acquisition exceeds its freshness budget. This prevents acceptance of a caller-supplied timestamp *in this audit path* but does not guarantee the upstream API data is fresh; the transport must validate the Writer's own revision or as-of metadata and detect partial responses.
+
+Admission rows now carry `tier`, `flags`, and `memphisStrongNegative`; they are informational only. Archived rejected/declined rows participate in the same protection index when actually supplied. **Production submissions remain disabled.**
+
+## Live Cockpit Writer master reader (PR #37)
+
+`tools/source-intake/writer-reader.js` now implements actual read-only GETs against the Writer endpoint documented by `foreman-cockpit/docs/WRITER_ACCESS.md`. It uses `FORGE_WRITER_KEY` from the execution environment, never commits a credential, checks `ping`, `writer_status`, and `master`, parses canonical master rows, requires an END marker and unique IDs, and stamps the actual transport read. Tests use a fake transport; no production credential or live read was exercised.
+
+**Still blocked:** The Writer archive read action / response schema has not been verified. The adapter must not pretend the main master includes archived rejected/declined rows. `auditAuthenticated` continues to require a separate authenticated archive reader and emits zero Writer payloads. The production admission route must explicitly connect the two readers once the Writer archive API contract is confirmed. Do not use Cockpit's cached public structured snapshot for provenance.
+
+## Authenticated terminal archive reader — revised 2026-10-22
+
+Writer source `foreman-cockpit/apps-script/Code.gs` explicitly exposes authenticated GET `action=archive`; `readArchiveSafe_` returns `{ok,archiveId,mode,text,degraded}`. The source parser `parseArchive_` removes `RESTORED|PRIMARY_ID|INV|...` markers and superseded duplicate archive rows. `writer-reader.js` now implements this action, rejects degraded/unavailable archive reads, parses current terminal rows with RESTORED semantics, and exposes `auditLiveWriter(preview,{key,transport})` to fetch master and archive itself. The resulting audit is **review-only** with no intake payloads. The previous note saying the Writer archive action is unavailable is superseded by this section.
+
+Tests with injected HTTP mocks cover transport, archived rejection hold, restoration handling and failures. **No live Writer credential has been used in this PR, and a real authenticated production response has not been independently observed.** Before operational approval, validate schema, END/count integrity and completeness against a real authenticated Writer read, verify the archive migration mode, and resolve whether Writer status exposes additional blockers. Until verified, do not use review output to authorize intake.
+
+## Live Writer QA correction — 2026-10-22
+
+The Writer's `bytes` field is **JavaScript string length**, not UTF-8 octet length. Validate against `text.length`; a non-ASCII fixture proves the distinction. Read freshness uses `fetchedAt`, not last-edit `modifiedTime`. HTTP attempts each have a 30-second budget; a single retry is allowed on transport failure/HTTP 5xx with a separate bounded 65-second total budget. These changes remain review-only, require independent live re-QA, and do not enable any Writer submissions.
