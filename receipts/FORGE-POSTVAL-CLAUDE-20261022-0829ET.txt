@@ -1,0 +1,27 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261022-0829ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_BLOB_SHA=59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 (matches manifest lane.blob_sha); PACKET_SHA256 not computed separately
+RULES_BLOB_UNCHECKED (no policy interpretation needed)
+GATE: WRITER_FREEZE frozen=false (read fresh); worklist generated 2026-10-22T12:15Z (fresh); writer_status not used; queue root showed only processed/failed folders on first page
+RESOLVED_ASKS: none held by this lane
+ROWS_EVALUATED=10
+LIVE=3 (V2I-DD4EB7182E21, V2I-ADEC921BF4AD, V2I-771E37FB5813; all LIVE_SECONDARY)
+CLOSED=0
+UNCONFIRMED=7 (V2I-47ED2D54861C, V2I-6C6EDF73D9E3, V2I-B57D5FBEE50E, V2I-C005D662FB8F, V2I-19EF2C682879, V2I-2ED9FF85653C, V2I-03DB3B23557C)
+WRITTEN=0
+VERIFIED=0
+HELD=10 (payload validated, not submitted)
+FAILED=0
+TINYFISH_FETCHES=3 fetch_content calls (11 URLs), 7 searches
+BACKLOG_REMAINING=61 of 71 worklist rows (most URLs are truncated or tracker links on Indeed/ZipRecruiter/Glassdoor/Lensa/Ladders, which block TinyFish or cannot be resolved)
+STOP_REASON=WRITER_TRANSPORT_BLOCKED: Google Drive connector create_file converts uploads to a Google Doc (fileSize 1) and cannot write plain-text JSON with conversion disabled. The wrongly created Doc was trashed. No direct Writer route available. Named hard limit; PARTIAL_WITH_WORK.
+BATCHES_COMPLETED_THIS_RUN=0
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261022-0829ET-B01 (R01-R10, unsubmitted)
+PENDING: payload saved at receipts/FORGE-POSTVAL-CLAUDE-20261022-0829ET_PAYLOAD_B01.json for gofer or next run to submit once, after reconciling the exact rows. Do not replay blindly.
+SKIPPED_ROWS: Indeed/ZipRecruiter/Glassdoor/Lensa tracker rows (truncated or blocked) not attempted beyond the 10 listed
+NEXT_OWNER=FORGE_APPLICATION_WRITER_GOFER or next Claude POSTING_VALIDATION run
+NEXT_ACTION=submit B01 payload through a plain-text-capable route; verify RESULT, receipt-index COMPLETE and row_readback
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
