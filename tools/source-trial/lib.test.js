@@ -66,7 +66,7 @@ test('REV-164 Grok QA title recognition and exclusions', () => {
     'Director Continuous Improvement': 'MFG_PROD',
     'Operational Excellence Director': 'MFG_PROD',
     'Director Commissioning': 'MFG_PROD',
-    'Director Product Launch': 'MFG_PROD',
+    'Director Manufacturing Product Launch': 'MFG_PROD',
     'Director Manufacturing Launch': 'MFG_PROD',
     'Senior Manager Production Ramp': 'MFG_PROD'
   };
@@ -93,4 +93,31 @@ test('REV-164 req ID, identity and protection precedence', () => {
   assert.strictEqual(T.novelty(idx,'Beta','Director Quality','https://elsewhere.example/j','Dallas, TX','ABCD-123'),'EXISTING');
   assert.notStrictEqual(T.identityKey('Acme','Sr Manager Manufacturing','Austin, TX'),T.identityKey('Acme','Senior Manager Manufacturing','Dallas, TX'));
   assert.strictEqual(T.novelty(idx,'Gamma','Director NPI','https://example.com/new','Austin, TX'),'NEW');
+});
+
+test('City/state identity and state-only fallback', () => {
+  assert.notStrictEqual(T.identityKey('Acme','Director NPI','Austin, TX'), T.identityKey('Acme','Director NPI','Dallas, TX'));
+  assert.strictEqual(T.identityKey('Acme','Director NPI','Austin, TX'), T.identityKey('ACME, LLC','Director NPI','austin, TX'));
+  const idx = T.masterIndex([{ COMPANY:'Acme', TITLE:'Director NPI', LOCATION:'Austin, TX' }]);
+  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','Dallas, TX'), 'NEW');
+  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','Austin, TX'), 'EXISTING');
+  assert.strictEqual(T.identityKey('Acme','Director NPI','Texas'), T.identityKey('Acme','Director NPI','TX'), 'state-only fallback');
+});
+test('Real master-shaped REQ BUCKET DISPOSITION ANTI_RESURRECTION DO_NOT_REWORK protection and precedence', () => {
+  const rows = [
+    {COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dallas, TX',REQ:'R-9',BUCKET:'APPLIED',DISPOSITION:'APPLIED',ANTI_RESURRECTION:'YES',DO_NOT_REWORK:'TRUE',p:{SOURCE_URL:'https://jobs.example/1'}},
+    {COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dallas, TX',REQ:'R-9',BUCKET:'RESEARCH',DISPOSITION:'',p:{SOURCE_URL:'https://jobs.example/2'}},
+    {COMPANY:'Other',TITLE:'Plant Manager',LOCATION:'Atlanta, GA',REQ:'P-1',DO_NOT_REWORK:'YES',p:{}}
+  ];
+  const idx = T.masterIndex(rows);
+  assert.strictEqual(T.novelty(idx,'Acme','Director of Quality','https://jobs.example/2','Dallas, TX','R-9'),'EXISTING_PROTECTED');
+  assert.strictEqual(T.novelty(idx,'Other','Plant Manager','','Atlanta, GA'),'EXISTING_PROTECTED');
+});
+test('Mission Assurance allowed; mission operations/director/control excluded; Product Launch needs manufacturing context', () => {
+  assert.strictEqual(T.family('Director Mission Assurance Quality'),'QUALITY');
+  assert.strictEqual(T.family('Director, Mission Operations'),null);
+  assert.strictEqual(T.family('Director, Mission Control'),null);
+  assert.strictEqual(T.family('Mission Director, Production'),null);
+  assert.strictEqual(T.family('Director Product Launch'),null);
+  assert.strictEqual(T.family('Director Manufacturing Product Launch'),'MFG_PROD');
 });
