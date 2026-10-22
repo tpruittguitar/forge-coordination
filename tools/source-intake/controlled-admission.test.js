@@ -87,11 +87,21 @@ test('pending receipt never calls request_result (which can mutate index)',async
  const out=await inspectDurableReadback({record,identityHash:stableId(record)},'RUN-77',{key:'fixture',clock:()=>now,transport});
  assert.equal(out.status,'PENDING_INDEX_REQUEST_PROOF');assert.deepEqual(seen,['receipt_index']);
 });
-test('legacy missing items stays unbound, stale index blocks',async()=>{
+test('legacy missing items stays unbound, quiet index is valid',async()=>{
  const {inspectDurableReadback}=require('./durable-readback'),{stableId}=require('./transaction-preflight');
  const record={COMPANY:'A'},now=Date.now(),proposal={record,identityHash:stableId(record)};
  const transport=async u=>{const action=new URL(u).searchParams.get('action');return {ok:true,json:async()=>action==='receipt_index'?{ok:true,source:'GITHUB',exists:true,sha:'abc',updatedAt:new Date(now).toISOString(),request:{s:'COMPLETE'}}:{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{s:'COMPLETE'}}}};
  const x=await inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now,transport});
  assert.equal(x.status,'PENDING_CANONICAL_ID_BINDING');assert.equal(x.verified,false);
- await assert.rejects(()=>inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now+3600000,transport}),/stale/);
+ const quiet=await inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now+3600000,transport});
+ assert.equal(quiet.status,'PENDING_CANONICAL_ID_BINDING');assert.equal(quiet.verified,false);
+ assert.ok(quiet.receiptIndexIdleMs>=3600000);
+});
+
+test('future index or request timestamp is blocked, even when index is quiet',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback'),{stableId}=require('./transaction-preflight');
+ const now=Date.now(),record={COMPANY:'A'},proposal={record,identityHash:stableId(record)};
+ const transport=(updatedAt,at)=>async()=>({ok:true,json:async()=>({ok:true,source:'GITHUB',exists:true,sha:'sha',updatedAt,request:{s:'PENDING',at}})});
+ await assert.rejects(()=>inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now,transport:transport(new Date(now+180000).toISOString(),null)}),/timestamp invalid/);
+ await assert.rejects(()=>inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now,transport:transport(new Date(now-3600000).toISOString(),new Date(now).toISOString())}),/request timestamp invalid/);
 });
