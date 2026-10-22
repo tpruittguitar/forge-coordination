@@ -22,3 +22,9 @@ The new `auditAuthenticated` function **does not implement the Cockpit HTTP tran
 Both reads are mandatory and fail closed. Their actual audit acquisition times are measured inside the function, and the audit will not run if acquisition exceeds its freshness budget. This prevents acceptance of a caller-supplied timestamp *in this audit path* but does not guarantee the upstream API data is fresh; the transport must validate the Writer's own revision or as-of metadata and detect partial responses.
 
 Admission rows now carry `tier`, `flags`, and `memphisStrongNegative`; they are informational only. Archived rejected/declined rows participate in the same protection index when actually supplied. **Production submissions remain disabled.**
+
+## Live Cockpit Writer master reader (PR #37)
+
+`tools/source-intake/writer-reader.js` now implements actual read-only GETs against the Writer endpoint documented by `foreman-cockpit/docs/WRITER_ACCESS.md`. It uses `FORGE_WRITER_KEY` from the execution environment, never commits a credential, checks `ping`, `writer_status`, and `master`, parses canonical master rows, requires an END marker and unique IDs, and stamps the actual transport read. Tests use a fake transport; no production credential or live read was exercised.
+
+**Still blocked:** The Writer archive read action / response schema has not been verified. The adapter must not pretend the main master includes archived rejected/declined rows. `auditAuthenticated` continues to require a separate authenticated archive reader and emits zero Writer payloads. The production admission route must explicitly connect the two readers once the Writer archive API contract is confirmed. Do not use Cockpit's cached public structured snapshot for provenance.
