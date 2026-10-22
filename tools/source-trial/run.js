@@ -38,6 +38,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   /* boards: priority companies first, then every board the master links to */
   const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
   const priority = T.parsePriority(process.env.TRIAL_PRIORITY_FILE ? fs.readFileSync(process.env.TRIAL_PRIORITY_FILE, 'utf8') : await (await get(RAW + 'forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt')).text());
+  const activePriority = new Map(priority.map(x => [P.normCo(x.name), x.tier]));
+  const staffEligible = (company, title) => T.level(title) !== 'SR_STAFF' || activePriority.has(P.normCo(company));
   const coBoard = {};   // normCo(company) -> board key, from the master's own ATS links
   rows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
   const probes = [];
@@ -73,9 +75,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           if (seen.has(x.page || x.title)) return; seen.add(x.page || x.title); st.openings++;
           const fam = T.family(x.title), place = T.usPlace(x.location);
           if (!fam || !place) return;
-          st.matches++;
           const company = [...b.companies][0];
-          found.push({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page) });
+          if (!staffEligible(company, x.title)) return;
+          st.matches++;
+          found.push({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page) });
         });
       } catch (e) { st.error = String(e.message || e).slice(0, 60); }
     }
@@ -93,11 +96,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const site = String(x.site || 'unknown'), s = js.sites[site] = js.sites[site] || { returned: 0, matches: 0, new: 0 };
       s.returned++;
       const k = T.normUrl(x.job_url) || (x.company + '|' + x.title); if (seen.has(k)) return; seen.add(k);
-      const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place) return;
+      const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
       s.matches++;
       const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url); if (status === 'NEW') s.new++;
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || 'yearly') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      found.push({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, url: x.job_url_direct || x.job_url, pay, status, posted: x.date_posted || '' });
+      found.push({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, posted: x.date_posted || '' });
     });
   }
 
@@ -109,6 +112,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING'), sites: js.sites, errors: js.errors },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status === 'EXISTING').length }, o), {}),
     priority_boards_probed: probes,
+    by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status === 'EXISTING').length }, o), {}),
   };
   const report = { summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status === 'EXISTING'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
@@ -119,8 +123,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
     '', 'JobSpy errors: ' + (js.ran ? (js.errors.length ? js.errors.map(e => e.site + ': ' + e.error).join('; ') : 'none') : 'JobSpy did not run'), '',
     'Priority companies with no board found: ' + (probes.filter(p => !p.found).map(p => p.company).join(', ') || 'none'), '',
-    '## New roles', '', '| Source | Company | Title | Location | Family | Pay |', '|---|---|---|---|---|---|',
-    ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.pay} |`), ''];
+    '## By level', '', '| Level | New | Existing |', '|---|---:|---:|', ...Object.entries(summary.by_level).map(([k,v]) => `| ${k} | ${v.new} | ${v.existing} |`), '', '## New roles', '', '| Source | Company | Title | Location | Family | Level | Pay |', '|---|---|---|---|---|---|---|',
+    ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
   fs.writeFileSync(path.join(OUT, 'source-trial-report.md'), md.join('\n'));
   console.log(JSON.stringify(summary));
 })().catch(e => { console.error(e); process.exit(1); });
