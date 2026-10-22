@@ -107,3 +107,15 @@ test('a disabled kill switch halts before any Writer write and records the halt'
  assert.ok(!w.log.includes('POST'));
  assert.equal(JSON.parse(fs.readFileSync(statePath,'utf8')).halts.length,1);
 });
+test('file recorder: probe and every recorded response are on disk before they are reported', async () => {
+ const {fileRecorder} = require('./canary-cli');
+ const statePath = tmpState(), state = {results: {}};
+ fs.writeFileSync(statePath, JSON.stringify(state));
+ const rec = fileRecorder(statePath, state);
+ assert.equal(await rec.check(), true);
+ assert.ok(JSON.parse(fs.readFileSync(statePath, 'utf8')).recorderProbe.probe, 'probe persisted');
+ await rec.record('FORGE-SOURCE-X', {ok: true, receipt: {REQUEST_ID: 'FORGE-SOURCE-X'}});
+ assert.deepEqual(JSON.parse(fs.readFileSync(statePath, 'utf8')).results['FORGE-SOURCE-X'], {ok: true, receipt: {REQUEST_ID: 'FORGE-SOURCE-X'}});
+ assert.deepEqual(await rec.read('FORGE-SOURCE-X'), {ok: true, receipt: {REQUEST_ID: 'FORGE-SOURCE-X'}});
+ assert.ok(!fs.existsSync(statePath + '.tmp'), 'atomic rename leaves no temp file');
+});

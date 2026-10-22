@@ -5,6 +5,11 @@
  *    receipt_index gets {s:'PENDING',w:writeId} before the master write and later {s:'COMPLETE',items:[{pid,op:'INSERT'}]}.
  *  - no-op (EXISTING_MATCH against live master OR terminal archive): ok, COMPLETION_STATUS=COMPLETE, no WRITE_ACCEPTED,
  *    no writeId, receipt.NEW_PRIMARY_IDS=[]; the receipt goes to the receipts log only — receipt_index gets NO entry.
+ * Durability: runCanary requires a recorder {check, record, read}. check() must prove a write/read-back before any
+ * network call; every Writer response is recorded and read back before it is classified. A recorder failure after
+ * a POST halts as UNKNOWN with the response attached to the error — reconcile, never retry.
+ * Kill switch: re-read before each case. Turning it off stops LATER cases only; it cannot cancel a POST already in
+ * flight, so a case that was mid-POST must still be reconciled through the receipt index.
  */
 const crypto=require('node:crypto');
 const {read,fetchAuthenticatedArchive}=require('./writer-reader');
@@ -53,7 +58,7 @@ function classifyWriterResponse(result,rid){
  if(r.result==='NEVER_CONSIDER_EXCLUDED'&&!result.writeId&&!ids.length)return {kind:'EXCLUDED'};
  return {kind:'UNKNOWN'};
 }
-async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},onWriterResult=()=>{}}={}){
+async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder}={}){
  if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
@@ -61,6 +66,11 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  if(kinds.filter(x=>x==='EXISTING_MATCH').length<1||kinds.filter(x=>x==='PROTECTED_NOOP').length<1||kinds.filter(x=>x==='NEW').length<1)throw Error('BLOCKED: canary must test new, existing and protected states');
  const unique=new Set(records.map(x=>requestId(x.record)));
  if(unique.size!==5)throw Error('BLOCKED: repeated candidate identity');
+ // No live POST without a recorder that has just proven it can persist and read back.
+ if(!recorder||['check','record','read'].some(f=>typeof recorder[f]!=='function'))throw Error('BLOCKED: durable Writer-response recorder required before any Writer POST');
+ let recorderReady=false;
+ try{recorderReady=(await recorder.check())===true}catch{}
+ if(!recorderReady)throw Error('BLOCKED: durable Writer-response recorder failed its write/read-back check');
  const outcomes=[];
  const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
  for(const [i,candidate] of records.entries()){
@@ -102,8 +112,10 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   catch {halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry')}
   let result;
   try{result=await response.json()}catch{halt('UNKNOWN: Writer response invalid; reconcile before retry')}
-  // Persist before classifying: a crash after this point must never lose the only copy of a write outcome.
-  await onWriterResult(rid,result);
+  // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
+  let recorded=false;
+  try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
+  if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; save outcomes[].writerResult and reconcile the receipt index before any retry')}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   if(verdict.kind==='UNKNOWN'){outcomes.push({requestId:rid,status:'UNKNOWN',writerResult:result});halt('UNKNOWN: Writer transaction not conclusively classified; reconcile before retry')}
