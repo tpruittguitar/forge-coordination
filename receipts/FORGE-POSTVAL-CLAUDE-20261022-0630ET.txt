@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261022-0630ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches lane.blob_sha)
+RULES_BLOB_UNCHECKED
+SOURCE_VERSIONS=forge-coordination@95df0b46e7b1; worklist generated 2026-10-22T10:11:02Z (72 eligible)
+GATE=WRITER_FREEZE frozen=false (at 2026-10-18T03:29Z); writer_status not available; queue root had no recent files
+ASKS_RESOLVED_CHECKED=none held by this lane
+
+ROWS_EVALUATED=9 (worklist rows 63,70,72 fetched; 15,19,66 Indeed blocked; 50 Indeed search page; 11,68,69 blocked)
+LIVE=1 (V2I-8EDE6B70C4B8 LIVE_SECONDARY, LinkedIn posted 2 weeks ago)
+CLOSED=0
+UNCONFIRMED=8
+WRITTEN=1 (file 1yQM3QqB5d7Qrhk7KRn5WHeo-LMFwE4ub, request FORGE-POSTVAL-CLAUDE-20261022-0630ET-B01)
+VERIFIED=0 (submitted only; RESULT/receipt-index/row_readback not yet available to this runtime)
+HELD=1 V2I-47ED2D54861C: LinkedIn view URL redirected to expired_jd_redirect (strong closure signal) but sole-source status not checkable without row_readback; left for gofer/next run
+HELD V2I-DD4EB7182E21: LinkedIn page loaded, no posted age or closed notice shown -> UNCONFIRMED, not written
+FAILED=0
+TINYFISH_FETCHES=2 calls, 10 URLs (3 LinkedIn ok, 1 Indeed search page ok-but-not-posting, 3 Indeed + 2 Glassdoor/ZipRecruiter bot_blocked/401)
+BACKLOG_REMAINING=71
+STOP_REASON=HARD LIMIT: remaining worklist URLs are Lensa/Ladders/Indeed/ZipRecruiter/Glassdoor tracking redirects that TinyFish cannot read (bot_blocked/401); employer-route search needs metered search/browser tools not permitted without Tim. Below the 10-row minimum.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261022-0630ET-B01
+NEXT_OWNER=Claude next POSTVAL run; Writer for B01 verification
+NEXT_ACTION=verify B01 (RESULT, receipt-index COMPLETE, row_readback V2I-8EDE6B70C4B8); consider prioritising LinkedIn-sourced rows and employer-route lookups
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK

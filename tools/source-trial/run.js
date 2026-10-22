@@ -33,7 +33,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     lines = lines.concat(j.jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean)); if (!j.jobs.length) break;
   }
   const rows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + lines.join('\n') + '\n');
-  const idx = T.masterIndex(rows.map(r => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, p: r.p })));
+  const idx = T.masterIndex(rows.map(r => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p })));
 
   /* boards: priority companies first, then every board the master links to */
   const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
@@ -61,7 +61,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const order = [...boards.values()].sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)).slice(0, CONFIG.maxBoards);
 
   /* read each board, keep Tim's three families in the US */
-  const found = [], boardStats = [];
+  const found = [], boardStats = [], discovered = new Map();
+  const addFound = item => { const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
   for (const b of order) {
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
     const reqs = b.kind === 'workday' ? CONFIG.workdaySearches.map(s => P.boardListRequest(b, s)) : [P.boardListRequest(b, '')];
@@ -78,7 +79,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           const company = [...b.companies][0];
           if (!staffEligible(company, x.title)) return;
           st.matches++;
-          found.push({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page) });
+          addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
         });
       } catch (e) { st.error = String(e.message || e).slice(0, 60); }
     }
@@ -93,14 +94,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const d = JSON.parse(fs.readFileSync(jsFile, 'utf8')); js.ran = true; js.errors = d.errors || []; js.searches = d.searches || [];
     const seen = new Set();
     (d.jobs || []).forEach(x => {
-      const site = String(x.site || 'unknown'), s = js.sites[site] = js.sites[site] || { returned: 0, matches: 0, new: 0 };
+      const site = String(x.site || 'unknown'), s = js.sites[site] = js.sites[site] || { returned: 0, matches: 0, new: 0, protected: 0 };
       s.returned++;
-      const k = T.normUrl(x.job_url) || (x.company + '|' + x.title); if (seen.has(k)) return; seen.add(k);
+      const k = T.identityKey(x.company, x.title, x.location); if (seen.has(k)) return; seen.add(k);
       const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
       s.matches++;
-      const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url); if (status === 'NEW') s.new++;
+      const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url, x.location); if (status === 'NEW') s.new++; if (status === 'EXISTING_PROTECTED') s.protected++;
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || 'yearly') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      found.push({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, posted: x.date_posted || '' });
+      addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, posted: x.date_posted || '' });
     });
   }
 
@@ -108,16 +109,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') },
-    jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING'), sites: js.sites, errors: js.errors },
-    by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status === 'EXISTING').length }, o), {}),
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED') },
+    jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
+    by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
     priority_boards_probed: probes,
-    by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status === 'EXISTING').length }, o), {}),
+    by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status !== 'NEW').length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
   };
-  const report = { summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status === 'EXISTING'), boards: boardStats };
+  const report = { caution: 'NEW is provisional, not verified against all historical requisition identities or archival application states.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'source-trial-report.json'), JSON.stringify(report, null, 1) + '\n');
-  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-156). Nothing was sent to the Writer.', '',
+  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
