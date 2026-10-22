@@ -1,0 +1,27 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261021-2029ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (fetched via GitHub connector; packet blob sha 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read this run)
+SOURCE_VERSIONS=manifest blob 77541215142355db64daa4238621e4f8b6e6130f; worklist generated 2026-10-22T00:24:02Z
+GATE=WRITER_FREEZE frozen=false (read this run); Writer status/row_readback/receipt-index not available in this runtime
+ROWS_EVALUATED=20
+LIVE=4 (LIVE_SECONDARY: V2I-34514F39F103, V2I-4AD683C33D1F, V2I-05E548DEBA7D, V2I-2F36B5E0844B)
+CLOSED=2 (V2I-AFFCA8A8009B, V2I-3819C935295E; Workday missing page on requisition URL plus site search 0 jobs)
+UNCONFIRMED=11 written (V2I-A148B781C8BF, V2I-AF305159C63C, V2I-03EBFAEE8746, V2I-678BB438ABCC, V2I-64B66F4A85BB, V2I-0EB7B28B2072, V2I-E3305C6E99BB, V2I-97905AF5C08C, V2I-D0DCAC58D720, V2I-F079E97821B7, V2I-52F257D06730)
+WRITTEN=17 submitted to WRITER_QUEUE as Drive file 15btSpg9DHydeNvczP51wgZBBrL9fYmrC (CLAUDE_FORGE-POSTVAL-CLAUDE-20261021-2029ET-B01.json), state SUBMITTED
+VERIFIED=0 (no RESULT/receipt-index/row_readback access yet; nothing labeled COMPLETE)
+VERIFIED_PRIOR_RUN=none inherited
+HELD=2: V2I-E58D7633D048 (Critical Loop; LinkedIn shows No longer accepting applications, but sole-source status not confirmed against master, so CLOSED not submitted); V2I-302835E30F10 (LinkedIn bot_blocked 999, not written)
+FAILED=0
+TINYFISH_FETCHES=4 calls (30 URLs)
+SKIPPED_NAMED=~60 rows with truncated/redirect tracking URLs (lensa, indeed pagead, ziprecruiter, glassdoor partner, ladders) not fetchable; search-result URLs (V2I-B468EFE27CC5, V2I-25524E63F85C, V2I-3027D540AB4E) are not postings
+BACKLOG_REMAINING=~104 of 124 eligible
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261021-2029ET-B01 (R01-R17)
+CURSOR=worklist items 1-79 scanned for directly fetchable URLs
+STOP_REASON=remaining rows lack a fetchable employer or LinkedIn URL; further work needs row_readback/master access to find employer routes
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT_OWNER=Writer (process queue file), then next Claude POSTVAL run: verify B01 via request_result, receipt_index, row_readback
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
