@@ -5,12 +5,21 @@ async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThi
  if(!key)throw Error('BLOCKED: credential required');
  if(!['ping','master','writer_status','archive'].includes(action))throw Error('BLOCKED: unsupported Writer action');
  const started=clock(),url=new URL(ENDPOINT);url.searchParams.set('action',action);url.searchParams.set('key',key);
- let resp;for(let attempt=0;attempt<2;attempt++){try{resp=await transport(url.toString(),{method:'GET',redirect:'follow',signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-store'}});break}catch(e){if(attempt===1)throw Error('BLOCKED: Writer '+action+' transport '+(e&&e.name||'Error'))}}
- if(!resp.ok && resp.status>=500 && resp.status<=599){try{resp=await transport(url.toString(),{method:'GET',redirect:'follow',signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-store'}})}catch(e){throw Error('BLOCKED: Writer '+action+' transport '+(e&&e.name||'Error'))}} if(!resp.ok)throw Error('BLOCKED: Writer HTTP '+resp.status);
+ let resp,ended;
+ for(let attempt=0;attempt<2;attempt++){
+  const attemptStart=clock();
+  try{resp=await transport(url.toString(),{method:'GET',redirect:'follow',signal:AbortSignal.timeout(30000),headers:{'Cache-Control':'no-store'}})}
+  catch(e){if(attempt===1)throw Error('BLOCKED: Writer '+action+' transport '+(e&&e.name||'Error'));continue}
+  ended=clock();
+  if(ended<attemptStart||ended-attemptStart>30000)throw Error('BLOCKED: Writer '+action+' attempt timed out');
+  if(resp.ok)break;
+  if(attempt===0&&resp.status>=500&&resp.status<=599)continue;
+  throw Error('BLOCKED: Writer HTTP '+resp.status);
+ }
  let data;try{data=await resp.json()}catch{throw Error('BLOCKED: Writer JSON invalid')}
  if(!data||data.ok!==true)throw Error('BLOCKED: Writer read not authorized');
- const ended=clock();if(ended<started||ended-started>30000)throw Error('BLOCKED: Writer read time invalid');
- return {data,startedAt:new Date(started).toISOString(),completedAt:new Date(ended).toISOString()};
+ const completed=clock();if(completed<started||completed-started>65000)throw Error('BLOCKED: Writer read total time invalid');
+ return {data,startedAt:new Date(started).toISOString(),completedAt:new Date(completed).toISOString()};
 }
 function parseArchive(text){
  if(typeof text!=='string')throw Error('BLOCKED: archive text unavailable');
@@ -45,8 +54,8 @@ async function fetchAuthenticatedMaster(options={}){
  const rows=parseMaster(master.data.text);
  const expected=master.data.rowCount??master.data.count;
  if(Number.isInteger(expected)&&expected!==rows.length)throw Error('BLOCKED: Writer master count mismatch');
- // Writer's live response currently provides bytes rather than a row count.
- if(master.data.bytes!=null && (!Number.isSafeInteger(master.data.bytes)||master.data.bytes<0||Buffer.byteLength(master.data.text,'utf8')!==master.data.bytes))throw Error('BLOCKED: Writer master byte count mismatch');
+ // Writer labels UTF-16 JS string length as bytes; compare characters, not UTF-8 octets.
+ if(master.data.bytes!=null && (!Number.isSafeInteger(master.data.bytes)||master.data.bytes<0||master.data.text.length!==master.data.bytes))throw Error('BLOCKED: Writer master byte count mismatch');
  const fetched=Date.parse(master.data.fetchedAt||'');
  const now=options.clock?options.clock():Date.now();
  if(!Number.isFinite(fetched)||now-fetched>15*60000||fetched>now+120000)throw Error('BLOCKED: Writer master fetchedAt stale or invalid');
