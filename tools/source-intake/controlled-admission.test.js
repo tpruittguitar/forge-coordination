@@ -64,7 +64,7 @@ test('authenticated durable proof reads use real Writer response structure and r
  const proposal={record,identityHash:stableId(record)},actions=[];
  const transport=async url=>{
   const u=new URL(url),action=u.searchParams.get('action');actions.push(action);
-  const values={request_result:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{primaryId:'V2I-77'}},receipt_index:{ok:true,exists:true,source:'GITHUB',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}},row_readback:{ok:true,master:{endMarkerPresent:true},requested:1,found:1,rows:[{found:true,matches:1,primaryId:'V2I-77',line:'1 | V2I-77 | Acme | Director Manufacturing | SCOUT_INTAKE | OPEN | P1 | R77 | Austin, TX | PAY=UNKNOWN'}]}};
+  const values={request_result:{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{primaryId:'V2I-77'}},receipt_index:{ok:true,exists:true,source:'GITHUB',sha:'valid-sha',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}},row_readback:{ok:true,master:{endMarkerPresent:true},requested:1,found:1,rows:[{found:true,matches:1,primaryId:'V2I-77',line:'1 | V2I-77 | Acme | Director Manufacturing | SCOUT_INTAKE | OPEN | P1 | R77 | Austin, TX | PAY=UNKNOWN'}]}};
   return {ok:true,json:async()=>values[action]};
  };
  const out=await inspectDurableReadback(proposal,'RUN-77',{key:'mock',transport});
@@ -73,7 +73,19 @@ test('authenticated durable proof reads use real Writer response structure and r
 });
 test('incomplete GitHub receipt index refuses readback',async()=>{
  const {inspectDurableReadback}=require('./durable-readback');
- const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='receipt_index'?{ok:true,exists:true,source:'GITHUB',updatedAt:new Date().toISOString(),request:null}:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true}});
+ const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='receipt_index'?{ok:true,exists:true,source:'GITHUB',sha:'valid-sha',updatedAt:new Date().toISOString(),request:null}:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true}});
  const out=await inspectDurableReadback({record:{},identityHash:'X'},'RUN-77',{key:'mock',transport});
  assert.equal(out.status,'PENDING_INDEX_REQUEST_PROOF');assert.equal(out.verified,false);
+});
+
+test('live COMPLETE receipt without primary ID holds instead of inventing canonical row binding',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback');
+ const {stableId}=require('./transaction-preflight');
+ const record={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',SOURCE_URL:'https://example.com/1'};
+ const seen=[];
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');seen.push(action);return {ok:true,json:async()=>action==='request_result'?{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{s:'COMPLETE'}}:{ok:true,source:'GITHUB',exists:true,sha:'sha',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}}}};
+ const out=await inspectDurableReadback({record,identityHash:stableId(record)},'RUN-77',{key:'fixture',transport});
+ assert.equal(out.status,'PENDING_CANONICAL_ID_BINDING');
+ assert.equal(out.verified,false);
+ assert.deepEqual(seen,['request_result','receipt_index']);
 });
