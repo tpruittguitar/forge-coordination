@@ -6,3 +6,10 @@ WHY=Source discovery PR #33 and preview adapter PR #34 are merged, but submissio
 SAFETY=No network or Writer calls, no submit payloads, no new discovery cadence. Snapshot check can return protected/existing/review, never admission.
 RISKS=Snapshot alone is not proof of current Writer state; no automatic production enablement; no canonical employer-business decisions made.
 VERIFICATION=Node unit tests and CI required before merging.
+
+FOLLOWUP_PR=37
+LIVE_QA_REMEDIATION=2026-10-22
+FINDINGS=Writer bytes denotes JS string character length, not UTF-8 byte length; retry timing must allow separately bounded attempts.
+CHANGES=writer-reader.js compares bytes to text.length; read allows two 30-second attempts within 65 seconds total; added non-ASCII and delayed-503 retry regression tests.
+SAFETY=Read-only audit; writer_payloads empty; production admission disabled; PR remains draft and unmerged.
+VERIFICATION=Automated CI and independent live Writer re-QA required; do not infer pass from mock tests.
