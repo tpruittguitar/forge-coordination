@@ -23,3 +23,5 @@ PR39_LIVE_SCHEMA_FOLLOWUP=Writer request_result COMPLETE index entry does not in
 PR39_GROK_QA_CORRECTION=Modern Writer receipts include entry.items[].pid; use all matching index/result PIDs and read them back; pending request_result may verify/write index so check COMPLETE index first. Preserve 15min freshness, legacy hold, verified=false, no writes. No item hash comparison without proven encoding match.
 
 PR39_GROK_TIMESTAMP_CORRECTION=receipt_index.updatedAt means last index write, not read; permit quiet COMPLETE entries, enforce future and request chronology, expose diagnostic idle age only. Live binding stays verified=false, no Writer submissions.
+
+PRODUCTION_RELEASE_PR=One-PR gated execution scaffold requested by Tim. Main kill-switch disabled by default; deterministic request hashes; receipt-index precheck; Writer freeze/status check; stop after first accepted transaction pending readback. NOT LIVE. Remaining blockers: verify canonical rules response and employer evidence source, real outcome accounting, five-case canary and precise final receipt/readback. No writer calls made.
