@@ -72,7 +72,7 @@ test('missing archive, unauthenticated responses, and overlong reads block',asyn
 test('Writer reader authenticates through ping/status/master and parses canonical rows',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
  let tick=Date.now(),called=[];
- const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\nEND',modifiedTime:'2026-10-22T18:00:00Z'}:{ok:true,frozen:false,build:'test'}}};
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\nEND',modifiedTime:new Date().toISOString()}:{ok:true,freeze:null,level:'OK',errors:[],build:'test'}}};
  const out=await fetchAuthenticatedMaster({key:'test-secret',transport,clock:()=>tick++});
  assert.deepEqual(called.sort(),['master','ping','writer_status']);
  assert.equal(out.rows[0].DISPOSITION,'OPEN');
@@ -83,7 +83,7 @@ test('Writer reader fails closed on incomplete, unauthorized and frozen response
  const mock=fn=>async u=>({ok:true,json:async()=>fn(new URL(u).searchParams.get('action'))});
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='master'?{ok:true,text:'incomplete'}:{ok:true})}),/completeness/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='ping'?{ok:false}:{ok:true,text:'END'})}),/authorized/);
- await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,frozen:true}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND'}:{ok:true})}),/frozen/);
+ await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,freeze:{reason:'QA freeze'},level:'WARN',errors:[]}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString()}:{ok:true})}),/status not healthy/);
 });
 
 test('archive RESTORED markers prevent obsolete terminal history from resurfacing',()=>{
@@ -96,9 +96,9 @@ test('actual authenticated Writer master+archive audit holds archive rejection',
  const {auditLiveWriter}=require('./writer-reader');
  const row='1 | V2S-A1 | Acme | Director Quality | REJECTED_BY_EMPLOYER | REJECTED_BY_EMPLOYER | P1 | R1 | Austin, TX | DONE';
  const transport=async u=>{const action=new URL(u).searchParams.get('action');
-  const data=action==='master'?{ok:true,text:'2 | V2S-B1 | Other | Production Manager | DISCOVERY_LEAD | OPEN | P1 | R2 | Toledo, OH | LIVE\nEND V2_CURRENT_POPULATION_MASTER'}
-    :action==='archive'?{ok:true,archiveId:'archive-file-id',text:row,degraded:false,mode:'COMPLETE'}
-    :{ok:true,frozen:false};
+  const data=action==='master'?{ok:true,text:'2 | V2S-B1 | Other | Production Manager | DISCOVERY_LEAD | OPEN | P1 | R2 | Toledo, OH | LIVE\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString()}
+    :action==='archive'?{ok:true,archiveId:'archive-file-id',text:'V2_TERMINAL_ARCHIVE (read-only terminal history)\n'+row,degraded:false,mode:'COMPLETE'}
+    :{ok:true,freeze:null,level:'OK',errors:[]};
   return {ok:true,json:async()=>data};
  };
  const preview={rows:[item('Acme','Director Quality','Austin, TX','https://example.com/a')]};
@@ -109,6 +109,25 @@ test('actual authenticated Writer master+archive audit holds archive rejection',
 });
 test('authenticated Writer archive failure blocks every candidate',async()=>{
  const {auditLiveWriter}=require('./writer-reader');
- const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='archive'?{ok:true,degraded:true,text:'',archiveId:'id'}:{ok:true,text:'1 | V2S-A1 | Acme | Director | OPEN | OPEN | P1 | R1 | Austin, TX | LIVE\nEND V2_CURRENT_POPULATION_MASTER',frozen:false}});
+ const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='archive'?{ok:true,degraded:true,text:'',archiveId:'id'}:{ok:true,text:'1 | V2S-A1 | Acme | Director | OPEN | OPEN | P1 | R1 | Austin, TX | LIVE\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString(),freeze:null,level:'OK',errors:[]}});
  await assert.rejects(()=>auditLiveWriter({rows:[]},{key:'mock',transport}),/archive degraded/);
+});
+
+test('real terminal archive dispositions and protection evidence are held',()=>{
+ const L=require('../source-trial/lib');
+ for(const disposition of ['REJECTED_CONFIRMED','RESOLVED','REJECTED_BY_EMPLOYER','DECLINED_BY_TIM','CLOSED_DEAD','NOT_GOOD_FIT','OFF_TARGET_LOCATION']){
+  const rows=[{COMPANY:'Acme',TITLE:'Director Quality',LOCATION:'Austin, TX',DISPOSITION:disposition,ARCHIVED_TERMINAL:true}];
+  assert.equal(L.novelty(L.masterIndex(rows),'Acme','Director Quality','','Austin, TX'),'EXISTING_PROTECTED',disposition);
+ }
+ const {parseArchive}=require('./writer-reader');
+ const a=parseArchive('1 | V2S-X1 | Acme | Director | REJECTED_BY_EMPLOYER | REJECTED_CONFIRMED | P1 | R1 | Austin, TX | NOTES; ANTI_RESURRECTION=YES; DO_NOT_REWORK=YES');
+ assert.equal(a[0].ANTI_RESURRECTION,'YES');assert.equal(a[0].DO_NOT_REWORK,'YES');
+});
+test('Writer health and master age gates block bad data',async()=>{
+ const {fetchAuthenticatedMaster}=require('./writer-reader');
+ const raw='1 | V2S-X1 | Acme | Director | DISCOVERY_LEAD | OPEN | P1 | R1 | Austin, TX | NOTES\nEND V2_CURRENT_POPULATION_MASTER';
+ const run=(st,modifiedTime)=>fetchAuthenticatedMaster({key:'mock',transport:async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='master'?{ok:true,text:raw,modifiedTime}:new URL(u).searchParams.get('action')==='writer_status'?{ok:true,...st}:{ok:true}})});
+ await assert.rejects(()=>run({freeze:null,level:'ERROR',errors:[]},new Date().toISOString()),/status not healthy/);
+ await assert.rejects(()=>run({freeze:null,level:'OK',errors:[]},'2026-01-01T00:00:00Z'),/stale/);
+ await assert.rejects(()=>run({freeze:null,level:'OK',errors:['failure']},new Date().toISOString()),/status not healthy/);
 });
