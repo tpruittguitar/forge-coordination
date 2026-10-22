@@ -9,7 +9,7 @@ function fixture(overrides={}){
 }
 test('eligible only with live audit and independent employer business evidence',()=>{
  const {preview,audit}=fixture();const r=eligibleFromAudit(audit,preview);
- assert.equal(r.admitted.length,1);assert.equal(r.writerSubmissions,0);assert.equal(r.submissionExecuted,false);
+ assert.equal(r.proposed.length,1);assert.equal(r.admitted.length,0);assert.equal(r.writerSubmissions,0);assert.equal(r.submissionExecuted,false);
 });
 test('protected, existing, unverifiable and never consider candidates are held',()=>{
  for(const [type,override] of [['protected',1],['existing',2],['unknown',3],['never',4]]){
