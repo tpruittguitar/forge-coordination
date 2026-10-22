@@ -50,3 +50,7 @@ Writer `request_result` normally returns an index entry with status and durabili
 ## PR #39 live receipt correction (Grok QA)
 
 Modern COMPLETE receipt entries bind one or more canonical IDs through `entry.items[].pid`; compare that sequence with `receipt_index.request.items[].pid`. The collector obtains the GitHub receipt index **first** and only calls `request_result` when the index marks the request COMPLETE, because pending result lookups may execute Writer verification and update the index. Check index SHA and timestamp (15-minute freshness), require all (up to 25) canonical rows from `row_readback` and exactly one role identity match; legacy receipts without `items` remain unbound. No `lineSha256`/item `a` hash equality is asserted: their representation equivalence has not been established. All outputs remain `verified:false` and zero submissions.
+
+## PR #39 index timestamp correction
+
+`receipt_index.updatedAt` is the last **write** time, not the fetch time. Quiet indices remain valid: require a nonempty revision SHA, parseable nonfuture `updatedAt` (2-minute clock tolerance), and `request.at <= updatedAt` where available. Record idle age diagnostically, never use it as a 15-minute validity cutoff. Live GET response acquisition is timed separately by Writer transport. No `lineSha256` versus item `a` comparison is claimed because equivalent hash input formats are not established.
