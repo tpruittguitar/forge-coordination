@@ -51,10 +51,10 @@ function atsId(url) {
   return m ? m[1].toLowerCase() : '';
 }
 const PROTECTED_RE = /\b(applied|rejected(?:_by_employer)?|declined(?:_by_tim)?|withdrawn|interviewed)\b/i;
-const rowState = r => ['DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
+const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
 const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => /^(true|yes|1|locked|protected)$/i.test(String(v || ''))));
 const locKey = loc => {
-  const raw = String(loc || '').trim(), state = usPlace(raw);
+  const raw = String(loc || '').trim(), state = usPlace(raw) || (/^[A-Z]{2}$/.test(raw) ? P.stateFrom('City, ' + raw) : '');
   if (!state) return '';
   const city = raw.split(',')[0].replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   return city && raw.includes(',') && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
