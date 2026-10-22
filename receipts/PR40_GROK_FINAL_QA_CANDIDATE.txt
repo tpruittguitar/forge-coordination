@@ -1,0 +1,21 @@
+PR40 GROK QA CANDIDATE — CODE REVIEW ONLY
+Repository: tpruittguitar/forge-coordination
+PR: https://github.com/tpruittguitar/forge-coordination/pull/40
+Branch: feature/source-intake-production-release
+Production kill switch: control/SOURCE_INTAKE_RELEASE.json, enabled=false. DO NOT TURN ON OR MERGE.
+
+REVIEW SCOPE (ONE READ-ONLY FULL QA PASS)
+1. Verify requestId derived from stableId, receipt_index checked before retry; inspectReceipt never calls request_result for PENDING/unknown index.
+2. Verify 5-record fixture pre-validation, independent employer evidence requirements, canonical rules from Writer freshly read and candidate.rulesHash exactly bound; unclear business HOLDS.
+3. Confirm authenticated archived protected role exact identity before canary POST and Writer final authority. No-op output must have exact row readback + no insert, with independent before/after count and ID reconciliation.
+4. Verify Writer freeze/health and kill switch before each operation, stop on any unknown Writer POST outcome. No blind retry.
+5. Validate all five COMPLETE receipts, item PIDs, row readbacks employer/title/location/requisition, and no new rows for known-existing and archived-protected. Any mismatch stops scale.
+6. Unknown salary, degree and FLEX pass through as enrichment fields, never guessed.
+
+RELEASE MATURITY
+This is a static CODE QA candidate, NOT a five-job canary results package.
+No live Writer transactions or five-job canary executed. Existing executor intentionally HALTS after a single accepted POST pending durable evidence. Resume/next-case orchestration must be independently assessed before live canary.
+CI has not been independently confirmed by GitHub workflow results. Run node --test tools/source-intake/production-executor.test.js and inspect source-intake-production-test action.
+IMPORTANT: inspectReceipt returns PENDING_INDEPENDENT_VERIFICATION, NOT verified=true, until independent snapshot proof.
+Any unresolved condition must be marked FAIL / BLOCKED and no production scale authorization.
+Review ONLY; do not write to Writer, change release switch, or merge.
