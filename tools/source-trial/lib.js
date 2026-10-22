@@ -95,7 +95,7 @@ function masterIndex(rows) {
 function novelty(idx, company, title, url, location = '', explicitReqId = '') {
   const co = P.normCo(company), ti = normTitle(title), id = String(explicitReqId || atsId(url)).toLowerCase();
   const matches = [url && idx.urls.get(normUrl(url)), id && idx.reqIds.get(co + '|' + id),
-    idx.locations.get(identityKey(company,title,location)), (!locKey(location) || locKey(location) === usPlace(location)) && idx.keys.get(co + '|' + ti)].filter(Boolean);
+    idx.locations.get(identityKey(company,title,location)), (!locKey(location) || !locKey(location).includes(',')) && idx.keys.get(co + '|' + ti)].filter(Boolean);
   return matches.includes('EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : matches[0] || 'NEW';
 }
 
