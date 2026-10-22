@@ -31,3 +31,12 @@ test('ET timestamps, no Writer, 200 records max',()=>{
  assert.match(r.rows[0].record.DISCOVERED_AT_ET,/ET$/);
  assert.equal(r.counts.writer_submission_count,0);
 });
+
+test('CLI priority registry parses source text for JobSpy Shield AI without supplied tier',()=>{
+ const {priorityRegistry,priority}=require('./preview');
+ const txt='STATUS=ACTIVE\nSECTION=TARGET_COMPANIES\nDREAM\n- Shield AI | careers: https://jobs.lever.co/shieldai\nP1\n- Anduril | careers: UNKNOWN\n';
+ const reg=priorityRegistry(txt);
+ assert.equal(priority({company:'Shield AI',tier:''},reg),'DREAM');
+ assert.equal(priority({company:'Some firm',tier:'DREAMY'},reg),'UNKNOWN');
+ assert.equal(priority({company:'Some firm',tier:'xxP1'},reg),'UNKNOWN');
+});
