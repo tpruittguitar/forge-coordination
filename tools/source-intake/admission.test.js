@@ -85,3 +85,30 @@ test('Writer reader fails closed on incomplete, unauthorized and frozen response
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='ping'?{ok:false}:{ok:true,text:'END'})}),/authorized/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,frozen:true}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND'}:{ok:true})}),/frozen/);
 });
+
+test('archive RESTORED markers prevent obsolete terminal history from resurfacing',()=>{
+ const {parseArchive}=require('./writer-reader');
+ const row='1 | V2S-A1 | Acme | Director Quality | REJECTED_BY_EMPLOYER | REJECTED_BY_EMPLOYER | P1 | R1 | Austin, TX | DONE';
+ assert.equal(parseArchive(row+'\nRESTORED|V2S-A1|1|2026-10-22|RUN').length,0);
+ assert.equal(parseArchive(row).length,1);
+});
+test('actual authenticated Writer master+archive audit holds archive rejection',async()=>{
+ const {auditLiveWriter}=require('./writer-reader');
+ const row='1 | V2S-A1 | Acme | Director Quality | REJECTED_BY_EMPLOYER | REJECTED_BY_EMPLOYER | P1 | R1 | Austin, TX | DONE';
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');
+  const data=action==='master'?{ok:true,text:'2 | V2S-B1 | Other | Production Manager | DISCOVERY_LEAD | OPEN | P1 | R2 | Toledo, OH | LIVE\nEND V2_CURRENT_POPULATION_MASTER'}
+    :action==='archive'?{ok:true,archiveId:'archive-file-id',text:row,degraded:false,mode:'COMPLETE'}
+    :{ok:true,frozen:false};
+  return {ok:true,json:async()=>data};
+ };
+ const preview={rows:[item('Acme','Director Quality','Austin, TX','https://example.com/a')]};
+ const out=await auditLiveWriter(preview,{key:'mock-key',transport});
+ assert.equal(out.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(out.acquisition.archiveCount,1);
+ assert.equal(out.writer_submissions,0);
+});
+test('authenticated Writer archive failure blocks every candidate',async()=>{
+ const {auditLiveWriter}=require('./writer-reader');
+ const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='archive'?{ok:true,degraded:true,text:'',archiveId:'id'}:{ok:true,text:'1 | V2S-A1 | Acme | Director | OPEN | OPEN | P1 | R1 | Austin, TX | LIVE\nEND V2_CURRENT_POPULATION_MASTER',frozen:false}});
+ await assert.rejects(()=>auditLiveWriter({rows:[]},{key:'mock',transport}),/archive degraded/);
+});
