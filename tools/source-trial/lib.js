@@ -50,9 +50,9 @@ function atsId(url) {
     || u.match(/(?:myworkdayjobs\.com|wd\d+\.myworkdayjobs\.com)\/[^?#]*?\/job\/[^?#]*?\/([A-Za-z0-9_-]+)(?:[?#]|$)/i);
   return m ? m[1].toLowerCase() : '';
 }
-const PROTECTED_RE = /\b(applied|rejected(?:_by_employer)?|declined(?:_by_tim)?|withdrawn|interviewed)\b/i;
+const PROTECTED_RE = /(?:^|[^a-z0-9])(applied|rejected(?:_[a-z0-9]+)*|declined(?:_[a-z0-9]+)*|withdrawn|interviewed|resolved|closed_dead|not_good_fit|off_target(?:_[a-z0-9]+)*)(?=$|[^a-z0-9])/i;
 const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
-const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
+const protectedRow = r => r.ARCHIVED_TERMINAL === true || PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
 const locKey = loc => {
   const raw = String(loc || '').trim();
   const shortSuffix = raw.match(/^(.+?)\s+([A-Z]{2})$/);
