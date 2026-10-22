@@ -25,8 +25,8 @@ async function preflight(record,{key,transport=globalThis.fetch}={}){
  if(status.data.freeze!=null||String(status.data.level||'').toUpperCase()!=='OK'||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer freeze/health');
  if(index.data.source!=='GITHUB'||index.data.exists!==true||!index.data.sha)throw Error('BLOCKED: receipt index authority');
  if(index.data.request) return {rid,mode:'EXISTING_REQUEST_HOLD',state:index.data.request.s||'UNKNOWN'};
- if(!rules.data.ok||!rules.data.text||rules.data.degraded===true)throw Error('BLOCKED: canonical rules unavailable');
- return {rid,mode:'READY_FOR_WRITER_ADJUDICATION',rulesHash:sha(rules.data.text)};
+ if(!rules.data.rules||rules.data.rules.status==='UNAVAILABLE'||!rules.data.rules.raw||!rules.data.rules.id)throw Error('BLOCKED: canonical rules unavailable');
+ return {rid,mode:'READY_FOR_WRITER_ADJUDICATION',rulesHash:sha(rules.data.rules.raw)};
 }
 async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId}={}){
  if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&x.evidenceVerified===true))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
