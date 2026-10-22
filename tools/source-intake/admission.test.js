@@ -72,7 +72,7 @@ test('missing archive, unauthenticated responses, and overlong reads block',asyn
 test('Writer reader authenticates through ping/status/master and parses canonical rows',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
  let tick=Date.now(),called=[];
- const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\nEND',modifiedTime:new Date().toISOString()}:{ok:true,freeze:null,level:'OK',errors:[],build:'test'}}};
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString()}:{ok:true,freeze:null,level:'OK',errors:[],build:'test'}}};
  const out=await fetchAuthenticatedMaster({key:'test-secret',transport,clock:()=>tick++});
  assert.deepEqual(called.sort(),['master','ping','writer_status']);
  assert.equal(out.rows[0].DISPOSITION,'OPEN');
@@ -80,7 +80,7 @@ test('Writer reader authenticates through ping/status/master and parses canonica
 });
 test('Writer reader fails closed on incomplete, unauthorized and frozen responses',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
- const mock=fn=>async u=>({ok:true,json:async()=>fn(new URL(u).searchParams.get('action'))});
+ const mock=fn=>async u=>({ok:true,json:async()=>{const a=new URL(u).searchParams.get('action');return a==='writer_status'?{ok:true,freeze:null,level:'OK',errors:[]}:fn(a)}});
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='master'?{ok:true,text:'incomplete'}:{ok:true})}),/completeness/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='ping'?{ok:false}:{ok:true,text:'END'})}),/authorized/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,freeze:{reason:'QA freeze'},level:'WARN',errors:[]}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString()}:{ok:true})}),/status not healthy/);
