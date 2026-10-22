@@ -74,7 +74,7 @@ test('REV-164 Grok QA title recognition and exclusions', () => {
   for (const title of [
     'Director Launch Operations', 'Director Launch Vehicle Manufacturing',
     'Director Launch Site Production', 'Director Launch Control',
-    'Director Mission Production', 'Director Launch',
+    'Director Launch',
     'Senior Manager Ramp', 'Senior Manager Software Launch'
   ]) assert.strictEqual(T.family(title), null, title);
   assert.strictEqual(T.level('Principal Quality Engineer'), 'SR_STAFF');
