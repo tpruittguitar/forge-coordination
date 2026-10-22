@@ -16,9 +16,11 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks}={}
  const pids=receipt.entry.items.map(x=>x.pid).filter(Boolean);
  if(!Array.isArray(readbacks))return held('READBACK_MISSING');
  if(kind==='EXISTING_MATCH'){
-  if(!outcome.PRIMARY_ID||pids.length>1)return held('EXISTING_IDENTITY_UNCERTAIN');
+  if(!outcome.PRIMARY_ID||pids.length>1||pids.some(pid=>pid!==outcome.PRIMARY_ID))return held('EXISTING_IDENTITY_UNCERTAIN');
   const match=readbacks.filter(x=>x.primaryId===outcome.PRIMARY_ID&&x.found&&x.matches===1);
   if(match.length!==1)return held('EXISTING_READBACK_MISSING');
+  const cells=String(match[0].line||'').split(' | '),norm=x=>String(x??'').trim().toLowerCase();
+  if(cells.length<10||cells[1]!==outcome.PRIMARY_ID||norm(cells[2])!==norm(record?.COMPANY)||norm(cells[3])!==norm(record?.TITLE)||norm(cells[8])!==norm(record?.LOCATION)|| (record?.REQ_ID&&norm(cells[7])!==norm(record.REQ_ID)))return held('EXISTING_IDENTITY_MISMATCH');
   // Existing means no newly inserted rows in receipt. Reconcile before declaring a no-op.
   if(receipt.entry.items.some(x=>['INSERT','CREATE','APPEND'].includes(String(x.op||'').toUpperCase())))return held('UNEXPECTED_ROW_WRITE');
   return {status:'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS',primaryId:outcome.PRIMARY_ID,verified:false,scaleUpAllowed:false};
