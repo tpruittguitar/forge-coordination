@@ -22,7 +22,7 @@ function eligibleFromAudit(audit,preview){
   admitted.push({...rec,EMPLOYER_PRIMARY_BUSINESS:proof.primaryBusiness,EMPLOYER_EVIDENCE_URL:proof.url});
  }
  if(admitted.length>MAX_BATCH)throw Error('BLOCKED: admission exceeds 200');
- return {mode:'AUTHORIZED_TO_REQUEST_FINAL_WRITER_INTAKE_CHECK',admitted,held,submissionExecuted:false,writerSubmissions:0};
+ return {mode:'MANUAL_EVIDENCE_REVIEW_REQUIRED',proposed:admitted,admitted:[],held,submissionExecuted:false,writerSubmissions:0};
 }
 async function prepareLiveAdmission(preview,options={}){
  if(options.auditOverride||options.fetchMaster||options.fetchArchive)throw Error('BLOCKED: injected audit readers forbidden in production');
