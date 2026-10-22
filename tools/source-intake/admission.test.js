@@ -42,3 +42,29 @@ test('stale and future snapshots fail closed',()=>{
  assert.throws(()=>plan(p,[],{snapshotAsOf:new Date(Date.now()-3600000).toISOString()}),/freshness/);
  assert.throws(()=>plan(p,[],{snapshotAsOf:new Date(Date.now()+3600000).toISOString()}),/freshness/);
 });
+
+test('authenticated audit requires both Writer reads and preserves flags',async()=>{
+ const {auditAuthenticated}=require('./admission');
+ const preview={rows:[{...item('Acme','Director Quality','Memphis, TN','https://example.com/one'),tier:'P1',flags:['MEMPHIS_STRONG_NEGATIVE']}]};
+ const read={source:'WRITER',authenticated:true,rows:[]};
+ const out=await auditAuthenticated(preview,{fetchMaster:async()=>read,fetchArchive:async()=>read});
+ assert.equal(out.rows[0].tier,'P1');
+ assert.equal(out.rows[0].memphisStrongNegative,true);
+ assert.equal(out.productionAdmission,'BLOCKED_UNTIL_READER_CONTRACT_QA');
+ assert.equal(out.writer_submissions,0);
+});
+test('archived rejected identity gets protected hold',async()=>{
+ const {auditAuthenticated}=require('./admission');
+ const preview={rows:[item('Acme','Director Manufacturing','Austin, TX','https://example.com/one')]};
+ const good=rows=>({source:'WRITER',authenticated:true,rows});
+ const x=await auditAuthenticated(preview,{fetchMaster:async()=>good([]),fetchArchive:async()=>good([{COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',DISPOSITION:'REJECTED'}])});
+ assert.equal(x.rows[0].gate,'PROTECTED_HOLD');
+});
+test('missing archive, unauthenticated responses, and overlong reads block',async()=>{
+ const {auditAuthenticated}=require('./admission');
+ const p={rows:[]},good={source:'WRITER',authenticated:true,rows:[]};
+ await assert.rejects(()=>auditAuthenticated(p,{fetchMaster:async()=>good}),/readers required/);
+ await assert.rejects(()=>auditAuthenticated(p,{fetchMaster:async()=>good,fetchArchive:async()=>({source:'WRITER',authenticated:false,rows:[]})}),/archive acquisition failed/);
+ let at=0;
+ await assert.rejects(()=>auditAuthenticated(p,{fetchMaster:async()=>good,fetchArchive:async()=>good,clock:()=>{at+=901000;return at}}),/expired/);
+});
