@@ -7,9 +7,10 @@ const P = require('../enrich-ats-pay/lib.js');
 const LEADER_RE = /\b(director|head of|head,|vice president|vp\b|v\.p\.|svp|evp|chief\b|plant manager|general manager|site (?:lead|leader|director)|plant leader|senior manager|sr\.? manager|senior staff|sr\.? staff|staff engineer|principal(?:\s+(?:manufacturing|production|process|industrial))?\s+engineer)\b/i;
 const NOT_LEADER_RE = /\b(assistant|associate|intern|coordinator|specialist|analyst|technician|administrator)\b/i;
 const MFG_ENG_RE = /\b(manufacturing engineering|manufacturing engineer|process engineering|process engineer|industrial engineering|industrial engineer|production engineering|production engineer)\b/i;
+const TRANSFORM_RE = /\b(npi|new product introduction|new product development|continuous improvement|operational excellence|industrializ\w*|launch|ramp(?:-?up)?)\b/i;
 const QUALITY_RE = /\bquality\b/i;
 const MFG_PROD_RE = /\b(manufactur\w*|production|plant|factory|assembly|fabrication|operations|ops)\b/i;
-const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|customer|legal|flight operations|launch operations|mission operations|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
+const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|customer|legal|flight operations|mission operations|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
 
 /** Title -> 'QUALITY' | 'MFG_PROD' | 'MFG_ENG' | null. Only leadership titles in Tim's three families count. */
 function family(title) {
@@ -17,6 +18,7 @@ function family(title) {
   if (!LEADER_RE.test(t) || NOT_LEADER_RE.test(t) || OFF_TOPIC_RE.test(t)) return null;
   if (MFG_ENG_RE.test(t)) return 'MFG_ENG';
   if (QUALITY_RE.test(t)) return 'QUALITY';
+  if (TRANSFORM_RE.test(t)) return 'MFG_PROD';
   if (/\b(plant manager|plant leader|general manager)\b/i.test(t)) return /\bgeneral manager\b/i.test(t) && !MFG_PROD_RE.test(t.replace(/general manager/i, '')) ? null : 'MFG_PROD';
   if (MFG_PROD_RE.test(t)) return 'MFG_PROD';
   return null;
