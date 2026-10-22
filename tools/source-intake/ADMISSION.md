@@ -42,3 +42,7 @@ The Writer's `bytes` field is **JavaScript string length**, not UTF-8 octet leng
 ## PR #39 transaction consistency (review only)
 
 `transaction-preflight.js` now checks a proposed identity against a durable COMPLETE request receipt and a separately supplied canonical readback. A single exact employer/title/location match with a compatible req ID yields `CONSISTENT_PENDING_PROVENANCE_VALIDATION`, **never** `verified:true`. An ambiguous/missing row or identity mismatch fails closed. Receipt and master inputs could still be forged by a caller; the trusted production executor must authenticate both against the Writer and bind receipt requestId/intent to exact canonical row identity. No execution or Writer submissions are enabled.
+
+## PR #39 live Writer receipt schema limitation
+
+Writer `request_result` normally returns an index entry with status and durability but **does not guarantee a canonical PRIMARY_ID**. The `receipt_index` response can confirm GitHub source, revision and a per-request COMPLETE state without binding that request to one exact row. The collector now explicitly returns `PENDING_CANONICAL_ID_BINDING` rather than manufacturing a PRIMARY_ID, skipping `row_readback` until a trusted request-to-row binding exists. Caller hints cannot supply this binding. This is a remaining production blocker; all results have `verified:false` and no Writer mutations occur.
