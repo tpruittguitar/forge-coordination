@@ -21,3 +21,18 @@ test('cannot call a Writer and never produces submit-ready payload',()=>{
  assert.equal(out.mode,'NON_SUBMITTABLE_REVIEW_ONLY');
  assert.equal(out.rows[0].gate,'EMPLOYER_BUSINESS_REVIEW');
 });
+
+test('end-to-end Source Trial -> preview -> admission stays review-only',()=>{
+ const {adapt}=require('./preview');
+ const report={summary:{run:'TRIAL-TEST'},new_roles:[
+  {company:'Shield AI',title:'Director Manufacturing',location:'Dallas, TX',url:'https://jobs.lever.co/shieldai/8b747653-dba8-4133-9056-eeedc162dbcd',source:'JobSpy',status:'NEW'},
+  {company:'Acme',title:'Director Quality',location:'Dayton, OH',url:'https://example.com/acme/77',source:'BOARD',status:'NEW'}
+ ]};
+ const preview=adapt(report,{runId:'FORGE-DRYRUN',discoveredAt:'2026-10-22T12:00:00Z'});
+ const master=[{COMPANY:'Shield AI',TITLE:'Director Manufacturing',LOCATION:'Dallas, TX',DISPOSITION:'APPLIED'}];
+ const gated=plan(preview,master,{snapshotAsOf:'2026-10-22T12:01:00Z'});
+ assert.equal(gated.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(gated.rows[1].gate,'EMPLOYER_BUSINESS_REVIEW');
+ assert.equal(gated.writer_submissions,0);
+ assert.deepEqual(gated.writer_payloads,[]);
+});
