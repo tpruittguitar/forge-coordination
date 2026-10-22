@@ -4,7 +4,6 @@
  */
 const {read}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
-const MAX_AGE_MS=15*60*1000;
 const validPid=x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x);
 const idsFrom=entry=>Array.isArray(entry?.items)?entry.items.map(x=>x?.pid):null;
 async function inspectDurableReadback(proposal,requestId,{key,transport,clock=()=>Date.now()}={}){
@@ -14,8 +13,10 @@ async function inspectDurableReadback(proposal,requestId,{key,transport,clock=()
  const index=await read('receipt_index',opts);
  if(index.data.source!=='GITHUB'||index.data.exists!==true||!index.data.sha||!index.data.updatedAt)throw Error('BLOCKED: missing GitHub receipt index proof');
  const now=clock(),updated=Date.parse(index.data.updatedAt);
- if(!Number.isFinite(updated)||updated>now+120000||now-updated>MAX_AGE_MS)throw Error('BLOCKED: receipt index stale or invalid');
- const meta={receiptIndexSha:index.data.sha,receiptIndexUpdatedAt:index.data.updatedAt,verified:false,writerPayloads:[],writerSubmissions:0};
+ if(!Number.isFinite(updated)||updated>now+120000)throw Error('BLOCKED: receipt index timestamp invalid');
+ const requestAt=index.data.request?.at;
+ if(requestAt!=null){const recorded=Date.parse(requestAt);if(!Number.isFinite(recorded)||recorded>updated+120000)throw Error('BLOCKED: receipt request timestamp invalid');}
+ const meta={receiptIndexSha:index.data.sha,receiptIndexUpdatedAt:index.data.updatedAt,receiptIndexIdleMs:Math.max(0,now-updated),verified:false,writerPayloads:[],writerSubmissions:0};
  if(index.data.request?.s!=='COMPLETE')return {...meta,status:'PENDING_INDEX_REQUEST_PROOF',proofReads:['receipt_index']};
  const result=await read('request_result',opts),detail=result.data;
  if(!detail.found||detail.source!=='index'||detail.requestId!==requestId||detail.status!=='COMPLETE'||detail.durable!==true)
