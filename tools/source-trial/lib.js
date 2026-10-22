@@ -6,7 +6,7 @@ const P = require('../enrich-ats-pay/lib.js');
 /* Tim 18:09 ET: "quality leadership, manufacturing and production leadership and manufacturing engineering leadership". */
 const LEADER_RE = /\b(director|head of|head,|vice president|vp\b|v\.p\.|svp|evp|chief\b|plant manager|general manager|site (?:lead|leader|director)|plant leader|senior manager|sr\.? manager|senior staff|sr\.? staff|staff engineer|principal engineer)\b/i;
 const NOT_LEADER_RE = /\b(assistant|associate|intern|coordinator|specialist|analyst|technician|administrator)\b/i;
-const MFG_ENG_RE = /\b(manufacturing engineering|manufacturing engineer|process engineering|industrial engineering|production engineering)\b/i;
+const MFG_ENG_RE = /\b(manufacturing engineering|manufacturing engineer|process engineering|process engineer|industrial engineering|industrial engineer|production engineering|production engineer)\b/i;
 const QUALITY_RE = /\bquality\b/i;
 const MFG_PROD_RE = /\b(manufactur\w*|production|plant|factory|assembly|fabrication|operations|ops)\b/i;
 const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|customer|legal|flight operations|launch operations|mission operations|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
