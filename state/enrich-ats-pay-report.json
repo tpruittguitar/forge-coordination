@@ -1,59 +1,95 @@
 {
- "at": "2026-10-22T21:56:03.583Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261022T2155Z",
+ "at": "2026-10-22T23:31:22.489Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261022T2328Z",
  "dry": false,
- "rows": 1663,
- "eligible": 286,
+ "rows": 1677,
+ "eligible": 300,
  "anchors": 152,
  "archive_anchors": 6,
- "ats_rows": 0,
- "ats_read": 0,
+ "ats_rows": 1,
+ "ats_read": 1,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 0,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 12,
  "skipped_recent": 240,
- "submitted": 0,
+ "submitted": 2,
  "guard_dropped": 1,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 2
  },
  "agg_read": {
+  "linkedin": 2
+ },
+ "agg_pay": {
   "linkedin": 1
  },
- "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 0,
- "boards_read": 0,
+ "est_comparables": 1,
+ "boards_read": 1,
  "boards_failed": 0,
  "bls": {
   "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 1
  },
  "bls_queries": 0,
- "est_shared_low": 0,
- "ats_candidates": 26,
+ "est_shared_low": 1,
+ "ats_candidates": 27,
  "ats_by_kind": {
+  "greenhouse": 11,
   "workday": 10,
   "ashby": 5,
-  "greenhouse": 10,
   "lever": 1
  },
  "skipped_closed": 45,
  "ats_unconfirmed": 0,
+ "ats_need_salary": 1,
+ "nothing_found": 12,
  "upgraded": 0,
- "planned": 1,
+ "planned": 3,
  "sample": [
+  {
+   "id": "V2I-EE73E85EDE7A",
+   "fields": {
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 216000,
+    "SALARY_MIDPOINT": 190500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-22",
+    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2S-INTUITIVEMACHINES-DIRHVP-R23964,V2S-MAYBELL-DIR-MFG-5415157008,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2F-D400EE31A881, V2S-INTUITIVEMACHINES-DIRHVP-R23964, V2S-MAYBELL-DIR-MFG-5415157008, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 7 employer-posted comparable(s), level 2 MFG any region; range shared by 5 eligible roles from the same comparables, so LOW; BLS state wage n/a; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-22"
+   }
+  },
+  {
+   "id": "V2I-82B87E6CCC65",
+   "fields": {
+    "SALARY_BASE_LOW": 190000,
+    "SALARY_BASE_HIGH": 252000,
+    "SALARY_MIDPOINT": 221000,
+    "SALARY_BASIS": "THIRD_PARTY_ESTIMATE",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4465067799",
+    "SALARY_ASOF": "2026-10-22",
+    "SALARY_CONF": "MED",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4465067799",
+    "DEGREE_ASOF": "2026-10-22",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-22"
+   }
+  },
   {
    "id": "V2I-302835E30F10",
    "fields": {
@@ -61,6 +97,32 @@
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-EE73E85EDE7A",
+   "company": "Inversion",
+   "title": "Director of Engineering, Manufacturing",
+   "location": "Unknown",
+   "posting": "https://my.greenhouse.io/jobs/inversionspace/4665959005",
+   "est": [
+    165000,
+    216000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "NO_BLS",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG any region; range shared by 5 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2S-INTUITIVEMACHINES-DIRHVP-R23964",
+    "V2S-MAYBELL-DIR-MFG-5415157008",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
