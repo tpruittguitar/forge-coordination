@@ -38,3 +38,7 @@ Tests with injected HTTP mocks cover transport, archived rejection hold, restora
 ## Live Writer QA correction — 2026-10-22
 
 The Writer's `bytes` field is **JavaScript string length**, not UTF-8 octet length. Validate against `text.length`; a non-ASCII fixture proves the distinction. Read freshness uses `fetchedAt`, not last-edit `modifiedTime`. HTTP attempts each have a 30-second budget; a single retry is allowed on transport failure/HTTP 5xx with a separate bounded 65-second total budget. These changes remain review-only, require independent live re-QA, and do not enable any Writer submissions.
+
+## PR #39 transaction consistency (review only)
+
+`transaction-preflight.js` now checks a proposed identity against a durable COMPLETE request receipt and a separately supplied canonical readback. A single exact employer/title/location match with a compatible req ID yields `CONSISTENT_PENDING_PROVENANCE_VALIDATION`, **never** `verified:true`. An ambiguous/missing row or identity mismatch fails closed. Receipt and master inputs could still be forged by a caller; the trusted production executor must authenticate both against the Writer and bind receipt requestId/intent to exact canonical row identity. No execution or Writer submissions are enabled.
