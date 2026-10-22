@@ -57,8 +57,7 @@ const locKey = loc => {
   const raw = String(loc || '').trim(), state = usPlace(raw);
   if (!state) return '';
   const city = raw.split(',')[0].replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  return city && !/^(united states|usa|us|[a-z]{2})$/.test(city) && city !== raw.toLowerCase().trim().replace(/[^a-z0-9]+/g,' ').trim() || (city && raw.includes(','))
-    ? city + ',' + state : state;
+  return city && raw.includes(',') && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
 };
 const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
 function masterIndex(rows) {
@@ -68,7 +67,7 @@ function masterIndex(rows) {
     const status = PROTECTED_RE.test(rowState(r)) ? 'EXISTING_PROTECTED' : 'EXISTING';
     if (co) companies.add(co);
     const put = (map, key) => { if (key) map.set(key, (map.get(key) === 'EXISTING_PROTECTED' || status === 'EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : status); };
-    put(keys, co && ti ? co + '|' + ti : '');
+    if (!locKey(r.LOCATION || (r.p && r.p.LOCATION))) put(keys, co && ti ? co + '|' + ti : '');
     put(locations, co && ti ? identityKey(co, ti, r.LOCATION || (r.p && r.p.LOCATION)) : '');
     const p = r.p || {};
     P.ATS_URL_KEYS.forEach(k => {
