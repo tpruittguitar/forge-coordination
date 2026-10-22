@@ -35,12 +35,12 @@ function parseMaster(text){
  const c=l.trim().split(/\s+\|\s+/);if(c.length<10)throw Error('BLOCKED: short master row');
  return {PRIMARY_ID:c[1],COMPANY:c[2],TITLE:c[3],BUCKET:c[4],DISPOSITION:c[5],REQ_ID:c[7],LOCATION:c[8]};
  });
- if(!rows.length||!/^END V2_CURRENT_POPULATION_MASTER\b/m.test(text))throw Error('BLOCKED: master completeness marker missing');
+ if(!rows.length||!/^END V2_CURRENT_POPULATION_MASTER(?:\s|$)/m.test(text))throw Error('BLOCKED: master completeness marker missing');
  if(new Set(rows.map(x=>x.PRIMARY_ID)).size!==rows.length)throw Error('BLOCKED: duplicated master identities');
  return rows;
 }
 async function fetchAuthenticatedMaster(options={}){
- const [ping,status,master]=await Promise.all(['ping','writer_status','master'].map(a=>read(a,options)));
+ const ping=await read('ping',options),status=await read('writer_status',options),master=await read('master',options);
  if(!Object.hasOwn(status.data,'freeze')||status.data.freeze!=null||status.data.level!=='OK'||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer status not healthy');
  const rows=parseMaster(master.data.text);const expected=master.data.rowCount??master.data.count;if(Number.isInteger(expected)&&expected!==rows.length)throw Error('BLOCKED: Writer master count mismatch');const modified=Date.parse(master.data.modifiedTime||'');if(!Number.isFinite(modified)||Date.now()-modified>15*60000||modified>Date.now()+120000)throw Error('BLOCKED: Writer master modifiedTime stale or invalid');return {source:'WRITER',authenticated:true,rows,writerModifiedTime:master.data.modifiedTime,writerReadAt:master.completedAt,writerBuild:ping.data.build||null};
 }
