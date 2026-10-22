@@ -57,3 +57,23 @@ test('exact-row consistency remains unverified pending trusted readback provenan
  assert.equal(verifyExactRow(proposal,{receipt,requestId:'SOURCE-REQ-21',masterRows:[...masterRows,...masterRows]}).status,'AMBIGUOUS_READBACK');
  assert.throws(()=>verifyExactRow({...proposal,identityHash:'ALTERED'},{receipt,requestId:'SOURCE-REQ-21',masterRows}),/identity changed/);
 });
+
+test('authenticated durable proof reads use real Writer response structure and remain non-verifying',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback');const {stableId}=require('./transaction-preflight');
+ const record={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',REQ_ID:'R77',SOURCE_URL:'https://example.com/job'};
+ const proposal={record,identityHash:stableId(record)},actions=[];
+ const transport=async url=>{
+  const u=new URL(url),action=u.searchParams.get('action');actions.push(action);
+  const values={request_result:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{primaryId:'V2I-77'}},receipt_index:{ok:true,exists:true,source:'GITHUB',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}},row_readback:{ok:true,master:{endMarkerPresent:true},requested:1,found:1,rows:[{found:true,matches:1,primaryId:'V2I-77',line:'1 | V2I-77 | Acme | Director Manufacturing | SCOUT_INTAKE | OPEN | P1 | R77 | Austin, TX | PAY=UNKNOWN'}]}};
+  return {ok:true,json:async()=>values[action]};
+ };
+ const out=await inspectDurableReadback(proposal,'RUN-77',{key:'mock',transport});
+ assert.deepEqual(actions,['request_result','receipt_index','row_readback']);
+ assert.equal(out.matchedPrimaryId,'V2I-77');assert.equal(out.verified,false);assert.equal(out.writerSubmissions,0);
+});
+test('incomplete GitHub receipt index refuses readback',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback');
+ const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='receipt_index'?{ok:true,exists:true,source:'GITHUB',updatedAt:new Date().toISOString(),request:null}:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true}});
+ const out=await inspectDurableReadback({record:{},identityHash:'X'},'RUN-77',{key:'mock',transport});
+ assert.equal(out.status,'PENDING_INDEX_REQUEST_PROOF');assert.equal(out.verified,false);
+});
