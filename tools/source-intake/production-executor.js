@@ -43,6 +43,10 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
   if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});throw Error('BLOCKED: existing or uncertain request; reconcile before retry')}
+  // Prior review must be bound to the exact canonical rules fetched from Writer now.
+  // A caller-provided industry label or boolean alone cannot authorize intake.
+  if(!candidate.rulesHash||candidate.rulesHash!==pre.rulesHash||candidate.businessEvidenceApproved!==true)
+    throw Error('BLOCKED: independent employer-business review not bound to fresh canonical rules');
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId,GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:candidate.primaryBusiness||''}]};
   let response;
   try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(60000)}); }
