@@ -8,3 +8,9 @@ node tools/source-intake/admission.js preview.json canonical-master-snapshot.jso
 ```
 
 The snapshot must be an **authorized, current, canonical master** export, not a cached trial master. The timestamp is a caller assertion and is not a cryptographic provenance check. Apparent NEW roles remain held for employer core-business verification and the live Writer's dedupe/protection authority; a snapshot alone is insufficient for production admission. No silent bypass for protected, previously applied or rejected roles. Full Never Consider evaluation, targeted registry, INTAKE_KEY case rules, writer status/freeze checks, 50-row ruling ceiling, live receipt/readback and operational authorization remain prerequisites. There is intentionally no Writer endpoint or scheduler in this code.
+
+## Production-data audit blocker (verified 2026-10-22)
+
+The legacy `foreman-cockpit/netlify/functions/master.js` endpoint returns HTTP 410 and explicitly states public master access is disabled; it directs callers to the **authenticated Writer**. A copy from `/api/structured` or `state/source-trial-report.json` is not an authoritative canonical Writer master snapshot. This CLI accepts a caller-supplied timestamp, which is only a freshness assertion, **not proof of source, authority or a protected-state read**. A malicious or mistaken caller can label old data as recent.
+
+Before live intake: provide an approved, authenticated, read-only Writer snapshot with source identity, verified extraction timestamp, schema/version and full protected-state columns; independently verify counts/identity against Writer; then apply final Writer-side admission and receipt/readback. Do not use the read-only admission output as authorization to submit, even when it says `REVIEW_REQUIRED`.
