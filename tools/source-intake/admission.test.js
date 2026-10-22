@@ -136,7 +136,7 @@ test('live Writer schema allows older last edit with fresh fetch, validates byte
  const {fetchAuthenticatedMaster}=require('./writer-reader');
  const text='1 | V2S-X1 | Acme | Director | OPEN | OPEN | P1 | R1 | Austin, TX | DATA\nEND V2_CURRENT_POPULATION_MASTER';
  const fetchedAt=new Date().toISOString();
- const t=async u=>({ok:true,json:async()=>{const a=new URL(u).searchParams.get('action');return a==='writer_status'?{ok:true,freeze:null,level:'ok',errors:[],warnings:[]}:a==='master'?{ok:true,docAccess:'OK',id:'master',title:'Master',text,bytes:Buffer.byteLength(text,'utf8'),modifiedTime:'2026-10-20T12:00:00Z',fetchedAt}:{ok:true}}});
+ const t=async u=>({ok:true,json:async()=>{const a=new URL(u).searchParams.get('action');return a==='writer_status'?{ok:true,freeze:null,level:'ok',errors:[],warnings:[]}:a==='master'?{ok:true,docAccess:'OK',id:'master',title:'Master',text,bytes:text.length,modifiedTime:'2026-10-20T12:00:00Z',fetchedAt}:{ok:true}}});
  const result=await fetchAuthenticatedMaster({key:'fixture',transport:t});
  assert.equal(result.rows.length,1);
  assert.equal(result.writerFetchedAt,fetchedAt);
@@ -147,4 +147,29 @@ test('read-only Writer HTTP GET retries one transient 503',async()=>{
  const {read}=require('./writer-reader');let calls=0;
  const transport=async()=>{calls++;return calls===1?{ok:false,status:503}:{ok:true,json:async()=>({ok:true})}};
  await read('ping',{key:'fixture',transport});assert.equal(calls,2);
+});
+
+test('Writer character count uses JS text length, not UTF-8 octets',async()=>{
+ const {fetchAuthenticatedMaster}=require('./writer-reader');
+ const text='1 | V2S-Z1 | Acme | Director — Zürich | OPEN | OPEN | P1 | R1 | Zürich, CH | NOTES\nEND V2_CURRENT_POPULATION_MASTER';
+ assert.notEqual(Buffer.byteLength(text,'utf8'),text.length);
+ const transport=async u=>({ok:true,json:async()=>{
+  const action=new URL(u).searchParams.get('action');
+  if(action==='master')return {ok:true,text,bytes:text.length,fetchedAt:new Date().toISOString(),modifiedTime:'2026-10-20T00:00:00Z'};
+  if(action==='writer_status')return {ok:true,freeze:null,level:'ok',errors:[],warnings:[]};
+  return {ok:true};
+ }});
+ assert.equal((await fetchAuthenticatedMaster({key:'fixture',transport})).rows.length,1);
+});
+test('retry timing permits two individually valid attempts beyond 30s combined',async()=>{
+ const {read}=require('./writer-reader');
+ let now=0,calls=0;
+ const clock=()=>now;
+ const transport=async()=>{
+  calls++;
+  now+=calls===1?29000:8000;
+  return calls===1?{ok:false,status:503}:{ok:true,json:async()=>({ok:true})};
+ };
+ const out=await read('ping',{key:'fixture',transport,clock});
+ assert.equal(calls,2);assert.equal(out.completedAt,new Date(37000).toISOString());
 });
