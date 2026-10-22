@@ -46,10 +46,10 @@ test('CLI loads the registry file and tags Shield AI JobSpy result DREAM',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-intake-'));
  try{
  const report=path.join(dir,'report.json'),output=path.join(dir,'output.json'),registry=path.join(dir,'priority.txt');
- fs.writeFileSync(report,JSON.stringify({new_roles:[job('Shield AI','Director Quality','San Diego, CA','https://example.com/jobs/111')]}));
- fs.writeFileSync(registry,'DREAM (every discovery run, first): 1\\n- Shield AI | careers: https://shield.ai/careers | Dallas, TX\\n');
+ fs.writeFileSync(report,JSON.stringify({new_roles:[job('ShieldAI','Director Quality','San Diego, CA','https://example.com/jobs/111'),job('Anduril Industries','Director Manufacturing','Costa Mesa, CA','https://example.com/jobs/222')]}));
+ fs.writeFileSync(registry,'DREAM (every discovery run, first): 1\\n- Shield AI | careers: https://shield.ai/careers | Dallas, TX\n');
  const done=cp.spawnSync(process.execPath,[path.join(__dirname,'preview.js'),report,output,'FORGE-CLI-TEST',registry],{encoding:'utf8'});
  assert.equal(done.status,0,done.stderr);
- assert.equal(JSON.parse(fs.readFileSync(output,'utf8')).rows[0].tier,'DREAM');
+ const rows=JSON.parse(fs.readFileSync(output,'utf8')).rows;assert.equal(rows[0].tier,'DREAM');assert.equal(rows[1].tier,'P1');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
