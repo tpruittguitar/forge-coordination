@@ -41,24 +41,47 @@ function usPlace(loc) {
 const normTitle = s => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(sr|senior)\b/g, 'senior').replace(/\s+/g, ' ').trim();
 const normUrl = u => String(u || '').toLowerCase().replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/+$/, '');
 
-/** Index of what the master already holds: company+title keys and posting URLs. */
-function masterIndex(rows) {
-  const keys = new Set(), urls = new Set(), companies = new Set();
-  rows.forEach(r => {
-    const co = P.normCo(r.COMPANY || (r.p && r.p.COMPANY)), ti = normTitle(r.TITLE || (r.p && r.p.TITLE));
-    if (co) companies.add(co);
-    if (co && ti) keys.add(co + '|' + ti);
-    const p = r.p || {};
-    P.ATS_URL_KEYS.forEach(k => { if (p[k]) urls.add(normUrl(p[k])); });
-  });
-  return { keys, urls, companies };
+/** ATS IDs are scoped to the employer; third-party URLs must not be treated as canonical IDs. */
+function atsId(url) {
+  const u = String(url || '');
+  let m = u.match(/(?:job-boards|boards)\.greenhouse\.io\/[^/]+\/jobs\/(\d+)/i)
+    || u.match(/jobs\.lever\.co\/[^/]+\/([a-f0-9-]{20,})/i)
+    || u.match(/jobs\.ashbyhq\.com\/[^/]+\/([a-f0-9-]{20,})/i)
+    || u.match(/(?:myworkdayjobs\.com|wd\d+\.myworkdayjobs\.com)\/[^?#]*?\/job\/[^?#]*?\/([A-Za-z0-9_-]+)(?:[?#]|$)/i);
+  return m ? m[1].toLowerCase() : '';
 }
-
-/** 'EXISTING' (same posting URL or same company + title) or 'NEW'. */
-function novelty(idx, company, title, url) {
-  if (url && idx.urls.has(normUrl(url))) return 'EXISTING';
-  if (idx.keys.has(P.normCo(company) + '|' + normTitle(title))) return 'EXISTING';
-  return 'NEW';
+const PROTECTED_RE = /\b(applied|rejected(?:_by_employer)?|declined(?:_by_tim)?|withdrawn|interviewed)\b/i;
+const rowState = r => [r.STATUS,r.APP_STATE,r.APPLICATION_STATE,r.DISPOSITION, ...(r.p ? [r.p.STATUS,r.p.APP_STATE,r.p.APPLICATION_STATE,r.p.DISPOSITION] : [])].filter(Boolean).join(' ');
+const locKey = loc => String(usPlace(loc) || '').toUpperCase();
+const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
+function masterIndex(rows) {
+  const keys = new Map(), urls = new Map(), reqIds = new Map(), locations = new Map(), companies = new Set();
+  for (const r of rows) {
+    const co = P.normCo(r.COMPANY || (r.p && r.p.COMPANY)), ti = normTitle(r.TITLE || (r.p && r.p.TITLE));
+    const status = PROTECTED_RE.test(rowState(r)) ? 'EXISTING_PROTECTED' : 'EXISTING';
+    if (co) companies.add(co);
+    const put = (map, key) => { if (key) map.set(key, map.get(key) === 'EXISTING_PROTECTED' ? 'EXISTING_PROTECTED' : status); };
+    put(keys, co && ti ? co + '|' + ti : '');
+    put(locations, co && ti ? identityKey(co, ti, r.LOCATION || (r.p && r.p.LOCATION)) : '');
+    const p = r.p || {};
+    P.ATS_URL_KEYS.forEach(k => {
+      const url = p[k]; if (!url) return;
+      put(urls, normUrl(url));
+      const id = atsId(url); if (id) put(reqIds, co + '|' + id);
+    });
+    for (const k of ['REQ_ID','REQUISITION_ID','ATS_REQ_ID','JOB_ID']) {
+      const id = String(p[k] || r[k] || '').trim().toLowerCase();
+      if (id) put(reqIds, co + '|' + id);
+    }
+  }
+  return { keys, urls, reqIds, locations, companies };
+}
+/** Provisional new is a discovery candidate, NOT a verified unique requisition. */
+function novelty(idx, company, title, url, location = '', explicitReqId = '') {
+  const co = P.normCo(company), ti = normTitle(title), id = String(explicitReqId || atsId(url)).toLowerCase();
+  const matches = [url && idx.urls.get(normUrl(url)), id && idx.reqIds.get(co + '|' + id),
+    idx.locations.get(identityKey(company,title,location)), idx.keys.get(co + '|' + ti)].filter(Boolean);
+  return matches.includes('EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : matches[0] || 'NEW';
 }
 
 /** A board from a careers link written as the board root (the digest lists e.g. job-boards.greenhouse.io/aevexaerospace). */
@@ -93,4 +116,4 @@ function level(title) {
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
-module.exports = { level, family, usPlace, normTitle, normUrl, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority };
+module.exports = { level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority };
