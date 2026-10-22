@@ -83,3 +83,34 @@ test('five-case count reconciliation proves exact new ID set and protects archiv
  const contaminated=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot([...after,row('V2I-X',6)])});
  assert.equal(contaminated.reason,'INSERTED_ID_SET_MISMATCH');
 });
+
+test('pending receipt never requests result and never posts',async()=>{
+ const {inspectReceipt}=require('./production-executor');
+ const calls=[];
+ const transport=async(url,options)=>{
+  calls.push({url,method:options.method});
+  const action=new URL(url).searchParams.get('action');
+  assert.equal(action,'receipt_index');
+  return {ok:true,json:async()=>({ok:true,source:'GITHUB',exists:true,sha:'gitsha',request:{s:'PENDING'}})};
+ };
+ const output=await inspectReceipt({COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/job/a'},{key:'fixture',transport});
+ assert.equal(output.reason,'PENDING');assert.equal(calls.length,1);
+ assert.equal(calls[0].method,'GET');
+});
+test('complete index is required before request_result and row readback',async()=>{
+ const {inspectReceipt}=require('./production-executor');
+ const calls=[];
+ const transport=async(url,options)=>{
+  const u=new URL(url),action=u.searchParams.get('action');calls.push(action);
+  let data={ok:true};
+  if(action==='receipt_index')data={...data,source:'GITHUB',exists:true,sha:'abc',request:{s:'COMPLETE',items:[{pid:'V2I-123'}]}};
+  else if(action==='request_result')data={...data,status:'COMPLETE',entry:{items:[{pid:'V2I-123'}]}};
+  else if(action==='row_readback')data={...data,results:[]};
+  else throw Error('unapproved operation');
+  assert.equal(options.method,'GET');
+  return {ok:true,json:async()=>data};
+ };
+ const output=await inspectReceipt({COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/job/a'},{key:'fixture',transport});
+ assert.deepEqual(calls,['receipt_index','request_result','row_readback']);
+ assert.deepEqual(output.primaryIds,['V2I-123']);assert.equal(output.verified,false);
+});
