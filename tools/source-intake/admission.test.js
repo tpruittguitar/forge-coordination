@@ -80,7 +80,7 @@ test('Writer reader authenticates through ping/status/master and parses canonica
 });
 test('Writer reader fails closed on incomplete, unauthorized and frozen responses',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
- const mock=fn=>async u=>({ok:true,json:async()=>{const a=new URL(u).searchParams.get('action');return a==='writer_status'?{ok:true,freeze:null,level:'OK',errors:[]}:fn(a)}});
+ const mock=fn=>async u=>({ok:true,json:async()=>{const a=new URL(u).searchParams.get('action');return a==='writer_status'?{ok:true,freeze:null,level:'OK',errors:[],...fn(a)}:fn(a)}});
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='master'?{ok:true,text:'incomplete'}:{ok:true})}),/completeness/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='ping'?{ok:false}:{ok:true,text:'END'})}),/authorized/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,freeze:{reason:'QA freeze'},level:'WARN',errors:[]}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND V2_CURRENT_POPULATION_MASTER',modifiedTime:new Date().toISOString()}:{ok:true})}),/status not healthy/);
