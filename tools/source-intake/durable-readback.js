@@ -13,11 +13,14 @@ async function inspectDurableReadback(proposal,requestId,{key,transport,clock}={
  const detail=result.data;
  if(detail.requestId!==requestId||detail.status!=='COMPLETE'||detail.durable!==true)
   return {status:'PENDING_RECEIPT_PROOF',verified:false};
- if(index.data.exists!==true||!index.data.updatedAt)
+ if(index.data.exists!==true||!index.data.updatedAt||!index.data.sha)
   return {status:'PENDING_INDEX_PROOF',verified:false};
- if(!index.data.request||index.data.request.s!=='COMPLETE')return {status:'PENDING_INDEX_REQUEST_PROOF',verified:false};
- const pid=String(detail.primaryId||detail.PRIMARY_ID||detail.entry?.primaryId||detail.entry?.PRIMARY_ID||'');
- if(!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(pid))return {status:'PENDING_PRIMARY_ID',verified:false};
+ if(!index.data.request||index.data.request.s!=='COMPLETE'||!detail.found||detail.source!=='index')return {status:'PENDING_INDEX_REQUEST_PROOF',verified:false};
+ // The live request_result endpoint returns an index entry, not necessarily a primary ID.
+ // Do not invent a row identity from an unbound receipt or a caller hint.
+ const candidateIds=[detail.primaryId,detail.PRIMARY_ID,detail.entry?.primaryId,detail.entry?.PRIMARY_ID].filter(Boolean);
+ const pid=candidateIds.length===1?String(candidateIds[0]):'';
+ if(!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(pid))return {status:'PENDING_CANONICAL_ID_BINDING',verified:false};
  const rb=await read('row_readback',{...opts,primaryIds:[pid]});
  if(!Array.isArray(rb.data.rows))return {status:'PENDING_READBACK_SCHEMA',verified:false};
  if(rb.data.master?.endMarkerPresent!==true||rb.data.requested!==1||rb.data.found!==1||rb.data.rows.length!==1||rb.data.rows[0].matches!==1||rb.data.rows[0].found!==true)return {status:'PENDING_EXACT_ROW_READBACK',verified:false};
