@@ -12,7 +12,7 @@ const LAUNCH_RE = /\b(launch|ramp(?:-?up)?)\b/i;
 const LAUNCH_CONTEXT_RE = /\b(manufactur\w*|production|plant|factory|assembly|industrializ\w*|npi)\b/i;
 const QUALITY_RE = /\bquality\b/i;
 const MFG_PROD_RE = /\b(manufactur\w*|production|plant|factory|assembly|fabrication|operations|ops)\b/i;
-const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission operations|mission control|mission director|mission production|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
+const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission operations|mission control|mission director|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
 
 /** Title -> 'QUALITY' | 'MFG_PROD' | 'MFG_ENG' | null. Only leadership titles in Tim's three families count. */
 function family(title) {
@@ -55,17 +55,17 @@ const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK
 const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
 const locKey = loc => {
   const raw = String(loc || '').trim();
-  const shortSuffix = raw.match(/^(.+?)\\s+([A-Z]{2})$/);
+  const shortSuffix = raw.match(/^(.+?)\s+([A-Z]{2})$/);
   const state = usPlace(raw) || (/^[A-Z]{2}$/.test(raw) ? P.stateFrom('City, ' + raw) :
     shortSuffix ? P.stateFrom('City, ' + shortSuffix[2]) : '');
   if (!state) return '';
   let city = raw.includes(',') ? raw.split(',')[0] : '';
   if (!city && shortSuffix && P.stateFrom('City, ' + shortSuffix[2]) === state) city = shortSuffix[1];
   if (!city && !raw.includes(',') && state !== 'REMOTE_US' && state !== 'US') {
-    const m = raw.match(/^(.+?)\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*)$/);
+    const m = raw.match(/^(.+?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)$/);
     if (m && P.stateFrom(m[2]) === state) city = m[1];
   }
-  city = city.replace(/\\b(remote|hybrid|onsite|on-site)\\b/gi, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  city = city.replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
   return city && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
 };
 const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
@@ -73,10 +73,10 @@ function masterIndex(rows) {
   const keys = new Map(), urls = new Map(), reqIds = new Map(), locations = new Map(), companies = new Set();
   for (const r of rows) {
     const co = P.normCo(r.COMPANY || (r.p && r.p.COMPANY)), ti = normTitle(r.TITLE || (r.p && r.p.TITLE));
-    const status = PROTECTED_RE.test(rowState(r)) ? 'EXISTING_PROTECTED' : 'EXISTING';
+    const status = protectedRow(r) ? 'EXISTING_PROTECTED' : 'EXISTING';
     if (co) companies.add(co);
     const put = (map, key) => { if (key) map.set(key, (map.get(key) === 'EXISTING_PROTECTED' || status === 'EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : status); };
-    if (!locKey(r.LOCATION || (r.p && r.p.LOCATION))) put(keys, co && ti ? co + '|' + ti : '');
+    put(keys, co && ti ? co + '|' + ti : '');
     put(locations, co && ti ? identityKey(co, ti, r.LOCATION || (r.p && r.p.LOCATION)) : '');
     const p = r.p || {};
     P.ATS_URL_KEYS.forEach(k => {
@@ -95,7 +95,7 @@ function masterIndex(rows) {
 function novelty(idx, company, title, url, location = '', explicitReqId = '') {
   const co = P.normCo(company), ti = normTitle(title), id = String(explicitReqId || atsId(url)).toLowerCase();
   const matches = [url && idx.urls.get(normUrl(url)), id && idx.reqIds.get(co + '|' + id),
-    idx.locations.get(identityKey(company,title,location)), idx.keys.get(co + '|' + ti)].filter(Boolean);
+    idx.locations.get(identityKey(company,title,location)), (!locKey(location) || locKey(location) === usPlace(location)) && idx.keys.get(co + '|' + ti)].filter(Boolean);
   return matches.includes('EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : matches[0] || 'NEW';
 }
 
