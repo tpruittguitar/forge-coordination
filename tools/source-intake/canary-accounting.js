@@ -25,8 +25,8 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,req
   if(match.length!==1)return held('EXISTING_READBACK_MISSING');
   const cells=String(match[0].line||'').split(' | '),norm=x=>String(x??'').trim().toLowerCase();
   if(cells.length<10||cells[1]!==outcome.PRIMARY_ID||norm(cells[2])!==norm(record?.COMPANY)||norm(cells[3])!==norm(record?.TITLE)||norm(cells[8])!==norm(record?.LOCATION)|| (record?.REQ_ID&&norm(cells[7])!==norm(record.REQ_ID)))return held('EXISTING_IDENTITY_MISMATCH');
-  // Existing means no newly inserted rows in receipt. Reconcile before declaring a no-op.
-  if(receipt.entry.items.some(x=>['INSERT','CREATE','APPEND'].includes(String(x.op||'').toUpperCase())))return held('UNEXPECTED_ROW_WRITE');
+  // A Writer no-op opens no master transaction, so its receipt carries no items at all, whatever their op name.
+  if(receipt.entry.items.length)return held('UNEXPECTED_ROW_WRITE');
   return {status:'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS',primaryId:outcome.PRIMARY_ID,verified:false,scaleUpAllowed:false};
  }
  if(pids.length!==1||outcome.PRIMARY_ID!==pids[0])return held('INSERT_PRIMARY_ID_MISMATCH');

@@ -1,21 +1,60 @@
-PR40 GROK QA CANDIDATE — CODE REVIEW ONLY
+PR40 GROK QA CANDIDATE — CODE REVIEW ONLY (REVISED 2026-10-22 BY CLAUDE CODE; SUPERSEDES 0c0ddcb PACKAGE)
 Repository: tpruittguitar/forge-coordination
 PR: https://github.com/tpruittguitar/forge-coordination/pull/40
 Branch: feature/source-intake-production-release
+Candidate: the branch head commit that introduced this revision of this file (git log -1 -- receipts/PR40_GROK_FINAL_QA_CANDIDATE.txt).
 Production kill switch: control/SOURCE_INTAKE_RELEASE.json, enabled=false. DO NOT TURN ON OR MERGE.
 
-REVIEW SCOPE (ONE READ-ONLY FULL QA PASS)
-1. Verify requestId derived from stableId, receipt_index checked before retry; inspectReceipt never calls request_result for PENDING/unknown index.
-2. Verify 5-record fixture pre-validation, independent employer evidence requirements, canonical rules from Writer freshly read and candidate.rulesHash exactly bound; unclear business HOLDS.
-3. Confirm authenticated archived protected role exact identity before canary POST and Writer final authority. No-op output must have exact row readback + no insert, with independent before/after count and ID reconciliation.
-4. Verify Writer freeze/health and kill switch before each operation, stop on any unknown Writer POST outcome. No blind retry.
-5. Validate all five COMPLETE receipts, item PIDs, row readbacks employer/title/location/requisition, and no new rows for known-existing and archived-protected. Any mismatch stops scale.
-6. Unknown salary, degree and FLEX pass through as enrichment fields, never guessed.
+WHY THIS REVISION EXISTS
+Claude QA of 0c0ddcb returned FAIL. Fixed since then:
+ F1 protected archive identity check was a single // comment line (literal \n escapes) and never ran.
+ F2 canary could never pass case 1 after the deliberate halt (no verified resume).
+ F3 reconcileCanaryBatch required archived protected roles to be in the current master.
+ F4 CI never ran on the candidate (paths filter skipped a receipts-only commit).
+ F5 (found by Writer contract audit) every EXISTING_MATCH / protected no-op would halt as UNKNOWN: the Writer sets
+    WRITE_ACCEPTED only when rows are inserted, and a no-op opens no receipt_index transaction.
 
-RELEASE MATURITY
-This is a static CODE QA candidate, NOT a five-job canary results package.
-No live Writer transactions or five-job canary executed. Existing executor intentionally HALTS after a single accepted POST pending durable evidence. Resume/next-case orchestration must be independently assessed before live canary.
-CI has not been independently confirmed by GitHub workflow results. Run node --test tools/source-intake/production-executor.test.js and inspect source-intake-production-test action.
-IMPORTANT: inspectReceipt returns PENDING_INDEPENDENT_VERIFICATION, NOT verified=true, until independent snapshot proof.
-Any unresolved condition must be marked FAIL / BLOCKED and no production scale authorization.
-Review ONLY; do not write to Writer, change release switch, or merge.
+WRITER CONTRACT USED (foreman-cockpit apps-script/Code.gs at bb3327d; read, not assumed)
+ applyIntakeToMaster_ dedupes against lines.concat(archiveRowsLive_()) — live master AND terminal archive.
+ insert: ok, WRITE_ACCEPTED=true, writeId, COMPLETION_STATUS=PENDING_VERIFICATION, receipt.REQUEST_ID=requestId,
+   receipt.NEW_PRIMARY_IDS=[pid]; saveMasterLines_ writes receipt_index {s:PENDING,w} BEFORE the master write;
+   verification later sets {s:COMPLETE,items:[{pid,op:INSERT}]}.
+ no-op: ok, COMPLETION_STATUS=COMPLETE, results[0].result=EXISTING_MATCH with the matched PRIMARY_ID (archived ID for
+   archived roles), no WRITE_ACCEPTED, no writeId, NEW_PRIMARY_IDS=[]; receipt goes to the receipts log only.
+ findRequestResult_ calls verifyNow_ only for index PENDING/PENDING_DELIVERY; with no index entry it answers from receipts.
+ row_readback: {rows:[{primaryId,found,matches,line}],master:{endMarkerPresent},requested,found}.
+ Contract responses were regenerated locally from Code.gs pure functions (planIntake, runCounters_, intakeResponse_):
+   existing and archived roles -> EXISTING_MATCH no-op; the same archived role WITHOUT the archive supplied ->
+   SCOUT_INTAKE_WRITTEN (re-insert). This is exactly what the protected canary case detects.
+
+REVIEW SCOPE (ONE READ-ONLY FULL QA PASS)
+1. production-executor.js classifyWriterResponse: only the two contract shapes above are accepted; request-ID binding,
+   single result, NEW_PRIMARY_IDS consistency; REVIEW_NEEDED / EXCLUDED / anything else halts; no retry anywhere.
+2. Protected archive guard executes before preflight/POST; exact PRIMARY_ID + company/title/location/req match.
+3. No-op verification (verifyNoopCase): receipt_index must have NO entry, request_result from receipts with the same
+   requestId, exact readback (existing) or master-absent + archive-present (protected); canary continues without halt.
+4. Insert resume (verifyAcceptedCase): index COMPLETE, durable request_result bound to requestId, identical non-empty
+   index/result PID lists, exact readback; a protected case with any index transaction holds.
+5. Captured responses: onWriterResult persists every Writer response before classification; a no-op is re-verified,
+   never re-POSTed; a pending insert never triggers request_result or a POST.
+6. canary-cli.js: before snapshot once, state bound to candidate hash, after snapshot only after five accounted cases,
+   finalize reconciles master+archive snapshots; Writer key never persisted.
+7. canary-accounting.js: no-op receipts must carry zero items; protected reconciliation uses archive snapshots;
+   results remain verified=false, scaleUpAllowed=false.
+8. Kill switch read from the GitHub contents API (?ref=main), not the raw CDN.
+9. Unknown salary/degree/FLEX pass as INITIAL_UNKNOWN_FIELDS; never guessed.
+
+EVIDENCE
+ node --test tools/source-intake/*.test.js -> 66 tests, 66 pass (local, Node 24). CI workflow
+ source-intake-production-test now runs all source-intake suites on every PR commit and asserts the switch is disabled.
+ canary-cli.test.js drives a stateful contract fake through the full five-case sequence: exactly 5 POSTs across
+ 4 runs, no POST while pending, 3 inserts reconciled; and a Writer that ignores the archive is stopped at the
+ protected case.
+
+STILL OPEN (NOT CODE QA BLOCKERS, BUT RELEASE BLOCKERS)
+ - Employer business evidence and Never Consider adjudication remain a human review gate (flags + rules hash);
+   the Writer's own classification is final and EXCLUDED/REVIEW_NEEDED halts the canary.
+ - No live Writer credential used; the five-job canary has NOT run; real candidates are not yet selected/approved.
+ - Enabling requires a commit to control/SOURCE_INTAKE_RELEASE.json on main by Tim.
+
+Grok: return one PASS/FAIL verdict with exact defects. Review only; do not write to Writer, change the switch, or merge.

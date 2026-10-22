@@ -107,7 +107,7 @@ test('complete index is required before request_result and row readback',async()
   const u=new URL(url),action=u.searchParams.get('action');calls.push(action);
   let data={ok:true};
   if(action==='receipt_index')data={...data,source:'GITHUB',exists:true,sha:'abc',request:{s:'COMPLETE',items:[{pid:'V2I-123'}]}};
-  else if(action==='request_result')data={...data,status:'COMPLETE',entry:{items:[{pid:'V2I-123'}]}};
+  else if(action==='request_result')data={...data,requestId:u.searchParams.get('requestId'),status:'COMPLETE',entry:{items:[{pid:'V2I-123'}]}};
   else if(action==='row_readback')data={...data,results:[]};
   else throw Error('unapproved operation');
   assert.equal(options.method,'GET');
@@ -126,9 +126,15 @@ const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'CANARY',maxB
 const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Dir',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:kind,protectedPrimaryId:'V2A-9',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
-function mockWriter({index={},result={},readback={},archiveText=ARCHIVE_TEXT}={},log=[]){
+// Response shapes follow foreman-cockpit Code.gs applyIntakeToMaster_/intakeResponse_ (see production-executor.js header).
+const insertResponse=(rid,pid='V2I-NEW')=>({ok:true,WRITE_ACCEPTED:true,WRITE_VERIFIED:false,writeId:'W1',verification:'PENDING',COMPLETION_STATUS:'PENDING_VERIFICATION',RUN_ACCOUNTING:'RECONCILED',
+ results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:pid,matchedBy:'',NEVER_CONSIDER_REVIEW_NEEDED:''}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[pid],COMPLETION_STATUS:'PENDING_VERIFICATION'}});
+const noopResponse=(rid,pid)=>({ok:true,WRITE_VERIFIED:true,COMPLETION_STATUS:'COMPLETE',RUN_ACCOUNTING:'RECONCILED',
+ results:[{result:'EXISTING_MATCH',PRIMARY_ID:pid,matchedBy:'REQ_ID',NEVER_CONSIDER_REVIEW_NEEDED:''}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[],COMPLETION_STATUS:'COMPLETE'}});
+function mockWriter({index={},result={},readback={},post={},archiveText=ARCHIVE_TEXT}={},log=[]){
  return async(url,o)=>{
-  const u=new URL(url),action=o.method==='POST'?'POST':u.searchParams.get('action'),rid=u.searchParams.get('requestId');log.push(action);
+  const u=new URL(url),action=o.method==='POST'?'POST':u.searchParams.get('action');
+  const rid=action==='POST'?JSON.parse(o.body).requestId:u.searchParams.get('requestId');log.push(action);
   const d={ok:true};
   if(action==='writer_status')Object.assign(d,{freeze:null,level:'OK',errors:[]});
   else if(action==='receipt_index')Object.assign(d,{source:'GITHUB',exists:true,sha:'s',request:index[rid]||null});
@@ -136,7 +142,7 @@ function mockWriter({index={},result={},readback={},archiveText=ARCHIVE_TEXT}={}
   else if(action==='archive')Object.assign(d,{archiveId:'A',mode:'MIGRATED',text:archiveText});
   else if(action==='request_result')Object.assign(d,result[rid]);
   else if(action==='row_readback')Object.assign(d,readback[rid]);
-  else if(action==='POST')Object.assign(d,{WRITE_ACCEPTED:true,writeId:'W1',results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-NEW'}]});
+  else if(action==='POST')return {ok:true,json:async()=>post[rid]||insertResponse(rid)};
   else throw Error('unapproved operation '+action);
   return {ok:true,json:async()=>d};
  };
@@ -154,19 +160,54 @@ test('protected candidate with identity mismatch in archive never reaches Writer
  await assert.rejects(()=>runCanary(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
  assert.ok(!log.includes('POST'));
 });
-test('proven archived protected candidate proceeds to one POST, then halts with captured Writer result',async()=>{
- const log=[];
- const err=await runCanary(canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']),opts(mockWriter({},log))).catch(e=>e);
+test('proven protected no-op is verified without a receipt-index entry and the canary advances to the next case',async()=>{
+ const rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']),rid=requestId(rows[0].record),log=[];
+ const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2A-9')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
+  readback:{[rid]:{rows:[{primaryId:'V2A-9',found:false,matches:0}],master:{endMarkerPresent:true},requested:1,found:0}}},log);
+ const err=await runCanary(rows,opts(writer)).catch(e=>e);
  assert.match(err.message,/HOLD: Writer accepted/);
- assert.equal(log.filter(x=>x==='POST').length,1);
- assert.equal(err.outcomes[0].status,'PENDING_VERIFICATION');assert.equal(err.outcomes[0].writerResult.results[0].PRIMARY_ID,'V2I-NEW');
+ assert.equal(err.outcomes[0].status,'NOOP_ACCOUNTED');
+ assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
+ assert.equal(err.outcomes[1].status,'PENDING_VERIFICATION');assert.equal(err.outcomes[1].writerResult.results[0].PRIMARY_ID,'V2I-NEW');
+ assert.equal(log.filter(x=>x==='POST').length,2);
+});
+test('a no-op response that Writer actually indexed as a transaction is held',async()=>{
+ const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
+ let posted=false;const inner=mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')}});
+ const writer=async(url,o)=>{if(o.method==='POST')posted=true;
+  if(posted&&new URL(url).searchParams.get('action')==='receipt_index')return {ok:true,json:async()=>({ok:true,source:'GITHUB',exists:true,sha:'s',request:{s:'PENDING'}})};
+  return inner(url,o)};
+ const err=await runCanary(rows,opts(writer)).catch(e=>e);
+ assert.match(err.message,/NOOP_OPENED_MASTER_TRANSACTION/);
+ assert.equal(err.outcomes[0].writerResult.results[0].result,'EXISTING_MATCH','captured for persistence');
+});
+test('Writer responses outside the contract are UNKNOWN and halt with no further POST',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
+ const bad=[{...insertResponse(rid),receipt:{REQUEST_ID:'FORGE-SOURCE-OTHER',NEW_PRIMARY_IDS:['V2I-NEW']}},
+  {...insertResponse(rid),writeId:''},{...insertResponse(rid),results:[]},{...noopResponse(rid,'V2I-5'),COMPLETION_STATUS:'INCOMPLETE'},
+  {...noopResponse(rid,'V2I-5'),ok:false},{ok:true,results:[{result:'WRITE_FAILED'}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[]}}];
+ for(const response of bad){
+  const log=[];
+  await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:response}},log))),/UNKNOWN: Writer transaction not conclusively classified/);
+  assert.equal(log.filter(x=>x==='POST').length,1);
+ }
+});
+test('Writer exclusion, review flag, unexpected insert for a no-op case, or NEW matching existing all halt',async()=>{
+ const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
+ const excluded={ok:true,COMPLETION_STATUS:'COMPLETE',results:[{result:'NEVER_CONSIDER_EXCLUDED',NEVER_CONSIDER_RULE_ID:'NC-001'}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[]}};
+ const review={...insertResponse(rid),results:[{...insertResponse(rid).results[0],NEVER_CONSIDER_REVIEW_NEEDED:'NC-002'}]};
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:excluded}}))),/HOLD: Writer EXCLUDED/);
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:review}}))),/HOLD: Writer REVIEW_NEEDED/);
+ await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')}}))),/NEW canary case matched an existing row/);
+ const flipped=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),frid=requestId(flipped[0].record);
+ await assert.rejects(()=>runCanary(flipped,opts(mockWriter({post:{[frid]:insertResponse(frid)}}))),/Writer inserted a row for a EXISTING_MATCH canary case/);
 });
 test('resume accounts a verified COMPLETE case without re-POSTing and advances to the next case',async()=>{
- const rows=canary(['NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW','NEW']);rows[1].record.COMPANY='Co0';rows[1].record.SOURCE_URL='https://example.com/p';
+ const rows=canary(['NEW','NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW']);
  const rid=requestId(rows[0].record),items=[{pid:'V2I-100',op:'INSERT'}],log=[];
  const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
   readback:{[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
- const priorResults={[rid]:{ok:true,WRITE_ACCEPTED:true,results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-100'}]}};
+ const priorResults={[rid]:insertResponse(rid,'V2I-100')};
  const err=await runCanary(rows,opts(writer,{priorResults})).catch(e=>e);
  assert.match(err.message,/HOLD: Writer accepted/);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
@@ -193,15 +234,16 @@ test('resume holds without captured Writer result, on pending state, or on recei
   if(state.index[rid].s!=='COMPLETE')assert.ok(!log.includes('request_result'),'pending index never requests result');
  }
 });
-test('protected resume proves the role stayed archived and absent from master',async()=>{
+test('protected no-op resume re-verifies from the captured response without re-POSTing',async()=>{
  const rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);
  const rid=requestId(rows[0].record);
- const base={index:{[rid]:{s:'COMPLETE',items:[]}},result:{[rid]:durable(rid,[])}};
- const priorResults={[rid]:{results:[{result:'EXISTING_MATCH',PRIMARY_ID:'V2A-9'}]}};
+ const base={result:{[rid]:{found:true,source:'receipts',requestId:rid}}};
+ const priorResults={[rid]:noopResponse(rid,'V2A-9')};
  const absent={[rid]:{rows:[],master:{endMarkerPresent:true},requested:1,found:0}};
  const log=[];
  const err=await runCanary(rows,opts(mockWriter({...base,readback:absent},log),{priorResults})).catch(e=>e);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
+ assert.equal(log.indexOf('POST'),log.lastIndexOf('POST'),'only case 2 is posted');
  assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
  assert.equal(log.filter(x=>x==='POST').length,1);
  const resurrected={[rid]:{rows:[{primaryId:'V2A-9',found:true,matches:1,line:'1 | V2A-9 | Co0 | Dir | S | OPEN | P | R0 | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
@@ -233,4 +275,29 @@ test('accounting rejects a receipt bound to a different request ID',()=>{
   receipt:{requestId:'FORGE-SOURCE-OTHER',status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1'}]}},
   readbacks:[{primaryId:'V2I-1',found:true,matches:1,line:'1 | V2I-1 | A | D | B | OPEN | P | R | X | N'}]});
  assert.equal(out.reason,'RECEIPT_REQUEST_ID_MISMATCH');
+});
+test('an indexed transaction for a no-op canary case is never accepted on resume',async()=>{
+ const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record),items=[{pid:'V2I-5',op:'INSERT'}];
+ const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
+  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}});
+ await assert.rejects(()=>runCanary(rows,opts(writer,{priorResults:{[rid]:noopResponse(rid,'V2I-5')}})),/UNEXPECTED_ROW_WRITE|EXISTING_IDENTITY_UNCERTAIN/);
+});
+test('kill switch is read from the GitHub contents API on main, not the raw CDN',async()=>{
+ let seen;await fetchRelease(async(url,o)=>{seen={url,o};return {ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})}});
+ assert.match(seen.url,/^https:\/\/api\.github\.com\/repos\/tpruittguitar\/forge-coordination\/contents\/control\/SOURCE_INTAKE_RELEASE\.json\?ref=main$/);
+ assert.equal(seen.o.headers.Accept,'application/vnd.github.raw');
+});
+test('inspectReceipt holds when index and result disagree on row IDs',async()=>{
+ const {inspectReceipt}=require('./production-executor');
+ const transport=async(url)=>{const u=new URL(url),a=u.searchParams.get('action'),rid=u.searchParams.get('requestId');
+  const d=a==='receipt_index'?{source:'GITHUB',exists:true,sha:'x',request:{s:'COMPLETE',items:[{pid:'V2I-1'}]}}:{requestId:rid,status:'COMPLETE',entry:{items:[{pid:'V2I-2'}]}};
+  return {ok:true,json:async()=>({ok:true,...d})}};
+ const out=await inspectReceipt({COMPANY:'A',TITLE:'D',LOCATION:'X',SOURCE_URL:'https://example.com/x'},{key:'k',transport});
+ assert.equal(out.reason,'RECEIPT_IDS_UNBOUND');
+});
+test('existing no-op accounting rejects any receipt item regardless of op name',()=>{
+ const {checkCanaryOutcome}=require('./canary-accounting');
+ const out=checkCanaryOutcome({expectedOutcome:'EXISTING_MATCH',record:{COMPANY:'A',TITLE:'D',LOCATION:'X'},result:{results:[{result:'EXISTING_MATCH',PRIMARY_ID:'V2I-1'}]},
+  receipt:{status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1',op:'REPLACE'}]}},readbacks:[{primaryId:'V2I-1',found:true,matches:1,line:'1 | V2I-1 | A | D | B | OPEN | P | R | X | N'}]});
+ assert.equal(out.reason,'UNEXPECTED_ROW_WRITE');
 });
