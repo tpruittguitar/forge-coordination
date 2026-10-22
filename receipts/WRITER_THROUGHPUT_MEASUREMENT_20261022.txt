@@ -1,0 +1,37 @@
+WRITER THROUGHPUT MEASUREMENT — REV-191 — 2026-10-22T23:28:33.074Z (Claude Code). Read-only.
+Answers step 1 of handoffs/CLAUDE_CODE_HANDOFF_ADDENDUM_WRITER_ARCHITECTURE_20261022.txt.
+
+SOURCES (Writer GET only; nothing written)
+ queue_stats hours=168 (WRITER_QUEUE_LOG.jsonl), writer_status (queue, recentRuns writerTimings), live master pulled
+ 2026-10-22T23:02Z (1,677 rows).
+
+WRITER CAPACITY (2026-10-16T00:00:00.000Z .. 2026-10-23T00:00:00.000Z)
+ Requests: 296 arrived, 296 finished, 106 failed, 0 held; peak 10 finished/hour.
+ Writer busy 2.44 h of 168 h = 1.45% utilization; avg run 30 s per request.
+ Max backlog at any hour end: 2; now pending 0, processing 0, held 0.
+ Median hourly average queue wait 37 s (trigger cadence, not contention).
+ Recent transaction timings: total ~28-36 s; LOCK_WAIT ~65-124 ms; MASTER_WRITE ~10-12.6 s; RECEIPT ~6.5-7.4 s;
+ PLAN ~5-7.6 s; EVENT ~3.3-4.1 s.
+ Daily:
+   2026-10-16: arrived 54, finished 54, failed 51, max wait 9 min
+   2026-10-17: arrived 46, finished 46, failed 46, max wait 1 min
+   2026-10-18: arrived 48, finished 48, failed 6, max wait 2 min
+   2026-10-19: arrived 44, finished 44, failed 1, max wait 20 min
+   2026-10-20: arrived 33, finished 33, failed 1, max wait 6 min
+   2026-10-21: arrived 43, finished 43, failed 0, max wait 21 min
+   2026-10-22: arrived 28, finished 28, failed 1, max wait 2 min
+ 97 of the 106 failures fall on 2026-10-16/17 (receipt-index corruption incident,
+ handoffs/FORGE_WRITER_RECEIPT_INDEX_CORRUPTION_20261016_0003ET.txt); since 10-18 about one per day.
+
+ENRICHMENT BACKLOG (live SCOUT_INTAKE / DISCOVERY_LEAD / MANUAL_RESEARCH / APPLIED rows: 1471)
+ No salary estimate: 670 (matches the ~670 reported). No degree requirement: 998. Either: 1034.
+ Rows with ENRICH_UPDATED_AT in the last 7 days: 1068; last 24 h: 152.
+
+CONCLUSION
+ The single Writer is NOT the throughput bottleneck: ~1.5% utilized, negligible lock wait, no sustained backlog,
+ and multi-record batches already commit in one ~30 s transaction. Enrichment rows are being touched at ~150/day
+ while pay/degree gaps persist, which points at research yield (pay and degree not published or not extracted),
+ not at commit capacity. A second enrichment Writer would add concurrency risk without a throughput benefit.
+ Recommended next steps instead: improve enrichment yield (ATS pay/degree extraction, sources) and keep batching
+ enrichment updates per transaction. Revisit the dual-Writer design only if utilization or backlog rises materially.
+ Limits: ENRICH_UPDATED_AT counts attempts as well as successes; queue_stats counts requests, not rows.
