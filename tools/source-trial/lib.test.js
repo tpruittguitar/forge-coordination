@@ -27,6 +27,19 @@ test('REV-160 senior leadership title and level cases', () => {
   assert.strictEqual(T.level('Director of Manufacturing'), 'DIRECTOR_PLUS');
 });
 
+test('REV-163 NPI, continuous improvement and launch leadership', () => {
+  for (const title of [
+    'Director of NPI',
+    'Senior Manager, Continuous Improvement',
+    'Senior Staff Industrialization Engineer',
+    'Director, Launch Operations',
+    'VP Operational Excellence',
+    'Senior Manager, Production Ramp'
+  ]) assert.strictEqual(T.family(title), 'MFG_PROD', title);
+  assert.strictEqual(T.family('Launch Operations Coordinator'), null);
+  assert.strictEqual(T.family('Senior Manager Software Launch'), null);
+});
+
 test('REV-156 US places, novelty against the master, board roots, slug probes, priority digest', () => {
   assert.strictEqual(T.usPlace('Tampa, FL'), 'FL'); assert.strictEqual(T.usPlace('Remote'), 'REMOTE_US'); assert.strictEqual(T.usPlace('Munich, Germany'), ''); assert.strictEqual(T.usPlace('United States'), 'US');
   const idx = T.masterIndex([{ COMPANY: 'Acme Inc', TITLE: 'Sr. Director of Quality', p: { SOURCE_URL: 'https://job-boards.greenhouse.io/acme/jobs/111?gh_src=x' } }]);
