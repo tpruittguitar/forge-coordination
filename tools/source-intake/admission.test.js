@@ -10,14 +10,14 @@ test('fails closed without canonical snapshot and timestamp',()=>{
 test('protects applied master rows and keeps unknown business in review',()=>{
  const p={rows:[item('Acme','Director Manufacturing','Austin TX','https://example.com/job1'),item('Other','Director Quality','Memphis, TN','https://example.com/job2')]};
  const master=[{COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',DISPOSITION:'APPLIED'}];
- const out=plan(p,master,{snapshotAsOf:'2026-10-22T12:00:00Z'});
+ const out=plan(p,master,{snapshotAsOf:new Date().toISOString()});
  assert.equal(out.rows[0].gate,'PROTECTED_HOLD');
  assert.equal(out.rows[1].gate,'EMPLOYER_BUSINESS_REVIEW');
  assert.deepEqual(out.writer_payloads,[]);
  assert.equal(out.writer_submissions,0);
 });
 test('cannot call a Writer and never produces submit-ready payload',()=>{
- const out=plan({rows:[item('Acme','VP Quality','Chattanooga, TN','https://example.com/a')]},[],{snapshotAsOf:'2026-10-22T12:00:00Z'});
+ const out=plan({rows:[item('Acme','VP Quality','Chattanooga, TN','https://example.com/a')]},[],{snapshotAsOf:new Date().toISOString()});
  assert.equal(out.mode,'NON_SUBMITTABLE_REVIEW_ONLY');
  assert.equal(out.rows[0].gate,'EMPLOYER_BUSINESS_REVIEW');
 });
@@ -28,11 +28,17 @@ test('end-to-end Source Trial -> preview -> admission stays review-only',()=>{
   {company:'Shield AI',title:'Director Manufacturing',location:'Dallas, TX',url:'https://jobs.lever.co/shieldai/8b747653-dba8-4133-9056-eeedc162dbcd',source:'JobSpy',status:'NEW'},
   {company:'Acme',title:'Director Quality',location:'Dayton, OH',url:'https://example.com/acme/77',source:'BOARD',status:'NEW'}
  ]};
- const preview=adapt(report,{runId:'FORGE-DRYRUN',discoveredAt:'2026-10-22T12:00:00Z'});
+ const preview=adapt(report,{runId:'FORGE-DRYRUN',discoveredAt:new Date().toISOString()});
  const master=[{COMPANY:'Shield AI',TITLE:'Director Manufacturing',LOCATION:'Dallas, TX',DISPOSITION:'APPLIED'}];
- const gated=plan(preview,master,{snapshotAsOf:'2026-10-22T12:01:00Z'});
+ const gated=plan(preview,master,{snapshotAsOf:new Date().toISOString()});
  assert.equal(gated.rows[0].gate,'PROTECTED_HOLD');
  assert.equal(gated.rows[1].gate,'EMPLOYER_BUSINESS_REVIEW');
  assert.equal(gated.writer_submissions,0);
  assert.deepEqual(gated.writer_payloads,[]);
+});
+
+test('stale and future snapshots fail closed',()=>{
+ const p={rows:[item('Acme','Director Quality','Dayton, OH','https://example.com/job')]};
+ assert.throws(()=>plan(p,[],{snapshotAsOf:new Date(Date.now()-3600000).toISOString()}),/freshness/);
+ assert.throws(()=>plan(p,[],{snapshotAsOf:new Date(Date.now()+3600000).toISOString()}),/freshness/);
 });
