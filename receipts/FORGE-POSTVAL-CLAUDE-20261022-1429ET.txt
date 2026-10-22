@@ -1,0 +1,23 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261022-1429ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; GitHub blob SHA 59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches lane.blob_sha)
+SOURCE_VERSIONS=manifest blob 77541215142355db64daa4238621e4f8b6e6130f; worklist generated 2026-10-22T18:26:04Z (fresh); RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (read 2026-10-22); writer_status not available in this runtime
+ROWS_EVALUATED=9 (worklist #9,13,17,27,28,37,38,39,48 via Indeed attempt; #39,9,41,56 via employer/secondary search)
+LIVE=0 (no qualifying first-party/dated-page evidence recorded)
+CLOSED=0
+UNCONFIRMED=9
+WRITTEN=0
+VERIFIED=0
+HELD=#56 V2I-DDB756188D49 Philips: Workday req 589054 is OPEN but posted for Bedford, MA, not Nashville, TN as in the row; location mismatch, not recorded as LIVE.
+FAILED=0
+TINYFISH_FETCHES=3 calls (Indeed viewjob x7: 401; Tesla careers + LinkedIn: bot_blocked; Philips Workday: ok); TINYFISH_SEARCH=5
+BACKLOG_REMAINING=56 (worklist unchanged)
+STOP_REASON=Named limits: (1) worklist URLs are truncated (~) tracking redirects (Indeed pagead, ZipRecruiter, Lensa, Ladders, Glassdoor) and unusable; (2) Indeed returns 401 and Tesla/LinkedIn bot_blocked through TinyFish; (3) employer-route searches for most rows returned only job-board copies, no first-party page. Blocks are not closure evidence. 8 connectors (not named here) were missing from this session. Remaining rows need full URLs or employer-route lookups.
+BATCHES_COMPLETED_THIS_RUN=0
+REQUEST_IDS=none
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run / Tim: worklist generator should emit full (untruncated) URLs or employer-route hints.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
