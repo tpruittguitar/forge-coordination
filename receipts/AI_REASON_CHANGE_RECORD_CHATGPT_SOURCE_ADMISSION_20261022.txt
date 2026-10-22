@@ -13,3 +13,13 @@ FINDINGS=Writer bytes denotes JS string character length, not UTF-8 byte length;
 CHANGES=writer-reader.js compares bytes to text.length; read allows two 30-second attempts within 65 seconds total; added non-ASCII and delayed-503 retry regression tests.
 SAFETY=Read-only audit; writer_payloads empty; production admission disabled; PR remains draft and unmerged.
 VERIFICATION=Automated CI and independent live Writer re-QA required; do not infer pass from mock tests.
+
+FOLLOWUP=Controlled admission preparation approved by Tim 2026-10-22. Only live authenticated Writer reads accepted. Caller-provided business evidence remains untrusted for automatic admission. Candidate proposals have admitted=[]; no Writer submission or master mutation; CI and review before enabling controlled writes.
+
+PR39_CONTINUATION=Added conservative durable-receipt/exact-row consistency review. No independent provenance authentication yet; all outcomes remain verified=false, zero Writer writes. Ambiguous and absent readback are reported rather than treated as success.
+
+PR39_LIVE_SCHEMA_FOLLOWUP=Writer request_result COMPLETE index entry does not inherently supply PRIMARY_ID. Reject missing or multiple candidates, require GitHub index SHA and index source, and hold for canonical binding rather than produce false verified result. No Writer mutation.
+
+PR39_GROK_QA_CORRECTION=Modern Writer receipts include entry.items[].pid; use all matching index/result PIDs and read them back; pending request_result may verify/write index so check COMPLETE index first. Preserve 15min freshness, legacy hold, verified=false, no writes. No item hash comparison without proven encoding match.
+
+PR39_GROK_TIMESTAMP_CORRECTION=receipt_index.updatedAt means last index write, not read; permit quiet COMPLETE entries, enforce future and request chronology, expose diagnostic idle age only. Live binding stays verified=false, no Writer submissions.

@@ -38,3 +38,19 @@ Tests with injected HTTP mocks cover transport, archived rejection hold, restora
 ## Live Writer QA correction — 2026-10-22
 
 The Writer's `bytes` field is **JavaScript string length**, not UTF-8 octet length. Validate against `text.length`; a non-ASCII fixture proves the distinction. Read freshness uses `fetchedAt`, not last-edit `modifiedTime`. HTTP attempts each have a 30-second budget; a single retry is allowed on transport failure/HTTP 5xx with a separate bounded 65-second total budget. These changes remain review-only, require independent live re-QA, and do not enable any Writer submissions.
+
+## PR #39 transaction consistency (review only)
+
+`transaction-preflight.js` now checks a proposed identity against a durable COMPLETE request receipt and a separately supplied canonical readback. A single exact employer/title/location match with a compatible req ID yields `CONSISTENT_PENDING_PROVENANCE_VALIDATION`, **never** `verified:true`. An ambiguous/missing row or identity mismatch fails closed. Receipt and master inputs could still be forged by a caller; the trusted production executor must authenticate both against the Writer and bind receipt requestId/intent to exact canonical row identity. No execution or Writer submissions are enabled.
+
+## PR #39 live Writer receipt schema limitation
+
+Writer `request_result` normally returns an index entry with status and durability but **does not guarantee a canonical PRIMARY_ID**. The `receipt_index` response can confirm GitHub source, revision and a per-request COMPLETE state without binding that request to one exact row. The collector now explicitly returns `PENDING_CANONICAL_ID_BINDING` rather than manufacturing a PRIMARY_ID, skipping `row_readback` until a trusted request-to-row binding exists. Caller hints cannot supply this binding. This is a remaining production blocker; all results have `verified:false` and no Writer mutations occur.
+
+## PR #39 live receipt correction (Grok QA)
+
+Modern COMPLETE receipt entries bind one or more canonical IDs through `entry.items[].pid`; compare that sequence with `receipt_index.request.items[].pid`. The collector obtains the GitHub receipt index **first** and only calls `request_result` when the index marks the request COMPLETE, because pending result lookups may execute Writer verification and update the index. Check index SHA and timestamp (15-minute freshness), require all (up to 25) canonical rows from `row_readback` and exactly one role identity match; legacy receipts without `items` remain unbound. No `lineSha256`/item `a` hash equality is asserted: their representation equivalence has not been established. All outputs remain `verified:false` and zero submissions.
+
+## PR #39 index timestamp correction
+
+`receipt_index.updatedAt` is the last **write** time, not the fetch time. Quiet indices remain valid: require a nonempty revision SHA, parseable nonfuture `updatedAt` (2-minute clock tolerance), and `request.at <= updatedAt` where available. Record idle age diagnostically, never use it as a 15-minute validity cutoff. Live GET response acquisition is timed separately by Writer transport. No `lineSha256` versus item `a` comparison is claimed because equivalent hash input formats are not established.
