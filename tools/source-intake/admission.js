@@ -6,6 +6,8 @@ const MAX_BATCH=200;
 function plan(preview,master,{snapshotAsOf,runId='FORGE-SOURCE-ADMISSION-REVIEW'}={}){
  if(!Array.isArray(preview?.rows)||!Array.isArray(master))throw Error('BLOCKED: preview rows and canonical master snapshot required');
  if(!snapshotAsOf||!Number.isFinite(Date.parse(snapshotAsOf)))throw Error('BLOCKED: timestamped live canonical master snapshot required');
+ const age=Date.now()-Date.parse(snapshotAsOf);
+ if(age > 15*60*1000 || age < -2*60*1000)throw Error('BLOCKED: canonical master snapshot outside 15-minute freshness window');
  if(!/^[A-Z0-9_-]+$/.test(runId))throw Error('BLOCKED: invalid run identifier');
  const index=L.masterIndex(master);
  const rows=preview.rows.map(x=>{
