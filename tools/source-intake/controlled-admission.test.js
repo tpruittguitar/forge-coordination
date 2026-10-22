@@ -58,34 +58,40 @@ test('exact-row consistency remains unverified pending trusted readback provenan
  assert.throws(()=>verifyExactRow({...proposal,identityHash:'ALTERED'},{receipt,requestId:'SOURCE-REQ-21',masterRows}),/identity changed/);
 });
 
-test('authenticated durable proof reads use real Writer response structure and remain non-verifying',async()=>{
+
+test('COMPLETE item receipts bind all PIDs and match exactly one intended role',async()=>{
  const {inspectDurableReadback}=require('./durable-readback');const {stableId}=require('./transaction-preflight');
  const record={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',REQ_ID:'R77',SOURCE_URL:'https://example.com/job'};
- const proposal={record,identityHash:stableId(record)},actions=[];
+ const proposal={record,identityHash:stableId(record)},actions=[],now=Date.now();
+ const items=[{pid:'V2I-77',op:'insert'},{pid:'V2I-88',op:'insert'}];
  const transport=async url=>{
-  const u=new URL(url),action=u.searchParams.get('action');actions.push(action);
-  const values={request_result:{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{primaryId:'V2I-77'}},receipt_index:{ok:true,exists:true,source:'GITHUB',sha:'valid-sha',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}},row_readback:{ok:true,master:{endMarkerPresent:true},requested:1,found:1,rows:[{found:true,matches:1,primaryId:'V2I-77',line:'1 | V2I-77 | Acme | Director Manufacturing | SCOUT_INTAKE | OPEN | P1 | R77 | Austin, TX | PAY=UNKNOWN'}]}};
+  const action=new URL(url).searchParams.get('action');actions.push(action);
+  const values={
+   receipt_index:{ok:true,exists:true,source:'GITHUB',sha:'abc123',updatedAt:new Date(now).toISOString(),request:{s:'COMPLETE',items}},
+   request_result:{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{s:'COMPLETE',items}},
+   row_readback:{ok:true,master:{endMarkerPresent:true},requested:2,found:2,rows:[
+    {found:true,matches:1,primaryId:'V2I-77',line:'1 | V2I-77 | Acme | Director Manufacturing | SCOUT_INTAKE | OPEN | P1 | R77 | Austin, TX | NOTES'},
+    {found:true,matches:1,primaryId:'V2I-88',line:'2 | V2I-88 | Acme | Quality Engineer | SCOUT_INTAKE | OPEN | P1 | R88 | Austin, TX | NOTES'}]}};
   return {ok:true,json:async()=>values[action]};
  };
- const out=await inspectDurableReadback(proposal,'RUN-77',{key:'mock',transport});
- assert.deepEqual(actions,['request_result','receipt_index','row_readback']);
- assert.equal(out.matchedPrimaryId,'V2I-77');assert.equal(out.verified,false);assert.equal(out.writerSubmissions,0);
+ const out=await inspectDurableReadback(proposal,'RUN-77',{key:'fixture',transport,clock:()=>now});
+ assert.deepEqual(actions,['receipt_index','request_result','row_readback']);
+ assert.equal(out.matchedPrimaryId,'V2I-77');assert.equal(out.verified,false);
+ assert.equal(out.receiptPrimaryIds.length,2);assert.equal(out.receiptIndexSha,'abc123');
+ assert.equal(out.writerSubmissions,0);
 });
-test('incomplete GitHub receipt index refuses readback',async()=>{
- const {inspectDurableReadback}=require('./durable-readback');
- const transport=async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='receipt_index'?{ok:true,exists:true,source:'GITHUB',sha:'valid-sha',updatedAt:new Date().toISOString(),request:null}:{ok:true,found:true,requestId:'RUN-77',status:'COMPLETE',durable:true}});
- const out=await inspectDurableReadback({record:{},identityHash:'X'},'RUN-77',{key:'mock',transport});
- assert.equal(out.status,'PENDING_INDEX_REQUEST_PROOF');assert.equal(out.verified,false);
+test('pending receipt never calls request_result (which can mutate index)',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback'),{stableId}=require('./transaction-preflight');
+ const record={COMPANY:'A'},seen=[],now=Date.now();
+ const transport=async u=>{seen.push(new URL(u).searchParams.get('action'));return {ok:true,json:async()=>({ok:true,source:'GITHUB',exists:true,sha:'abc',updatedAt:new Date(now).toISOString(),request:{s:'PENDING'}})}};
+ const out=await inspectDurableReadback({record,identityHash:stableId(record)},'RUN-77',{key:'fixture',clock:()=>now,transport});
+ assert.equal(out.status,'PENDING_INDEX_REQUEST_PROOF');assert.deepEqual(seen,['receipt_index']);
 });
-
-test('live COMPLETE receipt without primary ID holds instead of inventing canonical row binding',async()=>{
- const {inspectDurableReadback}=require('./durable-readback');
- const {stableId}=require('./transaction-preflight');
- const record={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',SOURCE_URL:'https://example.com/1'};
- const seen=[];
- const transport=async u=>{const action=new URL(u).searchParams.get('action');seen.push(action);return {ok:true,json:async()=>action==='request_result'?{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{s:'COMPLETE'}}:{ok:true,source:'GITHUB',exists:true,sha:'sha',updatedAt:new Date().toISOString(),request:{s:'COMPLETE'}}}};
- const out=await inspectDurableReadback({record,identityHash:stableId(record)},'RUN-77',{key:'fixture',transport});
- assert.equal(out.status,'PENDING_CANONICAL_ID_BINDING');
- assert.equal(out.verified,false);
- assert.deepEqual(seen,['request_result','receipt_index']);
+test('legacy missing items stays unbound, stale index blocks',async()=>{
+ const {inspectDurableReadback}=require('./durable-readback'),{stableId}=require('./transaction-preflight');
+ const record={COMPANY:'A'},now=Date.now(),proposal={record,identityHash:stableId(record)};
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');return {ok:true,json:async()=>action==='receipt_index'?{ok:true,source:'GITHUB',exists:true,sha:'abc',updatedAt:new Date(now).toISOString(),request:{s:'COMPLETE'}}:{ok:true,found:true,source:'index',requestId:'RUN-77',status:'COMPLETE',durable:true,entry:{s:'COMPLETE'}}}};
+ const x=await inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now,transport});
+ assert.equal(x.status,'PENDING_CANONICAL_ID_BINDING');assert.equal(x.verified,false);
+ await assert.rejects(()=>inspectDurableReadback(proposal,'RUN-77',{key:'fixture',clock:()=>now+3600000,transport}),/stale/);
 });
