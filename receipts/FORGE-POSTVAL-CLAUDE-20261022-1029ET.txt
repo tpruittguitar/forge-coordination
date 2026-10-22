@@ -1,0 +1,39 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261022-1029ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=UNVERIFIED_SHA256; PACKET_BLOB_SHA=59f1dde72cbffeeb6aedf7529ffcf6c847a818d5 matches lane.blob_sha
+SOURCE_VERSIONS=forge-coordination@0b5a21b3724e5bac40e82f3029dee341ccec7012; WORKLIST generated 2026-10-22T14:18:11Z (fresh)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read; no policy interpretation needed)
+GATE: WRITER_FREEZE frozen=false (read Drive, at 2026-10-18T03:29Z). Writer status tool not available; queue root inspected: only processed/failed folders seen. asks/resolved: no items held by this lane.
+ROWS_EVALUATED=11
+LIVE=0
+CLOSED=1
+UNCONFIRMED=10
+WRITTEN=1
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 fetch calls (10 URLs) + 4 searches
+BACKLOG_REMAINING=60 of 71 worklist rows (most have truncated tracking URLs in the worklist; see notes)
+STOP_REASON=No further fetchable rows: worklist URLs for remaining rows are truncated ("~") lensa/indeed-redirect/ziprecruiter/glassdoor/ladders tracking links; Indeed viewjob returns 401. Named limit: WORKLIST_URL_TRUNCATION. Employer-route search attempted for 3 rows only.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261022-1029ET-B01 (file CLAUDE_FORGE-POSTVAL-CLAUDE-20261022-1029ET-B01.json, Drive id 1m-gyR1qug1VWRp3NjVAB2EY76ZWG4l-o, in WRITER_QUEUE); R01=V2I-47ED2D54861C
+PENDING: B01 SUBMITTED only (not yet WRITER_ACCEPTED/VERIFIED). Verification (RESULT, receipt-index COMPLETE, row_readback) owed by next run/gofer.
+
+PER-ROW
+V2I-47ED2D54861C (Verto People QA Manager, LinkedIn 4473670767): CLOSED. Fetch redirected to linkedin.com/jobs/...?trk=expired_jd_redirect. Written. Assumed LinkedIn is sole source (REQ=LI-...).
+V2I-DD4EB7182E21 (Tesla TPM, LinkedIn 4473989637): UNCONFIRMED. Page renders, no closed notice, but no posted age shown, so not LIVE_SECONDARY.
+V2I-ADEC921BF4AD (Panasonic Sr Director EHS): UNCONFIRMED. Indeed viewjob 401. Employer URL found via search: careers.na.panasonic.com/jobs/51368 (snippet "14 hours ago"), but fetched page rendered no job body. Next run: retry employer page.
+V2I-DDB756188D49 (Philips Sr Quality Ops Mgr-Adv Imaging): UNCONFIRMED. Employer URL careers.philips.com/na/en/job/589054 listed Bedford MA (row says Nashville TN) and fetch showed "couldn't find any jobs" (possible JS shell); not requisition-site proof, not treated as closure.
+V2I-B468EFE27CC5 (Align Production Systems), V2I-25524E63F85C (Swagelok N. Texas), V2I-3027D540AB4E (Biery Cheese): UNCONFIRMED. Indeed search pages only; no posting found; search no-results is not closure.
+V2I-2ED9FF85653C (Amcor Production Mgr Tolleson), V2I-03DB3B23557C (Tarkett Production Mgr Dalton): UNCONFIRMED. ZipRecruiter company pages only; matching job not listed; not closure.
+V2I-B57D5FBEE50E (Kenco VP Logistic Ops): UNCONFIRMED. Search found Glassdoor listing only; no employer posting located (Kenco Workday search not exhausted).
+V2I-6C6EDF73D9E3 (P&W Field Supplier Quality Mgr Remote): UNCONFIRMED. RTX Workday req 01878229 seen in search (apply URL, sign-in page) and secondary 2026-10-01 copy; no open-page fetch done.
+
+NOTES/RECOMMENDATION (for Tim/maintainer): worklist truncates URLs with "~", making ~55 rows unfetchable by this lane; emit full URLs (or a URL file) in the worklist.
+NEXT_OWNER=Claude POSTING_VALIDATION next run / gofer for B01 verification
+NEXT_ACTION=Verify B01 (RESULT, receipt-index, row_readback V2I-47ED2D54861C); retry Panasonic and RTX employer pages.
+OLDEST_BLOCKER=WORKLIST_URL_TRUNCATION
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
