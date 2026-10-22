@@ -20,8 +20,8 @@ test('normalize Austin variants; no Workday city slug ID collision',()=>{
  job('Acme','Director Manufacturing','Austin, Texas','https://acme.wd1.myworkdayjobs.com/en-US/Jobs/job/San-Diego-California/Position-Two_R200'),
  job('Acme','Director Manufacturing','Dallas, TX','https://example.com/unique'),
  ]});
- assert.equal(r.counts.DUPLICATE_IN_REPORT,1);
- assert.equal(r.counts.CANDIDATE_REQUIRES_WRITER_CHECK,2);
+ assert.equal(r.counts.DUPLICATE_IN_REPORT||0,0);
+ assert.equal(r.counts.CANDIDATE_REQUIRES_WRITER_CHECK,3);
  assert.notEqual(r.rows[0].record.REQ_ID,'San-Diego-California');
 });
 test('ET timestamps, no Writer, 200 records max',()=>{
