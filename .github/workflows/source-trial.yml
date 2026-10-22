@@ -1,4 +1,4 @@
-# REV-156 (Tim 2026-10-21 18:09 ET): one-off, read-only trial of employer job boards and JobSpy for Tim's three role
+# REV-156 (Tim 2026-10-21 18:09 ET): one-off, read-only trial of employer job boards, JobSpy and (REV-187) HiringCafe for Tim's three role
 # families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md}; nothing is sent to the Writer.
 name: source-trial
 on:
@@ -26,7 +26,7 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js tools/source-trial/hiringcafe.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
@@ -36,10 +36,15 @@ jobs:
         run: |
           pip install -q python-jobspy || echo "pip install failed"
           python tools/source-trial/jobspy_run.py tools/source-trial/config.json /tmp/jobspy.json
+      - name: HiringCafe (official read-only MCP connector; bounded, no auth)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: node tools/source-trial/hiringcafe.js tools/source-trial/config.json /tmp/hiringcafe.json
       - name: Trial
         env:
           TRIAL_FC_DIR: ${{ github.workspace }}/_fc
           TRIAL_JOBSPY_FILE: /tmp/jobspy.json
+          TRIAL_HIRINGCAFE_FILE: /tmp/hiringcafe.json
         run: node tools/source-trial/run.js
       - name: Keep the report as a run artifact (any branch)
         uses: actions/upload-artifact@v4

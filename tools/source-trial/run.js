@@ -4,7 +4,9 @@
    1. employer job boards (Greenhouse, Lever, Ashby, Workday) for every employer the master already has an ATS link for,
       plus the priority companies in forge-policy derived/TARGET_COMPANIES_PRIORITY.txt (board probed when not known);
    2. JobSpy (python-jobspy, run by the workflow step before this script) on LinkedIn, Indeed, ZipRecruiter, Glassdoor,
-      Google.
+      Google;
+   3. HiringCafe (official read-only MCP connector, run by tools/source-trial/hiringcafe.js before this script), read
+      last so the roles it alone contributes after cross-source dedupe are its measured incremental yield.
    Every matching US role is marked NEW or EXISTING against the master. Writes only state/source-trial-report.{json,md}.
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
 const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
@@ -105,12 +107,31 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     });
   }
 
+  /* HiringCafe results, written by hiringcafe.js; read after boards and JobSpy so overlap is attributed to them */
+  const hc = { ran: false, returned: 0, matches: 0, unique: 0, overlap: {}, errors: [], searches: [] };
+  const hcFile = process.env.TRIAL_HIRINGCAFE_FILE || path.join(os.tmpdir(), 'hiringcafe.json');
+  if (fs.existsSync(hcFile)) {
+    const d = JSON.parse(fs.readFileSync(hcFile, 'utf8')); hc.ran = !!d.ran; hc.errors = d.errors || []; hc.searches = d.searches || []; hc.skipped = d.skipped || '';
+    (d.jobs || []).forEach(x => {
+      hc.returned++;
+      const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
+      hc.matches++;
+      const status = T.novelty(idx, x.company, x.title, x.job_url, x.location);
+      const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
+      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, pay, status, posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
+      if (addFound(item)) { hc.unique++; return; }
+      const prior = discovered.get(T.identityKey(item.company, item.title, item.location)), from = String(prior.source).split(':')[0];
+      hc.overlap[from] = (hc.overlap[from] || 0) + 1;
+    });
+  }
+
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, seconds: Math.round((Date.now() - T0) / 1000),
     boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED') },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
+    hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
     priority_boards_probed: probes,
     by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status !== 'NEW').length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
@@ -122,7 +143,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
+    `| HiringCafe (${hc.returned} returned; ${hc.matches - hc.unique} already found by ${Object.entries(hc.overlap).map(([k, v]) => k + ' ' + v).join(', ') || 'no other source'}) | ${hc.matches} (${hc.unique} unique) | ${by('HIRINGCAFE', 'NEW')} | ${by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED')} |`,
     '', 'JobSpy errors: ' + (js.ran ? (js.errors.length ? js.errors.map(e => e.site + ': ' + e.error).join('; ') : 'none') : 'JobSpy did not run'), '',
+    'HiringCafe: ' + (hc.ran ? (hc.errors.length ? hc.errors.map(e => (e.search ? e.search + ': ' : '') + e.error).join('; ') : 'no errors') : (hc.skipped || 'did not run')) + '. Unique = matching US roles no board or JobSpy result already covered.', '',
     'Priority companies with no board found: ' + (probes.filter(p => !p.found).map(p => p.company).join(', ') || 'none'), '',
     '## By level', '', '| Level | New | Existing |', '|---|---:|---:|', ...Object.entries(summary.by_level).map(([k,v]) => `| ${k} | ${v.new} | ${v.existing} |`), '', '## New roles', '', '| Source | Company | Title | Location | Family | Level | Pay |', '|---|---|---|---|---|---|---|',
     ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
