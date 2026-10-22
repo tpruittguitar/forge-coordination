@@ -3,7 +3,7 @@
 const crypto=require('node:crypto');
 const {read}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
-const {auditLiveWriter}=require('./writer-reader');
+const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
 const SWITCH='https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/SOURCE_INTAKE_RELEASE.json';
 function requestId(record){return 'FORGE-SOURCE-'+stableId(record)}
@@ -39,7 +39,7 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  const outcomes=[];
  for(const candidate of records){
   await fetchRelease(switchTransport); // fresh kill switch before each write
-  if(candidate.expectedOutcome==='PROTECTED_NOOP')throw Error('BLOCKED: archived protected canary requires proven Writer no-op semantics before enabling executor');
+  // Protected roles must be proven in the authenticated terminal archive before submission.\n  if(candidate.expectedOutcome==='PROTECTED_NOOP'){\n   const archive=await fetchAuthenticatedArchive({key,transport});\n   const match=archive.rows.filter(r=>r.ARCHIVED_TERMINAL&&r.PRIMARY_ID===candidate.protectedPrimaryId&&\n    String(r.COMPANY).trim().toLowerCase()===String(candidate.record.COMPANY).trim().toLowerCase()&&\n    String(r.TITLE).trim().toLowerCase()===String(candidate.record.TITLE).trim().toLowerCase()&&\n    String(r.LOCATION).trim().toLowerCase()===String(candidate.record.LOCATION).trim().toLowerCase()&&\n    (!candidate.record.REQ_ID||String(r.REQ_ID).trim().toLowerCase()===String(candidate.record.REQ_ID).trim().toLowerCase()));\n   if(match.length!==1)throw Error('BLOCKED: protected archive identity unproven');\n  }
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
   if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});throw Error('BLOCKED: existing or uncertain request; reconcile before retry')}
@@ -60,4 +60,20 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  }
  return outcomes;
 }
-module.exports={requestId,fetchRelease,preflight,runCanary};
+// READ-ONLY reconciliation. NEVER call request_result while receipt-index is pending:
+// the Writer's request_result verification path may itself mutate the index.
+async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch}={}){
+ const rid=requestId(record);
+ const index=(await read('receipt_index',{key,transport,requestId:rid})).data;
+ if(index.source!=='GITHUB'||index.exists!==true||!index.sha)return {requestId:rid,status:'HOLD',reason:'RECEIPT_INDEX_UNTRUSTED'};
+ const entry=index.request;
+ if(!entry||entry.s!=='COMPLETE')return {requestId:rid,status:'HOLD',reason:entry?.s||'INDEX_NOT_COMPLETE'};
+ const response=(await read('request_result',{key,transport,requestId:rid})).data;
+ if(response.status!=='COMPLETE')return {requestId:rid,status:'HOLD',reason:'RESULT_NOT_COMPLETE'};
+ const ids=[...(entry.items||[]),...(response.entry?.items||[])].map(x=>x?.pid).filter(Boolean);
+ const unique=[...new Set(ids)];
+ if(!unique.length||unique.some(x=>!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x)))return {requestId:rid,status:'HOLD',reason:'RECEIPT_IDS_UNBOUND'};
+ const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:unique})).data;
+ return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:unique,readback:back,verified:false};
+}
+module.exports={requestId,fetchRelease,preflight,runCanary,inspectReceipt};
