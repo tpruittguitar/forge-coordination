@@ -1,0 +1,19 @@
+name: source-intake-controlled-admission-test
+on:
+  push:
+    paths:
+      - 'tools/source-intake/**'
+      - '.github/workflows/source-intake-controlled-admission-test.yml'
+  pull_request:
+    paths:
+      - 'tools/source-intake/**'
+      - '.github/workflows/source-intake-controlled-admission-test.yml'
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/source-intake/controlled-admission.test.js
