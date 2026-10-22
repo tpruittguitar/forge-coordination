@@ -52,12 +52,21 @@ function atsId(url) {
 }
 const PROTECTED_RE = /\b(applied|rejected(?:_by_employer)?|declined(?:_by_tim)?|withdrawn|interviewed)\b/i;
 const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
-const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => /^(true|yes|1|locked|protected)$/i.test(String(v || ''))));
+const protectedRow = r => PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
 const locKey = loc => {
-  const raw = String(loc || '').trim(), state = usPlace(raw) || (/^[A-Z]{2}$/.test(raw) ? P.stateFrom('City, ' + raw) : '');
+  const raw = String(loc || '').trim();
+  const shortSuffix = raw.match(/^(.+?)\\s+([A-Z]{2})$/);
+  const state = usPlace(raw) || (/^[A-Z]{2}$/.test(raw) ? P.stateFrom('City, ' + raw) :
+    shortSuffix ? P.stateFrom('City, ' + shortSuffix[2]) : '');
   if (!state) return '';
-  const city = raw.split(',')[0].replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').trim().toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  return city && raw.includes(',') && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
+  let city = raw.includes(',') ? raw.split(',')[0] : '';
+  if (!city && shortSuffix && P.stateFrom('City, ' + shortSuffix[2]) === state) city = shortSuffix[1];
+  if (!city && !raw.includes(',') && state !== 'REMOTE_US' && state !== 'US') {
+    const m = raw.match(/^(.+?)\\s+([A-Z][a-z]+(?:\\s+[A-Z][a-z]+)*)$/);
+    if (m && P.stateFrom(m[2]) === state) city = m[1];
+  }
+  city = city.replace(/\\b(remote|hybrid|onsite|on-site)\\b/gi, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  return city && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
 };
 const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
 function masterIndex(rows) {
