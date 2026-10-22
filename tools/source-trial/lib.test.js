@@ -121,3 +121,14 @@ test('Mission Assurance allowed; mission operations/director/control excluded; P
   assert.strictEqual(T.family('Director Product Launch'),null);
   assert.strictEqual(T.family('Director Manufacturing Product Launch'),'MFG_PROD');
 });
+
+test('Re-QA unpunctuated and long-form city normalization plus city-less fallback', () => {
+ const a=T.identityKey('Acme','Director NPI','Austin, TX');
+ assert.strictEqual(T.identityKey('Acme','Director NPI','Austin TX'),a);
+ assert.strictEqual(T.identityKey('Acme','Director NPI','Austin, Texas'),a);
+ const idx=T.masterIndex([{COMPANY:'Acme',TITLE:'Director NPI',LOCATION:'Austin, TX',ANTI_RESURRECTION:'YES'}]);
+ assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','TX'),'EXISTING_PROTECTED');
+ assert.strictEqual(T.novelty(idx,'Acme','Director NPI','',''),'EXISTING_PROTECTED');
+ assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','Dallas, TX'),'NEW');
+ assert.strictEqual(T.family('Director, Mission Production'),'MFG_PROD');
+});
