@@ -1,0 +1,31 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261022-1830ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=ea4ec957cdabf7146078
+PACKET_SHA256=02d1cd3649b8055b8c125ad9eef7cf79ccd8d220769913bc587aa171aa4343cc (verified; blob sha 59f1dde7 also matches)
+SOURCE_VERSIONS=policy_revision 2026-10-21.1; worklist generated 2026-10-22T22:03:02Z (68 eligible); RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (read fresh); Writer status not queried; WRITER_QUEUE root listing showed only processed/failed folders on first page
+ROWS_EVALUATED=11 (worklist 1,2,4(not fetched),7..., see below)
+LIVE=0
+CLOSED=0
+UNCONFIRMED=11
+WRITTEN=0
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=10 URLs fetched across 3 calls; 3 searches
+DETAIL:
+- Glassdoor partner links (#1,#2,#29): bot_blocked
+- PostJobFree (#30 -> myjobhelper signup page, no posting evidence; #31): blocked/no evidence
+- Lensa tracker (#6): HTTP 400; Ladders tracker (#18): redirects to google.com; Indeed (#15) and ZipRecruiter (#17): bot_blocked
+- #19 Prime Data Centers Director, Operations Engineering: employer Rippling ATS posting is open (https://ats.rippling.com/prime-data-centers/jobs/c6998111-2a70-44f1-a709-1f3c43fd7678) but lists Tolleson AZ, Lockhart TX, Denver CO, Elk Grove Village IL, not Dallas TX; location mismatch so NOT recorded as LIVE for this row. Possible follow-up for Tim/Writer: same-title posting may be a different row.
+- #22/#53 Pratt & Whitney and #68 Philips: employer search returned no exact title+location match page; not fetched further.
+- No submissions: no qualifying evidence (blocked or tracking-redirect sources are never closure).
+BACKLOG_REMAINING=68 less 0 = ~68
+STOP_REASON=Named limit: nearly all worklist URLs are aggregator/tracker redirects blocked by TinyFish (bot_blocked/redirect), employer-route searches found no exact-match page in the bounded attempt. Fewer than 10 rows evaluated; PARTIAL_WITH_WORK.
+BATCHES_COMPLETED_THIS_RUN=0
+REQUEST_IDS=none
+CARRY_FORWARD: worklist rows 1-68 unchanged; consider employer-route searches per row (company career sites) in a longer run.
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
