@@ -12,7 +12,7 @@ const LAUNCH_RE = /\b(launch|ramp(?:-?up)?)\b/i;
 const LAUNCH_CONTEXT_RE = /\b(manufactur\w*|production|plant|factory|assembly|industrializ\w*|npi)\b/i;
 const QUALITY_RE = /\bquality\b/i;
 const MFG_PROD_RE = /\b(manufactur\w*|production|plant|factory|assembly|fabrication|operations|ops)\b/i;
-const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission operations|mission control|mission director|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
+const OFF_TOPIC_RE = /\b(software|data quality|quality of service|clinical|regulatory affairs|sales|marketing|finance|financial|it operations|security operations|network operations|devops|revenue operations|people operations|hr operations|business operations|legal|flight operations|launch operations|launch site|launch vehicle|launch control|mission operations|mission control|mission director|mission production|space operations|fleet operations|store|restaurant|hospital|nursing|patient)\b/i;
 
 /** Title -> 'QUALITY' | 'MFG_PROD' | 'MFG_ENG' | null. Only leadership titles in Tim's three families count. */
 function family(title) {
