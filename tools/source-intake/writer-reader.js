@@ -1,10 +1,10 @@
 'use strict';
 /* Authorized read-only transport; never submit and never log the Writer key. */
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
-async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,clock=()=>Date.now()}={}){
+async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,clock=()=>Date.now(),requestId='',primaryIds=[]}={}){
  if(!key)throw Error('BLOCKED: credential required');
- if(!['ping','master','writer_status','archive'].includes(action))throw Error('BLOCKED: unsupported Writer action');
- const started=clock(),url=new URL(ENDPOINT);url.searchParams.set('action',action);url.searchParams.set('key',key);
+ if(!['ping','master','writer_status','archive','request_result','receipt_index','row_readback'].includes(action))throw Error('BLOCKED: unsupported Writer action');
+ const started=clock(),url=new URL(ENDPOINT);url.searchParams.set('action',action);url.searchParams.set('key',key);if(['request_result','receipt_index','row_readback'].includes(action)){if(!/^[A-Za-z0-9_-]{3,160}$/.test(requestId))throw Error('BLOCKED: valid receipt request ID required');url.searchParams.set('requestId',requestId);if(action==='row_readback'){if(!Array.isArray(primaryIds)||!primaryIds.length||primaryIds.length>25||primaryIds.some(x=>!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x)))throw Error('BLOCKED: exact canonical readback IDs required');url.searchParams.set('ids',primaryIds.join(','))}}
  let resp,ended;
  for(let attempt=0;attempt<2;attempt++){
   const attemptStart=clock();
