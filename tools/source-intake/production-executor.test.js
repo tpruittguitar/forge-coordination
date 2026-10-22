@@ -59,3 +59,27 @@ test('canary rejects malformed source URLs before any switch or Writer call',asy
  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/exactly 5 reviewed/);
  assert.equal(calls,0);
 });
+
+test('five-case count reconciliation holds without independent authenticated master snapshots',()=>{
+ const {reconcileCanaryBatch}=require('./canary-accounting');
+ assert.equal(reconcileCanaryBatch({cases:Array(5).fill({}),before:{rows:[]},after:{rows:[]}}).reason,'INDEPENDENT_WRITER_SNAPSHOTS_REQUIRED');
+});
+test('five-case count reconciliation proves exact new ID set and protects archived no-op',()=>{
+ const {reconcileCanaryBatch}=require('./canary-accounting');
+ const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'Company '+n,TITLE:'Director '+n,LOCATION:'Austin TX',REQ_ID:'REQ'+n});
+ const before=[row('V2I-1',1),row('V2A-2',2),row('V2I-3',3)];
+ const after=[...before,row('V2I-4',4),row('V2I-5',5)];
+ const cases=[1,2,3,4,5].map(n=>({
+   expectedOutcome:n===2?'PROTECTED_NOOP':n===1?'EXISTING_MATCH':n===3?'EXISTING_MATCH':'NEW',
+   record:row('',n),primaryId:'V2I-'+n,
+   protectedBefore:n===2?before[1]:undefined,
+   accounting:{status:n===2||n===1||n===3?'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS':'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',
+    primaryId:n===2?'V2A-2':'V2I-'+n}
+ }));
+ const snapshot=rows=>({source:'WRITER',authenticated:true,rows});
+ const ok=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot(after)});
+ assert.equal(ok.status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');
+ assert.equal(ok.verified,false);assert.equal(ok.scaleUpAllowed,false);
+ const contaminated=reconcileCanaryBatch({cases,before:snapshot(before),after:snapshot([...after,row('V2I-X',6)])});
+ assert.equal(contaminated.reason,'INSERTED_ID_SET_MISMATCH');
+});
