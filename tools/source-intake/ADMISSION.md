@@ -46,3 +46,7 @@ The Writer's `bytes` field is **JavaScript string length**, not UTF-8 octet leng
 ## PR #39 live Writer receipt schema limitation
 
 Writer `request_result` normally returns an index entry with status and durability but **does not guarantee a canonical PRIMARY_ID**. The `receipt_index` response can confirm GitHub source, revision and a per-request COMPLETE state without binding that request to one exact row. The collector now explicitly returns `PENDING_CANONICAL_ID_BINDING` rather than manufacturing a PRIMARY_ID, skipping `row_readback` until a trusted request-to-row binding exists. Caller hints cannot supply this binding. This is a remaining production blocker; all results have `verified:false` and no Writer mutations occur.
+
+## PR #39 live receipt correction (Grok QA)
+
+Modern COMPLETE receipt entries bind one or more canonical IDs through `entry.items[].pid`; compare that sequence with `receipt_index.request.items[].pid`. The collector obtains the GitHub receipt index **first** and only calls `request_result` when the index marks the request COMPLETE, because pending result lookups may execute Writer verification and update the index. Check index SHA and timestamp (15-minute freshness), require all (up to 25) canonical rows from `row_readback` and exactly one role identity match; legacy receipts without `items` remain unbound. No `lineSha256`/item `a` hash equality is asserted: their representation equivalence has not been established. All outputs remain `verified:false` and zero submissions.
