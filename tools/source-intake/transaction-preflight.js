@@ -21,4 +21,27 @@ function classifyReceipt(result,requestId){
  if(result.status==='FAILED'||result.status==='REJECTED_SCHEMA')return 'FAILED_REQUIRES_REVIEW';
  return 'PENDING_VERIFICATION';
 }
-module.exports={stableId,prepareRequests,classifyReceipt};
+
+/* An independently obtained master readback and durable receipt are both required.
+ * This pure function never contacts the Writer and cannot certify the provenance
+ * of passed-in evidence. It only reports consistency to a later trusted executor. */
+function verifyExactRow(proposal,{receipt,requestId,masterRows}={}){
+ if(!proposal||!proposal.record||!proposal.identityHash||stableId(proposal.record)!==proposal.identityHash)throw Error('BLOCKED: proposed record identity changed');
+ if(!Array.isArray(masterRows))throw Error('BLOCKED: independent master readback missing');
+ const receiptStatus=classifyReceipt(receipt,requestId);
+ if(receiptStatus!=='COMPLETE_PENDING_EXACT_ROW_READBACK')return {status:receiptStatus,verified:false,matches:[]};
+ const r=proposal.record;
+ const norm=x=>String(x||'').trim().toLowerCase();
+ const matches=masterRows.filter(x=>{
+  if(norm(x.COMPANY)!==norm(r.COMPANY)||norm(x.TITLE)!==norm(r.TITLE)||norm(x.LOCATION)!==norm(r.LOCATION))return false;
+  const req=norm(r.REQ_ID),otherReq=norm(x.REQ_ID||x.REQ);
+  if(req&&otherReq&&req!==otherReq)return false;
+  return true;
+ });
+ if(matches.length!==1)return {status:matches.length?'AMBIGUOUS_READBACK':'ROW_NOT_FOUND',verified:false,matches:matches.map(x=>x.PRIMARY_ID||'UNKNOWN')};
+ const x=matches[0];
+ if(!x.PRIMARY_ID||!/^V2[A-Z]-/.test(x.PRIMARY_ID))return {status:'MISSING_CANONICAL_PRIMARY_ID',verified:false,matches:[]};
+ return {status:'CONSISTENT_PENDING_PROVENANCE_VALIDATION',verified:false,matchedPrimaryId:x.PRIMARY_ID,matches:[x.PRIMARY_ID]};
+}
+
+module.exports={stableId,prepareRequests,classifyReceipt,verifyExactRow};
