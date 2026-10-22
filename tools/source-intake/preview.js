@@ -2,10 +2,15 @@
 // Conservative read-only preview; canonical Writer classification is the only exclusion authority.
 const fs=require('node:fs');
 const L=require('../source-trial/lib');
+const P=require('../enrich-ats-pay/lib');
+const https=require('node:https');
+const PRIORITY_URL='https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt';
+function priorityRegistry(text){return Object.fromEntries(L.parsePriority(text).map(x=>[P.normCo(x.name),x.tier]));}
+function loadPriority(url=PRIORITY_URL){return new Promise((resolve,reject)=>{https.get(url,res=>{if(res.statusCode!==200){res.resume();return reject(Error('priority registry HTTP '+res.statusCode));}let text='';res.setEncoding('utf8');res.on('data',x=>text+=x);res.on('end',()=>resolve(priorityRegistry(text)));}).on('error',reject);});}
 const WRONG_FUNCTION=/\b(accounting|finance|sales|marketing|human resources|talent acquisition|corporate operations|commercial operations|business development|information technology|cybersecurity)\b/i;
 const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const et=at=>new Intl.DateTimeFormat('en-US',{timeZone:'America/New_York',year:'numeric',month:'2-digit',day:'2-digit',hour:'2-digit',minute:'2-digit',hourCycle:'h23'}).format(new Date(at)).replace(',','')+' ET';
-const priority=(j,registry)=>registry?.[norm(j.company)]||(/^DREAM|P[123]$/i.test(j.tier||'')?j.tier.toUpperCase():'UNKNOWN');
+const priority=(j,registry)=>registry?.[P.normCo(j.company)]||(/^(DREAM|P[123])$/i.test(j.tier||'')?j.tier.toUpperCase():'UNKNOWN');
 function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date().toISOString(),targetRegistry={}}={}){
  if(!Array.isArray(report.new_roles))throw Error('new_roles must be array');
  if(!/^[A-Z0-9_-]+$/.test(runId))throw Error('invalid runId');
@@ -34,5 +39,5 @@ function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date()
  const batches=[];for(let i=0;i<candidates.length;i+=200)batches.push({action:'intake',requestId:runId+'-B'+String(batches.length+1).padStart(2,'0'),run:{SCOUT_RUN_ID:runId,GROSS_FOUND:report.new_roles.length,RUN_STARTED_AT_ET:at},records:candidates.slice(i,i+200)});
  return {mode:'DRY_RUN_ONLY_NO_WRITER_CALLS',canonical_never_consider:'UNVERIFIED_REVIEW_REQUIRED',report_source_run:report.summary?.run||'UNKNOWN',counts,rows,batches};
 }
-module.exports={adapt,priority};
-if(require.main===module){const [input,output,runId]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node tools/source-intake/preview.js report.json output.json [RUN_ID]');const result=adapt(JSON.parse(fs.readFileSync(input,'utf8')),{runId:runId||'FORGE-SOURCE-TRIAL-DRYRUN'});fs.writeFileSync(output,JSON.stringify(result,null,2)+'\n');console.log(JSON.stringify(result.counts));}
+module.exports={adapt,priority,priorityRegistry,loadPriority};
+if(require.main===module){(async()=>{const [input,output,runId,registryFile]=process.argv.slice(2);if(!input||!output)throw Error('Usage: node tools/source-intake/preview.js report.json output.json [RUN_ID] [PRIORITY_FILE]');const registry=registryFile?priorityRegistry(fs.readFileSync(registryFile,'utf8')):await loadPriority();const result=adapt(JSON.parse(fs.readFileSync(input,'utf8')),{runId:runId||'FORGE-SOURCE-TRIAL-DRYRUN',targetRegistry:registry});fs.writeFileSync(output,JSON.stringify(result,null,2)+'\\n');console.log(JSON.stringify(result.counts));})().catch(e=>{console.error('BLOCKED_PRIORITY_REGISTRY: '+e.message);process.exitCode=1;});}
