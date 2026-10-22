@@ -1,0 +1,8 @@
+AI_REASON_CHANGE_RECORD
+PROVIDER=ChatGPT
+DATE=2026-10-22
+CHANGE=New read-only canonical-snapshot admission gate for source-trial preview.
+WHY=Source discovery PR #33 and preview adapter PR #34 are merged, but submissions require live canonical dedupe and employer-industry evidence. User requested next stage.
+SAFETY=No network or Writer calls, no submit payloads, no new discovery cadence. Snapshot check can return protected/existing/review, never admission.
+RISKS=Snapshot alone is not proof of current Writer state; no automatic production enablement; no canonical employer-business decisions made.
+VERIFICATION=Node unit tests and CI required before merging.
