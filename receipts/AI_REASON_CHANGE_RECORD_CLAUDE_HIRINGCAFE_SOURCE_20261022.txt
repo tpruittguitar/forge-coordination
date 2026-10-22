@@ -21,3 +21,5 @@ JobSpy/ATS logic, Writer, receipts, schedules, email-discovery automation, Grok 
 NEXT
 Decide whether HiringCafe stays in routine trials; evaluate industries filter for precision; never promote NEW to Writer
 without canonical rules and dedupe.
+
+FOLLOW-UP REV-190: canary drafting showed the trial NEW is archive-blind (12/142 archived, e.g. Anduril Altius/Fury, Allen Control Systems). run.js now loads the Writer terminal archive read-only into the novelty index as ARCHIVED_TERMINAL (protected); if the read fails, the report says so and NEW is flagged as master-only. Regression test added (archived AEVEX role -> protected).

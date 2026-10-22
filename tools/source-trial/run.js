@@ -35,7 +35,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     lines = lines.concat(j.jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean)); if (!j.jobs.length) break;
   }
   const rows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + lines.join('\n') + '\n');
-  const idx = T.masterIndex(rows.map(r => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p })));
+  /* the terminal archive (Writer GET action=archive, read-only): declined, rejected and closed history is protected,
+     never NEW. The Writer dedupes intake against it, so a trial that ignores it overstates NEW. */
+  const archive = { read: false, rows: 0, error: '' };
+  let archived = [];
+  try {
+    const text = process.env.TRIAL_ARCHIVE_FILE ? fs.readFileSync(process.env.TRIAL_ARCHIVE_FILE, 'utf8') : await (async () => {
+      const j = await (await get(conn.PipelineConnection.url + '?action=archive&key=' + encodeURIComponent(key), { headers: { 'cache-control': 'no-store' } })).json();
+      if (!j.ok || j.degraded) throw new Error('archive ' + (j.degraded ? 'degraded' : 'not ok'));
+      return j.text || '';
+    })();
+    archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + text.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n');
+    archive.read = true; archive.rows = archived.length;
+  } catch (e) { archive.error = String(e.message || e).slice(0, 80); }   // never the URL: it carries the key
+  const asIndexRow = (r, terminal) => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p, ARCHIVED_TERMINAL: terminal });
+  const idx = T.masterIndex(rows.map(r => asIndexRow(r, false)).concat(archived.map(r => asIndexRow(r, true))));
 
   /* boards: priority companies first, then every board the master links to */
   const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
@@ -128,7 +142,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
-    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, seconds: Math.round((Date.now() - T0) / 1000),
+    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
     boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED') },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
@@ -136,10 +150,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     priority_boards_probed: probes,
     by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status !== 'NEW').length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
   };
-  const report = { caution: 'NEW is provisional, not verified against all historical requisition identities or archival application states.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
+  const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'source-trial-report.json'), JSON.stringify(report, null, 1) + '\n');
-  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '',
+  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
