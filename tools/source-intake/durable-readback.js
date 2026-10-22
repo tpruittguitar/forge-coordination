@@ -15,7 +15,7 @@ async function inspectDurableReadback(proposal,requestId,{key,transport,clock=()
  const now=clock(),updated=Date.parse(index.data.updatedAt);
  if(!Number.isFinite(updated)||updated>now+120000)throw Error('BLOCKED: receipt index timestamp invalid');
  const requestAt=index.data.request?.at;
- if(requestAt!=null){const recorded=Date.parse(requestAt);if(!Number.isFinite(recorded)||recorded>updated+120000)throw Error('BLOCKED: receipt request timestamp invalid');}
+ if(requestAt!=null){const recorded=Date.parse(requestAt);if(!Number.isFinite(recorded)||recorded>updated)throw Error('BLOCKED: receipt request timestamp invalid');}
  const meta={receiptIndexSha:index.data.sha,receiptIndexUpdatedAt:index.data.updatedAt,receiptIndexIdleMs:Math.max(0,now-updated),verified:false,writerPayloads:[],writerSubmissions:0};
  if(index.data.request?.s!=='COMPLETE')return {...meta,status:'PENDING_INDEX_REQUEST_PROOF',proofReads:['receipt_index']};
  const result=await read('request_result',opts),detail=result.data;
