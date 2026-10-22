@@ -30,7 +30,7 @@ async function preflight(record,{key,transport=globalThis.fetch}={}){
  return {rid,mode:'READY_FOR_WRITER_ADJUDICATION',rulesHash:sha(rules.data.rules.raw)};
 }
 async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId}={}){
- if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\//.test(x.evidenceUrl||'')&&x.primaryBusiness&&x.reviewedNeverConsider===false))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
+ if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
  if(kinds.filter(x=>x==='EXISTING_MATCH').length<1||kinds.filter(x=>x==='PROTECTED_NOOP').length<1||kinds.filter(x=>x==='NEW').length<1)throw Error('BLOCKED: canary must test new, existing and protected states');
