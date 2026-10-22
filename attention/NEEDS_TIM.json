@@ -1,12 +1,12 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-22T02:51:42.365Z",
- "sourceCommit": "d4609473034b62eaa04667489f6fb48f0fc80101",
+ "builtAt": "2026-10-22T04:07:38.743Z",
+ "sourceCommit": "4221724e3056e640a0cedd170155affeecb369db",
  "counts": {
   "total": 8,
   "BLOCKING": 0,
-  "ACTION": 2,
-  "WATCH": 6,
+  "ACTION": 3,
+  "WATCH": 5,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 2,
@@ -33,6 +33,18 @@
    "raisedBy": "CLAUDE",
    "askId": "ASK-20261019-CLAUDE-1855",
    "links": []
+  },
+  {
+   "id": "lane-overdue:EMAIL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "EMAIL lane has gone quiet (usually reports every 1.1 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt (CHATGPT, status PARTIAL). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
+   "at": "2026-10-21T11:57:00-04:00",
+   "raisedBy": "CHATGPT"
   },
   {
    "id": "run-next-owner:GOFER|CLAUDE",
@@ -144,18 +156,6 @@
    "source": "receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
    "at": "2026-10-19T00:59:00-04:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "EMAIL lane has gone quiet (usually reports every 1.1 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt (CHATGPT, status PARTIAL). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
-   "at": "2026-10-21T11:57:00-04:00",
    "raisedBy": "CHATGPT"
   }
  ],
