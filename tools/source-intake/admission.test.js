@@ -72,7 +72,7 @@ test('missing archive, unauthenticated responses, and overlong reads block',asyn
 test('Writer reader authenticates through ping/status/master and parses canonical rows',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
  let tick=Date.now(),called=[];
- const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\\nEND',modifiedTime:'2026-10-22T18:00:00Z'}:{ok:true,frozen:false,build:'test'}}};
+ const transport=async u=>{const action=new URL(u).searchParams.get('action');called.push(action);return {ok:true,json:async()=>action==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director Quality | DISCOVERY_LEAD | OPEN | P1 | R1 | Memphis, TN | NEW\nEND',modifiedTime:'2026-10-22T18:00:00Z'}:{ok:true,frozen:false,build:'test'}}};
  const out=await fetchAuthenticatedMaster({key:'test-secret',transport,clock:()=>tick++});
  assert.deepEqual(called.sort(),['master','ping','writer_status']);
  assert.equal(out.rows[0].DISPOSITION,'OPEN');
@@ -83,5 +83,5 @@ test('Writer reader fails closed on incomplete, unauthorized and frozen response
  const mock=fn=>async u=>({ok:true,json:async()=>fn(new URL(u).searchParams.get('action'))});
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='master'?{ok:true,text:'incomplete'}:{ok:true})}),/completeness/);
  await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='ping'?{ok:false}:{ok:true,text:'END'})}),/authorized/);
- await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,frozen:true}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\\nEND'}:{ok:true})}),/frozen/);
+ await assert.rejects(()=>fetchAuthenticatedMaster({key:'k',transport:mock(a=>a==='writer_status'?{ok:true,frozen:true}:a==='master'?{ok:true,text:'1 | V2S-A1 | Acme | Director | NEW | OPEN | P1 | A | TX | NEW\nEND'}:{ok:true})}),/frozen/);
 });
