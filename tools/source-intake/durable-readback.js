@@ -1,33 +1,42 @@
 'use strict';
-/* Read-only proof collection through the actual authenticated Writer endpoint.
- * No call to intake, submit, post, or mutable Writer actions. */
+/* Authenticated Writer consistency inspection; no admissions or submissions.
+ * receipt_index must be consulted BEFORE request_result: pending request_result can invoke verifyNow_.
+ */
 const {read}=require('./writer-reader');
-const {verifyExactRow}=require('./transaction-preflight');
-async function inspectDurableReadback(proposal,requestId,{key,transport,clock}={}){
+const {stableId}=require('./transaction-preflight');
+const MAX_AGE_MS=15*60*1000;
+const validPid=x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x);
+const idsFrom=entry=>Array.isArray(entry?.items)?entry.items.map(x=>x?.pid):null;
+async function inspectDurableReadback(proposal,requestId,{key,transport,clock=()=>Date.now()}={}){
  if(!/^[A-Za-z0-9_-]{3,160}$/.test(requestId||''))throw Error('BLOCKED: invalid request ID');
+ if(!proposal?.record||stableId(proposal.record)!==proposal.identityHash)throw Error('BLOCKED: proposal identity changed');
  const opts={key,transport,clock,requestId};
- const result=await read('request_result',opts);
  const index=await read('receipt_index',opts);
- if(index.data.source!=='GITHUB')throw Error('BLOCKED: Writer receipt index must come from GITHUB');
- // These shapes are intentionally checked conservatively. Unknown live schema = hold.
- const detail=result.data;
- if(detail.requestId!==requestId||detail.status!=='COMPLETE'||detail.durable!==true)
-  return {status:'PENDING_RECEIPT_PROOF',verified:false};
- if(index.data.exists!==true||!index.data.updatedAt||!index.data.sha)
-  return {status:'PENDING_INDEX_PROOF',verified:false};
- if(!index.data.request||index.data.request.s!=='COMPLETE'||!detail.found||detail.source!=='index')return {status:'PENDING_INDEX_REQUEST_PROOF',verified:false};
- // The live request_result endpoint returns an index entry, not necessarily a primary ID.
- // Do not invent a row identity from an unbound receipt or a caller hint.
- const candidateIds=[detail.primaryId,detail.PRIMARY_ID,detail.entry?.primaryId,detail.entry?.PRIMARY_ID].filter(Boolean);
- const pid=candidateIds.length===1?String(candidateIds[0]):'';
- if(!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(pid))return {status:'PENDING_CANONICAL_ID_BINDING',verified:false};
- const rb=await read('row_readback',{...opts,primaryIds:[pid]});
- if(!Array.isArray(rb.data.rows))return {status:'PENDING_READBACK_SCHEMA',verified:false};
- if(rb.data.master?.endMarkerPresent!==true||rb.data.requested!==1||rb.data.found!==1||rb.data.rows.length!==1||rb.data.rows[0].matches!==1||rb.data.rows[0].found!==true)return {status:'PENDING_EXACT_ROW_READBACK',verified:false};
- const row=rb.data.rows[0],cells=String(row.line||'').split(' | ');
- if(cells.length<10||cells[1]!==pid)return {status:'READBACK_SCHEMA_MISMATCH',verified:false};
- const readback={PRIMARY_ID:pid,COMPANY:cells[2],TITLE:cells[3],LOCATION:cells[8],REQ_ID:cells[7]};
- const consistency=verifyExactRow(proposal,{receipt:detail,requestId,masterRows:[readback]});
- return {status:consistency.status,verified:false,matchedPrimaryId:consistency.matchedPrimaryId||null,proofReads:['request_result','receipt_index','row_readback'],writerPayloads:[],writerSubmissions:0};
+ if(index.data.source!=='GITHUB'||index.data.exists!==true||!index.data.sha||!index.data.updatedAt)throw Error('BLOCKED: missing GitHub receipt index proof');
+ const now=clock(),updated=Date.parse(index.data.updatedAt);
+ if(!Number.isFinite(updated)||updated>now+120000||now-updated>MAX_AGE_MS)throw Error('BLOCKED: receipt index stale or invalid');
+ const meta={receiptIndexSha:index.data.sha,receiptIndexUpdatedAt:index.data.updatedAt,verified:false,writerPayloads:[],writerSubmissions:0};
+ if(index.data.request?.s!=='COMPLETE')return {...meta,status:'PENDING_INDEX_REQUEST_PROOF',proofReads:['receipt_index']};
+ const result=await read('request_result',opts),detail=result.data;
+ if(!detail.found||detail.source!=='index'||detail.requestId!==requestId||detail.status!=='COMPLETE'||detail.durable!==true)
+  return {...meta,status:'PENDING_RECEIPT_PROOF',proofReads:['receipt_index','request_result']};
+ const a=idsFrom(index.data.request),b=idsFrom(detail.entry);
+ if(!a||!b||!a.length||a.length>25||a.length!==b.length||a.some((v,i)=>!validPid(v)||v!==b[i])||new Set(a).size!==a.length)
+  return {...meta,status:'PENDING_CANONICAL_ID_BINDING',proofReads:['receipt_index','request_result']};
+ const rb=await read('row_readback',{...opts,primaryIds:a});
+ if(!Array.isArray(rb.data.rows)||rb.data.master?.endMarkerPresent!==true||rb.data.requested!==a.length||rb.data.found!==a.length||
+    rb.data.rows.length!==a.length||rb.data.rows.some((x,i)=>x.primaryId!==a[i]||!x.found||x.matches!==1))
+  return {...meta,status:'PENDING_EXACT_ROW_READBACK',proofReads:['receipt_index','request_result','row_readback']};
+ const normalized=rb.data.rows.map(x=>{const c=String(x.line||'').split(' | ');
+  if(c.length<10||c[1]!==x.primaryId)return null;
+  return {PRIMARY_ID:c[1],COMPANY:c[2],TITLE:c[3],REQ_ID:c[7],LOCATION:c[8]};
+ });
+ if(normalized.some(x=>!x))return {...meta,status:'READBACK_SCHEMA_MISMATCH'};
+ const norm=x=>String(x||'').trim().toLowerCase(),rec=proposal.record;
+ const matched=normalized.filter(x=>norm(x.COMPANY)===norm(rec.COMPANY)&&norm(x.TITLE)===norm(rec.TITLE)&&
+  norm(x.LOCATION)===norm(rec.LOCATION)&&(!rec.REQ_ID||!x.REQ_ID||norm(x.REQ_ID)===norm(rec.REQ_ID)));
+ if(matched.length!==1)return {...meta,status:matched.length?'AMBIGUOUS_READBACK':'ROW_NOT_FOUND',matchedCount:matched.length};
+ return {...meta,status:'CONSISTENT_PENDING_PROVENANCE_VALIDATION',matchedPrimaryId:matched[0].PRIMARY_ID,
+  receiptPrimaryIds:a,proofReads:['receipt_index','request_result','row_readback']};
 }
 module.exports={inspectDurableReadback};
