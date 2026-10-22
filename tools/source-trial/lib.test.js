@@ -32,10 +32,11 @@ test('REV-163 NPI, continuous improvement and launch leadership', () => {
     'Director of NPI',
     'Senior Manager, Continuous Improvement',
     'Senior Staff Industrialization Engineer',
-    'Director, Launch Operations',
+    'Director, Manufacturing Launch',
     'VP Operational Excellence',
     'Senior Manager, Production Ramp'
   ]) assert.strictEqual(T.family(title), 'MFG_PROD', title);
+  assert.strictEqual(T.family('Director, Launch Operations'), null);
   assert.strictEqual(T.family('Launch Operations Coordinator'), null);
   assert.strictEqual(T.family('Senior Manager Software Launch'), null);
 });
@@ -52,4 +53,44 @@ test('REV-156 US places, novelty against the master, board roots, slug probes, p
   assert.deepStrictEqual(T.slugGuesses('Shield AI'), ['shieldai', 'shield-ai', 'shield']);
   const p = T.parsePriority('DREAM (x): 1\n- Shield AI | careers: https://shield.ai/careers | Dallas\nP1 (y): 1\n- Path Robotics | careers: UNKNOWN | Columbus, OH\n');
   assert.deepStrictEqual(p, [{ tier: 'DREAM', name: 'Shield AI', careers: 'https://shield.ai/careers' }, { tier: 'P1', name: 'Path Robotics', careers: '' }]);
+});
+
+test('REV-164 Grok QA title recognition and exclusions', () => {
+  const yes = {
+    'GM, Plant': 'MFG_PROD',
+    'Principal Quality Engineer': 'QUALITY',
+    'Staff Manufacturing Engineer': 'MFG_ENG',
+    'Senior Manager, Customer Quality': 'QUALITY',
+    'Director NPI': 'MFG_PROD',
+    'Senior Manager NPI': 'MFG_PROD',
+    'Director Continuous Improvement': 'MFG_PROD',
+    'Operational Excellence Director': 'MFG_PROD',
+    'Director Commissioning': 'MFG_PROD',
+    'Director Product Launch': 'MFG_PROD',
+    'Director Manufacturing Launch': 'MFG_PROD',
+    'Senior Manager Production Ramp': 'MFG_PROD'
+  };
+  for (const [title, fam] of Object.entries(yes)) assert.strictEqual(T.family(title), fam, title);
+  for (const title of [
+    'Director Launch Operations', 'Director Launch Vehicle Manufacturing',
+    'Director Launch Site Production', 'Director Launch Control',
+    'Director Mission Production', 'Director Launch',
+    'Senior Manager Ramp', 'Senior Manager Software Launch'
+  ]) assert.strictEqual(T.family(title), null, title);
+  assert.strictEqual(T.level('Principal Quality Engineer'), 'SR_STAFF');
+  assert.strictEqual(T.level('Staff Manufacturing Engineer'), 'SR_STAFF');
+});
+test('REV-164 req ID, identity and protection precedence', () => {
+  const idx = T.masterIndex([
+    {COMPANY:'Acme',TITLE:'Director NPI',LOCATION:'Austin, TX',STATUS:'APPLIED',
+      p:{SOURCE_URL:'https://job-boards.greenhouse.io/acme/jobs/12345'}},
+    {COMPANY:'Beta',TITLE:'Director Quality',LOCATION:'Dallas, TX',
+      p:{REQ_ID:'ABCD-123'}}
+  ]);
+  assert.strictEqual(T.atsId('https://job-boards.greenhouse.io/acme/jobs/12345?gh_src=xx'),'12345');
+  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','https://job-boards.greenhouse.io/acme/jobs/12345','Austin, TX'),'EXISTING_PROTECTED');
+  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','https://job-boards.greenhouse.io/acme/jobs/12345?source=linkedin','Austin, TX'),'EXISTING_PROTECTED');
+  assert.strictEqual(T.novelty(idx,'Beta','Director Quality','https://elsewhere.example/j','Dallas, TX','ABCD-123'),'EXISTING');
+  assert.notStrictEqual(T.identityKey('Acme','Sr Manager Manufacturing','Austin, TX'),T.identityKey('Acme','Senior Manager Manufacturing','Dallas, TX'));
+  assert.strictEqual(T.novelty(idx,'Gamma','Director NPI','https://example.com/new','Austin, TX'),'NEW');
 });
