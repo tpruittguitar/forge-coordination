@@ -119,3 +119,43 @@ test('file recorder: probe and every recorded response are on disk before they a
  assert.deepEqual(await rec.read('FORGE-SOURCE-X'), {ok: true, receipt: {REQUEST_ID: 'FORGE-SOURCE-X'}});
  assert.ok(!fs.existsSync(statePath + '.tmp'), 'atomic rename leaves no temp file');
 });
+
+test('auto: one command runs the full canary, waiting read-only for each insert receipt between runs', async () => {
+ const {auto} = require('./canary-cli');
+ const w = fakeWriter(), statePath = tmpState(), opts = {statePath, candidates: CANDIDATES, key: 'fixture', transport: w.transport, switchTransport: ENABLED};
+ await snapshot('before', {...opts, sourceRunId: 'FORGE-CANARY-TEST'});
+ let waits = 0;
+ const r = await auto({...opts, waitFn: async () => { waits++; w.verifyPending(); }});
+ assert.equal(r.status, 'ALL_CASES_ACCOUNTED');
+ assert.equal(waits, CANDIDATES.filter(c => c.expectedOutcome === 'NEW').length, 'one wait per insert');
+ assert.equal(w.log.filter(x => x === 'POST').length, 5);
+ await snapshot('after', opts); assert.equal(finalize(opts).status, 'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');
+});
+test('auto stops on anything other than an accepted insert (here a disabled switch) and on a receipt that never completes', async () => {
+ const {auto} = require('./canary-cli');
+ const w = fakeWriter(), statePath = tmpState(), off = async () => ({ok: true, json: async () => ({enabled: false})});
+ await snapshot('before', {statePath, candidates: CANDIDATES, key: 'fixture', transport: w.transport, sourceRunId: 'FORGE-CANARY-TEST'});
+ const r = await auto({statePath, candidates: CANDIDATES, key: 'fixture', transport: w.transport, switchTransport: off, waitFn: async () => { throw Error('should not wait'); }});
+ assert.match(r.message, /release switch not enabled/); assert.ok(!w.log.includes('POST'));
+ const w2 = fakeWriter(), s2 = tmpState();
+ await snapshot('before', {statePath: s2, candidates: CANDIDATES, key: 'fixture', transport: w2.transport, sourceRunId: 'FORGE-CANARY-TEST'});
+ const r2 = await auto({statePath: s2, candidates: CANDIDATES, key: 'fixture', transport: w2.transport, switchTransport: ENABLED, waitFn: async () => { throw Error('HOLD: receipt still PENDING after 30 min'); }});
+ assert.match(r2.message, /still PENDING/); assert.equal(w2.log.filter(x => x === 'POST').length, 1, 'no further POST while the insert is unverified');
+});
+test('a 25-job STAGE runs end to end with the same proof and reconciles in STAGE mode', async () => {
+ const {auto} = require('./canary-cli');
+ const STAGE = async () => ({ok: true, json: async () => ({enabled: true, mode: 'STAGE', revision: 'SOURCE_INTAKE_STAGE_V1', maxBatch: 25, approvedBy: 'Tim 2026-10-22'})});
+ const stage = Array.from({length: 4}, (_, i) => candidate({COMPANY: 'Stage New ' + i, TITLE: 'Director of Manufacturing', LOCATION: 'Dayton, OH', REQ_ID: 'R-S' + i}, 'NEW'))
+  .concat([CANDIDATES[1]]);
+ const w = fakeWriter(), statePath = tmpState(), opts = {statePath, candidates: stage, key: 'fixture', transport: w.transport, switchTransport: STAGE};
+ await snapshot('before', {...opts, sourceRunId: 'FORGE-STAGE-TEST', mode: 'STAGE'});
+ const r = await auto({...opts, waitFn: async () => w.verifyPending()});
+ assert.equal(r.status, 'ALL_CASES_ACCOUNTED'); assert.equal(w.log.filter(x => x === 'POST').length, 5);
+ await snapshot('after', opts);
+ const rec = finalize(opts);
+ assert.equal(rec.status, 'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA'); assert.equal(rec.mode, 'STAGE'); assert.equal(rec.insertedIds.length, 4);
+ const wrong = fakeWriter(), s3 = tmpState();
+ await snapshot('before', {statePath: s3, candidates: stage, key: 'fixture', transport: wrong.transport, sourceRunId: 'FORGE-STAGE-TEST', mode: 'STAGE'});
+ const r3 = await auto({statePath: s3, candidates: stage, key: 'fixture', transport: wrong.transport, switchTransport: ENABLED, waitFn: async () => {}});
+ assert.match(r3.message, /release switch is CANARY but this run is STAGE/); assert.ok(!wrong.log.includes('POST'));
+});
