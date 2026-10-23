@@ -10,7 +10,8 @@ CHANGE RECORDS — how a change gets its REV (from 2026-10-22; replaces appendin
      DATE=2026-10-22                optional; defaults to the merge date (ET)
      REV=REV-187                    only for a number reserved in control/CHANGE_RECORDS_CONSUMED.txt
    Do NOT put a REV number in the file, the PR title or control/CHANGE_REGISTER.txt.
-   PROVIDER= and RUN_ID= lines are tolerated and ignored, and CHANGE= is read as WHAT=; any other key fails the record.
+   Only these six keys are allowed; any other key fails the record. PROVIDER and RUN_ID go in the commit message, not here.
+   A lane receipt committed directly to main needs only: WHAT=<one line>
 3. When the PR merges, .github/workflows/change-register.yml appends the register line with the next REV (merge order),
    logs it in control/CHANGE_RECORDS_CONSUMED.txt and deletes your record. The PR check (change-record-check) fails a PR
    that has no valid record, edits register entries or the ledger, or reuses a record name.
