@@ -22,6 +22,9 @@ const CORE=/production|manufactur|quality|plant|test engineer|commissioning|oper
 const OFF=/account|financ|compensation|payroll|\bhse\b|\behs\b|safety|environment|strateg|software|supply chain|procure|sourcing|purchas|\bml\b|data|analyst|marketing|sales|human resources|\bhr\b|talent|recruit|legal|\bit\b|cyber|operator|technician|intern/i;
 const WEST=new Set(['CA','WA','OR']);
 const AGENCY=/staffing|recruit|talent|executive search|search partners|personnel|placement|consulting|hr solutions|workforce|\bcareers$/i;
+// Tim 2026-10-23: no pharmaceutical or medical companies. Checked on company + title, then on the posting text.
+const MEDICAL=/pharm|bio(?!fuel|diesel|plastic|mass|gas)|microbio|gene therap|cell therap|genetic|life science|biologic|therapeutic|diagnostic|medical|medtech|med tech|health ?care|health system|hospital|clinic|surgical|dental|orthop|patient|\bdrug|vaccine|genomic|oncolog|cardio|biopharm|\bhealth\b(?! ?(?:and|&) ?safety)/i;
+const MEDICAL_TEXT=/pharmaceutical|gene therapy|cell therapy|orthopedic|surgical|biotech|biopharm|life sciences company|medical device|medtech|health ?care company|hospital|patients\b/i;
 
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
@@ -31,7 +34,7 @@ function pick(report,{max,sent}){
  const per={},out=[];
  for(const r of report.new_roles||[]){
   if(out.length>=max)break;
-  if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||WEST.has(r.place)||/memphis/i.test(r.location+' '+r.title)||AGENCY.test(r.company))continue;
+  if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||WEST.has(r.place)||/memphis/i.test(r.location+' '+r.title)||AGENCY.test(r.company)||MEDICAL.test(r.company+' '+r.title))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
   const k=r.company.toLowerCase();if((per[k]||0)>=2)continue;
   const record={COMPANY:r.company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
@@ -47,6 +50,7 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   if(!res.ok)return null;
   const html=await res.text(),text=strip(html);
   if(!text.toLowerCase().includes(company.toLowerCase().split(/[ ,]/)[0]))return null;
+  if(MEDICAL_TEXT.test(text.slice(0,4000)))return null;
   const d=meta(html,'og:description')||meta(html,'description')||text;
   const at=d.toLowerCase().indexOf(company.toLowerCase().split(/[ ,]/)[0]);
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
