@@ -1,0 +1,33 @@
+HIRINGCAFE SOURCE A/B — REV-187 — 2026-10-22 (Claude Code). Read-only. Nothing sent to the Writer.
+
+SOURCE CHOICE
+ HiringCafe's documented public MCP connector (https://hiringcafe.com/documentation/hiringcafe-claude-connector):
+ POST https://hiringcafe.com/api/mcp, tools/call search_jobs, no account/auth, read-only, per-IP rate limit (429 +
+ Retry-After). Reviewed and NOT used: CJ7862/HiringCafe-Scraper (scrapes Next.js _next/data/<buildId> pages: undocumented,
+ breaks on every deploy; 1 star, 13 open issues); chen-gdp/hiringcafe-cli (unofficial Python client of the same MCP plus
+ account features Forge does not need). A direct Node client of the documented endpoint adds no dependency.
+ Limits of the connector: <=25 jobs per call, one job per company, no pagination, HiringCafe job links only (no direct
+ employer ATS URL, even from get_job_details). Direct-ATS evidence therefore stays with the board reader.
+
+METHOD
+ Live: tools/source-trial/hiringcafe.js with config.json hiringcafe (18 existing JobSpy searches, United States,
+ posted_within_days 7, Senior Level, Full Time, limit 25, 2.5 s gap) -> 18 calls, 0 errors, 54 s, 362 distinct jobs.
+ Baseline: state/source-trial-report.json FORGE-SOURCE-TRIAL-20261022T0500Z (boards + JobSpy; 168 h window). Same run.js filters
+ (T.family, T.usPlace, Senior Staff priority eligibility), T.identityKey cross-source dedupe, T.novelty against the live
+ structured master (1677 rows). Baseline is ~14 h older than the HiringCafe pass.
+
+RESULT (unique relevant roles after cross-source dedupe, not raw counts)
+ HiringCafe returned 362; in family 135; US 129; matching after filters 113.
+ Already found by baseline: {'JOBSPY': 7, 'BOARD': 1}.
+ Unique vs boards+JobSpy: 105 -> provisionally NEW 95, EXISTING 9, EXISTING_PROTECTED 1.
+ Baseline matches: boards 133, JobSpy 121; baseline NEW: boards 49, JobSpy 93.
+ Unique NEW by level {'DIRECTOR_PLUS': 85, 'SR_MANAGER': 10, 'SR_STAFF': 0}; by family {'QUALITY': 25, 'MFG_PROD': 69, 'MFG_ENG': 1}; with published pay 46; priority-tier employers 0.
+
+INTERPRETATION
+ HiringCafe is largely complementary (8 of 113 matches overlapped), so it is not primarily duplicating boards/JobSpy.
+ Precision is the cost: the family filter is title-based, and the sample includes medical-device, software and
+ healthcare "Director of Quality" roles that the Writer's canonical Never Consider adjudication or review must
+ handle; 16 NEW are West Coast (low priority). NEW is provisional, not a Writer insert.
+ Recommendation: keep HiringCafe in the read-only source trial for further runs; consider the connector's
+ structured industries filter as a recall/precision experiment (not as a substitute for canonical rules) before any
+ promotion into routine production discovery. Runtime ~1 min/run, no dependencies.

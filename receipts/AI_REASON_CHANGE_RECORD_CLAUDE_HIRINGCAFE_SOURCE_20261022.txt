@@ -1,0 +1,25 @@
+AI_REASON_CHANGE_RECORD
+PROVIDER=Claude Code
+TASK=REV-187 HiringCafe discovery source (handoff 2026-10-22 priority 3)
+AUTHORIZED_BY=Tim, Claude Code master handoff 2026-10-22 ("Implement HiringCafe discovery ... separate scoped PR")
+WRITER=untouched. No Writer reads beyond the existing structured-master read used by the trial; no submissions.
+
+WHAT CHANGED
+- tools/source-trial/hiringcafe.js: bounded read-only client of HiringCafe's documented MCP connector; JobSpy-shaped output.
+- tools/source-trial/run.js: ingests TRIAL_HIRINGCAFE_FILE after boards and JobSpy; reports unique yield and overlap by source.
+- tools/source-trial/config.json: hiringcafe block (enabled, 18 searches, 7 days, Senior Level, Full Time, 25/call, 2.5 s gap).
+- .github/workflows/source-trial.yml: HiringCafe step (continue-on-error) before the trial; adapter tests in the test step.
+- Tests: hiringcafe.test.js (parsing, pay, URL, bounds, 429, failure stop); run.test.js extended (unique vs overlap attribution).
+- receipts/HIRINGCAFE_SOURCE_AB_20261022.txt: live A/B measurement and source-choice rationale.
+
+WHY
+Handoff asked for a separate adapter feeding normalized discovery, an A/B on unique relevant roles, and no reliance on unstable
+endpoints. The documented connector is the supported interface; scrapers of Next.js data routes were rejected.
+
+NOT CHANGED
+JobSpy/ATS logic, Writer, receipts, schedules, email-discovery automation, Grok lanes. Production intake (PR #40) unaffected.
+NEXT
+Decide whether HiringCafe stays in routine trials; evaluate industries filter for precision; never promote NEW to Writer
+without canonical rules and dedupe.
+
+FOLLOW-UP REV-190: canary drafting showed the trial NEW is archive-blind (12/142 archived, e.g. Anduril Altius/Fury, Allen Control Systems). run.js now loads the Writer terminal archive read-only into the novelty index as ARCHIVED_TERMINAL (protected); if the read fails, the report says so and NEW is flagged as master-only. Regression test added (archived AEVEX role -> protected).

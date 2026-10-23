@@ -4,7 +4,9 @@
    1. employer job boards (Greenhouse, Lever, Ashby, Workday) for every employer the master already has an ATS link for,
       plus the priority companies in forge-policy derived/TARGET_COMPANIES_PRIORITY.txt (board probed when not known);
    2. JobSpy (python-jobspy, run by the workflow step before this script) on LinkedIn, Indeed, ZipRecruiter, Glassdoor,
-      Google.
+      Google;
+   3. HiringCafe (official read-only MCP connector, run by tools/source-trial/hiringcafe.js before this script), read
+      last so the roles it alone contributes after cross-source dedupe are its measured incremental yield.
    Every matching US role is marked NEW or EXISTING against the master. Writes only state/source-trial-report.{json,md}.
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
 const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
@@ -33,7 +35,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     lines = lines.concat(j.jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean)); if (!j.jobs.length) break;
   }
   const rows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + lines.join('\n') + '\n');
-  const idx = T.masterIndex(rows.map(r => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p })));
+  /* the terminal archive (Writer GET action=archive, read-only): declined, rejected and closed history is protected,
+     never NEW. The Writer dedupes intake against it, so a trial that ignores it overstates NEW. */
+  const archive = { read: false, rows: 0, error: '' };
+  let archived = [];
+  try {
+    const text = process.env.TRIAL_ARCHIVE_FILE ? fs.readFileSync(process.env.TRIAL_ARCHIVE_FILE, 'utf8') : await (async () => {
+      const j = await (await get(conn.PipelineConnection.url + '?action=archive&key=' + encodeURIComponent(key), { headers: { 'cache-control': 'no-store' } })).json();
+      if (!j.ok || j.degraded) throw new Error('archive ' + (j.degraded ? 'degraded' : 'not ok'));
+      return j.text || '';
+    })();
+    archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + text.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n');
+    archive.read = true; archive.rows = archived.length;
+  } catch (e) { archive.error = String(e.message || e).slice(0, 80); }   // never the URL: it carries the key
+  const asIndexRow = (r, terminal) => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p, ARCHIVED_TERMINAL: terminal });
+  const idx = T.masterIndex(rows.map(r => asIndexRow(r, false)).concat(archived.map(r => asIndexRow(r, true))));
 
   /* boards: priority companies first, then every board the master links to */
   const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
@@ -105,24 +121,45 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     });
   }
 
+  /* HiringCafe results, written by hiringcafe.js; read after boards and JobSpy so overlap is attributed to them */
+  const hc = { ran: false, returned: 0, matches: 0, unique: 0, overlap: {}, errors: [], searches: [] };
+  const hcFile = process.env.TRIAL_HIRINGCAFE_FILE || path.join(os.tmpdir(), 'hiringcafe.json');
+  if (fs.existsSync(hcFile)) {
+    const d = JSON.parse(fs.readFileSync(hcFile, 'utf8')); hc.ran = !!d.ran; hc.errors = d.errors || []; hc.searches = d.searches || []; hc.skipped = d.skipped || '';
+    (d.jobs || []).forEach(x => {
+      hc.returned++;
+      const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
+      hc.matches++;
+      const status = T.novelty(idx, x.company, x.title, x.job_url, x.location);
+      const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
+      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, pay, status, posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
+      if (addFound(item)) { hc.unique++; return; }
+      const prior = discovered.get(T.identityKey(item.company, item.title, item.location)), from = String(prior.source).split(':')[0];
+      hc.overlap[from] = (hc.overlap[from] || 0) + 1;
+    });
+  }
+
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
-    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, seconds: Math.round((Date.now() - T0) / 1000),
+    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
     boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED') },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
+    hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
     priority_boards_probed: probes,
     by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status !== 'NEW').length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
   };
-  const report = { caution: 'NEW is provisional, not verified against all historical requisition identities or archival application states.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
+  const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
   fs.writeFileSync(path.join(OUT, 'source-trial-report.json'), JSON.stringify(report, null, 1) + '\n');
-  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '',
+  const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
+    `| HiringCafe (${hc.returned} returned; ${hc.matches - hc.unique} already found by ${Object.entries(hc.overlap).map(([k, v]) => k + ' ' + v).join(', ') || 'no other source'}) | ${hc.matches} (${hc.unique} unique) | ${by('HIRINGCAFE', 'NEW')} | ${by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED')} |`,
     '', 'JobSpy errors: ' + (js.ran ? (js.errors.length ? js.errors.map(e => e.site + ': ' + e.error).join('; ') : 'none') : 'JobSpy did not run'), '',
+    'HiringCafe: ' + (hc.ran ? (hc.errors.length ? hc.errors.map(e => (e.search ? e.search + ': ' : '') + e.error).join('; ') : 'no errors') : (hc.skipped || 'did not run')) + '. Unique = matching US roles no board or JobSpy result already covered.', '',
     'Priority companies with no board found: ' + (probes.filter(p => !p.found).map(p => p.company).join(', ') || 'none'), '',
     '## By level', '', '| Level | New | Existing |', '|---|---:|---:|', ...Object.entries(summary.by_level).map(([k,v]) => `| ${k} | ${v.new} | ${v.existing} |`), '', '## New roles', '', '| Source | Company | Title | Location | Family | Level | Pay |', '|---|---|---|---|---|---|---|',
     ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
