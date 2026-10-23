@@ -34,10 +34,14 @@ function releaseRules(cfg){
  if(!cfg||cfg.enabled!==true)return null;
  if(cfg.mode==='CANARY'&&cfg.revision==='SOURCE_INTAKE_CANARY_V1'&&cfg.maxBatch===5)return {mode:'CANARY',maxBatch:5};
  if(cfg.mode==='STAGE'&&cfg.revision==='SOURCE_INTAKE_STAGE_V1'&&(cfg.maxBatch===25||cfg.maxBatch===200)&&typeof cfg.approvedBy==='string'&&cfg.approvedBy.trim())return {mode:'STAGE',maxBatch:cfg.maxBatch};
+ // AUTO (Tim 2026-10-23): the scheduled source-intake-auto workflow submits filtered candidates without per-batch review.
+ if(cfg.mode==='AUTO'&&cfg.revision==='SOURCE_INTAKE_AUTO_V1'&&Number.isInteger(cfg.maxBatch)&&cfg.maxBatch>=1&&cfg.maxBatch<=25&&typeof cfg.approvedBy==='string'&&cfg.approvedBy.trim())return {mode:'AUTO',maxBatch:cfg.maxBatch};
  return null;
 }
 async function fetchRelease(fetcher=globalThis.fetch){
- const response=await fetcher(SWITCH,{headers:{'Accept':'application/vnd.github.raw','Cache-Control':'no-store','User-Agent':'forge-source-intake'},signal:AbortSignal.timeout(15000)});
+ // Authenticated when a token is available: the unauthenticated limit (60/h) halted the 24-job stage at case 13.
+ const token=process.env.GITHUB_TOKEN||process.env.GH_TOKEN;
+ const response=await fetcher(SWITCH,{headers:{'Accept':'application/vnd.github.raw','Cache-Control':'no-store','User-Agent':'forge-source-intake',...(token?{Authorization:'Bearer '+token}:{})},signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw Error('BLOCKED: release switch unavailable');
  const cfg=await response.json();
  if(!releaseRules(cfg))throw Error('BLOCKED: release switch not enabled for canary or stage');
@@ -70,7 +74,12 @@ function classifyWriterResponse(result,rid){
 }
 const runCanary=(records,opts={})=>runIntake(records,{...opts,expectedMode:'CANARY'});
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,expectedMode='CANARY'}={}){
- if(expectedMode!=='CANARY'&&expectedMode!=='STAGE')throw Error('BLOCKED: expected release mode must be CANARY or STAGE');
+ if(!['CANARY','STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be CANARY, STAGE or AUTO');
+ const auto=expectedMode==='AUTO';
+ // AUTO only: a Writer answer that opened no master transaction (excluded, review flag without a write, matched an
+ // existing row) is accounted as SKIPPED and the batch continues; everything else halts exactly as in STAGE.
+ const skipped=(rid,kind,result)=>({requestId:rid,status:'SKIPPED',reason:kind,accounting:{status:'SKIPPED',reason:kind},writerResult:result});
+ const noWrite=r=>r&&!r.writeId&&Array.isArray(r.receipt?.NEW_PRIMARY_IDS)&&!r.receipt.NEW_PRIMARY_IDS.length&&r.WRITE_ACCEPTED!==true;
  const canary=expectedMode==='CANARY';
  if(!Array.isArray(records)||(canary?records.length!==5:(records.length<1||records.length>200))||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error(canary?'BLOCKED: exactly 5 reviewed canary candidates required':'BLOCKED: 1 to 200 reviewed intake candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
@@ -111,6 +120,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
   if(prior!==undefined){
    // A captured response with no receipt_index entry can only be a no-op. Re-verify it; never re-POST.
+   const pk=classifyWriterResponse(prior,rid).kind;
+   if(auto&&noWrite(prior)&&(pk==='EXCLUDED'||pk==='REVIEW_NEEDED'||(pk==='NOOP_COMPLETE'&&candidate.expectedOutcome==='NEW'))){outcomes.push(skipped(rid,pk,prior));continue}
    let accounting;
    try{accounting=await verifyNoopCase(candidate,rid,prior,{key,transport})}
    catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:prior});halt(e.message)}
@@ -134,6 +145,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   if(verdict.kind==='UNKNOWN'){outcomes.push({requestId:rid,status:'UNKNOWN',writerResult:result});halt('UNKNOWN: Writer transaction not conclusively classified; reconcile before retry')}
+  if(auto&&noWrite(result)&&(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'||(verdict.kind==='NOOP_COMPLETE'&&candidate.expectedOutcome==='NEW'))){outcomes.push(skipped(rid,verdict.kind,result));continue}
   if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push({requestId:rid,status:'HOLD',reason:verdict.kind,writerResult:result});halt('HOLD: Writer '+verdict.kind+' for canary candidate; employer review required before proceeding')}
   if(verdict.kind==='INSERT_ACCEPTED'){
    outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null,writerResult:result});

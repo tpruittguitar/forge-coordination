@@ -1,0 +1,96 @@
+#!/usr/bin/env node
+'use strict';
+/* AUTO source intake (Tim 2026-10-23): run by .github/workflows/source-intake-auto.yml after each source trial on main.
+ * Does nothing unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and FORGE_WRITER_KEY is set.
+ * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person).
+ * 2. Picks up to maxBatch NEW roles from state/source-trial-report.json with the 24-job stage's filters
+ *    (Director+/Senior Manager, core functions, not West Coast or Memphis, no agencies, at most 2 per employer,
+ *    never a role an earlier AUTO run already sent), and keeps only those whose posting page loads and names the employer.
+ * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
+ *    executor gates as the stage. The Writer decides Never Consider; what it declines without writing is SKIPPED.
+ * State and outcome go to receipts/auto-intake/<run>.json (Writer responses only, never the key).
+ * Exit 1 = needs a person (halt or reconcile HOLD); the workflow commits the state first.
+ * Run: node tools/source-intake/auto-run.js [--report state/source-trial-report.json] [--dry-run] */
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {snapshot,auto,finalize}=require('./canary-cli');
+const {read}=require('./writer-reader');
+const {requestId,releaseRules}=require('./production-executor');
+
+const DIR='receipts/auto-intake',SWITCH='control/SOURCE_INTAKE_RELEASE.json';
+const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
+const CORE=/production|manufactur|quality|plant|test engineer|commissioning|operational excellence|continuous improvement|operations director|director of operations|npi|industrializ/i;
+const OFF=/account|financ|compensation|payroll|\bhse\b|\behs\b|safety|environment|strateg|software|supply chain|procure|sourcing|purchas|\bml\b|data|analyst|marketing|sales|human resources|\bhr\b|talent|recruit|legal|\bit\b|cyber|operator|technician|intern/i;
+const WEST=new Set(['CA','WA','OR']);
+const AGENCY=/staffing|recruit|talent|executive search|search partners|personnel|placement|consulting|hr solutions|workforce|\bcareers$/i;
+
+const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
+const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
+const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
+
+function pick(report,{max,sent}){
+ const per={},out=[];
+ for(const r of report.new_roles||[]){
+  if(out.length>=max)break;
+  if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||WEST.has(r.place)||/memphis/i.test(r.location+' '+r.title)||AGENCY.test(r.company))continue;
+  if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
+  const k=r.company.toLowerCase();if((per[k]||0)>=2)continue;
+  const record={COMPANY:r.company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
+  if(sent.has(requestId(record)))continue;
+  per[k]=(per[k]||0)+1;out.push({r,record});
+ }
+ return out;
+}
+// The posting must load and name the employer; its description is the employer-business evidence the Writer screens.
+async function evidence(url,company,fetcher=globalThis.fetch){
+ try{
+  const res=await fetcher(url,{redirect:'follow',signal:AbortSignal.timeout(20000),headers:{'User-Agent':'Mozilla/5.0 (forge-source-intake)'}});
+  if(!res.ok)return null;
+  const html=await res.text(),text=strip(html);
+  if(!text.toLowerCase().includes(company.toLowerCase().split(/[ ,]/)[0]))return null;
+  const d=meta(html,'og:description')||meta(html,'description')||text;
+  const at=d.toLowerCase().indexOf(company.toLowerCase().split(/[ ,]/)[0]);
+  return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
+ }catch{return null}
+}
+function previous(){
+ if(!fs.existsSync(DIR))return [];
+ return fs.readdirSync(DIR).filter(f=>f.endsWith('.json')).map(f=>({file:path.join(DIR,f),state:JSON.parse(fs.readFileSync(path.join(DIR,f),'utf8'))}));
+}
+async function main(argv=process.argv.slice(2)){
+ const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
+ const rules=releaseRules(JSON.parse(fs.readFileSync(SWITCH,'utf8')));
+ if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
+ const key=process.env.FORGE_WRITER_KEY;
+ if(!key)return console.log('AUTO intake off: FORGE_WRITER_KEY is not set');
+ const prior=previous(),open=prior.filter(p=>!p.state.reconciliation&&!p.state.noCandidates);
+ if(open.length)throw Error('NEEDS TIM: earlier AUTO run unfinished: '+open.map(p=>p.file).join(', '));
+ const sent=new Set(prior.flatMap(p=>p.state.requestIds||[]));
+ const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
+ const rulesHash=sha((await read('rules',{key})).data.rules.raw);
+ const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent}),candidates=[];
+ for(const {r,record} of picked){
+  if(candidates.length>=(rules?.maxBatch||25))break;
+  const business=await evidence(r.url,r.company);
+  if(!business)continue;
+  candidates.push({record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
+   reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
+   approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
+ }
+ const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').slice(0,13)+'Z';
+ console.log(JSON.stringify({run,newRoles:(report.new_roles||[]).length,filtered:picked.length,candidates:candidates.length}));
+ if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
+ fs.mkdirSync(DIR,{recursive:true});
+ const statePath=path.join(DIR,run+'.json');
+ if(!candidates.length){fs.writeFileSync(statePath,JSON.stringify({run,noCandidates:true,at:new Date().toISOString()}));return}
+ fs.writeFileSync(path.join(DIR,run+'.candidates.json'),JSON.stringify(candidates,null,1));
+ await snapshot('before',{statePath,candidates,sourceRunId:run,key,mode:'AUTO'});
+ const r=await auto({statePath,candidates,key});
+ console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
+ if(r.status!=='ALL_CASES_ACCOUNTED'&&r.status!=='ALREADY_COMPLETE')throw Error('NEEDS TIM: AUTO run halted: '+r.message);
+ await snapshot('after',{statePath,candidates,key});
+ const rec=finalize({statePath,candidates});
+ console.log(JSON.stringify(rec));
+ if(rec.status==='HOLD')throw Error('NEEDS TIM: AUTO reconcile HOLD '+rec.reason);
+}
+if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
+module.exports={pick,evidence};

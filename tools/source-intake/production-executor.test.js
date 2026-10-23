@@ -377,7 +377,7 @@ test('stage batch bounds are checked before any network',async()=>{
  let calls=0;const count=async()=>{calls++;throw Error('network')};
  await assert.rejects(()=>runIntake(newOnly(201),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
  await assert.rejects(()=>runIntake([],{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
- await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/CANARY or STAGE/);
+ await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/CANARY, STAGE or AUTO/);
  assert.equal(calls,0);
 });
 test('stage reconciliation drops canary coverage but keeps the exact insert set and archive checks',()=>{
@@ -389,4 +389,42 @@ test('stage reconciliation drops canary coverage but keeps the exact insert set 
  assert.equal(ok.status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');assert.equal(ok.mode,'STAGE');assert.equal(ok.scaleUpAllowed,false);
  assert.equal(reconcileIntakeBatch({cases,before:snap(before),after:snap([...after,row('V2I-X',9)]),archiveBefore:snap([]),archiveAfter:snap([]),mode:'STAGE'}).reason,'INSERTED_ID_SET_MISMATCH');
  assert.equal(reconcileCanaryBatch({cases,before:snap(before),after:snap(after),archiveBefore:snap([]),archiveAfter:snap([])}).reason,'FIVE_CASES_REQUIRED');
+});
+
+/* ---- AUTO mode (Tim 2026-10-23) ---- */
+const autoSwitch=(maxBatch=25)=>async()=>({ok:true,json:async()=>({enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch,approvedBy:'Tim 2026-10-23'})});
+const excludedResponse=rid=>({ok:true,COMPLETION_STATUS:'COMPLETE',results:[{result:'NEVER_CONSIDER_EXCLUDED',PRIMARY_ID:'',NEVER_CONSIDER_REVIEW_NEEDED:''}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[]}});
+test('releaseRules: AUTO needs its revision, approvedBy and a batch of 1..25',()=>{
+ assert.deepEqual(releaseRules({enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:25,approvedBy:'Tim'}),{mode:'AUTO',maxBatch:25});
+ for(const bad of [{enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:26,approvedBy:'Tim'},{enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25,approvedBy:'Tim'},
+   {enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:25},{enabled:false,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:25,approvedBy:'Tim'}])
+  assert.equal(releaseRules(bad),null,JSON.stringify(bad));
+});
+test('AUTO: excluded and existing-match answers that wrote nothing are SKIPPED; the batch continues to the next insert',async()=>{
+ const c=newOnly(3),r0=requestId(c[0].record),r1=requestId(c[1].record),log=[];
+ const err=await runIntake(c,opts(mockWriter({post:{[r0]:excludedResponse(r0),[r1]:noopResponse(r1,'V2A-9')}},log),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.match(err.message,/HOLD: Writer accepted/);
+ assert.deepEqual(err.outcomes.map(o=>o.status),['SKIPPED','SKIPPED','PENDING_VERIFICATION']);
+ assert.equal(log.filter(x=>x==='POST').length,3);
+});
+test('STAGE still halts on an excluded answer; AUTO still halts on a review flag that wrote a row',async()=>{
+ const c=newOnly(2),r0=requestId(c[0].record);
+ const e1=await runIntake(c,opts(mockWriter({post:{[r0]:excludedResponse(r0)}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
+ assert.match(e1.message,/HOLD: Writer EXCLUDED/);
+ const flagged=insertResponse(r0);flagged.results[0].NEVER_CONSIDER_REVIEW_NEEDED='Y';
+ const e2=await runIntake(c,opts(mockWriter({post:{[r0]:flagged}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.match(e2.message,/HOLD: Writer REVIEW_NEEDED/);
+});
+test('AUTO reconcile ignores SKIPPED cases and tolerates rows other lanes inserted meanwhile',()=>{
+ const {reconcileIntakeBatch}=require('./canary-accounting');
+ const snap=rows=>({authenticated:true,source:'WRITER',rows});
+ const row=(id,i)=>({PRIMARY_ID:id,COMPANY:'Stage Co '+i,TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH'});
+ const before=snap([{PRIMARY_ID:'V2A-1',COMPANY:'Old',TITLE:'T',LOCATION:'L'}]);
+ const after=snap([...before.rows,row('V2I-A',0),{PRIMARY_ID:'V2I-OTHER',COMPANY:'Email lane',TITLE:'T',LOCATION:'L'}]);
+ const cases=newOnly(2).map((x,i)=>({...x,accounting:i?{status:'SKIPPED'}:{status:'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',primaryId:'V2I-A'}}));
+ const arch=snap([]);
+ assert.equal(reconcileIntakeBatch({cases,before,after,archiveBefore:arch,archiveAfter:arch,mode:'AUTO'}).status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');
+ assert.equal(reconcileIntakeBatch({cases,before,after,archiveBefore:arch,archiveAfter:arch,mode:'STAGE'}).status,'HOLD');
+ const missing=snap([...before.rows,{PRIMARY_ID:'V2I-OTHER',COMPANY:'x',TITLE:'T',LOCATION:'L'}]);
+ assert.equal(reconcileIntakeBatch({cases,before,after:missing,archiveBefore:arch,archiveAfter:arch,mode:'AUTO'}).reason,'INSERTED_ID_SET_MISMATCH');
 });

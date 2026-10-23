@@ -43,8 +43,14 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,req
 // Both snapshots must come from authenticated, complete Writer master acquisitions.
 const reconcileCanaryBatch=args=>reconcileIntakeBatch({...args,mode:'CANARY'});
 // CANARY: exactly five cases covering NEW, EXISTING_MATCH and PROTECTED_NOOP. STAGE: 1..200 cases, any mix.
-function reconcileIntakeBatch({cases:casesInput,before,after,archiveBefore,archiveAfter,mode='CANARY'}={}){
+function reconcileIntakeBatch({cases:allCases,before,after,archiveBefore,archiveAfter,mode='CANARY'}={}){
  const hold=reason=>({status:'HOLD',reason,verified:false,scaleUpAllowed:false});
+ // AUTO runs beside the hourly lanes: SKIPPED cases wrote nothing, and rows other runs insert meanwhile are allowed,
+ // so every inserted case must appear in the master but the inserted set may be larger. Otherwise exactly as STAGE.
+ const autoMode=mode==='AUTO';
+ if(autoMode)mode='STAGE';
+ const casesInput=autoMode&&Array.isArray(allCases)?allCases.filter(x=>x.accounting?.status!=='SKIPPED'):allCases;
+ if(autoMode&&Array.isArray(allCases)&&!casesInput.length&&before&&after)return {status:'NOTHING_INSERTED',mode:'AUTO',cases:allCases.length,skipped:allCases.length,verified:false,scaleUpAllowed:false};
  const canary=mode==='CANARY';
  if(mode!=='CANARY'&&mode!=='STAGE')return hold('UNKNOWN_RELEASE_MODE');
  if(!Array.isArray(casesInput)||(canary?casesInput.length!==5:(casesInput.length<1||casesInput.length>200)))return hold(canary?'FIVE_CASES_REQUIRED':'STAGE_CASE_COUNT');
@@ -72,7 +78,7 @@ function reconcileIntakeBatch({cases:casesInput,before,after,archiveBefore,archi
    return hold('UNVERIFIED_CASE_ACCOUNTING');
  const expectedIds=newCases.map(x=>x.accounting.primaryId);
  if(expectedIds.some(x=>!x)||new Set(expectedIds).size!==expectedIds.length||
-    inserted.length!==newCases.length||inserted.some(x=>!expectedIds.includes(x)))
+    (autoMode?expectedIds.some(x=>!inserted.includes(x)):(inserted.length!==newCases.length||inserted.some(x=>!expectedIds.includes(x)))))
    return hold('INSERTED_ID_SET_MISMATCH');
  for(const x of casesInput){
   const id=x.accounting.primaryId||x.primaryId,record=x.record||{};
