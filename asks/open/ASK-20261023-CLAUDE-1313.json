@@ -1,0 +1,22 @@
+{
+ "id": "ASK-20261023-CLAUDE-1313",
+ "raisedBy": "CLAUDE",
+ "raisedAt": "2026-10-23T13:13:00-04:00",
+ "section": "DECIDE",
+ "level": "WATCH",
+ "title": "Source trial's 6-hour schedule has not fired yet",
+ "detail": "The source trial was set to run every 6 hours (REV-210, live 08:09 UTC 2026-10-23), but no scheduled run had happened by 17:00 UTC; GitHub sometimes drops scheduled runs. Automatic intake runs after each source trial, so no source trial means no new automatic inserts.",
+ "blocks": "Automatic intake cadence.",
+ "options": [
+  "Watch the next runs",
+  "Ask Claude to investigate"
+ ],
+ "recommended": "Watch: if there is still no scheduled run by 2026-10-24, ask Claude to investigate.",
+ "action": "Answer in chat; Claude records it in asks/resolved/.",
+ "links": [
+  {
+   "label": "source-trial runs",
+   "url": "https://github.com/tpruittguitar/forge-coordination/actions/workflows/source-trial.yml"
+  }
+ ]
+}
