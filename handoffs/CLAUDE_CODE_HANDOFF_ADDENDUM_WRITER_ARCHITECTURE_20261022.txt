@@ -1,0 +1,43 @@
+CLAUDE CODE HANDOFF — ADDENDUM 2026-10-22 (Tim)
+Supplements: "FORGE — CLAUDE CODE MASTER HANDOFF" of 2026-10-22 (delivered in chat; not stored in this repo).
+STATUS: UNFINISHED ARCHITECTURE OBJECTIVE. NOTHING BELOW IS IMPLEMENTED OR DEPLOYED.
+STEP 1 RESULT (2026-10-22, receipts/WRITER_THROUGHPUT_MEASUREMENT_20261022.txt): the single Writer is NOT the bottleneck
+(~1.5% utilized over 7 days, ~0.1 s lock wait, max backlog 2). Do not build a second Writer now; improve enrichment yield.
+
+CURRENT STATE (as of 2026-10-22)
+ Original Writer — intake ............................ operational
+ Enrichment through the original Writer ............. operational, with throughput limitations
+ Separate intake and enrichment work queues .......... implemented (logical lanes)
+ Second dedicated enrichment Writer .................. NOT implemented
+ Dual-Writer deployment .............................. NOT verified
+ Independent transaction and concurrency testing ..... NOT completed
+ History: on 2026-10-10 the design settled on one centralized Writer with separate logical intake and enrichment
+ lanes. Enrichment workers may run in parallel, but every commit still goes through the one Writer. That has not
+ been replaced.
+
+OBJECTIVE (candidate target architecture, only if justified by step 1)
+ Writer A — Intake: new jobs, deduplication, application-state protection, canonical identity creation.
+ Writer B — Enrichment: updates to EXISTING records only, addressed by canonical PRIMARY_ID; never creates identities.
+ Shared transaction coordinator: one locking/version authority, idempotent request IDs, durable receipts,
+   receipt-index reconciliation and exact readbacks for both Writers.
+ Both Writers operate on the SAME canonical master. No copies, no second master, no second receipt ledger.
+
+HARD CONSTRAINT
+ Two Writers must never modify the master without coordinated locking and a single transaction authority; otherwise
+ duplicates, lost updates and corrupted receipt reconciliation follow. Today the Writer's saveMasterLines_ relies on
+ one script lock, a single-pending-transaction write fence in the receipt index, and a pre-commit snapshot hash —
+ any second write path must participate in exactly that protocol (or its replacement) before it writes anything.
+
+REQUIRED ORDER OF WORK
+ 1. Establish whether the current Writer is actually the throughput bottleneck for the ~670-record pay/degree
+    enrichment backlog (reported, not re-verified here). Measure from Writer evidence — queue depth and age
+    (writer_status.queue), per-transaction duration, lock wait, single-pending write-fence waits, FAILED/HOLD rates —
+    against enrichment research time per record. If research, source access or verification is the limit, a second
+    Writer does not help.
+ 2. Only if the Writer is the bottleneck: prefer cheaper fixes first (batching enrichment updates per transaction,
+    queue scheduling, verification cadence) and re-measure.
+ 3. Only then design Writer B + coordinator, with concurrency tests (interleaved intake/enrichment, conflicting
+    updates, crash between intent and commit, replay) passing before any deployment.
+
+NOT IN SCOPE OF THE CURRENT SESSION'S WORK
+ PR #40 (source-intake canary) and the HiringCafe adapter use the existing single Writer and are unaffected.
