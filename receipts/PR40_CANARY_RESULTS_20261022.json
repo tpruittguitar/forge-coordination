@@ -1,0 +1,235 @@
+{
+ "canary": "PR40 five-job source intake canary",
+ "sourceRunId": "FORGE-CANARY-20261022",
+ "writerBuild": "4e011a9 (foreman-cockpit#186, Apps Script version 80)",
+ "before": {
+  "takenAt": "2026-10-23T00:46:04.687Z",
+  "masterRows": 1699,
+  "archiveRows": 785
+ },
+ "after": {
+  "takenAt": "2026-10-23T00:56:36.660Z",
+  "masterRows": 1701,
+  "archiveRows": 785
+ },
+ "completedAt": "2026-10-23T00:56:07.405Z",
+ "halts": [
+  {
+   "at": "2026-10-23T00:49:24.966Z",
+   "message": "HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding"
+  },
+  {
+   "at": "2026-10-23T00:53:13.960Z",
+   "message": "HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding"
+  }
+ ],
+ "reconciliation": {
+  "status": "COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA",
+  "verified": false,
+  "scaleUpAllowed": false,
+  "beforeCount": 1699,
+  "afterCount": 1701,
+  "insertedIds": [
+   "V2I-EFD35D57DD0D",
+   "V2I-B1BFE4DC6AF3"
+  ],
+  "archiveBeforeCount": 785,
+  "archiveAfterCount": 785,
+  "at": "2026-10-23T00:56:36.779Z"
+ },
+ "cases": [
+  {
+   "case": 1,
+   "expected": "EXISTING_MATCH",
+   "company": "BETA Technologies",
+   "title": "Director of Supplier Quality",
+   "requestId": "FORGE-SOURCE-22965326D614544CD029F7C8",
+   "writer": {
+    "result": "EXISTING_MATCH",
+    "PRIMARY_ID": "V2I-9E30CCE0E70B",
+    "writeId": null,
+    "COMPLETION_STATUS": "COMPLETE",
+    "NEW_PRIMARY_IDS": []
+   },
+   "receiptIndex": null,
+   "requestResult": {
+    "found": true,
+    "source": "receipts",
+    "status": null,
+    "durable": null
+   },
+   "accounting": {
+    "status": "EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS",
+    "primaryId": "V2I-9E30CCE0E70B",
+    "verified": false,
+    "scaleUpAllowed": false
+   },
+   "masterReadback": {
+    "found": true,
+    "matches": 1,
+    "lineSha256": "e9349aca44535baf008a1e7b484da954194f5d0d98d7ca6a863dc39ffb8921ce",
+    "bucket": "SCOUT_INTAKE",
+    "line": "1599 | V2I-9E30CCE0E70B | BETA Technologies | Director of Supplier Quality | SCOUT_INTAKE | INTAKE/AWAITING_ANALYSIS | SCOUT_INTAKE_2026-10-12; RUN_FORGE-WEB-GROK-20261012-0015ET-B02 | 4418953009 | South Burlington, Vermont, United States"
+   }
+  },
+  {
+   "case": 2,
+   "expected": "PROTECTED_NOOP",
+   "company": "Anduril Industries",
+   "title": "Deputy Head of Production, Autonomous Airpower (Fury)",
+   "requestId": "FORGE-SOURCE-E7540F1B38033F3D9C60B249",
+   "writer": {
+    "result": "EXISTING_MATCH",
+    "PRIMARY_ID": "V2S-ANDURIL-FURY-5577",
+    "writeId": null,
+    "COMPLETION_STATUS": "COMPLETE",
+    "NEW_PRIMARY_IDS": []
+   },
+   "receiptIndex": null,
+   "requestResult": {
+    "found": true,
+    "source": "receipts",
+    "status": null,
+    "durable": null
+   },
+   "accounting": {
+    "status": "EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS",
+    "primaryId": "V2S-ANDURIL-FURY-5577",
+    "verified": false,
+    "scaleUpAllowed": false
+   },
+   "masterReadback": {
+    "found": false,
+    "matches": 0,
+    "lineSha256": null,
+    "bucket": null,
+    "line": null
+   }
+  },
+  {
+   "case": 3,
+   "expected": "EXISTING_MATCH",
+   "company": "Outrider",
+   "title": "Senior Manager, Autonomous Vehicle Assembly Operations",
+   "requestId": "FORGE-SOURCE-D6A96A75E63B2B4C11A0FCDB",
+   "writer": {
+    "result": "EXISTING_MATCH",
+    "PRIMARY_ID": "V2I-029CE63ACABD",
+    "writeId": null,
+    "COMPLETION_STATUS": "COMPLETE",
+    "NEW_PRIMARY_IDS": []
+   },
+   "receiptIndex": null,
+   "requestResult": {
+    "found": true,
+    "source": "receipts",
+    "status": null,
+    "durable": null
+   },
+   "accounting": {
+    "status": "EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS",
+    "primaryId": "V2I-029CE63ACABD",
+    "verified": false,
+    "scaleUpAllowed": false
+   },
+   "masterReadback": {
+    "found": true,
+    "matches": 1,
+    "lineSha256": "0172f070eb57fe155e1c2a645aef3d5fb798b2549d8fa80ee27cf8424bfa3fa6",
+    "bucket": "APPLIED",
+    "line": "1692 | V2I-029CE63ACABD | Outrider | Senior Manager, Autonomous Vehicle Assembly Operations | APPLIED | RESOLVED/APPLIED_CONFIRMED | SCOUT_INTAKE_2026-10-12; RUN_FORGE-WEB-GROK-20261012-0120ET-B01; APPLIED_2026-08-15 | 5392330008 | Henderson, CO"
+   }
+  },
+  {
+   "case": 4,
+   "expected": "NEW",
+   "company": "Anduril Industries",
+   "title": "Director of Production, Optics",
+   "requestId": "FORGE-SOURCE-E3EB36A23E02D6BCC9CE8C8B",
+   "writer": {
+    "result": "SCOUT_INTAKE_WRITTEN",
+    "PRIMARY_ID": "V2I-EFD35D57DD0D",
+    "writeId": "W-20261023004905773-12682e",
+    "COMPLETION_STATUS": "PENDING_VERIFICATION",
+    "NEW_PRIMARY_IDS": [
+     "V2I-EFD35D57DD0D"
+    ]
+   },
+   "receiptIndex": {
+    "s": "COMPLETE",
+    "w": "W-20261023004905773-12682e",
+    "items": [
+     {
+      "pid": "V2I-EFD35D57DD0D",
+      "op": "INSERT"
+     }
+    ]
+   },
+   "requestResult": {
+    "found": true,
+    "source": "index",
+    "status": "COMPLETE",
+    "durable": true
+   },
+   "accounting": {
+    "status": "CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK",
+    "primaryId": "V2I-EFD35D57DD0D",
+    "verified": false,
+    "scaleUpAllowed": false
+   },
+   "masterReadback": {
+    "found": true,
+    "matches": 1,
+    "lineSha256": "53e507525b980f85cf7987a917de6b95b0d7083078a2ab260bad4958ad2c600a",
+    "bucket": "SCOUT_INTAKE",
+    "line": "2485 | V2I-EFD35D57DD0D | Anduril Industries | Director of Production, Optics | SCOUT_INTAKE | INTAKE/AWAITING_ANALYSIS | SCOUT_INTAKE_2026-10-23; RUN_FORGE-CANARY-20261022-C4 | 5268363007 | Waltham, Massachusetts, United States"
+   }
+  },
+  {
+   "case": 5,
+   "expected": "NEW",
+   "company": "nVent",
+   "title": "Director of Manufacturing Automation",
+   "requestId": "FORGE-SOURCE-16F1783DBEAE4D56B32FEBA4",
+   "writer": {
+    "result": "SCOUT_INTAKE_WRITTEN",
+    "PRIMARY_ID": "V2I-B1BFE4DC6AF3",
+    "writeId": "W-20261023005256393-49f943",
+    "COMPLETION_STATUS": "PENDING_VERIFICATION",
+    "NEW_PRIMARY_IDS": [
+     "V2I-B1BFE4DC6AF3"
+    ]
+   },
+   "receiptIndex": {
+    "s": "COMPLETE",
+    "w": "W-20261023005256393-49f943",
+    "items": [
+     {
+      "pid": "V2I-B1BFE4DC6AF3",
+      "op": "INSERT"
+     }
+    ]
+   },
+   "requestResult": {
+    "found": true,
+    "source": "index",
+    "status": "COMPLETE",
+    "durable": true
+   },
+   "accounting": {
+    "status": "CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK",
+    "primaryId": "V2I-B1BFE4DC6AF3",
+    "verified": false,
+    "scaleUpAllowed": false
+   },
+   "masterReadback": {
+    "found": true,
+    "matches": 1,
+    "lineSha256": "4c5d34b9400a489af9a07c919b4b167c4ea5497b93d3725dd30e7697623f6da8",
+    "bucket": "SCOUT_INTAKE",
+    "line": "2486 | V2I-B1BFE4DC6AF3 | nVent | Director of Manufacturing Automation | SCOUT_INTAKE | INTAKE/AWAITING_ANALYSIS | SCOUT_INTAKE_2026-10-23; RUN_FORGE-CANARY-20261022-C5 | R19232 | St Louis Park, MN, US"
+   }
+  }
+ ],
+ "collectedAt": "2026-10-23T00:57:52.882Z"
+}
