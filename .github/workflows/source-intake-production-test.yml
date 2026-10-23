@@ -17,5 +17,11 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tools/source-intake/*.test.js
-      - name: Release switch must stay disabled on this branch
+      # A pull request (or any branch other than main) can never arm the canary.
+      - name: Release switch must stay disabled outside main
+        if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
         run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');if(c.enabled!==false||c.mode!=='DISABLED')process.exit(1)"
+      # On main the switch is armed only by Tim's approved commit; it must be exactly disarmed or exactly armed for the canary.
+      - name: Release switch on main must be a valid disarmed or canary state
+        if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
+        run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');const off=c.enabled===false&&c.mode==='DISABLED',on=c.enabled===true&&c.mode==='CANARY';if(c.revision!=='SOURCE_INTAKE_CANARY_V1'||c.maxBatch!==5||!(off||on))process.exit(1);console.log('release switch on main:',on?'ARMED (CANARY)':'disarmed')"
