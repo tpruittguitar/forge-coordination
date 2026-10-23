@@ -1,80 +1,295 @@
 {
- "at": "2026-10-23T10:08:27.551Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T1008Z",
+ "at": "2026-10-23T13:31:37.127Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T1328Z",
  "dry": false,
- "rows": 1743,
- "eligible": 331,
- "anchors": 161,
+ "rows": 1757,
+ "eligible": 261,
+ "anchors": 166,
  "archive_anchors": 6,
  "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 0,
- "skipped_recent": 283,
+ "degree": 11,
+ "estimates": 10,
+ "estimate_waiting_for_posting": 47,
+ "skipped_recent": 130,
  "submitted": 0,
- "guard_dropped": 2,
+ "guard_dropped": 0,
  "writer_ok": 0,
- "writer_failed": 0,
+ "writer_failed": 15,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "indeed": 1,
-  "linkedin": 2
+  "linkedin": 15,
+  "indeed": 3,
+  "ziprecruiter": 1
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 11
  },
- "agg_pay": {},
+ "agg_pay": {
+  "linkedin": 5
+ },
  "agg_failed": {
-  "indeed": 1
+  "linkedin": 3,
+  "indeed": 3,
+  "ziprecruiter": 1
  },
  "agg_errors": {
+  "linkedin": [
+   "429",
+   "404",
+   "404"
+  ],
   "indeed": [
+   "401",
+   "401",
    "401"
+  ],
+  "ziprecruiter": [
+   "403"
   ]
  },
- "agg_wall": {},
+ "agg_wall": {
+  "linkedin": 1
+ },
  "est_same_employer": 0,
- "est_comparables": 0,
- "boards_read": 0,
+ "est_comparables": 10,
+ "boards_read": 1,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
-  "ABOVE": 0,
+  "OK": 8,
+  "ABOVE": 1,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 1
  },
- "bls_queries": 0,
- "est_shared_low": 0,
- "ats_candidates": 26,
+ "bls_queries": 2,
+ "est_shared_low": 10,
+ "ats_candidates": 24,
  "ats_by_kind": {
-  "workday": 10,
+  "workday": 12,
   "ashby": 5,
-  "greenhouse": 10,
+  "greenhouse": 6,
   "lever": 1
  },
- "skipped_closed": 45,
+ "skipped_closed": 39,
  "ats_unconfirmed": 0,
- "nothing_found": 1,
+ "nothing_found": 77,
  "upgraded": 0,
- "planned": 2,
+ "planned": 15,
+ "writer_error": "https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec?action=row_readback&key=…&ids=V2I-E907B5019E8A,V2I-919523995653,V2I-33D0B75C2DD5,V2I-EF",
  "sample": [
   {
-   "id": "V2I-302835E30F10",
+   "id": "V2I-E907B5019E8A",
    "fields": {
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 190000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4480017823",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4480017823",
+    "DEGREE_ASOF": "2026-10-23",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
    }
   },
   {
-   "id": "V2I-5798F7DC6DEF",
+   "id": "V2I-919523995653",
    "fields": {
+    "DEGREE_TEXT": "Bachelor's degree from an accredited college, or equivalent experience/combined education",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4480033880",
+    "DEGREE_ASOF": "2026-10-23",
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 222000,
+    "SALARY_MIDPOINT": 193500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B,V2I-9987A70AA529",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 6 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B, V2I-9987A70AA529]; 6 employer-posted comparable(s), level 2 MFG same region S; range shared by 21 eligible roles from the same comparables, so LOW; BLS AL 113051 P25-P90 $92K-$204K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-33D0B75C2DD5",
+   "fields": {
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 172500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4482456789",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Operations Management, Business, or a related discipline preferred.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4482456789",
+    "DEGREE_ASOF": "2026-10-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-EF5DA84E2EB8",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor’s Degree in Business Administration, Manufacturing, Operations Management, Engineering, or a related field required; master’s degree or MBA preferred.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481153299",
+    "DEGREE_ASOF": "2026-10-23",
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 216000,
+    "SALARY_MIDPOINT": 190500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2S-INTUITIVEMACHINES-DIRHVP-R23964,V2S-MAYBELL-DIR-MFG-5415157008,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2F-D400EE31A881, V2S-INTUITIVEMACHINES-DIRHVP-R23964, V2S-MAYBELL-DIR-MFG-5415157008, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 7 employer-posted comparable(s), level 2 MFG any region; range shared by 5 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-78CF4EC99443",
+   "fields": {
+    "SALARY_BASE_LOW": 140326,
+    "SALARY_BASE_HIGH": 228029,
+    "SALARY_MIDPOINT": 184178,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4482154035",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Associate degree with 10+ years of progressive manufacturing, operations, or facilities leadership experience, OR",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4482154035",
+    "DEGREE_ASOF": "2026-10-23",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-919523995653",
+   "company": "Lockheed Martin",
+   "title": "Assembly, Integration, & Test Director",
+   "location": "Courtland, AL",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480033880/",
+   "est": [
+    165000,
+    222000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "6 employer-posted comparable(s), level 2 MFG same region S; range shared by 21 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B",
+    "V2I-9987A70AA529"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-EF5DA84E2EB8",
+   "company": "Bridgestone Americas",
+   "title": "Director of Manufacturing",
+   "location": "North Carolina, United States",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481153299/",
+   "est": [
+    165000,
+    216000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG any region; range shared by 5 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2S-INTUITIVEMACHINES-DIRHVP-R23964",
+    "V2S-MAYBELL-DIR-MFG-5415157008",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-4F7141B03576",
+   "company": "The Judge Group",
+   "title": "Manufacturing Director (1158724)",
+   "location": "Bend, OR",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481613230/",
+   "est": [
+    178000,
+    240000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region W; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2S-MAYBELL-DIR-MFG-5415157008",
+    "V2I-8E5A4E599437",
+    "V2I-CF442CBFC904",
+    "V2I-3673CBC7020E",
+    "V2I-B8E84E47C2F8"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-2665BCE4101D",
+   "company": "Resource Label Group",
+   "title": "Plant Manager",
+   "location": "Minneapolis, MN, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4478218328",
+   "est": [
+    156000,
+    215000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region MW; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-D12D92FC7251",
+    "V2I-AE6B9498C206",
+    "V2I-B96ABE6B628A",
+    "V2I-8C7EA3FC89EC",
+    "V2I-A71B1BD9F6C4"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-B184841C3989",
+   "company": "Ash Grove Cement Company",
+   "title": "Plant Manager",
+   "location": "Louisville, NE, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4478921314",
+   "est": [
+    156000,
+    215000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region MW; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-D12D92FC7251",
+    "V2I-AE6B9498C206",
+    "V2I-B96ABE6B628A",
+    "V2I-8C7EA3FC89EC",
+    "V2I-A71B1BD9F6C4"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
