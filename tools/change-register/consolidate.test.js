@@ -87,13 +87,12 @@ test('record fields: PR and DATE override what git found; WHAT may contain "="',
   assert.strictEqual(r.added[0].line, 'REV-195  2026-10-21  foreman-cockpit      #131          LIVE     Cockpit fix');
 });
 
-test('lane label keys are tolerated: PROVIDER/RUN_ID ignored, CHANGE means WHAT', () => {
+test('commit-label keys in a record are rejected with the fix (POSTVAL records of 2026-10-23)', () => {
   const p = parseRecord('PROVIDER=Claude\nRUN_ID=FORGE-POSTVAL-CLAUDE-20261023-0430ET\nCHANGE=Added a receipt\n', 'claude-20261023-0430-postval-receipt');
-  assert.deepStrictEqual(p.errors, []); assert.strictEqual(p.fields.WHAT, 'Added a receipt');
-  assert.ok(!('PROVIDER' in p.fields) && !('RUN_ID' in p.fields));
-  assert.ok(parseRecord('WHAT=One\nCHANGE=Two\n', 'claude-x').errors.some(e => /CHANGE is another name for WHAT/.test(e)));
-  assert.ok(parseRecord('CHANGE=One\nWHAT=Two\n', 'claude-x').errors.some(e => /WHAT given twice/.test(e)));
-  assert.ok(parseRecord('PROVIDER=Claude\n', 'claude-x').errors.some(e => /WHAT is required/.test(e)), 'ignored keys do not stand in for WHAT');
+  assert.ok(p.errors.some(e => /line 1: unknown key PROVIDER: PROVIDER belongs in the commit message/.test(e)));
+  assert.ok(p.errors.some(e => /line 2: unknown key RUN_ID: RUN_ID belongs in the commit message/.test(e)));
+  assert.ok(p.errors.some(e => /line 3: unknown key CHANGE: use WHAT=/.test(e)));
+  assert.ok(p.errors.some(e => /WHAT is required/.test(e)));
 });
 
 test('merge subjects give the PR number; ET dates', () => {
