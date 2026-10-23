@@ -20,7 +20,7 @@ const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-rea
 const {runIntake,requestId}=require('./production-executor');
 const {reconcileIntakeBatch}=require('./canary-accounting');
 const {read}=require('./writer-reader');
-const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED']);
+const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED','SKIPPED']);
 const hashOf=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function loadState(path){try{return JSON.parse(fs.readFileSync(path,'utf8'))}catch(e){if(e.code==='ENOENT')return null;throw Error('BLOCKED: canary state unreadable')}}
 function saveState(path,state){const tmp=path+'.tmp',fd=fs.openSync(tmp,'w');try{fs.writeFileSync(fd,JSON.stringify(state,null,1));fs.fsyncSync(fd)}finally{fs.closeSync(fd)}fs.renameSync(tmp,path)}
@@ -42,7 +42,7 @@ async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mo
  if(phase==='before'){
   if(state)throw Error('BLOCKED: canary state already exists; a before snapshot is taken once');
   if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
-  if(mode!=='CANARY'&&mode!=='STAGE')throw Error('BLOCKED: mode must be CANARY or STAGE');
+  if(!['CANARY','STAGE','AUTO'].includes(mode))throw Error('BLOCKED: mode must be CANARY, STAGE or AUTO');
  }else if(phase==='after'){
   bound(state,candidates);
   if(state.completedAt==null)throw Error('BLOCKED: after snapshot requires all five cases accounted');

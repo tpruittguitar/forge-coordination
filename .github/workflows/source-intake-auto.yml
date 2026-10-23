@@ -1,0 +1,48 @@
+# AUTO source intake (Tim 2026-10-23): after each source trial on main, insert up to maxBatch filtered NEW roles through the
+# Writer with the stage's executor gates. Off unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and the
+# FORGE_WRITER_KEY secret exists. A failed run means it needs a person; later runs refuse to start until it is resolved.
+# See tools/source-intake/auto-run.js.
+name: source-intake-auto
+on:
+  workflow_run:
+    workflows: [source-trial]
+    types: [completed]
+    branches: [main]
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: source-intake-auto
+  cancel-in-progress: false
+jobs:
+  intake:
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 330   # 25 inserts at ~6 min each waiting for durable receipts
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Intake
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/source-intake/auto-run.js
+      - name: Commit run record (also after a halt)
+        if: always()
+        run: |
+          [ -d receipts/auto-intake ] || exit 0
+          git config user.name forge-auto-intake-bot
+          git config user.email forge-auto-intake-bot@users.noreply.github.com
+          for i in 1 2 3 4 5 6; do
+            git add receipts/auto-intake
+            git diff --cached --quiet && exit 0
+            git commit -q -m "AUTO-INTAKE-BOT: run record"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git fetch -q origin main && git rebase -q origin/main || { git rebase --abort; exit 1; }
+          done
+          exit 1
