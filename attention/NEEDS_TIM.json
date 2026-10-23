@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-23T01:20:58.021Z",
- "sourceCommit": "38d4b4b0d77a39db74d855256c12391af70a5feb",
+ "builtAt": "2026-10-23T01:21:26.725Z",
+ "sourceCommit": "0f71223b5483ea36fee8d351033b1bbb274d2a2a",
  "counts": {
-  "total": 9,
+  "total": 7,
   "BLOCKING": 0,
-  "ACTION": 7,
+  "ACTION": 5,
   "WATCH": 2,
   "DECIDE": 2,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 5
+  "UPKEEP": 3
  },
  "items": [
   {
@@ -33,18 +33,6 @@
    "raisedBy": "CLAUDE",
    "askId": "ASK-20261019-CLAUDE-1855",
    "links": []
-  },
-  {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "EMAIL lane has gone quiet (usually reports every 1.1 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt (CHATGPT, status PARTIAL). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
-   "at": "2026-10-21T11:57:00-04:00",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "pr:forge-coordination#36",
@@ -80,18 +68,6 @@
    "source": "forge-coordination #41",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/41",
    "at": "2026-10-22T23:22:36Z",
-   "raisedBy": ""
-  },
-  {
-   "id": "pr:forge-coordination#46",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "forge-coordination PR #46: REV-195: record 19:56 ET email discovery intake",
-   "detail": "Open since 2026-10-23. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-coordination #46",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/46",
-   "at": "2026-10-23T00:08:41Z",
    "raisedBy": ""
   },
   {
@@ -149,12 +125,12 @@
   {
    "lane": "EMAIL",
    "provider": "CHATGPT",
-   "lastAt": "2026-10-21T11:57:00-04:00",
-   "lastStatus": "PARTIAL",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261021-1157ET_TERMINAL.txt",
-   "runs7d": 50,
-   "usualGapHours": 1.1,
-   "overdue": true
+   "lastAt": "2026-10-22T19:56:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261022-1956ET_TERMINAL.txt",
+   "runs7d": 51,
+   "usualGapHours": 2,
+   "overdue": false
   },
   {
    "lane": "EMAIL",
@@ -164,7 +140,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
    "runs7d": 1,
    "usualGapHours": 27,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "ENRICH-FEASIBILITY",
