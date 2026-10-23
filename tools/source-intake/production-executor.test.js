@@ -428,3 +428,13 @@ test('AUTO reconcile ignores SKIPPED cases and tolerates rows other lanes insert
  const missing=snap([...before.rows,{PRIMARY_ID:'V2I-OTHER',COMPANY:'x',TITLE:'T',LOCATION:'L'}]);
  assert.equal(reconcileIntakeBatch({cases,before,after:missing,archiveBefore:arch,archiveAfter:arch,mode:'AUTO'}).reason,'INSERTED_ID_SET_MISMATCH');
 });
+test('AUTO: any well-formed answer that wrote nothing (e.g. IDENTITY_CONFLICT) is SKIPPED; a malformed one still halts',async()=>{
+ const c=newOnly(2),r0=requestId(c[0].record),r1=requestId(c[1].record);
+ const conflict={ok:true,COMPLETION_STATUS:'COMPLETE',results:[{result:'IDENTITY_CONFLICT',PRIMARY_ID:'',NEVER_CONSIDER_REVIEW_NEEDED:''}],receipt:{REQUEST_ID:r0,NEW_PRIMARY_IDS:[]}};
+ const err=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.deepEqual(err.outcomes.map(o=>o.status+':'+(o.reason||'')),['SKIPPED:IDENTITY_CONFLICT','PENDING_VERIFICATION:']);
+ const bad=await runIntake(c,opts(mockWriter({post:{[r0]:{ok:true,results:[]}}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.match(bad.message,/UNKNOWN/);
+ const stage=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
+ assert.match(stage.message,/UNKNOWN/);
+});

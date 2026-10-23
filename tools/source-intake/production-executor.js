@@ -80,6 +80,13 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  // existing row) is accounted as SKIPPED and the batch continues; everything else halts exactly as in STAGE.
  const skipped=(rid,kind,result)=>({requestId:rid,status:'SKIPPED',reason:kind,accounting:{status:'SKIPPED',reason:kind},writerResult:result});
  const noWrite=r=>r&&!r.writeId&&Array.isArray(r.receipt?.NEW_PRIMARY_IDS)&&!r.receipt.NEW_PRIMARY_IDS.length&&r.WRITE_ACCEPTED!==true;
+ // Any well-formed answer for this request that wrote nothing, whatever its result (IDENTITY_CONFLICT halted the
+ // second AUTO run as UNKNOWN on 2026-10-23). Returns the reason to record, or null.
+ const autoSkip=(r,rid,kind,candidate)=>{
+  if(!auto||!noWrite(r)||r.ok!==true||r.receipt?.REQUEST_ID!==rid||!Array.isArray(r.results)||r.results.length!==1)return null;
+  if(kind==='INSERT_ACCEPTED'||(kind==='NOOP_COMPLETE'&&candidate.expectedOutcome!=='NEW'))return null;
+  return kind==='UNKNOWN'?String(r.results[0]?.result||'NO_WRITE'):kind;
+ };
  const canary=expectedMode==='CANARY';
  if(!Array.isArray(records)||(canary?records.length!==5:(records.length<1||records.length>200))||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error(canary?'BLOCKED: exactly 5 reviewed canary candidates required':'BLOCKED: 1 to 200 reviewed intake candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
@@ -121,7 +128,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(prior!==undefined){
    // A captured response with no receipt_index entry can only be a no-op. Re-verify it; never re-POST.
    const pk=classifyWriterResponse(prior,rid).kind;
-   if(auto&&noWrite(prior)&&(pk==='EXCLUDED'||pk==='REVIEW_NEEDED'||(pk==='NOOP_COMPLETE'&&candidate.expectedOutcome==='NEW'))){outcomes.push(skipped(rid,pk,prior));continue}
+   const priorSkip=autoSkip(prior,rid,pk,candidate);
+   if(priorSkip){outcomes.push(skipped(rid,priorSkip,prior));continue}
    let accounting;
    try{accounting=await verifyNoopCase(candidate,rid,prior,{key,transport})}
    catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:prior});halt(e.message)}
@@ -144,8 +152,9 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; save outcomes[].writerResult and reconcile the receipt index before any retry')}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
+  const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
+  if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
   if(verdict.kind==='UNKNOWN'){outcomes.push({requestId:rid,status:'UNKNOWN',writerResult:result});halt('UNKNOWN: Writer transaction not conclusively classified; reconcile before retry')}
-  if(auto&&noWrite(result)&&(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'||(verdict.kind==='NOOP_COMPLETE'&&candidate.expectedOutcome==='NEW'))){outcomes.push(skipped(rid,verdict.kind,result));continue}
   if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push({requestId:rid,status:'HOLD',reason:verdict.kind,writerResult:result});halt('HOLD: Writer '+verdict.kind+' for canary candidate; employer review required before proceeding')}
   if(verdict.kind==='INSERT_ACCEPTED'){
    outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null,writerResult:result});
