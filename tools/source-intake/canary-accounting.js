@@ -41,9 +41,13 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,req
 
 // Independent snapshot reconciliation never trusts a Writer response as a row-count oracle.
 // Both snapshots must come from authenticated, complete Writer master acquisitions.
-function reconcileCanaryBatch({cases:casesInput,before,after,archiveBefore,archiveAfter}={}){
+const reconcileCanaryBatch=args=>reconcileIntakeBatch({...args,mode:'CANARY'});
+// CANARY: exactly five cases covering NEW, EXISTING_MATCH and PROTECTED_NOOP. STAGE: 1..200 cases, any mix.
+function reconcileIntakeBatch({cases:casesInput,before,after,archiveBefore,archiveAfter,mode='CANARY'}={}){
  const hold=reason=>({status:'HOLD',reason,verified:false,scaleUpAllowed:false});
- if(!Array.isArray(casesInput)||casesInput.length!==5)return hold('FIVE_CASES_REQUIRED');
+ const canary=mode==='CANARY';
+ if(mode!=='CANARY'&&mode!=='STAGE')return hold('UNKNOWN_RELEASE_MODE');
+ if(!Array.isArray(casesInput)||(canary?casesInput.length!==5:(casesInput.length<1||casesInput.length>200)))return hold(canary?'FIVE_CASES_REQUIRED':'STAGE_CASE_COUNT');
  if(!before||!after||before.authenticated!==true||after.authenticated!==true||
     before.source!=='WRITER'||after.source!=='WRITER'||!Array.isArray(before.rows)||!Array.isArray(after.rows))
    return hold('INDEPENDENT_WRITER_SNAPSHOTS_REQUIRED');
@@ -61,8 +65,8 @@ function reconcileCanaryBatch({cases:casesInput,before,after,archiveBefore,archi
  const deleted=[...a.keys()].filter(id=>!b.has(id));
  if(deleted.length)return hold('UNEXPECTED_ROW_DELETION');
  const newCases=casesInput.filter(x=>x.expectedOutcome==='NEW');
- if(!newCases.length||!casesInput.some(x=>x.expectedOutcome==='EXISTING_MATCH')||
-    !casesInput.some(x=>x.expectedOutcome==='PROTECTED_NOOP'))return hold('CANARY_CASE_COVERAGE');
+ if(canary&&(!newCases.length||!casesInput.some(x=>x.expectedOutcome==='EXISTING_MATCH')||
+    !casesInput.some(x=>x.expectedOutcome==='PROTECTED_NOOP')))return hold('CANARY_CASE_COVERAGE');
  if(casesInput.some(x=>!x.accounting||x.accounting.status!=='CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK'&&
     x.accounting.status!=='EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS'))
    return hold('UNVERIFIED_CASE_ACCOUNTING');
@@ -86,7 +90,7 @@ function reconcileCanaryBatch({cases:casesInput,before,after,archiveBefore,archi
   if(x.expectedOutcome!=='NEW'&&!a.has(id))return hold('NOOP_CREATED_NEW_ROW');
   if(!sameIdentity(b.get(id),record))return hold('MASTER_IDENTITY_MISMATCH');
  }
- return {status:'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA',verified:false,scaleUpAllowed:false,
+ return {status:'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA',mode,cases:casesInput.length,verified:false,scaleUpAllowed:false,
    beforeCount:a.size,afterCount:b.size,insertedIds:inserted,archiveBeforeCount:archiveBefore.rows.length,archiveAfterCount:archiveAfter.rows.length};
 }
-module.exports={checkCanaryOutcome,reconcileCanaryBatch};
+module.exports={checkCanaryOutcome,reconcileCanaryBatch,reconcileIntakeBatch};

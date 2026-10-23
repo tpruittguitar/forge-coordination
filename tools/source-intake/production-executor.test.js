@@ -345,3 +345,48 @@ test('kill switch turned off between cases stops the next case; it cannot recall
  assert.match(err.message,/release switch not enabled/);
  assert.equal(log.filter(x=>x==='POST').length,1,'case 1 was already posted and is accounted; case 2 never posts');
 });
+
+// ---- Staged release (25 / 200) ----
+const {releaseRules,runIntake}=require('./production-executor');
+const stageSwitch=(maxBatch=25,extra={})=>async()=>({ok:true,json:async()=>({enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch,approvedBy:'Tim 2026-10-22',...extra})});
+const newOnly=n=>Array.from({length:n},(_,i)=>({record:{COMPANY:'Stage Co '+i,TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH',SOURCE_URL:'https://example.com/stage/'+i},
+ evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
+ reviewedNeverConsider:false,expectedOutcome:'NEW',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
+test('releaseRules: only the canary and an approved 25/200 stage are armed states',()=>{
+ assert.deepEqual(releaseRules({enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:5}),{mode:'CANARY',maxBatch:5});
+ assert.deepEqual(releaseRules({enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:200,approvedBy:'Tim'}),{mode:'STAGE',maxBatch:200});
+ for(const bad of [{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25},{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:50,approvedBy:'Tim'},
+   {enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25,approvedBy:'Tim'},{enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25},
+   {enabled:false,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25,approvedBy:'Tim'},{enabled:true,mode:'PRODUCTION',maxBatch:200}])
+  assert.equal(releaseRules(bad),null,JSON.stringify(bad));
+});
+test('a stage run needs no canary coverage and goes through the same one-insert-at-a-time halt',async()=>{
+ const log=[];const err=await runIntake(newOnly(3),opts(mockWriter({},log),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
+ assert.match(err.message,/HOLD: Writer accepted/);assert.equal(log.filter(x=>x==='POST').length,1);
+});
+test('a stage larger than the switch maxBatch never posts',async()=>{
+ const log=[];await assert.rejects(()=>runIntake(newOnly(26),opts(mockWriter({},log),{switchTransport:stageSwitch(25),expectedMode:'STAGE'})),/26 candidates exceed the switch maxBatch 25/);
+ assert.ok(!log.includes('POST'));
+});
+test('the live switch mode must match the run: a stage run never fires on a canary switch and vice versa',async()=>{
+ const log=[];await assert.rejects(()=>runIntake(newOnly(3),opts(mockWriter({},log),{expectedMode:'STAGE'})),/release switch is CANARY but this run is STAGE/);
+ await assert.rejects(()=>runCanary(canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),opts(mockWriter({},log),{switchTransport:stageSwitch()})),/release switch is STAGE but this run is CANARY/);
+ assert.ok(!log.includes('POST'));
+});
+test('stage batch bounds are checked before any network',async()=>{
+ let calls=0;const count=async()=>{calls++;throw Error('network')};
+ await assert.rejects(()=>runIntake(newOnly(201),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
+ await assert.rejects(()=>runIntake([],{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
+ await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/CANARY or STAGE/);
+ assert.equal(calls,0);
+});
+test('stage reconciliation drops canary coverage but keeps the exact insert set and archive checks',()=>{
+ const {reconcileIntakeBatch,reconcileCanaryBatch}=require('./canary-accounting');
+ const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'C'+n,TITLE:'T'+n,LOCATION:'L'});const snap=rows=>({source:'WRITER',authenticated:true,rows});
+ const before=[row('V2I-1',1)],after=[...before,row('V2I-4',4),row('V2I-5',5)];
+ const cases=[4,5].map(n=>({expectedOutcome:'NEW',record:row('',n),accounting:{status:'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',primaryId:'V2I-'+n}}));
+ const ok=reconcileIntakeBatch({cases,before:snap(before),after:snap(after),archiveBefore:snap([]),archiveAfter:snap([]),mode:'STAGE'});
+ assert.equal(ok.status,'COUNT_AND_IDENTITY_CONSISTENT_REQUIRES_INDEPENDENT_QA');assert.equal(ok.mode,'STAGE');assert.equal(ok.scaleUpAllowed,false);
+ assert.equal(reconcileIntakeBatch({cases,before:snap(before),after:snap([...after,row('V2I-X',9)]),archiveBefore:snap([]),archiveAfter:snap([]),mode:'STAGE'}).reason,'INSERTED_ID_SET_MISMATCH');
+ assert.equal(reconcileCanaryBatch({cases,before:snap(before),after:snap(after),archiveBefore:snap([]),archiveAfter:snap([])}).reason,'FIVE_CASES_REQUIRED');
+});

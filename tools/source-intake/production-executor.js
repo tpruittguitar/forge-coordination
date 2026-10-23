@@ -8,6 +8,9 @@
  * Durability: runCanary requires a recorder {check, record, read}. check() must prove a write/read-back before any
  * network call; every Writer response is recorded and read back before it is classified. A recorder failure after
  * a POST halts as UNKNOWN with the response attached to the error — reconcile, never retry.
+ * Release stages (control/SOURCE_INTAKE_RELEASE.json): CANARY = revision SOURCE_INTAKE_CANARY_V1, maxBatch 5, exactly five
+ * cases covering new, existing and protected; STAGE = revision SOURCE_INTAKE_STAGE_V1, maxBatch 25 or 200, approvedBy set,
+ * 1..maxBatch reviewed cases. Every case still goes through the same gates, recorder and one-transaction-at-a-time halt.
  * Kill switch: re-read before each case. Turning it off stops LATER cases only; it cannot cancel a POST already in
  * flight, so a case that was mid-POST must still be reconciled through the receipt index.
  */
@@ -26,11 +29,18 @@ const validPid=x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x||'');
 const norm=x=>String(x??'').trim().toLowerCase();
 const sameIdentity=(row,record)=>norm(row.COMPANY)===norm(record.COMPANY)&&norm(row.TITLE)===norm(record.TITLE)&&
  norm(row.LOCATION)===norm(record.LOCATION)&&(!record.REQ_ID||norm(row.REQ_ID)===norm(record.REQ_ID));
+// The only two armed states the executor accepts. Anything else is disarmed.
+function releaseRules(cfg){
+ if(!cfg||cfg.enabled!==true)return null;
+ if(cfg.mode==='CANARY'&&cfg.revision==='SOURCE_INTAKE_CANARY_V1'&&cfg.maxBatch===5)return {mode:'CANARY',maxBatch:5};
+ if(cfg.mode==='STAGE'&&cfg.revision==='SOURCE_INTAKE_STAGE_V1'&&(cfg.maxBatch===25||cfg.maxBatch===200)&&typeof cfg.approvedBy==='string'&&cfg.approvedBy.trim())return {mode:'STAGE',maxBatch:cfg.maxBatch};
+ return null;
+}
 async function fetchRelease(fetcher=globalThis.fetch){
  const response=await fetcher(SWITCH,{headers:{'Accept':'application/vnd.github.raw','Cache-Control':'no-store','User-Agent':'forge-source-intake'},signal:AbortSignal.timeout(15000)});
  if(!response.ok)throw Error('BLOCKED: release switch unavailable');
  const cfg=await response.json();
- if(cfg.enabled!==true||cfg.mode!=='CANARY'||cfg.maxBatch!==5||cfg.revision!=='SOURCE_INTAKE_CANARY_V1')throw Error('BLOCKED: release switch not enabled for canary');
+ if(!releaseRules(cfg))throw Error('BLOCKED: release switch not enabled for canary or stage');
  return cfg;
 }
 async function preflight(record,{key,transport=globalThis.fetch}={}){
@@ -58,14 +68,17 @@ function classifyWriterResponse(result,rid){
  if(r.result==='NEVER_CONSIDER_EXCLUDED'&&!result.writeId&&!ids.length)return {kind:'EXCLUDED'};
  return {kind:'UNKNOWN'};
 }
-async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder}={}){
- if(!Array.isArray(records)||records.length!==5||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error('BLOCKED: exactly 5 reviewed canary candidates required');
+const runCanary=(records,opts={})=>runIntake(records,{...opts,expectedMode:'CANARY'});
+async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,expectedMode='CANARY'}={}){
+ if(expectedMode!=='CANARY'&&expectedMode!=='STAGE')throw Error('BLOCKED: expected release mode must be CANARY or STAGE');
+ const canary=expectedMode==='CANARY';
+ if(!Array.isArray(records)||(canary?records.length!==5:(records.length<1||records.length>200))||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error(canary?'BLOCKED: exactly 5 reviewed canary candidates required':'BLOCKED: 1 to 200 reviewed intake candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
  if(kinds.some(x=>!KINDS.has(x)))throw Error('BLOCKED: unknown expected canary outcome');
- if(kinds.filter(x=>x==='EXISTING_MATCH').length<1||kinds.filter(x=>x==='PROTECTED_NOOP').length<1||kinds.filter(x=>x==='NEW').length<1)throw Error('BLOCKED: canary must test new, existing and protected states');
+ if(canary&&(kinds.filter(x=>x==='EXISTING_MATCH').length<1||kinds.filter(x=>x==='PROTECTED_NOOP').length<1||kinds.filter(x=>x==='NEW').length<1))throw Error('BLOCKED: canary must test new, existing and protected states');
  const unique=new Set(records.map(x=>requestId(x.record)));
- if(unique.size!==5)throw Error('BLOCKED: repeated candidate identity');
+ if(unique.size!==records.length)throw Error('BLOCKED: repeated candidate identity');
  // No live POST without a recorder that has just proven it can persist and read back.
  if(!recorder||['check','record','read'].some(f=>typeof recorder[f]!=='function'))throw Error('BLOCKED: durable Writer-response recorder required before any Writer POST');
  let recorderReady=false;
@@ -74,7 +87,9 @@ async function runCanary(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  const outcomes=[];
  const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
  for(const [i,candidate] of records.entries()){
-  await fetchRelease(switchTransport); // fresh kill switch before each write
+  const rules=releaseRules(await fetchRelease(switchTransport)); // fresh kill switch before each write
+  if(rules.mode!==expectedMode)halt('BLOCKED: release switch is '+rules.mode+' but this run is '+expectedMode);
+  if(records.length>rules.maxBatch)halt('BLOCKED: '+records.length+' candidates exceed the switch maxBatch '+rules.maxBatch);
   // Protected roles must be proven in the authenticated terminal archive before submission.
   if(candidate.expectedOutcome==='PROTECTED_NOOP'){
    const archive=await fetchAuthenticatedArchive({key,transport});
@@ -198,4 +213,4 @@ async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport
  const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:a})).data;
  return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:a,readback:back,verified:false};
 }
-module.exports={requestId,fetchRelease,preflight,classifyWriterResponse,runCanary,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
+module.exports={requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runCanary,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
