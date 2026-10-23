@@ -1,4 +1,6 @@
-# Stage 25: candidates for Tim's approval (DRAFT, nothing submitted)
+# Stage 25: candidates APPROVED by Tim (2026-10-23)
+
+**APPROVED:** Tim, 2026-10-23: "it's good enough. Go live". This was given after Grok's QA returned HOLD, citing two things: the canary not yet independently verified on the live Writer, and 17 LinkedIn-sourced roles not checked on employer ATS. Before the run, the canary was re-verified read-only on the live Writer: both inserted rows present once, COMPLETE receipts, Fury still archived and absent from the master. The LinkedIn-sourced roles remain checked only on their posting pages.
 
 Built 2026-10-23 from discovery run `FORGE-SOURCE-TRIAL-20261023T0131Z` (boards + JobSpy + HiringCafe, archive-aware) and a read-only
 pull of the live Writer (master 1,703, archive 785, rules `876a618c…`, Writer build `4e011a9`). Machine-readable:
