@@ -1,0 +1,30 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261023-1829ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=d3473d594947a87bc7cc
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (fetched via GitHub connector; blob SHA 5e353f55fe1676440b45f8f990fdc9b9a07af8c7 matches lane.blob_sha)
+RULES_BLOB_UNCHECKED (forge-policy rules directory metadata not read this run; no policy interpretation needed)
+GATE: WRITER_FREEZE frozen=false (TIM 2026-10-18T03:29Z); WRITER_QUEUE root held no pending files; writer_status not available as a tool, gate inferred from fresh queue/result listing
+INPUT: WORKLIST_FORGE_POSTING_VALIDATION.txt generated 2026-10-23T22:17Z, ELIGIBLE_TOTAL=35
+ROWS_EVALUATED=10
+LIVE=5 (LIVE_SECONDARY via LinkedIn page, TinyFish fetch)
+CLOSED=0
+UNCONFIRMED=5 (worklist rows 6,8,10,11,12; Lensa tracking links HTTP 400/redirect to google.com, ZipRecruiter bot_blocked; employer-route searches returned only aggregator copies, not fetched; block is not closure)
+WRITTEN=10 submitted (SUBMITTED, not yet WRITER_ACCEPTED/VERIFIED)
+VERIFIED=0 (RESULT/receipt-index/row_readback not observed this run)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 fetch_content calls (15 URLs), 5 search calls
+BACKLOG_REMAINING=25 of 35 worklist rows (rows 7,9,13-35 untouched; rows 7,13-14,16-18,20-25,29,31 are Indeed/Glassdoor click links, 9 is a Gmail link)
+STOP_REASON=Run ended after first batch of 10; remaining worklist rows are mostly tracking/redirect links (Lensa, Indeed, ZipRecruiter, Ladders, SendGrid) that TinyFish cannot resolve; no named hard limit reached beyond that. PARTIAL_WITH_WORK.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-1829ET-B01 (R01-R10); queue file CLAUDE_FORGE-POSTVAL-CLAUDE-20261023-1829ET-B01.json Drive id 1agbLjemnUisqd-rEqGxry2kNCfZufxr0
+ROW_IDS_LIVE=V2I-63B0C8663C36,V2I-05F70E9B63DE,V2I-3FB44DACC609,V2I-9B3C6A9095FB,V2I-78D9FD347F64
+ROW_IDS_UNCONFIRMED=V2I-844470D5F87B,V2I-A0E946C64C94,V2I-A8E8CFAF1DD8,V2I-3E4FAC13B30D,V2I-11CB3A8214EC
+NOTE: CITGO row V2I-05F70E9B63DE page shows Requisition ID 2244 (recorded in LIVENESS_NOTE only; no EMPLOYER_REQ_ID field submitted).
+PENDING: write verification for B01 (RESULT, receipt-index COMPLETE, row_readback) belongs to next run or gofer.
+PRIOR_RUN: FORGE-POSTVAL-CLAUDE-20261023-1429ET-B01 RESULT SUCCESS (writeId W-20261023183114569-3d45e9), verification PENDING; not independently verified this run.
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run / gofer
+NEXT_ACTION=Verify B01 and prior-run writes; continue worklist from row 7 skipping rows touched in last 2 hours.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
