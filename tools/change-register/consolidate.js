@@ -18,6 +18,10 @@ const REPOS = ['forge-coordination', 'foreman-cockpit', 'forge-policy', 'forge-w
 const HOME_REPO = 'forge-coordination';
 const STATUSES = ['MERGED', 'LIVE'];
 const KEYS = ['REPO', 'PR', 'STATUS', 'DATE', 'WHAT', 'REV'];
+/* Lanes copy the commit-label pattern into their records (POSTVAL 2026-10-23 used PROVIDER/RUN_ID and CHANGE for WHAT,
+   which failed every change-register run that day). Accepted: PROVIDER/RUN_ID are ignored, CHANGE means WHAT. */
+const IGNORED_KEYS = ['PROVIDER', 'RUN_ID'];
+const KEY_ALIASES = { CHANGE: 'WHAT' };
 const ID_RE = /^[a-z0-9][a-z0-9._-]{2,99}$/;
 const WHAT_MAX = 1000;
 
@@ -37,7 +41,10 @@ function parseRecord(text, id) {
     if (!line || line.startsWith('#')) return;
     const eq = line.indexOf('=');
     if (eq < 1) { errors.push('line ' + (i + 1) + ': expected KEY=VALUE'); return; }
-    const key = line.slice(0, eq).trim().toUpperCase(), value = line.slice(eq + 1).trim();
+    const given = line.slice(0, eq).trim().toUpperCase(), value = line.slice(eq + 1).trim();
+    if (IGNORED_KEYS.indexOf(given) >= 0) return;
+    const key = KEY_ALIASES[given] || given;
+    if (key !== given && key in fields) { errors.push('line ' + (i + 1) + ': ' + given + ' is another name for ' + key + ', which is already given'); return; }
     if (KEYS.indexOf(key) < 0) { errors.push('line ' + (i + 1) + ': unknown key ' + key + ' (allowed: ' + KEYS.join(', ') + ')'); return; }
     if (key in fields) { errors.push('line ' + (i + 1) + ': ' + key + ' given twice'); return; }
     fields[key] = value;
