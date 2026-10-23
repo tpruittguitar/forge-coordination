@@ -56,9 +56,11 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
  }catch{return null}
 }
+// Run state files only. A <run>.candidates.json without its state file means the run stopped before the before
+// snapshot (no Writer POST), so it neither blocks later runs nor marks its roles as sent (first run, 2026-10-23).
 function previous(){
  if(!fs.existsSync(DIR))return [];
- return fs.readdirSync(DIR).filter(f=>f.endsWith('.json')).map(f=>({file:path.join(DIR,f),state:JSON.parse(fs.readFileSync(path.join(DIR,f),'utf8'))}));
+ return fs.readdirSync(DIR).filter(f=>f.endsWith('.json')&&!f.endsWith('.candidates.json')).map(f=>({file:path.join(DIR,f),state:JSON.parse(fs.readFileSync(path.join(DIR,f),'utf8'))}));
 }
 async function main(argv=process.argv.slice(2)){
  const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
