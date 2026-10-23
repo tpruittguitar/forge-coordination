@@ -1,6 +1,6 @@
 {
- "at": "2026-10-23T05:00:36.393Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T0456Z",
+ "at": "2026-10-23T05:24:44.654Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T0522Z",
  "dry": false,
  "rows": 1703,
  "eligible": 322,
@@ -10,40 +10,46 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 23,
- "estimates": 12,
- "estimate_waiting_for_posting": 0,
- "skipped_recent": 252,
- "submitted": 23,
+ "degree": 22,
+ "estimates": 11,
+ "estimate_waiting_for_posting": 1,
+ "skipped_recent": 253,
+ "submitted": 0,
  "guard_dropped": 1,
  "writer_ok": 0,
- "writer_failed": 23,
+ "writer_failed": 22,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
   "linkedin": 24
  },
  "agg_read": {
-  "linkedin": 24
+  "linkedin": 23
  },
  "agg_pay": {
   "linkedin": 10
  },
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
  "est_same_employer": 1,
- "est_comparables": 11,
+ "est_comparables": 10,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 11,
+  "OK": 10,
   "ABOVE": 1,
   "BELOW": 0,
   "NO_BLS": 0
  },
- "bls_queries": 3,
- "est_shared_low": 6,
+ "bls_queries": 0,
+ "est_shared_low": 5,
  "ats_candidates": 26,
  "ats_by_kind": {
   "workday": 10,
@@ -55,10 +61,8 @@
  "ats_unconfirmed": 0,
  "nothing_found": 1,
  "upgraded": 0,
- "planned": 24,
- "writer_fail_modes": {
-  "Lock timeout: another process was holding the lock for too l": 23
- },
+ "planned": 23,
+ "writer_error": "https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec HTTP 404",
  "sample": [
   {
    "id": "V2I-296561E2DF0C",
@@ -75,24 +79,6 @@
     "DEGREE_REQ": "REQUIRED",
     "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4468289310",
     "DEGREE_ASOF": "2026-10-23",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
-   }
-  },
-  {
-   "id": "V2I-7581B95C2484",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in engineering or related field, or equivalent experience",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481735354",
-    "DEGREE_ASOF": "2026-10-23",
-    "SALARY_BASE_LOW": 165000,
-    "SALARY_BASE_HIGH": 216000,
-    "SALARY_MIDPOINT": 190500,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-10-23",
-    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; range shared by 17 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
    }
   },
@@ -149,32 +135,27 @@
     "DEGREE_ASOF": "2026-10-23",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
    }
+  },
+  {
+   "id": "V2I-1163FB271B96",
+   "fields": {
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 180000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4480481326",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor's degree in Supply Chain Management, Operations, Engineering, Business, or a related field",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4480481326",
+    "DEGREE_ASOF": "2026-10-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
   }
  ],
  "estimate_samples": [
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-7581B95C2484",
-   "company": "Spectrum",
-   "title": "Director, Inside Plant (ISP)",
-   "location": "Austin, TX",
-   "posting": "https://www.linkedin.com/comm/jobs/view/4481735354/?trackingId=JSrI7MaMSO68v7DTUeNyUA%3D%3D&refId=%2FzetJRenVmNQ%2F%2BllamO9Fw%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BysaU5blWRl2eDgKtm35IYA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1InXD6RfOxWcs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_2_jobid_4481735354_ssid_16046956916_fmid_5yvbc~mvk2ut7i~bn&trkEm",
-   "est": [
-    165000,
-    216000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region S; range shared by 17 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2F-D400EE31A881",
-    "V2I-14D26C98673B",
-    "V2I-A307A66AA27E",
-    "V2I-6454CEAC0B71",
-    "V2I-4EF458B3894B"
-   ]
-  },
   {
    "basis": "POSTING_READ",
    "id": "V2I-8DBC6A92014F",
@@ -257,6 +238,25 @@
     "V2I-A307A66AA27E",
     "V2I-6454CEAC0B71",
     "V2I-4EF458B3894B"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-1FAB07EA7579",
+   "company": "Workshop Venture Partners",
+   "title": "Head of Hardware",
+   "location": "Austin, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481751959/?trackingId=b1WwKTBu96Tx23eHj8s0xg%3D%3D&refId=%2FzetJRenVmNQ%2F%2BllamO9Fw%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BysaU5blWRl2eDgKtm35IYA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1InXD6RfOxWcs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_5_jobid_4481751959_ssid_16046956916_fmid_5yvbc~mvk2ut7i~bn&trkEm",
+   "est": [
+    172000,
+    250000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "1 employer-posted comparable(s), level 3 OTHER any region",
+   "comparables": [
+    "V2I-CF882BE76023"
    ]
   }
  ],
