@@ -17,10 +17,14 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tools/source-intake/*.test.js
-      # A pull request (or any branch other than main) can never arm the canary.
+      # A pull request (or any branch other than main) can never arm the switch. Since main may be armed (AUTO,
+      # 2026-10-23), a branch that carries main's switch unchanged passes; a branch that changes it must disarm it.
       - name: Release switch must stay disabled outside main
         if: github.event_name == 'pull_request' || github.ref != 'refs/heads/main'
-        run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');if(c.enabled!==false||c.mode!=='DISABLED')process.exit(1)"
+        run: |
+          git fetch -q --depth=1 origin main
+          git diff --quiet FETCH_HEAD -- control/SOURCE_INTAKE_RELEASE.json && { echo "switch unchanged from main"; exit 0; }
+          node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');if(c.enabled!==false||c.mode!=='DISABLED')process.exit(1)"
       # On main the switch is armed only by Tim's approved commit; it must be exactly disarmed, or a state the executor accepts.
       - name: Release switch on main must be a valid disarmed, canary or stage state
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
