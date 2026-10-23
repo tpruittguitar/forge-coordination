@@ -1,6 +1,6 @@
 {
- "at": "2026-10-23T19:18:11.798Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T1917Z",
+ "at": "2026-10-23T21:31:51.965Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T2128Z",
  "dry": false,
  "rows": 1757,
  "eligible": 261,
@@ -11,35 +11,41 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 0,
- "skipped_recent": 219,
- "submitted": 0,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 15,
+ "skipped_recent": 194,
+ "submitted": 1,
  "guard_dropped": 1,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "indeed": 1,
-  "linkedin": 2
+  "indeed": 3,
+  "linkedin": 3
  },
  "agg_read": {
   "linkedin": 1
  },
  "agg_pay": {},
  "agg_failed": {
-  "indeed": 1
+  "indeed": 3,
+  "linkedin": 1
  },
  "agg_errors": {
   "indeed": [
+   "401",
+   "401",
    "401"
+  ],
+  "linkedin": [
+   "429"
   ]
  },
  "agg_wall": {
   "linkedin": 1
  },
- "est_same_employer": 0,
+ "est_same_employer": 1,
  "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
@@ -47,9 +53,9 @@
   "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 1
  },
- "bls_queries": 0,
+ "bls_queries": 1,
  "est_shared_low": 0,
  "ats_candidates": 24,
  "ats_by_kind": {
@@ -60,10 +66,24 @@
  },
  "skipped_closed": 39,
  "ats_unconfirmed": 0,
- "nothing_found": 2,
+ "nothing_found": 26,
+ "estimates_no_posting_read": 1,
  "upgraded": 0,
- "planned": 1,
+ "planned": 2,
  "sample": [
+  {
+   "id": "V2I-C0B3157A0421",
+   "fields": {
+    "SALARY_BASE_LOW": 99000,
+    "SALARY_BASE_HIGH": 166000,
+    "SALARY_MIDPOINT": 132500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "MED",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "same-employer:V2I-02618BB261B5",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 1 same-employer posted range(s) [V2I-02618BB261B5]; same employer, 1 posted range(s) for level 0 OTHER roles: Superintendent (KS) $99K-$166K; BLS state wage n/a; NO_POSTING_READ: posting unreadable on 2026-10-21, 2026-10-23; uncertainty: moderate, same-employer range(s) for a similar role"
+   }
+  },
   {
    "id": "V2I-90EF9504E75B",
    "fields": {
@@ -71,6 +91,26 @@
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "NO_POSTING_READ",
+   "id": "V2I-C0B3157A0421",
+   "company": "Ford Motor Company",
+   "title": "New Model Launch Specialist",
+   "location": "UNKNOWN",
+   "posting": "https://apply.ford.com/en/sites/CX_1/job/69906/",
+   "est": [
+    99000,
+    166000,
+    "MED"
+   ],
+   "source": "SAME_EMPLOYER",
+   "bls": "NO_BLS",
+   "basis_detail": "same employer, 1 posted range(s) for level 0 OTHER roles: Superintendent (KS) $99K-$166K",
+   "comparables": [
+    "V2I-02618BB261B5"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
