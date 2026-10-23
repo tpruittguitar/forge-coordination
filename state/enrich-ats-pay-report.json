@@ -1,66 +1,264 @@
 {
- "at": "2026-10-23T00:00:34.432Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T0000Z",
+ "at": "2026-10-23T05:00:36.393Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261023T0456Z",
  "dry": false,
- "rows": 1677,
- "eligible": 300,
+ "rows": 1703,
+ "eligible": 322,
  "anchors": 152,
  "archive_anchors": 6,
  "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
+ "degree": 23,
+ "estimates": 12,
  "estimate_waiting_for_posting": 0,
- "skipped_recent": 254,
- "submitted": 0,
+ "skipped_recent": 252,
+ "submitted": 23,
  "guard_dropped": 1,
  "writer_ok": 0,
- "writer_failed": 0,
+ "writer_failed": 23,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 24
  },
  "agg_read": {
-  "linkedin": 1
+  "linkedin": 24
  },
- "agg_pay": {},
+ "agg_pay": {
+  "linkedin": 10
+ },
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "est_same_employer": 0,
- "est_comparables": 0,
+ "est_same_employer": 1,
+ "est_comparables": 11,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
-  "ABOVE": 0,
+  "OK": 11,
+  "ABOVE": 1,
   "BELOW": 0,
   "NO_BLS": 0
  },
- "bls_queries": 0,
- "est_shared_low": 0,
- "ats_candidates": 27,
+ "bls_queries": 3,
+ "est_shared_low": 6,
+ "ats_candidates": 26,
  "ats_by_kind": {
-  "greenhouse": 11,
   "workday": 10,
   "ashby": 5,
+  "greenhouse": 10,
   "lever": 1
  },
  "skipped_closed": 45,
  "ats_unconfirmed": 0,
+ "nothing_found": 1,
  "upgraded": 0,
- "planned": 1,
+ "planned": 24,
+ "writer_fail_modes": {
+  "Lock timeout: another process was holding the lock for too l": 23
+ },
  "sample": [
   {
-   "id": "V2I-302835E30F10",
+   "id": "V2I-296561E2DF0C",
    "fields": {
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 175000,
+    "SALARY_MIDPOINT": 147500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4468289310",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor’s degree in Engineering, Manufacturing, Operations Management, or related field required; advanced degree (MBA or M.S.) a plus.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4468289310",
+    "DEGREE_ASOF": "2026-10-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-7581B95C2484",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in engineering or related field, or equivalent experience",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481735354",
+    "DEGREE_ASOF": "2026-10-23",
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 216000,
+    "SALARY_MIDPOINT": 190500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "comparables:V2F-D400EE31A881,V2I-14D26C98673B,V2I-A307A66AA27E,V2I-6454CEAC0B71,V2I-4EF458B3894B",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 5 employer-posted comparable(s) [V2F-D400EE31A881, V2I-14D26C98673B, V2I-A307A66AA27E, V2I-6454CEAC0B71, V2I-4EF458B3894B]; 5 employer-posted comparable(s), level 2 MFG same region S; range shared by 17 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-8DBC6A92014F",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor’s degree in a related field",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4480726963",
+    "DEGREE_ASOF": "2026-10-23",
+    "SALARY_BASE_LOW": 154000,
+    "SALARY_BASE_HIGH": 212000,
+    "SALARY_MIDPOINT": 183000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "MED",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "same-employer:V2I-465AB3277083",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 1 same-employer posted range(s) [V2I-465AB3277083]; same employer, 1 posted range(s) for level 2 OPS roles: Operations Director (IL) $155K-$213K x1.00 BLS state ratio; BLS TX 111021 P25-P90 $64K-$265K; this posting read, no pay stated; uncertainty: moderate, same-employer range(s) for a similar role",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-474016BEA726",
+   "fields": {
+    "DEGREE_TEXT": "Education: Bachelor’s degree in a technical discipline (Chemistry, Microbiology, Biology, or Engineering).",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481567606",
+    "DEGREE_ASOF": "2026-10-23",
+    "SALARY_BASE_LOW": 213000,
+    "SALARY_BASE_HIGH": 288000,
+    "SALARY_MIDPOINT": 250500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_SOURCE": "comparables:V2I-EF056B055742,V2I-B95C7CF620FC",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 2 employer-posted comparable(s) [V2I-EF056B055742, V2I-B95C7CF620FC]; 2 employer-posted comparable(s), level 4 QUALITY any region; BLS MN 113051 P25-P90 $98K-$219K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
+   }
+  },
+  {
+   "id": "V2I-73FEC90E9FE9",
+   "fields": {
+    "SALARY_BASE_LOW": 140000,
+    "SALARY_BASE_HIGH": 175000,
+    "SALARY_MIDPOINT": 157500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4480701211",
+    "SALARY_ASOF": "2026-10-23",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor’s degree in engineering, manufacturing, operations management, business, or a related technical discipline.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4480701211",
+    "DEGREE_ASOF": "2026-10-23",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-10-23"
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-7581B95C2484",
+   "company": "Spectrum",
+   "title": "Director, Inside Plant (ISP)",
+   "location": "Austin, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481735354/?trackingId=JSrI7MaMSO68v7DTUeNyUA%3D%3D&refId=%2FzetJRenVmNQ%2F%2BllamO9Fw%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BysaU5blWRl2eDgKtm35IYA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1InXD6RfOxWcs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_2_jobid_4481735354_ssid_16046956916_fmid_5yvbc~mvk2ut7i~bn&trkEm",
+   "est": [
+    165000,
+    216000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region S; range shared by 17 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-8DBC6A92014F",
+   "company": "Flex",
+   "title": "Director, Operations Engineering",
+   "location": "Austin, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480726963/?trackingId=6BH2MN%2B99szfhw5G4iEk%2Fg%3D%3D&refId=%2FzetJRenVmNQ%2F%2BllamO9Fw%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3BysaU5blWRl2eDgKtm35IYA%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1InXD6RfOxWcs1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_3_jobid_4480726963_ssid_16046956916_fmid_5yvbc~mvk2ut7i~bn&t",
+   "est": [
+    154000,
+    212000,
+    "MED"
+   ],
+   "source": "SAME_EMPLOYER",
+   "bls": "OK",
+   "basis_detail": "same employer, 1 posted range(s) for level 2 OPS roles: Operations Director (IL) $155K-$213K x1.00 BLS state ratio",
+   "comparables": [
+    "V2I-465AB3277083"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-474016BEA726",
+   "company": "Weber & Company",
+   "title": "Vice President of Quality",
+   "location": "Minnesota, United States",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481567606/?trackingId=P1CYughJiTLhwLumpXWAFA%3D%3D&refId=pquE8I15aIm9pVxWtgNuEQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3Bk%2BCN%2F7gPTqioGrrRHNMKNg%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1gwzoMjUopWss1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_5_jobid_4481567606_ssid_15980302732_fmid_5yvbc~mvk753t1~a2&trkEmai",
+   "est": [
+    213000,
+    288000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "2 employer-posted comparable(s), level 4 QUALITY any region",
+   "comparables": [
+    "V2I-EF056B055742",
+    "V2I-B95C7CF620FC"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-231F44D76F11",
+   "company": "Loenbro",
+   "title": "Regional Director of Quality - South",
+   "location": "Dallas, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4478916485/?trackingId=yWgVKTRpIxxwb3ZfIL5m%2Fw%3D%3D&refId=pquE8I15aIm9pVxWtgNuEQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3Bk%2BCN%2F7gPTqioGrrRHNMKNg%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1gwzoMjUopWss1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_1_jobid_4478916485_ssid_15980302732_fmid_5yvbc~mvk753t1~a2&trkEm",
+   "est": [
+    160000,
+    199000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "4 employer-posted comparable(s), level 2 QUALITY same region S; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-AFCBBC5522B9",
+    "V2I-A9BA67414A87",
+    "V2I-308A8C264244",
+    "V2I-91088D8D55A8"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-CC5F1519BF0A",
+   "company": "Tower Semiconductor",
+   "title": "Director, Manufacturing",
+   "location": "San Antonio, TX",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4480498854/?trackingId=%2F%2BAqgJsZbO3L%2F00Q%2FFwAUA%3D%3D&refId=6WggzN7BhS43gdhVZaMBhQ%3D%3D&lipi=urn%3Ali%3Apage%3Aemail_email_job_alert_digest_01%3Bp5G7RVsDSKGzYadZ9BSDRw%3D%3D&midToken=AQGrR0UWMGfuPg&midSig=1gwzoMjUopWss1&trk=eml-email_job_alert_digest_01-primary_job_list-0-jobcard_body_text_3_jobid_4480498854_ssid_16049761228_fmid_5yvbc~mvk753t1~yz&trk",
+   "est": [
+    165000,
+    216000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "5 employer-posted comparable(s), level 2 MFG same region S; range shared by 17 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-14D26C98673B",
+    "V2I-A307A66AA27E",
+    "V2I-6454CEAC0B71",
+    "V2I-4EF458B3894B"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
