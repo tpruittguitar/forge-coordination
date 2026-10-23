@@ -1,0 +1,26 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261023-0430ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=a8e2e06b27ea42e5b987
+PACKET_SHA256=86e632fe892f2d521d363555cd14434f6d7146b6f5f1ab1f1289f4bf27dfc68d (computed, matches manifest)
+SOURCE_VERSIONS=policy_revision 2026-10-21.1; worklist generated 2026-10-23T08:21:55Z; master modified 2026-10-23T08:20:55Z
+RULES_BLOB_UNCHECKED (not needed for this lane; no policy interpretation required)
+GATE=WRITER_FREEZE frozen=false; WRITER_QUEUE root empty at start; no writer_status transport in this runtime
+RESOLVED_ASKS=none held by this lane (ASK-20261022-CLAUDE-1252/1652 concern other work)
+ROWS_EVALUATED=20 (worklist rows 1-15 LinkedIn, 27, 51-54 LinkedIn)
+LIVE=10 (LIVE_SECONDARY, LinkedIn posted age shown, no closure notice)
+CLOSED=0
+UNCONFIRMED=10 (no posted age shown or stub page: 9; TinyFish bot_blocked 999: 1; employer route not tried)
+WRITTEN=20 submitted to WRITER_QUEUE (not yet confirmed processed)
+VERIFIED=0 (no RESULT / receipt-index COMPLETE / row_readback available this run)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 calls, 20 URLs
+BACKLOG_REMAINING=~75 of 95 eligible (60 remaining on worklist after these 20)
+STOP_REASON=Bounded run; two batches evaluated, remaining rows non-LinkedIn (Indeed/ZipRecruiter/Glassdoor/Lensa redirect links) need employer-route lookups not completed
+BATCHES_COMPLETED_THIS_RUN=1 written batch (2 fetch batches of 10)
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-0430ET-B01 (R01-R20), queue file CLAUDE_FORGE-POSTVAL-CLAUDE-20261023-0430ET-B01.json id 1NBqmOAZPj-fNBlzsdo5pqvxRx7do3tql
+PRIOR_RUN=FORGE-POSTVAL-CLAUDE-20261023-0230ET-B01 RESULT SUCCESS (verification PENDING at write time); not re-verified this run
+PENDING=B01 awaiting Writer processing; NEXT_OWNER=gofer/next POSTVAL run to read RESULT, receipt-index and row_readback
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
