@@ -29,7 +29,7 @@ Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_
    ```
    `mode` is `append` or `replace`. The Action rejects authority/generated-state/immutable-evidence targets, applies allowed revisions, moves requests to `applied/` or `rejected/`, and opens an issue on rejection. Claimed `requested_by` is attribution, not approval authority.
 4. **Instruction sources and generated releases** change only on Tim's instruction through a reviewed PR. Run `python scripts/build_runtime.py`, tests, then `python scripts/build_runtime.py --check`; commit source and generated outputs together. Tim merges. Never rewrite a published release.
-5. **Number every change.** Take the next REV from `control/CHANGE_REGISTER.txt`; the PR title starts `REV-NNN · `; add the register line in the same PR or commit.
+5. **Record every change; the REV comes at merge.** A PR adds one file `control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt` (`WHAT=...`; format in `control/changes/README.txt`) and never edits `control/CHANGE_REGISTER.txt` or picks a REV. When it merges, the `change-register` Action appends the register line with the next REV in merge order. The `change-record-check` PR check enforces this. Direct commits to main may add a record the same way.
 6. **Report only real SHAs.** Claude spot-checks reported SHAs against `git log`.
 
 ## Related repos

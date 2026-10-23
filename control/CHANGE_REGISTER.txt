@@ -1,9 +1,13 @@
 FORGE CHANGE REGISTER — one numbering for every change, in every repo (Tim 2026-10-18 17:16 ET: "I just want consistency")
 OWNER=Tim. MAINTAINED_BY=Claude; every AI adds its own line.
 RULE: Every change gets the next REV number, whichever repo it lands in (foreman-cockpit, forge-coordination, forge-policy,
-  forge-writer-state). The PR title starts with it: "REV-016 · <what it does>". Add the change's line here in the same PR
-  (for a direct commit, in the same commit). Take the highest REV below + 1. GitHub's own PR numbers count separately per
-  repo and are shared with issues, so they never line up; REV is the number to use.
+  forge-writer-state). GitHub's own PR numbers count separately per repo and are shared with issues, so they never line up;
+  REV is the number to use.
+  FROM 2026-10-22 (change records): do NOT add lines here and do NOT pick a REV. A PR adds control/changes/<id>.txt
+  (format: control/changes/README.txt); when it merges, .github/workflows/change-register.yml appends its line below with
+  the next REV in merge order and logs it in control/CHANGE_RECORDS_CONSUMED.txt. The change-record-check PR check fails
+  a PR that adds, removes or changes a line here. Lines above that point were added by hand under the old rule ("take the
+  highest REV + 1", PR title "REV-016 · ..."); they are never renumbered or rewritten.
 Status: QUEUED · OPEN (PR waiting for Tim) · MERGED · LIVE (deployed/in use) · CLOSED (not merged).
 Detail for each REV stays in control/PIPELINE_EXPLORER_REVISION_LOG.txt (app/Writer) or the linked PR.
 DUPLICATES (Tim 2026-10-21 03:43 ET, option a): REV-138, REV-139 and REV-140 each name two changes, a ChatGPT direct
@@ -220,4 +224,9 @@ REV-188  2026-10-22  forge-coordination   #40           DRAFT    Tim approved th
 REV-192  2026-10-22  forge-coordination   direct        LIVE     Tim approved (chat 2026-10-22): control/SOURCE_INTAKE_RELEASE.json enabled=true, mode=CANARY (revision SOURCE_INTAKE_CANARY_V1, maxBatch 5). Canary armed, NOT run; set enabled=false to stop before the next case. No Writer writes in this change.
 REV-193  2026-10-22  forge-coordination   direct        LIVE     Release switch disarmed (enabled=false, mode=DISABLED) after independent QA of PR #40 found a release-blocking gap: no required durable Writer-response recorder before the first POST. Canary never ran; no Writer writes.
 REV-194  2026-10-22  forge-coordination   PR_PENDING    DRAFT    Independent-QA fix: runCanary requires a durable Writer-response recorder (check/record/read) that passes write/read-back before any network call; every response recorded and read back before classification, failure halts UNKNOWN. canary-cli uses fsync file recorder. Docs: kill switch stops next case only; dry-run results relabeled predictions. Switch OFF; no Writer writes.
-REV-195  2026-10-22  forge-coordination   PR_PENDING   DRAFT    Email run FORGE-EMAIL-CHATGPT-20261022-1956ET: 26 messages classified, 73 visible/explicit jobs accounted, 23 candidates submitted, 22 inserted and 1 existing verified COMPLETE with fresh master readback; recovery PR #36 remains complete/no replay; one held identity and hidden carry-forward preserved; no direct master or schedule writes.
+REV-197  2026-10-22  foreman-cockpit      #187          DRAFT    Tim ruling ASK-20261018-07 (D-8) "Add it": unit-tests workflow runs npm test on every PR, push to main and on demand; visible check, not required, never blocks merging. First run 635/635 pass. Ruling recorded in asks/resolved/ASK-20261018-07.json.
+REV-195  2026-10-22  forge-coordination   PR_PENDING    DRAFT    CI: release-switch-disabled assertion now applies to pull requests and non-main branches only; on main the switch must be exactly disarmed or exactly armed (CANARY, SOURCE_INTAKE_CANARY_V1, maxBatch 5), so Tim's approved arming commit no longer turns main red. Switch stays OFF.
+REV-198  2026-10-22  forge-coordination   direct        LIVE     Tim approved (chat 2026-10-22, "Deploy, arm and run"): REV-196 Writer deployed (version 80, build 4e011a9); control/SOURCE_INTAKE_RELEASE.json enabled=true, mode=CANARY for the five-job canary. Durable recorder required; stop on any halt.
+199  2026-10-22  forge-coordination   direct        LIVE     FORGE-GOFER-CLAUDE-20261022-2051ET gofer receipt: Swagelok B01 RESULT SUCCESS (WRITER_ACCEPTED, unverified); no new evidence; no Writer writes.
+REV-199  2026-10-22  forge-coordination   direct        LIVE     Five-job canary complete and switch disarmed (enabled=false, mode=DISABLED). Reconciliation COUNT_AND_IDENTITY_CONSISTENT: master 1699->1701 (V2I-EFD35D57DD0D Anduril Optics, V2I-B1BFE4DC6AF3 nVent), archive 785->785, 3 verified no-ops incl. archived Fury. Pending Grok canary-results review; no scale-up.
+REV-200  2026-10-22  forge-coordination   #45           MERGED   Change records replace direct CHANGE_REGISTER.txt edits: PRs add control/changes/<id>.txt (no REV); change-register workflow on main assigns the next REV in merge order, appends the line, logs it in CHANGE_RECORDS_CONSUMED.txt and deletes the record (idempotent, refuses duplicates, never rewrites history); change-record-check PR check; REV-187/190 (#41) and REV-189/191 (#42) reserved for open PRs.
