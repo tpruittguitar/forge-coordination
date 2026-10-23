@@ -31,10 +31,21 @@ jobs:
           FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
         run: node tools/source-intake/auto-run.js
+      # The run record holds every Writer response (the recovery evidence after a halt), so it is kept twice.
+      - name: Keep the run record as an artifact
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: auto-intake-record
+          path: receipts/auto-intake/
+          if-no-files-found: ignore
+      # Same retry shape as the source trial: on a rejected push start from the latest main and copy the record back
+      # (the 2026-10-23 17:34 run lost its record because a rebase in this shallow checkout failed).
       - name: Commit run record (also after a halt)
         if: always()
         run: |
           [ -d receipts/auto-intake ] || exit 0
+          mkdir -p /tmp/rec && cp receipts/auto-intake/* /tmp/rec/
           git config user.name forge-auto-intake-bot
           git config user.email forge-auto-intake-bot@users.noreply.github.com
           for i in 1 2 3 4 5 6; do
@@ -43,6 +54,7 @@ jobs:
             git commit -q -m "AUTO-INTAKE-BOT: run record"
             git push -q origin HEAD:main && exit 0
             sleep $((i * 4 + RANDOM % 4))
-            git fetch -q origin main && git rebase -q origin/main || { git rebase --abort; exit 1; }
+            git fetch -q origin main && git reset -q --hard origin/main
+            mkdir -p receipts/auto-intake && cp /tmp/rec/* receipts/auto-intake/
           done
           exit 1
