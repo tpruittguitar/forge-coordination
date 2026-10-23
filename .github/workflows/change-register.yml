@@ -1,0 +1,55 @@
+# Change register consolidator (replaces "every PR appends its own line to control/CHANGE_REGISTER.txt", which put every
+# open PR in conflict after each merge and let branch-chosen REVs collide, e.g. the two REV-184 lines of 2026-10-22).
+# PRs add control/changes/<id>.txt; on main this assigns the next REV in merge order, appends the register line, logs the
+# record in control/CHANGE_RECORDS_CONSUMED.txt and deletes the record. See tools/change-register/consolidate.js.
+name: change-register
+on:
+  push:
+    branches: [main]
+    paths: ['control/changes/**']
+  schedule:
+    - cron: '23 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+  pull-requests: read
+concurrency:
+  group: change-register
+  cancel-in-progress: false
+jobs:
+  consolidate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test consolidator
+        run: node --test tools/change-register/consolidate.test.js
+      - name: Consolidate and push
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          git config user.name forge-change-register-bot
+          git config user.email forge-change-register-bot@users.noreply.github.com
+          # Same retry shape as build-needs-tim: on a rejected push start again from the latest main and redo the whole
+          # consolidation, so REVs are always computed from the register that is actually on main.
+          for i in 1 2 3 4 5 6; do
+            node tools/change-register/consolidate.js --summary /tmp/change-register.json
+            git add -A control/CHANGE_REGISTER.txt control/CHANGE_RECORDS_CONSUMED.txt control/changes/
+            if git diff --cached --quiet; then echo "Nothing to register"; break; fi
+            revs=$(jq -r '[.added[].rev] | join(", ")' /tmp/change-register.json)
+            body=$(jq -r '(.added[] | "\(.rev) <- \(.id)"), (.refused[] | "refused \(.id): \(.reason)")' /tmp/change-register.json)
+            git commit -q -m "CHANGE-REGISTER-BOT: register ${revs:-no new REVs}" -m "$body"
+            git push -q origin HEAD:main && break
+            [ "$i" = 6 ] && exit 1
+            sleep $((i * 4 + RANDOM % 4))
+            git rebase --abort 2>/dev/null || true
+            git fetch -q origin main && git reset -q --hard origin/main
+          done
+      - name: Fail on invalid records
+        run: |
+          n=$(jq '.rejected | length' /tmp/change-register.json)
+          if [ "$n" != 0 ]; then jq -r '.rejected[] | "\(.id): \(.errors | join("; "))"' /tmp/change-register.json; exit 1; fi
