@@ -1,0 +1,32 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261023-1231ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=a8e2e06b27ea42e5b987
+POLICY_REVISION=2026-10-21.1
+PACKET_SHA256=NOT_COMPUTED (PACKET_HASH_UNVERIFIED; GitHub connector blob SHA 26f6b2b60e8c724a070ab35de2d802196647ecd1 matches lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main@3d001d1a6af98da83cd354c588b386eeecf3c43c (manifest/packet read); worklist GENERATED_AT_UTC=2026-10-23T16:05:09Z (42 eligible)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read; no business-policy interpretation needed)
+GATE: WRITER_FREEZE frozen=false (read fresh); writer_status not available in this runtime; WRITER_QUEUE root empty before submission; resolved asks: none held by this lane.
+INHERITED: 0829ET-B01 (W-20261023123324158-67a39c) and 1030ET-B01 (W-20261023143221802-1be634, RESULT SUCCESS, 11 records) remain WRITER_ACCEPTED only; receipt-index COMPLETE and row_readback not observable here, so neither is VERIFIED.
+ANOMALY=Worklist generated 16:05Z (after the 1030ET RESULT at 14:32Z) still lists 1030ET rows 1, 4, 17, 20, 23, 24, 25, 26, 29, 31, 34 with MISSING/UNCONFIRMED liveness. Those rows were skipped this run under the 2-hour RESULT rule. Gofer should row_readback them to confirm the effects landed.
+ROWS_EVALUATED=10 (worklist rows 2, 3, 5, 6, 7, 9, 10, 11, 12, 13)
+LIVE=8 (row 5 LIVE_EMPLOYER_ATS agency page; rows 2, 3, 6, 7, 10, 11, 13 LIVE_SECONDARY)
+CLOSED=0
+UNCONFIRMED=2 (rows 9 and 12: only undated or title-mismatched copies)
+SKIPPED=1 (row 8: Gmail inbox link, not a fetchable posting)
+WRITTEN=10 (submitted, not yet verified)
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 fetch calls (13 URLs) + 10 searches
+FINDING=Indeed pagead, ZipRecruiter, Glassdoor partner and Indeed rc/clk links are bot_blocked; exact company+title searches reach dated secondary copies for most rows. Butcher Gem board renders sections collapsed, so it was not used as ATS proof.
+BACKLOG_REMAINING=32 of 42 (rows 1, 4, 8, 14-42 excluding 17, 20, 23-26, 29, 31, 34 held by the 2-hour rule or unprocessed)
+STOP_REASON=TOOL_LIMIT: single-run research budget reached; remaining rows are tracking-link rows needing the same title-search method
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-1231ET-B01 (R01-R10)
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-1231ET-B01
+PENDING=Drive file 1zCsJOVsKhIeyrsV8UCG2pxX3PTufsv2v (CLAUDE_FORGE-POSTVAL-CLAUDE-20261023-1231ET-B01.json) was PROCESSING at receipt time; RESULT not yet observed
+NEXT_OWNER=gofer (verify 0829ET-B01, 1030ET-B01, 1231ET-B01 via request_result, receipt_index, row_readback)
+NEXT_ACTION=Next postval run: confirm the three batches, then continue worklist from row 14 using exact-title searches
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
