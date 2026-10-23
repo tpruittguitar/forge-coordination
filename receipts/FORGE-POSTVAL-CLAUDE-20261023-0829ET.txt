@@ -1,0 +1,29 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261023-0829ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=a8e2e06b27ea42e5b987
+POLICY_REVISION=2026-10-21.1
+PACKET_SHA256=NOT_COMPUTED (PACKET_HASH_UNVERIFIED; fetched via GitHub connector, blob SHA 26f6b2b60e8c724a070ab35de2d802196647ecd1 matches lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main@1f1100d91356866f1fd51d6d3cfa5912fcb14b15; worklist GENERATED_AT_UTC=2026-10-23T12:29:02Z (63 eligible)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read; no business-policy interpretation needed)
+GATE: WRITER_FREEZE frozen=false (read fresh); writer_status tool not available in this runtime; WRITER_QUEUE root empty of files before submission; no resolved asks held by this lane.
+ROWS_EVALUATED=22
+LIVE=10
+CLOSED=0
+UNCONFIRMED=12 (not written; blocked or no dated/first-party evidence: worklist rows 3, 10, 11, 13, 19, 22, 24, 27, 30, 32, 38, 58)
+WRITTEN=10 (submitted, not yet verified)
+VERIFIED=0 (RESULT / receipt-index COMPLETE / row_readback not observable this run; no writer_status tool)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 calls, 24 URLs (ttl default/0)
+KEY_FINDING=Indeed short redirect https://www.indeed.com/rc/clk/dl?jk=<jk> resolved through TinyFish to the employer ATS (Workday, Ashby, Oracle CX, Celestica) for 6 of 10 tried; long-form pagead/clk and tracking redirects (ziprecruiter, glassdoor, postjobfree, lensa, ladders) are bot_blocked.
+BACKLOG_REMAINING=53 of 63 (includes the 12 attempted-unconfirmed; remaining rows are mostly lensa/ladders/ziprecruiter/glassdoor/pagead links not fetchable)
+STOP_REASON=TOOL_LIMIT: remaining worklist URLs are bot_blocked tracking redirects; more Indeed jk short-redirect rows (row 12-ish pagead types lack jk) not attempted this run
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-0829ET-B01 (R01-R10)
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261023-0829ET-B01
+PENDING=Drive file 1lZCgPZI4gzt7CI5-a_ydWMYiGSgVQFMx (CLAUDE_FORGE-POSTVAL-CLAUDE-20261023-0829ET-B01.json) in WRITER_QUEUE awaiting Writer RESULT
+NEXT_OWNER=gofer (verify B01 via request_result, receipt_index, row_readback)
+NEXT_ACTION=Next postval run: verify B01 first; try jk short redirects for remaining Indeed rows
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
