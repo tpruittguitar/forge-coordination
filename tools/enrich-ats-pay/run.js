@@ -240,7 +240,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
       let res, fenced = 0;
       for (;;) {
-        res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json();
+        try { res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
+        catch (e) {
+          /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
+             batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
+             the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
+             on; a failed receipt = failed; nothing or still pending = unconfirmed, the run stops sending and the row_readback
+             guard settles those rows next run. Never re-POSTed here. */
+          const proof = await receiptFor(batch);
+          if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; throw Object.assign(new Error('stop'), { counted: true }); }
+          stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
+          res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
+        }
         if (res.mode !== 'WRITE_FENCE' || res.frozen || fenced >= CONFIG.fenceRetries) break;
         fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
         await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
@@ -249,13 +260,26 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const results = res.results || [];
       // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
-      const committed = res.mode === 'BATCH_RULING_SINGLE_COMMIT' || !!res.writeId;
+      const committed = res.mode === 'BATCH_RULING_SINGLE_COMMIT' || res.mode === 'RECEIPT_COMPLETE' || !!res.writeId;
       batch.forEach((q, i) => { const it = results[i] || {}; const saved = it.ok && (committed || it.mode === 'ALREADY_APPLIED'); if (saved) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else if (it.ok) stats.writer_not_written++; else { stats.writer_failed++; const m = String(it.mode || it.error || res.mode || res.error || 'NO_RESULT').slice(0, 60); (stats.writer_fail_modes = stats.writer_fail_modes || {})[m] = (stats.writer_fail_modes[m] || 0) + 1; } });
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
-    } catch (e) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); break; }
+    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } break; }
     await sleep(CONFIG.batchGapMs);
+  }
+  // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
+  // is PENDING (the Writer verifies a save no sooner than 120 s after it), up to replyCheckPolls x replyCheckGapMs.
+  async function receiptFor(batch) {
+    const rid = batch[0].ruling.requestId; let s = 'NO_ENTRY';
+    for (let i = 0; i < (CONFIG.replyCheckPolls || 6); i++) {
+      await sleep(CONFIG.replyCheckGapMs || 30000);
+      let d; try { d = await (await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(rid)}`)).json(); } catch (e) { continue; }
+      const entry = d && d.request; s = entry ? String(entry.s || 'UNKNOWN') : 'NO_ENTRY';
+      if (s === 'COMPLETE') return { status: s, pids: new Set((entry.items || []).map(x => x && x.pid)) };
+      if (['NEEDS_RESOLUTION', 'NOT_PERSISTED', 'FALSE_COMPLETE'].includes(s)) return { status: s, failed: true };
+    }
+    return { status: s };
   }
   for (const k of ['submitted', 'tried']) for (const id of Object.keys(ledger[k])) if (Date.now() - Date.parse(ledger[k][id]) > 14 * 864e5) delete ledger[k][id];
   for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
