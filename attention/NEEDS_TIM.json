@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-23T17:04:06.107Z",
- "sourceCommit": "e0e2bff973ea9f076ffe6d5459ef8c2c2942a075",
+ "builtAt": "2026-10-23T17:12:12.988Z",
+ "sourceCommit": "1b1e24aeabf52f70f57ca8e15f2b91fbc14bfc61",
  "counts": {
-  "total": 11,
+  "total": 16,
   "BLOCKING": 0,
-  "ACTION": 9,
-  "WATCH": 2,
-  "DECIDE": 2,
+  "ACTION": 11,
+  "WATCH": 5,
+  "DECIDE": 6,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 7
+  "UPKEEP": 8
  },
  "items": [
   {
@@ -131,6 +131,43 @@
    "raisedBy": "CLAUDE"
   },
   {
+   "id": "pr:forge-coordination#59",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #59: Forge email discovery — 2026-10-23 13:02 ET",
+   "detail": "Open since 2026-10-23. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #59",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/59",
+   "at": "2026-10-23T17:11:32Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "ask:ASK-20261023-CLAUDE-1312",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Exclude pharma and medical companies everywhere, not just in automatic intake?",
+   "detail": "On 2026-10-23 you said no pharma or medical companies. That rule is in the automatic intake filter only (PR #58). The AI lanes and the Writer's Never Consider list in forge-policy do not have it, so those can still add pharma/medical jobs.",
+   "blocks": "Consistent screening across every lane.",
+   "options": [
+    "Add to Never Consider in forge-policy (all lanes)",
+    "Automatic intake only"
+   ],
+   "recommended": "Add to Never Consider so every lane and the Writer apply it.",
+   "action": "Answer in chat; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261023-CLAUDE-1312.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261023-CLAUDE-1312.json",
+   "at": "2026-10-23T13:12:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261023-CLAUDE-1312",
+   "links": [
+    {
+     "label": "forge-policy rules",
+     "url": "https://github.com/tpruittguitar/forge-policy/blob/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt"
+    }
+   ]
+  },
+  {
    "id": "ask:ASK-20261018-02",
    "section": "DECIDE",
    "level": "WATCH",
@@ -167,6 +204,81 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
    "at": "2026-10-19T00:59:00-04:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "ask:ASK-20261023-CLAUDE-1310",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Trim the WEB_CAREER_DISCOVERY lane once automatic intake is reliable?",
+   "detail": "The source-trial Action already reads ~160 employer job boards every run. Grok's WEB_CAREER_DISCOVERY lane searches many of the same career sites. Once automatic intake (armed 2026-10-23) has run cleanly for a few days, the lane could be cut down to the priority companies the Action finds no board for (Tesla, Anduril, LeoLabs and others in the source-trial report).",
+   "blocks": "Lower AI cost per run; nothing is blocked today.",
+   "options": [
+    "Trim to no-board companies",
+    "Keep as is"
+   ],
+   "recommended": "Trim, but only after about a week of clean automatic intake runs.",
+   "action": "Answer in chat; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261023-CLAUDE-1310.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261023-CLAUDE-1310.json",
+   "at": "2026-10-23T13:10:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261023-CLAUDE-1310",
+   "links": [
+    {
+     "label": "Source-trial report (no-board list)",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/state/source-trial-report.md"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261023-CLAUDE-1311",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Pay for a proxy so JobSpy can read ZipRecruiter and Glassdoor?",
+   "detail": "On GitHub's servers ZipRecruiter and Glassdoor block every JobSpy search (403) and Google returns nothing; LinkedIn is partly rate-limited (429). Fixing it needs a paid residential proxy. Until then the ChatGPT ZIPRECRUITER_WEEKLY lane is the only ZipRecruiter coverage and must stay.",
+   "blocks": "Retiring the ZipRecruiter lane.",
+   "options": [
+    "Keep the ZipRecruiter lane (no cost)",
+    "Buy a proxy and then retire the lane"
+   ],
+   "recommended": "Keep the lane; a proxy costs money every month for one source.",
+   "action": "Answer in chat; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261023-CLAUDE-1311.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261023-CLAUDE-1311.json",
+   "at": "2026-10-23T13:11:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261023-CLAUDE-1311",
+   "links": [
+    {
+     "label": "PR #57 (blocked-site report)",
+     "url": "https://github.com/tpruittguitar/forge-coordination/pull/57"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261023-CLAUDE-1313",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Source trial's 6-hour schedule has not fired yet",
+   "detail": "The source trial was set to run every 6 hours (REV-210, live 08:09 UTC 2026-10-23), but no scheduled run had happened by 17:00 UTC; GitHub sometimes drops scheduled runs. Automatic intake runs after each source trial, so no source trial means no new automatic inserts.",
+   "blocks": "Automatic intake cadence.",
+   "options": [
+    "Watch the next runs",
+    "Ask Claude to investigate"
+   ],
+   "recommended": "Watch: if there is still no scheduled run by 2026-10-24, ask Claude to investigate.",
+   "action": "Answer in chat; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261023-CLAUDE-1313.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261023-CLAUDE-1313.json",
+   "at": "2026-10-23T13:13:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261023-CLAUDE-1313",
+   "links": [
+    {
+     "label": "source-trial runs",
+     "url": "https://github.com/tpruittguitar/forge-coordination/actions/workflows/source-trial.yml"
+    }
+   ]
   }
  ],
  "lanes": [
