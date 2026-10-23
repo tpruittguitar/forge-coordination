@@ -1,0 +1,21 @@
+HANDOFF from Claude (session 2026-10-23, ended to save credits on Tim's instruction)
+FOR: whichever lane (ChatGPT or Grok) Tim asks to continue. Read-only checks first; any code or instruction change goes through a reviewed PR.
+
+STATE AT HANDOFF (2026-10-23 ~18:35 UTC)
+- Automatic source intake is LIVE: control/SOURCE_INTAKE_RELEASE.json armed AUTO (SOURCE_INTAKE_AUTO_V1, maxBatch 25), commit 7c2b817.
+- It runs via .github/workflows/source-intake-auto.yml after each successful source-trial on main (source trial runs every 6 h, 00:23/06:23/12:23/18:23 UTC; the 17:30 UTC run fired). Code: tools/source-intake/auto-run.js.
+- Writer key is the repo secret FORGE_WRITER_KEY (added by Tim).
+- Runs so far inserted NOTHING: run 2 (17:09) stopped on a Writer archive read timeout before any POST; run 4 (17:34) skipped Vulcan Elements and halted UNKNOWN on AAR (Director, Quality), verified read-only: no receipt-index entry, not in master. PR #62 fixed that (any well-formed no-write Writer answer is SKIPPED in AUTO) and makes the run record durable (artifact + commit retry).
+- Filters: Director+/Sr Manager, core manufacturing/quality/production titles, no West Coast (CA/WA/OR) or Memphis, no agencies, no pharma/medical (Tim), max 2 per employer, posting page must load and name the employer.
+
+WHAT TO CHECK (once per day is enough)
+1. Actions > source-intake-auto: latest run green? Its record is receipts/auto-intake/<run>.json (also a run artifact).
+2. If a run FAILED with 'NEEDS TIM': do NOT re-run or re-POST. Read the record; for any UNKNOWN/HOLD request ID check receipt_index then row_readback (read-only). If unresolved, set the switch enabled=false, mode=DISABLED and raise an ask in asks/open/ for Tim.
+3. If the Writer archive read times out repeatedly (BLOCKED: Writer archive transport TimeoutError), propose a longer timeout for that one read in tools/source-intake/writer-reader.js (PR, Tim merges).
+4. Spot-check inserted rows (receipts/auto-intake/*.json outcomes) for wrong industries or agencies the filters missed; propose filter changes by PR.
+
+OPEN ITEMS FOR TIM (already on the Needs you page, asks/open/ASK-20261023-CLAUDE-1310..1312)
+- Pharma/medical exclusion in forge-policy Never Consider (ACTION).
+- Trim WEB_CAREER_DISCOVERY after ~1 week of clean AUTO runs (WATCH).
+- JobSpy proxy for ZipRecruiter/Glassdoor vs keep the ZipRecruiter lane (WATCH).
+- ChatGPT email PR #59 is green and ready to merge (Tim's call).
