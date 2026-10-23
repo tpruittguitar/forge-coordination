@@ -1,0 +1,28 @@
+# PR check for change records (tools/change-register/check-pr.js): every PR adds a valid control/changes/<id>.txt and
+# leaves the register entries and the consumed-records ledger alone. Bots and the change-register-override label are exempt.
+name: change-record-check
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, labeled, unlabeled, ready_for_review]
+permissions:
+  contents: read
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test change-register tools
+        run: node --test tools/change-register/consolidate.test.js
+      - name: Check change record
+        env:
+          BASE: ${{ github.event.pull_request.base.sha }}
+          HEAD: ${{ github.event.pull_request.head.sha }}
+          AUTHOR: ${{ github.event.pull_request.user.login }}
+          LABELS: ${{ join(github.event.pull_request.labels.*.name, ',') }}
+        run: node tools/change-register/check-pr.js --base "$BASE" --head "$HEAD" --author "$AUTHOR" --labels "$LABELS"

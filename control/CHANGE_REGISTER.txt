@@ -1,9 +1,13 @@
 FORGE CHANGE REGISTER — one numbering for every change, in every repo (Tim 2026-10-18 17:16 ET: "I just want consistency")
 OWNER=Tim. MAINTAINED_BY=Claude; every AI adds its own line.
 RULE: Every change gets the next REV number, whichever repo it lands in (foreman-cockpit, forge-coordination, forge-policy,
-  forge-writer-state). The PR title starts with it: "REV-016 · <what it does>". Add the change's line here in the same PR
-  (for a direct commit, in the same commit). Take the highest REV below + 1. GitHub's own PR numbers count separately per
-  repo and are shared with issues, so they never line up; REV is the number to use.
+  forge-writer-state). GitHub's own PR numbers count separately per repo and are shared with issues, so they never line up;
+  REV is the number to use.
+  FROM 2026-10-22 (change records): do NOT add lines here and do NOT pick a REV. A PR adds control/changes/<id>.txt
+  (format: control/changes/README.txt); when it merges, .github/workflows/change-register.yml appends its line below with
+  the next REV in merge order and logs it in control/CHANGE_RECORDS_CONSUMED.txt. The change-record-check PR check fails
+  a PR that adds, removes or changes a line here. Lines above that point were added by hand under the old rule ("take the
+  highest REV + 1", PR title "REV-016 · ..."); they are never renumbered or rewritten.
 Status: QUEUED · OPEN (PR waiting for Tim) · MERGED · LIVE (deployed/in use) · CLOSED (not merged).
 Detail for each REV stays in control/PIPELINE_EXPLORER_REVISION_LOG.txt (app/Writer) or the linked PR.
 DUPLICATES (Tim 2026-10-21 03:43 ET, option a): REV-138, REV-139 and REV-140 each name two changes, a ChatGPT direct
