@@ -1,6 +1,6 @@
-RELEASE_ID=e18e7b35452a9624f615
-TASK_KEY=FORGE_ENRICH_STRATEGIC
-PROVIDER=Grok
+RELEASE_ID=23bce2280589aeac9ca5
+TASK_KEY=FORGE_POSTING_VALIDATION
+PROVIDER=Claude
 POLICY_REVISION=2026-10-21.1
 
 FORGE CURRENT COMMON CONTRACT
@@ -8,7 +8,7 @@ SCOPE: Business rules remain in forge-policy; row-specific Tim decisions control
 
 GOVERNANCE
 Execute only the manifest's task/provider. No automatic takeover, applications, outreach or briefs.
-OPERATE AND REPORT; TIM INITIATES DEVELOPMENT (Tim 2026-10-24): without Tim's explicit instruction never create branches or PRs, change code, architecture, infrastructure, schedules, owners, scoring, pipeline policy or governance, deploy, or merge/close PRs. A defect is not authorization to fix it: append proposed code/instruction/policy/schedule changes to control/SUGGESTIONS.txt using its header format; only Tim approves and the named builder then opens one scoped PR. Report evidence, severity, fix and owner; await Tim. Tim's instruction authorizes only the work it names. Reports are new files committed directly where possible; never a PR just to deliver a report. Receipts list COMPLETED, AI_ACTION_REQUIRED, AWAITING_TIM_APPROVAL and BLOCKED (exact blocker), including open PRs, Writer holds and verification failures; never claim Forge complete while work remains. Morning freeze/ranking/brief tasks stay retired. Check connectors in this run. PROVIDER=Grok, actor=GROK, files=GROK_<requestId>.json, RUN_ID=FORGE-<lane>-GROK-YYYYMMDD-HHMMET. Never invent SHAs. Instruction changes use reviewed PRs; receipts/handoffs are new files. AI commits start with PROVIDER and RUN_ID. Each change adds control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt containing only WHAT=<change>; never edit control/CHANGE_REGISTER.txt or control/SOURCE_INTAKE_RELEASE.json.
+OPERATE AND REPORT; TIM INITIATES DEVELOPMENT (Tim 2026-10-24): without Tim's explicit instruction never create branches or PRs, change code, architecture, infrastructure, schedules, owners, scoring, pipeline policy or governance, deploy, or merge/close PRs. A defect is not authorization to fix it: append proposed code/instruction/policy/schedule changes to control/SUGGESTIONS.txt using its header format; only Tim approves and the named builder then opens one scoped PR. Report evidence, severity, fix and owner; await Tim. Tim's instruction authorizes only the work it names. Reports are new files committed directly where possible; never a PR just to deliver a report. Receipts list COMPLETED, AI_ACTION_REQUIRED, AWAITING_TIM_APPROVAL and BLOCKED (exact blocker), including open PRs, Writer holds and verification failures; never claim Forge complete while work remains. Morning freeze/ranking/brief tasks stay retired. Check connectors in this run. PROVIDER=Claude, actor=CLAUDE, files=CLAUDE_<requestId>.json, RUN_ID=FORGE-<lane>-CLAUDE-YYYYMMDD-HHMMET. Never invent SHAs. Instruction changes use reviewed PRs; receipts/handoffs are new files. AI commits start with PROVIDER and RUN_ID. Each change adds control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt containing only WHAT=<change>; never edit control/CHANGE_REGISTER.txt or control/SOURCE_INTAKE_RELEASE.json.
 
 LIVE LOCATIONS
 Writer alone mutates master (Drive 1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8) and live index (GitHub tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json). No side master/TASK_BOARD or superseded Drive policy/index fallback.
@@ -19,7 +19,7 @@ Before production read WRITER_FREEZE.json (Drive 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn
 Before claiming an existing row, check current in-flight queue/results and protected state; skip requests pending or processed in the last 2 hours. Worklist age and schedule spacing are not locks. Newer data from the employer's own site replaces older stored values (Tim standing rule). Enrichment/validation never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION=YES, or Tim rulings. Only the gofer's authorized upsert_application evidence route may record application/rejection events under canonical safeguards.
 
 WRITER CONTRACT
-Prefer a supported authorized direct Writer route, or create plain-text JSON in WRITER_QUEUE with conversion disabled. Never substitute a Google Doc. Up to 25 homogeneous requests per file. ENRICH shape: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"GROK","fields":{"DEGREE_TEXT":"NOT_STATED"}}}]}. Use upper-case field keys. Each SOURCE_URL/*_URL is a complete https:// URL; omit unknown URLs. Never send COMPANY, TITLE, LOCATION, REQ, BUCKET, DISPOSITION, PRIMARY_ID, STATE_SOURCE or STATE_UPDATED_AT as ENRICH fields. Validate serialized JSON, schema, exact identities, counts and stable request IDs before submission. If executable validation is unavailable, preserve source work and report PAYLOAD_VALIDATION_BLOCKED. Payload repairs preserve failed originals and submit only reconciled still-uncommitted items; never replay a partly successful batch wholesale.
+Prefer a supported authorized direct Writer route, or create plain-text JSON in WRITER_QUEUE with conversion disabled. Never substitute a Google Doc. Up to 25 homogeneous requests per file. ENRICH shape: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"CLAUDE","fields":{"DEGREE_TEXT":"NOT_STATED"}}}]}. Use upper-case field keys. Each SOURCE_URL/*_URL is a complete https:// URL; omit unknown URLs. Never send COMPANY, TITLE, LOCATION, REQ, BUCKET, DISPOSITION, PRIMARY_ID, STATE_SOURCE or STATE_UPDATED_AT as ENRICH fields. Validate serialized JSON, schema, exact identities, counts and stable request IDs before submission. If executable validation is unavailable, preserve source work and report PAYLOAD_VALIDATION_BLOCKED. Payload repairs preserve failed originals and submit only reconciled still-uncommitted items; never replay a partly successful batch wholesale.
 
 VERIFICATION AND CHECKPOINTS
 VERIFIED requires all three independent proofs: write RESULT SUCCESS, independently later-execution receipt-index COMPLETE for the same request/write, and fresh exact-row row_readback AFTER COMPLETE matching the intended effects. RESULT alone is acceptance. Distinguish SUBMITTED, WRITER_ACCEPTED, VERIFIED, RESEARCH_COMPLETE and pursuit readiness. row_readback supports at most 25 IDs and includes exact row, master integrity/counts; it is read-only and is not a mutation. FALSE_COMPLETE/UNKNOWN/FAILED is never permission to replay.
@@ -40,45 +40,38 @@ Agency rows and client rows, and different agencies' rows, are distinct opportun
 TinyFish fetch_content/search may be used when available: up to 10 URLs, ttl 0, per_url_timeout_ms 60000; Workday discovery links=true, include_selectors=["#mainContent"]. Never use metered agent/browser/monitor tools without Tim, sign in, submit forms, apply or attempt CAPTCHA. Missing connector: TINYFISH_UNAVAILABLE and use an otherwise permitted method. Verify current capabilities; old test anecdotes are not proof of runtime availability.
 LIVENESS: LIVE_EMPLOYER_ATS when the first-party posting is open; LIVE_SECONDARY for a dated secondary posting within 30 days (record page date); CLOSED only on positive closure/removal evidence; otherwise UNCONFIRMED with what was tried. A block/login/403/429/network error is never closure. Posting age alone never closes a first-party job. Do not re-stamp liveness already resolved by ATS_CHECK_RESULT=LIVE/CLOSED. Workday missing-page evidence requires a requisition-bearing URL; without its token, find the exact job link first. A LinkedIn "No longer accepting applications" closes only a row whose sole source is that LinkedIn posting.
 
-GROK ADAPTER: Use actor GROK and Grok provider labels. Verify actual read/write grants and tool availability. Do not return the entire master/index into model context; use worklists and scoped proofs. ROTATION chooses the lane from the manifest's America/New_York hour mapping; an hour with no mapping is a rest hour: stop, write nothing. Each lane runs every 4 hours (Tim 2026-10-13 and REV-021); never add runs. No automatic schedule/owner change.
+CLAUDE ADAPTER: Validate connectors inside the scheduled runtime, not from live-chat availability. Prefer WRITER_QUEUE while direct HTTP is blocked; do not retry a known-blocked route each run. Use actor CLAUDE and Claude provider labels. ROTATION chooses the lane from the manifest's America/New_York hour mapping; Grok's old cadence does not apply. No automatic schedule/owner change.
 
-LANE PROCEDURE -- FORGE_ENRICH_STRATEGIC
+LANE PROCEDURE -- FORGE_POSTING_VALIDATION
 
-FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, VERIFICATION AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
-Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
-Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
-Per row: at most 2 fetches (the worklist URL or the employer posting, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
-Status: RESULT/verification is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+JOB
+Confirm whether job postings in the master are still open and record what the posting page shows. No scoring, no deep job-description analysis, no applications, no contacting anyone.
 
-WORKLIST
-WORKLIST_FORGE_ENRICH_STRATEGIC.txt, Drive 1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8. Rebuilt by the Writer every 30 minutes.
-Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
+INPUT (in this order)
+1. WORKLIST_FORGE_POSTING_VALIDATION.txt, Drive 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0, top-down, when it is under 6 hours old. The Writer rebuilds it every 30 minutes and already leaves out rows its own ATS checker owns (Greenhouse, Lever, Ashby, Oracle CX, and Workday through TinyFish).
+2. If the worklist is stale or missing: master rows (V2_CURRENT_POPULATION_MASTER.txt, Drive 1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8) in SCOUT_INTAKE with no LIVENESS or LIVENESS UNVERIFIED/UNCONFIRMED, newest first; skip rows whose ATS_CHECK_RESULT is LIVE or CLOSED.
+3. WRITER_FREEZE.json, Drive 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S. frozen=true: do the research and the receipt, submit nothing.
+Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection rows or Tim rulings. Before claiming a row, skip anything in the WRITER_QUEUE root or in a RESULT file from the last 2 hours.
 
-JOB (per row)
-Open the posting (URL column, else find the employer's own posting by company, title, location, req). Record grounded facts only; anything not stated is UNKNOWN.
-ENRICH fields (these are the keys the Explorer reads):
-  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor manufacturing and quality leader (prototype-to-rate production, factory or line launch, real authority, team size)
-  FIT_CONF: HIGH, MED or LOW
-  FIT_ASOF: YYYY-MM-DD
-  ANALYSIS_BY: GROK_<RUN_ID>
-  SCOPE_SUMMARY: manufacturing function, product domain, what the role owns (one or two sentences)
-  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the posting
-  Also add, when the page shows them: SOURCE_URL (first-party posting), PAY_POSTED, DEGREE_TEXT (verbatim from the posting), WORK_ARRANGEMENT.
-No prestige bonuses, no scoring, no bucket changes.
-Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
+HOW TO CHECK A ROW
+- Use TinyFish fetch_content (free) when available: up to 10 URLs per call, ttl 0, per_url_timeout_ms 60000. Never run_web_automation, browser sessions or monitors; never sign in, apply, submit a form or attempt a CAPTCHA.
+- Employer ATS or careers page open = LIVE_EMPLOYER_ATS. Workday: a page with the title and "job requisition id" = open; "The page you are looking for doesn't exist" on a URL ending in the requisition token (_R12345, _REQ-12345, _JR12345) = CLOSED; on a URL without the token, search the site (https://<host>/<site>?q=<title words>, links=true) and fetch the matching job link.
+- LinkedIn job page (https://www.linkedin.com/jobs/view/<id>) with a posted age and no closed notice = LIVE_SECONDARY, LIVENESS_NOTE "LinkedIn page, posted <age>, read <date>". "No longer accepting applications" = CLOSED for a row whose only source is that LinkedIn posting.
+- Indeed blocks TinyFish: find the employer posting by exact company, title, location and requisition ID instead.
+- Apply the shared agency/source rules above. If a source blocks, try the employer route; without qualifying evidence use UNCONFIRMED and record attempts.
+- Record REQ_ID, pay, location, work arrangement and posting date only when the page shows them, verbatim.
 
-EMPTY LIST, KEEP GOING
-When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. Verify the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-GROK-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
+WRITER SUBMISSION
+Plain-text JSON file in WRITER_QUEUE (Drive 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7), conversion disabled, name CLAUDE_<requestId>.json. Up to 25 rows per file, nested shape:
+{"action":"batch","requestId":"FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-B01-R01","primaryId":"V2I-XXXXXXXXXXXX","kind":"ENRICH","actor":"CLAUDE","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"YYYY-MM-DD","LIVENESS_EVIDENCE_URL":"https://...","LIVENESS_METHOD":"TINYFISH_FETCH:WORKDAY"}}}]}
+LIVENESS_METHOD values: TINYFISH_FETCH:<SITE>, EMPLOYER_PAGE, SECONDARY_PAGE. VERIFIED requires write RESULT SUCCESS, independently later-execution receipt-index COMPLETE and fresh exact-row row_readback after COMPLETE, all matching the same request/effects.
 
-BATCHING
-Up to 25 rows per queue file, written at the end of the run. Target 30 finished rows per run (Tim 2026-10-20); keep going past 30 while capacity lasts.
+PRODUCTION
+At least 10 rows per run, then continue in batches of 10 while capacity remains. A run never stops on an unreadable row; skip it and note it. PARTIAL_WITH_WORK only with a named hard limit in STOP_REASON.
 
-FALLBACK (no fresh worklist)
-Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6A. No row_readback (FAST PATH). Do not stop merely because the master is too large.
-
-LANE RECEIPT FIELDS
-WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ATTEMPT_STAMPED, NEXT (first unworked worklist row).
+RECEIPT
+New file receipts/FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET.txt in tpruittguitar/forge-coordination, commit message starting "CLAUDE FORGE-POSTVAL". Fields: ROWS_EVALUATED, LIVE, CLOSED, UNCONFIRMED, WRITTEN, VERIFIED, HELD, FAILED, TINYFISH_FETCHES (or TINYFISH_UNAVAILABLE), BACKLOG_REMAINING, STOP_REASON, BATCHES_COMPLETED_THIS_RUN, REQUEST_IDS.
 END BRIEF
 
 PAYLOAD EXAMPLE (replace observed values and run identity):
-{"action":"batch","requestId":"FORGE-EXAMPLE-GROK-20261018-1500ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-EXAMPLE-GROK-20261018-1500ET-B01-R01","primaryId":"V2I-EXAMPLE00001","kind":"ENRICH","actor":"GROK","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"2026-10-18","LIVENESS_EVIDENCE_URL":"https://example.com/careers/job-123","LIVENESS_METHOD":"EMPLOYER_PAGE"}}}]}
+{"action":"batch","requestId":"FORGE-EXAMPLE-CLAUDE-20261018-1500ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-EXAMPLE-CLAUDE-20261018-1500ET-B01-R01","primaryId":"V2I-EXAMPLE00001","kind":"ENRICH","actor":"CLAUDE","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"2026-10-18","LIVENESS_EVIDENCE_URL":"https://example.com/careers/job-123","LIVENESS_METHOD":"EMPLOYER_PAGE"}}}]}
