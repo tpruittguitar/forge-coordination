@@ -1,0 +1,81 @@
+FORGE GOVERNANCE DIRECTIVE
+Authority: Tim — APPROVED
+Issued: 2026-10-24 13:25 ET (relayed in Claude chat; recorded verbatim by Claude as Forge coordinator)
+Effective: Immediately
+Applies to: ChatGPT, Claude, Grok, and all scheduled Forge automations
+Operational projection: policy/current/COMMON.txt, GOVERNANCE section ("OPERATE AND REPORT; TIM INITIATES DEVELOPMENT"), carried into every generated lane packet.
+
+1. Governing principle
+
+AUTOMATIONS OPERATE AND REPORT. TIM INITIATES DEVELOPMENT.
+
+Scheduled automations are authorized to execute their existing operational responsibilities, collect evidence, and produce reports.
+
+They are NOT authorized to initiate application development, architecture changes, policy modifications, workflow repairs, or deployment activities without an explicit instruction from Tim.
+
+2. Permitted scheduled activities
+
+* Job discovery, intake, enrichment, validation, and analysis within existing authorization.
+* Authorized Writer transactions with required verification.
+* Operational health checks, QA monitoring, and evidence collection.
+* Publishing reports, receipts, and outstanding-work summaries.
+* Identifying defects and recommending corrective actions.
+
+Use approved reporting and receipt channels. Routine reporting must not generate development PRs or require hourly manual merges.
+
+3. Prohibited without Tim's explicit approval
+
+* Creating development branches or pull requests.
+* Modifying application code, architecture, or infrastructure.
+* Changing automation schedules or task ownership.
+* Changing scoring logic, pipeline policies, or governance rules.
+* Deploying fixes or initiating corrective development.
+* Merging or closing existing PRs.
+* Treating a detected defect as authorization to repair it.
+
+An explicit development instruction from Tim authorizes only the work covered by that instruction.
+
+4. Mandatory reporting
+
+Every automation must distinguish:
+
+COMPLETED: Operational work finished and verified.
+AI_ACTION_REQUIRED: Unfinished operational work assigned to an AI.
+AWAITING_TIM_APPROVAL: Proposed development or policy change requiring Tim's authorization.
+BLOCKED: Work that cannot continue safely, with the exact blocker.
+
+Report outstanding PRs, unresolved Writer holds, incomplete tasks, and verification failures. Do not claim that Forge is fully complete when outstanding work remains.
+
+5. Development authorization
+
+When a scheduled automation identifies a defect:
+
+1. Document the defect and evidence.
+2. Assess operational impact and severity.
+3. Recommend a solution and identify the responsible component.
+4. Report it to Tim.
+5. Await explicit authorization before beginning development.
+
+Do not create an unnecessary PR simply to deliver the report.
+
+Existing operational safeguards, protected application states, Writer verification requirements, and canonical master authority remain in force.
+
+6. Implementation assignment
+
+Claude, as Forge coordinator, is authorized by this directive to publish this specific governance change into the canonical shared instructions, following existing change-control procedures and validation.
+
+This authorization does not extend to unrelated code changes, pipeline fixes, scheduling changes, or deployments.
+
+Grok must acknowledge and follow the directive, but must not independently create a duplicate governance PR.
+
+After publication, report the exact changed files, PR, validation results, and effective release.
+
+Required acknowledgment from both AIs:
+"Understood. Scheduled operations report; Tim initiates development. No autonomous development PRs or fixes."
+
+Division of responsibility: Claude publishes the one shared governance change. Grok adopts it. ChatGPT's Email Discovery automation already contains the operational restriction.
+
+---
+CLAUDE NOTES (2026-10-24, not part of Tim's text)
+- Interaction with existing rules: COMMON.txt already required reviewed PRs for instruction changes and barred schedule changes/deployment; those prohibitions are now stated once in the OPERATE AND REPORT line.
+- Open question for Tim (AWAITING_TIM_APPROVAL): register line REV-235 (2026-10-23) requires a change record "in the same GitHub PR before reporting receipt work ready for merge", and ChatGPT's email receipts have been delivered as PRs (#63, #65, #66). Section 2 of this directive says routine reporting must not require manual merges. The common contract now says reports are committed directly where the connector allows. Whether ChatGPT's connector can commit directly to main is unverified.
