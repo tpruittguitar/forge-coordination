@@ -98,3 +98,20 @@ Compared IDs referenced in nine detailed candidate ledgers (#38, #48, #52, #53, 
 #73: 2 of 2 V2I references present.
 Total: 84 of 87 ledger V2I references observed in the live master extract. Distinguish insert primary IDs from historical, archive, and candidate conflict IDs. Missing historical/protected IDs are NOT authorization for new intake.
 No canonical master edits, intake replays or PR closings performed.
+
+
+2026-10-24 PR-BY-PR EVIDENCE IDENTITY CHECK
+Compared every receipt path on each PR head to current origin/main using git object bytes.
+PR 36: 5/5 identical; branch-only historical control/CHANGE_REGISTER.txt and state/latest.json.
+PR 38: 3/3 identical; branch-only historical control/CHANGE_REGISTER.txt.
+PR 48: 11/11 identical; branch-only per-run control/changes record.
+PR 52: 8/8 identical; branch-only per-run control/changes record.
+PR 53: 7/7 identical; branch-only per-run control/changes record.
+PR 54: 10/10 identical; branch-only per-run control/changes record.
+PR 59: 15/15 identical; branch-only per-run control/changes record.
+PR 71: 4/4 identical; branch-only per-run control/changes record.
+PR 72: 4/4 identical; branch-only per-run control/changes record.
+PR 73: 5/5 identical; branch-only per-run control/changes record.
+Total 72/72 byte-identical. CLOSURE_EVIDENCE_READY for the ten source PRs, separately from open candidate holds.
+Do not merge branch-only stale control/CHANGE_REGISTER.txt or state/latest.json; do not replay intake.
+Do not close PRs until specifically authorized by Tim. Candidate conflicts and protected identity records remain carried forward in this audit document.
