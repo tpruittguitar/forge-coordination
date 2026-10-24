@@ -18,7 +18,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test change-register tools
-        run: node --test tools/change-register/consolidate.test.js
+        run: node --test tools/change-register/consolidate.test.js tools/change-register/preflight.test.js
       - name: Check change record
         env:
           BASE: ${{ github.event.pull_request.base.sha }}
