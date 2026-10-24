@@ -38,15 +38,30 @@ jobs:
           t, mode, content = r.get("target"), r.get("mode"), r.get("content")
           if not (isinstance(t, str) and isinstance(content, str) and mode in ("append", "replace") and r.get("requested_by")):
               print("REJECT missing or invalid target/mode/content/requested_by"); sys.exit()
-          p = os.path.normpath(t)
+          p = os.path.normpath(t).replace('\\', '/')
           # Authoritative instructions/generated state and immutable evidence use
           # direct reviewed changes, never a self-declared requested_by string.
-          if p.startswith("..") or os.path.isabs(p) or p.split(os.sep)[0] not in ("proposals", "usage"):
+          if p.startswith("..") or os.path.isabs(p) or (p != "control/SUGGESTIONS.txt" and p.split('/')[0] not in ("proposals", "usage")):
               print(f"REJECT target not allowed: {t}"); sys.exit()
           root = os.path.realpath(".")
           resolved = os.path.realpath(p)
           if os.path.commonpath([root, resolved]) != root or os.path.islink(p):
               print(f"REJECT target escapes checkout: {t}"); sys.exit()
+          # Suggestions are append-only and must carry a single unapproved entry.
+          if p == "control/SUGGESTIONS.txt":
+              keys = ["ID","DATE","BY","COMPONENT","SEVERITY","EVIDENCE","PROBLEM","PROPOSED_FIX","SUGGESTED_BUILDER","STATUS","TIM_DECISION"]
+              lines = [line for line in content.splitlines() if line.strip()]
+              pairs = [line.split("=",1) for line in lines]
+              if (mode != "append" or len(pairs) != len(keys) or
+                  any(len(pair) != 2 or pair[0] != key for pair,key in zip(pairs,keys)) or
+                  not __import__("re").fullmatch(r"SUG-\d{8}-(?:CHATGPT|CLAUDE|GROK)-\d{2,}",pairs[0][1]) or
+                  pairs[4][1] not in ("CRITICAL","HIGH","MEDIUM","LOW") or
+                  pairs[9][1] != "OPEN" or pairs[10][1].strip() or
+                  pairs[8][1] not in ("CHATGPT","CLAUDE","GROK","UNASSIGNED")):
+                  print("REJECT invalid suggestion entry (must be append-only, OPEN, undecided)"); sys.exit()
+              previous = open(p,encoding="utf-8").read() if os.path.exists(p) else ""
+              if "ID=" + pairs[0][1] + "\n" in previous:
+                  print("REJECT duplicate suggestion ID"); sys.exit()
           base = r.get("base_blob_sha")
           if os.path.exists(p) and not base:
               print("REJECT existing target requires base_blob_sha"); sys.exit()
