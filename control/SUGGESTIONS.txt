@@ -364,3 +364,15 @@ SUGGESTED_BUILDER=UNASSIGNED
 STATUS=OPEN
 TIM_DECISION=
 
+ID=SUG-20261024-CHATGPT-31
+DATE=2026-10-24
+BY=CHATGPT FORGE-JOBSPY-HIRINGCAFE-ENRICH-AUDIT
+COMPONENT=forge-coordination/tools/enrich-ats-pay/lib.js,run.js; tools/needs-tim/build.js
+SEVERITY=HIGH
+EVIDENCE=GitHub Actions run 40129887056; tools/enrich-ats-pay/lib.js aggregatorPage directly fetches Indeed; state/enrich-ats-pay-report.json has Indeed HTTP 401 twice
+PROBLEM=JobSpy and HiringCafe integration improves discovery but has not replaced direct Indeed requests in pay/degree enrichment; repeated 401 results in lost source evidence. Separately the Needs Tim builder does not ingest the Suggestion Register.
+PROPOSED_FIX=Tim-approved scoped builder task: reuse JobSpy/HiringCafe structured records for pay/degree enrichment when provenance is adequate; prefer employer ATS evidence; mark third-party/estimated pay distinctly and preserve verbatim degree evidence; avoid pointless direct Indeed requests after 401. Independently expose OPEN/APPROVED suggestions in Needs Tim with a clear decision workflow and no autonomous approval or build.
+SUGGESTED_BUILDER=CLAUDE
+STATUS=OPEN
+TIM_DECISION=
+
