@@ -69,8 +69,30 @@ async function main(argv=process.argv.slice(2)){
  const key=process.env.FORGE_WRITER_KEY;
  if(!key)return console.log('AUTO intake off: FORGE_WRITER_KEY is not set');
  const prior=previous(),open=prior.filter(p=>!p.state.reconciliation&&!p.state.noCandidates);
- if(open.length)throw Error('NEEDS TIM: earlier AUTO run unfinished: '+open.map(p=>p.file).join(', '));
- const sent=new Set(prior.flatMap(p=>p.state.requestIds||[]));
+ // A single, DURABLY captured identity mismatch may be isolated from unrelated future work.
+ // Keep the original run incomplete and its failed case on HOLD. Never retry ANY request
+ // with a recorded Writer response; only untouched candidates can enter a fresh AUTO run.
+ // All other halts (unknown POST, bad recorder, pending index, switch changes, etc.) still
+ // block globally. This is not a declaration that the quarantined insert is verified.
+ const quarantined=[];
+ for(const p of open){
+  const halt=p.state.halts?.at(-1),out=halt?.outcomes||[];
+  const held=out.filter(x=>x.status==='HOLD');
+  const exact=halt?.message==='HOLD: resumed case not verified (INSERT_IDENTITY_MISMATCH)'&&
+   held.length===1&&held[0].reason===halt.message&&out.at(-1)===held[0]&&
+   Object.hasOwn(p.state.results||{},held[0].requestId)&&
+   p.state.results[held[0].requestId]?.WRITE_ACCEPTED===true&&
+   p.state.results[held[0].requestId]?.receipt?.REQUEST_ID===held[0].requestId&&
+   (p.state.results[held[0].requestId]?.receipt?.NEW_PRIMARY_IDS||[]).length===1&&
+   out.slice(0,-1).every(x=>['SKIPPED','RESUMED_ACCOUNTED'].includes(x.status))&&
+   out.every(x=>Object.hasOwn(p.state.results||{},x.requestId));
+  if(!exact)throw Error('NEEDS TIM: earlier AUTO run unfinished: '+p.file);
+  quarantined.push({file:p.file,requestId:held[0].requestId,reason:halt.message});
+ }
+ if(quarantined.length)console.error('NEEDS TIM: isolated identity HOLD(s), NOT resolved: '+JSON.stringify(quarantined));
+ // Count only attempts actually recorded; unattempted tail candidates are safe to
+ // consider again. Quarantined and all other attempted requests remain excluded.
+ const sent=new Set(prior.flatMap(p=>Object.keys(p.state.results||{})));
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
  const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent}),candidates=[];
