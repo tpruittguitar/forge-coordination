@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-24T07:44:27.108Z",
- "sourceCommit": "083516f6afd9abd562cc323ac13cfb58ecaba503",
+ "builtAt": "2026-10-24T11:35:28.261Z",
+ "sourceCommit": "2f337380c4f8010369dc0ba1d2e3bbd28554fe20",
  "counts": {
-  "total": 14,
+  "total": 17,
   "BLOCKING": 0,
   "ACTION": 10,
-  "WATCH": 4,
+  "WATCH": 7,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 8
+  "UPKEEP": 11
  },
  "items": [
   {
@@ -131,16 +131,16 @@
    "raisedBy": "CLAUDE"
   },
   {
-   "id": "pr:forge-policy#3",
+   "id": "pr:forge-coordination#71",
    "section": "UPKEEP",
    "level": "ACTION",
-   "title": "forge-policy PR #3: Codify global pharma and medical employer exclusion",
+   "title": "forge-coordination PR #71: CHATGPT: email discovery receipts 2026-10-24 0604 ET",
    "detail": "Open since 2026-10-24. Waiting for your review and merge.",
    "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-policy #3",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-policy/pull/3",
-   "at": "2026-10-24T07:43:16Z",
-   "raisedBy": ""
+   "source": "forge-coordination #71",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/71",
+   "at": "2026-10-24T10:20:17Z",
+   "raisedBy": "CHATGPT"
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -229,6 +229,42 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/pull/57"
     }
    ]
+  },
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "POSTVAL lane has gone quiet (usually reports every 2 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
+   "at": "2026-10-23T22:29:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "GOFER lane has gone quiet (usually reports every 2 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
+   "at": "2026-10-23T22:55:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "lane-overdue:EMAIL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "EMAIL lane has gone quiet (usually reports every 3.5 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
+   "at": "2026-10-24T00:04:00-04:00",
+   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -238,9 +274,9 @@
    "lastAt": "2026-10-24T00:04:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
-   "runs7d": 45,
+   "runs7d": 44,
    "usualGapHours": 3.5,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "EMAIL",
@@ -250,7 +286,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
    "runs7d": 0,
    "usualGapHours": 27,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ENRICH-FEASIBILITY",
@@ -334,7 +370,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
    "runs7d": 65,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "HANDOFF",
@@ -374,7 +410,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261015-2016ET_CHECKPOINT1.txt",
    "runs7d": 0,
    "usualGapHours": 4,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -384,7 +420,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
    "runs7d": 61,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -394,7 +430,7 @@
    "lastFile": "receipts/FORGE_POSTING_VALIDATION_GROK_20261012_2208ET.txt",
    "runs7d": 0,
    "usualGapHours": 0,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ROTATION",
