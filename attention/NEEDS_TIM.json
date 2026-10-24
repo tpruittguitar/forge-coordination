@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-24T14:53:43.146Z",
- "sourceCommit": "2246c7efed87ada342c53ca16233f71b8a92be04",
+ "builtAt": "2026-10-24T18:05:12.526Z",
+ "sourceCommit": "3badb0bb3de869bed7be9144262b3c41058b15fa",
  "counts": {
-  "total": 17,
+  "total": 20,
   "BLOCKING": 0,
-  "ACTION": 11,
-  "WATCH": 6,
+  "ACTION": 16,
+  "WATCH": 4,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 11
+  "UPKEEP": 14
  },
  "items": [
   {
@@ -143,6 +143,30 @@
    "raisedBy": "CLAUDE"
   },
   {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "GOFER lane has gone quiet (usually reports every 2 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
+   "at": "2026-10-23T22:55:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "lane-overdue:EMAIL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "EMAIL lane has gone quiet (usually reports every 3.5 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
+   "at": "2026-10-24T00:04:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "pr:forge-coordination#71",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -153,6 +177,42 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/71",
    "at": "2026-10-24T10:20:17Z",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#72",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #72: ChatGPT: Forge email discovery 2026-10-24 11:55 ET",
+   "detail": "Open since 2026-10-24. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #72",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/72",
+   "at": "2026-10-24T16:11:30Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "pr:forge-coordination#73",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #73: ChatGPT: Forge email discovery 2026-10-24 12:57 ET",
+   "detail": "Open since 2026-10-24. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #73",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/73",
+   "at": "2026-10-24T17:08:39Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "pr:forge-coordination#74",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #74: Governance: automations operate and report; Tim initiates development (Tim directive 2026-10-24)",
+   "detail": "Open since 2026-10-24. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #74",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/74",
+   "at": "2026-10-24T17:30:28Z",
+   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -241,30 +301,6 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/pull/57"
     }
    ]
-  },
-  {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "GOFER lane has gone quiet (usually reports every 2 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
-   "at": "2026-10-23T22:55:00-04:00",
-   "raisedBy": "CLAUDE"
-  },
-  {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "EMAIL lane has gone quiet (usually reports every 3.5 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
-   "at": "2026-10-24T00:04:00-04:00",
-   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -294,7 +330,7 @@
    "lastAt": "2026-10-18T12:11:00-04:00",
    "lastStatus": "UNSTATED",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
-   "runs7d": 4,
+   "runs7d": 3,
    "usualGapHours": 6,
    "overdue": false,
    "paused": "2026-10-21T18:07:00-04:00"
@@ -458,7 +494,7 @@
    "lastAt": "2026-10-18T05:46:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-CHATGPT-20261018-0546ET_TERMINAL.txt",
-   "runs7d": 2,
+   "runs7d": 1,
    "usualGapHours": 24.1,
    "overdue": false,
    "paused": "2026-10-20T11:10:00-04:00"
