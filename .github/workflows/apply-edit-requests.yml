@@ -38,10 +38,10 @@ jobs:
           t, mode, content = r.get("target"), r.get("mode"), r.get("content")
           if not (isinstance(t, str) and isinstance(content, str) and mode in ("append", "replace") and r.get("requested_by")):
               print("REJECT missing or invalid target/mode/content/requested_by"); sys.exit()
-          p = os.path.normpath(t)
+          p = os.path.normpath(t).replace('\\', '/')
           # Authoritative instructions/generated state and immutable evidence use
           # direct reviewed changes, never a self-declared requested_by string.
-          if p.startswith("..") or os.path.isabs(p) or (p != "control/SUGGESTIONS.txt" and p.split(os.sep)[0] not in ("proposals", "usage")):
+          if p.startswith("..") or os.path.isabs(p) or (p != "control/SUGGESTIONS.txt" and p.split('/')[0] not in ("proposals", "usage")):
               print(f"REJECT target not allowed: {t}"); sys.exit()
           root = os.path.realpath(".")
           resolved = os.path.realpath(p)
