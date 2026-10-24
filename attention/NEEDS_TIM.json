@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-24T05:07:31.731Z",
- "sourceCommit": "05568c93b659fa2b41b7d8349761db7848366f63",
+ "builtAt": "2026-10-24T07:44:27.108Z",
+ "sourceCommit": "083516f6afd9abd562cc323ac13cfb58ecaba503",
  "counts": {
   "total": 14,
   "BLOCKING": 0,
   "ACTION": 10,
   "WATCH": 4,
-  "DECIDE": 5,
+  "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 7
+  "UPKEEP": 8
  },
  "items": [
   {
@@ -119,31 +119,6 @@
    "raisedBy": ""
   },
   {
-   "id": "ask:ASK-20261023-CLAUDE-1312",
-   "section": "DECIDE",
-   "level": "ACTION",
-   "title": "Exclude pharma and medical companies everywhere, not just in automatic intake?",
-   "detail": "On 2026-10-23 you said no pharma or medical companies. That rule is in the automatic intake filter only (PR #58). The AI lanes and the Writer's Never Consider list in forge-policy do not have it, so those can still add pharma/medical jobs.",
-   "blocks": "Consistent screening across every lane.",
-   "options": [
-    "Add to Never Consider in forge-policy (all lanes)",
-    "Automatic intake only"
-   ],
-   "recommended": "Add to Never Consider so every lane and the Writer apply it.",
-   "action": "Answer in chat; Claude records it in asks/resolved/.",
-   "source": "asks/open/ASK-20261023-CLAUDE-1312.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261023-CLAUDE-1312.json",
-   "at": "2026-10-23T13:12:00-04:00",
-   "raisedBy": "CLAUDE",
-   "askId": "ASK-20261023-CLAUDE-1312",
-   "links": [
-    {
-     "label": "forge-policy rules",
-     "url": "https://github.com/tpruittguitar/forge-policy/blob/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt"
-    }
-   ]
-  },
-  {
    "id": "run-next-owner:GOFER|CLAUDE",
    "section": "DECIDE",
    "level": "ACTION",
@@ -154,6 +129,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261023-2255ET_TERMINAL.txt",
    "at": "2026-10-23T22:55:00-04:00",
    "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "pr:forge-policy#3",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-policy PR #3: Codify global pharma and medical employer exclusion",
+   "detail": "Open since 2026-10-24. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-policy #3",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-policy/pull/3",
+   "at": "2026-10-24T07:43:16Z",
+   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -251,7 +238,7 @@
    "lastAt": "2026-10-24T00:04:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-0004ET_TERMINAL.txt",
-   "runs7d": 46,
+   "runs7d": 45,
    "usualGapHours": 3.5,
    "overdue": false
   },
