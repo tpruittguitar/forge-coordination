@@ -17,3 +17,9 @@ CHANGE RECORDS — how a change gets its REV (from 2026-10-22; replaces appendin
    that has no valid record, edits register entries or the ledger, or reuses a record name.
 A direct commit to main (lanes, receipts) may drop a record the same way; it is registered on the next run.
 Changes made in another repo: add the record here in a direct commit or a small PR, with REPO= and PR=.
+
+LOCAL PREFLIGHT — before pushing a receipt PR
+Run: node tools/change-register/preflight.js control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt
+Exit 0 = syntax, filename, and consumed-ID checks passed; nonzero = do not push.
+After opening the PR, still require GitHub change-record-check PASS against latest head. This local check does not replace the PR diff check or attest Writer results.
+For tool-only AI sessions with no local shell, read and verify the exact new file contents and filename through GitHub and rely on the mandatory GitHub check before requesting merge; never claim the local command ran.
