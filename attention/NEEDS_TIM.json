@@ -1,12 +1,12 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-24T11:35:28.261Z",
- "sourceCommit": "2f337380c4f8010369dc0ba1d2e3bbd28554fe20",
+ "builtAt": "2026-10-24T14:53:43.146Z",
+ "sourceCommit": "2246c7efed87ada342c53ca16233f71b8a92be04",
  "counts": {
   "total": 17,
   "BLOCKING": 0,
-  "ACTION": 10,
-  "WATCH": 7,
+  "ACTION": 11,
+  "WATCH": 6,
   "DECIDE": 4,
   "JOBS": 1,
   "FAILED": 1,
@@ -117,6 +117,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/59",
    "at": "2026-10-23T17:11:32Z",
    "raisedBy": ""
+  },
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "POSTVAL lane has gone quiet (usually reports every 2 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
+   "at": "2026-10-23T22:29:00-04:00",
+   "raisedBy": "CLAUDE"
   },
   {
    "id": "run-next-owner:GOFER|CLAUDE",
@@ -231,18 +243,6 @@
    ]
   },
   {
-   "id": "lane-overdue:POSTVAL",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "POSTVAL lane has gone quiet (usually reports every 2 h)",
-   "detail": "Last receipt FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CLAUDE-20261023-2229ET.txt",
-   "at": "2026-10-23T22:29:00-04:00",
-   "raisedBy": "CLAUDE"
-  },
-  {
    "id": "lane-overdue:GOFER",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -294,7 +294,7 @@
    "lastAt": "2026-10-18T12:11:00-04:00",
    "lastStatus": "UNSTATED",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
-   "runs7d": 5,
+   "runs7d": 4,
    "usualGapHours": 6,
    "overdue": false,
    "paused": "2026-10-21T18:07:00-04:00"
