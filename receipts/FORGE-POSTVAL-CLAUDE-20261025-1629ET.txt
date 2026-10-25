@@ -1,0 +1,28 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261025-1629ET
+RELEASE_ID=23bce2280589aeac9ca5
+ENTRY_VERSION=2026-10-18.1
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (GitHub blob SHA c4b98a7158fbe47362491a981d82646ce01b2ecb matches lane.blob_sha)
+RULES_BLOB_UNCHECKED
+SOURCE_VERSIONS=manifest blob c462512f; worklist generated 2026-10-25T20:14:02Z (master rows 1872, eligible 58)
+GATE=WRITER_FREEZE frozen=false; writer_status tool not available in this runtime (no direct Writer route)
+ROWS_EVALUATED=10
+LIVE=9 (LIVE_SECONDARY, LinkedIn pages, no closed notice)
+CLOSED=0
+UNCONFIRMED=1 (V2I-E18949125561 Korn Ferry: no posted age, page date 2026-09-01)
+WRITTEN=10 (submitted to WRITER_QUEUE, file CLAUDE_FORGE-POSTVAL-CLAUDE-20261025-1629ET-B01.json, Drive id 1_VTiU6B6xcH8bd8M3uoZqqXMm5-sw5cx)
+VERIFIED=0 (SUBMITTED only; no RESULT/receipt-index/row_readback access this run)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=1 call, 10 URLs
+BACKLOG_REMAINING=48 of 58 on worklist; most are Indeed (blocked for TinyFish), tracking redirects (lensa, ladders, sendgrid, ZipRecruiter km) or Gmail link needing employer-route searches
+WRITTEN_REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261025-1629ET-B01 (R01-R10)
+IDS=V2I-28105A3DE9BC V2I-E4171CEB8252 V2I-22107238F049 V2I-3CF679EE040A V2I-AC2D8731BB73 V2I-D155D1CBD593 V2I-35A225DD195A V2I-331ADBACD225 V2I-05F4B3DB2985 V2I-E18949125561
+NOTE=LIVE_SECONDARY for rows without visible age relied on TinyFish page date metadata within 30 days (Amazon 10-20, Big Wave 10-07, IREN 10-24, Sterling 10-08, GM 10-03); recorded in LIVENESS_NOTE.
+PENDING=B01 awaiting Writer RESULT, receipt-index COMPLETE, row_readback
+NEXT_OWNER=Claude gofer / next POSTVAL run to verify B01
+NEXT_ACTION=verify B01; continue worklist rows 12+ via employer-route searches
+STOP_REASON=Minimum 10 rows met; remaining rows need Indeed/tracking-link resolution not completed this run (PARTIAL_WITH_WORK: Indeed blocks TinyFish, no Writer verification route)
+BATCHES_COMPLETED_THIS_RUN=1
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
