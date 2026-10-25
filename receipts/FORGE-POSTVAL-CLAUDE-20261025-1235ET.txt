@@ -1,0 +1,27 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261025-1235ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=23bce2280589aeac9ca5
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (GitHub blob SHA c4b98a7158fbe47362491a981d82646ce01b2ecb matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (by TIM 2026-10-18T03:29Z); writer_status not available as a tool; queue root had no pending request files; no resolved asks held by this lane
+WORKLIST=generated 2026-10-25T16:06Z, 79 eligible
+ROWS_EVALUATED=19 (worklist rows 11-20 except 19, 26-30, 44-47)
+LIVE=16 (15 LIVE_SECONDARY LinkedIn, 1 LIVE_EMPLOYER_ATS BWXT row V2I-C76E1C79842A)
+CLOSED=0 written
+UNCONFIRMED=2 not written: V2I-DE92A6CA3207 (LinkedIn page dated 2026-09-17, older than 30 days, no age shown); V2I-28105A3DE9BC (LinkedIn bot_blocked 999)
+WRITTEN=16 submitted to WRITER_QUEUE (SUBMITTED, not yet WRITER_ACCEPTED)
+VERIFIED=0 (no RESULT/receipt-index/row_readback available this run; no Writer read transport)
+HELD=1: V2I-E4171CEB8252 (Big Wave Digital) LinkedIn page shows "No longer accepting applications"; closure applies only if the LinkedIn posting is the row's sole source, which could not be confirmed without row_readback. Gofer/next run should check and close if sole-source.
+FAILED=0
+TINYFISH_FETCHES=19 URLs in 3 calls (fetch_content, ttl 0)
+NOTE: 5 rows (V2I-5166CAA6E4EF, V2I-CBA7A5BA4106, V2I-0D63A838FD1B, V2I-D36678BB2D9C, V2I-7473C6F041DA) recorded LIVE_SECONDARY on page date within 30 days with no posted-age text; noted in LIVENESS_NOTE. BWXT evidence URL submitted as https (worklist URL was http; same path).
+BACKLOG_REMAINING=60 (mostly Indeed/ZipRecruiter/Lensa/email-tracking URLs; Indeed blocks TinyFish; need employer-route searches)
+STOP_REASON=Remaining worklist rows have no direct fetchable employer/LinkedIn URL (Indeed/tracking redirects); run ended after 2 batches
+BATCHES_COMPLETED_THIS_RUN=2
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261025-1235ET-B01 (10), FORGE-POSTVAL-CLAUDE-20261025-1235ET-B02 (6)
+DRIVE_FILES=1p_aJV0qeEjV-v8ddYIrrtLeXVB_bwfe-, 1kxp-6ZFUfDpfDQX5ghBzQrJuCF1VQWyv
+AI_ACTION_REQUIRED=verify B01/B02 (RESULT SUCCESS + receipt-index COMPLETE + row_readback); resolve HELD Big Wave row
+NEXT_OWNER=Claude (next POSTING_VALIDATION run / gofer verification)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
