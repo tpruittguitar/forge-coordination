@@ -1,10 +1,10 @@
 name: Validate instruction release
 on:
   pull_request:
-    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", ".github/workflows/**"]
+    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", ".github/workflows/**"]
   push:
     branches: [main]
-    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", ".github/workflows/**"]
+    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", ".github/workflows/**"]
 permissions:
   contents: read
 jobs:
@@ -16,4 +16,6 @@ jobs:
         with:
           python-version: '3.12'
       - run: python -m unittest discover -s tests -v
+      - run: python -m pip install pytest
+      - run: python -m pytest -q tests/test_alert_preparse.py
       - run: python scripts/build_runtime.py --check

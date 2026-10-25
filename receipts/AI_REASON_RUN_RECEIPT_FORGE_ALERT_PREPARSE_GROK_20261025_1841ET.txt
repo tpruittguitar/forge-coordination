@@ -1,0 +1,24 @@
+PROVIDER=GROK
+RUN_ID=FORGE-ALERT-PREPARSE-GROK-20261025-1841ET
+TASK_KEY=FORGE_EMAIL_DISCOVERY
+RUN_TERMINAL_STATUS=PR_OPEN
+
+FACT: alert_preparse.py and test_alert_preparse.py were untracked in the Windows clone root. They are now tools/alert-preparse/alert_preparse.py and tests/test_alert_preparse.py.
+FACT: source-intake-auto does not read Gmail. FORGE_EMAIL_DISCOVERY is the lane that reads alert bodies. The preparser is wired into policy/current/FORGE_EMAIL_DISCOVERY.txt and release 68855a0df9fd622c2d2c.
+FACT: The email packet estimate is 5235 tokens. registry max_estimated_tokens for that lane is 5235. Other lane packet bodies match release 23bce2280589aeac9ca5 aside from RELEASE_ID.
+FACT: pytest tests/test_alert_preparse.py: 6 passed. python -m unittest discover -s tests: 24 passed. python scripts/build_runtime.py --check: passed.
+FACT: Seen keys persist in state/alert-seen-jobs.json (schema forge.alert-seen.v1). The file in this change starts empty.
+FACT: ChatGPT.txt does not grant a shell. The packet says: if the script cannot execute, record PREPARSE=UNAVAILABLE and read the full body.
+FACT: Gmail query after:2026/10/24 before:2026/10/25 returned 16 messages from jobalerts-noreply@linkedin.com and 6 from donotreply@jobalert.indeed.com.
+FACT: Two of those bodies were parsed. LinkedIn 1a16e9d9489bfb91: 9858 chars in, 6 jobs kept, 0 dropped, CLI report 1758 chars (82.2% smaller). Indeed 1a16bffdc89e0782: 26201 chars in, 22 jobs kept, 0 sponsored, CLI report 5815 chars (77.8% smaller). Combined CLI 36059 -> 7573 (79.0%). Library stats chars_out is 17200 because each job record repeats the alert name; the CLI report hoists that name once.
+FACT: A CRLF separator in the live LinkedIn plain text was collapsing the digest to one job. parse_linkedin and parse_indeed now normalize newlines. A CRLF test covers it.
+FACT: source-intake-auto is still blocked by receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json. This change does not edit that file.
+FACT: Receipt index PIPELINE_RECEIPT_INDEX.json updatedAt 2026-10-25T22:33:13.963Z. FORGE-SOURCE-BBFB7DE70A9CF5C21CF4B82B s=COMPLETE w=W-20261024050515109-1ba61b. FORGE-SOURCE-17EFA26FC343DEE067124FB8 s=COMPLETE w=W-20261024050745188-1509e2. FORGE-SOURCE-8102B92A18A8DB6F0F31FF17 (Blue Origin, Director - Manufacturing, Ops & Assembly Electric Propulsion, Hutto, TX) is absent. pending length 0.
+FACT: NUL at the Windows clone root is untracked. It was not deleted.
+
+INFERENCE: The 05:02Z halt's unconfirmed POST is candidate 4, request FORGE-SOURCE-8102B92A18A8DB6F0F31FF17. The transport threw before a response was stored. The index has no row for that id 41 hours later.
+INFERENCE: Marking that run resolved would let later AUTO runs insert the remaining 21 candidates. That write decision is Tim's.
+
+ASSUMPTION: The GitHub receipt-index mirror matches the Writer index the executor reads.
+
+OPINION: Leave FORGE-AUTO-20261024T0502Z unresolved until Tim accepts the index evidence and says to close it.
