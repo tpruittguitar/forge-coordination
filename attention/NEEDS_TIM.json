@@ -1,12 +1,12 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-25T12:32:14.753Z",
- "sourceCommit": "9fa9e5b305ac7fa915a35e1b21a0bcd726bb4fb2",
+ "builtAt": "2026-10-25T16:06:49.186Z",
+ "sourceCommit": "6d6068dbaebb9acde1a925a58651084a7eb56c45",
  "counts": {
   "total": 11,
   "BLOCKING": 0,
-  "ACTION": 4,
-  "WATCH": 7,
+  "ACTION": 5,
+  "WATCH": 6,
   "DECIDE": 6,
   "JOBS": 1,
   "FAILED": 1,
@@ -33,6 +33,18 @@
    "raisedBy": "CLAUDE",
    "askId": "ASK-20261019-CLAUDE-1855",
    "links": []
+  },
+  {
+   "id": "lane-overdue:EMAIL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "EMAIL lane has gone quiet (usually reports every 5 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
+   "at": "2026-10-24T12:57:00-04:00",
+   "raisedBy": "CHATGPT"
   },
   {
    "id": "lane-overdue:POSTVAL",
@@ -159,18 +171,6 @@
    ]
   },
   {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "EMAIL lane has gone quiet (usually reports every 5 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "at": "2026-10-24T12:57:00-04:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "ask:ASK-20261024-CHATGPT-ACTION-CENTER",
    "section": "DECIDE",
    "level": "WATCH",
@@ -239,7 +239,7 @@
    "lastAt": "2026-10-24T12:57:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "runs7d": 51,
+   "runs7d": 49,
    "usualGapHours": 5,
    "overdue": true
   },
