@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-25T16:32:22.750Z",
- "sourceCommit": "9c41ca9177ec77a473eda1cca7b636770b8ab970",
+ "builtAt": "2026-10-25T16:54:51.729Z",
+ "sourceCommit": "5198bad8dd171501b6ef60b80f5d9ebdf2bbbec2",
  "counts": {
   "total": 10,
   "BLOCKING": 0,
-  "ACTION": 4,
-  "WATCH": 6,
+  "ACTION": 3,
+  "WATCH": 7,
   "DECIDE": 6,
-  "JOBS": 1,
+  "JOBS": 2,
   "FAILED": 1,
-  "UPKEEP": 2
+  "UPKEEP": 1
  },
  "items": [
   {
@@ -51,23 +51,11 @@
    "section": "DECIDE",
    "level": "ACTION",
    "title": "GOFER · CLAUDE — next step is yours",
-   "detail": "Claude gofer: new Gmail evidence only; verify when a read route exists. Tim/Writer: supply row_readback + receipt_index route.",
-   "action": "Claude gofer: new Gmail evidence only; verify when a read route exists. Tim/Writer: supply row_readback + receipt_index route.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt",
-   "at": "2026-10-24T16:52:00-04:00",
-   "raisedBy": "CLAUDE"
-  },
-  {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "GOFER lane has gone quiet (usually reports every 2 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt",
-   "at": "2026-10-24T16:52:00-04:00",
+   "detail": "Tim for ASK-20261025-CLAUDE-1252; Tim/Writer to supply row_readback + receipt_index route. Claude gofer: on ruling, resend with TARGET_PRIMARY_ID or close as already recorded.",
+   "action": "Tim for ASK-20261025-CLAUDE-1252; Tim/Writer to supply row_readback + receipt_index route. Claude gofer: on ruling, resend with TARGET_PRIMARY_ID or close as already recorded.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261025-1252ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261025-1252ET_TERMINAL.txt",
+   "at": "2026-10-25T12:52:00-04:00",
    "raisedBy": "CLAUDE"
   },
   {
@@ -218,6 +206,26 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CHATGPT_20261024_MULTICHANNEL_APPLICATION_IDENTITY.md"
     }
    ]
+  },
+  {
+   "id": "ask:ASK-20261025-CLAUDE-1252",
+   "section": "JOBS",
+   "level": "WATCH",
+   "title": "Three new application confirmations held by Writer: are they new roles or ones already marked Applied?",
+   "detail": "Gmail shows confirmations for Blue Origin 'Sr Manager Lunar Manufacturing, Ops and Assembly Core Components' (2026-10-24), Fluidstack 'Plant Manager (Arizona)' (2026-10-25) and Generac 'Value Stream Director' (2026-10-25). Writer held all three: Blue Origin near-matches 4 roles you already marked Applied (closest: V2I-9D90D416AC88 Manager Lunar - Manufacturing, Ops & Assembly); Fluidstack may be V2I-5298E28F64EC (Phoenix, AZ, Applied); Generac may be V2I-A47388DEB6AE (Trenton, SC, Applied). The emails give no location or requisition, so Claude cannot ground the identity. Nothing was written. Request FORGE-GOFER-CLAUDE-20261025-1252ET-B01.",
+   "blocks": "Recording these three application events.",
+   "options": [
+    "Same as the existing Applied rows - nothing to record",
+    "New roles - record as new Applied events (tell Claude any location/req)"
+   ],
+   "recommended": "Fluidstack and Generac are probably the existing Applied rows; Blue Origin is a Sr Manager title, so likely a different role. Your call.",
+   "action": "Answer in chat; Claude records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261025-CLAUDE-1252.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261025-CLAUDE-1252.json",
+   "at": "2026-10-25T12:52:00-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261025-CLAUDE-1252",
+   "links": []
   }
  ],
  "lanes": [
@@ -318,12 +326,12 @@
   {
    "lane": "GOFER",
    "provider": "CLAUDE",
-   "lastAt": "2026-10-24T16:52:00-04:00",
+   "lastAt": "2026-10-25T12:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261024-1652ET_TERMINAL.txt",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261025-1252ET_TERMINAL.txt",
    "runs7d": 65,
-   "usualGapHours": 2,
-   "overdue": true
+   "usualGapHours": 2.1,
+   "overdue": false
   },
   {
    "lane": "HANDOFF",
