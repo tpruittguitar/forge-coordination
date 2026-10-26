@@ -1,0 +1,4 @@
+WHAT=Tim 2026-10-25 22:09 ET ruled ASK-20261023-CLAUDE-1310. Discovery splits into two lanes: job-board cycle, and specific companies. Not trim, not keep-as-is. No lane code in this change. Open ask file left in place; the resolved file hides the card.
+WHY=One run that covers boards and named companies stops before a full cycle. WEB_CAREER_DISCOVERY is already capped at two company or board units per run. Source-trial auto-intake has already halted mid-run on a Writer archive timeout.
+FILES=asks/resolved/ASK-20261023-CLAUDE-1310.json attention/NEEDS_TIM.json
+VERIFY=node tools/needs-tim/build.js; ASK-20261023-CLAUDE-1310 absent from the written item list.
