@@ -9,7 +9,7 @@ function checkFile(file, root=process.cwd()) {
   const errors=[];
   const rel=path.relative(root,path.resolve(root,file)).split(path.sep).join('/');
   const name=path.posix.basename(rel);
-  if(path.posix.dirname(rel)!==RECORDS_DIR || !isRecordFile(name) || !/^[a-z0-9][a-z0-9._-]{2,99}\.txt$/.test(name))
+  if(path.posix.dirname(rel)!==RECORDS_DIR || !isRecordFile(name) || !/^[A-Za-z0-9][A-Za-z0-9._-]{2,99}\.txt$/.test(name))
     errors.push('invalid change record path/filename: '+rel);
   let body;
   try {body=fs.readFileSync(path.join(root,rel),'utf8');} catch(e) {errors.push('record unreadable: '+e.message);}
