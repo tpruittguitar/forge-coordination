@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261026T1338Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261026T2254Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (180 read, 6 failed) | 181 | 79 | 102 |
+| Employer job boards (180 read, 6 failed) | 181 | 82 | 99 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,8 +19,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 34 | 76 |
-| SR_MANAGER | 19 | 25 |
+| DIRECTOR_PLUS | 36 | 76 |
+| SR_MANAGER | 20 | 22 |
 | SR_STAFF | 26 | 1 |
 
 ## New roles
@@ -30,7 +30,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Compensation Director, Aircraft Engineering and Manufacturing (R6270)](https://jobs.lever.co/shieldai/b4d5bcbe-0f48-4be7-b959-57c6e10a4772) | Seattle, Washington | MFG_PROD | DIRECTOR_PLUS | $210K-$320K |
 | BOARD:lever | DREAM Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.lever.co/shieldai/a25edcee-69a9-47b4-a325-ec549b2e0d28) | United States | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:lever | DREAM Shield AI | [Director, Ops Analysis (R5036)](https://jobs.lever.co/shieldai/a25b91a5-9933-46f1-a9a2-eb06866ac65a) | Washington, D.C. | MFG_PROD | DIRECTOR_PLUS | $210K-$320K |
-| BOARD:lever | DREAM Shield AI | [Senior Director, Hivemind Operations & Sustainment (R5855)](https://jobs.lever.co/shieldai/34164b22-f9d9-4364-862d-5d0cf8f7a108) | Washington, D.C. | MFG_PROD | DIRECTOR_PLUS | $250K-$370K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/0034444c-c0c4-4884-a49f-b921bd661b03) | San Diego, California | MFG_PROD | SR_STAFF | $233K-$350K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
@@ -84,17 +83,17 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Compute & Comms](https://boards.greenhouse.io/andurilindustries/jobs/5213199007?gh_jid=5213199007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Anduril Industries | [Senior Manager, Manufacturing Engineering — Autonomous Airpower](https://boards.greenhouse.io/andurilindustries/jobs/5274989007?gh_jid=5274989007) | Costa Mesa, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Test Operations, Space](https://boards.greenhouse.io/andurilindustries/jobs/5225988007?gh_jid=5225988007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Gatik | [Senior Manager, Truck Assets & Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4596842006?gh_jid=4596842006) | Santa Clara, CA | MFG_PROD | SR_MANAGER | $140K-$190K |
 | BOARD:greenhouse | Gatik | [Sr. Manager, Market Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4722733006?gh_jid=4722733006) | Phoenix, AZ | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Oklo | [Director of Chemistry, Manufacturing and Controls](https://job-boards.greenhouse.io/oklo/jobs/6185186004) | Austin, Texas | MFG_PROD | DIRECTOR_PLUS | $170K-$250K |
-| BOARD:greenhouse | Rocket Lab | [Senior Manager, Test Site Operations](https://job-boards.greenhouse.io/rocketlab/jobs/6592909003) | Stennis Space Center, MS | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | TerraPower LLC | [Director, Supply Chain Operations](https://job-boards.greenhouse.io/terrapowerllc/jobs/4250366009) | Bellevue, WA | MFG_PROD | DIRECTOR_PLUS | $217K-$325K |
 | BOARD:greenhouse | Vulcan Elements | [Sr. Manager, Operational Excellence](https://job-boards.greenhouse.io/vulcanelements/jobs/5406379008) | Benson, NC | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Memphis Power Plant Operations ](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
@@ -102,7 +101,11 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
 | BOARD:workday | AeroVironment | [Vice President, Operations - Autonomous Systems](https://avav.wd1.myworkdayjobs.com/AVAV/job/Simi-Valley-CA/Vice-President--Operations---Autonomous-Systems_8235) | Simi Valley, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | AeroVironment | [Chief Engineer, Production](https://avav.wd1.myworkdayjobs.com/AVAV/job/Petaluma-CA/Chief-Engineer--Production_8845) | Petaluma, CA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:workday | Alliance Machine Systems International (Barry-Wehmiller) | [Director of Operations](https://barrywehmiller.wd1.myworkdayjobs.com/BWCareers/job/Green-Bay-WI/Director-of-Operations_R023068) | Green Bay, WI | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | Alliance Machine Systems International (Barry-Wehmiller) | [Operations Director & Site Leader](https://barrywehmiller.wd1.myworkdayjobs.com/BWCareers/job/Flagstaff-AZ/Operations-Director---Site-Manager_R023278) | Flagstaff, AZ | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | Carrier | [Senior Manager, Quality](https://carrier.wd5.myworkdayjobs.com/jobs/job/CAN03-Carrier-Charlotte-9701-Old-Statesville-Road-Charlotte-NC-28269-USA/Senior-Manager--Quality_30220847) | CAN03: Carrier-Charlotte, 9701 Old Statesville Road, Charlotte, NC, 28269 USA | QUALITY | SR_MANAGER |  |
 | BOARD:workday | Comfort Systems USA | [Director of Manufacturing](https://comfortsystemsusa.wd1.myworkdayjobs.com/corpcareers/job/Houston-TX-TAS-Cullen-HQ/Director-of-Manufacturing_JR108045-1) | Houston, TX (TAS-Cullen HQ) | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | ZT Systems | [Director, Manufacturing Engineering](https://connect.wd1.myworkdayjobs.com/ztsystemscareers/job/Georgetown-TX/Director--Manufacturing-Engineering_R-105492) | Georgetown, TX | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:workday | Deckers Brands | [Sr. Manager, Design Operations - HOKA](https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505) | Portland, Oregon | MFG_PROD | SR_MANAGER |  |
+| BOARD:workday | Leidos | [Director Production Control](https://leidos.wd5.myworkdayjobs.com/External/job/Huntsville-AL/Director-Production-Control_R-00195459-1) | Huntsville, AL | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Regal Rexnord | [Director, Continuous Improvement](https://regalrexnord.wd1.myworkdayjobs.com/Careers/job/Rosemont-Illinois-United-States/Director--Continuous-Improvement_R26_04497) | Rosemont, Illinois, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | Stanley Black & Decker | [Director, Quality Manufacturing](https://sbdinc.wd1.myworkdayjobs.com/Stanley_Black_Decker_Career_Site/job/Hopkinsville-KY-United-States/Director--Quality-Manufacturing_REQ-1000051833) | Hopkinsville, KY, United States | QUALITY | DIRECTOR_PLUS |  |
