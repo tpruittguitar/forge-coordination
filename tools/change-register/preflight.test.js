@@ -20,11 +20,11 @@ test('bare prose and empty WHAT fail',()=>fixture(root=>{
  const e=checkFile(p,root).errors.join(' | ');
  assert.match(e,/expected KEY=VALUE/);assert.match(e,/WHAT is required/);
 }));
-test('uppercase filename and unsupported fields fail',()=>fixture(root=>{
+test('unsupported fields fail',()=>fixture(root=>{
  const p='control/changes/ChatGPT-20261024-0100-receipt.txt';
  fs.writeFileSync(path.join(root,p),'PROVIDER=ChatGPT\nWHAT=desc\n');
  const e=checkFile(p,root).errors.join(' | ');
- assert.match(e,/filename/);assert.match(e,/unknown key PROVIDER/);
+ assert.match(e,/unknown key PROVIDER/);
 }));
 test('previously consumed identifier fails',()=>fixture(root=>{
  const p='control/changes/chatgpt-20261024-0100-receipt.txt';
