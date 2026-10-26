@@ -48,6 +48,7 @@ jobs:
           TRIAL_FC_DIR: ${{ github.workspace }}/_fc
           TRIAL_JOBSPY_FILE: /tmp/jobspy.json
           TRIAL_HIRINGCAFE_FILE: /tmp/hiringcafe.json
+          TRIAL_SKIP_BOARDS: '1'
         run: node tools/source-trial/run.js
       - name: Keep the report as a run artifact (any branch)
         uses: actions/upload-artifact@v4

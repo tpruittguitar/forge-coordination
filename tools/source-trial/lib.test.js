@@ -51,8 +51,14 @@ test('REV-156 US places, novelty against the master, board roots, slug probes, p
   assert.strictEqual(T.boardFromCareers('https://jobs.lever.co/hermeus').key, 'lever:hermeus');
   assert.strictEqual(T.boardFromCareers('https://shield.ai/careers'), null);
   assert.deepStrictEqual(T.slugGuesses('Shield AI'), ['shieldai', 'shield-ai', 'shield']);
-  const p = T.parsePriority('DREAM (x): 1\n- Shield AI | careers: https://shield.ai/careers | Dallas\nP1 (y): 1\n- Path Robotics | careers: UNKNOWN | Columbus, OH\n');
-  assert.deepStrictEqual(p, [{ tier: 'DREAM', name: 'Shield AI', careers: 'https://shield.ai/careers' }, { tier: 'P1', name: 'Path Robotics', careers: '' }]);
+  const p = T.parsePriority('DREAM (x): 1\n- Shield AI | careers: https://shield.ai/careers | Dallas\nP1 (y): 1\n- Path Robotics | careers: UNKNOWN | Columbus, OH\nWATCH (opportunistic): 1\n- Auterion | careers: https://auterion.com/careers | Arlington\nPAUSED (no targeted search): 1\n- Machina Labs | careers: https://machinalabs.ai/careers | Chatsworth\n');
+  assert.deepStrictEqual(p, [
+    { tier: 'DREAM', name: 'Shield AI', careers: 'https://shield.ai/careers' },
+    { tier: 'P1', name: 'Path Robotics', careers: '' },
+    { tier: 'WATCH', name: 'Auterion', careers: 'https://auterion.com/careers' },
+    { tier: 'PAUSED', name: 'Machina Labs', careers: 'https://machinalabs.ai/careers' },
+  ]);
+  assert.deepStrictEqual(['DREAM', 'P1', 'P2', 'P3', 'WATCH', ''].map(T.tierRank), [0, 1, 2, 3, 4, 9]);
 });
 
 test('REV-164 Grok QA title recognition and exclusions', () => {

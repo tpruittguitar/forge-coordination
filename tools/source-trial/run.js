@@ -60,6 +60,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   rows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
   const probes = [];
   for (const c of priority) {
+    if (c.tier === 'PAUSED') { probes.push({ company: c.name, found: null, skipped: 'PAUSED' }); continue; }
     let b = T.boardFromCareers(c.careers) || coBoard[P.normCo(c.name)] || null;
     if (!b) {
       for (const slug of T.slugGuesses(c.name)) {
@@ -74,11 +75,24 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     add(b, c.name, c.tier, 'priority');
   }
   rows.forEach(r => add(P.boardOf(r.p || {}), r.COMPANY, '', 'master'));
-  const order = [...boards.values()].sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)).slice(0, CONFIG.maxBoards);
+  /* Explorer ranking: DREAM, P1, P2, P3, WATCH, then boards known only from the master. PAUSED was not added. */
+  const ranked = [...boards.values()].filter(b => b.tier !== 'PAUSED').sort((a, b) => T.tierRank(a.tier) - T.tierRank(b.tier) || a.key.localeCompare(b.key));
+  const cap = Math.max(1, +(process.env.TRIAL_MAX_BOARDS || CONFIG.maxBoards) || CONFIG.maxBoards);
+  const cursorFile = process.env.TRIAL_CURSOR_FILE || path.join(OUT, 'board-cursor.json');
+  let start = 0;
+  if (!process.env.TRIAL_SKIP_BOARDS && fs.existsSync(cursorFile)) {
+    try {
+      const saved = JSON.parse(fs.readFileSync(cursorFile, 'utf8')).next || '';
+      const i = ranked.findIndex(b => b.key === saved);
+      start = i < 0 ? 0 : i;
+    } catch (e) { start = 0; }
+  }
+  const order = process.env.TRIAL_SKIP_BOARDS ? [] : ranked.slice(start, start + cap);
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
   const addFound = item => { const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
+  let consumed = 0;
   for (const b of order) {
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
     const reqs = b.kind === 'workday' ? CONFIG.workdaySearches.map(s => P.boardListRequest(b, s)) : [P.boardListRequest(b, '')];
@@ -100,13 +114,19 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       } catch (e) { st.error = String(e.message || e).slice(0, 60); }
     }
     boardStats.push(st);
+    consumed++;
     if (Date.now() - T0 > CONFIG.boardBudgetMs) { st.note = 'time budget reached; later boards not read'; break; }
   }
+  let cursorNext = '';
+  if (!process.env.TRIAL_SKIP_BOARDS && ranked.length) {
+    const nextPos = start + consumed;
+    cursorNext = ranked[nextPos >= ranked.length ? 0 : nextPos].key;
+  }
 
-  /* JobSpy results, written by the workflow's Python step */
+  /* JobSpy results, written by the workflow's Python step. The board job does not wait on this. */
   const js = { ran: false, sites: {}, errors: [] };
   const jsFile = process.env.TRIAL_JOBSPY_FILE || path.join(os.tmpdir(), 'jobspy.json');
-  if (fs.existsSync(jsFile)) {
+  if (!process.env.TRIAL_BOARDS_ONLY && fs.existsSync(jsFile)) {
     const d = JSON.parse(fs.readFileSync(jsFile, 'utf8')); js.ran = true; js.errors = d.errors || []; js.searches = d.searches || [];
     const seen = new Set();
     (d.jobs || []).forEach(x => {
@@ -124,7 +144,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   /* HiringCafe results, written by hiringcafe.js; read after boards and JobSpy so overlap is attributed to them */
   const hc = { ran: false, returned: 0, matches: 0, unique: 0, overlap: {}, errors: [], searches: [] };
   const hcFile = process.env.TRIAL_HIRINGCAFE_FILE || path.join(os.tmpdir(), 'hiringcafe.json');
-  if (fs.existsSync(hcFile)) {
+  if (!process.env.TRIAL_BOARDS_ONLY && fs.existsSync(hcFile)) {
     const d = JSON.parse(fs.readFileSync(hcFile, 'utf8')); hc.ran = !!d.ran; hc.errors = d.errors || []; hc.searches = d.searches || []; hc.skipped = d.skipped || '';
     (d.jobs || []).forEach(x => {
       hc.returned++;
@@ -143,7 +163,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED') },
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
@@ -152,7 +172,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   };
   const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
-  fs.writeFileSync(path.join(OUT, 'source-trial-report.json'), JSON.stringify(report, null, 1) + '\n');
+  if (!process.env.TRIAL_SKIP_BOARDS) {
+    const cursorBody = { at, next: cursorNext, start, read: consumed, ranked: ranked.length, source: 'Pipeline Explorer Target Companies ranking via forge-policy derived/TARGET_COMPANIES_PRIORITY.txt', order: ranked.map(b => ({ key: b.key, tier: b.tier || '', company: [...b.companies][0] || '' })) };
+    fs.mkdirSync(path.dirname(cursorFile), { recursive: true });
+    fs.writeFileSync(cursorFile, JSON.stringify(cursorBody, null, 1) + '\n');
+  }
+  const reportName = process.env.TRIAL_BOARDS_ONLY ? 'board-discovery-report' : 'source-trial-report';
+  fs.writeFileSync(path.join(OUT, reportName + '.json'), JSON.stringify(report, null, 1) + '\n');
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
@@ -163,6 +189,6 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     'Priority companies with no board found: ' + (probes.filter(p => !p.found).map(p => p.company).join(', ') || 'none'), '',
     '## By level', '', '| Level | New | Existing |', '|---|---:|---:|', ...Object.entries(summary.by_level).map(([k,v]) => `| ${k} | ${v.new} | ${v.existing} |`), '', '## New roles', '', '| Source | Company | Title | Location | Family | Level | Pay |', '|---|---|---|---|---|---|---|',
     ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
-  fs.writeFileSync(path.join(OUT, 'source-trial-report.md'), md.join('\n'));
+  fs.writeFileSync(path.join(OUT, reportName + '.md'), md.join('\n'));
   console.log(JSON.stringify(summary));
 })().catch(e => { console.error(e); process.exit(1); });

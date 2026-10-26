@@ -115,11 +115,17 @@ function slugGuesses(name) {
   return out;
 }
 
-/** The priority digest -> [{ tier, name, careers }]. */
+/** Rank of a Pipeline Explorer Target Companies priority. PAUSED is not searched. Unlisted boards sort after WATCH. */
+const TIER_RANK = { DREAM: 0, P1: 1, P2: 2, P3: 3, WATCH: 4 };
+function tierRank(tier) {
+  return Object.prototype.hasOwnProperty.call(TIER_RANK, tier) ? TIER_RANK[tier] : 9;
+}
+
+/** The priority digest (published copy of the Explorer Target Companies ranking) -> [{ tier, name, careers }]. */
 function parsePriority(text) {
   let tier = ''; const out = [];
   String(text || '').split('\n').forEach(l => {
-    const t = l.match(/^(DREAM|P\d)\b/); if (t) { tier = t[1]; return; }
+    const t = l.match(/^(DREAM|P\d|WATCH|PAUSED)\b/); if (t) { tier = t[1]; return; }
     const m = l.match(/^- ([^|]+?)\s*\|\s*careers:\s*(\S+)/); if (m && tier) out.push({ tier, name: m[1].trim(), careers: m[2] === 'UNKNOWN' ? '' : m[2] });
   });
   return out;
@@ -131,4 +137,4 @@ function level(title) {
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
-module.exports = { level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority };
+module.exports = { level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority, tierRank };

@@ -1,0 +1,11 @@
+FORGE DIRECTIVE — DISCOVERY SPLIT
+AUTHORIZED_BY=Tim 2026-10-25 22:20 ET
+TASK=Split board discovery from named-company discovery. Both follow the Pipeline Explorer Target Companies ranking.
+
+1. COMPANY LANE. FORGE_WEB_CAREER_DISCOVERY keeps its owner, its schedule, and its native prompt. Company order is the Explorer ranking (DREAM, P1, P2, P3, WATCH; PAUSED never), read from the published digest of that list. A careers URL on Greenhouse, Lever, Ashby, or Workday is LEFT_FOR_BOARD_LANE. The run finishes its company slice and writes NEXT_COMPANY_CURSOR.
+
+2. BOARD JOB. The source-trial code walker owns boards. Workflow board-discovery runs tools/source-trial/run.js with TRIAL_BOARDS_ONLY=1. Order is the same Explorer ranking. state/board-cursor.json field next is where the next run starts. JobSpy and HiringCafe stay on the source-trial workflow and do not run in this job. ZipRecruiter stays FORGE_ZIPRECRUITER_WEEKLY. No Grok scheduled task is created for boards.
+
+3. SNIFFER. The Grok bot Sniffer is not scheduled onto either lane. It does not walk this company list and it does not file intake for these runs.
+
+4. AUTO INTAKE. source-intake-auto runs after source-trial and after board-discovery. The board run is read from state/board-discovery-report.json.
