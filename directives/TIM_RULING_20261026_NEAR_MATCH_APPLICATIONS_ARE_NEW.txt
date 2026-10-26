@@ -1,0 +1,17 @@
+FORGE DIRECTIVE - TIM RULING 2026-10-26 00:44 ET
+RECORDED_BY=Claude (Foreman)
+AUTHORIZED_BY=Tim (chat 2026-10-26 00:44 ET): "treat all three as different jobs. going forward do the same, err on the side of finding new opportunity."
+FORMAT=plain text.
+SCOPE=Application-confirmation emails that the Writer holds as a near match (NEAR_MATCH_TIM_RULED or AMBIGUOUS) against roles already marked Applied.
+
+RULING
+1. ASK-20261025-CLAUDE-1252: Blue Origin, Fluidstack and Generac confirmations are three new roles.
+2. Standing rule: when an application confirmation cannot be grounded to one existing row by requisition/ATS ID, stable ID or canonical URL, record it as a new role. Resend the upsert_application event with CREATE_NEW:true. Do not raise a "same or different role?" ask to Tim for these cases.
+
+LIMITS (unchanged)
+- An exact identity match (REQ_ID, ATS ID, stable ID, canonical URL, or one exact employer+title+location row) still updates that row.
+- REJECTED_BY_EMPLOYER is never regressed to APPLIED without newer application evidence.
+- Tim's saved decisions and terminal protection remain controlling.
+- The Gmail evidence (message ID, sender, subject, date) goes in EVIDENCE as usual.
+
+Instruction source change: policy/current/FORGE_APPLICATION_WRITER_GOFER.txt via a reviewed PR.
