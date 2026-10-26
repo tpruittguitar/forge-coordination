@@ -5,7 +5,7 @@
  * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person). That refusal
  *    happens before any Writer call and exits 0 with a warning; the latch is listed on attention/NEEDS_TIM.json.
  * 2. Picks up to maxBatch NEW roles from state/source-trial-report.json with the 24-job stage's filters
- *    (Director+/Senior Manager, core functions, not West Coast or Memphis, no agencies, at most 2 per employer,
+ *    (Director+/Senior Manager, core functions, no agencies, at most 2 per employer,
  *    never a role an earlier AUTO run already sent), and keeps only those whose posting page loads and names the employer.
  * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
  *    executor gates as the stage. The Writer decides Never Consider; what it declines without writing is SKIPPED.
@@ -24,7 +24,8 @@ const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
 const CORE=/production|manufactur|quality|plant|test engineer|commissioning|operational excellence|continuous improvement|operations director|director of operations|npi|industrializ/i;
 const OFF=/account|financ|compensation|payroll|\bhse\b|\behs\b|safety|environment|strateg|software|supply chain|procure|sourcing|purchas|\bml\b|data|analyst|marketing|sales|human resources|\bhr\b|talent|recruit|legal|\bit\b|cyber|operator|technician|intern/i;
-const WEST=new Set(['CA','WA','OR']);
+// No location is dropped here (Tim 2026-10-26: "I would take a good fit offer on the west coast for 280k"; Memphis can
+// be OK). Location is scored by the geo map / PAY_WORTH per the canonical rules, after intake.
 const AGENCY=/staffing|recruit|talent|executive search|search partners|personnel|placement|consulting|hr solutions|workforce|\bcareers$/i;
 // Tim 2026-10-23: no pharmaceutical or medical companies. Checked on company + title, then on the posting text.
 const MEDICAL=/pharm|bio(?!fuel|diesel|plastic|mass|gas)|microbio|gene therap|cell therap|genetic|life science|biologic|therapeutic|diagnostic|medical|medtech|med tech|health ?care|health system|hospital|clinic|surgical|dental|orthop|patient|\bdrug|vaccine|genomic|oncolog|cardio|biopharm|\bhealth\b(?! ?(?:and|&) ?safety)/i;
@@ -38,7 +39,7 @@ function pick(report,{max,sent}){
  const per={},out=[];
  for(const r of report.new_roles||[]){
   if(out.length>=max)break;
-  if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||WEST.has(r.place)||/memphis/i.test(r.location+' '+r.title)||AGENCY.test(r.company)||MEDICAL.test(r.company+' '+r.title))continue;
+  if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||AGENCY.test(r.company)||MEDICAL.test(r.company+' '+r.title))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
   // Employer as the Writer compares it (text before " | "); the raw name's request ID is still checked so a role an
   // earlier run sent under the raw name is never sent again under the normalized one.
