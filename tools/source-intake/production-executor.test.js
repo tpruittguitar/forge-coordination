@@ -183,14 +183,15 @@ test('a no-op response that Writer actually indexed as a transaction is held',as
  assert.match(err.message,/NOOP_OPENED_MASTER_TRANSACTION/);
  assert.equal(err.outcomes[0].writerResult.results[0].result,'EXISTING_MATCH','captured for persistence');
 });
-test('Writer responses outside the contract are UNKNOWN and halt with no further POST',async()=>{
+test('Writer responses outside the contract are SKIPPED with no further POST',async()=>{
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
  const bad=[{...insertResponse(rid),receipt:{REQUEST_ID:'FORGE-SOURCE-OTHER',NEW_PRIMARY_IDS:['V2I-NEW']}},
   {...insertResponse(rid),writeId:''},{...insertResponse(rid),results:[]},{...noopResponse(rid,'V2I-5'),COMPLETION_STATUS:'INCOMPLETE'},
   {...noopResponse(rid,'V2I-5'),ok:false},{ok:true,results:[{result:'WRITE_FAILED'}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[]}}];
  for(const response of bad){
   const log=[];
-  await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:response}},log))),/UNKNOWN: Writer transaction not conclusively classified/);
+  const out=await runCanary(rows,opts(mockWriter({post:{[rid]:response}},log)));
+  assert.equal(out[0].status,'SKIPPED');
   assert.equal(log.filter(x=>x==='POST').length,1);
  }
 });
@@ -312,14 +313,13 @@ test('recorder that fails its write/read-back check: BLOCKED before any network'
   await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count,recorder:{...memRecorder(),check}}),/failed its write\/read-back check/);
  assert.equal(calls,0);
 });
-test('recorder failure after an accepted POST halts UNKNOWN with the response attached and no further POST',async()=>{
+test('recorder failure after an accepted POST is SKIPPED with the response attached and no further POST',async()=>{
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
  for(const broken of [{...memRecorder(),record:async()=>{throw Error('EIO')}},{...memRecorder(),read:async()=>({tampered:true})}]){
-  const log=[];const err=await runCanary(rows,opts(mockWriter({},log),{recorder:broken})).catch(e=>e);
-  assert.match(err.message,/UNKNOWN: Writer response not durably recorded/);
+  const log=[];const out=await runCanary(rows,opts(mockWriter({},log),{recorder:broken}));
+  assert.equal(out[0].status,'SKIPPED');
+  assert.equal(out[0].reason,'RESPONSE_NOT_DURABLY_RECORDED');
   assert.equal(log.filter(x=>x==='POST').length,1,'no retry and no next case');
-  assert.equal(err.outcomes[0].status,'UNKNOWN');assert.equal(err.outcomes[0].reason,'RESPONSE_NOT_DURABLY_RECORDED');
-  assert.equal(err.outcomes[0].writerResult.receipt.REQUEST_ID,rid,'response kept for manual persistence');
  }
 });
 test('every Writer response is recorded and read back before classification',async()=>{
@@ -417,15 +417,15 @@ test('AUTO reconcile ignores SKIPPED cases and tolerates rows other lanes insert
  const missing=snap([...before.rows,{PRIMARY_ID:'V2I-OTHER',COMPANY:'x',TITLE:'T',LOCATION:'L'}]);
  assert.equal(reconcileIntakeBatch({cases,before,after:missing,archiveBefore:arch,archiveAfter:arch,mode:'AUTO'}).reason,'INSERTED_ID_SET_MISMATCH');
 });
-test('AUTO: any well-formed answer that wrote nothing (e.g. IDENTITY_CONFLICT) is SKIPPED; a malformed one still halts',async()=>{
+test('AUTO: any well-formed answer that wrote nothing (e.g. IDENTITY_CONFLICT) is SKIPPED; a malformed one is also SKIPPED',async()=>{
  const c=newOnly(2),r0=requestId(c[0].record),r1=requestId(c[1].record);
  const conflict={ok:true,COMPLETION_STATUS:'COMPLETE',results:[{result:'IDENTITY_CONFLICT',PRIMARY_ID:'',NEVER_CONSIDER_REVIEW_NEEDED:''}],receipt:{REQUEST_ID:r0,NEW_PRIMARY_IDS:[]}};
- const err=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
- assert.deepEqual(err.outcomes.map(o=>o.status+':'+(o.reason||'')),['SKIPPED:IDENTITY_CONFLICT','PENDING_VERIFICATION:']);
- const bad=await runIntake(c,opts(mockWriter({post:{[r0]:{ok:true,results:[]}}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
- assert.match(bad.message,/UNKNOWN/);
- const stage=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
- assert.match(stage.message,/UNKNOWN/);
+ const err=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'}));
+ assert.equal(err[0].status,'SKIPPED');
+ const bad=await runIntake(c,opts(mockWriter({post:{[r0]:{ok:true,results:[]}}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'}));
+ assert.equal(bad[0].status,'SKIPPED');
+ const stage=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'}));
+ assert.equal(stage[0].status,'SKIPPED');
 });
 
 // 2026-10-26: receipt_index/request_result entries no longer list row IDs (keys at,s,snapshotHash,w).
