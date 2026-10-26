@@ -438,3 +438,38 @@ test('AUTO: any well-formed answer that wrote nothing (e.g. IDENTITY_CONFLICT) i
  const stage=await runIntake(c,opts(mockWriter({post:{[r0]:conflict}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
  assert.match(stage.message,/UNKNOWN/);
 });
+
+// 2026-10-26: receipt_index/request_result entries no longer list row IDs (keys at,s,snapshotHash,w).
+test('resume binds to the captured Writer PRIMARY_ID when the receipt carries no row IDs',async()=>{
+ const rows=canary(['NEW','NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW']);
+ const rid=requestId(rows[0].record),log=[];
+ const bare={s:'COMPLETE',at:'t',snapshotHash:'h',w:'W1'};
+ const result={[rid]:{found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{...bare}}};
+ const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const priorResults={[rid]:insertResponse(rid,'V2I-100')};
+ const err=await runCanary(rows,opts(mockWriter({index:{[rid]:bare},result,readback:rb},log),{priorResults})).catch(e=>e);
+ assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
+ assert.equal(err.outcomes[0].accounting.status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
+ assert.equal(err.outcomes[0].accounting.binding,'CAPTURED_RESPONSE');
+ assert.equal(log.filter(x=>x==='POST').length,1,'only the next case is posted');
+});
+test('captured-ID binding still holds on a bad capture, a wrong row, or a one-sided receipt',async()=>{
+ const rows=canary(['NEW','NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW']);
+ const rid=requestId(rows[0].record),bare={s:'COMPLETE',at:'t',snapshotHash:'h',w:'W1'};
+ const result=(entry)=>({[rid]:{found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry}});
+ const rb=line=>({[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line}],master:{endMarkerPresent:true},requested:1,found:1}});
+ const good='1 | V2I-100 | Co0 | Dir | S | OPEN | P | R | TX | N';
+ const twoIds={...insertResponse(rid,'V2I-100'),receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:['V2I-100','V2I-101']}};
+ const otherRid={...insertResponse(rid,'V2I-100'),receipt:{REQUEST_ID:'FORGE-SOURCE-OTHER',NEW_PRIMARY_IDS:['V2I-100']}};
+ const cases=[
+  [{index:{[rid]:bare},result:result({...bare}),readback:rb(good)},twoIds,/CAPTURED_ID_UNBOUND/],
+  [{index:{[rid]:bare},result:result({...bare}),readback:rb(good)},otherRid,/CAPTURED_ID_UNBOUND/],
+  [{index:{[rid]:bare},result:result({...bare}),readback:rb('1 | V2I-100 | Someone Else | Dir | S | OPEN | P | R | TX | N')},insertResponse(rid,'V2I-100'),/INSERT_IDENTITY_MISMATCH/],
+  [{index:{[rid]:bare},result:result({...bare,items:[{pid:'V2I-100'}]}),readback:rb(good)},insertResponse(rid,'V2I-100'),/INDEX_RESULT_ID_MISMATCH/]
+ ];
+ for(const [state,prior,pattern] of cases){
+  const log=[];
+  await assert.rejects(()=>runCanary(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}})),pattern);
+  assert.ok(!log.includes('POST'),'no POST');
+ }
+});
