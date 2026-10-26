@@ -1,11 +1,12 @@
 # AUTO source intake (Tim 2026-10-23): after each source trial on main, insert up to maxBatch filtered NEW roles through the
-# Writer with the stage's executor gates. Off unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and the
-# FORGE_WRITER_KEY secret exists. A failed run means it needs a person; later runs refuse to start until it is resolved.
+# Writer with the stage's executor gates. Also after board-discovery, using that report. Off unless
+# control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and the FORGE_WRITER_KEY secret exists. A failed run means it
+# needs a person; later runs refuse to start until it is resolved.
 # See tools/source-intake/auto-run.js.
 name: source-intake-auto
 on:
   workflow_run:
-    workflows: [source-trial]
+    workflows: [source-trial, board-discovery]
     types: [completed]
     branches: [main]
   workflow_dispatch: {}
@@ -30,7 +31,8 @@ jobs:
         env:
           FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
-        run: node tools/source-intake/auto-run.js
+          INTAKE_REPORT: ${{ github.event.workflow_run.name == 'board-discovery' && 'state/board-discovery-report.json' || 'state/source-trial-report.json' }}
+        run: node tools/source-intake/auto-run.js --report "$INTAKE_REPORT"
       # The run record holds every Writer response (the recovery evidence after a halt), so it is kept twice.
       - name: Keep the run record as an artifact
         if: always()

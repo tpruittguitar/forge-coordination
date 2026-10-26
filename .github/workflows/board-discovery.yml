@@ -1,0 +1,61 @@
+# Board discovery (Tim 2026-10-25): the source-trial board walker, alone.
+# Order is the Pipeline Explorer Target Companies ranking (published digest).
+# Cursor: state/board-cursor.json. JobSpy, HiringCafe and the company lane are not this job.
+name: board-discovery
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '53 */6 * * *'   # 00:53, 06:53, 12:53, 18:53 UTC; 30 minutes after the aggregator source-trial
+  pull_request:
+    paths: ['tools/source-trial/**', '.github/workflows/board-discovery.yml']
+permissions:
+  contents: write
+concurrency:
+  group: board-discovery-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  boards:
+    runs-on: ubuntu-latest
+    timeout-minutes: 25
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: tpruittguitar/foreman-cockpit
+          path: _fc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
+      - name: Boards
+        env:
+          TRIAL_FC_DIR: ${{ github.workspace }}/_fc
+          TRIAL_BOARDS_ONLY: '1'
+          TRIAL_CURSOR_FILE: state/board-cursor.json
+        run: node tools/source-trial/run.js
+      - name: Keep the report as a run artifact (any branch)
+        uses: actions/upload-artifact@v4
+        with:
+          name: board-discovery-report
+          path: |
+            state/board-discovery-report.*
+            state/board-cursor.json
+      - name: Commit report and cursor (main only; a PR-branch run never pushes)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          mkdir -p /tmp/out && cp state/board-discovery-report.* state/board-cursor.json /tmp/out/
+          git config user.name forge-source-trial-bot
+          git config user.email forge-source-trial-bot@users.noreply.github.com
+          for i in 1 2 3 4 5 6; do
+            git add state/board-discovery-report.json state/board-discovery-report.md state/board-cursor.json
+            git diff --cached --quiet && { echo "No change"; exit 0; }
+            git commit -q -m "SOURCE-TRIAL-BOT: board discovery report"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp /tmp/out/* state/
+          done
+          exit 1

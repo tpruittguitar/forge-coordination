@@ -46,3 +46,26 @@ test('REV-156 trial: boards + JobSpy, NEW vs EXISTING, read-only', { skip: !fs.e
   assert.match(md, /Terminal archive: 1 rows read/); assert.match(md, /JobSpy errors: indeed: 403/); assert.match(md, /\| HiringCafe \(4 returned; 2 already found by JOBSPY 2\) \| 3 \(1 unique\) \| 1 \| 0 \|/); assert.match(md, /no board found: Path Robotics/);
   fs.rmSync(dir, { recursive: true, force: true });
 });
+
+test('board cursor follows Explorer rank and resumes at next', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev-cursor-'));
+  fs.writeFileSync(path.join(dir, 'master.txt'), [
+    row(1, 'V2I-00000000000A', 'Acme', 'Director of Quality', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111'),
+  ].join('\n') + '\n');
+  fs.writeFileSync(path.join(dir, 'priority.txt'), 'DREAM (x): 1\n- Shield AI | careers: https://shield.ai/careers | Dallas\nP1 (y): 1\n- AEVEX | careers: https://job-boards.greenhouse.io/aevexaerospace | Tampa\nPAUSED (z): 1\n- Machina Labs | careers: https://job-boards.greenhouse.io/acme | Chatsworth\n');
+  fs.writeFileSync(path.join(dir, 'archive.txt'), 'V2_TERMINAL_ARCHIVE\n');
+  const out = path.join(dir, 'out'), cursor = path.join(dir, 'board-cursor.json');
+  const env = extra => Object.assign({}, process.env, { TRIAL_FC_DIR: FC, TRIAL_MASTER_FILE: path.join(dir, 'master.txt'), TRIAL_PRIORITY_FILE: path.join(dir, 'priority.txt'), TRIAL_ARCHIVE_FILE: path.join(dir, 'archive.txt'), TRIAL_OUT_DIR: out, TRIAL_CURSOR_FILE: cursor, TRIAL_FAST: '1', TRIAL_BOARDS_ONLY: '1', TRIAL_MAX_BOARDS: '1' }, extra);
+  const run = extra => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')], { env: env(extra), stdio: 'pipe', timeout: 60000 });
+  run();
+  const first = JSON.parse(fs.readFileSync(path.join(out, 'board-discovery-report.json'), 'utf8'));
+  const cur = JSON.parse(fs.readFileSync(cursor, 'utf8'));
+  assert.deepStrictEqual(first.boards.map(b => b.board), ['lever:shieldai']);
+  assert.strictEqual(cur.next, 'greenhouse:aevexaerospace');
+  assert.strictEqual(cur.order.some(b => b.company === 'Machina Labs'), false, 'PAUSED is not in the board order');
+  run();
+  const second = JSON.parse(fs.readFileSync(path.join(out, 'board-discovery-report.json'), 'utf8'));
+  assert.deepStrictEqual(second.boards.map(b => b.board), ['greenhouse:aevexaerospace']);
+  assert.strictEqual(JSON.parse(fs.readFileSync(cursor, 'utf8')).next, 'greenhouse:acme');
+  fs.rmSync(dir, { recursive: true, force: true });
+});
