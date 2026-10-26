@@ -1,0 +1,50 @@
+# Shared Writer verification service (Claude 2026-10-26, Tim: yes). READ-ONLY: receipt_index, then request_result and
+# an exact row_readback only for COMPLETE entries. Never sends anything to the Writer. Lanes that cannot run the
+# Writer's reads drop a request in verify/requests/ and read the answer in verify/results/. See verify/README.md and
+# tools/writer-verify/verify.js.
+name: writer-verify
+on:
+  push:
+    branches: [main]
+    paths: ['verify/requests/**']
+  schedule:
+    - cron: '11,41 * * * *'   # rechecks PENDING / CHECK_FAILED answers for 24 h
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: writer-verify
+  cancel-in-progress: false
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        run: node --test tools/writer-verify/verify.test.js
+      - name: Verify (read-only)
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
+        run: node tools/writer-verify/verify.js
+      - name: Commit answers
+        run: |
+          [ -d verify/results ] || exit 0
+          mkdir -p /tmp/res && cp verify/results/*.json /tmp/res/ 2>/dev/null || exit 0
+          git config user.name forge-verify-bot
+          git config user.email forge-verify-bot@users.noreply.github.com
+          for i in 1 2 3 4 5 6; do
+            git add verify/results
+            git diff --cached --quiet && exit 0
+            git commit -q -m "VERIFY-BOT: Writer verification answers"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git fetch -q origin main && git reset -q --hard origin/main
+            mkdir -p verify/results && cp /tmp/res/*.json verify/results/
+          done
+          exit 1
