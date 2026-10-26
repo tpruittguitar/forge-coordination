@@ -142,3 +142,21 @@ test('REV-155: a lane in control/PAUSED_LANES.json is marked paused, never repor
   const lane = (r.lanes || []).find(l => l.lane === 'ENRICH-FEASIBILITY');
   assert.ok(lane && lane.paused, 'lane row says paused');
 });
+
+test('AUTO intake: an unfinished run is a BLOCKING item; an isolated identity HOLD is an ACTION item', () => {
+  const ID = 'HOLD: resumed case not verified (INSERT_IDENTITY_MISMATCH)';
+  const root = repo({
+    'receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json': { sourceRunId: 'FORGE-AUTO-20261024T0502Z', requestIds: ['R1', 'R2'], results: { R1: {} },
+      halts: [{ at: '2026-10-24T05:11:15Z', message: 'UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry', outcomes: [{ requestId: 'R1', status: 'SKIPPED' }] }] },
+    'receipts/auto-intake/FORGE-AUTO-20261023T2144Z.json': { sourceRunId: 'FORGE-AUTO-20261023T2144Z', requestIds: ['A', 'B'],
+      results: { A: {}, B: { WRITE_ACCEPTED: true, receipt: { REQUEST_ID: 'B', NEW_PRIMARY_IDS: ['V2I-1'] } } },
+      halts: [{ at: 'x', message: ID, outcomes: [{ requestId: 'A', status: 'SKIPPED' }, { requestId: 'B', status: 'HOLD', reason: ID }] }] },
+    'receipts/auto-intake/FORGE-AUTO-20261025T0000Z.json': { noCandidates: true },
+  });
+  const r = build({ root, now: NOW });
+  const latched = r.items.find(i => i.id === 'auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json');
+  assert.ok(latched); assert.strictEqual(latched.level, 'BLOCKING'); assert.match(latched.detail, /Open request: R2\./);
+  const hold = r.items.find(i => i.id === 'auto-intake-identity-hold:B');
+  assert.ok(hold); assert.strictEqual(hold.level, 'ACTION');
+  assert.strictEqual(r.items.filter(i => /^auto-intake/.test(i.id)).length, 2);
+});

@@ -6,6 +6,7 @@
    Run: node tools/needs-tim/build.js [--root .] [--prs prs.json] [--now ISO] [--out attention/NEEDS_TIM.json] */
 'use strict';
 const fs = require('fs'), path = require('path');
+const autoLatch = require('../source-intake/auto-latch');
 
 const PROVIDERS = ['CLAUDE', 'CHATGPT', 'GROK'];
 const LANE_ALIAS = { 'POSTING-VALIDATION': 'POSTVAL', 'WEB-CAREER-DISCOVERY': 'WEB', 'EMAIL-DISCOVERY': 'EMAIL' };
@@ -186,6 +187,19 @@ function build(opts) {
   (opts.prs || []).forEach(pr => {
     const dnm = /DO NOT MERGE/i.test(pr.title || '');
     add({ id: 'pr:' + pr.repo + '#' + pr.number, section: 'UPKEEP', level: dnm || pr.draft ? 'WATCH' : 'ACTION', title: pr.repo + ' PR #' + pr.number + (pr.draft ? ' (draft)' : '') + ': ' + clip(pr.title, 120), detail: 'Open since ' + String(pr.created_at || '').slice(0, 10) + '. ' + (dnm ? 'Marked DO NOT MERGE — close it if no longer needed.' : pr.draft ? 'Draft — merge, keep, or close.' : 'Waiting for your review and merge.'), action: 'Open the PR → review → Merge (or Close with a one-line reason).', source: pr.repo + ' #' + pr.number, sourceUrl: pr.url, at: pr.created_at || null, raisedBy: (String(pr.title || '').match(/^(CLAUDE|CHATGPT|GROK)\b/) || [])[1] || '' });
+  });
+
+  /* 6. AUTO source intake latch (Claude 2026-10-26): source-intake-auto exits 0 while an earlier run is unfinished, so the
+     latch shows here instead of as a red run on every trigger. Same classification the intake itself uses. */
+  let autoRuns = { blocking: [], quarantined: [] };
+  try { autoRuns = autoLatch.latch(autoLatch.previous(root)); } catch (e) {
+    add({ id: 'auto-intake-unreadable', section: 'FAILED', level: 'BLOCKING', title: 'AUTO intake run record unreadable', detail: clip(e.message, 300), action: 'Any AI: fix the JSON in receipts/auto-intake/; AUTO intake cannot start while it is unreadable.', source: 'receipts/auto-intake', sourceUrl: ghUrl('forge-coordination', 'receipts/auto-intake'), at: null, raisedBy: '' });
+  }
+  autoRuns.blocking.forEach(b => {
+    add({ id: 'auto-intake-latched:' + b.file, section: 'FAILED', level: 'BLOCKING', title: 'AUTO source intake stopped: earlier run ' + (b.run || b.file) + ' is unfinished', detail: clip(b.message.replace(/\.?$/, '.') + (b.requestId ? ' Open request: ' + b.requestId + '.' : '') + ' Every later source-intake-auto run stops before any Writer call until this is reconciled.', 400), action: 'Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.', source: b.file, sourceUrl: ghUrl('forge-coordination', b.file), at: b.haltAt, raisedBy: 'AUTO-INTAKE' });
+  });
+  autoRuns.quarantined.forEach(q => {
+    add({ id: 'auto-intake-identity-hold:' + q.requestId, section: 'FAILED', level: 'ACTION', title: 'AUTO intake identity HOLD not resolved: ' + q.requestId, detail: clip(q.reason + ' in ' + (q.run || q.file) + '. Isolated: later AUTO runs may proceed, but this insert is not verified.', 400), action: 'Verify the inserted row against the request (exact-row readback); record the outcome in the run file.', source: q.file, sourceUrl: ghUrl('forge-coordination', q.file), at: null, raisedBy: 'AUTO-INTAKE' });
   });
 
   const dismissedOut = [];
