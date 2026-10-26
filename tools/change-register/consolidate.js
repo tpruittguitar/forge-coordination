@@ -24,7 +24,7 @@ const KEY_HINTS = {
   RUN_ID: 'RUN_ID belongs in the commit message, not the record; delete this line',
   CHANGE: 'use WHAT= for the description',
 };
-const ID_RE = /^[a-z0-9][a-z0-9._-]{2,99}$/;
+const ID_RE = /^[A-Za-z0-9][A-Za-z0-9._-]{2,99}$/;
 const WHAT_MAX = 1000;
 
 /* Files in control/changes/ that are records: <id>.txt, except README.txt and names starting with "_". */
@@ -37,7 +37,7 @@ function recordId(name) { return name.replace(/\.txt$/, ''); }
 /* Record text -> {fields, errors}. KEY=VALUE lines; "#" lines and blank lines ignored; WHAT may contain "=". */
 function parseRecord(text, id) {
   const fields = {}, errors = [];
-  if (id !== undefined && !ID_RE.test(id)) errors.push('file name must be lowercase letters, digits, ".", "_" or "-" (3-100 chars) + .txt');
+  if (id !== undefined && !ID_RE.test(id)) errors.push('file name must be letters, digits, ".", "_" or "-" (3-100 chars) + .txt');
   String(text).replace(/^﻿/, '').split(/\r?\n/).forEach((raw, i) => {
     const line = raw.trim();
     if (!line || line.startsWith('#')) return;

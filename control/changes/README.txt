@@ -1,7 +1,7 @@
 CHANGE RECORDS — how a change gets its REV (from 2026-10-22; replaces appending to control/CHANGE_REGISTER.txt)
 
 1. In your PR add ONE new file: control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt
-   e.g. control/changes/claude-20261022-2015-change-records.txt (lowercase, digits, ".", "_", "-"; never reuse a name).
+   e.g. control/changes/claude-20261022-2015-change-records.txt (letters, digits, ".", "_", "-"; never reuse a name).
 2. Contents, KEY=VALUE, one per line ("#" lines are comments):
      WHAT=One line saying what the change does (required, up to 1000 characters)
      REPO=forge-coordination        optional; or foreman-cockpit, forge-policy, forge-writer-state
