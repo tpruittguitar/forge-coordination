@@ -27626,5 +27626,42 @@
  "recorderProbe": {
   "probe": "d7aa1b3b-0552-4a77-8c6f-a88453286b59",
   "at": "2026-10-23T22:04:07.427Z"
+ },
+ "reconciliation": {
+  "status": "RECONCILED_READ_ONLY",
+  "at": "2026-10-26T11:55:00Z",
+  "by": "CLAUDE",
+  "probe": "receipts/auto-intake/probes/20261026T1148Z.json",
+  "writerSubmissions": 0,
+  "cases": {
+   "FORGE-SOURCE-B785E695BF640CF2D3997508": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-78D9FD347F64",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-F7F523AB5008B70B35B0FDD6": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-9B3C6A9095FB",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-C55B67ECE90424CDF7EEE8FA": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-3FB44DACC609",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-4F2F5A6D3214C0403D2BAF01": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-05F70E9B63DE",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-9B6C915E08DD1A81093FE453": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MISMATCH",
+    "primaryId": "V2I-63B0C8663C36",
+    "receiptIndex": "COMPLETE"
+   }
+  },
+  "evidence": "receipt_index COMPLETE + request_result durable COMPLETE + exact row_readback of the PRIMARY_ID captured at write time (receipt_index entries no longer list row IDs, so index-to-row binding came from the captured Writer response).",
+  "untouchedCandidates": 16,
+  "note": "FORGE-SOURCE-9B6C915E08DD1A81093FE453 (V2I-63B0C8663C36): title, location, requisition match and readback is unique; employer differs only because the record name contains \" | \" (\"CEIS | Critical Energy Infrastructure Services\") and the Writer stored the normalized employer \"CEIS\" (identity.compared.employer=ceis). Accepted as the correct row; the INSERT_IDENTITY_MISMATCH HOLD is closed."
  }
 }
