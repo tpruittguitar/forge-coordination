@@ -1,0 +1,45 @@
+# Recovers AUTO intake run records whose commit step failed (Claude 2026-10-26: the 13:30Z and 15:44Z runs kept their
+# record only as the auto-intake-record artifact). Copies top-level FORGE-AUTO-*.json files that are NOT already on the
+# branch; never overwrites an existing run file. No Writer access.
+name: auto-intake-recover-record
+on:
+  pull_request:
+    branches: [main]
+    paths: ['receipts/auto-intake-recover/REQUEST', '.github/workflows/auto-intake-recover-record.yml']
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'Space-separated source-intake-auto run IDs'
+        required: true
+permissions:
+  contents: write
+  actions: read
+jobs:
+  recover:
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+      - name: Recover
+        env:
+          GH_TOKEN: ${{ github.token }}
+          RUNS: ${{ github.event.inputs.runs }}
+        run: |
+          set -euo pipefail
+          [ -n "$RUNS" ] || RUNS=$(cat receipts/auto-intake-recover/REQUEST)
+          for id in $RUNS; do
+            d=/tmp/art/$id; mkdir -p "$d"
+            gh run download "$id" -R "$GITHUB_REPOSITORY" -n auto-intake-record -D "$d"
+            find "$d" -maxdepth 1 -type f -name 'FORGE-AUTO-*.json' | sort | while read -r f; do
+              b=$(basename "$f")
+              if [ -e "receipts/auto-intake/$b" ]; then echo "::notice::$id: $b already present, kept"; else cp "$f" "receipts/auto-intake/$b"; echo "::notice::$id: recovered $b"; fi
+            done
+          done
+          git config user.name forge-auto-intake-bot
+          git config user.email forge-auto-intake-bot@users.noreply.github.com
+          git add receipts/auto-intake
+          git diff --cached --quiet && { echo "nothing to recover"; exit 0; }
+          git commit -q -m "AUTO-INTAKE-BOT: recover run records from artifacts ($RUNS)"
+          git push -q origin HEAD:${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }}
