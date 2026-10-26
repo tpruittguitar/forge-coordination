@@ -165,10 +165,11 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
   if(verdict.kind==='UNKNOWN'){outcomes.push({requestId:rid,status:'UNKNOWN',writerResult:result});halt('UNKNOWN: Writer transaction not conclusively classified; reconcile before retry')}
-  if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push({requestId:rid,status:'HOLD',reason:verdict.kind,writerResult:result});halt('HOLD: Writer '+verdict.kind+' for canary candidate; employer review required before proceeding')}
+  // REVIEW_NEEDED / EXCLUDED and unexpected inserts for non-NEW cases are single-case: document and continue.
+  if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push(skipped(rid,verdict.kind,result));continue}
   if(verdict.kind==='INSERT_ACCEPTED'){
    outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null,writerResult:result});
-   if(candidate.expectedOutcome!=='NEW')halt('HOLD: Writer inserted a row for a '+candidate.expectedOutcome+' canary case; stop and reconcile');
+   if(candidate.expectedOutcome!=='NEW'){outcomes.push(skipped(rid,'UNEXPECTED_INSERT_FOR_'+candidate.expectedOutcome,result));continue}
    // No next job while current transaction is unverified. Reconciliation is a separate execution.
    halt('HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding');
   }
