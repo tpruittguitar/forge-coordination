@@ -28347,5 +28347,35 @@
  "recorderProbe": {
   "probe": "d0ba372e-4336-4af9-8d8b-ac6a17d04b7e",
   "at": "2026-10-26T15:52:03.789Z"
+ },
+ "reconciliation": {
+  "status": "RECONCILED_READ_ONLY",
+  "at": "2026-10-26T16:02:10.711Z",
+  "by": "CLAUDE",
+  "evidence": "verify/results/CLAUDE-20261026-1205-auto-1544z.json (writer-verify, read-only)",
+  "writerSubmissions": 0,
+  "cases": {
+   "FORGE-SOURCE-09B3753983190C31C89CD1E4": {
+    "verdict": "VERIFIED",
+    "receiptIndex": "COMPLETE",
+    "primaryIds": [
+     "V2I-1512A196D613"
+    ]
+   },
+   "FORGE-SOURCE-53B8FF5CA7094F2BF6B31D6D": {
+    "verdict": "VERIFIED",
+    "receiptIndex": "COMPLETE",
+    "primaryIds": [
+     "V2I-1F424EF2B0B4"
+    ]
+   },
+   "FORGE-SOURCE-313238ED3950C8CB6CA60AEB": {
+    "verdict": "HELD",
+    "receiptIndex": "NOT_PERSISTED",
+    "primaryIds": []
+   }
+  },
+  "untouchedCandidates": 8,
+  "note": "FORGE-SOURCE-313238ED3950C8CB6CA60AEB (Divergent Technologies, Senior Manager, Manufacturing Engineering, Torrance CA): Writer replied ok:false INTENT_READBACK_FAILED: no master write attempted; receipt_index state NOT_PERSISTED. Did not land. Its request ID stays recorded, so AUTO never resends it; a person may resubmit the role under a new request. The 8 untouched candidates are eligible for a fresh AUTO run."
  }
 }
