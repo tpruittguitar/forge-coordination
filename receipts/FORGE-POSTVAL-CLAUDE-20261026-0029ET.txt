@@ -1,0 +1,40 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-0029ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=fedec71efcda391a2310
+PACKET_SHA256=NOT_COMPUTED; PACKET_HASH_UNVERIFIED (GitHub blob sha 1f4b85ac6542d6508d15d099d173e1b1ae829e68 matches manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main 771021b30fbff2f04655617414b28d8c26682cf9; policy_revision 2026-10-25.1
+RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (read fresh); WRITER_QUEUE root had no pending files at start; writer_status/receipt-index/row_readback not available in this runtime
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION.txt generated 2026-10-26T04:01Z, 26 eligible rows
+RESOLVED_ASKS=none held by this lane
+
+ROWS_EVALUATED=12
+LIVE=6
+  LIVE_EMPLOYER_ATS: V2I-8331CFB6CFCC BD Assoc Director Manufacturing (Workday R-557906, posted 2 days ago); V2I-C611BCB90F80 MatX Supply Chain System Manager (Ashby page open); V2I-10367EA1D3BE Helios HVAC/R Service Manager (Greenhouse board lists the role for Missouri, exact city not shown)
+  LIVE_SECONDARY: V2I-4B98655B3D33 Samuel Son & Co (LinkedIn, posted 6 days ago); V2I-7C17AD8BD140 Tesla Mechanical Quality Manager (SimplyHired, dated 2026-10-17 per search result); V2I-9BD06F09D782 Liberty Restoration (JobLeads, 11 days ago)
+CLOSED=0
+UNCONFIRMED=6
+  V2I-FA36CCC494EF EngeniusMicro: LinkedIn shows "4 months ago" (stale), other boards say 2-3 days; no first-party page; not treated as closed
+  V2I-87254C5748B7 Tesla Sr Mgr Infrastructure: tesla.com page returned site error
+  V2I-066822C01890 Tesla Assoc Maintenance Mgr Castings: tesla.com and LinkedIn bot_blocked
+  V2I-2C880B989A0E F&B MFG: ZipRecruiter blocked, SimplyHired page content empty
+  V2I-E75E8FE1D2F9-class rows already UNCONFIRMED last run were not re-attempted
+  V2I-8DE5BDE78419 / other tracking-link rows (Rhee, Dakota, Koch, Vudoo, Wartech, Air Vent, Cordx, Abbott) were attempted in the 20261025-2230ET run and not repeated
+WRITTEN=6 (submitted to WRITER_QUEUE, file id 1acbjF9aIqf0zfSziOEszS5RwKiQ6qBuZ, CLAUDE_FORGE-POSTVAL-CLAUDE-20261026-0029ET-B01.json)
+VERIFIED=0 (RESULT / receipt-index COMPLETE / row_readback not available here; SUBMITTED only, not COMPLETE)
+VERIFIED_PRIOR_RUN=0; prior B01 FORGE-POSTVAL-CLAUDE-20261025-2230ET-B01 (file 1U7xuOimk_FOW6A4UO3vDh8KpCrhgyfrN) still unverified, not replayed
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 fetch calls (16 URLs), 10 search calls
+BACKLOG_REMAINING=about 8 worklist rows not attempted this or last run (Insight Global, Career Links, Detroit Quality Staffing x2, Blue Ops, Rider Solution, confidential plastics, Tesla Palo Alto/others), plus UNCONFIRMED above
+NOTES=REQ not sent as an ENRICH field (common contract forbids REQ); BD req id R-557906 is visible at the evidence URL. Most worklist URLs are dead Indeed/ZipRecruiter/Lensa tracking links, so each row needs an employer or secondary lookup by company and title. Tesla career pages are bot_blocked or error out.
+SUGGESTION_FOR_TIM (not enacted): worklist generator could carry the Indeed jk viewjob URL or untruncated links.
+STOP_REASON=Named limit: dead/blocked tracking-link sources and per-row lookup budget for this run; remaining rows not attempted
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-0029ET-B01 (R01-R06)
+PENDING=FORGE-POSTVAL-CLAUDE-20261026-0029ET-B01 file 1acbjF9aIqf0zfSziOEszS5RwKiQ6qBuZ awaiting Writer processing; prior 20261025-2230ET-B01
+NEXT_OWNER=Writer (process queue); gofer owns verification of both batches
+NEXT_ACTION=Verify B01s; continue worklist rows not yet attempted
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
