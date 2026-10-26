@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-26T04:55:54.218Z",
- "sourceCommit": "9a0bcde7080b0ebb1a7e740a55259cabab54c2e3",
+ "builtAt": "2026-10-26T05:08:15.756Z",
+ "sourceCommit": "5c5212b3fdf31f301e8814b431b6bc6889e77245",
  "counts": {
-  "total": 8,
+  "total": 9,
   "BLOCKING": 0,
-  "ACTION": 4,
-  "WATCH": 4,
-  "DECIDE": 4,
+  "ACTION": 6,
+  "WATCH": 3,
+  "DECIDE": 6,
   "JOBS": 1,
   "FAILED": 1,
-  "UPKEEP": 2
+  "UPKEEP": 1
  },
  "items": [
   {
@@ -47,18 +47,6 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "pr:foreman-cockpit#197",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "foreman-cockpit PR #197: GROK Needs you Action Center layout",
-   "detail": "Open since 2026-10-26. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "foreman-cockpit #197",
-   "sourceUrl": "https://github.com/tpruittguitar/foreman-cockpit/pull/197",
-   "at": "2026-10-26T04:54:50Z",
-   "raisedBy": "GROK"
-  },
-  {
    "id": "run-next-owner:GOFER|CLAUDE",
    "section": "DECIDE",
    "level": "ACTION",
@@ -69,6 +57,55 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261026-0055ET_TERMINAL.txt",
    "at": "2026-10-26T00:55:00-04:00",
    "raisedBy": "CLAUDE"
+  },
+  {
+   "id": "run-next-owner:ZIPR|CHATGPT",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "ZIPR · CHATGPT — next step is yours",
+   "detail": "Claude gofer for Writer reconciliation/identity holds and salary anomaly review; ChatGPT weekly for source provenance recovery; Tim for approval of proposed SonicJobs procedure change",
+   "action": "Check exact request_result, later-execution COMPLETE and post-COMPLETE exact rows; no replay of processed/ambiguous requests. Review SonicJobs suggestion, do not change runtime/policy until Tim approves.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt",
+   "at": "2026-10-26T01:02:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "edit-rejected:CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Edit request rejected: CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE",
+   "detail": "REJECT invalid suggestion entry (must be append-only, OPEN, undecided)",
+   "action": "Requesting lane: fix and resubmit, or drop it.",
+   "source": "edit-requests/rejected/CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/edit-requests/rejected/CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt",
+   "at": "2026-10-26T01:02:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "ask:ASK-20261026-CHATGPT-0102",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "SonicJobs trial cannot supply source links: approve recovery plan or retire it?",
+   "detail": "For two weekly runs SonicJobs returned job summaries without exact listing links or posting dates. This run preserves 30 source-only leads; none submitted with guessed links. Weekly ZipRecruiter intake continues independently. Proposed change is recorded as a suggestion; no implementation authorized.",
+   "blocks": "Safe SonicJobs intake and a meaningful assessment of its four-week trial.",
+   "options": [
+    "Approve a scoped investigation and recovery proposal",
+    "Retire the SonicJobs trial; retain ZipRecruiter Weekly"
+   ],
+   "recommended": "Approve a scoped investigation and recovery proposal; preserve captured leads.",
+   "action": "Answer in chat; record ruling in asks/resolved/ before any instruction or schedule change.",
+   "source": "asks/open/ASK-20261026-CHATGPT-0102.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261026-CHATGPT-0102.json",
+   "at": "2026-10-26T01:07:54.515733-04:00",
+   "raisedBy": "CHATGPT",
+   "askId": "ASK-20261026-CHATGPT-0102",
+   "links": [
+    {
+     "label": "Evidence",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261026-0102ET.json"
+    }
+   ]
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -95,18 +132,6 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/directives/FORGE_PLAN_GitHub_Migration_2026-10-12.txt"
     }
    ]
-  },
-  {
-   "id": "run-unfinished:ZIPR|CHATGPT",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "ZIPR · CHATGPT — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
-   "at": "2026-10-19T00:59:00-04:00",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "ask:ASK-20261023-CLAUDE-1310",
@@ -387,11 +412,11 @@
   {
    "lane": "ZIPR",
    "provider": "CHATGPT",
-   "lastAt": "2026-10-19T00:59:00-04:00",
-   "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261019-0059ET.json",
+   "lastAt": "2026-10-26T01:02:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt",
    "runs7d": 1,
-   "usualGapHours": null,
+   "usualGapHours": 168.1,
    "overdue": false
   }
  ],
