@@ -22,3 +22,10 @@ test('a role already sent under its raw name is not sent again',()=>{
  const raw=requestId({COMPANY:role.company,TITLE:role.title,LOCATION:role.location,SOURCE_URL:role.url});
  assert.deepStrictEqual(pick({new_roles:[role]},{max:5,sent:new Set([raw])}),[]);
 });
+test('AUTO intake does not drop West Coast or Memphis roles; the geo map scores them',()=>{
+ const base={company:'Acme Robotics',title:'Director of Manufacturing',level:'DIRECTOR_PLUS'};
+ const roles=[{...base,location:'Torrance, CA, USA',place:'CA',url:'https://example.com/1'},
+  {...base,company:'Beta Aero',location:'Seattle, WA, USA',place:'WA',url:'https://example.com/2'},
+  {...base,company:'Gamma Works',location:'Memphis, TN, USA',place:'TN',url:'https://example.com/3'}];
+ assert.strictEqual(pick({new_roles:roles},{max:5,sent:new Set()}).length,3);
+});
