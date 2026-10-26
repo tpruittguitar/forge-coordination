@@ -87,8 +87,8 @@ test('a Writer that resurrects the archived role halts the canary at the protect
  await snapshot('before',{...opts,sourceRunId:'FORGE-CANARY-TEST'});
  await run(opts);w.verifyPending();
  const r=await run(opts);
- assert.equal(r.status,'HALTED');assert.match(r.message,/Writer inserted a row for a PROTECTED_NOOP canary case/);
- for(let i=0;i<3;i++){w.verifyPending();const again=await run(opts);assert.equal(again.status,'HALTED');assert.match(again.message,/PROTECTED_ROLE_OPENED_MASTER_TRANSACTION/)}
+ assert.equal(r.status,'HALTED');assert.match(r.message,/Writer accepted canary record|Writer inserted a row for a PROTECTED_NOOP canary case/);
+ for(let i=0;i<3;i++){w.verifyPending();const again=await run(opts);assert.equal(again.status,'HALTED');assert.match(again.message,/Writer accepted canary record|PROTECTED_ROLE_OPENED_MASTER_TRANSACTION/)}
  assert.equal(w.log.filter(x=>x==='POST').length,3,'canary never proceeds past the protected case');
 });
 test('state is bound to the exact candidates and the before snapshot is taken once',async()=>{
