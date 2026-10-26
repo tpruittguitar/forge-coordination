@@ -18,6 +18,7 @@ const {snapshot,auto,finalize}=require('./canary-cli');
 const {read}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
 const {DIR,previous,latch}=require('./auto-latch');
+const {normalizeCompany}=require('./record-normalize');
 
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
@@ -39,9 +40,12 @@ function pick(report,{max,sent}){
   if(out.length>=max)break;
   if(!LEVELS.has(r.level)||!CORE.test(r.title)||OFF.test(r.title)||WEST.has(r.place)||/memphis/i.test(r.location+' '+r.title)||AGENCY.test(r.company)||MEDICAL.test(r.company+' '+r.title))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
-  const k=r.company.toLowerCase();if((per[k]||0)>=2)continue;
-  const record={COMPANY:r.company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
-  if(sent.has(requestId(record)))continue;
+  // Employer as the Writer compares it (text before " | "); the raw name's request ID is still checked so a role an
+  // earlier run sent under the raw name is never sent again under the normalized one.
+  const company=normalizeCompany(r.company).company;
+  const k=company.toLowerCase();if((per[k]||0)>=2)continue;
+  const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
+  if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
  }
  return out;
