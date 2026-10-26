@@ -1,0 +1,45 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-0630ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=9cccaefe557522d47015
+PACKET_SHA256=NOT_COMPUTED (PACKET_HASH_UNVERIFIED; packet blob SHA fetched=5aacf1c07de77f0f3a76f2b636b26321649eb389 matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED (no forge-policy directory metadata read this run)
+GATE: WRITER_FREEZE frozen=false (read fresh); writer_status not available; WRITER_QUEUE root empty, no RESULT from last 2h touching these rows.
+WORKLIST: GENERATED_AT_UTC=2026-10-26T10:12:02Z, ELIGIBLE_TOTAL=34, worked top-down with skips named below.
+
+ROWS_EVALUATED=10
+LIVE=2
+CLOSED=0
+UNCONFIRMED=8
+WRITTEN=2 (submitted, not yet verified)
+VERIFIED=0
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=5 fetch calls (plus 10 free TinyFish searches); one transient 502 on a fetch call, retried once successfully
+
+LIVE (written, batch B01):
+- V2I-656EDB4BE306 3M Clarkston Plant Manager, Clarkston GA: Workday req R01172724, on-site, posted 3 days ago, comp $221,591-$270,834. LIVE_EMPLOYER_ATS.
+- V2I-258E3523D5C1 Abbott Quality Manager, Atlanta GA: Workday req 31163430, posted 26 days ago, base $113,300-$226,700. LIVE_EMPLOYER_ATS.
+
+UNCONFIRMED (not written; attempts recorded):
+- V2I-6C2025AB8621 Aspen Enterprises: ZipRecruiter redirect bot_blocked; only secondary job-board snippets (Jobrapido 404 on fetch). No employer page found.
+- V2I-51BD7BD9E557 Nexoval Group: agency posting; LinkedIn bot_blocked (999); ZipRecruiter blocked. No agency page read.
+- V2I-ED09A8C302EB Harvard Bioscience: employer ATS (applicantpro) listing page renders no job data via fetch; careers page shows no posting detail.
+- V2I-8E165A1D36E2 Dakota Tube: Indeed only; no employer page found.
+- V2I-D41A79F9B629 Vudoo Gun Works: only Glassdoor (bot_blocked); no employer posting found.
+- V2I-A610E13ACFC0 RR Donnelley: rrd.com listings and SmartRecruiters index are JS/summary pages without the Plant President detail; no requisition page read.
+- V2I-54E97B6F5B40 Wanco: employer careers page has a Current Openings widget with no readable posting; apply is via external form.
+- V2I-066822C01890 Tesla Associate Maintenance Manager, Castings: tesla.com job page bot_blocked.
+No blocked source treated as closure.
+
+BACKLOG_REMAINING=24 worklist rows not reached (rows 4,5,7-12,14,16-18,20,22,23,25-33), plus 8 UNCONFIRMED above.
+STOP_REASON=Most remaining rows are ZipRecruiter/Indeed/Lensa/email redirect URLs (TinyFish bot_blocked, tokens truncated in worklist); run ended after the 10-row minimum with no further unblocked source route identified. Not a quota limit.
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-0630ET-B01 (R01, R02); queue file Drive id 18yAqYBuWI3Wg_HjhNZKocFUTo6fPg50A
+PENDING: B01 awaiting Writer RESULT, receipt-index COMPLETE and row_readback; no writer_status/row_readback transport available in this run, so verification is owed to the next run/gofer.
+VERIFIED_THIS_RUN=none; VERIFIED_PRIOR_RUN=n/a (no prior POSTVAL receipt reconciled; none read)
+NEXT_OWNER=Claude FORGE_APPLICATION_WRITER_GOFER / next POSTING_VALIDATION run
+NEXT_ACTION=Verify B01 via request_result, receipt_index, row_readback; revisit UNCONFIRMED rows.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+Note: worklist URLs are mostly truncated aggregator redirects; suggestion for Tim (not filed, no change made): worklist could carry the employer-facing URL when known.
