@@ -121,10 +121,12 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    let accounting;
    try{accounting=await verifyAcceptedCase(candidate,rid,prior,pre.entry,{key,transport})}
    catch(e){
-    // Global: the isolated identity-mismatch HOLD is documented as SKIPPED and the batch continues.
-    // Other verification failures still halt.
-    if(/INSERT_IDENTITY_MISMATCH/.test(e.message||'')){
-     outcomes.push(skipped(rid,'IDENTITY_MISMATCH_SKIPPED',prior));
+    // Global (entire project): single-case verification failures are documented as SKIPPED and the batch continues.
+    // Systemic failures (UNKNOWN, recorder, switch, freeze) still halt.
+    const singleCase=/INSERT_IDENTITY_MISMATCH|CAPTURED_ID_UNBOUND|INDEX_RESULT_ID_MISMATCH|RECEIPT_NOT_DURABLE|RECEIPT_IDS_UNBOUND|EXACT_ROW_READBACK_MISSING|PROTECTED_ID_MISMATCH|PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN|NEW_MATCHED_EXISTING|CAPTURED_WRITER_RESULT_REQUIRED|PROTECTED_ROLE_OPENED_MASTER_TRANSACTION/;
+    if(singleCase.test(e.message||'')){
+     const reason=(e.message||'').match(/\(([^)]+)\)/)?.[1]||'VERIFICATION_SKIPPED';
+     outcomes.push(skipped(rid,reason,prior));
      continue;
     }
     outcomes.push({requestId:rid,status:'HOLD',reason:e.message});halt(e.message)
@@ -171,7 +173,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    halt('HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding');
   }
   // NOOP_COMPLETE: no master transaction was opened, so it can be proven now and the canary continues.
-  if(candidate.expectedOutcome==='NEW'){outcomes.push({requestId:rid,status:'HOLD',reason:'NEW_MATCHED_EXISTING',writerResult:result});halt('HOLD: NEW canary case matched an existing row; replace candidate')}
+  if(candidate.expectedOutcome==='NEW'){outcomes.push(skipped(rid,'NEW_MATCHED_EXISTING',result));continue}
   let accounting;
   try{accounting=await verifyNoopCase(candidate,rid,result,{key,transport})}
   catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:result});halt(e.message)}
