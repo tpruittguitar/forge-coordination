@@ -1,18 +1,42 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-26T10:52:28.773Z",
- "sourceCommit": "0a6e43a2dfd432935bccdb99bcc0e24fbf17cdea",
+ "builtAt": "2026-10-26T11:41:08.464Z",
+ "sourceCommit": "0d9a4a91f85a0acebfe45baeb127a10267394e92",
  "counts": {
-  "total": 9,
-  "BLOCKING": 0,
-  "ACTION": 6,
+  "total": 11,
+  "BLOCKING": 1,
+  "ACTION": 7,
   "WATCH": 3,
   "DECIDE": 6,
   "JOBS": 1,
-  "FAILED": 1,
+  "FAILED": 3,
   "UPKEEP": 1
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261024T0502Z is unfinished",
+   "detail": "UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry. Open request: FORGE-SOURCE-8102B92A18A8DB6F0F31FF17. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261024T0502Z.json",
+   "at": "2026-10-24T05:11:15.016Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-9B6C915E08DD1A81093FE453",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "AUTO intake identity HOLD not resolved: FORGE-SOURCE-9B6C915E08DD1A81093FE453",
+   "detail": "HOLD: resumed case not verified (INSERT_IDENTITY_MISMATCH) in FORGE-AUTO-20261023T2144Z. Isolated: later AUTO runs may proceed, but this insert is not verified.",
+   "action": "Verify the inserted row against the request (exact-row readback); record the outcome in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261023T2144Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261023T2144Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
