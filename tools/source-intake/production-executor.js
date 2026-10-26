@@ -153,18 +153,22 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:candidate.primaryBusiness||''}]};
   let response;
   try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(60000)}); }
-  catch {halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile receipt index before retry')}
+  catch(e){outcomes.push(skipped(rid,'POST_UNCONFIRMED',{error:String(e&&e.message||e)}));continue}
   let result;
-  try{result=await response.json()}catch{halt('UNKNOWN: Writer response invalid; reconcile before retry')}
+  try{result=await response.json()}catch{outcomes.push(skipped(rid,'RESPONSE_INVALID',{status:response.status}));continue}
   // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
   let recorded=false;
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
-  if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; save outcomes[].writerResult and reconcile the receipt index before any retry')}
+  if(!recorded){outcomes.push(skipped(rid,'RESPONSE_NOT_DURABLY_RECORDED',result));continue}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
-  if(verdict.kind==='UNKNOWN'){outcomes.push({requestId:rid,status:'UNKNOWN',writerResult:result});halt('UNKNOWN: Writer transaction not conclusively classified; reconcile before retry')}
+  if(verdict.kind==='UNKNOWN'){
+   const reason=result&&result.ok===false?'WRITER_ERROR':'CONTRACT_MISMATCH';
+   outcomes.push(skipped(rid,reason,result));
+   continue;
+  }
   // REVIEW_NEEDED / EXCLUDED and unexpected inserts for non-NEW cases are single-case: document and continue.
   if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push(skipped(rid,verdict.kind,result));continue}
   if(verdict.kind==='INSERT_ACCEPTED'){
