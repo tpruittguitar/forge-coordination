@@ -7,6 +7,8 @@ Order per row (Tim 2026-10-20 18:17 and 18:21 ET):
 1. Employer ATS posting (Lever, Greenhouse, Ashby public APIs): posted pay -> `SALARY_BASIS=EMPLOYER_POSTED`.
 2. Aggregator posting (LinkedIn guest page, Indeed, ZipRecruiter): posted pay -> `EMPLOYER_POSTED`; pay the site labels as
    its own estimate -> `THIRD_PARTY_ESTIMATE`.
+   `config.json` `aggregatorsOff` lists sites that are never fetched (Tim 2026-10-26: `indeed`, 401 on every read from the
+   runner; Indeed roles still arrive through JobSpy and HiringCafe in source-trial).
 3. Only when a posting was read (this run, or `FEASIBILITY_ATTEMPT_ASOF` set by a lane) and showed no pay:
    `FORGE-ESTIMATE` from employer-posted comparables in the master (same level and function; same region first;
    1 comparable = LOW, 2+ close = MED), with comparables, basis, uncertainty and ASOF recorded.
