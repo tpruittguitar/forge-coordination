@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-26T23:07:02.451Z",
- "sourceCommit": "85444eea0017875db860dc031edd37502afc9d1d",
+ "builtAt": "2026-10-26T23:08:38.139Z",
+ "sourceCommit": "e0f8d41f2a5ea4cfa15f40857fdc6dfeb6c29058",
  "counts": {
   "total": 11,
-  "BLOCKING": 0,
-  "ACTION": 8,
+  "BLOCKING": 1,
+  "ACTION": 7,
   "WATCH": 3,
   "DECIDE": 6,
   "JOBS": 1,
-  "FAILED": 2,
-  "UPKEEP": 2
+  "FAILED": 3,
+  "UPKEEP": 1
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261026T2255Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261026T2255Z is unfinished",
+   "detail": "UNKNOWN: Writer transaction not conclusively classified; reconcile before retry. Open request: FORGE-SOURCE-8C33C0BC62A4EF056B707300. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261026T2255Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261026T2255Z.json",
+   "at": "2026-10-26T23:08:09.474Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-840F3921F2C06EA339A54E3A",
    "section": "FAILED",
@@ -118,18 +130,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261026-1852ET_TERMINAL.txt",
    "at": "2026-10-26T18:52:00-04:00",
    "raisedBy": "CLAUDE"
-  },
-  {
-   "id": "pr:forge-coordination#91",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "forge-coordination PR #91: Global: single-case verification failures are SKIPPED and the batch c…",
-   "detail": "Open since 2026-10-26. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-coordination #91",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/91",
-   "at": "2026-10-26T23:02:50Z",
-   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
