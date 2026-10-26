@@ -1,0 +1,25 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-1229ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+PACKET_SHA256=UNVERIFIED (PACKET_HASH_UNVERIFIED; fetched blob SHA e3574b0e8b3b2fa183363aac33e5afdcff8c98df matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false; WRITER_QUEUE root empty; writer_status tool unavailable
+RESOLVED_ASKS=none held by this lane
+ROWS_EVALUATED=10 (worklist rows 1-7, 24, 25, 31; 46 eligible, worklist generated 2026-10-26T16:22Z)
+LIVE=2 (V2I-61087574E22E LIVE_SECONDARY; V2I-46636D607AAA LIVE_SECONDARY)
+CLOSED=0
+UNCONFIRMED=8 (no posted age on page: rows 1,3,5,6,7 [V2I-103780A8D987, V2I-55D2F55196F2, V2I-33B142A0D573, V2I-A08E192306E0, V2I-87CBAE20E3C7]; HTTP 429: rows 2,4 [V2I-68C32674D184, V2I-348C8DFBF5C9]; login_required: row 31 [V2I-1CDB6D8FAAA2]). Not written.
+WRITTEN=2 (submitted, not yet accepted)
+VERIFIED=0 (pending: no RESULT/receipt-index/row_readback this run)
+HELD=rows 8-30, 32-46: truncated redirect/tracking URLs (ZipRecruiter, Indeed, Lensa, Gmail, sendgrid, Glassdoor) not fetchable from worklist; buildsubmarines rows 26-27 not reached
+FAILED=0
+TINYFISH_FETCHES=1 call, 10 URLs
+BACKLOG_REMAINING=44
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-1229ET-B01 (R01,R02); Drive file 1x4SNDPO_thInb-CExR-qft0f6eUn4KiS
+PENDING=B01 awaiting Writer processing; verify next run via forge-coordination verify/README.md
+STOP_REASON=Run ended early: remaining worklist rows have truncated tracking URLs not resolvable without employer-site search; LinkedIn 429 on 2 rows
+BATCHES_COMPLETED_THIS_RUN=1
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION next run / gofer for verification
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
