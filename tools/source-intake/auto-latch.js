@@ -31,7 +31,7 @@ function isolatedIdentityHold(state){
 }
 // The request the halted run was on when it stopped: the first request with no accounted outcome in the last halt.
 function stoppedAt(state){
- const halt=state.halts?.at(-1),done=new Set((halt?.outcomes||[]).filter(x=>['SKIPPED','RESUMED_ACCOUNTED','NOOP_ACCOUNTED'].includes(x.status)).map(x=>x.requestId));
+ const halt=state.halts?.at(-1),done=new Set((halt?.outcomes||[]).filter(x=>['SKIPPED','RESUMED_ACCOUNTED','NOOP_ACCOUNTED','IDENTITY_MISMATCH_SKIPPED'].includes(x.status)).map(x=>x.requestId));
  const open=(halt?.outcomes||[]).find(x=>!done.has(x.requestId));
  if(open)return open.requestId;
  return (state.requestIds||[]).find(r=>!done.has(r))||null;
