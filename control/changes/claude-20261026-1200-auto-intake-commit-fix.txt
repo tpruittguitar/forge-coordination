@@ -1,1 +1,0 @@
-WHAT=Fix source-intake-auto "Commit run record": cp receipts/auto-intake/* failed on the probes/ subdirectory added by PR #83, so the 13:30Z and 15:44Z AUTO runs never committed their records. Copy top-level *.json only; new workflow auto-intake-recover-record restores the two lost records from their artifacts (never overwrites an existing run file).
