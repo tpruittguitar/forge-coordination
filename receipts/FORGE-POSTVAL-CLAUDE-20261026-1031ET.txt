@@ -1,0 +1,30 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-1031ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+POLICY_REVISION=2026-10-26.3
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (fetched via GitHub Contents; blob sha e3574b0e8b3b2fa183363aac33e5afdcff8c98df equals manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination@1e6dda7e5bd92151d19889d066b161f0b8fff312; worklist generated 2026-10-26T14:19:44Z (57 eligible)
+RULES_BLOB_UNCHECKED (forge-policy directory metadata not read this run; no policy interpretation needed)
+GATE=WRITER_FREEZE frozen=false (read fresh); Writer status not queried (no writer_status route in this runtime); queue root listing showed only processed/failed folders on first page
+INHERITED_PENDING=none checked beyond queue listing; asks/resolved not read (no items held by this lane)
+
+ROWS_EVALUATED=20 (worklist rows 1,2,5-14,19,20,31,34,35,36,40,57; all LinkedIn)
+LIVE=15 (LIVE_SECONDARY, LinkedIn page published_date within 30 days, no closed notice)
+CLOSED=0
+UNCONFIRMED=5 (V2I-C813C3616E09 page dated 2026-09-22 older than 30 days; V2I-0F35C33869E0 bot_blocked 999; V2I-759B1FE6F795 login_required; V2I-552A7377F55F and V2I-9A8F50B71603 HTTP 429)
+NOTE: LinkedIn relative-age text on several pages ("21 hours ago") conflicts with the page published_date; LIVENESS_NOTE records the published_date. Reviewer may want a stricter rule.
+WRITTEN=20 SUBMITTED (not yet WRITER_ACCEPTED)
+VERIFIED=0 (no RESULT / receipt-index COMPLETE / row_readback yet; verification pending, next owner must confirm)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 calls, 20 URLs
+BACKLOG_REMAINING=37 worklist rows (ZipRecruiter redirects, Indeed, Glassdoor, Lensa, Gmail, jobs.buildsubmarines.com not attempted; skipped for time, not blocked)
+STOP_REASON=Two batches of 10 completed (minimum 10 met); remaining worklist rows are non-LinkedIn redirect/aggregator URLs needing employer-route searches, not attempted this run
+BATCHES_COMPLETED_THIS_RUN=2
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-1031ET-B01 (Drive 1GhWC7nJFF983DaWhjLC7r4vjtP2WZLFo), FORGE-POSTVAL-CLAUDE-20261026-1031ET-B02 (Drive 1Q7wBXUwGDgc-bFT-SIhRgEuFoYvgfUdc)
+PENDING=both queue files awaiting Writer processing
+NEXT_OWNER=Claude next POSTVAL run / gofer
+NEXT_ACTION=verify B01/B02 via RESULT file, receipt-index and row_readback; continue worklist
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
