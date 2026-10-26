@@ -246,10 +246,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
-             on; a failed receipt = failed; nothing or still pending = unconfirmed, the run stops sending and the row_readback
-             guard settles those rows next run. Never re-POSTed here. */
+             on; a failed receipt = failed; nothing or still pending = unconfirmed, counted, and the run continues to the next batch. Never re-POSTed here. */
           const proof = await receiptFor(batch);
-          if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; throw Object.assign(new Error('stop'), { counted: true }); }
+          if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue; }
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
@@ -257,7 +256,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
         await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
       }
-      if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); break; }
+      if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue; }
       const results = res.results || [];
       // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
@@ -266,7 +265,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
-    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } break; }
+    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue; }
     await sleep(CONFIG.batchGapMs);
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
