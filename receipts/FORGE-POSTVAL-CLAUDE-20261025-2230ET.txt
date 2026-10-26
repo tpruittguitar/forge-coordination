@@ -1,0 +1,37 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261025-2230ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=68855a0df9fd622c2d2c
+PACKET_SHA256=NOT_COMPUTED; PACKET_HASH_UNVERIFIED (fetched blob sha 4701a3e4119da7411f38dd5bc3e2f84e8c0d205c matches manifest lane.blob_sha)
+RULES_BLOB_UNCHECKED
+GATE=WRITER_FREEZE frozen=false (read fresh); WRITER_QUEUE root empty at start; writer_status/receipt-index/row_readback not available in this runtime
+WORKLIST=WORKLIST_FORGE_POSTING_VALIDATION.txt generated 2026-10-26T02:25Z, 29 eligible rows
+
+ROWS_EVALUATED=12
+LIVE=3 (LIVE_SECONDARY: V2I-6BF07E54A797 Refresco; V2I-DC7A08FB2C53 Advanced Navigation; V2I-2D22501D7571 Fleet Data Centers; all LinkedIn pages read 2026-10-26 with posted age, no closed notice)
+CLOSED=0
+UNCONFIRMED=9
+  V2I-8E165A1D36E2 Dakota Tube: employer careers page lists no Director of Operations, but Indeed search snippet shows it posted recently; not treated as closure
+  V2I-E75E8FE1D2F9 Air Vent: ZipRecruiter blocked; LinkedIn copy is Dallas TX, not Cincinnati
+  V2I-1101C8BC4EE1 Koch: employer ATS (koch.avature.net) returned 403; block is not closure
+  V2I-0EEF32C5FA54 Tesla RSM: tesla.com bot_blocked; LinkedIn page shows no posted age
+  V2I-258E3523D5C1 Abbott: jobs.abbott page rendered "no jobs for your search criteria" (likely JS shell, not positive closure)
+  V2I-4DE5BDE78419 Rhee Bros: LinkedIn shows "No longer accepting applications" but row source is Indeed not LinkedIn-only, so not closed; flag for Writer/Tim review
+  V2I-67C2406697F0 Cordx: no matching-title posting found
+  V2I-D41A79F9B629 Vudoo Gun Works: no posting found
+  V2I-004DCE05CEB0 Wartech Engineering: no matching posting found
+WRITTEN=3 (submitted to WRITER_QUEUE, file id 1U7xuOimk_FOW6A4UO3vDh8KpCrhgyfrN)
+VERIFIED=0 (RESULT/receipt-index/row_readback not yet available; submitted-only, not COMPLETE)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=5 fetch calls (14 URLs), 12 search calls
+BACKLOG_REMAINING=17 worklist rows not attempted (plus 9 UNCONFIRMED above)
+NOTES=Most worklist URLs are truncated Indeed/ZipRecruiter/Lensa/Ladders tracking links that no longer resolve (Lensa/Ladders redirect to google.com; ZipRecruiter bot_blocked); resolution requires employer/LinkedIn lookup per row. SUGGESTION (for Tim, not enacted): worklist generator could carry the Indeed jk/REQ-based viewjob URL or untruncated links.
+STOP_REASON=Named limit: tracking-link sources dead/blocked and per-row employer lookup budget for this run; remaining rows not attempted
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261025-2230ET-B01 (R01-R03)
+PENDING=FORGE-POSTVAL-CLAUDE-20261025-2230ET-B01 file 1U7xuOimk_FOW6A4UO3vDh8KpCrhgyfrN awaiting Writer processing
+NEXT_OWNER=Writer (process queue); gofer owns verification of B01 (RESULT SUCCESS + receipt-index COMPLETE + row_readback)
+NEXT_ACTION=Verify B01 next run; continue worklist rows 1-8, 11-23 etc.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
