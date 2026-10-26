@@ -120,7 +120,14 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    if(pre.state!=='COMPLETE'||prior===undefined){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode,state:pre.state});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
    let accounting;
    try{accounting=await verifyAcceptedCase(candidate,rid,prior,pre.entry,{key,transport})}
-   catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message});halt(e.message)}
+   catch(e){
+    // AUTO: an isolated identity mismatch (or other single-case verification HOLD) is documented and skipped so the rest of the batch continues. Other modes still halt.
+    if(auto&&/INSERT_IDENTITY_MISMATCH|IDENTITY_MISMATCH|CAPTURED_ID_UNBOUND|INDEX_RESULT_ID_MISMATCH/.test(e.message||'')){
+     outcomes.push(skipped(rid,'IDENTITY_MISMATCH_SKIPPED',prior));
+     continue;
+    }
+    outcomes.push({requestId:rid,status:'HOLD',reason:e.message});halt(e.message)
+   }
    outcomes.push({requestId:rid,status:'RESUMED_ACCOUNTED',accounting});
    continue;
   }
