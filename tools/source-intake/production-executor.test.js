@@ -464,12 +464,21 @@ test('captured-ID binding still holds on a bad capture, a wrong row, or a one-si
  const cases=[
   [{index:{[rid]:bare},result:result({...bare}),readback:rb(good)},twoIds,/CAPTURED_ID_UNBOUND/],
   [{index:{[rid]:bare},result:result({...bare}),readback:rb(good)},otherRid,/CAPTURED_ID_UNBOUND/],
-  [{index:{[rid]:bare},result:result({...bare}),readback:rb('1 | V2I-100 | Someone Else | Dir | S | OPEN | P | R | TX | N')},insertResponse(rid,'V2I-100'),/INSERT_IDENTITY_MISMATCH/],
   [{index:{[rid]:bare},result:result({...bare,items:[{pid:'V2I-100'}]}),readback:rb(good)},insertResponse(rid,'V2I-100'),/INDEX_RESULT_ID_MISMATCH/]
  ];
  for(const [state,prior,pattern] of cases){
   const log=[];
   await assert.rejects(()=>runCanary(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}})),pattern);
+  assert.ok(!log.includes('POST'),'no POST');
+ }
+ // Identity mismatch is now a documented skip that continues (global behavior).
+ {
+  const log=[];
+  const state={index:{[rid]:bare},result:result({...bare}),readback:rb('1 | V2I-100 | Someone Else | Dir | S | OPEN | P | R | TX | N')};
+  const prior=insertResponse(rid,'V2I-100');
+  const out=await runCanary(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}}));
+  assert.equal(out[0].status,'SKIPPED');
+  assert.equal(out[0].reason,'IDENTITY_MISMATCH_SKIPPED');
   assert.ok(!log.includes('POST'),'no POST');
  }
 });
