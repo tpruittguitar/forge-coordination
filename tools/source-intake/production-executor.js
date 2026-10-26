@@ -193,13 +193,26 @@ async function verifyAcceptedCase(candidate,rid,prior,indexEntry,{key,transport}
  const detail=(await read('request_result',{key,transport,requestId:rid})).data;
  if(!detail.found||detail.source!=='index'||detail.requestId!==rid||detail.status!=='COMPLETE'||detail.durable!==true)hold('RECEIPT_NOT_DURABLE');
  const a=Array.isArray(indexEntry?.items)?indexEntry.items.map(x=>x?.pid):null,b=Array.isArray(detail.entry?.items)?detail.entry.items.map(x=>x?.pid):null;
- // An index entry exists only when a master transaction ran, so it must name the rows it wrote.
- if(!a||!b||!a.length||a.length!==b.length||a.length>25||a.some((v,i)=>!validPid(v)||v!==b[i]))hold('INDEX_RESULT_ID_MISMATCH');
  if(candidate.expectedOutcome==='PROTECTED_NOOP')hold('PROTECTED_ROLE_OPENED_MASTER_TRANSACTION');
- const readbacks=await caseReadbacks(candidate,rid,a,{key,transport});
- const accounting=checkCanaryOutcome({expectedOutcome:candidate.expectedOutcome,record:candidate.record,result:prior,receipt:detail,readbacks,requestId:rid});
+ let ids,receipt=detail,binding='RECEIPT_INDEX';
+ if(a||b){
+  // An index entry that names rows must agree exactly with request_result.
+  if(!a||!b||!a.length||a.length!==b.length||a.length>25||a.some((v,i)=>!validPid(v)||v!==b[i]))hold('INDEX_RESULT_ID_MISMATCH');
+  ids=a;
+ }else{
+  // Since 2026-10-24 receipt_index and request_result carry no row IDs (entry keys at,s,snapshotHash,w). Tim
+  // 2026-10-26: bind to the PRIMARY_ID in the Writer's own durably captured acceptance instead. It must name exactly
+  // one row, its receipt must carry this request ID and that same single ID, and the exact-row readback below must pass.
+  const pid=prior.results[0].PRIMARY_ID,cap=prior.receipt;
+  if(prior.WRITE_ACCEPTED!==true||cap?.REQUEST_ID!==rid||!Array.isArray(cap?.NEW_PRIMARY_IDS)||cap.NEW_PRIMARY_IDS.length!==1||
+     cap.NEW_PRIMARY_IDS[0]!==pid||!validPid(pid))hold('CAPTURED_ID_UNBOUND');
+  ids=[pid];binding='CAPTURED_RESPONSE';
+  receipt={...detail,entry:{...(detail.entry||{}),items:[{pid,op:'INSERT',boundFrom:'CAPTURED_RESPONSE'}]}};
+ }
+ const readbacks=await caseReadbacks(candidate,rid,ids,{key,transport});
+ const accounting=checkCanaryOutcome({expectedOutcome:candidate.expectedOutcome,record:candidate.record,result:prior,receipt,readbacks,requestId:rid});
  if(accounting.status==='HOLD')hold(accounting.reason);
- return accounting;
+ return {...accounting,binding};
 }
 // READ-ONLY proof for a no-op. receipt_index must still have no entry (no master transaction); request_result is then
 // answered from the receipts log and cannot invoke pending verification.
