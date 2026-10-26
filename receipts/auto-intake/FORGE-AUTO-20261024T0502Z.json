@@ -26941,5 +26941,32 @@
  "recorderProbe": {
   "probe": "30fe2e33-564d-4a77-82a1-462716b58428",
   "at": "2026-10-24T05:09:10.308Z"
+ },
+ "reconciliation": {
+  "status": "RECONCILED_READ_ONLY",
+  "at": "2026-10-26T11:55:00Z",
+  "by": "CLAUDE",
+  "probe": "receipts/auto-intake/probes/20261026T1148Z.json",
+  "writerSubmissions": 0,
+  "cases": {
+   "FORGE-SOURCE-BBFB7DE70A9CF5C21CF4B82B": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-A808BA44334C",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-17EFA26FC343DEE067124FB8": {
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "primaryId": "V2I-6588A8E139CF",
+    "receiptIndex": "COMPLETE"
+   },
+   "FORGE-SOURCE-8102B92A18A8DB6F0F31FF17": {
+    "verdict": "NOT_IN_RECEIPT_INDEX",
+    "primaryId": null,
+    "receiptIndex": "NO_ENTRY"
+   }
+  },
+  "evidence": "receipt_index COMPLETE + request_result durable COMPLETE + exact row_readback of the PRIMARY_ID captured at write time (receipt_index entries no longer list row IDs, so index-to-row binding came from the captured Writer response).",
+  "untouchedCandidates": 21,
+  "note": "FORGE-SOURCE-8102B92A18A8DB6F0F31FF17 has no receipt_index entry ~2.5 days after the UNKNOWN POST: not landed. It and the untouched candidates are eligible for a fresh AUTO run (receipt index is checked before any POST)."
  }
 }

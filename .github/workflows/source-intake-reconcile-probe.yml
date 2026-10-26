@@ -1,0 +1,51 @@
+# READ-ONLY reconciliation probe for halted AUTO intake runs (Claude 2026-10-26). Reads receipt_index, then
+# request_result and an exact row_readback only for COMPLETE entries. No Writer POST, no run-file edit, no retry.
+# Output: receipts/auto-intake/probes/<time>.json (statuses and IDs only; this repo is public) plus one annotation per request.
+name: source-intake-reconcile-probe
+on:
+  pull_request:
+    branches: [main]
+    paths: ['tools/source-intake/reconcile-probe.js', '.github/workflows/source-intake-reconcile-probe.yml', 'receipts/auto-intake/probes/REQUEST']
+  workflow_dispatch:
+    inputs:
+      runs:
+        description: 'Space-separated AUTO run IDs, e.g. FORGE-AUTO-20261024T0502Z'
+        required: true
+permissions:
+  contents: write
+concurrency:
+  group: source-intake-reconcile-probe
+  cancel-in-progress: false
+jobs:
+  probe:
+    # Same-repo PRs only: fork PRs never receive the Writer key.
+    if: github.event_name == 'workflow_dispatch' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.head_ref || github.ref }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Probe (read-only)
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
+          RUNS: ${{ github.event.inputs.runs }}
+        run: |
+          [ -n "$RUNS" ] || RUNS=$(cat receipts/auto-intake/probes/REQUEST)
+          args=""; for r in $RUNS; do args="$args --run $r"; done
+          out="receipts/auto-intake/probes/$(date -u +%Y%m%dT%H%MZ).json"
+          node tools/source-intake/reconcile-probe.js $args --out "$out" | while read -r run rid verdict; do
+            echo "::notice title=probe $run::$rid $verdict"
+          done
+          echo "OUT=$out" >> "$GITHUB_ENV"
+      - name: Commit probe summary
+        if: always()
+        run: |
+          [ -n "${OUT:-}" ] && [ -f "$OUT" ] || exit 0
+          git config user.name forge-auto-intake-bot
+          git config user.email forge-auto-intake-bot@users.noreply.github.com
+          git add "$OUT" && git commit -q -m "AUTO-INTAKE-BOT: reconciliation probe (read-only)"
+          git push -q origin HEAD:${{ github.event_name == 'pull_request' && github.head_ref || github.ref_name }} || echo "::warning::push of probe summary failed; see annotations"
