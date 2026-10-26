@@ -37,15 +37,15 @@ function bound(state,candidates){
  if(state.candidatesHash!==hashOf(candidates))throw Error('BLOCKED: candidates changed since the before snapshot');
  return state;
 }
-async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mode='CANARY'}){
+async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mode='STAGE'}){
  const state=loadState(statePath);
  if(phase==='before'){
-  if(state)throw Error('BLOCKED: canary state already exists; a before snapshot is taken once');
+  if(state)throw Error('BLOCKED: state already exists; a before snapshot is taken once');
   if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
-  if(!['CANARY','STAGE','AUTO'].includes(mode))throw Error('BLOCKED: mode must be CANARY, STAGE or AUTO');
+  if(!['STAGE','AUTO'].includes(mode))throw Error('BLOCKED: mode must be STAGE or AUTO');
  }else if(phase==='after'){
   bound(state,candidates);
-  if(state.completedAt==null)throw Error('BLOCKED: after snapshot requires all five cases accounted');
+  if(state.completedAt==null)throw Error('BLOCKED: after snapshot requires all cases accounted');
  }else throw Error('BLOCKED: snapshot phase must be before or after');
  const [master,archive]=await Promise.all([fetchAuthenticatedMaster({key,transport}),fetchAuthenticatedArchive({key,transport})]);
  const snap={takenAt:new Date().toISOString(),master,archive};
@@ -58,7 +58,7 @@ async function run({statePath,candidates,key,transport,switchTransport}){
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
-  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),expectedMode:state.mode||'CANARY'});
+  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),expectedMode:state.mode||'STAGE'});
   if(outcomes.length!==candidates.length||outcomes.some(x=>!ACCOUNTED.has(x.status)))throw Error('BLOCKED: run returned without every case accounted');
   state.outcomes=outcomes;state.completedAt=new Date().toISOString();saveState(statePath,state);
   return {status:'ALL_CASES_ACCOUNTED',outcomes};

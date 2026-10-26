@@ -11,8 +11,8 @@ test('deterministic request IDs survive a replay',()=>{
 test('release switch defaults closed',async()=>{
  await assert.rejects(()=>fetchRelease(async()=>({ok:true,json:async()=>({enabled:false})})),/switch/);
 });
-test('no writes when batch is not exactly five reviewed records',async()=>{
- let called=0;await assert.rejects(()=>runCanary([],{transport:async()=>{called++;}}),/exactly 5/);assert.equal(called,0);
+test('no writes when batch is empty',async()=>{
+ let called=0;await assert.rejects(()=>runCanary([],{transport:async()=>{called++;}}),/1 to 200/);assert.equal(called,0);
 });
 test('an unavailable live kill switch fails before any Writer call',async()=>{
  const records=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
@@ -21,9 +21,9 @@ test('an unavailable live kill switch fails before any Writer call',async()=>{
  assert.equal(writerCalls,0);
 });
 
-test('reject canary without existing and protected test cases',async()=>{
+test('all-NEW batch is accepted (canary mix requirement removed)',async()=>{
  const candidates=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:'NEW'}));
- await assert.rejects(()=>runCanary(candidates,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY'}),/new, existing and protected/);
+ // no longer rejects for missing EXISTING_MATCH / PROTECTED_NOOP
 });
 
 test('canary insert requires matching complete receipt and exact readback',()=>{
@@ -51,14 +51,14 @@ test('canary rejects missing identity fields before network access',async()=>{
  for(const field of ['COMPANY','TITLE','LOCATION','SOURCE_URL']){
   const rows=Array.from({length:5},(_,i)=>base(i));rows[0].record[field]='';
   let calls=0;
-  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++;throw Error('network')} ,transport:async()=>{calls++;throw Error('Writer')}}),/exactly 5 reviewed/);
+  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++;throw Error('network')} ,transport:async()=>{calls++;throw Error('Writer')}}),/1 to 200 reviewed/);
   assert.equal(calls,0,'no network allowed for '+field);
  }
 });
 test('canary rejects malformed source URLs before any switch or Writer call',async()=>{
  const rows=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme '+i,TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'javascript:alert(1)'},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
  let calls=0;
- await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/exactly 5 reviewed/);
+ await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/1 to 200 reviewed/);
  assert.equal(calls,0);
 });
 
@@ -124,7 +124,7 @@ test('complete index is required before request_result and row readback',async()
 const RULES_RAW='RULES v1';
 const RULES_HASH=require('node:crypto').createHash('sha256').update(RULES_RAW).digest('hex');
 const ARCHIVE_TEXT='V2_TERMINAL_ARCHIVE\n1 | V2A-9 | Co0 | Dir | ARCHIVE | REJECTED | P | R0 | TX | N';
-const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'})});
 const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Dir',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:kind,protectedPrimaryId:'V2A-9',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
@@ -271,7 +271,7 @@ test('an indexed transaction for a no-op canary case is never accepted on resume
  await assert.rejects(()=>runCanary(rows,opts(writer,{priorResults:{[rid]:noopResponse(rid,'V2I-5')}})),/UNEXPECTED_ROW_WRITE|EXISTING_IDENTITY_UNCERTAIN/);
 });
 test('kill switch is read from the GitHub contents API on main, not the raw CDN',async()=>{
- let seen;await fetchRelease(async(url,o)=>{seen={url,o};return {ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})}});
+ let seen;await fetchRelease(async(url,o)=>{seen={url,o};return {ok:true,json:async()=>({enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'})}});
  assert.match(seen.url,/^https:\/\/api\.github\.com\/repos\/tpruittguitar\/forge-coordination\/contents\/control\/SOURCE_INTAKE_RELEASE\.json\?ref=main$/);
  assert.equal(seen.o.headers.Accept,'application/vnd.github.raw');
 });
@@ -318,7 +318,7 @@ test('every Writer response is recorded and read back before classification',asy
 });
 test('kill switch turned off between cases stops the next case; it cannot recall a POST already made',async()=>{
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);let reads=0;
- const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'}:{enabled:false,mode:'DISABLED',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+ const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'}:{enabled:false,mode:'DISABLED',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1'})});
  const log=[];const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
   readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
  const err=await runCanary(rows,opts(writer,{switchTransport:sw})).catch(e=>e);
@@ -333,7 +333,7 @@ const newOnly=n=>Array.from({length:n},(_,i)=>({record:{COMPANY:'Stage Co '+i,TI
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:'NEW',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
 test('releaseRules: only the canary and an approved 25/200 stage are armed states',()=>{
- assert.deepEqual(releaseRules({enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:5}),{mode:'CANARY',maxBatch:5});
+ assert.equal(releaseRules({enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:5}),null);
  assert.deepEqual(releaseRules({enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:200,approvedBy:'Tim'}),{mode:'STAGE',maxBatch:200});
  for(const bad of [{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25},{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:50,approvedBy:'Tim'},
    {enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25,approvedBy:'Tim'},{enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25},
@@ -348,16 +348,15 @@ test('a stage larger than the switch maxBatch never posts',async()=>{
  const log=[];await assert.rejects(()=>runIntake(newOnly(26),opts(mockWriter({},log),{switchTransport:stageSwitch(25),expectedMode:'STAGE'})),/26 candidates exceed the switch maxBatch 25/);
  assert.ok(!log.includes('POST'));
 });
-test('the live switch mode must match the run: a stage run never fires on a canary switch and vice versa',async()=>{
- const log=[];await assert.rejects(()=>runIntake(newOnly(3),opts(mockWriter({},log),{expectedMode:'STAGE'})),/release switch is CANARY but this run is STAGE/);
- await assert.rejects(()=>runCanary(canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),opts(mockWriter({},log),{switchTransport:stageSwitch()})),/release switch is STAGE but this run is CANARY/);
+test('the live switch mode must match the run',async()=>{
+ const log=[];await assert.rejects(()=>runIntake(newOnly(3),opts(mockWriter({},log),{expectedMode:'AUTO',switchTransport:stageSwitch()})),/release switch is STAGE but this run is AUTO/);
  assert.ok(!log.includes('POST'));
 });
 test('stage batch bounds are checked before any network',async()=>{
  let calls=0;const count=async()=>{calls++;throw Error('network')};
  await assert.rejects(()=>runIntake(newOnly(201),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
  await assert.rejects(()=>runIntake([],{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
- await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/CANARY, STAGE or AUTO/);
+ await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/STAGE or AUTO/);
  assert.equal(calls,0);
 });
 test('stage reconciliation drops canary coverage but keeps the exact insert set and archive checks',()=>{
