@@ -48,7 +48,7 @@ jobs:
         if: always()
         run: |
           [ -d receipts/auto-intake ] || exit 0
-          mkdir -p /tmp/rec && cp receipts/auto-intake/* /tmp/rec/
+          mkdir -p /tmp/rec && find receipts/auto-intake -maxdepth 1 -type f -name '*.json' -exec cp {} /tmp/rec/ \;   # files only: receipts/auto-intake/probes/ is a directory (broke cp, 2026-10-26)
           git config user.name forge-auto-intake-bot
           git config user.email forge-auto-intake-bot@users.noreply.github.com
           for i in 1 2 3 4 5 6; do
