@@ -121,8 +121,9 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    let accounting;
    try{accounting=await verifyAcceptedCase(candidate,rid,prior,pre.entry,{key,transport})}
    catch(e){
-    // Global: an isolated identity mismatch (or other single-case verification HOLD) is documented and skipped so the rest of the batch continues.
-    if(/INSERT_IDENTITY_MISMATCH|IDENTITY_MISMATCH|CAPTURED_ID_UNBOUND|INDEX_RESULT_ID_MISMATCH/.test(e.message||'')){
+    // Global: the isolated identity-mismatch HOLD is documented as SKIPPED and the batch continues.
+    // Other verification failures still halt.
+    if(/INSERT_IDENTITY_MISMATCH/.test(e.message||'')){
      outcomes.push(skipped(rid,'IDENTITY_MISMATCH_SKIPPED',prior));
      continue;
     }
