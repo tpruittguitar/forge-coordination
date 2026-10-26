@@ -2,21 +2,24 @@
 'use strict';
 /* AUTO source intake (Tim 2026-10-23): run by .github/workflows/source-intake-auto.yml after each source trial on main.
  * Does nothing unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and FORGE_WRITER_KEY is set.
- * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person).
+ * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person). That refusal
+ *    happens before any Writer call and exits 0 with a warning; the latch is listed on attention/NEEDS_TIM.json.
  * 2. Picks up to maxBatch NEW roles from state/source-trial-report.json with the 24-job stage's filters
  *    (Director+/Senior Manager, core functions, not West Coast or Memphis, no agencies, at most 2 per employer,
  *    never a role an earlier AUTO run already sent), and keeps only those whose posting page loads and names the employer.
  * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
  *    executor gates as the stage. The Writer decides Never Consider; what it declines without writing is SKIPPED.
  * State and outcome go to receipts/auto-intake/<run>.json (Writer responses only, never the key).
- * Exit 1 = needs a person (halt or reconcile HOLD); the workflow commits the state first.
+ * Exit 1 = THIS run halted and needs a person (halt or reconcile HOLD); the workflow commits the state first.
+ * Exit 0 = done, off, or latched by an earlier halted run (see tools/source-intake/auto-latch.js).
  * Run: node tools/source-intake/auto-run.js [--report state/source-trial-report.json] [--dry-run] */
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {snapshot,auto,finalize}=require('./canary-cli');
 const {read}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
+const {DIR,previous,latch}=require('./auto-latch');
 
-const DIR='receipts/auto-intake',SWITCH='control/SOURCE_INTAKE_RELEASE.json';
+const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
 const CORE=/production|manufactur|quality|plant|test engineer|commissioning|operational excellence|continuous improvement|operations director|director of operations|npi|industrializ/i;
 const OFF=/account|financ|compensation|payroll|\bhse\b|\behs\b|safety|environment|strateg|software|supply chain|procure|sourcing|purchas|\bml\b|data|analyst|marketing|sales|human resources|\bhr\b|talent|recruit|legal|\bit\b|cyber|operator|technician|intern/i;
@@ -56,38 +59,26 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
  }catch{return null}
 }
-// Run state files only. A <run>.candidates.json without its state file means the run stopped before the before
-// snapshot (no Writer POST), so it neither blocks later runs nor marks its roles as sent (first run, 2026-10-23).
-function previous(){
- if(!fs.existsSync(DIR))return [];
- return fs.readdirSync(DIR).filter(f=>f.endsWith('.json')&&!f.endsWith('.candidates.json')).map(f=>({file:path.join(DIR,f),state:JSON.parse(fs.readFileSync(path.join(DIR,f),'utf8'))}));
-}
 async function main(argv=process.argv.slice(2)){
  const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
  const rules=releaseRules(JSON.parse(fs.readFileSync(SWITCH,'utf8')));
  if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
  const key=process.env.FORGE_WRITER_KEY;
  if(!key)return console.log('AUTO intake off: FORGE_WRITER_KEY is not set');
- const prior=previous(),open=prior.filter(p=>!p.state.reconciliation&&!p.state.noCandidates);
- // A single, DURABLY captured identity mismatch may be isolated from unrelated future work.
- // Keep the original run incomplete and its failed case on HOLD. Never retry ANY request
- // with a recorded Writer response; only untouched candidates can enter a fresh AUTO run.
- // All other halts (unknown POST, bad recorder, pending index, switch changes, etc.) still
- // block globally. This is not a declaration that the quarantined insert is verified.
- const quarantined=[];
- for(const p of open){
-  const halt=p.state.halts?.at(-1),out=halt?.outcomes||[];
-  const held=out.filter(x=>x.status==='HOLD');
-  const exact=halt?.message==='HOLD: resumed case not verified (INSERT_IDENTITY_MISMATCH)'&&
-   held.length===1&&held[0].reason===halt.message&&out.at(-1)===held[0]&&
-   Object.hasOwn(p.state.results||{},held[0].requestId)&&
-   p.state.results[held[0].requestId]?.WRITE_ACCEPTED===true&&
-   p.state.results[held[0].requestId]?.receipt?.REQUEST_ID===held[0].requestId&&
-   (p.state.results[held[0].requestId]?.receipt?.NEW_PRIMARY_IDS||[]).length===1&&
-   out.slice(0,-1).every(x=>['SKIPPED','RESUMED_ACCOUNTED'].includes(x.status))&&
-   out.every(x=>Object.hasOwn(p.state.results||{},x.requestId));
-  if(!exact)throw Error('NEEDS TIM: earlier AUTO run unfinished: '+p.file);
-  quarantined.push({file:p.file,requestId:held[0].requestId,reason:halt.message});
+ const prior=previous();
+ // An earlier run that halted needs a person (UNKNOWN POST, HOLD, a switch change, ...). This run then stops HERE, before
+ // any Writer call, and exits 0: it is a deliberate latch, not a new failure (2026-10-24 11:30Z to 2026-10-26: 8 red runs in a row
+ // only repeated the 2026-10-24 05:11Z UNKNOWN halt). The halt itself was red once; the latch is on attention/NEEDS_TIM.json and
+ // in a ::warning:: annotation. Never auto-clears: UNKNOWN is reconciled against the receipt index, never retried.
+ // A single, DURABLY captured identity mismatch may be isolated from unrelated future work (quarantined below).
+ const {blocking,quarantined}=latch(prior);
+ if(blocking.length){
+  for(const b of blocking){
+   const msg='NEEDS TIM: AUTO intake latched by earlier unfinished run '+b.file+' ('+b.message+(b.requestId?'; request '+b.requestId:'')+'). No Writer call was made. Reconcile that run, then later runs resume.';
+   console.log('::warning title=AUTO intake latched::'+msg);
+   console.error(msg);
+  }
+  return {latched:blocking};
  }
  if(quarantined.length)console.error('NEEDS TIM: isolated identity HOLD(s), NOT resolved: '+JSON.stringify(quarantined));
  // Count only attempts actually recorded; unattempted tail candidates are safe to
@@ -121,4 +112,4 @@ async function main(argv=process.argv.slice(2)){
  if(rec.status==='HOLD')throw Error('NEEDS TIM: AUTO reconcile HOLD '+rec.reason);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence};
+module.exports={pick,evidence,main};
