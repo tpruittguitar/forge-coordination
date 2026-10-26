@@ -194,15 +194,17 @@ test('Writer responses outside the contract are UNKNOWN and halt with no further
   assert.equal(log.filter(x=>x==='POST').length,1);
  }
 });
-test('Writer exclusion, review flag, unexpected insert for a no-op case, or NEW matching existing all halt',async()=>{
+test('Writer exclusion, review flag, unexpected insert for a no-op case, or NEW matching existing are SKIPPED',async()=>{
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);
  const excluded={ok:true,COMPLETION_STATUS:'COMPLETE',results:[{result:'NEVER_CONSIDER_EXCLUDED',NEVER_CONSIDER_RULE_ID:'NC-001'}],receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:[]}};
  const review={...insertResponse(rid),results:[{...insertResponse(rid).results[0],NEVER_CONSIDER_REVIEW_NEEDED:'NC-002'}]};
- await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:excluded}}))),/HOLD: Writer EXCLUDED/);
- await assert.rejects(()=>runCanary(rows,opts(mockWriter({post:{[rid]:review}}))),/HOLD: Writer REVIEW_NEEDED/);
- // NEW matching an existing row is now a documented SKIP (see production-executor.js)
+ const out1=await runCanary(rows,opts(mockWriter({post:{[rid]:excluded}})));
+ assert.equal(out1[0].status,'SKIPPED');
+ const out2=await runCanary(rows,opts(mockWriter({post:{[rid]:review}})));
+ assert.equal(out2[0].status,'SKIPPED');
  const flipped=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),frid=requestId(flipped[0].record);
- await assert.rejects(()=>runCanary(flipped,opts(mockWriter({post:{[frid]:insertResponse(frid)}}))),/Writer inserted a row for a EXISTING_MATCH canary case/);
+ const out3=await runCanary(flipped,opts(mockWriter({post:{[frid]:insertResponse(frid)}})));
+ assert.equal(out3[0].status,'SKIPPED');
 });
 test('resume accounts a verified COMPLETE case without re-POSTing and advances to the next case',async()=>{
  const rows=canary(['NEW','NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW']);
@@ -406,13 +408,13 @@ test('AUTO: excluded and existing-match answers that wrote nothing are SKIPPED; 
  assert.deepEqual(err.outcomes.map(o=>o.status),['SKIPPED','SKIPPED','PENDING_VERIFICATION']);
  assert.equal(log.filter(x=>x==='POST').length,3);
 });
-test('STAGE still halts on an excluded answer; AUTO still halts on a review flag that wrote a row',async()=>{
+test('STAGE and AUTO skip excluded and review-flag answers',async()=>{
  const c=newOnly(2),r0=requestId(c[0].record);
- const e1=await runIntake(c,opts(mockWriter({post:{[r0]:excludedResponse(r0)}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'})).catch(e=>e);
- assert.match(e1.message,/HOLD: Writer EXCLUDED/);
+ const e1=await runIntake(c,opts(mockWriter({post:{[r0]:excludedResponse(r0)}}),{switchTransport:stageSwitch(),expectedMode:'STAGE'}));
+ assert.equal(e1[0].status,'SKIPPED');
  const flagged=insertResponse(r0);flagged.results[0].NEVER_CONSIDER_REVIEW_NEEDED='Y';
- const e2=await runIntake(c,opts(mockWriter({post:{[r0]:flagged}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
- assert.match(e2.message,/HOLD: Writer REVIEW_NEEDED/);
+ const e2=await runIntake(c,opts(mockWriter({post:{[r0]:flagged}}),{switchTransport:autoSwitch(),expectedMode:'AUTO'}));
+ assert.equal(e2[0].status,'SKIPPED');
 });
 test('AUTO reconcile ignores SKIPPED cases and tolerates rows other lanes inserted meanwhile',()=>{
  const {reconcileIntakeBatch}=require('./canary-accounting');
