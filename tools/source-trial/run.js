@@ -3,8 +3,8 @@
    (quality leadership; manufacturing / production leadership; manufacturing engineering leadership):
    1. employer job boards (Greenhouse, Lever, Ashby, Workday) for every employer the master already has an ATS link for,
       plus the priority companies in forge-policy derived/TARGET_COMPANIES_PRIORITY.txt (board probed when not known);
-   2. JobSpy (python-jobspy, run by the workflow step before this script) on LinkedIn, Indeed, ZipRecruiter, Glassdoor,
-      Google;
+   2. JobSpy (python-jobspy, run by the workflow step before this script) on LinkedIn and Indeed (Tim 2026-10-26:
+      ZipRecruiter, Glassdoor and Google dropped; each failed 18 of 18 searches on every run from the runner);
    3. HiringCafe (official read-only MCP connector, run by tools/source-trial/hiringcafe.js before this script), read
       last so the roles it alone contributes after cross-source dedupe are its measured incremental yield.
    Every matching US role is marked NEW or EXISTING against the master. Writes only state/source-trial-report.{json,md}.

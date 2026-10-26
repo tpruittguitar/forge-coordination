@@ -35,8 +35,6 @@ for site in cfg["sites"]:
         try:
             kw = dict(site_name=[site], search_term=term, location=cfg["location"], results_wanted=cfg["resultsWanted"],
                       hours_old=cfg["hoursOld"], country_indeed="USA", verbose=0)
-            if site == "google":
-                kw["google_search_term"] = term + " jobs in the United States since last week"
             df = scrape_jobs(**kw)
             rows = json.loads(df.to_json(orient="records", date_format="iso")) if df is not None and len(df) else []
             for r in rows:
