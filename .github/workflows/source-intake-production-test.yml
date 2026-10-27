@@ -26,6 +26,6 @@ jobs:
           git diff --quiet FETCH_HEAD -- control/SOURCE_INTAKE_RELEASE.json && { echo "switch unchanged from main"; exit 0; }
           node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json');if(c.enabled!==false||c.mode!=='DISABLED')process.exit(1)"
       # On main the switch is armed only by Tim's approved commit; it must be exactly disarmed, or a state the executor accepts.
-      - name: Release switch on main must be a valid disarmed, canary or stage state
+      - name: Release switch on main must be a valid disarmed, stage or auto state
         if: github.event_name != 'pull_request' && github.ref == 'refs/heads/main'
-        run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json'),{releaseRules}=require('./tools/source-intake/production-executor.js');const off=c.enabled===false&&c.mode==='DISABLED'&&['SOURCE_INTAKE_CANARY_V1','SOURCE_INTAKE_STAGE_V1','SOURCE_INTAKE_AUTO_V1'].includes(c.revision),on=releaseRules(c);if(!(off||on))process.exit(1);console.log('release switch on main:',on?'ARMED ('+on.mode+' '+on.maxBatch+')':'disarmed')"
+        run: node -e "const c=require('./control/SOURCE_INTAKE_RELEASE.json'),{releaseRules}=require('./tools/source-intake/production-executor.js');const off=c.enabled===false&&c.mode==='DISABLED'&&['SOURCE_INTAKE_STAGE_V1','SOURCE_INTAKE_AUTO_V1'].includes(c.revision),on=releaseRules(c);if(!(off||on))process.exit(1);console.log('release switch on main:',on?'ARMED ('+on.mode+' '+on.maxBatch+')':'disarmed')"

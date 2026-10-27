@@ -10,15 +10,15 @@ This adapter previews a candidate Writer `action=intake` payload from `state/sou
 - Existing/protected records in report are not emitted as new submissions; the current master snapshot is not authoritative for later runs.
 - A true old-vs-new discovery A/B still needs identical baseline execution; no claim is made here.
 
-## Staged Writer intake (after the five-job canary)
+## Staged Writer intake (after the five-job intake)
 `control/SOURCE_INTAKE_RELEASE.json` has exactly two armed states, both set only by Tim's approved commit on `main`:
-- `CANARY`: `revision: SOURCE_INTAKE_CANARY_V1`, `maxBatch: 5`; exactly five cases covering NEW, EXISTING_MATCH and PROTECTED_NOOP.
+- `STAGE`: `revision: SOURCE_INTAKE_STAGE_V1`, `maxBatch: 5`; exactly five cases covering NEW, EXISTING_MATCH and PROTECTED_NOOP.
 - `STAGE`: `revision: SOURCE_INTAKE_STAGE_V1`, `maxBatch: 25` or `200`, `approvedBy: "<Tim's approval>"`; 1..maxBatch reviewed cases, any mix.
 
-Run a stage with the same operator and proof as the canary:
+Run a stage with the same operator and proof as the intake:
 1. Re-run the read-only pull and Writer dry run for the approved candidates.
-2. `canary-cli.js snapshot before --mode STAGE ...`, arm the switch (`STAGE`), then `canary-cli.js auto ...`: it runs, waits read-only on
+2. `intake-cli.js snapshot before --mode STAGE ...`, arm the switch (`STAGE`), then `intake-cli.js auto ...`: it runs, waits read-only on
    the receipt index for each accepted insert to reach COMPLETE, and runs again; it stops on anything else (UNKNOWN, HOLD, a mode
    mismatch, a switch turned off).
 3. `snapshot after`, `finalize` (STAGE reconciliation: exact insert set, no deletions, archive checks), disarm the switch.
-Every case keeps the canary's gates: durable recorder, receipt-index-first, one Writer transaction at a time, no retries.
+Every case keeps the intake's gates: durable recorder, receipt-index-first, one Writer transaction at a time, no retries.

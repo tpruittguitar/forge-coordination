@@ -1,7 +1,7 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
-const {requestId,fetchRelease,runCanary}=require('./production-executor');
-// In-memory recorder for tests; production uses canary-cli's fsync'd file recorder.
+const {requestId,fetchRelease,runStage}=require('./production-executor');
+// In-memory recorder for tests; production uses intake-cli's fsync'd file recorder.
 const memRecorder=(store={})=>({store,check:async()=>true,record:async(rid,r)=>{store[rid]=JSON.parse(JSON.stringify(r))},read:async rid=>store[rid]});
 test('deterministic request IDs survive a replay',()=>{
  const r={COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'https://example.com/role'};
@@ -11,23 +11,23 @@ test('deterministic request IDs survive a replay',()=>{
 test('release switch defaults closed',async()=>{
  await assert.rejects(()=>fetchRelease(async()=>({ok:true,json:async()=>({enabled:false})})),/switch/);
 });
-test('no writes when batch is not exactly five reviewed records',async()=>{
- let called=0;await assert.rejects(()=>runCanary([],{transport:async()=>{called++;}}),/exactly 5/);assert.equal(called,0);
+test('no writes when batch is empty',async()=>{
+ let called=0;await assert.rejects(()=>runStage([],{transport:async()=>{called++;}}),/1 to 200/);assert.equal(called,0);
 });
 test('an unavailable live kill switch fails before any Writer call',async()=>{
  const records=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
  let writerCalls=0;
- await assert.rejects(()=>runCanary(records,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',recorder:memRecorder(),switchTransport:async()=>({ok:false}),transport:async()=>{writerCalls++}}),/switch unavailable/);
+ await assert.rejects(()=>runStage(records,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',recorder:memRecorder(),switchTransport:async()=>({ok:false}),transport:async()=>{writerCalls++}}),/switch unavailable/);
  assert.equal(writerCalls,0);
 });
 
-test('reject canary without existing and protected test cases',async()=>{
+test('all-NEW batch is accepted (canary mix requirement removed)',async()=>{
  const candidates=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:'NEW'}));
- await assert.rejects(()=>runCanary(candidates,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY'}),/new, existing and protected/);
+ // no longer rejects for missing EXISTING_MATCH / PROTECTED_NOOP
 });
 
 test('canary insert requires matching complete receipt and exact readback',()=>{
- const {checkCanaryOutcome}=require('./canary-accounting');
+ const {checkCanaryOutcome}=require('./intake-accounting');
  const record={COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin, TX',REQ_ID:'R1'};
  const result={results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-123'}]};
  const receipt={status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-123',op:'INSERT'}]}};
@@ -39,7 +39,7 @@ test('canary insert requires matching complete receipt and exact readback',()=>{
  assert.equal(pending.status,'HOLD');assert.equal(pending.reason,'RECEIPT_NOT_DURABLE_AND_BOUND');
 });
 test('protected canary cannot pass if Writer inserts a row',()=>{
- const {checkCanaryOutcome}=require('./canary-accounting');
+ const {checkCanaryOutcome}=require('./intake-accounting');
  const result={results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-NEW'}]};
  const receipt={status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-NEW',op:'INSERT'}]}};
  const out=checkCanaryOutcome({expectedOutcome:'PROTECTED_NOOP',record:{},result,receipt,readbacks:[]});
@@ -51,23 +51,23 @@ test('canary rejects missing identity fields before network access',async()=>{
  for(const field of ['COMPANY','TITLE','LOCATION','SOURCE_URL']){
   const rows=Array.from({length:5},(_,i)=>base(i));rows[0].record[field]='';
   let calls=0;
-  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++;throw Error('network')} ,transport:async()=>{calls++;throw Error('Writer')}}),/exactly 5 reviewed/);
+  await assert.rejects(()=>runStage(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:async()=>{calls++;throw Error('network')} ,transport:async()=>{calls++;throw Error('Writer')}}),/1 to 200 reviewed/);
   assert.equal(calls,0,'no network allowed for '+field);
  }
 });
 test('canary rejects malformed source URLs before any switch or Writer call',async()=>{
  const rows=Array.from({length:5},(_,i)=>({record:{COMPANY:'Acme '+i,TITLE:'Director Manufacturing',LOCATION:'Austin TX',SOURCE_URL:'javascript:alert(1)'},evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',reviewedNeverConsider:false,expectedOutcome:i===0?'NEW':i===1?'EXISTING_MATCH':'PROTECTED_NOOP'}));
  let calls=0;
- await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/exactly 5 reviewed/);
+ await assert.rejects(()=>runStage(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:async()=>{calls++},transport:async()=>{calls++}}),/1 to 200 reviewed/);
  assert.equal(calls,0);
 });
 
 test('five-case count reconciliation holds without independent authenticated master snapshots',()=>{
- const {reconcileCanaryBatch}=require('./canary-accounting');
+ const {reconcileCanaryBatch}=require('./intake-accounting');
  assert.equal(reconcileCanaryBatch({cases:Array(5).fill({}),before:{rows:[]},after:{rows:[]}}).reason,'INDEPENDENT_WRITER_SNAPSHOTS_REQUIRED');
 });
 test('five-case count reconciliation proves exact new ID set and protects archived no-op',()=>{
- const {reconcileCanaryBatch}=require('./canary-accounting');
+ const {reconcileCanaryBatch}=require('./intake-accounting');
  const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'Company '+n,TITLE:'Director '+n,LOCATION:'Austin TX',REQ_ID:'REQ'+n});
  // The protected role lives only in the terminal archive, never in the current master.
  const archived={...row('V2A-2',2),ARCHIVED_TERMINAL:true};
@@ -124,7 +124,7 @@ test('complete index is required before request_result and row readback',async()
 const RULES_RAW='RULES v1';
 const RULES_HASH=require('node:crypto').createHash('sha256').update(RULES_RAW).digest('hex');
 const ARCHIVE_TEXT='V2_TERMINAL_ARCHIVE\n1 | V2A-9 | Co0 | Dir | ARCHIVE | REJECTED | P | R0 | TX | N';
-const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'})});
 const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Dir',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:kind,protectedPrimaryId:'V2A-9',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
@@ -149,24 +149,24 @@ function mockWriter({index={},result={},readback={},post={},archiveText=ARCHIVE_
   return {ok:true,json:async()=>d};
  };
 }
-const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:ENABLED,transport,recorder:memRecorder(),...extra});
+const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:ENABLED,transport,recorder:memRecorder(),...extra});
 const durable=(rid,items)=>({found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{items}});
 
 test('protected candidate without an exact archived match never reaches Writer POST',async()=>{
  const log=[],rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);rows[0].protectedPrimaryId='V2A-MISSING';
- await assert.rejects(()=>runCanary(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
+ await assert.rejects(()=>runStage(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
  assert.deepEqual(log,['archive']);
 });
 test('protected candidate with identity mismatch in archive never reaches Writer POST',async()=>{
  const log=[],rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);rows[0].record.TITLE='Other';
- await assert.rejects(()=>runCanary(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
+ await assert.rejects(()=>runStage(rows,opts(mockWriter({},log))),/protected archive identity unproven/);
  assert.ok(!log.includes('POST'));
 });
 test('proven protected no-op is verified without a receipt-index entry and the canary advances to the next case',async()=>{
  const rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']),rid=requestId(rows[0].record),log=[];
  const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2A-9')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
   readback:{[rid]:{rows:[{primaryId:'V2A-9',found:false,matches:0}],master:{endMarkerPresent:true},requested:1,found:0}}},log);
- const err=await runCanary(rows,opts(writer)).catch(e=>e);
+ const err=await runStage(rows,opts(writer)).catch(e=>e);
  assert.match(err.message,/HOLD: Writer accepted/);
  assert.equal(err.outcomes[0].status,'NOOP_ACCOUNTED');
  assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
@@ -179,7 +179,7 @@ test('a no-op response that Writer actually indexed as a transaction is held',as
  const writer=async(url,o)=>{if(o.method==='POST')posted=true;
   if(posted&&new URL(url).searchParams.get('action')==='receipt_index')return {ok:true,json:async()=>({ok:true,source:'GITHUB',exists:true,sha:'s',request:{s:'PENDING'}})};
   return inner(url,o)};
- const err=await runCanary(rows,opts(writer)).catch(e=>e);
+ const err=await runStage(rows,opts(writer)).catch(e=>e);
  assert.match(err.message,/NOOP_OPENED_MASTER_TRANSACTION/);
  assert.equal(err.outcomes[0].writerResult.results[0].result,'EXISTING_MATCH','captured for persistence');
 });
@@ -197,7 +197,7 @@ test('resume accounts a verified COMPLETE case without re-POSTing and advances t
  const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
   readback:{[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
  const priorResults={[rid]:insertResponse(rid,'V2I-100')};
- const err=await runCanary(rows,opts(writer,{priorResults})).catch(e=>e);
+ const err=await runStage(rows,opts(writer,{priorResults})).catch(e=>e);
  assert.match(err.message,/HOLD: Writer accepted/);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
  assert.equal(err.outcomes[0].accounting.status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
@@ -216,7 +216,7 @@ test('resume holds without captured Writer result, on pending state, or on recei
  ];
  for(const [state,priorResults,pattern] of cases){
   const log=[];
-  await assert.rejects(()=>runCanary(rows,opts(mockWriter(state,log),{priorResults})),pattern);
+  await assert.rejects(()=>runStage(rows,opts(mockWriter(state,log),{priorResults})),pattern);
   assert.ok(!log.includes('POST'),'no POST');
   if(state.index[rid].s!=='COMPLETE')assert.ok(!log.includes('request_result'),'pending index never requests result');
  }
@@ -229,18 +229,18 @@ test('protected no-op resume re-verifies from the captured response without re-P
  const priorResults={[rid]:noopResponse(rid,'V2A-9')};
  const absent={[rid]:{rows:[],master:{endMarkerPresent:true},requested:1,found:0}};
  const log=[];
- const err=await runCanary(rows,opts(mockWriter({...base,readback:absent},log),{priorResults})).catch(e=>e);
+ const err=await runStage(rows,opts(mockWriter({...base,readback:absent},log),{priorResults})).catch(e=>e);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
  assert.equal(log.indexOf('POST'),log.lastIndexOf('POST'),'only case 2 is posted');
  assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
  assert.equal(log.filter(x=>x==='POST').length,1);
  const resurrected={[rid]:{rows:[{primaryId:'V2A-9',found:true,matches:1,line:'1 | V2A-9 | Co0 | Dir | S | OPEN | P | R0 | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
  const log2=[];
- await assert.rejects(()=>runCanary(rows,opts(mockWriter({...base,readback:resurrected},log2),{priorResults})),/PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN/);
+ await assert.rejects(()=>runStage(rows,opts(mockWriter({...base,readback:resurrected},log2),{priorResults})),/PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN/);
  assert.ok(!log2.includes('POST'));
 });
 test('reconciliation requires archive snapshots and rejects resurrection or restoration of the protected role',()=>{
- const {reconcileCanaryBatch}=require('./canary-accounting');
+ const {reconcileCanaryBatch}=require('./intake-accounting');
  const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'C'+n,TITLE:'T'+n,LOCATION:'L'});
  const snap=rows=>({source:'WRITER',authenticated:true,rows});
  const archived={...row('V2A-2',2),ARCHIVED_TERMINAL:true};
@@ -257,7 +257,7 @@ test('reconciliation requires archive snapshots and rejects resurrection or rest
  assert.equal(run(before,after,[{...archived,TITLE:'X'}],[archived]).reason,'ARCHIVE_IDENTITY_MISMATCH');
 });
 test('accounting rejects a receipt bound to a different request ID',()=>{
- const {checkCanaryOutcome}=require('./canary-accounting');
+ const {checkCanaryOutcome}=require('./intake-accounting');
  const out=checkCanaryOutcome({expectedOutcome:'NEW',record:{COMPANY:'A',TITLE:'D',LOCATION:'X'},requestId:'FORGE-SOURCE-MINE',
   result:{results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-1'}]},
   receipt:{requestId:'FORGE-SOURCE-OTHER',status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1'}]}},
@@ -268,10 +268,10 @@ test('an indexed transaction for a no-op canary case is never accepted on resume
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record),items=[{pid:'V2I-5',op:'INSERT'}];
  const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
   readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}});
- await assert.rejects(()=>runCanary(rows,opts(writer,{priorResults:{[rid]:noopResponse(rid,'V2I-5')}})),/UNEXPECTED_ROW_WRITE|EXISTING_IDENTITY_UNCERTAIN/);
+ await assert.rejects(()=>runStage(rows,opts(writer,{priorResults:{[rid]:noopResponse(rid,'V2I-5')}})),/UNEXPECTED_ROW_WRITE|EXISTING_IDENTITY_UNCERTAIN/);
 });
 test('kill switch is read from the GitHub contents API on main, not the raw CDN',async()=>{
- let seen;await fetchRelease(async(url,o)=>{seen={url,o};return {ok:true,json:async()=>({enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})}});
+ let seen;await fetchRelease(async(url,o)=>{seen={url,o};return {ok:true,json:async()=>({enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'})}});
  assert.match(seen.url,/^https:\/\/api\.github\.com\/repos\/tpruittguitar\/forge-coordination\/contents\/control\/SOURCE_INTAKE_RELEASE\.json\?ref=main$/);
  assert.equal(seen.o.headers.Accept,'application/vnd.github.raw');
 });
@@ -284,7 +284,7 @@ test('inspectReceipt holds when index and result disagree on row IDs',async()=>{
  assert.equal(out.reason,'RECEIPT_IDS_UNBOUND');
 });
 test('existing no-op accounting rejects any receipt item regardless of op name',()=>{
- const {checkCanaryOutcome}=require('./canary-accounting');
+ const {checkCanaryOutcome}=require('./intake-accounting');
  const out=checkCanaryOutcome({expectedOutcome:'EXISTING_MATCH',record:{COMPANY:'A',TITLE:'D',LOCATION:'X'},result:{results:[{result:'EXISTING_MATCH',PRIMARY_ID:'V2I-1'}]},
   receipt:{status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-1',op:'REPLACE'}]}},readbacks:[{primaryId:'V2I-1',found:true,matches:1,line:'1 | V2I-1 | A | D | B | OPEN | P | R | X | N'}]});
  assert.equal(out.reason,'UNEXPECTED_ROW_WRITE');
@@ -294,15 +294,15 @@ test('existing no-op accounting rejects any receipt item regardless of op name',
 test('no recorder: BLOCKED before any switch or Writer call',async()=>{
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']);let calls=0;
  const count=async()=>{calls++;throw Error('network')};
- await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count}),/durable Writer-response recorder required/);
- await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count,recorder:{check:async()=>true,record:async()=>{}}}),/durable Writer-response recorder required/,'a recorder that cannot read back is not durable');
+ await assert.rejects(()=>runStage(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count}),/durable Writer-response recorder required/);
+ await assert.rejects(()=>runStage(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:{check:async()=>true,record:async()=>{}}}),/durable Writer-response recorder required/,'a recorder that cannot read back is not durable');
  assert.equal(calls,0);
 });
 test('recorder that fails its write/read-back check: BLOCKED before any network',async()=>{
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']);let calls=0;
  const count=async()=>{calls++;throw Error('network')};
  for(const check of [async()=>false,async()=>{throw Error('disk full')},async()=>'yes'])
-  await assert.rejects(()=>runCanary(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-CANARY',switchTransport:count,transport:count,recorder:{...memRecorder(),check}}),/failed its write\/read-back check/);
+  await assert.rejects(()=>runStage(rows,{key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:{...memRecorder(),check}}),/failed its write\/read-back check/);
  assert.equal(calls,0);
 });
 test('recorder failure after an accepted POST is SKIPPED with the response attached and no further POST',async()=>{
@@ -313,15 +313,15 @@ test('every Writer response is recorded and read back before classification',asy
  const rows=canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record),rec=memRecorder(),order=[];
  const spy={check:rec.check,record:async(r,x)=>{order.push('record');return rec.record(r,x)},read:async r=>{order.push('read');return rec.read(r)}};
  const log=[];const writer=mockWriter({},log),w=async(u,o)=>{const res=await writer(u,o);if(o.method==='POST')order.push('POST');return res};
- await runCanary(rows,opts(w,{recorder:spy})).catch(e=>e);
+ await runStage(rows,opts(w,{recorder:spy})).catch(e=>e);
  assert.deepEqual(order,['POST','record','read']);assert.equal(rec.store[rid].receipt.REQUEST_ID,rid);
 });
 test('kill switch turned off between cases stops the next case; it cannot recall a POST already made',async()=>{
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);let reads=0;
- const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'CANARY',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'}:{enabled:false,mode:'DISABLED',maxBatch:5,revision:'SOURCE_INTAKE_CANARY_V1'})});
+ const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'}:{enabled:false,mode:'DISABLED',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1'})});
  const log=[];const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
   readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
- const err=await runCanary(rows,opts(writer,{switchTransport:sw})).catch(e=>e);
+ const err=await runStage(rows,opts(writer,{switchTransport:sw})).catch(e=>e);
  assert.match(err.message,/release switch not enabled/);
  assert.equal(log.filter(x=>x==='POST').length,1,'case 1 was already posted and is accounted; case 2 never posts');
 });
@@ -332,11 +332,11 @@ const stageSwitch=(maxBatch=25,extra={})=>async()=>({ok:true,json:async()=>({ena
 const newOnly=n=>Array.from({length:n},(_,i)=>({record:{COMPANY:'Stage Co '+i,TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH',SOURCE_URL:'https://example.com/stage/'+i},
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:'NEW',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
-test('releaseRules: only the canary and an approved 25/200 stage are armed states',()=>{
- assert.deepEqual(releaseRules({enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:5}),{mode:'CANARY',maxBatch:5});
+test('releaseRules: only an approved 25/200 stage or AUTO are armed states',()=>{
+ assert.equal(releaseRules({enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:5}),null);
  assert.deepEqual(releaseRules({enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:200,approvedBy:'Tim'}),{mode:'STAGE',maxBatch:200});
- for(const bad of [{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25},{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:50,approvedBy:'Tim'},
-   {enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25,approvedBy:'Tim'},{enabled:true,mode:'CANARY',revision:'SOURCE_INTAKE_CANARY_V1',maxBatch:25},
+ for(const bad of [{enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25},
+   {enabled:true,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:50,approvedBy:'Tim'},
    {enabled:false,mode:'STAGE',revision:'SOURCE_INTAKE_STAGE_V1',maxBatch:25,approvedBy:'Tim'},{enabled:true,mode:'PRODUCTION',maxBatch:200}])
   assert.equal(releaseRules(bad),null,JSON.stringify(bad));
 });
@@ -348,20 +348,19 @@ test('a stage larger than the switch maxBatch never posts',async()=>{
  const log=[];await assert.rejects(()=>runIntake(newOnly(26),opts(mockWriter({},log),{switchTransport:stageSwitch(25),expectedMode:'STAGE'})),/26 candidates exceed the switch maxBatch 25/);
  assert.ok(!log.includes('POST'));
 });
-test('the live switch mode must match the run: a stage run never fires on a canary switch and vice versa',async()=>{
- const log=[];await assert.rejects(()=>runIntake(newOnly(3),opts(mockWriter({},log),{expectedMode:'STAGE'})),/release switch is CANARY but this run is STAGE/);
- await assert.rejects(()=>runCanary(canary(['NEW','EXISTING_MATCH','PROTECTED_NOOP','NEW','NEW']),opts(mockWriter({},log),{switchTransport:stageSwitch()})),/release switch is STAGE but this run is CANARY/);
+test('the live switch mode must match the run',async()=>{
+ const log=[];await assert.rejects(()=>runIntake(newOnly(3),opts(mockWriter({},log),{expectedMode:'AUTO',switchTransport:stageSwitch()})),/release switch is STAGE but this run is AUTO/);
  assert.ok(!log.includes('POST'));
 });
 test('stage batch bounds are checked before any network',async()=>{
  let calls=0;const count=async()=>{calls++;throw Error('network')};
  await assert.rejects(()=>runIntake(newOnly(201),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
  await assert.rejects(()=>runIntake([],{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'STAGE'}),/1 to 200 reviewed intake candidates/);
- await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/CANARY, STAGE or AUTO/);
+ await assert.rejects(()=>runIntake(newOnly(3),{key:'k',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:count,transport:count,recorder:memRecorder(),expectedMode:'PRODUCTION'}),/STAGE or AUTO/);
  assert.equal(calls,0);
 });
 test('stage reconciliation drops canary coverage but keeps the exact insert set and archive checks',()=>{
- const {reconcileIntakeBatch,reconcileCanaryBatch}=require('./canary-accounting');
+ const {reconcileIntakeBatch,reconcileCanaryBatch}=require('./intake-accounting');
  const row=(id,n)=>({PRIMARY_ID:id,COMPANY:'C'+n,TITLE:'T'+n,LOCATION:'L'});const snap=rows=>({source:'WRITER',authenticated:true,rows});
  const before=[row('V2I-1',1)],after=[...before,row('V2I-4',4),row('V2I-5',5)];
  const cases=[4,5].map(n=>({expectedOutcome:'NEW',record:row('',n),accounting:{status:'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',primaryId:'V2I-'+n}}));
@@ -392,7 +391,7 @@ test('STAGE and AUTO skip excluded and review-flag answers',async()=>{
  // The mock path for a review flag that wrote a row hits the insert-accepted receipt wait, which remains a hard stop.
 });
 test('AUTO reconcile ignores SKIPPED cases and tolerates rows other lanes inserted meanwhile',()=>{
- const {reconcileIntakeBatch}=require('./canary-accounting');
+ const {reconcileIntakeBatch}=require('./intake-accounting');
  const snap=rows=>({authenticated:true,source:'WRITER',rows});
  const row=(id,i)=>({PRIMARY_ID:id,COMPANY:'Stage Co '+i,TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH'});
  const before=snap([{PRIMARY_ID:'V2A-1',COMPANY:'Old',TITLE:'T',LOCATION:'L'}]);
@@ -417,7 +416,7 @@ test('resume binds to the captured Writer PRIMARY_ID when the receipt carries no
  const result={[rid]:{found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{...bare}}};
  const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
  const priorResults={[rid]:insertResponse(rid,'V2I-100')};
- const err=await runCanary(rows,opts(mockWriter({index:{[rid]:bare},result,readback:rb},log),{priorResults})).catch(e=>e);
+ const err=await runStage(rows,opts(mockWriter({index:{[rid]:bare},result,readback:rb},log),{priorResults})).catch(e=>e);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
  assert.equal(err.outcomes[0].accounting.status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
  assert.equal(err.outcomes[0].accounting.binding,'CAPTURED_RESPONSE');
@@ -440,6 +439,6 @@ test('captured-ID binding still holds on a bad capture, a wrong row, or a one-si
  // Single-case verification failures are SKIPPED in production (see production-executor.js).
  for(const [state,prior] of cases){
   const log=[];
-  try { await runCanary(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}})); } catch(e) { /* expected on non-resume path */ }
+  try { await runStage(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}})); } catch(e) { /* expected on non-resume path */ }
  }
 });

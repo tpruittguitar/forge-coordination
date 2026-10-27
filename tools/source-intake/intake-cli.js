@@ -1,13 +1,13 @@
 'use strict';
-/* Operator orchestration for the five-job canary. All Writer writes go through runCanary; this file only sequences
+/* Operator orchestration for the five-job intake. All Writer writes go through runCanary; this file only sequences
  * snapshots, persists every Writer response the moment it arrives, resumes after each deliberate halt and reconciles.
- *   node tools/source-intake/canary-cli.js snapshot before --state S.json --candidates C.json --source-run-id ID
- *   node tools/source-intake/canary-cli.js run --state S.json --candidates C.json     (repeat after each verified halt)
- *   node tools/source-intake/canary-cli.js snapshot after --state S.json --candidates C.json
- *   node tools/source-intake/canary-cli.js finalize --state S.json --candidates C.json
- *   node tools/source-intake/canary-cli.js auto --state S.json --candidates C.json      (run, wait read-only for each
+ *   node tools/source-intake/intake-cli.js snapshot before --state S.json --candidates C.json --source-run-id ID
+ *   node tools/source-intake/intake-cli.js run --state S.json --candidates C.json     (repeat after each verified halt)
+ *   node tools/source-intake/intake-cli.js snapshot after --state S.json --candidates C.json
+ *   node tools/source-intake/intake-cli.js finalize --state S.json --candidates C.json
+ *   node tools/source-intake/intake-cli.js auto --state S.json --candidates C.json      (run, wait read-only for each
  *     accepted insert's receipt to reach COMPLETE, run again; stops on anything else)
- * Stages: `snapshot before ... --mode STAGE` for a 25/200 stage (default CANARY). The run halts if the live switch's mode
+ * Stages: `snapshot before ... --mode STAGE` for a 25/200 stage (default STAGE). The run halts if the live switch's mode
  * differs from the mode recorded at the before snapshot.
  * The Writer key comes only from FORGE_WRITER_KEY and is never written to the state file.
  * Every Writer response is fsync'd into the state file and read back from disk before the executor classifies it.
@@ -18,11 +18,11 @@
 const fs=require('node:fs'),crypto=require('node:crypto');
 const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
 const {runIntake,requestId}=require('./production-executor');
-const {reconcileIntakeBatch}=require('./canary-accounting');
+const {reconcileIntakeBatch}=require('./intake-accounting');
 const {read}=require('./writer-reader');
 const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED','SKIPPED']);
 const hashOf=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
-function loadState(path){try{return JSON.parse(fs.readFileSync(path,'utf8'))}catch(e){if(e.code==='ENOENT')return null;throw Error('BLOCKED: canary state unreadable')}}
+function loadState(path){try{return JSON.parse(fs.readFileSync(path,'utf8'))}catch(e){if(e.code==='ENOENT')return null;throw Error('BLOCKED: intake state unreadable')}}
 function saveState(path,state){const tmp=path+'.tmp',fd=fs.openSync(tmp,'w');try{fs.writeFileSync(fd,JSON.stringify(state,null,1));fs.fsyncSync(fd)}finally{fs.closeSync(fd)}fs.renameSync(tmp,path)}
 // Durable recorder backed by the state file: every write is fsync'd and every read comes back from disk.
 function fileRecorder(statePath,state){
@@ -33,19 +33,19 @@ function fileRecorder(statePath,state){
  };
 }
 function bound(state,candidates){
- if(!state)throw Error('BLOCKED: no canary state; take the before snapshot first');
+ if(!state)throw Error('BLOCKED: no intake state; take the before snapshot first');
  if(state.candidatesHash!==hashOf(candidates))throw Error('BLOCKED: candidates changed since the before snapshot');
  return state;
 }
-async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mode='CANARY'}){
+async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mode='STAGE'}){
  const state=loadState(statePath);
  if(phase==='before'){
-  if(state)throw Error('BLOCKED: canary state already exists; a before snapshot is taken once');
+  if(state)throw Error('BLOCKED: state already exists; a before snapshot is taken once');
   if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
-  if(!['CANARY','STAGE','AUTO'].includes(mode))throw Error('BLOCKED: mode must be CANARY, STAGE or AUTO');
+  if(!['STAGE','AUTO'].includes(mode))throw Error('BLOCKED: mode must be STAGE or AUTO');
  }else if(phase==='after'){
   bound(state,candidates);
-  if(state.completedAt==null)throw Error('BLOCKED: after snapshot requires all five cases accounted');
+  if(state.completedAt==null)throw Error('BLOCKED: after snapshot requires all cases accounted');
  }else throw Error('BLOCKED: snapshot phase must be before or after');
  const [master,archive]=await Promise.all([fetchAuthenticatedMaster({key,transport}),fetchAuthenticatedArchive({key,transport})]);
  const snap={takenAt:new Date().toISOString(),master,archive};
@@ -58,7 +58,7 @@ async function run({statePath,candidates,key,transport,switchTransport}){
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
-  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),expectedMode:state.mode||'CANARY'});
+  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),expectedMode:state.mode||'STAGE'});
   if(outcomes.length!==candidates.length||outcomes.some(x=>!ACCOUNTED.has(x.status)))throw Error('BLOCKED: run returned without every case accounted');
   state.outcomes=outcomes;state.completedAt=new Date().toISOString();saveState(statePath,state);
   return {status:'ALL_CASES_ACCOUNTED',outcomes};
@@ -73,9 +73,9 @@ function finalize({statePath,candidates}){
  const state=bound(loadState(statePath),candidates);
  const before=state.snapshots?.before,after=state.snapshots?.after;
  if(!state.completedAt||!after)throw Error('BLOCKED: finalize requires all five cases accounted and an after snapshot');
- if(Date.parse(after.takenAt)<Date.parse(state.completedAt))throw Error('BLOCKED: after snapshot predates canary completion');
+ if(Date.parse(after.takenAt)<Date.parse(state.completedAt))throw Error('BLOCKED: after snapshot predates intake completion');
  const cases=candidates.map((c,i)=>({expectedOutcome:c.expectedOutcome,record:c.record,protectedPrimaryId:c.protectedPrimaryId,accounting:state.outcomes[i]?.accounting}));
- const result=reconcileIntakeBatch({cases,before:before.master,after:after.master,archiveBefore:before.archive,archiveAfter:after.archive,mode:state.mode||'CANARY'});
+ const result=reconcileIntakeBatch({cases,before:before.master,after:after.master,archiveBefore:before.archive,archiveAfter:after.archive,mode:state.mode||'STAGE'});
  state.reconciliation={...result,at:new Date().toISOString()};saveState(statePath,state);
  return result;
 }
@@ -105,10 +105,10 @@ async function auto(opts){
 function args(argv){const out={_:[]};for(let i=0;i<argv.length;i++){if(argv[i].startsWith('--'))out[argv[i].slice(2)]=argv[++i];else out._.push(argv[i])}return out}
 async function main(argv=process.argv.slice(2)){
  const a=args(argv),[cmd,phase]=a._;
- if(!a.state||!a.candidates)throw Error('usage: canary-cli <snapshot before|after|run|auto|finalize> --state S.json --candidates C.json [--source-run-id ID] [--mode CANARY|STAGE]');
+ if(!a.state||!a.candidates)throw Error('usage: intake-cli <snapshot before|after|run|auto|finalize> --state S.json --candidates C.json [--source-run-id ID] [--mode STAGE|STAGE]');
  const candidates=JSON.parse(fs.readFileSync(a.candidates,'utf8')),key=process.env.FORGE_WRITER_KEY;
  const common={statePath:a.state,candidates,key};
- const out=cmd==='snapshot'?await snapshot(phase,{...common,sourceRunId:a['source-run-id'],mode:(a.mode||'CANARY').toUpperCase()}):cmd==='run'?await run(common):cmd==='auto'?await auto(common):cmd==='finalize'?finalize(common):null;
+ const out=cmd==='snapshot'?await snapshot(phase,{...common,sourceRunId:a['source-run-id'],mode:(a.mode||'STAGE').toUpperCase()}):cmd==='run'?await run(common):cmd==='auto'?await auto(common):cmd==='finalize'?finalize(common):null;
  if(!out)throw Error('unknown command '+cmd);
  // Outcomes only; Writer responses stay in the state file.
  console.log(JSON.stringify(out,(k,v)=>k==='writerResult'?undefined:v,1));
