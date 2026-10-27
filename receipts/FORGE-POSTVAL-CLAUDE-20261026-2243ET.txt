@@ -1,0 +1,19 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-2243ET
+RELEASE_ID=6fd06a9987f73ef6e3d3 (manifest re-read, unchanged)
+GATE=WRITER_FREEZE frozen=false
+RECONCILE_OF=FORGE-POSTVAL-CLAUDE-20261026-2229ET (B01 10 rows, B02 8 rows)
+WRITER_RESULT_B01=SUCCESS, BATCH_RULING_SINGLE_COMMIT, 10 records, writeId W-20261027023321438-148733, verification=PENDING; before/after show LIVENESS effects for all 10 rows as intended
+WRITER_RESULT_B02=file present (RESULT__CLAUDE_FORGE-POSTVAL-CLAUDE-20261026-2229ET-B02.json, 02:35Z); contents not read this run
+VERIFY_REQUEST=verify/requests/CLAUDE-20261026-2243-postval.json -> verdict NOT_IN_INDEX for B01 and B02 at 02:43:55Z (receipt index updated 02:35:23Z had no entry). Treated as possible index lag, not failure; no replay.
+VERIFIED=0 (needs receipt-index COMPLETE + row_readback)
+ROWS_EVALUATED_NEW=0 written; employer-route attempts only
+EMPLOYER_ROUTE_ATTEMPTS: Cloyes careers page open positions list had no Denton Director of Operations (V2I-3E7E88269CF3), but a tallo copy dated Oct 17 exists, so not treated as closed; PSC Plant Manager (V2I-6D5AD21175C5) only an undated vaia copy; Rhee Bros LinkedIn 429; Air Vent ZipRecruiter blocked. None written.
+BLOCKED_HOSTS=ZipRecruiter, Glassdoor, Tesla bot_blocked; LinkedIn intermittent 429
+BACKLOG_REMAINING=50 of 68 (at 2229ET start)
+BATCHES_COMPLETED_THIS_RUN=0
+STOP_REASON=Remaining rows sit on hosts blocked to TinyFish; employer-route searches returned no qualifying evidence
+AI_ACTION_REQUIRED=Next run: re-request verify for 2229ET B01/B02 (use writeId W-20261027023321438-148733 for B01); do not resend.
+NEXT_OWNER=Claude FORGE_POSTING_VALIDATION
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
