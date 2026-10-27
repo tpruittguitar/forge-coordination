@@ -1,0 +1,25 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261027-0040ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+PACKET_SHA256=10ca411238f2c5b7113f9d1e0c162d7e1c245eab760fa3811684e067d553e5e3 (blob sha e3574b0e matches manifest)
+GATE=WRITER_FREEZE frozen=false (read 2026-10-27); WRITER_QUEUE root had no pending files; writer_status not available (RULES_BLOB_UNCHECKED)
+WORKLIST=generated 2026-10-27T04:17Z, 57 eligible
+ROWS_EVALUATED=30 (rows 1,3-10,17(not fetched),... see below; 30 URLs fetched, top-down + ATS-resolvable redirects)
+LIVE=5 (V2I-2ACDD054F157 Zilla ADP; V2I-5910E7FACF01 PowerSecure UltiPro; V2I-09EEB6DB7B8A Ford careers; V2I-84D38C989F4B Silgan Workday R8470; V2I-2C880B989A0E F&B MFG ADP)
+CLOSED=0
+UNCONFIRMED=25 (bot_blocked: Glassdoor x3, ZipRecruiter x1, Tesla x2, Indeed x12 direct; LinkedIn 429/login_required x2; Magna LinkedIn open but page date 2026-09-25 is >30 days; BAE Phenom page content not rendered; Rivian iCIMS redirect returned generic page; Wartech Indeed page undated). No closure evidence anywhere; none written.
+WRITTEN=5 (SUBMITTED to WRITER_QUEUE, file 13BoT8daaA82aoGShnEJ8qB8wehgbZiVF)
+VERIFIED=0 (not yet: awaiting RESULT, receipt-index COMPLETE, row_readback)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=3 calls / 30 URLs
+BACKLOG_REMAINING=52 (57 minus 5 submitted)
+STOP_REASON=Remaining rows are on hosts that block TinyFish (Indeed/ZipRecruiter/Glassdoor/Tesla/LinkedIn 429); no further qualifying evidence method without metered tools
+BATCHES_COMPLETED_THIS_RUN=1
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261027-0040ET-B01 (R01-R05)
+PENDING=B01 written to queue, needs verification by next run/gofer
+NEXT_OWNER=Claude gofer / next POSTVAL run: verify B01 via forge-coordination verify/README.md
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
+OBSERVATION=Indeed rc/clk redirect links often resolve via TinyFish to the employer ATS (ADP, UltiPro, Ford, Workday); worth noting for worklist ordering.
