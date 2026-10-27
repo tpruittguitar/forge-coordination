@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261027T1247Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261027T1824Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -53,7 +53,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:ashby | P2 Skydio | [Head of Supply Chain & Manufacturing Strategy](https://jobs.ashbyhq.com/skydio/4cb9c624-ed0b-4dac-ae33-a4794dd01cbc) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER | $166K-$228K |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
-| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5460689008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
+| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5461638008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
 | BOARD:greenhouse | P2 Mach Industries | [Principal Manufacturing Engineer, Energetics](https://job-boards.greenhouse.io/machindustries/jobs/4388749009) | Huntington Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P2 True Anomaly | [Head of Non-Production Operations, Facilities](https://job-boards.greenhouse.io/trueanomalyinc/jobs/5165501007) | Long Beach, CA | MFG_PROD | DIRECTOR_PLUS | $145K-$210K |
 | BOARD:greenhouse | P2 Ursa Major | [Director of Operations](https://ursamajor.com/careers/?gh_jid=4729125005) | Berthoud, Colorado | MFG_PROD | DIRECTOR_PLUS | $180K-$220K |
@@ -85,12 +85,13 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Gatik | [Senior Manager, Truck Assets & Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4596842006?gh_jid=4596842006) | Santa Clara, CA | MFG_PROD | SR_MANAGER | $140K-$190K |
 | BOARD:greenhouse | Gatik | [Sr. Manager, Market Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4722733006?gh_jid=4722733006) | Phoenix, AZ | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Oklo | [Director of Chemistry, Manufacturing and Controls](https://job-boards.greenhouse.io/oklo/jobs/6185186004) | Austin, Texas | MFG_PROD | DIRECTOR_PLUS | $170K-$250K |
+| BOARD:greenhouse | Re:Build Manufacturing | [Plant Manager](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738375005) | Kalamazoo, MI | MFG_PROD | DIRECTOR_PLUS | $120K-$180K |
 | BOARD:greenhouse | TerraPower LLC | [Director, Supply Chain Operations](https://job-boards.greenhouse.io/terrapowerllc/jobs/4250366009) | Bellevue, WA | MFG_PROD | DIRECTOR_PLUS | $217K-$325K |
 | BOARD:greenhouse | Vulcan Elements | [Sr. Manager, Operational Excellence](https://job-boards.greenhouse.io/vulcanelements/jobs/5406379008) | Benson, NC | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Memphis Power Plant Operations ](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
@@ -104,4 +105,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Deckers Brands | [Sr. Manager, Design Operations - HOKA](https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505) | Portland, Oregon | MFG_PROD | SR_MANAGER |  |
 | BOARD:workday | Leidos | [Director Production Control](https://leidos.wd5.myworkdayjobs.com/External/job/Huntsville-AL/Director-Production-Control_R-00195459-1) | Huntsville, AL | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Regal Rexnord | [Director, Continuous Improvement](https://regalrexnord.wd1.myworkdayjobs.com/Careers/job/Rosemont-Illinois-United-States/Director--Continuous-Improvement_R26_04497) | Rosemont, Illinois, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:workday | Stanley Black & Decker | [Director, Quality Manufacturing](https://sbdinc.wd1.myworkdayjobs.com/Stanley_Black_Decker_Career_Site/job/Hopkinsville-KY-United-States/Director--Quality-Manufacturing_REQ-1000051833) | Hopkinsville, KY, United States | QUALITY | DIRECTOR_PLUS |  |
