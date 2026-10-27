@@ -14,7 +14,7 @@
  * Exit 0 = done, off, or latched by an earlier halted run (see tools/source-intake/auto-latch.js).
  * Run: node tools/source-intake/auto-run.js [--report state/source-trial-report.json] [--dry-run] */
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {snapshot,auto,finalize}=require('./canary-cli');
+const {snapshot,auto,finalize}=require('./intake-cli');
 const {read}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
 const {DIR,previous,latch}=require('./auto-latch');

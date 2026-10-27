@@ -17,7 +17,7 @@
 const crypto=require('node:crypto');
 const {read,fetchAuthenticatedArchive}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
-const {checkCanaryOutcome}=require('./canary-accounting');
+const {checkCanaryOutcome}=require('./intake-accounting');
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
 // Contents API, not raw.githubusercontent.com: the raw CDN can serve a stale switch for minutes after it is turned off.
 const SWITCH='https://api.github.com/repos/tpruittguitar/forge-coordination/contents/control/SOURCE_INTAKE_RELEASE.json?ref=main';
@@ -72,7 +72,6 @@ function classifyWriterResponse(result,rid){
  return {kind:'UNKNOWN'};
 }
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
-const runCanary=runStage; // removed: kept as alias so existing tests compile; delete after test migration
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,expectedMode='STAGE'}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
@@ -171,9 +170,9 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    outcomes.push({requestId:rid,status:'PENDING_VERIFICATION',writeId:result.writeId||null,writerResult:result});
    if(candidate.expectedOutcome!=='NEW'){outcomes.push(skipped(rid,'UNEXPECTED_INSERT_FOR_'+candidate.expectedOutcome,result));continue}
    // No next job while current transaction is unverified. Reconciliation is a separate execution.
-   halt('HOLD: Writer accepted canary record; durable receipt and exact-row readback required before proceeding');
+   halt('HOLD: Writer accepted intake record; durable receipt and exact-row readback required before proceeding');
   }
-  // NOOP_COMPLETE: no master transaction was opened, so it can be proven now and the canary continues.
+  // NOOP_COMPLETE: no master transaction was opened, so it can be proven now and the intake continues.
   if(candidate.expectedOutcome==='NEW'){outcomes.push(skipped(rid,'NEW_MATCHED_EXISTING',result));continue}
   let accounting;
   try{accounting=await verifyNoopCase(candidate,rid,result,{key,transport})}
@@ -258,4 +257,4 @@ async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport
  const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:a})).data;
  return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:a,readback:back,verified:false};
 }
-module.exports={requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runCanary,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
+module.exports={requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
