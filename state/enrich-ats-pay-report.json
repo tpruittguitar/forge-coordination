@@ -1,35 +1,41 @@
 {
- "at": "2026-10-26T23:28:40.457Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261026T2328Z",
+ "at": "2026-10-27T02:31:22.614Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261027T0228Z",
  "dry": false,
- "rows": 1897,
- "eligible": 259,
- "anchors": 189,
+ "rows": 1967,
+ "eligible": 313,
+ "anchors": 195,
  "archive_anchors": 6,
- "ats_rows": 1,
- "ats_read": 0,
+ "ats_rows": 2,
+ "ats_read": 1,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
+ "degree": 1,
  "estimates": 0,
- "estimate_waiting_for_posting": 2,
- "skipped_recent": 206,
- "submitted": 0,
+ "estimate_waiting_for_posting": 80,
+ "skipped_recent": 180,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 3
  },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
- "agg_wall": {
-  "linkedin": 1
+ "agg_failed": {
+  "linkedin": 3
  },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
+ "agg_wall": {},
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -42,19 +48,94 @@
  },
  "bls_queries": 0,
  "est_shared_low": 0,
- "ats_candidates": 20,
+ "ats_candidates": 21,
  "ats_by_kind": {
+  "greenhouse": 7,
   "workday": 9,
   "ashby": 4,
-  "lever": 1,
-  "greenhouse": 6
+  "lever": 1
  },
  "skipped_closed": 43,
  "ats_unconfirmed": 0,
- "nothing_found": 10,
- "upgraded": 0,
- "planned": 0,
- "sample": [],
- "estimate_samples": [],
+ "ats_pay_seen": 1,
+ "nothing_found": 89,
+ "upgraded": 2,
+ "planned": 3,
+ "sample": [
+  {
+   "id": "V2I-1F424EF2B0B4",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://job-boards.greenhouse.io/divergent/jobs/5194800008",
+    "DEGREE_ASOF": "2026-10-27",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-27"
+   }
+  },
+  {
+   "id": "V2I-00B1FC6BEDE4",
+   "fields": {
+    "SALARY_BASE_LOW": 106000,
+    "SALARY_BASE_HIGH": 159000,
+    "SALARY_MIDPOINT": 132500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "MED",
+    "SALARY_ASOF": "2026-10-27",
+    "SALARY_SOURCE": "same-employer:V2I-AB72DF3399F3",
+    "SALARY_NOTE": "FORGE-ESTIMATE upgraded from a comparables LOW estimate: same employer, 1 posted range(s) for level 1 OPS roles: Field Operations Manager, Wrap Installation (CA) $106K-$159K; BLS state wage n/a"
+   }
+  },
+  {
+   "id": "V2I-AA865119DFA0",
+   "fields": {
+    "SALARY_BASE_LOW": 106000,
+    "SALARY_BASE_HIGH": 159000,
+    "SALARY_MIDPOINT": 132500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "MED",
+    "SALARY_ASOF": "2026-10-27",
+    "SALARY_SOURCE": "same-employer:V2I-AB72DF3399F3",
+    "SALARY_NOTE": "FORGE-ESTIMATE upgraded from a comparables LOW estimate: same employer, 1 posted range(s) for level 1 OPS roles: Field Operations Manager, Wrap Installation (CA) $106K-$159K; BLS state wage n/a"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "UPGRADE",
+   "id": "V2I-00B1FC6BEDE4",
+   "company": "Slate Auto",
+   "title": "Senior Manager, Finished Vehicle Yard Operations",
+   "location": "Warsaw, IN",
+   "est": [
+    106000,
+    159000,
+    "MED"
+   ],
+   "source": "SAME_EMPLOYER",
+   "bls": "NO_BLS",
+   "basis_detail": "same employer, 1 posted range(s) for level 1 OPS roles: Field Operations Manager, Wrap Installation (CA) $106K-$159K",
+   "comparables": [
+    "V2I-AB72DF3399F3"
+   ]
+  },
+  {
+   "basis": "UPGRADE",
+   "id": "V2I-AA865119DFA0",
+   "company": "Slate Auto",
+   "title": "Operations Manager, GA Crew B",
+   "location": "Warsaw, IN",
+   "est": [
+    106000,
+    159000,
+    "MED"
+   ],
+   "source": "SAME_EMPLOYER",
+   "bls": "NO_BLS",
+   "basis_detail": "same employer, 1 posted range(s) for level 1 OPS roles: Field Operations Manager, Wrap Installation (CA) $106K-$159K",
+   "comparables": [
+    "V2I-AB72DF3399F3"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
