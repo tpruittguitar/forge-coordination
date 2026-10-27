@@ -1,0 +1,31 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-2229ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (fetched via GitHub connector; blob SHA e3574b0e8b3b2fa183363aac33e5afdcff8c98df matches manifest lane.blob_sha)
+SOURCE_VERSIONS=forge-coordination main 0f83d86a51d35f0e2fb091ddf6ca329c31d92df2; worklist GENERATED_AT_UTC=2026-10-27T02:13:03Z (MASTER_ROWS=1978, ELIGIBLE_TOTAL=68)
+RULES_BLOB_UNCHECKED (forge-policy rules directory metadata not read; no policy interpretation needed)
+GATE=WRITER_FREEZE frozen=false (read fresh); queue root had no pending files; no resolved asks held by this lane
+ROWS_EVALUATED=18
+LIVE=10 (LIVE_SECONDARY, LinkedIn pages with posted age)
+CLOSED=0
+UNCONFIRMED=8
+WRITTEN=18 (submitted to WRITER_QUEUE, not yet verified)
+VERIFIED=0
+HELD=0
+FAILED=0
+SKIPPED_UNREADABLE=9 (V2I-0C9A2E2D9B42 ZipRecruiter bot_blocked; V2I-6D5AD21175C5 ZipRecruiter bot_blocked; V2I-E8F258130FE7 and V2I-72E8B2E9EAE1 Glassdoor bot_blocked; V2I-AC7E25A32261 LinkedIn 429 twice; V2I-40BFEF2100D6 LinkedIn login_required; V2I-4B2B27817FD3 and V2I-65CF594E4857 tesla.com bot_blocked; V2I-AC7E25A32261 counted once)
+TINYFISH_FETCHES=4 calls / 30 URLs (+4 URL retry call)
+BACKLOG_REMAINING=50 of 68 worklist rows. Mostly ZipRecruiter/Indeed/Glassdoor/Lensa/SendGrid redirect links, which block TinyFish; employer-route lookups for those not attempted this run.
+STOP_REASON=Remaining rows are on hosts that block TinyFish (ZipRecruiter, Indeed, Glassdoor, Tesla) or require employer-route search; ZipRecruiter and Tesla confirmed blocked in this run. LinkedIn 429 on one row after retry.
+BATCHES_COMPLETED_THIS_RUN=2
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-2229ET-B01 (10 rows, Drive 1tmieTUPPIz2rxNYFuucJGXTlobYRfniQ), FORGE-POSTVAL-CLAUDE-20261026-2229ET-B02 (8 rows, Drive 10dHQ5mQeXTCX06ToPMuRlnAfhrEYNYCI)
+PENDING=B01 and B02 awaiting Writer processing; VERIFIED requires RESULT SUCCESS + receipt-index COMPLETE + row_readback.
+VERIFIED_PRIOR_RUN=not checked this run (prior POSTVAL-20261026-2029ET B01/B02 files are in processed/)
+NOTES=Row V2I-ECBC7AFB6CD7 (LinkedIn 404) and V2I-835F4DFE37FE (appone 404) recorded UNCONFIRMED, not CLOSED: no positive closure notice. V2I-5BEBFC6DBB21 Simplify INACTIVE flag is aggregator-only; employer page not checked.
+AI_ACTION_REQUIRED=Verify B01/B02 via forge-coordination verify/README.md next run; employer-route checks for blocked rows.
+AWAITING_TIM_APPROVAL=none
+BLOCKED=ZipRecruiter/Indeed/Glassdoor/Tesla fetch blocked by TinyFish (not closure)
+NEXT_OWNER=Claude (FORGE_POSTING_VALIDATION next run)
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
