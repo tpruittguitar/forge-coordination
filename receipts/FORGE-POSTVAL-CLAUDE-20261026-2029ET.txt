@@ -1,0 +1,25 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_POSTING_VALIDATION
+RUN_ID=FORGE-POSTVAL-CLAUDE-20261026-2029ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+PACKET_SHA256=PACKET_HASH_UNVERIFIED (GitHub blob SHA e3574b0e8b3b2fa183363aac33e5afdcff8c98df matches manifest lane.blob_sha)
+SOURCE_VERSIONS=worklist generated 2026-10-27T00:09:02Z (master rows 1976, eligible 81); WRITER_FREEZE frozen=false; RULES_BLOB_UNCHECKED
+GATE=freeze false; Writer status/receipt-index not checked this run (no verify route used)
+ROWS_EVALUATED=15 of 20 attempted (worklist rows 1-12, 34, 36, 37, 39-43; fetches returned 429/404 for 5)
+LIVE=5 (LIVE_SECONDARY, LinkedIn posted age shown)
+CLOSED=1 (V2I-1B7A4134734B Renesas, LinkedIn "No longer accepting applications")
+UNCONFIRMED=9 written (page read without posted age, or LinkedIn returned a listing page)
+NOT_WRITTEN=5 (V2I-EF4D5CCEE1FF, V2I-83E79BC8C491, V2I-FD292D70BD84, V2I-25444D1E7A2C: HTTP 429; V2I-ECBC7AFB6CD7: LinkedIn 404, not closure evidence)
+WRITTEN=15 (SUBMITTED to WRITER_QUEUE, not yet WRITER_ACCEPTED)
+VERIFIED=0 (no RESULT, receipt-index COMPLETE or row_readback checked yet)
+HELD=0
+FAILED=0
+TINYFISH_FETCHES=2 calls, 20 URLs
+BACKLOG_REMAINING=about 60 (worklist rows 13-33 are ZipRecruiter/Indeed/Glassdoor/email redirects, not attempted; rows 44-80 not attempted)
+STOP_REASON=LinkedIn 429 rate limiting on part of batch 2; run ended after 2 batches. Not a hard limit on remaining non-LinkedIn rows; they were not attempted this run.
+BATCHES_COMPLETED_THIS_RUN=2
+REQUEST_IDS=FORGE-POSTVAL-CLAUDE-20261026-2029ET-B01 (9 rulings; Drive file 1PotirgF-F_qhz9gEfBkiVGAJFz5RDM-T), FORGE-POSTVAL-CLAUDE-20261026-2029ET-B02 (6 rulings; Drive file 1CHT2zAYEZAVcYOHCtdhYCwJL9tdfufRt)
+NEXT_OWNER=Claude next POSTING_VALIDATION run / gofer
+NEXT_ACTION=Verify B01 and B02 via forge-coordination verify/README.md (RESULT, receipt-index COMPLETE, row_readback). Retry 429 rows later. Work rows 13+ via employer routes.
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
