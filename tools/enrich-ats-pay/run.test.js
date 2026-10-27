@@ -232,8 +232,8 @@ test('lost Writer reply (HTTP 404 after the save): the receipt index decides; sa
     assert.strictEqual(r.out.writer_ok, 30); assert.strictEqual(r.out.writer_failed, 0); assert.strictEqual(r.out.writer_reply_lost, 2);
     Object.keys(byId).forEach(id => assert.ok(r.led.submitted[id], id + ' saved per its receipt'));
     r = run('REPLY_LOST_UNSAVED');
-    assert.strictEqual(r.posts.length, 1, 'no receipt: the run stops sending and never re-posts');
-    assert.strictEqual(r.out.writer_ok, 0); assert.strictEqual(r.out.writer_failed, 0); assert.strictEqual(r.out.writer_unconfirmed, 25);
+    assert.strictEqual(r.posts.length, 2, 'unconfirmed: the run continues to the next batch');
+    assert.strictEqual(r.out.writer_ok, 0); assert.strictEqual(r.out.writer_failed, 0); assert.strictEqual(r.out.writer_unconfirmed, 30);
     assert.match(r.out.writer_error, /HTTP 404; receipt NO_ENTRY/);
     assert.deepStrictEqual(r.led.submitted, {}, 'unconfirmed rows are not marked saved; the row_readback guard settles them next run');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }

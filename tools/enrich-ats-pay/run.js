@@ -218,7 +218,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
   stats.planned = requests.length;
-  if (!DRY) for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
+  if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
     let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
     try {
       // Grok Bot QA: the structured copy can lag; re-read these rows from the Writer (read-only, no lock) and drop what a lane
@@ -248,7 +248,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
              on; a failed receipt = failed; nothing or still pending = unconfirmed, counted, and the run continues to the next batch. Never re-POSTed here. */
           const proof = await receiptFor(batch);
-          if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue; }
+          if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue batches; }
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
@@ -256,7 +256,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
         await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
       }
-      if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue; }
+      if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue batches; }
       const results = res.results || [];
       // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
@@ -265,7 +265,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
-    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue; }
+    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue batches; }
     await sleep(CONFIG.batchGapMs);
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
