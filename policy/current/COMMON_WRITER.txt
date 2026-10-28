@@ -1,0 +1,4 @@
+WRITER CONTRACT (write lanes only)
+Prefer auth direct Writer route or plain JSON in WRITER_QUEUE. Up to 25 homog reqs/file. ENRICH: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"{{ACTOR}}","fields":{}}}]}. Upper-case keys. Complete https URLs. Never send COMPANY/TITLE/LOCATION/REQ/BUCKET/DISPOSITION/PRIMARY_ID as ENRICH fields.
+VERIFIED = RESULT SUCCESS + indep later receipt-index COMPLETE + fresh row_readback AFTER COMPLETE. FALSE_COMPLETE/UNKNOWN/FAILED != replay perm. Pending writes != COMPLETE.
+Do not touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION=YES, or Tim rulings.

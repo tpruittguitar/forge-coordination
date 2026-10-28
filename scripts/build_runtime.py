@@ -149,7 +149,8 @@ def build(root=ROOT):
         owner = lane['owner']
         require(owner in PROVIDERS, 'invalid lane owner')
         chunks = [f'RELEASE_ID={release}\nTASK_KEY={task}\nPROVIDER={owner}\nPOLICY_REVISION={registry["policy_revision"]}\n']
-        chunks.extend(render(name, owner, task) for name in registry['common'])
+        common = lane.get('common') or registry['common']
+        chunks.extend(render(name, owner, task) for name in common)
         chunks.append(render(registry['adapters'][owner], owner, task))
         chunks.append(render(lane['source'], owner, task))
         for example in lane['examples']:

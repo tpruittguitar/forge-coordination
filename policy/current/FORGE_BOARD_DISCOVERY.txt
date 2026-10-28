@@ -1,8 +1,8 @@
-BOARD DISCOVERY IS A CODE JOB. This file is not a Grok lane and it is not on the rotation.
+BOARD disc IS A CODE JOB. This file is not a Grok lane and it is not on the rotation.
 
-The board walker is .github/workflows/board-discovery.yml running tools/source-trial/run.js with TRIAL_BOARDS_ONLY=1.
-It reads Greenhouse, Lever and Ashby public JSON, and Workday through the existing board request, for companies on the Pipeline Explorer Target Companies list.
-Order is that list's ranking, published at https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt : DREAM, then P1, then P2, then P3, then WATCH. PAUSED is not searched. A company whose careers URL is not a board host stays on FORGE_WEB_CAREER_DISCOVERY.
+The board walker is .github/workflows/board-disc.yml running tools/source-trial/run.js with TRIAL_BOARDS_ONLY=1.
+It reads Greenhouse, Lever and Ashby public JSON, and Workday through the exist board request, for cos on the Pipeline Explorer Target cos list.
+Order is that list's ranking, published at https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt : DREAM, then P1, then P2, then P3, then WATCH. PAUSED is not searched. A co whose careers URL is not a board host stays on FORGE_WEB_CAREER_DISCOVERY.
 Each run starts at state/board-cursor.json field next and writes the following board key when it stops. The next run starts there. A finished pass sets next back to the first board.
 JobSpy, HiringCafe and ZipRecruiter are not this job. ZipRecruiter stays FORGE_ZIPRECRUITER_WEEKLY. The Grok bot Sniffer is not this job: it does not walk this list and it does not file these rows.
-NEW board roles are written to state/board-discovery-report.json. Auto intake reads that file after the board workflow on main.
+NEW board roles are written to state/board-disc-report.json. Auto intake reads that file after the board workflow on main.

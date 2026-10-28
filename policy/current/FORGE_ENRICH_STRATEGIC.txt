@@ -1,30 +1,30 @@
 LANE PROCEDURE -- FORGE_ENRICH_STRATEGIC
 
-FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, VERIFICATION AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
+FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, verif AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
 Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
 Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
-Per row: at most 2 fetches (the worklist URL or the employer posting, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
-Status: RESULT/verification is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+Per row: at most 2 fetches (the worklist URL or the employer post, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
+Status: RESULT/verif is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
 
 WORKLIST
 WORKLIST_FORGE_ENRICH_STRATEGIC.txt, Drive 1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8. Rebuilt by the Writer every 30 minutes.
 Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
 
 JOB (per row)
-Open the posting (URL column, else find the employer's own posting by company, title, location, req). Record grounded facts only; anything not stated is UNKNOWN.
+Open the post (URL column, else find the employer's own post by co, title, loc, req). Record grounded facts only; anything not stated is UNKNOWN.
 ENRICH fields (these are the keys the Explorer reads):
-  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor manufacturing and quality leader (prototype-to-rate production, factory or line launch, real authority, team size)
+  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor mfg and qual leader (prototype-to-rate production, factory or line launch, real authority, team size)
   FIT_CONF: HIGH, MED or LOW
   FIT_ASOF: YYYY-MM-DD
   ANALYSIS_BY: {{ACTOR}}_<RUN_ID>
-  SCOPE_SUMMARY: manufacturing function, product domain, what the role owns (one or two sentences)
-  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the posting
-  Also add, when the page shows them: SOURCE_URL (first-party posting), PAY_POSTED, DEGREE_TEXT (verbatim from the posting), WORK_ARRANGEMENT.
+  SCOPE_SUMMARY: mfg function, product domain, what the role owns (one or two sentences)
+  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the post
+  Also add, when the page shows them: SOURCE_URL (first-party post), PAY_POSTED, DEGREE_TEXT (verbatim from the post), WORK_ARRANGEMENT.
 No prestige bonuses, no scoring, no bucket changes.
 Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
 
 EMPTY LIST, KEEP GOING
-When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. Verify the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-{{ACTOR}}-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
+When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. verif the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-{{ACTOR}}-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
 
 BATCHING
 Up to 25 rows per queue file, written at the end of the run. Target 30 finished rows per run (Tim 2026-10-20); keep going past 30 while capacity lasts.
