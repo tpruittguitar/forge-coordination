@@ -1,12 +1,12 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-28T10:51:09.929Z",
- "sourceCommit": "4c96cb3522b8f873eb3796bc9dd1a236402c0c58",
+ "builtAt": "2026-10-28T11:15:19.201Z",
+ "sourceCommit": "4a9e1df643bdc9764f7dd6a54a97503157a04a3b",
  "counts": {
   "total": 14,
   "BLOCKING": 1,
-  "ACTION": 9,
-  "WATCH": 4,
+  "ACTION": 8,
+  "WATCH": 5,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 3,
@@ -57,18 +57,6 @@
    "raisedBy": "CLAUDE",
    "askId": "ASK-20261019-CLAUDE-1855",
    "links": []
-  },
-  {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "EMAIL lane has gone quiet (usually reports every 5 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt (CHATGPT, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "at": "2026-10-24T12:57:00-04:00",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "run-next-owner:ZIPR|CHATGPT",
@@ -250,6 +238,18 @@
    ]
   },
   {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "GOFER lane has gone quiet (usually reports every 1.6 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
+   "at": "2026-10-28T00:52:00-04:00",
+   "raisedBy": "CLAUDE"
+  },
+  {
    "id": "ask:ASK-20261028-GROK-SALARY-EST",
    "section": "DECIDE",
    "level": "WATCH",
@@ -307,9 +307,19 @@
    "lastAt": "2026-10-24T12:57:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "runs7d": 18,
+   "runs7d": 17,
    "usualGapHours": 5,
-   "overdue": true
+   "overdue": false
+  },
+  {
+   "lane": "EMAIL",
+   "provider": "GROK",
+   "lastAt": "2026-10-28T07:14:00-04:00",
+   "lastStatus": "PARTIAL_WITH_WORK",
+   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-GROK-20261028-0714ET_TERMINAL.txt",
+   "runs7d": 1,
+   "usualGapHours": null,
+   "overdue": false
   },
   {
    "lane": "EMAIL",
@@ -319,7 +329,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
    "runs7d": 0,
    "usualGapHours": 27,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "ENRICH-FEASIBILITY",
@@ -407,9 +417,9 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 62,
+   "runs7d": 61,
    "usualGapHours": 1.6,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "HANDOFF",
