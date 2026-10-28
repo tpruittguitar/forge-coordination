@@ -113,6 +113,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     if (!est) { est = L.estimate(r, anchors); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
+    if (!est && rowState) {
+      // Required unanchored estimate (Tim 2026-10-28): BLS sets the number when no anchors exist.
+      const w = await blsWages(rowState, soc);
+      est = L.blsEstimate(r, w, []);   // mlPoints: JobPredictor / nginyc numbers when a lightweight call is available; empty = BLS range only
+      if (est) { stats.est_bls = (stats.est_bls || 0) + 1; if (!opts.noNetwork) stats.bls.BLS_EST = (stats.bls.BLS_EST || 0) + 1; }
+    }
     if (!est) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); if (!opts.noNetwork) stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;

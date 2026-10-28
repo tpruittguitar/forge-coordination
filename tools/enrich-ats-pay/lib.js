@@ -154,8 +154,7 @@ function atsFor(p) { for (const k of ATS_URL_KEYS) { const a = atsApi(String(p[k
       pay range in job ads come first. A range posted in another state is scaled by the BLS median ratio of the two states.
    2) Similar role at other employers in the master (level + function, same region first). The master has no company
       size / industry field (checked 2026-10-21), so "similar company type/size" is not available yet.
-   3) BLS OEWS state wages for the role's occupation: cross-check only. It lowers confidence when an estimate sits far outside
-      the state's range; it never sets the number.
+   3) BLS OEWS state wages for the role's occupation: cross-check when an anchored estimate exists (lowers confidence if far outside). When no anchored estimate exists, BLS sets the number (required, LOW confidence) so the row can be scored and processed. Tim 2026-10-28.
    4) Salary sites (Glassdoor, Salary.com, Payscale): THIRD_PARTY_ESTIMATE, LOW, lanes only; this bot does not fetch them.
    Pay-range-in-posting states (secondary source, loio.com guide 2026-07-03, plus WA since 2023): verify against statutes. */
 const PAY_TRANSPARENCY = ['CA', 'CO', 'CT', 'DC', 'HI', 'IL', 'MA', 'MD', 'ME', 'MN', 'NJ', 'NY', 'VA', 'VT', 'WA'];
@@ -249,4 +248,28 @@ function blsCheck(est, w) {
   return { flag: 'OK', note: `BLS ${w.state} ${w.soc} P25-P90 $${Math.round(w.p25 / 1000)}K-$${Math.round(w.p90 / 1000)}K`, conf: est.conf };
 }
 
-module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, PAY_TRANSPARENCY, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
+
+/** Required unanchored estimate (Tim 2026-10-28). When no employer or comparable anchors exist:
+    Produce a RANGE that spans BLS OEWS and any available text-based model estimates (JobPredictor, nginyc).
+    - BLS supplies P25/median/P90.
+    - Each ML estimate (if available) is a point.
+    - Range low = min of (BLS P25, all ML points).
+    - Range high = max of (BLS P90, all ML points).
+    - If no ML estimates, range is BLS P25-P90.
+    The value used for PAY_WORTH is 75% of the resulting range (low + 0.75*(high-low)), not the midpoint. */
+function blsEstimate(row, w, mlPoints) {
+  if (!w || !w.p25 || !w.median || !w.p90) return null;
+  const points = (mlPoints || []).filter(x => Number.isFinite(x) && x > 0);
+  const candidates = [w.p25, w.p90].concat(points);
+  const low = Math.round(Math.min.apply(null, candidates) / 1000) * 1000;
+  const high = Math.round(Math.max.apply(null, candidates) / 1000) * 1000;
+  const scorePoint = Math.round(low + 0.75 * (high - low));
+  const mlNote = points.length ? ` + ${points.length} ML point(s) $${points.map(p => Math.round(p/1000)+'K').join(', ')}` : ' (no ML points)';
+  return {
+    low, high, mid: scorePoint, conf: 'LOW', n: points.length, close: false, tight: false, ids: [],
+    source: points.length ? 'BLS_ML_RANGE' : 'BLS_OEWS',
+    basis: `range spanning BLS OEWS ${w.state} SOC ${w.soc} P25-P90 $${Math.round(w.p25/1000)}K-$${Math.round(w.p90/1000)}K${mlNote} (no employer or comparable anchors; required)`
+  };
+}
+
+module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
