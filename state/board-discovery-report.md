@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261028T0623Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261028T1531Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (181 read, 6 failed) | 181 | 80 | 101 |
+| Employer job boards (181 read, 7 failed) | 180 | 79 | 101 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 37 | 78 |
+| DIRECTOR_PLUS | 36 | 78 |
 | SR_MANAGER | 17 | 22 |
 | SR_STAFF | 26 | 1 |
 
@@ -83,10 +83,10 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Test Operations, Space](https://boards.greenhouse.io/andurilindustries/jobs/5225988007?gh_jid=5225988007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Gatik | [Senior Manager, Truck Assets & Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4596842006?gh_jid=4596842006) | Santa Clara, CA | MFG_PROD | SR_MANAGER | $140K-$190K |
 | BOARD:greenhouse | Gatik | [Sr. Manager, Market Operations](https://boards.greenhouse.io/gatikaiinc/jobs/4722733006?gh_jid=4722733006) | Phoenix, AZ | MFG_PROD | SR_MANAGER |  |
@@ -106,4 +106,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Comfort Systems USA | [Director of Manufacturing](https://comfortsystemsusa.wd1.myworkdayjobs.com/corpcareers/job/Houston-TX-TAS-Cullen-HQ/Director-of-Manufacturing_JR108045-1) | Houston, TX (TAS-Cullen HQ) | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Deckers Brands | [Sr. Manager, Design Operations - HOKA](https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505) | Portland, Oregon | MFG_PROD | SR_MANAGER |  |
 | BOARD:workday | Leidos | [Director Production Control](https://leidos.wd5.myworkdayjobs.com/External/job/Huntsville-AL/Director-Production-Control_R-00195459-1) | Huntsville, AL | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:workday | Northrop Grumman | [SDS Director of Programs 1 – Production Master Planner](https://ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site/job/United-States-Utah-Roy/SDS-Director-of-Programs-1---Production-Master-Planner_R10257910) | United States-Utah-Roy | MFG_PROD | DIRECTOR_PLUS |  |
