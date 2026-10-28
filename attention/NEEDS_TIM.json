@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-28T07:27:23.295Z",
- "sourceCommit": "aeebfdbd5dd7dfbbd9644fbdd263eb100d73fe97",
+ "builtAt": "2026-10-28T08:12:14.798Z",
+ "sourceCommit": "fbfaa5ff2d80d0490d85b97038182520a5cb5e5b",
  "counts": {
-  "total": 12,
+  "total": 14,
   "BLOCKING": 1,
-  "ACTION": 7,
+  "ACTION": 9,
   "WATCH": 4,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 3,
-  "UPKEEP": 1
+  "UPKEEP": 3
  },
  "items": [
   {
@@ -140,6 +140,30 @@
    "links": []
   },
   {
+   "id": "pr:forge-policy#6",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-policy PR #6: RULES: required unanchored salary estimate from BLS OEWS",
+   "detail": "Open since 2026-10-28. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-policy #6",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-policy/pull/6",
+   "at": "2026-10-28T08:11:51Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "pr:forge-coordination#101",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #101: ENRICH: required BLS OEWS estimate when no anchors",
+   "detail": "Open since 2026-10-28. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #101",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/101",
+   "at": "2026-10-28T08:11:57Z",
+   "raisedBy": ""
+  },
+  {
    "id": "ask:ASK-20261018-02",
    "section": "DECIDE",
    "level": "WATCH",
@@ -229,16 +253,15 @@
    "id": "ask:ASK-20261028-GROK-SALARY-EST",
    "section": "DECIDE",
    "level": "WATCH",
-   "title": "Proposal: stamp SALARY_ESTIMATED from BLS OEWS or JobPredictor when source-trial report has no pay",
-   "detail": "Source-trial (JobSpy/HiringCafe) already supplies posted pay for many roles. When it is silent, open-source estimators can fill the gap without AI page fetches. JobPredictor (DeBERTa, ~750k LinkedIn) reports MAE ~$15.5k / 84.5% within $20k. nginyc MLP ~$19.8k MAE. BLS OEWS Industrial Production Managers median $121k is a defensible baseline for manufacturing/quality. Proposal: a small Writer Action that, for roles with no posted pay in the latest report, stamps SALARY_ESTIMATED (and source) from BLS OEWS title mapping or a cached JobPredictor call. Prefer posted pay when present. No AI tokens. Compare against current posted midpoints in the report shows most non-tech quality roles land within ~$30k of BLS; engineering leadership is higher.",
+   "title": "REQUIRED: stamp SALARY_ESTIMATED from BLS OEWS when no anchors (implementation in PRs)",
+   "detail": "Tim 2026-10-28: unanchored estimate is required so rows are not left without pay. Implementation: forge-coordination PR 101 (enrich-ats-pay blsEstimate fallback) and forge-policy PR 6 (COMPENSATION_ESTIMATION rule). When same-employer and comparable anchors yield nothing, BLS OEWS P25/median/P90 stamps a LOW-confidence range (source=BLS_OEWS). Prefer posted pay or anchored estimates when present. Counts as real pay for scoring, PAY_WORTH, and the $190k floor.",
    "blocks": "Nothing blocked. Reduces AI research cost on rows with no posted pay.",
    "options": [
-    "Approve Writer Action: BLS OEWS title mapping only",
-    "Approve Writer Action: BLS + optional JobPredictor fallback",
-    "Defer; keep current posted-pay-only path",
-    "Decline"
+    "Approve and merge the two PRs",
+    "Approve rules only; hold the Action",
+    "Defer"
    ],
-   "recommended": "Start with BLS OEWS title mapping (zero model dependency). Add JobPredictor later if accuracy on manufacturing roles is acceptable.",
+   "recommended": "Approve and merge both PRs.",
    "action": "Tim decides in chat; record ruling in asks/resolved/. Do not implement absent explicit approval.",
    "source": "asks/open/ASK-20261028-GROK-SALARY-EST.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261028-GROK-SALARY-EST.json",
@@ -247,20 +270,12 @@
    "askId": "ASK-20261028-GROK-SALARY-EST",
    "links": [
     {
-     "label": "JobPredictor (Hugging Face / GitHub)",
-     "url": "https://github.com/ak3zaidan/JobPredictor"
+     "label": "forge-coordination PR 101",
+     "url": "https://github.com/tpruittguitar/forge-coordination/pull/101"
     },
     {
-     "label": "nginyc job-posting-salary-prediction",
-     "url": "https://github.com/nginyc/job-posting-salary-prediction"
-    },
-    {
-     "label": "OfferLens (BLS provider)",
-     "url": "https://github.com/tang-vu/offerlens"
-    },
-    {
-     "label": "Latest source-trial report",
-     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/state/source-trial-report.md"
+     "label": "forge-policy PR 6",
+     "url": "https://github.com/tpruittguitar/forge-policy/pull/6"
     }
    ]
   }
@@ -292,7 +307,7 @@
    "lastAt": "2026-10-24T12:57:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261024-1257ET_TERMINAL.txt",
-   "runs7d": 19,
+   "runs7d": 18,
    "usualGapHours": 5,
    "overdue": true
   },
