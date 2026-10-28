@@ -376,3 +376,14 @@ SUGGESTED_BUILDER=CLAUDE
 STATUS=OPEN
 TIM_DECISION=
 
+ID=SUG-20261028-GROK-01
+DATE=2026-10-28
+BY=GROK
+COMPONENT=Writer / source-trial / salary estimation
+SEVERITY=MEDIUM
+EVIDENCE=state/source-trial-report.json; open-source estimators (JobPredictor MAE ~$15.5k, nginyc ~$19.8k, BLS OEWS production-manager median $121k)
+PROBLEM=Many roles in the source-trial report have no posted pay. AI lanes currently research those pages. Open-source estimators or BLS can stamp SALARY_ESTIMATED without AI tokens.
+PROPOSED_FIX=Add a small Writer Action that, when the latest source-trial report has no pay for a role, stamps SALARY_ESTIMATED from BLS OEWS title mapping (or optional JobPredictor). Prefer posted pay when present. Start with BLS only.
+SUGGESTED_BUILDER=UNASSIGNED
+STATUS=OPEN
+TIM_DECISION=

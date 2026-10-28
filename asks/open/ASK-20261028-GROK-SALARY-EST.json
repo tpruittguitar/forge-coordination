@@ -1,0 +1,36 @@
+{
+  "id": "ASK-20261028-GROK-SALARY-EST",
+  "raisedBy": "GROK",
+  "raisedAt": "2026-10-28T03:26:00-04:00",
+  "section": "DECIDE",
+  "level": "WATCH",
+  "title": "Proposal: stamp SALARY_ESTIMATED from BLS OEWS or JobPredictor when source-trial report has no pay",
+  "detail": "Source-trial (JobSpy/HiringCafe) already supplies posted pay for many roles. When it is silent, open-source estimators can fill the gap without AI page fetches. JobPredictor (DeBERTa, ~750k LinkedIn) reports MAE ~$15.5k / 84.5% within $20k. nginyc MLP ~$19.8k MAE. BLS OEWS Industrial Production Managers median $121k is a defensible baseline for manufacturing/quality. Proposal: a small Writer Action that, for roles with no posted pay in the latest report, stamps SALARY_ESTIMATED (and source) from BLS OEWS title mapping or a cached JobPredictor call. Prefer posted pay when present. No AI tokens. Compare against current posted midpoints in the report shows most non-tech quality roles land within ~$30k of BLS; engineering leadership is higher.",
+  "blocks": "Nothing blocked. Reduces AI research cost on rows with no posted pay.",
+  "options": [
+    "Approve Writer Action: BLS OEWS title mapping only",
+    "Approve Writer Action: BLS + optional JobPredictor fallback",
+    "Defer; keep current posted-pay-only path",
+    "Decline"
+  ],
+  "recommended": "Start with BLS OEWS title mapping (zero model dependency). Add JobPredictor later if accuracy on manufacturing roles is acceptable.",
+  "action": "Tim decides in chat; record ruling in asks/resolved/. Do not implement absent explicit approval.",
+  "links": [
+    {
+      "label": "JobPredictor (Hugging Face / GitHub)",
+      "url": "https://github.com/ak3zaidan/JobPredictor"
+    },
+    {
+      "label": "nginyc job-posting-salary-prediction",
+      "url": "https://github.com/nginyc/job-posting-salary-prediction"
+    },
+    {
+      "label": "OfferLens (BLS provider)",
+      "url": "https://github.com/tang-vu/offerlens"
+    },
+    {
+      "label": "Latest source-trial report",
+      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/state/source-trial-report.md"
+    }
+  ]
+}
