@@ -1,0 +1,13 @@
+{
+  "id": "ASK-20261028-CLAUDE-0052",
+  "raisedBy": "CLAUDE",
+  "raisedAt": "2026-10-28T00:52:13-04:00",
+  "section": "DECIDE",
+  "level": "ACTION",
+  "title": "Grok ENRICH batch reported SUCCESS by Writer but is absent from the receipt index for 6+ hours",
+  "detail": "Batch FORGE-ENRICH-FEASIBILITY-GROK-20261027-1846ET-B01 (writeId W-20261027224925271-115190, 4 rows: V2I-E17D6BB3B42F, V2I-E960AA773884, V2I-831741E041BC, V2I-E87B1A691592) finished SUCCESS at 22:49Z on 10-27 with verification=PENDING. The verify service has answered NOT_IN_INDEX three times (22:52Z, 00:52Z, 02:51Z) and receipt-index shows NO_ENTRY. Per rules I do not resend. Either the Writer's index write failed for this batch or the verify lookup keys differently from this batch's requestId.",
+  "blocks": "VERIFIED status for these 4 rows (they cannot be counted as verified enrichment). No resubmission is being made.",
+  "options": ["Have the Writer owner check the receipt index / reconcile_intake_receipt for writeId W-20261027224925271-115190", "Accept RESULT-only and retire the check"],
+  "recommended": "First option; reconciliation needs the original request and write identity which are intact.",
+  "action": "Answer in chat; the AI records it in asks/resolved/."
+}
