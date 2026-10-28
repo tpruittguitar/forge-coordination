@@ -1,13 +1,13 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-28T07:13:30.181Z",
- "sourceCommit": "5c889769794716450f88a6b7713959f6f9e92597",
+ "builtAt": "2026-10-28T07:27:23.295Z",
+ "sourceCommit": "aeebfdbd5dd7dfbbd9644fbdd263eb100d73fe97",
  "counts": {
-  "total": 11,
+  "total": 12,
   "BLOCKING": 1,
   "ACTION": 7,
-  "WATCH": 3,
-  "DECIDE": 6,
+  "WATCH": 4,
+  "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 3,
   "UPKEEP": 1
@@ -222,6 +222,45 @@
     {
      "label": "Mobile mockup",
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CHATGPT_20261024_ACTION_CENTER_MOBILE.svg"
+    }
+   ]
+  },
+  {
+   "id": "ask:ASK-20261028-GROK-SALARY-EST",
+   "section": "DECIDE",
+   "level": "WATCH",
+   "title": "Proposal: stamp SALARY_ESTIMATED from BLS OEWS or JobPredictor when source-trial report has no pay",
+   "detail": "Source-trial (JobSpy/HiringCafe) already supplies posted pay for many roles. When it is silent, open-source estimators can fill the gap without AI page fetches. JobPredictor (DeBERTa, ~750k LinkedIn) reports MAE ~$15.5k / 84.5% within $20k. nginyc MLP ~$19.8k MAE. BLS OEWS Industrial Production Managers median $121k is a defensible baseline for manufacturing/quality. Proposal: a small Writer Action that, for roles with no posted pay in the latest report, stamps SALARY_ESTIMATED (and source) from BLS OEWS title mapping or a cached JobPredictor call. Prefer posted pay when present. No AI tokens. Compare against current posted midpoints in the report shows most non-tech quality roles land within ~$30k of BLS; engineering leadership is higher.",
+   "blocks": "Nothing blocked. Reduces AI research cost on rows with no posted pay.",
+   "options": [
+    "Approve Writer Action: BLS OEWS title mapping only",
+    "Approve Writer Action: BLS + optional JobPredictor fallback",
+    "Defer; keep current posted-pay-only path",
+    "Decline"
+   ],
+   "recommended": "Start with BLS OEWS title mapping (zero model dependency). Add JobPredictor later if accuracy on manufacturing roles is acceptable.",
+   "action": "Tim decides in chat; record ruling in asks/resolved/. Do not implement absent explicit approval.",
+   "source": "asks/open/ASK-20261028-GROK-SALARY-EST.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261028-GROK-SALARY-EST.json",
+   "at": "2026-10-28T03:26:00-04:00",
+   "raisedBy": "GROK",
+   "askId": "ASK-20261028-GROK-SALARY-EST",
+   "links": [
+    {
+     "label": "JobPredictor (Hugging Face / GitHub)",
+     "url": "https://github.com/ak3zaidan/JobPredictor"
+    },
+    {
+     "label": "nginyc job-posting-salary-prediction",
+     "url": "https://github.com/nginyc/job-posting-salary-prediction"
+    },
+    {
+     "label": "OfferLens (BLS provider)",
+     "url": "https://github.com/tang-vu/offerlens"
+    },
+    {
+     "label": "Latest source-trial report",
+     "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/state/source-trial-report.md"
     }
    ]
   }
