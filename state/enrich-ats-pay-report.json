@@ -1,6 +1,6 @@
 {
- "at": "2026-10-28T06:19:39.544Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261028T0619Z",
+ "at": "2026-10-28T12:43:30.775Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261028T1240Z",
  "dry": false,
  "rows": 2003,
  "eligible": 325,
@@ -10,20 +10,22 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 0,
- "skipped_recent": 273,
- "submitted": 0,
+ "degree": 2,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 8,
+ "skipped_recent": 255,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 3
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 2
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
@@ -31,17 +33,17 @@
   "linkedin": 1
  },
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 1
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 2,
  "ats_candidates": 20,
  "ats_by_kind": {
   "workday": 9,
@@ -51,10 +53,98 @@
  },
  "skipped_closed": 44,
  "ats_unconfirmed": 0,
- "nothing_found": 8,
+ "nothing_found": 24,
  "upgraded": 0,
- "planned": 0,
- "sample": [],
- "estimate_samples": [],
+ "planned": 2,
+ "sample": [
+  {
+   "id": "V2I-AB34EFA7588F",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481173270",
+    "DEGREE_ASOF": "2026-10-28",
+    "SALARY_BASE_LOW": 180000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 200000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-28",
+    "SALARY_SOURCE": "comparables:V2F-AFCBBC5522B9,V2M-FORTUNE-DIR-GLOBAL-MFG-QUALITY-20260930,V2I-A131D9E47BED,V2I-C3FE6BEC0FA0,V2I-4D814A27A330,V2I-2B48CDC98E17,V2I-1E623587393B",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2F-AFCBBC5522B9, V2M-FORTUNE-DIR-GLOBAL-MFG-QUALITY-20260930, V2I-A131D9E47BED, V2I-C3FE6BEC0FA0, V2I-4D814A27A330, V2I-2B48CDC98E17, V2I-1E623587393B]; 7 employer-posted comparable(s), level 2 QUALITY any region; range shared by 5 eligible roles from the same comparables, so LOW; BLS state wage n/a; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-28"
+   }
+  },
+  {
+   "id": "V2I-37DB54C87154",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481517378",
+    "DEGREE_ASOF": "2026-10-28",
+    "SALARY_BASE_LOW": 170000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 195000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-10-28",
+    "SALARY_SOURCE": "comparables:V2I-1094F1656203,V2I-E66F0F453DD5,V2I-D8FDA55EFBB3,V2I-ED56F2930088,V2I-F9EAD4E79698,V2I-5C594B197AE9,V2I-A5129802C860",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-1094F1656203, V2I-E66F0F453DD5, V2I-D8FDA55EFBB3, V2I-ED56F2930088, V2I-F9EAD4E79698, V2I-5C594B197AE9, V2I-A5129802C860]; 7 employer-posted comparable(s), level 2 OTHER same region S; range shared by 11 eligible roles from the same comparables, so LOW; BLS AL 111021 P25-P90 $77K-$244K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-10-28"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-AB34EFA7588F",
+   "company": "Nexus Search",
+   "title": "Quality Site Head / Quality Director",
+   "location": "United States",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481173270/",
+   "est": [
+    180000,
+    220000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "NO_BLS",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY any region; range shared by 5 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2F-AFCBBC5522B9",
+    "V2M-FORTUNE-DIR-GLOBAL-MFG-QUALITY-20260930",
+    "V2I-A131D9E47BED",
+    "V2I-C3FE6BEC0FA0",
+    "V2I-4D814A27A330",
+    "V2I-2B48CDC98E17",
+    "V2I-1E623587393B"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-37DB54C87154",
+   "company": "Copart",
+   "title": "General Manager",
+   "location": "Tanner, AL",
+   "posting": "https://www.linkedin.com/comm/jobs/view/4481517378/",
+   "est": [
+    170000,
+    220000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 OTHER same region S; range shared by 11 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-1094F1656203",
+    "V2I-E66F0F453DD5",
+    "V2I-D8FDA55EFBB3",
+    "V2I-ED56F2930088",
+    "V2I-F9EAD4E79698",
+    "V2I-5C594B197AE9",
+    "V2I-A5129802C860"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
