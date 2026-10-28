@@ -1,0 +1,24 @@
+PACKET TOKEN REDUCTION — 2026-10-28
+
+Packets trimmed so discovery lanes do not carry the full writer/verification contract. Lane sources abbreviated. AGENCY_AND_TOOLS is conditional.
+
+TOKEN ESTIMATES (per run)
+Lane                        Before    After     Saved
+WEB_CAREER_DISCOVERY        ~4893     ~1795     ~3100
+ZIPRECRUITER_WEEKLY         ~5204     ~2081     ~3120
+EMAIL_DISCOVERY             ~5659     ~2563     ~3100
+ENRICH_STRATEGIC            ~4420     ~1546     ~2870
+POSTING_VALIDATION          ~4547     ~1673     ~2870
+WRITER_GOFER                ~4670     ~1768     ~2900
+ENRICH_FEASIBILITY          ~5142     ~2243     ~2900
+
+Average ~3000 tokens saved per lane run (~55-65%).
+
+STRUCTURE
+- COMMON_CORE.txt: every lane. Governance, three-proof, source-trial reuse, unanchored 30-110% BLS estimate.
+- COMMON_WRITER.txt: writer-touching lanes only.
+- Discovery lanes (EMAIL, WEB, ZIPRECRUITER): CORE only.
+- Writer lanes: CORE + WRITER.
+- AGENCY_AND_TOOLS.txt: fetch only when processing an agency row.
+
+PRs: forge-coordination #104 (split + CORE), #105 (abbreviation + AGENCY conditional).
