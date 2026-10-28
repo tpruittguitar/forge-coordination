@@ -250,25 +250,24 @@ function blsCheck(est, w) {
 
 
 /** Required unanchored estimate (Tim 2026-10-28). When no employer or comparable anchors exist:
-    Produce a RANGE that spans BLS OEWS and any available text-based model estimates (JobPredictor, nginyc).
-    - BLS supplies P25/median/P90.
-    - Each ML estimate (if available) is a point.
-    - Range low = min of (BLS P25, all ML points).
-    - Range high = max of (BLS P90, all ML points).
-    - If no ML estimates, range is BLS P25-P90.
-    The value used for PAY_WORTH is 75% of the resulting range (low + 0.75*(high-low)), not the midpoint. */
+    Range = 30% to 110% of the BLS P25-P90 span:
+      low  = P25 + 0.30*(P90-P25)
+      high = P25 + 1.10*(P90-P25)
+    If ML points are available, the range also spans those points.
+    PAY_WORTH uses 75% of the resulting range. */
 function blsEstimate(row, w, mlPoints) {
-  if (!w || !w.p25 || !w.median || !w.p90) return null;
+  if (!w || !w.p25 || !w.p90) return null;
+  const span = w.p90 - w.p25;
+  let low = w.p25 + 0.30 * span, high = w.p25 + 1.10 * span;
   const points = (mlPoints || []).filter(x => Number.isFinite(x) && x > 0);
-  const candidates = [w.p25, w.p90].concat(points);
-  const low = Math.round(Math.min.apply(null, candidates) / 1000) * 1000;
-  const high = Math.round(Math.max.apply(null, candidates) / 1000) * 1000;
+  if (points.length) { low = Math.min(low, ...points); high = Math.max(high, ...points); }
+  low = Math.round(low / 1000) * 1000; high = Math.round(high / 1000) * 1000;
   const scorePoint = Math.round(low + 0.75 * (high - low));
-  const mlNote = points.length ? ` + ${points.length} ML point(s) $${points.map(p => Math.round(p/1000)+'K').join(', ')}` : ' (no ML points)';
+  const mlNote = points.length ? ` + ${points.length} ML point(s)` : '';
   return {
     low, high, mid: scorePoint, conf: 'LOW', n: points.length, close: false, tight: false, ids: [],
     source: points.length ? 'BLS_ML_RANGE' : 'BLS_OEWS',
-    basis: `range spanning BLS OEWS ${w.state} SOC ${w.soc} P25-P90 $${Math.round(w.p25/1000)}K-$${Math.round(w.p90/1000)}K${mlNote} (no employer or comparable anchors; required)`
+    basis: `BLS OEWS ${w.state} SOC ${w.soc} 30-110% of P25-P90 $${Math.round(w.p25/1000)}K-$${Math.round(w.p90/1000)}K${mlNote} (no anchors; required)`
   };
 }
 
