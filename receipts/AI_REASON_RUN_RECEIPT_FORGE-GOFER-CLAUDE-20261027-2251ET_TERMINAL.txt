@@ -1,0 +1,21 @@
+PROVIDER=Claude
+TASK_KEY=FORGE_APPLICATION_WRITER_GOFER
+RUN_ID=FORGE-GOFER-CLAUDE-20261027-2251ET
+ENTRY_VERSION=2026-10-18.1
+RELEASE_ID=6fd06a9987f73ef6e3d3
+PACKET_SHA256=6fd606d041b638506639aa9b1a426edc9d8348dac82e7b6d83b9a27fd74d6871 (recomputed, matches; git blob 615731ca matches)
+SOURCE_VERSIONS=policy_revision 2026-10-26.3; main@4151529
+RULES_BLOB_UNCHECKED (forge-policy outside session scope; no policy interpretation needed)
+GATE=WRITER_FREEZE.json frozen=false (Drive read this run). writer_status unavailable.
+CONNECTORS=Drive working. Gmail GMAIL_QUOTA_BLOCKED ("Resource has been exhausted") on 2 of 2 searches this run; second consecutive run. Application/rejection email scan NOT done.
+ASKS=no resolved items held by this lane.
+QUEUE=WRITER_QUEUE root: processed/ and failed/ only, no pending files. No new processed files since 20261028 00:54Z other than ATSCHK/POSTVAL results.
+HANDOFFS=only EVIDENCE_HANDOFF_ARCHIVE_20261011T1826Z present (cursor unchanged); no new handoffs. Consumed: none.
+ENRICH_BULK_VERIFY: batch FORGE-ENRICH-FEASIBILITY-GROK-20261027-1846ET-B01 (4 rows). Writer RESULT read (processed/RESULT__GROK_ENRICH_FEASIBILITY_BATCH_20261027-1846ET.json): terminalStatus SUCCESS, writeId W-20261027224925271-115190, verification PENDING, all 4 results ok, AFTER values show intended fields. Verify service 20261028-0052 answered NOT_IN_INDEX (index updatedAt 00:32Z, NO_ENTRY). Re-ask filed as verify/requests/CLAUDE-20261027-2251-gofer-enrich.json. Status WRITER_ACCEPTED, not VERIFIED. ENRICH_VERIFIED=none; ENRICH_FAILED=none. Second NOT_IN_INDEX would indicate a receipt-index gap for this write; do not resend.
+WRITES=none. No resubmission.
+COUNTS: new dispositions 0; failures 0.
+NEXT_OWNER=Claude gofer next run: read verify/results/CLAUDE-20261027-2251-gofer-enrich.json; if NOT_IN_INDEX again, report to Tim as receipt-index gap (suggestion only); retry Gmail scan.
+NOT_DONE=Gmail evidence scan; no applications, outreach, master/index edits, archive replay, branches/PRs/code/policy changes.
+STOP_REASON=Gmail quota exhausted; other evidence exhausted
+BATCHES_COMPLETED_THIS_RUN=0
+RUN_TERMINAL_STATUS=PARTIAL_WITH_WORK
