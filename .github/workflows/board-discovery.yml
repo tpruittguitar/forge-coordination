@@ -5,7 +5,7 @@ name: board-discovery
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: '53 */6 * * *'   # 00:53, 06:53, 12:53, 18:53 UTC; 30 minutes after the aggregator source-trial
+    - cron: '53 */4 * * *'   # every 4 hours at :53 UTC; 30 minutes after source-trial (aligned 2026-10-28)
   pull_request:
     paths: ['tools/source-trial/**', '.github/workflows/board-discovery.yml']
 permissions:
