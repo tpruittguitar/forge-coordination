@@ -5,7 +5,7 @@ name: source-trial
 on:
   workflow_dispatch: {}
   schedule:
-    - cron: '23 */4 * * *'   # every 4 hours at :23 UTC (increased cadence, Tim 2026-10-28)
+    - cron: '13 */4 * * *'   # six/day; staggered with boards by two hours (Tim 2026-10-28)
   pull_request:
     paths: ['tools/source-trial/**', '.github/workflows/source-trial.yml']   # a PR run reads real sources, keeps the report as an artifact, never pushes
 permissions:
