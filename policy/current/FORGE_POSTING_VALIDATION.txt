@@ -1,7 +1,7 @@
 LANE PROCEDURE -- FORGE_POSTING_VALIDATION
 
 JOB
-Confirm whether job postings in the master are still open and record what the posting page shows. No scoring, no deep job-description analysis, no applications, no contacting anyone.
+Confirm whether job posts in the master are still open and record what the post page shows. No scoring, no deep job-description analysis, no apps, no contacting anyone.
 
 INPUT (in this order)
 1. WORKLIST_FORGE_POSTING_VALIDATION.txt, Drive 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0, top-down, when it is under 6 hours old. The Writer rebuilds it every 30 minutes and already leaves out rows its own ATS checker owns (Greenhouse, Lever, Ashby, Oracle CX, and Workday through TinyFish).
@@ -11,16 +11,16 @@ Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DE
 
 HOW TO CHECK A ROW
 - Use TinyFish fetch_content (free) when available: up to 10 URLs per call, ttl 0, per_url_timeout_ms 60000. Never run_web_automation, browser sessions or monitors; never sign in, apply, submit a form or attempt a CAPTCHA.
-- Employer ATS or careers page open = LIVE_EMPLOYER_ATS. Workday: a page with the title and "job requisition id" = open; "The page you are looking for doesn't exist" on a URL ending in the requisition token (_R12345, _REQ-12345, _JR12345) = CLOSED; on a URL without the token, search the site (https://<host>/<site>?q=<title words>, links=true) and fetch the matching job link.
-- LinkedIn job page (https://www.linkedin.com/jobs/view/<id>) with a posted age and no closed notice = LIVE_SECONDARY, LIVENESS_NOTE "LinkedIn page, posted <age>, read <date>". "No longer accepting applications" = CLOSED for a row whose only source is that LinkedIn posting.
-- Indeed blocks TinyFish: find the employer posting by exact company, title, location and requisition ID instead.
-- Apply the shared agency/source rules above. If a source blocks, try the employer route; without qualifying evidence use UNCONFIRMED and record attempts.
-- Record REQ_ID, pay, location, work arrangement and posting date only when the page shows them, verbatim.
+- Employer ATS or careers page open = LIVE_EMPLOYER_ATS. Workday: a page with the title and "job requisition id" = open; "The page you are looking for doesn't exist" on a URL ending in the requisition token (_R12345, _REQ-12345, _JR12345) = CLOSED; on a URL w/o the token, search the site (https://<host>/<site>?q=<title words>, links=true) and fetch the matching job link.
+- LinkedIn job page (https://www.linkedin.com/jobs/view/<id>) with a posted age and no closed notice = LIVE_SECONDARY, LIVENESS_NOTE "LinkedIn page, posted <age>, read <date>". "No longer accepting apps" = CLOSED for a row whose only source is that LinkedIn post.
+- Indeed blocks TinyFish: find the employer post by exact co, title, loc and requisition ID instead.
+- Apply the shared agy/source rules above. If a source blocks, try the employer route; w/o qualifying evid use UNCONFIRMED and record attempts.
+- Record REQ_ID, pay, loc, work arrangement and post date only when the page shows them, verbatim.
 
 WRITER SUBMISSION
 Plain-text JSON file in WRITER_QUEUE (Drive 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7), conversion disabled, name {{ACTOR}}_<requestId>.json. Up to 25 rows per file, nested shape:
 {"action":"batch","requestId":"FORGE-POSTVAL-{{ACTOR}}-<YYYYMMDD>-<HHMM>ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-POSTVAL-{{ACTOR}}-<YYYYMMDD>-<HHMM>ET-B01-R01","primaryId":"V2I-XXXXXXXXXXXX","kind":"ENRICH","actor":"{{ACTOR}}","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"YYYY-MM-DD","LIVENESS_EVIDENCE_URL":"https://...","LIVENESS_METHOD":"TINYFISH_FETCH:WORKDAY"}}}]}
-LIVENESS_METHOD values: TINYFISH_FETCH:<SITE>, EMPLOYER_PAGE, SECONDARY_PAGE. VERIFIED requires write RESULT SUCCESS, independently later-execution receipt-index COMPLETE and fresh exact-row row_readback after COMPLETE, all matching the same request/effects.
+LIVENESS_METHOD values: TINYFISH_FETCH:<SITE>, EMPLOYER_PAGE, SECONDARY_PAGE. VERIFIED requires write RESULT SUCCESS, indep later-execution receipt-index COMPLETE and fresh exact-row row_readback after COMPLETE, all matching the same request/effects.
 
 PRODUCTION
 At least 10 rows per run, then continue in batches of 10 while capacity remains. A run never stops on an unreadable row; skip it and note it. PARTIAL_WITH_WORK only with a named hard limit in STOP_REASON.

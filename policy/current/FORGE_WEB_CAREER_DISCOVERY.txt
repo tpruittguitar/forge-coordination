@@ -1,34 +1,34 @@
 LANE PROCEDURE -- FORGE_WEB_CAREER_DISCOVERY
 
 JOB
-Find new Director, Head, VP (and strategically strong Manager / Sr Manager at destination employers) roles in manufacturing, production, operations and quality at named priority companies, using each company's own careers URL. No Gmail. No aggregator sweep. No full board walk.
-FORGE_BOARD_DISCOVERY owns Greenhouse, Lever, Ashby and Workday board indexes. If a company's careers URL host is boards.greenhouse.io, job-boards.greenhouse.io, boards-api.greenhouse.io, jobs.lever.co, api.lever.co, jobs.ashbyhq.com, or myworkdayjobs.com, do not open it. Record LEFT_FOR_BOARD_LANE and take the next company. ZipRecruiter stays FORGE_ZIPRECRUITER_WEEKLY.
-One run finishes its company slice and writes the cursor. The next run starts at the cursor. Do not restart at the first company while the cursor is unfinished. Do not begin a board sweep when the company slice is done.
+Find new dir, Head, VP (and strategically strong mgr / Sr mgr at destination employers) roles in mfg, production, ops and qual at named priority cos, using each co's own careers URL. No Gmail. No aggregator sweep. No full board walk.
+FORGE_BOARD_DISCOVERY owns Greenhouse, Lever, Ashby and Workday board indexes. If a co's careers URL host is boards.greenhouse.io, job-boards.greenhouse.io, boards-api.greenhouse.io, jobs.lever.co, api.lever.co, jobs.ashbyhq.com, or myworkdayjobs.com, do not open it. Record LEFT_FOR_BOARD_LANE and take the next co. ZipRecruiter stays FORGE_ZIPRECRUITER_WEEKLY.
+One run finishes its co slice and writes the cursor. The next run starts at the cursor. Do not restart at the first co while the cursor is unfinished. Do not begin a board sweep when the co slice is done.
 Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
 
 SLICE
-The company order is the Target Companies ranking in Pipeline Explorer: DREAM, then P1, then P2, then P3, then WATCH. Read the published copy of that list, https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt?cb=<epoch seconds>, at the start of every run and record its SOURCE line. Do not substitute another company list. Read the previous terminal receipt and continue at NEXT_COMPANY_CURSOR. Order: every unfinished DREAM company, then P1, then P2 due today, then the P3 weekly rotation, then WATCH when the higher tiers are finished. PAUSED never. Finish the companies you start, up to eight in one run. Write NEXT_COMPANY_CURSOR as the first company not finished. COMPANIES_COVERED lists the companies finished this run. The Grok bot Sniffer is not this lane.
+The co order is the Target cos ranking in Pipeline Explorer: DREAM, then P1, then P2, then P3, then WATCH. Read the published copy of that list, https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt?cb=<epoch seconds>, at the start of every run and record its SOURCE line. Do not substitute another co list. Read the previous terminal receipt and continue at NEXT_COMPANY_CURSOR. Order: every unfinished DREAM co, then P1, then P2 due today, then the P3 weekly rotation, then WATCH when the higher tiers are finished. PAUSED never. Finish the cos you start, up to eight in one run. Write NEXT_COMPANY_CURSOR as the first co not finished. COMPANIES_COVERED lists the cos finished this run. The Grok bot Sniffer is not this lane.
 
-COMPANY SITE NAVIGATION
-Use the careers URL from the priority digest when it is not UNKNOWN and it is not a board host listed above. Open that URL. Use the site's own search for manufacturing, production, operations, quality, plant. Screen titles.
-ICIMS and other company career sites have no public JSON. Stay on the URL you opened. Never invent a deep link.
-TESLA and other company sites with no public board stay in this lane. Record NO_PUBLIC_BOARD when the digest careers URL is UNKNOWN and no company careers page opens. Do not probe Greenhouse, Lever or Ashby slugs; that probe is the board lane.
-ORACLE company sites: an empty search is not closure. CLOSED only when ExternalPostedEndDate is in the past.
-A 403, 429, 5xx, timeout, or unreadable page: record the company and the error, then take the next company in this slice. Do not end the slice on one blocked site.
+co SITE NAVIGATION
+Use the careers URL from the priority digest when it is not UNKNOWN and it is not a board host listed above. Open that URL. Use the site's own search for mfg, production, ops, qual, plant. Screen titles.
+ICIMS and other co career sites have no public JSON. Stay on the URL you opened. Never invent a deep link.
+TESLA and other co sites with no public board stay in this lane. Record NO_PUBLIC_BOARD when the digest careers URL is UNKNOWN and no co careers page opens. Do not probe Greenhouse, Lever or Ashby slugs; that probe is the board lane.
+ORACLE co sites: an empty search is not closure. CLOSED only when ExternalPostedEndDate is in the past.
+A 403, 429, 5xx, timeout, or unreadable page: record the co and the error, then take the next co in this slice. Do not end the slice on one blocked site.
 
 SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
-Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + location) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
+Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + loc) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
 
 INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
-Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed COMPANY, TITLE, LOCATION, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES; DISCOVERY_SOURCE="{{PROVIDER}} company discovery". REQ_ID is the ATS number from the URL, else the posted requisition, else unknown.
-COMPANY, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES; DISCOVERY_SOURCE="{{PROVIDER}} co disc". REQ_ID is the ATS number from the URL, else the posted requisition, else unknown.
+co, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
 
 LANE RECEIPT FIELDS
-COMPANIES_COVERED (list), LEFT_FOR_BOARD_LANE (list), NEXT_COMPANY_CURSOR, CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, SKIPPED_BLOCKED (company | error), OUT_OF_SCOPE (title | company | reason).
-Prior-run verification: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
+COMPANIES_COVERED (list), LEFT_FOR_BOARD_LANE (list), NEXT_COMPANY_CURSOR, CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, SKIPPED_BLOCKED (co | error), OUT_OF_SCOPE (title | co | reason).
+Prior-run verif: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
 END BRIEF
 
 
 INTAKE IDENTITY (REV-196): REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED is a role Tim applied to, declined, was rejected for or protected, listed again; the Writer holds it for Tim. Count it RELISTED_HELD; never resubmit, merge or ask.
 
-SOURCE-TRIAL NEW INTAKE (short): For a NEW role in the latest state/source-trial-report.json that passes screening, submit intake with the report's company, title, location, url, and pay (if present). Set PAY_POSTED from the report string when present. SOURCE_URL is the report URL. Skip page research for salary/liveness when the report supplies them. Do not invent REQ_ID.
+SOURCE-TRIAL NEW INTAKE (short): For a NEW role in the latest state/source-trial-report.json that passes screening, submit intake with the report's co, title, loc, url, and pay (if present). Set PAY_POSTED from the report string when present. SOURCE_URL is the report URL. Skip page research for sal/liveness when the report supplies them. Do not invent REQ_ID.
