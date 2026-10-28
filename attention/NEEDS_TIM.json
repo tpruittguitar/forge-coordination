@@ -1,13 +1,13 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-28T04:30:39.968Z",
- "sourceCommit": "c488c779e4d0e86cb8d31b3cebdf093379c168b5",
+ "builtAt": "2026-10-28T04:52:32.391Z",
+ "sourceCommit": "d9da6396161eed0f8d1f5c5e7fed2ee8afd0d75a",
  "counts": {
-  "total": 10,
+  "total": 11,
   "BLOCKING": 1,
-  "ACTION": 6,
+  "ACTION": 7,
   "WATCH": 3,
-  "DECIDE": 5,
+  "DECIDE": 6,
   "JOBS": 1,
   "FAILED": 3,
   "UPKEEP": 1
@@ -118,6 +118,26 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261026-0102ET.json"
     }
    ]
+  },
+  {
+   "id": "ask:ASK-20261028-CLAUDE-0052",
+   "section": "DECIDE",
+   "level": "ACTION",
+   "title": "Grok ENRICH batch reported SUCCESS by Writer but is absent from the receipt index for 6+ hours",
+   "detail": "Batch FORGE-ENRICH-FEASIBILITY-GROK-20261027-1846ET-B01 (writeId W-20261027224925271-115190, 4 rows: V2I-E17D6BB3B42F, V2I-E960AA773884, V2I-831741E041BC, V2I-E87B1A691592) finished SUCCESS at 22:49Z on 10-27 with verification=PENDING. The verify service has answered NOT_IN_INDEX three times (22:52Z, 00:52Z, 02:51Z) and receipt-index shows NO_ENTRY. Per rules I do not resend. Either the Writer's index write failed for this batch or the verify lookup keys differently from this batch's requestId.",
+   "blocks": "VERIFIED status for these 4 rows (they cannot be counted as verified enrichment). No resubmission is being made.",
+   "options": [
+    "Have the Writer owner check the receipt index / reconcile_intake_receipt for writeId W-20261027224925271-115190",
+    "Accept RESULT-only and retire the check"
+   ],
+   "recommended": "First option; reconciliation needs the original request and write identity which are intact.",
+   "action": "Answer in chat; the AI records it in asks/resolved/.",
+   "source": "asks/open/ASK-20261028-CLAUDE-0052.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261028-CLAUDE-0052.json",
+   "at": "2026-10-28T00:52:13-04:00",
+   "raisedBy": "CLAUDE",
+   "askId": "ASK-20261028-CLAUDE-0052",
+   "links": []
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -313,7 +333,7 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 63,
+   "runs7d": 64,
    "usualGapHours": 2,
    "overdue": false
   },
