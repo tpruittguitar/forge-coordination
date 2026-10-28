@@ -32,12 +32,13 @@ class ReleaseTests(unittest.TestCase):
             self.assertTrue(r.verify_packet(self.manifest,task,lane['owner'],self.outputs[path]))
 
     def test_wrong_provider_or_changed_bytes_rejected(self):
-        task = 'FORGE_POSTING_VALIDATION'
+        # TEMPORARY (revert with ownership after 2026-11-01): POSTVAL is now Grok-owned
+        task = 'FORGE_EMAIL_DISCOVERY'  # still ChatGPT-owned
         data = self.outputs['runtime/releases/'+self.manifest['release_id']+'/'+task+'.txt']
         with self.assertRaisesRegex(ValueError,'own lane'):
             r.verify_packet(self.manifest,task,'Grok',data)
         with self.assertRaisesRegex(ValueError,'hash mismatch'):
-            r.verify_packet(self.manifest,task,'Claude',data+b'\n')
+            r.verify_packet(self.manifest,task,'ChatGPT',data+b'\n')
 
     def test_even_rehashed_mixed_release_rejected(self):
         task='FORGE_POSTING_VALIDATION'
@@ -46,7 +47,7 @@ class ReleaseTests(unittest.TestCase):
         m=copy.deepcopy(self.manifest)
         m['lanes'][task].update(sha256=r.digest(data),blob_sha=r.blob_sha(data))
         with self.assertRaisesRegex(ValueError,'mixed release'):
-            r.verify_packet(m,task,'Claude',data)
+            r.verify_packet(m,task,'Grok',data)
 
     def test_traversal_missing_lane_unknown_schema_rejected(self):
         for alter in (lambda m:m['lanes']['FORGE_POSTING_VALIDATION'].update(file='../CONTROL.txt'),
@@ -60,30 +61,37 @@ class ReleaseTests(unittest.TestCase):
         lanes=self.manifest['lanes']
         for k in ('FORGE_WEB_CAREER_DISCOVERY','FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'):
             self.assertEqual(lanes[k]['owner'],'Grok')
-        self.assertEqual(lanes['FORGE_POSTING_VALIDATION']['owner'],'Claude')
+        # TEMPORARY (revert after 2026-11-01): owner is Grok until Claude reset
+        self.assertEqual(lanes['FORGE_POSTING_VALIDATION']['owner'],'Grok')
+        self.assertEqual(lanes['FORGE_APPLICATION_WRITER_GOFER']['owner'],'Grok')
         self.assertEqual(lanes['FORGE_EMAIL_DISCOVERY']['owner'],'ChatGPT')
         self.assertEqual(lanes['FORGE_ZIPRECRUITER_WEEKLY']['owner'],'ChatGPT')
         self.assertEqual(self.manifest['addons'],{})
         # Claude's temporary rotation now resolves to Grok-owned lanes, so a Claude run skips (no overlap)
         self.assertEqual(r.select_task(self.manifest,'Claude','ROTATION',0),('FORGE_ENRICH_STRATEGIC',False))
 
-    def test_grok_rotation_discovery_paused_enrichment_in_its_hours(self):
-        # 2026-10-20 (Tim 11:10 ET): FORGE_WEB_CAREER_DISCOVERY paused; its hours (0,4,8,12,16,20) run enrichment, alternating
-        seen={}
+    def test_grok_rotation_temporary_claude_lanes_only(self):
+        # TEMPORARY (revert after 2026-11-01): rotations.Grok is ONLY the two transferred lanes
+        # 01/09/17 = WRITER_GOFER, 05/13/21 = POSTING_VALIDATION; all other hours are rest
+        expected = {
+            1: 'FORGE_APPLICATION_WRITER_GOFER',
+            9: 'FORGE_APPLICATION_WRITER_GOFER',
+            17: 'FORGE_APPLICATION_WRITER_GOFER',
+            5: 'FORGE_POSTING_VALIDATION',
+            13: 'FORGE_POSTING_VALIDATION',
+            21: 'FORGE_POSTING_VALIDATION',
+        }
         for h in range(24):
-            if h%4==3:
-                with self.assertRaises(ValueError): r.select_task(self.manifest,'Grok','ROTATION',h)
-                continue
-            task,owned=r.select_task(self.manifest,'Grok','ROTATION',h)
-            self.assertTrue(owned)
-            self.assertNotEqual(task,'FORGE_WEB_CAREER_DISCOVERY',h)
-            want=['FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'][(h//4)%2] if h%4==0 else ['','FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'][h%4]
-            self.assertEqual(task,want,h)
-            seen.setdefault(task,[]).append(h)
-        self.assertEqual(sorted(seen),['FORGE_ENRICH_FEASIBILITY','FORGE_ENRICH_STRATEGIC'])
-        self.assertEqual([len(seen[k]) for k in sorted(seen)],[9,9])
-        for h in range(0,24,3):
-            self.assertFalse(r.select_task(self.manifest,'Claude','ROTATION',h)[1])
+            if h in expected:
+                task, owned = r.select_task(self.manifest, 'Grok', 'ROTATION', h)
+                self.assertTrue(owned)
+                self.assertEqual(task, expected[h])
+            else:
+                with self.assertRaises(ValueError):
+                    r.select_task(self.manifest, 'Grok', 'ROTATION', h)
+        # Claude rotation unchanged and still skips on its enrichment hours
+        for h in range(0, 24, 3):
+            self.assertFalse(r.select_task(self.manifest, 'Claude', 'ROTATION', h)[1])
 
     def test_false_complete_or_readback_before_complete_never_verified(self):
         self.assertTrue(r.verified(True,True,True,True))
