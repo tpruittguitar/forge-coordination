@@ -11,6 +11,13 @@ HOW IT WORKS:
 ==================================================================
 QUEUED (Tim requested; not built yet)
 ==================================================================
+REV-291  Narrow REV-008 to three weekly AI usage bars
+  Status: BUILT 2026-10-28; reader and Explorer changes prepared for draft PR checks, merge and Cloudflare production verification. Next free REV at preparation; register allocation follows the change-record workflow.
+  Asked: Tim 2026-10-28 ("Remove Grok Bot and Hourly usage from each AI report. Keep the others. So only 3 (weekly usage status) results needed for each run."); handover authorizes both PRs and production deploy. Tim subsequently authorized merge only after all checks pass.
+  What: Reader appends exactly 3 readings per run: CLAUDE weekly / weekly (all models), GROK weekly / weekly SuperGrok, CHATGPT weekly / weekly (Codex/Work/agents), all windowHours 168. Grok reads the renamed Weekly Premium Limit. Chrome-unavailable and individual failures still produce one weekly row per provider. Explorer filters meter === "weekly" and preserves weekly %, reset time, run-out projection and verdict logic. Historical session/bot/5-hour rows stay untouched until normal 600-line retention removes them. Task trig_01PD3R3v24kYgznTgRLerCiR is unchanged.
+  Why: Tim needs only the weekly usage status. Grok Bot shares Grok's premium pool with a different reset day; Tim will watch it by hand, with no replacement meter.
+  Risk: Low. Read-only usage-page rule remains: never Buy/Upgrade/credits/toggles/sign-in. Regression coverage mixes all 6 legacy meters and requires exactly 3 weekly bars. Rollback: revert the reader and panel PRs.
+
 REV-017  Explorer state writes merge, never overwrite (includes REV-016 independent tests by ChatGPT)
   Asked: review 2026-10-17 section 2 (stale tab could erase seen marks, incident acks, rulings mirror); Tim approved plan 2026-10-18 ("next with step by step")
   Status: SHIPPED 2026-10-18 17:45 ET. foreman-cockpit PR #121 merged by Tim (e7389ed); Writer deployed from Tim's PC as version 69. G-2 live check PASS before deploy and again after (seen 704, rulings 30, incidents 173, 356,637 bytes, unchanged). writer_status reports build e7389ed / PR 121.
