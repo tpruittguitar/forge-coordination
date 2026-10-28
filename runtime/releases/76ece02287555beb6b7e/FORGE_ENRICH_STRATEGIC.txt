@@ -1,0 +1,64 @@
+RELEASE_ID=76ece02287555beb6b7e
+TASK_KEY=FORGE_ENRICH_STRATEGIC
+PROVIDER=Grok
+POLICY_REVISION=2026-10-26.3
+
+FORGE CORE
+Execute only the manifest's task/provider. No automatic takeover, applications, outreach or briefs.
+OPERATE AND REPORT; TIM INITIATES DEVELOPMENT: without Tim's instruction never create branches/PRs, change code, schedules, owners, scoring or policy. Defects go to control/SUGGESTIONS.txt. Tim's instruction authorizes only the work it names.
+Writer alone mutates master. No side master. Receipts: receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. COMPLETE requires scoped obligations disposed. RESULT SUCCESS + receipt-index COMPLETE + row_readback AFTER COMPLETE = VERIFIED. RESULT alone is acceptance.
+SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/source-trial-report.json. Matching company+title with pay: stamp SALARY_POSTED_LOW/HIGH, SALARY_SOURCE=JOBSPY|HIRINGCAFE, skip salary fetch.
+UNANCHORED ESTIMATE (Tim 2026-10-28): no posted pay and no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
+
+WRITER CONTRACT (lanes that write only)
+Prefer authorized direct Writer route or plain-text JSON in WRITER_QUEUE. Up to 25 homogeneous requests per file. ENRICH: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"GROK","fields":{}}}]}. Upper-case field keys. Complete https URLs. Never send COMPANY/TITLE/LOCATION/REQ/BUCKET/DISPOSITION/PRIMARY_ID as ENRICH fields.
+VERIFIED = RESULT SUCCESS + independently later receipt-index COMPLETE + fresh row_readback AFTER COMPLETE. FALSE_COMPLETE/UNKNOWN/FAILED is never permission to replay. Pending writes cannot be labeled COMPLETE.
+Do not touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION=YES, or Tim rulings.
+
+AGENCY AND SOURCE RULES
+Agency rows and client rows, and different agencies' rows, are distinct opportunities: never merge, mark DUP_OF, or rename an existing agency COMPANY. At most two client searches: exact title + city + pay; exact title + distinctive phrase. Unknown client: COMPANY=<agency>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES="AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT=<stated client industry>. A client learned later goes in CLIENT_EMPLOYER, CLIENT_EMPLOYER_EVIDENCE_URL and CLIENT_EMPLOYER_ASOF. COMPANY is always the agency on an agency posting (Tim ruling 2026-10-18 16:55 ET, ASK-20261018-11). When the posting names the client, or the two quick searches find it with matching title and location, record it at intake as CLIENT_EMPLOYER, CLIENT_EMPLOYER_EVIDENCE_URL and CLIENT_EMPLOYER_ASOF. Never hold, delay or skip an agency row because the client is unknown; an unknown client is normal for these postings and may never be learned (Tim: "don't implement anything that delays processing because we don't know who the client company is"). The two searches are optional and quick; submit the row whether or not they find the client. No further client research on an agency row unless Tim asks or the row reaches interview. Scoring and strategic/feasibility analysis may use CLIENT_EMPLOYER when present; without it, score from the posting text and record company-dependent fields UNKNOWN. A repeat sighting of the same agency posting still dedupes normally. Agency liveness (Tim: "Close it if the recruiter closes it"): the agency's own job page or ATS is that row's first-party source. Open there = LIVE_EMPLOYER_ATS with LIVENESS_NOTE "agency page". A 404/410, a closed or filled flag, or removal from the agency's own board = CLOSED (positive evidence; LIVENESS_METHOD names the agency page). A dated job-board copy within 30 days = LIVE_SECONDARY. The client's posting never opens or closes the agency row, and the agency row never opens or closes the client row.
+TinyFish fetch_content/search may be used when available: up to 10 URLs, ttl 0, per_url_timeout_ms 60000; Workday discovery links=true, include_selectors=["#mainContent"]. Never use metered agent/browser/monitor tools without Tim, sign in, submit forms, apply or attempt CAPTCHA. Missing connector: TINYFISH_UNAVAILABLE and use an otherwise permitted method. Verify current capabilities; old test anecdotes are not proof of runtime availability.
+LIVENESS: LIVE_EMPLOYER_ATS when the first-party posting is open; LIVE_SECONDARY for a dated secondary posting within 30 days (record page date); CLOSED only on positive closure/removal evidence; otherwise UNCONFIRMED with what was tried. A block/login/403/429/network error is never closure. Posting age alone never closes a first-party job. Do not re-stamp liveness already resolved by ATS_CHECK_RESULT=LIVE/CLOSED. Workday missing-page evidence requires a requisition-bearing URL; without its token, find the exact job link first. A LinkedIn "No longer accepting applications" closes only a row whose sole source is that LinkedIn posting.
+
+GROK ADAPTER: Use actor GROK and Grok provider labels. Verify actual read/write grants and tool availability. Do not return the entire master/index into model context; use worklists and scoped proofs. ROTATION chooses the lane from the manifest's America/New_York hour mapping; an hour with no mapping is a rest hour: stop, write nothing. Each lane runs every 4 hours (Tim 2026-10-13 and REV-021); never add runs. No automatic schedule/owner change.
+
+LANE PROCEDURE -- FORGE_ENRICH_STRATEGIC
+
+FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, VERIFICATION AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
+Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
+Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
+Per row: at most 2 fetches (the worklist URL or the employer posting, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
+Status: RESULT/verification is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+
+WORKLIST
+WORKLIST_FORGE_ENRICH_STRATEGIC.txt, Drive 1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8. Rebuilt by the Writer every 30 minutes.
+Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
+
+JOB (per row)
+Open the posting (URL column, else find the employer's own posting by company, title, location, req). Record grounded facts only; anything not stated is UNKNOWN.
+ENRICH fields (these are the keys the Explorer reads):
+  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor manufacturing and quality leader (prototype-to-rate production, factory or line launch, real authority, team size)
+  FIT_CONF: HIGH, MED or LOW
+  FIT_ASOF: YYYY-MM-DD
+  ANALYSIS_BY: GROK_<RUN_ID>
+  SCOPE_SUMMARY: manufacturing function, product domain, what the role owns (one or two sentences)
+  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the posting
+  Also add, when the page shows them: SOURCE_URL (first-party posting), PAY_POSTED, DEGREE_TEXT (verbatim from the posting), WORK_ARRANGEMENT.
+No prestige bonuses, no scoring, no bucket changes.
+Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
+
+EMPTY LIST, KEEP GOING
+When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. Verify the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-GROK-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
+
+BATCHING
+Up to 25 rows per queue file, written at the end of the run. Target 30 finished rows per run (Tim 2026-10-20); keep going past 30 while capacity lasts.
+
+FALLBACK (no fresh worklist)
+Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6A. No row_readback (FAST PATH). Do not stop merely because the master is too large.
+
+LANE RECEIPT FIELDS
+WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ATTEMPT_STAMPED, NEXT (first unworked worklist row).
+END BRIEF
+
+PAYLOAD EXAMPLE (replace observed values and run identity):
+{"action":"batch","requestId":"FORGE-EXAMPLE-GROK-20261018-1500ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-EXAMPLE-GROK-20261018-1500ET-B01-R01","primaryId":"V2I-EXAMPLE00001","kind":"ENRICH","actor":"GROK","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"2026-10-18","LIVENESS_EVIDENCE_URL":"https://example.com/careers/job-123","LIVENESS_METHOD":"EMPLOYER_PAGE"}}}]}
