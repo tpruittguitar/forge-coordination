@@ -1,15 +1,15 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-28T16:09:38.725Z",
- "sourceCommit": "efaf2227f6665453dd92bcbf09f2a4f32c71b32b",
+ "builtAt": "2026-10-28T17:14:06.527Z",
+ "sourceCommit": "252bd7415d10e2f73ade4e13508df7f101510d00",
  "counts": {
-  "total": 16,
+  "total": 15,
   "BLOCKING": 1,
-  "ACTION": 8,
-  "WATCH": 7,
+  "ACTION": 9,
+  "WATCH": 5,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 5,
+  "FAILED": 4,
   "UPKEEP": 3
  },
  "items": [
@@ -106,6 +106,18 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261026-0102ET.json"
     }
    ]
+  },
+  {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "GOFER lane has gone quiet (usually reports every 1.6 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
+   "at": "2026-10-28T00:52:00-04:00",
+   "raisedBy": "CLAUDE"
   },
   {
    "id": "ask:ASK-20261028-CLAUDE-0052",
@@ -238,18 +250,6 @@
    ]
   },
   {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "GOFER lane has gone quiet (usually reports every 1.6 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt (CLAUDE, status PARTIAL_WITH_WORK). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "at": "2026-10-28T00:52:00-04:00",
-   "raisedBy": "CLAUDE"
-  },
-  {
    "id": "run-unfinished:APPWRITER|CLAUDE",
    "section": "FAILED",
    "level": "WATCH",
@@ -290,18 +290,6 @@
      "url": "https://github.com/tpruittguitar/forge-policy/pull/6"
     }
    ]
-  },
-  {
-   "id": "run-unfinished:POSTVAL|GROK",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "POSTVAL · GROK — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-POSTVAL-GROK-20261028-0512ET.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-0512ET.txt",
-   "at": "2026-10-28T05:12:00-04:00",
-   "raisedBy": "GROK"
   }
  ],
  "lanes": [
@@ -441,7 +429,7 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 59,
+   "runs7d": 58,
    "usualGapHours": 1.6,
    "overdue": true
   },
@@ -491,18 +479,18 @@
    "lastAt": "2026-10-28T10:32:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
-   "runs7d": 66,
+   "runs7d": 65,
    "usualGapHours": 2,
    "overdue": false
   },
   {
    "lane": "POSTVAL",
    "provider": "GROK",
-   "lastAt": "2026-10-28T05:12:00-04:00",
+   "lastAt": "2026-10-28T13:13:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-0512ET.txt",
-   "runs7d": 1,
-   "usualGapHours": 183.6,
+   "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
+   "runs7d": 2,
+   "usualGapHours": 8,
    "overdue": false
   },
   {
