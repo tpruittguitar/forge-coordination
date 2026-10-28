@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261027T2240Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261028T0623Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (181 read, 6 failed) | 183 | 81 | 102 |
+| Employer job boards (181 read, 6 failed) | 181 | 80 | 101 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -20,7 +20,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 37 | 78 |
-| SR_MANAGER | 18 | 23 |
+| SR_MANAGER | 17 | 22 |
 | SR_STAFF | 26 | 1 |
 
 ## New roles
@@ -105,6 +105,5 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Carrier | [Associste Director, Field Quality CHVAC](https://carrier.wd5.myworkdayjobs.com/jobs/job/CAN05-CCS-Charlotte-5900-Northwoods-Business-Parkway-Charlotte-NC-28269-USA/Associste-Director--Field-Quality-CHVAC_30221105-1) | CAN05: CCS-Charlotte, 5900 Northwoods Business Parkway, Charlotte, NC, 28269 USA | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Comfort Systems USA | [Director of Manufacturing](https://comfortsystemsusa.wd1.myworkdayjobs.com/corpcareers/job/Houston-TX-TAS-Cullen-HQ/Director-of-Manufacturing_JR108045-1) | Houston, TX (TAS-Cullen HQ) | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Deckers Brands | [Sr. Manager, Design Operations - HOKA](https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505) | Portland, Oregon | MFG_PROD | SR_MANAGER |  |
-| BOARD:workday | Pratt & Whitney (RTX) | [APU Quality Senior Manager (Onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-FL-WEST-PALM-BEACH-777-CUST--777-S-Flagler--FLAGLER-External-Site/APU-Quality-Senior-Manager--Onsite-_01885470) | US-FL-WEST PALM BEACH-777-CUST ~ 777 S Flagler ~ FLAGLER (External Site) | QUALITY | SR_MANAGER |  |
 | BOARD:workday | Leidos | [Director Production Control](https://leidos.wd5.myworkdayjobs.com/External/job/Huntsville-AL/Director-Production-Control_R-00195459-1) | Huntsville, AL | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Northrop Grumman | [SDS Director of Programs 1 – Production Master Planner](https://ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site/job/United-States-Utah-Roy/SDS-Director-of-Programs-1---Production-Master-Planner_R10257910) | United States-Utah-Roy | MFG_PROD | DIRECTOR_PLUS |  |
