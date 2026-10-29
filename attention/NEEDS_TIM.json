@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-29T05:19:17.959Z",
- "sourceCommit": "fcb2c5356e77efaea1dd0703e5fd46a72c501085",
+ "builtAt": "2026-10-29T05:39:48.683Z",
+ "sourceCommit": "26fabddce173004398b09b76a91c8d4806c007e0",
  "counts": {
-  "total": 16,
+  "total": 15,
   "BLOCKING": 0,
   "ACTION": 8,
-  "WATCH": 8,
+  "WATCH": 7,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 5,
-  "UPKEEP": 3
+  "UPKEEP": 2
  },
  "items": [
   {
@@ -290,18 +290,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "at": "2026-10-28T13:13:00-04:00",
    "raisedBy": "GROK"
-  },
-  {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "GOFER lane has gone quiet (usually reports every 1.6 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt (GROK, status COMPLETE_EMPTY_QUEUE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
-   "at": "2026-10-28T17:17:00-04:00",
-   "raisedBy": "GROK"
   }
  ],
  "lanes": [
@@ -437,13 +425,23 @@
   },
   {
    "lane": "GOFER",
+   "provider": "CHATGPT",
+   "lastAt": "2026-10-29T01:24:00-04:00",
+   "lastStatus": "UNFINISHED",
+   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261029-0124ET_WRITER_RESPONSE.json",
+   "runs7d": 3,
+   "usualGapHours": 0,
+   "overdue": false
+  },
+  {
+   "lane": "GOFER",
    "provider": "CLAUDE",
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
    "runs7d": 52,
    "usualGapHours": 1.6,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "GOFER",
@@ -453,7 +451,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "HANDOFF",
