@@ -10,7 +10,10 @@ async function jsonRequest(req,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout
   let r;
   try{r=await fetcher(req.url,{method:req.method||'GET',headers:{accept:'application/json',...(req.body?{'content-type':'application/json'}:{})},...(req.body?{body:req.body}:{}),signal:AbortSignal.timeout(20000)});}
   catch(e){if(count<attempts){await wait(500*2**(count-1));continue;}const err=Error('Connection timeout or network failure');err.attempts=count;throw err;}
-  if(!r.ok){if(TRANSIENT.has(r.status)&&count<attempts){const retry=Number(r.headers?.get?.('retry-after'));await wait(Math.min(20000,Math.max(500*2**(count-1),Number.isFinite(retry)?retry*1000:0)));continue;}const err=Error('HTTP '+r.status);err.status=r.status;err.attempts=count;throw err;}
+  if(!r.ok){const header=r.headers?.get?.('retry-after'),seconds=Number(header),retryMs=header?Math.max(0,Number.isFinite(seconds)?seconds*1000:Date.parse(header)-Date.now()):0;
+   if(TRANSIENT.has(r.status)&&count<attempts&&!(retryMs>20000)){await wait(Math.max(500*2**(count-1),Number.isFinite(retryMs)?retryMs:0));continue;}
+   const err=Error('HTTP '+r.status);err.status=r.status;err.attempts=count;err.retryAfterMs=Number.isFinite(retryMs)?retryMs:0;throw err;
+  }
   try{return {data:await r.json(),attempts:count};}catch{const err=Error('Invalid job-board response');err.status=r.status;err.attempts=count;throw err;}
  }
 }
@@ -38,11 +41,11 @@ async function readBoard(board,searches,{fetcher=fetch,wait=ms=>new Promise(r=>s
    succeeded++;for(const job of P.parseBoard(b,answer.data)){const key=job.page||job.title;if(!seen.has(key)){seen.add(key);jobs.push(job);}}
   }catch(e){failed++;attempts+=e.attempts||0;lastError=e;break;} // do not repeat the same broken endpoint for all search words
  }
- return {board:b,jobs,succeeded,failed,attempts,tenantRecovered,error:lastError?String(lastError.message).slice(0,120):'',httpStatus:lastError?.status||null,status:lastError?(succeeded?'PARTIAL':failure(lastError.status)):'OK'};
+ return {board:b,jobs,succeeded,failed,attempts,tenantRecovered,error:lastError?String(lastError.message).slice(0,120):'',httpStatus:lastError?.status||null,retryAfterMs:lastError?.retryAfterMs||0,status:lastError?(succeeded?'PARTIAL':failure(lastError.status)):'OK'};
 }
 function loadState(text){if(!text)return {schema:'forge.board-health.v1',at:null,boards:{}};const s=JSON.parse(text);if(s.schema!=='forge.board-health.v1'||!s.boards||Array.isArray(s.boards))throw Error('Invalid board-health history; preserve it for recovery');return s;}
 function record(state,b,result,at){
- const prev=state.boards[b.key]||{},ok=result.status==='OK',now=Date.parse(at),delay=result.status==='ACCESS_RESTRICTED'?4*3600000:result.status==='ADDRESS_OR_REQUEST_ERROR'?6*3600000:15*60000;
+ const prev=state.boards[b.key]||{},ok=result.status==='OK',now=Date.parse(at),delay=Math.max(result.retryAfterMs||0,result.status==='ACCESS_RESTRICTED'?4*3600000:result.status==='ADDRESS_OR_REQUEST_ERROR'?6*3600000:15*60000);
  state.boards[b.key]={key:b.key,descriptor:{kind:b.kind,key:b.key,board:b.board,host:b.host,tenant:b.tenant,site:b.site,tier:b.tier||'',companies:[...b.companies]},companies:[...b.companies],lastAttemptAt:at,lastSuccessAt:ok?at:prev.lastSuccessAt||null,lastSuccessOpenings:ok?result.jobs.length:prev.lastSuccessOpenings??null,status:result.status,error:result.error,httpStatus:result.httpStatus,consecutiveFailures:ok?0:(prev.consecutiveFailures||0)+1,retryAt:ok?null:new Date(now+delay).toISOString(),attempts:result.attempts,pagesSucceeded:result.succeeded,pagesFailed:result.failed,repairedFrom:b.repairedFrom||null,evidenceUrl:b.evidenceUrl||null};
  state.at=at;return state.boards[b.key];
 }

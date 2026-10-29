@@ -17,6 +17,11 @@ test('Workday 422 can recover public tenant configuration without guessing or ex
  }});
  assert.equal(r.status,'OK');assert.equal(r.board.tenant,'vhr_otsuka');assert.equal(r.tenantRecovered,true);assert.equal(calls.length,3);
 });
+
+test('a long provider Retry-After is deferred instead of retried too soon',async()=>{
+ let calls=0;await assert.rejects(H.jsonRequest({url:'https://example.com/jobs'},{fetcher:async()=>{calls++;return {ok:false,status:429,headers:{get:()=> '3600'}}},wait:async()=>assert.fail('must defer')}),e=>e.retryAfterMs===3600000);assert.equal(calls,1);
+ const state=H.loadState(),h=H.record(state,board,{status:'TEMPORARY_FAILURE',error:'HTTP 429',httpStatus:429,retryAfterMs:3600000,jobs:[],attempts:1,succeeded:0,failed:1},'2026-10-28T12:00:00Z');assert.equal(h.retryAt,'2026-10-28T13:00:00.000Z');
+});
 test('failed source survives later passes, preserves last success, and is removed from recovery after success',()=>{
  const s=H.loadState(),pass={status:'OK',jobs:[{}],attempts:1,succeeded:1,failed:0,error:''};
  H.record(s,board,pass,'2026-10-28T12:00:00Z');
