@@ -44,3 +44,14 @@ test('reviewed address repairs preserve the real employer and do not select the 
  assert.equal(H.repair({key:'workday:vhr-otsuka.wd1.myworkdayjobs.com/External'}).tenant,'vhr_otsuka');
  assert.throws(()=>H.loadState('{"schema":"wrong","boards":{}}'),/history/);
 });
+
+test('an official address repair migrates one board obligation and clears only after a successful check',()=>{
+ const old={...board,key:'workday:chloe.wd3.myworkdayjobs.com/OpellaCareers',companies:new Set(['Opella'])},s=H.loadState();
+ const fail={status:'ACCESS_RESTRICTED',error:'HTTP 403',httpStatus:403,jobs:[],attempts:1,succeeded:0,failed:1};
+ H.record(s,old,fail,'2026-10-29T03:00:00Z');
+ const repaired=H.repair(old);assert.equal(repaired.host,'opella.wd103.myworkdayjobs.com');
+ H.record(s,repaired,fail,'2026-10-29T04:00:00Z');
+ assert.equal(Object.keys(s.boards).length,1);assert.equal(s.boards[repaired.key].consecutiveFailures,2);assert.equal(H.summary(s,new Set()).pending,1);
+ H.record(s,repaired,{...fail,status:'OK',error:'',httpStatus:null,jobs:[{}],succeeded:3,failed:0},'2026-10-29T05:00:00Z');
+ assert.equal(Object.keys(s.boards).length,1);assert.equal(s.boards[old.key],undefined);assert.equal(H.summary(s,new Set()).pending,0);assert.equal(s.boards[repaired.key].lastSuccessAt,'2026-10-29T05:00:00Z');
+});
