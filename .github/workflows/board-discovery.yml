@@ -29,7 +29,7 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js tools/source-trial/board-health.test.js
       - name: Boards
         env:
           TRIAL_FC_DIR: ${{ github.workspace }}/_fc
@@ -37,20 +37,24 @@ jobs:
           TRIAL_CURSOR_FILE: state/board-cursor.json
         run: node tools/source-trial/run.js
       - name: Keep the report as a run artifact (any branch)
+        if: always()
         uses: actions/upload-artifact@v4
         with:
           name: board-discovery-report
           path: |
             state/board-discovery-report.*
             state/board-cursor.json
+            state/board-health.json
       - name: Commit report and cursor (main only; a PR-branch run never pushes)
-        if: github.ref == 'refs/heads/main'
+        if: always() && github.ref == 'refs/heads/main'
         run: |
           mkdir -p /tmp/out && cp state/board-discovery-report.* state/board-cursor.json /tmp/out/
+          [ ! -f state/board-health.json ] || cp state/board-health.json /tmp/out/
           git config user.name forge-source-trial-bot
           git config user.email forge-source-trial-bot@users.noreply.github.com
           for i in 1 2 3 4 5 6; do
             git add state/board-discovery-report.json state/board-discovery-report.md state/board-cursor.json
+            [ ! -f state/board-health.json ] || git add state/board-health.json
             git diff --cached --quiet && { echo "No change"; exit 0; }
             git commit -q -m "SOURCE-TRIAL-BOT: board discovery report"
             git push -q origin HEAD:main && exit 0
