@@ -20,6 +20,7 @@ const {requestId,releaseRules}=require('./production-executor');
 const {DIR,previous,latch}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
 const {carryForwardRoles}=require('./carry-forward');
+const {knownRequestIds}=require('./known-requests');
 
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
@@ -93,7 +94,7 @@ async function main(argv=process.argv.slice(2)){
  if(quarantined.length)console.error('NEEDS TIM: isolated identity HOLD(s), NOT resolved: '+JSON.stringify(quarantined));
  // Count only attempts actually recorded; unattempted tail candidates are safe to
  // consider again. Quarantined and all other attempted requests remain excluded.
- const sent=new Set(prior.flatMap(p=>Object.keys(p.state.results||{})));
+ const sent=knownRequestIds(prior);
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
  const carried=carryForwardRoles(prior);
  // A rolled-over discovery report must not lose a reconciled run's untouched candidates.

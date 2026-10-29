@@ -3,8 +3,9 @@
 // These are discovery inputs only: current filters, live evidence and Writer gates still apply.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {requestId}=require('./production-executor');
+const {knownRequestIds}=require('./known-requests');
 function carryForwardRoles(prior,{root='.'}={}){
- const sent=new Set(prior.flatMap(p=>Object.keys(p.state.results||{}))),seen=new Set(),roles=[];
+ const sent=knownRequestIds(prior),seen=new Set(),roles=[];
  for(const p of prior){
   const ids=p.state.reconciliation?.carryForwardRequestIds;
   if(ids===undefined)continue;

@@ -31466,5 +31466,44 @@
  "recorderProbe": {
   "probe": "dfda54f6-a766-47ad-943b-f003cd7bf9a7",
   "at": "2026-10-29T16:02:15.721Z"
+ },
+ "reconciliation": {
+  "status": "RECONCILED_INTERRUPTED_RUN_WITH_CARRY_FORWARD",
+  "at": "2026-10-29T19:57:01.675Z",
+  "by": "CHATGPT",
+  "authority": "Tim: automatic intake is stopped; fix prior Writer blocks and finish work",
+  "writerSubmissions": 0,
+  "confirmedInserts": 9,
+  "capturedNoWrite": 2,
+  "pendingUnattempted": 13,
+  "preExistingCompleteRequests": [
+   {
+    "requestId": "FORGE-SOURCE-7D47C22AD4D794A937C0D51D",
+    "primaryId": "V2I-DFB602928E16",
+    "receiptState": "COMPLETE",
+    "exactRowVerified": true,
+    "proof": "receipts/auto-intake/probes/20261029T1952Z-operator-recovery.json"
+   }
+  ],
+  "carryForwardRequestIds": [
+   "FORGE-SOURCE-46F1DC02722618D0EF2BEAE6",
+   "FORGE-SOURCE-5611234E8989170F80610865",
+   "FORGE-SOURCE-A60C67837459EF4F4931D1AA",
+   "FORGE-SOURCE-0562F737BF05ECC0D99E5272",
+   "FORGE-SOURCE-55119CDC29C7D30783F9D11E",
+   "FORGE-SOURCE-97880248E077C9B029BA44CE",
+   "FORGE-SOURCE-EB74EC69BE7227D11F5CCF10",
+   "FORGE-SOURCE-198A753540A1CBC452B4E827",
+   "FORGE-SOURCE-6B7186C86E8C0C4509270953",
+   "FORGE-SOURCE-731ADA3376B32D715FE3BF8A",
+   "FORGE-SOURCE-AF71FB3D0B404CCD6947416D",
+   "FORGE-SOURCE-73BCF4885A7EF0733628E1EA",
+   "FORGE-SOURCE-245E5D1E8CE52DE32FF5F593"
+  ],
+  "proofs": [
+   "receipts/auto-intake/probes/20261029T1952Z-operator-recovery.json"
+  ],
+  "scaleUpAllowed": false,
+  "note": "Earlier durable request has no local acceptance response; do not synthesize one. It already existed in this run before-snapshot. The later run made no POST for it. Preserve every original response/halt and carry all13 untouched tail candidates."
  }
 }
