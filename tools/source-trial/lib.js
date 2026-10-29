@@ -53,6 +53,12 @@ function atsId(url) {
 const PROTECTED_RE = /(?:^|[^a-z0-9])(applied|rejected(?:_[a-z0-9]+)*|declined(?:_[a-z0-9]+)*|withdrawn|interviewed|resolved|closed_dead|not_good_fit|off_target(?:_[a-z0-9]+)*)(?=$|[^a-z0-9])/i;
 const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
 const protectedRow = r => r.ARCHIVED_TERMINAL === true || PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
+// A closed job is retained for deduplication, never used to create discovery work.
+function discoverySeed(r) {
+ const bucket=String(r.BUCKET||'').toUpperCase();
+ if(/^(DECLINED_BY_TIM|REJECTED_BY_EMPLOYER|CLOSED_DEAD|DUPLICATE|APPLIED)$/.test(bucket))return false;
+ return !['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k=>[r[k],r.p&&r.p[k]].some(v=>!!String(v||'').trim()&&!/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
+}
 const locKey = loc => {
   const raw = String(loc || '').trim();
   const shortSuffix = raw.match(/^(.+?)\s+([A-Z]{2})$/);
@@ -137,4 +143,4 @@ function level(title) {
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
-module.exports = { level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority, tierRank };
+module.exports = { discoverySeed, level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority, tierRank };

@@ -138,3 +138,9 @@ test('Re-QA unpunctuated and long-form city normalization plus city-less fallbac
  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','Dallas, TX'),'NEW');
  assert.strictEqual(T.family('Director, Mission Production'),'MFG_PROD');
 });
+test('declined jobs cannot seed discovery but open pursuit jobs can',()=>{
+ const T=require('./lib');
+ for(const BUCKET of ['DECLINED_BY_TIM','REJECTED_BY_EMPLOYER','CLOSED_DEAD','DUPLICATE','APPLIED'])assert.equal(T.discoverySeed({BUCKET}),false);
+ assert.equal(T.discoverySeed({BUCKET:'READY_TO_PURSUE',DISPOSITION:'RESOLVED/PURSUE_CANDIDATE'}),true);
+ assert.equal(T.discoverySeed({BUCKET:'MANUAL_RESEARCH',p:{DO_NOT_REWORK:'YES'}}),false);
+});

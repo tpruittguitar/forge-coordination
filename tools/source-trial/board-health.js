@@ -52,7 +52,7 @@ function record(state,b,result,at){
  state.at=at;return state.boards[b.key];
 }
 function recoveryBoards(state,paused,now=Date.now()){
- return Object.values(state.boards).filter(h=>h.status!=='OK'&&h.descriptor&&Date.parse(h.retryAt||0)<=now&&!h.companies.every(c=>paused.has(P.normCo(c)))).sort((a,b)=>Date.parse(a.lastAttemptAt)-Date.parse(b.lastAttemptAt)).map(h=>({...repair(h.descriptor),companies:new Set(h.companies),tier:h.descriptor.tier||''}));
+ return Object.values(state.boards).filter(h=>!h.paused&&h.status!=='OK'&&h.descriptor&&Date.parse(h.retryAt||0)<=now&&!h.companies.every(c=>paused.has(P.normCo(c)))).sort((a,b)=>Date.parse(a.lastAttemptAt)-Date.parse(b.lastAttemptAt)).map(h=>({...repair(h.descriptor),companies:new Set(h.companies),tier:h.descriptor.tier||''}));
 }
-function summary(state,paused){const rows=Object.values(state.boards).filter(h=>!h.companies.every(c=>paused.has(P.normCo(c))));return {tracked:rows.length,pending:rows.filter(h=>h.status!=='OK').length,unavailable:rows.filter(h=>h.status==='ACCESS_RESTRICTED'||h.status==='TEMPORARY_FAILURE').length};}
+function summary(state,paused){const rows=Object.values(state.boards).filter(h=>!h.paused&&!h.companies.every(c=>paused.has(P.normCo(c))));return {tracked:rows.length,pending:rows.filter(h=>h.status!=='OK').length,unavailable:rows.filter(h=>h.status==='ACCESS_RESTRICTED'||h.status==='TEMPORARY_FAILURE').length};}
 module.exports={repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};
