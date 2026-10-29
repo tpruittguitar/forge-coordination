@@ -54,3 +54,10 @@ test('a retained pending transaction supplies after-image bindings without fabri
  const e={s:'NEEDS_RESOLUTION',at,w:'W-OLD'},index=idx({'REQ-OLD':e});index.pending=[{writeId:'W-OLD',writtenAt:at,requestIds:['REQ-OLD'],items:[item()]}];
  const c=await R.inspect({requestId:'REQ-OLD',entry:e,bindings:[]},index,R.graph(index),async()=>[row()],{});assert.equal(c.status,'PROVEN_PERSISTED');assert.equal(c.sourceEntry.items,undefined);assert.deepEqual(c.pendingBinding.items,[item()]);
 });
+
+test('a proven historical outcome remains closed after later row changes; a changed receipt opens a new case',async()=>{
+ const root=temp(),index=idx({'REQ-OLD':entry([item()])});await R.recover({root,index,sha,now,readRows:async()=>[row()]});
+ const next=await R.recover({root,index,sha,now:new Date(+now+86400000),readRows:()=>{throw Error('A resolved old write is not a new live failure');}});
+ assert.equal(next.cases[0].status,'PROVEN_PERSISTED');assert.equal(next.cases[0].historicalResolution,true);assert.equal(next.cases[0].rows[0].readAt,now.toISOString());
+ index.requests['REQ-OLD'].at='2026-10-29T13:00:00Z';const changed=await R.recover({root,index,sha,now:new Date(+now+86400000),readRows:async()=>[row('different:10')]});assert.equal(changed.cases[0].status,'ESCALATED');
+});
