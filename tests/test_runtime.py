@@ -32,8 +32,7 @@ class ReleaseTests(unittest.TestCase):
             self.assertTrue(r.verify_packet(self.manifest,task,lane['owner'],self.outputs[path]))
 
     def test_wrong_provider_or_changed_bytes_rejected(self):
-        # TEMPORARY (revert with ownership after 2026-11-01): POSTVAL is now Grok-owned
-        task = 'FORGE_EMAIL_DISCOVERY'  # still ChatGPT-owned
+        task = 'FORGE_EMAIL_DISCOVERY'
         data = self.outputs['runtime/releases/'+self.manifest['release_id']+'/'+task+'.txt']
         with self.assertRaisesRegex(ValueError,'own lane'):
             r.verify_packet(self.manifest,task,'Grok',data)
@@ -47,7 +46,7 @@ class ReleaseTests(unittest.TestCase):
         m=copy.deepcopy(self.manifest)
         m['lanes'][task].update(sha256=r.digest(data),blob_sha=r.blob_sha(data))
         with self.assertRaisesRegex(ValueError,'mixed release'):
-            r.verify_packet(m,task,'Grok',data)
+            r.verify_packet(m,task,'ChatGPT',data)
 
     def test_traversal_missing_lane_unknown_schema_rejected(self):
         for alter in (lambda m:m['lanes']['FORGE_POSTING_VALIDATION'].update(file='../CONTROL.txt'),
@@ -57,22 +56,15 @@ class ReleaseTests(unittest.TestCase):
             alter(m)
             with self.assertRaises(ValueError): r.validate_manifest(m)
 
-    def test_rev021_owners_and_grok_four_hour_rotation(self):
-        lanes=self.manifest['lanes']
-        for k in ('FORGE_WEB_CAREER_DISCOVERY','FORGE_ENRICH_STRATEGIC','FORGE_ENRICH_FEASIBILITY'):
-            self.assertEqual(lanes[k]['owner'],'Grok')
-        # TEMPORARY (revert after 2026-11-01): owner is Grok until Claude reset
-        self.assertEqual(lanes['FORGE_POSTING_VALIDATION']['owner'],'Grok')
-        self.assertEqual(lanes['FORGE_APPLICATION_WRITER_GOFER']['owner'],'Grok')
-        self.assertEqual(lanes['FORGE_EMAIL_DISCOVERY']['owner'],'ChatGPT')
-        self.assertEqual(lanes['FORGE_ZIPRECRUITER_WEEKLY']['owner'],'ChatGPT')
-        self.assertEqual(self.manifest['addons'],{})
-        # Claude's temporary rotation now resolves to Grok-owned lanes, so a Claude run skips (no overlap)
-        self.assertEqual(r.select_task(self.manifest,'Claude','ROTATION',0),('FORGE_ENRICH_STRATEGIC',False))
+    def test_temporary_chatgpt_ownership_and_legacy_provider_rejection(self):
+        for task, lane in self.manifest['lanes'].items():
+            self.assertEqual(lane['owner'], 'ChatGPT')
+            self.assertTrue(r.select_task(self.manifest, 'ChatGPT', task, 0)[1])
+            for former_provider in ('Claude', 'Grok'):
+                self.assertFalse(r.select_task(self.manifest, former_provider, task, 0)[1])
+        self.assertEqual(self.manifest['addons'], {})
 
-    def test_grok_rotation_temporary_claude_lanes_only(self):
-        # TEMPORARY (revert after 2026-11-01): rotations.Grok is ONLY the two transferred lanes
-        # 01/09/17 = WRITER_GOFER, 05/13/21 = POSTING_VALIDATION; all other hours are rest
+    def test_chatgpt_rotation_preserves_slots_and_legacy_launcher_map(self):
         expected = {
             1: 'FORGE_APPLICATION_WRITER_GOFER',
             9: 'FORGE_APPLICATION_WRITER_GOFER',
@@ -82,14 +74,19 @@ class ReleaseTests(unittest.TestCase):
             21: 'FORGE_POSTING_VALIDATION',
         }
         for h in range(24):
-            if h in expected:
-                task, owned = r.select_task(self.manifest, 'Grok', 'ROTATION', h)
-                self.assertTrue(owned)
-                self.assertEqual(task, expected[h])
-            else:
-                with self.assertRaises(ValueError):
-                    r.select_task(self.manifest, 'Grok', 'ROTATION', h)
-        # Claude rotation unchanged and still skips on its enrichment hours
+            for provider in ('ChatGPT', 'Grok'):
+                if h in expected:
+                    task, owned = r.select_task(self.manifest, provider, 'ROTATION', h)
+                    self.assertEqual(task, expected[h])
+                    self.assertEqual(owned, provider == 'ChatGPT')
+                else:
+                    with self.assertRaises(ValueError):
+                        r.select_task(self.manifest, provider, 'ROTATION', h)
+        # The existing ChatGPT launcher resolves rotations.Grok then uses its actual provider.
+        for h, task in expected.items():
+            legacy_task = self.manifest['rotations']['Grok'][str(h)]
+            self.assertEqual(legacy_task, task)
+            self.assertTrue(r.select_task(self.manifest, 'ChatGPT', legacy_task, h)[1])
         for h in range(0, 24, 3):
             self.assertFalse(r.select_task(self.manifest, 'Claude', 'ROTATION', h)[1])
 

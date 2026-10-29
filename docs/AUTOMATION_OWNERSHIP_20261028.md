@@ -1,5 +1,7 @@
 # Pipeline Explorer automation ownership and schedule audit
 
+Schedule changes authorized later on October 28 are tracked in [Coordinated schedules and chart coverage](COORDINATED_SCHEDULES_20261028.md). Tables below preserve the earlier observed configuration; use the coordinated schedule document and its completion record for current execution.
+
 Authority: Tim, 2026-10-28, in Codex chat `01a184da-4336-7221-8a99-5e405f1af7ad`: "all belong to you for at lease the rest of the week / update documentation accordingly" and "list them all with a schedule when you are finshed".
 
 **Accountable owner: ChatGPT/Codex for all Pipeline Explorer / Forge automations through at least Sunday, November 1, 2026. TEMPORARY — REVERT ONLY ON TIM'S INSTRUCTION.** No automatic ownership handback on a quota reset or calendar date. This supersedes earlier temporary Claude-to-Grok / Grok-to-ChatGPT ownership notes. Tim remains the decision authority. Business rules, Writer-only mutations, proof requirements and existing pauses are unchanged. The unrelated Stacy reminder is outside the Pipeline Explorer scope.
