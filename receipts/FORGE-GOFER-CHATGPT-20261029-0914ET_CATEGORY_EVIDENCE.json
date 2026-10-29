@@ -1,0 +1,81 @@
+{
+  "run": "FORGE-GOFER-CHATGPT-20261029-0914ET",
+  "at": "2026-10-29T13:28:46.386Z",
+  "sourceCollectionSha256": "48d7f29473a78b583244cd69169b16e952e6b106f5db392d717c0f04670f6c62",
+  "decisions": [
+    {
+      "primaryId": "V2I-14536C8AF428",
+      "requestId": "FORGE-GOFER-CHATGPT-20261029-0914ET-B01-R01",
+      "kind": "ENRICH",
+      "note": "Existing Tim NC-002 and approved global PHARMA_MEDICAL exclusion: official employer company page establishes medical technology/devices as primary business. Not a supplier classified solely by its customers. Policy authority: Tim existing global exclusion, RULES_V4_20261007 and ASK-20261023-CLAUDE-1312; no new category or personal decision invented. Evidence https://www.bd.com/en-us/about-bd/our-company",
+      "evidence": "https://www.bd.com/en-us/about-bd/our-company",
+      "fields": {
+        "EMPLOYER_PRIMARY_BUSINESS": "MEDICAL_DEVICE_MANUFACTURER",
+        "NEVER_CONSIDER_RULE_ID": "NC-002",
+        "NEVER_CONSIDER_REVIEW_NEEDED": "NO",
+        "EXCLUSION_CONFIDENCE": "HIGH",
+        "EXCLUSION_REASON": "NEVER_CONSIDER - PHARMA_MEDICAL",
+        "EMPLOYER_PRIMARY_BUSINESS_EVIDENCE_URL": "https://www.bd.com/en-us/about-bd/our-company",
+        "EXCLUSION_ASOF": "2026-10-29"
+      }
+    },
+    {
+      "primaryId": "V2I-4C626AFC07E4",
+      "requestId": "FORGE-GOFER-CHATGPT-20261029-0914ET-B01-R02",
+      "kind": "ENRICH",
+      "note": "Existing Tim NC-002 and approved global PHARMA_MEDICAL exclusion: official employer company page establishes medical technology/devices as primary business. Not a supplier classified solely by its customers. Policy authority: Tim existing global exclusion, RULES_V4_20261007 and ASK-20261023-CLAUDE-1312; no new category or personal decision invented. Evidence https://www.bd.com/en-us/about-bd/our-company",
+      "evidence": "https://www.bd.com/en-us/about-bd/our-company",
+      "fields": {
+        "EMPLOYER_PRIMARY_BUSINESS": "MEDICAL_DEVICE_MANUFACTURER",
+        "NEVER_CONSIDER_RULE_ID": "NC-002",
+        "NEVER_CONSIDER_REVIEW_NEEDED": "NO",
+        "EXCLUSION_CONFIDENCE": "HIGH",
+        "EXCLUSION_REASON": "NEVER_CONSIDER - PHARMA_MEDICAL",
+        "EMPLOYER_PRIMARY_BUSINESS_EVIDENCE_URL": "https://www.bd.com/en-us/about-bd/our-company",
+        "EXCLUSION_ASOF": "2026-10-29"
+      }
+    },
+    {
+      "primaryId": "V2I-CE650ED22640",
+      "requestId": "FORGE-GOFER-CHATGPT-20261029-0914ET-B01-R03",
+      "kind": "ENRICH",
+      "note": "Existing Tim NC-002 and approved global PHARMA_MEDICAL exclusion: official employer company page establishes medical technology/devices as primary business. Not a supplier classified solely by its customers. Policy authority: Tim existing global exclusion, RULES_V4_20261007 and ASK-20261023-CLAUDE-1312; no new category or personal decision invented. Evidence https://www.transmedics.com/our-company/",
+      "evidence": "https://www.transmedics.com/our-company/",
+      "fields": {
+        "EMPLOYER_PRIMARY_BUSINESS": "MEDICAL_DEVICE_MANUFACTURER",
+        "NEVER_CONSIDER_RULE_ID": "NC-002",
+        "NEVER_CONSIDER_REVIEW_NEEDED": "NO",
+        "EXCLUSION_CONFIDENCE": "HIGH",
+        "EXCLUSION_REASON": "NEVER_CONSIDER - PHARMA_MEDICAL",
+        "EMPLOYER_PRIMARY_BUSINESS_EVIDENCE_URL": "https://www.transmedics.com/our-company/",
+        "EXCLUSION_ASOF": "2026-10-29"
+      }
+    },
+    {
+      "primaryId": "V2I-F6CA2C7BC259",
+      "requestId": "FORGE-GOFER-CHATGPT-20261029-0914ET-B01-R04",
+      "kind": "ENRICH",
+      "note": "Existing Tim NC-003 food producer exclusion: official Tip Top Foods company page describes primary processing/marketing of raw and cooked poultry, and exact Tip Top Food Group LLC Marietta role describes poultry slaughter-plant operations. Policy authority: Tim existing global exclusion, RULES_V4_20261007 and ASK-20261023-CLAUDE-1312; no new category or personal decision invented. Evidence https://tiptopfoods.com/our-company and https://talents.vaia.com/companies/tip-top-food-group-llc/marietta/salary-production-plant-manager-153726182/",
+      "evidence": "https://tiptopfoods.com/our-company",
+      "fields": {
+        "EMPLOYER_PRIMARY_BUSINESS": "FOOD_OR_BEVERAGE_MANUFACTURER",
+        "NEVER_CONSIDER_RULE_ID": "NC-003",
+        "NEVER_CONSIDER_REVIEW_NEEDED": "NO",
+        "EXCLUSION_CONFIDENCE": "HIGH",
+        "EXCLUSION_REASON": "NEVER_CONSIDER - FOOD_OR_BEVERAGE_MANUFACTURER",
+        "EMPLOYER_PRIMARY_BUSINESS_EVIDENCE_URL": "https://tiptopfoods.com/our-company",
+        "EXCLUSION_ASOF": "2026-10-29"
+      }
+    }
+  ],
+  "validation": {
+    "initialDraft": "A DECLINE draft was rejected locally by the producer validator before checkpoint or POST. No DECLINE was submitted.",
+    "submitted": "Supported ENRICH only; no bucket, application state or personal Tim decision changed."
+  },
+  "facts": {
+    "BD": "Official company page: pure-play medical technology; medical essentials, connected care, biopharma and interventional solutions.",
+    "TransMedics": "Official company page: Organ Care System medical organ preservation and end-stage heart/lung/liver therapies.",
+    "TipTop": "Official company page: primary processor/marketer raw and cooked poultry. Exact named Food Group LLC Marietta role independently describes poultry slaughter-plant manufacturing.",
+    "tipTopExactJob": "https://talents.vaia.com/companies/tip-top-food-group-llc/marietta/salary-production-plant-manager-153726182/"
+  }
+}
