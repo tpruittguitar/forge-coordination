@@ -1,0 +1,58 @@
+name: receipt-recovery
+on:
+  schedule:
+    - cron: '18 * * * *' # hourly; serialized with the existing :08/:38 verification service
+  workflow_dispatch: {}
+  pull_request:
+    paths: ['tools/writer-verify/**', '.github/workflows/receipt-recovery.yml']
+permissions:
+  contents: write
+concurrency:
+  group: writer-verify
+  cancel-in-progress: false
+jobs:
+  recover:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event_name == 'pull_request' && github.event.pull_request.head.sha || 'main' }}
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test recovery and verification
+        run: node --test tools/writer-verify/verify.test.js tools/writer-verify/recovery.test.js
+      - name: Recover evidence (no Writer mutations)
+        if: github.event_name != 'pull_request'
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
+          GITHUB_TOKEN: ${{ github.token }}
+        run: node tools/writer-verify/recovery.js
+      - name: Preserve recovery evidence
+        if: always() && github.event_name != 'pull_request'
+        uses: actions/upload-artifact@v4
+        with:
+          name: receipt-recovery
+          path: verify/recovery/
+      - name: Publish independent recovery evidence
+        if: github.event_name != 'pull_request'
+        shell: bash
+        run: |
+          set -euo pipefail
+          mkdir -p /tmp/recovery
+          cp -a verify/recovery/. /tmp/recovery/
+          git config user.name forge-recovery-bot
+          git config user.email forge-recovery-bot@users.noreply.github.com
+          for attempt in 1 2 3 4 5 6; do
+            git add verify/recovery
+            git diff --cached --quiet && exit 0
+            git commit -q -m "RECOVERY-BOT: independent receipt evidence; no writes replayed"
+            if git push origin HEAD:main; then exit 0; fi
+            sleep $((attempt * 3))
+            git fetch origin main
+            git reset --hard origin/main
+            mkdir -p verify/recovery
+            cp -a /tmp/recovery/. verify/recovery/
+          done
+          exit 1

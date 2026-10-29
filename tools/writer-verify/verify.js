@@ -12,7 +12,7 @@
  * Answer: verify/results/<same name>.json with one verdict per request:
  *   VERIFIED            index COMPLETE + durable request_result COMPLETE + every ID read back exactly (matches=1)
  *   COMPLETE_UNBOUND    index and result COMPLETE but no primaryIds supplied (a no-op, or the lane must send IDs)
- *   PENDING             index entry not COMPLETE yet; rechecked by later runs for 24 h
+ *   PENDING             index entry not COMPLETE yet; rechecked indefinitely, at a slower cadence after 24 h
  *   NOT_IN_INDEX        no index entry: the Writer has no master transaction for this request
  *   HELD                index state NEEDS_RESOLUTION / NOT_PERSISTED / FALSE_COMPLETE, or result not durable
  *   ROWS_MISSING        COMPLETE, but an ID is absent or not exactly once in the master
@@ -27,7 +27,7 @@ const REQ_DIR='verify/requests',RES_DIR='verify/results';
 const NAME=/^[A-Z][A-Z0-9_-]{1,40}-\d{8}-\d{4}[A-Za-z0-9_.-]*\.json$/;
 const RID=/^[A-Za-z0-9_-]{3,160}$/,PID=/^V2[A-Z]-[A-Za-z0-9_-]+$/;
 const TERMINAL_BAD=new Set(['NEEDS_RESOLUTION','NOT_PERSISTED','FALSE_COMPLETE']);
-const RECHECK=new Set(['PENDING','CHECK_FAILED']),RECHECK_MS=24*3600e3;
+const RECHECK=new Set(['PENDING','CHECK_FAILED','NOT_IN_INDEX','HELD','ROWS_MISSING']),RECHECK_MS=24*3600e3;
 
 function validate(doc){
  if(!doc||doc.schema!=='forge.writer-verify-request.v1')return 'schema must be forge.writer-verify-request.v1';
@@ -60,13 +60,15 @@ async function verifyOne({requestId,primaryIds=[]},{key,transport}){
  const ok=rb.master?.endMarkerPresent===true&&out.rows.every(r=>r.found&&r.matches===1&&r.row?.PRIMARY_ID===r.primaryId);
  return {...out,verdict:ok?'VERIFIED':'ROWS_MISSING'};
 }
-// Files with no result, or whose result still has PENDING / CHECK_FAILED verdicts younger than 24 h.
+// Files with no result, or unresolved results with slower six-hour rechecks after 24 h; never silently abandoned.
 function due(root,now=Date.now()){
  const dir=path.join(root,REQ_DIR);if(!fs.existsSync(dir))return [];
  return fs.readdirSync(dir).filter(f=>f.endsWith('.json')).sort().filter(f=>{
   const rp=path.join(root,RES_DIR,f);if(!fs.existsSync(rp))return true;
   let res;try{res=JSON.parse(fs.readFileSync(rp,'utf8'))}catch{return true}
-  return now-Date.parse(res.firstCheckedAt||res.checkedAt||0)<RECHECK_MS&&(res.results||[]).some(x=>RECHECK.has(x.verdict));
+  if(!Array.isArray(res.results))return true;
+  const age=now-Date.parse(res.firstCheckedAt||res.checkedAt||0),last=Date.parse(res.checkedAt||'');
+  return res.results.some(x=>RECHECK.has(x.verdict))&&(!Number.isFinite(last)||last>now+120000||!Number.isFinite(age)||age<RECHECK_MS||now-last>=6*3600e3);
  });
 }
 async function processFile(root,f,{key,transport,now=new Date()}){
@@ -82,7 +84,7 @@ async function processFile(root,f,{key,transport,now=new Date()}){
   const results=[];
   for(const r of doc.requests){
    const prior=prev?.results?.find(x=>x.requestId===r.requestId);
-   if(prior&&!RECHECK.has(prior.verdict)){results.push(prior);continue}
+   if(prior&&!RECHECK.has(prior.verdict)&&JSON.stringify(prior.primaryIds||[])===JSON.stringify(r.primaryIds||[])){results.push(prior);continue}
    try{results.push(await verifyOne(r,{key,transport}))}
    catch(e){results.push({requestId:r.requestId,primaryIds:r.primaryIds||[],verdict:'CHECK_FAILED',reason:String(e.message).slice(0,200)})}
   }
