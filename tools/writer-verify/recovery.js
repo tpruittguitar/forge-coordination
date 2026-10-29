@@ -79,6 +79,19 @@ async function inspect(c,index,g,rows,opts){
  return {...out,status:proven?'PROVEN_PERSISTED':'ESCALATED',reason:proven?'EXACT_SAVED_WRITE_EVIDENCE':'INSUFFICIENT_ROW_EVIDENCE',nextAction:proven?'Recovery proved persistence; original failure record and replay fences remain unchanged.':'Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.'};
 }
 function atomic(file,value){fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+'.tmp';fs.writeFileSync(tmp,JSON.stringify(value,null,1)+'\n');fs.renameSync(tmp,file);}
+function savedResolution(root,c,now,index){
+ const name=digest([c.requestId,c.entry,'PROVEN_PERSISTED','EXACT_SAVED_WRITE_EVIDENCE'])+'.json';let p;
+ try{p=JSON.parse(fs.readFileSync(path.join(root,'verify/recovery/resolutions',name)));}catch{return null;}
+ const items=c.entry?.items||p.pendingBinding?.items,time=Date.parse(p.checkedAt||'');
+ if(p.status!=='PROVEN_PERSISTED'||canonical(p.sourceEntry)!==canonical(c.entry)||p.writerSubmissions!==0||p.masterMutations!==0||p.source?.repo!=='tpruittguitar/forge-writer-state'||!/^[a-f0-9]{40}$/.test(p.source.sha||'')||!Number.isFinite(time)||time>now+120000||!Array.isArray(items)||!items.length||!Array.isArray(p.rows)||p.rows.length!==items.length)return null;
+ const pending=index.pending.find(x=>x.writeId===c.entry.w&&x.requestIds.includes(c.requestId));if(pending&&p.pendingBinding&&canonical(p.pendingBinding.items)!==canonical(pending.items))return null;
+ if(p.rows.some(r=>!r||typeof r!=='object')||new Set(p.rows.map(r=>r.primaryId)).size!==items.length||!items.every(i=>{const r=p.rows.find(r=>r.primaryId===i.pid);if(!r||r.expectedAfter!==i.a||!/^[a-f0-9]{64}$/.test(r.sha256||'')||!(Date.parse(r.readAt)>Date.parse(c.entry.at)))return false;
+  if(r.status==='EXACT_AFTER_IMAGE')return r.observedHash===i.a;
+  if(r.status!=='LATER_VERIFIED_HASH_CHAIN'||!Array.isArray(r.chain)||!r.chain.length||r.chain.length>32)return false;
+  let hash=i.a,last=Date.parse(c.entry.at);const ok=r.chain.every(l=>{const peer=index.requests[l.requestId],t=Date.parse(l.at);if(!peer||peer.s!=='COMPLETE'||peer.w!==l.writeId||peer.at!==l.at||l.from!==hash||!Number.isFinite(t)||t<last||t>Date.parse(r.readAt)||Object.values(index.requests).some(e=>e.w===l.writeId&&e.s!=='COMPLETE'))return false;if(peer.items&&!peer.items.some(j=>j.pid===i.pid&&j.op==='REPLACE'&&j.b===l.from&&j.a===l.to))return false;hash=l.to;last=t;return true;});return ok&&hash===r.observedHash;
+ }))return null;
+ return {...p,historicalResolution:true,sourceBindings:c.bindings,proofRecordedAt:p.checkedAt};
+}
 async function recover({root='.',index,sha,now=new Date(),opts={},maxCases=100,readRows}={}){
  const started=Date.now(),observed=()=>new Date(now.getTime()+Date.now()-started).toISOString();
  if(!indexValid(index)||!/^[a-f0-9]{40}$/.test(sha||'')||!Number.isFinite(now.getTime())||!Number.isFinite(Date.parse(index.updatedAt))||Date.parse(index.updatedAt)>now.getTime()+120000)throw Error('Invalid recovery source/time');
@@ -86,7 +99,7 @@ async function recover({root='.',index,sha,now=new Date(),opts={},maxCases=100,r
  const checked=new Map(Object.entries(prior?.lastChecked||{}));for(const c of prior?.cases||[])checked.set(c.requestId,Date.parse(c.checkedAt)||0);all.sort((a,b)=>(checked.get(a.requestId)||0)-(checked.get(b.requestId)||0)||a.requestId.localeCompare(b.requestId));
  const g=graph(index),rows=readRows||rowReader(opts),report={schema:'forge.receipt-recovery.v1',at:now.toISOString(),source:{repo:'tpruittguitar/forge-writer-state',path:'PIPELINE_RECEIPT_INDEX.json',sha,indexUpdatedAt:index.updatedAt},writerSubmissions:0,masterMutations:0,canonicalReceiptMutations:0,cases:[],deferred:Math.max(0,all.length-maxCases)};
  report.lastChecked=Object.fromEntries(all.map(c=>[c.requestId,checked.get(c.requestId)||0]));
- for(const c of all.slice(0,maxCases)){let result;try{result=await inspect(c,index,g,rows,opts);}catch{result={requestId:c.requestId,sourceEntry:c.entry,sourceBindings:c.bindings,status:'CHECK_FAILED',reason:'AUTHENTICATED_READ_FAILED',owner:'ChatGPT Gofer',nextAction:'Retry evidence reads on the next run; do not resubmit.'};}
+ for(const c of all.slice(0,maxCases)){let result=savedResolution(root,c,now.getTime(),index);try{if(!result)result=await inspect(c,index,g,rows,opts);}catch{result={requestId:c.requestId,sourceEntry:c.entry,sourceBindings:c.bindings,status:'CHECK_FAILED',reason:'AUTHENTICATED_READ_FAILED',owner:'ChatGPT Gofer',nextAction:'Retry evidence reads on the next run; do not resubmit.'};}
   result.checkedAt=observed();const type=result.status==='PROVEN_PERSISTED'||result.status==='VERIFIED_RECEIPT_AND_ROWS'?'resolutions':'escalations',name=digest([result.requestId,result.sourceEntry,result.status,result.reason])+'.json';
   result.evidenceFile='verify/recovery/'+type+'/'+name;const evidencePath=path.join(root,result.evidenceFile);if(!fs.existsSync(evidencePath))atomic(evidencePath,{...result,source:report.source,writerSubmissions:0,masterMutations:0});
   report.lastChecked[c.requestId]=now.getTime();report.cases.push(result);atomic(priorFile,{...report,inProgress:true});
