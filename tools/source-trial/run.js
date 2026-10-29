@@ -11,6 +11,7 @@
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
 const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
 const P = require('../enrich-ats-pay/lib.js'), T = require('./lib.js');
+const H = require('./board-health');
 const ROOT = path.resolve(__dirname, '../..');
 const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/';
@@ -52,9 +53,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const idx = T.masterIndex(rows.map(r => asIndexRow(r, false)).concat(archived.map(r => asIndexRow(r, true))));
 
   /* boards: priority companies first, then every board the master links to */
-  const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
+  const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; b=H.repair(b); const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
   const priority = T.parsePriority(process.env.TRIAL_PRIORITY_FILE ? fs.readFileSync(process.env.TRIAL_PRIORITY_FILE, 'utf8') : await (await get(RAW + 'forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt')).text());
   const activePriority = new Map(priority.map(x => [P.normCo(x.name), x.tier]));
+  const paused = new Set(priority.filter(x=>x.tier==='PAUSED').map(x=>P.normCo(x.name)));
+  const healthFile=path.join(OUT,'board-health.json');
+  const health=H.loadState(fs.existsSync(healthFile)?fs.readFileSync(healthFile,'utf8'):null);
+  Object.values(health.boards).forEach(h=>{h.paused=h.companies.every(c=>paused.has(P.normCo(c)));});
   const staffEligible = (company, title) => T.level(title) !== 'SR_STAFF' || activePriority.has(P.normCo(company));
   const coBoard = {};   // normCo(company) -> board key, from the master's own ATS links
   rows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
@@ -76,7 +81,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   rows.forEach(r => add(P.boardOf(r.p || {}), r.COMPANY, '', 'master'));
   /* Explorer ranking: DREAM, P1, P2, P3, WATCH, then boards known only from the master. PAUSED was not added. */
-  const ranked = [...boards.values()].filter(b => b.tier !== 'PAUSED').sort((a, b) => T.tierRank(a.tier) - T.tierRank(b.tier) || a.key.localeCompare(b.key));
+  const ranked = [...boards.values()].filter(b => b.tier !== 'PAUSED'&&!([...b.companies].every(c=>paused.has(P.normCo(c))))).sort((a, b) => T.tierRank(a.tier) - T.tierRank(b.tier) || a.key.localeCompare(b.key));
   const cap = Math.max(1, +(process.env.TRIAL_MAX_BOARDS || CONFIG.maxBoards) || CONFIG.maxBoards);
   const cursorFile = process.env.TRIAL_CURSOR_FILE || path.join(OUT, 'board-cursor.json');
   let start = 0;
@@ -87,39 +92,41 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       start = i < 0 ? 0 : i;
     } catch (e) { start = 0; }
   }
-  const order = process.env.TRIAL_SKIP_BOARDS ? [] : ranked.slice(start, start + cap);
+  const rotation=ranked.slice(start,start+cap),recoveries=H.recoveryBoards(health,paused).slice(0,Math.min(10,Math.max(1,Math.floor(cap/4))));
+  const cooling=new Set(rotation.filter(b=>health.boards[b.key]?.status!=='OK'&&Date.parse(health.boards[b.key]?.retryAt||0)>Date.now()).map(b=>b.key));
+  const order=process.env.TRIAL_SKIP_BOARDS?[]:[...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key))].map(b=>[b.key,b])).values()].slice(0,cap);
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
   const addFound = item => { const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
-  let consumed = 0;
+  let consumed = 0;const attempted=new Set();
   for (const b of order) {
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
-    const reqs = b.kind === 'workday' ? CONFIG.workdaySearches.map(s => P.boardListRequest(b, s)) : [P.boardListRequest(b, '')];
-    const seen = new Set();
-    for (const req of reqs) {
-      if (!req) continue;
-      try {
-        await sleep(CONFIG.gapMs);
-        const j = await (await get(req.url, req.method === 'POST' ? { method: 'POST', headers: { 'content-type': 'application/json', accept: 'application/json' }, body: req.body } : { headers: { accept: 'application/json' } })).json();
-        P.parseBoard(b, j).forEach(x => {
-          if (seen.has(x.page || x.title)) return; seen.add(x.page || x.title); st.openings++;
+    const result=await H.readBoard(b,CONFIG.workdaySearches,{wait:sleep,gapMs:CONFIG.gapMs});
+    st.error=result.error;st.status=result.status;st.httpStatus=result.httpStatus;st.attempts=result.attempts;
+    const history=H.record(health,result.board,result,new Date().toISOString());
+    st.lastAttemptAt=history.lastAttemptAt;st.lastSuccessAt=history.lastSuccessAt;st.retryAt=history.retryAt;
+    st.repairedFrom=b.repairedFrom||null;st.tenantRecovered=result.tenantRecovered;
+    result.jobs.forEach(x => {
+          st.openings++;
           const fam = T.family(x.title), place = T.usPlace(x.location);
           if (!fam || !place) return;
           const company = [...b.companies][0];
           if (!staffEligible(company, x.title)) return;
           st.matches++;
           addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
-        });
-      } catch (e) { st.error = String(e.message || e).slice(0, 60); }
-    }
+    });
+    // Persist each completed board check before moving on. A later crash cannot erase failed-source obligations.
+    fs.mkdirSync(OUT,{recursive:true});const healthTmp=healthFile+'.tmp',healthFd=fs.openSync(healthTmp,'w');
+    try{fs.writeFileSync(healthFd,JSON.stringify(health,null,1)+'\n');fs.fsyncSync(healthFd);}finally{fs.closeSync(healthFd);}fs.renameSync(healthTmp,healthFile);
     boardStats.push(st);
-    consumed++;
+    attempted.add(b.key);consumed++;
     if (Date.now() - T0 > CONFIG.boardBudgetMs) { st.note = 'time budget reached; later boards not read'; break; }
   }
   let cursorNext = '';
   if (!process.env.TRIAL_SKIP_BOARDS && ranked.length) {
-    const nextPos = start + consumed;
+    let covered=0;while(covered<rotation.length&&(attempted.has(rotation[covered].key)||cooling.has(rotation[covered].key)))covered++;
+    const nextPos = start + covered;
     cursorNext = ranked[nextPos >= ranked.length ? 0 : nextPos].key;
   }
 
@@ -163,7 +170,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length },
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),

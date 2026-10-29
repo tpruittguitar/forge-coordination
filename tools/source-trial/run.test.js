@@ -67,5 +67,15 @@ test('board cursor follows Explorer rank and resumes at next', { skip: !fs.exist
   const second = JSON.parse(fs.readFileSync(path.join(out, 'board-discovery-report.json'), 'utf8'));
   assert.deepStrictEqual(second.boards.map(b => b.board), ['greenhouse:aevexaerospace']);
   assert.strictEqual(JSON.parse(fs.readFileSync(cursor, 'utf8')).next, 'greenhouse:acme');
+  // A failed board is retained independently of the normal cursor. Recovery must not skip unread rotation work.
+  const H=require('./board-health'),healthFile=path.join(out,'board-health.json'),health=H.loadState(fs.readFileSync(healthFile,'utf8'));
+  H.record(health,{kind:'greenhouse',key:'greenhouse:acme',board:'acme',companies:new Set(['Acme'])},{status:'TEMPORARY_FAILURE',jobs:[],error:'HTTP 503',httpStatus:503,attempts:3,succeeded:0,failed:1},'2026-01-01T00:00:00Z');
+  fs.writeFileSync(healthFile,JSON.stringify(health));fs.writeFileSync(cursor,JSON.stringify({next:'greenhouse:aevexaerospace'}));
+  run();
+  const recovered=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8'));
+  assert.deepStrictEqual(recovered.boards.map(b=>b.board),['greenhouse:acme']);
+  assert.strictEqual(JSON.parse(fs.readFileSync(cursor,'utf8')).next,'greenhouse:aevexaerospace');
+  assert.strictEqual(JSON.parse(fs.readFileSync(healthFile,'utf8')).boards['greenhouse:acme'].status,'OK');
+  run();assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8')).boards.map(b=>b.board),['greenhouse:aevexaerospace']);
   fs.rmSync(dir, { recursive: true, force: true });
 });
