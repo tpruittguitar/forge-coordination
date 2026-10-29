@@ -19,6 +19,7 @@ const {read}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
 const {DIR,previous,latch}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
+const {carryForwardRoles}=require('./carry-forward');
 
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
@@ -94,6 +95,14 @@ async function main(argv=process.argv.slice(2)){
  // consider again. Quarantined and all other attempted requests remain excluded.
  const sent=new Set(prior.flatMap(p=>Object.keys(p.state.results||{})));
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
+ const carried=carryForwardRoles(prior);
+ // A rolled-over discovery report must not lose a reconciled run's untouched candidates.
+ const uniqueRoles=new Map();
+ for(const r of [...carried,...(report.new_roles||[])]){
+  const id=requestId({COMPANY:normalizeCompany(r.company).company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url});
+  if(!uniqueRoles.has(id))uniqueRoles.set(id,r);
+ }
+ report.new_roles=[...uniqueRoles.values()];
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
  const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent}),candidates=[];
  for(const {r,record} of picked){
@@ -105,7 +114,7 @@ async function main(argv=process.argv.slice(2)){
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
  }
  const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').slice(0,13)+'Z';
- console.log(JSON.stringify({run,newRoles:(report.new_roles||[]).length,filtered:picked.length,candidates:candidates.length}));
+ console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,filtered:picked.length,candidates:candidates.length}));
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
  const statePath=path.join(DIR,run+'.json');

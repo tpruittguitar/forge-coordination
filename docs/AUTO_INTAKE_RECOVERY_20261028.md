@@ -1,0 +1,13 @@
+# October 28 AUTO intake recovery
+
+Tim requested that ChatGPT fix the Writer block and finish the work. The Writer itself was healthy; later automatic intake runs were deliberately latched by `FORGE-AUTO-20261026T2255Z`.
+
+The sixth POST failed to return an acceptance because updating the GitHub receipt index returned HTTP 500. Its master insertion nevertheless landed. Fresh authenticated reads now prove COMPLETE receipt `W-20261026230758639-47ec5a` and exactly one canonical row, `V2I-9108B5881890`, matching company, title, location, original source URL and `SCOUT_RUN_ID=FORGE-AUTO-20261026T2255Z-C6`. The original failed response is retained; no synthetic acceptance was substituted and the request was never re-POSTed. Tim subsequently requested research on that row, which was preserved.
+
+Four earlier accepted inserts also have fresh COMPLETE receipts and exact row matches. The before/after authenticated population check is 1,961 → 2,007 rows: five inserts from this run, 41 unrelated concurrent inserts, no missing original IDs. Archive counts remain 785. The third case's captured response explicitly records no write. Public-safe evidence is under `receipts/auto-intake/probes/20261029T0040Z-readback.json` and `20261029T0043Z-operator-recovery.json`.
+
+The original interrupted run is explicitly reconciled as five confirmed inserts, one captured no-write and **19 untouched candidates carried forward**, rather than pretending all 25 were completed. The response history, original candidates and candidate hash remain intact. Automatic intake prioritizes the declared untouched tail ahead of the latest source report, validates its original candidate hash and identities, excludes any request attempted by any run, and reapplies current level/industry filters, fresh posting evidence, current rules, Writer deduplication and verification gates. Report rollover therefore cannot lose those candidates. A candidate which no longer passes current evidence or policy stays unsubmitted; recovery does not authorize bypassing admission rules.
+
+No release switch, business policy, master row, saved Tim decision, Writer deployment or receipt-index entry was changed by the read-only reconciliation. The existing operator reconciliation field releases this particular stop only after the evidence and carry-forward consumer are published together.
+
+Validation: 104 source-intake tests passed locally, including recovery across report rollover, no replay of later attempts, rejection of altered/attempted carry-forward identities and preservation of industry exclusions. Live post-release workflow results are recorded separately after dispatch.
