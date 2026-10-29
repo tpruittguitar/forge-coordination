@@ -8,6 +8,7 @@ test('REV-156 trial: boards + JobSpy, NEW vs EXISTING, read-only', { skip: !fs.e
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev156-'));
   fs.writeFileSync(path.join(dir, 'master.txt'), [
     row(1, 'V2I-00000000000A', 'Acme', 'Director of Quality', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; ANTI_RESURRECTION=YES; DO_NOT_REWORK=YES').replace('READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE', 'APPLIED | REJECTED_BY_EMPLOYER'),
+    row(3, 'V2I-00000000000C', 'Acme', 'Plant Manager', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/999'),
     row(2, 'V2I-00000000000B', 'Globex', 'Plant Manager', 'Reno, NV', 'SOURCE_URL=https://www.linkedin.com/jobs/view/plant-manager-401'),
   ].join('\n') + '\n');
   fs.writeFileSync(path.join(dir, 'priority.txt'), 'DREAM (x): 1\n- Shield AI | careers: https://shield.ai/careers | Dallas\nP1 (y): 2\n- AEVEX | careers: https://job-boards.greenhouse.io/aevexaerospace | Tampa\n- Path Robotics | careers: UNKNOWN | Columbus\n');
@@ -78,4 +79,16 @@ test('board cursor follows Explorer rank and resumes at next', { skip: !fs.exist
   assert.strictEqual(JSON.parse(fs.readFileSync(healthFile,'utf8')).boards['greenhouse:acme'].status,'OK');
   run();assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8')).boards.map(b=>b.board),['greenhouse:aevexaerospace']);
   fs.rmSync(dir, { recursive: true, force: true });
+});
+test('declined-only board retries stop; an active company target can still discover different jobs', {skip: !fs.existsSync(path.join(FC,'apps-script/PipelineWorklists.gs'))},()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'closed-discovery-')),out=path.join(dir,'out');fs.mkdirSync(out);
+ const master=path.join(dir,'master.txt'),priority=path.join(dir,'priority.txt');
+ fs.writeFileSync(master,row(1,'V2I-00000000000A','Acme','Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111').replace('READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE','DECLINED_BY_TIM | RESOLVED/DECLINED_BY_TIM')+'\n');
+ fs.writeFileSync(priority,'');fs.writeFileSync(path.join(dir,'archive.txt'),'V2_TERMINAL_ARCHIVE\n');
+ const H=require('./board-health'),health=H.loadState();H.record(health,{kind:'greenhouse',key:'greenhouse:acme',board:'acme',companies:new Set(['Acme'])},{status:'TEMPORARY_FAILURE',error:'HTTP 500',httpStatus:500,jobs:[],attempts:3,succeeded:0,failed:1},'2026-01-01T00:00:00Z');fs.writeFileSync(path.join(out,'board-health.json'),JSON.stringify(health));
+ const run=()=>cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,TRIAL_FC_DIR:FC,TRIAL_MASTER_FILE:master,TRIAL_PRIORITY_FILE:priority,TRIAL_ARCHIVE_FILE:path.join(dir,'archive.txt'),TRIAL_OUT_DIR:out,TRIAL_FAST:'1',TRIAL_BOARDS_ONLY:'1'},stdio:'pipe',timeout:60000});
+ run();let r=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'))),s=JSON.parse(fs.readFileSync(path.join(out,'board-health.json')));
+ assert.equal(r.boards.length,0);assert.equal(s.boards['greenhouse:acme'].paused,true);assert.equal(s.boards['greenhouse:acme'].pauseReason,'NO_ACTIVE_DISCOVERY_SEED');assert.equal(H.summary(s,new Set()).pending,0);assert.equal(H.recoveryBoards(s,new Set()).length,0);
+ fs.writeFileSync(priority,'P1 (x): 1\n- Acme | careers: https://job-boards.greenhouse.io/acme | Dayton\n');run();r=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json')));assert.equal(r.boards.length,1);assert.equal(r.protected_roles.some(x=>x.title==='Director of Quality'),true);assert.equal(r.new_roles.some(x=>x.title==='Director of Quality'),false);
+ fs.rmSync(dir,{recursive:true,force:true});
 });

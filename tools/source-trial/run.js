@@ -61,8 +61,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const health=H.loadState(fs.existsSync(healthFile)?fs.readFileSync(healthFile,'utf8'):null);
   Object.values(health.boards).forEach(h=>{h.paused=h.companies.every(c=>paused.has(P.normCo(c)));});
   const staffEligible = (company, title) => T.level(title) !== 'SR_STAFF' || activePriority.has(P.normCo(company));
+  const discoveryRows = rows.filter(T.discoverySeed);
   const coBoard = {};   // normCo(company) -> board key, from the master's own ATS links
-  rows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
+  discoveryRows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
   const probes = [];
   for (const c of priority) {
     if (c.tier === 'PAUSED') { probes.push({ company: c.name, found: null, skipped: 'PAUSED' }); continue; }
@@ -79,7 +80,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     add(b, c.name, c.tier, 'priority');
   }
-  rows.forEach(r => add(P.boardOf(r.p || {}), r.COMPANY, '', 'master'));
+  discoveryRows.forEach(r => add(P.boardOf(r.p || {}), r.COMPANY, '', 'master'));
+  // Stop retries inherited only from closed jobs; an active target or another open job can keep the source useful.
+  Object.values(health.boards).forEach(h=>{const eligible=boards.has(H.repair(h.descriptor||{key:h.key}).key);h.paused=h.companies.every(c=>paused.has(P.normCo(c)))||!eligible;h.pauseReason=!eligible?'NO_ACTIVE_DISCOVERY_SEED':h.paused?'TARGET_PAUSED':null;});
+  fs.mkdirSync(OUT,{recursive:true});fs.writeFileSync(healthFile,JSON.stringify(health,null,1)+'\n');
   /* Explorer ranking: DREAM, P1, P2, P3, WATCH, then boards known only from the master. PAUSED was not added. */
   const ranked = [...boards.values()].filter(b => b.tier !== 'PAUSED'&&!([...b.companies].every(c=>paused.has(P.normCo(c))))).sort((a, b) => T.tierRank(a.tier) - T.tierRank(b.tier) || a.key.localeCompare(b.key));
   const cap = Math.max(1, +(process.env.TRIAL_MAX_BOARDS || CONFIG.maxBoards) || CONFIG.maxBoards);
