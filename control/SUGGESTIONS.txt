@@ -387,3 +387,15 @@ PROPOSED_FIX=Add a small Writer Action that, when the latest source-trial report
 SUGGESTED_BUILDER=UNASSIGNED
 STATUS=OPEN
 TIM_DECISION=
+
+ID=SUG-20261028-CHATGPT-POSTVAL-01
+DATE=2026-10-28
+BY=CHATGPT
+COMPONENT=Posting-validation source links and receipt verification
+SEVERITY=MEDIUM
+EVIDENCE=receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261028-2112ET_TERMINAL.txt; receipts/POSTVAL_20261028_2112ET_VERIFICATION.json
+PROBLEM=Legacy iHire /candidate/jobs/view links require login while public /jobs/view links for the same job ID can expose useful liveness evidence. Also direct batch ENRICH indexes ruling.requestId children, not the batch envelope; checking only the envelope yields NO_ENTRY even while all child requests are COMPLETE.
+PROPOSED_FIX=Tim-authorized development could validate and prefer the public canonical iHire link while preserving INITIATING_URL. Verification producers should persist exact child request IDs from Writer results and verify those plus exact rows; never replay a batch solely because its envelope is absent. This run changed neither code nor governance.
+SUGGESTED_BUILDER=CHATGPT_CODEX
+STATUS=OPEN
+TIM_DECISION=
