@@ -26,11 +26,15 @@ Create a new file `verify/requests/<ACTOR>-<YYYYMMDD>-<HHMM>[-slug].json`, for e
 |---|---|---|
 | VERIFIED | Receipt index COMPLETE, durable request_result COMPLETE, every ID read back exactly once | Record VERIFIED. `rows[].row` gives COMPANY, TITLE, LOCATION, BUCKET to match against what you sent |
 | COMPLETE_UNBOUND | COMPLETE, but no IDs were supplied | A no-op needs nothing more; for an insert, ask again with the IDs |
-| PENDING | Not COMPLETE yet | Wait; the service rechecks every 30 min for 24 h |
+| PENDING | Not COMPLETE yet | Rechecked at the regular cadence initially, then every six hours after 24 h; no age-based abandonment |
 | NOT_IN_INDEX | No master transaction for this request | Read the Writer RESULT file; never resend blindly |
 | HELD | NEEDS_RESOLUTION / NOT_PERSISTED / FALSE_COMPLETE, or result not durable | Reconcile; never replay |
 | ROWS_MISSING | COMPLETE but an ID is absent or not exactly once in the master | Reconcile; report it |
 | REJECTED | Malformed request (`reason`) | Fix and ask again with a new file |
-| CHECK_FAILED | The read failed (`reason`) | Rechecked automatically for 24 h |
+| CHECK_FAILED | The read failed (`reason`) | Rechecked indefinitely, slowing after 24 h |
 
 This repository is public: answers carry IDs, states and only COMPANY / TITLE / LOCATION / BUCKET of each row.
+
+## Automatic historical recovery
+
+The hourly receipt-recovery worker also examines old failures and saved verification requests, including terminal archive rows. It records exact proven outcomes or explicit escalations without replaying writes. See [Receipt recovery](../docs/RECEIPT_RECOVERY.md).

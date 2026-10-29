@@ -61,9 +61,12 @@ test('processFile writes results, keeps settled verdicts, rechecks PENDING, reje
  assert.equal(log.filter(a=>a==='receipt_index').length,1,'settled R-1 not re-read');
  assert.equal(r2.firstCheckedAt,now.toISOString());
  assert.deepEqual(due(root,now.getTime()+120e3),[]);
- // A PENDING result older than 24 h stops being rechecked.
+ // Old PENDING results remain due; after that check they use a six-hour cadence.
  state['R-9']={index:{s:'PROCESSING'}};
  fs.writeFileSync(path.join(root,'verify/requests/GROK-20261026-0900.json'),JSON.stringify({...req,requests:[{requestId:'R-9'}]}));
  await processFile(root,'GROK-20261026-0900.json',{...opts(state),now});
- assert.deepEqual(due(root,now.getTime()+25*3600e3),[]);
+ assert.deepEqual(due(root,now.getTime()+25*3600e3),['GROK-20261026-0900.json']);
+ await processFile(root,'GROK-20261026-0900.json',{...opts(state),now:new Date(now.getTime()+25*3600e3)});
+ assert.deepEqual(due(root,now.getTime()+26*3600e3),[]);
+ assert.deepEqual(due(root,now.getTime()+31*3600e3),['GROK-20261026-0900.json']);
 });
