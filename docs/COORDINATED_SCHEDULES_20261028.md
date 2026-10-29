@@ -2,7 +2,7 @@
 
 Tim authorized staggered automation schedules on 2026-10-28 after assigning all Pipeline Explorer automation responsibility to ChatGPT/Codex through at least November 1. Ownership does not automatically revert. Paused discovery/enrichment/weekly tasks remain paused. This supersedes the schedule portion of [the earlier inventory](AUTOMATION_OWNERSHIP_20261028.md); that file remains the audit of the previous configuration.
 
-## Target schedules
+## Saved schedules
 
 AI times use America/New_York, including daylight saving changes. GitHub uses UTC; the ET column is the October 28 EDT equivalent and shifts by one hour on November 1.
 
@@ -28,9 +28,15 @@ Staggering reduces bursts but cannot guarantee that long runs never overlap. Git
 
 The three local production AI schedules additionally use `tools/automation-run-lock.cjs` and the same absolute local lock path: `C:/Users/Tim/Documents/Codex/2026-10-28/referenced-chatgpt-conversation-this-is-an/work/forge-ai-production.lock.json`. Run `node <script> acquire <lock-path> <unique-RUN_ID>` before production work. Exit 2 means another/abandoned run owns it: preserve pending work, report/defer, and do not submit anything. Only the matching run token may check/release it. Release in a finally path after durable checkpoints/terminal accounting. Locks never expire automatically; an abandoned lock requires checking the prior run before removal. Independent-process exclusion and wrong-owner/stale-lock refusal are tested.
 
-Retire the two ChatGPT cloud temporary launchers after the local replacements are active, so the misleading Daily email recurrence and hourly rest wakes do not persist. Pause Grok Bot's daily health audit after its local replacement is active. Keep Grok's other paused tasks off. Claude scheduler was inspected with Source=All and Status=Active on October 28: no scheduled tasks matched (49 hidden). Therefore there were no active Claude duplicates to pause at inspection time. Do not touch the unrelated Stacy reminder.
+The two ChatGPT cloud temporary launchers are paused, browser verified. Grok Bot's daily health audit and stale rotation-check reminder are paused, browser verified. Grok's other Forge tasks remain paused. Claude scheduler was inspected with Source=All and Status=Active on October 28: no scheduled tasks matched (49 hidden). Therefore there were no active Claude duplicates to pause at inspection time. The unrelated Stacy reminder was not changed.
 
 Deployment readbacks and actual replacement IDs are recorded in the completion record; this source document alone is not proof a scheduler accepted a change.
+
+Completed configuration readback: [scheduler evidence](../state/AUTOMATION_SCHEDULE_READBACK.json). GUI deployment, validation and remaining limitations: [completion record](../receipts/CHATGPT_20261028_PIPELINE_CONTROL_ROOM_COMPLETION.json). New native schedules have not yet supplied first-run proof.
+
+## Live whole-system overview
+
+Foreman cockpit PRs 201 and 202 are deployed. System → Dashboard now shows five stages, one combined all-source intake chart and a ranked health board. The red/amber alert remains visible across pages and public evidence refreshes every minute while open. Missing data and saved-but-unverified schedules remain explicit. Writer receipt activity includes direct GitHub API work; file-queue statistics are separately labeled. Research remains open rather than a final disposition. This is in-app monitoring; it does not create a push-notification service. The AUTO intake latch remains a visible blocker pending Gofer reconciliation.
 
 ## What the charts include
 

@@ -1,0 +1,26 @@
+{
+  "at": "2026-10-29T00:35:00Z",
+  "owner": "ChatGPT/Codex",
+  "authority": "Tim: all Pipeline Explorer automations through at least the rest of the week; stagger schedules; add whole-system GUI",
+  "runtimeRelease": "70ebd4329983eb3649fe",
+  "scheduleCommit": "abec07fe23b344fd64de061632b7a0325ec26838",
+  "scheduleReadback": "state/AUTOMATION_SCHEDULE_READBACK.json",
+  "schedules": "docs/COORDINATED_SCHEDULES_20261028.md",
+  "guiRepository": "tpruittguitar/foreman-cockpit",
+  "writerActivityPR": 201,
+  "writerActivityCommit": "6235529eb86f7ce3641791d5b2cd367826f251ec",
+  "overviewPR": 202,
+  "overviewCommit": "6bcffacbbf3906dbd5b8d81783b716e39823ec34",
+  "productionDeployment": "https://06c3c71b.foreman-cockpit.pages.dev",
+  "productionBuild": "success",
+  "validation": "671 tests passed, zero failed in Linux CI; live production browser verified combined all-source intake, five stages, automatic-intake blocking banner, and collapsed diagnostics. Preview checked at desktop and phone widths and persistent alert checked outside dashboard.",
+  "liveSnapshot": {"newJobsTodayET":3,"confirmedWritesTodayET":21,"enrichmentUpdatesLast24h":7,"currentResearch":258,"currentApplied":355,"currentDeclined":995},
+  "knownLimitations": [
+    "AUTO intake remains latched from FORGE-AUTO-20261026T2255Z. Gofer must reconcile exact-row evidence and unfinished candidates; no replay or latch clear performed.",
+    "Native schedule configuration is verified; first scheduled production executions are not yet independently verified.",
+    "Source-window operations coverage is missing and displayed as unknown, not zero.",
+    "GUI refreshes every minute while open; this change does not add out-of-app push notifications.",
+    "Staggering reduces contention; local production lanes share a fail-closed lock and existing Writer locks/idempotency remain authoritative. Long runs can overlap."
+  ]
+}
+
