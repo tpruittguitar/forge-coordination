@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-29T03:06:00.177Z",
- "sourceCommit": "9928cc3696f95fcc433acd970753626f8ac44b28",
+ "builtAt": "2026-10-29T03:32:12.630Z",
+ "sourceCommit": "5d68b4e227d3eaf869132e19d9fe0a3bbcc7a8ca",
  "counts": {
-  "total": 16,
+  "total": 17,
   "BLOCKING": 1,
   "ACTION": 8,
-  "WATCH": 7,
+  "WATCH": 8,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 6,
-  "UPKEEP": 2
+  "UPKEEP": 3
  },
  "items": [
   {
@@ -302,6 +302,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "at": "2026-10-28T13:13:00-04:00",
    "raisedBy": "GROK"
+  },
+  {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "GOFER lane has gone quiet (usually reports every 1.6 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt (GROK, status COMPLETE_EMPTY_QUEUE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
+   "at": "2026-10-28T17:17:00-04:00",
+   "raisedBy": "GROK"
   }
  ],
  "lanes": [
@@ -443,7 +455,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
    "runs7d": 53,
    "usualGapHours": 1.6,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "GOFER",
@@ -453,7 +465,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "HANDOFF",
