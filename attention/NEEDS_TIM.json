@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-30T06:26:52.671Z",
- "sourceCommit": "80ebcc462d63510c372e4ecda2e67f99f6dee1f0",
+ "builtAt": "2026-10-30T09:10:56.938Z",
+ "sourceCommit": "ab1974f549815bcec60640de1845a2f1eee4dbbb",
  "counts": {
-  "total": 16,
+  "total": 18,
   "BLOCKING": 1,
   "ACTION": 8,
-  "WATCH": 7,
+  "WATCH": 9,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 6,
-  "UPKEEP": 2
+  "FAILED": 7,
+  "UPKEEP": 3
  },
  "items": [
   {
@@ -302,6 +302,30 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "at": "2026-10-28T13:13:00-04:00",
    "raisedBy": "GROK"
+  },
+  {
+   "id": "run-unfinished:POSTVAL|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "POSTVAL · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json",
+   "at": "2026-10-29T21:12:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "POSTVAL lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json",
+   "at": "2026-10-29T21:12:00-04:00",
+   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -328,10 +352,10 @@
   {
    "lane": "EMAIL",
    "provider": "CHATGPT",
-   "lastAt": "2026-10-29T23:02:00-04:00",
+   "lastAt": "2026-10-30T03:02:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-EMAIL-CHATGPT-20261029-2302ET-B05_WRITER_RESPONSE.json",
-   "runs7d": 144,
+   "lastFile": "receipts/FORGE-EMAIL-CHATGPT-20261030-0302ET-B01_GATE.json",
+   "runs7d": 146,
    "usualGapHours": 0,
    "overdue": false
   },
@@ -451,7 +475,7 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 42,
+   "runs7d": 40,
    "usualGapHours": 1.6,
    "overdue": false
   },
@@ -503,7 +527,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261029-2112ET-B07_VERIFIED.json",
    "runs7d": 119,
    "usualGapHours": 0,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -511,9 +535,9 @@
    "lastAt": "2026-10-28T10:32:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
-   "runs7d": 48,
+   "runs7d": 46,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -523,7 +547,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "runs7d": 2,
    "usualGapHours": 8,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ROTATION",
