@@ -74,6 +74,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Grok Bot QA #21: cache finite numbers only (BLS suppresses some cells with "-" or "*"); retry a missing value after 7 days;
   // count queries per UTC day in the cache and stop at 20 (BLS v1 allows 25 a day; the job runs hourly).
   async function blsWages(state, soc) {
+    // Tim 2026-10-28: a missing cache entry is not a reason for n/a when the series exists. Fetch it.
     const ids = ['12', '13', '15'].map(dt => L.blsSeries(state, soc, dt)); if (!ids[0]) return null;
     const day = new Date().toISOString().slice(0, 10); if (!blsCache.daily || blsCache.daily.day !== day) blsCache.daily = { day, queries: 0 };
     const age = id => blsCache.series[id] ? Date.now() - Date.parse(blsCache.series[id].at) : Infinity;
