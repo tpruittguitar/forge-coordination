@@ -1,46 +1,51 @@
 {
   "schema": "forge.schedule-readback.v1",
-  "at": "2026-10-29T00:23:40.643514Z",
+  "at": "2026-10-30T05:39:46.683Z",
   "timezone": "America/New_York",
   "owner": "ChatGPT/Codex",
   "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
   "executionVerified": false,
-  "note": "Native configuration readback and browser pause readbacks; new production lane runs have not yet been independently verified. Configuration alone is not execution proof.",
+  "note": "All five native task configurations read back ACTIVE. This refresh proves configuration only. Production receipts exist for Usage Reader, Email, Posting Validation and Gofer; complete cross-schedule execution coverage, including daily health audit, is not established by this readback. Superseded provider pause evidence remains historical from priorReadbackAt, not freshly browser-verified.",
   "local": [
     {
       "id": "forge-ai-usage-reader",
       "name": "FORGE_AI_USAGE_READER",
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad"
+      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "nativeUpdatedAt": "1793230414009"
     },
     {
       "id": "forge-application-writer-gofer",
       "name": "FORGE_APPLICATION_WRITER_GOFER",
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=1,9,17;BYMINUTE=12;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad"
+      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "nativeUpdatedAt": "1793252401949"
     },
     {
       "id": "forge-email-discovery",
       "name": "FORGE_EMAIL_DISCOVERY",
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=3,7,11,15,19,23;BYMINUTE=2;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad"
+      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "nativeUpdatedAt": "1793231844846"
     },
     {
       "id": "forge-posting-validation",
       "name": "FORGE_POSTING_VALIDATION",
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad"
+      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "nativeUpdatedAt": "1793231845048"
     },
     {
       "id": "pe-stack-health-daily",
       "name": "PE_STACK_HEALTH_DAILY",
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad"
+      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "nativeUpdatedAt": "1793231845156"
     }
   ],
   "superseded": {
@@ -51,5 +56,7 @@
     "Claude active tasks": "None matched Source=All, Status=Active; 49 hidden"
   },
   "githubScheduleCommit": "abec07fe23b344fd64de061632b7a0325ec26838",
-  "runtimeRelease": "70ebd4329983eb3649fe"
+  "runtimeRelease": "70ebd4329983eb3649fe",
+  "priorReadbackAt": "2026-10-29T00:23:40.643514Z",
+  "configurationReadbackSource": "Read-only existing local automations/*/automation.toml; no task changes"
 }
