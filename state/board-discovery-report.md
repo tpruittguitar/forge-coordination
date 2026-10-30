@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261029T2243Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261030T0837Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (109 read, 1 failed) | 135 | 54 | 81 |
+| Employer job boards (109 read, 1 failed) | 135 | 52 | 83 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 20 | 62 |
+| DIRECTOR_PLUS | 18 | 64 |
 | SR_MANAGER | 10 | 16 |
 | SR_STAFF | 24 | 3 |
 
@@ -49,11 +49,10 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Propulsion Systems Advance Manufacturing (R5185)](https://jobs.lever.co/shieldai/a7747154-cc00-48e4-b89d-663bbeb4ca47) | Seattle, Washington | MFG_PROD | SR_STAFF | $150K-$230K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R4840)](https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5) | Seattle, Washington | QUALITY | SR_STAFF | $149K-$223K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R5512)](https://jobs.lever.co/shieldai/664414ae-6aa0-4dc1-8e24-e89e7466428b) | Dallas, Texas | QUALITY | SR_STAFF | $120K-$180K |
-| BOARD:ashby | P2 Hadrian | [Director, Forward Deployed Engineering - Manufacturing](https://jobs.ashbyhq.com/hadrian-automation/3dbea2da-8e23-4f0c-baff-9a4cf6268e95) | Los Angeles, CA | MFG_PROD | DIRECTOR_PLUS | $300K-$415K |
 | BOARD:ashby | P2 Skydio | [Head of Supply Chain & Manufacturing Strategy](https://jobs.ashbyhq.com/skydio/4cb9c624-ed0b-4dac-ae33-a4794dd01cbc) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER | $166K-$228K |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
-| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5460689008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
+| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5461638008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Operations Planning and Special Projects](https://jobs.ashbyhq.com/bedrock-robotics/ef4ed0a0-a27a-48e0-8c85-418e26c1faff) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Primary Structures](https://boards.greenhouse.io/relativity/jobs/8889038002?gh_jid=8889038002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
@@ -68,15 +67,14 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Test Operations, Space](https://boards.greenhouse.io/andurilindustries/jobs/5225988007?gh_jid=5225988007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Oklo | [Director of Chemistry, Manufacturing and Controls](https://job-boards.greenhouse.io/oklo/jobs/6185186004) | Austin, Texas | MFG_PROD | DIRECTOR_PLUS | $170K-$250K |
-| BOARD:greenhouse | xAI (SpaceXAI) | [Director, Memphis Power Plant Operations ](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
-| BOARD:lever | Tutor Intelligence | [Head of Quality](https://jobs.lever.co/tutorintelligence/66106126-f5b4-4243-a305-829fbfc879b0) | Watertown, MA | QUALITY | DIRECTOR_PLUS | $220K-$280K |
 | BOARD:lever | Tutor Intelligence | [Head of Technical Operations (Manufacturing, Supply Chain, Field)](https://jobs.lever.co/tutorintelligence/11ce838d-5df0-49be-886d-a0709b102487) | Watertown, MA | MFG_PROD | DIRECTOR_PLUS | $250K-$350K |
 | BOARD:workday | Alkegen | [Chief Operations Officer - Industrial Solutions](https://alkegen.wd5.myworkdayjobs.com/alkegen/job/Remote/Sr-Director--Operations---Industrial-Solutions_R11841) | Remote | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Manufacturing Quality Director](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-LaFayette-GA/Manufacturing-Quality-Director_REQ-27183) | USA, LaFayette, GA | QUALITY | DIRECTOR_PLUS |  |
