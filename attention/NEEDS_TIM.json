@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-30T05:43:37.439Z",
- "sourceCommit": "fe75c918e35b8b7b167dfe5527b7d52095e72507",
+ "builtAt": "2026-10-30T06:05:39.948Z",
+ "sourceCommit": "10fe8ff22754bfa2c577f834abf27595f7cf4978",
  "counts": {
-  "total": 15,
-  "BLOCKING": 0,
+  "total": 16,
+  "BLOCKING": 1,
   "ACTION": 8,
   "WATCH": 7,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 5,
+  "FAILED": 6,
   "UPKEEP": 2
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261030T0551Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261030T0551Z is unfinished",
+   "detail": "HOLD: no-op case not verified (CAPTURED_RESPONSE_NOT_NOOP). Open request: FORGE-SOURCE-99E748FF965C97ABBF761805. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261030T0551Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261030T0551Z.json",
+   "at": "2026-10-30T05:56:10.029Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-840F3921F2C06EA339A54E3A",
    "section": "FAILED",
