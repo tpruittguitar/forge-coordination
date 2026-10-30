@@ -411,3 +411,15 @@ PROPOSED_FIX=In a separately authorized development task, preserve full initiati
 SUGGESTED_BUILDER=CHATGPT_CODEX
 STATUS=OPEN
 TIM_DECISION=
+
+ID=SUG-20261029-CHATGPT-EMAIL-QUERY-02
+DATE=2026-10-29
+BY=CHATGPT
+COMPONENT=Discovery exact URL identity and alert card bindings
+SEVERITY=HIGH
+EVIDENCE=receipts/EMAIL_IDENTITY_GUARD_FORGE-EMAIL-CHATGPT-20261029-2302ET.json; receipts/EMAIL_CARD_CORRECTIONS_FORGE-EMAIL-CHATGPT-20261029-2302ET.json; receipts/EMAIL_SOURCE_BINDING_CORRECTION_FORGE-EMAIL-CHATGPT-20261029-2302ET.json
+PROBLEM=Extends SUG-20261029-CHATGPT-EMAIL-REDIRECT-01: normUrl removes query IDs from Indeed viewjob and Glassdoor partner/jobListing, so unrelated jobs can be mislabeled EXISTING_PROTECTED by a generic path. Exact-card selection must bind employer/title/site together; a generic Quality Manager substring selected the wrong Glassdoor card and Writer safely held it. LinkedIn Top applicant also shifts title/company/site in preparse.
+PROPOSED_FIX=Separate authorized development: retain stable jk/jobListingId/listing IDs and validated exact redirect identities, never use generic tracker paths alone. Parse card fields around exact job IDs, tolerate badges, and assert employer/title/site link binding before submission. Preserve complete initiating provenance, protected rows and all existing holds; no blind replay. Current run applied local operational checks only and independently verified every claimed new row.
+SUGGESTED_BUILDER=CHATGPT_CODEX
+STATUS=OPEN
+TIM_DECISION=
