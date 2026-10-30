@@ -1,30 +1,18 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-30T03:26:10.627Z",
- "sourceCommit": "59cc8ad1b1524892abff275e4e393f43e5c72dae",
+ "builtAt": "2026-10-30T05:33:36.447Z",
+ "sourceCommit": "1bfff78131c4e9389d70587a6a7c3623e520dde4",
  "counts": {
-  "total": 18,
-  "BLOCKING": 1,
+  "total": 15,
+  "BLOCKING": 0,
   "ACTION": 8,
-  "WATCH": 9,
+  "WATCH": 7,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 7,
-  "UPKEEP": 3
+  "FAILED": 5,
+  "UPKEEP": 2
  },
  "items": [
-  {
-   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261030T0017Z.json",
-   "section": "FAILED",
-   "level": "BLOCKING",
-   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261030T0017Z is unfinished",
-   "detail": "HOLD: no-op case not verified (CAPTURED_RESPONSE_NOT_NOOP). Open request: FORGE-SOURCE-4E230C371B6883C58F2316B7. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
-   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261030T0017Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261030T0017Z.json",
-   "at": "2026-10-30T00:23:41.823Z",
-   "raisedBy": "AUTO-INTAKE"
-  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-840F3921F2C06EA339A54E3A",
    "section": "FAILED",
@@ -302,30 +290,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "at": "2026-10-28T13:13:00-04:00",
    "raisedBy": "GROK"
-  },
-  {
-   "id": "run-unfinished:GOFER|CHATGPT",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "GOFER · CHATGPT — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json",
-   "at": "2026-10-29T17:14:00-04:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "GOFER lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json",
-   "at": "2026-10-29T17:14:00-04:00",
-   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -355,7 +319,7 @@
    "lastAt": "2026-10-29T23:02:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-EMAIL-CHATGPT-20261029-2302ET-B05_WRITER_RESPONSE.json",
-   "runs7d": 145,
+   "runs7d": 144,
    "usualGapHours": 0,
    "overdue": false
   },
@@ -462,12 +426,12 @@
   {
    "lane": "GOFER",
    "provider": "CHATGPT",
-   "lastAt": "2026-10-29T17:14:00-04:00",
+   "lastAt": "2026-10-30T01:16:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261029-1714ET_WRITER_RESPONSE.json",
-   "runs7d": 33,
+   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261030-0116ET_AUTO_RECOVERY.json",
+   "runs7d": 38,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "GOFER",
@@ -477,7 +441,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
    "runs7d": 42,
    "usualGapHours": 1.6,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "GOFER",
@@ -487,7 +451,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "HANDOFF",
