@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261030T1641Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261030T2217Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (109 read, 1 failed) | 134 | 52 | 82 |
+| Employer job boards (109 read, 1 failed) | 133 | 51 | 82 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -21,7 +21,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 |---|---:|---:|
 | DIRECTOR_PLUS | 19 | 63 |
 | SR_MANAGER | 9 | 16 |
-| SR_STAFF | 24 | 3 |
+| SR_STAFF | 23 | 3 |
 
 ## New roles
 
@@ -52,13 +52,12 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:ashby | P2 Skydio | [Head of Supply Chain & Manufacturing Strategy](https://jobs.ashbyhq.com/skydio/4cb9c624-ed0b-4dac-ae33-a4794dd01cbc) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER | $166K-$228K |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
-| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5460689008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
+| BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5461638008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Operations Planning and Special Projects](https://jobs.ashbyhq.com/bedrock-robotics/ef4ed0a0-a27a-48e0-8c85-418e26c1faff) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Primary Structures](https://boards.greenhouse.io/relativity/jobs/8889038002?gh_jid=8889038002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Structures](https://boards.greenhouse.io/relativity/jobs/8862013002?gh_jid=8862013002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Mechanical Engineer, Factory Automation](https://boards.greenhouse.io/relativity/jobs/8033633002?gh_jid=8033633002) | Long Beach, California | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | P3 Relativity Space | [Staff Propulsion Engineer, Engine Assembly Design](https://boards.greenhouse.io/relativity/jobs/8359978002?gh_jid=8359978002) | Long Beach, California, United States | MFG_PROD | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Quality Engineer](https://boards.greenhouse.io/relativity/jobs/8889666002?gh_jid=8889666002) | Cape Canaveral, Florida, United States | QUALITY | SR_STAFF |  |
 | BOARD:greenhouse | Anduril Industries | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations, Air Dominance & Strike](https://boards.greenhouse.io/andurilindustries/jobs/5198760007?gh_jid=5198760007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
@@ -67,9 +66,9 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Test Operations, Space](https://boards.greenhouse.io/andurilindustries/jobs/5225988007?gh_jid=5225988007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Gotion Inc. | [Operations Director](https://job-boards.greenhouse.io/gotion/jobs/8925174002) | Manteno, Illinois | MFG_PROD | DIRECTOR_PLUS | $200K-$240K |
