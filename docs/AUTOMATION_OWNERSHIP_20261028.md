@@ -1,5 +1,15 @@
 # Pipeline Explorer automation ownership and schedule audit
 
+## Current ownership directive — October 30, 2026
+
+Tim instructed: "Cancel any other automatics hardbacks that are scheduled back to Claude or grok." ChatGPT/Codex retains accountable ownership until Tim explicitly changes the assignment. There is no automatic return to Claude or Grok on a calendar date, quota reset, or temporary-coverage expiry. This directive supersedes historical minimum-date and temporary-coverage wording below.
+
+The five local Codex automations were read back and their prompts updated to include this explicit instruction: AI Usage Reader, Email Discovery, Application/Writer Gofer, Posting Validation, and Daily Stack Health. All five remain ACTIVE with their existing recurrence and target chat. None has an UNTIL/end-date rule. No separate active local handback automation or repository workflow handback was found. The current runtime manifest already assigns every listed lane to ChatGPT; no runtime release or business-rule change was needed. Existing paused lanes remain paused.
+
+This does not claim a fresh enabled-state audit of schedules inside Claude, Grok, or cloud ChatGPT. Historical inventories below remain historical; an expiry in an old inventory is not permission to change ownership. Existing historical Claude Usage Reader configuration was not changed.
+
+Local automation readback: `C:/Users/Tim/.codex/automations/*/automation.toml`; routing readback: `runtime/current.json`, release `70ebd4329983eb3649fe`.
+
 Schedule changes authorized later on October 28 are tracked in [Coordinated schedules and chart coverage](COORDINATED_SCHEDULES_20261028.md). Tables below preserve the earlier observed configuration; use the coordinated schedule document and its completion record for current execution.
 
 Authority: Tim, 2026-10-28, in Codex chat `01a184da-4336-7221-8a99-5e405f1af7ad`: "all belong to you for at lease the rest of the week / update documentation accordingly" and "list them all with a schedule when you are finshed".
