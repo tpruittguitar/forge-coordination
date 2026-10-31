@@ -40,8 +40,8 @@ function sourcesFor(target,profile,context={},now=Date.now()){
  const age=now-Date.parse(profile.asOf);if(!Number.isFinite(age)||age< -86400000||age>90*86400000)return [];
  const result=[];for(const company of profile.companies){if(company.searchTier!=='REPEATED_DOCUMENTED_SOURCE'||company.sourceCategory!=='EMPLOYER_CANDIDATE')continue;
   const track=t=>/\b(program|project)\s+manager\b/i.test(t||'')?'PROGRAM':'LINE';
-  const anchors=company.disclosures.filter(d=>d.level===L.level(target.TITLE)&&d.function===L.func(target.TITLE)&&track(d.title)===track(target.TITLE)).map(d=>({id:d.primaryId,co:company.company,title:d.title,location:d.location,state:d.state,low:d.low,high:d.high,asOf:d.asOf,sourceUrl:d.sourceUrl}));
-  const usable=C.rank({...target,state:L.stateFrom(target.LOCATION)},anchors,context,now);if(usable.length)result.push({company:company.company,compatibleDisclosures:usable.length,sourceUrls:usable.map(a=>a.sourceUrl),priority:usable[0].weight,scope:'SEARCH_ONLY_NOT_TARGET_PAY'});
+  const anchors=company.disclosures.filter(d=>d.level===L.level(target.TITLE)&&d.function===L.func(target.TITLE)&&track(d.title)===track(target.TITLE)).map(d=>({id:d.primaryId,co:company.company,title:d.title,location:d.location,state:d.state,region:L.regionOf(d.location),low:d.low,high:d.high,asOf:d.asOf,sourceUrl:d.sourceUrl}));
+  const usable=C.rank({...target,state:L.stateFrom(target.LOCATION)},anchors,context,now);if(usable.length)result.push({company:company.company,compatibleDisclosures:usable.length,sourceUrls:usable.map(a=>a.sourceUrl),candidates:usable,priority:usable[0].weight,scope:'SEARCH_ONLY_NOT_TARGET_PAY'});
  }
  return result.sort((a,b)=>b.priority-a.priority||b.compatibleDisclosures-a.compatibleDisclosures||a.company.localeCompare(b.company));
 }

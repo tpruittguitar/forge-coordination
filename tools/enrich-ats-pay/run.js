@@ -7,6 +7,9 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const P = require('./public-posting.js');
+const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
+const PAY_SOURCE_FILE=process.env.ENRICH_PAY_SOURCE_FILE||path.resolve(__dirname,'../../reference/EMPLOYER_PAY_SOURCES.json');
+let payProfile=null,profileRebuilt=false,profileRefreshStatus='RETAINED_PREVIOUS_PROFILE';try{if((!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_PAY_SOURCE_FILE)&&fs.existsSync(PAY_SOURCE_FILE)){const p=JSON.parse(fs.readFileSync(PAY_SOURCE_FILE,'utf8'));if(p.schema==='forge.employer-pay-sources.v1')payProfile=p;}}catch{profileRefreshStatus='PROFILE_FILE_UNREADABLE';}
 const Context=require('./context'),crypto=require('node:crypto');
 const CONTEXT_FILE=process.env.ENRICH_CONTEXT_FILE||path.resolve(__dirname,'../../reference/COMPANY_SITE_CONTEXT.json');
 const salaryContext=(!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_CONTEXT_FILE)&&fs.existsSync(CONTEXT_FILE)?JSON.parse(fs.readFileSync(CONTEXT_FILE,'utf8')):null;
@@ -42,12 +45,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
   // REV-140 (Tim 2026-10-21 03:30 ET): roles archived after they closed still carry valid employer-posted pay; they stay comparables.
-  let archiveText = '';
+  let archiveText = '',archiveComplete=false;
   if (process.env.ENRICH_MASTER_FILE) archiveText = process.env.ENRICH_ARCHIVE_FILE ? fs.readFileSync(process.env.ENRICH_ARCHIVE_FILE, 'utf8') : '';   // tests only
-  else if(!PRODUCTS_ONLY) { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : ''; } catch (e) { archiveText = ''; } }
+  else if(!PRODUCTS_ONLY) { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : '';archiveComplete=a?.ok===true&&a.degraded!==true&&/^V2_TERMINAL_ARCHIVE\b/m.test(archiveText)&&(a.bytes==null||a.bytes===archiveText.length); } catch (e) { archiveText = ''; } }
   const archiveRows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n');
   const liveIds = new Set(rows.map(a => a.PRIMARY_ID)), archived = archiveRows.map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
   archived.forEach(a => { a.archived = true; anchors.push(a); });
+  if(archiveComplete&&!process.env.ENRICH_MASTER_FILE)try{const effective=W.parseRows(require('../source-intake/writer-reader').parseArchive(archiveText).map(r=>r.RAW_ROW).join('\n'));payProfile=SourceProfile.build([...rows.map(r=>({...r,store:'MASTER'})),...effective.filter(r=>!liveIds.has(r.PRIMARY_ID)).map(r=>({...r,store:'ARCHIVE'}))],{context:salaryContext||{}});profileRebuilt=true;profileRefreshStatus='COMPLETE_CANONICAL_SNAPSHOT';}catch{profileRefreshStatus='PROFILE_REFRESH_UNCONFIRMED_PREVIOUS_RETAINED';}
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
   const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){const probe=entry.requestIds?.[0]||requestId;try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(probe)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'&&(entry.ids||[]).every(id=>(d.request.items||[]).some(x=>x.pid===id))){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
@@ -122,7 +126,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (est && !opts.noNetwork) stats.est_same_employer++;   // the upgrade pass counts only in `upgraded`
     }
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
-    if (!est) { est = L.estimate(r, anchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const n = shared[shareKey(est)] || 0; if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
+    let comparisonAnchors=anchors;
+    if(!est&&!opts.noNetwork&&!opts.noBoard&&sourceSearch){const extra=await sourceSearch.find(r,anchors);if(extra.length){const ids=new Set(extra.map(a=>a.id));comparisonAnchors=extra.concat(anchors.filter(a=>!ids.has(a.id)));}}
+    if (!est) { est = L.estimate(r, comparisonAnchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const k=shareKey(est),n=comparisonAnchors===anchors?(shared[k]||0):list.reduce((n,t)=>n+(/SALARY/.test(needsOf(t))&&shareKey(L.estimate(t,comparisonAnchors,salaryContext))===k?1:0),0); if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est && rowState) {
       // Required unanchored estimate (Tim 2026-10-28): BLS sets the number when no anchors exist.
       const w = await blsWages(rowState, soc);
@@ -132,9 +138,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!est) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); if (!opts.noNetwork) stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
+    if(!opts.noNetwork)sourceSearch?.count(est);
     return est;
   }
   const empCache = fs.existsSync(EMPLOYER_CACHE) ? JSON.parse(fs.readFileSync(EMPLOYER_CACHE, 'utf8')) : { employers: {} }; empCache.employers = empCache.employers || {};
+  empCache.sourceSearch=empCache.sourceSearch||{};
+  function sourcePage(a){if(SourceSearch.firstParty(a.sourceUrl,a.co)||(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_PUBLIC_PAGES))return P.publicUrl(a.sourceUrl);const r=rows.concat(archiveRows).find(r=>r.PRIMARY_ID===a.id);if(!r||Context.norm(r.COMPANY)!==Context.norm(a.co)||Context.norm(r.TITLE)!==Context.norm(a.title)||Context.norm(r.LOCATION)!==Context.norm(a.location))return null;const url=L.atsFor(r.p)?.page;return url&&SourceSearch.firstParty(url,a.co)?P.publicUrl(url):null;}
+  const sourceSearch=SourceSearch.create({profile:payProfile,context:salaryContext||{},cache:empCache.sourceSearch,maxReads:CONFIG.maxPaySourceReads??6,maxPerTarget:CONFIG.maxPaySourceReadsPerJob??2,canRead:()=>Date.now()-T0<CONFIG.maxRunMs,canReadSource:a=>!!sourcePage(a),readSource:async a=>{const url=sourcePage(a);if(!url||!Recovery.readableRoute(url,CONFIG.aggregatorsOff||[]))return null;await sleep(CONFIG.fetchGapMs);const html=await(await get(url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)})).text();const parsed=SourceSearch.parsePage(html,a);return parsed?{...parsed,sourceUrl:url}:null;}});
+  sourceSearch.stats.enabled=!!payProfile;sourceSearch.stats.profile_as_of=payProfile?.asOf||null;sourceSearch.stats.profile_rebuilt=profileRebuilt;sourceSearch.stats.profile_refresh_status=profileRefreshStatus;stats.pay_source_search=sourceSearch.stats;
   function rememberPostings(co, list) {
     if (!co) return; const day = new Date().toISOString().slice(0, 10);
     list.filter(x => x.pay && x.state).forEach(x => {
@@ -364,9 +375,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const id of Object.keys(ledger.failedReads)) { const d = ledger.failedReads[id].dates || []; if (!d.length || Date.now() - Date.parse(d[d.length - 1]) > 14 * 864e5) delete ledger.failedReads[id]; }
   fs.mkdirSync(path.dirname(LEDGER), { recursive: true });
   Object.keys(empCache.employers).forEach(co => { const e = empCache.employers[co].filter(x => Date.now() - Date.parse(x.seen) < 60 * 864e5).sort((a, b) => String(b.seen).localeCompare(String(a.seen))).slice(0, 50); if (e.length) empCache.employers[co] = e; else delete empCache.employers[co]; });   // Grok QA #23: prune > 60 d, newest 50 per employer
+  for(const [k,v]of Object.entries(empCache.sourceSearch))if(Date.now()-Date.parse(v.at)>60*864e5)delete empCache.sourceSearch[k];
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
+  if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
   if(!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-recovery.json'),JSON.stringify({schema:'forge.enrichment-recovery.v1',at:new Date().toISOString(),run:RUN_ID,rows:recoveryRows,pendingWrites:ledger.pendingWrites,note:'Pre-write worklist; use reconciled process flow for completions. Never replay an uncertain original request.'},null,2)+'\n');

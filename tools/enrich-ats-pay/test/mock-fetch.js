@@ -26,6 +26,7 @@ globalThis.fetch = async (url, opts) => {
     return { ok: true, status: 200, json: async () => body, text: async () => JSON.stringify(body) };
   }
   if (/\/jobs\/404\?/.test(url)) return { ok: false, status: 404, json: async () => ({}), text: async () => '' };   // posting taken down
+  if(process.env.ENRICH_TEST_PUBLIC_PAGES){const pages=JSON.parse(fs.readFileSync(process.env.ENRICH_TEST_PUBLIC_PAGES,'utf8'));if(Object.hasOwn(pages,url)){if(process.env.ENRICH_TEST_PUBLIC_READS)fs.appendFileSync(process.env.ENRICH_TEST_PUBLIC_READS,url+'\n');const body=pages[url];return {ok:true,status:200,text:async()=>body,json:async()=>JSON.parse(body)};}}
   if (!(url in R)) throw new Error('offline: ' + url);
   const body = R[url];
   return { ok: true, status: 200, json: async () => body, text: async () => (typeof body === 'string' ? body : JSON.stringify(body)) };
