@@ -1,5 +1,8 @@
 name: receipt-recovery
 on:
+  push:
+    branches: [main]
+    paths: ['receipts/**', 'tools/writer-verify/**', 'verify/requests/**', 'verify/recovery/dispositions.json']
   schedule:
     - cron: '18 * * * *' # hourly; serialized with the existing :08/:38 verification service
   workflow_dispatch: {}
@@ -22,7 +25,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test recovery and verification
-        run: node --test tools/writer-verify/verify.test.js tools/writer-verify/recovery.test.js
+        run: node --test tools/writer-verify/verify.test.js tools/writer-verify/recovery.test.js tools/writer-verify/case-closure.test.js
       - name: Recover evidence (no Writer mutations)
         if: github.event_name != 'pull_request'
         env:
@@ -56,3 +59,4 @@ jobs:
             cp -a /tmp/recovery/. verify/recovery/
           done
           exit 1
+

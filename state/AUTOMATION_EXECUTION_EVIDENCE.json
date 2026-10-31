@@ -1,0 +1,147 @@
+{
+  "schema": "forge.automation-evidence.v1",
+  "at": "2026-10-31T00:53:51.448Z",
+  "source": "Immutable lane receipts and verified native configuration; no Writer/master mutations",
+  "emailCoverage": {
+    "at": "2026-10-30T23:14:27.825Z",
+    "run": "FORGE-EMAIL-CHATGPT-20261030-1902ET",
+    "window": [
+      "2026-10-30T20:02:00Z",
+      "2026-10-30T23:02:00Z"
+    ],
+    "continuityWindow": [
+      "2026-10-30T19:02:00Z",
+      "2026-10-30T20:02:00Z"
+    ],
+    "bodiesRead": 6,
+    "historicalBodiesRevisited": 10,
+    "visibleOccurrences": 121,
+    "verifiedInserted": 24,
+    "held": 2,
+    "advertisedUnshownOccurrences": 149,
+    "coverageComplete": false,
+    "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+    "writerProofsVerified": true
+  },
+  "executions": [
+    {
+      "id": "forge-email-discovery",
+      "at": "2026-10-30T23:14:27.825Z",
+      "status": "PARTIAL_WITH_VERIFIED_INTAKE_AND_CARRIED_HOLDS",
+      "evidenceFiles": [
+        "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+        "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B01_VERIFIED.json",
+        "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B02_VERIFIED.json"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-posting-validation",
+      "at": "2026-10-30T17:28:09.263Z",
+      "status": "COMPLETE",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261030-1312ET_TERMINAL.txt",
+        "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B01_VERIFIED.json",
+        "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B02_VERIFIED.json",
+        "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B03_VERIFIED.json",
+        "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET_POSTPUSH_VERIFIED.json"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-application-writer-gofer",
+      "at": "2026-10-30T21:26:21.189Z",
+      "status": "SCOPED_VERIFIED_WITH_HELD_CARRY",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261030-1712ET_TERMINAL.txt",
+        "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_APP_B01_VERIFIED.json",
+        "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_ATS_BULK_VERIFIED.json",
+        "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_CATEGORY_B01_VERIFIED.json"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-ai-usage-reader",
+      "at": "2026-10-31T00:06:23.448Z",
+      "status": "OK",
+      "evidenceFiles": [
+        "usage/AI_USAGE_READINGS.jsonl"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "pe-stack-health-daily",
+      "at": "2026-10-30T11:52:10.125Z",
+      "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+      "evidenceFiles": [
+        "receipts/HEALTH_AUDIT_20261030_0745ET.json"
+      ],
+      "executionVerified": true
+    }
+  ],
+  "schedules": {
+    "configurationObservedAt": "2026-10-31T00:45:23.063Z",
+    "active": [
+      {
+        "id": "forge-ai-usage-reader",
+        "lastDueAt": "2026-10-30T18:05:00.000Z",
+        "lastRunAt": "2026-10-31T00:06:23.448Z",
+        "status": "OK",
+        "executionVerified": true,
+        "evidenceFiles": [
+          "usage/AI_USAGE_READINGS.jsonl"
+        ]
+      },
+      {
+        "id": "forge-application-writer-gofer",
+        "lastDueAt": "2026-10-30T21:12:00.000Z",
+        "lastRunAt": "2026-10-30T21:26:21.189Z",
+        "status": "SCOPED_VERIFIED_WITH_HELD_CARRY",
+        "executionVerified": true,
+        "evidenceFiles": [
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261030-1712ET_TERMINAL.txt",
+          "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_APP_B01_VERIFIED.json",
+          "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_ATS_BULK_VERIFIED.json",
+          "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_CATEGORY_B01_VERIFIED.json"
+        ]
+      },
+      {
+        "id": "forge-email-discovery",
+        "lastDueAt": "2026-10-30T23:02:00.000Z",
+        "lastRunAt": "2026-10-30T23:14:27.825Z",
+        "status": "PARTIAL_WITH_VERIFIED_INTAKE_AND_CARRIED_HOLDS",
+        "executionVerified": true,
+        "evidenceFiles": [
+          "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+          "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B01_VERIFIED.json",
+          "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B02_VERIFIED.json"
+        ]
+      },
+      {
+        "id": "forge-posting-validation",
+        "lastDueAt": "2026-10-30T17:12:00.000Z",
+        "lastRunAt": "2026-10-30T17:28:09.263Z",
+        "status": "COMPLETE",
+        "executionVerified": true,
+        "evidenceFiles": [
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261030-1312ET_TERMINAL.txt",
+          "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B01_VERIFIED.json",
+          "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B02_VERIFIED.json",
+          "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET-B03_VERIFIED.json",
+          "receipts/FORGE-POSTVAL-CHATGPT-20261030-1312ET_POSTPUSH_VERIFIED.json"
+        ]
+      },
+      {
+        "id": "pe-stack-health-daily",
+        "lastDueAt": "2026-10-30T11:45:00.000Z",
+        "lastRunAt": "2026-10-30T11:52:10.125Z",
+        "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+        "executionVerified": true,
+        "evidenceFiles": [
+          "receipts/HEALTH_AUDIT_20261030_0745ET.json"
+        ]
+      }
+    ],
+    "executionVerified": true
+  }
+}

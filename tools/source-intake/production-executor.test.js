@@ -314,7 +314,7 @@ test('every Writer response is recorded and read back before classification',asy
  const spy={check:rec.check,record:async(r,x)=>{order.push('record');return rec.record(r,x)},read:async r=>{order.push('read');return rec.read(r)}};
  const log=[];const writer=mockWriter({},log),w=async(u,o)=>{const res=await writer(u,o);if(o.method==='POST')order.push('POST');return res};
  await runStage(rows,opts(w,{recorder:spy})).catch(e=>e);
- assert.deepEqual(order,['POST','record','read']);assert.equal(rec.store[rid].receipt.REQUEST_ID,rid);
+ assert.deepEqual(order,['record','read','POST','record','read']);assert.equal(rec.store[rid].receipt.REQUEST_ID,rid);
 });
 test('kill switch turned off between cases stops the next case; it cannot recall a POST already made',async()=>{
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);let reads=0;
@@ -442,3 +442,16 @@ test('captured-ID binding still holds on a bad capture, a wrong row, or a one-si
   try { await runStage(rows,opts(mockWriter(state,log),{priorResults:{[rid]:prior}})); } catch(e) { /* expected on non-resume path */ }
  }
 });
+
+test('lost POST response is durably fenced UNKNOWN and cannot be replayed',async()=>{
+ const rows=newOnly(2),rec=memRecorder(),base=mockWriter();let posts=0;
+ const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;assert.equal(rec.store[rid].status,'POST_IN_FLIGHT_UNKNOWN');throw Error('timeout');}return base(u,o);};
+ const o=opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO'});
+ const first=await runIntake(rows,o).catch(e=>e);assert.match(first.message,/UNKNOWN/);assert.equal(first.outcomes[0].status,'UNKNOWN');assert.equal(posts,1);
+ await assert.rejects(()=>runIntake(rows,{...o,priorResults:rec.store}),/HOLD|uncertain|UNKNOWN/);assert.equal(posts,1);
+});
+test('malformed Writer response never becomes accounted SKIPPED',async()=>{
+ const rows=newOnly(2),base=mockWriter();let posts=0;const transport=async(u,o)=>o.method==='POST'?(posts++,{ok:true,json:async()=>{throw Error('bad JSON')}}):base(u,o);
+ const err=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);assert.match(err.message,/UNKNOWN/);assert.equal(err.outcomes[0].status,'UNKNOWN');assert.equal(posts,1);
+});
+

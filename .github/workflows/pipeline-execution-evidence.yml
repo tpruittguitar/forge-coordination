@@ -1,0 +1,38 @@
+name: Publish pipeline execution evidence
+on:
+  push:
+    branches: [main]
+    paths: ['receipts/**', 'usage/AI_USAGE_READINGS.jsonl', 'state/AUTOMATION_SCHEDULE_READBACK.json', 'tools/automation-health/**', '.github/workflows/pipeline-execution-evidence.yml']
+  schedule:
+    - cron: '11,41 * * * *'
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: pipeline-execution-evidence
+  cancel-in-progress: false
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/automation-health/build.test.js
+      - name: Materialize immutable proof receipts
+        run: |
+          set -euo pipefail
+          git config user.name forge-evidence-bot
+          git config user.email forge-evidence-bot@users.noreply.github.com
+          for attempt in 1 2 3 4; do
+            node tools/automation-health/build.js
+            git add state/AUTOMATION_EXECUTION_EVIDENCE.json
+            git diff --cached --quiet && exit 0
+            git commit -m "EVIDENCE-BOT: publish lane execution and source coverage proofs"
+            git push origin HEAD:main && exit 0
+            git fetch origin main
+            git reset --hard origin/main
+          done
+          exit 1

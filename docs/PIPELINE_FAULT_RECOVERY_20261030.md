@@ -1,0 +1,21 @@
+# Pipeline fault repair — 2026-10-30
+
+Authorized by Tim: fix the displayed Pipeline Explorer faults and their root causes.
+
+## Findings and repairs
+
+- Automatic source intake was globally latched by `FORGE-AUTO-20261030T0551Z`: the Chromalloy POST timed out without a confirmed outcome. The original request remains UNKNOWN. Explicit operator containment fences that request and conservatively fences its employer/title family against changed URLs or location formatting, while carrying the 22 untouched original candidates forward. The original run is not marked complete and no original write is replayed. New unknown failures still fail closed until contained or reconciled.
+- The intake executor incorrectly classified timeouts, malformed responses and lost response checkpoints as SKIPPED. It now durably records and reads back intent before POST, uses a 180-second response budget, and halts UNKNOWN on ambiguous outcomes. Windows HTTP intake checkpoints now flush a writable file handle.
+- Twenty-four old failed receipt references represented eight incidents. Exact canonical readbacks established that affected jobs were terminal/protected, intended fields were already present, or a newer independently COMPLETE pay-enrichment request had satisfied the same work. One original failure explicitly proved that no master write was attempted and had already been reconciled. These old obligations close without changing canonical failure states or counting successful throughput. Historical closure evidence remains in GitHub; a later job reopening creates new work rather than reviving the original failed transaction.
+- U.S. Venture requisition R8890 remained in research despite an old closure signal. A fresh first-party page explicitly said the exact Senior Director of Operations posting was filled. It was closed through Writer and independently verified, resolving the last legacy fit-enrichment obligation.
+- The recovery worker could not distinguish canonical child requests from batch envelopes. Envelope lookup obligations remain recorded in GitHub rather than appearing as failed canonical write incidents. The resolved Grok four-child verification question is closed by its existing independent proofs, without accepting RESULT-only evidence.
+- The email discovery lane wrote durable GitHub coverage receipts, while the GUI only checked an unrelated empty operations run store. A bounded evidence publisher now materializes the actual immutable receipt/proof files for the GUI. Inaccessible advertised recommendations remain explicit unfinished coverage, not zero work or completed discovery.
+- Native schedule configuration alone never proved execution. Per-task proof receipts now establish all five executions. The existing 07:45 health audit evidence was imported with its original timestamp. Future daily audits must persist an audit receipt even when notifications are quiet. Cadences are unchanged. Missing or overdue proof still produces a warning.
+- The Zurn Elkay official site confirms the case-sensitive `Elkay_External` Workday path. The correctly addressed endpoint still returns HTTP500. This is an active employer-side outage, not a successful empty search. The address mapping is corrected; retries back off to a four-hour cap while preserving the failure and last success evidence.
+- A multi-owner automation follow-up was mislabeled as Tim's next decision. It is now assigned to automation maintenance. Genuine unresolved Tim decisions are preserved.
+
+## Evidence and safety
+
+`verify/recovery/dispositions.json` registers exact original receipt-entry digests and canonical job bindings. The recovery worker independently validates current rows and newer COMPLETE receipts before the first closure. Durable closure records are immutable history and never grant replay permission. Raw failed receipt states remain in the canonical index; the GUI exposes only unresolved current work. No applications, outreach, source deletion or forced identity merges were performed.
+
+Execution evidence is rebuilt by `.github/workflows/pipeline-execution-evidence.yml` after lane receipts and on a bounded periodic pass. It is not a replacement master or a new AI schedule. `state/AUTOMATION_EXECUTION_EVIDENCE.json` retains the original observation times and proof paths; fresh publication time alone cannot prove a task ran.

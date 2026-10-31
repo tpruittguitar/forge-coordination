@@ -139,7 +139,8 @@ function build(opts) {
       const cf = String(b.json.CARRY_FORWARD_HOLDS || ''), cm = cf.match(/Tim rulings? needed on ([^;.]+)/i);
       if (cm) add(Object.assign({ id: 'gofer-archive:' + cm[1].trim(), section: 'JOBS', level: 'ACTION', title: 'Archive items need your ruling: ' + cm[1].trim(), detail: clip(cf, 400), action: 'Tell Claude your ruling per archive item; the gofer applies it next run.' }, src));
     } else if (mentionsTim(b.nextOwner)) {
-      add(Object.assign({ id: 'run-next-owner:' + fk, section: 'DECIDE', level: 'ACTION', title: name + ' — next step is yours', detail: clip(b.nextOwner, 300), action: clip(b.nextAction || b.nextOwner, 300) }, src));
+      const aiOwned=/^(Claude|ChatGPT|Grok)\b/i.test(b.nextOwner);
+      add(Object.assign({ id: 'run-next-owner:' + fk, section: aiOwned?'UPKEEP':'DECIDE', level: 'ACTION', title: name + (aiOwned?' — assigned automation follow-up':' — next step is yours'), detail: clip(b.nextOwner, 300), action: clip(b.nextAction || b.nextOwner, 300) }, src));
     }
     if (b.timDecisions) add(Object.assign({ id: 'run-tim-decisions:' + fk, section: 'DECIDE', level: 'ACTION', title: name + ' — decisions recorded as open', detail: clip(b.timDecisions, 400), action: 'Rule in chat; the AI records the ruling.' }, src));
     lanes.push(lane);
@@ -199,7 +200,7 @@ function build(opts) {
     add({ id: 'auto-intake-latched:' + b.file, section: 'FAILED', level: 'BLOCKING', title: 'AUTO source intake stopped: earlier run ' + (b.run || b.file) + ' is unfinished', detail: clip(b.message.replace(/\.?$/, '.') + (b.requestId ? ' Open request: ' + b.requestId + '.' : '') + ' Every later source-intake-auto run stops before any Writer call until this is reconciled.', 400), action: 'Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.', source: b.file, sourceUrl: ghUrl('forge-coordination', b.file), at: b.haltAt, raisedBy: 'AUTO-INTAKE' });
   });
   autoRuns.quarantined.forEach(q => {
-    add({ id: 'auto-intake-identity-hold:' + q.requestId, section: 'FAILED', level: 'ACTION', title: 'AUTO intake identity HOLD not resolved: ' + q.requestId, detail: clip(q.reason + ' in ' + (q.run || q.file) + '. Isolated: later AUTO runs may proceed, but this insert is not verified.', 400), action: 'Verify the inserted row against the request (exact-row readback); record the outcome in the run file.', source: q.file, sourceUrl: ghUrl('forge-coordination', q.file), at: null, raisedBy: 'AUTO-INTAKE' });
+    add({ id: 'auto-intake-identity-hold:' + q.requestId, section: 'FAILED', level: 'ACTION', title: 'One intake request is quarantined: ' + q.requestId, detail: clip(q.reason + ' in ' + (q.run || q.file) + '. Unrelated intake may proceed; this request remains unresolved and cannot be replayed.', 400), action: 'ChatGPT Gofer: inspect the saved original evidence. Never resubmit the request or force its identity.', source: q.file, sourceUrl: ghUrl('forge-coordination', q.file), at: null, raisedBy: 'AUTO-INTAKE' });
   });
 
   const dismissedOut = [];

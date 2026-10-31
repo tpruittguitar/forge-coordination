@@ -8,6 +8,21 @@
  * A <run>.candidates.json without its state file stopped before any Writer POST and is ignored. */
 const fs=require('node:fs'),path=require('node:path');
 const DIR='receipts/auto-intake';
+const {requestId}=require('./production-executor');
+// Conservatively fence the employer/title family: a changed URL, country label, ZIP or site spelling cannot replay it.
+const identityKey=r=>[String(r.COMPANY||'').replace(/\b(incorporated|corporation|corp|inc|llc|ltd|limited)\b/gi,''),r.TITLE].map(v=>String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()).join('|');
+// Explicit operator containment is not reconciliation: the original outcome stays UNKNOWN.
+function isolatedUnknown(state){
+ const q=state.quarantine,r=state.results?.[q?.requestId];
+ if(!q||q.schema!=='forge.intake-quarantine.v1'||q.status!=='UNKNOWN_NO_REPLAY'||q.authorizedBy!=='Tim'||
+    !Number.isFinite(Date.parse(q.at))||!q.record||q.candidatesHash!==state.candidatesHash||
+    requestId(q.record)!==q.requestId||!(state.requestIds||[]).includes(q.requestId)||
+    !r||r.ok===true||r.WRITE_ACCEPTED===true||!Array.isArray(q.proofs)||!q.proofs.length||
+    !Array.isArray(q.carryForwardRequestIds)||q.carryForwardRequestIds.some(id=>!(state.requestIds||[]).includes(id)||Object.hasOwn(state.results||{},id))||
+    new Set(q.carryForwardRequestIds).size!==q.carryForwardRequestIds.length||
+    (state.requestIds||[]).some(id=>!Object.hasOwn(state.results||{},id)&&!q.carryForwardRequestIds.includes(id)))return null;
+ return {requestId:q.requestId,reason:'UNKNOWN_NO_REPLAY; operator-contained, not resolved',record:q.record,identityKey:identityKey(q.record)};
+}
 
 function previous(root='.'){
  const dir=path.join(root,DIR);
@@ -40,10 +55,10 @@ function latch(prior){
  const blocking=[],quarantined=[];
  for(const p of prior){
   if(p.state.reconciliation||p.state.noCandidates)continue;
-  const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state);
+  const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state)||isolatedUnknown(p.state);
   if(iso){quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});continue}
   blocking.push({file:p.file,run:p.state.sourceRunId||'',haltAt:halt?.at||null,message:halt?.message||'run stopped without a recorded halt',requestId:stoppedAt(p.state)});
  }
  return {blocking,quarantined};
 }
-module.exports={DIR,previous,latch,isolatedIdentityHold,stoppedAt};
+module.exports={DIR,previous,latch,isolatedIdentityHold,isolatedUnknown,identityKey,stoppedAt};
