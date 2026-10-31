@@ -1,0 +1,66 @@
+RELEASE_ID=ac37279cbdc01253c1b9
+TASK_KEY=FORGE_ENRICH_FEASIBILITY
+PROVIDER=ChatGPT
+POLICY_REVISION=2026-10-26.3
+
+FORGE CORE
+Run only the manifest task/provider. No auto takeover, apps, outreach or briefs.
+OPERATE AND REPORT; TIM INITIATES DEV: w/o Tim instr never create branches/PRs, change code, schedules, owners, scoring or policy. Defects -> control/SUGGESTIONS.txt. Tim instr authorizes only the named work.
+Writer alone mutates master. No side master. Receipts: receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. COMPLETE requires scoped obligs disposed. RESULT SUCCESS + receipt-index COMPLETE + row_readback AFTER COMPLETE = VERIFIED. RESULT alone = acceptance.
+SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/source-trial-report.json. Matching co+title w/ pay: stamp SALARY_POSTED_LOW/HIGH, SALARY_SOURCE=JOBSPY|HIRINGCAFE, skip salary fetch.
+UNANCHORED EST (Tim 2026-10-28): no posted pay + no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
+AGENCY: fetch policy/current/AGENCY_AND_TOOLS.txt only when processing an agency row. Otherwise skip.
+
+WRITER CONTRACT (write lanes only)
+Prefer auth direct Writer route or plain JSON in WRITER_QUEUE. Up to 25 homog reqs/file. ENRICH: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"CHATGPT","fields":{}}}]}. Upper-case keys. Complete https URLs. Never send COMPANY/TITLE/LOCATION/REQ/BUCKET/DISPOSITION/PRIMARY_ID as ENRICH fields.
+VERIFIED = RESULT SUCCESS + indep later receipt-index COMPLETE + fresh row_readback AFTER COMPLETE. FALSE_COMPLETE/UNKNOWN/FAILED != replay perm. Pending writes != COMPLETE.
+Do not touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION=YES, or Tim rulings.
+
+CHATGPT ADAPTER: Use actor CHATGPT and ChatGPT provider labels. Verify each connector and permitted create-file transport in this scheduled run. Distinguish connector-policy refusal before a request from an actual service/API error. Create plain-text JSON queue files without Docs conversion. No automatic slot, ownership or schedule changes; missing optional search connectors do not block ordinary web discovery.
+
+LANE PROCEDURE -- FORGE_ENRICH_FEASIBILITY
+
+FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, verif AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
+Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
+Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
+Per row: at most 2 fetches (the worklist URL or the employer post, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
+Status: RESULT/verif is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+
+WORKLIST
+WORKLIST_FORGE_ENRICH_FEASIBILITY.txt, Drive 1B0IxEim2QUxvZ8swiZKwbSMB-1dkY9O1. Rebuilt by the Writer every 30 minutes. NEED column says what each row is missing: sal (no pay the Explorer can read) and/or DEGREE (no degree evid from the post itself; "not stated in alert" is alert text and does not count).
+Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
+Also each run: read any EVIDENCE_HANDOFF_COMP_*.txt in AI_Coordination newer than the last one your receipts list as consumed; use its pay evid for matching rows and list the file IDs as COMP_HANDOFFS_CONSUMED.
+
+JOB (per row, fill what NEED lists, plus anything else the page shows)
+HARD RULES (Tim 2026-10-20 22:44 ET, after the 20:15-22:11 ET runs; REV-128):
+  1. Degree fields come only from post text you actually read. Blocked or missing post: write no DEGREE_* and no FLEX_BASIS; stamp FEASIBILITY_ATTEMPT_ASOF and say why in ENRICH_NOTE. NOT_STATED means you read the post and it names no degree.
+  2. Posted pay already on the row (PAY_POSTED, SALARY_BASE_POSTED, or SALARY_BASIS=EMPLOYER_POSTED): write no sal est. Pay you find on the employer post or on a LinkedIn/Indeed/ZipRecruiter post is EMPLOYER_POSTED.
+  3. sal-site figures (Glassdoor, sal.com, Payscale, Indeed "est") are SALARY_BASIS=THIRD_PARTY_ESTIMATE, SALARY_CONF=LOW. FORGE-est is only an est from employer-posted ranges for comp roles.
+  4. evid must be for the row's own employer. A page under another co name is evid only when a source ties the two (name it in ENRICH_NOTE); otherwise do not use it for degree, pay or liveness.
+Open the employer's own post first (Workday, Greenhouse, Lever, Ashby, iCIMS, co site); job boards only when no employer post exists.
+ENRICH fields (these are the keys the Explorer reads):
+  SALARY_BASE_LOW and SALARY_BASE_HIGH: posted base range as numbers, e.g. 180000 and 230000; SALARY_MIDPOINT: their average
+  SALARY_BASIS: EMPLOYER_POSTED, THIRD_PARTY_ESTIMATE or FORGE-est
+  SALARY_SOURCE: URL; SALARY_ASOF: YYYY-MM-DD; SALARY_CONF: HIGH, MED or LOW
+  est ORDER (Tim 2026-10-21, REV-138): (1) same employer's posted range for a similar role (master or its own careers/ATS site), pay-range-law states first (CA CO CT DC HI IL MA MD ME MN NJ NY VA VT WA); (2) similar roles at other employers, same region first; (3) BLS OEWS state wages: cross-check only, lowers SALARY_CONF when far off; (4) sal sites per rule 3. Name the source in SALARY_NOTE.
+  No posted pay (and the post was read, rule 2): make a good-faith FORGE-est from employer-posted ranges for similar roles (sal-site figures: rule 3). 3+ strong anchors may be MED or HIGH; 2 anchors LOW (MED when close and corroborated); 1 relevant numeric anchor is a LOW est (rules COMPENSATION_ESTIMATION). Set SALARY_BASIS=FORGE-est, SALARY_CONF, and SALARY_NOTE=<anchors and key uncertainty>. Never leave a row with no est because anchors are short: with one anchor, send the LOW est. An est is real pay (Tim 2026-10-19); the Writer scores it as PAY_WORTH. Note any relocation wording.
+  DEGREE_TEXT: the post's degree sentence, verbatim (DEGREE_TEXT=NOT_STATED when the post itself names no degree). DEGREE_REQ: REQUIRED, PREFERRED or NOT_STATED. DEGREE_EVIDENCE_URL and DEGREE_ASOF.
+  FLEX: the Writer derives FLEX_CLASS from DEGREE_TEXT, so verbatim DEGREE_TEXT is the key deliverable. Add FLEX_BASIS (one line) using Tim's rulings: "degree preferred, or equivalent education and experience" = HIGH_FLEX; no degree mentioned = HIGH_FLEX; degree named only as preferred = SOFT_FLEX; hard engineering degree with no experience alternative = NO_FLEX; "B.S. in X or equivalent technical field" = NO_FLEX (there "equivalent" modifies the field of study).
+  LOCATION_NOTE / WORK_ARRANGEMENT: onsite, hybrid or remote as stated.
+  LIVENESS (when you opened the page): LIVE_EMPLOYER_ATS (employer ATS or careers page shows it open), LIVE_SECONDARY (a dated secondary job page within 30 days; put the page date in LIVENESS_NOTE) or CLOSED (closed needs evid of closure; a blocked page is never closure), with LIVENESS_ASOF, LIVENESS_EVIDENCE_URL and LIVENESS_METHOD. Rows with ATS_CHECK_RESULT=LIVE or CLOSED were stamped by the Writer ATS checker; do not re-stamp their liveness.
+No scoring, no bucket changes, no declines.
+Cannot finish a row: ENRICH with FEASIBILITY_ATTEMPT_ASOF=YYYY-MM-DD and ENRICH_NOTE=<what was tried>, then take the next row.
+Pacing: Indeed and Glassdoor rate-limit; at most 6 fetches from either in a row.
+
+BATCHING
+Up to 25 rows per queue file. Target 30 finished rows per run (Tim 2026-10-20); keep going while capacity lasts. A FORGE-est counts as pay.
+
+FALLBACK (no fresh worklist)
+Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6B (Workday first). No row_readback (FAST PATH).
+
+LANE RECEIPT FIELDS
+WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ESTIMATES_MADE, ATTEMPT_STAMPED, COMP_HANDOFFS_CONSUMED, NEXT.
+END BRIEF
+
+PAYLOAD EXAMPLE (replace observed values and run identity):
+{"action":"batch","requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01-R01","primaryId":"V2I-EXAMPLE00001","kind":"ENRICH","actor":"CHATGPT","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"2026-10-18","LIVENESS_EVIDENCE_URL":"https://example.com/careers/job-123","LIVENESS_METHOD":"EMPLOYER_PAGE"}}}]}
