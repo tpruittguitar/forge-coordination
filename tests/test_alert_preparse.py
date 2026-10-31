@@ -136,10 +136,10 @@ def test_dedupe_across_emails():
     p = Preparser()
     a = p.process(LINKEDIN_SENDER, LI_1)
     b = p.process(LINKEDIN_SENDER, LI_2)
-    assert len(a) == 2 and b == []          # Rolls-Royce dropped on second sight
-    assert p.stats["duplicates"] == 1
-    assert p.last_dropped[0]["reason"] == "duplicate"
-    assert p.last_dropped[0]["job_id"] == "4479999999"
+    assert len(a) == 2 and len(b) == 1
+    assert b[0]["seen_before_review_required"] is True
+    assert p.stats["duplicates"] == 0
+    assert p.last_dropped == []
 
 
 def test_size_reduction_and_passthrough():
@@ -157,5 +157,6 @@ def test_seen_file_roundtrip(tmp_path):
     assert load_seen(path) == ["indeed:abc", "linkedin:4483191253"]
     p = Preparser(load_seen(path))
     kept = p.process(LINKEDIN_SENDER, LI_1)
-    assert [j["job_id"] for j in kept] == ["4479999999"]
-    assert p.stats["duplicates"] == 1
+    assert [j["job_id"] for j in kept] == ["4483191253", "4479999999"]
+    assert kept[0]["seen_before_review_required"] is True
+    assert p.stats["duplicates"] == 0

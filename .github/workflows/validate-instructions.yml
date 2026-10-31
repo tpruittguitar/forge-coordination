@@ -1,10 +1,10 @@
 name: Validate instruction release
 on:
   pull_request:
-    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", ".github/workflows/**"]
+    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", "tools/email-recovery/**", ".github/workflows/**"]
   push:
     branches: [main]
-    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", ".github/workflows/**"]
+    paths: ["policy/**", "runtime/**", "scripts/**", "schemas/**", "examples/**", "tests/**", "control/**", "lanes/**", "tools/alert-preparse/**", "tools/email-recovery/**", ".github/workflows/**"]
 permissions:
   contents: read
 jobs:
@@ -22,4 +22,5 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tests/automation-run-lock.test.cjs
+      - run: node --test tools/email-recovery/*.test.cjs
       - run: python scripts/build_runtime.py --check
