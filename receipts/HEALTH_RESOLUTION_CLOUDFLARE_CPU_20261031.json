@@ -1,0 +1,47 @@
+{
+  "schema": "forge.health-resolution.v1",
+  "provider": "ChatGPT",
+  "status": "RESOLVED_OBSERVED_NO_CURRENT_RESOURCE_ERRORS",
+  "priorEvidence": "receipts/HEALTH_HANDOFF_CLOUDFLARE_CPU_20261031_1059ET.json",
+  "source": "Authenticated Cloudflare Pages project API and GraphQL pagesFunctionsInvocationsAdaptiveGroups; fresh production HTTP probes; deployed source and relevant tests",
+  "project": "foreman-cockpit",
+  "script": "pages-worker--20955110-production",
+  "productionDeploymentId": "bd2d7c53-69b0-451a-9e18-d6c359a8a00c",
+  "productionCommit": "50fcb602099a8c24149fa51baeae1d243440b6de",
+  "latestObservedResourceFailure": "2026-10-31T03:06:25Z",
+  "latestObservedResourceFailureEastern": "2026-10-30 23:06:25 America/New_York",
+  "recentWindow": {
+    "from": "2026-10-31T04:00:00Z",
+    "to": "2026-10-31T16:00:00Z",
+    "successfulRequests": 12010,
+    "clientDisconnected": 16,
+    "resourceLimitFailures": 0,
+    "reportedErrors": 0
+  },
+  "preceding24Hours": {
+    "from": "2026-10-30T16:00:00Z",
+    "to": "2026-10-31T16:00:00Z",
+    "resourceLimitFailures": 274,
+    "successfulRequests": 14285
+  },
+  "rootCauseEvidence": {
+    "fixCommit": "dc0fe91323081eb46c7adf8eeffd503b65adbe98",
+    "fixCommittedAt": "2026-10-31T03:05:36Z",
+    "oldBehavior": "The writer-activity request fetched and JSON-parsed the growing full receipt index and recovery report, then aggregated every receipt within the Pages request CPU budget.",
+    "currentBehavior": "Background code publishes the compact WRITER_ACTIVITY.json summary; the request serves and validates that bounded summary, with an enforced 256 KiB streamed-read cap. It no longer aggregates the full ledger on each GUI poll.",
+    "confidence": "Strong source-code and deployment-time correlation: final resource error is immediately after fix commit during rollout. Historical per-route logs were not available; do not represent route attribution as an exact log trace.",
+    "dailyEmailExplanation": "The alert covers previous-day resource failures; its delivery does not establish a current fault. Daily request quota and per-invocation CPU limits are different measures."
+  },
+  "validation": {
+    "liveHttp200": ["/api/pipeline-health", "/api/writer-activity", "/api/structured/health", "/api/structured/jobs?limit=250&offset=0", "/api/structured/counts"],
+    "writerActivityResponseBytes": 4912,
+    "tests": "node --test tests/health-refresh.test.js tests/writer-activity.test.js",
+    "passed": 21,
+    "failed": 0,
+    "codeChangesThisAudit": 0,
+    "billingChanges": 0,
+    "masterMutations": 0,
+    "temporaryTail": "Created for read-only diagnosis; websocket transport unavailable; session deleted after investigation. No per-route evidence claimed from it."
+  },
+  "next": "Treat this prior incident as resolved in current app status. Keep historical evidence on GitHub. Investigate only new post-fix exceededResources events; do not convert old daily-email totals into a persistent active fault."
+}
