@@ -7,7 +7,7 @@ function profile(){return Profile.build(['Dayton','Cleveland','Akron'].map((city
 test('bounded source refresh uses cache, failure backoff, and never becomes target posted pay',async()=>{
  const p=profile(),cache={},job=()=>({identityVerified:true,basis:'EMPLOYER_POSTED',pay:{low:220000,high:260000}});let reads=0;
  const s=S.create({profile:p,cache,now:()=>Date.parse(at),maxReads:2,maxPerTarget:1,readSource:async()=>{reads++;return job();}});
- const a=await s.find(target,[]);assert.equal(a.length,1);assert.equal(a[0].id,'V2I-SOURCE0');assert.equal(s.stats.reads,1);await s.find(target,[]);assert.equal(reads,2);s.count({ids:[a[0].id]});assert.equal(s.stats.estimates_with_profile_sources,1);
+ const a=await s.find(target,[]);assert.equal(a.length,1);assert.equal(a[0].id,'V2I-SOURCE0');assert.equal(a[0].region,'MW');assert.equal(s.stats.reads,1);await s.find(target,[]);assert.equal(reads,2);s.count({ids:[a[0].id]});assert.equal(s.stats.estimates_with_profile_sources,1);
  const reuse=S.create({profile:p,cache,now:()=>Date.parse(at),maxReads:0,readSource:async()=>{throw Error('No read allowed');}});assert.equal((await reuse.find(target,[])).length,2);assert.equal(reuse.stats.cache_hits,2);
  const failCache={},fail=S.create({profile:p,cache:failCache,now:()=>Date.parse(at),readSource:async()=>null});assert.equal((await fail.find(target,[])).length,0);await fail.find(target,[]);assert.equal(fail.stats.backoff,2);assert.equal(fail.stats.failed,3);
 });
