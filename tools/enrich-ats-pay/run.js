@@ -205,7 +205,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     // Employer/custom posting formats previously had no reader. Read only an exact
     // company/title JobPosting object; never infer NOT_STATED from page chrome.
     // Reuse alternate posting links already saved with this exact row; never research candidate identities.
-    if(!checked)for(const publicUrl of Recovery.urls(r).slice(0,4)){
+    const recoveryUrls=Recovery.urls(r),knownBoard=boardByCo[L.normCo(r.COMPANY)];
+    if(!checked&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
+    if(!checked)for(const publicUrl of [...new Set(recoveryUrls)].slice(0,4)){
       if(stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
       if(/email\.|\.sendgrid\.net|t\.ladders/i.test(new URL(publicUrl).hostname))continue;
       const aggCandidate=L.aggregatorPage(publicUrl);if(aggCandidate&&(CONFIG.aggregatorsOff||[]).includes(aggCandidate.kind))continue;
