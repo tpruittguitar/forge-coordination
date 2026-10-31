@@ -145,7 +145,7 @@ function parseAggregator(kind, html, row) {
 }
 /** REV-136: the first field on a row that names a readable ATS posting (rows keep the ATS link in ATS_POSTING_URL more often
  *  than in SOURCE_URL, which is usually the LinkedIn / Indeed alert). */
-const ATS_URL_KEYS = ['ATS_POSTING_URL', 'SOURCE_URL', 'SOURCE', 'COMPANY_SOURCE_URL', 'DIRECT_JOB_URL', 'INITIATING_URL', 'LIVENESS_EVIDENCE_URL'];
+const ATS_URL_KEYS = ['ATS_POSTING_URL', 'DIRECT_JOB_URL', 'CLAUDE_REVIEW_EVIDENCE_URL', 'DEGREE_EVIDENCE_URL', 'SALARY_EVIDENCE_URL', 'LIVENESS_EVIDENCE_URL', 'SOURCE_URL', 'SOURCE', 'COMPANY_SOURCE_URL', 'INITIATING_URL'];
 function aggregatorFor(p) { for (const k of ATS_URL_KEYS) { const a = aggregatorPage(p[k]); if (a) return Object.assign({ key:k },a); } return null; }
 function atsFor(p) { for (const k of ATS_URL_KEYS) { const a = atsApi(String(p[k] == null ? '' : p[k]).trim()); if (a) return Object.assign({ key: k }, a); } return null; }
 
