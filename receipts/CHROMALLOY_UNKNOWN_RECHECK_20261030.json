@@ -1,0 +1,44 @@
+{
+  "schema": "forge.quarantine-investigation.v1",
+  "at": "2026-10-31T03:08:56.206Z",
+  "requestId": "FORGE-SOURCE-99E748FF965C97ABBF761805",
+  "outcome": "UNKNOWN_NO_REPLAY",
+  "writerSubmissions": 0,
+  "masterMutations": 0,
+  "sourceIndexSha": "bd25f5300bb5069761a4ee1c669e5780d98d5720",
+  "receiptEvidence": {
+    "id": "FORGE-SOURCE-99E748FF965C97ABBF761805",
+    "entry": null,
+    "result": {
+      "data": {
+        "ok": true,
+        "found": false,
+        "requestId": "FORGE-SOURCE-99E748FF965C97ABBF761805"
+      },
+      "startedAt": "2026-10-31T03:00:37.794Z",
+      "completedAt": "2026-10-31T03:00:44.527Z"
+    }
+  },
+  "canonicalSearch": {
+    "exactMatchingMasterRows": 0,
+    "matchingEmployerMasterRows": [
+      "595 | V2I-C19F73DF2F52 | Chromalloy | Director of Engineering - Investment Castings | DECLINED_BY_TIM | RESOLVED/DECLINED_BY_TIM | SCOUT_INTAKE_2026-10-02; RUN_GROK07-20261001-1707ET-07089bfe; TIM_DECLINE_2026-10-26 | UNCAPTURED | Tampa, FL"
+    ],
+    "matchingEmployerArchiveRows": [
+      {
+        "PRIMARY_ID": "V2F-05759D76DC8E",
+        "TITLE": "Senior Manager, Quality Assurance",
+        "LOCATION": "Newnan, GA",
+        "BUCKET": "DECLINED_BY_TIM"
+      }
+    ]
+  },
+  "reason": "The request response was lost to a transport timeout. No request receipt or exact employer/title/location/source match was found. Other declined Chromalloy roles are different jobs and cannot close this case. NO_ENTRY does not prove no write occurred.",
+  "prevention": [
+    "Existing 180-second POST budget",
+    "Durable pre-POST intent and persisted UNKNOWN checkpoint",
+    "Stable request and employer/title replay fence",
+    "Unrelated jobs and 22 untouched candidates proceed independently"
+  ],
+  "nextAction": "Gofer must retain this request without replay until original execution evidence or an exact canonical identity is independently established."
+}
