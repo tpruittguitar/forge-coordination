@@ -134,3 +134,5 @@ test('REV-138: same-employer source, board parsing, BLS series and cross-check',
   assert.deepStrictEqual([L.blsCheck({ mid: 80000, high: 85000, conf: 'MED' }, w).flag, L.blsCheck({ mid: 80000, high: 85000, conf: 'MED' }, w).conf], ['BELOW', 'LOW']);
   assert.strictEqual(L.blsCheck({ mid: 1, high: 1, conf: 'MED' }, null).flag, 'NO_BLS');
 });
+
+test('aggregator recovery uses saved direct evidence when the original source is a tracking URL',()=>{const a=L.aggregatorFor({SOURCE_URL:'https://www.ziprecruiter.com/km/tracking',LIVENESS_EVIDENCE_URL:'https://www.linkedin.com/jobs/view/4485233648/'});assert.equal(a.kind,'linkedin');assert.equal(a.id,'4485233648');assert.equal(L.aggregatorFor({SOURCE_URL:'https://email.lensa.com/opaque'}),null);});
