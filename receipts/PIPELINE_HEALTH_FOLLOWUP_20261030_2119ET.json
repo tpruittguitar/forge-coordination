@@ -1,0 +1,164 @@
+{
+  "schema": "forge.pipeline-health-followup.v1",
+  "at": "2026-10-31T01:18:59.982Z",
+  "authorization": "Tim: resolve displayed warnings, identify root causes and implement permanent prevention; restore correct colors",
+  "status": "DEPLOYED_AND_LIVE_VERIFIED",
+  "rootCauses": [
+    {
+      "issue": "Zurn Elkay HTTP500",
+      "cause": "Missing Accept-Language: en-US in the Workday request contract; browser independently returned 131 jobs",
+      "fix": "Explicit locale in discovery and enrichment HTTP readers",
+      "verification": "Three configured searches succeeded; 47 deduplicated postings; current health entry OK with lastSuccessAt",
+      "proof": "receipts/BOARD_LOCALE_RECOVERY_20261030.json"
+    },
+    {
+      "issue": "Master population stale in an open tab",
+      "cause": "One-minute health polling did not refresh the canonical job population",
+      "fix": "Bounded read-only canonical refresh every five minutes while visible; deduplicate, back off, preserve editing/open drawers",
+      "verification": "Focused regression tests; live browser canonical population loaded 1164 roles at 21:17:34 ET"
+    },
+    {
+      "issue": "Coverage unreported after a transient read failure",
+      "cause": "A partial failed feed replaced previously verified coverage; generic absence text hid the distinction",
+      "fix": "Retry transient reads, retain and label last verified coverage, distinguish genuinely overdue evidence",
+      "verification": "Live coverage reported; partial source windows remain explicit"
+    },
+    {
+      "issue": "Resolved fault resurfaced from old GitHub evidence",
+      "cause": "Raw branch URLs returned an obsolete snapshot even after main had verified recovery",
+      "fix": "Resolve current main once per minute and pin all six snapshots to the same immutable revision; fail visibly if revision lookup cannot be verified",
+      "verification": "Live sourceRevision and revision check independently inspected"
+    },
+    {
+      "issue": "Green panel backgrounds",
+      "cause": "Hard-coded green and olive presentation colors",
+      "fix": "Shared neutral panel/theme variables; status accents remain on borders and labels",
+      "verification": "Live Chrome computed RGB channels equal: 11/11/11 and 20/20/20"
+    }
+  ],
+  "deployments": {
+    "coordination": {
+      "pr": 115,
+      "mergeSha": "8dc360358f6cfb5404df35f54ace7abe37446562"
+    },
+    "gui": {
+      "prs": [
+        212,
+        214
+      ],
+      "mergeShas": [
+        "dfea44addd676d82a6ac17d34f1d26111fccbdf7",
+        "503237f695ca58b319d784b115a3491f4cb46777"
+      ],
+      "cloudflarePages": "SUCCESS"
+    }
+  },
+  "tests": {
+    "sourceAndEnrichment": 52,
+    "guiFullSuite": 690,
+    "additionalRevisionFailureRegression": "PASS",
+    "focusedHealthRefresh": 8
+  },
+  "live": {
+    "at": "2026-10-31T01:18:42.895Z",
+    "healthHttp": 200,
+    "emailCoverage": {
+      "ok": true,
+      "at": "2026-10-30T23:14:27.825Z",
+      "run": "FORGE-EMAIL-CHATGPT-20261030-1902ET",
+      "window": [
+        "2026-10-30T20:02:00Z",
+        "2026-10-30T23:02:00Z"
+      ],
+      "continuityWindow": [
+        "2026-10-30T19:02:00Z",
+        "2026-10-30T20:02:00Z"
+      ],
+      "bodiesRead": 6,
+      "historicalBodiesRevisited": 10,
+      "visibleOccurrences": 121,
+      "verifiedInserted": 24,
+      "held": 2,
+      "advertisedUnshownOccurrences": 149,
+      "coverageComplete": false,
+      "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+      "writerProofsVerified": true
+    },
+    "schedules": {
+      "ok": true,
+      "at": "2026-10-31T00:45:23.063Z",
+      "configured": 5,
+      "ids": [
+        "forge-ai-usage-reader",
+        "forge-application-writer-gofer",
+        "forge-email-discovery",
+        "forge-posting-validation",
+        "pe-stack-health-daily"
+      ],
+      "executionVerified": true,
+      "executionAt": "2026-10-31T01:11:25.079Z",
+      "unverified": []
+    },
+    "boards": [],
+    "elkay": {
+      "key": "workday:elkay.wd1.myworkdayjobs.com/Elkay_External",
+      "companies": [
+        "Zurn Elkay Water Solutions"
+      ],
+      "status": "OK",
+      "error": "",
+      "httpStatus": null,
+      "lastAttemptAt": "2026-10-31T01:09:07.883Z",
+      "lastSuccessAt": "2026-10-31T01:09:07.883Z",
+      "retryAt": null,
+      "consecutiveFailures": 0
+    },
+    "deployed": {
+      "neutralSurfaces": true,
+      "canonicalRefresh": true,
+      "coverageFailurePreserved": true
+    },
+    "cache": {
+      "html": "no-cache",
+      "js": "no-cache",
+      "css": "no-cache"
+    },
+    "issues": [
+      {
+        "id": "auto-intake-identity-hold:FORGE-SOURCE-840F3921F2C06EA339A54E3A",
+        "title": "One intake request is quarantined: FORGE-SOURCE-840F3921F2C06EA339A54E3A"
+      },
+      {
+        "id": "auto-intake-identity-hold:FORGE-SOURCE-99E748FF965C97ABBF761805",
+        "title": "One intake request is quarantined: FORGE-SOURCE-99E748FF965C97ABBF761805"
+      },
+      {
+        "id": "ask:ASK-20261019-CLAUDE-1855",
+        "title": "Anduril Deputy Head of Production, Altius (applied 10-19): Writer refuses to record it because a rejected row matches"
+      },
+      {
+        "id": "run-next-owner:ZIPR|CHATGPT",
+        "title": "ZIPR · CHATGPT — assigned automation follow-up"
+      },
+      {
+        "id": "edit-rejected:CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt",
+        "title": "Edit request rejected: CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE"
+      },
+      {
+        "id": "ask:ASK-20261026-CHATGPT-0102",
+        "title": "SonicJobs trial cannot supply source links: approve recovery plan or retire it?"
+      },
+      {
+        "id": "pr:forge-policy#8",
+        "title": "forge-policy PR #8: RULES: fetch missing BLS series for unanchored estimates"
+      },
+      {
+        "id": "pr:forge-coordination#102",
+        "title": "forge-coordination PR #102: ENRICH: fetch missing BLS series before n/a"
+      }
+    ]
+  },
+  "remaining": "Two uncertain intake requests stay quarantined without replay; partial email recommendations and two genuine questions stay visible. No job decisions or applications were invented.",
+  "writerSubmissions": 0,
+  "masterMutations": 0
+}
