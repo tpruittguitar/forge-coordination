@@ -68,7 +68,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const c of priority) {
     if (c.tier === 'PAUSED') { probes.push({ company: c.name, found: null, skipped: 'PAUSED' }); continue; }
     let b = T.boardFromCareers(c.careers) || coBoard[P.normCo(c.name)] || null;
-    if (!b) {
+    if (!b && !process.env.TRIAL_SKIP_BOARDS) {
       for (const slug of T.slugGuesses(c.name)) {
         for (const kind of ['greenhouse', 'lever', 'ashby']) {
           const cand = { kind, key: kind + ':' + slug, board: slug }, req = P.boardListRequest(cand, '');
@@ -83,7 +83,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   discoveryRows.forEach(r => add(P.boardOf(r.p || {}), r.COMPANY, '', 'master'));
   // Stop retries inherited only from closed jobs; an active target or another open job can keep the source useful.
   Object.values(health.boards).forEach(h=>{const eligible=boards.has(H.repair(h.descriptor||{key:h.key}).key);h.paused=h.companies.every(c=>paused.has(P.normCo(c)))||!eligible;h.pauseReason=!eligible?'NO_ACTIVE_DISCOVERY_SEED':h.paused?'TARGET_PAUSED':null;});
-  fs.mkdirSync(OUT,{recursive:true});fs.writeFileSync(healthFile,JSON.stringify(health,null,1)+'\n');
+  fs.mkdirSync(OUT,{recursive:true});if(!process.env.TRIAL_SKIP_BOARDS)fs.writeFileSync(healthFile,JSON.stringify(health,null,1)+'\n');
   /* Explorer ranking: DREAM, P1, P2, P3, WATCH, then boards known only from the master. PAUSED was not added. */
   const ranked = [...boards.values()].filter(b => b.tier !== 'PAUSED'&&!([...b.companies].every(c=>paused.has(P.normCo(c))))).sort((a, b) => T.tierRank(a.tier) - T.tierRank(b.tier) || a.key.localeCompare(b.key));
   const cap = Math.max(1, +(process.env.TRIAL_MAX_BOARDS || CONFIG.maxBoards) || CONFIG.maxBoards);
