@@ -18,9 +18,9 @@ function parse(html,row){
 }
 function publicUrl(raw){try{const u=new URL(String(raw||'').split(/\s/)[0]);return u.protocol==='https:'&&!u.username&&!u.password&&!/^(localhost|127\.|10\.|192\.168\.|169\.254\.|\[)/i.test(u.hostname)?u.href:null;}catch{return null;}}
 function retryDue(ledger,id,needs,now=Date.now()){
- const last=ledger.submitted[id]||ledger.tried[id];if(!last)return true;
+ const last=Math.max(Date.parse(ledger.submitted[id])||0,Date.parse(ledger.tried[id])||0);if(!last)return true;
  // A successful partial write or new missing field must not suppress the next task.
  const prior=ledger.needs&&ledger.needs[id];if(prior&&prior!==needs)return true;
- return now-Date.parse(last)>=6*3600000;
+ return now-last>=6*3600000;
 }
 module.exports={parse,publicUrl,retryDue};
