@@ -5,6 +5,10 @@ Maintain source priority rather than applying a universal discount to software c
 Use [Pay-disclosure salary search guide](PAY_DISCLOSURE_SEARCH_GUIDE.md) for the dated official-source state table,
 remote/reporting coverage cues, request-only laws, future effective dates and shared salary-search procedure.
 
+Use [the master/archive employer-source audit](EMPLOYER_PAY_SOURCE_AUDIT.md) and
+`reference/EMPLOYER_PAY_SOURCES.json` for repeatedly documented employer sources and the programmatic source selector.
+Saved capture coverage is not an employer's actual disclosure rate; provenance-review records are not approved anchors.
+
 1. Exact employer posting (including an identity-matched aggregator copy of that posting): use the stated base range.
    Salary-transparency jurisdictions are useful places to search for same-employer comparables when the target has no
    posted pay. The current worker already checks posting pay first and prioritizes transparency-state board results.
