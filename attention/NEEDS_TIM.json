@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-31T16:15:03.040Z",
- "sourceCommit": "5b3af60ab4b7b7a9e221e691774df8b663b2fd48",
+ "builtAt": "2026-10-31T16:29:03.352Z",
+ "sourceCommit": "7ef9700119eacf1e4f916fb1e21ae529e6a2ae91",
  "counts": {
-  "total": 22,
-  "BLOCKING": 0,
+  "total": 23,
+  "BLOCKING": 1,
   "ACTION": 9,
   "WATCH": 13,
   "DECIDE": 6,
   "JOBS": 1,
-  "FAILED": 8,
+  "FAILED": 9,
   "UPKEEP": 7
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261031T1437Z is unfinished",
+   "detail": "BLOCKED: independent employer-business review not bound to fresh canonical rules. Open request: FORGE-SOURCE-016B50EE57B27F70DBFA43B0. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
+   "at": "2026-10-31T16:23:55.288Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -588,7 +600,7 @@
    "lastAt": "2026-10-31T01:41:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-OUTCOME-CHATGPT-20261031-0141ET_VERIFICATION.json",
-   "runs7d": 40,
+   "runs7d": 43,
    "usualGapHours": 0,
    "overdue": true
   },
