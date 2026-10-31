@@ -1,0 +1,196 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "task": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "scheduledAt": "2026-10-31T11:44:22.048Z",
+  "at": "2026-10-31T11:49:26.146Z",
+  "readOnly": true,
+  "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+  "sharedInstructionRevision": "272ec577fb4c36e36be8c0b896dcdab258db471d",
+  "revisions": {
+    "coordinationRead": "272ec577fb4c36e36be8c0b896dcdab258db471d",
+    "coordinationObservedAtFinish": "272ec577fb4c36e36be8c0b896dcdab258db471d",
+    "cockpit": "50fcb602099a8c24149fa51baeae1d243440b6de"
+  },
+  "sourceEvidenceSha256": "352ebce320ac065e64b7609d220ff783b5d5b03303757ebe8fc4a4d17686ff2c",
+  "sourceEvidence": {
+    "writerSha": "360e577ec77f8c17489bd17c89f588732ec3529519b7c91373cbf3a6118fbdd6",
+    "githubSha": "d15575c7e7bb638bd59c689b3b301ce5a484e2b995aaba19ce43a5bd196b2399",
+    "explorerSha": "001f70212a6de6410ef3755e078b7a4498601858091121f81998c0e1a880e026",
+    "operationsSha": "309246a056c581eb4f27352ce72c25ffc21ca72c4383ce9f4192ffe5c9fda1c7",
+    "queueSha": "7a4189690976807a373d44b67a287fd3c3428d7c7c20a866682fa08c693d2646",
+    "alignmentSha": "57016d614b8ca4fbb14aed66e4ff215dea05227deac4fd5e0d848532fd60c212",
+    "coordinationSnapshot": "272ec577fb4c36e36be8c0b896dcdab258db471d",
+    "cockpitSnapshot": "50fcb602099a8c24149fa51baeae1d243440b6de"
+  },
+  "checks": {
+    "writer": true,
+    "github": true,
+    "operations": true,
+    "canonicalMaster": true,
+    "explorerHealth": true
+  },
+  "writer": {
+    "readAt": "2026-10-31T11:45:33.898Z",
+    "build": "3f583ea",
+    "level": "ok",
+    "errors": [],
+    "freeze": null,
+    "fileQueuePending": 0,
+    "fileQueueProcessing": 0,
+    "fileQueueHolds": 0,
+    "unverifiedDirectWrites": 0,
+    "queueTriggerInstalled": true,
+    "fileQueue24h": {
+      "arrived": 12,
+      "finished": 12,
+      "failed": 0,
+      "held": 0,
+      "peakFinishedPerHour": 2,
+      "waitMsMax": 91907
+    },
+    "fileQueueBasis": "WRITER_QUEUE_LOG.jsonl; a request is counted once it finishes; backlogAtEnd counts logged requests that had arrived and not yet finished",
+    "queueLogSkippedLines": 1,
+    "warningMetadataDefect": "One undated blank FAILED record produces a notice; no24-hour failure timestamp/identity can be established from that malformed record.",
+    "localProductionLockPresent": false,
+    "fence": "No active freeze observed; per-execution fence state is not exposed by supported read-only endpoint.",
+    "logRotation": "Code verifies automatic threshold-based rotation on queue ticks; live log byte sizes/rotation receipt were not exposed by status and were not mutated."
+  },
+  "canonical": {
+    "masterRows": 2448,
+    "archiveRows": 785,
+    "uniquePrimaryIds": 3230,
+    "masterReadAt": "2026-10-31T11:45:20.771Z",
+    "masterModifiedAt": "2026-10-31T11:06:31.180Z"
+  },
+  "flow": {
+    "at": "2026-10-31T11:24:51.546Z",
+    "queues": {
+      "verification": 0,
+      "enrichment": 367,
+      "readyForReview": 460,
+      "blockedClosed": 93
+    },
+    "population": {
+      "total": 920,
+      "accounted": 920,
+      "reconciled": true
+    },
+    "upstreamReconciled": true,
+    "upstreamWaiting": 1749
+  },
+  "enrichment": {
+    "lastRun": "FORGE-ENRICH_ATS-ATSBOT-20261031T0958Z",
+    "at": "2026-10-31T10:06:03.494Z",
+    "submittedUpdates": 20,
+    "writerAcceptedUpdates": 20,
+    "distinctCompletedJobsNotInferredFromUpdates": true,
+    "publicRead": 3,
+    "publicFailed": 57,
+    "explicitSourceResearchExceptions": 218
+  },
+  "operations": {
+    "counts": {
+      "NOT_ATTEMPTED": 0,
+      "RESEARCHING": 0,
+      "QUEUED": 0,
+      "PROCESSING": 0,
+      "PENDING_VERIFICATION": 1,
+      "WRITER_TRANSPORT_BLOCKED": 0,
+      "BLOCKED": 0,
+      "NEEDS_RESOLUTION": 377,
+      "UNSYNCED": 0,
+      "VERIFIED_COMPLETE": 1613,
+      "EXCLUDED_VERIFIED": 6,
+      "EXISTING_VERIFIED": 272,
+      "CANCELED_VERIFIED": 0
+    },
+    "total": 2269,
+    "done": 1891,
+    "open": 378,
+    "nativeRunRecords": 0,
+    "sourceCoverageRecords": 0,
+    "coverageNote": "Missing Writer operations-run telemetry is not zero work. Hash-bound GitHub execution receipts independently prove current AI runs."
+  },
+  "explorer": {
+    "httpHealthy": true,
+    "sourceRevision": "272ec577fb4c36e36be8c0b896dcdab258db471d",
+    "allSnapshotChecksReadSuccessfully": true,
+    "decisionReady": 460,
+    "readinessReconciles": true,
+    "pendingEmailCandidates": 248,
+    "pendingEmailResultPages": 11,
+    "nativeScheduledTasks": 6,
+    "nativeExecutionUnverified": [],
+    "browserOutbox": "NOT_INSPECTED; server readback cannot establish a particular browser local outbox/poll session",
+    "pollingAndPayload": "Published API returned valid current pinned-revision snapshots; no server payload failure observed."
+  },
+  "receiptRecovery": {
+    "at": "2026-10-31T11:23:46.423Z",
+    "statusCounts": {
+      "CLOSED_NO_ACTIVE_WORK": 24,
+      "ESCALATED": 10
+    }
+  },
+  "stalePullRequests": [
+    {
+      "number": 102,
+      "updatedAt": "2026-10-28T08:37:00Z",
+      "url": "https://github.com/tpruittguitar/forge-coordination/pull/102",
+      "title": "ENRICH: fetch missing BLS series before n/a"
+    }
+  ],
+  "cockpitOpenPullRequests": 0,
+  "comparison": {
+    "priorReceipt": "receipts/HEALTH_AUDIT_20261030_0745ET.json",
+    "improved": [
+      "Automatic global intake latch is absent in current attention evidence; last auto run exhausted eligible candidates rather than proving new inserts.",
+      "Writer unverified count0; old receipt cases are archived/closed in recovery evidence.",
+      "Canonical flow and review-ready population reconcile; all six native scheduled tasks have current execution evidence."
+    ],
+    "remaining": [
+      "Discovery dedupe still reads delayed structured master.",
+      "Email has248 saved candidates and11 result pages, with two durable source-window gaps.",
+      "Writer operations runs/source-window tables remain empty despite independent GitHub production proofs."
+    ]
+  },
+  "findings": [
+    {
+      "priority": 1,
+      "owner": "ChatGPT/Codex",
+      "code": "EXPECTED_AUTO_INTAKE_RUN_ABSENT",
+      "reason": "Successful main source-trial finished 2026-10-31T11:20:16Z; source-intake-auto latest run is 2026-10-31T08:29:25Z. No downstream run visible after more than20minutes. Workflow is active and configured workflow_run on successful source-trial/board-discovery.",
+      "action": "Inspect GitHub workflow_run delivery/eligibility and reconcile this source report against current master before recovery. Do not replay prior writes or clear protections.",
+      "evidence": [
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41195888167",
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41184804479"
+      ]
+    },
+    {
+      "priority": 2,
+      "owner": "ChatGPT/Codex",
+      "code": "ENRICHMENT_SCHEDULE_GAP",
+      "reason": "Latest enrichment start 2026-10-31T09:57:46Z completed successfully; configured hourly :42 plus three-hour :57 fallback, but no10:42UTC start is listed. Current canonical flow has367 waiting enrichment. Writer is healthy, no file-queue backlog or unverified direct writes.",
+      "action": "Investigate missed/delayed Actions scheduling first; preserve pending source-research exceptions and uncertain write IDs. No new dispatch or schedule change performed in read-only audit.",
+      "evidence": [
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41190783316"
+      ]
+    },
+    {
+      "priority": 3,
+      "owner": "ChatGPT/Codex",
+      "code": "DISCOVERY_USES_DELAYED_STRUCTURED_COPY",
+      "reason": "Source report at2026-10-31T11:19:53.974Z used2436 master and783 archive rows; fresh Writer reads contain2448 master and785 archive rows. tools/source-trial/run.js reads structuredApi/jobs for discovery dedupe. Canonical downstream intake guards remain required.",
+      "action": "Use an authenticated complete canonical snapshot or explicitly freshness-validated structured copy for discovery deduplication. This audit changes no code.",
+      "evidence": [
+        "tools/source-trial/run.js:30",
+        "state/source-trial-report.json"
+      ]
+    }
+  ],
+  "masterMutations": 0,
+  "driveMutations": 0,
+  "codeChanges": 0,
+  "scheduleChanges": 0,
+  "workflowDispatches": 0
+}
