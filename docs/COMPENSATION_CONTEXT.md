@@ -37,6 +37,11 @@ Existing active FORGE estimates migrate through the bounded repair pass, up to t
 new bounded recalculation. Posted pay and protected decisions are untouched; fresh salary readback and existing uncertain
 request guards still apply. Completion requires the existing Writer verification procedure, not merely a planned report.
 
+An additional active-estimate review (five jobs per existing worker run) checks weak filled estimates for exact posted pay
+or stronger comparable evidence. It reuses the shared source selector and keeps durable retry history; see
+`docs/EMPLOYER_PAY_SOURCE_AUDIT.md`, Active estimate review, for limits, matching and concurrency guards. This is programmed
+work, not another AI task. No job decision state changes as part of salary review.
+
 `state/enrich-ats-pay-calibration.json` reports leave-one-distinct-posting-out diagnostics: typical absolute error, signed
 bias, underestimation frequency, posted-midpoint range coverage and the share of jobs for which a comparison was possible.
 Every alias of the held-out salary source is excluded. Cases include an unweighted comparison error when available.
