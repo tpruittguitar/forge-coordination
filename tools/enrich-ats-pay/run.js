@@ -7,6 +7,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const P = require('./public-posting.js');
+const Recovery=require('./recovery');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
@@ -45,8 +46,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const liveIds = new Set(anchors.map(a => a.id)), archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n').map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
   archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
-  ledger.needs = ledger.needs || {};
-  const fresh = r => !P.retryDue(ledger, r.PRIMARY_ID, needsOf(r));
+  ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
+  const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(requestId)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
+  const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
@@ -151,14 +153,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // gets its aggregator read and estimate.
   const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
   const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
-  const ordered = PRODUCTS_ONLY?[]:first.concat(list.filter(r => !firstSet.has(r)));
+  const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger);
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
-    if (fresh(r)) { stats.skipped_recent++; continue; }
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
-    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
+    if(inFlightIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
+    if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
+    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
+    const saved=Recovery.cached(ledger,r);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let checked = false, attempted = false, postedPay = null, atsUnconfirmed = false;
     if (api) {
@@ -200,16 +204,20 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     // Employer/custom posting formats previously had no reader. Read only an exact
     // company/title JobPosting object; never infer NOT_STATED from page chrome.
-    const publicUrl=P.publicUrl(url);
-    if(!checked&&publicUrl&&!aggPage&&stats.public_tried<20){
+    // Reuse alternate posting links already saved with this exact row; never research candidate identities.
+    if(!checked)for(const publicUrl of Recovery.urls(r).slice(0,4)){
+      if(stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
+      if(/email\.|\.sendgrid\.net|t\.ladders/i.test(new URL(publicUrl).hostname))continue;
+      const aggCandidate=L.aggregatorPage(publicUrl);if(aggCandidate&&(CONFIG.aggregatorsOff||[]).includes(aggCandidate.kind))continue;
       attempted=true;stats.public_tried++;
-      try{await sleep(CONFIG.fetchGapMs);const response=await get(publicUrl,{signal:AbortSignal.timeout(20000),headers:{'user-agent':CONFIG.userAgent}});
-        const parsed=P.parse(await response.text(),r);
-        if(parsed){checked=true;stats.public_read++;postedPay=parsed.pay;
-          if(n.includes('SALARY')&&parsed.pay){stats.posted_pay++;Object.assign(f,{SALARY_BASE_LOW:parsed.pay.low,SALARY_BASE_HIGH:parsed.pay.high,SALARY_MIDPOINT:Math.round((parsed.pay.low+parsed.pay.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_SOURCE:publicUrl,SALARY_ASOF:today,SALARY_CONF:'HIGH'});}
-          if(n.includes('DEGREE')){const d=L.degreeFromText(parsed.text);if(d){stats.degree++;Object.assign(f,{DEGREE_TEXT:d.text,DEGREE_REQ:d.req,DEGREE_EVIDENCE_URL:publicUrl,DEGREE_ASOF:today});}}
-        }else stats.public_failed++;
-      }catch{stats.public_failed++;}
+      try{await sleep(CONFIG.fetchGapMs);const alternateApi=L.atsApi(publicUrl);let parsed;
+        if(alternateApi){const j=await(await get(alternateApi.api,{headers:{accept:'application/json'},signal:AbortSignal.timeout(20000)})).json();parsed=Recovery.exactApi(r,alternateApi,j);}
+        else {const response=await get(aggCandidate?aggCandidate.fetch:publicUrl,{signal:AbortSignal.timeout(20000),headers:{'user-agent':CONFIG.userAgent}});const html=await response.text();parsed=P.parse(html,r);if(!parsed&&aggCandidate){const candidate=L.parseAggregator(aggCandidate.kind,html,r);if(candidate&&!candidate.wall)parsed=candidate;}}
+        if(parsed&&parsed.text&&parsed.text.length>=300){checked=true;stats.public_read++;postedPay=parsed.pay;const e=Recovery.saveEvidence(ledger,r,publicUrl,parsed);
+          if(n.includes('SALARY')&&parsed.pay){stats.posted_pay++;Object.assign(f,{SALARY_BASE_LOW:parsed.pay.low,SALARY_BASE_HIGH:parsed.pay.high,SALARY_MIDPOINT:Math.round((parsed.pay.low+parsed.pay.high)/2),SALARY_BASIS:parsed.basis||'EMPLOYER_POSTED',SALARY_SOURCE:publicUrl,SALARY_ASOF:today,SALARY_CONF:'HIGH'});}
+          if(n.includes('DEGREE')&&e.degree){stats.degree++;Object.assign(f,{DEGREE_TEXT:e.degree.text,DEGREE_REQ:e.degree.req,DEGREE_EVIDENCE_URL:publicUrl,DEGREE_ASOF:today});}readAttempts.push({url:publicUrl,status:'FULL_POSTING_READ'});break;
+        }stats.public_failed++;readAttempts.push({url:publicUrl,status:'NO_EXACT_COMPLETE_POSTING'});
+      }catch(e){stats.public_failed++;readAttempts.push({url:publicUrl,status:e.status?'HTTP_'+e.status:'READ_ERROR'});}
     }
     // Tim 2026-10-20 18:17 ET: salary from the posting first; estimate only once the posting was checked and shows none
     // Tim ruling 2026-10-21 02:15 ET: a row may be estimated without a posting read after 2 failed reads on different days
@@ -229,7 +237,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (attempted && Object.keys(f).every(k => k === 'FEASIBILITY_ATTEMPT_ASOF')) ledger.tried[r.PRIMARY_ID] = new Date().toISOString();
-    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; pending.push({id:r.PRIMARY_ID,needs:n,reason:attempted?'POSTING_UNREADABLE_OR_NO_USABLE_EVIDENCE':'NO_SUPPORTED_READER_OR_RUN_BUDGET'}); continue; }
+    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(attempted)Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts);pending.push(Recovery.unresolved(r,n,ledger,attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER')); continue; }
+    Recovery.remember(ledger,r,needsOf(r),'EVIDENCE_FOUND',readAttempts);
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   // Shared location facts are looked up once per site, then copied through the Writer.
@@ -281,7 +290,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
       let res, fenced = 0;
       for (;;) {
-        try { res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
+        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
@@ -289,14 +298,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
              on; a failed receipt = failed; nothing or still pending = unconfirmed, counted, and the run continues to the next batch. Never re-POSTed here. */
           const proof = await receiptFor(batch);
           if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue batches; }
+          delete ledger.pendingWrites[requestId];
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
+        if(res.mode==='WRITE_FENCE')delete ledger.pendingWrites[requestId];
         if (res.mode !== 'WRITE_FENCE' || res.frozen || fenced >= CONFIG.fenceRetries) break;
         fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
         await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
       }
       if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue batches; }
+      if(res.mode==='BATCH_RULING_RETRY'){delete ledger.pendingWrites[requestId];for(const q of batch)delete ledger.progress?.[q.ruling.primaryId];}else if(res.results?.every(x=>x.mode==='ALREADY_APPLIED'))delete ledger.pendingWrites[requestId];
       const results = res.results || [];
       // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
@@ -328,9 +340,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
+  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
+  if(!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-recovery.json'),JSON.stringify({schema:'forge.enrichment-recovery.v1',at:new Date().toISOString(),run:RUN_ID,rows:recoveryRows,pendingWrites:ledger.pendingWrites,note:'Pre-write worklist; use reconciled process flow for completions. Never replay an uncertain original request.'},null,2)+'\n');
+  stats.recovery_statuses=recoveryRows.reduce((out,r)=>(out[r.status]=(out[r.status]||0)+1,out),{});
   const body = Object.assign({}, stats, { pending,product_sample:productSample, sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
-  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
+  const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {}),(key,value)=>["lastAttemptAt","retryAt"].includes(key)?undefined:value); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
