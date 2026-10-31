@@ -66,6 +66,23 @@ Offline regeneration from privately parsed canonical rows (each has PRIMARY_ID, 
 Do not commit the input snapshot, correspondence, keys or raw notes. Regenerate after a fresh complete authenticated
 master/archive audit; never replace complete coverage with a failed or partial archive read.
 
-This change provides the populated source inventory and a tested programmatic selector. It does not add network
-scraping, a recurring AI task, salary multipliers, automatic anchor promotion or a new Writer mutation path. Existing
-enrichment continues its current same-employer/comparable logic; this selector is available for source-search consumers.
+## Connected worker behavior (2026-10-31)
+
+The existing programmed `enrich-ats-pay` worker now calls the selector when exact target sources and same-employer
+evidence have not supplied pay and a comparable estimate is needed. Recent saved source ranges are reused without
+network reads. Older/missing source evidence receives at most six public checks per run, two per target job, inside
+the existing run deadline. A refreshed source requires an exact company/title/site full JobPosting with explicit USD
+annual baseSalary. Missing structured evidence, failed pages, wrong identities, expired postings and unclear pay are
+skipped; they never block the original target or become its employer-posted salary. Estimates retain the existing
+level/scope/size/geography/age weighting and confidence rules. Salary-repair and no-network upgrade passes do not
+trigger these additional source checks.
+
+Successful public evidence is cached for 14 days, failures back off for 24 hours, and cached entries expire after 60
+days. The worker rebuilds the shared directory only after complete master AND effective archive reads; otherwise it
+retains the previous directory. Publication preserves a concurrently generated newer snapshot. Dry runs do not change
+the shared directory. No new AI task or schedule is needed.
+
+`state/enrich-ats-pay-report.json` includes `pay_source_search`: targets/candidates, saved ranges reused, cache hits,
+public reads, found/failed checks, backoff and estimates containing profile sources. These are source-read/planning
+metrics, not verified master-completion counts or proof of an accuracy gain. Samples include the exact source identity,
+range, date and public URL. Existing Writer guards and verification still control canonical outcomes.
