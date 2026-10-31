@@ -1,11 +1,604 @@
 {
   "schema": "forge.company-site-context.v1",
-  "companies": [{
-    "company": "Tesla", "aliases": ["Tesla, Inc."],
-    "facts": {
-      "employees": {"value":134785,"asOf":"2025-12-31","status":"CONFIRMED","sourceUrl":"https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm","quote":"As of December 31, 2025, our employee headcount worldwide was 134,785."}
+  "companies": [
+    {
+      "company": "Tesla",
+      "aliases": [
+        "Tesla, Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 134785,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm",
+          "quote": "As of December 31, 2025, our employee headcount worldwide was 134,785."
+        },
+        "revenueUsd": {
+          "value": 94827000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1318605/000162828026003952/tsla-20251231.htm",
+          "quote": "Total revenues 94,827",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
     },
-    "sites": []
-  }],
+    {
+      "company": "Amazon",
+      "aliases": [
+        "Amazon.com",
+        "Amazon.com, Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 1576000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000002/amzn-20251231xex991.htm",
+          "quote": "Employees (full-time and part-time; excludes contractors & temporary personnel)",
+          "scope": "COMPANY_WIDE",
+          "population": "Full-time and part-time; excludes contractors and temporary personnel",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 716924000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000002/amzn-20251231xex991.htm",
+          "quote": "Net sales 716,924",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Amazon Web Services (AWS)",
+      "aliases": [
+        "Amazon Web Services",
+        "AWS"
+      ],
+      "facts": {
+        "revenueUsd": {
+          "value": 128725000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1018724/000101872426000002/amzn-20251231xex991.htm",
+          "quote": "Net sales 128,725",
+          "scope": "AWS_SEGMENT",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "sourceTable": "AWS segment, twelve months ended December 31, 2025; table USD millions"
+        }
+      },
+      "sites": [],
+      "parentCompany": "Amazon",
+      "scopeNote": "AWS is a separately reported segment. Amazon consolidated headcount is deliberately not copied here."
+    },
+    {
+      "company": "General Motors",
+      "aliases": [
+        "General Motors Company",
+        "General Motors Co."
+      ],
+      "facts": {
+        "employees": {
+          "value": 155000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1467858/000146785826000013/gm-20251231.htm",
+          "quote": "Total Worldwide 155",
+          "scope": "COMPANY_WIDE",
+          "population": "Worldwide employment; source table in thousands; rounded components do not sum to rounded reported total",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 185019000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1467858/000146785826000013/gm-20251231.htm",
+          "quote": "Total net sales and revenue 185,019",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Ford Motor Company",
+      "aliases": [
+        "Ford"
+      ],
+      "facts": {
+        "employees": {
+          "value": 169000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/37996/000003799626000015/f-20251231.htm",
+          "quote": "about 169,000 employees worldwide",
+          "scope": "COMPANY_WIDE",
+          "population": "Reported company-wide employees",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 187267000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/37996/000003799626000015/f-20251231.htm",
+          "quote": "Total Revenues 187,267",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": [
+        {
+          "location": "Dearborn Truck Plant, Dearborn, MI",
+          "siteName": "Dearborn Truck Plant",
+          "city": "Dearborn, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 4995,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "4,995",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Dearborn Diversified Manufacturing Plant, Dearborn, MI",
+          "siteName": "Dearborn Diversified Manufacturing Plant",
+          "city": "Dearborn, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 790,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "790",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Dearborn Stamping, Dearborn, MI",
+          "siteName": "Dearborn Stamping",
+          "city": "Dearborn, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 1613,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "1,613",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Woodhaven Forging Plant, Woodhaven, MI",
+          "siteName": "Woodhaven Forging Plant",
+          "city": "Woodhaven, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 86,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "86",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Woodhaven Stamping Plant, Woodhaven, MI",
+          "siteName": "Woodhaven Stamping Plant",
+          "city": "Woodhaven, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 451,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "451",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Michigan Assembly Plant, Wayne, MI",
+          "siteName": "Michigan Assembly Plant",
+          "city": "Wayne, MI",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 6066,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "6,066",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        },
+        {
+          "location": "Ohio Assembly Plant, Avon Lake, OH",
+          "siteName": "Ohio Assembly Plant",
+          "city": "Avon Lake, OH",
+          "scopeNote": "Facility-specific; a city-only job location does not establish this plant.",
+          "facts": {
+            "employees": {
+              "value": 1704,
+              "asOf": "2026-06",
+              "status": "CONFIRMED",
+              "sourceUrl": "https://corporate.ford.com/operations/locations/global-plants/",
+              "quote": "1,704",
+              "scope": "NAMED_FACILITY",
+              "datePrecision": "MONTH",
+              "precision": "APPROXIMATE",
+              "population": "Current total employees, not just hourly employees"
+            }
+          }
+        }
+      ]
+    },
+    {
+      "company": "Carvana",
+      "aliases": [
+        "Carvana Co."
+      ],
+      "facts": {
+        "revenueUsd": {
+          "value": 20322000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1690820/000169082026000009/cvna-20251231.htm",
+          "quote": "Total revenues 20,322",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        },
+        "employeesLowerBound": {
+          "value": 23100,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1690820/000169082026000009/cvna-20251231.htm",
+          "quote": "over 23,100 full-time and part-time employees",
+          "relation": "GREATER_THAN",
+          "scope": "COMPANY_WIDE",
+          "modelUse": "Not an exact headcount; excluded from numeric employees dimension"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Eaton",
+      "aliases": [
+        "Eaton Corporation",
+        "Eaton Corporation plc"
+      ],
+      "facts": {
+        "employees": {
+          "value": 97303,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000007/etn-20251231.htm",
+          "quote": "All employees 97,303",
+          "scope": "COMPANY_WIDE",
+          "population": "All employees, total global",
+          "precision": "REPORTED_COUNT"
+        },
+        "revenueUsd": {
+          "value": 27448000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000007/etn-20251231.htm",
+          "quote": "Total 27,448",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        },
+        "industry": {
+          "value": "power management",
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1551182/000155118226000007/etn-20251231.htm",
+          "quote": "intelligent power management company"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Celestica",
+      "aliases": [
+        "Celestica Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 29591,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1030894/000103089426000011/cls-20251231.htm",
+          "quote": "29,591 permanent and temporary (contract) employees worldwide",
+          "scope": "COMPANY_WIDE",
+          "population": "Permanent and temporary contract employees",
+          "precision": "REPORTED_COUNT"
+        },
+        "revenueUsd": {
+          "value": 12390900000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1030894/000103089426000011/cls-20251231.htm",
+          "quote": "Revenue 12,390.9",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        },
+        "industry": {
+          "value": "electronics manufacturing services",
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1030894/000103089426000011/cls-20251231.htm",
+          "quote": "electronics manufacturing services"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Flex",
+      "aliases": [
+        "Flex Ltd.",
+        "Flextronics"
+      ],
+      "facts": {
+        "employees": {
+          "value": 149686,
+          "asOf": "2026-03-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/866374/000086637426000012/flex-20260331.htm",
+          "quote": "Total 149,686",
+          "scope": "COMPANY_WIDE",
+          "population": "Global workforce including contractors",
+          "precision": "REPORTED_COUNT"
+        },
+        "revenueUsd": {
+          "value": 27914000000,
+          "asOf": "2026-03-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/866374/000086637426000012/flex-20260331.htm",
+          "quote": "27,914",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Sanmina",
+      "aliases": [
+        "Sanmina Corporation"
+      ],
+      "facts": {
+        "employees": {
+          "value": 39000,
+          "asOf": "2025-09-27",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/897723/000089772325000042/sanm-20250927.htm",
+          "quote": "approximately 39,000 employees, including 4,000 temporary employees",
+          "scope": "COMPANY_WIDE",
+          "population": "Includes temporary employees",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 8128382000,
+          "asOf": "2025-09-27",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/897723/000089772325000042/sanm-20250927.htm",
+          "quote": "Net sales 8,128,382",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        },
+        "industry": {
+          "value": "electronics manufacturing services",
+          "asOf": "2025-09-27",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/897723/000089772325000042/sanm-20250927.htm",
+          "quote": "electronics manufacturing services"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Jabil",
+      "aliases": [
+        "Jabil Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 140000,
+          "asOf": "2026-08-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/898293/000162828026067038/jbl-20260831.htm",
+          "quote": "Total 140",
+          "scope": "COMPANY_WIDE",
+          "population": "Permanent, temporary and contingent workers; source table in thousands",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 35954000000,
+          "asOf": "2026-08-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/898293/000162828026067038/jbl-20260831.htm",
+          "quote": "Net revenue 35,954",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Rivian",
+      "aliases": [
+        "Rivian Automotive",
+        "Rivian Automotive, Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 15232,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1874178/000187417826000008/rivn-20251231.htm",
+          "quote": "15,232 employees across North America and Europe",
+          "scope": "COMPANY_WIDE",
+          "population": "Includes the consolidated joint venture",
+          "precision": "REPORTED_COUNT"
+        },
+        "revenueUsd": {
+          "value": 5387000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1874178/000187417826000008/rivn-20251231.htm",
+          "quote": "Total revenues 5,387",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Carrier",
+      "aliases": [
+        "Carrier Global",
+        "Carrier Global Corporation"
+      ],
+      "facts": {
+        "employees": {
+          "value": 47000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000008/carr-20251231.htm",
+          "quote": "approximately 47,000 employees worldwide",
+          "scope": "COMPANY_WIDE",
+          "population": "Reported company-wide employees",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 21747000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000008/carr-20251231.htm",
+          "quote": "Net sales 21,747",
+          "scope": "CONSOLIDATED",
+          "currency": "USD",
+          "period": "FISCAL_YEAR",
+          "units": "USD, converted from the filing table unit, not an FX conversion"
+        },
+        "industry": {
+          "value": "climate and energy solutions",
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.sec.gov/Archives/edgar/data/1783180/000178318026000008/carr-20251231.htm",
+          "quote": "intelligent climate and energy solutions"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Magna International",
+      "aliases": [
+        "Magna",
+        "Magna International Inc."
+      ],
+      "facts": {
+        "employees": {
+          "value": 156000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.magna.com/docs/default-source/corporate-governance/disclosure-documents_2026/magna-2025-annual-report.pdf?sfvrsn=44230f50_11",
+          "quote": "approximately 156,000",
+          "scope": "COMPANY_WIDE",
+          "population": "Global team as reported in the 2025 annual report; rounded",
+          "precision": "APPROXIMATE"
+        },
+        "revenueUsd": {
+          "value": 42000000000,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://www.magna.com/docs/default-source/corporate-governance/disclosure-documents_2026/magna-2025-annual-report.pdf?sfvrsn=44230f50_11",
+          "quote": "Total sales declined 2% to $42.0 billion",
+          "currency": "USD",
+          "scope": "CONSOLIDATED",
+          "period": "FISCAL_YEAR",
+          "precision": "APPROXIMATE"
+        }
+      },
+      "sites": []
+    },
+    {
+      "company": "Fresenius Kabi",
+      "aliases": [],
+      "facts": {
+        "employees": {
+          "value": 40913,
+          "asOf": "2025-12-31",
+          "status": "CONFIRMED",
+          "sourceUrl": "https://report.fresenius.com/2025/annual-report/management-report/fundamental-information-about-the-group/employees.html",
+          "quote": "Fresenius Kabi 40,913",
+          "scope": "COMPANY_WIDE",
+          "population": "Fresenius Kabi business, not the entire Fresenius group and not USA subsidiary",
+          "precision": "REPORTED_COUNT"
+        }
+      },
+      "sites": [],
+      "parentCompany": "Fresenius",
+      "scopeNote": "Do not alias Fresenius Kabi USA to this global business headcount."
+    }
+  ],
   "roles": []
 }

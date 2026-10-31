@@ -3,6 +3,7 @@
 Company/site scale and role responsibility use the shared [compensation context contract](../../docs/COMPENSATION_CONTEXT.md)
 and `reference/COMPANY_SITE_CONTEXT.json`. The programmed worker owns matching, weighting, deduplication, diagnostics and
 bounded migration; Writer owns canonical updates/scoring. AI research is for ambiguous evidence, not every calculation.
+See [salary data sources](../../docs/SALARY_DATA_SOURCES.md) for posted-pay priority, public DOL/BLS data and calibration requirements.
 
 Hourly GitHub Action (`.github/workflows/enrich-ats-pay.yml`, :40) that fills SALARY and DEGREE on FORGE_ENRICH_FEASIBILITY
 rows without loading the Writer.
