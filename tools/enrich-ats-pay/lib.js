@@ -146,6 +146,7 @@ function parseAggregator(kind, html, row) {
 /** REV-136: the first field on a row that names a readable ATS posting (rows keep the ATS link in ATS_POSTING_URL more often
  *  than in SOURCE_URL, which is usually the LinkedIn / Indeed alert). */
 const ATS_URL_KEYS = ['ATS_POSTING_URL', 'SOURCE_URL', 'SOURCE', 'COMPANY_SOURCE_URL', 'DIRECT_JOB_URL', 'INITIATING_URL', 'LIVENESS_EVIDENCE_URL'];
+function aggregatorFor(p) { for (const k of ATS_URL_KEYS) { const a = aggregatorPage(p[k]); if (a) return Object.assign({ key:k },a); } return null; }
 function atsFor(p) { for (const k of ATS_URL_KEYS) { const a = atsApi(String(p[k] == null ? '' : p[k]).trim()); if (a) return Object.assign({ key: k }, a); } return null; }
 
 /* ---------- REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources, in this order ----------
@@ -271,4 +272,4 @@ function blsEstimate(row, w, mlPoints) {
   };
 }
 
-module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
+module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, aggregatorFor, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };

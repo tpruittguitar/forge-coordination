@@ -153,9 +153,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
-    let checked = false, postedPay = null, atsUnconfirmed = false;
+    let checked = false, attempted = false, postedPay = null, atsUnconfirmed = false;
     if (api) {
-      stats.ats_rows++;
+      stats.ats_rows++; attempted = true;
       try {
         await sleep(CONFIG.fetchGapMs);
         const parsed = L.parseAts(api.kind, await (await get(api.api, { headers: { accept: 'application/json' } })).json(), api.id);
@@ -175,9 +175,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     // Tim 2026-10-20 18:21 ET: an aggregator posting (LinkedIn, Indeed, ZipRecruiter) with pay counts as posting pay
     // Tim 2026-10-26: Indeed viewjob pages answer 401 to this runner on every read; Indeed roles come in through JobSpy and HiringCafe.
-    const aggPage = L.aggregatorPage(url), agg = aggPage && !(CONFIG.aggregatorsOff || []).includes(aggPage.kind) ? aggPage : null;
+    const aggPage = L.aggregatorFor(r.p), agg = aggPage && !(CONFIG.aggregatorsOff || []).includes(aggPage.kind) ? aggPage : null;
     if (!postedPay && agg && (n.includes('SALARY') || (n.includes('DEGREE') && !f.DEGREE_REQ)) && aggFetches < CONFIG.maxAggregatorFetches && (blocked[agg.kind] || 0) < 3) {
-      aggFetches++; stats.agg_tried[agg.kind] = (stats.agg_tried[agg.kind] || 0) + 1;
+      attempted = true; aggFetches++; stats.agg_tried[agg.kind] = (stats.agg_tried[agg.kind] || 0) + 1;
       try {
         await sleep(CONFIG.aggregatorGapMs);
         const parsed = L.parseAggregator(agg.kind, await (await get(agg.fetch, { headers: { 'user-agent': CONFIG.userAgent, accept: 'text/html' } })).text(), r);
@@ -208,7 +208,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: (est.source === 'SAME_EMPLOYER' ? 'same-employer:' : 'comparables:') + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
-    if (!Object.keys(f).length) { ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
+    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
@@ -233,7 +233,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (!rb.ok) throw new Error('row_readback: ' + (rb.error || 'not ok'));
       const now = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) now[x.primaryId] = W.parseRows(x.line)[0]; });
       batch = batch.filter(q => {
-        const cur = now[q.ruling.primaryId]; if (!cur) { stats.guard_dropped++; return false; }
+        const cur = now[q.ruling.primaryId]; if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if (!/SALARY/.test(left) && !(upgradeIds.has(q.ruling.primaryId) && weak(cur))) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);   // an upgrade goes in only while the row still holds the weak estimate
         if (!/DEGREE/.test(left)) Object.keys(f).filter(k => /^DEGREE_/.test(k)).forEach(k => delete f[k]);
