@@ -15,3 +15,11 @@ The 2026-10-31 initial snapshot partitions 946 open records into 347 awaiting po
 Enrichment runner corrections: try saved direct posting evidence when the original URL is a tracking link; only apply retry cooldown after an actual fetch; recheck protected/closed state before submitting; recover missed scheduled starts without dispatching duplicates. These fixes do not bypass Writer gates or alter eligibility.
 
 Application outcome events in state/APPLICATION_OUTCOMES.json require verified personal contact and a canonical applied job identity. Initial coverage is incomplete and is displayed as a minimum; automated job recommendations are not recruiter contacts.
+
+## Discovery and intake accounting
+
+UPSTREAM_LEDGER.json retains captured report/email candidate identities across report rollover. Exact posting identities deduplicate repeated observations; several source identities join one canonical primary ID only with supporting matching evidence. Ambiguous or missing identities stay held. A disappeared prior master match becomes an explicit exception. Screening mirrors existing automatic selection rules; it changes no policy or production queue.
+
+The source balance is saved identities minus proven aliases = tracked candidates = present in master/archive + excluded + pending. Pending movement independently balances opening + arrivals - resolved present - exclusions - other exits = closing. Resolving a candidate as already present is not a new admission. Unique canonical jobs reconcile as linked source jobs + direct/legacy jobs. All actual job-stage backlogs are derived from master. Candidate identities before admission are displayed with their own unit because unresolved cross-source duplicates cannot honestly be called unique jobs. Unread source pages remain discovery work with unknown job count.
+
+The displayed 36-hour rate is observed distinct completed jobs / 36, including numeric zero. Partial history is explicitly an observed minimum; elapsed collection hours and gaps remain in the summary, and baseline stock is never output. Whole-number display may round a small nonzero rate to zero. Unrounded measurements drive constraint comparison. A tie highlights every tied process; this is the observed throughput constraint and does not assert that missing historical output was zero.
