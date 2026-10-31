@@ -47,7 +47,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
-  const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(requestId)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
+  const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){const probe=entry.requestIds?.[0]||requestId;try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(probe)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'&&(entry.ids||[]).every(id=>(d.request.items||[]).some(x=>x.pid===id))){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
   const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
@@ -209,7 +209,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(!checked&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
     if(!checked)for(const publicUrl of [...new Set(recoveryUrls)].slice(0,4)){
       if(stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
-      if(/email\.|\.sendgrid\.net|t\.ladders/i.test(new URL(publicUrl).hostname))continue;
+      if(!Recovery.readableRoute(publicUrl,CONFIG.aggregatorsOff||[]))continue;
       const aggCandidate=L.aggregatorPage(publicUrl);if(aggCandidate&&(CONFIG.aggregatorsOff||[]).includes(aggCandidate.kind))continue;
       attempted=true;stats.public_tried++;
       try{await sleep(CONFIG.fetchGapMs);const alternateApi=L.atsApi(publicUrl);let parsed;
@@ -239,7 +239,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (attempted && Object.keys(f).every(k => k === 'FEASIBILITY_ATTEMPT_ASOF')) ledger.tried[r.PRIMARY_ID] = new Date().toISOString();
-    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(attempted)Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts);pending.push(Recovery.unresolved(r,n,ledger,attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER')); continue; }
+    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(attempted||(!api&&!knownBoard&&!recoveryUrls.some(u=>Recovery.readableRoute(u,CONFIG.aggregatorsOff||[])))){Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts.length?readAttempts:[{status:'NO_SUPPORTED_READER_FOR_SAVED_SOURCE'}]);}pending.push(Recovery.unresolved(r,n,ledger,attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER')); continue; }
     Recovery.remember(ledger,r,needsOf(r),'EVIDENCE_FOUND',readAttempts);
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
@@ -292,7 +292,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
       let res, fenced = 0;
       for (;;) {
-        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
+        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
