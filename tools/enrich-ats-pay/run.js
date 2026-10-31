@@ -129,7 +129,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     let comparisonAnchors=anchors;
     if(!est&&!opts.noNetwork&&(!opts.noBoard||opts.review)&&sourceSearch){const extra=await sourceSearch.find(r,anchors);if(extra.length){const ids=new Set(extra.map(a=>a.id));comparisonAnchors=extra.concat(anchors.filter(a=>!ids.has(a.id)));}}
-    if (!est) { est = L.estimate(r, comparisonAnchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const k=shareKey(est),n=comparisonAnchors===anchors?(shared[k]||0):list.reduce((n,t)=>n+(/SALARY/.test(needsOf(t))&&shareKey(L.estimate(t,comparisonAnchors,salaryContext))===k?1:0),0); if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
+    if (!est) { est = L.estimate(r, comparisonAnchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const k=shareKey(est),pool=opts.review?[...new Map(list.concat(rows.filter(ActiveReview.eligible)).map(t=>[t.PRIMARY_ID,t])).values()]:list,n=!opts.review&&comparisonAnchors===anchors?(shared[k]||0):pool.reduce((n,t)=>n+((opts.review||/SALARY/.test(needsOf(t)))&&shareKey(L.estimate(t,comparisonAnchors,salaryContext))===k?1:0),0); if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if (!est && rowState) {
       // Required unanchored estimate (Tim 2026-10-28): BLS sets the number when no anchors exist.
       const w = await blsWages(rowState, soc);
