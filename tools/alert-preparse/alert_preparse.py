@@ -204,13 +204,19 @@ class Preparser:
         self.stats["sponsored"] += sponsored
         self.stats["chars_in"] += len(body)
         out = []
+        in_email = set()
         for j in jobs:
-            if j.key in self.seen:
+            if j.key in in_email:
                 self.stats["duplicates"] += 1
                 self.last_dropped.append(_job_drop(j, "duplicate"))
                 continue
+            seen_before = j.key in self.seen
+            in_email.add(j.key)
             self.seen.add(j.key)
             d = asdict(j)
+            # Observation is not a completed disposition. Cross-run seen keys must not lose unprocessed jobs.
+            if seen_before:
+                d["seen_before_review_required"] = True
             out.append(d)
         self.stats["kept"] += len(out)
         self.stats["chars_out"] += len(json.dumps(out))
