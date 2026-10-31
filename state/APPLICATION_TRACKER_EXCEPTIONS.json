@@ -1,6 +1,6 @@
 {
   "schema": "forge.application-tracker-exceptions.v1",
-  "at": "2026-10-31T16:28:26.913Z",
+  "at": "2026-10-31T17:33:27.028Z",
   "exceptions": [
     {
       "id": "TRACKER-MISUMI-1a1853f2b2ecba93",
@@ -110,12 +110,40 @@
           "scope": "MASTER_ARCHIVE",
           "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
           "protectedStatePreserved": true
+        },
+        {
+          "messageId": "1a0a086b0ab7d4f2",
+          "company": "American Legend Aircraft",
+          "primaryIds": [
+            "V2E-5EBCC75920F9",
+            "V2E-8001BA71B4AB"
+          ],
+          "listingId": "4467002377",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Same primary confirmation, company/title/date/listing; requisition stored as LI-4467002377 versus LinkedIn 4467002377.",
+          "protectedStatePreserved": true
         }
       ],
-      "reason": "Five exact-source duplicate canonical pairs found. Two pairs are both APPLIED in current master. GUI Applied KPI currently counts PRIMARY_ID, so these current rows risk counting two single applications twice. Three rejected pairs span master/archive.",
+      "reason": "Six exact-source duplicate canonical pairs retained for supported Gofer alias reconciliation; no protected state or arbitrary KPI binding changed.",
       "nextAction": "Reconcile existing protected aliases through supported provenance-preserving procedures; never replay original applications or choose one arbitrarily. Escalate any protected-state mutation requiring Tim. Preserve both original row histories. Report deterministic alias/ingestion and KPI-dedupe defects for a separately authorized software fix.",
       "retryCondition": "Fresh canonical alias resolution or supported identity/accounting evidence, not repeated email reads.",
-      "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261031T162426Z_VERIFICATION.json"
+      "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261031T162426Z_VERIFICATION.json",
+      "lastObservedAt": "2026-10-31T17:33:27.028Z"
+    },
+    {
+      "id": "TRACKER-AMETEK-1a0c196a002be5c1",
+      "messageId": "1a0c196a002be5c1",
+      "status": "EXCEPTION",
+      "owner": "Gofer",
+      "at": "2026-10-31T17:33:27.028Z",
+      "reason": "Primary AMETEK confirmation names only Director, Operations, no location/requisition/link. Existing Huntsville closed and Irvine active Director Operations records are both plausible; old archive hint alone cannot establish identity.",
+      "candidatePrimaryIds": [
+        "V2S-AMETEK-OPSDIR-1422928700",
+        "V2I-CD6A2ACA7D49"
+      ],
+      "attempts": 1,
+      "retryCondition": "New exact application/thread/location evidence or Tim confirmation; do not resurrect the closed Huntsville row or choose a role from a generic title.",
+      "nextAction": "Inspect bounded related primary correspondence for exact requisition/location; preserve original application evidence without inserting a new job."
     }
   ]
 }
