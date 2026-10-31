@@ -23,6 +23,14 @@ test('custom employer JobPosting supplies missing pay and degree without inventi
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
 
+test('shared site products fill jobs without repeating source research and never overwrite a fresh Tim product',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'enrich-products-')),master=path.join(dir,'master.txt'),reference=path.join(dir,'reference.json'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const id='V2I-00000000000A',line=row(1,id,'Director of Quality','Dayton, OH','SCOPE_FIT_RAW=80');fs.writeFileSync(master,line);fs.writeFileSync(reference,JSON.stringify({schema:'forge.company-site-products.v1',entries:[{id:'acme-dayton',company:'Acme',location:'Dayton, OH',status:'CONFIRMED',verifiedAt:new Date().toISOString().slice(0,10),products:['Industrial pumps'],sources:['https://example.org/factory']}]}));
+ const run=live=>cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),...(live?[]:['--dry'])],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_PRODUCTS_REFERENCE:reference,ENRICH_PRODUCTS_ONLY:'1',ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:writer,ENRICH_TEST_POSTS:posts},stdio:'pipe'});
+ try{run(false);let r=JSON.parse(fs.readFileSync(report));assert.equal(r.products_planned,1);assert.equal(r.sample[0].fields.PRODUCT,'Industrial pumps');assert.deepEqual(r.agg_tried,{});fs.writeFileSync(writer,JSON.stringify({[id]:line+'; PRODUCT=Tim confirmed compressor'}));run(true);r=JSON.parse(fs.readFileSync(report));assert.equal(r.guard_dropped,1);assert.equal(fs.existsSync(posts),false,'no write after newer product evidence');}
+ finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
+
 test('dry run: ATS pay, then aggregator pay, estimate only after the posting was read', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev116-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);
