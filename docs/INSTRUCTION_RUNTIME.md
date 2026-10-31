@@ -63,3 +63,7 @@ The build caps ordinary packet estimates at 3,500, email at 5,000, and the condi
 ## Application outcome ownership — Tim 2026-10-31
 
 FORGE_APPLICATION_OUTCOME_TRACKER is an independent scheduler-hosted utility using lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt, hourly at :42 America/New_York. It owns routine application confirmations, rejections and recruiter correspondence, including inherited routine Gofer archive cursors. Gofer retains its existing :12 schedule but handles exceptions only. The new permission for grounded company/title matching and the requirement to ask before adding missing jobs supersede the October 26 automatic CREATE_NEW instruction. The native prompts must adopt this cutover as well as the regenerated Gofer/email packets. Existing paused lanes remain paused.
+
+## Shared native automation launcher — 2026-10-31
+
+All six active Codex Forge automations now launch through control/FORGE_SHARED_AUTOMATION_ENTRY.txt with only actual provider and task identity in their saved prompts. The entry reads control/AI_AUTOMATION_TASKS.json and policy/current/AI_AUTOMATION_COMMON.txt at one resolved repository revision. Production lanes continue through the existing immutable packet runtime; outcome tracker, usage reader and stack health use centrally routed procedure files. Schedules and notification settings remain in the native scheduler. Task behavior and shared rules are no longer maintained in isolated native prompt copies.
