@@ -2,6 +2,7 @@
 // Test-only fetch stub for run.test.js: canned ATS / aggregator responses, everything else fails.
 const pad = 'Acme is hiring a Director of Quality. Lead the site. '.repeat(12);
 const R = {
+  'https://careers.example.org/job/quality': '<script type="application/ld+json">'+JSON.stringify({'@type':'JobPosting',title:'Director of Quality',hiringOrganization:{name:'Acme'},description:pad+'Bachelor degree required. Base $170,000 - $210,000'})+'</script>',
   'https://boards-api.greenhouse.io/v1/boards/acme/jobs/111?pay_transparency=true': { content: '&lt;p&gt;' + pad + 'Bachelor degree required. Base $170,000 - $210,000&lt;/p&gt;', pay_input_ranges: [] },
   'https://boards-api.greenhouse.io/v1/boards/acme/jobs/333?pay_transparency=true': { content: '&lt;p&gt;' + pad + 'BS preferred.&lt;/p&gt;', pay_input_ranges: [] },
   'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4012345678': '<div>' + pad + 'Base pay range $150,000.00/yr - $190,000.00/yr</div>',

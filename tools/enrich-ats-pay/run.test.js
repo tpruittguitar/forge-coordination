@@ -15,6 +15,14 @@ const MASTER = [
   row(7, 'V2I-00000000000G', 'Director of Quality', 'Lima, OH', 'SOURCE_URL=https://www.linkedin.com/jobs/view/9; ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/404; DATE_ADDED=2026-10-15'),
 ].join('\n') + '\n';
 
+test('custom employer JobPosting supplies missing pay and degree without inventing identity',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'enrich-public-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ fs.writeFileSync(master,row(1,'V2I-00000000000A','Director of Quality','Dayton, OH','SOURCE_URL=https://careers.example.org/job/quality; DATE_ADDED=2026-10-19'));
+ try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')},stdio:'pipe'});
+ const out=JSON.parse(fs.readFileSync(report));assert.equal(out.public_read,1);assert.equal(out.sample[0].fields.DEGREE_REQ,'REQUIRED');assert.equal(out.sample[0].fields.SALARY_BASIS,'EMPLOYER_POSTED');assert.equal(out.sample[0].fields.SALARY_BASE_LOW,170000);
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
+
 test('dry run: ATS pay, then aggregator pay, estimate only after the posting was read', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev116-')), master = path.join(dir, 'master.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);

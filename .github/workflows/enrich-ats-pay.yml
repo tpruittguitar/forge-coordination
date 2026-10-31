@@ -29,7 +29,7 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js
+        run: node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js tools/enrich-ats-pay/public-posting.test.js
       - name: Enrich
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc

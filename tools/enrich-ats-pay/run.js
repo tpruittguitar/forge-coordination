@@ -6,13 +6,14 @@
    node tools/enrich-ats-pay/run.js [--dry] */
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
+const P = require('./public-posting.js');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
 const sleep = ms => new Promise(r => setTimeout(r, process.env.ENRICH_TEST_FAST ? 0 : ms));
-async function get(url, opts) { const r = await fetch(url, {...opts,headers:{'Accept-Language':'en-US',...opts?.headers}}); if (!r.ok) { const e = new Error(url.replace(/key=[^&]+/, 'key=…') + ' HTTP ' + r.status); e.status = r.status; throw e; } return r; }
+async function get(url, opts) { const r = await fetch(url, {signal:AbortSignal.timeout(30000),...opts,headers:{'Accept-Language':'en-US',...opts?.headers}}); if (!r.ok) { const e = new Error(url.replace(/key=[^&]+/, 'key=…') + ' HTTP ' + r.status); e.status = r.status; throw e; } return r; }
 const FC_DIR = process.env.ENRICH_FC_DIR || '';   // tests: a local foreman-cockpit checkout instead of raw GitHub
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + rel)).text(); }
 async function loadModule(name) { const src = await fcFile('apps-script/' + name); const file = path.join(require('os').tmpdir(), name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./$1.js')")); return file; }
@@ -21,7 +22,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const T0 = Date.now();
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
-  await loadModule('PipelineEvidence.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
+  await loadModule('PipelineEvidence.gs'); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
   // jobs from the structured copy (Cloudflare D1), paged; the Writer is not read
   let jobs = [], total = null;
   if (process.env.ENRICH_MASTER_FILE) { jobs = fs.readFileSync(process.env.ENRICH_MASTER_FILE, 'utf8').split('\n').filter(l => /^\d+ \| /.test(l)).map(l => ({ SOURCE_LINE: l })); total = jobs.length; }   // tests only
@@ -41,7 +42,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const liveIds = new Set(anchors.map(a => a.id)), archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n').map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
   archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
-  const fresh = id => { const t = ledger.submitted[id] || ledger.tried[id]; return t && Date.now() - Date.parse(t) < CONFIG.resubmitHours * 3600e3; };
+  ledger.needs = ledger.needs || {};
+  const fresh = r => !P.retryDue(ledger, r.PRIMARY_ID, needsOf(r));
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
@@ -148,11 +150,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
   const ordered = first.concat(list.filter(r => !firstSet.has(r)));
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
+  stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
-    if (fresh(r.PRIMARY_ID)) { stats.skipped_recent++; continue; }
+    if (fresh(r)) { stats.skipped_recent++; continue; }
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {};
+    ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let checked = false, attempted = false, postedPay = null, atsUnconfirmed = false;
     if (api) {
       stats.ats_rows++; attempted = true;
@@ -191,6 +195,19 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }
       } catch (e) { stats.agg_failed[agg.kind] = (stats.agg_failed[agg.kind] || 0) + 1; blocked[agg.kind] = (blocked[agg.kind] || 0) + 1; (stats.agg_errors[agg.kind] = stats.agg_errors[agg.kind] || []).length < 3 && stats.agg_errors[agg.kind].push(String(e.status || e.message).slice(0, 80)); }   // 3 failures in a row: skip that site for the rest of the run (run 1: Indeed failed 21 of 21)
     }
+    // Employer/custom posting formats previously had no reader. Read only an exact
+    // company/title JobPosting object; never infer NOT_STATED from page chrome.
+    const publicUrl=P.publicUrl(url);
+    if(!checked&&publicUrl&&!aggPage&&stats.public_tried<20){
+      attempted=true;stats.public_tried++;
+      try{await sleep(CONFIG.fetchGapMs);const response=await get(publicUrl,{signal:AbortSignal.timeout(20000),headers:{'user-agent':CONFIG.userAgent}});
+        const parsed=P.parse(await response.text(),r);
+        if(parsed){checked=true;stats.public_read++;postedPay=parsed.pay;
+          if(n.includes('SALARY')&&parsed.pay){stats.posted_pay++;Object.assign(f,{SALARY_BASE_LOW:parsed.pay.low,SALARY_BASE_HIGH:parsed.pay.high,SALARY_MIDPOINT:Math.round((parsed.pay.low+parsed.pay.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_SOURCE:publicUrl,SALARY_ASOF:today,SALARY_CONF:'HIGH'});}
+          if(n.includes('DEGREE')){const d=L.degreeFromText(parsed.text);if(d){stats.degree++;Object.assign(f,{DEGREE_TEXT:d.text,DEGREE_REQ:d.req,DEGREE_EVIDENCE_URL:publicUrl,DEGREE_ASOF:today});}}
+        }else stats.public_failed++;
+      }catch{stats.public_failed++;}
+    }
     // Tim 2026-10-20 18:17 ET: salary from the posting first; estimate only once the posting was checked and shows none
     // Tim ruling 2026-10-21 02:15 ET: a row may be estimated without a posting read after 2 failed reads on different days
     // (ATS answer unconfirmed, or the Writer checker says NOT_IN_PUBLIC_BOARD / NOT_FOUND / ERROR / UNREADABLE) with no readable
@@ -208,7 +225,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: (est.source === 'SAME_EMPLOYER' ? 'same-employer:' : 'comparables:') + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
-    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; continue; }   // let the list move on; retried after resubmitHours
+    if (attempted && Object.keys(f).every(k => k === 'FEASIBILITY_ATTEMPT_ASOF')) ledger.tried[r.PRIMARY_ID] = new Date().toISOString();
+    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; pending.push({id:r.PRIMARY_ID,needs:n,reason:attempted?'POSTING_UNREADABLE_OR_NO_USABLE_EVIDENCE':'NO_SUPPORTED_READER_OR_RUN_BUDGET'}); continue; }
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
@@ -294,7 +312,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const body = Object.assign({}, stats, { sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
+  const body = Object.assign({}, stats, { pending, sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
   const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
