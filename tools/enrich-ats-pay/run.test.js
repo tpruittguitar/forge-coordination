@@ -4,6 +4,14 @@
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+test('production context route migrates filled estimates, keeps missing size nonblocking and records model without rewriting reference in dry run',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-context-')),master=path.join(dir,'master.txt'),context=path.join(dir,'context.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const ref=JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]});fs.writeFileSync(context,ref);
+ fs.writeFileSync(master,[row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX','SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(2,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
+ try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')},stdio:'pipe'});
+ const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'size-scope-v1');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
+ }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+});
 test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-repair-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';

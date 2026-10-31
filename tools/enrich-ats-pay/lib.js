@@ -1,4 +1,5 @@
 'use strict';
+const Context = require('./context');
 /* REV-116 (Tim 2026-10-20 18:09-18:17 ET): pay and degree from the posting first, estimates only after the posting was
    checked, done off the Writer. Pure functions here; run.js does the network. */
 
@@ -97,13 +98,14 @@ function postedAnchor(r, p) {
   // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
   if (/estimate/i.test(String(p.PAY_POSTED || '')) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
   const lo = num(p.SALARY_BASE_LOW), hi = num(p.SALARY_BASE_HIGH);
-  if (/EMPLOYER_POSTED/i.test(basis) && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION) };
+  if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION) };
   return null;
 }
 function median(a) { const s = a.slice().sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; }
 function comparable(row, anchor) {
   // Recompute from actual titles, never trust a cached coarse level.
-  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title);
+  const track = title => /\b(program|project)\s+manager\b/i.test(title||'') ? 'PROGRAM' : 'LINE';
+  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title);
 }
 function invalidSavedAnchors(row, rows) {
   const p = row.p || {};
@@ -116,19 +118,21 @@ function invalidSavedAnchors(row, rows) {
 }
 /* Tim's COMPENSATION_ESTIMATION: 1 employer-posted comparable = LOW; 2 = LOW (MED when role/geo close); 3+ strong = MED.
    Comparables must share level and function; same-region ones first. */
-function estimate(row, anchors) {
+function estimate(row, anchors, context) {
   const L = level(row.TITLE), F = func(row.TITLE), R = regionOf(row.LOCATION);
   const same = anchors.filter(a => comparable(row, a) && a.id !== row.PRIMARY_ID);
   if (!same.length) return null;
   const local = same.filter(a => R && a.region === R);
-  const use = (local.length >= 2 ? local : same).slice(0, 7);
-  const low = Math.round(median(use.map(a => a.low)) / 1000) * 1000, high = Math.round(median(use.map(a => a.high)) / 1000) * 1000;
+  const use = (context ? Context.rank({...row,state:stateFrom(row.LOCATION)},same,context) : (local.length >= 2 ? local : same)).slice(0, 7);
+  if(!use.length)return null;
+  const low = Math.round((context ? Context.weightedMedian(use,'low') : median(use.map(a => a.low))) / 1000) * 1000, high = Math.round((context ? Context.weightedMedian(use,'high') : median(use.map(a => a.high))) / 1000) * 1000;
   // COMPENSATION_ESTIMATION: 1 comparable LOW; 2 LOW, MED when close; 3+ strong anchors may go higher.
   // close = same region; strong = same region and the comparables' midpoints within 20% of their median.
-  const close = local.length >= 2, mids = use.map(a => (a.low + a.high) / 2), med = median(mids);
+  const close = use.filter(a=>R&&a.region===R).length >= 2, mids = use.map(a => (a.low + a.high) / 2), med = median(mids);
   const tight = med > 0 && (Math.max.apply(null, mids) - Math.min.apply(null, mids)) / med <= 0.2;
-  const conf = use.length >= 3 && close && tight ? 'HIGH' : use.length >= 2 && close ? 'MED' : 'LOW';
-  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}` };
+  let conf = use.length >= 3 && close && tight ? 'HIGH' : use.length >= 2 && close ? 'MED' : 'LOW';
+  if(context)conf=Context.confidence({conf},use);
+  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), modelVersion:context?Context.VERSION:null, basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}`+(context?'; '+Context.annotation(use):'') };
 }
 /* Tim 2026-10-20 18:21 ET: pay shown on an aggregator posting (LinkedIn, Indeed, ZipRecruiter) is posting pay and comes
    before any estimate. Pay the site itself labels as its own estimate is THIRD_PARTY_ESTIMATE; it still beats FORGE-ESTIMATE. */
@@ -229,30 +233,32 @@ function parseBoard(b, j) {
 /** Postings of the same employer that are the same kind of role (same level and function), with pay, transparency states first. */
 function similarPostings(row, postings) {
   const L = level(row.TITLE), F = func(row.TITLE);
-  return postings.filter(x => x.pay && x.state && level(x.title) === L && func(x.title) === F && x.pay.low >= 40000)   // a posting with no US state (abroad, remote, unknown) is never a comparable
+  return postings.filter(x => x.pay && x.state && comparable(row,x) && x.pay.low >= 40000)   // a posting with no US state (abroad, remote, unknown) is never a comparable
     .sort((a, b) => (PAY_TRANSPARENCY.indexOf(b.state) >= 0) - (PAY_TRANSPARENCY.indexOf(a.state) >= 0));
 }
 /** Step 1 estimate. comps: [{ title, state, pay, page, id? }]. ratio(fromState) -> BLS median(row state)/median(fromState) or null. */
-function sameEmployerEstimate(row, comps, ratio) {
+function sameEmployerEstimate(row, comps, ratio, context) {
   // Revalidate here too: remembered/cache callers must not bypass title matching.
-  const use = comps.filter(c => comparable(row, c)).slice(0, 5); if (!use.length) return null;
+  const valid=comps.filter(c => comparable(row, c));
+  const use = (context?Context.rank({...row,state:stateFrom(row.LOCATION)},valid.map(c=>({...c,low:c.pay.low,high:c.pay.high})),context):valid).slice(0, 5); if (!use.length) return null;
   const rowState = stateFrom(row.LOCATION), adj = [], notes = [];
   use.forEach(c => {
     let k = 1; if (c.state && rowState && c.state !== rowState) { const r = ratio && ratio(c.state); if (r) k = Math.min(1.1, Math.max(0.75, r)); }
-    adj.push({ low: c.pay.low * k, high: c.pay.high * k });
+    adj.push({ low: c.pay.low * k, high: c.pay.high * k, weight:c.weight });
     notes.push(`${c.title} (${c.state || 'location n/a'}) $${Math.round(c.pay.low / 1000)}K-$${Math.round(c.pay.high / 1000)}K` + (k !== 1 ? ` x${k.toFixed(2)} BLS state ratio` : ''));
   });
-  const low = Math.round(median(adj.map(a => a.low)) / 1000) * 1000, high = Math.round(median(adj.map(a => a.high)) / 1000) * 1000;
+  const low = Math.round((context?Context.weightedMedian(adj,'low'):median(adj.map(a => a.low))) / 1000) * 1000, high = Math.round((context?Context.weightedMedian(adj,'high'):median(adj.map(a => a.high))) / 1000) * 1000;
   const mids = adj.map(a => (a.low + a.high) / 2), med = median(mids), tight = med > 0 && (Math.max(...mids) - Math.min(...mids)) / med <= 0.2;
-  const conf = use.length >= 2 && tight ? 'HIGH' : 'MED';
+  let conf = use.length >= 2 && tight ? 'HIGH' : 'MED';
+  if(context)conf=Context.confidence({conf},use);
   return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, ids: use.map(c => c.id || c.page).filter(Boolean), source: 'SAME_EMPLOYER',
-    basis: `same employer, ${use.length} posted range(s) for level ${level(row.TITLE)} ${func(row.TITLE)} roles: ` + notes.join('; ') };
+    modelVersion:context?Context.VERSION:null,basis: `same employer, ${use.length} posted range(s) for level ${level(row.TITLE)} ${func(row.TITLE)} roles: ` + notes.join('; ')+(context?'; '+Context.annotation(use):'') };
 }
 /** Master anchors from the same employer (step 1, no network). */
 function sameEmployerAnchors(row, anchors) {
   const co = normCo(row.COMPANY), L = level(row.TITLE), F = func(row.TITLE);
   return co ? anchors.filter(a => a.id !== row.PRIMARY_ID && normCo(a.co) === co && comparable(row, a))
-    .map(a => ({ id: a.id, title: a.title, state: a.state || '', pay: { low: a.low, high: a.high }, page: '' })) : [];
+    .map(a => ({ id: a.id, co:a.co, title: a.title, location:a.location, asOf:a.asOf,sourceUrl:a.sourceUrl,state: a.state || '', pay: { low: a.low, high: a.high }, page: '' })) : [];
 }
 /* BLS OEWS (step 3). SOC by function; series OEU S <state FIPS>00000 000000 <SOC> <datatype>; 12 = P25, 13 = median, 15 = P90. */
 const SOC = { QUALITY: '113051', MFG: '113051', OPS: '111021', ENG: '119041', PROGRAM: '111021', OTHER: '111021' };
