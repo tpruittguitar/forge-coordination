@@ -1,0 +1,2068 @@
+{
+  "schema": "forge.pipeline-repair-verification.v1",
+  "at": "2026-10-31T03:18:39.251Z",
+  "codeReleases": {
+    "coordination": [
+      "6c6134209f50fe534436587c451eacc532580756",
+      "bb7ab6aa15a4a64b4d9bc39a15a4f66b1eafd7f9"
+    ],
+    "gui": [
+      "874970e4601751959b66c04f418512a527e21d79",
+      "1b2feb9d35f635f3784c228ca129dd6f33595242"
+    ]
+  },
+  "proofs": {
+    "polywood": "receipts/POLYWOOD_SERIALIZER_RECONCILIATION_20261030.json",
+    "chromalloy": "receipts/CHROMALLOY_UNKNOWN_RECHECK_20261030.json",
+    "sourceProductionRun": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41162755984",
+    "publisherRun": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41163714620"
+  },
+  "verified": {
+    "polywoodAcceptedRequests": 15,
+    "untouchedTailPreserved": 8,
+    "sourceRunConclusion": "success",
+    "publisherConclusion": "success",
+    "health": {
+      "ok": true,
+      "sourceRevision": "46833c4276c306127130199d57e6fbc060ffada3",
+      "observedAt": "2026-10-31T03:18:07.264Z",
+      "checks": {
+        "attention": {
+          "ok": true,
+          "at": "2026-10-31T03:13:18.581Z"
+        },
+        "schedules": {
+          "ok": true,
+          "at": "2026-10-31T00:45:23.063Z",
+          "configured": 5,
+          "ids": [
+            "forge-ai-usage-reader",
+            "forge-application-writer-gofer",
+            "forge-email-discovery",
+            "forge-posting-validation",
+            "pe-stack-health-daily"
+          ],
+          "executionVerified": true,
+          "executionAt": "2026-10-31T03:12:56.672Z",
+          "unverified": []
+        },
+        "boards": {
+          "ok": true,
+          "at": "2026-10-31T00:55:20.907Z",
+          "failedBoards": 1,
+          "candidates": 51
+        },
+        "execution": {
+          "ok": true,
+          "at": "2026-10-31T03:12:56.672Z"
+        },
+        "emailCoverage": {
+          "ok": true,
+          "at": "2026-10-30T23:14:27.825Z",
+          "run": "FORGE-EMAIL-CHATGPT-20261030-1902ET",
+          "window": [
+            "2026-10-30T20:02:00Z",
+            "2026-10-30T23:02:00Z"
+          ],
+          "continuityWindow": [
+            "2026-10-30T19:02:00Z",
+            "2026-10-30T20:02:00Z"
+          ],
+          "bodiesRead": 6,
+          "historicalBodiesRevisited": 10,
+          "visibleOccurrences": 121,
+          "verifiedInserted": 24,
+          "held": 2,
+          "advertisedUnshownOccurrences": 149,
+          "coverageComplete": false,
+          "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+          "writerProofsVerified": true
+        },
+        "boardHealth": {
+          "ok": true,
+          "at": "2026-10-31T01:09:07.883Z",
+          "tracked": 110,
+          "pending": 0
+        },
+        "sources": {
+          "ok": true,
+          "at": "2026-10-31T03:12:12.849Z",
+          "failedBoards": 0,
+          "candidates": 306
+        },
+        "revision": {
+          "ok": true,
+          "sha": "46833c4276c306127130199d57e6fbc060ffada3"
+        }
+      },
+      "issues": [
+        {
+          "id": "auto-intake-identity-hold:FORGE-SOURCE-99E748FF965C97ABBF761805",
+          "section": "FAILED",
+          "level": "ACTION",
+          "title": "One intake request is quarantined: FORGE-SOURCE-99E748FF965C97ABBF761805",
+          "detail": "UNKNOWN_NO_REPLAY; operator-contained, not resolved in FORGE-AUTO-20261030T0551Z. Unrelated intake may proceed; this request remains unresolved and cannot be replayed.",
+          "action": "ChatGPT Gofer: inspect the saved original evidence. Never resubmit the request or force its identity.",
+          "at": null,
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261030T0551Z.json"
+        },
+        {
+          "id": "ask:ASK-20261019-CLAUDE-1855",
+          "section": "JOBS",
+          "level": "ACTION",
+          "title": "Anduril Deputy Head of Production, Altius (applied 10-19): Writer refuses to record it because a rejected row matches",
+          "detail": "Anduril confirmed your new application 2026-10-19 17:22 ET (Gmail 1a1560b17e0a7ce0). Writer holds it twice (even with force:true) because it matches a REJECTED_BY_EMPLOYER row. The 10-16 rejection email (Gmail 1a1466cc749e6241) names Deputy Head of Production, Connected Warfare, a different role; an Aug 25 Altius application was rejected ~Aug 28 per the sender's notes. Greenhouse job 5220654007. The gofer does not send a third identical request.",
+          "action": "Answer in chat; the AI records it in asks/resolved/.",
+          "at": "2026-10-19T18:55:00-04:00",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261019-CLAUDE-1855.json"
+        },
+        {
+          "id": "run-next-owner:ZIPR|CHATGPT",
+          "section": "UPKEEP",
+          "level": "ACTION",
+          "title": "ZIPR · CHATGPT — assigned automation follow-up",
+          "detail": "Claude gofer for Writer reconciliation/identity holds and salary anomaly review; ChatGPT weekly for source provenance recovery; Tim for approval of proposed SonicJobs procedure change",
+          "action": "Check exact request_result, later-execution COMPLETE and post-COMPLETE exact rows; no replay of processed/ambiguous requests. Review SonicJobs suggestion, do not change runtime/policy until Tim approves.",
+          "at": "2026-10-26T01:02:00-04:00",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt"
+        },
+        {
+          "id": "edit-rejected:CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt",
+          "section": "FAILED",
+          "level": "ACTION",
+          "title": "Edit request rejected: CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE",
+          "detail": "REJECT invalid suggestion entry (must be append-only, OPEN, undecided)",
+          "action": "Requesting lane: fix and resubmit, or drop it.",
+          "at": "2026-10-26T01:02:00-04:00",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/edit-requests/rejected/CHATGPT_20261026_0102ET_SONICJOBS_PROVENANCE.result.txt"
+        },
+        {
+          "id": "ask:ASK-20261026-CHATGPT-0102",
+          "section": "DECIDE",
+          "level": "ACTION",
+          "title": "SonicJobs trial cannot supply source links: approve recovery plan or retire it?",
+          "detail": "For two weekly runs SonicJobs returned job summaries without exact listing links or posting dates. This run preserves 30 source-only leads; none submitted with guessed links. Weekly ZipRecruiter intake continues independently. Proposed change is recorded as a suggestion; no implementation authorized.",
+          "action": "Answer in chat; record ruling in asks/resolved/ before any instruction or schedule change.",
+          "at": "2026-10-26T01:07:54.515733-04:00",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/ASK-20261026-CHATGPT-0102.json"
+        },
+        {
+          "id": "pr:forge-policy#8",
+          "section": "UPKEEP",
+          "level": "ACTION",
+          "title": "forge-policy PR #8: RULES: fetch missing BLS series for unanchored estimates",
+          "detail": "Open since 2026-10-28. Waiting for your review and merge.",
+          "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+          "at": "2026-10-28T08:36:53Z",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-policy/pull/8"
+        },
+        {
+          "id": "pr:forge-coordination#102",
+          "section": "UPKEEP",
+          "level": "ACTION",
+          "title": "forge-coordination PR #102: ENRICH: fetch missing BLS series before n/a",
+          "detail": "Open since 2026-10-28. Waiting for your review and merge.",
+          "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+          "at": "2026-10-28T08:37:00Z",
+          "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/102"
+        }
+      ],
+      "candidates": 356,
+      "execution": {
+        "schema": "forge.automation-evidence.v1",
+        "at": "2026-10-31T03:12:56.672Z",
+        "source": "Immutable lane receipts and verified native configuration; no Writer/master mutations",
+        "emailCoverage": {
+          "at": "2026-10-30T23:14:27.825Z",
+          "run": "FORGE-EMAIL-CHATGPT-20261030-1902ET",
+          "window": [
+            "2026-10-30T20:02:00Z",
+            "2026-10-30T23:02:00Z"
+          ],
+          "continuityWindow": [
+            "2026-10-30T19:02:00Z",
+            "2026-10-30T20:02:00Z"
+          ],
+          "bodiesRead": 6,
+          "historicalBodiesRevisited": 10,
+          "visibleOccurrences": 121,
+          "verifiedInserted": 24,
+          "held": 2,
+          "advertisedUnshownOccurrences": 149,
+          "coverageComplete": false,
+          "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+          "writerProofsVerified": true
+        },
+        "executions": [
+          {
+            "id": "forge-email-discovery",
+            "at": "2026-10-30T23:14:27.825Z",
+            "status": "PARTIAL_WITH_VERIFIED_INTAKE_AND_CARRIED_HOLDS",
+            "evidenceFiles": [
+              "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+              "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B01_VERIFIED.json",
+              "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B02_VERIFIED.json"
+            ],
+            "executionVerified": true
+          },
+          {
+            "id": "forge-posting-validation",
+            "at": "2026-10-31T01:41:29.052Z",
+            "status": "COMPLETE",
+            "evidenceFiles": [
+              "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261030-2112ET_TERMINAL.txt",
+              "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B01_VERIFIED.json",
+              "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B02_VERIFIED.json",
+              "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B03_VERIFIED.json",
+              "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B04_VERIFIED.json",
+              "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET_POSTPUSH_VERIFIED.json"
+            ],
+            "executionVerified": true
+          },
+          {
+            "id": "forge-application-writer-gofer",
+            "at": "2026-10-30T21:26:21.189Z",
+            "status": "SCOPED_VERIFIED_WITH_HELD_CARRY",
+            "evidenceFiles": [
+              "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261030-1712ET_TERMINAL.txt",
+              "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_APP_B01_VERIFIED.json",
+              "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_ATS_BULK_VERIFIED.json",
+              "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_CATEGORY_B01_VERIFIED.json"
+            ],
+            "executionVerified": true
+          },
+          {
+            "id": "forge-ai-usage-reader",
+            "at": "2026-10-31T00:06:23.448Z",
+            "status": "OK",
+            "evidenceFiles": [
+              "usage/AI_USAGE_READINGS.jsonl"
+            ],
+            "executionVerified": true
+          },
+          {
+            "id": "pe-stack-health-daily",
+            "at": "2026-10-30T11:52:10.125Z",
+            "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+            "evidenceFiles": [
+              "receipts/HEALTH_AUDIT_20261030_0745ET.json"
+            ],
+            "executionVerified": true
+          }
+        ],
+        "schedules": {
+          "configurationObservedAt": "2026-10-31T00:45:23.063Z",
+          "active": [
+            {
+              "id": "forge-ai-usage-reader",
+              "lastDueAt": "2026-10-31T00:05:00.000Z",
+              "lastRunAt": "2026-10-31T00:06:23.448Z",
+              "status": "OK",
+              "executionVerified": true,
+              "evidenceFiles": [
+                "usage/AI_USAGE_READINGS.jsonl"
+              ]
+            },
+            {
+              "id": "forge-application-writer-gofer",
+              "lastDueAt": "2026-10-30T21:12:00.000Z",
+              "lastRunAt": "2026-10-30T21:26:21.189Z",
+              "status": "SCOPED_VERIFIED_WITH_HELD_CARRY",
+              "executionVerified": true,
+              "evidenceFiles": [
+                "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261030-1712ET_TERMINAL.txt",
+                "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_APP_B01_VERIFIED.json",
+                "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_ATS_BULK_VERIFIED.json",
+                "receipts/FORGE-GOFER-CHATGPT-20261030-1712ET_CATEGORY_B01_VERIFIED.json"
+              ]
+            },
+            {
+              "id": "forge-email-discovery",
+              "lastDueAt": "2026-10-30T23:02:00.000Z",
+              "lastRunAt": "2026-10-30T23:14:27.825Z",
+              "status": "PARTIAL_WITH_VERIFIED_INTAKE_AND_CARRIED_HOLDS",
+              "executionVerified": true,
+              "evidenceFiles": [
+                "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json",
+                "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B01_VERIFIED.json",
+                "receipts/FORGE-EMAIL-CHATGPT-20261030-1902ET-B02_VERIFIED.json"
+              ]
+            },
+            {
+              "id": "forge-posting-validation",
+              "lastDueAt": "2026-10-31T01:12:00.000Z",
+              "lastRunAt": "2026-10-31T01:41:29.052Z",
+              "status": "COMPLETE",
+              "executionVerified": true,
+              "evidenceFiles": [
+                "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261030-2112ET_TERMINAL.txt",
+                "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B01_VERIFIED.json",
+                "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B02_VERIFIED.json",
+                "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B03_VERIFIED.json",
+                "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET-B04_VERIFIED.json",
+                "receipts/FORGE-POSTVAL-CHATGPT-20261030-2112ET_POSTPUSH_VERIFIED.json"
+              ]
+            },
+            {
+              "id": "pe-stack-health-daily",
+              "lastDueAt": "2026-10-30T11:45:00.000Z",
+              "lastRunAt": "2026-10-30T11:52:10.125Z",
+              "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+              "executionVerified": true,
+              "evidenceFiles": [
+                "receipts/HEALTH_AUDIT_20261030_0745ET.json"
+              ]
+            }
+          ],
+          "executionVerified": true
+        }
+      },
+      "boardHealth": [
+        {
+          "key": "ashby:radiant-industries",
+          "companies": [
+            "Radiant"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:31.502Z",
+          "lastSuccessAt": "2026-10-31T00:59:31.502Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:challengemfg.wd503.myworkdayjobs.com/challenge-mfg_careers",
+          "companies": [
+            "Challenge Manufacturing"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:11.228Z",
+          "lastSuccessAt": "2026-10-31T01:00:11.228Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:shieldai",
+          "companies": [
+            "Shield AI"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:52.601Z",
+          "lastSuccessAt": "2026-10-31T00:58:52.601Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:pathrobotics",
+          "companies": [
+            "Path Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:53.020Z",
+          "lastSuccessAt": "2026-10-31T00:58:53.020Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:spacex",
+          "companies": [
+            "SpaceX"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:55.291Z",
+          "lastSuccessAt": "2026-10-31T00:58:55.291Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:blueorigin.wd5.myworkdayjobs.com/BlueOrigin",
+          "companies": [
+            "Blue Origin"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:57.903Z",
+          "lastSuccessAt": "2026-10-31T00:58:57.903Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:cowboyspace",
+          "companies": [
+            "Cowboy Space Corporation"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:58.396Z",
+          "lastSuccessAt": "2026-10-31T00:58:58.396Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:hadrian-automation",
+          "companies": [
+            "Hadrian"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:58.802Z",
+          "lastSuccessAt": "2026-10-31T00:58:58.802Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:mindrobotics",
+          "companies": [
+            "Mind Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:59.129Z",
+          "lastSuccessAt": "2026-10-31T00:58:59.129Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:quindar",
+          "companies": [
+            "Quindar"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:59.460Z",
+          "lastSuccessAt": "2026-10-31T00:58:59.460Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:saronic",
+          "companies": [
+            "Saronic",
+            "Saronic Technologies"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:58:59.861Z",
+          "lastSuccessAt": "2026-10-31T00:58:59.861Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:skydio",
+          "companies": [
+            "Skydio"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:00.232Z",
+          "lastSuccessAt": "2026-10-31T00:59:00.232Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:slingshot-aerospace",
+          "companies": [
+            "Slingshot Aerospace"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:00.630Z",
+          "lastSuccessAt": "2026-10-31T00:59:00.630Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:swarmaero",
+          "companies": [
+            "Swarm Aero"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:00.963Z",
+          "lastSuccessAt": "2026-10-31T00:59:00.963Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:aevexaerospace",
+          "companies": [
+            "AEVEX"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:01.394Z",
+          "lastSuccessAt": "2026-10-31T00:59:01.394Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:agilityrobotics",
+          "companies": [
+            "Agility Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:01.806Z",
+          "lastSuccessAt": "2026-10-31T00:59:01.806Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:allencontrolsystems",
+          "companies": [
+            "Allen Control Systems"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:02.194Z",
+          "lastSuccessAt": "2026-10-31T00:59:02.194Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:apex",
+          "companies": [
+            "Apex"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:02.545Z",
+          "lastSuccessAt": "2026-10-31T00:59:02.545Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:apptronik",
+          "companies": [
+            "Apptronik"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:02.930Z",
+          "lastSuccessAt": "2026-10-31T00:59:02.930Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:archer",
+          "companies": [
+            "Archer Aviation"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:03.281Z",
+          "lastSuccessAt": "2026-10-31T00:59:03.281Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:divergent",
+          "companies": [
+            "Divergent Technologies"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:03.753Z",
+          "lastSuccessAt": "2026-10-31T00:59:03.753Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:electraaero",
+          "companies": [
+            "Electra.Aero"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:04.127Z",
+          "lastSuccessAt": "2026-10-31T00:59:04.127Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:figureai",
+          "companies": [
+            "Figure AI"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:04.506Z",
+          "lastSuccessAt": "2026-10-31T00:59:04.506Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:hevenaerotech",
+          "companies": [
+            "Heven AeroTech"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:04.875Z",
+          "lastSuccessAt": "2026-10-31T00:59:04.875Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:jetzero",
+          "companies": [
+            "JetZero"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:05.284Z",
+          "lastSuccessAt": "2026-10-31T00:59:05.284Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:machindustries",
+          "companies": [
+            "Mach Industries"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:05.747Z",
+          "lastSuccessAt": "2026-10-31T00:59:05.747Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:trueanomalyinc",
+          "companies": [
+            "True Anomaly"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:06.282Z",
+          "lastSuccessAt": "2026-10-31T00:59:06.282Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:ursamajor",
+          "companies": [
+            "Ursa Major"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:06.721Z",
+          "lastSuccessAt": "2026-10-31T00:59:06.721Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:espace",
+          "companies": [
+            "E-Space"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:07.289Z",
+          "lastSuccessAt": "2026-10-31T00:59:07.289Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:hermeus",
+          "companies": [
+            "Hermeus"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:07.646Z",
+          "lastSuccessAt": "2026-10-31T00:59:07.646Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:alta-ares",
+          "companies": [
+            "Alta Ares"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:08.097Z",
+          "lastSuccessAt": "2026-10-31T00:59:08.097Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:bedrock-robotics",
+          "companies": [
+            "Bedrock Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:08.429Z",
+          "lastSuccessAt": "2026-10-31T00:59:08.429Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:gecko-robotics",
+          "companies": [
+            "Gecko Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:08.755Z",
+          "lastSuccessAt": "2026-10-31T00:59:08.755Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:impulse",
+          "companies": [
+            "Impulse Space"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:09.079Z",
+          "lastSuccessAt": "2026-10-31T00:59:09.079Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:infinite",
+          "companies": [
+            "Infinite Orbits"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:09.405Z",
+          "lastSuccessAt": "2026-10-31T00:59:09.405Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:quantum",
+          "companies": [
+            "Quantum Systems"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:09.810Z",
+          "lastSuccessAt": "2026-10-31T00:59:09.810Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:reliable-robotics",
+          "companies": [
+            "Reliable Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:10.139Z",
+          "lastSuccessAt": "2026-10-31T00:59:10.139Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:standardbots",
+          "companies": [
+            "Standard Bots"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:10.475Z",
+          "lastSuccessAt": "2026-10-31T00:59:10.475Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:tar",
+          "companies": [
+            "TAR"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:10.819Z",
+          "lastSuccessAt": "2026-10-31T00:59:10.819Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:astranis",
+          "companies": [
+            "Astranis"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:11.294Z",
+          "lastSuccessAt": "2026-10-31T00:59:11.294Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:chaosindustries",
+          "companies": [
+            "CHAOS Industries"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:11.751Z",
+          "lastSuccessAt": "2026-10-31T00:59:11.751Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:epirus",
+          "companies": [
+            "Epirus"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:12.132Z",
+          "lastSuccessAt": "2026-10-31T00:59:12.132Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:formic",
+          "companies": [
+            "Formic"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:12.541Z",
+          "lastSuccessAt": "2026-10-31T00:59:12.541Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:general",
+          "companies": [
+            "General Motors"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:12.928Z",
+          "lastSuccessAt": "2026-10-31T00:59:12.928Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:nerostechnologies",
+          "companies": [
+            "Neros Technologies"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:13.321Z",
+          "lastSuccessAt": "2026-10-31T00:59:13.321Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:physicsx",
+          "companies": [
+            "PhysicsX"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:13.693Z",
+          "lastSuccessAt": "2026-10-31T00:59:13.693Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:relativity",
+          "companies": [
+            "Relativity Space"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:15.266Z",
+          "lastSuccessAt": "2026-10-31T00:59:15.266Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:blue",
+          "companies": [
+            "Blue Bird"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:15.738Z",
+          "lastSuccessAt": "2026-10-31T00:59:15.738Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:dexterity",
+          "companies": [
+            "Dexterity"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:22.447Z",
+          "lastSuccessAt": "2026-10-31T00:59:22.447Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:pyka",
+          "companies": [
+            "Pyka"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:22.831Z",
+          "lastSuccessAt": "2026-10-31T00:59:22.831Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh",
+          "companies": [
+            "Oshkosh Corporation"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:25.923Z",
+          "lastSuccessAt": "2026-10-31T00:59:25.923Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:auterion",
+          "companies": [
+            "Auterion"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:26.300Z",
+          "lastSuccessAt": "2026-10-31T00:59:26.300Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:allen-control-systems",
+          "companies": [
+            "Allen Control Systems"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:26.723Z",
+          "lastSuccessAt": "2026-10-31T00:59:26.723Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:atp",
+          "companies": [
+            "AT Process Technologies"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:27.166Z",
+          "lastSuccessAt": "2026-10-31T00:59:27.166Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:cobot",
+          "companies": [
+            "Collaborative Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:27.889Z",
+          "lastSuccessAt": "2026-10-31T00:59:27.889Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:critical-energy",
+          "companies": [
+            "Critical Energy"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:28.286Z",
+          "lastSuccessAt": "2026-10-31T00:59:28.286Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:criticalloop",
+          "companies": [
+            "Critical Loop"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:28.686Z",
+          "lastSuccessAt": "2026-10-31T00:59:28.686Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:foundational%20industries",
+          "companies": [
+            "Foundational Industries"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:29.145Z",
+          "lastSuccessAt": "2026-10-31T00:59:29.145Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:foundry-robotics",
+          "companies": [
+            "Foundry Robotics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:29.477Z",
+          "lastSuccessAt": "2026-10-31T00:59:29.477Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:genesis",
+          "companies": [
+            "Genesis AI"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:29.804Z",
+          "lastSuccessAt": "2026-10-31T00:59:29.804Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:helicon",
+          "companies": [
+            "Helicon"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:30.195Z",
+          "lastSuccessAt": "2026-10-31T00:59:30.195Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:matx",
+          "companies": [
+            "MatX"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:30.524Z",
+          "lastSuccessAt": "2026-10-31T00:59:30.524Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:powertown",
+          "companies": [
+            "Powertown"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:30.928Z",
+          "lastSuccessAt": "2026-10-31T00:59:30.928Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:reframesystems",
+          "companies": [
+            "Reframe Systems"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:31.901Z",
+          "lastSuccessAt": "2026-10-31T00:59:31.901Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:regent",
+          "companies": [
+            "REGENT"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:32.235Z",
+          "lastSuccessAt": "2026-10-31T00:59:32.235Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:sentradel",
+          "companies": [
+            "Sentradel"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:32.628Z",
+          "lastSuccessAt": "2026-10-31T00:59:32.628Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:twelve",
+          "companies": [
+            "Twelve"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:32.946Z",
+          "lastSuccessAt": "2026-10-31T00:59:32.946Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:andurilindustries",
+          "companies": [
+            "Anduril Industries"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:35.548Z",
+          "lastSuccessAt": "2026-10-31T00:59:35.548Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:anthropic",
+          "companies": [
+            "Anthropic"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:36.354Z",
+          "lastSuccessAt": "2026-10-31T00:59:36.354Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:axon",
+          "companies": [
+            "Axon"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:37.152Z",
+          "lastSuccessAt": "2026-10-31T00:59:37.152Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:eh2",
+          "companies": [
+            "Electric Hydrogen"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:37.514Z",
+          "lastSuccessAt": "2026-10-31T00:59:37.514Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:formlabs",
+          "companies": [
+            "Formlabs"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:37.967Z",
+          "lastSuccessAt": "2026-10-31T00:59:37.967Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:gatherai",
+          "companies": [
+            "Gather AI"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:38.317Z",
+          "lastSuccessAt": "2026-10-31T00:59:38.317Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:gotion",
+          "companies": [
+            "Gotion Inc."
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:38.736Z",
+          "lastSuccessAt": "2026-10-31T00:59:38.736Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:materialbank",
+          "companies": [
+            "Material Bank"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:39.113Z",
+          "lastSuccessAt": "2026-10-31T00:59:39.113Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:oklo",
+          "companies": [
+            "Oklo"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:39.529Z",
+          "lastSuccessAt": "2026-10-31T00:59:39.529Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:rebuildmanufacturing",
+          "companies": [
+            "Re:Build Manufacturing"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:39.948Z",
+          "lastSuccessAt": "2026-10-31T00:59:39.948Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:rocketlab",
+          "companies": [
+            "Rocket Lab"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:40.822Z",
+          "lastSuccessAt": "2026-10-31T00:59:40.822Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:scoutmotors",
+          "companies": [
+            "Scout Motors Inc."
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:41.542Z",
+          "lastSuccessAt": "2026-10-31T00:59:41.542Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "greenhouse:xai",
+          "companies": [
+            "xAI (SpaceXAI)"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:41.996Z",
+          "lastSuccessAt": "2026-10-31T00:59:41.996Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:cfsenergy",
+          "companies": [
+            "Commonwealth Fusion Systems"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:44.200Z",
+          "lastSuccessAt": "2026-10-31T00:59:44.200Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:last-energy",
+          "companies": [
+            "Last Energy"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:44.538Z",
+          "lastSuccessAt": "2026-10-31T00:59:44.538Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:pivotal",
+          "companies": [
+            "Pivotal"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:45.143Z",
+          "lastSuccessAt": "2026-10-31T00:59:45.143Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:abbott.wd5.myworkdayjobs.com/abbottcareers",
+          "companies": [
+            "Abbott Laboratories"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:52.630Z",
+          "lastSuccessAt": "2026-10-31T00:59:52.630Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:aero.wd5.myworkdayjobs.com/External",
+          "companies": [
+            "The Aerospace Corporation"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:55.025Z",
+          "lastSuccessAt": "2026-10-31T00:59:55.025Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:alkegen.wd5.myworkdayjobs.com/alkegen",
+          "companies": [
+            "Alkegen"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:02.491Z",
+          "lastSuccessAt": "2026-10-31T01:00:02.491Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:blueorigin.wd5.myworkdayjobs.com/blueorigin",
+          "companies": [
+            "Blue Origin"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:05.970Z",
+          "lastSuccessAt": "2026-10-31T01:00:05.970Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:bostondynamics.wd1.myworkdayjobs.com/Boston_Dynamics",
+          "companies": [
+            "Boston Dynamics"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:08.907Z",
+          "lastSuccessAt": "2026-10-31T01:00:08.907Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:dover.wd103.myworkdayjobs.com/Dover",
+          "companies": [
+            "DOVER PRECISION COMPONENTS"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:14.228Z",
+          "lastSuccessAt": "2026-10-31T01:00:14.228Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:freudenberg.wd3.myworkdayjobs.com/freudenberg-group",
+          "companies": [
+            "Freudenberg Sealing Technologies"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:21.862Z",
+          "lastSuccessAt": "2026-10-31T01:00:21.862Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:globalfoundries.wd1.myworkdayjobs.com/External",
+          "companies": [
+            "GLOBALFOUNDRIES"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:24.992Z",
+          "lastSuccessAt": "2026-10-31T01:00:24.992Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway",
+          "companies": [
+            "Collins Aerospace (RTX)",
+            "Pratt & Whitney (RTX)"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:26.867Z",
+          "lastSuccessAt": "2026-10-31T01:00:26.867Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:haier.wd3.myworkdayjobs.com/GE_Appliances",
+          "companies": [
+            "GE Appliances (Haier)"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:30.801Z",
+          "lastSuccessAt": "2026-10-31T01:00:30.801Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:intel.wd1.myworkdayjobs.com/External",
+          "companies": [
+            "Intel"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:34.979Z",
+          "lastSuccessAt": "2026-10-31T01:00:34.979Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:leidos.wd5.myworkdayjobs.com/External",
+          "companies": [
+            "Leidos"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:39.940Z",
+          "lastSuccessAt": "2026-10-31T01:00:39.940Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:mydpr.wd5.myworkdayjobs.com/11212017",
+          "companies": [
+            "DPR Construction"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:41.812Z",
+          "lastSuccessAt": "2026-10-31T01:00:41.812Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site",
+          "companies": [
+            "Northrop Grumman"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:46.213Z",
+          "lastSuccessAt": "2026-10-31T01:00:46.213Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:nvent.wd5.myworkdayjobs.com/nVent",
+          "companies": [
+            "nVent"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:49.882Z",
+          "lastSuccessAt": "2026-10-31T01:00:49.882Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:recar.wd108.myworkdayjobs.com/SLATEcareers",
+          "companies": [
+            "Slate Auto"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:51.732Z",
+          "lastSuccessAt": "2026-10-31T01:00:51.732Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:silgancontainers.wd1.myworkdayjobs.com/silgan",
+          "companies": [
+            "Silgan Containers Mfg Corp"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:01:00.774Z",
+          "lastSuccessAt": "2026-10-31T01:01:00.774Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:snc.wd1.myworkdayjobs.com/SNC_External_Career_Site",
+          "companies": [
+            "Sierra Nevada Corporation"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:01:03.273Z",
+          "lastSuccessAt": "2026-10-31T01:01:03.273Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:weber.wd115.myworkdayjobs.com/WB",
+          "companies": [
+            "Weber Blackstone"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:01:07.049Z",
+          "lastSuccessAt": "2026-10-31T01:01:07.049Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:symbotic.wd504.myworkdayjobs.com/Symbotic",
+          "companies": [
+            "Symbotic"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:01:04.889Z",
+          "lastSuccessAt": "2026-10-31T01:01:04.889Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "ashby:brelle",
+          "companies": [
+            "Brelle"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:27.562Z",
+          "lastSuccessAt": "2026-10-31T00:59:27.562Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "lever:tutorintelligence",
+          "companies": [
+            "Tutor Intelligence"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T00:59:45.594Z",
+          "lastSuccessAt": "2026-10-31T00:59:45.594Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:nextracker.wd5.myworkdayjobs.com/nextpower_careers",
+          "companies": [
+            "Nextpower"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:43.842Z",
+          "lastSuccessAt": "2026-10-31T01:00:43.842Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:rollsroyce.wd3.myworkdayjobs.com/professional",
+          "companies": [
+            "Rolls-Royce"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:56.755Z",
+          "lastSuccessAt": "2026-10-31T01:00:56.755Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:elkay.wd1.myworkdayjobs.com/Elkay_External",
+          "companies": [
+            "Zurn Elkay Water Solutions"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:09:07.883Z",
+          "lastSuccessAt": "2026-10-31T01:09:07.883Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:ag.wd3.myworkdayjobs.com/Airbus",
+          "companies": [
+            "Airbus Robotics LLC"
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:00.444Z",
+          "lastSuccessAt": "2026-10-31T01:00:00.444Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        },
+        {
+          "key": "workday:ebi.wd5.myworkdayjobs.com/ebicareers",
+          "companies": [
+            "Ensign-Bickford Industries, Inc."
+          ],
+          "status": "OK",
+          "error": "",
+          "httpStatus": null,
+          "lastAttemptAt": "2026-10-31T01:00:17.785Z",
+          "lastSuccessAt": "2026-10-31T01:00:17.785Z",
+          "retryAt": null,
+          "consecutiveFailures": 0
+        }
+      ]
+    },
+    "activity": {
+      "ok": true,
+      "now": "2026-10-31T03:17:27.660Z",
+      "indexUpdatedAt": "2026-10-31T03:17:18.662Z",
+      "from": "2026-10-30T03:17:27.660Z",
+      "todayDate": "2026-10-30",
+      "todayTimezone": "America/New_York",
+      "today": {
+        "writes": 93,
+        "inserts": 19,
+        "updates": 81,
+        "otherChanges": 0,
+        "jobs": 78
+      },
+      "recent": {
+        "writes": 97,
+        "inserts": 19,
+        "updates": 81,
+        "otherChanges": 0,
+        "jobs": 78
+      },
+      "buckets": [
+        {
+          "start": "2026-10-30T03:00:00.000Z",
+          "writes": 4,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T04:00:00.000Z",
+          "writes": 1,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T05:00:00.000Z",
+          "writes": 11,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T06:00:00.000Z",
+          "writes": 18,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T07:00:00.000Z",
+          "writes": 2,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T08:00:00.000Z",
+          "writes": 2,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T09:00:00.000Z",
+          "writes": 9,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T10:00:00.000Z",
+          "writes": 2,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T11:00:00.000Z",
+          "writes": 4,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T12:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T13:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T14:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T15:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T16:00:00.000Z",
+          "writes": 1,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T17:00:00.000Z",
+          "writes": 4,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T18:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T19:00:00.000Z",
+          "writes": 4,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T20:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T21:00:00.000Z",
+          "writes": 2,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T22:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-30T23:00:00.000Z",
+          "writes": 2,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        {
+          "start": "2026-10-31T00:00:00.000Z",
+          "writes": 3,
+          "inserts": 1,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 1
+        },
+        {
+          "start": "2026-10-31T01:00:00.000Z",
+          "writes": 17,
+          "inserts": 11,
+          "updates": 40,
+          "otherChanges": 0,
+          "jobs": 50
+        },
+        {
+          "start": "2026-10-31T02:00:00.000Z",
+          "writes": 11,
+          "inserts": 7,
+          "updates": 41,
+          "otherChanges": 0,
+          "jobs": 46
+        },
+        {
+          "start": "2026-10-31T03:00:00.000Z",
+          "writes": 0,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        }
+      ],
+      "sources": {
+        "Email intake": {
+          "writes": 10,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        "Automatic posting checks": {
+          "writes": 23,
+          "inserts": 0,
+          "updates": 6,
+          "otherChanges": 0,
+          "jobs": 6
+        },
+        "Other work": {
+          "writes": 26,
+          "inserts": 0,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 0
+        },
+        "Automatic intake (GitHub)": {
+          "writes": 21,
+          "inserts": 19,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 19
+        },
+        "Pay enrichment (GitHub)": {
+          "writes": 3,
+          "inserts": 0,
+          "updates": 37,
+          "otherChanges": 0,
+          "jobs": 37
+        },
+        "Posting validation": {
+          "writes": 14,
+          "inserts": 0,
+          "updates": 38,
+          "otherChanges": 0,
+          "jobs": 38
+        }
+      },
+      "pendingReceipts": 1,
+      "problemReceipts": 0,
+      "rawProblemReceipts": 24,
+      "problemWriteIncidents": 0,
+      "recoveredReceipts": 0,
+      "closedObligations": 24,
+      "recovery": {
+        "status": "CURRENT",
+        "at": "2026-10-31T03:12:59.694Z",
+        "groups": [],
+        "deferred": 0
+      },
+      "coverage": {
+        "metadataGaps": 68,
+        "missingWriteIds": 0,
+        "unplacedCompleteReceipts": 0,
+        "legacyReceiptsExcluded": 946,
+        "conflictedWrites": 1
+      },
+      "basis": "Current COMPLETE master-write receipts, deduplicated by write ID; inserts/updates deduplicated within each write. Recovery evidence never changes throughput or canonical receipt states.",
+      "schema": "forge.writer-activity.v1",
+      "source": {
+        "repo": "tpruittguitar/forge-writer-state",
+        "path": "PIPELINE_RECEIPT_INDEX.json",
+        "sha": "48bbd1ad6a013179a6c34afafdfea454a9a973c1"
+      },
+      "publishedAt": "2026-10-31T03:17:27.660Z",
+      "servedAt": "2026-10-31T03:18:07.416Z",
+      "summaryAgeSeconds": 39
+    }
+  },
+  "writerSubmissions": 0,
+  "masterMutations": 0,
+  "unresolved": [
+    "Chromalloy original delivery outcome UNKNOWN_NO_REPLAY; never resubmitted",
+    "Partial email recommendation coverage remains pending",
+    "Two Tim questions remain"
+  ],
+  "validation": {
+    "intakeAndObservabilityUnitTests": 114,
+    "guiUnitTests": 691,
+    "sourceUnitAndIntegrationTests": 23,
+    "productionPagesDeployment": "success",
+    "optionalPullRequestSourceAndBoardProbes": "Still running at final verification; production source refresh independently succeeded"
+  },
+  "note": "The remaining in-flight receipt is current work, not a failed receipt. Historical write problems were not converted into successful throughput."
+}
