@@ -1,6 +1,10 @@
 name: Publish compact Writer activity
 on:
   workflow_dispatch: {}
+  workflow_run:
+    workflows: [enrich-ats-pay, source-trial, board-discovery, source-intake-auto, writer-verify, receipt-recovery]
+    types: [completed]
+    branches: [main]
   schedule:
     - cron: '7,17,27,37,47,57 * * * *'
   push:
@@ -31,6 +35,7 @@ jobs:
         env:
           ACTIVITY_FC_DIR: _fc
       - name: Check for a missed discovery start
+        continue-on-error: true # a dispatch/API failure must not stop publication of measured job counts
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
