@@ -12,8 +12,8 @@ test('review cooldown survives numeric readback, unchanged failures back off, ch
  const h={},r=row('A');R.remember(h,r,'NO_STRONGER_EVIDENCE',{now});assert.equal(R.order([r],h,new Set(),now+3600000).length,0);
  assert.equal(R.order([r],h,new Set(),now+25*3600000).length,1);
  const changed={...r,p:{...r.p,ATS_POSTING_URL:'https://job-boards.greenhouse.io/acme/jobs/42'}};assert.equal(R.order([changed],h,new Set(),now+3600000).length,1);
- R.remember(h,r,'STRONGER_ESTIMATE_PLANNED',{now,hours:168,fields:{SALARY_BASE_HIGH:200000}});
- assert.equal(R.order([{...r,p:{...r.p,SALARY_BASE_HIGH:'200000'}}],h,new Set(),now+3600000).length,0);
+ R.remember(h,r,'STRONGER_ESTIMATE_PLANNED',{now,hours:168,fields:{SALARY_BASE_HIGH:200000,SALARY_NOTE:'Stronger evidence; base estimate'}});
+ assert.equal(R.order([{...r,p:{...r.p,SALARY_BASE_HIGH:'200000',SALARY_NOTE:'Stronger evidence, base estimate'}}],h,new Set(),now+3600000).length,0);
 });
 test('numerical changes alone and confidence downgrades are not improved estimates',()=>{
  const r=row('A','MED');assert.equal(R.improved(r,{conf:'LOW',source:'SAME_EMPLOYER'}),false);assert.equal(R.improved(r,{conf:'MED',source:'COMPARABLES',high:500000}),false);assert.equal(R.improved(r,{conf:'MED',source:'SAME_EMPLOYER'}),true);assert.equal(R.improved(r,{conf:'HIGH',source:'COMPARABLES'}),true);

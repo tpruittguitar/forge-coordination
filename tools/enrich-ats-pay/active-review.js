@@ -1,9 +1,10 @@
 'use strict';
 const crypto=require('node:crypto'),L=require('./lib'),C=require('./context');
+const {normalizeCell}=require('../source-intake/writer-cell');
 const ACTIVE=['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'];
 const confidence=s=>({LOW:1,MED:2,HIGH:3}[s]||0);
 function eligible(r){const p=r.p||{};return ACTIVE.includes(r.BUCKET)&&p.SALARY_BASIS==='FORGE-ESTIMATE'&&!/^CLOSED/.test(p.LIVENESS||'')&&!/^CLOSED/.test(p.ATS_CHECK_RESULT||'')&&!/^YES/i.test(p.ANTI_RESURRECTION||'')&&!p.DO_NOT_REWORK;}
-function stamp(r){return JSON.stringify([r.COMPANY,r.TITLE,r.LOCATION,Object.entries(r.p||{}).filter(([k])=>/^SALARY_|URL$|^SOURCE$/.test(k)).map(([k,v])=>[k,String(v)]).sort()]);}
+function stamp(r){return JSON.stringify([r.COMPANY,r.TITLE,r.LOCATION,Object.entries(r.p||{}).filter(([k])=>/^SALARY_|URL$|^SOURCE$/.test(k)).map(([k,v])=>[k,normalizeCell(v)]).sort()]);}
 function fingerprint(r){return crypto.createHash('sha256').update(stamp(r)).digest('hex');}
 function order(rows,history={},inFlight=new Set(),now=Date.now()){
  return rows.filter(r=>eligible(r)&&!inFlight.has(r.PRIMARY_ID)).filter(r=>{const h=history[r.PRIMARY_ID];return !h||h.fingerprint!==fingerprint(r)||now>=Date.parse(h.retryAt||'');}).sort((a,b)=>{
