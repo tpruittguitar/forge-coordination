@@ -1,0 +1,4 @@
+'use strict';
+const crypto=require('node:crypto'),R=require('../source-intake/writer-reader');
+async function readCanonical({key,W,reader=R.read}){const result=await reader('master',{key}),text=result.data.text,expected=R.parseMaster(text),lines=text.split(/\r?\n/).filter(l=>/^\d+ \| /.test(l)),rows=W.parseRows(text);if(rows.length!==expected.length)throw Error('Canonical row parser disagreement');const byId=new Map(lines.map(l=>[l.split(' | ')[1],l]));if(byId.size!==rows.length||rows.some(r=>!byId.has(r.PRIMARY_ID)))throw Error('Incomplete canonical identities');rows.forEach(r=>r.line=byId.get(r.PRIMARY_ID));return {rows,source:{kind:'CANONICAL_WRITER_MASTER',readAt:result.completedAt,sha256:crypto.createHash('sha256').update(text).digest('hex'),rows:rows.length}};}
+module.exports={readCanonical};
