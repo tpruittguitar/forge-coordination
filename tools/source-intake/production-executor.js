@@ -72,7 +72,7 @@ function classifyWriterResponse(result,rid){
  return {kind:'UNKNOWN'};
 }
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
-async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,expectedMode='STAGE'}={}){
+async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
  const skipped=(rid,kind,result)=>({requestId:rid,status:'SKIPPED',reason:kind,accounting:{status:'SKIPPED',reason:kind},writerResult:result});
@@ -143,9 +143,14 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   }
   // Prior review must be bound to the exact canonical rules fetched from Writer now.
   // A caller-provided industry label or boolean alone cannot authorize intake.
-  if(!candidate.rulesHash||candidate.rulesHash!==pre.rulesHash||candidate.businessEvidenceApproved!==true)
+  let review=candidate;
+  if(candidate.rulesHash!==pre.rulesHash&&typeof refreshReview==='function'){
+   const refreshed=await refreshReview(candidate,pre.rulesHash);
+   if(refreshed)review={...candidate,...refreshed};
+  }
+  if(!review.rulesHash||review.rulesHash!==pre.rulesHash||review.businessEvidenceApproved!==true)
     halt('BLOCKED: independent employer-business review not bound to fresh canonical rules');
-  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:candidate.primaryBusiness||''}]};
+  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:review.primaryBusiness||''}]};
   // Persist intent before sending: a lost response must still fence this exact request after a crash.
   const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
   await recorder.record(rid,intent);

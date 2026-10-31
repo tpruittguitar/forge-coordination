@@ -152,6 +152,20 @@ function mockWriter({index={},result={},readback={},post={},archiveText=ARCHIVE_
 const opts=(transport,extra={})=>({key:'fixture',sourceRunId:'FORGE-SOURCE-STAGE',switchTransport:ENABLED,transport,recorder:memRecorder(),...extra});
 const durable=(rid,items)=>({found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{items}});
 
+test('rules drift requires fresh review, and never bypasses an existing uncertain request',async()=>{
+ const rows=canary(['NEW']);rows[0].rulesHash='old';
+ let reviews=0;const log=[];
+ const refreshReview=async(c,h)=>{reviews++;assert.equal(h,RULES_HASH);return {rulesHash:h,businessEvidenceApproved:true,primaryBusiness:'Fresh posting evidence'};};
+ const e=await runIntake(rows,opts(mockWriter({},log),{refreshReview})).catch(e=>e);
+ assert.equal(reviews,1);assert.equal(log.filter(x=>x==='POST').length,1);assert.match(e.message,/Writer accepted/);
+ const rid=requestId(rows[0].record),uncertain=[];
+ await assert.rejects(()=>runIntake(rows,opts(mockWriter({index:{[rid]:{s:'PENDING'}}},uncertain),{refreshReview})),/uncertain/);
+ assert.equal(reviews,1);assert.ok(!uncertain.includes('POST'));
+ const denied=[];
+ await assert.rejects(()=>runIntake(rows,opts(mockWriter({},denied),{refreshReview:async()=>null})),/fresh canonical rules/);
+ assert.ok(!denied.includes('POST'));
+});
+
 test('protected candidate without an exact archived match never reaches Writer POST',async()=>{
  const log=[],rows=canary(['PROTECTED_NOOP','NEW','EXISTING_MATCH','NEW','NEW']);rows[0].protectedPrimaryId='V2A-MISSING';
  await assert.rejects(()=>runStage(rows,opts(mockWriter({},log))),/protected archive identity unproven/);

@@ -127,7 +127,16 @@ async function main(argv=process.argv.slice(2)){
  if(!candidates.length){fs.writeFileSync(statePath,JSON.stringify({run,noCandidates:true,at:new Date().toISOString()}));return}
  fs.writeFileSync(path.join(DIR,run+'.candidates.json'),JSON.stringify(candidates,null,1));
  await snapshot('before',{statePath,candidates,sourceRunId:run,key,mode:'AUTO'});
- const r=await auto({statePath,candidates,key});
+ const refreshReview=async(candidate,expectedHash)=>{
+  // Re-read the actual posting and rules; never merely stamp the old review
+  // with a new hash. Writer remains the canonical Never Consider adjudicator.
+  const business=await evidence(candidate.record.SOURCE_URL,candidate.record.COMPANY);
+  if(!business)return null;
+  const fresh=sha((await read('rules',{key})).data.rules.raw);
+  if(fresh!==expectedHash)return null;
+  return {rulesHash:fresh,businessEvidenceApproved:true,primaryBusiness:business,evidenceUrl:candidate.record.SOURCE_URL};
+ };
+ const r=await auto({statePath,candidates,key,refreshReview});
  console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
  if(r.status!=='ALL_CASES_ACCOUNTED'&&r.status!=='ALREADY_COMPLETE')throw Error('NEEDS TIM: AUTO run halted: '+r.message);
  await snapshot('after',{statePath,candidates,key});

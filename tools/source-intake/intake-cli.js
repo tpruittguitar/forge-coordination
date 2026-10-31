@@ -54,11 +54,11 @@ async function snapshot(phase,{statePath,candidates,sourceRunId,key,transport,mo
  saveState(statePath,next);
  return {phase,masterRows:master.rows.length,archiveRows:archive.rows.length};
 }
-async function run({statePath,candidates,key,transport,switchTransport}){
+async function run({statePath,candidates,key,transport,switchTransport,refreshReview}){
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
-  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),expectedMode:state.mode||'STAGE'});
+  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
   if(outcomes.length!==candidates.length||outcomes.some(x=>!ACCOUNTED.has(x.status)))throw Error('BLOCKED: run returned without every case accounted');
   state.outcomes=outcomes;state.completedAt=new Date().toISOString();saveState(statePath,state);
   return {status:'ALL_CASES_ACCOUNTED',outcomes};

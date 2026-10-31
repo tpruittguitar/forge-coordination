@@ -20,7 +20,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/automation-health/build.test.js
+      - run: node --test tools/automation-health/build.test.js tools/automation-health/tracker-proof.test.js
       - name: Materialize immutable proof receipts
         run: |
           set -euo pipefail
