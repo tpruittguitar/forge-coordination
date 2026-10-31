@@ -41,6 +41,11 @@ async function recover(file,{key=process.env.FORGE_WRITER_KEY,transport=fetch,ro
  }
  const outcome=await C.auto(opts);if(outcome.status!=='ALL_CASES_ACCOUNTED'&&outcome.status!=='ALREADY_COMPLETE')return {status:'RECOVERY_PENDING',detail:outcome.message};
  const cs=JSON.parse(fs.readFileSync(child)),result=cs.results[q.requestId];
+ if(E.classifyWriterResponse(result,q.requestId).kind==='NOOP_COMPLETE'){
+  const accounting=await E.verifyNoopCase({...candidate,expectedOutcome:'EXISTING_MATCH'},q.requestId,result,{key,transport});
+  if(accounting.status!=='EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS')return {status:'RECOVERY_NOT_VERIFIED'};
+  s.unknownRecovery={schema:'forge.unknown-recovery.v1',status:'EXISTING_SATISFIED',at:new Date().toISOString(),requestId:q.requestId,receiptState:'NOT_REQUIRED_NO_WRITE',exactRowVerified:true,primaryId:accounting.primaryId,proof:path.relative(root,child).split(path.sep).join('/'),originalOutcome:'UNKNOWN_TRANSPORT',carryForwardRequestIds:q.carryForwardRequestIds};save(full,s);return s.unknownRecovery;
+ }
  const receipt=await R.read('receipt_index',{key,transport,requestId:q.requestId});
  const accounting=await E.verifyAcceptedCase(candidate,q.requestId,result,receipt.data.request,{key,transport});
  if(accounting.status!=='CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK')return {status:'RECOVERY_NOT_VERIFIED'};
