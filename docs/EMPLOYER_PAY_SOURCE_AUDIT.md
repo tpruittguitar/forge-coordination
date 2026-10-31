@@ -1,0 +1,71 @@
+# Employer salary-source audit — 2026-10-31
+
+Read-only authenticated master/archive snapshot: 2,533 master jobs plus 782 terminal-archive identities = 3,315 unique
+jobs. RESTORED archive markers were applied, repeated archive primary IDs consolidated, and master identities took
+precedence where present. The source snapshots are private; public output contains only company, role/location,
+canonical IDs, salary amounts/dates and public posting URLs. No application, decision or salary was changed.
+
+## Repeated documented sources
+
+| Company | Distinct dated, source-linked employer-posted ranges | States in those saved disclosures |
+| --- | ---: | --- |
+| Tesla | 10 | CA |
+| Applied Materials | 8 | TX, MA |
+| Ford Motor Company | 7 | MI, OH, KS, CA |
+| Anduril Industries | 6 | CA, OH, MA |
+| Boeing | 6 | KS, CA, AL |
+| Blue Origin | 5 | AL, TX; one location lacks a parsed state |
+| Carrier | 4 | FL, TN, NC |
+| Eaton | 4 | NC, PA |
+| Northrop Grumman | 4 | UT, MN, MD |
+| Oracle | 3 | CA, TX |
+| Stryker | 3 | IL, GA, AZ |
+
+These 11 employers meet the conservative three-distinct-disclosure source threshold. Insight Global also has three
+saved examples, but is retained separately as a staffing/recruiter source, not treated as the unnamed client's salary
+policy or company context. Official category evidence: https://insightglobal.com/services/talent-services/staffing/
+
+Slate and Scout remain source candidates: each has one dated source-linked record meeting this strict classifier.
+Slate also has saved mirrored employer text for Head of Quality, Troy MI; Scout has a legacy POSTED_ROLE_RANGE record.
+Those remain provenance-review evidence, not silently normalized into algorithm-ready employer anchors. This audit
+does not conclude that either employer rarely publishes pay. Other employers with one/two examples stay in the file
+as LIMITED_DOCUMENTED_SOURCE rather than disappearing.
+
+## Why these are not publication-rate percentages
+
+2,081 jobs have no saved SALARY_BASIS. Others have estimates, mirrors, legacy labels, missing dates/URLs or conflicting
+source identity. Missing collection evidence does not prove missing employer pay. There is no representative sample
+of complete posting reads with recorded pay-present/pay-absent outcomes, so an actual company disclosure consistency
+rate cannot be estimated honestly. Applied Materials (8 documented of 9 saved role/location identities) and Boeing
+(6 of 7) have particularly dense saved coverage, but those fractions remain capture coverage, not universal policies.
+
+The audit retains 328 conservative distinct disclosures across all employers, from 360 strict EMPLOYER_POSTED records;
+it separately reports 112 records needing provenance review. These categories overlap at company/role level and are
+not a partition of the 3,315 jobs. Repeated same-role/location copies count once; the newest dated disclosure wins and
+equal-date conflicting ranges are withheld. A stored EMPLOYER_POSTED flag is not a fresh public-page verification.
+
+## Algorithmic use
+
+Shared inventory: `reference/EMPLOYER_PAY_SOURCES.json`, schema `forge.employer-pay-sources.v1`.
+Reusable builder and selector: `tools/enrich-ats-pay/source-profile.js` (`build`, `sourcesFor`).
+
+1. Prefer the exact target posting regardless of employer/state; identity-matched employer copies come next.
+2. Reuse already valid target and comparable pay evidence before making network requests.
+3. When another source is needed, `sourcesFor(target, profile, sharedCompanyContext)` ranks the repeated documented
+   employer candidates using the existing level/function, geography, age, company/site size and responsibility rules.
+   Explicit role-scope conflicts are rejected. Undated/old sources and stale (>90-day) profiles are not search inputs.
+4. Open the returned PUBLIC posting URLs, verify exact role/location and base-pay meaning. Copies are not independent
+   comparables. Tesla's ten saved examples are all CA: they do not establish an Austin Tesla range.
+5. A company being a frequent publisher never raises its salary amount, overrides comparability or boosts estimate
+   confidence. Recruiter client pay must not become the recruiter's corporate pay scale. Keep base/bonus/equity separate.
+6. Keep single-example employers, voluntary disclosures, Slate and Scout in fallback research. The directory prioritizes
+   sources; it must not make all other employers ineligible as genuine comparables.
+
+Offline regeneration from privately parsed canonical rows (each has PRIMARY_ID, COMPANY, TITLE, LOCATION, store and p):
+`node tools/enrich-ats-pay/source-profile.js <private-structured-rows.json> reference/EMPLOYER_PAY_SOURCES.json`
+Do not commit the input snapshot, correspondence, keys or raw notes. Regenerate after a fresh complete authenticated
+master/archive audit; never replace complete coverage with a failed or partial archive read.
+
+This change provides the populated source inventory and a tested programmatic selector. It does not add network
+scraping, a recurring AI task, salary multipliers, automatic anchor promotion or a new Writer mutation path. Existing
+enrichment continues its current same-employer/comparable logic; this selector is available for source-search consumers.
