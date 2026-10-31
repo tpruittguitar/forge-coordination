@@ -41,11 +41,12 @@ const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
+function screenReason(r){if(!levelOk(r))return 'LEVEL_FILTER';if(!CORE.test(r.title)||OFF.test(r.title))return 'FUNCTION_FILTER';if(AGENCY.test(r.company))return 'AGENCY_FILTER';if(MEDICAL.test(r.company+' '+r.title))return 'INDUSTRY_FILTER';return null;}
 function pick(report,{max,sent,blockedIdentities=new Set()}){
  const per={},out=[];
  for(const r of report.new_roles||[]){
   if(out.length>=max)break;
-  if(!levelOk(r)||!CORE.test(r.title)||OFF.test(r.title)||AGENCY.test(r.company)||MEDICAL.test(r.company+' '+r.title))continue;
+  if(screenReason(r))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
   // Employer as the Writer compares it (text before " | "); the raw name's request ID is still checked so a role an
   // earlier run sent under the raw name is never sent again under the normalized one.
@@ -135,4 +136,4 @@ async function main(argv=process.argv.slice(2)){
  if(rec.status==='HOLD')throw Error('NEEDS TIM: AUTO reconcile HOLD '+rec.reason);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,main};
+module.exports={pick,evidence,main,screenReason};
