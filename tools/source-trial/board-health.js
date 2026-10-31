@@ -14,7 +14,7 @@ async function jsonRequest(req,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout
    if(TRANSIENT.has(r.status)&&count<attempts&&!(retryMs>20000)){await wait(Math.max(500*2**(count-1),Number.isFinite(retryMs)?retryMs:0));continue;}
    const err=Error('HTTP '+r.status);err.status=r.status;err.attempts=count;err.retryAfterMs=Number.isFinite(retryMs)?retryMs:0;throw err;
   }
-  try{return {data:await r.json(),attempts:count};}catch{const err=Error('Invalid job-board response');err.status=r.status;err.attempts=count;throw err;}
+  try{return {data:await r.json(),attempts:count};}catch{if(count<attempts){await wait(500*2**(count-1));continue;}const err=Error('Invalid job-board response after '+count+' attempts');err.status=r.status;err.attempts=count;throw err;}
  }
 }
 function validAnswer(b,j){return b.kind==='lever'?Array.isArray(j):b.kind==='workday'?Array.isArray(j?.jobPostings):Array.isArray(j?.jobs);}
