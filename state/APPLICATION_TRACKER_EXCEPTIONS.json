@@ -1,6 +1,6 @@
 {
   "schema": "forge.application-tracker-exceptions.v1",
-  "at": "2026-10-31T13:29:24.837Z",
+  "at": "2026-10-31T16:28:26.913Z",
   "exceptions": [
     {
       "id": "TRACKER-MISUMI-1a1853f2b2ecba93",
@@ -44,6 +44,78 @@
       "attempts": 1,
       "retryCondition": "New message or Tim provides employer and role context. Do not repeat public searches based only on a private personal name.",
       "nextAction": "Preserve source correspondence. Do not add a job, force a canonical match, count an applied-job recruiter contact or send outreach."
+    },
+    {
+      "id": "TRACKER-HISTORICAL-CANONICAL-DUPLICATES-20261031",
+      "status": "EXCEPTION",
+      "owner": "Gofer",
+      "at": "2026-10-31T16:28:26.913Z",
+      "groups": [
+        {
+          "messageId": "19f3ae312c8f7d6f",
+          "company": "Addison Group",
+          "primaryIds": [
+            "V2E-7288376297B6",
+            "V2E-1B4BA801441B"
+          ],
+          "listingId": "4436215249",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "19f4006dccd23c67",
+          "company": "Advantage Technical",
+          "primaryIds": [
+            "V2E-C840A6428C7B",
+            "V2E-0033946A0E1F"
+          ],
+          "listingId": "4437872066",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "1a035bbd9b53170d",
+          "company": "Aardvark Studios",
+          "primaryIds": [
+            "V2E-3BD91D02F61A",
+            "V2E-E907C9066787"
+          ],
+          "listingId": "4434258267",
+          "scope": "MASTER_ARCHIVE",
+          "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "19f8e1e926d4fa25",
+          "company": "Adecco",
+          "primaryIds": [
+            "V2E-F9E23CF40896",
+            "V2E-104A132D8DB9"
+          ],
+          "listingId": "4429665659",
+          "scope": "MASTER_ARCHIVE",
+          "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "1a0b7a27bddc8cfa",
+          "company": "AEQUITA",
+          "primaryIds": [
+            "V2E-A8136B1E7133",
+            "V2E-3D6FD83087F0"
+          ],
+          "listingId": "4466558851",
+          "scope": "MASTER_ARCHIVE",
+          "sharedEvidence": "Same Gmail message and employer/title/listing. REQ stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
+          "protectedStatePreserved": true
+        }
+      ],
+      "reason": "Five exact-source duplicate canonical pairs found. Two pairs are both APPLIED in current master. GUI Applied KPI currently counts PRIMARY_ID, so these current rows risk counting two single applications twice. Three rejected pairs span master/archive.",
+      "nextAction": "Reconcile existing protected aliases through supported provenance-preserving procedures; never replay original applications or choose one arbitrarily. Escalate any protected-state mutation requiring Tim. Preserve both original row histories. Report deterministic alias/ingestion and KPI-dedupe defects for a separately authorized software fix.",
+      "retryCondition": "Fresh canonical alias resolution or supported identity/accounting evidence, not repeated email reads.",
+      "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261031T162426Z_VERIFICATION.json"
     }
   ]
 }
