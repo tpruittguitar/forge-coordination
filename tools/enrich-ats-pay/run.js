@@ -11,6 +11,7 @@ const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSy
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
+const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
 const sleep = ms => new Promise(r => setTimeout(r, process.env.ENRICH_TEST_FAST ? 0 : ms));
 async function get(url, opts) { const r = await fetch(url, {signal:AbortSignal.timeout(30000),...opts,headers:{'Accept-Language':'en-US',...opts?.headers}}); if (!r.ok) { const e = new Error(url.replace(/key=[^&]+/, 'key=…') + ' HTTP ' + r.status); e.status = r.status; throw e; } return r; }
@@ -23,6 +24,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
   await loadModule('PipelineEvidence.gs'); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
+  const productModule=path.join(require('os').tmpdir(),'PipelineProducts.js');fs.writeFileSync(productModule,await fcFile('pipeline-products.js'));const Products=require(productModule);
+  const productsRefFile=process.env.ENRICH_PRODUCTS_REFERENCE||path.join(ROOT,'reference/COMPANY_SITE_PRODUCTS.json'),productsReference=fs.existsSync(productsRefFile)?JSON.parse(fs.readFileSync(productsRefFile,'utf8')):null;
   // jobs from the structured copy (Cloudflare D1), paged; the Writer is not read
   let jobs = [], total = null;
   if (process.env.ENRICH_MASTER_FILE) { jobs = fs.readFileSync(process.env.ENRICH_MASTER_FILE, 'utf8').split('\n').filter(l => /^\d+ \| /.test(l)).map(l => ({ SOURCE_LINE: l })); total = jobs.length; }   // tests only
@@ -38,7 +41,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // REV-140 (Tim 2026-10-21 03:30 ET): roles archived after they closed still carry valid employer-posted pay; they stay comparables.
   let archiveText = '';
   if (process.env.ENRICH_MASTER_FILE) archiveText = process.env.ENRICH_ARCHIVE_FILE ? fs.readFileSync(process.env.ENRICH_ARCHIVE_FILE, 'utf8') : '';   // tests only
-  else { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : ''; } catch (e) { archiveText = ''; } }
+  else if(!PRODUCTS_ONLY) { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : ''; } catch (e) { archiveText = ''; } }
   const liveIds = new Set(anchors.map(a => a.id)), archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n').map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
   archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
@@ -148,7 +151,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // gets its aggregator read and estimate.
   const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
   const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
-  const ordered = first.concat(list.filter(r => !firstSet.has(r)));
+  const ordered = PRODUCTS_ONLY?[]:first.concat(list.filter(r => !firstSet.has(r)));
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   for (const r of ordered) {
@@ -229,11 +232,23 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; pending.push({id:r.PRIMARY_ID,needs:n,reason:attempted?'POSTING_UNREADABLE_OR_NO_USABLE_EVIDENCE':'NO_SUPPORTED_READER_OR_RUN_BUDGET'}); continue; }
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
+  // Shared location facts are looked up once per site, then copied through the Writer.
+  // They are supporting decision context, never a new readiness gate or reason to re-research a complete job.
+  const productSample=[],productGaps={};stats.products_planned=0;
+  function activeProductRow(r){return ['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET)&&!/^YES/i.test(r.p.ANTI_RESURRECTION||'')&&!r.p.DO_NOT_REWORK&&!/^CLOSED/.test(r.p.LIVENESS||'')&&!/^CLOSED/.test(r.p.ATS_CHECK_RESULT||'');}
+  for(const r of rows){if(!activeProductRow(r)||Products.known(r.p.PRODUCT))continue;const entry=Products.lookup(r,productsReference);
+    if(!entry){const k=Products.company(r.COMPANY)+'|'+Products.location(r.LOCATION),g=productGaps[k]||(productGaps[k]={company:r.COMPANY,location:r.LOCATION,jobs:0});g.jobs++;continue;}
+    const existing=requests.find(q=>q.ruling.primaryId===r.PRIMARY_ID);if(!existing&&requests.length>=CONFIG.maxBatches*25)continue;
+    const fields=Products.fields(entry);if(existing)Object.assign(existing.ruling.fields,fields);else requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-P'+String(stats.products_planned+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}});
+    stats.products_planned++;if(productSample.length<5)productSample.push({id:r.PRIMARY_ID,reference:entry.id});
+  }
+  if(!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),JSON.stringify({schema:'forge.company-site-product-gaps.v1',at:new Date().toISOString(),mappedPlanned:stats.products_planned,unmappedSites:Object.values(productGaps).sort((a,b)=>b.jobs-a.jobs)},null,2)+'\n');
   // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
   // archive or remembered postings; no new network). Posted pay and anything a lane wrote are never touched.
   const upgradeIds = new Set(); stats.upgraded = 0;
   const weak = r => val(r, 'SALARY_BASIS') === 'FORGE-ESTIMATE' && val(r, 'SALARY_CONF') === 'LOW' && /^comparables:/.test(val(r, 'SALARY_SOURCE'));
   for (const r of rows) {
+    if(PRODUCTS_ONLY)break;
     if (requests.length >= CONFIG.maxBatches * 25 || stats.upgraded >= (CONFIG.maxUpgradesPerRun || 10)) break;
     if (!weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
     const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER' || est.conf === 'LOW') continue;   // LOW for LOW is no upgrade
@@ -253,6 +268,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       batch = batch.filter(q => {
         const cur = now[q.ruling.primaryId]; if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
+        if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(Products.known(cur.p.PRODUCT)||!entry||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         if (!/SALARY/.test(left) && !(upgradeIds.has(q.ruling.primaryId) && weak(cur))) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);   // an upgrade goes in only while the row still holds the weak estimate
         if (!/DEGREE/.test(left)) Object.keys(f).filter(k => /^DEGREE_/.test(k)).forEach(k => delete f[k]);
         const keep = Object.keys(f).some(k => k !== 'FEASIBILITY_ATTEMPT_ASOF'); if (!keep) stats.guard_dropped++;
@@ -312,7 +328,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const body = Object.assign({}, stats, { pending, sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
+  const body = Object.assign({}, stats, { pending,product_sample:productSample, sample: requests.slice(0, 5).map(q => ({ id: q.ruling.primaryId, fields: q.ruling.fields })), estimate_samples: estSamples, ats_unconfirmed_rows: unconfirmedRows });
   // compare without the per-run stamps and in one key order (Grok Bot QA: key order made every hourly report differ)
   const strip_ = o => { const c = Object.assign({}, o); delete c.at; delete c.run; delete c.bls_queries; /* BLS queries depend on the cache, not on the data */ return JSON.stringify(Object.keys(c).sort().reduce((a, k) => (a[k] = c[k], a), {})); };
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;

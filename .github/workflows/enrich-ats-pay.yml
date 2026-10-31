@@ -7,7 +7,13 @@ on:
   schedule:
     - cron: '42 * * * *'      # after the :02/:12 AI starts and :13 discovery starts (Tim 2026-10-28)
     - cron: '57 */3 * * *'   # retained fallback; same concurrency group prevents parallel pay runs
-  workflow_dispatch: {}
+  workflow_dispatch:
+    inputs:
+      products_only:
+        description: Copy confirmed site products without repeating pay or degree research
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
 concurrency:
@@ -33,6 +39,7 @@ jobs:
       - name: Enrich
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
+          ENRICH_PRODUCTS_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.products_only && '1' || '' }}
         run: node tools/enrich-ats-pay/run.js
       - name: Commit report and ledger
         run: |
