@@ -55,3 +55,5 @@ test('an official address repair migrates one board obligation and clears only a
  H.record(s,repaired,{...fail,status:'OK',error:'',httpStatus:null,jobs:[{}],succeeded:3,failed:0},'2026-10-29T05:00:00Z');
  assert.equal(Object.keys(s.boards).length,1);assert.equal(s.boards[old.key],undefined);assert.equal(H.summary(s,new Set()).pending,0);assert.equal(s.boards[repaired.key].lastSuccessAt,'2026-10-29T05:00:00Z');
 });
+
+test('persistent employer outages back off without hiding failure or losing last success',()=>{const s=H.loadState(),at='2026-10-30T12:00:00Z';let r;for(let i=0;i<7;i++)r=H.record(s,board,{status:'TEMPORARY_FAILURE',error:'HTTP500',httpStatus:500,jobs:[],attempts:3,succeeded:0,failed:1},at);assert.equal(r.status,'TEMPORARY_FAILURE');assert.equal(r.lastSuccessAt,null);assert.equal(Date.parse(r.retryAt)-Date.parse(at),4*3600000);});

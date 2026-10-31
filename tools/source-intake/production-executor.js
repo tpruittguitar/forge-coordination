@@ -146,23 +146,27 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(!candidate.rulesHash||candidate.rulesHash!==pre.rulesHash||candidate.businessEvidenceApproved!==true)
     halt('BLOCKED: independent employer-business review not bound to fresh canonical rules');
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:candidate.primaryBusiness||''}]};
+  // Persist intent before sending: a lost response must still fence this exact request after a crash.
+  const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
+  await recorder.record(rid,intent);
+  if(JSON.stringify(await recorder.read(rid))!==JSON.stringify(intent))halt('BLOCKED: durable pre-POST intent readback failed');
   let response;
-  try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(60000)}); }
-  catch(e){outcomes.push(skipped(rid,'POST_UNCONFIRMED',{error:String(e&&e.message||e)}));continue}
+  try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(180000)}); }
+  catch(e){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'POST_UNCONFIRMED',writerResult:intent});halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay');}
   let result;
-  try{result=await response.json()}catch{outcomes.push(skipped(rid,'RESPONSE_INVALID',{status:response.status}));continue}
+  try{result=await response.json()}catch{outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_INVALID',writerResult:intent});halt('UNKNOWN: invalid Writer response; reconcile, never replay');}
   // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
   let recorded=false;
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
-  if(!recorded){outcomes.push(skipped(rid,'RESPONSE_NOT_DURABLY_RECORDED',result));continue}
+  if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; reconcile, never replay');}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
   if(verdict.kind==='UNKNOWN'){
    const reason=result&&result.ok===false?'WRITER_ERROR':'CONTRACT_MISMATCH';
-   outcomes.push(skipped(rid,reason,result));
-   continue;
+   outcomes.push({requestId:rid,status:'UNKNOWN',reason,writerResult:result});
+   halt('UNKNOWN: Writer response cannot prove a no-write outcome; reconcile, never replay');
   }
   // REVIEW_NEEDED / EXCLUDED and unexpected inserts for non-NEW cases are single-case: document and continue.
   if(verdict.kind==='REVIEW_NEEDED'||verdict.kind==='EXCLUDED'){outcomes.push(skipped(rid,verdict.kind,result));continue}

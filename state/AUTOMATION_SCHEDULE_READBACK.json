@@ -1,11 +1,11 @@
 {
   "schema": "forge.schedule-readback.v1",
-  "at": "2026-10-30T05:39:46.683Z",
+  "at": "2026-10-31T00:45:23.063Z",
   "timezone": "America/New_York",
-  "owner": "ChatGPT/Codex",
+  "owner": "ChatGPT/Codex until Tim explicitly changes it",
   "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
   "executionVerified": false,
-  "note": "All five native task configurations read back ACTIVE. This refresh proves configuration only. Production receipts exist for Usage Reader, Email, Posting Validation and Gofer; complete cross-schedule execution coverage, including daily health audit, is not established by this readback. Superseded provider pause evidence remains historical from priorReadbackAt, not freshly browser-verified.",
+  "note": "Fresh native configuration readback only. Per-task execution and current source coverage are independently materialized from proof receipts in state/AUTOMATION_EXECUTION_EVIDENCE.json; the GUI validates that evidence separately.",
   "local": [
     {
       "id": "forge-ai-usage-reader",
@@ -13,7 +13,7 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "nativeUpdatedAt": "1793230414009"
+      "nativeUpdatedAt": "1793404163339"
     },
     {
       "id": "forge-application-writer-gofer",
@@ -21,7 +21,7 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=1,9,17;BYMINUTE=12;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "nativeUpdatedAt": "1793252401949"
+      "nativeUpdatedAt": "1793404167688"
     },
     {
       "id": "forge-email-discovery",
@@ -29,7 +29,7 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=3,7,11,15,19,23;BYMINUTE=2;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "nativeUpdatedAt": "1793231844846"
+      "nativeUpdatedAt": "1793404167836"
     },
     {
       "id": "forge-posting-validation",
@@ -37,7 +37,7 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "nativeUpdatedAt": "1793231845048"
+      "nativeUpdatedAt": "1793404167990"
     },
     {
       "id": "pe-stack-health-daily",
@@ -45,7 +45,7 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "nativeUpdatedAt": "1793231845156"
+      "nativeUpdatedAt": "1793406326969"
     }
   ],
   "superseded": {
@@ -57,6 +57,6 @@
   },
   "githubScheduleCommit": "abec07fe23b344fd64de061632b7a0325ec26838",
   "runtimeRelease": "70ebd4329983eb3649fe",
-  "priorReadbackAt": "2026-10-29T00:23:40.643514Z",
-  "configurationReadbackSource": "Read-only existing local automations/*/automation.toml; no task changes"
+  "priorReadbackAt": "2026-10-30T05:39:46.683Z",
+  "configurationReadbackSource": "Read-only native automations/*/automation.toml; cadence unchanged. Daily health prompt now requires a durable audit receipt so silent success is observable."
 }

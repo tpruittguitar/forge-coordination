@@ -61,3 +61,13 @@ test('auto-run stops before any network call and does not fail when latched',asy
   assert.deepStrictEqual(fs.readdirSync('receipts/auto-intake'),['FORGE-AUTO-1.json']);
  }finally{process.chdir(cwd);globalThis.fetch=fetch0;console.log=log0;console.error=err0;if(key0===undefined)delete process.env.FORGE_WRITER_KEY;else process.env.FORGE_WRITER_KEY=key0}
 });
+
+test('operator containment preserves UNKNOWN and blocks changed-URL identities without losing untouched tail',()=>{
+ const {requestId}=require('./production-executor'),{isolatedUnknown,identityKey}=require('./auto-latch'),{pick}=require('./auto-run');
+ const record={COMPANY:'Acme',TITLE:'Director of Manufacturing',LOCATION:'Austin, TX',SOURCE_URL:'https://example.com/original'},rid=requestId(record),s={sourceRunId:'ORIGINAL',candidatesHash:'original-hash',requestIds:[rid,'UNTOUCHED'],results:{[rid]:{error:'timeout'}},halts:[{message:'UNKNOWN'}],quarantine:{schema:'forge.intake-quarantine.v1',status:'UNKNOWN_NO_REPLAY',authorizedBy:'Tim',at:'2026-10-31T00:00:00Z',record,requestId:rid,candidatesHash:'original-hash',proofs:['receipts/original-proof.json'],carryForwardRequestIds:['UNTOUCHED']}};
+ assert.ok(isolatedUnknown(s));const r=latch([{file:'original.json',state:s}]);assert.equal(r.blocking.length,0);assert.equal(r.quarantined.length,1);assert.equal(s.completedAt,undefined);assert.equal(s.results[rid].error,'timeout');
+ const report={new_roles:[{company:'Acme',title:record.TITLE,location:record.LOCATION,url:'https://example.com/changed',level:'DIRECTOR_PLUS'},{company:'Other Industrial',title:record.TITLE,location:record.LOCATION,url:'https://example.com/unrelated',level:'DIRECTOR_PLUS'}]};
+ const candidates=pick(report,{max:25,sent:new Set(),blockedIdentities:new Set([identityKey(record)])});assert.equal(candidates.length,1);assert.equal(candidates[0].record.COMPANY,'Other Industrial');
+ assert.equal(isolatedUnknown({...s,quarantine:{...s.quarantine,candidatesHash:'wrong'}}),null);
+ assert.equal(isolatedUnknown({...s,quarantine:{...s.quarantine,carryForwardRequestIds:[]}}),null);
+});

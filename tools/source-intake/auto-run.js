@@ -17,7 +17,7 @@ const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypt
 const {snapshot,auto,finalize}=require('./intake-cli');
 const {read}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
-const {DIR,previous,latch}=require('./auto-latch');
+const {DIR,previous,latch,identityKey}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
 const {carryForwardRoles}=require('./carry-forward');
 const {knownRequestIds}=require('./known-requests');
@@ -41,7 +41,7 @@ const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
-function pick(report,{max,sent}){
+function pick(report,{max,sent,blockedIdentities=new Set()}){
  const per={},out=[];
  for(const r of report.new_roles||[]){
   if(out.length>=max)break;
@@ -52,6 +52,7 @@ function pick(report,{max,sent}){
   const company=normalizeCompany(r.company).company;
   const k=company.toLowerCase();if((per[k]||0)>=2)continue;
   const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
+  if(blockedIdentities.has(identityKey(record)))continue; // a changed URL cannot bypass an uncertain prior write
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
  }
@@ -105,7 +106,8 @@ async function main(argv=process.argv.slice(2)){
  }
  report.new_roles=[...uniqueRoles.values()];
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
- const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent}),candidates=[];
+ const blockedIdentities=new Set(quarantined.filter(q=>q.identityKey).map(q=>q.identityKey));
+ const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent,blockedIdentities}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const business=await evidence(r.url,r.company);

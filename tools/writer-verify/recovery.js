@@ -3,6 +3,7 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {read,fetchAuthenticatedArchive}=require('../source-intake/writer-reader');
 const {validate}=require('./verify');
+const Closure=require('./case-closure');
 const BAD=new Set(['FALSE_COMPLETE','NOT_PERSISTED','NEEDS_RESOLUTION']),PENDING=new Set(['PENDING','PENDING_DELIVERY','VERIFYING']);
 const PID=/^V2[A-Z]-[A-Za-z0-9_-]+$/,HASH=/^[a-f0-9]+:\d+$/;
 const canonical=x=>JSON.stringify(x&&typeof x==='object'?Array.isArray(x)?x.map(v=>JSON.parse(canonical(v))):Object.fromEntries(Object.keys(x).sort().map(k=>[k,JSON.parse(canonical(x[k]))])):x);
@@ -46,9 +47,9 @@ function rowReader(opts){
   const missing=ids.filter(id=>!cache.has(id));for(let n=0;n<missing.length;n+=25){const group=missing.slice(n,n+25),r=(await read('row_readback',{...opts,requestId:rid,primaryIds:group})).data;
    if(r.master?.endMarkerPresent!==true||!Array.isArray(r.rows)||!Number.isFinite(Date.parse(r.readAt||'')))throw Error('Incomplete live master readback');
    for(const id of group){const matches=r.rows.filter(x=>x.primaryId===id);if(matches.length!==1)throw Error('Readback ID binding failed');const x=matches[0];if(x.found&&(x.matches!==1||String(x.line||'').split(' | ')[1]!==id))cache.set(id,{error:'DUPLICATE_OR_MISMATCHED_ROW'});
-    else if(x.found){const sha=digest(x.line);if(x.lineSha256&&sha!==x.lineSha256)throw Error('Row readback hash mismatch');cache.set(id,{primaryId:id,hash:textHash(x.line),sha256:sha,readAt:r.readAt,location:'MASTER'});}
+    else if(x.found){const sha=digest(x.line);if(x.lineSha256&&sha!==x.lineSha256)throw Error('Row readback hash mismatch');cache.set(id,{primaryId:id,hash:textHash(x.line),sha256:sha,readAt:r.readAt,location:'MASTER',bucket:x.bucket,fields:Closure.fields(x.line)});}
     else cache.set(id,{primaryId:id,missing:true,readAt:r.readAt});}}
-  if(ids.some(id=>cache.get(id)?.missing)){if(!archive)archive=await fetchAuthenticatedArchive(opts);for(const id of ids.filter(id=>cache.get(id)?.missing)){const found=archive.rows.filter(r=>r.PRIMARY_ID===id);if(found.length===1)cache.set(id,{primaryId:id,hash:textHash(found[0].RAW_ROW),sha256:digest(found[0].RAW_ROW),readAt:archive.writerReadAt,location:'TERMINAL_ARCHIVE'});else if(found.length>1)cache.set(id,{error:'DUPLICATE_ARCHIVE_ROW'});}}
+  if(ids.some(id=>cache.get(id)?.missing)){if(!archive)archive=await fetchAuthenticatedArchive(opts);for(const id of ids.filter(id=>cache.get(id)?.missing)){const found=archive.rows.filter(r=>r.PRIMARY_ID===id);if(found.length===1)cache.set(id,{primaryId:id,hash:textHash(found[0].RAW_ROW),sha256:digest(found[0].RAW_ROW),readAt:archive.writerReadAt,location:'TERMINAL_ARCHIVE',bucket:found[0].BUCKET,fields:Closure.fields(found[0].RAW_ROW)});else if(found.length>1)cache.set(id,{error:'DUPLICATE_ARCHIVE_ROW'});}}
   return ids.map(id=>cache.get(id));
  };
 }
@@ -99,12 +100,12 @@ async function recover({root='.',index,sha,now=new Date(),opts={},maxCases=100,r
  const checked=new Map(Object.entries(prior?.lastChecked||{}));for(const c of prior?.cases||[])checked.set(c.requestId,Date.parse(c.checkedAt)||0);all.sort((a,b)=>(checked.get(a.requestId)||0)-(checked.get(b.requestId)||0)||a.requestId.localeCompare(b.requestId));
  const g=graph(index),rows=readRows||rowReader(opts),report={schema:'forge.receipt-recovery.v1',at:now.toISOString(),source:{repo:'tpruittguitar/forge-writer-state',path:'PIPELINE_RECEIPT_INDEX.json',sha,indexUpdatedAt:index.updatedAt},writerSubmissions:0,masterMutations:0,canonicalReceiptMutations:0,cases:[],deferred:Math.max(0,all.length-maxCases)};
  report.lastChecked=Object.fromEntries(all.map(c=>[c.requestId,checked.get(c.requestId)||0]));
- for(const c of all.slice(0,maxCases)){let result=savedResolution(root,c,now.getTime(),index);try{if(!result)result=await inspect(c,index,g,rows,opts);}catch{result={requestId:c.requestId,sourceEntry:c.entry,sourceBindings:c.bindings,status:'CHECK_FAILED',reason:'AUTHENTICATED_READ_FAILED',owner:'ChatGPT Gofer',nextAction:'Retry evidence reads on the next run; do not resubmit.'};}
-  result.checkedAt=observed();const type=result.status==='PROVEN_PERSISTED'||result.status==='VERIFIED_RECEIPT_AND_ROWS'?'resolutions':'escalations',name=digest([result.requestId,result.sourceEntry,result.status,result.reason])+'.json';
+ for(const c of all.slice(0,maxCases)){let result=savedResolution(root,c,now.getTime(),index);try{if(!result){const closed=await Closure.closeCase(root,c,index,rows);result=closed?{requestId:c.requestId,sourceEntry:c.entry,sourceBindings:c.bindings,owner:'ChatGPT Gofer',...closed}:await inspect(c,index,g,rows,opts);}}catch{result={requestId:c.requestId,sourceEntry:c.entry,sourceBindings:c.bindings,status:'CHECK_FAILED',reason:'AUTHENTICATED_READ_FAILED',owner:'ChatGPT Gofer',nextAction:'Retry evidence reads on the next run; do not resubmit.'};}
+  result.checkedAt=observed();const type=['PROVEN_PERSISTED','VERIFIED_RECEIPT_AND_ROWS','CLOSED_NO_ACTIVE_WORK'].includes(result.status)?'resolutions':'escalations',name=digest([result.requestId,result.sourceEntry,result.status,result.reason])+'.json';
   result.evidenceFile='verify/recovery/'+type+'/'+name;const evidencePath=path.join(root,result.evidenceFile);if(!fs.existsSync(evidencePath))atomic(evidencePath,{...result,source:report.source,writerSubmissions:0,masterMutations:0});
   report.lastChecked[c.requestId]=now.getTime();report.cases.push(result);atomic(priorFile,{...report,inProgress:true});
  }
- report.at=observed();report.summary={checked:report.cases.length,resolved:report.cases.filter(c=>['PROVEN_PERSISTED','VERIFIED_RECEIPT_AND_ROWS'].includes(c.status)).length,escalated:report.cases.filter(c=>c.status==='ESCALATED').length,checkFailed:report.cases.filter(c=>c.status==='CHECK_FAILED').length,deferred:report.deferred};
+ report.at=observed();report.summary={checked:report.cases.length,resolved:report.cases.filter(c=>['PROVEN_PERSISTED','VERIFIED_RECEIPT_AND_ROWS','CLOSED_NO_ACTIVE_WORK'].includes(c.status)).length,closedWithoutClaimingOriginalWriteSuccess:report.cases.filter(c=>c.status==='CLOSED_NO_ACTIVE_WORK').length,escalated:report.cases.filter(c=>c.status==='ESCALATED').length,checkFailed:report.cases.filter(c=>c.status==='CHECK_FAILED').length,deferred:report.deferred};
  atomic(priorFile,report);return report;
 }
 async function main(){if(!process.env.FORGE_WRITER_KEY)throw Error('Writer read credential unavailable');const {index,sha}=await loadIndex();const report=await recover({index,sha});console.log(JSON.stringify({at:report.at,summary:report.summary,writerSubmissions:0,masterMutations:0}));}

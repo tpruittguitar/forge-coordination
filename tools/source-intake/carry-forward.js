@@ -7,7 +7,9 @@ const {knownRequestIds}=require('./known-requests');
 function carryForwardRoles(prior,{root='.'}={}){
  const sent=knownRequestIds(prior),seen=new Set(),roles=[];
  for(const p of prior){
-  const ids=p.state.reconciliation?.carryForwardRequestIds;
+  const q=p.state.quarantine;
+  if(q&&!require('./auto-latch').isolatedUnknown(p.state))throw Error('BLOCKED: invalid unknown-write containment');
+  const ids=p.state.reconciliation?.carryForwardRequestIds||q?.carryForwardRequestIds;
   if(ids===undefined)continue;
   if(!Array.isArray(ids)||new Set(ids).size!==ids.length)throw Error('BLOCKED: invalid carry-forward identities');
   const candidates=JSON.parse(fs.readFileSync(path.join(root,p.file.replace(/\.json$/,'.candidates.json')),'utf8'));
