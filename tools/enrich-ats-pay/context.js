@@ -49,13 +49,13 @@ function rank(row,anchors,ref,now=Date.now()){
  }
  return out.sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page)));
 }
-function weightedMedian(items,key){const a=items.slice().sort((a,b)=>a[key]-b[key]);const half=a.reduce((s,x)=>s+x.weight,0)/2;let sum=0;for(const x of a){sum+=x.weight;if(sum>=half)return x[key];}return null;}
+function weightedMedian(items,key){const a=items.slice().sort((a,b)=>a[key]-b[key]);const half=a.reduce((s,x)=>s+x.weight,0)/2;let sum=0;for(let i=0;i<a.length;i++){sum+=a[i].weight;if(Math.abs(sum-half)<1e-10&&a[i+1])return(a[i][key]+a[i+1][key])/2;if(sum>=half)return a[i][key];}return null;}
 function confidence(est,used){return used.length<2||used.some(a=>!a.ageKnown)||used.filter(a=>a.contextKnown>=3).length<2?'LOW':est.conf;}
 function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
 function learn(ref,row,text,sourceUrl,asOf){
  // Only explicit responsibility wording; never infer headcount from a title or production volume.
  if(!text||!sourceUrl)return false;
- const facts={},put=(key,value,quote)=>{facts[key]={value,quote:quote.slice(0,240),sourceUrl,asOf,status:'CONFIRMED'};};
+ const facts={},conflicts=new Set(),put=(key,value,quote)=>{if(conflicts.has(key))return;if(facts[key]&&facts[key].value!==value){delete facts[key];conflicts.add(key);return;}facts[key]={value,quote:quote.slice(0,240),sourceUrl,asOf,status:'CONFIRMED'};};
  let m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(\d[\d,]*)\s+(?:people|employees|engineers|direct reports)\b/i);
  if(m)put('teamSize',Number(m[1].replace(/,/g,'')),m[0]);
  m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(?:\d+\s+)?managers\b/i);if(m)put('management','MANAGES_MANAGERS',m[0]);

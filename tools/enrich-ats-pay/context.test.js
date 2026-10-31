@@ -9,6 +9,7 @@ test('sourced fresh company size and exact site are separate; ambiguous/stale/un
  a.deepEqual(C.lookup(row,{companies:[ref.companies[0],ref.companies[0]]},now),{});
 });
 test('size selects evidence, never inflates pay; explicit scope conflicts excluded and missing facts are not blockers',()=>{
+ a.equal(C.weightedMedian([{low:150000,weight:1},{low:200000,weight:1}],'low'),175000,'balanced evidence must not bias toward the lower salary');
  a.ok(C.similarity({employees:100000},{employees:90000}).weight>C.similarity({employees:100000},{employees:50}).weight);
  a.equal(C.similarity({management:'MANAGES_MANAGERS'},{management:'INDIVIDUAL_CONTRIBUTOR'}).weight,0);
  const anchors=[{id:'A',co:'Small Co',title:row.TITLE,location:'Austin, TX',low:100000,high:150000,asOf:'2026-09-01'},{id:'B',co:'Big Co',title:row.TITLE,location:'Austin, TX',low:200000,high:250000,asOf:'2026-09-01'}];
@@ -26,6 +27,8 @@ test('explicit posting facts are learned with provenance; role facts never becom
  const r=JSON.parse(JSON.stringify(ref));a.equal(C.learn(r,row,'Lead a team of 12 engineers. Manage a team of managers. Responsible for operations across multiple plants.','https://employer.com/jobs/123','2026-10-31'),true);
  a.equal(C.lookup(row,r,now).teamSize,12);a.equal(C.lookup(row,r,now).management,'MANAGES_MANAGERS');a.equal(C.lookup(row,r,now).reach,'MULTI_SITE');a.equal(C.lookup(row,r,now).employees,100000);
  a.equal(C.learn(r,row,'Build 50,000 engines annually','https://employer.com/jobs/123','2026-10-31'),false);
+ const fresh={schema:ref.schema,companies:[],roles:[]};a.equal(C.learn(fresh,{...row,COMPANY:'New Employer'},'New Employer employs 1200 people worldwide.','https://employer.com/jobs/123','2026-10-31'),true);a.equal(C.lookup({...row,COMPANY:'New Employer'},C.merge(ref,fresh),now).employees,1200);
+ const unclear={schema:ref.schema,companies:[],roles:[]};C.learn(unclear,row,'Manage a team of managers. This position is an individual contributor. Lead a team of 12 engineers.','https://employer.com/jobs/123','2026-10-31');a.equal(C.lookup(row,unclear,now).management,undefined,'contradictory responsibilities need research, not an arbitrary choice');
  const newer=JSON.parse(JSON.stringify(r));newer.roles[0].facts.teamSize=fact(20,'2026-10-31');r.roles[0].facts.teamSize=fact(10,'2026-10-01');a.equal(C.merge(newer,r).roles[0].facts.teamSize.value,20);
 });
 test('calibration excludes target salary aliases and reports non-estimable cases',()=>{
