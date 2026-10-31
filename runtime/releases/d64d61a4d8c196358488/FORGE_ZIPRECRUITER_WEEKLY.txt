@@ -1,0 +1,55 @@
+RELEASE_ID=d64d61a4d8c196358488
+TASK_KEY=FORGE_ZIPRECRUITER_WEEKLY
+PROVIDER=ChatGPT
+POLICY_REVISION=2026-10-26.3
+
+FORGE CORE
+Run only the manifest task/provider. No auto takeover, apps, outreach or briefs.
+OPERATE AND REPORT; TIM INITIATES DEV: w/o Tim instr never create branches/PRs, change code, schedules, owners, scoring or policy. Defects -> control/SUGGESTIONS.txt. Tim instr authorizes only the named work.
+Writer alone mutates master. No side master. Receipts: receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. COMPLETE requires scoped obligs disposed. RESULT SUCCESS + receipt-index COMPLETE + row_readback AFTER COMPLETE = VERIFIED. RESULT alone = acceptance.
+SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/source-trial-report.json. Matching co+title w/ pay: stamp SALARY_POSTED_LOW/HIGH, SALARY_SOURCE=JOBSPY|HIRINGCAFE, skip salary fetch.
+UNANCHORED EST (Tim 2026-10-28): no posted pay + no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
+AGENCY: fetch policy/current/AGENCY_AND_TOOLS.txt only when processing an agency row. Otherwise skip.
+
+CHATGPT ADAPTER: Use actor CHATGPT and ChatGPT provider labels. Verify each connector and permitted create-file transport in this scheduled run. Distinguish connector-policy refusal before a request from an actual service/API error. Create plain-text JSON queue files without Docs conversion. No automatic slot, ownership or schedule changes; missing optional search connectors do not block ordinary web discovery.
+
+LANE PROCEDURE -- FORGE_ZIPRECRUITER_WEEKLY (ChatGPT's own weekly task; REV-021, Tim 2026-10-18: web disc moved to Grok, this pass stays with ChatGPT)
+
+WHEN
+One scheduled ChatGPT task, Monday 01:00 America/New_York, TASK_KEY=FORGE_ZIPRECRUITER_WEEKLY. Run once per ISO week. Read this week's FORGE-ZIPR-CHATGPT-<ISO week>*.txt receipt via state/latest.json hint or scoped listing. A completed terminal receipt means stop with a one-line SKIP receipt; START alone never proves completion. Resume durable partial search/request cursors; never repeat completed pages or submissions. Missing search_jobs: SKIPPED_NO_CONNECTOR receipt and stop.
+
+INTAKE FILE (one per 25 roles, name CHATGPT_<requestId>.json in WRITER_QUEUE)
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES. co, TITLE and SOURCE_URL are required. Never invent a deep link.
+Submit every kept role in this run. The Writer removes duplicates (EXISTING_MATCH) and applies Never-Consider; do not check the master.
+
+SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
+Nationwide: loc "United States" and country_admin_code "US" set explicitly on every call (an omitted loc lets the connector anchor to the user's city: ChatGPT test 2026-10-13 17:33 ET returned 6 Cleveland-TN-area results; Claude test with "United States" returned 905 nationwide), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
+ 1 dir of mfg   2 Vice President of mfg   3 Head of mfg
+ 4 VP of ops mfg   5 dir of ops mfg   6 Plant mgr
+ 7 dir of qual mfg   8 dir of Production
+Local (loc "Cleveland, TN", country_admin_code US, radius_miles 200, seniority_classes SENIOR, max_posted_minutes_ago 10080, no sal filter, so unposted pay is kept):
+ 9 dir mfg   10 Plant mgr
+Check each response's search_url: it must show loc=United+States for searches 1-8. If it names a city, record LOCATION_ANCHORED=<city> in the receipt and retry once with the explicit loc. Echo the conversation_id from the first result in every later call of the run.
+
+SONICJOBS TRIAL (4 ISO weeks: 2026W42 to 2026W45; stop after 2026W45 unless an approved current release extends it)
+After the ZipRecruiter searches, run three SonicJobs searches with the same nationwide filters (loc United States set explicitly, $180K floor, last 7 days, full time where supported): dir of mfg, Vice President of mfg, Plant mgr. Read 20 results each. Same quick screen and agy rule. Intake rows carry SOURCE_PROVIDER=SonicJobs and DISCOVERY_SOURCE "ChatGPT SonicJobs trial"; SOURCE_URL = the listing link SonicJobs returns, exactly as returned (if it returns none, use the SonicJobs job page URL; never build one). Never use any SonicJobs apply, submit or account workflow.
+A role found by both connectors goes to the Writer once, under ZipRecruiter, and counts as OVERLAP.
+Receipt adds: SONICJOBS_RESULTS_SEEN, SONICJOBS_KEPT, SONICJOBS_ONLY (kept roles ZipRecruiter did not return), OVERLAP, SONICJOBS_SUBMITTED.
+Success test at the end of 2026W45: an average of 3 or more SONICJOBS_ONLY roles a week that the Writer writes as new (not EXISTING_MATCH, not Never-Consider). Claude reports the result to Tim.
+
+Keep: dir / Head / VP / GM / Plant mgr over mfg, production, ops or qual in a mfg business, plus Sr mgr at a DREAM or P1 co in https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt.
+Drop: sales, clinical, medical, restaurant, retail, construction-site, software-only and engineer-level roles. A sal range that only reaches 180000 at its top is a lead; keep it.
+agy posts (staffing, recruit, executive search, placement firms): follow the agy rules in AGENCY_AND_TOOLS above: at most two searches to name the client; not named means co=<agy>, EMPLOYER_PRIMARY_BUSINESS=RECRUITING_AGENCY, SCOUT_NOTES "AGENCY_POSTING; CLIENT=UNKNOWN; CLIENT_SEARCH=BASIC_DONE", EMPLOYER_DOMAIN_HINT = the industry the post states. Each agy post is its own opportunity.
+
+INTAKE (schema and Writer route as INTAKE FILE above; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
+SOURCE_URL = the job_redirect_url from search_jobs exactly as returned. SOURCE_PROVIDER = ZipRecruiter. DISCOVERY_SOURCE = "ChatGPT ZipRecruiter weekly pass". When the result has a sal it is ZipRecruiter's listing figure, not employer-posted pay: send SALARY_BASE_EST = "<min>-<max>", SALARY_BASIS = THIRD_PARTY_ESTIMATE, SALARY_CONF = LOW, SALARY_SOURCE = the job_redirect_url, SALARY_ASOF = run date, SALARY_NOTE = "ZipRecruiter listing sal". Never put it in PAY_POSTED. It is real pay for scoring and PAY_WORTH (sal RULE, Tim 2026-10-19); employer-posted pay found later replaces it. POSTING_DATE = run date minus days_ago. loc, co and TITLE exactly as returned. REQ_ID blank. INITIAL_UNKNOWN_FIELDS lists what the result lacks (DEGREE_TEXT always; REQ_ID; PAY when null).
+Do not check the master: the Writer dedupes (EXISTING_MATCH) and applies Never-Consider.
+
+RECEIPT (receipts/FORGE-ZIPR-CHATGPT-<ISO week>-<YYYYMMDD-HHMMET>.txt, commit message starting "CHATGPT FORGE-ZIPR")
+SEARCHES_RUN, RESULTS_SEEN, KEPT, DROPPED (title | co | reason, one line each), AGENCY_ROWS, CLIENT_NAMED, SUBMITTED_TO_WRITER, REQUEST_IDS, STOP_REASON. The next weekly pass reports PRIOR_RUN_OUTCOMES from the intake RESULT.
+END
+
+INTAKE IDENTITY (REV-196): REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED is a role Tim applied to, declined, was rejected for or protected, listed again; the Writer holds it for Tim. Count it RELISTED_HELD; never resubmit, merge or ask.
+
+PAYLOAD EXAMPLE (replace observed values and run identity):
+{"action":"intake","requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01","run":{"SCOUT_RUN_ID":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET","RUN_STARTED_AT_ET":"2026-10-18 15:00 ET","GROSS_FOUND":1},"records":[{"COMPANY":"Example Manufacturing","TITLE":"Director of Manufacturing","LOCATION":"Huntsville, AL","SOURCE_URL":"https://example.com/careers/job-123","SOURCE_PROVIDER":"Company site","REQ_ID":"123","IDENTITY_CONFIDENCE":"HIGH","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"DISCOVERED_AT_ET":"2026-10-18 15:00 ET","DISCOVERY_SOURCE":"ChatGPT discovery"}]}
