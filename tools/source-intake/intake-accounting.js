@@ -2,7 +2,7 @@
 /* Pure receipt accounting. A Writer response alone is never durable proof. */
 const NOOP=new Set(['EXISTING_MATCH','NEVER_CONSIDER_EXCLUDED']);
 const INSERT=new Set(['SCOUT_INTAKE_WRITTEN','DISCOVERY_LEAD_WRITTEN']);
-const norm=x=>String(x??'').trim().toLowerCase();
+const {normalizeCell:norm}=require('./writer-cell');
 const sameIdentity=(row,record)=>norm(row.COMPANY)===norm(record.COMPANY)&&norm(row.TITLE)===norm(record.TITLE)&&
  norm(row.LOCATION)===norm(record.LOCATION)&&(!record.REQ_ID||norm(row.REQ_ID)===norm(record.REQ_ID));
 function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,requestId}={}){
@@ -23,7 +23,7 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,req
   if(!outcome.PRIMARY_ID||pids.length>1||pids.some(pid=>pid!==outcome.PRIMARY_ID))return held('EXISTING_IDENTITY_UNCERTAIN');
   const match=readbacks.filter(x=>x.primaryId===outcome.PRIMARY_ID&&x.found&&x.matches===1);
   if(match.length!==1)return held('EXISTING_READBACK_MISSING');
-  const cells=String(match[0].line||'').split(' | '),norm=x=>String(x??'').trim().toLowerCase();
+  const cells=String(match[0].line||'').split(' | ');
   if(cells.length<10||cells[1]!==outcome.PRIMARY_ID||norm(cells[2])!==norm(record?.COMPANY)||norm(cells[3])!==norm(record?.TITLE)||norm(cells[8])!==norm(record?.LOCATION)|| (record?.REQ_ID&&norm(cells[7])!==norm(record.REQ_ID)))return held('EXISTING_IDENTITY_MISMATCH');
   // A Writer no-op opens no master transaction, so its receipt carries no items at all, whatever their op name.
   if(receipt.entry.items.length)return held('UNEXPECTED_ROW_WRITE');
@@ -33,7 +33,6 @@ function checkCanaryOutcome({expectedOutcome,record,result,receipt,readbacks,req
  const rb=readbacks.filter(x=>x.primaryId===pids[0]&&x.found&&x.matches===1);
  if(rb.length!==1)return held('INSERT_READBACK_MISSING');
  const cells=String(rb[0].line||'').split(' | ');
- const norm=x=>String(x||'').trim().toLowerCase();
  if(cells.length<10||cells[1]!==pids[0]||norm(cells[2])!==norm(record?.COMPANY)||norm(cells[3])!==norm(record?.TITLE)||
     norm(cells[8])!==norm(record?.LOCATION)|| (record?.REQ_ID&&norm(cells[7])!==norm(record.REQ_ID)))return held('INSERT_IDENTITY_MISMATCH');
  return {status:'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK',primaryId:pids[0],verified:false,scaleUpAllowed:false};

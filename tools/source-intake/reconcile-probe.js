@@ -46,7 +46,7 @@ async function probeOne(rid,candidate,state,{key,transport}){
  const pids=out.capturedPrimaryIds.filter(x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x));
  if(pids.length!==1){out.fallback={status:'NO_CAPTURED_PRIMARY_ID'};return out}
  const rb=(await read('row_readback',{key,transport,requestId:rid,primaryIds:pids})).data;
- const row=(rb.rows||[])[0]||{},c=String(row.line||'').split(' | '),n=x=>String(x||'').trim().toLowerCase();
+ const row=(rb.rows||[])[0]||{},c=String(row.line||'').split(' | '),n=require('./writer-cell').normalizeCell;
  out.fallback={primaryId:pids[0],endMarker:rb.master?.endMarkerPresent===true,found:row.found===true,matches:row.matches??null,
   companyMatch:n(c[2])===n(rec.COMPANY),titleMatch:n(c[3])===n(rec.TITLE),locationMatch:n(c[8])===n(rec.LOCATION),
   reqIdMatch:!rec.REQ_ID||!c[7]||n(c[7])===n(rec.REQ_ID),columns:c.length};

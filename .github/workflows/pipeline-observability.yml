@@ -1,0 +1,50 @@
+name: Publish compact Writer activity
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '7,17,27,37,47,57 * * * *'
+  push:
+    branches: [main]
+    paths: ['receipts/**', 'verify/recovery/**', 'tools/pipeline-observability/**', '.github/workflows/pipeline-observability.yml']
+permissions:
+  contents: write
+  actions: write
+concurrency:
+  group: pipeline-observability
+  cancel-in-progress: false
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 8
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: tpruittguitar/foreman-cockpit
+          path: _fc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/pipeline-observability/activity.test.js
+      - name: Check for a missed discovery start
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/pipeline-observability/discovery-watchdog.js
+      - name: Publish bounded receipt summary
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ACTIVITY_FC_DIR: _fc
+        run: |
+          set -euo pipefail
+          git config user.name forge-activity-bot
+          git config user.email forge-activity-bot@users.noreply.github.com
+          for attempt in 1 2 3 4; do
+            node tools/pipeline-observability/activity.js
+            git add state/WRITER_ACTIVITY.json
+            git diff --cached --quiet && exit 0
+            git commit -m "ACTIVITY-BOT: publish compact verified receipt activity"
+            git push origin HEAD:main && exit 0
+            git fetch origin main
+            git reset --hard origin/main
+          done
+          exit 1
