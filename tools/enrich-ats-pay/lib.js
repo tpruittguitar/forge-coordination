@@ -6,7 +6,9 @@ const LEVELS = [
   [4, /\b(chief|svp|evp|senior vice president|executive vice president|vice president|vp)\b/i],
   [3, /\b(senior director|sr\.? director|executive director|head of)\b/i],
   [2, /\b(director|plant manager|general manager|site (leader|lead))\b/i],
-  [1, /\b(senior manager|sr\.? manager|manager)\b/i],
+  [1.5, /\b(senior|sr\.?)\s+(?:[a-z]+\s+){0,4}manager\b/i],
+  [0.5, /\b(associate|assistant|asst\.?)\s+manager\b/i],
+  [1, /\bmanager\b/i],
 ];
 function level(title) { for (const [n, re] of LEVELS) if (re.test(title || '')) return n; return 0; }
 const FUNCS = [
@@ -92,16 +94,31 @@ function parseAts(kind, j, id) {
 /* employer-posted comparables from the master; one per row */
 function postedAnchor(r, p) {
   const basis = String(p.SALARY_BASIS || '');
+  // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
+  if (/estimate/i.test(String(p.PAY_POSTED || '')) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
   const lo = num(p.SALARY_BASE_LOW), hi = num(p.SALARY_BASE_HIGH);
   if (/EMPLOYER_POSTED/i.test(basis) && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION) };
   return null;
 }
 function median(a) { const s = a.slice().sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; }
+function comparable(row, anchor) {
+  // Recompute from actual titles, never trust a cached coarse level.
+  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title);
+}
+function invalidSavedAnchors(row, rows) {
+  const p = row.p || {};
+  if (p.SALARY_BASIS !== 'FORGE-ESTIMATE' || !/^(same-employer|comparables):/.test(p.SALARY_SOURCE || '')) return [];
+  const by = new Map(rows.map(r => [r.PRIMARY_ID, r]));
+  return [...new Set(String(p.SALARY_SOURCE).match(/V2[IE]-[A-Z0-9]+/g) || [])].flatMap(id => {
+    const a = by.get(id); if (!a) return []; // Missing history is not proof of a bad comparator.
+    return !postedAnchor(a, a.p || {}) || !comparable(row, { title: a.TITLE }) ? [id] : [];
+  });
+}
 /* Tim's COMPENSATION_ESTIMATION: 1 employer-posted comparable = LOW; 2 = LOW (MED when role/geo close); 3+ strong = MED.
    Comparables must share level and function; same-region ones first. */
 function estimate(row, anchors) {
   const L = level(row.TITLE), F = func(row.TITLE), R = regionOf(row.LOCATION);
-  const same = anchors.filter(a => a.level === L && a.func === F && a.id !== row.PRIMARY_ID);
+  const same = anchors.filter(a => comparable(row, a) && a.id !== row.PRIMARY_ID);
   if (!same.length) return null;
   const local = same.filter(a => R && a.region === R);
   const use = (local.length >= 2 ? local : same).slice(0, 7);
@@ -217,7 +234,8 @@ function similarPostings(row, postings) {
 }
 /** Step 1 estimate. comps: [{ title, state, pay, page, id? }]. ratio(fromState) -> BLS median(row state)/median(fromState) or null. */
 function sameEmployerEstimate(row, comps, ratio) {
-  const use = comps.slice(0, 5); if (!use.length) return null;
+  // Revalidate here too: remembered/cache callers must not bypass title matching.
+  const use = comps.filter(c => comparable(row, c)).slice(0, 5); if (!use.length) return null;
   const rowState = stateFrom(row.LOCATION), adj = [], notes = [];
   use.forEach(c => {
     let k = 1; if (c.state && rowState && c.state !== rowState) { const r = ratio && ratio(c.state); if (r) k = Math.min(1.1, Math.max(0.75, r)); }
@@ -233,7 +251,7 @@ function sameEmployerEstimate(row, comps, ratio) {
 /** Master anchors from the same employer (step 1, no network). */
 function sameEmployerAnchors(row, anchors) {
   const co = normCo(row.COMPANY), L = level(row.TITLE), F = func(row.TITLE);
-  return co ? anchors.filter(a => a.id !== row.PRIMARY_ID && normCo(a.co) === co && a.level === L && a.func === F)
+  return co ? anchors.filter(a => a.id !== row.PRIMARY_ID && normCo(a.co) === co && comparable(row, a))
     .map(a => ({ id: a.id, title: a.title, state: a.state || '', pay: { low: a.low, high: a.high }, page: '' })) : [];
 }
 /* BLS OEWS (step 3). SOC by function; series OEU S <state FIPS>00000 000000 <SOC> <datatype>; 12 = P25, 13 = median, 15 = P90. */
@@ -273,3 +291,4 @@ function blsEstimate(row, w, mlPoints) {
 }
 
 module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, aggregatorFor, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
+module.exports.comparable = comparable; module.exports.invalidSavedAnchors = invalidSavedAnchors;

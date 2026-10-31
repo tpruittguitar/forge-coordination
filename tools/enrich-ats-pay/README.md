@@ -19,3 +19,12 @@ Writes: at most `maxBatches` x 25 rows per run, one Writer `batch` call at a tim
 per-run report. `config.json` `"submit": false` = dry run: report only, Writer untouched, ledger unchanged.
 
 Tests: `ENRICH_FC_DIR=../foreman-cockpit node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js`
+
+Salary anchor repair (2026-10-31): associate/assistant manager, manager and senior manager are distinct comparison levels.
+Every anchor path recomputes level from the source title, including remembered postings. Site-labelled estimates cannot
+be employer-posted anchors. Each run audits existing named-anchor estimates, including rows outside the missing-salary
+worklist, and plans up to 10 recalculations before new missing-field work. Unrepaired IDs and invalid anchor IDs remain
+in `salary_invalid` in the report. The pre-submit readback requires the original salary fields to be unchanged.
+Protected application/decline states, closed jobs and pending Writer requests are excluded. Missing historical anchor
+records alone do not prove a bad estimate. Replacements retain estimate provenance; they do not claim employer-posted
+pay or include equity/bonus. This corrects comparison errors in either direction, without an invented salary floor.
