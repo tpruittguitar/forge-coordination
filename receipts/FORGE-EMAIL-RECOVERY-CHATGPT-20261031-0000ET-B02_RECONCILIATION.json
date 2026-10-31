@@ -1,0 +1,88 @@
+{
+  "at": "2026-10-31T04:17:54.748Z",
+  "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B02",
+  "index": {
+    "ok": true,
+    "exists": true,
+    "source": "GITHUB",
+    "location": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+    "sha": "a16e358ea549d177f35346645e8f7489c6140e8b",
+    "updatedAt": "2026-10-31T04:13:29.463Z",
+    "rotations": [
+      {
+        "rotatedAt": "2026-10-05T01:27:19.993Z",
+        "archiveId": "18Stcypd92nESZAuFtnBB_1Ew5lvIJId0HqQ2x23eSvg",
+        "archiveName": "PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS__ARCHIVE_2026-10-05",
+        "archiveChars": 1109515,
+        "completeIds": 951,
+        "by": "CLAUDE",
+        "receiptLogId": "1DgGnGWNUmmhSBD8R8QrfGGYEfpVaWO31"
+      },
+      {
+        "rotatedAt": "2026-10-21T05:33:02.418Z",
+        "kind": "TEXT_LOG",
+        "archiveId": "1DgGnGWNUmmhSBD8R8QrfGGYEfpVaWO31",
+        "archiveName": "PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS__ARCHIVE_2026-10-21T05-33-02-418Z",
+        "archiveChars": 12979162,
+        "completeIds": 6087,
+        "indexed": 0,
+        "by": "WRITER_QUEUE_TICK"
+      },
+      {
+        "rotatedAt": "2026-10-23T08:12:20.426Z",
+        "kind": "TEXT_LOG",
+        "archiveId": "1KT_kOWJZzuw1ElP-kSjPQ3OEdMTSgPJX",
+        "archiveName": "PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS__ARCHIVE_2026-10-23T08-12-20-426Z",
+        "archiveChars": 2040886,
+        "completeIds": 912,
+        "indexed": 0,
+        "by": "WRITER_QUEUE_TICK"
+      },
+      {
+        "rotatedAt": "2026-10-25T22:26:55.728Z",
+        "kind": "TEXT_LOG",
+        "archiveId": "1QP8fKIL0BinR6t7Uv-UQ5LzUZ_3_VTIS",
+        "archiveName": "PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS__ARCHIVE_2026-10-25T22-26-55-728Z",
+        "archiveChars": 2033342,
+        "completeIds": 954,
+        "indexed": 0,
+        "by": "WRITER_QUEUE_TICK"
+      },
+      {
+        "rotatedAt": "2026-10-27T06:40:30.863Z",
+        "kind": "TEXT_LOG",
+        "archiveId": "1SbSEN7v0I6niq3xcWWIejA5CiC2Vz-h0",
+        "archiveName": "PIPELINE_EXPLORER_STATE_CHANGE_RECEIPTS__ARCHIVE_2026-10-27T06-40-30-863Z",
+        "archiveChars": 2327514,
+        "completeIds": 1112,
+        "indexed": 0,
+        "by": "WRITER_QUEUE_TICK"
+      }
+    ],
+    "statusCounts": {
+      "COMPLETE": 11287,
+      "FALSE_COMPLETE": 5,
+      "NOT_PERSISTED": 19
+    },
+    "pending": [],
+    "request": null
+  },
+  "result": {
+    "ok": true,
+    "found": false,
+    "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B02"
+  },
+  "writerResponse": {
+    "ok": false,
+    "error": "Lock timeout: another process was holding the lock for too long.",
+    "errorStack": "Exception: Lock timeout: another process was holding the lock for too long. | at applyIntakeToMaster_ (Code:1910:8) | at dispatchWrite_ (Code:187:30) | at doPost (Code:173:17) | at __GS_INTERNAL_top_function_call__.gs:1:8",
+    "docAccess": {
+      "status": "INITIAL_SUCCESS",
+      "retries": 0,
+      "ops": []
+    }
+  },
+  "sourceFinding": "Code.gs applyIntakeToMaster_ acquires script lock before opening master; lock timeout is before any intake mutation.",
+  "decision": "DEFERRED_PREEXECUTION_LOCK_TIMEOUT",
+  "retrySubmitted": false
+}
