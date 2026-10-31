@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-31T05:48:13.295Z",
- "sourceCommit": "942e4f45f9d15dd450ef8b3bd2a3811819ecccf7",
+ "builtAt": "2026-10-31T06:29:04.633Z",
+ "sourceCommit": "cc5aa887bfc7f413875b3fd196b3b17b3de0d4f7",
  "counts": {
-  "total": 14,
+  "total": 16,
   "BLOCKING": 0,
   "ACTION": 7,
-  "WATCH": 7,
+  "WATCH": 9,
   "DECIDE": 5,
   "JOBS": 1,
-  "FAILED": 5,
-  "UPKEEP": 3
+  "FAILED": 6,
+  "UPKEEP": 4
  },
  "items": [
   {
@@ -270,6 +270,30 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "at": "2026-10-28T13:13:00-04:00",
    "raisedBy": "GROK"
+  },
+  {
+   "id": "run-unfinished:REPAIR|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "REPAIR · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
+   "at": "2026-10-30T20:20:00-04:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:REPAIR",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "REPAIR lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
+   "at": "2026-10-30T20:20:00-04:00",
+   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -521,7 +545,7 @@
    "lastFile": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
    "runs7d": 5,
    "usualGapHours": 0,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "ROTATION",
