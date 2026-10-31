@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261031T0055Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261031T0732Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (110 read, 1 failed) | 133 | 51 | 82 |
+| Employer job boards (110 read, 3 failed) | 131 | 50 | 81 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 19 | 63 |
+| DIRECTOR_PLUS | 18 | 62 |
 | SR_MANAGER | 9 | 16 |
 | SR_STAFF | 23 | 3 |
 
@@ -71,7 +71,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/7550553003) | Georgia, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Gotion Inc. | [Operations Director](https://job-boards.greenhouse.io/gotion/jobs/8925174002) | Manteno, Illinois | MFG_PROD | DIRECTOR_PLUS | $200K-$240K |
 | BOARD:greenhouse | Oklo | [Director of Chemistry, Manufacturing and Controls](https://job-boards.greenhouse.io/oklo/jobs/6185186004) | Austin, Texas | MFG_PROD | DIRECTOR_PLUS | $170K-$250K |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
