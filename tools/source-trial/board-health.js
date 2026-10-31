@@ -8,7 +8,7 @@ async function jsonRequest(req,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout
  let count=0;
  while(++count<=attempts){
   let r;
-  try{r=await fetcher(req.url,{method:req.method||'GET',headers:{accept:'application/json',...(req.body?{'content-type':'application/json'}:{})},...(req.body?{body:req.body}:{}),signal:AbortSignal.timeout(20000)});}
+  try{r=await fetcher(req.url,{method:req.method||'GET',headers:{accept:'application/json','accept-language':'en-US',...(req.body?{'content-type':'application/json'}:{})},...(req.body?{body:req.body}:{}),signal:AbortSignal.timeout(20000)});}
   catch(e){if(count<attempts){await wait(500*2**(count-1));continue;}const err=Error('Connection timeout or network failure');err.attempts=count;throw err;}
   if(!r.ok){const header=r.headers?.get?.('retry-after'),seconds=Number(header),retryMs=header?Math.max(0,Number.isFinite(seconds)?seconds*1000:Date.parse(header)-Date.now()):0;
    if(TRANSIENT.has(r.status)&&count<attempts&&!(retryMs>20000)){await wait(Math.max(500*2**(count-1),Number.isFinite(retryMs)?retryMs:0));continue;}

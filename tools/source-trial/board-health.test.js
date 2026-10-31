@@ -57,3 +57,5 @@ test('an official address repair migrates one board obligation and clears only a
 });
 
 test('persistent employer outages back off without hiding failure or losing last success',()=>{const s=H.loadState(),at='2026-10-30T12:00:00Z';let r;for(let i=0;i<7;i++)r=H.record(s,board,{status:'TEMPORARY_FAILURE',error:'HTTP500',httpStatus:500,jobs:[],attempts:3,succeeded:0,failed:1},at);assert.equal(r.status,'TEMPORARY_FAILURE');assert.equal(r.lastSuccessAt,null);assert.equal(Date.parse(r.retryAt)-Date.parse(at),4*3600000);});
+
+test('Workday requires an explicit locale even when the endpoint and JSON body are correct',async()=>{let calls=0;const r=await H.readBoard(board,['Quality','Manufacturing','Production'],{wait:async()=>{},fetcher:async(u,o)=>{calls++;assert.equal(o.headers['accept-language'],'en-US');return ok({jobPostings:[{title:'Director Quality',externalPath:'/job/1',locationsText:'Austin, TX'}]});}});assert.equal(r.status,'OK');assert.equal(calls,3);assert.equal(r.jobs.length,1);});
