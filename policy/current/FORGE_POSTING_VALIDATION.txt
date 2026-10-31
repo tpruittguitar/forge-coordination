@@ -1,13 +1,13 @@
 LANE PROCEDURE -- FORGE_POSTING_VALIDATION
 
 JOB
-Confirm whether job posts in the master are still open and record what the post page shows. No scoring, no deep job-description analysis, no apps, no contacting anyone.
+Background maintenance: check aging active postings and record what the page shows. No scoring, no deep job-description analysis, no apps, no contacting anyone.
 
-INPUT (in this order)
-1. WORKLIST_FORGE_POSTING_VALIDATION.txt, Drive 1KyBWb2RTVMoDEkdYGCHuXMAAqCShdQl0, top-down, when it is under 6 hours old. The Writer rebuilds it every 30 minutes and already leaves out rows its own ATS checker owns (Greenhouse, Lever, Ashby, Oracle CX, and Workday through TinyFish).
-2. If the worklist is stale or missing: master rows (V2_CURRENT_POPULATION_MASTER.txt, Drive 1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8) in SCOUT_INTAKE with no LIVENESS or LIVENESS UNVERIFIED/UNCONFIRMED, newest first; skip rows whose ATS_CHECK_RESULT is LIVE or CLOSED.
-3. WRITER_FREEZE.json, Drive 1VlPBKYQmXsnoQK9sySarm-Lbw9tIVn3S. frozen=true: do the research and the receipt, submit nothing.
-Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection rows or Tim rulings. Before claiming a row, skip anything in the WRITER_QUEUE root or in a RESULT file from the last 2 hours.
+BACKGROUND POSTING FRESHNESS — Tim 2026-10-31
+This task is outside the main pipeline. It never gates enrichment, review readiness or the main-line constraint calculation.
+Select ACTIVE, unprotected jobs across all active buckets only after seven days from a reliable POSTING_DATE/POSTED_DATE; otherwise seven days from first discovery (DISCOVERED_AT_ET, DATE_ADDED, MASTER_LOADED_AT, earliest reliable date). No reliable date: flag UNDated for evidence review, do not invent an age or continually retry it. Reuse a saved successful posting check for seven days; unclear/blocked attempts retry no sooner than 24 hours. Never read a young posting merely because LIVENESS is missing.
+Use the current Writer-generated WORKLIST_FORGE_POSTING_VALIDATION when under six hours old; the shared PipelinePostingFreshness.assess rule also controls the automatic ATS checker. If it is stale, select from fresh master with the same age rule; never fall back to the former SCOUT_INTAKE-only missing-LIVENESS gate. Prefer employer ATS APIs when supported; preserve current ATS ownership and avoid duplicate pending writes. Honor Writer freeze and shared run lock.
+Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, anti-resurrection rows or saved Tim rulings. Before claiming a row, skip anything in the Writer queue or a recent RESULT. Existing fresh discovery/intake evidence that already establishes liveness is reused; no repeat page fetch for a current check.
 
 HOW TO CHECK A ROW
 - Use TinyFish fetch_content (free) when available: up to 10 URLs per call, ttl 0, per_url_timeout_ms 60000. Never run_web_automation, browser sessions or monitors; never sign in, apply, submit a form or attempt a CAPTCHA.
