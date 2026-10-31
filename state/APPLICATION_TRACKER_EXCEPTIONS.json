@@ -1,6 +1,6 @@
 {
   "schema": "forge.application-tracker-exceptions.v1",
-  "at": "2026-10-31T07:47:38.399Z",
+  "at": "2026-10-31T13:25:10.998Z",
   "exceptions": [
     {
       "id": "TRACKER-MISUMI-1a1853f2b2ecba93",
@@ -23,12 +23,16 @@
       "messageId": "1a1904d0528fb5cd",
       "primaryId": "V2I-323DC3082D22",
       "requestId": "APPTRACK-1a1904d0528fb5cd-APPLIED",
-      "status": "EXCEPTION",
+      "status": "RESOLVED",
       "owner": "Gofer",
       "reason": "Update-only ruling accepted genuine email application evidence but canonical APP_CONFIRMATION is TIM_RULING: deployed isEmailRuling requires fields.UPSERT_KEY. Application date, state and email evidence are correct; no identity uncertainty.",
       "attempts": 1,
       "retryCondition": "Inspect independent verified original proof and supported update-only email-confirmation metadata route; do not replay the original or use insertion-capable upsert.",
-      "nextAction": "Reconcile confirmation provenance label on this existing row only; retain application date and email evidence. No new job or application."
+      "nextAction": "None; preserve original application proof. Do not replay.",
+      "resolvedAt": "2026-10-31T13:25:10.998Z",
+      "resolution": "Supported update-only APPLIED correction with deterministic email UPSERT_KEY. APP_CONFIRMATION independently read back EMAIL; APPLIED and original APP_DATE preserved.",
+      "correctionRequestId": "FORGE-GOFER-CHATGPT-20261031-0914ET-B01-R01",
+      "proof": "receipts/FORGE-GOFER-CHATGPT-20261031-0914ET_VERIFIED.json"
     }
   ]
 }
