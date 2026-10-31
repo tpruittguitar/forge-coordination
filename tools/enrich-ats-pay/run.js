@@ -39,7 +39,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   let archiveText = '';
   if (process.env.ENRICH_MASTER_FILE) archiveText = process.env.ENRICH_ARCHIVE_FILE ? fs.readFileSync(process.env.ENRICH_ARCHIVE_FILE, 'utf8') : '';   // tests only
   else if(!PRODUCTS_ONLY) { try { const a = await (await get(`${conn.PipelineConnection.url}?action=archive&key=${encodeURIComponent(key)}`)).json(); archiveText = a && a.ok ? String(a.text || '') : ''; } catch (e) { archiveText = ''; } }
-  const liveIds = new Set(anchors.map(a => a.id)), archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n').map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
+  const archiveRows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + archiveText.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n');
+  const liveIds = new Set(rows.map(a => a.PRIMARY_ID)), archived = archiveRows.map(r => L.postedAnchor(r, r.p)).filter(a => a && !liveIds.has(a.id));
   archived.forEach(a => { a.archived = true; anchors.push(a); });
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
@@ -103,7 +104,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!comps.length) {
       // REV-140: same-employer pay postings found by any earlier run are remembered (Workday search results vary run to run)
       const co = L.normCo(r.COMPANY), b = L.boardOf(r.p) || boardByCo[co];
-      const fresh = b && !opts.noNetwork ? await employerPostings(b, r) : [];
+      const fresh = b && !opts.noNetwork && !opts.noBoard ? await employerPostings(b, r) : [];
       rememberPostings(co, fresh);
       comps = L.similarPostings(r, fresh.concat(remembered(co)).filter((x, i, a) => a.findIndex(y => y.page === x.page && y.title === x.title) === i));
     }
@@ -152,8 +153,27 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger);
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
+  // Old estimates are otherwise invisible to the missing-salary worklist. Audit their
+  // named evidence every run and repair a bounded set before processing new gaps.
+  const evidenceRows = rows.concat(archiveRows.filter(r => !liveIds.has(r.PRIMARY_ID)));
+  const repairOriginal = new Map(); stats.salary_repairs = 0; stats.salary_invalid = [];
+  const salaryStamp = r => JSON.stringify(Object.fromEntries(Object.entries(r.p).filter(([k]) => /^SALARY_/.test(k)).sort()));
+  for (const r of PRODUCTS_ONLY ? [] : rows) {
+    if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
+    const bad = L.invalidSavedAnchors(r, evidenceRows); if (!bad.length) continue;
+    const record = { id: r.PRIMARY_ID, invalidAnchors: bad, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
+    if (inFlightIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
+    const est = await estimateFor(r, { noBoard: true }); if (!est) continue;
+    record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
+    requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
+      SALARY_BASE_LOW:est.low, SALARY_BASE_HIGH:est.high, SALARY_MIDPOINT:est.mid, SALARY_BASIS:'FORGE-ESTIMATE', SALARY_CONF:est.conf, SALARY_ASOF:today,
+      SALARY_SOURCE:est.source === 'SAME_EMPLOYER' ? 'same-employer:' + est.ids.join(',') : est.source === 'COMPARABLES' ? 'comparables:' + est.ids.join(',') : est.source,
+      SALARY_NOTE:'Recalculated: incompatible or non-posted anchors removed [' + bad.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + '; base salary estimate, excludes bonus/equity; prior posting check retained'
+    } } });
+  }
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
+    if (repairOriginal.has(r.PRIMARY_ID)) continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(inFlightIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
@@ -276,7 +296,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const cur = now[q.ruling.primaryId]; if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(Products.known(cur.p.PRODUCT)||!entry||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
-        if (!/SALARY/.test(left) && !(upgradeIds.has(q.ruling.primaryId) && weak(cur))) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);   // an upgrade goes in only while the row still holds the weak estimate
+        const repairing = repairOriginal.has(q.ruling.primaryId);
+        const repairUnchanged = repairing && repairOriginal.get(q.ruling.primaryId) === salaryStamp(cur);
+        if ((repairing && !repairUnchanged) || (!/SALARY/.test(left) && !repairUnchanged && !(upgradeIds.has(q.ruling.primaryId) && weak(cur)))) Object.keys(f).filter(k => /^SALARY_/.test(k)).forEach(k => delete f[k]);
         if (!/DEGREE/.test(left)) Object.keys(f).filter(k => /^DEGREE_/.test(k)).forEach(k => delete f[k]);
         const keep = Object.keys(f).some(k => k !== 'FEASIBILITY_ATTEMPT_ASOF'); if (!keep) stats.guard_dropped++;
         return keep;

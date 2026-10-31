@@ -4,6 +4,20 @@
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-repair-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
+ const target=row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX',bad);
+ const input=[target,row(2,'V2I-00000000T002','Sr. Manager of Quality','Austin, TX',bad).replace('READY_TO_PURSUE','DECLINED_BY_TIM'),row(3,'V2I-00000000A001','Quality Associate Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(4,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')];
+ fs.writeFileSync(master,input.join('\n'));const current=path.join(dir,'current.json'),posts=path.join(dir,'posts.jsonl');
+ fs.writeFileSync(current,JSON.stringify(Object.fromEntries(input.map(l=>[l.split(' | ')[1],l.replace('SALARY_CONF=MED','SALARY_CONF=HIGH')]))));
+ try{const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')};
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env,stdio:'pipe'});
+ let out=JSON.parse(fs.readFileSync(report));assert.equal(out.salary_repairs,1);assert.deepEqual(out.salary_invalid.map(x=>x.id),['V2I-00000000T001']);assert.equal(out.sample[0].fields.SALARY_BASE_HIGH,240000);
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...env,ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:current,ENRICH_TEST_POSTS:posts},stdio:'pipe'});
+ out=JSON.parse(fs.readFileSync(report));assert.equal(out.guard_dropped,1);assert.equal(fs.existsSync(posts),false,'no POST when salary changed after snapshot');
+ }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+});
 const MASTER = [
   row(1, 'V2I-00000000000A', 'Director of Quality', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19'),
   row(2, 'V2I-00000000000B', 'Director of Quality', 'Akron, OH', 'SOURCE_URL=https://www.linkedin.com/jobs/view/director-quality-4012345678; DATE_ADDED=2026-10-18'),
