@@ -54,7 +54,7 @@ function stoppedAt(state){
 function latch(prior){
  const blocking=[],quarantined=[];
  for(const p of prior){
-  if(p.state.reconciliation||p.state.noCandidates)continue;
+  if(p.state.reconciliation||p.state.noCandidates||require("./unknown-recovery").resolved(p.state))continue;
   const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state)||isolatedUnknown(p.state);
   if(iso){quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});continue}
   blocking.push({file:p.file,run:p.state.sourceRunId||'',haltAt:halt?.at||null,message:halt?.message||'run stopped without a recorded halt',requestId:stoppedAt(p.state)});

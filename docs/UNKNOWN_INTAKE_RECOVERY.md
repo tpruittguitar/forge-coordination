@@ -1,0 +1,9 @@
+# Unknown intake recovery — Tim authorization, 2026-10-30
+
+Tim requested that an absent job not remain quarantined indefinitely after a transport timeout. This is an explicit exception to the former blanket never-replay rule, implemented by tools/source-intake/unknown-recovery.js, not permission for blind retries.
+
+A source intake run may recover at most one case per pass. Original candidate hash and stable request ID must be intact. Only an unaccepted transport timeout/abort qualifies. At least 60 minutes must have elapsed since the original attempt/halt, conservatively beyond Apps Script's documented execution lifetime (https://developers.google.com/apps-script/guides/services/quotas). No local or Writer lock is expired or removed.
+
+Fresh authenticated Writer health, authoritative receipt status, complete master and archive are read. A pending/existing receipt goes to reconciliation. An exact existing job satisfies the practical intake obligation without inventing the original receipt. Ambiguous employer/title matches require review. An absent job with unchanged canonical rules may make one recorded recovery attempt using the SAME original request ID through normal Writer adjudication. Writer's own script lock, live master/archive deduplication and transaction fence remain decisive against races. A second uncertain attempt stays recorded and escalates; it is never looped automatically.
+
+Recovered inserts require accepted result, independent COMPLETE receipt and exact post-COMPLETE row proof before closing the warning. The historical outcome remains UNKNOWN_TRANSPORT; new proof lives under receipts/auto-intake/recovery/. The old run's untouched tail remains unchanged and eligible for ordinary discovery. Original declines/application states and Never Consider rules remain protected.
