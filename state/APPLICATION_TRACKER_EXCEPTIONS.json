@@ -1,6 +1,6 @@
 {
   "schema": "forge.application-tracker-exceptions.v1",
-  "at": "2026-10-31T19:21:49.778Z",
+  "at": "2026-10-31T19:30:52.522Z",
   "exceptions": [
     {
       "id": "TRACKER-MISUMI-1a1853f2b2ecba93",
@@ -367,6 +367,87 @@
       "countermeasureNeeded": "Recognize embedded job-specific redirect identity or treat shared tracking endpoints as provenance-only, never as a shared job identity. Preserve the full initiating URL privately, exact source hash and embedded job ID. Audit/reconcile the two prior rows; do not force identity, overwrite them or replay B02.",
       "retryCondition": "Writer identity owner verifies a supported source-binding repair and complete master/archive/unknown-request checks for each candidate. One case must not block independent intake.",
       "writerSubmissionsOnRecovery": 0
+    },
+    {
+      "id": "EMAIL-IDENTITY-EXCEPTIONS-20261031-1506ET",
+      "at": "2026-10-31T19:30:52.522Z",
+      "owner": "FORGE_APPLICATION_WRITER_GOFER",
+      "status": "OPEN",
+      "kind": "EMAIL_INTAKE_IDENTITY_REVIEW",
+      "source": "receipts/EMAIL_CANDIDATE_LEDGER_20261031_1506ET.json",
+      "cases": [
+        {
+          "gmailId": "1a19317f74a4a370",
+          "company": "Keller Executive Search",
+          "title": "Vice President of Manufacturing (Automotive)",
+          "location": "Cincinnati, OH",
+          "sourceUrlHash": "1d2dfd4f35dbb973f685b15d9eccf7c28f462a552599b206fa29f58bc94b4a3f",
+          "requestId": null,
+          "reason": "Company/title or listing collides with canonical identities; preserve protected states",
+          "primaryId": "V2F-AF03D677B8FD-E44C"
+        },
+        {
+          "gmailId": "1a19317f74a4a370",
+          "company": "NOX METALS",
+          "title": "VP of Operations",
+          "location": "Los Angeles, CA",
+          "sourceUrlHash": "4d39f12ce714cbea07bfae279e5d9633fc8c1e8ba08e3446d5cc9e9161e00136",
+          "requestId": "FORGE-EMAIL-CHATGPT-20261031-1506ET-B01",
+          "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+          "primaryId": null
+        },
+        {
+          "gmailId": "1a18ecd5d9385086",
+          "company": "Amazon",
+          "title": "Supply Chain Manager, WWGS - SCOPE (Supply Chain Optimization Planning & Execution)",
+          "location": "Austin, TX",
+          "sourceUrlHash": "82f192f15eb23866ff9cc171ec3879e7f710df6cdf251243d5007083af39c834",
+          "requestId": null,
+          "reason": "Two distinct listing IDs have identical company/title/location in this batch; do not create an unproven duplicate",
+          "primaryId": null
+        },
+        {
+          "gmailId": "1a191d54743bbe45",
+          "company": "Celestica",
+          "title": "Operations Support Director",
+          "location": "Virtual / Travel",
+          "sourceUrlHash": "93560044d2702a8edad582d2ae581ce83a13c199bacb4147937a9006e1ff6820",
+          "requestId": null,
+          "reason": "Company/title collides with another canonical site or duplicate",
+          "primaryId": null
+        },
+        {
+          "gmailId": "1a191ce6994582c8",
+          "company": "EY",
+          "title": "Life Sciences Supply Chain Manufacturing Ops & AI Transformation Delivery- Manager",
+          "location": "Chattanooga, TN",
+          "sourceUrlHash": "b6ba1810f9f697ff4c1fdebfebd0fc20c2ab8eb9570701ca8768dbc838330e28",
+          "requestId": null,
+          "reason": "Company/title collides with another canonical site or duplicate",
+          "primaryId": null
+        },
+        {
+          "gmailId": "1a191ce6994582c8",
+          "company": "EY",
+          "title": "Life Sciences Supply Chain Manufacturing Ops & AI Transformation Delivery- Senior Manager",
+          "location": "Chattanooga, TN",
+          "sourceUrlHash": "72eab45da04272ebf5f7b54eb8742f1e246193b2fe5c8212a52fd82afc6ced81",
+          "requestId": "FORGE-EMAIL-CHATGPT-20261031-1506ET-B03",
+          "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+          "primaryId": null
+        },
+        {
+          "gmailId": "1a192aa1b0490dd4",
+          "company": "Keller Executive Search",
+          "title": "Vice President of Manufacturing (Automotive)",
+          "location": "Cincinnati, OH",
+          "sourceUrlHash": "1d2dfd4f35dbb973f685b15d9eccf7c28f462a552599b206fa29f58bc94b4a3f",
+          "requestId": null,
+          "reason": "Canonical company/title collision; protected states preserved",
+          "primaryId": "V2F-AF03D677B8FD-E44C"
+        }
+      ],
+      "next": "Reuse current exact canonical/source evidence; preserve protected jobs. No original request replay or forced identity. Dedupe recurring Keller and EY holds by exact source before new research."
     }
   ]
 }
