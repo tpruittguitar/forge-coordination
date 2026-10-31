@@ -164,10 +164,10 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
     const out = JSON.parse(fs.readFileSync(report, 'utf8')), by = {}; out.estimate_samples.forEach(x => { by[x.id] = x; });
     assert.strictEqual(out.archive_anchors, 1, 'archived posted pay is a comparable');
     assert.strictEqual(by['V2I-00000000Z001'].source, 'SAME_EMPLOYER'); assert.match(by['V2I-00000000Z001'].basis_detail, /Plant Manager \(WA\) \$190K-\$240K/);
-    assert.strictEqual(out.upgraded, 1); assert.strictEqual(by['V2I-00000000U001'].basis, 'UPGRADE'); assert.strictEqual(by['V2I-00000000U001'].source, 'SAME_EMPLOYER');
+    assert.strictEqual(out.salary_review.estimate_planned, 1); assert.strictEqual(by['V2I-00000000U001'].basis, 'ACTIVE_REVIEW'); assert.strictEqual(by['V2I-00000000U001'].source, 'SAME_EMPLOYER');
     assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.zeta.length, 1, 'cache kept, not duplicated');
     assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.oldco, undefined, 'entries older than 60 days are pruned');
-    assert.strictEqual(out.est_same_employer, 1, 'the upgrade is counted only in upgraded');
+    assert.strictEqual(out.est_same_employer, 2, 'one missing-pay estimate and one active estimate review');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -295,4 +295,20 @@ test('lost Writer reply (HTTP 404 after the save): the receipt index decides; sa
     assert.match(r.out.writer_error, /HTTP 404; receipt NO_ENTRY/);
     assert.deepStrictEqual(r.led.submitted, {}, 'unconfirmed rows are not marked saved; the row_readback guard settles them next run');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('active estimate review is bounded, promotes exact pay, skips protected jobs and rejects concurrent changes',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-active-')),master=path.join(dir,'master.txt'),pages=path.join(dir,'pages.json'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const lines=[],responses={},original={};for(let i=1;i<=7;i++){
+  const id='V2I-REVIEW'+i,url='https://job-boards.greenhouse.io/acme/jobs/'+(900+i);
+  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
+  responses['https://boards-api.greenhouse.io/v1/boards/acme/jobs/'+(900+i)+'?pay_transparency=true']=JSON.stringify({id:900+i,title:'Director of Quality',location:{name:'Dayton, OH'},content:'A complete employer job description. '.repeat(25),pay_input_ranges:[{min_cents:18000000,max_cents:24000000,currency_type:'USD',interval:'year',title:'Base salary'}]});
+ }
+ lines.push(lines[0].replace('V2I-REVIEW1','V2I-DECLINED').replace('READY_TO_PURSUE','DECLINED_BY_TIM'),lines[0].replace('V2I-REVIEW1','V2I-APPLIED').replace('READY_TO_PURSUE','APPLIED'));
+ fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(pages,JSON.stringify(responses));
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_TEST_PUBLIC_PAGES:pages,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json')};
+ const run=live=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),...(live?[]:['--dry'])],{env:{...env,...(live?{ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:writer,ENRICH_TEST_POSTS:posts}:{})},stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ try{let out=run(false);assert.equal(out.salary_review.eligible,7);assert.equal(out.salary_review.reviewed,5);assert.equal(out.salary_review.target_reads,5);assert.equal(out.salary_review.posted_planned,5);assert.equal(out.sample[0].fields.SALARY_BASIS,'EMPLOYER_POSTED');assert.equal(out.sample[0].fields.SALARY_BASE_HIGH,240000);assert.equal(fs.existsSync(env.ENRICH_LEDGER),false,'dry review does not consume durable queue');
+ original['V2I-REVIEW1']=original['V2I-REVIEW1'].replace('SALARY_CONF=LOW','SALARY_CONF=HIGH');original['V2I-REVIEW2']=original['V2I-REVIEW2'].replace('READY_TO_PURSUE','DECLINED_BY_TIM');original['V2I-REVIEW3']=original['V2I-REVIEW3'].replace(' | Acme | ',' | Different employer | ');fs.writeFileSync(writer,JSON.stringify(original));out=run(true);const sent=fs.readFileSync(posts,'utf8').trim().split('\n').flatMap(l=>JSON.parse(l).requests);assert.deepEqual(sent.map(q=>q.ruling.primaryId),['V2I-REVIEW4','V2I-REVIEW5']);assert.equal(out.salary_review.guard_dropped,2);assert.equal(out.guard_dropped,3);assert.equal(Object.keys(JSON.parse(fs.readFileSync(env.ENRICH_LEDGER)).salaryReview).length,5);
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });

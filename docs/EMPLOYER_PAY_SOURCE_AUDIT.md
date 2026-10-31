@@ -88,3 +88,28 @@ the shared directory. No new AI task or schedule is needed.
 public reads, found/failed checks, backoff and estimates containing profile sources. These are source-read/planning
 metrics, not verified master-completion counts or proof of an accuracy gain. Samples include the exact source identity,
 range, date and public URL. Existing Writer guards and verification still control canonical outcomes.
+
+## Active estimate review
+
+Filled `FORGE-ESTIMATE` salaries also receive a separate programmed review in the existing pay worker. Missing-data
+selection alone cannot revisit them. Each run reviews at most five active estimates, with at most six exact-target
+reads, two per job, and a 90-second review budget checked between operations. These reviews share the existing
+50-row submission cap and six comparable-source reads; there is no additional AI automation or schedule.
+
+Never-reviewed jobs come first, then weaker confidence and older evidence. Pending Writer requests, closed postings,
+applied/rejected/declined states, anti-resurrection and do-not-rework protections are excluded. The review uses already
+saved exact posting URLs on supported employer/ATS routes. Promotion to `EMPLOYER_POSTED` requires a complete matching
+title and city/state, plus explicit USD annual structured base pay; a snippet or another role's salary cannot qualify.
+Unsupported formats remain estimated. Otherwise the shared source selector may improve the estimate: higher confidence,
+or same-employer evidence at equal or higher confidence. A different number alone is not an improvement. Lower/higher
+exact posted pay replaces an estimate because it is direct evidence, not because the number increased.
+
+`salaryReview` in `state/enrich-ats-pay.json` stores input fingerprints and retry history. Unchanged unsuccessful reviews
+wait 24 hours; planned improvements wait seven days after their expected salary readback. Changed job/salary/source
+inputs can trigger reconsideration. Independent cases continue; unresolved writes remain fenced, never replayed.
+Before submission the worker rereads each row and drops reviewed salary fields if identity, pay or decision changed.
+
+`salary_review` in the report distinguishes eligible/due/reviewed jobs, exact-target reads, exact-pay and stronger-estimate
+plans, unchanged outcomes and concurrent-change drops. Planned improvements and Writer acknowledgments are not independently
+verified completions. Existing receipt/readback verification remains required. Old estimates without stronger evidence stay
+unchanged; the review is gradual, not an immediate rescore of every job.
