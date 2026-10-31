@@ -158,7 +158,6 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
-    if (fresh(r)) { stats.skipped_recent++; continue; }
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(inFlightIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
