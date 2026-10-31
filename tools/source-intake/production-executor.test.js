@@ -455,3 +455,12 @@ test('malformed Writer response never becomes accounted SKIPPED',async()=>{
  const err=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);assert.match(err.message,/UNKNOWN/);assert.equal(err.outcomes[0].status,'UNKNOWN');assert.equal(posts,1);
 });
 
+test('Writer delimiter escaping does not create false identity holds; actual differences still hold',()=>{
+ const {checkCanaryOutcome}=require('./intake-accounting');
+ const record={COMPANY:'POLYWOOD®',TITLE:'Director | Operational Excellence - Quality & Continuous Improvement',LOCATION:'Syracuse, IN, USA'};
+ const result={results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-123'}]};
+ const receipt={status:'COMPLETE',durable:true,entry:{items:[{pid:'V2I-123',op:'INSERT'}]}};
+ const readbacks=[{primaryId:'V2I-123',found:true,matches:1,line:'1 | V2I-123 | POLYWOOD® | Director / Operational Excellence - Quality & Continuous Improvement | SCOUT_INTAKE | OPEN | P1 | UNCAPTURED | Syracuse, IN, USA | NOTES'}];
+ assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt,readbacks}).status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
+ for(const patch of [{COMPANY:'Different'},{TITLE:'Director Operational Excellence - Quality & Continuous Improvement'},{LOCATION:'Syracuse, NY, USA'}])assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,...patch},result,receipt,readbacks}).reason,'INSERT_IDENTITY_MISMATCH');
+});

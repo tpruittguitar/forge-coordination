@@ -33,7 +33,7 @@ async function inspectDurableReadback(proposal,requestId,{key,transport,clock=()
   return {PRIMARY_ID:c[1],COMPANY:c[2],TITLE:c[3],REQ_ID:c[7],LOCATION:c[8]};
  });
  if(normalized.some(x=>!x))return {...meta,status:'READBACK_SCHEMA_MISMATCH'};
- const norm=x=>String(x||'').trim().toLowerCase(),rec=proposal.record;
+ const {normalizeCell:norm}=require('./writer-cell'),rec=proposal.record;
  const matched=normalized.filter(x=>norm(x.COMPANY)===norm(rec.COMPANY)&&norm(x.TITLE)===norm(rec.TITLE)&&
   norm(x.LOCATION)===norm(rec.LOCATION)&&(!rec.REQ_ID||!x.REQ_ID||norm(x.REQ_ID)===norm(rec.REQ_ID)));
  if(matched.length!==1)return {...meta,status:matched.length?'AMBIGUOUS_READBACK':'ROW_NOT_FOUND',matchedCount:matched.length};
