@@ -1,5 +1,8 @@
 # Shared salary context
 
+For locating employer-disclosed pay, use [the shared pay-disclosure search guide](PAY_DISCLOSURE_SEARCH_GUIDE.md).
+It records official state sources and coverage dates; check exact postings everywhere, including voluntary disclosures.
+
 `reference/COMPANY_SITE_CONTEXT.json` is the common reference for programmed enrichment and AI exceptions. It complements
 `reference/COMPANY_SITE_PRODUCTS.json`; global employer size, local site size and a particular role's responsibility are
 different facts. Never copy global headcount into a site or team field. Do not estimate a site headcount from output,
