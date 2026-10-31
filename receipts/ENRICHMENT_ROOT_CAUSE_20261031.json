@@ -1,0 +1,46 @@
+{
+  "at": "2026-10-31T09:05:42.719Z",
+  "auditedWaiting": 391,
+  "missingDegreeOnly": 107,
+  "missingPayAndDegree": 257,
+  "missingPayOnly": 27,
+  "alreadyHaveFinalScores": 391,
+  "withoutRecognizedATS": 383,
+  "rootCauses": [
+    "Source-only retrieval ignored usable alternate posting links already saved on the canonical job.",
+    "Fixed ordering repeatedly exhausted a 20-public-page budget; cooldown skipped 136 active jobs in the extra run.",
+    "Blocked aggregators, tracking links and unsupported employer pages need an alternate route or targeted research, not an identical retry.",
+    "Successful enrichment updates were followed by flow counts from a delayed structured mirror rather than a canonical master read.",
+    "Email capture was interrupted before dispositions and its checkpoint schema was not recognized by the execution publisher."
+  ],
+  "countermeasures": [
+    "Try saved exact posting/evidence URLs and unique exact title/location matches on an already-known employer board.",
+    "Reuse full posting evidence for seven days, bound to the job identity; rotate oldest attempts and record retry conditions.",
+    "Persist pending Writer child request IDs before POST; never blindly replay uncertainty; apply holds to all update paths.",
+    "Publish complete per-job recovery work and hand only exhausted/unsupported source exceptions to the existing Gofer procedure.",
+    "Observe canonical master queues with completeness checks and safe read timestamp/hash provenance.",
+    "Resume bounded saved email batches before expanding capture; keep unresolved windows and recovery candidates visible."
+  ],
+  "liveValidation": {
+    "workflowRun": 41186209844,
+    "submitted": 17,
+    "verifiedUpdates": 17,
+    "completedForDecisions": 17,
+    "enrichmentWaitingAfter": 375,
+    "readyForDecisionsAfter": 441,
+    "newIntakeDuringCatchup": 1,
+    "equation": "391 + 1 new AESC admission - 17 completed jobs = 375 waiting",
+    "proof": "receipts/ENRICHMENT_ROOT_REPAIR_20261031T0850Z_VERIFICATION.json"
+  },
+  "emailResume": {
+    "occurrencesAccounted": 28,
+    "verifiedInserted": 1,
+    "existing": 1,
+    "outOfScopeOrSponsored": 26,
+    "olderCapturedCandidatesStillPending": 253,
+    "olderResultPagesStillPending": 11,
+    "coverageComplete": false,
+    "proof": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261031-0449ET.json"
+  },
+  "remaining": "375 jobs still require real decision evidence. The repairs are deployed incrementally; inaccessible sources and unresolved historical email windows are not claimed complete. Existing user decision questions remain pending."
+}
