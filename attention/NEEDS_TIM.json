@@ -1,30 +1,18 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-10-31T18:27:56.117Z",
- "sourceCommit": "e3883607ce7a6a2839f17916480b810677cba592",
+ "builtAt": "2026-10-31T18:56:15.608Z",
+ "sourceCommit": "",
  "counts": {
-  "total": 23,
-  "BLOCKING": 1,
-  "ACTION": 10,
+  "total": 20,
+  "BLOCKING": 0,
+  "ACTION": 8,
   "WATCH": 12,
   "DECIDE": 6,
   "JOBS": 1,
-  "FAILED": 9,
-  "UPKEEP": 7
+  "FAILED": 8,
+  "UPKEEP": 5
  },
  "items": [
-  {
-   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
-   "section": "FAILED",
-   "level": "BLOCKING",
-   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261031T1437Z is unfinished",
-   "detail": "BLOCKED: independent employer-business review not bound to fresh canonical rules. Open request: FORGE-SOURCE-016B50EE57B27F70DBFA43B0. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
-   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261031T1437Z.json",
-   "at": "2026-10-31T16:23:55.288Z",
-   "raisedBy": "AUTO-INTAKE"
-  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -94,30 +82,6 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/SONIC_EVAL_FORGE-ZIPR-CHATGPT-20261026-0102ET.json"
     }
    ]
-  },
-  {
-   "id": "pr:forge-policy#8",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "forge-policy PR #8: RULES: fetch missing BLS series for unanchored estimates",
-   "detail": "Open since 2026-10-28. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-policy #8",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-policy/pull/8",
-   "at": "2026-10-28T08:36:53Z",
-   "raisedBy": ""
-  },
-  {
-   "id": "pr:forge-coordination#102",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "forge-coordination PR #102: ENRICH: fetch missing BLS series before n/a",
-   "detail": "Open since 2026-10-28. Waiting for your review and merge.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-coordination #102",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/102",
-   "at": "2026-10-28T08:37:00Z",
-   "raisedBy": ""
   },
   {
    "id": "lane-overdue:REPAIR",
@@ -399,7 +363,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-25T18:41:00-04:00",
    "lastStatus": "PR_OPEN",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_ALERT_PREPARSE_GROK_20261025_1841ET.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE_ALERT_PREPARSE_GROK_20261025_1841ET.txt",
    "runs7d": 1,
    "usualGapHours": null,
    "overdue": false
@@ -409,7 +373,7 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-28T02:52:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-APPWRITER-CLAUDE-20261028-0252ET.txt",
+   "lastFile": "receipts\\FORGE-APPWRITER-CLAUDE-20261028-0252ET.txt",
    "runs7d": 2,
    "usualGapHours": 2.9,
    "overdue": false
@@ -419,7 +383,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-31T00:00:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET_AUTHORITY.json",
+   "lastFile": "receipts\\FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET_AUTHORITY.json",
    "runs7d": 9,
    "usualGapHours": 0,
    "overdue": true
@@ -429,7 +393,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-31T10:59:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-EMAIL-CHATGPT-20261031-1059ET-B01_VERIFIED.json",
+   "lastFile": "receipts\\FORGE-EMAIL-CHATGPT-20261031-1059ET-B01_VERIFIED.json",
    "runs7d": 193,
    "usualGapHours": 0,
    "overdue": false
@@ -439,7 +403,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-28T07:14:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-GROK-20261028-0714ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-EMAIL-GROK-20261028-0714ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
    "overdue": false
@@ -449,7 +413,7 @@
    "provider": "UNKNOWN",
    "lastAt": "2026-10-16T18:00:00-04:00",
    "lastStatus": "PARTIAL",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
    "runs7d": 0,
    "usualGapHours": 27,
    "overdue": false
@@ -459,7 +423,7 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-18T12:11:00-04:00",
    "lastStatus": "UNSTATED",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 6,
    "overdue": false
@@ -469,7 +433,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-21T08:18:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ENRICH-FEASIBILITY-GROK-20261021-0818ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 3.4,
    "overdue": false
@@ -479,7 +443,7 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-18T12:11:00-04:00",
    "lastStatus": "UNSTATED",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-CLAUDE-20261018-1211ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-CLAUDE-20261018-1211ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 12,
    "overdue": false
@@ -489,7 +453,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-20T13:10:00-04:00",
    "lastStatus": "COMPLETE",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ENRICH-STRATEGIC-GROK-20261020-1310ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 8,
    "overdue": false
@@ -499,7 +463,7 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-28T04:51:00-04:00",
    "lastStatus": "UNSTATED",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-FORGE_APPLICATION_WRITER_GOFER-CLAUDE-20261028-0451ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-FORGE_APPLICATION_WRITER_GOFER-CLAUDE-20261028-0451ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
    "overdue": false
@@ -509,7 +473,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-21T04:13:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-FORGE_ENRICH_FEASIBILITY-GROK-20261021-0413ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-FORGE_ENRICH_FEASIBILITY-GROK-20261021-0413ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 21,
    "overdue": false
@@ -519,7 +483,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-20T00:11:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-FORGE_WEB_CAREER_DISCOVERY-GROK-20261020-0011ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-FORGE_WEB_CAREER_DISCOVERY-GROK-20261020-0011ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 6,
    "overdue": false
@@ -529,7 +493,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-17T23:56:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-SOURCEFIX-CHATGPT-20261017-2356ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-GOFER-SOURCEFIX-CHATGPT-20261017-2356ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
@@ -539,7 +503,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-31T09:14:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261031-0914ET_VERIFIED.json",
+   "lastFile": "receipts\\FORGE-GOFER-CHATGPT-20261031-0914ET_VERIFIED.json",
    "runs7d": 75,
    "usualGapHours": 0,
    "overdue": false
@@ -549,8 +513,8 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 31,
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
+   "runs7d": 30,
    "usualGapHours": 1.6,
    "overdue": false
   },
@@ -559,7 +523,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-28T17:17:00-04:00",
    "lastStatus": "COMPLETE_EMPTY_QUEUE",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
    "overdue": false
@@ -569,7 +533,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-17T23:02:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-HANDOFF-CHATGPT-20261017-2302ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-HANDOFF-CHATGPT-20261017-2302ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
@@ -579,7 +543,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-17T23:29:00-04:00",
    "lastStatus": "COMPLETE",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-INDEX-CUTOVER-CHATGPT-20261017-2329ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 0.2,
    "overdue": false
@@ -589,7 +553,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-17T23:05:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INDEX-CHATGPT-20261017-2305ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-INDEX-CHATGPT-20261017-2305ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
@@ -599,7 +563,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-31T01:41:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-OUTCOME-CHATGPT-20261031-0141ET_VERIFICATION.json",
+   "lastFile": "receipts\\FORGE-OUTCOME-CHATGPT-20261031-0141ET_VERIFICATION.json",
    "runs7d": 49,
    "usualGapHours": 0,
    "overdue": true
@@ -609,7 +573,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-31T05:09:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261031-0509ET-B02_VERIFIED.json",
+   "lastFile": "receipts\\FORGE-POSTVAL-CHATGPT-20261031-0509ET-B02_VERIFIED.json",
    "runs7d": 227,
    "usualGapHours": 0,
    "overdue": true
@@ -619,8 +583,8 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-28T10:32:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
-   "runs7d": 37,
+   "lastFile": "receipts\\FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
+   "runs7d": 36,
    "usualGapHours": 2,
    "overdue": true
   },
@@ -629,7 +593,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-28T13:13:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
+   "lastFile": "receipts\\FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "runs7d": 2,
    "usualGapHours": 8,
    "overdue": true
@@ -639,7 +603,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-30T20:20:00-04:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
+   "lastFile": "receipts\\FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
    "runs7d": 5,
    "usualGapHours": 0,
    "overdue": true
@@ -649,7 +613,7 @@
    "provider": "CLAUDE",
    "lastAt": "2026-10-18T21:11:00-04:00",
    "lastStatus": "UNSTATED",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ROTATION-CLAUDE-20261018-2111ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ROTATION-CLAUDE-20261018-2111ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
@@ -659,7 +623,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-19T20:15:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-CAREER-GROK-20261019-2015ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-WEB-CAREER-GROK-20261019-2015ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
@@ -669,7 +633,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-18T05:46:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-CHATGPT-20261018-0546ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-WEB-CHATGPT-20261018-0546ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 24.1,
    "overdue": false
@@ -679,7 +643,7 @@
    "provider": "GROK",
    "lastAt": "2026-10-20T04:10:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-WEB_CAREER_DISCOVERY-GROK-20261020-0410ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": 6.5,
    "overdue": false
@@ -689,7 +653,7 @@
    "provider": "CHATGPT",
    "lastAt": "2026-10-26T01:02:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
-   "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt",
+   "lastFile": "receipts\\AI_REASON_RUN_RECEIPT_FORGE-ZIPR-CHATGPT-20261026-0102ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": 168.1,
    "overdue": false
