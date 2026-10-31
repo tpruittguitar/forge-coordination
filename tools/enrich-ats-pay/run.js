@@ -1,5 +1,5 @@
 'use strict';
-/* REV-116: off-Writer pay / degree enrichment. Reads jobs from the Cloudflare structured copy (not the Writer), selects rows
+/* REV-116: off-Writer pay / degree enrichment. Reads jobs from the validated canonical master, selects rows
    with the Writer's own worklist code (same rule and order as WORKLIST_FORGE_ENRICH_FEASIBILITY), reads employer ATS postings
    (Lever, Greenhouse, Ashby public APIs), and only then estimates pay from employer-posted comparables in the master.
    Submits at most MAX_BATCHES x 25 rows per run to the Writer, one batch call at a time; CONFIG.submit=false = dry run.
@@ -27,14 +27,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   await loadModule('PipelineEvidence.gs'); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
   const productModule=path.join(require('os').tmpdir(),'PipelineProducts.js');fs.writeFileSync(productModule,await fcFile('pipeline-products.js'));const Products=require(productModule);
   const productsRefFile=process.env.ENRICH_PRODUCTS_REFERENCE||path.join(ROOT,'reference/COMPANY_SITE_PRODUCTS.json'),productsReference=fs.existsSync(productsRefFile)?JSON.parse(fs.readFileSync(productsRefFile,'utf8')):null;
-  // jobs from the structured copy (Cloudflare D1), paged; the Writer is not read
+  // Read one complete canonical snapshot. A delayed structured mirror must not hide new jobs or repeat completed work.
   let jobs = [], total = null;
   if (process.env.ENRICH_MASTER_FILE) { jobs = fs.readFileSync(process.env.ENRICH_MASTER_FILE, 'utf8').split('\n').filter(l => /^\d+ \| /.test(l)).map(l => ({ SOURCE_LINE: l })); total = jobs.length; }   // tests only
-  for (let off = 0; !process.env.ENRICH_MASTER_FILE && (total == null || off < total); off += 250) {
-    const j = await (await get(`${CONFIG.structuredApi}/jobs?limit=250&offset=${off}`, { headers: { 'x-writer-key': key } })).json();
-    if (!j.ok) throw new Error('structured jobs: ' + (j.error || 'not ok')); total = +j.total || 0; jobs = jobs.concat(j.jobs);
-    if (!j.jobs.length) break;
-  }
+  let masterSource=null;if(!process.env.ENRICH_MASTER_FILE){const snapshot=await require('../pipeline-observability/canonical-snapshot').readCanonical({key,W});jobs=snapshot.rows.map(r=>({SOURCE_LINE:r.line}));total=jobs.length;masterSource=snapshot.source;}
   const lines = jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean);
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
@@ -52,7 +48,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });

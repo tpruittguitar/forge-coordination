@@ -12,6 +12,8 @@ globalThis.fetch = async (url, opts) => {
   if (/^https:\/\/script\.google\.com\//.test(url)) {   // Writer: row_readback answers from ENRICH_TEST_WRITER_ROWS; batch POSTs are logged
     const W = JSON.parse(fs.readFileSync(process.env.ENRICH_TEST_WRITER_ROWS, 'utf8'));
     let body;
+    if(/action=master/.test(url)){body={ok:true,text:'V2_CURRENT_POPULATION_MASTER\n'+Object.values(W).join('\n')+'\nEND V2_CURRENT_POPULATION_MASTER\n'};return {ok:true,status:200,json:async()=>body};}
+    if(/action=archive/.test(url))return {ok:true,status:200,json:async()=>({ok:true,text:''})};
     const wm = process.env.ENRICH_TEST_WRITER_MODE;
     if (/action=receipt_index/.test(url)) {   // REPLY_LOST: the batch was saved; REPLY_LOST_UNSAVED: nothing in the index
       const rid = decodeURIComponent(url.match(/requestId=([^&]*)/)[1]), sent = fs.existsSync(process.env.ENRICH_TEST_POSTS) ? fs.readFileSync(process.env.ENRICH_TEST_POSTS, 'utf8').trim().split('\n').map(JSON.parse) : [];
