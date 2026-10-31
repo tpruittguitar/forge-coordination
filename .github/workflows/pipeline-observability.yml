@@ -18,6 +18,8 @@ jobs:
     timeout-minutes: 8
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/checkout@v4
         with:
           repository: tpruittguitar/foreman-cockpit
@@ -25,7 +27,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/pipeline-observability/activity.test.js
+      - run: node --test tools/pipeline-observability/*.test.js
       - name: Check for a missed discovery start
         env:
           GH_TOKEN: ${{ github.token }}
