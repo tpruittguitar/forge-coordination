@@ -1,0 +1,40 @@
+{
+  "schema": "forge.salary-context-seed.v1",
+  "at": "2026-10-31T21:08:26.806Z",
+  "actor": "CHATGPT",
+  "companies": 15,
+  "companyFacts": 32,
+  "facilityHeadcounts": 7,
+  "sources": 15,
+  "canonicalReadAt": "2026-10-31T21:08:22.412Z",
+  "activeJobs": 744,
+  "activeJobsWithContextBefore": 42,
+  "activeJobsWithContextAfter": 88,
+  "activeJobsWithHeadcountBefore": 42,
+  "activeJobsWithHeadcountAfter": 81,
+  "calibration": {
+    "eligible": 329,
+    "evaluated": 319,
+    "absoluteErrorPctBefore": 17.5,
+    "absoluteErrorPctAfter": 17.4,
+    "note": "Same current snapshot; leave-one-distinct-posting-out diagnostic, not future validation or a guarantee."
+  },
+  "noMasterWrites": true,
+  "referenceSha256": "ed68511e0f705eddec54722f45836501890c92c5420f88dc7398af1d46e1c8be",
+  "checks": [
+    "All facts have valid dated HTTPS source and quote",
+    "No AWS parent headcount inference",
+    "No city-only job to named-plant headcount inference",
+    "Carvana lower bound excluded from exact employees field",
+    "Concurrent learned roles retained"
+  ],
+  "pendingResearch": [
+    "Blue Origin global headcount: official current company-wide disclosure still needed; regional figures not substituted",
+    "SpaceX global headcount: official current disclosure still needed",
+    "Hyve Solutions: subsidiary-level headcount not inferred from TD SYNNEX",
+    "Fresenius Kabi USA: global business headcount not inferred for USA subsidiary",
+    "Unidentified/confidential employers: preserve unknown identity",
+    "Bind named facility to exact job evidence before applying facility headcount"
+  ],
+  "salaryDataOptions": "docs/SALARY_DATA_SOURCES.md"
+}
