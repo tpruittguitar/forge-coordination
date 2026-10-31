@@ -1,6 +1,6 @@
 {
   "schema": "forge.application-tracker-exceptions.v1",
-  "at": "2026-10-31T19:30:52.522Z",
+  "at": "2026-10-31T19:41:37.491Z",
   "exceptions": [
     {
       "id": "TRACKER-MISUMI-1a1853f2b2ecba93",
@@ -146,13 +146,61 @@
           "scope": "MASTER_MASTER",
           "sharedEvidence": "Same primary email, company/title/listing and outcome. Requisition stored as LI-<id> versus LinkedIn <id>. No distinct second application evidence.",
           "protectedStatePreserved": true
+        },
+        {
+          "messageId": "1a089087760664fa",
+          "company": "Antolin",
+          "primaryIds": [
+            "V2E-EDD5B978D7C1",
+            "V2E-860EED4B92A8"
+          ],
+          "listingId": "4417949902",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Exact same application confirmation, company/title/listing and source message is attached to two canonical APPLIED rows; LI- versus LinkedIn req storage. No independent second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "19fa54c4e81c0889",
+          "company": "Arke",
+          "primaryIds": [
+            "V2E-523E7BB6E735",
+            "V2E-A42BDF5BAEC6"
+          ],
+          "listingId": "4440970645",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Exact same application confirmation, company/title/listing and source message is attached to two canonical APPLIED rows; LI- versus LinkedIn req storage. No independent second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "1a01677cb0c607a2",
+          "company": "Astemo Ltd.",
+          "primaryIds": [
+            "V2E-D42CA30514A7",
+            "V2E-FD3EA5916D78"
+          ],
+          "listingId": "4449773985",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Exact same application confirmation, company/title/listing and source message is attached to two canonical APPLIED rows; LI- versus LinkedIn req storage. No independent second application evidence.",
+          "protectedStatePreserved": true
+        },
+        {
+          "messageId": "19f3fcd679078c26",
+          "company": "Astra",
+          "primaryIds": [
+            "V2E-653EDDFCD085",
+            "V2E-4F0ED63B0164"
+          ],
+          "listingId": "4436266552",
+          "scope": "MASTER_MASTER",
+          "sharedEvidence": "Exact same application confirmation, company/title/listing and source message is attached to two canonical APPLIED rows; LI- versus LinkedIn req storage. No independent second application evidence.",
+          "protectedStatePreserved": true
         }
       ],
-      "reason": "8 exact-source duplicate canonical pairs retained for supported provenance-preserving Gofer alias reconciliation. Protected state and arbitrary KPI bindings unchanged.",
+      "reason": "12 exact-source canonical pairs retained for supported Gofer reconciliation; no arbitrary event binding, merge, state overwrite or replay.",
       "nextAction": "Reconcile existing protected aliases through supported provenance-preserving procedures; never replay original applications or choose one arbitrarily. Escalate any protected-state mutation requiring Tim. Preserve both original row histories. Report deterministic alias/ingestion and KPI-dedupe defects for a separately authorized software fix.",
       "retryCondition": "Fresh canonical alias resolution or supported identity/accounting evidence, not repeated email reads.",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261031T162426Z_VERIFICATION.json",
-      "lastObservedAt": "2026-10-31T18:27:15.871Z"
+      "lastObservedAt": "2026-10-31T19:41:37.491Z"
     },
     {
       "id": "TRACKER-AMETEK-1a0c196a002be5c1",
@@ -448,6 +496,27 @@
         }
       ],
       "next": "Reuse current exact canonical/source evidence; preserve protected jobs. No original request replay or forced identity. Dedupe recurring Keller and EY holds by exact source before new research."
+    },
+    {
+      "id": "TRACKER-ASHLEY-CYCLE-19fafa969b08e5bb",
+      "owner": "FORGE_APPLICATION_WRITER_GOFER",
+      "status": "PENDING_IDENTITY_AND_CYCLE_RECONCILIATION",
+      "at": "2026-10-31T19:41:37.491Z",
+      "messageIds": [
+        "19fafa969b08e5bb",
+        "19fb038228f51c3e"
+      ],
+      "primaryIds": [
+        "V2E-A8D1AFA75EF5",
+        "V2E-28B089507755"
+      ],
+      "company": "Ashley Furniture Industries",
+      "title": "Senior Director of Manufacturing Operations",
+      "location": "Tupelo, MS",
+      "reason": "Primary rejection references an application on Jun28 and was sent2026-07-29T20:55:40Z; a new same-role application confirmation was sent2026-07-29T23:31:34Z and says Applied on July29. Two canonical rows share the later confirmation, one REJECTED with APP_DATE July29 and one APPLIED. Do not apply the earlier rejection to the later application or collapse potentially distinct cycles.",
+      "rejectionSourceSha256": "850a552c0613134977ccf7b1b10e4d09035a17021cf6941d8199bc2a9161cede",
+      "confirmationSourceSha256": "b6a6e083360401c892373d17beec5f2154ee270f33b76b277109d6494bfe9cbe",
+      "next": "Reconcile the exact application cycles and preserved operator notes through a supported update-only route. Preserve both states and source evidence meanwhile; no forced merge, row insertion or original request replay."
     }
   ]
 }
