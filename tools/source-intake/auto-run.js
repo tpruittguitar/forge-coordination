@@ -77,7 +77,9 @@ async function main(argv=process.argv.slice(2)){
  if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
  const key=process.env.FORGE_WRITER_KEY;
  if(!key)return console.log('AUTO intake off: FORGE_WRITER_KEY is not set');
- const prior=previous();
+ let prior=previous();
+ // One bounded transport recovery per scheduled pass; same workflow concurrency and Writer locks apply.
+ if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();const unresolved=prior.find(p=>p.state.quarantine&&!require("./unknown-recovery").resolved(p.state));if(unresolved){console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));prior=previous();}}
  // An earlier run that halted needs a person (UNKNOWN POST, HOLD, a switch change, ...). This run then stops HERE, before
  // any Writer call, and exits 0: it is a deliberate latch, not a new failure (2026-10-24 11:30Z to 2026-10-26: 8 red runs in a row
  // only repeated the 2026-10-24 05:11Z UNKNOWN halt). The halt itself was red once; the latch is on attention/NEEDS_TIM.json and
