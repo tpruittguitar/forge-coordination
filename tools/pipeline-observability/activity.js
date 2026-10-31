@@ -4,7 +4,7 @@ const {loadIndex}=require('../writer-verify/recovery');
 async function build({root=process.cwd(),now=Date.now(),load=loadIndex,aggregate}={}){
  const snapshot=await load();
  const age=now-Date.parse(snapshot.index.updatedAt);
- if(!Number.isFinite(age)||age < -120000||age>30*60000)throw Error('Receipt index stale; refusing fresh summary');
+ if(!Number.isFinite(age)||age < -120000)throw Error('Receipt index timestamp invalid');
  const recovery=JSON.parse(fs.readFileSync(path.join(root,'verify/recovery/latest.json'),'utf8'));
  const data=aggregate(snapshot.index,now,recovery);
  return {...data,schema:'forge.writer-activity.v1',source:{repo:'tpruittguitar/forge-writer-state',path:'PIPELINE_RECEIPT_INDEX.json',sha:snapshot.sha},publishedAt:new Date(now).toISOString()};

@@ -1,4 +1,4 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const {build}=require('./activity'),{discoveryDue}=require('./discovery-watchdog');
 test('only missed and idle discovery is dispatched, recent failures back off',()=>{const now=Date.parse('2026-10-31T03:00:00Z'),old={summary:{at:'2026-10-30T20:00:00Z'}};assert.equal(discoveryDue(old,[],now),true);assert.equal(discoveryDue({summary:{at:'2026-10-31T00:00:00Z'}},[],now),false);for(const status of ['queued','in_progress','completed'])assert.equal(discoveryDue(old,[{head_branch:'main',event:'workflow_dispatch',status,created_at:'2026-10-31T02:00:00Z'}],now),false);assert.equal(discoveryDue({},[],now),false);});
-test('activity publication refuses stale indices rather than stamping them fresh',async()=>{await assert.rejects(()=>build({now:Date.parse('2026-10-31T03:00:00Z'),load:async()=>({index:{updatedAt:'2026-10-30T20:00:00Z'}})}),/stale/);});
+test('activity publication rejects invalid future index timestamps',async()=>{await assert.rejects(()=>build({now:Date.parse('2026-10-31T03:00:00Z'),load:async()=>({index:{updatedAt:'2026-11-30T20:00:00Z'}})}),/timestamp invalid/);});

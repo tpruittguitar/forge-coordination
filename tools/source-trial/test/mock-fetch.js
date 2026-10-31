@@ -13,6 +13,7 @@ const R = {
     { text: 'Director of Production', categories: { location: 'Dallas, TX' }, hostedUrl: 'https://jobs.lever.co/shieldai/x1', descriptionPlain: '' } ],
 };
 globalThis.fetch = async url => {
+  if(process.env.TRIAL_FETCH_LOG)require('fs').appendFileSync(process.env.TRIAL_FETCH_LOG,String(url)+'\n');
   if (url in R) { const b = R[url]; return { ok: true, status: 200, json: async () => b, text: async () => JSON.stringify(b) }; }
   return { ok: false, status: 404, json: async () => ({}), text: async () => '' };
 };

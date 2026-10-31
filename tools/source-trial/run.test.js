@@ -92,3 +92,19 @@ test('declined-only board retries stop; an active company target can still disco
  fs.writeFileSync(priority,'P1 (x): 1\n- Acme | careers: https://job-boards.greenhouse.io/acme | Dayton\n');run();r=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json')));assert.equal(r.boards.length,1);assert.equal(r.protected_roles.some(x=>x.title==='Director of Quality'),true);assert.equal(r.new_roles.some(x=>x.title==='Director of Quality'),false);
  fs.rmSync(dir,{recursive:true,force:true});
 });
+
+test('source-only collection does not probe employer boards or alter board health', {skip: !fs.existsSync(path.join(FC,'apps-script/PipelineWorklists.gs'))},()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'source-only-')),out=path.join(dir,'out');fs.mkdirSync(out);
+ try{
+  fs.writeFileSync(path.join(dir,'master.txt'),row(1,'V2I-00000000000A','Acme','Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111')+'\n');
+  fs.writeFileSync(path.join(dir,'archive.txt'),'V2_TERMINAL_ARCHIVE\n');
+  fs.writeFileSync(path.join(dir,'priority.txt'),'P1 (x): 1\n- Unknown Industrial | careers: UNKNOWN | Dayton\n');
+  fs.writeFileSync(path.join(dir,'jobspy.json'),JSON.stringify({searches:[],errors:[],jobs:[{site:'linkedin',company:'Initech',title:'Director of Manufacturing',location:'Austin, TX',job_url:'https://www.linkedin.com/jobs/view/123'}]}));
+  const health='{"schema":"forge.board-health.v1","boards":{}}\n';fs.writeFileSync(path.join(out,'board-health.json'),health);
+  const log=path.join(dir,'fetch.log');
+  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,TRIAL_FC_DIR:FC,TRIAL_MASTER_FILE:path.join(dir,'master.txt'),TRIAL_ARCHIVE_FILE:path.join(dir,'archive.txt'),TRIAL_PRIORITY_FILE:path.join(dir,'priority.txt'),TRIAL_JOBSPY_FILE:path.join(dir,'jobspy.json'),TRIAL_HIRINGCAFE_FILE:path.join(dir,'absent.json'),TRIAL_OUT_DIR:out,TRIAL_SKIP_BOARDS:'1',TRIAL_FAST:'1',TRIAL_FETCH_LOG:log},stdio:'pipe',timeout:10000});
+  assert.equal(fs.existsSync(log),false,'source-only mode must make no board HTTP calls');
+  assert.equal(fs.readFileSync(path.join(out,'board-health.json'),'utf8'),health,'board evidence belongs to board workflow');
+  assert.equal(JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json'))).new_roles.length,1,'source results still publish');
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
