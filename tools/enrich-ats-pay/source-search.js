@@ -1,8 +1,8 @@
 'use strict';
 const Profile=require('./source-profile'),L=require('./lib'),C=require('./context');
 const DAY=86400000;
-function create({profile,context={},cache={},readSource,now=()=>Date.now(),maxReads=6,maxPerTarget=2,canRead=()=>true}){
- const stats={enabled:true,targets:0,candidates:0,saved_reused:0,cache_hits:0,reads:0,found:0,failed:0,backoff:0,estimates_with_profile_sources:0,samples:[]},usedIds=new Set();
+function create({profile,context={},cache={},readSource,now=()=>Date.now(),maxReads=6,maxPerTarget=2,canRead=()=>true,canReadSource=()=>true}){
+ const stats={enabled:true,targets:0,candidates:0,saved_reused:0,cache_hits:0,reads:0,found:0,failed:0,backoff:0,unsupported_routes:0,estimates_with_profile_sources:0,samples:[]},usedIds=new Set();
  async function find(target,canonicalAnchors){
   stats.targets++;const found=[],seen=new Set();let reads=0;
   for(const source of Profile.sourcesFor(target,profile,context,now()))for(const a of source.candidates){
@@ -12,6 +12,7 @@ function create({profile,context={},cache={},readSource,now=()=>Date.now(),maxRe
    const key=C.postingKey(a),prior=cache[key],identity=JSON.stringify([a.id,a.co,a.title,a.location]);
    if(prior?.identity===identity&&prior.anchor&&now()>=Date.parse(prior.at)&&now()-Date.parse(prior.at)<14*DAY){stats.cache_hits++;usedIds.add(a.id);found.push(prior.anchor);continue;}
    if(prior?.identity===identity&&Date.parse(prior.retryAt)>now()){stats.backoff++;continue;}
+   if(!canReadSource(a)){stats.unsupported_routes++;continue;}
    if(stats.reads>=maxReads||reads>=maxPerTarget||!canRead())continue;reads++;stats.reads++;
    let fresh;try{fresh=await readSource(a);}catch{}
    const at=new Date(now()).toISOString();
@@ -38,4 +39,7 @@ function parsePage(html,a){
  const s=j.baseSalary,v=s?.value;if(s?.currency!=='USD'||!/^(YEAR|ANNUAL)$/i.test(v?.unitText||'')||!Number.isFinite(+v.minValue)||!Number.isFinite(+v.maxValue))return null;
  return {identityVerified:true,basis:'EMPLOYER_POSTED',pay:{low:+v.minValue,high:+v.maxValue}};
 }
-module.exports={create,parsePage};
+function firstParty(raw,company){try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password)return false;if(L.atsApi(raw)||/\.oraclecloud\.com$/i.test(u.hostname))return true;
+ const hosts={'tesla':['tesla.com'],'applied materials':['appliedmaterials.com'],'ford motor company':['ford.com'],'anduril industries':['anduril.com'],'boeing':['boeing.com'],'blue origin':['blueorigin.com'],'carrier':['carrier.com'],'eaton':['eaton.com'],'northrop grumman':['northropgrumman.com'],'oracle':['oracle.com'],'stryker':['stryker.com']};
+ return (hosts[C.norm(company)]||[]).some(h=>u.hostname===h||u.hostname.endsWith('.'+h));}catch{return false;}}
+module.exports={create,parsePage,firstParty};

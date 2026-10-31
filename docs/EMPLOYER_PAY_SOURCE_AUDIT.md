@@ -71,8 +71,10 @@ master/archive audit; never replace complete coverage with a failed or partial a
 The existing programmed `enrich-ats-pay` worker now calls the selector when exact target sources and same-employer
 evidence have not supplied pay and a comparable estimate is needed. Recent saved source ranges are reused without
 network reads. Older/missing source evidence receives at most six public checks per run, two per target job, inside
-the existing run deadline. A refreshed source requires an exact company/title/site full JobPosting with explicit USD
-annual baseSalary. Missing structured evidence, failed pages, wrong identities, expired postings and unclear pay are
+the existing run deadline. A refreshed source requires an employer-owned or recognizable employer ATS page, an exact
+company/title/site full JobPosting, and explicit USD annual baseSalary. A saved aggregator URL may lead to the same
+canonical job's known ATS page; an aggregator's structured salary alone cannot establish new employer pay. Missing
+structured evidence, failed pages, wrong identities, expired postings and unclear pay are
 skipped; they never block the original target or become its employer-posted salary. Estimates retain the existing
 level/scope/size/geography/age weighting and confidence rules. Salary-repair and no-network upgrade passes do not
 trigger these additional source checks.
