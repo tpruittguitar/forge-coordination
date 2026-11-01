@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-01T19:27:04.759Z",
- "sourceCommit": "b02d8fcaa54cc01af0e584d52a81b5ce6f37dcee",
+ "builtAt": "2026-11-01T20:03:56.949Z",
+ "sourceCommit": "ed7009815db2c78f63f348e6344d05f6a46c321d",
  "counts": {
-  "total": 25,
+  "total": 26,
   "BLOCKING": 0,
-  "ACTION": 14,
+  "ACTION": 15,
   "WATCH": 11,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 8,
-  "UPKEEP": 9
+  "UPKEEP": 10
  },
  "items": [
   {
@@ -189,6 +189,18 @@
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
    "source": "receipts/FORGE-OUTCOME-CHATGPT-20261101T192412Z_VERIFICATION.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-OUTCOME-CHATGPT-20261101T192412Z_VERIFICATION.json",
+   "at": "2026-11-01T00:00:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:SALARY",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "SALARY lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt (CHATGPT, status COMPLETE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
    "at": "2026-11-01T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -720,6 +732,16 @@
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
+  },
+  {
+   "lane": "SALARY",
+   "provider": "CHATGPT",
+   "lastAt": "2026-11-01T00:00:00-05:00",
+   "lastStatus": "COMPLETE",
+   "lastFile": "receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
+   "runs7d": 5,
+   "usualGapHours": 0,
+   "overdue": true
   },
   {
    "lane": "WEB-CAREER",
