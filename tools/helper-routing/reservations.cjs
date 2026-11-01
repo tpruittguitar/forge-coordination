@@ -13,8 +13,14 @@ function intakeOwner(key,x=load()){return x.enabled?x.intake.find(r=>r.key===key
 function enrichmentIds(x=load()){return new Set(x.enabled?x.enrichment.map(r=>r.primaryId):[]);}
 function validateBatch(batch,x=load()){
  if(!x.enabled||batch?.schema!=='forge.claude-helper-batch.v1'||batch.provider!=='Claude'||!TASKS.includes(batch.taskKey)||batch.assignmentId!==x.assignmentId||!Array.isArray(batch.items)||!batch.items.length||batch.items.length>20||!batch.runId||!batch.instructionCommit)throw Error('Invalid helper batch envelope');
- const seen=new Set();for(const item of batch.items){const key=item.key||item.primaryId;if(!key||seen.has(key))throw Error('Duplicate helper item');seen.add(key);const owner=batch.taskKey===TASKS[2]?(x.enrichment.find(r=>r.primaryId===key)?.task):intakeOwner(key,x);if(owner!==batch.taskKey)throw Error('Item outside assigned work');if(!item.sourceEvidence||!item.recommendation||item.writerSubmitted!==false)throw Error('Evidence-only result required');}
- return{valid:true,taskKey:batch.taskKey,items:seen.size,productionAuthorized:false};
+ let releasedItems=0;
+ const seen=new Set();for(const item of batch.items){const key=item.key||item.primaryId;if(!key||seen.has(key))throw Error('Duplicate helper item');seen.add(key);const owner=batch.taskKey===TASKS[2]?(x.enrichment.find(r=>r.primaryId===key)?.task):intakeOwner(key,x);
+  // A partially consumed immutable batch stays readable after proven items are
+  // released. This validates historical assignment only: intakeOwner() and
+  // enrichmentIds() still exclude released work from production ownership.
+  const released=!owner&&(x.released||[]).some(r=>(r.key||r.primaryId)===key&&r.task===batch.taskKey&&typeof r.proof==='string'&&r.proof.startsWith('receipts/'));
+  if(owner!==batch.taskKey&&!released)throw Error('Item outside assigned work');if(released)releasedItems++;if(!item.sourceEvidence||!item.recommendation||item.writerSubmitted!==false)throw Error('Evidence-only result required');}
+ return{valid:true,taskKey:batch.taskKey,items:seen.size,activeItems:seen.size-releasedItems,releasedItems,productionAuthorized:false};
 }
 if(require.main===module){const [mode,file,after]=process.argv.slice(2);try{const x=load();if(mode==='validate')console.log(JSON.stringify(validateBatch(JSON.parse(fs.readFileSync(file,'utf8')),x)));else if(TASKS.includes(mode)){const all=(mode===TASKS[2]?x.enrichment:x.intake).filter(r=>r.task===mode),i=file==='--after'?all.findIndex(r=>(r.key||r.primaryId)===after):-1;if(file&&file!=='--after'||file==='--after'&&i<0)throw Error('Unknown continuation; never silently restart');const items=all.slice(i+1,i+21);console.log(JSON.stringify({assignmentId:x.assignmentId,mode:'EVIDENCE_ONLY',taskKey:mode,total:all.length,items,nextAfter:items.at(-1)?.key||items.at(-1)?.primaryId||null}));}else throw Error('Supply task key or validate <batch.json>');}catch(e){console.error(e.message);process.exitCode=1;}}
 module.exports={TASKS,shard,validate,load,intakeOwner,enrichmentIds,validateBatch};
