@@ -1,0 +1,655 @@
+{
+  "schema": "forge.function-mismatch-backtest.v1",
+  "at": "2026-11-01T21:21:30.503Z",
+  "mode": "READ_ONLY_ANALYSIS_NOT_ENABLED",
+  "inputs": {
+    "sourceCommit": "56ddc59a77fb2c46e9c6f454ca520623bd76d2a3",
+    "masterSha256": "498fb3695329d128a9d939157e5ba0fdf5278a0e0762110a4e80d0a460f202c9",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "canonicalDistinct": 4083,
+    "masterRows": 3301,
+    "archiveRows": 782,
+    "canonicalRulesStatus": "ACTIVE",
+    "writerSubmissions": 0,
+    "masterMutations": 0,
+    "ruleChanges": 0
+  },
+  "cohorts": {
+    "appliedPursuedOrLater": 576,
+    "canonicalApplied": 353,
+    "canonicalRejectedAfterApplication": 223,
+    "canonicalReadyToPursue": 0,
+    "declinedAll": 1633,
+    "declinedWithoutKnownPriorPursuit": 1633,
+    "declinedAlsoKnownPursued": 0,
+    "positiveLabelSources": "Canonical APPLIED/REJECTED_BY_EMPLOYER/READY_TO_PURSUE, explicit saved APP_DATE/PRIOR_APPLICATION, or verified application/interview event. Automated PURSUIT_STATUS recommendation is not a human pursuit label."
+  },
+  "rules": [
+    {
+      "ruleId": "FM_TAX",
+      "pattern": "\\btax(?:ation)?\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_CLINICAL_CARE",
+      "pattern": "\\b(?:clinical|patient care|nursing|nurse|physician|surgical services|hospital laboratory|health services|senior living|assisted living)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_FOOD_SERVICE",
+      "pattern": "\\b(?:food[ -]service|restaurant|culinary|chef|dining|catering)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_CLAIMS",
+      "pattern": "\\bclaims\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_RETAIL_STORE",
+      "pattern": "\\b(?:retail[ -]store|store manager|store director|retail district|retail operations)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_PUBLIC_SAFETY",
+      "pattern": "\\b(?:fire chief|fire marshal|police|sheriff|law enforcement|public safety|emergency management)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_SOFTWARE_ONLY",
+      "pattern": "\\bsoftware\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 1,
+      "declinesMatchedPct": 0.0612369871402327,
+      "falseClosureExamples": [],
+      "declineExamples": [
+        {
+          "primaryId": "V2I-625217638BBD",
+          "company": "KARMA AUTOMOTIVE, LLC",
+          "title": "Sr. Technical Specialist – HCU Controls Software & Hardware",
+          "location": "Irvine, CA",
+          "bucket": "DECLINED_BY_TIM"
+        }
+      ],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_DATACENTER_OPS",
+      "pattern": "\\bdata[ -]?cent(?:er|re)\\b.*\\boperations\\b|\\boperations\\b.*\\bdata[ -]?cent(?:er|re)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_HUMAN_RESOURCES",
+      "pattern": "\\b(?:human resources|talent acquisition|chief people officer|people operations)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_SALES_MARKETING",
+      "pattern": "\\b(?:sales|marketing|account executive|business development)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 0,
+      "declinesMatchedPct": 0,
+      "falseClosureExamples": [],
+      "declineExamples": [],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    },
+    {
+      "ruleId": "FM_FINANCE_ACCOUNTING",
+      "pattern": "\\b(?:finance|financial|accounting|controller|treasury|payroll)\\b",
+      "manufacturingContextExemption": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+      "positiveCohort": 576,
+      "falseClosures": 0,
+      "falseClosurePct": 0,
+      "declinedWithoutPursuitCohort": 1633,
+      "declinesMatched": 1,
+      "declinesMatchedPct": 0.0612369871402327,
+      "falseClosureExamples": [],
+      "declineExamples": [
+        {
+          "primaryId": "V2F-DBA519944BC0",
+          "company": "OneOncology",
+          "title": "Sr. Manager, Financial Operations",
+          "location": "Nashville, TN",
+          "bucket": "DECLINED_BY_TIM"
+        }
+      ],
+      "zeroObservedFalseClosures": true,
+      "enabled": false
+    }
+  ],
+  "pendingMismatchAnalysis": {
+    "pendingIntakeCards": 4185,
+    "rules": [
+      {
+        "ruleId": "FM_TAX",
+        "matchedCards": 0
+      },
+      {
+        "ruleId": "FM_CLINICAL_CARE",
+        "matchedCards": 62
+      },
+      {
+        "ruleId": "FM_FOOD_SERVICE",
+        "matchedCards": 23
+      },
+      {
+        "ruleId": "FM_CLAIMS",
+        "matchedCards": 5
+      },
+      {
+        "ruleId": "FM_RETAIL_STORE",
+        "matchedCards": 6
+      },
+      {
+        "ruleId": "FM_PUBLIC_SAFETY",
+        "matchedCards": 0
+      },
+      {
+        "ruleId": "FM_SOFTWARE_ONLY",
+        "matchedCards": 2
+      },
+      {
+        "ruleId": "FM_DATACENTER_OPS",
+        "matchedCards": 9
+      },
+      {
+        "ruleId": "FM_HUMAN_RESOURCES",
+        "matchedCards": 5
+      },
+      {
+        "ruleId": "FM_SALES_MARKETING",
+        "matchedCards": 32
+      },
+      {
+        "ruleId": "FM_FINANCE_ACCOUNTING",
+        "matchedCards": 9
+      }
+    ],
+    "originalSevenMatchedCards": 98,
+    "allCandidateMatchedCards": 153,
+    "actualClosures": 0,
+    "enabled": false
+  },
+  "combinedOriginalSeven": {
+    "ruleIds": [
+      "FM_TAX",
+      "FM_CLINICAL_CARE",
+      "FM_FOOD_SERVICE",
+      "FM_CLAIMS",
+      "FM_RETAIL_STORE",
+      "FM_PUBLIC_SAFETY",
+      "FM_SOFTWARE_ONLY"
+    ],
+    "falseClosures": 0,
+    "falseClosurePct": 0,
+    "declinesMatched": 1,
+    "declinesMatchedPct": 0.0612369871402327,
+    "falseClosureExamples": [],
+    "enabled": false
+  },
+  "combinedAllCandidates": {
+    "ruleIds": [
+      "FM_TAX",
+      "FM_CLINICAL_CARE",
+      "FM_FOOD_SERVICE",
+      "FM_CLAIMS",
+      "FM_RETAIL_STORE",
+      "FM_PUBLIC_SAFETY",
+      "FM_SOFTWARE_ONLY",
+      "FM_DATACENTER_OPS",
+      "FM_HUMAN_RESOURCES",
+      "FM_SALES_MARKETING",
+      "FM_FINANCE_ACCOUNTING"
+    ],
+    "falseClosures": 0,
+    "falseClosurePct": 0,
+    "declinesMatched": 2,
+    "declinesMatchedPct": 0.1224739742804654,
+    "falseClosureExamples": [],
+    "enabled": false
+  },
+  "combinedZeroObservedFalseClosureCandidates": {
+    "ruleIds": [
+      "FM_TAX",
+      "FM_CLINICAL_CARE",
+      "FM_FOOD_SERVICE",
+      "FM_CLAIMS",
+      "FM_RETAIL_STORE",
+      "FM_PUBLIC_SAFETY",
+      "FM_SOFTWARE_ONLY",
+      "FM_DATACENTER_OPS",
+      "FM_HUMAN_RESOURCES",
+      "FM_SALES_MARKETING",
+      "FM_FINANCE_ACCOUNTING"
+    ],
+    "falseClosures": 0,
+    "falseClosurePct": 0,
+    "declinesMatched": 2,
+    "declinesMatchedPct": 0.1224739742804654,
+    "falseClosureExamples": [],
+    "enabled": false
+  },
+  "geoSensitivity": {
+    "positive": {
+      "rows": 576,
+      "known": 112,
+      "unknown": 464,
+      "below40": 21,
+      "rankingOnly": true
+    },
+    "declined": {
+      "rows": 1633,
+      "known": 1231,
+      "unknown": 402,
+      "below40": 597,
+      "rankingOnly": true
+    }
+  },
+  "postedPaySensitivity": {
+    "positive": {
+      "known": 8,
+      "upperBelow190k": 0,
+      "examples": []
+    },
+    "declined": {
+      "known": 240,
+      "upperBelow190k": 93
+    },
+    "basis": "Diagnostic only: strict saved EMPLOYER_POSTED ranges accepted by existing postedAnchor(); estimated pay excluded. 190000 is a candidate sensitivity value, not a new global floor or closure rule."
+  },
+  "decisionRate": {
+    "windowStart": "2026-10-02T21:21:30.503Z",
+    "windowEnd": "2026-11-01T21:21:30.503Z",
+    "days": 30,
+    "latestExplicitTimStateActions": 1354,
+    "latestActionsPerCalendarDay": 45.13333333333333,
+    "activeDates": 28,
+    "perDay": {
+      "2026-10-21": 57,
+      "2026-10-14": 6,
+      "2026-10-25": 474,
+      "2026-10-24": 24,
+      "2026-10-19": 17,
+      "2026-10-16": 1,
+      "2026-10-18": 7,
+      "2026-10-02": 17,
+      "2026-10-20": 89,
+      "2026-10-26": 104,
+      "2026-10-15": 7,
+      "2026-10-06": 14,
+      "2026-10-10": 7,
+      "2026-10-27": 182,
+      "2026-10-05": 10,
+      "2026-10-11": 4,
+      "2026-10-30": 33,
+      "2026-10-31": 233,
+      "2026-10-07": 5,
+      "2026-10-22": 3,
+      "2026-10-23": 1,
+      "2026-10-29": 10,
+      "2026-10-28": 1,
+      "2026-10-04": 26,
+      "2026-10-03": 8,
+      "2026-10-09": 11,
+      "2026-10-13": 1,
+      "2026-10-08": 2
+    },
+    "latestActionBuckets": {
+      "DECLINED_BY_TIM": 1089,
+      "CLOSED_DEAD": 38,
+      "INVALID_DISCOVERY": 3,
+      "APPLIED": 28,
+      "MANUAL_RESEARCH": 190,
+      "REJECTED_BY_EMPLOYER": 2,
+      "DUPLICATE": 4
+    },
+    "datedKnownApplicationsInWindow": 104,
+    "status": "OBSERVED_LOWER_BOUND_NOT_FULL_DECISION_EVENT_HISTORY",
+    "limitations": "Requires both TIM/TIM_EXPLORER provenance and an explicit saved TIM_RULING decision type. Each row retains its latest state action only. Repeated decisions and earlier Tim actions superseded by later application/rejection updates are missing. Applications are not all reviews; no defensible hard WIP limit is inferred."
+  },
+  "pursueRatePerEnrichedJob": {
+    "value": null,
+    "status": "NOT_IDENTIFIABLE_FROM_CURRENT_RECORDS",
+    "reason": "No complete 30-day cohort linking every enrichment completion, exposure to Tim, all decisions and pursuit. PROCESS_COMPLETIONS starts October 31, retains eight days and records enrichment transitions rather than Tim decision events. Current stocks and latest state dates cannot recover the denominator."
+  },
+  "searches": [
+    {
+      "searchSha256": "5edef585fc99a3397d0e71e9d89756966f5ccf454d27d5c7f621859c4fe0c563",
+      "provider": "LinkedIn",
+      "keywords": "(director OR \"head of\" OR \"vice president\" OR \"senior manager\" OR manager) (manufacturing OR quality OR production OR operations OR industrialization OR launch OR \"manufacturing engineering\") BMW Group US or Ford Motor Company or General Motors or Hyundai Motor Company or Hyundai Motor Group or Hyundai Motor Group Metaplant America (HMGMA) or Lucid Motors or Mazda North American Operations or Mazda Toyota Manufacturing or Mercedes-Benz AG or Mercedes-Benz USA or Nissan Motor Corporation or Scout Motors Inc. or Slate Auto or Stellantis or Subaru of America or Subaru of Indiana Automotive or Tesla or Toyota Motor Corporation or Toyota North America &sortBy=DD",
+      "sourceMessages": 1,
+      "capturedCandidates": 1000,
+      "linkedCanonicalJobs": 557,
+      "provenNewInsertions": 335,
+      "appliedOrPursued": 24,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "0c8f82c01c2bca51ae8213bec8dd7a87330cd5bbe708ce7fbc2a16be7c44956a",
+      "provider": "LinkedIn",
+      "keywords": "Head of Operations",
+      "sourceMessages": 1,
+      "capturedCandidates": 898,
+      "linkedCanonicalJobs": 63,
+      "provenNewInsertions": 41,
+      "appliedOrPursued": 2,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "8c189c741ff973364f3d33613d9aa37f784e18b568c441279e04b5a0dd7d6a07",
+      "provider": "LinkedIn",
+      "keywords": "(\"director of manufacturing engineering\" OR \"head of manufacturing engineering\" OR \"director of industrialization\" OR \"senior manager manufacturing engineering\") (automotive OR battery OR defense OR EV)",
+      "sourceMessages": 1,
+      "capturedCandidates": 752,
+      "linkedCanonicalJobs": 329,
+      "provenNewInsertions": 161,
+      "appliedOrPursued": 22,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "5148f1e17009986921ac0ef1621a964a97d4a09213c7afb375dda281f4481628",
+      "provider": "LinkedIn",
+      "keywords": "(\"director of manufacturing engineering\" OR \"head of manufacturing engineering\" OR \"director of industrialization\" OR \"senior manager manufacturing engineering\") (automotive OR battery OR defense OR EV)",
+      "sourceMessages": 1,
+      "capturedCandidates": 671,
+      "linkedCanonicalJobs": 127,
+      "provenNewInsertions": 70,
+      "appliedOrPursued": 6,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "65c1be005a43c90e4332ce29284787d048453fb82ce6a0e9ac741ac35a4050c3",
+      "provider": "LinkedIn",
+      "keywords": "(director OR \"vice president\" OR \"head of\" OR \"senior manager\") (manufacturing OR \"manufacturing engineering\" OR production OR industrialization OR \"plant manager\" OR operations) (\"Korn Ferry\" OR \"Heidrick\" OR \"Spencer Stuart\" OR \"DHR Global\" OR \"ON Partners\" OR \"Kimball Hunt\" OR \"Wilbanks Partners\" OR \"Egon Zehnder\" OR \"Russell Reynolds\" OR \"Diversified Search\" OR \"Slone Partners\" OR \"JM Search\" OR \"Charles Aris\" OR \"Kensington International\" OR \"Hobbs & Towne\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 667,
+      "linkedCanonicalJobs": 362,
+      "provenNewInsertions": 174,
+      "appliedOrPursued": 25,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "f5a26e69f1a8d8cedc56bfe436ab0ffb0704df49531e7fa37d98845aef8ec406",
+      "provider": "LinkedIn",
+      "keywords": "“equivalent experience”",
+      "sourceMessages": 1,
+      "capturedCandidates": 551,
+      "linkedCanonicalJobs": 107,
+      "provenNewInsertions": 64,
+      "appliedOrPursued": 6,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "f3081df23edf88cdb0a2bb1ea7370d5987c295e84587ef7faeb61dd6444436ca",
+      "provider": "LinkedIn",
+      "keywords": "(\"director of manufacturing\" OR \"director, manufacturing\" OR \"head of manufacturing\" OR \"vice president of manufacturing\") (launch OR ramp OR greenfield OR startup OR \"new plant\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 541,
+      "linkedCanonicalJobs": 283,
+      "provenNewInsertions": 121,
+      "appliedOrPursued": 16,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "82439af1f29ab2348a301bef68dc9fc39884a0150504fb4c93188f734716bbd5",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 540,
+      "linkedCanonicalJobs": 92,
+      "provenNewInsertions": 41,
+      "appliedOrPursued": 5,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "44a8df269920202e86c8abd86d6ced90569e6ca91e39f2abca02f349032f7a77",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 437,
+      "linkedCanonicalJobs": 55,
+      "provenNewInsertions": 33,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "54b58d1c5ed8e3b87693d31ccbd85d6d60b5b10021f84fcafce936047bbf4e35",
+      "provider": "LinkedIn",
+      "keywords": "(director OR \"head of\" OR \"vice president\" OR \"senior manager\" OR manager) (manufacturing OR quality OR production OR operations OR industrialization OR launch OR \"manufacturing engineering\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 296,
+      "linkedCanonicalJobs": 39,
+      "provenNewInsertions": 9,
+      "appliedOrPursued": 1,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "fa9243eb857ca37f3b8a41a454e39e7d1d0b581a89333aed92f0fabab2ebc6b3",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 209,
+      "linkedCanonicalJobs": 137,
+      "provenNewInsertions": 118,
+      "appliedOrPursued": 3,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "cd63d67d95d560ee27b557f5c390af3d6ec5e4c57be2bbfd9413446f9bb28686",
+      "provider": "LinkedIn",
+      "keywords": "Scale ramp rate",
+      "sourceMessages": 1,
+      "capturedCandidates": 42,
+      "linkedCanonicalJobs": 37,
+      "provenNewInsertions": 12,
+      "appliedOrPursued": 7,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "180b617c17efd5a4f03a2cc2b1aed1281fc243b5359dc758c84412bb7bbce684",
+      "provider": "LinkedIn",
+      "keywords": "Scale ramp rate",
+      "sourceMessages": 1,
+      "capturedCandidates": 28,
+      "linkedCanonicalJobs": 28,
+      "provenNewInsertions": 13,
+      "appliedOrPursued": 2,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "7d7c9db4b3f8ade51840f4102f6f770ada28603aed3adae333635ae613bdf420",
+      "provider": "LinkedIn",
+      "keywords": "(robotics OR humanoid OR \"physical AI\" OR \"embodied AI\" OR \"autonomous systems\") (manufacturing OR production OR \"scale-up\" OR ramp OR \"new product introduction\" OR NPI OR launch) (Director OR \"Head of\" OR \"VP\" OR \"Senior Manager\") (quality OR operations OR manufacturing)",
+      "sourceMessages": 1,
+      "capturedCandidates": 25,
+      "linkedCanonicalJobs": 12,
+      "provenNewInsertions": 5,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "0af8109773fb5a552037f35b487eb1b17d5b094c6b719143b3c9d39ea82bc06f",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 25,
+      "linkedCanonicalJobs": 21,
+      "provenNewInsertions": 8,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "dc3bc7f0a6213a05832c32a244bbbfbcf3f0f9f7af3e2b78fec9d73d8ad00581",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 25,
+      "linkedCanonicalJobs": 6,
+      "provenNewInsertions": 0,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "5b20195c90d8cde472b452ae7f8006a74648f6fbacb69941ed855db9fcdf0ad4",
+      "provider": "LinkedIn",
+      "keywords": "(director OR \"head of\" OR \"vice president\" OR \"senior manager\" OR manager) (manufacturing OR quality OR production OR operations OR industrialization OR launch OR \"manufacturing engineering\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 6,
+      "linkedCanonicalJobs": 3,
+      "provenNewInsertions": 3,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "29c7024a98b1d3c8779ec175cf2eb386ac729136e7e8e75eac4c251b3fc8dbc2",
+      "provider": "LinkedIn",
+      "keywords": "(\"director of quality\" OR \"director, quality\" OR \"head of quality\" OR \"vice president of quality\") (automotive OR battery OR EV OR launch OR greenfield)",
+      "sourceMessages": 1,
+      "capturedCandidates": 6,
+      "linkedCanonicalJobs": 5,
+      "provenNewInsertions": 0,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "c11d7afeb0d66e54f253330c79de451e971c2e5b213c6eee5af5a240de881697",
+      "provider": "LinkedIn",
+      "keywords": "(manufacturing OR quality OR operations OR production) (director OR \"head of\" OR \"senior manager\")",
+      "sourceMessages": 1,
+      "capturedCandidates": 6,
+      "linkedCanonicalJobs": 0,
+      "provenNewInsertions": 0,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    },
+    {
+      "searchSha256": "8b426738dee180cb01bb16f60f9eb998444639ca2d3d62f056f5b78609fa60a7",
+      "provider": "Other board",
+      "keywords": "",
+      "sourceMessages": 1,
+      "capturedCandidates": 0,
+      "linkedCanonicalJobs": 0,
+      "provenNewInsertions": 0,
+      "appliedOrPursued": 0,
+      "partialSourceCoverage": true,
+      "notCausalAdmissionAttribution": true
+    }
+  ],
+  "searchLimitations": "Only saved result-search sources can be grouped. Counts overlap across searches; linked canonical jobs include already-known jobs. Unread pages remain unknown. No complete per-alert denominator or 30-day causal admitted/pursued attribution exists for direct/legacy board alerts.",
+  "limitations": [
+    "Retrospective current-card-field proxy, not a full historical card replay: some titles or posted pay were corrected after discovery; missing original cards stay explicit.",
+    "No final scores, degree evidence, inferred management scope or salary estimates used in title mismatch tests.",
+    "Zero observed matches in this cohort is not proof of zero future false closures; no proposed term is enabled.",
+    "Not all earlier Pursue decisions survive current row state/history. Positive cohort is the known application/pursuit evidence that can be recovered."
+  ],
+  "recommendation": "Review false-closure examples and term definitions before approving policy; keep geography and uncertain compensation as ranking factors. No daily processing cap or hard WIP limit is introduced."
+}
