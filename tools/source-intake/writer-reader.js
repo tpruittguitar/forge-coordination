@@ -1,10 +1,12 @@
 'use strict';
 /* Authorized read-only transport; never submit and never log the Writer key. */
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
-async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,clock=()=>Date.now(),requestId='',primaryIds=[]}={}){
+async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,clock=()=>Date.now(),requestId='',primaryIds=[],primaryId=''}={}){
  if(!key)throw Error('BLOCKED: credential required');
- if(!['ping','master','writer_status','archive','request_result','receipt_index','row_readback','rules'].includes(action))throw Error('BLOCKED: unsupported Writer action');
+ if(!['ping','master','writer_status','archive','request_result','receipt_index','row_readback','rules','evidence'].includes(action))throw Error('BLOCKED: unsupported Writer action');
+ if(action==='evidence'&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(primaryId))throw Error('BLOCKED: exact canonical evidence ID required');
  const started=clock(),url=new URL(ENDPOINT);url.searchParams.set('action',action);url.searchParams.set('key',key);if(['request_result','receipt_index','row_readback'].includes(action)){if(!/^[A-Za-z0-9_-]{3,160}$/.test(requestId))throw Error('BLOCKED: valid receipt request ID required');url.searchParams.set('requestId',requestId);if(action==='row_readback'){if(!Array.isArray(primaryIds)||!primaryIds.length||primaryIds.length>25||primaryIds.some(x=>!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x)))throw Error('BLOCKED: exact canonical readback IDs required');url.searchParams.set('ids',primaryIds.join(','))}}
+ if(action==='evidence')url.searchParams.set('primaryId',primaryId);
  let resp,ended;
  for(let attempt=0;attempt<2;attempt++){
   const attemptStart=clock();
@@ -17,6 +19,7 @@ async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThi
   throw Error('BLOCKED: Writer HTTP '+resp.status);
  }
  let data;try{data=await resp.json()}catch{throw Error('BLOCKED: Writer JSON invalid')}
+ if(action==='evidence'&&data?.ok===false&&/^identity not unique: 0 live rows match /.test(String(data.error||'')))throw Error('BLOCKED: live-row evidence unavailable; inspect canonical archive and saved source evidence, not credentials');
  if(!data||data.ok!==true)throw Error('BLOCKED: Writer read not authorized');
  const completed=clock();if(completed<started||completed-started>65000)throw Error('BLOCKED: Writer read total time invalid');
  return {data,startedAt:new Date(started).toISOString(),completedAt:new Date(completed).toISOString()};
