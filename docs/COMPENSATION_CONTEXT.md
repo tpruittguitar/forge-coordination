@@ -47,3 +47,23 @@ bias, underestimation frequency, posted-midpoint range coverage and the share of
 Every alias of the held-out salary source is excluded. Cases include an unweighted comparison error when available.
 This is a diagnostic on the available sample, not proof of future accuracy or a guaranteed improvement. Do not raise
 estimates simply to make them exceed a desired salary. Model weighting is a transparent heuristic pending calibration.
+
+### AI manufacturing and tracking-link regression
+
+Explicit AI/ML leadership titles require comparable AI/ML specialty evidence as well as the existing level, function
+and management-track match. Generic plant-management and plant-operations salaries cannot anchor an AI manufacturing
+enablement director. This is an evidence compatibility guard, not a technology/company pay multiplier; without suitable
+evidence the worker retains a missing/low-confidence result under the existing fallback rules. Saved estimates with
+incompatible named anchors enter the existing bounded repair pass; protected decisions remain excluded.
+
+For Recruitics sources, recover the explicit public HTTPS `rx_url` before attempting the tracking wrapper. A Meta job
+path with an intact numeric identity is usable even when trailing tracking query parameters were clipped. Retain the
+initiating URL; never rewrite source identity or infer a new job from a generic redirect. Direct pages still require the
+normal title/company/location checks. Structured USD annual `baseSalary` takes precedence over a computed estimate.
+For US-remote rows, require explicit US remote eligibility rather than assuming a local or foreign range applies.
+
+Meta `V2I-E955D669D095` was corrected through Writer from a LOW $153,000–$180,000 generic estimate to the published
+$245,000–$309,000 annual base range. Meta's exact careers requisition established the remote-US identity; employer-provided
+LinkedIn pay and the matching remote Indeed posting established the range. The Meta careers JSON-LD itself did not
+contain salary, so it is not claimed as the pay disclosure. Bonus/equity remain separate and unestimated. Receipt:
+`receipts/FORGE-META-PAY-CHATGPT-20261101T0136Z-B01_VERIFIED.json`.

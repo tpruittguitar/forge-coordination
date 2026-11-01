@@ -105,7 +105,10 @@ function median(a) { const s = a.slice().sort((x, y) => x - y), n = s.length; re
 function comparable(row, anchor) {
   // Recompute from actual titles, never trust a cached coarse level.
   const track = title => /\b(program|project)\s+manager\b/i.test(title||'') ? 'PROGRAM' : 'LINE';
-  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title);
+  // Applied AI/ML leadership is not a generic plant-management comparator. Do not
+  // infer a technology premium; with no matching specialty, retain missing evidence.
+  const specialty=title=>/\b(?:AI|ML|artificial intelligence|machine learning)\b/i.test(title||'')?'AI_ML':'GENERAL';
+  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title) && specialty(row.TITLE)===specialty(anchor.title);
 }
 function invalidSavedAnchors(row, rows) {
   const p = row.p || {};

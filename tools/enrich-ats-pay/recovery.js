@@ -1,9 +1,10 @@
 'use strict';
 const crypto=require('node:crypto'),L=require('./lib'),P=require('./public-posting');
 const KEYS=['ATS_POSTING_URL','DIRECT_JOB_URL','CLAUDE_REVIEW_EVIDENCE_URL','DEGREE_EVIDENCE_URL','SALARY_EVIDENCE_URL','LIVENESS_EVIDENCE_URL','SOURCE_URL','SOURCE','COMPANY_SOURCE_URL','INTAKE_SOURCE_URL','INITIATING_URL'];
-function urls(row){return [...new Set(KEYS.flatMap(k=>(String(row.p[k]||'').match(/https:\/\/[^\s;|"<>]+/g)||[]).map(x=>P.publicUrl(x.replace(/[),.]+$/,''))).filter(Boolean)))].sort((a,b)=>rank(a)-rank(b));}
-function rank(u){return /email\.|\.sendgrid\.net|t\.ladders|\.indeed\.com\/jobs\?|giga-texas|\/cmp\//i.test(u)?3:L.atsApi(u)?0:L.aggregatorPage(u)?2:1;}
-function readableRoute(url,off=[]){const host=new URL(url).hostname;if(/(^email\.|\.sendgrid\.net$|^t\.ladders)/i.test(host))return false;if(off.includes('indeed')&&/(^|\.)indeed\.com$/i.test(host))return false;return true;}
+function unwrap(raw){try{const u=new URL(raw);if(!/(^|\.)recruitics\.com$/i.test(u.hostname))return null;const target=P.publicUrl(u.searchParams.get('rx_url'));if(!target)return null;const t=new URL(target);if(/(^|\.)metacareers\.com$/i.test(t.hostname)&&/^\/jobs\/\d+\/?$/.test(t.pathname)){t.search='';t.hash='';}return t.href;}catch{return null;}}
+function urls(row){return [...new Set(KEYS.flatMap(k=>(String(row.p[k]||'').match(/https:\/\/[^\s;|"<>]+/g)||[]).flatMap(x=>{const u=P.publicUrl(x.replace(/[),.]+$/,''));return u?[unwrap(u),u].filter(Boolean):[];})))].sort((a,b)=>rank(a)-rank(b));}
+function rank(u){return /email\.|\.sendgrid\.net|t\.ladders|recruitics\.com|\.indeed\.com\/jobs\?|giga-texas|\/cmp\//i.test(u)?3:L.atsApi(u)?0:L.aggregatorPage(u)?2:1;}
+function readableRoute(url,off=[]){const host=new URL(url).hostname;if(/(^email\.|\.sendgrid\.net$|^t\.ladders|(^|\.)recruitics\.com$)/i.test(host))return false;if(off.includes('indeed')&&/(^|\.)indeed\.com$/i.test(host))return false;return true;}
 function exactApi(row,api,data){const job=api.kind==='workday'?data?.jobPostingInfo:api.kind==='ashby'?data?.jobs?.find(x=>x.id===api.id):data,norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim();if(norm(job?.title||job?.text)!==norm(row.TITLE))return null;return L.parseAts(api.kind,data,api.id);}
 function boardMatch(row,postings){const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim(),hits=postings.filter(p=>norm(p.title)===norm(row.TITLE)&&norm(p.location)===norm(row.LOCATION));return hits.length===1?hits[0]:null;}
 function fingerprint(row,needs){return crypto.createHash('sha256').update(JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION,needs,urls(row)])).digest('hex');}

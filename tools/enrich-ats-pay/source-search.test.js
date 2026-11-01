@@ -19,3 +19,9 @@ test('strict page identity and compensation checks reject wrong site, role, curr
  assert.equal(S.parsePage(page(j),a).pay.high,260000);
  for(const change of [x=>x.title='Quality Manager',x=>x.jobLocation.address.addressLocality='Akron',x=>x.hiringOrganization.name='Other',x=>x.baseSalary.currency='CAD',x=>x.baseSalary.value.unitText='HOUR',x=>x.description='Salary snippet',x=>x.validThrough='2020-01-01']){const k=structuredClone(j);change(k);assert.equal(S.parsePage(page(k),a),null);}
 });
+
+test('explicit US remote job evidence is required for a remote target and Meta routes are recognized',()=>{
+ const a={co:'Meta',title:'Director, AI Manufacturing Enablement',location:'Remote, USA'},j={'@type':'JobPosting',title:a.title,hiringOrganization:{name:'Meta'},description:'Complete employer role description. '.repeat(20),jobLocationType:'TELECOMMUTE',applicantLocationRequirements:[{'@type':'Country',name:'United States of America'}],baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:245000,maxValue:309000}}},page=x=>'<script type="application/ld+json">'+JSON.stringify(x)+'</script>';
+ assert.equal(S.firstParty('https://www.metacareers.com/jobs/123','Meta'),true);assert.equal(S.parsePage(page(j),a).pay.high,309000);
+ for(const change of [x=>delete x.jobLocationType,x=>x.applicantLocationRequirements=[{name:'Canada'}],x=>delete x.baseSalary]){const k=structuredClone(j);change(k);assert.equal(S.parsePage(page(k),a),null);}
+});

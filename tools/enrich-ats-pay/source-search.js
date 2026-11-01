@@ -33,13 +33,15 @@ function parsePage(html,a){
  for(const m of String(html).matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi))try{visit(JSON.parse(m[1]));}catch{}
  const norm=C.norm,hits=jobs.filter(j=>norm(j.title)===norm(a.title)&&norm(j.hiringOrganization?.name)===norm(a.co));if(hits.length!==1)return null;const j=hits[0];
  const places=[].concat(j.jobLocation||[]).map(l=>l.address).filter(Boolean),loc=norm(a.location),state=L.stateFrom(a.location);
- if(!state||!places.some(p=>{const city=norm(p.addressLocality),region=L.stateFrom(p.addressRegion)||String(p.addressRegion||'').toUpperCase();return region===state&&city&&loc.includes(city)&&(!p.addressCountry||/^(US|USA|United States)$/i.test(typeof p.addressCountry==='string'?p.addressCountry:p.addressCountry.name||''));}))return null;
+ const us=v=>/^(US|USA|United States|United States of America)$/i.test(typeof v==='string'?v:v?.name||'');
+ const remote=/^(?:remote (?:us|usa|united states)|(?:us|usa|united states) remote)$/.test(loc),remoteEvidence=places.some(p=>norm(p.addressLocality)==='remote'&&us(p.addressCountry))||(j.jobLocationType==='TELECOMMUTE'&&[].concat(j.applicantLocationRequirements||[]).some(us));
+ if(remote?!remoteEvidence:!state||!places.some(p=>{const city=norm(p.addressLocality),region=L.stateFrom(p.addressRegion)||String(p.addressRegion||'').toUpperCase();return region===state&&city&&loc.includes(city)&&(!p.addressCountry||us(p.addressCountry));}))return null;
  if(j.validThrough&&Date.parse(j.validThrough)<Date.now())return null;
  const text=String(j.description||'').replace(/<[^>]+>/g,' ');if(text.length<300||/captcha|sign in to view|verify you are human/i.test(text))return null;
  const s=j.baseSalary,v=s?.value;if(s?.currency!=='USD'||!/^(YEAR|ANNUAL)$/i.test(v?.unitText||'')||!Number.isFinite(+v.minValue)||!Number.isFinite(+v.maxValue))return null;
  return {identityVerified:true,basis:'EMPLOYER_POSTED',pay:{low:+v.minValue,high:+v.maxValue}};
 }
 function firstParty(raw,company){try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password)return false;if(L.atsApi(raw)||/\.oraclecloud\.com$/i.test(u.hostname))return true;
- const hosts={'tesla':['tesla.com'],'applied materials':['appliedmaterials.com'],'ford motor company':['ford.com'],'anduril industries':['anduril.com'],'boeing':['boeing.com'],'blue origin':['blueorigin.com'],'carrier':['carrier.com'],'eaton':['eaton.com'],'northrop grumman':['northropgrumman.com'],'oracle':['oracle.com'],'stryker':['stryker.com']};
+ const hosts={'meta':['metacareers.com'],'tesla':['tesla.com'],'applied materials':['appliedmaterials.com'],'ford motor company':['ford.com'],'anduril industries':['anduril.com'],'boeing':['boeing.com'],'blue origin':['blueorigin.com'],'carrier':['carrier.com'],'eaton':['eaton.com'],'northrop grumman':['northropgrumman.com'],'oracle':['oracle.com'],'stryker':['stryker.com']};
  return (hosts[C.norm(company)]||[]).some(h=>u.hostname===h||u.hostname.endsWith('.'+h));}catch{return false;}}
 module.exports={create,parsePage,firstParty};
