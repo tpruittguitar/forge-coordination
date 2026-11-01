@@ -18,3 +18,10 @@ test('only observed results pagination with unchanged search filters advances th
  assert.throws(()=>L.advance(l,{...proof,toUrl:from}));
  L.advance(l,proof);assert.equal(l.sources.one.nextPagePosition,25);assert.equal(l.sources.one.resumeUrl,to);assert.equal(L.summary(l).remainingPageCount,null);assert.equal(L.summary(l).sourcesWithPendingResults,1);
 });
+test('submission checkpoints fence every candidate and retain prior recovery evidence',()=>{
+ const l=L.seed(L.empty(),input);L.capture(l,page);const j=l.jobs['linkedin:123'];j.status='HELD_WRITER_REVIEW';j.disposition={proof:'original.json',reason:'WRITE_FAILED'};
+ const p={requestId:'new-request',keys:[j.key],at:page.at,proof:'checkpoint.json'};
+ assert.throws(()=>L.checkpointSubmission(l,p));assert.equal(j.status,'HELD_WRITER_REVIEW');
+ L.checkpointSubmission(l,{...p,recoveries:{[j.key]:{originalRequestId:'original',originalCandidateOutcome:'WRITE_FAILED',durableBatchStatus:'COMPLETE',proof:'original.json'}}});
+ assert.equal(j.status,'POST_IN_FLIGHT_UNKNOWN');assert.equal(j.dispositionHistory[0].evidence.proof,'original.json');assert.throws(()=>L.checkpointSubmission(l,p));
+});

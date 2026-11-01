@@ -13,7 +13,17 @@ function disposition(ledger,key,status,evidence){const j=ledger.jobs[key];if(!j)
 function summary(l){const sources=Object.values(l.sources),jobs=Object.values(l.jobs);return {at:l.at,sources:sources.length,accessRecovered:sources.filter(s=>s.access==='OK').length,accessBlocked:sources.filter(s=>s.access!=='OK').length,sourcePagesPending:sources.filter(s=>s.nextPageRequired).length,sourcesWithPendingResults:sources.filter(s=>s.nextPageRequired).length,remainingPageCount:null,historicalGaps:sources.filter(s=>s.status==='HISTORICAL_RESULTS_UNAVAILABLE').length,capturedUniqueJobs:jobs.length,awaitingIntake:jobs.filter(j=>!terminal.has(j.status)&&!['POST_IN_FLIGHT_UNKNOWN','SUBMITTED','HELD_WRITER_REVIEW'].includes(j.status)).length,pendingJobs:jobs.filter(j=>!terminal.has(j.status)).length,verifiedInserted:jobs.filter(j=>j.status==='VERIFIED_INSERTED').length,existing:jobs.filter(j=>j.status==='VERIFIED_EXISTING').length,outOfScope:jobs.filter(j=>j.status==='OUT_OF_SCOPE').length,coverageComplete:sources.length>0&&sources.every(s=>s.exhausted&&s.historicalCoverage==='PROVEN')&&jobs.every(j=>terminal.has(j.status))};}
 function save(file,l){const tmp=file+'.tmp';fs.writeFileSync(tmp,JSON.stringify(l,null,2)+'\n');fs.renameSync(tmp,file);if(file.endsWith('EMAIL_RECOVERY_QUEUE.json')){const summaryFile=file.replace('QUEUE.json','SUMMARY.json');fs.writeFileSync(summaryFile+'.tmp',JSON.stringify({schema:'forge.email-recovery-summary.v1',...summary(l),supersedesReceipt:l.supersedesReceipt||null,sourceLedger:'state/EMAIL_RECOVERY_QUEUE.json'},null,2)+'\n');fs.renameSync(summaryFile+'.tmp',summaryFile);}}
 if(require.main===module){const [file,input,captures]=process.argv.slice(2);const l=fs.existsSync(file)?JSON.parse(fs.readFileSync(file)):empty();seed(l,JSON.parse(fs.readFileSync(input)));for(const p of JSON.parse(fs.readFileSync(captures)))if(p.jobs.length||p.emptyConfirmed)capture(l,p);save(file,l);console.log(JSON.stringify(summary(l)));}
-module.exports={empty,seed,capture,advance,pendingSources,disposition,summary,save,safeUrl};
+module.exports={empty,seed,capture,advance,pendingSources,checkpointSubmission,disposition,summary,save,safeUrl};
+
+function checkpointSubmission(l,{requestId,keys,at,proof,recoveries={}}){
+ if(!requestId||!proof||!Number.isFinite(Date.parse(at))||!Array.isArray(keys)||!keys.length||new Set(keys).size!==keys.length)throw Error('Complete submission checkpoint required');
+ for(const key of keys){const j=l.jobs[key],r=recoveries[key];
+  if(!j||terminal.has(j.status)||['POST_IN_FLIGHT_UNKNOWN','SUBMITTED'].includes(j.status)||(j.submissions||[]).some(s=>s.requestId===requestId))throw Error('Candidate already disposed or in flight; do not replay');
+  if(j.status==='HELD_WRITER_REVIEW'&&(!r||r.originalRequestId===requestId||!r.originalRequestId||r.originalCandidateOutcome!=='WRITE_FAILED'||r.durableBatchStatus!=='COMPLETE'||!r.proof))throw Error('Resolve original Writer outcome before a new recovery');
+ }
+ for(const key of keys){const j=l.jobs[key];if(j.disposition)(j.dispositionHistory||(j.dispositionHistory=[])).push({status:j.status,evidence:j.disposition});const record={requestId,at,proof,...(recoveries[key]?{recovery:recoveries[key]}:{})};(j.submissions||(j.submissions=[])).push(record);j.status='POST_IN_FLIGHT_UNKNOWN';j.submission=record;}
+ l.at=at;return l;
+}
 
 // Record a continuation only AFTER the actual results-pagination control changed
 // the displayed URL. A carousel's Next button and a guessed offset are not proof.

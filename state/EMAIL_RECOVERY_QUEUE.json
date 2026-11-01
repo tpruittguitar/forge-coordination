@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-01T06:22:15.243Z",
+  "at": "2026-11-01T06:29:33.172Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -2491,7 +2491,7 @@
       "location": "Austin, TX",
       "url": "https://www.linkedin.com/jobs/view/4474805196/",
       "observedAt": "2026-10-31T04:00:08.270Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18ecd5d9385086"
       ],
@@ -2514,8 +2514,15 @@
       ],
       "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01",
       "disposition": {
-        "reason": "WRITE_FAILED: ",
-        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01_WRITER_RESPONSE.json"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-BECA09CDFB02",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "71e83b732470a49b727f639982e303dde2991e4ed88399df4f26b2c944298520",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
       },
       "employerPosting": {
         "url": "https://careers.ey.com/ey/job/Chicago-Life-Sciences-Supply-Chain-Manufacturing-Ops-&-AI-Transformation-Delivery-Senior-Manager-IL-60606/1445415133/",
@@ -2523,6 +2530,39 @@
         "recordedAt": "2026-11-01T06:20:07.954Z",
         "method": "SIGNED_IN_CHROME_APPLY_DESTINATION",
         "proof": "receipts/EMAIL_EMPLOYER_DESTINATIONS_20261101.json"
+      },
+      "dispositionHistory": [
+        {
+          "status": "HELD_WRITER_REVIEW",
+          "evidence": {
+            "reason": "WRITE_FAILED: ",
+            "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01_WRITER_RESPONSE.json"
+          }
+        }
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json",
+          "recovery": {
+            "originalRequestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01",
+            "originalCandidateOutcome": "WRITE_FAILED",
+            "durableBatchStatus": "COMPLETE",
+            "proof": "receipts/EMAIL_RECOVERY_SCREEN_20261101.json"
+          }
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json",
+        "recovery": {
+          "originalRequestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01",
+          "originalCandidateOutcome": "WRITE_FAILED",
+          "durableBatchStatus": "COMPLETE",
+          "proof": "receipts/EMAIL_RECOVERY_SCREEN_20261101.json"
+        }
       }
     },
     "linkedin:4484593547": {
@@ -3103,7 +3143,7 @@
       "location": "San Antonio, TX",
       "url": "https://www.linkedin.com/jobs/view/4474802261/",
       "observedAt": "2026-10-31T04:00:21.382Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_EXISTING",
       "sourceEmails": [
         "1a18ecd5d9385086"
       ],
@@ -3126,8 +3166,14 @@
       ],
       "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01",
       "disposition": {
-        "reason": "WRITE_FAILED: ",
-        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261031-0000ET-B01_WRITER_RESPONSE.json"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "Same exact employer EY posting 1445415133 across five location advertisements; canonical role independently verified. Original rejected ads not replayed and no extra job inserted.",
+        "primaryId": "V2I-BECA09CDFB02",
+        "exactRowVerified": true,
+        "rowSha256": "71e83b732470a49b727f639982e303dde2991e4ed88399df4f26b2c944298520",
+        "employerKey": "careers.ey.com:1445415133",
+        "originalWriteSuccessInferred": false
       },
       "employerPosting": {
         "url": "https://careers.ey.com/ey/job/Chicago-Life-Sciences-Supply-Chain-Manufacturing-Ops-&-AI-Transformation-Delivery-Senior-Manager-IL-60606/1445415133/",
@@ -10166,7 +10212,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4474806221/",
       "observedAt": "2026-10-31T04:02:00.150Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_EXISTING",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -10199,9 +10245,14 @@
         }
       ],
       "disposition": {
-        "proof": "receipts/FORGE-EMAIL-CHATGPT-20261101T030005Z-B02_VERIFIED.json",
-        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
-        "at": "2026-11-01T03:16:07.489Z"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "Same exact employer EY posting 1445415133 across five location advertisements; canonical role independently verified. Original rejected ads not replayed and no extra job inserted.",
+        "primaryId": "V2I-BECA09CDFB02",
+        "exactRowVerified": true,
+        "rowSha256": "71e83b732470a49b727f639982e303dde2991e4ed88399df4f26b2c944298520",
+        "employerKey": "careers.ey.com:1445415133",
+        "originalWriteSuccessInferred": false
       },
       "employerPosting": {
         "url": "https://careers.ey.com/ey/job/Chicago-Life-Sciences-Supply-Chain-Manufacturing-Ops-&-AI-Transformation-Delivery-Senior-Manager-IL-60606/1445415133/",
@@ -10219,7 +10270,7 @@
       "location": "Alpharetta, GA",
       "url": "https://www.linkedin.com/jobs/view/4474499364/",
       "observedAt": "2026-10-31T04:02:00.150Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_EXISTING",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -10252,9 +10303,14 @@
         }
       ],
       "disposition": {
-        "proof": "receipts/FORGE-EMAIL-CHATGPT-20261101T030005Z-B02_VERIFIED.json",
-        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
-        "at": "2026-11-01T03:16:07.489Z"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "Same exact employer EY posting 1445415133 across five location advertisements; canonical role independently verified. Original rejected ads not replayed and no extra job inserted.",
+        "primaryId": "V2I-BECA09CDFB02",
+        "exactRowVerified": true,
+        "rowSha256": "71e83b732470a49b727f639982e303dde2991e4ed88399df4f26b2c944298520",
+        "employerKey": "careers.ey.com:1445415133",
+        "originalWriteSuccessInferred": false
       },
       "employerPosting": {
         "url": "https://careers.ey.com/ey/job/Chicago-Life-Sciences-Supply-Chain-Manufacturing-Ops-&-AI-Transformation-Delivery-Senior-Manager-IL-60606/1445415133/",
@@ -10937,7 +10993,7 @@
       "location": "Chattanooga, TN",
       "url": "https://www.linkedin.com/jobs/view/4474491839/",
       "observedAt": "2026-10-31T04:02:02.505Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_EXISTING",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -10959,9 +11015,14 @@
         }
       ],
       "disposition": {
-        "proof": "receipts/FORGE-EMAIL-CHATGPT-20261101T030005Z-B02_VERIFIED.json",
-        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
-        "at": "2026-11-01T03:16:07.489Z"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "Same exact employer EY posting 1445415133 across five location advertisements; canonical role independently verified. Original rejected ads not replayed and no extra job inserted.",
+        "primaryId": "V2I-BECA09CDFB02",
+        "exactRowVerified": true,
+        "rowSha256": "71e83b732470a49b727f639982e303dde2991e4ed88399df4f26b2c944298520",
+        "employerKey": "careers.ey.com:1445415133",
+        "originalWriteSuccessInferred": false
       },
       "employerPosting": {
         "url": "https://careers.ey.com/ey/job/Chicago-Life-Sciences-Supply-Chain-Manufacturing-Ops-&-AI-Transformation-Delivery-Senior-Manager-IL-60606/1445415133/",
@@ -11977,7 +12038,7 @@
       "location": "Tempe, AZ",
       "url": "https://www.linkedin.com/jobs/view/4484053694/",
       "observedAt": "2026-10-31T04:02:05.488Z",
-      "status": "HELD_WRITER_REVIEW",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -12001,9 +12062,49 @@
         }
       ],
       "disposition": {
-        "proof": "receipts/FORGE-EMAIL-CHATGPT-20261101T030005Z-B03_VERIFIED.json",
-        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
-        "at": "2026-11-01T03:16:07.489Z"
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-84A882512EC7",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "1c705d3d8f7d6d588e1df0eaf5d3c7364833caed477abe92126f97e52bcd8e41",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      },
+      "dispositionHistory": [
+        {
+          "status": "HELD_WRITER_REVIEW",
+          "evidence": {
+            "proof": "receipts/FORGE-EMAIL-CHATGPT-20261101T030005Z-B03_VERIFIED.json",
+            "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+            "at": "2026-11-01T03:16:07.489Z"
+          }
+        }
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json",
+          "recovery": {
+            "originalRequestId": "FORGE-EMAIL-CHATGPT-20261101T030005Z-B03",
+            "originalCandidateOutcome": "WRITE_FAILED",
+            "durableBatchStatus": "COMPLETE",
+            "proof": "receipts/EMAIL_RECOVERY_SCREEN_20261101.json"
+          }
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json",
+        "recovery": {
+          "originalRequestId": "FORGE-EMAIL-CHATGPT-20261101T030005Z-B03",
+          "originalCandidateOutcome": "WRITE_FAILED",
+          "durableBatchStatus": "COMPLETE",
+          "proof": "receipts/EMAIL_RECOVERY_SCREEN_20261101.json"
+        }
       }
     },
     "linkedin:4448471393": {
@@ -17686,7 +17787,7 @@
       "location": "San Antonio, TX",
       "url": "https://www.linkedin.com/jobs/view/4482557990/",
       "observedAt": "2026-11-01T06:01:14.618Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18ecd5d9385086"
       ],
@@ -17702,7 +17803,30 @@
             "San Antonio, TX"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-E6942A6DA839",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "03c10c561661e9141cc781985cadb64f128c14162b05a2c75609d6f02e8c4145",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485679008": {
       "key": "linkedin:4485679008",
@@ -17712,7 +17836,7 @@
       "location": "San Antonio, TX",
       "url": "https://www.linkedin.com/jobs/view/4485679008/",
       "observedAt": "2026-11-01T06:01:14.618Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18ecd5d9385086"
       ],
@@ -17728,7 +17852,30 @@
             "San Antonio, TX (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-FDAEE43B784D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "e04b4c62a13935e8cd2024f5209f34c762a9ddd99e981fc63b70e45227e4b932",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4484894422": {
       "key": "linkedin:4484894422",
@@ -17800,7 +17947,7 @@
       "location": "Austin, TX",
       "url": "https://www.linkedin.com/jobs/view/4467296800/",
       "observedAt": "2026-11-01T06:01:14.618Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18ecd5d9385086"
       ],
@@ -17816,7 +17963,30 @@
             "Austin, TX"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-2D460C7270F0",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "c76e984982543b3fc9d40cd0ca65442d801eadc849b7269cc052422289bcbcdf",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4484570090": {
       "key": "linkedin:4484570090",
@@ -17909,7 +18079,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4453646771/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -17925,7 +18095,30 @@
             "Atlanta, GA"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-5A667554BF87",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "9808b0f82d2abf7335dcbbdb4b53b18509407c6d04b6aa0ccca3d3a74b9c0d6c",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4477827240": {
       "key": "linkedin:4477827240",
@@ -17935,7 +18128,7 @@
       "location": "Johns Creek, GA",
       "url": "https://www.linkedin.com/jobs/view/4477827240/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -17951,7 +18144,30 @@
             "Johns Creek, GA"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-BBA88C38CA3D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "7f4262b76f21ef72856175777cef638f0c2b62856bb4f7be546dea220c2b6924",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4469261279": {
       "key": "linkedin:4469261279",
@@ -17987,7 +18203,7 @@
       "location": "Peachtree City, GA",
       "url": "https://www.linkedin.com/jobs/view/4475224772/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18003,7 +18219,30 @@
             "Peachtree City, GA (Hybrid)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-E902D6C0F4F6",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "6d399c39b546c02c716ca9d6c0e71daaab865790b2b29d23334c670b97733cd4",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4440314932": {
       "key": "linkedin:4440314932",
@@ -18039,7 +18278,7 @@
       "location": "Carrollton, GA",
       "url": "https://www.linkedin.com/jobs/view/4460131455/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18055,7 +18294,30 @@
             "Carrollton, GA"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-59FA440A7C83",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "13d9e4c9a78b1c56ee052f197a8a7a74a1ab684aae0e12207c17f6eec6cbe877",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4448037810": {
       "key": "linkedin:4448037810",
@@ -18091,7 +18353,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4485943472/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18107,7 +18369,30 @@
             "Atlanta, GA (Remote)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-AEC58869F613",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "069753742f51b7e6b5011d990583a28da6338bf782d70ef9d859d7bc4fc30e9a",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4484582475": {
       "key": "linkedin:4484582475",
@@ -18117,7 +18402,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4484582475/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18133,7 +18418,30 @@
             "Atlanta, GA (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-C3ABF3A1065A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "3247955bdeb4ad5a984dccd1784ce4fad8ca0c99c23e06af4edbd81b81ec31aa",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4440991417": {
       "key": "linkedin:4440991417",
@@ -18143,7 +18451,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4440991417/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18159,7 +18467,30 @@
             "Atlanta, GA (Remote)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-7449584F440A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "ba043f233c209e24cdff8a18bca8cbfd48b79375595e2c38827867cc2c121b89",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485284297": {
       "key": "linkedin:4485284297",
@@ -18169,7 +18500,7 @@
       "location": "Atlanta Metropolitan Area",
       "url": "https://www.linkedin.com/jobs/view/4485284297/",
       "observedAt": "2026-11-01T06:02:07.774Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18185,7 +18516,30 @@
             "Atlanta Metropolitan Area (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-0DA3D0849E7D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "fd433dd063d92fcae592f9630133349401651ab893dfa78b32899a991464501f",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4468051891": {
       "key": "linkedin:4468051891",
@@ -18221,7 +18575,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4485104391/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18237,7 +18591,30 @@
             "Atlanta, GA"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-60E0897E9CA7",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "668503d84f8755be0007a5413125aa0393b3f1e8e93b3d4111a3cac0b6b8cc84",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485381793": {
       "key": "linkedin:4485381793",
@@ -18247,7 +18624,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4485381793/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18263,7 +18640,30 @@
             "Atlanta, GA (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-52E8AF8F89C3",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "38aa2cb9bd4ec5f82f738a45d2775c7f71a13a14983cc42eb29b1fa55b82d8d6",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4475225798": {
       "key": "linkedin:4475225798",
@@ -18299,7 +18699,7 @@
       "location": "Atlanta Metropolitan Area",
       "url": "https://www.linkedin.com/jobs/view/4465886092/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18315,7 +18715,30 @@
             "Atlanta Metropolitan Area"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-423387008F1F",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "7363956c7c1bb11b1e4427d89c99f21990e5dcfca85ab897891faa16993c6539",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485151812": {
       "key": "linkedin:4485151812",
@@ -18325,7 +18748,7 @@
       "location": "Buford, GA",
       "url": "https://www.linkedin.com/jobs/view/4485151812/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18341,7 +18764,30 @@
             "Buford, GA (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-A6AE9BB5A296",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "accf08c2a69c93471011b4cdd94fe95be4cfc53f5c8e205e20f247f560145a90",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485676322": {
       "key": "linkedin:4485676322",
@@ -18351,7 +18797,7 @@
       "location": "Covington, GA",
       "url": "https://www.linkedin.com/jobs/view/4485676322/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18367,7 +18813,30 @@
             "Covington, GA (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-7A68AE73D76D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "09debcfc341d20d8543e5f9d50473a7442d294dc1bec7173491db4abf30ed11b",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485251860": {
       "key": "linkedin:4485251860",
@@ -18377,7 +18846,7 @@
       "location": "Forest Park, GA",
       "url": "https://www.linkedin.com/jobs/view/4485251860/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18393,7 +18862,30 @@
             "Forest Park, GA"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-A7D0E68B6A25",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "0f74cdfcf2993e4f049f02560fdc449679a2794e898c268b29549840e848e332",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485239206": {
       "key": "linkedin:4485239206",
@@ -18403,7 +18895,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4485239206/",
       "observedAt": "2026-11-01T06:02:49.117Z",
-      "status": "UNSCREENED",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408"
       ],
@@ -18419,7 +18911,30 @@
             "Atlanta, GA (On-site)"
           ]
         }
-      ]
+      ],
+      "submissions": [
+        {
+          "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+          "at": "2026-11-01T06:27:42.831Z",
+          "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "at": "2026-11-01T06:27:42.831Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-01T06:29:33.172Z",
+        "proof": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01_VERIFIED.json",
+        "reason": "New evidence-backed recovery independently verified; original rejected transaction retained and never replayed",
+        "primaryId": "V2I-1E1021F23C9D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true,
+        "rowSha256": "c82b3bb56c24741b9f8ac3c745bb07d954368b3741ecb285aa0d1078b584cbb5",
+        "requestId": "FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY-B01",
+        "writeId": "W-20261101062654451-5da0cd"
+      }
     },
     "linkedin:4485905874": {
       "key": "linkedin:4485905874",

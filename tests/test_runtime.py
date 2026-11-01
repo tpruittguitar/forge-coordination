@@ -21,6 +21,13 @@ i = module('index_receipts')
 
 
 class ReleaseTests(unittest.TestCase):
+    def test_source_hashes_follow_git_lf_normalization(self):
+        with tempfile.TemporaryDirectory() as tmp:
+            path = Path(tmp) / 'policy.txt'
+            path.write_bytes(b'one\r\ntwo\r\n')
+            self.assertEqual(r.source_bytes(path), b'one\ntwo\n')
+            self.assertEqual(r.digest(r.source_bytes(path)), r.digest(b'one\ntwo\n'))
+
     @classmethod
     def setUpClass(cls):
         cls.outputs, cls.manifest = r.build()

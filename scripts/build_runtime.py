@@ -25,6 +25,12 @@ def digest(data):
     return hashlib.sha256(data).hexdigest()
 
 
+def source_bytes(path):
+    # These inputs are text governed by .gitattributes eol=lf. Windows editors
+    # may leave CRLF in a working copy before Git normalizes it for Linux CI.
+    return path.read_bytes().replace(b'\r\n', b'\n')
+
+
 def blob_sha(data):
     return hashlib.sha1(b'blob ' + str(len(data)).encode() + b'\0' + data).hexdigest()
 
@@ -126,7 +132,7 @@ def build(root=ROOT):
     inputs = sorted([p for p in source.rglob('*') if p.is_file()] +
                     list((root / 'examples').glob('*.json')) +
                     [root / 'scripts/build_runtime.py', root / 'schemas/runtime-manifest.schema.json'])
-    input_hashes = {p.relative_to(root).as_posix(): digest(p.read_bytes()) for p in inputs}
+    input_hashes = {p.relative_to(root).as_posix(): digest(source_bytes(p)) for p in inputs}
     release = digest(canonical(input_hashes))[:20]
     prefix = f'runtime/releases/{release}/'
     outputs = {}
