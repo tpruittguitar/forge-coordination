@@ -8,6 +8,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const P = require('./public-posting.js');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
+const HelperRouting=require('../helper-routing/reservations.cjs');
 const ActiveReview=require('./active-review'),Benchmarks=require('./employer-benchmarks');
 const BENCHMARK_FILE=process.env.ENRICH_BENCHMARK_FILE||path.resolve(__dirname,'../../reference/EMPLOYER_PAY_BENCHMARKS.json');
 const benchmarks=(!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_BENCHMARK_FILE)&&fs.existsSync(BENCHMARK_FILE)?JSON.parse(fs.readFileSync(BENCHMARK_FILE,'utf8')):{schema:Benchmarks.SCHEMA,entries:[],employers:[],searches:{}};
@@ -58,6 +59,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
   const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){const probe=entry.requestIds?.[0]||requestId;try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(probe)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'&&(entry.ids||[]).every(id=>(d.request.items||[]).some(x=>x.pid===id))){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
+  const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds]);
   const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
@@ -186,7 +188,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
-    if (inFlightIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
+    if (unavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
     const est = await estimateFor(r, { noBoard: true }); if (!est) continue;
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
@@ -199,7 +201,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // before new gaps, so a busy queue cannot starve old weak pay indefinitely.
   ledger.salaryReview=ledger.salaryReview||{};const reviewOriginal=new Map();
   const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
-  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,inFlightIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
+  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,unavailableIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
   for(const r of reviewDue){
     if(review.reviewed>=(CONFIG.maxSalaryReviewsPerRun??5)||requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
@@ -224,7 +226,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
     if (repairOriginal.has(r.PRIMARY_ID)||reviewOriginal.has(r.PRIMARY_ID)) continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
-    if(inFlightIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
+    if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
     const saved=Recovery.cached(ledger,r);
@@ -313,7 +315,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // They are supporting decision context, never a new readiness gate or reason to re-research a complete job.
   const productSample=[],productGaps={};let priorProductGaps={};try{const prior=JSON.parse(fs.readFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),'utf8'));priorProductGaps=Object.fromEntries((prior.unmappedSites||[]).map(g=>[Products.company(g.company)+'|'+Products.location(g.location),g]));}catch{}stats.products_planned=0;
   function activeProductRow(r){return ['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET)&&!/^YES/i.test(r.p.ANTI_RESURRECTION||'')&&!r.p.DO_NOT_REWORK&&!/^CLOSED/.test(r.p.LIVENESS||'')&&!/^CLOSED/.test(r.p.ATS_CHECK_RESULT||'');}
-  for(const r of rows){if(inFlightIds.has(r.PRIMARY_ID)||!activeProductRow(r))continue;const entry=Products.lookup(r,productsReference);if(Products.known(r.p.PRODUCT)&&!Products.needsUpdate(r,entry))continue;
+  for(const r of rows){if(unavailableIds.has(r.PRIMARY_ID)||!activeProductRow(r))continue;const entry=Products.lookup(r,productsReference);if(Products.known(r.p.PRODUCT)&&!Products.needsUpdate(r,entry))continue;
     if(!entry){const k=Products.company(r.COMPANY)+'|'+Products.location(r.LOCATION),g=productGaps[k]||(productGaps[k]={...priorProductGaps[k],company:r.COMPANY,location:r.LOCATION,jobs:0,primaryIds:[],status:priorProductGaps[k]?.status||'PENDING_ENRICHMENT_RESEARCH'});g.jobs++;g.primaryIds.push(r.PRIMARY_ID);continue;}
     const existing=requests.find(q=>q.ruling.primaryId===r.PRIMARY_ID);if(!existing&&requests.length>=CONFIG.maxBatches*25)continue;
     const fields=Products.fields(entry);if(existing)Object.assign(existing.ruling.fields,fields);else requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-P'+String(stats.products_planned+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}});
@@ -327,7 +329,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for (const r of rows) {
     if(PRODUCTS_ONLY)break;
     if (requests.length >= CONFIG.maxBatches * 25 || stats.upgraded >= (CONFIG.maxUpgradesPerRun || 10)) break;
-    if (inFlightIds.has(r.PRIMARY_ID) || !ActiveReview.eligible(r) || !weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
+    if (unavailableIds.has(r.PRIMARY_ID) || !ActiveReview.eligible(r) || !weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
     const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER' || est.conf === 'LOW') continue;   // LOW for LOW is no upgrade
     stats.upgraded++; upgradeIds.add(r.PRIMARY_ID);
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'same-employer:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
@@ -416,7 +418,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
   if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
+  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
   if(!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-recovery.json'),JSON.stringify({schema:'forge.enrichment-recovery.v1',at:new Date().toISOString(),run:RUN_ID,rows:recoveryRows,pendingWrites:ledger.pendingWrites,note:'Pre-write worklist; use reconciled process flow for completions. Never replay an uncertain original request.'},null,2)+'\n');
   if(salaryContext){stats.salary_model_version=Context.VERSION;stats.salary_context={companies:salaryContext.companies.length,roles:salaryContext.roles.length,nonblocking:true};const calibration=require('./calibration').evaluate(rows,anchors,salaryContext);if(!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-calibration.json'),JSON.stringify(calibration,null,2)+'\n');}
   stats.recovery_statuses=recoveryRows.reduce((out,r)=>(out[r.status]=(out[r.status]||0)+1,out),{});

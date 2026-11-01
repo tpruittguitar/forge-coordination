@@ -21,6 +21,7 @@ const {DIR,previous,latch,identityKey}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
 const {carryForwardRoles}=require('./carry-forward');
 const {knownRequestIds}=require('./known-requests');
+const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
@@ -110,6 +111,7 @@ async function main(argv=process.argv.slice(2)){
  report.new_roles=[...uniqueRoles.values()];
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
  const blockedIdentities=new Set(quarantined.filter(q=>q.identityKey).map(q=>q.identityKey));
+ const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
  const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent,blockedIdentities}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
