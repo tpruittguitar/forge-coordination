@@ -2,9 +2,9 @@
 // Title evidence describes work, not an assumed company pay premium.
 function family(title){
  const t=String(title||'');
- if(/supply chain|logistics|procurement|purchasing/i.test(t))return 'SUPPLY_CHAIN';
+ if(/supply chain|logistics|procurement|purchasing|production (?:control|planning)|materials? planning/i.test(t))return 'SUPPLY_CHAIN';
  if(/quality/i.test(t))return 'QUALITY';
- if(/manufactur\w*.*(?:engineering|technology|systems|enablement)|(?:engineering|technology).*manufactur|industrialization|automation|robotic|machine development/i.test(t))return 'MANUFACTURING_TECHNOLOGY';
+ if(/manufactur\w*.*(?:engineering|technology|systems|enablement|process)|(?:engineering|technology).*manufactur|production technology|process development|industrialization|automation|robotic|machine development/i.test(t))return 'MANUFACTURING_TECHNOLOGY';
  if(/plant (?:manager|director|operations)|(?:director|manager).*plant|general manager|site (?:leader|lead)|value stream/i.test(t))return 'PLANT_OPERATIONS';
  if(/manufactur|production|assembly|fabrication/i.test(t))return 'MANUFACTURING_OPERATIONS';
  if(/engineering/i.test(t))return 'ENGINEERING';

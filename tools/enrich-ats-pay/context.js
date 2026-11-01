@@ -1,6 +1,6 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='employer-role-scope-v2',DAY=86400000;
+const VERSION='employer-role-scope-v3',DAY=86400000;
 const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
@@ -13,7 +13,7 @@ function lookup(row,ref={},now=Date.now()){
  const sites=(company?.sites||[]).filter(s=>[s.location,...s.aliases||[]].some(n=>norm(n)===norm(row.LOCATION)));
  const roles=(ref.roles||[]).filter(r=>r.primaryId===row.PRIMARY_ID&&norm(r.company)===norm(row.COMPANY)&&norm(r.title)===norm(row.TITLE)&&norm(r.location)===norm(row.LOCATION));const role=roles.length===1?roles[0]:null;
  const out={};
- for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['industry',company?.facts?.industry],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
+ for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['industry',company?.facts?.industry],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
  return out;
 }
 function postingKey(a){
@@ -27,11 +27,11 @@ function identityKey(a){return norm(a.co)+'|'+norm(a.title).replace(/\bsr\b/g,'s
 const number=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
 function similarity(target,other){
  let weight=1,known=0;const missing=[];
- for(const key of ['employees','revenueUsd','siteEmployees','teamSize']){
-  if(number(target[key])&&number(other[key])){known++;weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}else missing.push(key);
+ for(const key of ['employees','revenueUsd','siteEmployees','teamSize','minExperienceYears','minLeadershipYears']){
+  if(number(target[key])&&number(other[key])){known++;weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}else{missing.push(key);if(number(target[key]))weight*=0.75;}
  }
- for(const key of ['industry','management','reach']){
-  if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else missing.push(key);
+ for(const key of ['industry','management','reach','launch']){
+  if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else{missing.push(key);if(target[key])weight*=0.75;}
  }
  return{weight,known,missing};
 }
@@ -70,6 +70,9 @@ function learn(ref,row,text,sourceUrl,asOf){
  m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(?:\d+\s+)?managers\b/i);if(m)put('management','MANAGES_MANAGERS',m[0]);
  m=text.match(/\b(?:this (?:role|position) is an individual contributor|individual contributor role)\b/i);if(m)put('management','INDIVIDUAL_CONTRIBUTOR',m[0]);
  m=text.match(/\b(?:responsible for|oversee|manage)\s+(?:operations\s+)?across multiple (?:sites|plants|facilities)\b/i);if(m)put('reach','MULTI_SITE',m[0]);
+ m=text.match(/\b(\d{1,2})\+?\s+years\s+(?:of\s+)?(?:experience\s+)?in\s+high.volume[^.\n]{0,100}manufacturing/i);if(m)put('minExperienceYears',Number(m[1]),m[0]);
+ m=text.match(/\b(\d{1,2})\+?\s+years of (?:progressive )?(?:operations |production )?leadership/i);if(m)put('minLeadershipYears',Number(m[1]),m[0]);
+ m=text.match(/\b(?:new )?greenfield (?:manufacturing )?facility\b/i);if(m)put('launch','GREENFIELD',m[0]);
  const companyFacts={};
  const escape=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
  const count=String(text).match(new RegExp('\\b'+escape(row.COMPANY)+'\\s+(?:employs|has)\\s+([0-9][0-9,]*)\\s+(?:employees|people)\\s+(?:worldwide|globally)\\b','i'));

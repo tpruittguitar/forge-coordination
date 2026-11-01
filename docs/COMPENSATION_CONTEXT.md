@@ -26,7 +26,7 @@ posting. AI/Gofer handles missing or ambiguous information only as an exception:
 sourced fact to this same reference, never an isolated automation memory. No additional recurring AI task is required.
 The workflow merges learned facts by source date, preserving concurrent company/site edits and newer role facts.
 
-The `employer-role-scope-v2` model uses source age, same employer, geography and company/site/team scale to rank and weight valid
+The `employer-role-scope-v3` model uses source age, same employer, geography and company/site/team scale to rank and weight valid
 same-level/function/management-track posted comparables. Explicit responsibility conflicts are excluded. Weighted medians
 set the base range; company size never multiplies salary. Salary estimates are not allowed to anchor other estimates.
 Posting copies are deduplicated before weighting. Missing comparison context/date caps confidence at LOW. A manager title
@@ -85,3 +85,13 @@ $245,000–$309,000 annual base range. Meta's exact careers requisition establis
 LinkedIn pay and the matching remote Indeed posting established the range. The Meta careers JSON-LD itself did not
 contain salary, so it is not claimed as the pay disclosure. Bonus/equity remain separate and unestimated. Receipt:
 `receipts/FORGE-META-PAY-CHATGPT-20261101T0136Z-B01_VERIFIED.json`.
+
+### Employer evidence outside the master and uncertainty
+
+`reference/EMPLOYER_PAY_BENCHMARKS.json` holds independently sourced employer annual-base disclosures, without adding jobs to the master. Exact title, location, source URL, observation time and either a quoted base range or structured annual USD baseSalary are required. Records expire from use after 30 days. Full indexed employer posting evidence is labeled separately from a successful direct page read. Search follows observed first-party links only; access failures back off 24 hours and remain explicit. These reads share the existing six-read source budget; no AI schedule or budget increase. Reuse saved compatible employer evidence before peer estimates. One posting remains LOW; geographic adjustment remains explicit, and bonus/equity are never folded into base.
+
+Production control/planning and production technology are different from production leadership. Missing known target size/responsibility facts downweight comparators rather than count as a match; explicit conflicts remain excluded. Narrow posting facts include stated experience requirements and greenfield launch scope. Never infer team headcount or a salary premium from volume.
+
+Tim authorized weak-estimate scoring safeguards on 2026-11-01: LOW or unclassified estimates retain their raw PAY_WORTH diagnostic, but produce CHECK_PAY_ESTIMATE_LOW_CONFIDENCE rather than a derived pay hold or pass. Ranking uses 25% of the raw deviation from neutral 50. Exact employer-posted pay retains full influence; explicit operator floor rulings remain authoritative. Browser and Writer use identical scoring, and derived-refresh request identities include this calculation revision. This reduces false certainty; it is not a claim that the numerical salary is accurate.
+
+A shared company/site product entry can restrict applicable title terms. Exact primary-ID-bound posting evidence overrides an older company/site copy, while custom operator product evidence stays intact. Brookshire solar req 278729 must not inherit Megapack context from another posting.
