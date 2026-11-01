@@ -1,0 +1,116 @@
+{
+ "schema": "forge.claude-helper-batch.v1",
+ "provider": "Claude",
+ "taskKey": "FORGE_CLAUDE_ENRICHMENT",
+ "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
+ "runId": "CLAUDE-ENRICHMENT-20261101-B0002",
+ "instructionCommit": "02aa61e393a31ba874dd23cb96ab24d421ed0612",
+ "items": [
+  {
+   "primaryId": "V2I-D1C423EC317B",
+   "recommendation": "NEEDS_SOURCE_EVIDENCE",
+   "writerSubmitted": false,
+   "sourceEvidence": {
+    "references": [
+     "state/enrich-ats-pay-recovery.json#rows[id=\"V2I-D1C423EC317B\"]",
+     "control/CLAUDE_HELPER_WORK.json"
+    ],
+    "url": null,
+    "observedAt": "2026-11-01T20:30:00Z",
+    "company": "ATSC IES INC",
+    "title": "Director of Operations",
+    "location": null,
+    "quote": "No public posting found for this company/title.",
+    "proposedRawFields": {}
+   },
+   "reason": "No saved source and no public match; may be an agency/obscure listing. Pay and degree unknown.",
+   "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+  },
+  {
+   "primaryId": "V2I-8F2267369C39",
+   "recommendation": "NEEDS_SOURCE_EVIDENCE",
+   "writerSubmitted": false,
+   "sourceEvidence": {
+    "references": [
+     "state/enrich-ats-pay-recovery.json#rows[id=\"V2I-8F2267369C39\"]",
+     "control/CLAUDE_HELPER_WORK.json"
+    ],
+    "url": null,
+    "observedAt": "2026-11-01T20:30:00Z",
+    "company": "Sigil Partners Staffing",
+    "title": "Director of Manufacturing Operations",
+    "location": null,
+    "quote": "Not researched beyond saved inventory: agency listing, client unknown.",
+    "proposedRawFields": {
+     "AGENCY": true
+    }
+   },
+   "reason": "Agency role with unknown client; never invent a client. Needs the saved source body.",
+   "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+  },
+  {
+   "primaryId": "V2I-DE25000FDB39",
+   "recommendation": "NEEDS_SOURCE_EVIDENCE",
+   "writerSubmitted": false,
+   "sourceEvidence": {
+    "references": [
+     "state/enrich-ats-pay-recovery.json#rows[id=\"V2I-DE25000FDB39\"]",
+     "control/CLAUDE_HELPER_WORK.json"
+    ],
+    "url": null,
+    "observedAt": "2026-11-01T20:30:00Z",
+    "company": "Mini-Circuits",
+    "title": "Director - Global Supply Chain Planning & Analysis",
+    "location": null,
+    "quote": "Search found other Mini-Circuits supply-chain roles, not this title.",
+    "proposedRawFields": {}
+   },
+   "reason": "Exact posting not located (Mini-Circuits uses Jobvite). Degree unknown.",
+   "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+  },
+  {
+   "primaryId": "V2I-63E5243A258E",
+   "recommendation": "NEEDS_SOURCE_EVIDENCE",
+   "writerSubmitted": false,
+   "sourceEvidence": {
+    "references": [
+     "state/enrich-ats-pay-recovery.json#rows[id=\"V2I-63E5243A258E\"]",
+     "control/CLAUDE_HELPER_WORK.json"
+    ],
+    "url": "https://www.linkedin.com/jobs/view/4485141472/",
+    "observedAt": "2026-11-01T20:30:00Z",
+    "company": "Confidencial",
+    "title": "Vice President Food Safety Quality Assurance",
+    "location": null,
+    "quote": "LinkedIn still rate-limited (429).",
+    "proposedRawFields": {
+     "NEVER_CONSIDER_REVIEW_NEEDED": "Title implies a food/beverage employer (NC-003) but the client is confidential; do not exclude on title keywords alone"
+    }
+   },
+   "reason": "Confidential employer; flagged for Writer NEVER_CONSIDER review. No pay/degree observed.",
+   "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+  },
+  {
+   "primaryId": "V2I-78C7C0B99B2E",
+   "recommendation": "NEEDS_SOURCE_EVIDENCE",
+   "writerSubmitted": false,
+   "sourceEvidence": {
+    "references": [
+     "state/enrich-ats-pay-recovery.json#rows[id=\"V2I-78C7C0B99B2E\"]",
+     "control/CLAUDE_HELPER_WORK.json"
+    ],
+    "url": null,
+    "observedAt": "2026-11-01T20:30:00Z",
+    "company": "Superior Talent Source",
+    "title": "Vice President of Operations / Montana / #ZJMO #3700639",
+    "location": "Montana",
+    "quote": "ZipRecruiter tracking link blocked (403); agency, client unknown.",
+    "proposedRawFields": {
+     "AGENCY": true
+    }
+   },
+   "reason": "Saved ZipRecruiter link is a tracking URL and was not reused. Degree unknown.",
+   "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+  }
+ ]
+}
