@@ -8,7 +8,9 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const P = require('./public-posting.js');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
-const ActiveReview=require('./active-review');
+const ActiveReview=require('./active-review'),Benchmarks=require('./employer-benchmarks');
+const BENCHMARK_FILE=process.env.ENRICH_BENCHMARK_FILE||path.resolve(__dirname,'../../reference/EMPLOYER_PAY_BENCHMARKS.json');
+const benchmarks=(!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_BENCHMARK_FILE)&&fs.existsSync(BENCHMARK_FILE)?JSON.parse(fs.readFileSync(BENCHMARK_FILE,'utf8')):{schema:Benchmarks.SCHEMA,entries:[],employers:[],searches:{}};
 const PAY_SOURCE_FILE=process.env.ENRICH_PAY_SOURCE_FILE||path.resolve(__dirname,'../../reference/EMPLOYER_PAY_SOURCES.json');
 let payProfile=null,profileRebuilt=false,profileRefreshStatus='RETAINED_PREVIOUS_PROFILE';try{if((!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_PAY_SOURCE_FILE)&&fs.existsSync(PAY_SOURCE_FILE)){const p=JSON.parse(fs.readFileSync(PAY_SOURCE_FILE,'utf8'));if(p.schema==='forge.employer-pay-sources.v1')payProfile=p;}}catch{profileRefreshStatus='PROFILE_FILE_UNREADABLE';}
 const Context=require('./context'),crypto=require('node:crypto');
@@ -111,7 +113,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   async function estimateFor(r, opts) {
     opts = opts || {};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
-    let comps = L.sameEmployerAnchors(r, anchors);
+    let comps = L.sameEmployerAnchors(r, anchors.concat(Benchmarks.candidates(r,benchmarks)));
+    if(!comps.length&&!opts.noNetwork&&!opts.noBoard){const external=await benchmarkSearch.find(r);comps=L.sameEmployerAnchors(r,external);}
     if (!comps.length) {
       // REV-140: same-employer pay postings found by any earlier run are remembered (Workday search results vary run to run)
       const co = L.normCo(r.COMPANY), b = L.boardOf(r.p) || boardByCo[co];
@@ -146,7 +149,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   empCache.sourceSearch=empCache.sourceSearch||{};
   function sourcePage(a){if(SourceSearch.firstParty(a.sourceUrl,a.co)||(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_PUBLIC_PAGES))return P.publicUrl(a.sourceUrl);const r=rows.concat(archiveRows).find(r=>r.PRIMARY_ID===a.id);if(!r||Context.norm(r.COMPANY)!==Context.norm(a.co)||Context.norm(r.TITLE)!==Context.norm(a.title)||Context.norm(r.LOCATION)!==Context.norm(a.location))return null;const url=L.atsFor(r.p)?.page;return url&&SourceSearch.firstParty(url,a.co)?P.publicUrl(url):null;}
   let reviewDeadline=0;
-  const sourceSearch=SourceSearch.create({profile:payProfile,context:salaryContext||{},cache:empCache.sourceSearch,maxReads:CONFIG.maxPaySourceReads??6,maxPerTarget:CONFIG.maxPaySourceReadsPerJob??2,canRead:()=>Date.now()-T0<CONFIG.maxRunMs&&(!reviewDeadline||Date.now()<reviewDeadline),canReadSource:a=>!!sourcePage(a),readSource:async a=>{const url=sourcePage(a);if(!url||!Recovery.readableRoute(url,CONFIG.aggregatorsOff||[]))return null;await sleep(CONFIG.fetchGapMs);const html=await(await get(url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)})).text();const parsed=SourceSearch.parsePage(html,a);return parsed?{...parsed,sourceUrl:url}:null;}});
+  const benchmarkSearch=Benchmarks.create({reference:benchmarks,maxReads:CONFIG.maxPaySourceReads??6,canRead:()=>sourceSearch.stats.reads+benchmarkSearch.stats.discoveryReads+benchmarkSearch.stats.postingReads<(CONFIG.maxPaySourceReads??6)&&Date.now()-T0<CONFIG.maxRunMs&&(!reviewDeadline||Date.now()<reviewDeadline),read:async url=>{await sleep(CONFIG.fetchGapMs);return(await get(url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)})).text();}});
+  stats.employer_benchmarks=benchmarkSearch.stats;
+  const sourceSearch=SourceSearch.create({profile:payProfile,context:salaryContext||{},cache:empCache.sourceSearch,maxReads:CONFIG.maxPaySourceReads??6,maxPerTarget:CONFIG.maxPaySourceReadsPerJob??2,canRead:()=>sourceSearch.stats.reads+benchmarkSearch.stats.discoveryReads+benchmarkSearch.stats.postingReads<(CONFIG.maxPaySourceReads??6)&&Date.now()-T0<CONFIG.maxRunMs&&(!reviewDeadline||Date.now()<reviewDeadline),canReadSource:a=>!!sourcePage(a),readSource:async a=>{const url=sourcePage(a);if(!url||!Recovery.readableRoute(url,CONFIG.aggregatorsOff||[]))return null;await sleep(CONFIG.fetchGapMs);const html=await(await get(url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)})).text();const parsed=SourceSearch.parsePage(html,a);if(parsed){Benchmarks.learn(benchmarks,a,parsed,new Date().toISOString());if(salaryContext)Context.learn(salaryContext,{PRIMARY_ID:a.id,COMPANY:a.co,TITLE:a.title,LOCATION:a.location},parsed.text,url,today);}return parsed?{...parsed,sourceUrl:url}:null;}});
   sourceSearch.stats.enabled=!!payProfile;sourceSearch.stats.profile_as_of=payProfile?.asOf||null;sourceSearch.stats.profile_rebuilt=profileRebuilt;sourceSearch.stats.profile_refresh_status=profileRefreshStatus;stats.pay_source_search=sourceSearch.stats;
   function rememberPostings(co, list) {
     if (!co) return; const day = new Date().toISOString().slice(0, 10);
@@ -308,7 +313,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // They are supporting decision context, never a new readiness gate or reason to re-research a complete job.
   const productSample=[],productGaps={};let priorProductGaps={};try{const prior=JSON.parse(fs.readFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),'utf8'));priorProductGaps=Object.fromEntries((prior.unmappedSites||[]).map(g=>[Products.company(g.company)+'|'+Products.location(g.location),g]));}catch{}stats.products_planned=0;
   function activeProductRow(r){return ['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET)&&!/^YES/i.test(r.p.ANTI_RESURRECTION||'')&&!r.p.DO_NOT_REWORK&&!/^CLOSED/.test(r.p.LIVENESS||'')&&!/^CLOSED/.test(r.p.ATS_CHECK_RESULT||'');}
-  for(const r of rows){if(inFlightIds.has(r.PRIMARY_ID)||!activeProductRow(r)||Products.known(r.p.PRODUCT))continue;const entry=Products.lookup(r,productsReference);
+  for(const r of rows){if(inFlightIds.has(r.PRIMARY_ID)||!activeProductRow(r))continue;const entry=Products.lookup(r,productsReference);if(Products.known(r.p.PRODUCT)&&!Products.needsUpdate(r,entry))continue;
     if(!entry){const k=Products.company(r.COMPANY)+'|'+Products.location(r.LOCATION),g=productGaps[k]||(productGaps[k]={...priorProductGaps[k],company:r.COMPANY,location:r.LOCATION,jobs:0,primaryIds:[],status:priorProductGaps[k]?.status||'PENDING_ENRICHMENT_RESEARCH'});g.jobs++;g.primaryIds.push(r.PRIMARY_ID);continue;}
     const existing=requests.find(q=>q.ruling.primaryId===r.PRIMARY_ID);if(!existing&&requests.length>=CONFIG.maxBatches*25)continue;
     const fields=Products.fields(entry);if(existing)Object.assign(existing.ruling.fields,fields);else requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-P'+String(stats.products_planned+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}});
@@ -340,7 +345,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       batch = batch.filter(q => {
         const cur = now[q.ruling.primaryId]; if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
-        if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(Products.known(cur.p.PRODUCT)||!entry||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
+        if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         const repairing = repairOriginal.has(q.ruling.primaryId);
         const repairUnchanged = repairing && repairOriginal.get(q.ruling.primaryId) === salaryStamp(cur);
         const reviewing=reviewOriginal.has(q.ruling.primaryId),reviewUnchanged=reviewing&&ActiveReview.eligible(cur)&&reviewOriginal.get(q.ruling.primaryId)===ActiveReview.fingerprint(cur);
@@ -407,6 +412,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for(const [k,v]of Object.entries(empCache.sourceSearch))if(Date.now()-Date.parse(v.at)>60*864e5)delete empCache.sourceSearch[k];
   fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
+  if(!DRY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(BENCHMARK_FILE,JSON.stringify(benchmarks,null,2)+'\n');
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
   if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
