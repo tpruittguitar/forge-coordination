@@ -1,0 +1,51 @@
+{
+  "schema": "forge.helper-native-schedule-activation.v1",
+  "observedAt": "2026-11-01T23:09:41.734Z",
+  "authorizedBy": "Tim: begin Grok and Claude scheduled runs",
+  "sharedEntry": "https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt",
+  "tasks": [
+    {
+      "provider": "Grok",
+      "taskKey": "FORGE_GROK_ENRICHMENT",
+      "status": "ACTIVE",
+      "schedule": "Hourly 00:35 through 23:35",
+      "timezone": "America/New_York",
+      "nativeReadback": "Active; next run in 28 min at observation",
+      "manualStart": "RUN_NOW_ACCEPTED_QUEUED",
+      "mode": "EVIDENCE_ONLY"
+    },
+    {
+      "provider": "Grok",
+      "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER",
+      "status": "ACTIVE",
+      "schedule": "Hourly 00:45 through 23:45",
+      "timezone": "America/New_York",
+      "nativeReadback": "Active; next run in 38 min at observation",
+      "manualStart": "RUN_NOW_ACCEPTED_QUEUED",
+      "mode": "EVIDENCE_ONLY"
+    },
+    {
+      "provider": "Claude",
+      "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+      "status": "ACTIVE",
+      "schedule": "Hourly; next shown today 7:08 PM",
+      "timezone": "America/New_York",
+      "execution": "Claude Code scheduled task; tpruittguitar/forge-coordination; default cloud environment",
+      "nativeReadback": "Active; Runs every hour; next run today at 7:08 PM",
+      "manualStart": "RUN_NOW_CLICKED_COMPLETION_NOT_YET_PROVEN",
+      "mode": "EVIDENCE_ONLY"
+    }
+  ],
+  "safety": {
+    "retiredSchedulesRemainPaused": true,
+    "chatgptSchedulesUnchanged": true,
+    "writerOwnership": "ChatGPT",
+    "replayCompletedWork": false,
+    "followSharedRepositoryInstructionsEveryRun": true
+  },
+  "limitations": [
+    "Native configuration and queued starts are not successful task receipts.",
+    "Claude recurrence control does not expose a minute selector; use native next-run time.",
+    "Existing active manual helper runs must be detected and deferred, not duplicated."
+  ]
+}
