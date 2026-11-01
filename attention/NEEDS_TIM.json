@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-01T20:35:11.555Z",
- "sourceCommit": "fbbff1a8e9b43d47a644e134c633d3d1234b059b",
+ "builtAt": "2026-11-01T20:55:36.733Z",
+ "sourceCommit": "d21d3358fe007f0bc1e4a56cf52e11c31ec36da2",
  "counts": {
-  "total": 26,
+  "total": 27,
   "BLOCKING": 0,
-  "ACTION": 15,
+  "ACTION": 16,
   "WATCH": 11,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 8,
-  "UPKEEP": 10
+  "UPKEEP": 11
  },
  "items": [
   {
@@ -165,6 +165,18 @@
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
    "source": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json",
+   "at": "2026-11-01T00:00:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:HELPER-CONSUME",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "HELPER-CONSUME lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
    "at": "2026-11-01T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -619,7 +631,7 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 27,
+   "runs7d": 26,
    "usualGapHours": 1.6,
    "overdue": true
   },
@@ -642,6 +654,16 @@
    "runs7d": 0,
    "usualGapHours": null,
    "overdue": false
+  },
+  {
+   "lane": "HELPER-CONSUME",
+   "provider": "CHATGPT",
+   "lastAt": "2026-11-01T00:00:00-05:00",
+   "lastStatus": "UNSTATED",
+   "lastFile": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
+   "runs7d": 7,
+   "usualGapHours": 0,
+   "overdue": true
   },
   {
    "lane": "INDEX-CUTOVER",
