@@ -25,3 +25,11 @@ test('saved estimates with incompatible anchors enter repair, valid estimates an
  assert.deepEqual(L.invalidSavedAnchors(r,[]),[]);
  assert.deepEqual(L.invalidSavedAnchors({...r,p:{...r.p,SALARY_BASIS:'EMPLOYER_POSTED'}},[assoc]),[]);
 });
+
+test('AI manufacturing leadership cannot inherit generic plant operations pay',()=>{
+ const row={PRIMARY_ID:'META',COMPANY:'Meta',TITLE:'Director, AI Manufacturing Enablement',LOCATION:'Remote, USA'};
+ for(const title of ['Plant Manager','Plant Director','Director Plant Operations','Director of Manufacturing Operations','Director of Overseas Manufacturing','Director, Value Stream Manufacturing'])assert.equal(L.comparable(row,{title}),false,title);
+ assert.equal(L.comparable(row,{title:'Director, AI Manufacturing Systems'}),true);
+ const anchors=[{id:'GENERIC',title:'Plant Director',co:'Other',low:153000,high:180000,region:'NE'}];assert.equal(L.estimate(row,anchors),null);
+ const old={...row,p:{SALARY_BASIS:'FORGE-ESTIMATE',SALARY_SOURCE:'comparables:V2I-ANCHOR'}};assert.deepEqual(L.invalidSavedAnchors(old,[{PRIMARY_ID:'V2I-ANCHOR',TITLE:'Plant Director',p:{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:153000,SALARY_BASE_HIGH:180000}}]),['V2I-ANCHOR']);
+});

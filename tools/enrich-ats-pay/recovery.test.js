@@ -5,3 +5,10 @@ test('full posting evidence is reused for seven days only for the same job ident
 test('a salary comparable URL cannot supply another role degree evidence',()=>{a.equal(R.exactApi(row,{kind:'greenhouse'},{title:'Engineer',content:'Bachelor degree required'}),null);a.equal(R.exactApi(row,{kind:'greenhouse'},{title:'Director Quality',content:'Bachelor degree required'}).text,'Bachelor degree required');});
 test('known employer board can recover only a unique exact title and site',()=>{const p={title:'Director Quality',location:'Dayton, OH',page:'https://acme.com/job'};a.equal(R.boardMatch(row,[p]),p);a.equal(R.boardMatch(row,[p,p]),null);a.equal(R.boardMatch(row,[{...p,location:'Akron, OH'}]),null);});
 test('disabled Indeed search links and tracking wrappers become research exceptions, not repeated HTTP calls',()=>{a.equal(R.readableRoute('https://www.indeed.com/jobs?q=Director',['indeed']),false);a.equal(R.readableRoute('https://email.lensa.com/f/a/x',[]),false);a.equal(R.readableRoute('https://careers.acme.com/job/1',['indeed']),true);});
+
+test('Recruitics target is recovered before tracking, including clipped Meta query tails',()=>{
+ const direct='https://www.metacareers.com/jobs/1065958456320572/',wrapped='https://jsv3.recruitics.com/redirect?rx_jobId=a1KiE00000019qrUAA&rx_url='+encodeURIComponent(direct+'?rx_a=0&rx_ts=2026');
+ const urls=R.urls({p:{SOURCE_URL:wrapped}});a.equal(urls[0],direct);a.equal(R.readableRoute(wrapped),false);
+ a.equal(R.urls({p:{SOURCE_URL:wrapped.replace('jsv3.recruitics.com','recruitics.com.other.example')}}).includes(direct),false);
+ a.equal(R.urls({p:{SOURCE_URL:'https://jsv3.recruitics.com/redirect?rx_url='+encodeURIComponent('http://127.0.0.1/private')}}).length,1);
+});

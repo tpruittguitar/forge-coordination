@@ -14,7 +14,8 @@ function parse(html,row){
  if(hit.length!==1)return null;
  const text=String(hit[0].description||'').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/<[^>]+>/g,'\n').replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').trim();
  if(text.length<300||/verify you are human|sign in to view|captcha/i.test(text))return null;
- return {text,pay:L.payFromText(text)};
+ const posted=require('./source-search').parsePage(html,{co:row.COMPANY,title:row.TITLE,location:row.LOCATION});
+ return {text,pay:posted?.pay||L.payFromText(text)};
 }
 function publicUrl(raw){try{const u=new URL(String(raw||'').split(/\s/)[0]);return u.protocol==='https:'&&!u.username&&!u.password&&!/^(localhost|127\.|10\.|192\.168\.|169\.254\.|\[)/i.test(u.hostname)?u.href:null;}catch{return null;}}
 function retryDue(ledger,id,needs,now=Date.now()){
