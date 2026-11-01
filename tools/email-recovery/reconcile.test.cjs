@@ -1,4 +1,11 @@
 const test=require('node:test'),assert=require('node:assert/strict'),{reconcile}=require('./reconcile.cjs');
+test('parent brand annotations require the exact unique employer posting and exact title',()=>{
+ const url='https://acme.wd1.myworkdayjobs.com/Careers/job/Site/Director_R123',j={key:'linkedin:123',jobId:'123',company:'The Acme, LLC',title:'Director',location:'Other, TX',url:'https://www.linkedin.com/jobs/view/123/',status:'HELD_IDENTITY',employerPosting:{url,sourceUrl:'https://www.linkedin.com/jobs/view/123/',observedAt:'2026-11-01T08:00:00Z',method:'SIGNED_IN_BROWSER_APPLY_DESTINATION',browser:'Edge'}};
+ const line='1 | V2I-OLD | Acme (Parent) | Director | APPLIED | OPEN | P | R | Site, GA | COMPANY_SOURCE_URL='+url;
+ for(const [text,count]of [[line,1],[line.replace('_R123','_R999'),0],[line.replace(' | Director |',' | Junior Director |'),0],[line.replace('Acme (Parent)','Other'),0],[line+'\n'+line.replace('V2I-OLD','V2I-OTHER'),0]]){
+ const l={jobs:{[j.key]:structuredClone(j)},sources:{}};assert.equal(reconcile(l,{masterText:text+'\nEND V2_CURRENT_POPULATION_MASTER',archiveText:'',at:'2026-11-01T09:00:00Z',proof:'receipts/proof.json'}).resolved.length,count);
+ }
+});
 test('authorized decided repeats close only compatible unique roles and never an uncertain transaction',()=>{
  const j={key:'linkedin:222',jobId:'222',company:'Acme',title:'Director',location:'Austin, TX',status:'HELD_IDENTITY'};
  const line='1 | V2I-OLD | Acme | Director | APPLIED | CLOSED | P | R | NOT_STATED | SOURCE_URL=https://www.linkedin.com/jobs/view/111/;';

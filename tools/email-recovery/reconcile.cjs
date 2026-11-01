@@ -4,6 +4,9 @@ const E=require('./employer-identity.cjs');
 const terminal=new Set(['VERIFIED_INSERTED','VERIFIED_EXISTING','OUT_OF_SCOPE','EXCLUDED_BY_WRITER']);
 const n=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const companyKey=x=>n(String(x||'').toLowerCase().replace(/&amp;|&/g,' and ').replace(/\b(inc|llc|corp|corporation|company|ltd|limited)\b/g,' '));
+// Legal suffix/parent-owner annotations are display variants only when the
+// exact employer-hosted posting and role also match. Never a global alias.
+const postingBrandKey=x=>companyKey(String(x||'').replace(/\([^)]*\)/g,' ').replace(/^the\s+/i,''));
 const titleKey=x=>n(String(x||'').toLowerCase().replace(/&amp;|&/g,' and ').replace(/\bsr\b/g,'senior').replace(/\bjr\b/g,'junior'));
 // These are presentation differences, not permission to equate nearby cities,
 // remote regions, multi-site postings, employer aliases or different seniority.
@@ -25,8 +28,11 @@ function reconcile(ledger,{masterText,archiveText,at,proof,appliedRepeatRule=fal
   const employerKey=E.evidence(j);
   const cached=employerKey&&known.get(bindingKey(j)),cachedId=cached?.size===1?[...cached][0]:null;
   const roleRows=byRole.get(companyKey(j.company)+'|'+titleKey(j.title))||[];
-  const hits=(cachedId?(byId.get(cachedId)||[]):roleRows).filter(line=>{const c=line.split(' | ');if(cachedId===c[1])return true;if(companyKey(c[2])!==companyKey(j.company)||titleKey(c[3])!==titleKey(j.title))return false;
-   if(employerKey&&(line.match(/https:\/\/[^\s"<>|;]+/g)||[]).some(url=>E.key(url)===employerKey))return true;
+  const strongRows=employerKey?lines.filter(line=>{const c=line.split(' | ');return titleKey(c[3])===titleKey(j.title)&&postingBrandKey(c[2])===postingBrandKey(j.company)&&(line.match(/https:\/\/[^\s"<>|;]+/g)||[]).some(url=>E.key(url)===employerKey);}):[];
+  const hits=(cachedId?(byId.get(cachedId)||[]):strongRows.length?strongRows:roleRows).filter(line=>{const c=line.split(' | ');if(cachedId===c[1])return true;
+   if(titleKey(c[3])!==titleKey(j.title))return false;
+   if(employerKey&&postingBrandKey(c[2])===postingBrandKey(j.company)&&(line.match(/https:\/\/[^\s"<>|;]+/g)||[]).some(url=>E.key(url)===employerKey))return true;
+   if(companyKey(c[2])!==companyKey(j.company))return false;
    return locationKey(c[8])===locationKey(j.location)&&new RegExp('linkedin\\.com/(?:comm/)?jobs/view/'+j.jobId+'(?:[/;?\\s]|$)').test(line);});
   let decidedRepeat=false;
   if(hits.length!==1&&(appliedRepeatRule||decidedRepeatRule)){
