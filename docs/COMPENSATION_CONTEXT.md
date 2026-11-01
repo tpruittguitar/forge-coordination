@@ -26,7 +26,7 @@ posting. AI/Gofer handles missing or ambiguous information only as an exception:
 sourced fact to this same reference, never an isolated automation memory. No additional recurring AI task is required.
 The workflow merges learned facts by source date, preserving concurrent company/site edits and newer role facts.
 
-The `size-scope-v1` model uses source age, same employer, geography and company/site/team scale to rank and weight valid
+The `employer-role-scope-v2` model uses source age, same employer, geography and company/site/team scale to rank and weight valid
 same-level/function/management-track posted comparables. Explicit responsibility conflicts are excluded. Weighted medians
 set the base range; company size never multiplies salary. Salary estimates are not allowed to anchor other estimates.
 Posting copies are deduplicated before weighting. Missing comparison context/date caps confidence at LOW. A manager title
@@ -47,6 +47,24 @@ bias, underestimation frequency, posted-midpoint range coverage and the share of
 Every alias of the held-out salary source is excluded. Cases include an unweighted comparison error when available.
 This is a diagnostic on the available sample, not proof of future accuracy or a guaranteed improvement. Do not raise
 estimates simply to make them exceed a desired salary. Model weighting is a transparent heuristic pending calibration.
+
+### Employer-first anchor selection
+
+Comparable eligibility separates manufacturing technology/engineering, plant operations, manufacturing operations,
+supply chain, quality, general engineering and other operations. Chief, senior-VP and ordinary VP scopes cannot anchor
+one another merely because the old broad executive band matched. Existing level, AI/ML specialty and program-management
+guards still apply. Explicit sourced management and multi-site responsibility conflicts remain disqualifying.
+
+After eligibility, deduplication and age checks, compatible same-employer evidence forms its own tier; numerous peer
+postings cannot outvote it. Exact employer names and unambiguous curated company aliases establish this tier. Missing
+employer identity never inherits the target employer's facts. When dated evidence exists, undated records cannot displace
+it. Without employer evidence, compatible peers use the existing sourced scale, industry, geography and freshness weights.
+No employer-name salary multiplier is introduced. Shared source search prioritizes compatible same-employer sources
+within its existing read budget. One distinct posting stays LOW confidence, including the same-employer board route.
+
+The version bump puts older active FORGE estimates into the existing bounded repair pass (ten per worker run); posted
+pay, protected decisions, concurrent-change guards and uncertain requests remain protected. No new AI automation or
+larger read/write budget is introduced. This changes evidence selection; it does not guarantee an error percentage.
 
 ### AI manufacturing and tracking-link regression
 

@@ -1,6 +1,6 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='size-scope-v1',DAY=86400000;
+const VERSION='employer-role-scope-v2',DAY=86400000;
 const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
@@ -39,19 +39,28 @@ function rank(row,anchors,ref,now=Date.now()){
  const target=lookup(row,ref,now),seen=new Set(),out=[];
  for(const a of anchors.slice().sort((a,b)=>(Date.parse(b.asOf||b.seen)||0)-(Date.parse(a.asOf||a.seen)||0))){
   const key=postingKey(a),identity=identityKey(a);if(seen.has(key)||seen.has(identity))continue;
-  const other=lookup({PRIMARY_ID:a.id,COMPANY:a.co||row.COMPANY,TITLE:a.title,LOCATION:a.location||''},ref,now),s=similarity(target,other);
+  const other=lookup({PRIMARY_ID:a.id,COMPANY:a.co||'',TITLE:a.title,LOCATION:a.location||''},ref,now),s=similarity(target,other);
   if(!s.weight)continue;
   const age=now-Date.parse(a.asOf||a.seen||'');if(Number.isFinite(age)&&(age>730*DAY||age< -DAY))continue;
   seen.add(key);seen.add(identity);
   const fresh=Number.isFinite(age)?Math.pow(0.5,Math.max(age,0)/(365*DAY)):0.5;
   const geography=a.state&&a.state===row.state?1.3:1;
-  out.push({...a,weight:s.weight*fresh*geography*(norm(a.co)===norm(row.COMPANY)?1.5:1),contextKnown:s.known,contextMissing:s.missing,ageKnown:Number.isFinite(age),postingKey:key});
+  const employers=(ref.companies||[]).filter(c=>[c.company,...c.aliases||[]].some(x=>norm(x)===norm(row.COMPANY)));
+  const sameEmployer=!!a.co&&(norm(a.co)===norm(row.COMPANY)||(employers.length===1&&[employers[0].company,...employers[0].aliases||[]].some(x=>norm(x)===norm(a.co))));
+  out.push({...a,weight:s.weight*fresh*geography*(sameEmployer?1.5:1),sameEmployer,contextKnown:s.known,contextMissing:s.missing,ageKnown:Number.isFinite(age),postingKey:key});
  }
  return out.sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page)));
 }
+function select(row,anchors,ref={},now=Date.now()){
+ const ranked=rank(row,anchors,ref,now),dated=ranked.filter(a=>a.ageKnown),eligible=dated.length?dated:ranked,employer=eligible.filter(a=>a.sameEmployer);
+ // Strong employer evidence must not be outvoted by the number of peer postings.
+ // An undated same-company row cannot displace dated evidence from peers.
+ const pool=employer.length?employer:eligible;
+ return pool;
+}
 function weightedMedian(items,key){const a=items.slice().sort((a,b)=>a[key]-b[key]);const half=a.reduce((s,x)=>s+x.weight,0)/2;let sum=0;for(let i=0;i<a.length;i++){sum+=a[i].weight;if(Math.abs(sum-half)<1e-10&&a[i+1])return(a[i][key]+a[i+1][key])/2;if(sum>=half)return a[i][key];}return null;}
 function confidence(est,used){return used.length<2||used.some(a=>!a.ageKnown)||used.filter(a=>a.contextKnown>=3).length<2?'LOW':est.conf;}
-function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
+function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':'peer tier')+'; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
 function learn(ref,row,text,sourceUrl,asOf){
  // Only explicit responsibility wording; never infer headcount from a title or production volume.
  if(!text||!sourceUrl)return false;
@@ -88,4 +97,4 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,norm,fact,lookup,similarity,rank,weightedMedian,confidence,annotation,postingKey,identityKey,learn,merge};
+module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,confidence,annotation,postingKey,identityKey,learn,merge};

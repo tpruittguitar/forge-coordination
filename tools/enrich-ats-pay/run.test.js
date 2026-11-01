@@ -23,7 +23,7 @@ test('production context route migrates filled estimates, keeps missing size non
  const ref=JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]});fs.writeFileSync(context,ref);
  fs.writeFileSync(master,[row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX','SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(2,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
  try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')},stdio:'pipe'});
- const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'size-scope-v1');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
+ const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'employer-role-scope-v2');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
  }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
@@ -88,8 +88,8 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
     assert.strictEqual(by['V2I-00000000000C'].SALARY_BASIS, 'FORGE-ESTIMATE');
     // REV-138: the comparables are the same employer (Acme), so step 1 applies; BLS is offline in the test (NO_BLS, conf unchanged)
     assert.strictEqual(by['V2I-00000000000C'].SALARY_CONF, 'HIGH');
-    assert.match(by['V2I-00000000000C'].SALARY_SOURCE, /^same-employer:V2I-00000000000E,V2I-00000000000F$/);
-    assert.match(by['V2I-00000000000C'].SALARY_NOTE, /FORGE-ESTIMATE from 2 same-employer posted range\(s\) \[V2I-00000000000E, V2I-00000000000F\]; same employer, 2 posted range\(s\).*BLS state wage n\/a; this posting read, no pay stated; uncertainty: narrow/);
+    assert.match(by['V2I-00000000000C'].SALARY_SOURCE, /^same-employer:V2I-00000000000F,V2I-00000000000E$/);
+    assert.match(by['V2I-00000000000C'].SALARY_NOTE, /FORGE-ESTIMATE from 2 same-employer posted range\(s\) \[V2I-00000000000F, V2I-00000000000E\]; same employer, 2 posted range\(s\).*BLS state wage n\/a; this posting read, no pay stated; uncertainty: narrow/);
     assert.strictEqual(by['V2I-00000000000C'].SALARY_ESTIMATE_BASIS, undefined);
     assert.deepStrictEqual(out.estimate_samples.map(x => [x.id, x.basis, x.source, x.bls]), [['V2I-00000000000C', 'POSTING_READ', 'SAME_EMPLOYER', 'NO_BLS']]);
     assert.strictEqual(by['V2I-00000000000D'], undefined, 'posting never read: no estimate');
