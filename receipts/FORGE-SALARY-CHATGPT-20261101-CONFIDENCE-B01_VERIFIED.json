@@ -1,0 +1,67 @@
+{
+  "schema": "forge.salary-correction-proof.v1",
+  "run": "FORGE-SALARY-CHATGPT-20261101-CONFIDENCE",
+  "at": "2026-11-01T20:03:33.583Z",
+  "primaryId": "V2I-E7F1F7E908C0",
+  "requestId": "FORGE-SALARY-CHATGPT-20261101-CONFIDENCE-B01-R01",
+  "result": {
+    "ok": true,
+    "mode": "BATCH_RULING_SINGLE_COMMIT",
+    "writeId": "W-20261101200124508-1755fd"
+  },
+  "independentReceipt": {
+    "source": "GITHUB",
+    "status": "COMPLETE",
+    "containsExactPrimaryId": true
+  },
+  "readback": {
+    "exactExpectedFields": true,
+    "protectedStatePreserved": true,
+    "rowSha256": "bd818dae8d85d4c91a5c5277e0e2be74a259154ce11d83eae0590888ea51b59a"
+  },
+  "expected": {
+    "SALARY_BASE_LOW": 138000,
+    "SALARY_BASE_HIGH": 207000,
+    "SALARY_MIDPOINT": 172500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-01",
+    "SALARY_SOURCE": "same-employer:PAYBENCH-TESLA-265725",
+    "SALARY_MODEL_VERSION": "employer-role-scope-v3",
+    "SALARY_CONTEXT_KEY": "32d9141e0e6bb7a2944aade2e2b372cf7c3fadca3bdce884d70154f80082dd2c",
+    "SALARY_NOTE": "Estimate, NOT posted Brookshire pay. Employer benchmark: Tesla Production Manager, Optimus req 265725, Fremont CA, $140000-$210000 annual base; https://www.tesla.com/careers/search/job/production-manager-optimus-265725; full indexed employer posting, direct automated access blocked. same employer, 1 posted range(s) for level 1 MFG roles: Production Manager, Optimus (CA) $140K-$210K x0.99 BLS state ratio; context model employer-role-scope-v3; 1 distinct postings; same-employer tier; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; excludes cash awards, equity and benefits; one comparator and missing local scope/compensation evidence keep LOW. Product corrected from exact Solar req 278729, not another Brookshire Megapack role.",
+    "PRODUCT": "Solar manufacturing: ingots, wafers and cells",
+    "PRODUCT_SCOPE": "JOB_POSTING",
+    "PRODUCT_SITE": "Greenfield solar manufacturing facility",
+    "PRODUCT_SOURCE": "https://www.tesla.com/careers/search/job/production-manager-solar-manufacturing-278729",
+    "PRODUCT_ASOF": "2026-11-01",
+    "PRODUCT_REFERENCE": "tesla-solar-278729"
+  },
+  "geographicAdjustment": {
+    "txMedian": 130890,
+    "caMedian": 132620,
+    "ratio": 0.9869552103755089
+  },
+  "benchmark": {
+    "id": "PAYBENCH-TESLA-265725",
+    "company": "Tesla",
+    "title": "Production Manager, Optimus",
+    "location": "Fremont, CA",
+    "currency": "USD",
+    "salaryType": "ANNUAL_BASE",
+    "status": "VERIFIED",
+    "low": 140000,
+    "high": 210000,
+    "quote": "$140,000 - $210,000/annual salary + cash and stock awards + benefits",
+    "sourceUrl": "https://www.tesla.com/careers/search/job/production-manager-optimus-265725",
+    "observedAt": "2026-11-01T19:40:00Z",
+    "evidenceKind": "EMPLOYER_POSTING_INDEXED_FULL_TEXT",
+    "note": "Exact employer requisition/title/Fremont and expected-compensation section read in full indexed Tesla content. Direct automated page and rendered fetch return access blocks; no direct-fetch success claimed. This is a Fremont benchmark, not Brookshire posted pay. Cash/stock awards excluded from numeric base range."
+  },
+  "deploy": {
+    "sha": "6059b866128f66c118cd8f65ee5742d2835839b5",
+    "pr": 249,
+    "version": "87",
+    "at": "2026-11-01T19:59:30.299Z"
+  }
+}
