@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261101T0108Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261101T0629Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (105 read, 0 failed) | 130 | 50 | 80 |
+| Employer job boards (105 read, 0 failed) | 130 | 49 | 81 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 18 | 61 |
+| DIRECTOR_PLUS | 17 | 62 |
 | SR_MANAGER | 9 | 16 |
 | SR_STAFF | 23 | 3 |
 
@@ -54,7 +54,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
 | BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5460689008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Operations Planning and Special Projects](https://jobs.ashbyhq.com/bedrock-robotics/ef4ed0a0-a27a-48e0-8c85-418e26c1faff) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Primary Structures](https://boards.greenhouse.io/relativity/jobs/8889038002?gh_jid=8889038002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Structures](https://boards.greenhouse.io/relativity/jobs/8862013002?gh_jid=8862013002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Mechanical Engineer, Factory Automation](https://boards.greenhouse.io/relativity/jobs/8033633002?gh_jid=8033633002) | Long Beach, California | MFG_PROD | SR_STAFF |  |
