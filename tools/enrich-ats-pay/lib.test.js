@@ -49,7 +49,7 @@ test('estimate follows COMPENSATION_ESTIMATION: comparables share level and func
   const one = L.estimate(row, [mk('A', 150000, 190000, 'Austin, TX')]);
   assert.deepStrictEqual([one.low, one.high, one.conf], [150000, 190000, 'LOW']);
   const two = L.estimate(row, [mk('A', 150000, 190000, 'Detroit, MI'), mk('B', 160000, 200000, 'Columbus, OH')]);
-  assert.deepStrictEqual([two.low, two.high, two.conf, two.n], [155000, 195000, 'MED', 2]);
+  assert.deepStrictEqual([two.low, two.high, two.conf, two.n], [160000, 200000, 'MED', 2]); // exact-state evidence receives more weight
   assert.strictEqual(L.postedAnchor({ PRIMARY_ID: 'E' }, { SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_BASE_LOW: 1e5, SALARY_BASE_HIGH: 2e5 }), null);
 });
 
@@ -120,7 +120,7 @@ test('REV-138: same-employer source, board parsing, BLS series and cross-check',
   const sim = L.similarPostings(row, gh); assert.deepStrictEqual(sim.map(x => x.page), ['u1'], 'same level and function, with pay');
   assert.deepStrictEqual(L.similarPostings(row, [{ title: 'Director of Manufacturing', location: 'Toronto, ON, CA', state: L.stateFrom('Toronto, ON, CA'), pay: { low: 200000, high: 250000 } }]), [], 'a posting abroad is never a comparable');
   const est = L.sameEmployerEstimate(row, sim, st => st === 'CA' ? 0.8 : null);
-  assert.deepStrictEqual([est.low, est.high, est.conf, est.source], [160000, 208000, 'MED', 'SAME_EMPLOYER']);
+  assert.deepStrictEqual([est.low, est.high, est.conf, est.source], [160000, 208000, 'LOW', 'SAME_EMPLOYER']); // one posting cannot establish MED confidence
   assert.match(est.basis, /Director of Manufacturing \(CA\) \$200K-\$260K x0\.80 BLS state ratio/);
   assert.strictEqual(L.sameEmployerEstimate(row, sim, () => 0.5).low, 150000, 'state ratio floored at 0.75');
   const anchors = [{ id: 'A1', co: 'Anduril Industries', title: 'Director, Manufacturing', low: 190000, high: 240000, level: 2, func: 'MFG', state: 'CA' },

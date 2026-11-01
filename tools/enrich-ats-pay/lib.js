@@ -1,5 +1,6 @@
 'use strict';
 const Context = require('./context');
+const Scope = require('./anchor-scope');
 /* REV-116 (Tim 2026-10-20 18:09-18:17 ET): pay and degree from the posting first, estimates only after the posting was
    checked, done off the Writer. Pure functions here; run.js does the network. */
 
@@ -108,7 +109,7 @@ function comparable(row, anchor) {
   // Applied AI/ML leadership is not a generic plant-management comparator. Do not
   // infer a technology premium; with no matching specialty, retain missing evidence.
   const specialty=title=>/\b(?:AI|ML|artificial intelligence|machine learning)\b/i.test(title||'')?'AI_ML':'GENERAL';
-  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title) && specialty(row.TITLE)===specialty(anchor.title);
+  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title) && specialty(row.TITLE)===specialty(anchor.title) && Scope.family(row.TITLE)===Scope.family(anchor.title) && Scope.executiveScope(row.TITLE)===Scope.executiveScope(anchor.title);
 }
 function invalidSavedAnchors(row, rows) {
   const p = row.p || {};
@@ -125,10 +126,11 @@ function estimate(row, anchors, context) {
   const L = level(row.TITLE), F = func(row.TITLE), R = regionOf(row.LOCATION);
   const same = anchors.filter(a => comparable(row, a) && a.id !== row.PRIMARY_ID);
   if (!same.length) return null;
-  const local = same.filter(a => R && a.region === R);
-  const use = (context ? Context.rank({...row,state:stateFrom(row.LOCATION)},same,context) : (local.length >= 2 ? local : same)).slice(0, 7);
+  // Always use the same employer-first, deduplicated selector, including callers
+  // without a context reference. Missing context remains unknown, not a premium.
+  const use = Context.select({...row,state:stateFrom(row.LOCATION)},same,context||{}).slice(0, 7);
   if(!use.length)return null;
-  const low = Math.round((context ? Context.weightedMedian(use,'low') : median(use.map(a => a.low))) / 1000) * 1000, high = Math.round((context ? Context.weightedMedian(use,'high') : median(use.map(a => a.high))) / 1000) * 1000;
+  const low = Math.round(Context.weightedMedian(use,'low') / 1000) * 1000, high = Math.round(Context.weightedMedian(use,'high') / 1000) * 1000;
   // COMPENSATION_ESTIMATION: 1 comparable LOW; 2 LOW, MED when close; 3+ strong anchors may go higher.
   // close = same region; strong = same region and the comparables' midpoints within 20% of their median.
   const close = use.filter(a=>R&&a.region===R).length >= 2, mids = use.map(a => (a.low + a.high) / 2), med = median(mids);
@@ -243,7 +245,7 @@ function similarPostings(row, postings) {
 function sameEmployerEstimate(row, comps, ratio, context) {
   // Revalidate here too: remembered/cache callers must not bypass title matching.
   const valid=comps.filter(c => comparable(row, c));
-  const use = (context?Context.rank({...row,state:stateFrom(row.LOCATION)},valid.map(c=>({...c,low:c.pay.low,high:c.pay.high})),context):valid).slice(0, 5); if (!use.length) return null;
+  const use = Context.select({...row,state:stateFrom(row.LOCATION)},valid.map(c=>({...c,co:c.co||row.COMPANY,low:c.pay.low,high:c.pay.high})),context||{}).slice(0, 5); if (!use.length) return null;
   const rowState = stateFrom(row.LOCATION), adj = [], notes = [];
   use.forEach(c => {
     let k = 1; if (c.state && rowState && c.state !== rowState) { const r = ratio && ratio(c.state); if (r) k = Math.min(1.1, Math.max(0.75, r)); }
@@ -252,7 +254,7 @@ function sameEmployerEstimate(row, comps, ratio, context) {
   });
   const low = Math.round((context?Context.weightedMedian(adj,'low'):median(adj.map(a => a.low))) / 1000) * 1000, high = Math.round((context?Context.weightedMedian(adj,'high'):median(adj.map(a => a.high))) / 1000) * 1000;
   const mids = adj.map(a => (a.low + a.high) / 2), med = median(mids), tight = med > 0 && (Math.max(...mids) - Math.min(...mids)) / med <= 0.2;
-  let conf = use.length >= 2 && tight ? 'HIGH' : 'MED';
+  let conf = use.length >= 2 && tight ? 'HIGH' : use.length>=2 ? 'MED' : 'LOW';
   if(context)conf=Context.confidence({conf},use);
   return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, ids: use.map(c => c.id || c.page).filter(Boolean), source: 'SAME_EMPLOYER',
     modelVersion:context?Context.VERSION:null,basis: `same employer, ${use.length} posted range(s) for level ${level(row.TITLE)} ${func(row.TITLE)} roles: ` + notes.join('; ')+(context?'; '+Context.annotation(use):'') };
