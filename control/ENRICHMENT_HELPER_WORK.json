@@ -1,8 +1,8 @@
 {
   "schema": "forge.enrichment-helper-work.v1",
   "enabled": true,
-  "routingActive": false,
-  "activation": "AWAITING_GROK_ACCESS_ACK",
+  "routingActive": true,
+  "activation": "ACKNOWLEDGED",
   "assignmentId": "GROK-ENRICH-20261101-V1",
   "authorizedBy": "Tim 2026-11-01: add an enrichment helper for Grok; usage reset",
   "at": "2026-11-01T22:17:41.687Z",
@@ -14,9 +14,9 @@
   "sourceReport": "state/enrich-ats-pay-recovery.json",
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-01T22:17:41.460Z",
-    "sha256": "9b363d11999e526f8186af4f3ea31eea3612b23cf36f5ca5d968524a8709fa1e",
-    "rows": 3465
+    "readAt": "2026-11-01T22:37:30.896Z",
+    "sha256": "433f259539ff5eb0173d3e8636fa468e9d7784482a843e98816e3ce9e1c3beb2",
+    "rows": 3541
   },
   "excluded": {
     "protected": 0,
@@ -575,7 +575,7 @@
       "primaryId": "V2I-DD6EA4D48F6F",
       "owner": "Grok",
       "taskKey": "FORGE_GROK_ENRICHMENT",
-      "status": "ASSIGNED",
+      "status": "PROTECTED_SKIP",
       "company": "Döhler GmbH",
       "title": "Head of Plant Based Nutrition",
       "location": "Princeton, NJ, USA",
@@ -7306,7 +7306,7 @@
       "primaryId": "V2I-83FF2693DCC7",
       "owner": "Grok",
       "taskKey": "FORGE_GROK_ENRICHMENT",
-      "status": "ASSIGNED",
+      "status": "PROTECTED_SKIP",
       "company": "Howmet Aerospace",
       "title": "Facilities & Controls Manager",
       "location": "Branford, CT",
@@ -10430,5 +10430,12 @@
       "rowSha256": "856c09c9da2b92ee2d495845b2eb3e4fdf6223e6523ed65bca658e9be48a148a",
       "instruction": "Reuse saved evidence; find only missing exact-posting facts. No Writer submission or final score."
     }
-  ]
+  ],
+  "activatedAt": "2026-11-01T22:37:31.118Z",
+  "acknowledgment": {
+    "runId": "GROK-ACCESS-ACK",
+    "instructionCommit": "557b534834520d07e6824450bc71cbd37034ef50",
+    "observedAt": "2026-11-01T22:31:29Z",
+    "proof": "receipts/GROK_HELPERS_ACTIVATION_20261101.json"
+  }
 }
