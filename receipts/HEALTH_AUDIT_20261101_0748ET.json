@@ -1,0 +1,606 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "task": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "scheduledAt": "2026-11-01T12:48:06.099Z",
+  "at": "2026-11-01T12:52:50.747Z",
+  "readOnly": true,
+  "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+  "sharedInstructionRevision": "f1db4c1a5d85edbdc8a8575a5b9031c8e71fd3f0",
+  "revisions": {
+    "coordination": "f1db4c1a5d85edbdc8a8575a5b9031c8e71fd3f0",
+    "cockpit": "cdaebf2e636fcf02ace87992bb2269fcb6ddcab3"
+  },
+  "sourceEvidenceSha256": "830eb86d7349206dd59334776e2039c52970c013bb16740e00dc91f88a2bad95",
+  "sourceEvidence": {
+    "writer": "53f15be395c13da80f0c7bf1fdbe94ecc9d6b9537478a7b54b4d35c5bad0884d",
+    "github": "687222f590c111666ea397f1c0d0e00dac1a1b2f90f6c32a7b1f97421125d0bb",
+    "workflows": "8f928f195c7d9d8019787ccfca2ef2d1ab5fc61671a7838529cb621b03c54684",
+    "explorer": "8cb9f903126f27bff9c3037542f5543f611f11cb9ac0c3c49599bcda636386dc",
+    "queue": "f30c7be82bfa9a09fbe9c3d626ddb9ec98dd754422c278760f427fd7d07580cb",
+    "operations": "3eb8f3ae3de4f5f42e5e42a0882042fda8d693ee6a12dbf2ea272bada8f62771",
+    "recovery": "bca7c5da1cf2b9905325cf40b60060b9404fa1d9b6f3f8cffc6bbfaf7ca6ee26",
+    "sourceReport": "452e10ce4f2060af5b1da217f3170cb12125d510c34e900c6fcf5df54eb81083",
+    "flow": "8c0282ac814a1f7afdf3aa90fb1d88721e920f102b397b3fce3bce3930b98c71",
+    "nativeReadback": "fbd49d69b9f24c2f82520b5198b5f222d7b417838a90fbb82e742a8b0fbb4dfa"
+  },
+  "checks": {
+    "writer": true,
+    "github": true,
+    "canonicalMaster": true,
+    "explorerHealth": true,
+    "operations": true
+  },
+  "writer": {
+    "build": {
+      "commit": "cdaebf2",
+      "pr": 248,
+      "subject": "CHATGPT: distinguish proven separate onsite facility roles (#248)",
+      "deployedAt": "2026-11-01T07:59:05Z"
+    },
+    "level": "ok",
+    "errors": [],
+    "freeze": null,
+    "fileQueuePending": 0,
+    "processing": 0,
+    "held": 0,
+    "unverifiedDirectWrites": 0,
+    "queueTriggerInstalled": true,
+    "fileQueue24h": {
+      "arrived": 2,
+      "finished": 2,
+      "failed": 0,
+      "held": 0,
+      "peakFinishedPerHour": 1,
+      "waitMsMax": 48597
+    },
+    "fileQueueBasis": "WRITER_QUEUE_LOG.jsonl; a request is counted once it finishes; backlogAtEnd counts logged requests that had arrived and not yet finished",
+    "queueLogSkippedLines": 1,
+    "localProductionLockPresent": false,
+    "fence": "No active freeze. Per-execution fence not exposed by supported read-only status.",
+    "rotation": "Current cockpit Automation.gs invokes threshold-based rotation during ticks. Live log size/rotation receipt not exposed; not asserted healthy.",
+    "metadataNotice": "Unchanged undated blank FAILED record remains; no identifiable current transaction or24h timestamp proven."
+  },
+  "canonical": {
+    "masterRows": 2858,
+    "archiveRows": 785,
+    "uniquePrimaryIds": 3640,
+    "readAt": "2026-11-01T12:50:57.585Z",
+    "modifiedAt": "2026-11-01T12:09:51.856Z"
+  },
+  "flow": {
+    "at": "2026-11-01T12:27:07.232Z",
+    "queues": {
+      "verification": 0,
+      "enrichment": 454,
+      "readyForReview": 613,
+      "blockedClosed": 97
+    },
+    "population": {
+      "total": 1164,
+      "accounted": 1164,
+      "reconciled": true
+    },
+    "completion": {
+      "verification": {
+        "count36": 4,
+        "count": 4,
+        "windowHours": 36,
+        "perHour": 0.1111111111111111,
+        "last24h": 2,
+        "partial": true,
+        "coverageHours": 31.86024861111111,
+        "collectionGaps": 22,
+        "available": true,
+        "countsAvailable": true,
+        "startedAt": "2026-10-31T04:35:30.337Z",
+        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+      },
+      "enrichment": {
+        "count36": 384,
+        "count": 384,
+        "windowHours": 36,
+        "perHour": 10.666666666666666,
+        "last24h": 317,
+        "partial": true,
+        "coverageHours": 31.86024861111111,
+        "collectionGaps": 22,
+        "available": true,
+        "countsAvailable": true,
+        "startedAt": "2026-10-31T04:35:30.337Z",
+        "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+      }
+    },
+    "completionByWindow": {
+      "6": {
+        "verification": {
+          "count36": 1,
+          "count": 1,
+          "windowHours": 6,
+          "perHour": 0.16666666666666666,
+          "last24h": 2,
+          "partial": true,
+          "coverageHours": 6,
+          "collectionGaps": 5,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        },
+        "enrichment": {
+          "count36": 153,
+          "count": 153,
+          "windowHours": 6,
+          "perHour": 25.5,
+          "last24h": 317,
+          "partial": true,
+          "coverageHours": 6,
+          "collectionGaps": 5,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        }
+      },
+      "12": {
+        "verification": {
+          "count36": 2,
+          "count": 2,
+          "windowHours": 12,
+          "perHour": 0.16666666666666666,
+          "last24h": 2,
+          "partial": true,
+          "coverageHours": 12,
+          "collectionGaps": 10,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        },
+        "enrichment": {
+          "count36": 212,
+          "count": 212,
+          "windowHours": 12,
+          "perHour": 17.666666666666668,
+          "last24h": 317,
+          "partial": true,
+          "coverageHours": 12,
+          "collectionGaps": 10,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        }
+      },
+      "24": {
+        "verification": {
+          "count36": 2,
+          "count": 2,
+          "windowHours": 24,
+          "perHour": 0.08333333333333333,
+          "last24h": 2,
+          "partial": true,
+          "coverageHours": 24,
+          "collectionGaps": 19,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        },
+        "enrichment": {
+          "count36": 317,
+          "count": 317,
+          "windowHours": 24,
+          "perHour": 13.208333333333334,
+          "last24h": 317,
+          "partial": true,
+          "coverageHours": 24,
+          "collectionGaps": 19,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        }
+      },
+      "36": {
+        "verification": {
+          "count36": 4,
+          "count": 4,
+          "windowHours": 36,
+          "perHour": 0.1111111111111111,
+          "last24h": 2,
+          "partial": true,
+          "coverageHours": 31.86024861111111,
+          "collectionGaps": 22,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        },
+        "enrichment": {
+          "count36": 384,
+          "count": 384,
+          "windowHours": 36,
+          "perHour": 10.666666666666666,
+          "last24h": 317,
+          "partial": true,
+          "coverageHours": 31.86024861111111,
+          "collectionGaps": 22,
+          "available": true,
+          "countsAvailable": true,
+          "startedAt": "2026-10-31T04:35:30.337Z",
+          "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+        }
+      }
+    },
+    "upstreamWaiting": 5405,
+    "upstreamReconciled": true,
+    "decisionReadyApiCount": 613,
+    "decisionReadyReconciles": true
+  },
+  "enrichment": {
+    "at": "2026-11-01T11:36:08.126Z",
+    "submittedFieldUpdates": 47,
+    "acceptedFieldUpdates": 47,
+    "publicRead": 6,
+    "publicFailed": 54,
+    "recoveryStatuses": {
+      "SOURCE_RESEARCH_REQUIRED": 406,
+      "EVIDENCE_FOUND": 38,
+      "NOT_YET_ATTEMPTED": 13
+    },
+    "savedAttemptStatuses": {
+      "HTTP_403": 161,
+      "FULL_POSTING_READ": 6,
+      "NO_EXACT_COMPLETE_POSTING": 123,
+      "NO_SUPPORTED_READER_FOR_SAVED_SOURCE": 140,
+      "READ_ERROR": 2,
+      "HTTP_404": 12,
+      "HTTP_410": 5,
+      "HTTP_429": 2
+    },
+    "completionCaution": "Only distinct recorded stage transitions count as completed jobs;47 field updates are not47 completions. History has collection gaps and observed minimum rates."
+  },
+  "github": {
+    "workflows": {
+      "source-intake-auto": [
+        {
+          "id": 41292620620,
+          "event": "workflow_run",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T09:19:21Z",
+          "updated": "2026-11-01T09:19:45Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41292620620"
+        },
+        {
+          "id": 41279199635,
+          "event": "workflow_run",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T06:02:26Z",
+          "updated": "2026-11-01T06:28:54Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41279199635"
+        },
+        {
+          "id": 41260185344,
+          "event": "workflow_run",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T01:13:40Z",
+          "updated": "2026-11-01T01:13:59Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41260185344"
+        }
+      ],
+      "enrich-ats-pay": [
+        {
+          "id": 41301671807,
+          "event": "workflow_dispatch",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T11:23:27Z",
+          "updated": "2026-11-01T11:36:19Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41301671807"
+        },
+        {
+          "id": 41288759104,
+          "event": "workflow_dispatch",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T09:24:49Z",
+          "updated": "2026-11-01T09:35:58Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41288759104"
+        },
+        {
+          "id": 41282673788,
+          "event": "schedule",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T06:54:36Z",
+          "updated": "2026-11-01T07:09:56Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41282673788"
+        }
+      ],
+      "source-trial": [
+        {
+          "id": 41301668143,
+          "event": "workflow_dispatch",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T11:23:24Z",
+          "updated": "2026-11-01T11:30:12Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41301668143"
+        },
+        {
+          "id": 41278695984,
+          "event": "schedule",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T05:54:24Z",
+          "updated": "2026-11-01T06:02:24Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41278695984"
+        },
+        {
+          "id": 41275965383,
+          "event": "workflow_dispatch",
+          "status": "completed",
+          "conclusion": "success",
+          "created": "2026-11-01T05:11:33Z",
+          "updated": "2026-11-01T05:18:50Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41275965383"
+        }
+      ]
+    },
+    "otherRecentFailures": [],
+    "openPrs": {
+      "coordination": [
+        {
+          "number": 102,
+          "title": "ENRICH: fetch missing BLS series before n/a",
+          "updated": "2026-10-28T08:37:00Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/102"
+        }
+      ],
+      "cockpit": []
+    },
+    "scope": "Most recent70 runs per repository plus explicit latest3 for core production workflows; not a complete historical failure inventory."
+  },
+  "explorer": {
+    "sourceRevision": "f1db4c1a5d85edbdc8a8575a5b9031c8e71fd3f0",
+    "checks": {
+      "processStates": {
+        "ok": true,
+        "at": "2026-11-01T12:27:07.232Z"
+      },
+      "emailRecovery": {
+        "ok": true,
+        "at": "2026-11-01T12:17:22.784Z"
+      },
+      "processFlow": {
+        "ok": true,
+        "at": "2026-11-01T12:27:07.232Z"
+      },
+      "attention": {
+        "ok": true,
+        "at": "2026-11-01T12:25:28.294Z"
+      },
+      "sources": {
+        "ok": true,
+        "at": "2026-11-01T11:29:51.822Z",
+        "failedBoards": 0,
+        "candidates": 189
+      },
+      "applicationOutcomes": {
+        "ok": true,
+        "at": "2026-11-01T12:24:25.528Z"
+      },
+      "boards": {
+        "ok": true,
+        "at": "2026-11-01T09:13:34.801Z",
+        "failedBoards": 0,
+        "candidates": 49
+      },
+      "execution": {
+        "ok": true,
+        "at": "2026-11-01T12:25:19.489Z"
+      },
+      "emailCoverage": {
+        "ok": true,
+        "at": "2026-11-01T12:17:22.784Z",
+        "run": "FORGE-EMAIL-CHATGPT-20261101-0704ET",
+        "window": [
+          "2026-11-01T09:04:35.390Z",
+          "2026-11-01T12:04:35.390Z"
+        ],
+        "bodiesRead": 3,
+        "savedBodiesResumed": 0,
+        "unresolvedWindows": [
+          [
+            "2026-10-30T23:02:00Z",
+            "2026-10-31T04:49:18.420Z"
+          ],
+          [
+            "2026-10-31T07:49:18.420Z",
+            "2026-10-31T08:01:21.383Z"
+          ],
+          [
+            "2026-10-31T11:01:21.383Z",
+            "2026-10-31T11:59:55.210Z"
+          ],
+          [
+            "2026-10-31T14:59:55.210Z",
+            "2026-10-31T16:06:29.048Z"
+          ],
+          [
+            "2026-10-31T16:06:29.048Z",
+            "2026-10-31T19:06:29.048Z"
+          ],
+          {
+            "from": "2026-10-31T20:03:32.801Z",
+            "to": "2026-10-31T23:03:32.801Z",
+            "reason": "Visible source identity holds; LinkedIn advertised unshown minimum24 and ZipRecruiter view-more remain; no coverage completion inferred"
+          },
+          {
+            "from": "2026-10-31T23:03:32.801Z",
+            "to": "2026-11-01T00:00:05.165Z",
+            "reason": "Continuity window remains pending; tracker-captured source IDs retained in immutable handoffs, not presumed intake complete"
+          },
+          {
+            "from": "2026-11-01T00:00:05.165Z",
+            "to": "2026-11-01T03:00:05.165Z",
+            "reason": "Visible identity holds and 26 overlapping unshown LinkedIn occurrences remain"
+          },
+          {
+            "from": "2026-11-01T03:00:05.165Z",
+            "to": "2026-11-01T07:10:03.548Z",
+            "reason": "Continuity window not advanced in this run; preserve source IDs and prior pending dispositions"
+          },
+          {
+            "from": "2026-11-01T07:10:03.548Z",
+            "to": "2026-11-01T10:10:03.548Z",
+            "reason": "All four alert bodies read; 17 displayed candidates accounted, two identity holds, at least 56 overlapping unseen occurrences and one linked-only recommendation source remain"
+          },
+          {
+            "from": "2026-11-01T09:04:35.390Z",
+            "to": "2026-11-01T12:04:35.390Z",
+            "reason": "Three new full alert bodies evaluated; current LinkedIn view-all has12 overlapping unseen occurrences and3 identity exceptions remain. Previously evaluated overlapping alert and all saved source windows retained."
+          }
+        ],
+        "pendingSourceWindows": 11,
+        "historicalBodiesRevisited": 0,
+        "visibleOccurrences": 46,
+        "verifiedInserted": 34,
+        "held": 0,
+        "advertisedUnshownOccurrences": 12,
+        "coverageComplete": false,
+        "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-0704ET.json",
+        "writerProofsVerified": true,
+        "pendingCapturedJobs": 3957,
+        "pendingResultSources": 3,
+        "pendingResultPageCount": null,
+        "pendingResultPages": 3
+      },
+      "schedules": {
+        "ok": true,
+        "at": "2026-11-01T12:21:52.174532Z",
+        "configured": 6,
+        "ids": [
+          "forge-ai-usage-reader",
+          "forge-application-outcome-tracker",
+          "forge-application-writer-gofer",
+          "forge-email-discovery",
+          "forge-posting-validation",
+          "pe-stack-health-daily"
+        ],
+        "executionVerified": false,
+        "executionAt": "2026-11-01T12:25:19.489Z",
+        "unverified": [
+          "forge-application-writer-gofer"
+        ]
+      },
+      "boardHealth": {
+        "ok": true,
+        "at": "2026-11-01T09:19:12.475Z",
+        "tracked": 105,
+        "pending": 0
+      },
+      "revision": {
+        "ok": true,
+        "sha": "f1db4c1a5d85edbdc8a8575a5b9031c8e71fd3f0"
+      }
+    },
+    "readOnlyHttpHealthy": true,
+    "browserOutbox": "NOT_INSPECTED:server readback does not establish a browser-local queue.",
+    "pollingAndPayload": "Published health returned valid current pinned-revision snapshots. Individual client polling state not inspected.",
+    "pendingEmailCandidates": 3957,
+    "pendingResultSources": 3,
+    "pendingResultPageCount": null
+  },
+  "operations": {
+    "total": 2737,
+    "done": 2311,
+    "counts": {
+      "NOT_ATTEMPTED": 0,
+      "RESEARCHING": 0,
+      "QUEUED": 0,
+      "PROCESSING": 0,
+      "PENDING_VERIFICATION": 1,
+      "WRITER_TRANSPORT_BLOCKED": 0,
+      "BLOCKED": 0,
+      "NEEDS_RESOLUTION": 425,
+      "UNSYNCED": 0,
+      "VERIFIED_COMPLETE": 2023,
+      "EXCLUDED_VERIFIED": 6,
+      "EXISTING_VERIFIED": 282,
+      "CANCELED_VERIFIED": 0
+    },
+    "runs": 0,
+    "coverageRecords": 0,
+    "note": "Empty operations-run tables are telemetry gaps, not zero work; independent hash-bound receipts prove recent AI work."
+  },
+  "receiptRecovery": {
+    "at": "2026-11-01T12:25:18.913Z",
+    "statusCounts": {
+      "CLOSED_NO_ACTIVE_WORK": 24,
+      "ESCALATED": 10
+    }
+  },
+  "schedule": {
+    "nativeConfigurationRead": true,
+    "allSixSharedEntry": true,
+    "configurationOnly": true,
+    "priorCurrentExecutionUnverified": [
+      "forge-application-writer-gofer"
+    ],
+    "gofer": "Last receipt deferred active user evidence repair; no newer completed run proof. Configuration is active but does not establish execution."
+  },
+  "comparison": {
+    "prior": "receipts/HEALTH_AUDIT_20261031_0744ET.json",
+    "improvements": [
+      "Ready-for-review queue increased from341 to613; observed317 enrichment completions last24h,153last6h, with collection gaps.",
+      "No active global intake latch in current attention evidence; no Writer pending/held/unverified writes.",
+      "All105 tracked employer boards have no current pending faults."
+    ],
+    "remaining": [
+      "Downstream auto-intake launch absent after latest source-trial success.",
+      "Scheduled enrichment starts remain sparse; manual runs are doing useful work.",
+      "Email pagination input blocked and historical source gaps remain durably saved."
+    ]
+  },
+  "findings": [
+    {
+      "priority": 1,
+      "code": "SOURCE_TO_AUTO_HANDOFF_RUN_ABSENT",
+      "newEvidence": true,
+      "previouslyReported": true,
+      "detail": "Latest source-trial completed successfully at11:30:12Z; at12:53Z latest source-intake-auto is still09:19Z board-triggered no-candidate run. No matching downstream run is listed more than80minutes after source completion. Workflow_run configuration names source-trial/board-discovery. Delivery root cause not established by read-only API.",
+      "next": "Investigate workflow_run delivery/eligibility; reconcile the189 reported new source matches against current canonical jobs before any recovery. Do not replay prior requests.",
+      "evidence": [
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41301668143",
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41292620620"
+      ]
+    },
+    {
+      "priority": 2,
+      "code": "ENRICHMENT_SOURCE_ACCESS_AND_SCHEDULE_GAPS",
+      "detail": "454 jobs currently await enrichment. Latest run accepted47 field updates, not47 completed jobs; exact public source reads succeeded6of60, failed54. Recovery ledger contains406 SOURCE_RESEARCH_REQUIRED,38 EVIDENCE_FOUND,13 NOT_YET_ATTEMPTED (ledger rows overlap live states and are not added to backlog). Latest three workflow runs: manual11:23/manual09:24/scheduled06:54 despite hourly:42 configured. GitHub reports all successful; missing starts are not failed writes.",
+      "next": "Restore reliable scheduled execution and route unreadable posting URLs to supported exact employer sources, preserving source retry state. Source failures must not become invented absent qualifications or salary.",
+      "evidence": [
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41301671807",
+        "state/enrich-ats-pay-recovery.json"
+      ]
+    },
+    {
+      "priority": 3,
+      "code": "DISCOVERY_SNAPSHOT_LAGS_CANONICAL",
+      "previouslyReported": true,
+      "detail": "Source report used2742 master/783 archive rows; fresh Writer read2858/785. Different observation times explain part of delta; canonical was already2824 at11:23 before source report11:29. Source runner still reads structuredApi/jobs. Downstream canonical deduplication remains mandatory.",
+      "next": "Use a freshness-validated complete canonical discovery snapshot. No code changed in this audit."
+    }
+  ],
+  "masterMutations": 0,
+  "driveMutations": 0,
+  "codeChanges": 0,
+  "scheduleChanges": 0,
+  "workflowDispatches": 0
+}
