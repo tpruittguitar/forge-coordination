@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-01T20:55:36.733Z",
- "sourceCommit": "d21d3358fe007f0bc1e4a56cf52e11c31ec36da2",
+ "builtAt": "2026-11-01T21:10:55.095Z",
+ "sourceCommit": "eb1c10773c3705754dca35f19e31788bbe868be9",
  "counts": {
-  "total": 27,
+  "total": 29,
   "BLOCKING": 0,
-  "ACTION": 16,
-  "WATCH": 11,
+  "ACTION": 17,
+  "WATCH": 12,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 8,
-  "UPKEEP": 11
+  "FAILED": 9,
+  "UPKEEP": 12
  },
  "items": [
   {
@@ -177,6 +177,18 @@
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
    "source": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
+   "at": "2026-11-01T00:00:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:HELPER-DRAIN",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "HELPER-DRAIN lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
    "at": "2026-11-01T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -430,6 +442,18 @@
    "raisedBy": "CHATGPT"
   },
   {
+   "id": "run-unfinished:HELPER-DRAIN|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "HELPER-DRAIN · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+   "at": "2026-11-01T00:00:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "run-unfinished:OUTCOME|CHATGPT",
    "section": "FAILED",
    "level": "WATCH",
@@ -662,6 +686,16 @@
    "lastStatus": "UNSTATED",
    "lastFile": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
    "runs7d": 7,
+   "usualGapHours": 0,
+   "overdue": true
+  },
+  {
+   "lane": "HELPER-DRAIN",
+   "provider": "CHATGPT",
+   "lastAt": "2026-11-01T00:00:00-05:00",
+   "lastStatus": "UNFINISHED",
+   "lastFile": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+   "runs7d": 6,
    "usualGapHours": 0,
    "overdue": true
   },
