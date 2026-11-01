@@ -4,9 +4,8 @@
  * Does nothing unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and FORGE_WRITER_KEY is set.
  * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person). That refusal
  *    happens before any Writer call and exits 0 with a warning; the latch is listed on attention/NEEDS_TIM.json.
- * 2. Picks up to maxBatch NEW roles from state/source-trial-report.json with the 24-job stage's filters
- *    (Director+/Senior Manager, or Senior Staff/Principal engineer, core functions, no agencies, at most 2 per employer,
- *    never a role an earlier AUTO run already sent), and keeps only those whose posting page loads and names the employer.
+ * 2. Ranks saved cards through the shared relevance screen, preserves all prior request fences,
+ *    and sends eligible work in successive maxBatch transactions (not a daily/pass quota).
  * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
  *    executor gates as the stage. The Writer decides Never Consider; what it declines without writing is SKIPPED.
  * State and outcome go to receipts/auto-intake/<run>.json (Writer responses only, never the key).
@@ -21,38 +20,26 @@ const {DIR,previous,latch,identityKey}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
 const {carryForwardRoles}=require('./carry-forward');
 const {knownRequestIds}=require('./known-requests');
+const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
-const LEVELS=new Set(['DIRECTOR_PLUS','SR_MANAGER']);
-// Tim 2026-10-26: "Sr staff on the west coast is also a high level good fit at most of those companies." Discovery tags
-// Staff, Senior Staff and Principal engineer titles SR_STAFF; Senior Staff and Principal pass, plain Staff does not.
-const SENIOR_IC=/\b(?:senior staff|sr\.? staff|principal)\b/i;
-const levelOk=r=>LEVELS.has(r.level)||(r.level==='SR_STAFF'&&SENIOR_IC.test(r.title));
-const CORE=/production|manufactur|quality|plant|test engineer|commissioning|operational excellence|continuous improvement|operations director|director of operations|npi|industrializ/i;
-const OFF=/account|financ|compensation|payroll|\bhse\b|\behs\b|safety|environment|strateg|software|supply chain|procure|sourcing|purchas|\bml\b|data|analyst|marketing|sales|human resources|\bhr\b|talent|recruit|legal|\bit\b|cyber|operator|technician|intern/i;
-// No location is dropped here (Tim 2026-10-26: "I would take a good fit offer on the west coast for 280k"; Memphis can
-// be OK). Location is scored by the geo map / PAY_WORTH per the canonical rules, after intake.
-const AGENCY=/staffing|recruit|talent|executive search|search partners|personnel|placement|consulting|hr solutions|workforce|\bcareers$/i;
-// Tim 2026-10-23: no pharmaceutical or medical companies. Checked on company + title, then on the posting text.
-const MEDICAL=/pharm|bio(?!fuel|diesel|plastic|mass|gas)|microbio|gene therap|cell therap|genetic|life science|biologic|therapeutic|diagnostic|medical|medtech|med tech|health ?care|health system|hospital|clinic|surgical|dental|orthop|patient|\bdrug|vaccine|genomic|oncolog|cardio|biopharm|\bhealth\b(?! ?(?:and|&) ?safety)/i;
-const MEDICAL_TEXT=/pharmaceutical|gene therapy|cell therapy|orthopedic|surgical|biotech|biopharm|life sciences company|medical device|medtech|health ?care company|hospital|patients\b/i;
-
+// Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
-function screenReason(r){if(!levelOk(r))return 'LEVEL_FILTER';if(!CORE.test(r.title)||OFF.test(r.title))return 'FUNCTION_FILTER';if(AGENCY.test(r.company))return 'AGENCY_FILTER';if(MEDICAL.test(r.company+' '+r.title))return 'INDUSTRY_FILTER';return null;}
-function pick(report,{max,sent,blockedIdentities=new Set()}){
+function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
+function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load()}){
  const per={},out=[];
- for(const r of report.new_roles||[]){
+ for(const r of Relevance.rank(report.new_roles||[],config)){
   if(out.length>=max)break;
-  if(screenReason(r))continue;
+  if(screenReason(r,config))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
   // Employer as the Writer compares it (text before " | "); the raw name's request ID is still checked so a role an
   // earlier run sent under the raw name is never sent again under the normalized one.
   const company=normalizeCompany(r.company).company;
-  const k=company.toLowerCase();if((per[k]||0)>=2)continue;
+  const k=company.toLowerCase(); // No per-employer throughput cap.
   const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
   if(blockedIdentities.has(identityKey(record)))continue; // a changed URL cannot bypass an uncertain prior write
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
@@ -67,7 +54,7 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   if(!res.ok)return null;
   const html=await res.text(),text=strip(html);
   if(!text.toLowerCase().includes(company.toLowerCase().split(/[ ,]/)[0]))return null;
-  if(MEDICAL_TEXT.test(text.slice(0,4000)))return null;
+  // Never-Consider is adjudicated by Writer from sourced employer facts.
   const d=meta(html,'og:description')||meta(html,'description')||text;
   const at=d.toLowerCase().indexOf(company.toLowerCase().split(/[ ,]/)[0]);
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
@@ -112,7 +99,8 @@ async function main(argv=process.argv.slice(2)){
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
  const blockedIdentities=new Set(quarantined.filter(q=>q.identityKey).map(q=>q.identityKey));
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
- const picked=pick(report,{max:(rules?.maxBatch||25)*3,sent,blockedIdentities}),candidates=[];
+ const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const business=await evidence(r.url,r.company);
@@ -121,7 +109,7 @@ async function main(argv=process.argv.slice(2)){
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
  }
- const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').slice(0,13)+'Z';
+ const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
  console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,filtered:picked.length,candidates:candidates.length}));
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
@@ -145,6 +133,8 @@ async function main(argv=process.argv.slice(2)){
  const rec=finalize({statePath,candidates});
  console.log(JSON.stringify(rec));
  if(rec.status==='HOLD')throw Error('NEEDS TIM: AUTO reconcile HOLD '+rec.reason);
+ // maxBatch is a transaction size, not a pass/day quota. Continue eligible work.
+ if(!argv.includes('--one-transaction'))return main(argv);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
 module.exports={pick,evidence,main,screenReason};

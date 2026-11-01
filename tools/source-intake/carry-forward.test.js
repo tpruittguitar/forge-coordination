@@ -25,7 +25,7 @@ test('cannot declare an attempted candidate or alter the bound candidate file',(
  f.prior[0].state.reconciliation.carryForwardRequestIds=[f.ids[1]];f.prior[0].state.candidatesHash='wrong';
  assert.throws(()=>carryForwardRoles(f.prior,{root:f.root}),/hash mismatch/);
 });
-test('carry-forward preserves current level and industry exclusions',()=>{
+test('carry-forward leaves employer Never Consider to Writer and logs off-function closures',()=>{
  const f=fixture(),roles=carryForwardRoles(f.prior,{root:f.root});
- roles[0].company='Medical Devices';assert.deepEqual(pick({new_roles:roles},{max:25,sent:new Set()}),[]);
+ roles[0].company='Medical Devices';assert.equal(pick({new_roles:roles},{max:25,sent:new Set()}).length,1);roles[0].title='Director of Clinical Care';assert.deepEqual(pick({new_roles:roles},{max:25,sent:new Set()}),[]);
 });
