@@ -6,3 +6,22 @@ test('viewed or accepted is insufficient to dispose a new job',()=>{const l=L.se
 test('empty live results retain historical uncertainty',()=>{const l=L.seed(L.empty(),input);L.capture(l,{...page,jobs:[],next:false,emptyConfirmed:true,evidence:'No new matches for now'});assert.equal(L.summary(l).historicalGaps,1);assert.equal(L.summary(l).coverageComplete,false);});
 
 test('intake waiting excludes completed and in-flight Writer jobs',()=>{const l=L.seed(L.empty(),input);L.capture(l,page);assert.equal(L.summary(l).awaitingIntake,1);l.jobs['linkedin:123'].status='POST_IN_FLIGHT_UNKNOWN';assert.equal(L.summary(l).awaitingIntake,0);l.jobs['linkedin:123'].status='VERIFIED_INSERTED';assert.equal(L.summary(l).awaitingIntake,0);});
+test('a missing pagination observation never silently closes a source',()=>{
+ const l=L.seed(L.empty(),input);L.capture(l,{...page,next:undefined});assert.equal(l.sources.one.nextPageRequired,true);
+ L.capture(l,{...page,next:false});assert.equal(l.sources.one.nextPageRequired,true);
+ L.capture(l,{...page,next:false,endConfirmed:true});assert.equal(l.sources.one.nextPageRequired,false);assert.equal(l.sources.one.exhausted,true);
+});
+test('only observed results pagination with unchanged search filters advances the resume cursor',()=>{
+ const l=L.seed(L.empty(),input);L.capture(l,page);const from=L.safeUrl(page.url),to=from+'&start=25',proof={gmailId:'one',fromUrl:from,toUrl:to,at:page.at,paginationControl:'RESULTS_NEXT'};
+ assert.throws(()=>L.advance(l,{...proof,paginationControl:'CAROUSEL_NEXT'}));
+ assert.throws(()=>L.advance(l,{...proof,toUrl:to.replace('quality','sales')}));
+ assert.throws(()=>L.advance(l,{...proof,toUrl:from}));
+ L.advance(l,proof);assert.equal(l.sources.one.nextPagePosition,25);assert.equal(l.sources.one.resumeUrl,to);assert.equal(L.summary(l).remainingPageCount,null);assert.equal(L.summary(l).sourcesWithPendingResults,1);
+});
+test('submission checkpoints fence every candidate and retain prior recovery evidence',()=>{
+ const l=L.seed(L.empty(),input);L.capture(l,page);const j=l.jobs['linkedin:123'];j.status='HELD_WRITER_REVIEW';j.disposition={proof:'original.json',reason:'WRITE_FAILED'};
+ const p={requestId:'new-request',keys:[j.key],at:page.at,proof:'checkpoint.json'};
+ assert.throws(()=>L.checkpointSubmission(l,p));assert.equal(j.status,'HELD_WRITER_REVIEW');
+ L.checkpointSubmission(l,{...p,recoveries:{[j.key]:{originalRequestId:'original',originalCandidateOutcome:'WRITE_FAILED',durableBatchStatus:'COMPLETE',proof:'original.json'}}});
+ assert.equal(j.status,'POST_IN_FLIGHT_UNKNOWN');assert.equal(j.dispositionHistory[0].evidence.proof,'original.json');assert.throws(()=>L.checkpointSubmission(l,p));
+});
