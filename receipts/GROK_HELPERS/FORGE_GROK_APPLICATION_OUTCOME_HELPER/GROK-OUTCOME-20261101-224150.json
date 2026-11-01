@@ -1,0 +1,28 @@
+{
+  "schema": "forge.outcome-helper-batch.v1",
+  "provider": "Grok",
+  "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER",
+  "assignmentId": "GROK-OUTCOME-20261101-V1",
+  "runId": "GROK-OUTCOME-20261101-224150",
+  "instructionCommit": "37edf94c9b6c097a719b399cc0d683c05ac20699",
+  "observedAt": "2026-11-01T22:41:50Z",
+  "routing": {
+    "active": true,
+    "cutoverAt": "2026-11-01T22:37:31.118Z",
+    "method": "sha256(threadId)[0]%2 == 1",
+    "retainedExcluded": true
+  },
+  "scan": {
+    "window": "messages at/after cutoverAt",
+    "labelsChecked": [
+      "INBOX",
+      "SENT",
+      "all/archive via search"
+    ],
+    "queryUsed": "newer_than:1d / after:2026/11/01",
+    "threadsExamined": 10,
+    "ownedAfterCutover": 0,
+    "notes": "No messages with date >= 2026-11-01T22:37:31Z found in recent results. Newest observed ~21:53 UTC. No owned partition items to process. Hash check capability confirmed (SHA-256 first byte % 2)."
+  },
+  "items": []
+}
