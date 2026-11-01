@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-01T22:51:36.109Z",
- "sourceCommit": "5f8ee937724038dfc63b7e8e9c878abebf497e59",
+ "builtAt": "2026-11-01T23:15:39.714Z",
+ "sourceCommit": "3574b885f2c73e63e445119d3da2960d4a174492",
  "counts": {
-  "total": 29,
+  "total": 27,
   "BLOCKING": 0,
-  "ACTION": 18,
-  "WATCH": 11,
+  "ACTION": 17,
+  "WATCH": 10,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 8,
-  "UPKEEP": 13
+  "FAILED": 7,
+  "UPKEEP": 12
  },
  "items": [
   {
@@ -241,18 +241,6 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "GOFER lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json",
-   "at": "2026-11-01T01:07:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "ask:ASK-CHATGPT-OUTCOME-CONFIDENTIAL-1a197f70e87751b0",
    "section": "DECIDE",
    "level": "ACTION",
@@ -464,18 +452,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-OUTCOME-CHATGPT-20261101T213415Z_VERIFICATION.json",
    "at": "2026-11-01T00:00:00-05:00",
    "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "run-unfinished:GOFER|CHATGPT",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "GOFER · CHATGPT — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json",
-   "at": "2026-11-01T01:07:00-05:00",
-   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -642,12 +618,12 @@
   {
    "lane": "GOFER",
    "provider": "CHATGPT",
-   "lastAt": "2026-11-01T01:07:00-05:00",
+   "lastAt": "2026-11-01T18:10:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261101-0107ET_EXCEPTION_AUDIT.json",
-   "runs7d": 89,
+   "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
+   "runs7d": 93,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "GOFER",
@@ -657,7 +633,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
    "runs7d": 26,
    "usualGapHours": 1.6,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "GOFER",
@@ -667,7 +643,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "HANDOFF",
