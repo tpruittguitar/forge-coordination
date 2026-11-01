@@ -1,0 +1,42 @@
+{
+  "schema": "forge.relevance-screen.v1",
+  "enabled": true,
+  "authorizedBy": "Tim 2026-11-01: Make it live; relevance screen and resume intake with no WIP or daily processing caps",
+  "policyPath": "rules/TIM_PIPELINE_RULES_CANONICAL.txt",
+  "policyCommit": "f81142fef4d864176adc8bbc7e7c3292d330c54e",
+  "backtest": "reports/FUNCTION_MISMATCH_BACKTEST_20261101.json",
+  "rules": [
+    {
+      "id": "FM_TAX",
+      "pattern": "\\btax(?:ation)?\\b"
+    },
+    {
+      "id": "FM_CLINICAL_CARE",
+      "pattern": "\\b(?:clinical|patient care|nursing|nurse|physician|surgical services|hospital laboratory|health services|senior living|assisted living)\\b"
+    },
+    {
+      "id": "FM_FOOD_SERVICE",
+      "pattern": "\\b(?:food[ -]service|restaurant|culinary|chef|dining|catering)\\b"
+    },
+    {
+      "id": "FM_CLAIMS",
+      "pattern": "\\bclaims\\b"
+    },
+    {
+      "id": "FM_RETAIL_STORE",
+      "pattern": "\\b(?:retail[ -]store|store manager|store director|retail district|retail operations)\\b"
+    },
+    {
+      "id": "FM_PUBLIC_SAFETY",
+      "pattern": "\\b(?:fire chief|fire marshal|police|sheriff|law enforcement|public safety|emergency management)\\b"
+    },
+    {
+      "id": "FM_SOFTWARE_ONLY",
+      "pattern": "\\bsoftware\\b"
+    }
+  ],
+  "manufacturingContext": "\\b(?:manufactur\\w*|production|plant|factory|assembl\\w*|industrializ\\w*|npi|process engineering)\\b",
+  "softwareContextGuard": "\\b(?:hardware|embedded|controls?|robotics?|firmware|mechatronic\\w*)\\b",
+  "dailyCap": null,
+  "wipLimit": null
+}
