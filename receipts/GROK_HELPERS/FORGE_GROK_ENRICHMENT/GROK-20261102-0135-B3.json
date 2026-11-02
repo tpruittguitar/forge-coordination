@@ -1,0 +1,107 @@
+{
+  "schema": "forge.enrichment-helper-batch.v1",
+  "provider": "Grok",
+  "taskKey": "FORGE_GROK_ENRICHMENT",
+  "assignmentId": "GROK-ENRICH-20261101-V1",
+  "runId": "GROK-20261102-0135-B3",
+  "instructionCommit": "138f1fbba1a4c592bb491a3fa72b0870a08fcfe4",
+  "items": [
+    {
+      "primaryId": "V2I-FF2EAD4D8188",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": ["priorAttempts NO_EXACT_COMPLETE_POSTING"],
+        "url": "https://apply.workable.com/ethosrecruiter/j/60ACB85152",
+        "observedAt": "2026-11-02T01:35:55Z",
+        "company": "Ethos",
+        "title": "Plant Manager",
+        "location": "Lakeside, IA, USA",
+        "quote": "Bachelors Degree in Engineering, Business Management or Industrial Management. 10 or more years’ experience in manufacturing, including at least 4 years in a higher-level supervisory capacity.",
+        "proposedRawFields": {
+          "DEGREE": "Bachelors Degree in Engineering, Business Management or Industrial Management (required per posting)",
+          "SALARY": "NOT_STATED in exact posting (Competitive Compensation Package only); secondary Glassdoor employer-provided range $125K-$145K noted but not used as anchor"
+        }
+      },
+      "reason": "Exact Workable posting recovered. Degree explicit. Salary not employer-posted annual base on source. Matching iHire copy confirms same text. Canonical check still required.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-2DA56A35B269",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": ["priorAttempts NO_EXACT_COMPLETE_POSTING on SuccessFactors"],
+        "url": "https://talents.vaia.com/companies/eco-material-technologies/cartersville/plant-manager-harvesting-145091788/ (matching public copy of Job ID 530265 / original SuccessFactors)",
+        "observedAt": "2026-11-02T01:35:55Z",
+        "company": "Eco Material Technologies",
+        "title": "Plant Manager",
+        "location": "Bucks, AL, USA",
+        "quote": "EDUCATION AND/OR Experience: Engineering or Technical Degree preferred 10years of manufacturing leadership experience",
+        "proposedRawFields": {
+          "DEGREE": "Engineering or Technical Degree preferred; 10 years manufacturing leadership",
+          "SALARY": "NOT_STATED in exact or matching sources"
+        }
+      },
+      "reason": "Original SuccessFactors blocked. Matching public copies (Vaia/Tallo/iHire descriptions) recover identical job summary and degree preference for the CRH/Eco Material Bucks/harvesting Plant Manager. Salary absent. Canonical check required.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-2350BD580697",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": ["priorAttempts HTTP_403 on Glassdoor"],
+        "url": "https://www.linkedin.com/jobs/view/plant-manager-mt-pleasant-tn-at-ventek-solutions-4373228561",
+        "observedAt": "2026-11-02T01:35:55Z",
+        "company": "Ventek Solutions",
+        "title": "Plant Manager",
+        "location": "Mount Pleasant, TN",
+        "quote": "Bachelor’s degree in Engineering, Business, Operations Management, or related field (required). Minimum 8–10 years of manufacturing leadership experience, including P&L ownership.",
+        "proposedRawFields": {
+          "DEGREE": "Bachelor’s degree in Engineering, Business, Operations Management, or related field (required)",
+          "SALARY": "NOT_STATED in observed LinkedIn posting"
+        }
+      },
+      "reason": "LinkedIn exact posting recovered after Glassdoor 403. Degree required and explicit. Salary not stated. Canonical check required.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-2ACC94937B0D",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": ["priorAttempts NO_EXACT_COMPLETE_POSTING on jobsync"],
+        "url": "https://jobsearcher.com/jobs/486182c33a5baa70456dfb69 (matching Compass/Fresh & Ready description)",
+        "observedAt": "2026-11-02T01:35:55Z",
+        "company": "Fresh And Ready Foods",
+        "title": "Director of Operations- Longview, TX",
+        "location": "Longview, TX, USA",
+        "quote": "Qualifications BA or BS in Operations Management, Business, Engineering, or related field 5–10 years of leadership experience in food manufacturing or equivalent",
+        "proposedRawFields": {
+          "DEGREE": "BA or BS in Operations Management, Business, Engineering, or related field",
+          "SALARY": "NOT_STATED in observed sources"
+        }
+      },
+      "reason": "Original jobsync incomplete. Matching public Compass/Fresh & Ready Director of Operations description recovers degree. Salary absent. Canonical check required.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-92E2E84F82A3",
+      "recommendation": "NEEDS_SOURCE_EVIDENCE",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": ["priorAttempts HTTP_403 on Glassdoor"],
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?...jobListingId=1010302828447",
+        "observedAt": "2026-11-02T01:35:55Z",
+        "company": "Cevians",
+        "title": "Director of Operations and Manufacturing Excellence",
+        "location": "San Diego, CA",
+        "quote": "",
+        "proposedRawFields": {}
+      },
+      "reason": "Glassdoor source remains blocked (HTTP_403). No exact complete public posting recovered with degree/salary for this specific Cevians role. Do not invent. Independent cases continue.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
