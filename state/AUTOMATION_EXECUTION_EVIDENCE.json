@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-02T05:30:40.329Z",
+  "at": "2026-11-02T05:31:42.261Z",
   "source": "Immutable lane receipts and verified native configuration; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -97,22 +97,6 @@
   },
   "executions": [
     {
-      "id": "forge-email-discovery",
-      "at": "2026-11-02T00:34:59.611Z",
-      "status": "PARTIAL_COVERAGE",
-      "evidenceFiles": [
-        "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B004_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B005_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006_HEALTH_PROOF.json",
-        "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B007_HEALTH_PROOF.json"
-      ],
-      "executionVerified": true
-    },
-    {
       "id": "forge-posting-validation",
       "at": "2026-11-02T02:26:51.732Z",
       "status": "PARTIAL_WITH_WORK",
@@ -132,6 +116,15 @@
       "evidenceFiles": [
         "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261101-1810ET_TERMINAL.txt",
         "receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_EXCEPTION_AUDIT.json"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-email-discovery",
+      "at": "2026-11-02T05:31:20.064Z",
+      "status": "COORDINATED_WITH_PENDING_WORK",
+      "evidenceFiles": [
+        "receipts/FORGE-CODE-CHATGPT-20261102T053024874Z_TERMINAL.json"
       ],
       "executionVerified": true
     },
@@ -164,6 +157,12 @@
       "executionVerified": true
     }
   ],
+  "helperCoordination": {
+    "at": "2026-11-02T05:31:20.064Z",
+    "runId": "FORGE-CODE-CHATGPT-20261102T053024874Z",
+    "coverageComplete": false,
+    "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261102T053024874Z_TERMINAL.json"
+  },
   "schedules": {
     "configurationObservedAt": "2026-11-02T05:18:13.652791Z",
     "active": [
@@ -202,18 +201,11 @@
       {
         "id": "forge-email-discovery",
         "lastDueAt": "2026-11-02T03:02:00.000Z",
-        "lastRunAt": "2026-11-02T00:34:59.611Z",
-        "status": "PARTIAL_COVERAGE",
-        "executionVerified": false,
+        "lastRunAt": "2026-11-02T05:31:20.064Z",
+        "status": "COORDINATED_WITH_PENDING_WORK",
+        "executionVerified": true,
         "evidenceFiles": [
-          "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B004_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B005_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006_HEALTH_PROOF.json",
-          "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B007_HEALTH_PROOF.json"
+          "receipts/FORGE-CODE-CHATGPT-20261102T053024874Z_TERMINAL.json"
         ]
       },
       {
@@ -241,6 +233,6 @@
         ]
       }
     ],
-    "executionVerified": false
+    "executionVerified": true
   }
 }
