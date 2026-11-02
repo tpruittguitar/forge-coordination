@@ -58,7 +58,7 @@ async function drain({ledger,state,adapter,privateDir,save=async()=>{},now=()=>D
    progress.advance={status:'OBSERVED',fromUrl:L.safeUrl(current.url),toUrl:L.safeUrl(after.url),pageProof:afterProof};
    await save();advances++;queue.push(id); // Fair rotation; no page/run-count quota.
   }catch(e){
-   progress.status='PENDING_EXCEPTION';progress.retryAfter=new Date(now()+15*60000).toISOString();
+   progress.status='PENDING_EXCEPTION';progress.retryAfter=new Date(now()+(/^(RESULT_PAGE|RESULTS_NEXT)_CAPTURE_PENDING$/.test(e.message)?0:15*60000)).toISOString();
    state.exceptions[id]={owner:/AMBIGUOUS/.test(e.message)?'AI':'CODE',reason:/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'BROWSER_SOURCE_FAILURE',errorSha256:S.hash(e.message),sourceIdHash:S.hash(id),retryAfter:progress.retryAfter};
    await save();
   }finally{if(session)await session.close().catch(()=>{});}

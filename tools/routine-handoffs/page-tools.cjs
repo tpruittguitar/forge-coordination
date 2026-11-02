@@ -5,27 +5,32 @@
 // Page N list with its adjacent labelled Next, distinct from carousel Next.
 async function readResults({expectedUrl}){
  const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''),label=e=>e.getAttribute('aria-label')||e.innerText||'',buttons=()=>[...document.querySelectorAll('main button, main [role="button"]')].filter(e=>e.getBoundingClientRect().width>0);
- const query=value=>{const u=new URL(value);u.pathname=u.pathname.replace('/comm/','/');for(const k of ['start','currentJobId'])u.searchParams.delete(k);u.searchParams.sort();return u.href;};
+ const query=value=>{const u=new URL(value);u.pathname=u.pathname.replace('/comm/','/');for(const k of [...u.searchParams.keys()])if(['start','currentJobId'].includes(k)||/token|sig|trk|lipi|eid|origin|referral|tracking|refid|^eBP$/i.test(k))u.searchParams.delete(k);u.searchParams.sort();return u.href;};
  if(/\/(?:login|checkpoint|authwall)(?:\/|$)/.test(location.pathname)||/Attention Required|Just a moment|Verify you are human/i.test(document.title))throw Error('SOURCE_ACCESS_BLOCKED');
  if(location.hostname!=='www.linkedin.com'||query(location.href)!==query(expectedUrl))throw Error('CHANGED_SOURCE_FILTERS');
  const cards=()=>buttons().filter(e=>e.querySelectorAll('p').length>=3&&[...e.querySelectorAll('button,[role="button"]')].some(b=>/^Dismiss .+ job$/i.test(label(b).trim())));
  const wait=async predicate=>{const until=Date.now()+10000;while(Date.now()<until){if(predicate())return;await new Promise(r=>setTimeout(r,50));}throw Error('RESULTS_NOT_READY');};
- await wait(()=>cards().length||/No results found|Try shortening or rephrasing your search\./i.test(document.querySelector('main')?.innerText||''));
+ const selected=()=>new URL(location.href).searchParams.get('currentJobId');
+ const postingTitle=title=>[...document.querySelectorAll('main a[href*="/jobs/view/"]')].some(e=>new URL(e.href).pathname.match(/\/jobs\/view\/(\d+)/)?.[1]===selected()&&norm(e.innerText)===norm(title));
+ const heading=title=>postingTitle(title)||[...document.querySelectorAll('main h1,main h2,main [role="heading"]')].some(e=>norm(e.innerText)===norm(title));
+ const cardTitle=card=>card.querySelector('p')?.innerText.split('\n')[0].replace(/ \(Verified job\)$/,'').trim();
+ // The server-rendered list can be replaced during hydration. Wait for a real
+ // selected posting or matching detail heading before snapshotting cards.
+ await wait(()=>cards().some(c=>heading(cardTitle(c)))||/No results found|Try shortening or rephrasing your search\./i.test(document.querySelector('main')?.innerText||''));
  const initial=cards().map(e=>[...e.querySelectorAll('p')].map(p=>p.innerText.trim())),jobs=[],seen=new Set();
  for(let n=0;n<initial.length;n++){
   const current=cards(),headers=current.map(e=>[...e.querySelectorAll('p')].slice(0,3).map(p=>p.innerText.trim()));
   if(JSON.stringify(headers)!==JSON.stringify(initial.map(x=>x.slice(0,3))))throw Error('RESULTS_CHANGED_DURING_CAPTURE');
   const title=initial[n][0].split('\n')[0].replace(/ \(Verified job\)$/,'').trim();
-  const selected=()=>new URL(location.href).searchParams.get('currentJobId'),heading=()=>[...document.querySelectorAll('main h1,main h2,main [role="heading"]')].some(e=>norm(e.innerText)===norm(title));
   let before=selected();current[n].click(); // Select the observed card; never its nested Dismiss/Apply.
-  try{await wait(()=>/^\d+$/.test(selected()||'')&&selected()!==before&&heading());}
+  try{await wait(()=>/^\d+$/.test(selected()||'')&&selected()!==before&&heading(title));}
   catch(e){
    // The first card can already be selected. Select a different observed card
    // and come back, requiring a real URL transition for the target. This also
    // prevents identical titles from binding the previous card's stale URL.
    if(n!==0||initial.length<2)throw Error('AMBIGUOUS_RESULT_CARD');
    before=selected();cards()[1].click();await wait(()=>selected()!==before&&/^\d+$/.test(selected()||''));
-   before=selected();cards()[0].click();await wait(()=>selected()!==before&&/^\d+$/.test(selected()||'')&&heading());
+   before=selected();cards()[0].click();await wait(()=>selected()!==before&&/^\d+$/.test(selected()||'')&&heading(title));
   }
   const jobId=new URL(location.href).searchParams.get('currentJobId');if(seen.has(jobId))throw Error('AMBIGUOUS_RESULT_CARD');seen.add(jobId);
   jobs.push({jobId,paragraphs:initial[n]});
@@ -40,7 +45,7 @@ async function readResults({expectedUrl}){
 }
 async function clickResultsNext({expectedUrl,controlProof}){
  const label=e=>e.getAttribute('aria-label')||e.innerText||'',buttons=()=>[...document.querySelectorAll('main button,main [role="button"]')].filter(e=>e.getBoundingClientRect().width>0);
- const query=value=>{const u=new URL(value);u.pathname=u.pathname.replace('/comm/','/');for(const k of ['start','currentJobId'])u.searchParams.delete(k);u.searchParams.sort();return u.href;};
+ const query=value=>{const u=new URL(value);u.pathname=u.pathname.replace('/comm/','/');for(const k of [...u.searchParams.keys()])if(['start','currentJobId'].includes(k)||/token|sig|trk|lipi|eid|origin|referral|tracking|refid|^eBP$/i.test(k))u.searchParams.delete(k);u.searchParams.sort();return u.href;};
  const start=value=>Number(new URL(value).searchParams.get('start')||0);
  if(location.hostname!=='www.linkedin.com'||query(location.href)!==query(expectedUrl)||start(location.href)!==start(expectedUrl))throw Error('CHANGED_SOURCE_FILTERS');
  const cards=buttons().filter(e=>e.querySelectorAll('p').length>=3&&[...e.querySelectorAll('button,[role="button"]')].some(b=>/^Dismiss .+ job$/i.test(label(b).trim()))).map(e=>[...e.querySelectorAll('p')].slice(0,3).map(p=>p.innerText.trim()));

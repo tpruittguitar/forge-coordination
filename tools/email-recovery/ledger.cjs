@@ -3,7 +3,7 @@
 const fs=require('node:fs'),crypto=require('node:crypto');
 const hash=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 const terminal=new Set(['VERIFIED_INSERTED','VERIFIED_EXISTING','OUT_OF_SCOPE','EXCLUDED_BY_WRITER']);
-function safeUrl(value){const u=new URL(value);if(u.protocol!=='https:'||!/(^|\.)(linkedin\.com|glassdoor\.com)$/.test(u.hostname))throw Error('Unsupported source URL');for(const k of [...u.searchParams.keys()])if(/token|sig|trk|lipi|eid|origin|referral|tracking|refid/i.test(k))u.searchParams.delete(k);return u.href;}
+function safeUrl(value){const u=new URL(value);if(u.protocol!=='https:'||!/(^|\.)(linkedin\.com|glassdoor\.com)$/.test(u.hostname))throw Error('Unsupported source URL');for(const k of [...u.searchParams.keys()])if(/token|sig|trk|lipi|eid|origin|referral|tracking|refid|^eBP$/i.test(k))u.searchParams.delete(k);return u.href;}
 function empty(){return {schema:'forge.email-recovery.v1',at:null,sources:{},jobs:{}};}
 function seed(ledger,emails){for(const e of emails){if(!e.gmailId||!Number.isInteger(e.advertisedUnseen)||e.advertisedUnseen<0)throw Error('Invalid source');const prior=ledger.sources[e.gmailId];if(prior)continue;ledger.sources[e.gmailId]={...e,url:safeUrl(e.url),status:'NEEDS_BROWSER',access:'NOT_TESTED',pages:[],jobKeys:[],historicalCoverage:'UNPROVEN',advertisedCountIsNotUniqueJobs:true};}return ledger;}
 function capture(ledger,page){const s=ledger.sources[page.gmailId];if(!s)throw Error('Unknown source');if(!Number.isFinite(Date.parse(page.at)))throw Error('Invalid observation time');if(!Array.isArray(page.jobs))throw Error('Missing cards');const url=safeUrl(page.url);const keys=[];
