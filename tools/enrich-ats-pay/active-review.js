@@ -10,7 +10,7 @@ function order(rows,history={},inFlight=new Set(),now=Date.now()){
  return rows.filter(r=>eligible(r)&&!inFlight.has(r.PRIMARY_ID)).filter(r=>{const h=history[r.PRIMARY_ID];return !h||h.fingerprint!==fingerprint(r)||now>=Date.parse(h.retryAt||'');}).sort((a,b)=>{
   // Never-reviewed jobs precede repeated attempts; weak evidence then oldest pay gets first attention.
   const age=r=>Date.parse(history[r.PRIMARY_ID]?.at||'')||0;
-  return (age(a)>0)-(age(b)>0)||confidence(a.p.SALARY_CONF)-confidence(b.p.SALARY_CONF)||age(a)-age(b)||(Date.parse(a.p.SALARY_ASOF)||0)-(Date.parse(b.p.SALARY_ASOF)||0)||a.PRIMARY_ID.localeCompare(b.PRIMARY_ID);
+  return (b.BUCKET==='TIM_DECISION_REQUIRED')-(a.BUCKET==='TIM_DECISION_REQUIRED')||(age(a)>0)-(age(b)>0)||confidence(a.p.SALARY_CONF)-confidence(b.p.SALARY_CONF)||age(a)-age(b)||(Date.parse(a.p.SALARY_ASOF)||0)-(Date.parse(b.p.SALARY_ASOF)||0)||a.PRIMARY_ID.localeCompare(b.PRIMARY_ID);
  });
 }
 function remember(history,r,status,{fields,now=Date.now(),hours=24}={}){const projected=fields?{...r,p:{...r.p,...fields}}:r;return history[r.PRIMARY_ID]={fingerprint:fingerprint(projected),at:new Date(now).toISOString(),retryAt:new Date(now+hours*3600000).toISOString(),status};}
