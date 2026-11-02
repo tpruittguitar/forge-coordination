@@ -1,0 +1,15 @@
+{
+  "at": "2026-11-02T06:02:11.372Z",
+  "runId": "FORGE-COORDINATOR-CHATGPT-20261102-0057ET",
+  "status": "EXACT_DRIVER_FAILURE_NOT_ESTABLISHED",
+  "owner": "PE_STACK_HEALTH_DAILY / maintainer",
+  "evidence": {
+    "codeRunId": "FORGE-CODE-CHATGPT-20261102T055824089Z",
+    "exception": "INTAKE_DRIVER_GATE_OR_RECONCILIATION_REQUIRED",
+    "currentPlanReady": 0,
+    "currentPlanInFlight": 0
+  },
+  "observation": "The current plan has no READY or in-flight entries. The driver catch stores a generic exception without its failure detail and does not clear an earlier exception after a later successful prepare/drain. This marker alone cannot establish a current Writer outage.",
+  "next": "Preserve exact private child diagnostics and refresh/remove this marker only after successful driver validation; do not replay any original request or infer a live gate from the retained marker.",
+  "scheduledRunChangedCode": false
+}
