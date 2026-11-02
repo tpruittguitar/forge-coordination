@@ -1,11 +1,18 @@
 {
   "schema": "forge.application-tracker-cursor.v1",
-  "at": "2026-11-02T05:25:46.540Z",
+  "at": "2026-11-02T06:34:32.639Z",
   "initialWindowFrom": "2026-10-24T00:00:00Z",
-  "enumeratedThrough": "2026-11-02T05:17:28.595Z",
+  "enumeratedThrough": "2026-11-02T06:31:59.678Z",
   "fullyReadThrough": "2026-11-02T05:17:28.595Z",
   "queryPagesPending": 0,
-  "pendingMessageIds": [],
+  "pendingMessageIds": [
+    "1a19aee5b890d3da",
+    "1a19aedf4f0c316a",
+    "1a19ace8ff789842",
+    "1a19ac24e05d5987",
+    "1a19abda83871f83",
+    "1a19ab223b8c58ab"
+  ],
   "processedMessageIds": [
     "1a18d6cb5276d4c7",
     "1a18e40ae18ddc7e",
@@ -602,17 +609,19 @@
     "1a19a63a4fe2d532",
     "1a19a56123b7619a",
     "1a19a552288333a4",
-    "1a19aac152cad434"
+    "1a19aac152cad434",
+    "1a19af29ad3935c5",
+    "1a19ad18776dd3a2"
   ],
-  "next": "Resume new mail from the enumerated cursor with overlap. Reuse these full-MIME dispositions; keep job-alert discovery and full helper report collection pending under handoffs/EMAIL_DISCOVERY_OUTCOME_TRACKER_20261102T0525Z-RECOVERY.json. Historical/archive gaps remain unchanged.",
+  "next": "Preserve 6 genuinely unreviewed delegated messages. Reuse 50 already-proven recovery dispositions; keep their separate job-alert discovery and full-helper-report handoffs open.",
   "inheritedArchiveCursorReference": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261030-1712ET_TERMINAL.txt",
   "historicalCursorAdvanced": false,
-  "coverageScope": "Previously enumerated current pending sources were fully body-read through supported Gmail tools and dispositioned in code. Job alerts transfer to durable discovery work; automation notices never prove helper report or mailbox coverage. Historical/archive cursors and calendar state are preserved.",
+  "coverageScope": "All-mail 48-hour overlap enumerated in three pages. Only new locally owned messages were body-read. Previously dispositioned messages and unchanged known recruiting threads were deduplicated, not reread. Delegated messages remain HELPER_PENDING and fullyReadThrough is not advanced. Historical and inherited archive coverage remain partial.",
   "queryFamiliesCompleted": 1,
   "calendarCoverage": {
-    "at": "2026-11-02T05:19:32.747Z",
-    "from": "2026-10-26T05:17:28Z",
-    "to": "2026-12-02T05:17:28Z",
+    "at": "2026-11-02T06:34:32.639Z",
+    "from": "2026-10-26T06:31:59Z",
+    "to": "2026-12-02T06:31:59Z",
     "calendar": "primary",
     "unfiltered": true,
     "pagesRead": 1,
@@ -854,6 +863,74 @@
   ],
   "helperPendingMessages": [
     {
+      "messageId": "1a19aee5b890d3da",
+      "threadId": "1a19aee5b890d3da",
+      "eventDate": "2026-11-02T06:24:34.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    },
+    {
+      "messageId": "1a19aedf4f0c316a",
+      "threadId": "1a19aedf4f0c316a",
+      "eventDate": "2026-11-02T06:24:07.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    },
+    {
+      "messageId": "1a19ace8ff789842",
+      "threadId": "1a19ace8ff789842",
+      "eventDate": "2026-11-02T05:49:50.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    },
+    {
+      "messageId": "1a19ac24e05d5987",
+      "threadId": "1a19ac24e05d5987",
+      "eventDate": "2026-11-02T05:36:26.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    },
+    {
+      "messageId": "1a19abda83871f83",
+      "threadId": "1a19abda83871f83",
+      "eventDate": "2026-11-02T05:31:22.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    },
+    {
+      "messageId": "1a19ab223b8c58ab",
+      "threadId": "1a19ab223b8c58ab",
+      "eventDate": "2026-11-02T05:18:46.000Z",
+      "status": "HELPER_PENDING",
+      "owner": "Grok",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "metadataRead": true,
+      "fullBodyRead": false,
+      "reason": "Delegated source retained; exact per-message helper disposition required."
+    }
+  ],
+  "helperDispositionHistory": [
+    {
       "messageId": "1a1995afdc7335ed",
       "threadId": "1a1995afdc7335ed",
       "eventDate": "2026-11-01T23:03:58.000Z",
@@ -867,7 +944,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "bc9ca6695e443163dd283d083149abc2f49a1f48a8e2857667fb95537dfb0b96"
     },
     {
       "messageId": "1a19959f6f4da9f1",
@@ -883,7 +962,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "4c0f7456ab44943e138ee632c4f354153934b8d6413ca76330da6f6bad171446"
     },
     {
       "messageId": "1a1994a244e4e599",
@@ -899,7 +980,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "791187d7cf84b5853cfa846c461b404c335b6f08941712b194d6b9a5b140d924"
     },
     {
       "messageId": "1a19967bbfb6ff52",
@@ -915,7 +998,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "908e14cfd446317086f8b5fbce3dfcd296f7ed2bf01e8a163500e94586c61689"
     },
     {
       "messageId": "1a199aa9c7e2b6e9",
@@ -931,7 +1016,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "d52721f4365dbd0c7a2ea11100d1c8bb688156c01875303a0719f2f7677c9e91"
     },
     {
       "messageId": "1a1999fbcb47300d",
@@ -947,7 +1034,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "4b5469803a464dcf50c1c0c65302ae5841e4b98cb059dcbdf064d2f1a663d820"
     },
     {
       "messageId": "1a199949ca42b48f",
@@ -963,7 +1052,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "1cfdff11474628bd946476b15dbc2300fb9c500e10dfdf57622f7b96f28f473e"
     },
     {
       "messageId": "1a19993f6fa63103",
@@ -979,7 +1070,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "d0030303c1ed99f8a19131bcaa488595f9319de78bcbf4693a6427d8d07351ff"
     },
     {
       "messageId": "1a19987efe5598a6",
@@ -995,7 +1088,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "55955cd0714039233147bea2aa7b1f747a40943439dc6a1fe10b9042284799a2"
     },
     {
       "messageId": "1a19987ee8f4cc61",
@@ -1011,7 +1106,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "d6860baa11cf6969670fb99a2cad904a7aaa8758d5b67b937e78319a1e6fdaf8"
     },
     {
       "messageId": "1a19987e6c9da1ec",
@@ -1027,7 +1124,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "00bd2fa81540fc2d103b086d016c697420d0ffaaad44f4f6aa789d8934ad5ccd"
     },
     {
       "messageId": "1a19987e248961d8",
@@ -1043,7 +1142,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "bc0eef4741f423a24371e400ed1d05446893ef437841898feb716c22c86a4efd"
     },
     {
       "messageId": "1a19987e22f21fb1",
@@ -1059,7 +1160,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "3e61f3edba5290c3008c24c446aaf97cd31982d9398e71ab1d2b3ef6068357f1"
     },
     {
       "messageId": "1a19987e0bd79ec9",
@@ -1075,7 +1178,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "c0c70436f9a030a42a05f5b3bbb9bf48cc542b538388d24c605616c08905f081"
     },
     {
       "messageId": "1a19986f1296ce32",
@@ -1091,7 +1196,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "79ef59a575d96e9aca8327fb5ac216b0f0870ba6035adee4a967f4e549c7ca01"
     },
     {
       "messageId": "1a19982c7a565d91",
@@ -1107,7 +1214,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "25bcd246a72b52857af7065400d71bf487be58730dacd674c1a6cc6bbe1ad565"
     },
     {
       "messageId": "1a199816bfb87691",
@@ -1123,7 +1232,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "a8ae06a29eb07989da3673833c10e8dc4eee362f91e4394b08707413e5fdc988"
     },
     {
       "messageId": "1a1997a591c7cda3",
@@ -1139,7 +1250,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "18a8c7a8c6eadaf3123d6663282c561599037101efbfc1ad3ca23e1d413ec41a"
     },
     {
       "messageId": "1a1997856df9f9ec",
@@ -1155,7 +1268,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "21b939aedd45fd1a86f16ff90a98df35b8a945ff5b28979180e710f9b13914af"
     },
     {
       "messageId": "1a19977fde1d194f",
@@ -1171,7 +1286,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "0f5d3aa3f20279c4aaaf31f10fac0ffed8e2dfddc6c099e5b896d9c20ae93043"
     },
     {
       "messageId": "1a19977f391f6f85",
@@ -1187,7 +1304,9 @@
       "classification": "PRODUCT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "340b0b4c794e656c44dffcc135de154dcbe974054a8b64c623440e2bde1c34b4"
     },
     {
       "messageId": "1a1997663b62cc30",
@@ -1203,7 +1322,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "a4b56f3c32804aa3a1ce1c88c841ad2568556d4c98c888a664a69deffbebe70a"
     },
     {
       "messageId": "1a19974a7d61deff",
@@ -1219,7 +1340,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "1d410e9edcf9c036c759967c74f0f31e1f6047e0ef7ab71986ee0c92d99e0346"
     },
     {
       "messageId": "1a1997360a4b818f",
@@ -1235,7 +1358,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "94e32bceffa4dd9aaf80bac029fc28b2a9fdd2642630d73fa8a72c95a533e9b8"
     },
     {
       "messageId": "1a19972d178f3469",
@@ -1251,7 +1376,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "41eb5d51fab5debd48390514768487463eb4612facc0f0e68167d75a65a71d8f"
     },
     {
       "messageId": "1a199706537c9309",
@@ -1267,7 +1394,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "72c875c5e638af2cf6ae979362c504a4b6c6bd4b4f2dc398ee10ea4945cbdcda"
     },
     {
       "messageId": "1a1996f0ac972239",
@@ -1283,7 +1412,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "3929374ad419670330b40626f9046a19f610164e4d4fa2441c6ccb046982e877"
     },
     {
       "messageId": "1a1996df33d17201",
@@ -1299,7 +1430,9 @@
       "classification": "ACCOUNT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "b35c11579f59f568d0975cb8254506e836f12c72f39565d0b6a34f5d5eb1a02b"
     },
     {
       "messageId": "1a199d1721159edd",
@@ -1315,7 +1448,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "d29401c7dd7d855ef73d68ff70152bb2299aee8667c7ecda98c22863be6146e1"
     },
     {
       "messageId": "1a199c0da92fc387",
@@ -1331,7 +1466,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "b7da9b17e2044f42e681c457e9359843fb63e50457df98d410b2aef9f59447f3"
     },
     {
       "messageId": "1a199b80d425bfda",
@@ -1347,7 +1484,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "bdfb6ebe3dd1b1332b9b7767fa76bd771a08178cec4ce0f7d8eeee38d2462b0c"
     },
     {
       "messageId": "1a19a06ce2df376e",
@@ -1363,7 +1502,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "fbe044db85cf9f07b5bfd0d887fe3af0ddfdec415cf00437006456c933ca605d"
     },
     {
       "messageId": "1a19a048706814a6",
@@ -1379,7 +1520,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "0d6b1659092e5e32dfaed39d8e05c0ffd43b7969ce5262c8537cdff039814a54"
     },
     {
       "messageId": "1a199fb14a352391",
@@ -1395,7 +1538,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "9aaba0ffc38bff7d44c1f398f5e5caf3e3c1eab4f61804c59aff1e2140302daa"
     },
     {
       "messageId": "1a199f5cd0bdfbe0",
@@ -1411,7 +1556,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "6dd2502d1f1f0c5ae06c972f3ded534b4be3e3e451103f69b9976d10cc269ff5"
     },
     {
       "messageId": "1a199ef140173f78",
@@ -1427,7 +1574,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "202ca9c56c0204d68e555e5ce9dcb2b4b7af529c22ace0c0b90f1f670d6f580b"
     },
     {
       "messageId": "1a199ec31ef7125c",
@@ -1443,7 +1592,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "0f644a0a995beabb606e7354d06d0f1f419eb1644f64358c60d7697f56fd37a6"
     },
     {
       "messageId": "1a199de1f5513ada",
@@ -1459,7 +1610,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "ec9bf59cce966a76d9c54e028e1e9d455328575127c5373da8c93a41277c9215"
     },
     {
       "messageId": "1a199dcced2a686d",
@@ -1475,7 +1628,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "d8cc748f038803209ee5c24ea0628f8e2903b071b7477011164fa51a62aee1b5"
     },
     {
       "messageId": "1a19a426384d8f79",
@@ -1491,7 +1646,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "5b77ac2ff85f8feadb033d604c77abbdb42ee800266ffa4f2cd80382ae461f92"
     },
     {
       "messageId": "1a19a3d30ee693bd",
@@ -1507,7 +1664,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "6c622f9619a9140d1a75409676e65915c916fefa10abdf8c38c397d7321b85ec"
     },
     {
       "messageId": "1a19a34185b56fc7",
@@ -1523,7 +1682,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "25d3372cee7f01f83f2b8e863607ee939224af0837574305b895f87815b62607"
     },
     {
       "messageId": "1a19a25ca8f6b65d",
@@ -1539,7 +1700,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "b484a8d57312d276ddd206e69bed77a3fd00f149747ac456e56888d1196cfe4e"
     },
     {
       "messageId": "1a19a1f4a56fdf5f",
@@ -1555,7 +1718,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "7f3ec39015f9830381b850f265137e90e48732fe0c19103f256dcdf0435861df"
     },
     {
       "messageId": "1a19a1dfb1c33dc9",
@@ -1571,7 +1736,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "ad60cd403e2b2dab1ee96b430894feefbf2c9369b7f066713182c546aa54f17d"
     },
     {
       "messageId": "1a19a7b17e2530e4",
@@ -1587,7 +1754,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "f8cdc5b8cd516fe4c8b3ddc3397f4b93bdb9757e128477622f4e9d99dcb8dcc5"
     },
     {
       "messageId": "1a19a63a4fe2d532",
@@ -1603,7 +1772,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "40e8911bdba2477c043ff1ee107416df0611c5578dc691c16742ac3cf0b4ff82"
     },
     {
       "messageId": "1a19a56123b7619a",
@@ -1619,7 +1790,9 @@
       "classification": "JOB_ALERT",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "HANDED_TO_DISCOVERY",
+      "sourceSha256": "4a6fab88e780fe856e0a23d3764eea5a7654134e3189852e99b04c9002a50a19"
     },
     {
       "messageId": "1a19a552288333a4",
@@ -1635,7 +1808,9 @@
       "classification": "AUTOMATION_NOTICE",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "bdf8b89a61103afc3381e18dd43bba75bbf307545ef6ba303427492438d8ad35"
     },
     {
       "messageId": "1a19aac152cad434",
@@ -1651,7 +1826,9 @@
       "classification": "DEVELOPMENT_NOTIFICATION",
       "recoveryOwner": "ChatGPT",
       "proof": "receipts/FORGE-OUTCOME-CHATGPT-20261102T0525Z-RECOVERY_VERIFICATION.json",
-      "at": "2026-11-02T05:25:46.540Z"
+      "at": "2026-11-02T05:25:46.540Z",
+      "resolution": "VERIFIED_NOT_RECRUITING",
+      "sourceSha256": "c9a2e365f465af43c44f14f58063216c93adb3586551476e40a322ba152223b6"
     }
   ]
 }
