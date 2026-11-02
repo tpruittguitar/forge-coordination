@@ -123,6 +123,7 @@ async function main(mode='inventory') {
       if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir).toLowerCase()===root.toLowerCase()||path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep))throw Error('Private output must be outside the public checkout');
       routine=(await require('../routine-handoffs/run.cjs').run({root,privateDir,commit,runId,apply})).report;
     }
+    if(apply)require('../routine-handoffs/return-repair.cjs').repair(root,commit,{apply:true});
     const collected=C.collect({root,state,commit});
     if(mode!=='inventory') {
       if(!privateDir || !path.isAbsolute(privateDir) || path.resolve(privateDir).toLowerCase()===root.toLowerCase() || path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep)) throw Error('Private output must be outside the public checkout');
@@ -167,6 +168,7 @@ async function main(mode='inventory') {
             await child(root,['prepare','--apply'],env);
             await drain({ready:async()=>S.read(root,'state/RELEVANCE_INTAKE_PLAN.json').items.filter(i=>i.status==='READY').length,
               reconcile:async()=>{},step:()=>child(root,['step','100'],env)});
+            delete state.exceptions['intake-driver'];
           }catch(e){state.exceptions['intake-driver']={owner:'CODE',reason:'INTAKE_DRIVER_GATE_OR_RECONCILIATION_REQUIRED'};}
         }
         // One row per transaction keeps receipt waiting independent of batch

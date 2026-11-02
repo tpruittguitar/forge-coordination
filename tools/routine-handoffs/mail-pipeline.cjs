@@ -28,6 +28,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
  result.read=messages.size;result.duplicateObservations=result.observations-result.read-(result.invalidObservations||0);
  for(const message of messages.values()){
   if(conflicts.has(message.id)){state.exceptions[message.id]={owner:'CODE',messageId:message.id,reason:'CONFLICTING_FULL_MESSAGE_CAPTURES'};result.pending++;continue;}
+  if(apply)try{deps.checkLock();const recovered=require('./alert-recovery.cjs').recover(root,message);result.recoveredAlertCards=(result.recoveredAlertCards||0)+recovered.recovered;delete state.exceptions['alert:'+message.id];}catch(e){state.exceptions['alert:'+message.id]={owner:'AI',messageId:message.id,reason:reason(e)};}
   try{const status=await W.process({root,privateDir,state,message,deps,apply,runId}),name=typeof status==='string'?status:status.status;result.statuses=result.statuses||{};result.statuses[name]=(result.statuses[name]||0)+1;result.processed++;if(/PENDING|IN_FLIGHT|AWAITING|EXCEPTION/.test(name))result.pending++;else delete state.exceptions[message.id];}
   catch(e){state.exceptions[message.id]={owner:/MATCH|IDENTIT|THREAD|CYCLE|INTERPRETATION/.test(e.message)?'AI':'CODE',messageId:message.id,sourceSha256:message.sourceSha256,reason:reason(e)};result.pending++;}
  }

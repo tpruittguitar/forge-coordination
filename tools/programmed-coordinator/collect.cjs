@@ -92,6 +92,21 @@ function collect({root, state, commit, routing = routingProof}) {
         invalidUrlKeys:items.filter(i => i.sourceEvidence?.url !== undefined && !/^https:\/\/\S+$/.test(i.sourceEvidence.url)).map(i => i.key || i.primaryId)};
     }
   }
+  // A full explicitly linked correction replaces the transport obligation,
+  // while the original bytes and downstream item/transaction fences remain.
+  for(const [rel,meta] of Object.entries(state.batches).filter(([,b])=>b.status==='VALIDATED')){
+    const corrected=S.read(root,rel),original=corrected.originalBatch;
+    if(!original||state.batches[original]?.status!=='QUARANTINED'||!paths.some(p=>original.startsWith(p+'/'))||original.includes('..'))continue;
+    if(/IMMUTABLE/.test(state.exceptions['batch:'+original]?.reason||''))continue;
+    const old=S.read(root,original),keys=x=>x.items.map(i=>i.key||i.primaryId).sort();
+    if(old.provider!==corrected.provider||old.taskKey!==corrected.taskKey||old.assignmentId!==corrected.assignmentId||!Array.isArray(old.items)||new Set(keys(old)).size!==old.items.length)continue;
+    if(S.hash(keys(old))!==S.hash(keys(corrected))){
+      const repaired=corrected.transportRepair;if(repaired?.kind!=='VALIDATED_UNCHANGED_ITEMS'||repaired.originalSha256!==S.hash(old)||corrected.items.some(i=>!old.items.some(o=>S.hash(o)===S.hash(i))))continue;
+      const remaining=keys(old).filter(k=>!keys(corrected).includes(k));if(S.hash(remaining)!==S.hash([...(repaired.unresolvedKeys||[])].sort()))continue;
+      Object.assign(state.exceptions['batch:'+original],{reason:'INCOMPLETE_RETURN_ITEMS_REQUIRE_SOURCE',recoveredItems:corrected.items.length,unresolvedKeys:remaining,correction:rel});continue;
+    }
+    Object.assign(state.batches[original],{status:'SUPERSEDED_BY_VALIDATED_RETURN',correction:rel,correctionSha256:meta.sha256,productionAuthorized:false});delete state.exceptions['batch:'+original];
+  }
   // A new source return arriving during an uncertain original is retained, then
   // promoted only after that exact transaction verifies. No original is replayed.
   for(const item of Object.values(state.items)) {

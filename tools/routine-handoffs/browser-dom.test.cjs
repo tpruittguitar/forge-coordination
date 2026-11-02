@@ -41,7 +41,27 @@ test('empty live UI requires explicit empty evidence and never clicks carousel N
  const p=await browser(t);await p.evaluate(()=>document.querySelector('main').innerHTML='<p>No results found</p><button id="carousel">Next</button>');
  const result=await p.evaluate(T.readResults,{expectedUrl:url});a.equal(result.emptyConfirmed,true);a.equal(result.endConfirmed,true);a.equal(result.jobs.length,0);a.equal(await p.evaluate(()=>badClicks),0);
 });
+
+test('visible card keys capture every identity without selecting cards; delayed verification badges do not invalidate Next',async t=>{
+ const p=await browser(t);await p.evaluate(()=>{for(const c of document.querySelectorAll('.job'))c.setAttribute('componentkey','job-card-component-ref-'+c.dataset.id);window.cardClicks=0;document.addEventListener('click',e=>{if(e.target.closest('.job'))cardClicks++;});setTimeout(()=>{for(const c of document.querySelectorAll('.job'))c.querySelector('p').innerText='Director of Manufacturing (Verified job)\nDirector of Manufacturing';},200);});
+ const first=await p.evaluate(T.readResults,{expectedUrl:url});a.deepEqual(first.jobs.map(j=>j.jobId),['1','2','3']);a.equal(await p.evaluate(()=>cardClicks),0);
+ await p.evaluate(()=>{for(const c of document.querySelectorAll('.job'))c.querySelector('p').innerText='Director of Manufacturing';});
+ await p.evaluate(T.clickResultsNext,{expectedUrl:first.url,controlProof:first.next.proof});a.equal(await p.evaluate(()=>resultClicks),1);
+});
+
+test('duplicate or conflicting visible DOM posting IDs remain exceptions',async t=>{
+ const p=await browser(t);await p.evaluate(()=>{for(const c of document.querySelectorAll('.job'))c.setAttribute('componentkey','job-card-component-ref-1');});await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/AMBIGUOUS_RESULT_CARD/);
+ await p.evaluate(()=>{for(const c of document.querySelectorAll('.job'))c.setAttribute('componentkey','job-card-component-ref-'+c.dataset.id);document.querySelector('.job').insertAdjacentHTML('beforeend','<a href="/jobs/view/999/">Wrong identity</a>');});await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/CONFLICTING_RESULT_CARD_ID/);
+});
 test('a source challenge remains an access exception and never becomes a changed-query or empty-page success',async t=>{const p=await browser(t);await p.evaluate(()=>{document.title='Attention Required! | Cloudflare';document.querySelector('main').innerHTML='';});await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/SOURCE_ACCESS_BLOCKED/);a.equal(await p.evaluate(()=>resultClicks),0);});
+test('final-page current marker proves omitted Next; missing, middle or trailing controls cannot claim exhaustion',async t=>{
+ const p=await browser(t);await p.evaluate(()=>{for(const c of document.querySelectorAll('.job'))c.setAttribute('componentkey','job-card-component-ref-'+c.dataset.id);document.querySelector('nav').innerHTML='<button>Previous</button><ul data-testid="pagination-controls-list"><li><button aria-label="Page 1" aria-current="false">1</button></li><li><button aria-label="Page 2" aria-current="true">2</button></li></ul>';});
+ const last=await p.evaluate(T.readResults,{expectedUrl:url});a.equal(last.endConfirmed,true);a.equal(last.next.available,false);a.equal(await p.evaluate(()=>badClicks),0);
+ await a.rejects(p.evaluate(T.clickResultsNext,{expectedUrl:last.url,controlProof:last.next.proof}),/PAGINATION_CONTROL_CHANGED/);
+ await p.evaluate(()=>document.querySelector('[aria-current="true"]').setAttribute('aria-current','false'));await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/RESULTS_CONTROLS_NOT_READY/);
+ await p.evaluate(()=>document.querySelector('[aria-label="Page 1"]').setAttribute('aria-current','true'));await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/RESULTS_CONTROLS_NOT_READY/);
+ await p.evaluate(()=>{document.querySelector('[aria-label="Page 1"]').setAttribute('aria-current','false');document.querySelector('[aria-label="Page 2"]').setAttribute('aria-current','true');document.querySelector('ul').insertAdjacentHTML('beforeend','<li>…</li>');});await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/RESULTS_CONTROLS_NOT_READY/);
+});
 test('WebMCP adapter registers known DOM tools, consumes configured report tools and closes only owned pages',async()=>{
  const B=require('./browser.cjs'),vm=require('node:vm');let disconnected=false,closed=0,registered=[];
  const registry={getTools:async()=>registered.map(name=>({name})),addTool:async d=>{a.ok(d.code.includes('async function'));registered.push(d.name);},getTool:async name=>({inputSchema:{type:'object'},execute:async input=>({name,input})})};

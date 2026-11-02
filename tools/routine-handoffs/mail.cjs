@@ -15,6 +15,7 @@ function normalize(message){
 function classify(m){
  if(!m.fullBody)return{owner:'CODE',classification:'FULL_MESSAGE_REQUIRED',status:'PENDING'};
  const s=m.sender,subject=m.subject,body=m.body;
+ if(s==='security-noreply@linkedin.com'&&subject==='New device registration for Remember me'&&/successfully activated Remember me on a new device/i.test(body)&&/When and where this happened:/i.test(body))return{owner:'CODE',classification:'ACCOUNT_NOTIFICATION',status:'VERIFIED_NOT_RECRUITING'};
  if(/^[a-z0-9._+-]+@(?:[a-z0-9-]+\.)?tinyfish\.ai$/i.test(s)&&/^Your Free TinyFish Signup Credit is Running Low$/i.test(subject)&&/credit|balance/i.test(body)&&!/recruit|interview|application status/i.test(body))return{owner:'CODE',classification:'SERVICE_CREDIT_NOTICE',status:'VERIFIED_NOT_RECRUITING'};
  if(s==='notifications@github.com'&&/left a comment|workflow run|Repository:/i.test(body))return{owner:'CODE',classification:'DEVELOPMENT_NOTIFICATION',status:'VERIFIED_NOT_RECRUITING'};
  const alertSenders=/^(?:info@glassdoor\.com|jobs@my\.theladders\.com|jobs@updates\.buildsubmarines\.com|donotreply@jobalerts\.baesystems\.com|recruitingnoreply@ford\.com|alerts@ziprecruiter\.com|jobalertlocal@postjobfree\.com|mailer@jobleads\.com|no-reply@reply\.experteer\.com|mailer@transactional\.talemetryservice\.com|[a-z0-9-]+-jobnotification@noreply\.jobs2web\.com)$/i;

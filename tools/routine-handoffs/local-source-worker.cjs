@@ -1,6 +1,6 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process'),S=require('../programmed-coordinator/store.cjs'),Q=require('./connector-queue.cjs');
-const reason=e=>/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'LOCAL_SOURCE_CAPTURE_FAILED';
+const reason=e=>(e.message||'').match(/(?:^|Error: )([A-Z][A-Z0-9_]{3,100})(?:\n|$)/)?.[1]||'LOCAL_SOURCE_CAPTURE_FAILED';
 function alive(pid){try{process.kill(pid,0);return true;}catch(e){return e.code!=='ESRCH';}}
 function lockPath(config){if(!path.isAbsolute(config.privateDirectory||'')||!path.isAbsolute(config.connectorDirectory||''))throw Error('ABSOLUTE_PRIVATE_WORKER_PATHS_REQUIRED');return path.join(config.privateDirectory,'local-source-worker.lock.json');}
 function acquire(config){const file=lockPath(config);const lock={pid:process.pid,token:crypto.randomUUID(),at:new Date().toISOString()};try{fs.writeFileSync(file,JSON.stringify(lock),{flag:'wx',mode:0o600});return lock;}catch(e){if(e.code==='EEXIST')return null;throw e;}}
