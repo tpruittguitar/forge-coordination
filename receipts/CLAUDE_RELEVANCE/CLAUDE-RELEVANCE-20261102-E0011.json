@@ -1,0 +1,67 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0011",
+  "instructionCommit": "83f8a878dcbe5dc01961b7342c327181850e1132",
+  "createdAt": "2026-11-02T07:52:35.634Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485389440"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485389440",
+      "recommendation": "INTAKE_READY",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485389440\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485389440\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485389440/",
+        "company": "TE Connectivity",
+        "title": "SR PLANT MGR",
+        "location": "Grayslake, IL",
+        "observedAt": "2026-11-01T09:35:21.969Z",
+        "quote": "SR PLANT MGR (Verified job)\nSR PLANT MGR | TE Connectivity | Grayslake, IL (On-site)"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0096.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:52:35.633Z",
+        "query": "TE Connectivity \"Senior Plant Manager\" Grayslake IL",
+        "employerPostingsRead": [
+          {
+            "url": "https://careers.te.com/job/SR-PLANT-MGR/154031-en_US",
+            "httpStatus": 200,
+            "readable": false,
+            "note": "script-rendered shell; no posting text in plain response"
+          },
+          {
+            "url": "https://careers.te.com/job/SR-PLANT-MGR/151687-en_US/",
+            "httpStatus": 200,
+            "readable": false
+          }
+        ],
+        "searchExcerptNotPostingQuote": "TE Medical Business Unit SR PLANT MGR search excerpt: overall site leader, accountable for plant performance including engineering, manufacturing, financial results, employee engagement, and compliance",
+        "cardTitleQuote": "SR PLANT MGR | TE Connectivity | Grayslake, IL",
+        "siteContext": "Grayslake, IL is a TE manufacturing site via the November 2024 Harger acquisition (per search results)",
+        "scopeLevel": "DIRECTOR_OR_SITE_HEAD",
+        "worksiteConfirmedInEmployerPosting": false,
+        "exactRequisitionMatched": false
+      },
+      "reason": "The card title is TE's abbreviation for Senior Plant Manager (screen's level pattern does not match 'MGR'); TE's own SR PLANT MGR requisitions are site-leader plant roles per search excerpt, and Grayslake is a TE manufacturing site. Employer posting text was not readable in a plain request, so the excerpt is labeled as search evidence, not a posting quote; requisition identity left to coordinator.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
