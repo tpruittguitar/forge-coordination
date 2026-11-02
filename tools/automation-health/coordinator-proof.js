@@ -15,6 +15,10 @@ function programmed(root,t){
  const c=t.canonicalSource;if(t.schema!=='forge.programmed-coordinator-report.v1'||t.mode!=='apply'||!hex(t.instructionCommit,40)||!date(t.at)||c?.kind!=='CANONICAL_WRITER_MASTER'||!hex(c.sha256,64)||!date(c.readAt)||Date.parse(c.readAt)>Date.parse(t.at)||Date.parse(t.at)-Date.parse(c.readAt)>900000||!Number.isSafeInteger(c.rows)||c.rows<1||!Array.isArray(t.transactions))return false;
  // Outstanding writes are valid execution evidence, never verified mutation.
  for(const tx of t.transactions.filter(x=>x.status==='VERIFIED')){const p=load(root,'receipts/'+tx.requestId+'_VERIFIED.json');if(p.schema!=='forge.programmed-coordinator-verification.v1'||p.requestId!==tx.requestId||!hex(p.acceptanceSha256,64)||(!p.noWrite&&!hex(p.independentIndexSha,40))||!date(p.completeObservedAt)||Date.parse(p.completeObservedAt)>Date.parse(t.at)||!Array.isArray(p.proofs)||p.proofs.length!==tx.items||!p.proofs.every(x=>hex(x.rowSha256,64)&&Array.isArray(x.fields)&&x.fields.length>0))return false;}
+ for(const tx of t.routineHandoffs?.mail?.transactions||[])if(tx.status==='VERIFIED'){
+  const p=load(root,'receipts/'+tx.requestId+'_VERIFIED.json'),cp=load(root,'receipts/'+tx.requestId+'_CHECKPOINT.json');
+  if(p.schema!=='forge.mail-writer-verification.v1'||p.requestId!==tx.requestId||p.primaryId!==tx.primaryId||p.eventKey!==cp.eventKey||cp.primaryId!==tx.primaryId||!hex(p.acceptanceSha256,64)||(!p.noWrite&&!hex(p.independentIndexSha,40))||!hex(p.rowSha256,64)||!date(p.completeObservedAt)||!date(p.readbackStartedAt)||Date.parse(p.readbackStartedAt)<Date.parse(p.completeObservedAt)||!date(p.verifiedAt)||Date.parse(p.verifiedAt)>Date.parse(t.at)||!Array.isArray(p.fields)||!p.fields.length)return false;
+ }
  return true;
 }
 function coordinatorProof(root,t){try{return utility(root,t)||programmed(root,t);}catch{return false;}}

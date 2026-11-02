@@ -3,6 +3,7 @@ const path=require('node:path');
 function endpoint(value){const u=new URL(value);if(!['http:','ws:'].includes(u.protocol)||!['127.0.0.1','localhost','[::1]'].includes(u.hostname)||u.username||u.password||u.search||u.hash)throw Error('LOCAL_BROWSER_ENDPOINT_REQUIRED');return u.href;}
 function sourceUrl(value){const u=new URL(value);if(u.protocol!=='https:'||!['grok.com','claude.ai','www.linkedin.com','www.glassdoor.com'].includes(u.hostname)||u.username||u.password)throw Error('UNAPPROVED_BROWSER_SOURCE');return u.href;}
 async function connect(config,{chromium}={}){
+ if(config?.connectorDirectory)return require('./connector-queue.cjs').connect(config);
  if(!config?.endpoint)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
  if(!chromium){if(!config.playwrightModule||!path.isAbsolute(config.playwrightModule))throw Error('EXISTING_PLAYWRIGHT_MODULE_REQUIRED');chromium=require(config.playwrightModule).chromium;}
  // Attach only to a separately configured existing browser. Never enable a
