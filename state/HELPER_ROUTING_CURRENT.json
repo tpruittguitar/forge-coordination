@@ -1,0 +1,72 @@
+{
+  "schema": "forge.helper-routing-current.v1",
+  "instructionCommit": "414c5481a16c80e206bfd477d3015f16afd770c2",
+  "at": "2026-11-02T05:35:26.611Z",
+  "tasks": {
+    "FORGE_CLAUDE_INTAKE_A": {
+      "provider": "Claude",
+      "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt",
+      "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
+      "enabled": false,
+      "routingActive": false,
+      "cutoverAt": null,
+      "partitionSha256": "0312bc08dbd0bb650a27830c08f55b4bedc681e2d7d229d431ca44aad48a4596"
+    },
+    "FORGE_CLAUDE_INTAKE_B": {
+      "provider": "Claude",
+      "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt",
+      "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
+      "enabled": false,
+      "routingActive": false,
+      "cutoverAt": null,
+      "partitionSha256": "0312bc08dbd0bb650a27830c08f55b4bedc681e2d7d229d431ca44aad48a4596"
+    },
+    "FORGE_CLAUDE_ENRICHMENT": {
+      "provider": "Claude",
+      "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_ENRICHMENT.txt",
+      "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
+      "enabled": false,
+      "routingActive": false,
+      "cutoverAt": null,
+      "partitionSha256": "0312bc08dbd0bb650a27830c08f55b4bedc681e2d7d229d431ca44aad48a4596"
+    },
+    "FORGE_GROK_ENRICHMENT": {
+      "provider": "Grok",
+      "procedure": "lanes/GROK_FORGE_SUPPLEMENTAL_ENRICHMENT.txt",
+      "assignmentId": "GROK-ENRICH-20261101-V1",
+      "enabled": true,
+      "routingActive": true,
+      "cutoverAt": null,
+      "partitionSha256": "c605a64241f269b948ac355a857f87c3be9540ba5088ed0b4bc8783659cb5d78"
+    },
+    "FORGE_GROK_APPLICATION_OUTCOME_HELPER": {
+      "provider": "Grok",
+      "procedure": "lanes/GROK_APPLICATION_OUTCOME_HELPER.txt",
+      "assignmentId": "GROK-OUTCOME-20261101-V1",
+      "enabled": true,
+      "routingActive": true,
+      "cutoverAt": "2026-11-01T22:37:31.118Z",
+      "partitionSha256": "5b7b1a60ecd98055c8aaf288b91c21934fac682d5ca3fb9a0e8d017a0dbe3f0e"
+    },
+    "FORGE_CLAUDE_RELEVANCE_REVIEW": {
+      "provider": "Claude",
+      "procedure": "lanes/CLAUDE_RELEVANCE_REVIEW.txt",
+      "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+      "enabled": true,
+      "routingActive": false,
+      "cutoverAt": null,
+      "partitionSha256": "ace911eb7f83f35f9c265d7f94c09280ee9efe1e53ac02dc20117d2d1f6da19b"
+    },
+    "FORGE_GROK_INTAKE_HELPER": {
+      "provider": "Grok",
+      "procedure": "lanes/GROK_FORGE_INTAKE_HELPER.txt",
+      "assignmentId": "GROK-INTAKE-20261101-V1",
+      "enabled": true,
+      "routingActive": true,
+      "cutoverAt": null,
+      "partitionSha256": "76907d10623c64be7c4ff44c76921add96234722a73a3c084e62d078fcd0e422"
+    }
+  },
+  "ackIsCoverage": false,
+  "requireFreshMain": true
+}
