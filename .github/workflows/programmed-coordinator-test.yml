@@ -1,0 +1,20 @@
+name: programmed-coordinator-test
+on:
+  pull_request:
+  push:
+    paths:
+      - 'tools/programmed-coordinator/**'
+      - 'tools/relevance-screen/**'
+      - 'tools/helper-routing/**'
+      - '.github/workflows/programmed-coordinator-test.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs

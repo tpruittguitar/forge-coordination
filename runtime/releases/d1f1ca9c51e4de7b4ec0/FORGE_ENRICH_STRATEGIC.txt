@@ -1,0 +1,60 @@
+RELEASE_ID=d1f1ca9c51e4de7b4ec0
+TASK_KEY=FORGE_ENRICH_STRATEGIC
+PROVIDER=ChatGPT
+POLICY_REVISION=2026-10-26.3
+
+FORGE CORE
+Run only the manifest task/provider. No auto takeover, apps, outreach or briefs.
+OPERATE AND REPORT; TIM INITIATES DEV: w/o Tim instr never create branches/PRs, change code, schedules, owners, scoring or policy. Defects -> control/SUGGESTIONS.txt. Tim instr authorizes only the named work.
+Writer alone mutates master. No side master. Receipts: receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. COMPLETE requires scoped obligs disposed. RESULT SUCCESS + receipt-index COMPLETE + row_readback AFTER COMPLETE = VERIFIED. RESULT alone = acceptance.
+SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/source-trial-report.json. Matching co+title w/ pay: stamp SALARY_POSTED_LOW/HIGH, SALARY_SOURCE=JOBSPY|HIRINGCAFE, skip salary fetch.
+UNANCHORED EST (Tim 2026-10-28): no posted pay + no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
+AGENCY: fetch policy/current/AGENCY_AND_TOOLS.txt only when processing an agency row. Otherwise skip.
+
+WRITER CONTRACT (write lanes only)
+Prefer auth direct Writer route or plain JSON in WRITER_QUEUE. Up to 25 homog reqs/file. ENRICH: {"action":"batch","requestId":"<RUN_ID>-B01","requests":[{"action":"ruling","ruling":{"requestId":"<RUN_ID>-B01-R01","primaryId":"V2I-...","kind":"ENRICH","actor":"CHATGPT","fields":{}}}]}. Upper-case keys. Complete https URLs. Never send COMPANY/TITLE/LOCATION/REQ/BUCKET/DISPOSITION/PRIMARY_ID as ENRICH fields.
+VERIFIED = RESULT SUCCESS + indep later receipt-index COMPLETE + fresh row_readback AFTER COMPLETE. FALSE_COMPLETE/UNKNOWN/FAILED != replay perm. Pending writes != COMPLETE.
+Do not touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION=YES, or Tim rulings.
+
+CHATGPT ADAPTER: Use actor CHATGPT and ChatGPT provider labels. Verify each connector and permitted create-file transport in this scheduled run. Distinguish connector-policy refusal before a request from an actual service/API error. Create plain-text JSON queue files without Docs conversion. No automatic slot, ownership or schedule changes; missing optional search connectors do not block ordinary web discovery.
+
+LANE PROCEDURE -- FORGE_ENRICH_STRATEGIC
+
+FAST PATH (Tim 2026-10-20 18:09 ET; overrides COMMON FRESH GATES, verif AND CHECKPOINTS and the ENTRY rules-blob/state-hint reads for this lane)
+Per run do only: manifest + this packet; this lane's worklist (one read); research rows; ONE queue file at the end with every finished row (split at 25); the terminal receipt.
+Skip each run: rules blob check, state/latest.json, WRITER_FREEZE.json/writer_status, queue/results scans, asks/resolved, and RESULT/receipt_index/row_readback checks of earlier batches. Make no Writer calls. The Claude gofer verifies enrichment batches in bulk.
+Per row: at most 2 fetches (the worklist URL or the employer post, plus one search when needed). Missing facts stay UNKNOWN; stamp the attempt and move on.
+Status: RESULT/verif is not this run's job; report SUBMITTED. Receipt fields: ROWS_RESEARCHED, ROWS_SUBMITTED, WORKLIST_ELIGIBLE_TOTAL, NEXT, STOP_REASON.
+
+WORKLIST
+WORKLIST_FORGE_ENRICH_STRATEGIC.txt, Drive 1nGzvaRZufMkXD0dIAqcrMeAWZEUzoPu8. Rebuilt by the Writer every 30 minutes.
+Take rows top-down. If the file says STATUS=PENDING_FIRST_BUILD, or GENERATED_AT_UTC is more than 6 hours old, use the FALLBACK below and say so in the receipt.
+
+JOB (per row)
+Open the post (URL column, else find the employer's own post by co, title, loc, req). Record grounded facts only; anything not stated is UNKNOWN.
+ENRICH fields (these are the keys the Explorer reads):
+  SCOPE_FIT_RAW: 0 to 100, how directly the role fits a plant-floor mfg and qual leader (prototype-to-rate production, factory or line launch, real authority, team size)
+  FIT_CONF: HIGH, MED or LOW
+  FIT_ASOF: YYYY-MM-DD
+  ANALYSIS_BY: CHATGPT_<RUN_ID>
+  SCOPE_SUMMARY: mfg function, product domain, what the role owns (one or two sentences)
+  FIT_BASIS: why SCOPE_FIT_RAW is what it is (one line); FIT_EVIDENCE: short quote(s) from the post
+  Also add, when the page shows them: SOURCE_URL (first-party post), PAY_POSTED, DEGREE_TEXT (verbatim from the post), WORK_ARRANGEMENT.
+No prestige bonuses, no scoring, no bucket changes.
+Cannot finish a row (page will not load, identity unclear): ENRICH with STRATEGIC_ATTEMPT_ASOF=YYYY-MM-DD and ANALYSIS_NOTE=<what was tried>, then take the next row.
+
+EMPTY LIST, KEEP GOING
+When the worklist is fresh and shows ELIGIBLE_TOTAL=0, or every listed row is finished/attempt-stamped, read the FORGE_ENRICH_FEASIBILITY packet from the same release manifest and its worklist. verif the same provider owns feasibility before working it; otherwise hand off. Use a second RUN_ID FORGE-ENRICH-FEASIBILITY-CHATGPT-<same date/time> and second receipt. STOP_REASON "worklist processed" with capacity left is a defect.
+
+BATCHING
+Up to 25 rows per queue file, written at the end of the run. Target 30 finished rows per run (Tim 2026-10-20); keep going past 30 while capacity lasts.
+
+FALLBACK (no fresh worklist)
+Use NEXT in the newest lane receipt; CONDITIONAL: if no usable cursor, read directives/FORGE_HANDOVER_ENRICH_STRATEGIC_FEASIBILITY_CLAUDE_TO_GROK_2026-10-12.txt section 6A. No row_readback (FAST PATH). Do not stop merely because the master is too large.
+
+LANE RECEIPT FIELDS
+WORKLIST_ELIGIBLE_TOTAL, ROWS_RESEARCHED, ROWS_SUBMITTED, ATTEMPT_STAMPED, NEXT (first unworked worklist row).
+END BRIEF
+
+PAYLOAD EXAMPLE (replace observed values and run identity):
+{"action":"batch","requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01-R01","primaryId":"V2I-EXAMPLE00001","kind":"ENRICH","actor":"CHATGPT","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"2026-10-18","LIVENESS_EVIDENCE_URL":"https://example.com/careers/job-123","LIVENESS_METHOD":"EMPLOYER_PAGE"}}}]}
