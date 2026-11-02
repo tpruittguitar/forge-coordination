@@ -23,11 +23,14 @@ Direct image links: `https://raw.githubusercontent.com/tpruittguitar/forge-coord
 - Strong fit close-up: `stage5-fit-strong-card-390.png` ("✓ Fit 79" in green beside "? — est. pending").
 - Times in these screenshots are the test run's clock in ET.
 
-## Score ring by band (`f54c724`, Tim 2026-11-02)
+## Score colours by band (`f54c724`, then the middle band to gray and banded cards, Tim 2026-11-02)
 - `stage5-ring-bands-390.png`: the detail sheet's verdict block for one job in each band, top to bottom: TOP (green, 83),
-  UPPER (yellow, 71), MID (orange, 51), LOW (red, 44), then a strong-fit job whose pay is below need (orange MID ring, 69,
-  beside the red pay line). Bands are percentiles of the open jobs (pipeline-bands.js), so the same number can sit in different
-  bands as the job list changes. Contrast against the panel: 8.0, 10.6, 6.9, 5.1 : 1.
+  UPPER (yellow, 71), MID (gray, 51), LOW (red, 44), then a strong-fit job whose pay is below need (gray MID ring, 69,
+  beside the red pay line). Contrast against the panel: 8.0, 10.6, 7.5, 5.1 : 1.
+- `stage5-card-bands-390.png`: the same four jobs as Decide cards. The score number is in the band colour with its glyph:
+  ▲ 83 green, ◆ 71 yellow, ● 51 gray, ▽ 44 red.
+- Bands are percentiles of the open jobs (pipeline-bands.js, the same as desktop), so a score's colour can change as the
+  job list changes. Bands are off below 40 open jobs: then the ring is gray and the number plain.
 - `stage5-ring-detail-top-390x844.png`: the full detail sheet for the TOP job.
 
 ## Why some banners show (test data, not live state)
