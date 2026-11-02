@@ -1,0 +1,43 @@
+AI_REASON_CHANGE_RECORD
+PROVIDER=Claude Code (cloud session moved from the desktop app)
+TASK=Pipeline Explorer mobile redesign: Stage 3-4 approval record, test fixes, Stage 5 review (foreman-cockpit PR #253, draft)
+AUTHORIZED_BY=Tim 2026-11-02 ("Go ahead"; Stages 3 and 4 approved; Grok Bot GUI review asks relayed by Tim)
+WRITER=untouched. No live Writer calls. Every test run blocked traffic to Google Apps Script hosts from Node and Chromium,
+  checked beforehand (script.google.com blocked, local test server allowed).
+
+WHAT CHANGED (foreman-cockpit, branch feat/mobile-pipeline-explorer)
+- c60b957 tests/act-now.browser.js: requires tests/legacy-phone-layout.cjs like the seven other old phone-layout tests, so its
+  phone contexts check the old layout (touch tablets) instead of failing on the new Decide tab. Every check unchanged
+  (6 lines added: the require and a comment).
+- 167543b tests/mobile-decide.browser.js: the test data adds one needs-decision job that is not Act Now (scored Director role in
+  Memphis, TN, lowest score). New step-8 checks: Memphis in All, out of Act now, Act now narrower than All, chip count = cards
+  shown. Writes stage3-decide-act-now-390x844.png. Existing checks unchanged.
+- PR #253 opened as a draft; issue #254 logs the desktop menu overlap.
+- forge-coordination: receipts/mobile-redesign-20261102/ (21 screenshots + README index) and this record.
+
+WHY
+- act-now: Stage 2 moved the old phone tests onto the helper but missed this one. It passes on main, and failed on the branch only
+  because phones now open the mobile shell.
+- Act now chip: on the old test data every job was Act Now (All · 7 = Act now · 7), so a screenshot could not show the chip
+  filtering (Grok review ask).
+- Screenshots in git: the Drive connector only uploads file contents written out inline, which isn't practical for 1.9 MB
+  of PNGs. A Google Doc in Drive "Pipeline Explorer mobile redesign/stage5" links here instead.
+
+VERIFIED
+- Unit: node --test tests/*.test.js = 758/758 (branch at 6225505; the later commits change browser tests only).
+- Browser, branch: mobile-decide, mobile-shell, mobile-jobs, mobile-a11y, writer-connection, act-now all pass at 167543b.
+  Full suite at 6225505: 22/37 pass. Of the 15 failures, act-now is now fixed, and 14 also fail on main (82a1daf) in this
+  container.
+- Desktop overlap: the same 1440x900 shot on main vs branch = 0 differing pixels (full page and header crop). It already exists
+  on main and doesn't block the branch.
+- Stage 5 Retry bug reproduced in a browser (health feed 503): the button stays disabled on "Retrying…".
+
+NOT CHANGED
+No app code. Stage 5 WIP (6225505) as pushed by Tim. Nothing merged. The earlier WIP commit on forge-coordination main-ed62bb
+(73d266e, three receipts from 2026-10-22) was left as is.
+
+OPEN / NEXT
+1. Rerun the 14 browser tests that fail on main on Tim's desktop before merge. That they fail only in the container is NOT
+   confirmed.
+2. Stage 5 review by Tim and Grok Bot GUI, including the "Decision queue loading" banner, then the one-line Retry fix plus a test.
+3. Phone shell Act Now rule coverage: Memphis is now covered; Shield AI pinned first is still only tested on the old layout.
