@@ -5,7 +5,7 @@ const empty=()=>({schema:'forge.mail-processing.v1',messages:{},transactions:{},
 function persistEvent(root,event){
  for(const [file,schema]of [['state/APPLICATION_TRACKER_EVENTS.json','forge.application-tracker-events.v1'],['state/APPLICATION_OUTCOMES.json','forge.application-outcomes.v1']]){
   const ledger=S.read(root,file,{schema,events:[]}),index=ledger.events.findIndex(e=>e.gmailMessageId&&e.type===event.type&&e.primaryId===event.primaryId&&e.gmailMessageId===event.gmailMessageId);
-  if(index<0)ledger.events.push(event);else ledger.events[index]={...ledger.events[index],...event};ledger.at=new Date().toISOString();S.save(root,file,ledger);
+  if(index<0)ledger.events.push(event);else{const old=ledger.events[index];ledger.events[index]=old.masterWriteStatus==='VERIFIED'&&event.masterWriteStatus!=='VERIFIED'?{...event,...old}:{...old,...event};}ledger.at=new Date().toISOString();S.save(root,file,ledger);
  }
 }
 const same=(a,b)=>String(a||'').trim()===String(b||'').trim();
@@ -42,6 +42,8 @@ async function process({root,privateDir,state,message,deps,apply=true,runId}){
  }
  const snapshot=await deps.snapshot();if(!Number.isFinite(Date.parse(snapshot.source?.readAt))||Date.now()-Date.parse(snapshot.source.readAt)>900000)throw Error('FRESH_MAIL_CANONICAL_REQUIRED');
  const events=S.read(root,'state/APPLICATION_TRACKER_EVENTS.json',{events:[]}).events,matched=Match.match(message,{...snapshot,events}),row=matched.row;
+ const historical=events.find(e=>e.gmailMessageId===message.id&&e.type===classification.type&&e.primaryId===row.PRIMARY_ID&&e.evidenceVerified&&['VERIFIED','EVENT_ONLY'].includes(e.masterWriteStatus));
+ if(historical){entry.status=historical.masterWriteStatus==='VERIFIED'?'VERIFIED':'RECORDED_EVENT';entry.proof=historical.writerProof||historical.proof||'state/APPLICATION_TRACKER_EVENTS.json#'+message.id;if(apply){state.messages[message.id]=entry;S.save(root,FILE,state);}return entry.status;}
  const event={primaryId:row.PRIMARY_ID,type:classification.type,eventDate:message.at.slice(0,10),gmailMessageId:message.id,threadId:message.threadId,matchingMethod:matched.method,sourceType:'EMAIL',sourceSha256:message.sourceSha256,evidenceVerified:true,masterWriteStatus:'PENDING',evidenceRef:'gmail:'+message.id};
  const key=eventKey(event),plan=Match.mutation(event,row,matched);entry.event=event;entry.eventKey=key;
  if(!apply)return{status:plan.eventOnly?'EVENT_ONLY':'READY',primaryId:row.PRIMARY_ID,eventKey:key};
