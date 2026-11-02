@@ -2,7 +2,7 @@
   "schema": "forge.maintenance-handoff.v1",
   "at": "2026-11-02T04:03:20.591Z",
   "runId": "FORGE-COORDINATOR-CHATGPT-20261101-2258ET",
-  "status": "RECOVERED_RECURRENCE_RISK_REMAINS",
+  "status": "RESOLVED_ROOT_CAUSE_FIX_DEPLOYED",
   "rootCause": "Code accounting publication collided with an independently refreshed generated relevance guard timestamp. Publication failure intentionally retained the shared lock; later scheduled starts failed behind that lock.",
   "evidence": {
     "noActiveCoordinatorProcessObservedAt": "2026-11-02T04:00:57.0936875Z",
@@ -16,5 +16,12 @@
   },
   "verifiedRecoveryCodeRun": "FORGE-CODE-CHATGPT-20261102T040156673Z",
   "recommendation": "Separate generated observation timestamps from semantic guard policy, or merge/rebuild timestamp-only guard conflicts only after asserting identical policyCommit and disabledRules. Preserve true policy conflicts and pending request fences. Add a publication regression check.",
-  "scope": "No code or schedule changes performed during this scheduled inspection."
+  "scope": "No code or schedule changes performed during this scheduled inspection.",
+  "previousStatus": "RECOVERED_RECURRENCE_RISK_REMAINS",
+  "resolution": {
+    "at": "2026-11-02T04:55:49.403Z",
+    "mergeCommit": "3f24c15fa37f10e1a14f03c611e0d352156f48d7",
+    "pr": "https://github.com/tpruittguitar/forge-coordination/pull/175",
+    "verification": "receipts/COORDINATOR_PUBLICATION_FIX_20261101_VERIFIED.json"
+  }
 }

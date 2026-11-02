@@ -1,0 +1,35 @@
+{
+  "schema": "forge.deployment-verification.v1",
+  "at": "2026-11-02T04:55:49.403Z",
+  "provider": "ChatGPT",
+  "pr": "https://github.com/tpruittguitar/forge-coordination/pull/175",
+  "mergeCommit": "3f24c15fa37f10e1a14f03c611e0d352156f48d7",
+  "tests": {
+    "localPassed": 58,
+    "realGitRaceCasesPassed": 7,
+    "githubChecksPassed": 6
+  },
+  "live": {
+    "runId": "FORGE-CODE-CHATGPT-20261102T045347192Z",
+    "instructionCommit": "2426c8dc4b72aeabaf8eda99104053c2819a9173",
+    "publicationCommit": "738112d90e4f71534809fc1e5654aaf8f3525c7d",
+    "launcherExit": 0,
+    "ownLockReleased": true,
+    "remoteAncestryVerified": true,
+    "masterTransactions": 0,
+    "workingTreeClean": true,
+    "publisherSha256": "294481a1cfd16c6828ed316dccc96eabade263f01a54f98d5f92b96b31e6508f"
+  },
+  "schedule": {
+    "taskName": "FORGE_PROGRAMMED_COORDINATOR",
+    "enabled": true,
+    "interval": "PT5M",
+    "executable": "pwsh.exe",
+    "multipleInstances": "IgnoreNew",
+    "executionTimeLimit": "PT0S",
+    "runLevel": "Limited",
+    "nativeReadAt": "2026-11-02T04:54:28.9103370Z",
+    "lastTaskResultAtRead": 0
+  },
+  "semantics": "Timestamp-only guard conflicts merge only with identical non-at fields and valid timestamps. Real semantic conflicts and unknown Writer requests remain fenced. Clean committed-but-unpublished accounting is recovered before new production. Push races retry without force."
+}

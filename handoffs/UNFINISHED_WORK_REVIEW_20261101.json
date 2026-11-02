@@ -1,0 +1,81 @@
+{
+  "schema": "forge.unfinished-work-review.v1",
+  "at": "2026-11-02T04:55:49.403Z",
+  "sourceCommit": "0a6862bced554b926f614e5540404917ae5063ef",
+  "resolved": [
+    {
+      "issue": "Programmed coordinator publication lock",
+      "proof": "receipts/COORDINATOR_PUBLICATION_FIX_20261101_VERIFIED.json"
+    }
+  ],
+  "open": [
+    {
+      "priority": 1,
+      "owner": "FORGE_EMAIL_DISCOVERY",
+      "issue": "Claude returns not published to main",
+      "evidence": {
+        "pullRequests": [
+          170,
+          171,
+          173,
+          174
+        ],
+        "check": "change-record-check failed; missing required change records"
+      },
+      "next": "Review overlapping immutable returns, fix delivery metadata and validate/deduplicate before consumption. Do not rerun source research."
+    },
+    {
+      "priority": 2,
+      "owner": "FORGE_GROK_APPLICATION_OUTCOME_HELPER / FORGE_APPLICATION_OUTCOME_TRACKER",
+      "issue": "Delegated email bodies remain unreviewed",
+      "pendingSources": 49,
+      "fullyReadThrough": "2026-11-01T22:45:34.999Z",
+      "evidence": "state/APPLICATION_TRACKER_CURSOR.json",
+      "next": "Use fresh activated routing; stale pre-activation ACKs are not mailbox coverage. Preserve each delegated source until dispositioned."
+    },
+    {
+      "priority": 3,
+      "owner": "FORGE_EMAIL_DISCOVERY / assigned helpers",
+      "issue": "Unresolved returned source and identity evidence",
+      "reportAt": "2026-11-02T04:54:27.274Z",
+      "codeExceptions": 53,
+      "aiExceptions": 8,
+      "quarantinedBatches": 3,
+      "note": "Batch exceptions and quarantine counts overlap; do not add them.",
+      "evidence": "state/PROGRAMMED_COORDINATOR_REPORT.json",
+      "next": "Correct invalid/missing source URLs, resolve exact identity differences, and use available source transport without replaying existing writes."
+    },
+    {
+      "priority": 4,
+      "owner": "FORGE_EMAIL_DISCOVERY",
+      "issue": "Saved discovery coverage remains partial",
+      "pendingResultSearches": 3,
+      "remainingPageCount": null,
+      "historicalGaps": 2,
+      "sourceInventoryAt": "2026-11-02T00:32:35.924Z",
+      "evidence": "state/EMAIL_RECOVERY_QUEUE.json",
+      "next": "Resume saved searches and retain historical gaps; pagination completion is separate from candidate admission."
+    },
+    {
+      "priority": 5,
+      "owner": "Maintainer / PE_STACK_HEALTH_DAILY",
+      "issue": "Execution publisher does not recognize newer helper-coordinator terminal schema",
+      "evidence": "handoffs/COORDINATOR_EXECUTION_EVIDENCE_GAP_20261102T022919Z.json",
+      "next": "Validate actual utility terminal and bound proofs separately from email coverage; do not invent successful coverage."
+    },
+    {
+      "priority": 6,
+      "owner": "FORGE_APPLICATION_WRITER_GOFER",
+      "issue": "Historical application identity/cycle exceptions remain in durable exception ledger",
+      "evidence": "state/APPLICATION_TRACKER_EXCEPTIONS.json",
+      "next": "Recheck current per-case proof and retry conditions; preserve protected applications and avoid treating stale ledger entries as fresh failures."
+    }
+  ],
+  "notCurrentFailure": [
+    {
+      "issue": "Earlier compact Writer activity workflow failure",
+      "evidence": "Later workflow runs 41390725424 and 41390316994 succeeded; current activity updates exist."
+    }
+  ],
+  "noProcessingCapsAdded": true
+}
