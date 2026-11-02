@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0010",
+  "instructionCommit": "a42c88c8f1d2fe41eee870be050728752a4a5528",
+  "createdAt": "2026-11-02T07:51:53.935Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485177203"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485177203",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485177203\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485177203\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485177203/",
+        "company": "American Lithium Energy Corporation",
+        "title": "Battery pack design and manufacturing supervisor",
+        "location": "Carlsbad, CA",
+        "observedAt": "2026-11-01T09:35:25.486Z",
+        "quote": "Battery pack design and manufacturing supervisor | American Lithium Energy Corporation | Carlsbad, CA (On-site)"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0101.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:51:53.934Z",
+        "query": "American Lithium Energy \"Battery pack design and manufacturing supervisor\" Carlsbad",
+        "employerSearchResult": "No posting with this exact title; only related American Lithium Energy roles on ev.careers (Battery Pack Assembly Operations Manager, Production Supervisor, Battery Production Testing Supervisor in Vista, CA)",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no exact American Lithium Energy posting for this title, so the design-versus-manufacturing scope split and level remain unestablished. Related pack-manufacturing roles exist but identity is not forced. Lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
