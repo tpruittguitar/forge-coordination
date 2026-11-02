@@ -9,7 +9,9 @@ function prepare(cfg){
  if(!request.id){request.id=S.hash(request);S.immutable(directory,'jobs/'+request.id+'.json',request);}
  const pages=S.files(path.join(directory,'pages',request.id)).map(f=>JSON.parse(fs.readFileSync(f,'utf8'))).sort((a,b)=>a.page-b.page);
  validatePages(pages);
- return{directory,inbox:path.join(cfg.privateDirectory,'mail-inbox'),request,pages};
+ const inbox=path.join(cfg.privateDirectory,'mail-inbox'),cached=new Set(),M=require('./mail.cjs');
+ for(const file of S.files(inbox)){try{const c=JSON.parse(fs.readFileSync(file,'utf8'));if(c.schema!=='forge.gmail-source-capture.v1'||c.transport!=='SUPPORTED_GMAIL_CONNECTOR'||c.request?.format!=='full'||!Number.isFinite(Date.parse(c.capturedAt))||!Array.isArray(c.request.ids)||!Array.isArray(c.responses)||c.responses.length!==c.request.ids.length||new Set(c.request.ids).size!==c.request.ids.length||c.responses.some(m=>!c.request.ids.includes(m.id))||new Set(c.responses.map(m=>m.id)).size!==c.request.ids.length)continue;for(const raw of c.responses)if(c.request.ids.includes(raw.id)&&M.normalize(raw).fullBody)cached.add(raw.id);}catch{}}
+ return{directory,inbox,request,pages,cachedIds:[...cached]};
 }
 function validatePages(pages){for(let i=0;i<pages.length;i++){const p=pages[i];if(p.page!==i||p.requestToken!==(i?pages[i-1].nextPageToken:null)||i&& !p.requestToken||!Array.isArray(p.messageIds)||p.messageIds.some(id=>!/^[a-f0-9]+$/i.test(id)))throw Error('GMAIL_PAGE_CHAIN_REQUIRED');}}
 // Runs only in the supported connector host. It never receives Writer credentials.
@@ -30,9 +32,10 @@ async function host(tools,cfg){
   catch{if(wanted.length>1){const middle=Math.ceil(wanted.length/2);await batch(wanted.slice(0,middle));await batch(wanted.slice(middle));}else failures.push(wanted[0]);return;}
   await save(cfg.inbox+'/'+cfg.request.id+'-'+wanted[0]+'-'+Date.now()+'.json',{schema:'forge.gmail-source-capture.v1',transport:'SUPPORTED_GMAIL_CONNECTOR',capturedAt:new Date().toISOString(),request:{format:'full',ids:wanted},responses});read+=responses.length;
  }
- for(let offset=0;offset<ids.length;offset+=100)await batch(ids.slice(offset,offset+100));
+ const cached=new Set(cfg.cachedIds||[]),wanted=ids.filter(id=>!cached.has(id));
+ for(let offset=0;offset<wanted.length;offset+=100)await batch(wanted.slice(offset,offset+100));
  await save(cfg.directory+'/inventories/'+cfg.request.id+'.json',{schema:'forge.gmail-inventory.v1',id:cfg.request.id,query:cfg.request.query,through:cfg.request.through,enumerationComplete:true,pages:pages.length,messageIds:ids,readFailures:failures});
- return{enumerated:ids.length,read,pending:failures.length,pages:pages.length,noProcessingCap:true};
+ return{enumerated:ids.length,read,reused:ids.length-wanted.length,pending:failures.length,pages:pages.length,noProcessingCap:true};
 }
 function ingest(root,privateDir){
  const cursor=S.read(root,'state/APPLICATION_TRACKER_CURSOR.json',null);if(!cursor)return;

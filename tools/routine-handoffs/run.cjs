@@ -11,7 +11,12 @@ async function run({root,privateDir,commit,runId,apply,config=settings(privateDi
   try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
   catch(e){state.exceptions.delivery={owner:'CODE',reason:'HELPER_DELIVERY_ROUTE_UNAVAILABLE',errorSha256:S.hash(e.message)};}
  }
- if(apply)result.imported+=Reports.scanInboxes({root,privateDir,state,commit,inboxes:config.inboxes||[],python:config.python}).imported;
+ if(apply){
+  result.directHandoffs=require('./direct-handoffs.cjs').consume(privateDir);
+  for(const key of Object.keys(state.exceptions).filter(k=>k.startsWith('direct:')))delete state.exceptions[key];
+  for(const item of result.directHandoffs.pending)state.exceptions['direct:'+item.sourceHash]={owner:'CODE',...item};
+  result.imported+=Reports.scanInboxes({root,privateDir,state,commit,inboxes:config.inboxes||[],python:config.python}).imported;
+ }
  if(apply&&config.browser?.connectorDirectory){result.connector=require('./connector-bridge.cjs').consume({directory:config.browser.connectorDirectory});for(const key of Object.keys(state.exceptions).filter(k=>k.startsWith('connector:')))delete state.exceptions[key];for(const failure of result.connector.failures)state.exceptions['connector:'+failure.jobId]={owner:'CODE',...failure};}
  let browser;
  try{
@@ -21,6 +26,13 @@ async function run({root,privateDir,commit,runId,apply,config=settings(privateDi
   for(const feedConfig of config.reportFeeds||[]){
    const home=homes.external.find(h=>h.taskKey===feedConfig.taskKey&&h.id===feedConfig.automationId&&h.provider===feedConfig.provider);
    if(!home){state.exceptions['feed:'+feedConfig.taskKey]={owner:'CODE',reason:'FEED_NOT_CURRENT_REGISTERED_AUTOMATION'};continue;}
+   if(config.nativeReportPolling!==true){
+    // Drain already captured bodies once; never enqueue another native AI run
+    // page. Unresolved historical coverage stays pending in the transport ledger.
+    const packets=require('./connector-queue.cjs').packets(config.browser.connectorDirectory||privateDir,'NATIVE_REPORTS').filter(p=>p.request.taskKey===home.taskKey&&p.request.automationId===home.id&&p.request.provider===home.provider);
+    if(apply)for(const packet of packets)for(const r of packet.data.reports||[])result.imported+=Reports.ingest({root,privateDir,state,commit,text:r.text,source:{provider:home.provider,taskKey:home.taskKey,id:r.id,complete:r.fullReportComplete}}).imported;
+    result.reportFeeds.push({taskKey:home.taskKey,mode:'DIRECT_ARTIFACTS',nativePolling:false,historicalCoverageComplete:false});continue;
+   }
    let feed;
    try{feed=await browser.feed(feedConfig);if(apply)result.reportFeeds.push(await Reports.collectFeed({feed,root,privateDir,state,commit,save}));delete state.exceptions['feed:'+feedConfig.taskKey];}
    catch(e){state.exceptions['feed:'+feedConfig.taskKey]={owner:'CODE',reason:reason(e),errorSha256:S.hash(e.message)};}

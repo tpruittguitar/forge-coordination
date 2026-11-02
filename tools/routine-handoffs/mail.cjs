@@ -15,6 +15,7 @@ function normalize(message){
 function classify(m){
  if(!m.fullBody)return{owner:'CODE',classification:'FULL_MESSAGE_REQUIRED',status:'PENDING'};
  const s=m.sender,subject=m.subject,body=m.body;
+ if(/^[a-z0-9._+-]+@(?:[a-z0-9-]+\.)?tinyfish\.ai$/i.test(s)&&/^Your Free TinyFish Signup Credit is Running Low$/i.test(subject)&&/credit|balance/i.test(body)&&!/recruit|interview|application status/i.test(body))return{owner:'CODE',classification:'SERVICE_CREDIT_NOTICE',status:'VERIFIED_NOT_RECRUITING'};
  if(s==='notifications@github.com'&&/left a comment|workflow run|Repository:/i.test(body))return{owner:'CODE',classification:'DEVELOPMENT_NOTIFICATION',status:'VERIFIED_NOT_RECRUITING'};
  const alertSenders=/^(?:info@glassdoor\.com|jobs@my\.theladders\.com|jobs@updates\.buildsubmarines\.com|donotreply@jobalerts\.baesystems\.com|recruitingnoreply@ford\.com|alerts@ziprecruiter\.com|jobalertlocal@postjobfree\.com|mailer@jobleads\.com|no-reply@reply\.experteer\.com|mailer@transactional\.talemetryservice\.com|[a-z0-9-]+-jobnotification@noreply\.jobs2web\.com)$/i;
  if((alertSenders.test(s)&&/job|position|saved search|opportunit/i.test(subject+' '+body))||s==='googlealerts-noreply@google.com'&&/^Google Alert -/.test(subject)||/^(?:jobalerts-noreply|jobs-noreply)@linkedin\.com$/.test(s)&&/Jobs similar to your alert|Your saved job|Job alert:|Jobs for Tim/i.test(body)||s==='noreply@glassdoor.com'&&/Job alert:|Jobs for Tim|Your job listings/i.test(body))return{owner:'CODE',classification:'JOB_ALERT',status:'HANDED_TO_DISCOVERY',discoveryPending:true};
