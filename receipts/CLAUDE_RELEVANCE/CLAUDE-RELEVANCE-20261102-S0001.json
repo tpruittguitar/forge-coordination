@@ -1,0 +1,85 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-S0001",
+  "instructionCommit": "03d64ef0f87f82e3544be5ed7ce472e098cbb177",
+  "createdAt": "2026-11-02T12:00:00.000Z",
+  "page": {
+    "path": "control/claude-relevance/page-0011.json",
+    "completedKeys": [
+      "linkedin:4415392645",
+      "linkedin:4428433855"
+    ],
+    "note": "Per-card checkpoint, employer-first; no LinkedIn request."
+  },
+  "method": "One targeted employer/company+title+worksite web search per card; search results only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4415392645",
+      "recommendation": "INTAKE_READY",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4415392645\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4415392645\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4415392645/",
+        "company": "General Motors",
+        "title": "Engineering Supervisor - ECU Software Flashing & Embedded Systems",
+        "location": "Warren, MI",
+        "observedAt": "2026-11-01T08:55:50.132Z",
+        "quote": "Engineering Supervisor - ECU Software Flashing & Embedded Systems | General Motors | Warren, MI"
+      },
+      "sourceDate": "2026-10-20",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0060.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T00:00:00Z",
+        "query": "General Motors Engineering Supervisor ECU Software Flashing Embedded Systems Warren MI",
+        "strongestEmployerResult": "https://search-careers.gm.com/en/jobs/jr-202608389/loose-piece-reflash-deployment-supervisor-global-manufacturing-electrical-sdv/",
+        "quote": "ECU Software Deployment Supervisor, Manufacturing Engineering (JR-202608389): leads a team carrying out ECU software deployment across GM plants; reflash events at plants, leading contractors",
+        "scopeLevel": "SUPERVISOR",
+        "exactRequisitionMatched": false,
+        "employerPageFetched": false
+      },
+      "reason": "GM careers search snippets show a Manufacturing Engineering supervisor role for plant-level ECU reflash deployment, which plausibly fits manufacturing/engineering leadership. Exact requisition not matched (title differs; employer page not fetched, search snippet only); coordinator must confirm identity. Role may skew software-deployment; scope fit is plausible, not certain.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "key": "linkedin:4428433855",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4428433855\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4428433855\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4428433855/",
+        "company": "Coherent Corp.",
+        "title": "Process Engineering Lead",
+        "location": "Newark, DE",
+        "observedAt": "2026-11-01T08:53:21.847Z",
+        "quote": "Process Engineering Lead | Coherent Corp. | Newark, DE"
+      },
+      "sourceDate": "2026-10-20",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0057.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T00:00:00Z",
+        "query": "Coherent Corp Process Engineering Lead Newark DE",
+        "strongestEmployerResult": null,
+        "quote": "Search found Newark DE Process Engineer/Staff Engineer Process/Quality Engineer listings (aggregators); no exact 'Process Engineering Lead' employer posting",
+        "scopeLevel": "UNKNOWN",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed search found no exact role; Newark DE is a Coherent ceramic-materials manufacturing site so process engineering context is manufacturing, but the lead scope fact is unresolved. Lookup consumed; stays ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
