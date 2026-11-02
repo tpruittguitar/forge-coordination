@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0012",
+  "instructionCommit": "28cdf0a007ebccd9cedcd95692525c5b1ad562fa",
+  "createdAt": "2026-11-02T07:52:57.055Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485607266"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485607266",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485607266\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485607266\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485607266/",
+        "company": "JARP Industries, Inc.",
+        "title": "Manufacturing Engineer - Onsite Only",
+        "location": "Schofield, WI",
+        "observedAt": "2026-11-01T09:34:59.334Z",
+        "quote": "Manufacturing Engineer - Onsite Only | JARP Industries, Inc. | Schofield, WI"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0096.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:52:57.055Z",
+        "query": "JARP Industries \"Manufacturing Engineer\" Schofield WI",
+        "employerSearchResult": "No JARP posting with this exact title; nearest JARP results are 'Engineer I - Onsite Only' (Dice) and a Wausau Manufacturing Technician",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no exact JARP Industries Manufacturing Engineer posting; the 'Engineer I' listing is a different title and identity is not forced. Scope/level remain unestablished; lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
