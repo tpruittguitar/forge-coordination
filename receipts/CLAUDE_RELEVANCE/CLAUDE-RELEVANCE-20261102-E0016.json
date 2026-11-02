@@ -1,0 +1,52 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0016",
+  "instructionCommit": "091bf1f37e02ae93df192e4f8f0142cc451c5317",
+  "createdAt": "2026-11-02T07:54:22.663Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4446462758"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4446462758",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4446462758\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4446462758\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4446462758/",
+        "company": "Burns & McDonnell",
+        "title": "Air Quality & Acoustics Business Line Leader - Environmental Services (Multiple Locations)",
+        "location": "Orlando, FL",
+        "observedAt": "2026-11-01T09:23:55.251Z",
+        "quote": "Air Quality & Acoustics Business Line Leader - Environmental Services (Multiple Locations) | Burns & McDonnell | Orlando, FL"
+      },
+      "sourceDate": "2026-10-19",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0005.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:54:22.663Z",
+        "query": "Burns & McDonnell \"Air Quality & Acoustics Business Line Leader\" Environmental Services",
+        "strongestResult": "https://www.theladders.com/job/air-quality-acoustics-business-line-leader-multiple-locations-burnsmcd-orlando-fl_88113841",
+        "searchExcerptNotPostingQuote": "The BLL serves as the primary point of contact between the business line and the National Sales Team.",
+        "scopeFacts": "National environmental-consulting business-line leadership: sales/revenue targets, business plans, profitability, staffing forecasts",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Search evidence shows an environmental-consulting business-line P&L/sales leadership role, not manufacturing/quality/plant/operations leadership. No approved function-mismatch title term applies, so no closure is proposed; retained ranked for coordinator/Writer.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
