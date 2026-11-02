@@ -1,0 +1,80 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0002",
+  "instructionCommit": "d0cf7f5d3b7265373b21093b9afa0414fef27c28",
+  "createdAt": "2026-11-02T07:47:44.083Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4483255913",
+      "linkedin:4483266305"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4483255913",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4483255913\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4483255913\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4483255913/",
+        "company": "Jabil",
+        "title": "Production Supervisor - Test Engineering",
+        "location": "Florence, KY",
+        "observedAt": "2026-11-01T09:35:29.359Z",
+        "quote": "Production Supervisor - Test Engineering | Jabil | Florence, KY"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0099.json",
+      "targetedLookups": 0,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:47:44.082Z",
+        "reusedEvidence": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102-E0001.json",
+        "sameCompanyTitleLocationAs": "linkedin:4483255912",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Same Jabil company/title/worksite card as linkedin:4483255912; reused that completed employer search (no readable employer posting). No repeat research; identity not forced. Retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "key": "linkedin:4483266305",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4483266305\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4483266305\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4483266305/",
+        "company": "Jabil",
+        "title": "Production Supervisor - Test Engineering",
+        "location": "Florence, KY",
+        "observedAt": "2026-11-01T09:35:21.969Z",
+        "quote": "Production Supervisor - Test Engineering | Jabil | Florence, KY"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0099.json",
+      "targetedLookups": 0,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:47:44.083Z",
+        "reusedEvidence": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102-E0001.json",
+        "sameCompanyTitleLocationAs": "linkedin:4483255912",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Same Jabil company/title/worksite card as linkedin:4483255912; reused that completed employer search (no readable employer posting). No repeat research; identity not forced. Retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
