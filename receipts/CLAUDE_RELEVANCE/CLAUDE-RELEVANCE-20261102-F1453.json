@@ -1,0 +1,112 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-F1453",
+  "instructionCommit": "ae1387803450aa06892db8e19de366ad1c3d12b0",
+  "createdAt": "2026-11-02T15:10:00.000Z",
+  "page": {
+    "path": "control/claude-relevance/page-0011.json",
+    "completedKeys": [
+      "linkedin:4466906632",
+      "linkedin:4464718195",
+      "linkedin:4459022714"
+    ],
+    "note": "Per-card checkpoint; employer-first search, no LinkedIn request."
+  },
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4466906632",
+      "recommendation": "INTAKE_READY",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4466906632\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4466906632\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4466906632/",
+        "company": "Dessert Holdings",
+        "title": "Quality Supervisor (2nd Shift)",
+        "location": "Kennesaw, GA",
+        "observedAt": "2026-11-01T09:38:23.862Z",
+        "quote": "Quality Supervisor (2nd Shift) | Dessert Holdings | Kennesaw, GA (On-site)"
+      },
+      "sourceDate": "2026-10-20",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0061.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T15:10:00.000Z",
+        "query": "Dessert Holdings \"Quality Supervisor\" 2nd shift Kennesaw GA",
+        "strongestResult": "https://dessertholdings.acquiretm.com/job_details_clean.aspx?ID=3783",
+        "quote": "Supervising all daily production floor activities as they relate to quality (CareerBuilder QA Supervisor (2nd Shift), Kennesaw GA, Dessert Holdings Inc.)",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Dessert Holdings posting for QA Supervisor 2nd shift Kennesaw supervises production-floor quality in a food plant: quality/plant scope fits. Exact requisition identity not confirmed; coordinator adjudicates.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "key": "linkedin:4464718195",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4464718195\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4464718195\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4464718195/",
+        "company": "Cargill",
+        "title": "Food Safety Quality Regulatory Senior Supervisor",
+        "location": "Gainesville, GA",
+        "observedAt": "2026-11-01T09:37:51.759Z",
+        "quote": "Food Safety Quality Regulatory Senior Supervisor (Verified job)\nFood Safety Quality Regulatory Senior Supervisor | Cargill | Gainesville, GA"
+      },
+      "sourceDate": "2026-10-20",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0064.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T15:10:00.000Z",
+        "query": "Cargill \"Food Safety Quality Regulatory Senior Supervisor\" Gainesville GA",
+        "strongestResult": "none for Gainesville GA",
+        "quote": "Search found same Cargill title at other sites (e.g., Camp Hill PA: owns site-level food safety and regulatory programs); no Gainesville GA posting surfaced.",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Title is a Cargill plant food safety/quality role family (manufacturing quality scope plausible) but the Gainesville posting was not found; lookup consumed, remains ranked. No exclusion.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "key": "linkedin:4459022714",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4459022714\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4459022714\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4459022714/",
+        "company": "Clarios",
+        "title": "Engineering Project Leader",
+        "location": "Glendale, WI",
+        "observedAt": "2026-11-01T08:53:46.027Z",
+        "quote": "Engineering Project Leader | Clarios | Glendale, WI (Hybrid)"
+      },
+      "sourceDate": "2026-10-20",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0059.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T15:10:00.000Z",
+        "query": "Clarios \"Engineering Project Leader\" Glendale WI",
+        "strongestResult": "none official (aggregators only)",
+        "quote": "Aggregator listings only; Clarios HQ is Glendale WI; no official posting found.",
+        "exactRequisitionMatched": false
+      },
+      "reason": "No readable employer posting; function/scope unresolved (could be corporate/R&D project engineering). Lookup consumed; remains ranked, not excluded.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
