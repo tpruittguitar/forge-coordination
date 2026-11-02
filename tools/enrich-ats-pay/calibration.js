@@ -7,7 +7,7 @@ function evaluate(rows,anchors,reference,now=Date.now()){
   // Exclude every alias/copy of the target posting, not merely its primary ID.
   const pool=anchors.filter(a=>C.postingKey(a)!==C.postingKey(target)&&C.identityKey(a)!==C.identityKey(target)&&a.id!==target.id);
   const same=L.sameEmployerAnchors(row,pool);
-  const est=(same.length&&L.sameEmployerEstimate(row,same,null,reference))||L.estimate(row,pool,reference);
+  const est=L.estimate(row,pool,reference)||require('./leadership').estimate(row,pool,reference,L,C);
   if(!est){cases.push({primaryId:target.id,status:'NO_COMPARABLES'});continue;}
   const actual=(target.low+target.high)/2,error=(est.mid-actual)/actual;
   const baseline=(same.length&&L.sameEmployerEstimate(row,same,null))||L.estimate(row,pool);

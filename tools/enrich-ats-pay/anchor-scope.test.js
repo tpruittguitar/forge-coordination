@@ -9,16 +9,16 @@ test('plant operations, manufacturing technology and supply chain cannot cross-a
  a.equal(L.comparable({TITLE:'Director, Supply Chain'},{title:'Director of Operations'}),false);
  a.equal(L.comparable({TITLE:'Chief Manufacturing Officer'},{title:'Vice President, Manufacturing'}),false);
 });
-test('one dated compatible employer anchor cannot be outvoted by many lower peer salaries',()=>{
+test('one employer anchor is weighted but no longer excludes the peer distribution',()=>{
  const own=anchor('OWN','Meta',245000,309000),peers=Array.from({length:12},(_,i)=>anchor('PEER'+i,'Other '+i));
- for(const ref of [undefined,{companies:[],roles:[]}]){const e=L.estimate(target,[...peers,own],ref);a.deepEqual(e.ids,['OWN']);a.equal(e.low,245000);a.equal(e.high,309000);a.equal(e.conf,'LOW');}
+ for(const ref of [undefined,{companies:[],roles:[]}]){const e=L.estimate(target,[...peers,own],ref);a.ok(e.ids.includes('OWN'));a.ok(e.ids.length>1);a.equal(e.low,198000);a.equal(e.high,245000);a.equal(e.conf,'LOW');}
 });
 test('employer preference honors explicit responsibility conflicts, staleness and curated aliases',()=>{
  const now=Date.now(),f=value=>({value,status:'CONFIRMED',sourceUrl:'https://employer.example/facts',quote:'Explicit responsibility',asOf:new Date(now).toISOString()}),own=anchor('OWN','Meta'),peer=anchor('PEER','Other');
  const ref={companies:[{company:'Meta',aliases:['Meta Platforms']}],roles:[{primaryId:'TARGET',company:'Meta',title:target.TITLE,location:target.LOCATION,facts:{reach:f('MULTI_SITE')}},{primaryId:'OWN',company:'Meta',title:own.title,location:own.location,facts:{reach:f('SINGLE_SITE')}}]};
  a.deepEqual(C.select(target,[own,peer],ref,now).map(x=>x.id),['PEER']);
  a.deepEqual(C.select(target,[{...own,asOf:'2020-01-01'},peer],{},now).map(x=>x.id),['PEER']);
- a.deepEqual(C.select(target,[{...own,co:'Meta Platforms'},peer],{companies:ref.companies},now).map(x=>x.id),['OWN']);
+ a.deepEqual(C.select(target,[{...own,co:'Meta Platforms'},peer],{companies:ref.companies},now).map(x=>x.id),['OWN','PEER']);
 });
 test('missing employer is never silently treated as same employer; saved wrong-family estimates need repair',()=>{
  a.equal(C.rank(target,[anchor('UNKNOWN',undefined)],{})[0].sameEmployer,false);
