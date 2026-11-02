@@ -1,6 +1,6 @@
 # Mobile redesign screenshots: Stage 5 review (2026-11-02)
 
-For Grok Bot GUI and Tim. Branch `feat/mobile-pipeline-explorer` at `7135638`, PR tpruittguitar/foreman-cockpit#253 (draft).
+For Grok Bot GUI and Tim. Branch `feat/mobile-pipeline-explorer` at `80c75e7`, PR tpruittguitar/foreman-cockpit#253 (draft).
 Taken in a Claude Code cloud session on scrubbed test data (company names are placeholders), with a local test server and a
 local stand-in for the Writer. All traffic to the production Writer was blocked, and the block was checked before any run.
 
@@ -15,6 +15,13 @@ Direct image links: `https://raw.githubusercontent.com/tpruittguitar/forge-coord
   Test: `tests/mobile-act-now.browser.js` (Shield AI first, Memphis out, a decided role out at once and after a reload).
 - **Fit glyph** (`7135638`). Fits of 70+ are green "✓ Fit 79" (table "✓ 79"), so every fit badge has a glyph.
 - All phone screenshots below were retaken at `7135638`.
+
+## Queue display fixes (`80c75e7`, Tim's Stage 5 review)
+- Queue failed to load: "— need you", chips "All · —" / "Act now · —"; header "⚠ QUEUE DOWN" in orange. See `stage5-retry-failed-390x844.png`.
+- Older queue shown after a failed refresh: header "? QUEUE STALE" in yellow; banner "Showing queue from 9:49 AM ET. Refresh failed (server error). Retry".
+  See `stage5-queue-stale-390x844.png`. After a failed retry the banner says "Retry failed at … ET (server error)" (`stage5-retry-stale-failed-390x844.png`).
+- Strong fit close-up: `stage5-fit-strong-card-390.png` ("✓ Fit 79" in green beside "? — est. pending").
+- Times in these screenshots are the test run's clock in ET.
 
 ## Why some banners show (test data, not live state)
 - **"✕ SYS FAULT"** in the phone header: the test serves no health or incident feed.
