@@ -23,3 +23,11 @@ test('exact ATS replacement requires returned job ID, title, city/state and USD 
  assert.equal(R.parseApi(r,api,j).pay.high,240000);
  for(const change of [x=>x.id=43,x=>x.title='Other',x=>x.location.name='Akron, OH',x=>x.pay_input_ranges[0].currency_type='CAD',x=>x.pay_input_ranges[0].interval='hour',x=>x.pay_input_ranges[0].title='Total compensation',x=>x.content='Snippet']){const k=structuredClone(j);change(k);assert.equal(R.parseApi(r,api,k),null);}
 });
+
+test('decision-waiting estimates precede other jobs without bypassing pending writes or cooldowns',()=>{
+ const decision={...row('D','HIGH'),BUCKET:'TIM_DECISION_REQUIRED'},other=row('A','LOW');
+ assert.deepEqual(R.order([other,decision],{},new Set(),now).map(r=>r.PRIMARY_ID),['D','A']);
+ assert.deepEqual(R.order([other,decision],{},new Set(['D']),now).map(r=>r.PRIMARY_ID),['A']);
+ const h={};R.remember(h,decision,'NO_STRONGER_EVIDENCE',{now});
+ assert.deepEqual(R.order([other,decision],h,new Set(),now+1000).map(r=>r.PRIMARY_ID),['A']);
+});
