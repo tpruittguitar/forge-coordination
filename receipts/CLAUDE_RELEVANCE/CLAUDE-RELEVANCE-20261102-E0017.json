@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0017",
+  "instructionCommit": "ac63526ed3ffaa509c8bc97f7901bee4e4569416",
+  "createdAt": "2026-11-02T07:54:46.020Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4457981113"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4457981113",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4457981113\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4457981113\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4457981113/",
+        "company": "Ardent Mills",
+        "title": "Sr. Center of Excellence (CoE) Functional Leader, Engineering",
+        "location": "United States",
+        "observedAt": "2026-11-01T08:53:17.694Z",
+        "quote": "Sr. Center of Excellence (CoE) Functional Leader, Engineering (Verified job)\nSr. Center of Excellence (CoE) Functional Leader, Engineering | Ardent Mills | United States (Remote)"
+      },
+      "sourceDate": "2026-10-19",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0008.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:54:46.019Z",
+        "query": "Ardent Mills \"Center of Excellence\" \"Functional Leader, Engineering\" job",
+        "employerSearchResult": "No posting with this title; Ardent Mills plant postings reference a Center of Excellence (COE) supporting milling/maintenance/engineering, but not this role",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no posting for this Ardent Mills CoE engineering leader title. Ardent Mills operates flour mills and its plant roles reference the COE, which suggests plant-engineering support, but the role's own scope is unestablished. Lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
