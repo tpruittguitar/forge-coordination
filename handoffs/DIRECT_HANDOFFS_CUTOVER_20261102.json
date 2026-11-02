@@ -1,0 +1,100 @@
+{
+  "schema": "forge.direct-handoff-cutover.v1",
+  "at": "2026-11-02T08:55:36.900473+00:00",
+  "authorization": "Tim: finish direct handoffs, replace routine AI orchestration, pause verified redundant AI automation, preserve backlog; merge and activate PR 187",
+  "pullRequest": "https://github.com/tpruittguitar/forge-coordination/pull/187",
+  "mergeCommit": "53389e6c96eceb1acb4d7c7e660195e8788508fe",
+  "verifiedRunId": "FORGE-CODE-CHATGPT-20261102T085207420Z",
+  "instructionCommit": "6de93f0dafd7148f36f68bd4f039f2c7d0da6c5c",
+  "receiptPublicationCommit": "596aca4b008ea97301b6a7629a7ebed020c782db",
+  "scheduledTask": {
+    "name": "FORGE_PROGRAMMED_COORDINATOR",
+    "enabled": true,
+    "intervalMinutes": 5,
+    "lastTaskResult": 0,
+    "lockReleased": true
+  },
+  "automations": [
+    {
+      "id": "forge-ai-usage-reader",
+      "name": "FORGE_AI_USAGE_READER",
+      "status": "ACTIVE",
+      "schedule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0"
+    },
+    {
+      "id": "forge-application-outcome-tracker",
+      "name": "FORGE_APPLICATION_OUTCOME_TRACKER",
+      "status": "ACTIVE",
+      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0"
+    },
+    {
+      "id": "forge-application-writer-gofer",
+      "name": "FORGE_APPLICATION_WRITER_GOFER",
+      "status": "ACTIVE",
+      "schedule": "RRULE:FREQ=DAILY;BYHOUR=1,9,17;BYMINUTE=12;BYSECOND=0"
+    },
+    {
+      "id": "forge-email-discovery",
+      "name": "FORGE_HELPER_COORDINATOR",
+      "status": "PAUSED",
+      "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=2;BYSECOND=0"
+    },
+    {
+      "id": "forge-posting-validation",
+      "name": "FORGE_POSTING_FRESHNESS",
+      "status": "ACTIVE",
+      "schedule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0"
+    },
+    {
+      "id": "pe-stack-health-daily",
+      "name": "PE_STACK_HEALTH_DAILY",
+      "status": "ACTIVE",
+      "schedule": "RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45;BYSECOND=0"
+    }
+  ],
+  "connectorVerification": {
+    "gmailPages": 3,
+    "gmailEnumerated": 241,
+    "firstNewReads": 12,
+    "firstReused": 229,
+    "lastReused": 241,
+    "readFailures": 0,
+    "directArtifactReadback": true,
+    "directArtifactWasExistingEvidence": true,
+    "canonicalWritesForTransportTest": 0
+  },
+  "nativeReportPolling": false,
+  "meteredBrowserLaunches": false,
+  "validation": {
+    "nodeTests": 174,
+    "pythonTests": 27,
+    "githubChecks": "ALL_PASS",
+    "runtimeRelease": "ea60be2948621f6b3028"
+  },
+  "scheduledAiWakeupsRemovedPerDay": 24,
+  "savingsMeasured": false,
+  "backlogProcessingCapped": false,
+  "mail": {
+    "capturedMessages": 254,
+    "pending": 1,
+    "statuses": {
+      "VERIFIED_NOT_RECRUITING": 149,
+      "HANDED_TO_DISCOVERY": 101,
+      "VERIFIED": 1,
+      "REVIEWED_CORRESPONDENCE": 2,
+      "EXCEPTION": 1
+    },
+    "original68DispositionsComplete": true
+  },
+  "remaining": {
+    "savedSearchSourcesPending": 5,
+    "historicalCoverageGaps": 2,
+    "discoveryHandoffs": 101,
+    "recruiterIdentityFollowups": 2,
+    "aiExceptions": 105,
+    "codeExceptions": 203,
+    "privateOutcomeBatches": 0,
+    "oneAiConnectorHostWakeupRequired": true,
+    "nativeHistoricalReportRecovery": "Pending usable direct artifacts; preserved original captures"
+  }
+}
