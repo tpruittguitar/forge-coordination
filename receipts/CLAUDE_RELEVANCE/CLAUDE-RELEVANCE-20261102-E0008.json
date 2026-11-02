@@ -1,0 +1,61 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0008",
+  "instructionCommit": "6ab2b4ddb87c964e7bec9eb0d41127379a00eb20",
+  "createdAt": "2026-11-02T07:51:06.092Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485124260"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485124260",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485124260\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485124260\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485124260/",
+        "company": "Jabil",
+        "title": "Production Supervisor",
+        "location": "Florence, KY",
+        "observedAt": "2026-11-01T09:35:02.443Z",
+        "quote": "Production Supervisor | Jabil | Florence, KY"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0095.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:51:06.091Z",
+        "query": "Jabil \"Production Supervisor\" Florence KY jobs.jabil.com",
+        "employerPostingsRead": [
+          {
+            "url": "https://jobs.jabil.com/en/job/florence/production-supervisor-days/626/91282242368",
+            "httpStatus": 404,
+            "text": "Job Not Found"
+          },
+          {
+            "url": "https://jobs.jabil.com/en/job/florence/production-supervisor/626/96515930000",
+            "httpStatus": 404,
+            "text": "Job Not Found"
+          }
+        ],
+        "exactRequisitionMatched": false
+      },
+      "reason": "Employer-first search found multiple Jabil Florence, KY Production Supervisor requisitions (some inventory-control/kitting scoped), but the employer postings read return 'Job Not Found'; which requisition this card is, and its scope, remain unestablished. Lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
