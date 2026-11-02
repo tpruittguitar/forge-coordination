@@ -47,6 +47,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       let card;
       for (const page of work.pages || []) { const match=S.read(root,page.path).items.find(i => i.key === evidence.key); if (match) {card=match.sourceEvidence || match;break;} }
       if (!card) { exception(state,item,'ORIGINAL_ASSIGNMENT_CARD_REQUIRED','CODE'); continue; }
+      try{card=require('../routine-handoffs/source-card.cjs').recover(root,evidence.key,card);}catch{exception(state,item,'CONFLICTING_ORIGINAL_SOURCE_CARDS','AI');continue;}
       expected={company:card.company,title:card.title,location:card.location};
       const hits=snapshot.rows.concat(snapshot.archiveRows).filter(r => T.same(r,expected));
       if (hits.length === 1) { item.status='EXISTING_CANONICAL'; item.primaryId=hits[0].PRIMARY_ID; delete state.exceptions[item.key]; continue; }

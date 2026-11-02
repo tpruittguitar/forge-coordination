@@ -156,6 +156,20 @@ test('Git LF/CRLF checkout conversion preserves accepted evidence; actual JSON c
  fs.writeFileSync(file,original);C.collect({...f,commit:'c'.repeat(40),routing});a.equal(f.state.batches[f.rel].status,'VALIDATED');a.equal(f.state.batches[f.rel].sha256,accepted);
  S.save(f.root,f.rel,{...f.batch,observedAt:'2020-01-01T00:00:00Z'});C.collect({...f,routing});a.equal(f.state.batches[f.rel].status,'QUARANTINED');
 });
+test('source recovery closes an invalid return only with exact saved facts and preserves valid items and recommendations',t=>{
+ const f=collection(t),key='indeed:1234567890abcdef',blocked={...f.batch.items[0],key,recommendation:'SOURCE_BLOCKED',sourceEvidence:{company:'Factory',title:'Plant Manager',location:null,url:null}},file='receipts/EMAIL_CANDIDATE_LEDGER_TEST.json';
+ f.work.keys.push(key);f.batch.items.push(blocked);S.save(f.root,f.rel,f.batch);S.save(f.root,'control/work.json',f.work);S.save(f.root,'control/GROK_INTAKE_HELPER_WORK.json',f.work);
+ S.save(f.root,'state/UPSTREAM_LEDGER.json',{entries:{[key]:{sources:['EMAIL_CANDIDATE_LEDGER_TEST.json']}}});S.save(f.root,file,{new_candidates:[{company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://www.indeed.com/viewjob?jk=1234567890abcdef'}]});
+ const routing=()=>({});C.collect({...f,routing});const r=require('../routine-handoffs/return-repair.cjs').repair(f.root,f.commit,{apply:true,routing})[0],corrected=S.read(f.root,r.correction);
+ a.deepEqual(r.restoredKeys,[key]);a.deepEqual(corrected.items[0],f.batch.items[0]);a.equal(corrected.items[1].recommendation,'SOURCE_BLOCKED');a.equal(corrected.items[1].sourceEvidence.sourceRecovery.postingFetched,false);a.deepEqual(S.read(f.root,f.rel),f.batch);
+ C.collect({...f,commit:'b'.repeat(40),routing});a.equal(f.state.batches[f.rel].status,'SUPERSEDED_BY_VALIDATED_RETURN');a.equal(Object.keys(f.state.items).length,2);a.equal(f.state.exceptions['batch:'+f.rel],undefined);
+ S.save(f.root,'state/PROGRAMMED_COORDINATOR.json',f.state);a.equal(require('../routine-handoffs/return-repair.cjs').repair(f.root,f.commit,{apply:true,routing}).length,0);
+});
+test('one unrecoverable source item keeps its exception while unchanged valid returns still flow',t=>{
+ const f=collection(t),key='indeed:1234567890abcdef';f.work.keys.push(key);f.batch.items.push({...f.batch.items[0],key,sourceEvidence:{url:null}});
+ S.save(f.root,f.rel,f.batch);S.save(f.root,'control/work.json',f.work);S.save(f.root,'control/GROK_INTAKE_HELPER_WORK.json',f.work);
+ const r=require('../routine-handoffs/return-repair.cjs').repair(f.root,f.commit,{apply:true,routing:()=>({})})[0];a.equal(r.items,1);a.deepEqual(r.unresolvedKeys,[key]);a.deepEqual(S.read(f.root,r.correction).items,[f.batch.items[0]]);
+});
 test('per-item source ambiguity stays an exception while independent items continue',async t=>{
   const f=collection(t);f.batch.schema='forge.enrichment-helper-batch.v1';f.batch.taskKey='FORGE_GROK_ENRICHMENT';
   const make=(id)=>({primaryId:id,recommendation:'ENRICHMENT_EVIDENCE_READY',sourceEvidence:{...T.identity(row()),url:'https://example.com/'+id}});

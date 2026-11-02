@@ -95,7 +95,13 @@ test('unclear scope is published to the existing Claude assignment with no overl
 test('pending transactions and canonical protected matches are not assigned or reseeded',t=>{
  const f=assignment(t);f.ledger.jobs['linkedin:1234'].submissions=[{requestId:'ORIGINAL'}];S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);a.equal(A.replenish(f).counts.fenced,1);a.equal(I.load(f.root).items.length,0);
  const g=assignment(t);g.snapshot.rows=[{PRIMARY_ID:'V2I-ONE',COMPANY:'Factory',TITLE:'Director of Manufacturing',LOCATION:'Austin, TX',BUCKET:'DECLINED_BY_TIM',p:{SOURCE_URL:'https://www.linkedin.com/jobs/view/1234/'}}];a.equal(A.replenish(g).counts.canonical,1);a.equal(I.load(g.root).items.length,0);
+ a.equal(S.read(g.root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:1234'].status,'VERIFIED_EXISTING');a.equal(S.read(g.root,'state/EMAIL_RECOVERY_SUMMARY.json').pendingJobs,0);a.equal(g.snapshot.rows[0].BUCKET,'DECLINED_BY_TIM');a.equal(S.read(g.root,'receipts/FORGE-CODE-TEST_HANDOFFS.json').canonicalMatches[0].primaryId,'V2I-ONE');a.equal(S.read(f.root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:1234'].submissions[0].requestId,'ORIGINAL');
  a.throws(()=>A.replenish({...g,snapshot:{...g.snapshot,source:{readAt:'2020-01-01T00:00:00Z'}}}),/FRESH_CANONICAL/);
+});
+test('a source URL shared by conflicting canonical identities remains an unresolved identity exception',t=>{
+ const f=assignment(t),row={PRIMARY_ID:'ONE',COMPANY:'Factory',TITLE:'Director of Manufacturing',LOCATION:'Austin, TX',p:{SOURCE_URL:'https://www.linkedin.com/jobs/view/1234/'}};
+ f.snapshot.rows=[row];f.snapshot.archiveRows=[{...row,PRIMARY_ID:'TWO',TITLE:'Different role'}];const r=A.replenish(f);
+ a.equal(r.counts.canonical,0);a.equal(r.exceptions[0].reason,'CANONICAL_NEAR_MATCH_REQUIRES_IDENTITY');a.equal(S.read(f.root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:1234'].status,'UNSCREENED');a.equal(r.appended.length,0);
 });
 test('assignment replenishment waits for handed-off research, retains reservations, and adds all eligible keys',t=>{
  const f=assignment(t,'General Manager'),work=S.read(f.root,'control/CLAUDE_RELEVANCE_WORK.json');work.keys=['linkedin:old'];S.save(f.root,'control/CLAUDE_RELEVANCE_WORK.json',work);
