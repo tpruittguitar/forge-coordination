@@ -43,3 +43,10 @@ test('a pending browser capture is reused across refresh windows and provider po
  const job={...S.read(directory,'jobs/'+id+'.json'),instructions:'read only'},config={directory,profileId:'existing',jobs:[job]};await B.host(tools,config);a.equal(launches,1);a.equal(polls,1);a.equal(files.has(directory+'/incoming/'+id+'.json'),false);await B.host(tools,{...config,jobs:[{...job,run:files.get(directory+'/runs/'+id+'.json')}]});a.equal(launches,1);a.equal(polls,2);a.ok(files.get(directory+'/incoming/'+id+'.json'));
  await B.host(tools,{...config,jobs:[{...job,run:{status:'POST_IN_FLIGHT_UNKNOWN'}}]});a.equal(launches,1);
 });
+test('overlapping full/partial captures process each unique message once and retain every raw observation',async t=>{
+ const root=dir(t),privateDir=dir(t),full=raw('abc'),partial={...full,payload:{...full.payload,body:{attachment_id:'unread'}}};
+ const save=(name,m)=>S.save(privateDir,'mail-inbox/'+name+'.json',{schema:'forge.gmail-source-capture.v1',transport:'SUPPORTED_GMAIL_CONNECTOR',capturedAt:new Date().toISOString(),request:{format:'full',ids:['abc']},responses:[m]});
+ save('a',full);save('b',partial);save('c',{...full,label_ids:['UNREAD']});
+ const report=await require('./mail-pipeline.cjs').run({root,privateDir,runId:'FORGE-CODE-CHATGPT-TEST',deps:{checkLock:()=>{}},apply:true});a.equal(report.observations,3);a.equal(report.read,1);a.equal(report.processed,1);a.equal(report.duplicateObservations,2);a.equal(report.statuses.VERIFIED_NOT_RECRUITING,1);a.equal(report.exceptions.length,0);a.equal(S.files(path.join(privateDir,'gmail-captures')).length,3);
+ full.payload.body.content+=' changed immutable source';save('d',full);const held=await require('./mail-pipeline.cjs').run({root,privateDir,runId:'FORGE-CODE-CHATGPT-TEST2',deps:{checkLock:()=>{}},apply:true});a.equal(held.processed,0);a.equal(held.pending,1);a.equal(held.exceptions[0].reason,'CONFLICTING_FULL_MESSAGE_CAPTURES');
+});
