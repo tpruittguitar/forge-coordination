@@ -1,0 +1,55 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0003",
+  "instructionCommit": "0ba7c6a841c66244b34ab334a0bc9e77a579b7c1",
+  "createdAt": "2026-11-02T07:48:30.568Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4483462845"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4483462845",
+      "recommendation": "INTAKE_READY",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4483462845\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4483462845\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4483462845/",
+        "company": "Lockheed Martin",
+        "title": "Multifunctional Manufacturing Supv - L3",
+        "location": "Littleton, CO",
+        "observedAt": "2026-11-01T09:34:13.007Z",
+        "quote": "Multifunctional Manufacturing Supv - L3 | Lockheed Martin | Littleton, CO"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0094.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:48:30.568Z",
+        "query": "Lockheed Martin \"Multifunctional Manufacturing Supv - L3\" Littleton CO",
+        "strongestEmployerResult": "https://lockheed.jobs.hr.cloud.sap/job/Multifunctional-Manufacturing-Supv-L3/10522-en_US/",
+        "employerPostingHttpStatus": 200,
+        "employerResultTitle": "Multifunctional Manufacturing Supv - L3",
+        "quote": "Manages more than one functional area of manufacturing, such as machining, assembly, tool and die, packaging. Responsible for coordinating subordinate employee recruitment, selection and training, performance assessment, work assignments, salary, and recognition/disciplinary actions. Provides immediate supervision to non-exempt employees.",
+        "scopeLevel": "FRONTLINE_SUPERVISOR",
+        "worksiteConfirmedInEmployerPosting": false,
+        "exactRequisitionMatched": false
+      },
+      "reason": "Lockheed Martin's own posting for the exact title establishes manufacturing supervision across multiple manufacturing functional areas with direct reports. Littleton worksite and exact requisition are not confirmed by that page; coordinator must reconcile identity. Scope level FRONTLINE_SUPERVISOR recorded (level is not terminal).",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
