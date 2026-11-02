@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261102T0631Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261102T0927Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (103 read, 0 failed) | 125 | 39 | 86 |
+| Employer job boards (103 read, 0 failed) | 126 | 39 | 87 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 12 | 62 |
+| DIRECTOR_PLUS | 12 | 63 |
 | SR_MANAGER | 6 | 19 |
 | SR_STAFF | 21 | 5 |
 
@@ -59,8 +59,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations - Tactical Effects](https://boards.greenhouse.io/andurilindustries/jobs/5253340007?gh_jid=5253340007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
