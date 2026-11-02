@@ -4,16 +4,25 @@
     "GROK-INTAKE-2026-11-02T00:11:48Z-B1": {
       "sha256": "29669ba0ca1e3b79362a1c3fc531da2942208e60dce49274b63dd9d3a7ef210a",
       "path": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T001148Z-B1-QUARANTINED.json",
-      "status": "QUARANTINED_FORMAT",
+      "status": "CORRECTED_ENVELOPE_RECEIVED",
       "reason": "Native helper runId contains colons; current envelope validator allows only alphanumeric, underscore and hyphen. Original return preserved unchanged.",
       "sourceReport": "https://grok.com/c/6258440a-662a-402a-9ba2-8d3ae9d3f383",
-      "at": "2026-11-02T00:15:22.752Z"
+      "at": "2026-11-02T00:15:22.752Z",
+      "correctionBatch": "GROK-INTAKE-20261102T002420Z-B0001"
     },
     "GROK-INTAKE-20261102T002420Z-B0001": {
       "sha256": "37aa1d23b67153780a68c5712df5f9b921b80c48d8b3fab7dd226ab7532db803",
       "path": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T002420Z-B0001.json",
       "items": 20,
       "at": "2026-11-02T00:28:37.242Z"
+    },
+    "GROK-INTAKE-20261102T0016Z-B001": {
+      "sha256": "e44cf8be93ff9b0d6b0045af3db1411d2bf2142ff4efeb9256cf4967f7e2a4d6",
+      "path": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T0016Z-B001.json",
+      "status": "DUPLICATE_KEYS_RETAINED_NOT_RESUBMITTED",
+      "items": 20,
+      "sourceReport": "https://grok.com/c/77df2293-6768-4b88-a19f-c5678e8d2d6f",
+      "reason": "Run started before coordinator publication of first return; same assigned page1 keys, not additional jobs"
     }
   },
   "items": {
@@ -184,6 +193,8 @@
     "lastReportedPage": 1,
     "nextPage": 2,
     "nextKey": "indeed:86d8b909b4aaf317",
+    "uniqueReturnedKeys": 20,
+    "remainingAssignedKeys": 605,
     "returnedDoesNotMeanAdmitted": true
   },
   "correctionRequests": [
@@ -194,7 +205,8 @@
       "exampleRunId": "GROK-INTAKE-20261102T001148Z-B0001",
       "scope": "Envelope correction only; not new source processing",
       "originalBatch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T001148Z-B1-QUARANTINED.json",
-      "status": "AWAITING_HELPER_CORRECTION"
+      "status": "RESOLVED_ENVELOPE_ONLY",
+      "proof": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T002420Z-B0001.json"
     }
   ]
 }
