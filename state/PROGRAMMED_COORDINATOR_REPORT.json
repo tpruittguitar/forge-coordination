@@ -1,10 +1,10 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-02T12:22:01.408Z",
-  "instructionCommit": "e9a7add5701c81744ff228ff7f118ea6c61696a8",
-  "batches": 281,
+  "at": "2026-11-02T12:27:01.176Z",
+  "instructionCommit": "ded80f6f47c7ead95fff0c86ea38037a07df2927",
+  "batches": 282,
   "statuses": {
-    "EXCEPTION": 254,
+    "EXCEPTION": 258,
     "VERIFIED": 1,
     "PROTECTED_SKIP": 2
   },
@@ -1898,6 +1898,15 @@
       "retryCondition": "Changed source evidence or retryAfter"
     },
     {
+      "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4484712631",
+      "itemVersion": "e9cc8993942bfd34353c23c673ed3df73f84db25dea6777a6dd4c898ab1e6a47",
+      "batch": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102T1240Z-P11B.json",
+      "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+      "owner": "CODE",
+      "attempts": 1,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
       "owner": "CODE",
       "reason": "NATIVE_REPORT_CAPTURE_PENDING",
       "errorSha256": "5e7e1a18f1a196a24c435515e0b8a8670392f113f0b802bdfb66ed2d5712aab9"
@@ -1915,7 +1924,7 @@
     {
       "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-02T12:20:34.710Z",
+      "at": "2026-11-02T12:25:36.132Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
@@ -2320,6 +2329,33 @@
       "key": "FORGE_GROK_INTAKE_HELPER:indeed:10c6cccc00cfa048",
       "itemVersion": "9852d0344f4929ce221c177ba03945986e2e56ee52d491e859b39934785ac628",
       "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-SOURCE-RECOVERY.json",
+      "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
+      "owner": "AI",
+      "attempts": 0,
+      "retryCondition": "Resolved identity, scope or conflicting evidence"
+    },
+    {
+      "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4478694262",
+      "itemVersion": "2c4c34fcfca191db1adb899661d5ea327e55e2a613e7a8176c74858b816f7158",
+      "batch": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102T1240Z-P11B.json",
+      "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
+      "owner": "AI",
+      "attempts": 0,
+      "retryCondition": "Resolved identity, scope or conflicting evidence"
+    },
+    {
+      "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4482733357",
+      "itemVersion": "e2f740d271c456606c968743cd6d606a5fac434542baef50395b776c47d8b868",
+      "batch": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102T1240Z-P11B.json",
+      "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
+      "owner": "AI",
+      "attempts": 0,
+      "retryCondition": "Resolved identity, scope or conflicting evidence"
+    },
+    {
+      "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4484093646",
+      "itemVersion": "f2558ec57f5d36cf150c98d6d9f32047b7626f863fa94f9df0347c86430aadfd",
+      "batch": "receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-20261102T1240Z-P11B.json",
       "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
       "owner": "AI",
       "attempts": 0,
@@ -2804,7 +2840,7 @@
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-02T12:20:49.254Z",
+    "readAt": "2026-11-02T12:25:50.283Z",
     "sha256": "61cd8a75056ecf4077746eac25f3027f2b6b74642961135d2afb51933a1cbb33",
     "rows": 4334
   },
@@ -2830,21 +2866,21 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261102T122023978Z",
+  "runId": "FORGE-CODE-CHATGPT-20261102T122524001Z",
   "mode": "apply",
   "collected": {
-    "newBatches": 0,
-    "newItems": 0,
+    "newBatches": 1,
+    "newItems": 4,
     "updatedItems": 0,
-    "validated": 46,
+    "validated": 47,
     "quarantined": 0
   },
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T122023978Z",
-      "at": "2026-11-02T12:20:35.888Z",
-      "imported": 0,
+      "runId": "FORGE-CODE-CHATGPT-20261102T122524001Z",
+      "at": "2026-11-02T12:25:37.367Z",
+      "imported": 1,
       "reportFeeds": [
         {
           "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
@@ -2881,6 +2917,12 @@
       "delivery": {
         "schema": "forge.helper-delivery-repair.v1",
         "results": [
+          {
+            "status": "RECORD_PRESENT",
+            "captured": 1,
+            "sourceCommit": "30ef48e2b740b305926b75092c36e54a482204e7",
+            "pullRequest": 193
+          },
           {
             "status": "RECORD_PRESENT",
             "captured": 1,
@@ -2942,7 +2984,7 @@
         "failures": [
           {
             "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-            "at": "2026-11-02T12:20:34.710Z",
+            "at": "2026-11-02T12:25:36.132Z",
             "reason": "RUN_LIST_INACCESSIBLE"
           }
         ]
@@ -2966,7 +3008,7 @@
         {
           "owner": "CODE",
           "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-          "at": "2026-11-02T12:20:34.710Z",
+          "at": "2026-11-02T12:25:36.132Z",
           "reason": "RUN_LIST_INACCESSIBLE"
         }
       ],
@@ -2977,10 +3019,10 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T122023978Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T122524001Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-02T12:20:49.254Z",
+        "readAt": "2026-11-02T12:25:50.283Z",
         "sha256": "61cd8a75056ecf4077746eac25f3027f2b6b74642961135d2afb51933a1cbb33",
         "rows": 4334
       },
@@ -3469,7 +3511,7 @@
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T122023978Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T122524001Z",
       "read": 268,
       "processed": 268,
       "pending": 1,
