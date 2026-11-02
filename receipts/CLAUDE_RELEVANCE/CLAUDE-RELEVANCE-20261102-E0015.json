@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0015",
+  "instructionCommit": "1a55660d428204933b6e00179db7a08afa651e09",
+  "createdAt": "2026-11-02T07:54:00.099Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4469377310"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4469377310",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/source-trial-report.json@d184421a (FORGE-SOURCE-TRIAL-20261021T2225Z) new_roles",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4469377310\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4469377310/",
+        "company": "Medline",
+        "title": "SVP Operations Quality",
+        "location": "Northfield, IL, USA",
+        "observedAt": null,
+        "quote": "SVP Operations Quality | Medline | Northfield, IL, USA"
+      },
+      "sourceDate": "2026-10-15",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0001.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:54:00.099Z",
+        "query": "Medline \"SVP Operations Quality\" Northfield IL",
+        "employerSearchResult": "No public Medline posting for this executive title; only lower-level Northfield quality roles surfaced",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no posting for this SVP title, so whether its scope is manufacturing-operations quality (target) versus distribution or corporate quality remains unestablished. Executive level is not terminal; lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
