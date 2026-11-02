@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-02T05:06:25.888Z",
- "sourceCommit": "839b239fa035c8201079c7b48ed6dc1e47b34ab3",
+ "builtAt": "2026-11-02T05:11:27.467Z",
+ "sourceCommit": "2603aaaba935ab20e5b22b877eaa5605256af665",
  "counts": {
-  "total": 30,
+  "total": 32,
   "BLOCKING": 0,
-  "ACTION": 16,
-  "WATCH": 14,
+  "ACTION": 17,
+  "WATCH": 15,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 7,
-  "UPKEEP": 15
+  "FAILED": 8,
+  "UPKEEP": 16
  },
  "items": [
   {
@@ -254,6 +254,18 @@
    ]
   },
   {
+   "id": "pr:forge-coordination#170",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #170: CLAUDE-RELEVANCE: page 2 partial receipt (10 accessible cards)",
+   "detail": "Open since 2026-11-02. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #170",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/170",
+   "at": "2026-11-02T01:41:55Z",
+   "raisedBy": "CLAUDE"
+  },
+  {
    "id": "ask:ASK-20261018-02",
    "section": "DECIDE",
    "level": "WATCH",
@@ -442,16 +454,28 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "pr:forge-coordination#170",
+   "id": "run-unfinished:GOFER|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "GOFER · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
+   "at": "2026-11-01T18:10:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:GOFER",
    "section": "UPKEEP",
    "level": "WATCH",
-   "title": "forge-coordination PR #170 (draft): CLAUDE-RELEVANCE: page 2 partial receipt (10 accessible cards)",
-   "detail": "Open since 2026-11-02. Draft — merge, keep, or close.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "forge-coordination #170",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/170",
-   "at": "2026-11-02T01:41:55Z",
-   "raisedBy": "CLAUDE"
+   "title": "GOFER lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
+   "at": "2026-11-01T18:10:00-05:00",
+   "raisedBy": "CHATGPT"
   },
   {
    "id": "pr:forge-coordination#171",
@@ -516,8 +540,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-02T00:00:00-05:00",
    "lastStatus": "UNSTATED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261102T050446195Z_TERMINAL.json",
-   "runs7d": 44,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261102T051024578Z_TERMINAL.json",
+   "runs7d": 46,
    "usualGapHours": 0,
    "overdue": false
   },
@@ -679,7 +703,7 @@
    "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261101-1810ET_SUMMARY.json",
    "runs7d": 93,
    "usualGapHours": 0,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "GOFER",
@@ -689,7 +713,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
    "runs7d": 24,
    "usualGapHours": 1.6,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "GOFER",
@@ -699,7 +723,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-GROK-20261028-1717ET_TERMINAL.txt",
    "runs7d": 1,
    "usualGapHours": null,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "HANDOFF",
