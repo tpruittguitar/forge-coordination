@@ -25,8 +25,9 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
-    const batch = cache.get(item.batch), evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
+    const batch = cache.get(item.batch);let evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
     if (!evidence) { exception(state,item,'SOURCE_BOUND_ITEM_MISSING','CODE'); continue; }
+    try{evidence=require('../routine-handoffs/exception-work.cjs').evidence(root,item,evidence);}catch(e){exception(state,item,e.message,'AI');continue;}
     if (!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY'].includes(evidence.recommendation)) {
       exception(state,item,evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'WORKING_SOURCE_ROUTE_REQUIRED' : 'AMBIGUOUS_SCOPE_OR_IDENTITY',
         evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'CODE' : 'AI'); continue;
@@ -151,6 +152,7 @@ async function main(mode='inventory') {
       if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
       const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply});
       state.routineHandoffs={transport:routine,assignments,mail};
+      if(apply)state.routineHandoffs.sourceReviews=require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state});
       await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
       if(apply) {
         S.save(root,STATE,state);
@@ -191,6 +193,7 @@ async function main(mode='inventory') {
     const coverage=S.read(root,'state/EMAIL_RECOVERY_SUMMARY.json',null), at=new Date().toISOString();
     const report={...publicReport(state,coverage,at),runId,mode,collected,routineHandoffs:state.routineHandoffs||null};
     if(apply) {
+      const exceptionWork=require('../routine-handoffs/exception-work.cjs').sync({root,state,report,apply:true});report.exceptionWork={counts:exceptionWork.counts,owner:'FORGE_APPLICATION_OUTCOME_TRACKER',reviewErrors:exceptionWork.reviewErrors};
       S.save(root,STATE,state);S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);
       S.immutable(root,'receipts/'+runId+'_TERMINAL.json',report);
     } else if(privateDir) {S.save(privateDir,'coordinator-'+mode+'.json',report);}

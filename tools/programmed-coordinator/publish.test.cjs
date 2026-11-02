@@ -13,6 +13,12 @@ test('clean committed checkout retries a previously unpublished receipt',t=>{con
 test('push race retries fetch/rebase and preserves concurrent work',t=>{const f=fixture(t);save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{runId:'new'});let races=0;const r=publish(f.local,{beforePush(n){if(n===0){save(f.bot,'independent.json',{race:true});commit(f.bot,'push race');g(f.bot,'push','origin','main');races++;}}});a.equal(races,1);a.equal(r.attempts,2);a.equal(JSON.parse(g(f.local,'show','origin/main:independent.json')).race,true);});
 for(const extra of [{policyCommit:'new-policy'},{disabledRules:['real-policy-change']}])test('semantic guard conflict preserves evidence for operator: '+JSON.stringify(extra),t=>{const f=fixture(t);race(f,extra);a.throws(()=>publish(f.local),/Semantic guard conflict/);a.match(fs.readFileSync(p.join(f.local,guard),'utf8'),/<<<<<<< HEAD/);a.equal(JSON.parse(g(f.local,'show','REBASE_HEAD:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'test');});
 test('unknown changes cannot be accidentally published',t=>{const f=fixture(t);save(f.local,'unexpected.json',{unsafe:true});a.throws(()=>publish(f.local),/Unexpected changed/);});
+
+test('exception accounting publishes new immutable reviews and rejects changes to existing reviews',t=>{
+ const f=fixture(t),file='receipts/AI_EXCEPTION_REVIEWS/'+'a'.repeat(64)+'-'+'b'.repeat(64)+'.json';save(f.local,'state/AI_EXCEPTION_WORK.json',{cases:{}});save(f.local,file,{disposition:'WAITING_SOURCE_CHANGE'});
+ a.equal(publish(f.local).published,true);save(f.local,file,{disposition:'VERIFIED'});a.throws(()=>publish(f.local),/Immutable/);
+ a.equal(require('./publish.cjs').allowed('receipts/AI_EXCEPTION_REVIEWS/private-mail.json'),false);
+});
 test('new transport accounting and immutable helper deliveries publish while private artifacts remain outside scope',t=>{
  const f=fixture(t);for(const [file,body]of [['state/HELPER_TRANSPORT.json',{schema:'test'}],['state/CODE_INTAKE_CONSUMPTION.json',{items:[]}],['receipts/FORGE-CODE-CHATGPT-TEST_TRANSPORT.json',{runId:'test'}],['control/grok-intake/FORGE-CODE-CHATGPT-TEST-0001.json',{items:[]}],['receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-TEST.json',{items:[]}]])save(f.local,file,body);
  a.equal(publish(f.local).published,true);save(f.local,'receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-TEST.json',{items:['changed']});a.throws(()=>publish(f.local),/Immutable accounting evidence changed/);
