@@ -1,12 +1,12 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-02T12:07:21.271Z",
- "sourceCommit": "35835130485c902f8aa9017f8279c8d82e7014c3",
+ "builtAt": "2026-11-02T12:12:25.238Z",
+ "sourceCommit": "2ed6cb3aca64ad24e66e5a316b6735c4a4eff85f",
  "counts": {
   "total": 40,
   "BLOCKING": 0,
-  "ACTION": 16,
-  "WATCH": 24,
+  "ACTION": 18,
+  "WATCH": 22,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 10,
@@ -254,6 +254,30 @@
    ]
   },
   {
+   "id": "lane-overdue:EMAIL",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "EMAIL lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
+   "at": "2026-11-01T19:10:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:INTAKE-INSPECT",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "INTAKE-INSPECT lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
+   "at": "2026-11-01T19:10:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "ask:ASK-20261018-02",
    "section": "DECIDE",
    "level": "WATCH",
@@ -454,38 +478,14 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "EMAIL lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-   "at": "2026-11-01T19:10:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:INTAKE-INSPECT",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "INTAKE-INSPECT lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
-   "at": "2026-11-01T19:10:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "run-unfinished:CODE|CHATGPT",
    "section": "FAILED",
    "level": "WATCH",
    "title": "CODE · CHATGPT — run never wrote a terminal receipt",
    "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
    "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json",
    "at": "2026-11-02T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -506,10 +506,10 @@
    "section": "UPKEEP",
    "level": "WATCH",
    "title": "CODE lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json",
    "at": "2026-11-02T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -636,8 +636,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-02T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261102T120523946Z_TRANSPORT.json",
-   "runs7d": 434,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261102T121023935Z_TRANSPORT.json",
+   "runs7d": 439,
    "usualGapHours": 0,
    "overdue": true
   },
