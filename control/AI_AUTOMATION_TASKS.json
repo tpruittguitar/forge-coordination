@@ -4,8 +4,12 @@
   "tasks": {
     "FORGE_EMAIL_DISCOVERY": {
       "owner": "ChatGPT",
-      "route": "runtime",
-      "taskKey": "FORGE_EMAIL_DISCOVERY"
+      "route": "utility",
+      "taskKey": "FORGE_EMAIL_DISCOVERY",
+      "procedure": "lanes/CHATGPT_INTAKE_INSPECTION.txt",
+      "role": "INSPECTION_AND_WRITER_COORDINATION",
+      "previousRuntimeTask": "FORGE_EMAIL_DISCOVERY",
+      "authorizedBy": "Tim 2026-11-01: shift ChatGPT intake to inspection and Writer coordination"
     },
     "FORGE_POSTING_VALIDATION": {
       "owner": "ChatGPT",
@@ -91,6 +95,16 @@
       "supplemental": true,
       "workAssignments": "control/CLAUDE_RELEVANCE_WORK.json",
       "authorizedBy": "Tim 2026-11-01"
+    },
+    "FORGE_GROK_INTAKE_HELPER": {
+      "owner": "Grok",
+      "route": "utility",
+      "taskKey": "FORGE_GROK_INTAKE_HELPER",
+      "procedure": "lanes/GROK_FORGE_INTAKE_HELPER.txt",
+      "executionMode": "EVIDENCE_ONLY",
+      "supplemental": true,
+      "workAssignments": "control/GROK_INTAKE_HELPER_WORK.json",
+      "authorizedBy": "Tim 2026-11-01: publish and activate intake routing and scheduled runs"
     }
   }
 }
