@@ -140,6 +140,16 @@ test('collector is idempotent, lists invalid URLs and preserves immutable collis
   const g=collection(t);g.batch.items[0].sourceEvidence.url='';S.save(g.root,g.rel,g.batch);C.collect({...g,routing});
   a.equal(g.state.batches[g.rel].status,'QUARANTINED');a.deepEqual(g.state.exceptions['batch:'+g.rel].invalidUrlKeys,['a']);a.equal(Object.keys(g.state.items).length,0);
 });
+test('linked complete corrections retire transport errors without replaying original items or hiding byte changes',t=>{
+ const f=collection(t),routing=()=>({});f.batch.runId='GROK:BAD';S.save(f.root,f.rel,f.batch);C.collect({...f,routing});
+ const correction={...f.batch,runId:'GROK-INTAKE-CORRECTED',originalBatch:f.rel},rel=f.rel.replace('batch.json','correction.json');S.save(f.root,rel,correction);C.collect({...f,commit:'b'.repeat(40),routing});a.equal(f.state.batches[f.rel].status,'SUPERSEDED_BY_VALIDATED_RETURN');a.equal(f.state.exceptions['batch:'+f.rel],undefined);a.equal(Object.keys(f.state.items).length,1);
+ S.save(f.root,f.rel,{...f.batch,notes:'changed original'});C.collect({...f,commit:'c'.repeat(40),routing});a.equal(f.state.exceptions['batch:'+f.rel].reason,'IMMUTABLE_BATCH_CHANGED');
+});
+test('partial invalid return salvages unchanged valid items and retains every missing item as an exception',t=>{
+ const f=collection(t),routing=()=>({});f.batch.items.push({...f.batch.items[0],key:'b',recommendation:'SOURCE_BLOCKED',sourceEvidence:{url:null}});S.save(f.root,f.rel,f.batch);S.save(f.root,'control/GROK_INTAKE_HELPER_WORK.json',f.work);
+ const repaired=require('../routine-handoffs/return-repair.cjs').repair(f.root,f.commit,{apply:true,routing});a.equal(repaired[0].items,1);a.deepEqual(repaired[0].unresolvedKeys,['b']);C.collect({...f,routing});a.equal(Object.keys(f.state.items).length,1);a.deepEqual(f.state.exceptions['batch:'+f.rel].unresolvedKeys,['b']);a.equal(f.state.exceptions['batch:'+f.rel].recoveredItems,1);a.equal(S.read(f.root,f.rel).items[1].sourceEvidence.url,null);
+ C.collect({...f,commit:'b'.repeat(40),routing});a.equal(Object.keys(f.state.items).length,1);a.equal(require('../routine-handoffs/return-repair.cjs').repair(f.root,f.commit,{apply:true,routing}).length,1);
+});
 test('Git LF/CRLF checkout conversion preserves accepted evidence; actual JSON changes still quarantine',t=>{
  const f=collection(t),routing=()=>({});const file=path.join(f.root,f.rel),original=fs.readFileSync(file,'utf8');
  fs.writeFileSync(file,original.replace(/\n/g,'\r\n'));C.collect({...f,routing});const accepted=f.state.batches[f.rel].sha256;

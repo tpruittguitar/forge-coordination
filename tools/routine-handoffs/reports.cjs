@@ -13,6 +13,9 @@ const canonical=x=>JSON.stringify(Array.isArray(x)?x.map(v=>JSON.parse(canonical
 // excerpt or unfinished fence never becomes a completed batch.
 function batches(text){
  if(typeof text!=='string'||Buffer.byteLength(text)>2_000_000)throw Error('REPORT_FORMAT_LIMIT');
+ // Some supported captures encode a complete report as a JSON string. Decode
+ // only valid complete strings; never repair a truncated transport or payload.
+ for(let n=0;n<3;n++){try{const value=JSON.parse(text);if(typeof value!=='string')break;text=value;}catch{break;}}
  const found=[];let start=-1,depth=0,quoted=false,escape=false;
  for(let n=0;n<text.length;n++){
   const c=text[n];if(start<0){if(c==='{'){start=n;depth=1;quoted=false;escape=false;}continue;}
