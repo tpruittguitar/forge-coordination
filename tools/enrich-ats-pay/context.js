@@ -1,6 +1,6 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='employer-role-scope-v4',DAY=86400000;
+const VERSION='employer-upper-range-v5',DAY=86400000;
 const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
@@ -60,6 +60,7 @@ function select(row,anchors,ref={},now=Date.now(),limit=Infinity){
  // a prolific employer (including the target) from overwhelming the population.
  const totals={};for(const a of eligible){const k=norm(a.co)||a.postingKey;totals[k]=(totals[k]||0)+a.weight;}
  const pool=eligible.map(a=>({...a,weight:a.weight*Math.min(1,2/totals[norm(a.co)||a.postingKey])})).sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page))).slice(0,limit);
+ if(employer.length&&!pool.some(a=>a.sameEmployer)){const ownBest=employer[0];if(pool.length>=limit)pool.pop();pool.push({...ownBest,weight:ownBest.weight*Math.min(1,2/totals[norm(ownBest.co)||ownBest.postingKey])});}
  const own=pool.filter(a=>a.sameEmployer),peers=pool.filter(a=>!a.sameEmployer);
  if(own.length&&peers.length){
   // One employer posting is balanced against the independent peer cohort;
@@ -70,9 +71,21 @@ function select(row,anchors,ref={},now=Date.now(),limit=Infinity){
  return pool.sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page)));
 }
 function weightedMedian(items,key){const a=items.slice().sort((a,b)=>a[key]-b[key]);const half=a.reduce((s,x)=>s+x.weight,0)/2;let sum=0;for(let i=0;i<a.length;i++){sum+=a[i].weight;if(Math.abs(sum-half)<1e-10&&a[i+1])return(a[i][key]+a[i+1][key])/2;if(sum>=half)return a[i][key];}return null;}
-function salaryValue(items,key){const own=items.filter(a=>a.sameEmployer),peers=items.filter(a=>!a.sameEmployer);if(!own.length||!peers.length)return weightedMedian(items,key);const share=own.length/(own.length+1);return share*weightedMedian(own,key)+(1-share)*weightedMedian(peers,key);}
+function weightedQuantile(items,key,q){
+ const a=items.filter(x=>Number.isFinite(x[key])&&x.weight>0).slice().sort((a,b)=>a[key]-b[key]);
+ const threshold=a.reduce((sum,x)=>sum+x.weight,0)*q;let sum=0;
+ for(const x of a){sum+=x.weight;if(sum>=threshold)return x[key];}return null;
+}
+function salaryValue(items,key){
+ const own=items.filter(a=>a.sameEmployer),peers=items.filter(a=>!a.sameEmployer);
+ // Screening ceiling: upper quartile of comparable posted ceilings. Do not
+ // average stronger same-employer evidence down toward lower-paying peers.
+ if(key==='high')return Math.max(weightedQuantile(items,key,.75)||0,own.length?weightedQuantile(own,key,.75):0);
+ if(!own.length||!peers.length)return weightedMedian(items,key);
+ const share=own.length/(own.length+1);return share*weightedMedian(own,key)+(1-share)*weightedMedian(peers,key);
+}
 function confidence(est,used){return used.length<2||used.some(a=>!a.ageKnown)||used.filter(a=>a.contextKnown>=3).length<2?'LOW':est.conf;}
-function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':used.some(a=>a.sameEmployer)?'blended employer/peer evidence':'peer tier')+'; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
+function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':used.some(a=>a.sameEmployer)?'blended employer/peer evidence':'peer tier')+'; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
 function learn(ref,row,text,sourceUrl,asOf){
  // Only explicit responsibility wording; never infer headcount from a title or production volume.
  if(!text||!sourceUrl)return false;
@@ -113,4 +126,5 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge};
+module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge};
+

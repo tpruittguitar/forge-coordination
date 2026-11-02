@@ -11,7 +11,7 @@ test('plant operations, manufacturing technology and supply chain cannot cross-a
 });
 test('one employer anchor is weighted but no longer excludes the peer distribution',()=>{
  const own=anchor('OWN','Meta',245000,309000),peers=Array.from({length:12},(_,i)=>anchor('PEER'+i,'Other '+i));
- for(const ref of [undefined,{companies:[],roles:[]}]){const e=L.estimate(target,[...peers,own],ref);a.ok(e.ids.includes('OWN'));a.ok(e.ids.length>1);a.equal(e.low,198000);a.equal(e.high,245000);a.equal(e.conf,'LOW');}
+ for(const ref of [undefined,{companies:[],roles:[]}]){const e=L.estimate(target,[...peers,own],ref);a.ok(e.ids.includes('OWN'));a.ok(e.ids.length>1);a.equal(e.low,198000);a.equal(e.high,309000);a.equal(e.conf,'LOW');}
 });
 test('employer preference honors explicit responsibility conflicts, staleness and curated aliases',()=>{
  const now=Date.now(),f=value=>({value,status:'CONFIRMED',sourceUrl:'https://employer.example/facts',quote:'Explicit responsibility',asOf:new Date(now).toISOString()}),own=anchor('OWN','Meta'),peer=anchor('PEER','Other');
@@ -25,3 +25,4 @@ test('missing employer is never silently treated as same employer; saved wrong-f
  const row={...target,p:{SALARY_BASIS:'FORGE-ESTIMATE',SALARY_SOURCE:'comparables:V2I-PLANT'}};
  a.deepEqual(L.invalidSavedAnchors(row,[{PRIMARY_ID:'V2I-PLANT',TITLE:'Plant Director',p:{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:153000,SALARY_BASE_HIGH:180000}}]),['V2I-PLANT']);
 });
+
