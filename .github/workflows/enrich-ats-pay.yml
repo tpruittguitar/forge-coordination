@@ -1,11 +1,11 @@
 # REV-116 (Tim 2026-10-20 18:09-18:21 ET): pay and degree enrichment off the Writer. Reads jobs from the Cloudflare structured
 # copy, takes pay from the posting first (employer ATS, then LinkedIn / Indeed / ZipRecruiter postings), estimates from
-# employer-posted comparables only after the posting was read, and hands the Writer at most 2 batches of 25 rows per run.
+# employer-posted comparables only after the posting was read, and hands the Writer at most 4 batches of 25 rows per run.
 # tools/enrich-ats-pay/config.json "submit": false = dry run (report only, Writer untouched).
 name: enrich-ats-pay
 on:
   schedule:
-    - cron: '12,42 * * * *'   # Tim: twice hourly; existing concurrency lock serializes runs
+    - cron: '12,27,42,57 * * * *'   # Tim: every 15 minutes; existing concurrency lock serializes runs
   workflow_dispatch:
     inputs:
       products_only:
