@@ -17,7 +17,7 @@ Direct image links: `https://raw.githubusercontent.com/tpruittguitar/forge-coord
 - All phone screenshots below were retaken at `7135638`.
 
 ## Queue display fixes (`80c75e7`, Tim's Stage 5 review)
-- Queue failed to load: "— need you", chips "All · —" / "Act now · —"; header "⚠ QUEUE DOWN" in orange. See `stage5-retry-failed-390x844.png`.
+- Queue failed to load: "— need you", chips "All · —" / "Act now · —"; header "⚠ QUEUE DOWN" in orange. See `stage5-queue-down-80c75e7-390x844.png` (retaken on `80c75e7`; same screen as `stage5-retry-failed-390x844.png`, new name so no cached copy can be shown).
 - Older queue shown after a failed refresh: header "? QUEUE STALE" in yellow; banner "Showing queue from 9:49 AM ET. Refresh failed (server error). Retry".
   See `stage5-queue-stale-390x844.png`. After a failed retry the banner says "Retry failed at … ET (server error)" (`stage5-retry-stale-failed-390x844.png`).
 - Strong fit close-up: `stage5-fit-strong-card-390.png` ("✓ Fit 79" in green beside "? — est. pending").
