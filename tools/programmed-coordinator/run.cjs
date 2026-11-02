@@ -11,9 +11,10 @@ function exception(state, item, reason, owner) {
 }
 function publicReport(state, coverage, at) {
   const statuses = {}; for (const i of Object.values(state.items)) statuses[i.status]=(statuses[i.status] || 0)+1;
+  const exceptions=[...Object.values(state.exceptions),...(state.routineHandoffs?.transport?.exceptions||[]),...(state.routineHandoffs?.assignments?.exceptions||[])];
   return {schema:'forge.programmed-coordinator-report.v1', at, instructionCommit:state.instructionCommit,
     batches:Object.keys(state.batches).length, statuses, transactions:Object.values(state.transactions).map(t => ({requestId:t.requestId,status:t.status,items:t.ids.length})),
-    codeExceptions:Object.values(state.exceptions).filter(x => x.owner === 'CODE'), aiExceptions:Object.values(state.exceptions).filter(x => x.owner === 'AI'),
+    codeExceptions:exceptions.filter(x => x.owner === 'CODE'), aiExceptions:exceptions.filter(x => x.owner === 'AI'),
     canonicalSource:state.canonicalSource||null, coverage, noProcessingCap:true, savingsMeasured:false};
 }
 async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now()}) {
@@ -115,6 +116,11 @@ async function main(mode='inventory') {
   }
   try {
     state.instructionCommit=commit;
+    let routine=null;
+    if(mode!=='inventory'){
+      if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir).toLowerCase()===root.toLowerCase()||path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep))throw Error('Private output must be outside the public checkout');
+      routine=(await require('../routine-handoffs/run.cjs').run({root,privateDir,commit,runId,apply})).report;
+    }
     const collected=C.collect({root,state,commit});
     if(mode!=='inventory') {
       if(!privateDir || !path.isAbsolute(privateDir) || path.resolve(privateDir).toLowerCase()===root.toLowerCase() || path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep)) throw Error('Private output must be outside the public checkout');
@@ -137,9 +143,12 @@ async function main(mode='inventory') {
       }
       const canonical=await snapshot();
       state.canonicalSource=canonical.source;
+      const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply});
+      state.routineHandoffs={transport:routine,assignments};
       await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
       if(apply) {
         S.save(root,STATE,state);
+        state.routineHandoffs.verifiedIntake=require('../routine-handoffs/intake-state.cjs').seedVerified(root,state,true);
         const env={...process.env,FORGE_RUN_ID:runId};
         const pendingIds=[...new Set(S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items.filter(i=>i.status==='POST_IN_FLIGHT_UNKNOWN').map(i=>i.requestId))];
         let intakePending=false;
@@ -170,7 +179,7 @@ async function main(mode='inventory') {
       }
     }
     const coverage=S.read(root,'state/EMAIL_RECOVERY_SUMMARY.json',null), at=new Date().toISOString();
-    const report={...publicReport(state,coverage,at),runId,mode,collected};
+    const report={...publicReport(state,coverage,at),runId,mode,collected,routineHandoffs:state.routineHandoffs||null};
     if(apply) {
       S.save(root,STATE,state);S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);
       S.immutable(root,'receipts/'+runId+'_TERMINAL.json',report);

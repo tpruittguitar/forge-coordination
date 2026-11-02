@@ -4,6 +4,9 @@ on:
   push:
     paths:
       - 'tools/programmed-coordinator/**'
+      - 'tools/routine-handoffs/**'
+      - 'tools/email-recovery/**'
+      - 'tools/automation-health/**'
       - 'tools/relevance-screen/**'
       - 'tools/helper-routing/**'
       - '.github/workflows/programmed-coordinator-test.yml'
@@ -17,4 +20,9 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: npm ci --prefix tools/routine-handoffs --ignore-scripts
+      - run: npx --prefix tools/routine-handoffs playwright install --with-deps chromium
+      - run: node --test tools/routine-handoffs/*.test.cjs tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs tools/email-recovery/*.test.cjs tools/automation-health/*.test.js tests/automation-run-lock.test.cjs
