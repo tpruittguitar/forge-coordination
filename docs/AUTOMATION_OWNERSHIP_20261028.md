@@ -1,3 +1,5 @@
+> Historical record. Current permanent homes and schedules: [AUTOMATION_OPERATING_MODEL.md](AUTOMATION_OPERATING_MODEL.md). Do not use this dated audit as current routing.
+
 # Pipeline Explorer automation ownership and schedule audit
 
 ## Current ownership directive — October 30, 2026

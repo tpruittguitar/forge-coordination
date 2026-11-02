@@ -16,7 +16,7 @@ def read_native(root, native_dir):
             'sharedEntry': 'control/FORGE_SHARED_AUTOMATION_ENTRY.txt' in item.get('prompt',''),
             'nativeConfigurationSha256': hashlib.sha256(raw).hexdigest()})
     prior.update(at=datetime.datetime.now(datetime.timezone.utc).isoformat().replace('+00:00','Z'),
-                 local=local, executionVerified=False,
+                 local=local, executionVerified=False, configurationReadbackScope='LOCAL_CODEX_ONLY',
                  observationMethod='Read local Codex automation.toml files; configuration only')
     tmp = path.with_suffix('.json.tmp')
     tmp.write_text(json.dumps(prior, indent=2)+'\n', encoding='utf-8')

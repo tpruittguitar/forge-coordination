@@ -1,3 +1,5 @@
+> Historical record. Current permanent homes and schedules: [AUTOMATION_OPERATING_MODEL.md](AUTOMATION_OPERATING_MODEL.md). Do not use this dated audit as current routing.
+
 # Coordinated Forge schedules and chart coverage
 
 Tim authorized staggered automation schedules on 2026-10-28 after assigning all Pipeline Explorer automation responsibility to ChatGPT/Codex through at least November 1. Ownership does not automatically revert. Paused discovery/enrichment/weekly tasks remain paused. This supersedes the schedule portion of [the earlier inventory](AUTOMATION_OWNERSHIP_20261028.md); that file remains the audit of the previous configuration.
