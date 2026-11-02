@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-02T18:14:00.957Z",
- "sourceCommit": "a13fa6d7d250b6ac21cb2e4103a8aa9cc6fa40bb",
+ "builtAt": "2026-11-02T19:03:54.902Z",
+ "sourceCommit": "5d1ffa7a2ff8f60025e258a2293dd96a04fc6115",
  "counts": {
   "total": 50,
-  "BLOCKING": 0,
+  "BLOCKING": 1,
   "ACTION": 22,
-  "WATCH": 28,
+  "WATCH": 27,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 10,
-  "UPKEEP": 32
+  "FAILED": 11,
+  "UPKEEP": 31
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261102T183110Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261102T183110Z is unfinished",
+   "detail": "UNKNOWN: Writer response cannot prove a no-write outcome; reconcile, never replay. Open request: FORGE-SOURCE-F09CEB13B2BB5EECC5B9AAEA. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261102T183110Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261102T183110Z.json",
+   "at": "2026-11-02T18:38:03.164Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -646,18 +658,6 @@
    "raisedBy": ""
   },
   {
-   "id": "pr:foreman-cockpit#253",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "foreman-cockpit PR #253 (draft): Mobile shell for Pipeline Explorer (Stages 2–5, Stage 5 in progress)",
-   "detail": "Open since 2026-11-02. Draft — merge, keep, or close.",
-   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
-   "source": "foreman-cockpit #253",
-   "sourceUrl": "https://github.com/tpruittguitar/foreman-cockpit/pull/253",
-   "at": "2026-11-02T13:16:51Z",
-   "raisedBy": ""
-  },
-  {
    "id": "pr:forge-coordination#194",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -927,7 +927,7 @@
    "lastAt": "2026-10-28T00:52:00-04:00",
    "lastStatus": "PARTIAL_WITH_WORK",
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CLAUDE-20261028-0052ET_TERMINAL.txt",
-   "runs7d": 19,
+   "runs7d": 18,
    "usualGapHours": 1.6,
    "overdue": true
   },
@@ -1047,7 +1047,7 @@
    "lastAt": "2026-10-28T10:32:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
-   "runs7d": 24,
+   "runs7d": 23,
    "usualGapHours": 2,
    "overdue": false
   },
