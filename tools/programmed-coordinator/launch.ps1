@@ -11,34 +11,10 @@ function Git-Checked([string[]]$GitArgs) {
     if ($LASTEXITCODE -ne 0) { throw 'Git operation failed; retained local state needs reconciliation' }
     return $result
 }
-# A publication failure leaves a dirty checkout. Publish exactly the retained
-# accounting before fetching again; never reset a checkpoint or copy over main.
+# Publish retained accounting even when a failed push left a clean committed checkout.
 function Publish-Accounting {
-    $changed = @(Git-Checked @('status','--porcelain','--untracked-files=all'))
-    if (-not $changed.Count) { return }
-    $paths = @('state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json',
-        'state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/CLAUDE_HELPER_CONSUMPTION.json',
-        'state/EMAIL_RECOVERY_QUEUE.json','state/EMAIL_RECOVERY_SUMMARY.json','control/CLAUDE_HELPER_WORK.json','control/ENRICHMENT_HELPER_WORK.json')
-    foreach ($line in $changed) {
-        $relative = $line.Substring(3).Replace('\','/').Trim('"')
-        if ($paths -notcontains $relative -and $relative -notmatch '^receipts/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+_(CHECKPOINT|ACCEPTANCE|VERIFIED|SCREEN|TERMINAL)\.json$') {
-            throw "Unexpected changed path; preserve and inspect: $relative"
-        }
-        Git-Checked @('add','--',$relative) | Out-Null
-    }
-    & git diff --cached --quiet
-    if ($LASTEXITCODE -eq 1) {
-        Git-Checked @('-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com',
-            'commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects') | Out-Null
-    } elseif ($LASTEXITCODE -ne 0) { throw 'Cannot inspect staged accounting' }
-    Git-Checked @('fetch','origin','main') | Out-Null
-    # Rebase retains independent bot appends. A real conflict stays visible and
-    # stops this runner; no force push, reset or scripted conflict resolution.
-    Git-Checked @('rebase','origin/main') | Out-Null
-    Git-Checked @('push','origin','HEAD:main') | Out-Null
-    $local = Git-Checked @('rev-parse','HEAD')
-    Git-Checked @('fetch','origin','main') | Out-Null
-    Git-Checked @('merge-base','--is-ancestor',$local,'origin/main') | Out-Null
+    & node tools/programmed-coordinator/publish.cjs $repo
+    if ($LASTEXITCODE -ne 0) { throw 'Accounting publication needs reconciliation; retained evidence and lock preserved' }
 }
 $env:ACTIVITY_FC_DIR = $config.cockpitDirectory
 $env:FORGE_CONNECTION_FILE = $config.connectionFile

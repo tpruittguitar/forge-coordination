@@ -12,7 +12,7 @@ if ($LASTEXITCODE -ne 0 -or $head -ne ($remote -split '\s+')[0]) { throw 'Instal
 $dirty = & git -C $repo status --porcelain
 if ($LASTEXITCODE -ne 0 -or $dirty) { throw 'Clean dedicated coordinator checkout required' }
 $arguments = '-NoProfile -NonInteractive -WindowStyle Hidden -File "' + $launcher + '" -ConfigFile "' + $configPath + '"'
-$action = New-ScheduledTaskAction -Execute (Get-Command powershell.exe).Source -Argument $arguments -WorkingDirectory $repo
+$action = New-ScheduledTaskAction -Execute (Get-Command pwsh.exe -ErrorAction Stop).Source -Argument $arguments -WorkingDirectory $repo
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(1) -RepetitionInterval (New-TimeSpan -Minutes 5)
 $settings = New-ScheduledTaskSettingsSet -MultipleInstances IgnoreNew -StartWhenAvailable -ExecutionTimeLimit ([TimeSpan]::Zero)
 $principal = New-ScheduledTaskPrincipal -UserId ([Security.Principal.WindowsIdentity]::GetCurrent().Name) -LogonType Interactive -RunLevel Limited
