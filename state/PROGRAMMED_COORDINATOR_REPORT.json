@@ -1,11 +1,12 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-02T09:24:20.873Z",
-  "instructionCommit": "09b0edc3cb09d4b7087187c95f7e308513c5b56d",
-  "batches": 278,
+  "at": "2026-11-02T09:26:21.922Z",
+  "instructionCommit": "a052ad84589cca2a91de4c92316bdd917a1de771",
+  "batches": 279,
   "statuses": {
-    "EXCEPTION": 226,
-    "VERIFIED": 1
+    "EXCEPTION": 245,
+    "VERIFIED": 1,
+    "PROTECTED_SKIP": 1
   },
   "transactions": [
     {
@@ -17,19 +18,7 @@
   "codeExceptions": [
     {
       "owner": "CODE",
-      "reason": "Duplicate, unassigned or submitting helper item",
-      "path": "receipts/GROK_HELPERS/FORGE_GROK_ENRICHMENT/GROK-20261102-0035-B3.json",
-      "invalidUrlKeys": []
-    },
-    {
-      "owner": "CODE",
-      "reason": "Invalid intake evidence envelope",
-      "path": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T001148Z-B1-QUARANTINED.json",
-      "invalidUrlKeys": []
-    },
-    {
-      "owner": "CODE",
-      "reason": "Unassigned, duplicate or invalid evidence item",
+      "reason": "INCOMPLETE_RETURN_ITEMS_REQUIRE_SOURCE",
       "path": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-20261102T0123Z-B002-QUARANTINED.json",
       "invalidUrlKeys": [
         "indeed:10c6cccc00cfa048",
@@ -37,7 +26,16 @@
         "indeed:19fa47a8a1890bb7",
         "indeed:1e22f4f2c509dad8",
         "indeed:2ca7e5459e83e8f5"
-      ]
+      ],
+      "recoveredItems": 15,
+      "unresolvedKeys": [
+        "indeed:10c6cccc00cfa048",
+        "indeed:1552059a218df8e4",
+        "indeed:19fa47a8a1890bb7",
+        "indeed:1e22f4f2c509dad8",
+        "indeed:2ca7e5459e83e8f5"
+      ],
+      "correction": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json"
     },
     {
       "key": "FORGE_GROK_ENRICHMENT:V2I-84C9E8DC8715",
@@ -1709,6 +1707,173 @@
       "retryCondition": "Changed source evidence or retryAfter"
     },
     {
+      "key": "FORGE_GROK_ENRICHMENT:V2I-01E5EF8F5A31",
+      "itemVersion": "f1005a404fbcf845452af2b6604c8437f823fa1276736349e2b579d7005a248e",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_ENRICHMENT/GROK-20261102-0035-B3.json",
+      "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+      "owner": "CODE",
+      "attempts": 1,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_ENRICHMENT:V2I-02A8C93A9B3C",
+      "itemVersion": "0210fda25a949273d8cea9a63123e323a1eb0c60dc6198fd3770dd52d80b6370",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_ENRICHMENT/GROK-20261102-0035-B3.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_ENRICHMENT:V2I-02E6CF9B904C",
+      "itemVersion": "bc5dfb64305d9dafbf0167c68e2eb28260a7aa5cb3320519c5b0c2e0135c10b8",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_ENRICHMENT/GROK-20261102-0035-B3.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_ENRICHMENT:V2I-004DCE05CEB0",
+      "itemVersion": "99499b089b5108ffd498667de32a5ce6563c833542c9ab6028d7332b75d058f4",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_ENRICHMENT/GROK-20261102-0035-B3.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:86d8b909b4aaf317",
+      "itemVersion": "0aebb783f97e5e401ee3217762d09d1f124dba020b02f7f1aff650e3a1ca9843",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:8ec2a2cf391d38d9",
+      "itemVersion": "d401ef3d0e496a0f584601b4463f7123d331b5a070cbe9439c3d286458690396",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:96a77078e9ee8078",
+      "itemVersion": "39c65aa2b8cd4ea40f6b31df7e969e9fdb5779a94e3793829cc95797b4c78287",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:9ca16897c4b43418",
+      "itemVersion": "d944a7c86f5392b308176d7f68d66602b0b8be1586008e60b63a666638a88817",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:a1e80e5e51211c7d",
+      "itemVersion": "abdf2ffc61db556ead2ee40de6db567911209793d180fcb8783e61416c25a1d5",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "SOURCE_HTTP_429",
+      "owner": "CODE",
+      "attempts": 1,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:a688023b9e2edd33",
+      "itemVersion": "614501b46b194a4c3a250de518bd8e4a9b4e70f2f524ee9e42d3f2188c9a42ad",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:c266783a6951ece7",
+      "itemVersion": "ad0d6f71814c695331795f3cec16dcf8711000950d4482e2383a3f67ebd15ef0",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "SOURCE_HTTP_403",
+      "owner": "CODE",
+      "attempts": 1,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:cb03853248250568",
+      "itemVersion": "c08a44e258c2027fc35288eb142f819e2197fb7cec2cb64c3a3805e3d7aa86cf",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:cfc902a954d63ac5",
+      "itemVersion": "97f2145ca91eb122784fd05f021d4e769136f75a6bf68880611cbde3dc7be17a",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:d8fd67089c4cb02f",
+      "itemVersion": "66501d531203b839259771c67db449153a8b9a190d73bf12e9b4b649e6c1562d",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:dcdbd16af8207107",
+      "itemVersion": "57dcdbfc887413d34c4b4f2afd2a1e9b72317d3cb70563e956e68787a76c5805",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:e4750fc5b9cb321b",
+      "itemVersion": "6209c4da08929cd6bfda9e57c814b229926f4341176332e8e84d2ba59cda1adc",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:f263d4547eb709fa",
+      "itemVersion": "bc2d400ca147e5e387736842a69c7d17dd2d3c0f842a99fe1f6a89e46d882c75",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "WORKING_SOURCE_ROUTE_REQUIRED",
+      "owner": "CODE",
+      "attempts": 0,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:linkedin:4480266295",
+      "itemVersion": "4be7c0531694d76d6e62be58fa05a7f60d19c64e15e702edf86211b922c333a1",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "SOURCE_ROUTE_BACKOFF",
+      "owner": "CODE",
+      "attempts": 1,
+      "retryCondition": "Changed source evidence or retryAfter"
+    },
+    {
+      "owner": "CODE",
+      "requestId": "FORGE-CODE-CHATGPT-20261102T091523622Z-B003",
+      "reason": "ORIGINAL_INTAKE_RECONCILIATION_REQUIRED"
+    },
+    {
       "owner": "CODE",
       "reason": "NATIVE_REPORT_CAPTURE_PENDING",
       "errorSha256": "5e7e1a18f1a196a24c435515e0b8a8670392f113f0b802bdfb66ed2d5712aab9"
@@ -1735,13 +1900,13 @@
     },
     {
       "owner": "CODE",
-      "reason": "NO_COMPLETE_BATCH_IN_REPORT",
+      "reason": "REPORT_CORRECTION_REQUIRED",
       "sourceHash": "aa0a91181010ee53da48fc0983f064788e5f05db88f3e336b3e201fa29fa3a47"
     },
     {
       "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-02T09:15:34.481Z",
+      "at": "2026-11-02T09:25:34.295Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
@@ -2113,6 +2278,15 @@
       "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
       "owner": "AI",
       "attempts": 0,
+      "retryCondition": "Resolved identity, scope or conflicting evidence"
+    },
+    {
+      "key": "FORGE_GROK_INTAKE_HELPER:indeed:04c6e17aba803be0",
+      "itemVersion": "305a202eb5fc7c307f2e222b4d00bd631383baa9f411519552bdb8b13063d260",
+      "batch": "receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/GROK-INTAKE-c942b554e7d2f85aa6dfca09-VALIDATED-SUBSET.json",
+      "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+      "owner": "AI",
+      "attempts": 1,
       "retryCondition": "Resolved identity, scope or conflicting evidence"
     },
     {
@@ -2494,19 +2668,13 @@
       "key": "linkedin:4442402869",
       "owner": "AI",
       "reason": "CANONICAL_NEAR_MATCH_REQUIRES_IDENTITY"
-    },
-    {
-      "owner": "AI",
-      "reason": "UNRESOLVED_CORRESPONDENCE",
-      "messageId": "1a19b46cbc88b2bc",
-      "sourceSha256": "4e2479fe7580502a1ec9a01eb98f22e13b20cd56002ec3fd52d28d0946a52ab0"
     }
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-02T09:16:11.957Z",
-    "sha256": "2524d890b8cb5b662ec5ae654a5d27c8e6ff8de33ce9f169c48fad1c94008f3d",
-    "rows": 4093
+    "readAt": "2026-11-02T09:25:47.756Z",
+    "sha256": "17776cd2397d2f5c5e63e27564578507c8bbc1481bc9fd95b94ef37e784c5faf",
+    "rows": 4232
   },
   "coverage": {
     "schema": "forge.email-recovery-summary.v1",
@@ -2517,10 +2685,10 @@
     "sourcePagesPending": 0,
     "sourcesWithPendingResults": 0,
     "remainingPageCount": null,
-    "historicalGaps": 3,
-    "capturedUniqueJobs": 5792,
-    "awaitingIntake": 3052,
-    "pendingJobs": 3490,
+    "historicalGaps": 2,
+    "capturedUniqueJobs": 5796,
+    "awaitingIntake": 3056,
+    "pendingJobs": 3494,
     "verifiedInserted": 1566,
     "existing": 509,
     "outOfScope": 227,
@@ -2530,21 +2698,21 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261102T091523622Z",
+  "runId": "FORGE-CODE-CHATGPT-20261102T092523647Z",
   "mode": "apply",
   "collected": {
     "newBatches": 1,
-    "newItems": 2,
+    "newItems": 20,
     "updatedItems": 0,
-    "validated": 42,
-    "quarantined": 3
+    "validated": 44,
+    "quarantined": 1
   },
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T091523622Z",
-      "at": "2026-11-02T09:15:57.066Z",
-      "imported": 1,
+      "runId": "FORGE-CODE-CHATGPT-20261102T092523647Z",
+      "at": "2026-11-02T09:25:35.367Z",
+      "imported": 0,
       "reportFeeds": [
         {
           "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
@@ -2572,8 +2740,8 @@
         }
       ],
       "pagination": {
-        "pagesCaptured": 65,
-        "advances": 60,
+        "pagesCaptured": 0,
+        "advances": 0,
         "sourcesWithPendingResults": 0,
         "coverageComplete": false,
         "noProcessingCap": true
@@ -2642,7 +2810,7 @@
         "failures": [
           {
             "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-            "at": "2026-11-02T09:15:34.481Z",
+            "at": "2026-11-02T09:25:34.295Z",
             "reason": "RUN_LIST_INACCESSIBLE"
           }
         ]
@@ -2675,13 +2843,13 @@
         },
         {
           "owner": "CODE",
-          "reason": "NO_COMPLETE_BATCH_IN_REPORT",
+          "reason": "REPORT_CORRECTION_REQUIRED",
           "sourceHash": "aa0a91181010ee53da48fc0983f064788e5f05db88f3e336b3e201fa29fa3a47"
         },
         {
           "owner": "CODE",
           "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-          "at": "2026-11-02T09:15:34.481Z",
+          "at": "2026-11-02T09:25:34.295Z",
           "reason": "RUN_LIST_INACCESSIBLE"
         }
       ],
@@ -2692,17 +2860,17 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T091523622Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T092523647Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-02T09:16:11.957Z",
-        "sha256": "2524d890b8cb5b662ec5ae654a5d27c8e6ff8de33ce9f169c48fad1c94008f3d",
-        "rows": 4093
+        "readAt": "2026-11-02T09:25:47.756Z",
+        "sha256": "17776cd2397d2f5c5e63e27564578507c8bbc1481bc9fd95b94ef37e784c5faf",
+        "rows": 4232
       },
       "counts": {
-        "seededCodeIntake": 780,
-        "canonical": 18,
-        "fenced": 277,
+        "seededCodeIntake": 3,
+        "canonical": 20,
+        "fenced": 438,
         "alreadyAssigned": 2420
       },
       "appended": [],
@@ -3093,27 +3261,20 @@
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T091523622Z",
-      "read": 254,
-      "processed": 254,
-      "pending": 1,
-      "exceptions": [
-        {
-          "owner": "AI",
-          "reason": "UNRESOLVED_CORRESPONDENCE",
-          "messageId": "1a19b46cbc88b2bc",
-          "sourceSha256": "4e2479fe7580502a1ec9a01eb98f22e13b20cd56002ec3fd52d28d0946a52ab0"
-        }
-      ],
+      "runId": "FORGE-CODE-CHATGPT-20261102T092523647Z",
+      "read": 260,
+      "processed": 260,
+      "pending": 0,
+      "exceptions": [],
       "noProcessingCap": true,
-      "observations": 974,
+      "observations": 980,
       "duplicateObservations": 720,
+      "recoveredAlertCards": 4,
       "statuses": {
-        "VERIFIED_NOT_RECRUITING": 149,
-        "HANDED_TO_DISCOVERY": 101,
+        "VERIFIED_NOT_RECRUITING": 150,
+        "HANDED_TO_DISCOVERY": 107,
         "VERIFIED": 1,
-        "REVIEWED_CORRESPONDENCE": 2,
-        "EXCEPTION": 1
+        "REVIEWED_CORRESPONDENCE": 2
       },
       "transactions": [],
       "masterVerifiedThisRun": 0
