@@ -18,6 +18,17 @@ test('actual DOM adapter binds same-title cards to observed URLs and only clicks
  const last=await p.evaluate(T.readResults,{expectedUrl:after.url});a.deepEqual(last.jobs.map(j=>j.jobId),['26','27','28']);a.equal(last.endConfirmed,true);
  a.deepEqual(await p.evaluate(()=>({bad:badClicks,result:resultClicks})),{bad:0,result:1});
 });
+test('hydrated title links bind exact posting IDs after the server placeholder list changes',async t=>{
+ const p=await browser(t);await p.evaluate(()=>{
+  const tracked=new URL(location.href);tracked.searchParams.set('eBP','opaque-attribution');tracked.searchParams.set('trackingId','tracking');tracked.searchParams.set('refId','referral');history.replaceState(null,'',tracked);
+  const original=render;window.render=()=>{original();document.querySelector('main h2').remove();};render();document.querySelector('.job p').innerText='Server placeholder title';
+  function detail(){document.querySelector('#postingTitle')?.remove();const a=document.createElement('a');a.id='postingTitle';a.href='/jobs/view/'+new URL(location.href).searchParams.get('currentJobId')+'/';a.innerText='Director of Manufacturing';document.querySelector('main').append(a);}
+  document.addEventListener('click',e=>{if(e.target.closest('.job'))setTimeout(detail,100);});
+  setTimeout(()=>{render();const u=new URL(location.href);u.searchParams.set('currentJobId','1');history.replaceState(null,'',u);detail();},150);
+ });
+ const first=await p.evaluate(T.readResults,{expectedUrl:url});a.deepEqual(first.jobs.map(j=>j.jobId),['1','2','3']);a.equal(first.jobs[0].paragraphs[0],'Director of Manufacturing');a.equal(await p.evaluate(()=>badClicks),0);
+ const after=await p.evaluate(T.clickResultsNext,{expectedUrl:first.url,controlProof:first.next.proof});await p.evaluate(()=>{const u=new URL(location.href);u.searchParams.set('currentJobId','26');history.replaceState(null,'',u);const a=document.createElement('a');a.id='postingTitle';a.href='/jobs/view/26/';a.innerText='Director of Manufacturing';document.querySelector('main').append(a);});const last=await p.evaluate(T.readResults,{expectedUrl:after.url});a.deepEqual(last.jobs.map(j=>j.jobId),['26','27','28']);a.equal(last.endConfirmed,true);
+});
 test('changed card/control proof prevents Next, and duplicate selected IDs remain an exception',async t=>{
  const p=await browser(t),first=await p.evaluate(T.readResults,{expectedUrl:url});
  await p.evaluate(()=>document.querySelector('.job p').innerText='Changed title');

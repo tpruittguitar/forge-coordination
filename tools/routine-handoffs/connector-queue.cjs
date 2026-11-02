@@ -17,7 +17,7 @@ async function connect(config){
   const candidates=packets(directory,'RESULTS_PAGE').filter(p=>p.request.sourceId===sourceId&&Date.now()-Date.parse(p.completedAt)<15*60000),observations=candidates.flatMap(p=>[p.data.before,p.data.after].filter(Boolean));
   const observed=observations.filter(p=>query(p.url)===query(url)&&P.position(p.url)===P.position(url)).at(-1);
   if(!observed)enqueue(directory,{type:'RESULTS_PAGE',sourceId,url,refreshWindow:Math.floor(Date.now()/(15*60000))});
-  return{async observe(){if(!observed)throw Error('RESULT_PAGE_CAPTURE_PENDING');return observed;},async next({expectedUrl,controlProof}){const packet=candidates.find(p=>p.data.clickedControl==='RESULTS_NEXT'&&p.data.before&&query(p.data.before.url)===query(expectedUrl)&&P.position(p.data.before.url)===P.position(expectedUrl)&&p.data.before.next?.proof===controlProof&&p.data.after);if(!packet)throw Error('RESULTS_NEXT_CAPTURE_PENDING');return packet.data.after;},close:async()=>{}};
+  return{async observe(){if(!observed)throw Error('RESULT_PAGE_CAPTURE_PENDING');return observed;},async next({expectedUrl,controlProof}){const packet=candidates.find(p=>p.data.clickedControl==='RESULTS_NEXT'&&p.data.before&&query(p.data.before.url)===query(expectedUrl)&&P.position(p.data.before.url)===P.position(expectedUrl)&&p.data.before.next?.proof===controlProof&&p.data.after);if(!packet){enqueue(directory,{type:'RESULTS_PAGE',sourceId,url:expectedUrl,refreshWindow:Math.floor(Date.now()/(15*60000))});throw Error('RESULTS_NEXT_CAPTURE_PENDING');}return packet.data.after;},close:async()=>{}};
  }},close:async()=>{}};
 }
 function accept(directory,job,result,providerRunId){
