@@ -158,8 +158,11 @@ async function main(mode='inventory') {
         const pendingIds=[...new Set(S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items.filter(i=>i.status==='POST_IN_FLIGHT_UNKNOWN').map(i=>i.requestId))];
         let intakePending=false;
         for(const id of pendingIds) {
-          try{const result=await child(root,['verify',id],env);if(!result.verified&&result.phase!=='VERIFIED')intakePending=true;}
-          catch(e){intakePending=true;state.exceptions['intake:'+id]={owner:'CODE',requestId:id,reason:'ORIGINAL_INTAKE_RECONCILIATION_REQUIRED'};}
+          try{const result=await child(root,['verify',id],env);if(!result.verified&&result.phase!=='VERIFIED')intakePending=true;else delete state.exceptions['intake:'+id];}
+          catch(e){
+            try{await require('../relevance-screen/not-accepted.cjs').recover({root,privateDir,requestId:id,runId,deps:{checkLock:deps.checkLock,status:async()=>(await R.read('writer_status',{key})).data,result:async rid=>(await R.read('request_result',{key,requestId:rid})).data,index:async rid=>(await R.read('receipt_index',{key,requestId:rid})).data,source:async revision=>cp.execFileSync('git',['show',revision+':apps-script/Code.gs'],{cwd:fc,encoding:'utf8',maxBuffer:4e6,stdio:['ignore','pipe','pipe']})}});delete state.exceptions['intake:'+id];}
+            catch{intakePending=true;state.exceptions['intake:'+id]={owner:'CODE',requestId:id,reason:'ORIGINAL_INTAKE_RECONCILIATION_REQUIRED'};}
+          }
         }
         // Existing preparation owns canonical dedup, relevance and source-ledger
         // accounting. Its transaction count is never a coordinator run quota.
