@@ -2,7 +2,15 @@
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
-const location = s => norm(String(s || '').replace(/,?\s*(USA|United States(?: of America)?)\s*$/i, ''));
+const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
+function location(s){
+ const clean=String(s||'').normalize('NFKC').trim().replace(/,?\s*\b(?:USA|US|United States(?: of America)?)\s*,?\s*(?:\d{5}(?:-\d{4})?)?\s*$/i,'').replace(/\s+\d{5}(?:-\d{4})?\s*$/,'').replace(/,\s*$/,'').trim(),parts=clean.split(',').map(x=>x.trim());
+ const state=L.stateFrom(clean);
+ // Existing shared US-state mappings normalize spelling, never another city,
+ // multiple sites, remote scope or foreign-country evidence.
+ if(parts.length===2&&parts[0]&&state&&L.stateFrom('City, '+parts[1])===state)return norm(parts[0])+state.toLowerCase();
+ return norm(clean);
+}
 function publicUrl(raw) {
   if(typeof raw !== 'string' || /\s/.test(raw)) throw Error('INVALID_PUBLIC_SOURCE_URL');
   const u = new URL(raw);
@@ -45,7 +53,7 @@ function postings(html) {
 }
 function inspect(raw, expected, quote = '', now = Date.now()) {
   const jobs=postings(raw);if(!jobs.length)throw Error('STRUCTURED_POSTING_UNAVAILABLE');
-  const matches = jobs.filter(j => norm(j.title) === norm(expected.title) && norm(j.hiringOrganization?.name) === norm(expected.company) &&
+  const matches = jobs.filter(j => norm(j.title) === norm(expected.title) && employer(j.hiringOrganization?.name) === employer(expected.company) &&
     [].concat(j.jobLocation || []).some(l => {
       const a = l.address || {}, parts = [a.addressLocality, a.addressRegion].filter(Boolean).join(', ');
       return parts && location(parts) === location(expected.location);
@@ -88,4 +96,4 @@ function enrichmentFields(source, row) {
   return fields;
 }
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {norm, location, publicUrl, page, text, postings, inspect, verify, enrichmentFields,known};
+module.exports = {norm,employer, location, publicUrl, page, text, postings, inspect, verify, enrichmentFields,known};

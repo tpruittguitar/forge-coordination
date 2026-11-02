@@ -9,7 +9,7 @@ function healthy(status) {
       !Array.isArray(status.errors) || status.errors.length || !status.unverified || status.unverified.count !== 0) throw Error('LIVE_WRITER_GATE');
 }
 function identity(row) { return {company:row.COMPANY, title:row.TITLE, location:row.LOCATION}; }
-function same(row, expected) { return Source.norm(row.COMPANY) === Source.norm(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location); }
+function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location); }
 function protectedRow(row) { return !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(row.BUCKET) || /^YES/i.test(row.p?.ANTI_RESURRECTION || '') || !!row.p?.DO_NOT_REWORK || !!row.p?.TIM_DECISION; }
 function fenced(root, state, id) {
   if (Object.values(state.transactions).some(tx => tx.status !== 'VERIFIED' && tx.ids.includes(id))) return true;

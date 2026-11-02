@@ -79,6 +79,12 @@ test('structured source inspection binds exact identity and quote without inferr
   a.throws(()=>Source.inspect(html({description:'short'}),expected),/INCOMPLETE/);
   a.equal(Source.inspect(html({description:'Production facility leadership and operational work. '.repeat(12)}),expected).degree,null);
 });
+test('routine legal suffix and US address spelling use code; parent brands, different cities and foreign places remain distinct',()=>{
+ a.equal(Source.location('Greenville, Texas'),Source.location('Greenville, TX, USA'));a.equal(Source.location('Springfield, IL, US, 62703'),Source.location('Springfield, Illinois'));a.equal(Source.location('Carson, California, United States, 90746'),Source.location('Carson, CA'));
+ a.notEqual(Source.location('Greenville, SC'),Source.location('Greenville, TX'));a.notEqual(Source.location('Toronto, ON, Canada'),Source.location('Toronto, CA'));a.notEqual(Source.location('Austin, TX / Houston, TX'),Source.location('Austin, TX'));
+ a.equal(Source.employer('Hubbell Incorporated'),Source.employer('Hubbell'));a.notEqual(Source.employer('Anduril Industries'),Source.employer('Anduril'));a.notEqual(Source.employer('Armstrong / Arktura LLC'),Source.employer('Armstrong'));
+ const expected={company:'Factory',title:'Plant Manager',location:'Austin, Texas, USA'};a.equal(Source.inspect(html({hiringOrganization:{name:'Factory Incorporated'}}),expected).degree.req,'PREFERRED');
+});
 test('pay must be explicitly structured annual USD base and source cache avoids repeated fetches',async t=>{
   const expected=T.identity(row()),privateDir=dir(t);let calls=0;
   const item={sourceEvidence:{url:'https://careers.factory.com/job/123',quote:'Bachelor degree preferred.'}};
