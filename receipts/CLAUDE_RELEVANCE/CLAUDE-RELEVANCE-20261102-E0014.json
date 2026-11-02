@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0014",
+  "instructionCommit": "a1f323bce0f150fc081426813d8d07ae7585d900",
+  "createdAt": "2026-11-02T07:53:41.752Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485666480"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485666480",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485666480\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485666480\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485666480/",
+        "company": "Actalent",
+        "title": "Manufacturing Engineer",
+        "location": "Hawthorne, CA",
+        "observedAt": "2026-11-01T09:34:05.470Z",
+        "quote": "Manufacturing Engineer | Actalent | Hawthorne, CA (On-site)"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0103.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:53:41.752Z",
+        "query": "Actalent \"Manufacturing Engineer\" Hawthorne CA job",
+        "employerSearchResult": "No Actalent Manufacturing Engineer posting in Hawthorne, CA; nearest are a Hawthorne CNC Programmer listing and out-of-area Manufacturing Engineer listings",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no exact Hawthorne posting for this agency card; hidden client, scope and level remain unknown. Lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
