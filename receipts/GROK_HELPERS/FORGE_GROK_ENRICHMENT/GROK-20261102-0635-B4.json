@@ -1,0 +1,116 @@
+{
+  "schema": "forge.enrichment-helper-batch.v1",
+  "provider": "Grok",
+  "taskKey": "FORGE_GROK_ENRICHMENT",
+  "assignmentId": "GROK-ENRICH-20261101-V1",
+  "runId": "GROK-20261102-0635-B4",
+  "instructionCommit": "eab8dac44345fa12b86e1eec64c7c5ce2e5521c2",
+  "items": [
+    {
+      "primaryId": "V2I-427B96E8A89D",
+      "recommendation": "NEEDS_SOURCE_EVIDENCE",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json",
+          "state/enrich-ats-pay-recovery.json"
+        ],
+        "url": "https://mavericktechus.com/job-details?id=4255bd2a-916b-4d5d-a44d-575d650257d2",
+        "observedAt": "2026-11-02T06:35:00Z",
+        "company": "Maverick Tech",
+        "title": "Plant Manager",
+        "location": "Torrington, CT, USA",
+        "quote": "Job title... Location... Salary... description... (template placeholders only; no filled details)",
+        "proposedRawFields": {}
+      },
+      "reason": "Assigned source is incomplete staffing-agency template page with no job body, salary, or degree. Targeted searches found no exact matching Plant Manager / Torrington CT posting for Maverick Tech (other Torrington Plant Manager roles exist for different employers). Cannot establish NOT_STATED or closure from inaccessible/partial page.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-D6379C962B61",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json"
+        ],
+        "url": "https://recruiting.ultipro.com/pin1011ptci/JobBoard/62d5acb3-ac57-4867-bb7d-c06ae19f8d37/OpportunityDetail?opportunityId=2d86e68e-2407-4c3a-8495-e86f204abd4d",
+        "observedAt": "2026-11-02T06:35:00Z",
+        "company": "Pinnacle Treatment Centers",
+        "title": "Quality Director OTP",
+        "location": "Ceres, CA, USA (Remote with travel)",
+        "quote": "Bachelor's degree required; Master's degree preferred... Pay Range is $75-90,000 depending on experience.",
+        "proposedRawFields": {
+          "DEGREE": "Bachelor's degree required; Master's preferred",
+          "SALARY_BASE_ANNUAL": "$75,000-$90,000 (employer-posted range)"
+        }
+      },
+      "reason": "Exact employer posting recovered with salary range and degree requirement. Matches assigned company/title/location. No product or other missing fields assigned.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-BFD280B05843",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json"
+        ],
+        "url": "https://frenchoil.com/about-us/career-opportunities/director-of-manufacturing/",
+        "observedAt": "2026-11-02T06:35:00Z",
+        "company": "French Oil Mill Machinery Company",
+        "title": "Director of Manufacturing",
+        "location": "Piqua, OH",
+        "quote": "Bachelor's degree in Engineering, Manufacturing Engineering, Industrial Engineering, Operations Management, Business Administration, or a related field... 10+ years of progressive manufacturing leadership experience... At least 5 years leading supervisors, managers, or production leaders.",
+        "proposedRawFields": {
+          "DEGREE": "Bachelor's degree in Engineering or related field required"
+        }
+      },
+      "reason": "Exact employer careers page recovered with full qualifications. No salary posted. Matches assigned identity. ZipRecruiter secondary source previously blocked.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-A6D4EEFB098F",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json"
+        ],
+        "url": "https://www.builtinsf.com/job/director-operational-quality-excellence/11619435",
+        "observedAt": "2026-11-02T06:35:00Z",
+        "company": "Phil / PHIL",
+        "title": "Director of Operational & Quality Excellence",
+        "location": "San Francisco, CA (Remote)",
+        "quote": "170K-180K Annually... 10+ years in operational quality... 5+ years leading and building a team...",
+        "proposedRawFields": {
+          "SALARY_BASE_ANNUAL": "$170,000-$180,000 (multiple independent postings)"
+        }
+      },
+      "reason": "Multiple public sources (Built In, Teal, Remotive) confirm employer-posted base range. No explicit degree requirement observed in available excerpts (experience only). Glassdoor original blocked. Matches company/title.",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    },
+    {
+      "primaryId": "V2I-DB914E782B87",
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "writerSubmitted": false,
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json"
+        ],
+        "url": "https://www.sonicjobs.com/jobs/north-chicago/senior-packaging-manager/director%2C-third-party-manufacturing-packaging-of-finished-goods-can6ae49703f7d612e70dfadb82",
+        "observedAt": "2026-11-02T06:35:00Z",
+        "company": "AbbVie",
+        "title": "Director, Third Party Manufacturing (Packaging of Finished Goods)",
+        "location": "North Chicago, IL",
+        "quote": "Bachelor's Degree required in a technical field; advanced technical degree (Master's or Doctorate Degree) strongly preferred... Salary Min: 160500 Salary Max: 305000",
+        "proposedRawFields": {
+          "DEGREE": "Bachelor's Degree required in a technical field; advanced preferred",
+          "SALARY_BASE_ANNUAL": "$160,500-$305,000 (posted range)"
+        }
+      },
+      "reason": "Public postings confirm degree and broad base range for matching title/location. Original Glassdoor blocked. Aligns with assigned missingFields (DEGREE only).",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
