@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-02T19:03:54.902Z",
- "sourceCommit": "5d1ffa7a2ff8f60025e258a2293dd96a04fc6115",
+ "builtAt": "2026-11-02T20:09:21.931Z",
+ "sourceCommit": "950f84fd4b5a3a081d62256928bf1d52b411e8bf",
  "counts": {
-  "total": 50,
+  "total": 51,
   "BLOCKING": 1,
-  "ACTION": 22,
+  "ACTION": 23,
   "WATCH": 27,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 11,
-  "UPKEEP": 31
+  "UPKEEP": 32
  },
  "items": [
   {
@@ -326,6 +326,18 @@
    "raisedBy": "CHATGPT"
   },
   {
+   "id": "lane-overdue:COORDINATOR",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "COORDINATOR lane has gone quiet (usually reports every 1.1 h)",
+   "detail": "Last receipt FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
+   "at": "2026-11-02T03:05:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "pr:forge-coordination#196",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -610,18 +622,6 @@
    "raisedBy": ""
   },
   {
-   "id": "lane-overdue:COORDINATOR",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "COORDINATOR lane has gone quiet (usually reports every 1.1 h)",
-   "detail": "Last receipt FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
-   "at": "2026-11-02T03:05:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "pr:forge-coordination#186",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -727,6 +727,18 @@
    "source": "forge-coordination #200",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/200",
    "at": "2026-11-02T18:10:18Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "pr:forge-coordination#201",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "forge-coordination PR #201 (draft): Claude relevance evidence P11D (evidence-only)",
+   "detail": "Open since 2026-11-02. Draft — merge, keep, or close.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #201",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/201",
+   "at": "2026-11-02T19:14:32Z",
    "raisedBy": ""
   }
  ],
