@@ -17,8 +17,9 @@ function handoffs(w){
   return w.coordinatorHandoffs||{};
 }
 function next(root,w,validate,start=1){
-  if(!Number.isInteger(start)||start<1||start>w.pages.length)throw Error('Unknown page; do not restart');
+  if(!Number.isInteger(start)||start<1||start>Math.max(1,w.pages.length))throw Error('Unknown page; do not restart');
   const done=completed(root,w,validate),owned=handoffs(w);
+  for(const k of require('../routine-handoffs/next.cjs').returned(root,w))done.add(k);
   for(let n=start;n<=w.pages.length;n++){
     const p=JSON.parse(fs.readFileSync(path.join(root,w.pages[n-1].path)));
     const items=p.items.filter(i=>!done.has(i.key)&&!owned[i.key]);

@@ -1,0 +1,33 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),Reports=require('./reports.cjs'),Pagination=require('./pagination.cjs'),Assignments=require('./assignments.cjs'),L=require('../email-recovery/ledger.cjs');
+const FILE='state/HELPER_TRANSPORT.json';
+function settings(privateDir){const file=process.env.FORGE_HANDOFF_CONFIG||path.join(privateDir,'handoffs.json');return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):{inboxes:[{directory:path.join(privateDir,'helper-inbox'),pattern:'.*\\.(?:json|jsonl|md|txt|zip)$'},{directory:path.join(require('node:os').homedir(),'Downloads')}]};}
+const reason=e=>/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'BROWSER_TOOL_FAILURE';
+async function run({root,privateDir,commit,runId,apply,config=settings(privateDir),browserConnect=require('./browser.cjs').connect}){
+ const state=S.read(root,FILE,Reports.empty()),ledger=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),before=S.hash(ledger),result={imported:0,reportFeeds:[],pagination:null};
+ const save=async()=>{if(apply){S.save(root,FILE,state);L.save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),ledger);}};
+ if(apply)result.imported+=Reports.scanInboxes({root,privateDir,state,commit,inboxes:config.inboxes||[],python:config.python}).imported;
+ let browser;
+ try{
+  if(!config.browser?.endpoint)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
+  browser=await browserConnect(config.browser);
+  const homes=S.read(root,'control/AUTOMATION_OPERATING_MODEL.json');
+  for(const feedConfig of config.reportFeeds||[]){
+   const home=homes.external.find(h=>h.taskKey===feedConfig.taskKey&&h.id===feedConfig.automationId&&h.provider===feedConfig.provider);
+   if(!home){state.exceptions['feed:'+feedConfig.taskKey]={owner:'CODE',reason:'FEED_NOT_CURRENT_REGISTERED_AUTOMATION'};continue;}
+   let feed;
+   try{feed=await browser.feed(feedConfig);if(apply)result.reportFeeds.push(await Reports.collectFeed({feed,root,privateDir,state,commit,save}));delete state.exceptions['feed:'+feedConfig.taskKey];}
+   catch(e){state.exceptions['feed:'+feedConfig.taskKey]={owner:'CODE',reason:reason(e),errorSha256:S.hash(e.message)};}
+   finally{if(feed)await feed.close().catch(()=>{});}
+  }
+  if(apply)result.pagination=await Pagination.drain({ledger,state,adapter:browser.pagination,privateDir,save});
+  delete state.exceptions.browser;
+ }catch(e){state.exceptions.browser={owner:'CODE',reason:reason(e),errorSha256:S.hash(e.message),retryCondition:'Restore the existing supported browser connection; do not change sign-in or copy session credentials'};}
+ finally{if(browser)await browser.close().catch(()=>{});}
+ await save();
+ const report={schema:'forge.routine-handoffs-report.v1',runId,at:new Date().toISOString(),...result,exceptions:Object.values(state.exceptions),sourceLedgerChanged:S.hash(ledger)!==before,noProcessingCap:true,writerSubmissions:0,browserConnected:!!browser};
+ if(apply){S.save(root,'state/ROUTINE_HANDOFFS_REPORT.json',report);S.immutable(root,'receipts/'+runId+'_TRANSPORT.json',report);}
+ else S.save(privateDir,'routine-handoffs-preview.json',report);
+ return{report,state};
+}
+module.exports={run,settings};

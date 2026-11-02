@@ -27,10 +27,13 @@ function routingProof(root, batch, current, historical = show) {
   const work = S.read(root, task.workAssignments), before = JSON.parse(historical(root, batch.instructionCommit, task.workAssignments));
   const partition = w => ({assignmentId: w.assignmentId, enabled: w.enabled, routingActive: w.routingActive, routing: w.routing});
   if (S.hash(partition(work)) !== S.hash(partition(before))) throw Error('STALE_ASSIGNMENT_ROUTING');
+  const assignedAtRevision=Array.isArray(before.keys)?new Set(before.keys):Array.isArray(before.items)?new Set(before.items.map(i=>i.primaryId)):null;
+  if(assignedAtRevision&&batch.items.some(i=>!assignedAtRevision.has(i.key||i.primaryId)))throw Error('ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION');
   if (batch.routing?.cutoverAt && batch.routing.cutoverAt !== work.routing?.cutoverAt) throw Error('STALE_REPORTED_ROUTING');
   return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, currentPolicyRecheckRequired:true};
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
+function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!task||task.owner!==batch.provider||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}
 function collect({root, state, commit, routing = routingProof}) {
   const registry = S.read(root, 'control/AI_AUTOMATION_TASKS.json');
   const legacy = new Set(S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}).items.map(i=>i.batch));
@@ -98,4 +101,4 @@ function collect({root, state, commit, routing = routingProof}) {
   return {newBatches, newItems, updatedItems, validated:Object.values(state.batches).filter(b => b.status === 'VALIDATED').length,
     quarantined:Object.values(state.batches).filter(b => b.status === 'QUARANTINED').length};
 }
-module.exports = {empty, collect, routingProof};
+module.exports = {empty, collect, routingProof,validateEnvelope};
