@@ -13,7 +13,7 @@ const LEVELS = [
   [0.5, /\b(associate|assistant|asst\.?)\s+manager\b/i],
   [1, /\bmanager\b/i],
 ];
-function level(title) { for (const [n, re] of LEVELS) if (re.test(title || '')) return n; return 0; }
+function level(title) { title=String(title||'').replace(/\bmgr\b/gi,'manager');for (const [n, re] of LEVELS) if (re.test(title || '')) return n; return 0; }
 const FUNCS = [
   ['QUALITY', /\bquality\b/i], ['ENG', /\bengineering\b/i], ['PROGRAM', /\b(program|project)\b/i],
   ['MFG', /\b(manufactur\w*|production|plant|assembly|fabrication)\b/i], ['OPS', /\b(operations?|ops|supply chain|industrial)\b/i],
@@ -255,7 +255,7 @@ function sameEmployerEstimate(row, comps, ratio, context) {
     adj.push({ low: c.pay.low * k, high: c.pay.high * k, weight:c.weight });
     notes.push(`${c.title} (${c.state || 'location n/a'}) $${Math.round(c.pay.low / 1000)}K-$${Math.round(c.pay.high / 1000)}K` + (k !== 1 ? ` x${k.toFixed(2)} BLS state ratio` : ''));
   });
-  const low = Math.round((context?Context.weightedMedian(adj,'low'):median(adj.map(a => a.low))) / 1000) * 1000, high = Math.round((context?Context.weightedMedian(adj,'high'):median(adj.map(a => a.high))) / 1000) * 1000;
+  const low = Math.round((context?Context.weightedMedian(adj,'low'):median(adj.map(a => a.low))) / 1000) * 1000, high = Math.round(Context.salaryValue(adj,'high') / 1000) * 1000;
   const mids = adj.map(a => (a.low + a.high) / 2), med = median(mids), tight = med > 0 && (Math.max(...mids) - Math.min(...mids)) / med <= 0.2;
   let conf = use.length >= 2 && tight ? 'HIGH' : use.length>=2 ? 'MED' : 'LOW';
   if(context)conf=Context.confidence({conf},use);
@@ -306,3 +306,4 @@ function blsEstimate(row, w, mlPoints) {
 
 module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, aggregatorFor, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
 module.exports.comparable = comparable; module.exports.invalidSavedAnchors = invalidSavedAnchors;
+
