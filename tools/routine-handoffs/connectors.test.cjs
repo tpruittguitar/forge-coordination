@@ -36,6 +36,16 @@ test('one malformed message does not suppress independent mail and cursor only c
  const result=await require('./mail-pipeline.cjs').run({root,privateDir,runId:'FORGE-CODE-CHATGPT-TEST',deps:{checkLock:()=>{}},apply:true});
  a.equal(result.processed,1);a.equal(result.exceptions.length,1);a.deepEqual(S.read(root,'state/APPLICATION_TRACKER_CURSOR.json').pendingMessageIds,['def']);a.equal(S.read(root,'state/APPLICATION_TRACKER_CURSOR.json').fullyReadThrough,'2026-10-31T00:00:00Z');
 });
+
+test('a validated recapture clears only its own prior envelope failure and keeps other failures open',async t=>{
+ const root=dir(t),privateDir=dir(t),pipeline=require('./mail-pipeline.cjs'),capture={schema:'forge.gmail-source-capture.v1',transport:'SUPPORTED_GMAIL_CONNECTOR',capturedAt:new Date().toISOString(),request:{ids:['abc']},responses:[raw('abc')]};
+ S.save(privateDir,'mail-inbox/one.json',capture);S.save(privateDir,'mail-inbox/two.json',{...capture,responses:[raw('def')]});
+ const run=runId=>pipeline.run({root,privateDir,runId,deps:{checkLock:()=>{}},apply:true});
+ a.equal((await run('FORGE-CODE-CHATGPT-BAD')).exceptions.length,2);
+ capture.request.format='full';S.save(privateDir,'mail-inbox/one.json',capture);let result=await run('FORGE-CODE-CHATGPT-RECOVERED');
+ a.equal(result.processed,1);a.equal(result.exceptions.length,1);a.equal(result.exceptions[0].sourceHash,S.hash(path.join(privateDir,'mail-inbox/two.json')));
+ S.save(privateDir,'mail-inbox/two.json',{...capture,request:{format:'full',ids:['abc']},responses:[raw('def')]});result=await run('FORGE-CODE-CHATGPT-UNBOUND');a.equal(result.exceptions[0].reason,'GMAIL_SOURCE_REQUEST_BINDING_REQUIRED');
+});
 test('a pending browser capture is reused across refresh windows and provider polling stays in code',async t=>{
  const directory=dir(t),request={type:'RESULTS_PAGE',sourceId:'source',url:'https://www.linkedin.com/jobs/search-results/?keywords=operations'};
  const id=Q.enqueue(directory,{...request,refreshWindow:1});a.equal(Q.enqueue(directory,{...request,refreshWindow:2}),id);

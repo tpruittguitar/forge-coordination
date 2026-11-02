@@ -14,6 +14,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
    try{capture=JSON.parse(fs.readFileSync(file,'utf8'));if(capture.schema!=='forge.gmail-source-capture.v1'||capture.transport!=='SUPPORTED_GMAIL_CONNECTOR'||!Number.isFinite(Date.parse(capture.capturedAt))||capture.request?.format!=='full'||!Array.isArray(capture.responses))throw Error('FULL_AUTHORIZED_GMAIL_CAPTURE_REQUIRED');
     if(!Array.isArray(capture.request.ids)||capture.request.ids.length!==new Set(capture.request.ids).size||capture.responses.length!==new Set(capture.responses.map(m=>m.id)).size)throw Error('GMAIL_SOURCE_REQUEST_BINDING_REQUIRED');
     const wanted=new Set(capture.request.ids);if(capture.responses.some(m=>!wanted.has(m.id))||capture.responses.length!==wanted.size)throw Error('GMAIL_SOURCE_REQUEST_BINDING_REQUIRED');
+    delete state.exceptions['capture:'+S.hash(file)];
     for(const raw of capture.responses){let message;result.observations++;
      try{message=M.normalize(raw);}catch(e){state.exceptions['message:'+S.hash(raw.id||raw)]={owner:'CODE',reason:'FULL_MESSAGE_NORMALIZATION_REQUIRED'};result.invalidObservations=(result.invalidObservations||0)+1;result.pending++;continue;}
      if(apply)S.immutable(privateDir,'gmail-captures/'+message.captureSha256+'.json',raw);

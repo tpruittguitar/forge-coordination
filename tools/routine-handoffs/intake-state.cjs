@@ -14,7 +14,7 @@ function original(root,item,work,cache=new Map()){
    if(!inspection||coordinator.batches[inspection.batch]?.status!=='VALIDATED'||inspection.version!==item.sourceVersion||inspection.status!=='SOURCE_VERIFIED'||inspection.sourceEvidence?.sourceSha256!==item.sourceEvidence?.sourceSha256)throw Error('CURRENT_SOURCE_INSPECTION_REQUIRED');
    const batch=S.read(root,inspection.batch),source=batch.items.find(i=>i.key===item.key);
    if(!source||S.hash(source)!==inspection.version)throw Error('IMMUTABLE_SOURCE_RETURN_REQUIRED');
-   return source;
+   return require('./exception-work.cjs').evidence(root,inspection,source);
   }
   const job=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs[item.key],evidence=job?.evidence?.find(e=>e.cardHash===item.cardHash&&e.paragraphs?.length>=3);
   if(!evidence||!item.sourceEvidence||item.provenance!=='CAPTURED_SOURCE_CARD')throw Error('CAPTURED_CARD_PROOF_REQUIRED');

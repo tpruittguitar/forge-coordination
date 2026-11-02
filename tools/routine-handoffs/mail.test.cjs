@@ -1,5 +1,19 @@
 'use strict';
 const {test}=require('node:test'),a=require('node:assert/strict'),M=require('./mail.cjs');
+
+test('Profigent newsletter requires full sender/footer/list evidence and never consumes recruiting replies',()=>{
+ const m={fullBody:true,sender:'profigent@blog.profigent.ai',subject:'LinkedIn released new features',body:'Profigent product newsletter. You are reading a plain text version of this post.',hasUnsubscribe:true};
+ a.equal(M.classify(m).classification,'PRODUCT_NEWSLETTER');a.equal(M.classify(m).status,'VERIFIED_NOT_RECRUITING');
+ for(const patch of [{sender:'recruiter@example.com'},{hasUnsubscribe:false},{body:'Profigent would like to schedule your interview.'},{subject:'Re: LinkedIn released new features'},{subject:'Interview invitation'},{isSent:true}])a.equal(M.classify({...m,...patch}).owner,'AI');
+ a.equal(M.classify({...m,fullBody:false}).status,'PENDING');
+});
+
+test('LinkedIn accepted-invitation notices need matching MIME template, class, sender and body',()=>{
+ const raw={id:'notice',thread_id:'notice',internal_date:'1793627585000',payload:{mime_type:'text/plain',headers:[{name:'From',value:'invitations@linkedin.com'},{name:'Subject',value:'Example accepted your invitation, explore their network'},{name:'X-LinkedIn-Class',value:'INVITE-ACCEPT'},{name:'X-LinkedIn-Template',value:'email_accept_invite_single_01'},{name:'List-Unsubscribe',value:'present'}],body:{content:'Accepted invitation'}}};
+ const m=M.normalize(raw);a.equal(M.classify(m).classification,'NETWORK_NOTIFICATION');
+ for(const patch of [{sender:'recruiter@example.com'},{notificationTemplate:null},{notificationClass:'MESSAGE'},{hasUnsubscribe:false},{body:'Please send your interview availability.'},{subject:'Re: Example accepted your invitation, explore their network'},{isSent:true}])a.equal(M.classify({...m,...patch}).owner,'AI');
+ a.equal(M.classify({...m,fullBody:false}).status,'PENDING');
+});
 test('Remember me security template requires its exact sender and full source body',()=>{const m={fullBody:true,sender:'security-noreply@linkedin.com',subject:'New device registration for Remember me',body:'You successfully activated Remember me on a new device. When and where this happened: Windows Chrome.'};a.equal(M.classify(m).classification,'ACCOUNT_NOTIFICATION');a.equal(M.classify({...m,sender:'recruiter@example.com'}).owner,'AI');a.equal(M.classify({...m,body:'Please provide interview availability.'}).owner,'AI');a.equal(M.classify({...m,fullBody:false}).status,'PENDING');});
 test('routine source templates preserve discovery work and do not swallow recruiter replies',()=>{const base={fullBody:true,subject:'New jobs matching your profile',body:'New positions based on your job alert preferences'};for(const sender of ['donotreply@jobalerts.baesystems.com','jobs@my.theladders.com','alerts@ziprecruiter.com'])a.equal(M.classify({...base,sender}).discoveryPending,true);a.equal(M.classify({...base,sender:'notifications@github.com',subject:'Re: application outcomes',body:'bot left a comment'}).classification,'DEVELOPMENT_NOTIFICATION');a.equal(M.classify({...base,sender:'team@clerk.com',subject:'Interview invitation',body:'Which day works?'}).owner,'AI');a.equal(M.classify({...base,sender:'team@clerk.com',subject:'Welcome to Clerk'}).status,'VERIFIED_NOT_RECRUITING');});
 test('full MIME bodies, not subject snippets, support routine classification and retain source hashes',()=>{const message={id:'m',thread_id:'t',internal_date:'1793574238000',payload:{mime_type:'text/html',headers:[{name:'From',value:'Grok <noreply@x.ai>'}],body:{content:'<style>secret</style><p>Automation FORGE_GROK_APPLICATION_OUTCOME_HELPER</p>'}}};const m=M.normalize(message);a.equal(m.fullBody,true);a.equal(M.classify(m).coverageComplete,false);a.equal(M.classify({...m,fullBody:false}).status,'PENDING');a.match(m.sourceSha256,/^[a-f0-9]{64}$/);});
