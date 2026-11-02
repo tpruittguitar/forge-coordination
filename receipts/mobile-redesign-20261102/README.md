@@ -1,45 +1,56 @@
 # Mobile redesign screenshots: Stage 5 review (2026-11-02)
 
-For Grok Bot GUI and Tim. Branch `feat/mobile-pipeline-explorer` at `167543b`, PR tpruittguitar/foreman-cockpit#253 (draft).
+For Grok Bot GUI and Tim. Branch `feat/mobile-pipeline-explorer` at `7135638`, PR tpruittguitar/foreman-cockpit#253 (draft).
 Taken in a Claude Code cloud session on scrubbed test data (company names are placeholders), with a local test server and a
 local stand-in for the Writer. All traffic to the production Writer was blocked, and the block was checked before any run.
 
 Direct image links: `https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main-ed62bb/receipts/mobile-redesign-20261102/<file>`
 
+## Changes since the first review set (all from the Stage 5 review)
+- **Retry fixed** (`7271ecd`). A retry in flight shows a disabled "Retrying…". When it settles the button is "Retry" again, and a
+  failed retry says, before the button: "Retry failed at h:mm AM ET (reason). Last successful load: h:mm AM ET" (or "never").
+  Test: `tests/mobile-queue-retry.browser.js`. It fails on the old code.
+- **Act now order fixed** (`22953d4`). The new Act Now rules test found that the phone re-sorted Act now by score, so Shield AI
+  came last. Act now now keeps the shared Act Now order (Shield AI first), and its header reads "Order: Act now".
+  Test: `tests/mobile-act-now.browser.js` (Shield AI first, Memphis out, a decided role out at once and after a reload).
+- **Fit glyph** (`7135638`). Fits of 70+ are green "✓ Fit 79" (table "✓ 79"), so every fit badge has a glyph.
+- All phone screenshots below were retaken at `7135638`.
+
 ## Why some banners show (test data, not live state)
-- **"✕ SYS FAULT"** in the phone header: the test serves no health or incident feed, so the system readout shows a fault.
-- **"? Decision queue loading: showing only jobs marked Needs decision."**: Stage 5's new queue state. The test serves no
-  `/api/pipeline-health`, so the decision-ready index never loads. Decide falls back to rows marked `TIM_DECISION_REQUIRED`
-  and says so. After 60 s, or on an error, it changes to "unavailable" with a Retry button. See the bug below.
+- **"✕ SYS FAULT"** in the phone header: the test serves no health or incident feed.
+- **"? Decision queue loading: showing only jobs marked Needs decision."**: the test serves no `/api/pipeline-health`, so the
+  decision-ready index never loads, and Decide says it is showing only `TIM_DECISION_REQUIRED` rows.
 
 ## Phone, 390×844 unless named
-| File | Stage | Shows |
-|---|---|---|
-| `stage2-decide-390x844.png`, `stage2-decide-375x667.png`, `stage2-decide-844x390.png` | 2 | Phone frame at three sizes |
-| `stage2-more-390x844.png`, `stage2-more-over-decide-390x844.png` | 2 | More sheet |
-| `stage3-decide-390x844.png` | 3 | Decide: **All · 8 / Act now · 7** (one test job, a Director role in Memphis, TN, is not Act Now) |
-| `stage3-decide-act-now-390x844.png` | 3 | Act now chip pressed after earlier decisions in the test: **All · 3 / Act now · 2**, Memphis card left out. A "Hold queued" toast from the previous step is still on screen |
-| `stage3-undo-toast-390x844.png` | 3 | "Pursue queued" with Undo |
-| `stage3-detail-390x844.png` | 3 | Full-screen job detail |
-| `stage3-no-writer-phone-390x844.png` | 3 | "⚠ NO WRITER" header and Decide banner |
-| `stage4-jobs-390x844.png`, `stage4-fields-390x844.png`, `stage4-jobs-landscape-844x390.png` | 4 | Jobs list, Fields sheet, landscape table |
-| `stage4-status-390x844.png` | 4 | Status (its "4 need decision" uses a different test data set than Decide; the test checks the two counts match on the same data) |
-| `stage5-retry-stuck-390x844.png` | 5 | **Bug:** after a failed Retry, the button stays disabled on "Retrying…" |
+| File | Shows |
+|---|---|
+| `stage5-retry-failed-390x844.png` | **Fixed:** "Decision queue unavailable", "Retry failed at … ET (Queue snapshot HTTP 503). Last successful load: never.", and an enabled Retry button |
+| `stage5-retry-stale-failed-390x844.png` | **Fixed:** older queue still shown; banner gives the failed retry, its reason, the last successful load time (ET), then Retry |
+| `stage5-retry-stuck-390x844.png` | *Before the fix* (`6225505`): the button stuck on "Retrying…" |
+| `stage5-act-now-rules-390x844.png` | Act now: Shield AI first (though not top score), no Memphis role, "Order: Act now" |
+| `stage3-decide-390x844.png` | Decide: All · 8 / Act now · 7; strong fit "✓ Fit 79" in green next to a yellow "~ Fit 67" |
+| `stage3-decide-act-now-390x844.png` | Act now chip pressed after earlier decisions in the test: All · 3 / Act now · 2, Memphis job left out |
+| `stage3-undo-toast-390x844.png` | "Pursue queued" with Undo |
+| `stage3-detail-390x844.png` | Full-screen job detail |
+| `stage3-no-writer-phone-390x844.png` | "⚠ NO WRITER" header and Decide banner |
+| `stage4-jobs-390x844.png`, `stage4-fields-390x844.png` | Jobs list and Fields sheet |
+| `stage4-jobs-landscape-844x390.png` | Landscape table: Fit cells "~ 67", "✓ 79", "✓ 71" |
+| `stage4-status-390x844.png` | Status (different test data set than Decide; the test checks the counts match on the same data) |
+| `stage2-*.png` | Phone frame at 390×844, 375×667, 844×390, and the More sheet |
 
 ## Desktop, 1440 wide
 | File | Shows |
 |---|---|
-| `stage3-no-writer-desktop-1440x900.png` | Header crop with no Writer connected: a single orange "WRITER ⚠ OFF" |
-| `branch-desktop-first-visit-header-1440x120.png` | The same state, from the comparison run |
+| `stage3-no-writer-desktop-1440x900.png`, `branch-desktop-first-visit-header-1440x120.png` | No Writer connected: a single orange "WRITER ⚠ OFF" |
 | `main-desktop-connected-1440x900.png` vs `branch-desktop-connected-1440x900.png` | Full page, connected: **0 differing pixels** |
-| `main-desktop-connected-header-1440x120.png` vs `branch-desktop-connected-header-1440x120.png` | Header crop, connected: **0 differing pixels** |
+| `main-desktop-connected-header-1440x120.png` vs `branch-desktop-connected-header-1440x120.png` | Header crop: **0 differing pixels** |
 
-The left menu panel covering "PIPELINE" and the start of the banner looks identical on `main`, so it's an existing issue,
-logged as tpruittguitar/foreman-cockpit#254. It doesn't block this branch.
+Retaken at `d11b7de`: still 0 differing pixels when connected. On first visit (no Writer saved), 437 pixels differ, all in the header
+strip at x 522–660, y 9–46. That is the approved Stage 3 "Writer ⚠ off" badge and the search field next to it, which is drawn
+slightly narrower. The left menu panel covering "PIPELINE" and the start of the banner is identical on `main`, so it's an existing
+issue, logged as tpruittguitar/foreman-cockpit#254. It doesn't block this branch.
 
-## Open items before merge
-1. **Rerun on Tim's desktop.** In the cloud container, 14 browser tests also fail on `main` (`derived-refresh`, `incidents`,
-   `map-popup`, `map`, `mobile`, `pay-worth`, `phone-columns`, `phone-drawer`, `phone-sheet`, `pr70`, `progress`,
-   `scoring-publish`, `three-col`, `ui`). That they fail only because of the container (Playwright 1.63 instead of the pinned
-   1.61.1, fonts, no map tiles) is **not confirmed**. They must pass on the desktop before merge.
-2. **Stage 5 Retry bug:** the fix isn't applied yet, pending Tim and Grok's Stage 5 review.
+## Browser suite: branch vs main
+Run by the `browser-tests-compare` GitHub Actions workflow on PR #253. It runs every browser test on the branch and on `main` in
+the same runner, with the Writer hosts blocked, and posts a side-by-side table in the run summary. Tests that fail on both
+are existing failures; a test that passes on `main` and fails on the branch is a regression.
