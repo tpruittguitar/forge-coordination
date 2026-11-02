@@ -1,0 +1,50 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0013",
+  "instructionCommit": "160d4e5a185285dee4ae35a8b0597c562fe98cf9",
+  "createdAt": "2026-11-02T07:53:22.681Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485612795"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485612795",
+      "recommendation": "RETAIN_RANKED",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485612795\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485612795\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485612795/",
+        "company": "Actalent",
+        "title": "Senior Manufacturing Engineer",
+        "location": "Frederick, MD",
+        "observedAt": "2026-11-01T09:35:25.486Z",
+        "quote": "Senior Manufacturing Engineer | Actalent | Frederick, MD (On-site)"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0102.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:53:22.680Z",
+        "query": "Actalent \"Senior Manufacturing Engineer\" Frederick MD",
+        "employerSearchResult": "No Actalent Senior Manufacturing Engineer posting for Frederick, MD; nearest is a Frederick, CO listing and a multi-location Actalent listing without stated locations",
+        "exactRequisitionMatched": false
+      },
+      "reason": "Completed employer-first search found no exact Frederick, MD posting for this agency card; hidden client, scope and level remain unknown (agency/unknown client never terminal). Lookup consumed; retained ranked.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
