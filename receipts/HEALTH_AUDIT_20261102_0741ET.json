@@ -1,0 +1,547 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "task": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "scheduledAt": "2026-11-02T12:41:16.866Z",
+  "at": "2026-11-02T12:42:47.702Z",
+  "readOnly": true,
+  "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+  "sharedInstructionRevision": "7aa9941e0d4411ef048e4d070ef5763579905c3d",
+  "revisions": {
+    "coordination": "7aa9941e0d4411ef048e4d070ef5763579905c3d",
+    "githubObservedMain": "b28fb40959258bf2883e4199dfa478c3216ea82f",
+    "cockpit": "82a1daf911208dc7fb8f68ceffa65168c4419604"
+  },
+  "sourceEvidenceSha256": "6340c1b19b4d8a01e9fb357b96056ea4d31c85618a7acf38edb8c0d8139585b1",
+  "sourceEvidence": {
+    "writer": "b46ffb6d6f766d22f2fa3f48294721bef5ef36d23d83c002e18f0b2a037d17d5",
+    "github": "284b44111cf2ddb5eac87e9c54aa7deba90c1a08694fbe68f74bb676db07aba3",
+    "workflows": "aa2259dfc1ba27910df5199854ad1d40c6084af939de0fd2db01a7f03f30c007",
+    "explorer": "819042af704f952efcb7eb8f7ae1c8b6812af28a0f7d877a171b6aeef894062f",
+    "nativeReadback": "8c6273f67b2a76566babcaf6f0a5b301907db7463c8d31e1e76e0724d955f286"
+  },
+  "checks": {
+    "writer": true,
+    "github": true,
+    "canonicalMaster": true,
+    "explorerHealth": true
+  },
+  "writer": {
+    "build": {
+      "commit": "82a1daf",
+      "pr": 252,
+      "subject": "Separate salary midpoint from policy scoring point (#252)",
+      "deployedAt": "2026-11-02T09:55:11.650Z"
+    },
+    "level": "ok",
+    "errors": [],
+    "freeze": null,
+    "fileQueue": {
+      "pending": 0,
+      "oldestPendingAt": "",
+      "processing": [],
+      "hold": []
+    },
+    "unverifiedDirectWrites": 0,
+    "triggerInstalled": true,
+    "fileQueue24h": {
+      "arrived": 1,
+      "finished": 1,
+      "failed": 0,
+      "held": 0,
+      "peakFinishedPerHour": 1,
+      "waitMsMax": 35466
+    },
+    "fileQueueBasis": "WRITER_QUEUE_LOG.jsonl; a request is counted once it finishes; backlogAtEnd counts logged requests that had arrived and not yet finished",
+    "localProductionLockPresent": false,
+    "metadataNotice": "Unchanged blank undated FAILED record; current log totals report zero failed requests. Not a proven new failure.",
+    "fence": "No active freeze; per-execution fence not exposed.",
+    "rotation": "Threshold-based rotation exists in deployed source; live file size and last rotation not independently exposed."
+  },
+  "canonical": {
+    "masterRows": 4334,
+    "archiveRows": 785,
+    "modifiedAt": "2026-11-02T12:04:08.785Z",
+    "readAt": "2026-11-02T12:42:54.275Z"
+  },
+  "flow": {
+    "at": "2026-11-02T12:39:29.725Z",
+    "queues": {
+      "verification": 0,
+      "enrichment": 1413,
+      "readyForReview": 525,
+      "blockedClosed": 106
+    },
+    "population": {
+      "total": 2044,
+      "accounted": 2044,
+      "reconciled": true
+    },
+    "enrichmentOutput": {
+      "count36": 666,
+      "count": 666,
+      "windowHours": 36,
+      "perHour": 18.5,
+      "last24h": 458,
+      "partial": true,
+      "coverageHours": 36,
+      "collectionGaps": 15,
+      "available": true,
+      "countsAvailable": true,
+      "startedAt": "2026-10-31T04:35:30.337Z",
+      "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+    },
+    "intakeOutput": {
+      "count": 1751,
+      "windowHours": 36,
+      "perHour": 48.638888888888886,
+      "partial": true,
+      "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
+    },
+    "discoveryOutput": {
+      "count": 1708,
+      "windowHours": 36,
+      "perHour": 47.44444444444444,
+      "partial": true,
+      "candidateCount": 5164,
+      "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 36 hours; unresolved candidate identities excluded from job rate."
+    },
+    "upstreamWaiting": 5129,
+    "upstreamReconciled": true,
+    "units": "Canonical job completions distinct from field updates and source candidate identities."
+  },
+  "programmedCoordinator": {
+    "at": "2026-11-02T12:37:01.496Z",
+    "statuses": {
+      "EXCEPTION": 258,
+      "VERIFIED": 1,
+      "PROTECTED_SKIP": 2
+    },
+    "transactions": [
+      {
+        "requestId": "FORGE-CODE-CHATGPT-20261102T065500945Z-E00001",
+        "status": "VERIFIED",
+        "items": 1
+      }
+    ],
+    "codeExceptionReasons": {
+      "STRUCTURED_POSTING_UNAVAILABLE": 15,
+      "WORKING_SOURCE_ROUTE_REQUIRED": 41,
+      "INVALID_PUBLIC_SOURCE_URL": 2,
+      "SOURCE_HTTP_404": 2,
+      "SOURCE_HTTP_429": 3,
+      "SOURCE_ROUTE_BACKOFF": 142,
+      "SOURCE_HTTP_410": 4,
+      "SOURCE_HTTP_403": 1,
+      "NATIVE_REPORT_CAPTURE_PENDING": 1,
+      "NATIVE_REPORT_LIST_INCOMPLETE": 1,
+      "REPORT_CORRECTION_REQUIRED": 1,
+      "RUN_LIST_INACCESSIBLE": 1
+    },
+    "aiExceptions": 143,
+    "mail": {
+      "processed": 268,
+      "pending": 1
+    },
+    "pagination": {
+      "pagesCaptured": 0,
+      "advances": 0,
+      "sourcesWithPendingResults": 0,
+      "coverageComplete": false,
+      "noProcessingCap": true
+    }
+  },
+  "enrichmentWorker": {
+    "at": "2026-11-02T12:08:06.937Z",
+    "run": "FORGE-ENRICH_ATS-ATSBOT-20261102T1154Z",
+    "submittedUpdates": 50,
+    "writerOk": 50,
+    "writerFailed": 0,
+    "sourceReads": {
+      "linkedin": 22
+    },
+    "pendingWrites": 0,
+    "note": "Worker field updates are not fully enriched job completions."
+  },
+  "github": {
+    "workflows": [
+      {
+        "name": "board-discovery",
+        "path": ".github/workflows/board-discovery.yml",
+        "runs": [
+          {
+            "id": 41420726297,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-02T09:26:58Z",
+            "updated": "2026-11-02T09:33:25Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41420726297"
+          },
+          {
+            "id": 41400421276,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T06:31:15Z",
+            "updated": "2026-11-02T06:37:50Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41400421276"
+          },
+          {
+            "id": 41372785345,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-02T01:29:59Z",
+            "updated": "2026-11-02T01:37:04Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41372785345"
+          },
+          {
+            "id": 41354816578,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-01T21:59:48Z",
+            "updated": "2026-11-01T22:07:50Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41354816578"
+          },
+          {
+            "id": 41354464721,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-01T21:55:29Z",
+            "updated": "2026-11-01T22:01:48Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41354464721"
+          }
+        ]
+      },
+      {
+        "name": "enrich-ats-pay",
+        "path": ".github/workflows/enrich-ats-pay.yml",
+        "runs": [
+          {
+            "id": 41439027353,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-02T11:43:19Z",
+            "updated": "2026-11-02T12:08:21Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41439027353"
+          },
+          {
+            "id": 41438815640,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-02T11:41:39Z",
+            "updated": "2026-11-02T11:53:47Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41438815640"
+          },
+          {
+            "id": 41437004054,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T11:27:36Z",
+            "updated": "2026-11-02T11:38:35Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41437004054"
+          },
+          {
+            "id": 41424857114,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T09:57:32Z",
+            "updated": "2026-11-02T10:09:29Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41424857114"
+          },
+          {
+            "id": 41415727649,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T08:48:21Z",
+            "updated": "2026-11-02T09:00:08Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41415727649"
+          }
+        ]
+      },
+      {
+        "name": "source-intake-auto",
+        "path": ".github/workflows/source-intake-auto.yml",
+        "runs": [
+          {
+            "id": 41421638198,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_run",
+            "created": "2026-11-02T09:33:27Z",
+            "updated": "2026-11-02T09:33:52Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41421638198"
+          },
+          {
+            "id": 41397138037,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_run",
+            "created": "2026-11-02T05:59:05Z",
+            "updated": "2026-11-02T08:18:18Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41397138037"
+          },
+          {
+            "id": 41373416696,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_run",
+            "created": "2026-11-02T01:37:06Z",
+            "updated": "2026-11-02T02:12:32Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41373416696"
+          },
+          {
+            "id": 41355536891,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_run",
+            "created": "2026-11-01T22:07:52Z",
+            "updated": "2026-11-01T22:08:21Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41355536891"
+          },
+          {
+            "id": 41347387341,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_run",
+            "created": "2026-11-01T20:32:38Z",
+            "updated": "2026-11-01T20:38:02Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41347387341"
+          }
+        ]
+      },
+      {
+        "name": "source-trial",
+        "path": ".github/workflows/source-trial.yml",
+        "runs": [
+          {
+            "id": 41433054072,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T10:58:43Z",
+            "updated": "2026-11-02T11:05:22Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41433054072"
+          },
+          {
+            "id": 41396691313,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-02T05:54:10Z",
+            "updated": "2026-11-02T05:59:02Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41396691313"
+          },
+          {
+            "id": 41373439873,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-02T01:37:22Z",
+            "updated": "2026-11-02T01:42:14Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41373439873"
+          },
+          {
+            "id": 41346921520,
+            "status": "completed",
+            "result": "success",
+            "event": "schedule",
+            "created": "2026-11-01T20:27:14Z",
+            "updated": "2026-11-01T20:32:36Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41346921520"
+          },
+          {
+            "id": 41346134413,
+            "status": "completed",
+            "result": "success",
+            "event": "workflow_dispatch",
+            "created": "2026-11-01T20:18:02Z",
+            "updated": "2026-11-01T20:23:34Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41346134413"
+          }
+        ]
+      }
+    ],
+    "openPrs": {
+      "forge-coordination": [
+        {
+          "number": 193,
+          "title": "Claude relevance review receipt P11B (evidence only)",
+          "updatedAt": "2026-11-02T12:25:18Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/193"
+        },
+        {
+          "number": 188,
+          "title": "Claude relevance review receipt P11 (evidence-only)",
+          "updatedAt": "2026-11-02T09:11:15Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/188"
+        },
+        {
+          "number": 186,
+          "title": "Claude relevance evidence receipt P10 (evidence-only)",
+          "updatedAt": "2026-11-02T08:24:56Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/186"
+        },
+        {
+          "number": 183,
+          "title": "Claude relevance review checkpoint P3 (evidence only)",
+          "updatedAt": "2026-11-02T07:27:22Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/183"
+        },
+        {
+          "number": 180,
+          "title": "Claude relevance review: page 3 evidence (17 cards)",
+          "updatedAt": "2026-11-02T06:18:04Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/180"
+        },
+        {
+          "number": 179,
+          "title": "Claude relevance review: page 3 evidence batch P0003-A (evidence-only)",
+          "updatedAt": "2026-11-02T06:12:45Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/179"
+        },
+        {
+          "number": 176,
+          "title": "Claude relevance review: page 2 receipt (10 keys)",
+          "updatedAt": "2026-11-02T05:35:28Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/176"
+        },
+        {
+          "number": 102,
+          "title": "ENRICH: fetch missing BLS series before n/a",
+          "updatedAt": "2026-10-28T08:37:00Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/102"
+        }
+      ],
+      "foreman-cockpit": []
+    },
+    "latest50Failures": {
+      "forge-coordination": [],
+      "foreman-cockpit": []
+    }
+  },
+  "explorer": {
+    "http": 200,
+    "ok": true,
+    "sourceRevision": "04355cdee9ea32c159656ec61e52787c372ae59c",
+    "observedAt": "2026-11-02T12:44:14.217Z",
+    "browserOutbox": "NOT_INSPECTED: browser-local state is not established by server readback.",
+    "polling": "Read-only health HTTP/JSON succeeded; individual client polling not inspected."
+  },
+  "operations": {
+    "counts": {
+      "NOT_ATTEMPTED": 0,
+      "RESEARCHING": 0,
+      "QUEUED": 0,
+      "PROCESSING": 0,
+      "PENDING_VERIFICATION": 1,
+      "WRITER_TRANSPORT_BLOCKED": 0,
+      "BLOCKED": 0,
+      "NEEDS_RESOLUTION": 872,
+      "UNSYNCED": 0,
+      "VERIFIED_COMPLETE": 3512,
+      "EXCLUDED_VERIFIED": 6,
+      "EXISTING_VERIFIED": 292,
+      "CANCELED_VERIFIED": 0
+    },
+    "coverageRecords": 0,
+    "note": "Missing run/coverage telemetry is not zero work; separate durable receipts and source bridge observations exist."
+  },
+  "schedule": {
+    "nativeReadback": "2026-11-02T12:41:45.396437Z",
+    "configured": 6,
+    "active": 5,
+    "configurationOnly": true,
+    "executionEvidence": [
+      {
+        "id": "forge-ai-usage-reader",
+        "lastRunAt": "2026-11-02T07:03:46.412Z",
+        "executionVerified": true
+      },
+      {
+        "id": "forge-application-outcome-tracker",
+        "lastRunAt": "2026-11-02T06:34:32.639Z",
+        "executionVerified": false
+      },
+      {
+        "id": "forge-application-writer-gofer",
+        "lastRunAt": "2026-11-02T06:30:54.181Z",
+        "executionVerified": false
+      },
+      {
+        "id": "forge-posting-validation",
+        "lastRunAt": "2026-11-02T10:24:53.426Z",
+        "executionVerified": true
+      },
+      {
+        "id": "pe-stack-health-daily",
+        "lastRunAt": "2026-11-01T12:52:50.747Z",
+        "executionVerified": true
+      }
+    ]
+  },
+  "comparison": {
+    "prior": "receipts/HEALTH_AUDIT_20261101_0748ET.json",
+    "priorQueues": {
+      "verification": 0,
+      "enrichment": 454,
+      "readyForReview": 613,
+      "blockedClosed": 97
+    },
+    "priorEnrichmentLast24h": 317,
+    "activeBoardFaults": 0,
+    "retiredCharterFailureExcluded": true
+  },
+  "findings": [
+    {
+      "priority": 1,
+      "code": "ENRICHMENT_INFLOW_EXCEEDS_COMPLETION",
+      "detail": "Reconciled backlog 1413 vs 454 prior audit. Intake observed 48.64 jobs/hr vs enrichment 18.5 jobs/hr over36h; rates are observed minimums with collection gaps. 458 distinct enrichment completions last24h vs317 prior audit, so processing is moving but arrivals exceed completion.",
+      "next": "Prioritize missing-evidence enrichment and the 968 not-yet-attempted recovery entries; reuse existing evidence and process independently of held cases. No WIP cap.",
+      "evidence": [
+        "state/ENRICHMENT_FLOW.json",
+        "state/enrich-ats-pay-recovery.json"
+      ]
+    },
+    {
+      "priority": 2,
+      "code": "HELPER_SOURCE_ACCESS_EXCEPTIONS",
+      "detail": "142 SOURCE_ROUTE_BACKOFF and41 WORKING_SOURCE_ROUTE_REQUIRED code exceptions; native report list remains inaccessible for one connector job. Published Claude PR evidence is captured without needing PR merge.",
+      "next": "Repair authorized source/report access and reuse captured helper evidence; preserve pending identities and never count notification excerpts as full reports.",
+      "evidence": [
+        "state/PROGRAMMED_COORDINATOR_REPORT.json",
+        "state/ROUTINE_HANDOFFS_REPORT.json"
+      ]
+    },
+    {
+      "priority": 3,
+      "code": "SOURCE_TO_AUTO_HANDOFF_RUN_ABSENT",
+      "previouslyReported": true,
+      "detail": "Latest source-trial completed11:05Z with136 reported new matches. No later source-intake-auto run listed at12:43Z; latest09:33Z board no-candidate run. Do not infer136 unique new jobs; canonical deduplication remains necessary.",
+      "next": "Investigate workflow_run delivery and correlate saved source identities with programmed intake before any recovery. Never replay original requests.",
+      "evidence": [
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41433054072",
+        "https://github.com/tpruittguitar/forge-coordination/actions/runs/41421638198"
+      ]
+    },
+    {
+      "priority": 4,
+      "code": "EXECUTION_EVIDENCE_LAGS_HOST_CAPTURE",
+      "detail": "Outcome source capture has current private observations through12:20Z, but published tracker execution shows06:34Z. Gofer receipt also not accepted as executionVerified by current publisher. These are proof-publication gaps, not proof tasks did no work.",
+      "next": "Reconcile existing host/Gofer receipts through the execution publisher without inventing Writer proofs."
+    }
+  ],
+  "masterMutations": 0,
+  "driveMutations": 0,
+  "codeChanges": 0,
+  "scheduleChanges": 0,
+  "workflowDispatches": 0
+}
