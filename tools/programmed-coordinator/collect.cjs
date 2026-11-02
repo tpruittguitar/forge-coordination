@@ -64,7 +64,8 @@ function collect({root, state, commit, routing = routingProof}) {
       for (const item of batch.items) {
         // The immutable item digest prevents an unchanged exception from being
         // resent to AI on every poll; task/key identity prevents cross-lane loss.
-        const key = batch.taskKey + ':' + (item.key || item.primaryId || require('../helper-routing/outcome.cjs').eventKey(item.gmailMessageId, item.type, item.primaryId));
+        const itemIdentity=batch.schema==='forge.outcome-helper-batch.v1'?require('../helper-routing/outcome.cjs').eventKey(item.gmailMessageId,item.type,item.primaryId):(item.key||item.primaryId);
+        const key = batch.taskKey + ':' + itemIdentity;
         const version = S.hash(item), existing = state.items[key];
         if(existing?.version===version||/^PROTECTED|^EXISTING/.test(existing?.status||''))continue;
         if(existing?.transactionId&&state.transactions[existing.transactionId]?.status!=='VERIFIED') {
@@ -73,7 +74,7 @@ function collect({root, state, commit, routing = routingProof}) {
           continue;
         }
         const history=existing?[...(existing.history||[]),{version:existing.version,status:existing.status,transactionId:existing.transactionId||null,proof:existing.proof||null,batch:existing.batch}]:[];
-        state.items[key] = {key, version, taskKey:batch.taskKey, batch:rel, batchSha256:sha256, itemKey:item.key || item.primaryId || null, status:'RETURNED', attempts:0,history};
+        state.items[key] = {key, version, taskKey:batch.taskKey, batch:rel, batchSha256:sha256, itemKey:itemIdentity, status:'RETURNED', attempts:0,history};
         if(existing)updatedItems++;else newItems++;
       }
       if (!prior) newBatches++;

@@ -21,10 +21,10 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
   for (const item of Object.values(state.items)) {
     if (terminal(item.status) || item.transactionId || item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
+    if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
     const batch = cache.get(item.batch), evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
     if (!evidence) { exception(state,item,'SOURCE_BOUND_ITEM_MISSING','CODE'); continue; }
-    if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY'].includes(evidence.recommendation)) {
       exception(state,item,evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'WORKING_SOURCE_ROUTE_REQUIRED' : 'AMBIGUOUS_SCOPE_OR_IDENTITY',
         evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'CODE' : 'AI'); continue;

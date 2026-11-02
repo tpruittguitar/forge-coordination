@@ -164,6 +164,15 @@ test('new helper facts survive an uncertain original and resume after its verifi
  C.collect({...f,routing});a.equal(f.state.items[key].transactionId,'OLD');a.equal(f.state.items[key].deferredReturns.length,1);
  f.state.transactions.OLD.status='VERIFIED';C.collect({...f,routing});a.equal(f.state.items[key].status,'RETURNED');a.equal(f.state.items[key].batch,rel);a.equal(f.state.items[key].history[0].transactionId,'OLD');
 });
+test('separate outcome messages for one canonical job retain separate pending event identities',t=>{
+ const f=collection(t),taskKey='FORGE_GROK_APPLICATION_OUTCOME_HELPER',O=require('../helper-routing/outcome.cjs');
+ const work={...f.work,taskKey,routing:{cutoverAt:'2026-01-01T00:00:00Z',grokRemainder:1,retainedThreadHashes:[]}};
+ S.save(f.root,'control/AI_AUTOMATION_TASKS.json',{tasks:{[taskKey]:f.task}});S.save(f.root,'control/work.json',work);
+ let threadId='';for(let n=0;n<100;n++)if(O.owner('thread'+n,'2026-11-01T00:00:00Z',work)==='Grok'){threadId='thread'+n;break;}
+ const item={primaryId:'V2I-ONE',threadId,eventDate:'2026-11-01T00:00:00Z',observedAt:'2026-11-01T01:00:00Z',writerSubmitted:false};
+ S.save(f.root,f.rel,{...f.batch,schema:'forge.outcome-helper-batch.v1',taskKey,runId:'GROK-OUTCOME-TEST',items:[{...item,gmailMessageId:'m1',type:'APPLICATION_CONFIRMED'},{...item,gmailMessageId:'m2',type:'REJECTED_BY_EMPLOYER'}]});
+ C.collect({...f,routing:()=>({})});a.equal(Object.keys(f.state.items).length,2);
+});
 test('externalized evidence verifies only against its exact stable canonical reference',async()=>{
  const Readback=require('./readback.cjs'),W={parseRows:line=>[{...row(),p:{EVIDENCE_REF:'EVC1:1'},line}]};let reads=0;
  const reader=async action=>action==='evidence'?{data:{active:true,primaryId:'V2I-ONE',evidenceRef:'EVC1:1',fields:{DEGREE_TEXT:'Bachelor preferred.'}}}:
