@@ -3,15 +3,16 @@ const path=require('node:path');
 function endpoint(value){const u=new URL(value);if(!['http:','ws:'].includes(u.protocol)||!['127.0.0.1','localhost','[::1]'].includes(u.hostname)||u.username||u.password||u.search||u.hash)throw Error('LOCAL_BROWSER_ENDPOINT_REQUIRED');return u.href;}
 function sourceUrl(value){const u=new URL(value);if(u.protocol!=='https:'||!['grok.com','claude.ai','www.linkedin.com','www.glassdoor.com'].includes(u.hostname)||u.username||u.password)throw Error('UNAPPROVED_BROWSER_SOURCE');return u.href;}
 async function connect(config,{chromium}={}){
- if(config?.connectorDirectory)return require('./connector-queue.cjs').connect(config);
- if(!config?.endpoint)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
+ if(config?.connectorDirectory&&!config.localManaged)return require('./connector-queue.cjs').connect(config);
+ if(!config?.endpoint&&!config?.localManaged)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
  if(!chromium){if(!config.playwrightModule||!path.isAbsolute(config.playwrightModule))throw Error('EXISTING_PLAYWRIGHT_MODULE_REQUIRED');chromium=require(config.playwrightModule).chromium;}
  // Attach only to a separately configured existing browser. Never enable a
  // debugger, restart Chrome, copy profiles/cookies, or perform a login.
- const browser=await chromium.connectOverCDP(endpoint(config.endpoint),{timeout:10000}),context=browser.contexts()[0];
+ const local=config.localManaged?await require('./local-browser.cjs').open(config,{chromium}):null;
+ const browser=local||await chromium.connectOverCDP(endpoint(config.endpoint),{timeout:10000}),context=local?.context||browser.contexts()[0];
  if(!context){await browser.close();throw Error('EXISTING_BROWSER_CONTEXT_REQUIRED');}
  const owned=new Set();
- async function page(url){const p=await context.newPage();owned.add(p);try{await p.goto(sourceUrl(url),{waitUntil:'domcontentloaded',timeout:30000});return p;}catch(e){await p.close().catch(()=>{});owned.delete(p);throw e;}}
+ async function page(url){const p=await context.newPage();owned.add(p);try{await p.goto(sourceUrl(url),{waitUntil:'load',timeout:30000});return p;}catch(e){await p.close().catch(()=>{});owned.delete(p);throw e;}}
  async function invoke(p,name,input){
   if(!/^[A-Za-z][A-Za-z0-9_.-]{2,100}$/.test(name||''))throw Error('CONFIGURED_WEBMCP_TOOL_REQUIRED');
   const definitions=require('./page-tools.cjs'),definition=definitions.tools[name];
@@ -27,6 +28,9 @@ async function connect(config,{chromium}={}){
  }
  return{
   async feed(feed){
+   // Retain completed legacy captures while public receipts arrive directly
+   // through GitHub; local Chrome is used for saved-search pagination only.
+   if(config.connectorDirectory)return(await require('./connector-queue.cjs').connect(config)).feed(feed);
    if(!feed.automationId||!feed.taskKey||!['Grok','Claude'].includes(feed.provider))throw Error('EXACT_HELPER_FEED_REQUIRED');
    const p=await page(feed.url);
    return{...feed,list:({cursor})=>invoke(p,feed.listTool,{automationId:feed.automationId,cursor}),read:report=>invoke(p,feed.readTool,{automationId:feed.automationId,reportId:report.id}),close:async()=>{owned.delete(p);await p.close();}};

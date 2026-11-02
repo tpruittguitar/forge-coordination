@@ -8,14 +8,14 @@ async function run({root,privateDir,commit,runId,apply,config=settings(privateDi
  const save=async()=>{if(apply){S.save(root,FILE,state);L.save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),ledger);}};
  if(apply){
   S.save(root,'state/HELPER_ROUTING_CURRENT.json',require('./routing.cjs').snapshot(root,commit));
-  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
+  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
   catch(e){state.exceptions.delivery={owner:'CODE',reason:'HELPER_DELIVERY_ROUTE_UNAVAILABLE',errorSha256:S.hash(e.message)};}
  }
  if(apply)result.imported+=Reports.scanInboxes({root,privateDir,state,commit,inboxes:config.inboxes||[],python:config.python}).imported;
  if(apply&&config.browser?.connectorDirectory){result.connector=require('./connector-bridge.cjs').consume({directory:config.browser.connectorDirectory});for(const key of Object.keys(state.exceptions).filter(k=>k.startsWith('connector:')))delete state.exceptions[key];for(const failure of result.connector.failures)state.exceptions['connector:'+failure.jobId]={owner:'CODE',...failure};}
  let browser;
  try{
-  if(!config.browser?.endpoint&&!config.browser?.connectorDirectory)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
+  if(!config.browser?.endpoint&&!config.browser?.connectorDirectory&&!config.browser?.localManaged)throw Error('SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
   browser=await browserConnect(config.browser);
   const homes=S.read(root,'control/AUTOMATION_OPERATING_MODEL.json');
   for(const feedConfig of config.reportFeeds||[]){

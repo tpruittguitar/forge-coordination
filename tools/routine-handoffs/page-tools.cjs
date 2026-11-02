@@ -6,8 +6,8 @@
 async function readResults({expectedUrl}){
  const norm=s=>String(s||'').toLowerCase().replace(/[^a-z0-9]/g,''),label=e=>e.getAttribute('aria-label')||e.innerText||'',buttons=()=>[...document.querySelectorAll('main button, main [role="button"]')].filter(e=>e.getBoundingClientRect().width>0);
  const query=value=>{const u=new URL(value);u.pathname=u.pathname.replace('/comm/','/');for(const k of ['start','currentJobId'])u.searchParams.delete(k);u.searchParams.sort();return u.href;};
+ if(/\/(?:login|checkpoint|authwall)(?:\/|$)/.test(location.pathname)||/Attention Required|Just a moment|Verify you are human/i.test(document.title))throw Error('SOURCE_ACCESS_BLOCKED');
  if(location.hostname!=='www.linkedin.com'||query(location.href)!==query(expectedUrl))throw Error('CHANGED_SOURCE_FILTERS');
- if(/\/(?:login|checkpoint|authwall)(?:\/|$)/.test(location.pathname))throw Error('SOURCE_ACCESS_BLOCKED');
  const cards=()=>buttons().filter(e=>e.querySelectorAll('p').length>=3&&[...e.querySelectorAll('button,[role="button"]')].some(b=>/^Dismiss .+ job$/i.test(label(b).trim())));
  const wait=async predicate=>{const until=Date.now()+10000;while(Date.now()<until){if(predicate())return;await new Promise(r=>setTimeout(r,50));}throw Error('RESULTS_NOT_READY');};
  await wait(()=>cards().length||/No results found|Try shortening or rephrasing your search\./i.test(document.querySelector('main')?.innerText||''));

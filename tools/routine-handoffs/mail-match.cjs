@@ -2,6 +2,17 @@
 const Source=require('../programmed-coordinator/source.cjs'),U=require('../pipeline-observability/upstream-flow'),E=require('../email-recovery/employer-identity.cjs');
 const phrase=s=>' '+String(s||'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim()+' ';
 function urls(text){return[...new Set((String(text).match(/https:\/\/[^\s<>"')]+/g)||[]).map(u=>u.replace(/&amp;/g,'&').replace(/[.,;]+$/,'')))];}
+// A shared careers home/search/login link is not a posting identity. Keep exact
+// ATS/board IDs and specific job paths; unfamiliar routes need interpretation.
+function postingKey(value){
+ const employer=E.key(value);if(employer)return employer;
+ let u;try{u=new URL(value);}catch{return null;}
+ const key=U.key(value);if(!key)return null;
+ if(/^(linkedin|indeed):/.test(key))return key;
+ if(/(^|\.)(?:linkedin|indeed)\.com$/.test(u.hostname))return null;
+ if(/\/(?:jobs?|positions?|opportunities)\/(?!search(?:[-_/]|$)|login(?:\/|$)|apply(?:\/|$)|categories(?:\/|$)|locations(?:\/|$))[^/]+/i.test(u.pathname)||/\/job-details\/?$/i.test(u.pathname)&&u.searchParams.get('id')||/\/OpportunityDetail\/?$/i.test(u.pathname)&&u.searchParams.get('opportunityId'))return key;
+ return null;
+}
 function match(message,{rows,archiveRows=[],events=[]}){
  if(!message.fullBody)throw Error('FULL_MESSAGE_REQUIRED');
  const all=rows.concat(archiveRows),byId=new Map();for(const r of all){if(!byId.has(r.PRIMARY_ID))byId.set(r.PRIMARY_ID,[]);byId.get(r.PRIMARY_ID).push(r);}
@@ -10,7 +21,7 @@ function match(message,{rows,archiveRows=[],events=[]}){
  if(bindings.size>1)throw Error('CONFLICTING_THREAD_BINDINGS');
  const found=new Map(),links=urls(message.body+' '+(message.links||[]).join(' '));
  for(const row of all){
-  const saved=urls(['ATS_POSTING_URL','DIRECT_JOB_URL','SOURCE_URL','INITIATING_URL'].map(k=>row.p?.[k]||'').join(' ')),exact=links.some(u=>saved.some(v=>(U.key(u)&&U.key(u)===U.key(v))||(E.key(u)&&E.key(u)===E.key(v))));
+  const saved=urls(['ATS_POSTING_URL','DIRECT_JOB_URL','SOURCE_URL','INITIATING_URL'].map(k=>row.p?.[k]||'').join(' ')),exact=links.some(u=>saved.some(v=>postingKey(u)&&postingKey(u)===postingKey(v)));
   if(exact)found.set(row.PRIMARY_ID,'EXACT_POSTING_URL');
  }
  if(bindings.size===1){const id=[...bindings][0];if(found.size&&![...found.keys()].every(k=>k===id))throw Error('THREAD_AND_POSTING_CONFLICT');return{row:rowFor(id),method:'VERIFIED_THREAD_BINDING',archived:archiveRows.some(r=>r.PRIMARY_ID===id)};}
@@ -35,4 +46,4 @@ function mutation(event,row,{archived=false}={}){
  }
  throw Error('INTERPRETATION_REQUIRED');
 }
-module.exports={match,mutation,urls};
+module.exports={match,mutation,urls,postingKey};

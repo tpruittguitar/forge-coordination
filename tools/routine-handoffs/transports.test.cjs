@@ -9,6 +9,7 @@ test('full report parser collects multiple complete batches and ignores excerpts
  a.equal(R.ingest({...f,text}).imported,2);a.equal(fs.existsSync(path.join(f.root,'receipts/GROK_HELPERS/'+f.batch.taskKey+'/'+f.batch.runId+'.json')),true);
  a.equal(R.ingest({...f,text}).duplicate,true);a.throws(()=>R.ingest({...f,source:{...f.source,complete:false}}),/FULL_REPORT/);
 });
+test('native receipt references use exact repository artifacts and retain provider validation',t=>{const f=report(t),relative='receipts/GROK_HELPERS/'+f.batch.taskKey+'/'+f.batch.runId+'.json';S.save(f.root,relative,f.batch);let validated=0;const result=R.ingest({...f,text:'Delivered the full batch at `'+relative+'`.',validate:()=>validated++});a.equal(result.imported,0);a.equal(f.state.reports[Object.keys(f.state.reports)[0]].results[0].status,'DUPLICATE');a.equal(validated,0);const g=report(t);S.save(g.root,relative,{...g.batch,provider:'Claude'});a.equal(R.ingest({...g,text:relative}).quarantined,1);});
 test('run/report collisions are immutable, correction remains private and does not promote items',t=>{
  const f=report(t);R.ingest(f);const changed=JSON.stringify({...f.batch,items:[]});
  a.equal(R.ingest({...f,text:changed}).quarantined,true);
