@@ -1,16 +1,32 @@
 {
   "schema": "forge.routine-handoffs-report.v1",
-  "runId": "FORGE-CODE-CHATGPT-20261102T085023601Z",
-  "at": "2026-11-02T08:50:36.875Z",
+  "runId": "FORGE-CODE-CHATGPT-20261102T085207420Z",
+  "at": "2026-11-02T08:52:26.017Z",
   "imported": 0,
   "reportFeeds": [
     {
-      "imported": 0,
-      "exhausted": true
+      "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+      "mode": "DIRECT_ARTIFACTS",
+      "nativePolling": false,
+      "historicalCoverageComplete": false
     },
     {
-      "imported": 0,
-      "exhausted": true
+      "taskKey": "FORGE_GROK_INTAKE_HELPER",
+      "mode": "DIRECT_ARTIFACTS",
+      "nativePolling": false,
+      "historicalCoverageComplete": false
+    },
+    {
+      "taskKey": "FORGE_GROK_ENRICHMENT",
+      "mode": "DIRECT_ARTIFACTS",
+      "nativePolling": false,
+      "historicalCoverageComplete": false
+    },
+    {
+      "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER",
+      "mode": "DIRECT_ARTIFACTS",
+      "nativePolling": false,
+      "historicalCoverageComplete": false
     }
   ],
   "pagination": {
@@ -23,11 +39,6 @@
   "delivery": {
     "schema": "forge.helper-delivery-repair.v1",
     "results": [
-      {
-        "status": "RECORD_PRESENT",
-        "captured": 0,
-        "pullRequest": 187
-      },
       {
         "status": "RECORD_PRESENT",
         "captured": 1,
@@ -67,27 +78,38 @@
     "merged": 0,
     "noProcessingCap": true
   },
+  "directHandoffs": {
+    "captured": 0,
+    "pending": [],
+    "noProcessingCap": true,
+    "sourceCapture": {
+      "at": "2026-11-02T08:46:58.271Z",
+      "pages": 1,
+      "enumerationComplete": true,
+      "failures": 0
+    }
+  },
   "connector": {
     "accepted": 0,
     "failures": [
       {
         "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-        "at": "2026-11-02T08:50:34.594Z",
+        "at": "2026-11-02T08:52:24.536Z",
         "reason": "RUN_LIST_INACCESSIBLE"
       },
       {
         "jobId": "524e5438bf859d93d99c3b9121016ac40cd31c521c1e2c02141c4e6dec4f7bdf",
-        "at": "2026-11-02T08:50:34.599Z",
+        "at": "2026-11-02T08:52:24.550Z",
         "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
       },
       {
         "jobId": "5b9e0f1eb52efd3b9200db07aa6723cd13e06f1548759bda4f1d5b32e4951d6f",
-        "at": "2026-11-02T08:50:34.605Z",
+        "at": "2026-11-02T08:52:24.569Z",
         "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
       },
       {
         "jobId": "bde7b4b7bb747462e85cdf53b8d9e5933e4886b49d00bed0c9b1534d92d1258d",
-        "at": "2026-11-02T08:50:34.610Z",
+        "at": "2026-11-02T08:52:24.590Z",
         "reason": "CONTRADICTORY_SOURCE_COMPLETION"
       }
     ]
@@ -108,21 +130,21 @@
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "4f7181d18b7fa1c49a9f3039178dc64cea4697c525685dbfc4673b7ad419f5cd",
-      "retryAfter": "2026-11-02T08:50:36.178Z"
+      "retryAfter": "2026-11-02T08:52:24.971Z"
     },
     {
       "owner": "CODE",
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "e42cfe2c811a1d49a211205067e23de7f0d2841a2b548a9d04f698f4d8306c4c",
-      "retryAfter": "2026-11-02T08:50:36.317Z"
+      "retryAfter": "2026-11-02T08:52:25.218Z"
     },
     {
       "owner": "CODE",
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "e4b37682b5f74fd705e9377bdb23ffa1572c856bf264c5a60b63c496071ec365",
-      "retryAfter": "2026-11-02T08:50:36.459Z"
+      "retryAfter": "2026-11-02T08:52:25.383Z"
     },
     {
       "owner": "CODE",
@@ -149,37 +171,37 @@
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "c722dcdbd8d50b7791a95ba5238b98c1f5ca070fff9fcf9acce73c213376ed58",
-      "retryAfter": "2026-11-02T08:50:36.585Z"
+      "retryAfter": "2026-11-02T08:52:25.569Z"
     },
     {
       "owner": "CODE",
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "9afdc9654c7bcc37f2577f63d5b28cbcf1ac57fb5b0affcd3f4fd6645f128c85",
-      "retryAfter": "2026-11-02T08:50:36.686Z"
+      "retryAfter": "2026-11-02T08:52:25.743Z"
     },
     {
       "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-02T08:50:34.594Z",
+      "at": "2026-11-02T08:52:24.536Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     },
     {
       "owner": "CODE",
       "jobId": "524e5438bf859d93d99c3b9121016ac40cd31c521c1e2c02141c4e6dec4f7bdf",
-      "at": "2026-11-02T08:50:34.599Z",
+      "at": "2026-11-02T08:52:24.550Z",
       "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
     },
     {
       "owner": "CODE",
       "jobId": "5b9e0f1eb52efd3b9200db07aa6723cd13e06f1548759bda4f1d5b32e4951d6f",
-      "at": "2026-11-02T08:50:34.605Z",
+      "at": "2026-11-02T08:52:24.569Z",
       "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
     },
     {
       "owner": "CODE",
       "jobId": "bde7b4b7bb747462e85cdf53b8d9e5933e4886b49d00bed0c9b1534d92d1258d",
-      "at": "2026-11-02T08:50:34.610Z",
+      "at": "2026-11-02T08:52:24.590Z",
       "reason": "CONTRADICTORY_SOURCE_COMPLETION"
     }
   ],
