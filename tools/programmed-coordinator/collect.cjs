@@ -40,10 +40,14 @@ function collect({root, state, commit, routing = routingProof}) {
   const paths = ['receipts/CLAUDE_HELPERS', 'receipts/GROK_HELPERS', 'receipts/CLAUDE_RELEVANCE'];
   let newBatches = 0, newItems = 0, updatedItems = 0;
   for (const dir of paths) for (const file of S.files(path.join(root, dir))) {
-    const rel = path.relative(root, file).replace(/\\/g, '/'), raw = fs.readFileSync(file, 'utf8'), sha256 = S.hash(raw);
+    const rel = path.relative(root, file).replace(/\\/g, '/'), raw = fs.readFileSync(file, 'utf8'), normalized=raw.replace(/\r\n/g,'\n'),sha256 = S.hash(normalized);
     if(dir !== 'receipts/CLAUDE_RELEVANCE' && rel.split('/').length < 4) continue; // ACKs/manifests are not returns.
     const prior = state.batches[rel];
-    if (prior && prior.sha256 !== sha256) { prior.status='QUARANTINED';state.exceptions['batch:' + rel] = {owner:'CODE', reason:'IMMUTABLE_BATCH_CHANGED', path:rel}; continue; }
+    // Git/Windows checkout line-ending conversion is not changed evidence.
+    // All other byte differences, including JSON whitespace, remain immutable.
+    const sameBytes=prior&&[sha256,S.hash(raw),S.hash(normalized.replace(/\n/g,'\r\n'))].includes(prior.sha256);
+    if (prior && !sameBytes) { prior.status='QUARANTINED';state.exceptions['batch:' + rel] = {owner:'CODE', reason:'IMMUTABLE_BATCH_CHANGED', path:rel}; continue; }
+    if(prior&&sameBytes)prior.sha256=sha256;
     if (prior?.checkedAgainst === commit) continue;
     let batch;
     try {

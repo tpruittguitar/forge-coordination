@@ -119,7 +119,8 @@ test('helper next drains completed pages in code without requiring an AI to coun
 });
 test('transport continues inbox processing without a browser and puts only real exceptions in the coordinator report',async t=>{
  const f=assignment(t),privateDir=dir(t);S.save(f.root,'control/AUTOMATION_OPERATING_MODEL.json',{external:[]});
- const result=await require('./run.cjs').run({...f,privateDir,commit:'a'.repeat(40),config:{inboxes:[]}});a.equal(result.report.noProcessingCap,true);a.equal(result.report.exceptions[0].reason,'SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
+ S.save(f.root,'control/AI_AUTOMATION_TASKS.json',{tasks:{}});
+ const result=await require('./run.cjs').run({...f,apply:false,privateDir,commit:'a'.repeat(40),config:{inboxes:[]}});a.equal(result.report.noProcessingCap,true);a.equal(result.report.exceptions[0].reason,'SUPPORTED_BROWSER_ROUTE_UNAVAILABLE');
  const state={...f.state,routineHandoffs:{transport:result.report,assignments:{exceptions:[{key:'identity',owner:'AI',reason:'CANONICAL_NEAR_MATCH_REQUIRES_IDENTITY'}]}}};
  const report=require('../programmed-coordinator/run.cjs').publicReport(state,{},new Date().toISOString());a.equal(report.aiExceptions.length,1);a.equal(report.codeExceptions.length,1);
 });

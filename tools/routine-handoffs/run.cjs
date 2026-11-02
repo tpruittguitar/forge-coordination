@@ -6,6 +6,11 @@ const reason=e=>/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'BROWSER
 async function run({root,privateDir,commit,runId,apply,config=settings(privateDir),browserConnect=require('./browser.cjs').connect}){
  const state=S.read(root,FILE,Reports.empty()),ledger=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),before=S.hash(ledger),result={imported:0,reportFeeds:[],pagination:null};
  const save=async()=>{if(apply){S.save(root,FILE,state);L.save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),ledger);}};
+ if(apply){
+  S.save(root,'state/HELPER_ROUTING_CURRENT.json',require('./routing.cjs').snapshot(root,commit));
+  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
+  catch(e){state.exceptions.delivery={owner:'CODE',reason:'HELPER_DELIVERY_ROUTE_UNAVAILABLE',errorSha256:S.hash(e.message)};}
+ }
  if(apply)result.imported+=Reports.scanInboxes({root,privateDir,state,commit,inboxes:config.inboxes||[],python:config.python}).imported;
  let browser;
  try{

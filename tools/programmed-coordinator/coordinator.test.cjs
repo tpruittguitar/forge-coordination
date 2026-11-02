@@ -134,6 +134,12 @@ test('collector is idempotent, lists invalid URLs and preserves immutable collis
   const g=collection(t);g.batch.items[0].sourceEvidence.url='';S.save(g.root,g.rel,g.batch);C.collect({...g,routing});
   a.equal(g.state.batches[g.rel].status,'QUARANTINED');a.deepEqual(g.state.exceptions['batch:'+g.rel].invalidUrlKeys,['a']);a.equal(Object.keys(g.state.items).length,0);
 });
+test('Git LF/CRLF checkout conversion preserves accepted evidence; actual JSON changes still quarantine',t=>{
+ const f=collection(t),routing=()=>({});const file=path.join(f.root,f.rel),original=fs.readFileSync(file,'utf8');
+ fs.writeFileSync(file,original.replace(/\n/g,'\r\n'));C.collect({...f,routing});const accepted=f.state.batches[f.rel].sha256;
+ fs.writeFileSync(file,original);C.collect({...f,commit:'c'.repeat(40),routing});a.equal(f.state.batches[f.rel].status,'VALIDATED');a.equal(f.state.batches[f.rel].sha256,accepted);
+ S.save(f.root,f.rel,{...f.batch,observedAt:'2020-01-01T00:00:00Z'});C.collect({...f,routing});a.equal(f.state.batches[f.rel].status,'QUARANTINED');
+});
 test('per-item source ambiguity stays an exception while independent items continue',async t=>{
   const f=collection(t);f.batch.schema='forge.enrichment-helper-batch.v1';f.batch.taskKey='FORGE_GROK_ENRICHMENT';
   const make=(id)=>({primaryId:id,recommendation:'ENRICHMENT_EVIDENCE_READY',sourceEvidence:{...T.identity(row()),url:'https://example.com/'+id}});
