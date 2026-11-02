@@ -2,7 +2,7 @@
 const S=require('../programmed-coordinator/store.cjs'),L=require('../email-recovery/ledger.cjs'),{query}=require('../email-recovery/import-capture.cjs');
 const position=url=>Number(new URL(url).searchParams.get('start')||0);
 function observation(value,source){
- if(value?.schema!=='forge.result-page-observation.v1'||value.browser!=='Chrome'||value.complete!==true||!Number.isFinite(Date.parse(value.at))||query(value.url)!==query(source.url))throw Error('INCOMPLETE_OR_CHANGED_SOURCE_PAGE');
+ if(value?.schema!=='forge.result-page-observation.v1'||!['Chrome','TinyFish'].includes(value.browser)||value.complete!==true||!Number.isFinite(Date.parse(value.at))||query(value.url)!==query(source.url))throw Error('INCOMPLETE_OR_CHANGED_SOURCE_PAGE');
  if(!Array.isArray(value.jobs)||!value.next||typeof value.next.available!=='boolean')throw Error('INCOMPLETE_RESULTS_CONTROLS');
  const ids=new Set();for(const j of value.jobs){if(!/^\d+$/.test(j.jobId)||ids.has(j.jobId)||!Array.isArray(j.paragraphs)||j.paragraphs.length<3||j.paragraphs.slice(0,3).some(v=>typeof v!=='string'||!v.trim()))throw Error('AMBIGUOUS_RESULT_CARD');ids.add(j.jobId);}
  if(value.jobs.length===0&&value.emptyConfirmed!==true)throw Error('LOADING_OR_UNRENDERED_PAGE');

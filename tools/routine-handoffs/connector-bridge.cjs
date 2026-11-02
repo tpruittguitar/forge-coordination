@@ -1,0 +1,38 @@
+'use strict';
+const fs=require('node:fs'),path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),Q=require('./connector-queue.cjs');
+function options(configFile){const cfg=JSON.parse(fs.readFileSync(configFile,'utf8')),handoffs=S.read(cfg.privateDirectory,'handoffs.json',{}),connector=S.read(cfg.privateDirectory,'connector.json',{});return{configFile,privateDir:cfg.privateDirectory,directory:handoffs.browser?.connectorDirectory||path.join(cfg.privateDirectory,'connector'),profileId:connector.profileId||null,scriptPath:__filename,mail:require('./mail-connector.cjs').prepare(cfg)};}
+function pending(directory){return S.files(path.join(directory,'jobs')).map(f=>S.read(directory,path.relative(directory,f))).filter(j=>!fs.existsSync(path.join(directory,'results',j.id+'.json'))&&!fs.existsSync(path.join(directory,'incoming',j.id+'.json'))).map(j=>({...j,run:S.read(directory,'runs/'+j.id+'.json',null)}));}
+function instructions(job){const r=job.request,common='Use the existing signed-in profile for read-only source access. Never sign in, change settings/prompts/schedules, send messages, apply/dismiss/save jobs, inspect credentials/cookies, or solve verification challenges. Return strict JSON from actual observed UI/DOM content, without guessing IDs or copying a notification preview. If blocked return {complete:false,reason:"SOURCE_ACCESS_BLOCKED"}.';
+ if(r.type==='NATIVE_REPORTS')return common+` Open existing automation ${r.taskKey} (${r.automationId}). List all completed native runs, following every actual run-list page; read every full persisted report not older than ${r.after||'the beginning of available history'}. Do not stop at an arbitrary report count. Return {schema:"forge.native-report-capture.v1",complete:true,provider:${JSON.stringify(r.provider)},taskKey:${JSON.stringify(r.taskKey)},automationId:${JSON.stringify(r.automationId)},reports:[{id:<observed native report id>,url:<observed report URL>,fullReportComplete:true,text:<entire verbatim persisted response including full JSON>}]}. Complete means the full run list was traversed and each returned report body was fully read. No public excerpts or source summaries substitute for full text.`;
+ if(r.type==='RESULTS_PAGE')return common+` Preserve every query filter in the exact supplied URL. Capture ALL current result cards via DOM/actual hrefs as jobId and paragraphs [title,company,location,...other exact card text]. Capture current results Next/Page N control, distinct from unrelated carousels. Save the first observation, click actual results Next once only when enabled, then capture all next-page cards and actual URL. Do not guess offsets. Return {schema:"forge.browser-pagination-capture.v1",sourceId:${JSON.stringify(r.sourceId)},complete:true,before:{schema:"forge.result-page-observation.v1",browser:"TinyFish",complete:true,url:<actual URL>,at:<UTC ISO>,jobs:[{jobId,paragraphs}],next:{available,kind:"RESULTS_NEXT",proof:<stable observed control/page binding>},endConfirmed:<true only if actual end proven>,emptyConfirmed:<true only if explicit empty results>},after:<same observation or null>,clickedControl:<"RESULTS_NEXT" or null>}. Return incomplete if any card identity or full-page capture cannot be proven.`;
+ throw Error('UNSUPPORTED_BROWSER_JOB');
+}
+// Executed inside functions.exec's authorized connector host. The host model
+// only launches this merged code; paging, tool calls, storage and polling are code.
+async function host(tools,config){
+ const unwrap=r=>r.structuredContent||JSON.parse(r.content.find(c=>c.type==='text').text);
+ const add=async(file,value)=>tools.apply_patch('*** Begin Patch\n*** Add File: '+file+'\n+'+JSON.stringify(value,null,2).split('\n').join('\n+')+'\n*** End Patch');
+ const out=[];
+ for(const job of config.jobs){
+  try{let runId=job.run?.runId;
+   if(!config.profileId)throw Error('EXISTING_BROWSER_PROFILE_REQUIRED');
+   if(job.run?.status==='POST_IN_FLIGHT_UNKNOWN'&&!runId)throw Error('ORIGINAL_BROWSER_RUN_ID_REQUIRED');
+   if(!runId)await add(config.directory+'/runs/'+job.id+'.json',{status:'POST_IN_FLIGHT_UNKNOWN',submittedAt:new Date().toISOString()});
+   if(!runId){const r=unwrap(await tools.mcp__codex_apps__tinyfish_run_web_automation({url:job.request.url,goal:job.instructions,use_profile:true,profile_id:config.profileId,output_schema:{type:'object',properties:{schema:{type:'string'},complete:{type:'boolean'},reason:{type:'string'},sourceId:{type:'string'},provider:{type:'string'},taskKey:{type:'string'},automationId:{type:'string'},reports:{type:'array',items:{type:'object',properties:{id:{type:'string'},url:{type:'string'},fullReportComplete:{type:'boolean'},text:{type:'string'}}}},before:{type:'object'},after:{},clickedControl:{}},required:['complete']}}));runId=r.runId||r.run_id;if(!/^[a-f0-9-]{36}$/i.test(runId||''))throw Error('SUPPORTED_BROWSER_RUN_ID_REQUIRED');await add(config.directory+'/runs/'+job.id+'.json',{runId});}
+   let result;do{result=unwrap(await tools.mcp__codex_apps__tinyfish_wait_for_run({run_id:runId}));}while(['pending','running'].includes(result.status));
+   await add(config.directory+'/incoming/'+job.id+'.json',{jobId:job.id,runId,result});out.push({jobId:job.id,status:result.status,runId});
+  }catch(e){out.push({jobId:job.id,status:'PENDING_SOURCE_ROUTE',reason:String(e.message).replace(/[^A-Z_]/g,'').slice(0,120)});}
+ }
+ return out;
+}
+function consume(config){let accepted=0;const failures=[];
+ for(const file of S.files(path.join(config.directory,'incoming'))){let item;
+  try{item=JSON.parse(fs.readFileSync(file,'utf8'));if(!/^[a-f0-9]{64}$/.test(item.jobId||''))throw Error('INVALID_CONNECTOR_JOB_ID');if(fs.existsSync(path.join(config.directory,'results',item.jobId+'.json')))continue;const job=S.read(config.directory,'jobs/'+item.jobId+'.json');
+   if(item.result.status!=='completed')throw Error('CONNECTOR_RUN_NOT_COMPLETE');let data=item.result.result;if(typeof data?.result==='string')data=data.result;if(typeof data==='string'){const fenced=data.match(/```(?:json)?\s*([\s\S]*?)```/i);data=JSON.parse(fenced?fenced[1]:data);}Q.accept(config.directory,job,data,item.runId);accepted++;}
+  catch(e){const id=/^[a-f0-9]{64}$/.test(item?.jobId||'')?item.jobId:S.hash(file),failure={jobId:id,at:new Date().toISOString(),reason:/^[A-Z][A-Z0-9_]+$/.test(e.message)?e.message:'COMPLETE_STRUCTURED_SOURCE_REQUIRED'};S.save(config.directory,'failures/'+id+'.json',S.read(config.directory,'failures/'+id+'.json',failure));failures.push(failure);}
+ }
+ const unresolved=failures.filter(f=>{const job=S.read(config.directory,'jobs/'+f.jobId+'.json',null);return !job||!Q.packets(config.directory,job.request.type).some(p=>Q.identity(p.request)===Q.identity(job.request)&&Date.parse(p.completedAt)>Date.parse(S.read(config.directory,'failures/'+f.jobId+'.json').at));});
+ return{accepted,failures:unresolved};
+}
+if(require.main===module){try{const config=options(process.argv[3]);if(process.argv[2]==='script'){config.jobs=pending(config.directory).map(j=>({...j,instructions:instructions(j)}));console.log('(async()=>{const results=await Promise.allSettled([('+require('./mail-connector.cjs').host.toString()+')(tools,'+JSON.stringify(config.mail)+'),('+host.toString()+')(tools,'+JSON.stringify(config)+')]);return results.map((r,i)=>r.status==="fulfilled"?{source:i===0?"GMAIL":"BROWSER",result:r.value}:{source:i===0?"GMAIL":"BROWSER",status:"PENDING_SOURCE_ROUTE"});})()');}else if(process.argv[2]==='consume')console.log(JSON.stringify(consume(config)));else throw Error('Use script or consume with the existing private coordinator config');}catch(e){console.error(e.message);process.exitCode=1;}}
+module.exports={options,pending,instructions,host,consume};

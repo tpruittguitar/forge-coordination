@@ -1,6 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
+const PARSER_VERSION='20261102-ats-microdata-v1';
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -37,7 +38,7 @@ async function page(raw, {transport = fetch, lookup = dns.lookup} = {}) {
   throw Error('SOURCE_REDIRECT_LIMIT');
 }
 function text(html) {
-  return String(html || '').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
+  return String(html || '').replace(/&lt;/g,'<').replace(/&gt;/g,'>').replace(/<script\b[^>]*>[\s\S]*?<\/script>/gi, '').replace(/<style\b[^>]*>[\s\S]*?<\/style>/gi, '')
     .replace(/<\/(?:p|div|li|h[1-6])>|<br\s*\/?>/gi, '\n').replace(/<[^>]*>/g, ' ')
     .replace(/&nbsp;/g,' ').replace(/&amp;/g,'&').replace(/&quot;/g,'"').replace(/&#39;|&rsquo;/g,"'")
     .replace(/&#(\d+);/g, (_, n) => Number(n) <= 0x10ffff ? String.fromCodePoint(Number(n)) : '').replace(/[ \t]+/g,' ').trim();
@@ -46,14 +47,21 @@ function postings(html) {
   const found = [];
   function walk(x) { if (Array.isArray(x)) x.forEach(walk); else if (x && typeof x === 'object') {
     if ([].concat(x['@type'] || []).includes('JobPosting')) found.push(x);
-    if (x['@graph']) walk(x['@graph']);
+    for(const [key,value] of Object.entries(x)) if(key!=='@type'&&value&&typeof value==='object') walk(value);
   } }
   for (const m of html.matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi)) { try { walk(JSON.parse(m[1])); } catch {} }
   return found;
 }
 function inspect(raw, expected, quote = '', now = Date.now()) {
-  const jobs=postings(raw);if(!jobs.length)throw Error('STRUCTURED_POSTING_UNAVAILABLE');
-  const matches = jobs.filter(j => norm(j.title) === norm(expected.title) && employer(j.hiringOrganization?.name) === employer(expected.company) &&
+  let jobs=postings(raw);
+  if(!jobs.length&&/itemtype\s*=\s*["'][^"']*JobPosting/i.test(raw)){
+    try{jobs=JSON.parse(require('node:child_process').execFileSync(process.env.FORGE_PYTHON||'python',[path.join(__dirname,'html-posting.py')],{input:raw,encoding:'utf8',maxBuffer:5e6,windowsHide:true}));}catch{throw Error('MICRODATA_SOURCE_EXTRACTION_FAILED');}
+  }
+  return inspectJobs(jobs,expected,quote,now);
+}
+function inspectJobs(jobs,expected,quote='',now=Date.now()){
+  if(!jobs.length)throw Error('STRUCTURED_POSTING_UNAVAILABLE');
+  const matches = jobs.filter(j => norm(j.title) === norm(expected.title) && [expected.company,...expected.companyAliases||[]].some(name=>employer(j.hiringOrganization?.name)===employer(name)) &&
     [].concat(j.jobLocation || []).some(l => {
       const a = l.address || {}, parts = [a.addressLocality, a.addressRegion].filter(Boolean).join(', ');
       return parts && location(parts) === location(expected.location);
@@ -63,28 +71,39 @@ function inspect(raw, expected, quote = '', now = Date.now()) {
   if (description.length < 300 || /captcha|sign in to view|verify you are human/i.test(description)) throw Error('INCOMPLETE_POSTING');
   if (job.validThrough && (!Number.isFinite(Date.parse(job.validThrough)) || Date.parse(job.validThrough) < now)) throw Error('POSTING_EXPIRED');
   if (quote && !norm(description).includes(norm(quote))) throw Error('HELPER_QUOTE_NOT_IN_POSTING');
-  const degree = L.degreeFromText(description), sal = job.baseSalary, val = sal?.value;
+  const degree = require('./posting-formats.cjs').degree(job.description,text), sal = job.baseSalary, val = sal?.value;
   // A generic dollar range may be bonus/total compensation. Only structured,
   // explicitly annual USD base salary is eligible for automatic posted pay.
   const low = Number(val?.minValue ?? val?.value), high = Number(val?.maxValue ?? val?.value);
   const pay = sal?.currency === 'USD' && val?.unitText === 'YEAR' && low >= 40000 && high >= low && high <= 2000000 ? {low, high} : null;
-  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay};
+  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
-async function verify({item, expected, privateDir, fetchPage = page, now = Date.now()}) {
-  const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''});
+async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
+  const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');
+  const context=S.read(path.resolve(__dirname,'../..'),'reference/COMPANY_SITE_CONTEXT.json',{companies:[]}),company=context.companies.find(c=>[c.company,...c.aliases||[]].some(n=>employer(n)===employer(expected.company)));
+  expected={...expected,companyAliases:[...expected.companyAliases||[],...company?[company.company,...company.aliases||[]]:[]]};
   const cache = path.join(privateDir, 'sources', key + '.json');
   if (fs.existsSync(cache)) {
     const c = JSON.parse(fs.readFileSync(cache, 'utf8'));
-    if (now - Date.parse(c.observedAt) < 86400000 && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256) return c;
+    if (now - Date.parse(c.observedAt) < 86400000 && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
+      const facts=c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);
+      return{...c,...facts}; // Reuse raw source, recompute facts under current parser.
+    }
   }
-  const host=new URL(url).hostname,routes=S.read(privateDir,'source-routes.json',{}),route=routes[host];
-  if(route&&Date.parse(route.retryAfter)>now)throw Error('SOURCE_ROUTE_BACKOFF');
-  let got;
-  try{got=await fetchPage(url);}
-  catch(e){if(/^SOURCE_HTTP_(?:403|429)$/.test(e.message)){routes[host]={reason:e.message,retryAfter:new Date(Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+15*60000).toISOString()};S.save(privateDir,'source-routes.json',routes);}throw e;}
-  const facts = inspect(got.raw, expected, item.sourceEvidence.quote, now);
-  const result = {...facts, raw:got.raw, sourceUrl:url, finalUrl:got.url, expected, sourceSha256:S.hash(got.raw), observedAt:new Date(now).toISOString()};
-  S.save(privateDir, 'sources/' + key + '.json', result); return result;
+  const sourceRoutes=S.read(privateDir,'source-routes.json',{}),errors=[];
+  async function get(target){publicUrl(target);const host=new URL(target).hostname;if(Date.parse(sourceRoutes[host]?.retryAfter)>now)throw Error('SOURCE_ROUTE_BACKOFF');try{return await fetchPage(target);}catch(e){if(/^SOURCE_HTTP_(?:403|429)$/.test(e.message)){sourceRoutes[host]={reason:e.message,retryAfter:new Date(Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+15*60000).toISOString()};S.save(privateDir,'source-routes.json',sourceRoutes);}throw e;}}
+  const apiRoutes=F.routes([url,...sourceUrls]),candidates=[...apiRoutes.map(route=>({route,format:'ATS_API',url:route.api})),...[url,...sourceUrls].map(url=>({url,format:'HTML'}))],seen=new Set();
+  for(const candidate of candidates){if(seen.has(candidate.url))continue;seen.add(candidate.url);
+    try{
+      const got=await get(candidate.url);let facts,companyRaw,boardCompany;
+      if(candidate.route){const route=candidate.route,board=new URL(route.api).pathname.split('/');if(route.companyApi)companyRaw=(await get(route.companyApi)).raw;else if(board.some(token=>[expected.company,...expected.companyAliases].some(n=>norm(token)===norm(n))))boardCompany={name:expected.company};
+        facts=inspectJobs([F.apiPosting(route,JSON.parse(got.raw),companyRaw?JSON.parse(companyRaw):boardCompany)],expected,item.sourceEvidence.quote,now);
+      }else facts=inspect(got.raw,expected,item.sourceEvidence.quote,now);
+      const result={...facts,format:candidate.format,route:candidate.route,companyRaw,boardCompany,raw:got.raw,sourceUrl:candidate.route?.page||candidate.url,finalUrl:got.url,expected,sourceSha256:S.hash(got.raw),observedAt:new Date(now).toISOString(),...(companyRaw?{companySourceSha256:S.hash(companyRaw)}:{})};
+      S.save(privateDir,'sources/'+key+'.json',result);return result;
+    }catch(e){errors.push(e);}
+  }
+  const conflict=errors.find(e=>/IDENTITY|QUOTE|CONFLICT/.test(e.message));throw conflict||errors[0]||Error('WORKING_SOURCE_ROUTE_REQUIRED');
 }
 function enrichmentFields(source, row) {
   const fields = {}, p = row.p || {}, date = source.observedAt.slice(0,10);
@@ -96,4 +115,4 @@ function enrichmentFields(source, row) {
   return fields;
 }
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {norm,employer, location, publicUrl, page, text, postings, inspect, verify, enrichmentFields,known};
+module.exports = {PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, enrichmentFields,known};

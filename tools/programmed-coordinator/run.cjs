@@ -11,7 +11,7 @@ function exception(state, item, reason, owner) {
 }
 function publicReport(state, coverage, at) {
   const statuses = {}; for (const i of Object.values(state.items)) statuses[i.status]=(statuses[i.status] || 0)+1;
-  const exceptions=[...Object.values(state.exceptions),...(state.routineHandoffs?.transport?.exceptions||[]),...(state.routineHandoffs?.assignments?.exceptions||[])];
+  const exceptions=[...Object.values(state.exceptions),...(state.routineHandoffs?.transport?.exceptions||[]),...(state.routineHandoffs?.assignments?.exceptions||[]),...(state.routineHandoffs?.mail?.exceptions||[])];
   return {schema:'forge.programmed-coordinator-report.v1', at, instructionCommit:state.instructionCommit,
     batches:Object.keys(state.batches).length, statuses, transactions:Object.values(state.transactions).map(t => ({requestId:t.requestId,status:t.status,items:t.ids.length})),
     codeExceptions:exceptions.filter(x => x.owner === 'CODE'), aiExceptions:exceptions.filter(x => x.owner === 'AI'),
@@ -20,7 +20,8 @@ function publicReport(state, coverage, at) {
 async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now()}) {
   const cache = new Map();
   for (const item of Object.values(state.items)) {
-    if (terminal(item.status) || item.transactionId || item.retryAfter && Date.parse(item.retryAfter) > now) continue;
+    const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY)$/.test(state.exceptions[item.key]?.reason||'');
+    if (terminal(item.status) || item.transactionId || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
@@ -53,7 +54,8 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     }
     try {
       item.attempts++;
-      const source=await sourceVerify({item:evidence,expected,privateDir,now});
+      item.sourceParserVersion=Source.PARSER_VERSION;
+      const source=await sourceVerify({item:evidence,expected,privateDir,now,sourceUrls:row?require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)):[]});
       if (enrichment) {
         const fields=Source.enrichmentFields(source,row);
         if (!Object.keys(fields).length) { item.status='NO_MISSING_SUPPORTED_FIELDS'; delete state.exceptions[item.key]; continue; }
@@ -141,10 +143,12 @@ async function main(mode='inventory') {
       if(apply) for(const tx of Object.values(state.transactions).filter(T.pending)) {
         try {await T.reconcile({root,privateDir,state,tx,deps});} catch(e) {state.exceptions['tx:'+tx.requestId]={owner:'CODE',reason:e.message,requestId:tx.requestId};}
       }
-      const canonical=await snapshot();
+      let canonical=await snapshot();
       state.canonicalSource=canonical.source;
+      const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply});
+      if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
       const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply});
-      state.routineHandoffs={transport:routine,assignments};
+      state.routineHandoffs={transport:routine,assignments,mail};
       await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
       if(apply) {
         S.save(root,STATE,state);
