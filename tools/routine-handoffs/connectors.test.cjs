@@ -40,6 +40,6 @@ test('a pending browser capture is reused across refresh windows and provider po
  const id=Q.enqueue(directory,{...request,refreshWindow:1});a.equal(Q.enqueue(directory,{...request,refreshWindow:2}),id);
  const files=new Map();let launches=0,polls=0;
  const tools={apply_patch:patchTool(files),mcp__codex_apps__tinyfish_run_web_automation:async()=>{launches++;return{structuredContent:{runId:'12345678-1234-1234-1234-123456789012'}};},mcp__codex_apps__tinyfish_wait_for_run:async()=>({structuredContent:++polls===1?{status:'running'}:{status:'completed',result:{complete:false,reason:'SOURCE_ACCESS_BLOCKED'}}})};
- const job={...S.read(directory,'jobs/'+id+'.json'),instructions:'read only'},config={directory,profileId:'existing',jobs:[job]};await B.host(tools,config);a.equal(launches,1);a.equal(polls,2);a.ok(files.get(directory+'/incoming/'+id+'.json'));
+ const job={...S.read(directory,'jobs/'+id+'.json'),instructions:'read only'},config={directory,profileId:'existing',jobs:[job]};await B.host(tools,config);a.equal(launches,1);a.equal(polls,1);a.equal(files.has(directory+'/incoming/'+id+'.json'),false);await B.host(tools,{...config,jobs:[{...job,run:files.get(directory+'/runs/'+id+'.json')}]});a.equal(launches,1);a.equal(polls,2);a.ok(files.get(directory+'/incoming/'+id+'.json'));
  await B.host(tools,{...config,jobs:[{...job,run:{status:'POST_IN_FLIGHT_UNKNOWN'}}]});a.equal(launches,1);
 });

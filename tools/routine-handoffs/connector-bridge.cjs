@@ -19,7 +19,8 @@ async function host(tools,config){
    if(job.run?.status==='POST_IN_FLIGHT_UNKNOWN'&&!runId)throw Error('ORIGINAL_BROWSER_RUN_ID_REQUIRED');
    if(!runId)await add(config.directory+'/runs/'+job.id+'.json',{status:'POST_IN_FLIGHT_UNKNOWN',submittedAt:new Date().toISOString()});
    if(!runId){const r=unwrap(await tools.mcp__codex_apps__tinyfish_run_web_automation({url:job.request.url,goal:job.instructions,use_profile:true,profile_id:config.profileId,output_schema:{type:'object',properties:{schema:{type:'string'},complete:{type:'boolean'},reason:{type:'string'},sourceId:{type:'string'},provider:{type:'string'},taskKey:{type:'string'},automationId:{type:'string'},reports:{type:'array',items:{type:'object',properties:{id:{type:'string'},url:{type:'string'},fullReportComplete:{type:'boolean'},text:{type:'string'}}}},before:{type:'object'},after:{},clickedControl:{}},required:['complete']}}));runId=r.runId||r.run_id;if(!/^[a-f0-9-]{36}$/i.test(runId||''))throw Error('SUPPORTED_BROWSER_RUN_ID_REQUIRED');await add(config.directory+'/runs/'+job.id+'.json',{runId});}
-   let result;do{result=unwrap(await tools.mcp__codex_apps__tinyfish_wait_for_run({run_id:runId}));}while(['pending','running'].includes(result.status));
+   const result=unwrap(await tools.mcp__codex_apps__tinyfish_wait_for_run({run_id:runId}));
+   if(['pending','running'].includes(result.status)){out.push({jobId:job.id,status:result.status,runId});continue;}
    await add(config.directory+'/incoming/'+job.id+'.json',{jobId:job.id,runId,result});out.push({jobId:job.id,status:result.status,runId});
   }catch(e){out.push({jobId:job.id,status:'PENDING_SOURCE_ROUTE',reason:String(e.message).replace(/[^A-Z_]/g,'').slice(0,120)});}
  }
