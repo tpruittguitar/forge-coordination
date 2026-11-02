@@ -1,0 +1,56 @@
+{
+  "schema": "forge.relevance-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+  "assignmentId": "CLAUDE-RELEVANCE-20261101-V2",
+  "runId": "CLAUDE-RELEVANCE-20261102-E0007",
+  "instructionCommit": "5dd75a8a3d1a41b206d6f9c6bbf17cddc301a423",
+  "createdAt": "2026-11-02T07:50:29.664Z",
+  "page": {
+    "path": "control/claude-relevance/page-0010.json",
+    "completedKeys": [
+      "linkedin:4485121469"
+    ],
+    "note": "Per-card checkpoint under permanent employer-first source order; no LinkedIn request."
+  },
+  "method": "One ordinary targeted employer/company + title + worksite web search, then a plain (default client headers) read of the strongest employer posting. Function/scope only.",
+  "submitted": 0,
+  "verified": 0,
+  "items": [
+    {
+      "key": "linkedin:4485121469",
+      "recommendation": "INTAKE_READY",
+      "sourceEvidence": {
+        "references": [
+          "state/EMAIL_RECOVERY_QUEUE.json#jobs[\"linkedin:4485121469\"]",
+          "state/UPSTREAM_LEDGER.json#entries[\"linkedin:4485121469\"]"
+        ],
+        "url": "https://www.linkedin.com/jobs/view/4485121469/",
+        "company": "Cirrus",
+        "title": "Manufacturing Supervisor - Finish Center - Days",
+        "location": "Duluth, MN",
+        "observedAt": "2026-11-01T09:35:25.486Z",
+        "quote": "Manufacturing Supervisor - Finish Center - Days\nManufacturing Supervisor - Finish Center - Days | Cirrus | Duluth, MN"
+      },
+      "sourceDate": "2026-11-01",
+      "originalBatch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0101.json",
+      "targetedLookups": 1,
+      "lookupEvidence": {
+        "route": "EMPLOYER_FIRST_SEARCH",
+        "observedAt": "2026-11-02T07:50:29.663Z",
+        "query": "Cirrus Aircraft \"Manufacturing Supervisor\" \"Finish Center\" Duluth MN",
+        "strongestEmployerResult": "https://careers-cirrusaircraft.icims.com/jobs/5692/supervisor-manufacturing/job",
+        "employerPostingHttpStatus": 200,
+        "employerReqId": "2026-5692",
+        "quote": "Directs and coordinates activities of production assembly department(s).",
+        "supportingFacts": "Location US-MN-Duluth; Schedule Monday - Friday, 6:00am - 2:30pm; Category Manufacturing",
+        "scopeLevel": "FRONTLINE_SUPERVISOR",
+        "finishCenterConfirmedInEmployerPosting": false,
+        "exactRequisitionMatched": false
+      },
+      "reason": "Cirrus's own Duluth Supervisor-Manufacturing posting (day schedule) establishes direction of production assembly departments. 'Finish Center' is not named on that page, so requisition identity is left for coordinator reconciliation; function scope is target manufacturing supervision.",
+      "writerSubmitted": false,
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED"
+    }
+  ]
+}
