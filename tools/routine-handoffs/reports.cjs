@@ -35,6 +35,11 @@ function ingest({root,privateDir,state,text,source,commit,validate=C.validateEnv
  // reparsed later even if one malformed batch needs correction.
  S.immutable(privateDir,'helper-reports/'+sourceHash+'.txt.json',{text});
  const parsed=batches(text),results=[];
+ // Native Claude reports often link the immutable receipt already delivered to
+ // this repository. Read only allowlisted receipt paths and revalidate the full
+ // envelope/routing below; prose never becomes fabricated structured evidence.
+ const references=[...new Set(text.match(/receipts\/(?:CLAUDE_RELEVANCE\/|(?:CLAUDE_HELPERS|GROK_HELPERS)\/FORGE_[A-Z0-9_]+\/)[A-Za-z0-9_-]+\.json/g)||[])];
+ for(const relative of references){const filename=path.join(root,relative);if(!fs.existsSync(filename))continue;for(const b of batches(fs.readFileSync(filename,'utf8')))if(!parsed.some(p=>canonical(p.value)===canonical(b.value)))parsed.push(b);}
  for(const {value:b,raw} of parsed){
   try{
    if(!/^[A-Za-z0-9_-]{3,160}$/.test(b.runId||'')||!/^[A-Z][A-Z0-9_]{3,80}$/.test(b.taskKey||'')||!source.provider||source.provider!==b.provider||source.taskKey!==b.taskKey||S.read(root,'control/AI_AUTOMATION_TASKS.json').tasks[b.taskKey]?.owner!==b.provider)throw Error('REPORT_TASK_OR_PROVIDER_MISMATCH');
@@ -65,6 +70,7 @@ async function collectFeed({feed,root,privateDir,state,commit,save=()=>{},ingest
    const result=ingestReport({root,privateDir,state,text:full.text,source:{provider:feed.provider,taskKey:feed.taskKey,id:report.id,complete:full.complete},commit});imported+=result.imported;
    await save(); // Cursor never moves ahead of durable full reports.
   }
+  if(page.incomplete)throw Error('NATIVE_REPORT_LIST_INCOMPLETE');
   if(page.exhausted){state.cursors[cursorKey]=page.resumeCursor??cursor;await save();return{imported,exhausted:true};}
   if(!page.nextCursor||page.nextCursor===cursor||seen.has(page.nextCursor))throw Error('REPORT_CURSOR_CYCLE');
   seen.add(page.nextCursor);cursor=page.nextCursor;state.cursors[cursorKey]=cursor;await save();

@@ -30,12 +30,15 @@ async function reconcile({root,privateDir,state,tx,deps}){
  return finish(root,state,tx,proof);
 }
 async function process({root,privateDir,state,message,deps,apply=true,runId}){
+ if(!/^[a-f0-9]{64}$/.test(message.sourceSha256||''))throw Error('IMMUTABLE_MAIL_SOURCE_CHANGED');
  const prior=state.messages[message.id];if(prior){
-  if(prior.sourceSha256!==message.sourceSha256&&!(prior.classification==='FULL_MESSAGE_REQUIRED'&&!prior.transactionId&&message.fullBody))throw Error('IMMUTABLE_MAIL_SOURCE_CHANGED');
+  if(prior.sourceSha256!==message.sourceSha256&&prior.sourceSha256!==message.legacySourceSha256&&!(message.legacySourceSha256s||[]).includes(prior.sourceSha256)&&!(prior.classification==='FULL_MESSAGE_REQUIRED'&&!prior.transactionId&&message.fullBody))throw Error('IMMUTABLE_MAIL_SOURCE_CHANGED');
   if(prior.transactionId)return apply?reconcile({root,privateDir,state,tx:state.transactions[prior.transactionId],deps}):prior.status;
   if(!['PENDING','EXCEPTION','MATCH_REQUIRED'].includes(prior.status))return prior.status;
  }
  const classification=require('./mail.cjs').classify(message),entry={sourceSha256:message.sourceSha256,classification:classification.classification,status:classification.status,at:new Date().toISOString()};
+ const review=require('./mail-review.cjs').disposition(privateDir,message,classification);
+ if(review){Object.assign(entry,review);if(apply){deps.checkLock();const ledger=S.read(root,'state/MAIL_SOURCE_HANDOFFS.json',{schema:'forge.mail-source-handoffs.v1',messages:{}});ledger.messages[message.id]={messageId:message.id,sourceSha256:message.sourceSha256,reviewSha256:review.reviewSha256,status:'PENDING_EMPLOYER_IDENTITY',owner:'TIM',nextAction:review.nextAction};S.save(root,'state/MAIL_SOURCE_HANDOFFS.json',ledger);state.messages[message.id]=entry;delete state.exceptions[message.id];S.save(root,FILE,state);}return entry.status;}
  if(classification.owner!=='CODE'||classification.status==='PENDING'){if(apply){state.messages[message.id]=entry;state.exceptions[message.id]={owner:classification.owner,reason:classification.classification,messageId:message.id,sourceSha256:message.sourceSha256};S.save(root,FILE,state);}return entry.status;}
  if(classification.status!=='MATCH_REQUIRED'){
   if(apply){state.messages[message.id]=entry;if(classification.discoveryPending||classification.reportCollectionRequired){const ledger=S.read(root,'state/MAIL_SOURCE_HANDOFFS.json',{schema:'forge.mail-source-handoffs.v1',messages:{}});ledger.messages[message.id]={messageId:message.id,sourceSha256:message.sourceSha256,classification:classification.classification,status:'PENDING_SOURCE_ACCOUNTING',owner:classification.discoveryPending?'FORGE_EMAIL_DISCOVERY':'CODE_REPORT_TRANSPORT'};S.save(root,'state/MAIL_SOURCE_HANDOFFS.json',ledger);}S.save(root,FILE,state);}return entry.status;

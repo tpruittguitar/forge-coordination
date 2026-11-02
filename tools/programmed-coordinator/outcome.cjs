@@ -5,8 +5,10 @@ function classify({subject='',body='',fullBody=false}) {
   if(!fullBody) return {owner:'CODE',reason:'FULL_MESSAGE_REQUIRED'};
   const text=(subject+'\n'+body).replace(/\s+/g,' ');
   const confirmation=/\b(?:we have received your application|your application has been received|thank you for applying for the (?:position|role))\b/i.exec(text);
-  const rejection=/\b(?:we (?:will not|won't) be (?:moving|proceeding) forward with your application|we have decided (?:not to (?:move|proceed) forward|to move forward with other candidates))\b/i.exec(text);
-  if((confirmation&&rejection)||/\b(?:interview|availability|call me|call you|would like to discuss|offer|withdraw)\b/i.test(text)) return {owner:'AI',reason:'CORRESPONDENCE_REQUIRES_INTERPRETATION'};
+  const rejection=/\b(?:we (?:will not|won't) be (?:moving|proceeding) forward with your application|we have decided (?:not to (?:move|proceed) forward|to move forward with other candidates)|you were not selected to move forward in our hiring process)\b/i.exec(text);
+  // A polite "thank you for applying" opening is not a competing confirmation
+  // when the same full notice explicitly rejects the application.
+  if((confirmation&&rejection&&!/^thank you for applying/i.test(confirmation[0]))||/\b(?:interview|availability|call me|call you|would like to discuss|offer|withdraw)\b/i.test(text)) return {owner:'AI',reason:'CORRESPONDENCE_REQUIRES_INTERPRETATION'};
   if(rejection)return {owner:'CODE',type:'REJECTED_BY_EMPLOYER',quote:rejection[0]};
   if(confirmation)return {owner:'CODE',type:'APPLICATION_CONFIRMED',quote:confirmation[0]};
   return {owner:'AI',reason:'NO_UNAMBIGUOUS_TEMPLATE'};

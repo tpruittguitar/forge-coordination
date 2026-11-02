@@ -18,8 +18,9 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
      try{message=M.normalize(raw);}catch(e){state.exceptions['message:'+S.hash(raw.id||raw)]={owner:'CODE',reason:'FULL_MESSAGE_NORMALIZATION_REQUIRED'};result.invalidObservations=(result.invalidObservations||0)+1;result.pending++;continue;}
      if(apply)S.immutable(privateDir,'gmail-captures/'+message.captureSha256+'.json',raw);
      const prior=messages.get(message.id);
+     message.legacySourceSha256s=[...new Set([...(prior?.legacySourceSha256s||[]),message.legacySourceSha256].filter(Boolean))];
      if(prior?.fullBody&&message.fullBody&&prior.sourceSha256!==message.sourceSha256)conflicts.add(message.id);
-     if(!prior||!prior.fullBody&&message.fullBody)messages.set(message.id,message);
+     if(!prior||!prior.fullBody&&message.fullBody)messages.set(message.id,message);else if(prior.sourceSha256===message.sourceSha256)prior.legacySourceSha256s=message.legacySourceSha256s;
     }
    }catch(e){state.exceptions['capture:'+S.hash(file)]={owner:'CODE',reason:reason(e),sourceHash:S.hash(file)};}
   }
@@ -37,7 +38,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
 function reason(e){return /^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'MAIL_SOURCE_OR_WRITE_FAILURE';}
 function updateCursor(root,state){
  const cursor=S.read(root,'state/APPLICATION_TRACKER_CURSOR.json',null);if(!cursor)return;
- const done=new Set(Object.entries(state.messages).filter(([,m])=>['VERIFIED','RECORDED_EVENT','VERIFIED_NOT_RECRUITING','HANDED_TO_DISCOVERY'].includes(m.status)).map(([id])=>id));
+ const done=new Set(Object.entries(state.messages).filter(([,m])=>['VERIFIED','RECORDED_EVENT','VERIFIED_NOT_RECRUITING','HANDED_TO_DISCOVERY','REVIEWED_CORRESPONDENCE'].includes(m.status)).map(([id])=>id));
  cursor.processedMessageIds=[...new Set([...(cursor.processedMessageIds||[]),...done])];cursor.pendingMessageIds=(cursor.pendingMessageIds||[]).filter(id=>!done.has(id));
  for(const m of cursor.helperPendingMessages||[])if(done.has(m.messageId)){m.status='COORDINATOR_DISPOSITIONED';m.fullBodyRead=true;m.evidenceVerified=true;m.proof='state/MAIL_PROCESSING.json#'+m.messageId;}
  if(!cursor.pendingMessageIds.length&&cursor.queryPagesPending===0)cursor.fullyReadThrough=cursor.enumeratedThrough;cursor.at=new Date().toISOString();S.save(root,'state/APPLICATION_TRACKER_CURSOR.json',cursor);

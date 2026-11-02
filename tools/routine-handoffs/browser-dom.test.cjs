@@ -30,6 +30,7 @@ test('empty live UI requires explicit empty evidence and never clicks carousel N
  const p=await browser(t);await p.evaluate(()=>document.querySelector('main').innerHTML='<p>No results found</p><button id="carousel">Next</button>');
  const result=await p.evaluate(T.readResults,{expectedUrl:url});a.equal(result.emptyConfirmed,true);a.equal(result.endConfirmed,true);a.equal(result.jobs.length,0);a.equal(await p.evaluate(()=>badClicks),0);
 });
+test('a source challenge remains an access exception and never becomes a changed-query or empty-page success',async t=>{const p=await browser(t);await p.evaluate(()=>{document.title='Attention Required! | Cloudflare';document.querySelector('main').innerHTML='';});await a.rejects(p.evaluate(T.readResults,{expectedUrl:url}),/SOURCE_ACCESS_BLOCKED/);a.equal(await p.evaluate(()=>resultClicks),0);});
 test('WebMCP adapter registers known DOM tools, consumes configured report tools and closes only owned pages',async()=>{
  const B=require('./browser.cjs'),vm=require('node:vm');let disconnected=false,closed=0,registered=[];
  const registry={getTools:async()=>registered.map(name=>({name})),addTool:async d=>{a.ok(d.code.includes('async function'));registered.push(d.name);},getTool:async name=>({inputSchema:{type:'object'},execute:async input=>({name,input})})};
