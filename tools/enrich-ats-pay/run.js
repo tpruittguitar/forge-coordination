@@ -6,6 +6,8 @@
    node tools/enrich-ats-pay/run.js [--dry] */
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
+const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
+const salarySource=e=>e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
 const HelperRouting=require('../helper-routing/reservations.cjs');
@@ -84,7 +86,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (b.kind === 'workday') {   // pay sits on the job page: read up to 3 similar postings, pay-transparency states first
         const L0 = L.level(row.TITLE), F0 = L.func(row.TITLE);
         const cand = list.filter(x => x.detail && L.level(x.title) === L0 && L.func(x.title) === F0).sort((a, c) => (L.PAY_TRANSPARENCY.indexOf(c.state) >= 0) - (L.PAY_TRANSPARENCY.indexOf(a.state) >= 0)).slice(0, 3);
-        for (const x of cand) { try { await sleep(CONFIG.fetchGapMs); const d = await (await get(x.detail, { headers: { accept: 'application/json' } })).json(); const info = d && d.jobPostingInfo; if (info) { x.pay = L.payFromText(L.parseAts('workday', d).text); if (!x.state) x.state = L.stateFrom(info.location || ''); } } catch (e) {} }
+        for (const x of cand) { try { await sleep(CONFIG.fetchGapMs); const d = await (await get(x.detail, { headers: { accept: 'application/json' } })).json(); const info = d && d.jobPostingInfo; if (info) { x.pay = L.parseAts('workday', d).pay; if (!x.state) x.state = L.stateFrom(info.location || ''); } } catch (e) {} }
         list = cand;
       }
       boards[key] = list; stats.boards_read++;
@@ -115,6 +117,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const shared = {}; list.forEach(r => { if (!/SALARY/.test(needsOf(r))) return; const e = L.estimate(r, anchors, salaryContext), k = shareKey(e); if (k) shared[k] = (shared[k] || 0) + 1; });
   stats.est_shared_low = 0;
   async function estimateFor(r, opts) {
+    r=Employer.resolve(r);
     opts = opts || {};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
     let comps = L.sameEmployerAnchors(r, anchors.concat(Benchmarks.candidates(r,benchmarks)));
@@ -130,13 +133,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (comps.length) {
       const med = {}; const home = rowState ? await blsWages(rowState, soc) : null;
       for (const c of comps.slice(0, 5)) if (c.state && c.state !== rowState && !med[c.state]) { const w = await blsWages(c.state, soc); med[c.state] = w && w.median; }
-      est = L.sameEmployerEstimate(r, comps, st => home && home.median && med[st] ? home.median / med[st] : null, salaryContext);
+      const adjusted=comps.map(c=>{const ratio=home&&home.median&&med[c.state]?Math.min(1.1,Math.max(0.75,home.median/med[c.state])):1;return{id:c.id||c.page,co:r.COMPANY,title:c.title,location:c.location||'',state:c.state,region:L.regionOf(c.location||', '+c.state),asOf:c.asOf||c.seen,sourceUrl:c.sourceUrl||c.page,low:c.pay.low*ratio,high:c.pay.high*ratio};});
+      const ids=new Set(adjusted.map(c=>c.id));
+      est=L.estimate(r,adjusted.concat(anchors.filter(a=>!ids.has(a.id))),salaryContext);
+      if(est&&est.ids.every(id=>ids.has(id)))est=L.sameEmployerEstimate(r,comps,st=>home&&home.median&&med[st]?home.median/med[st]:null,salaryContext);
+      if(est){est.source=est.ids.some(id=>!ids.has(id))?'BLENDED_POSTINGS':'SAME_EMPLOYER';est.basis+='; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium';}
       if (est && !opts.noNetwork) stats.est_same_employer++;   // the upgrade pass counts only in `upgraded`
     }
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     let comparisonAnchors=anchors;
     if(!est&&!opts.noNetwork&&(!opts.noBoard||opts.review)&&sourceSearch){const extra=await sourceSearch.find(r,anchors);if(extra.length){const ids=new Set(extra.map(a=>a.id));comparisonAnchors=extra.concat(anchors.filter(a=>!ids.has(a.id)));}}
     if (!est) { est = L.estimate(r, comparisonAnchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const k=shareKey(est),pool=opts.review?[...new Map(list.concat(rows.filter(ActiveReview.eligible)).map(t=>[t.PRIMARY_ID,t])).values()]:list,n=!opts.review&&comparisonAnchors===anchors?(shared[k]||0):pool.reduce((n,t)=>n+((opts.review||/SALARY/.test(needsOf(t)))&&shareKey(L.estimate(t,comparisonAnchors,salaryContext))===k?1:0),0); if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
+    if(!est){est=Leadership.estimate(r,comparisonAnchors,salaryContext,L,Context);if(est)stats.est_leadership=(stats.est_leadership||0)+1;}
     if (!est && rowState) {
       // Required unanchored estimate (Tim 2026-10-28): BLS sets the number when no anchors exist.
       const w = await blsWages(rowState, soc);
@@ -186,7 +194,33 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const evidenceRows = rows.concat(archiveRows.filter(r => !liveIds.has(r.PRIMARY_ID)));
   const repairOriginal = new Map(); stats.salary_repairs = 0; stats.salary_invalid = [];
   const salaryStamp = r => JSON.stringify(Object.fromEntries(Object.entries(r.p).filter(([k]) => /^SALARY_/.test(k)).sort()));
+  // Filled estimates do not enter the missing-data queue. Reserve a small review pass,
+  // before new gaps, so a busy queue cannot starve old weak pay indefinitely.
+  ledger.salaryReview=ledger.salaryReview||{};const reviewOriginal=new Map();
+  const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
+  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
+  reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
+  for(const r of reviewDue){
+    if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
+    review.reviewed++;let exact=null,source=null,attempts=0;
+    for(const url of Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY))){
+      if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
+      attempts++;review.target_reads++;
+      try{await sleep(CONFIG.fetchGapMs);const api=L.atsApi(url),response=await get(api?api.api:url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)});
+        exact=api?ActiveReview.parseApi(r,api,await response.json()):SourceSearch.parsePage(await response.text(),{co:Employer.resolve(r).COMPANY,title:r.TITLE,location:r.LOCATION,sourceUrl:url});
+        if(exact){source=api?.page||url;break;}
+      }catch{} // Unsupported/failed sources retain the original estimate, never erase it.
+    }
+    if(!exact&&Date.now()<reviewDeadline){const candidate=await benchmarkSearch.findExact(Employer.resolve(r));if(candidate){exact=candidate;source=candidate.sourceUrl;}}
+    let fields=null,status='NO_STRONGER_EVIDENCE';
+    if(exact){const p=exact.pay;fields={SALARY_BASE_LOW:p.low,SALARY_BASE_HIGH:p.high,SALARY_MIDPOINT:Math.round((p.low+p.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:source,SALARY_ASOF:today,SALARY_NOTE:'Active estimate review: exact employer posting, matched title and city/state; USD annual base pay, excludes bonus/equity.'};review.posted_planned++;status='EXACT_POSTED_PAY_PLANNED';}
+    else if(Date.now()<reviewDeadline&&Date.now()-T0<CONFIG.maxRunMs){const e=await estimateFor(r,{noBoard:true,review:true});if(ActiveReview.improved(r,e)){fields={...modelFields(r),SALARY_BASE_LOW:e.low,SALARY_BASE_HIGH:e.high,SALARY_MIDPOINT:e.mid,SALARY_BASIS:'FORGE-ESTIMATE',SALARY_CONF:e.conf,SALARY_ASOF:today,SALARY_SOURCE:salarySource(e),SALARY_NOTE:'Active estimate review: refreshed evidence model; '+e.basis+'; '+e.bls.note+'; base estimate, not target employer-posted pay.'};review.estimate_planned++;status='STRONGER_ESTIMATE_PLANNED';}}
+    if(fields){reviewOriginal.set(r.PRIMARY_ID,ActiveReview.fingerprint(r));requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-R'+String(review.reviewed).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}});if(estSamples.length<5)estSamples.push({basis:'ACTIVE_REVIEW',id:r.PRIMARY_ID,source:exact?'EXACT_POSTING':fields.SALARY_SOURCE.startsWith('same-employer:')?'SAME_EMPLOYER':'COMPARABLES',est:[fields.SALARY_BASE_LOW,fields.SALARY_BASE_HIGH,fields.SALARY_CONF]});}else review.no_improvement++;
+    ActiveReview.remember(ledger.salaryReview,r,status,{fields,hours:fields?168:24});
+    review.samples.push({id:r.PRIMARY_ID,status,priorConfidence:r.p.SALARY_CONF||null,basis:fields?.SALARY_BASIS||r.p.SALARY_BASIS});
+  }
   for (const r of PRODUCTS_ONLY ? [] : rows) {
+    if(requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
     if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
@@ -195,33 +229,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
       ...modelFields(r),SALARY_BASE_LOW:est.low, SALARY_BASE_HIGH:est.high, SALARY_MIDPOINT:est.mid, SALARY_BASIS:'FORGE-ESTIMATE', SALARY_CONF:est.conf, SALARY_ASOF:today,
-      SALARY_SOURCE:est.source === 'SAME_EMPLOYER' ? 'same-employer:' + est.ids.join(',') : est.source === 'COMPARABLES' ? 'comparables:' + est.ids.join(',') : est.source,
+       SALARY_SOURCE:salarySource(est),
       SALARY_NOTE:'Recalculated with '+(salaryContext?Context.VERSION:'level guard')+': incompatible or non-posted anchors removed [' + bad.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + '; base salary estimate, excludes bonus/equity; prior posting check retained'
     } } });
-  }
-  // Filled estimates do not enter the missing-data queue. Reserve a small review pass,
-  // before new gaps, so a busy queue cannot starve old weak pay indefinitely.
-  ledger.salaryReview=ledger.salaryReview||{};const reviewOriginal=new Map();
-  const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
-  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
-  reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
-  for(const r of reviewDue){
-    if(review.reviewed>=(CONFIG.maxSalaryReviewsPerRun??5)||requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
-    review.reviewed++;let exact=null,source=null,attempts=0;
-    for(const url of Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY))){
-      if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
-      attempts++;review.target_reads++;
-      try{await sleep(CONFIG.fetchGapMs);const api=L.atsApi(url),response=await get(api?api.api:url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)});
-        exact=api?ActiveReview.parseApi(r,api,await response.json()):SourceSearch.parsePage(await response.text(),{co:r.COMPANY,title:r.TITLE,location:r.LOCATION});
-        if(exact){source=api?.page||url;break;}
-      }catch{} // Unsupported/failed sources retain the original estimate, never erase it.
-    }
-    let fields=null,status='NO_STRONGER_EVIDENCE';
-    if(exact){const p=exact.pay;fields={SALARY_BASE_LOW:p.low,SALARY_BASE_HIGH:p.high,SALARY_MIDPOINT:Math.round((p.low+p.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:source,SALARY_ASOF:today,SALARY_NOTE:'Active estimate review: exact employer posting, matched title and city/state; USD annual base pay, excludes bonus/equity.'};review.posted_planned++;status='EXACT_POSTED_PAY_PLANNED';}
-    else if(Date.now()<reviewDeadline&&Date.now()-T0<CONFIG.maxRunMs){const e=await estimateFor(r,{noBoard:true,review:true});if(ActiveReview.improved(r,e)){fields={...modelFields(r),SALARY_BASE_LOW:e.low,SALARY_BASE_HIGH:e.high,SALARY_MIDPOINT:e.mid,SALARY_BASIS:'FORGE-ESTIMATE',SALARY_CONF:e.conf,SALARY_ASOF:today,SALARY_SOURCE:(e.source==='SAME_EMPLOYER'?'same-employer:':e.source==='COMPARABLES'?'comparables:':'')+e.ids.join(','),SALARY_NOTE:'Active estimate review: stronger evidence; '+e.basis+'; '+e.bls.note+'; base estimate, not target employer-posted pay.'};review.estimate_planned++;status='STRONGER_ESTIMATE_PLANNED';}}
-    if(fields){reviewOriginal.set(r.PRIMARY_ID,ActiveReview.fingerprint(r));requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-R'+String(review.reviewed).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}});if(estSamples.length<5)estSamples.push({basis:'ACTIVE_REVIEW',id:r.PRIMARY_ID,source:exact?'EXACT_POSTING':fields.SALARY_SOURCE.startsWith('same-employer:')?'SAME_EMPLOYER':'COMPARABLES',est:[fields.SALARY_BASE_LOW,fields.SALARY_BASE_HIGH,fields.SALARY_CONF]});}else review.no_improvement++;
-    ActiveReview.remember(ledger.salaryReview,r,status,{fields,hours:fields?168:24});
-    review.samples.push({id:r.PRIMARY_ID,status,priorConfidence:r.p.SALARY_CONF||null,basis:fields?.SALARY_BASIS||r.p.SALARY_BASIS});
   }
   reviewDeadline=0;
   for (const r of ordered) {
@@ -307,7 +317,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
-      else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: (est.source === 'SAME_EMPLOYER' ? 'same-employer:' : 'comparables:') + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
+      else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
     }
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (attempted && Object.keys(f).every(k => k === 'FEASIBILITY_ATTEMPT_ASOF')) ledger.tried[r.PRIMARY_ID] = new Date().toISOString();
@@ -339,6 +349,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'same-employer:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
+  // Every pay write carries an arithmetic midpoint and a separate policy scoring point.
+  for(const q of requests){const f=q.ruling.fields,v=Pay.values(f.SALARY_BASE_LOW,f.SALARY_BASE_HIGH);if(v){f.SALARY_MIDPOINT=v.mid;f.SALARY_SCORE_POINT=v.scorePoint;}}
   stats.planned = requests.length;
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
     let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;

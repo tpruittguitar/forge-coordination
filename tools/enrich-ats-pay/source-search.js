@@ -38,10 +38,10 @@ function parsePage(html,a){
  if(remote?!remoteEvidence:!state||!places.some(p=>{const city=norm(p.addressLocality),region=L.stateFrom(p.addressRegion)||String(p.addressRegion||'').toUpperCase();return region===state&&city&&loc.includes(city)&&(!p.addressCountry||us(p.addressCountry));}))return null;
  if(j.validThrough&&Date.parse(j.validThrough)<Date.now())return null;
  const text=String(j.description||'').replace(/<[^>]+>/g,' ');if(text.length<300||/captcha|sign in to view|verify you are human/i.test(text))return null;
- const s=j.baseSalary,v=s?.value;if(s?.currency!=='USD'||!/^(YEAR|ANNUAL)$/i.test(v?.unitText||'')||!Number.isFinite(+v.minValue)||!Number.isFinite(+v.maxValue))return null;
- return {identityVerified:true,basis:'EMPLOYER_POSTED',text,structuredBaseSalary:s,pay:{low:+v.minValue,high:+v.maxValue}};
+ const s=j.baseSalary,Pay=require('./pay-values'),pay=Pay.structured(s)||(!s&&firstParty(a.sourceUrl,a.co)?Pay.employerText(text,L.payFromText):null);if(!pay)return null;
+ return {identityVerified:true,basis:'EMPLOYER_POSTED',text,identifier:typeof j.identifier==='string'?j.identifier:j.identifier?.value,structuredBaseSalary:s||null,evidenceKind:s?'EMPLOYER_STRUCTURED_BASE_SALARY':'EMPLOYER_PAGE',pay,quote:s?null:text.match(/(?:base (?:salary|pay)|annual (?:base )?salary|salary range)[^\n]{0,140}/i)?.[0]};
 }
 function firstParty(raw,company){try{const u=new URL(raw);if(u.protocol!=='https:'||u.username||u.password)return false;if(L.atsApi(raw)||/\.oraclecloud\.com$/i.test(u.hostname))return true;
- const hosts={'meta':['metacareers.com'],'tesla':['tesla.com'],'applied materials':['appliedmaterials.com'],'ford motor company':['ford.com'],'anduril industries':['anduril.com'],'boeing':['boeing.com'],'blue origin':['blueorigin.com'],'carrier':['carrier.com'],'eaton':['eaton.com'],'northrop grumman':['northropgrumman.com'],'oracle':['oracle.com'],'stryker':['stryker.com']};
+ const hosts={'meta':['metacareers.com'],'tesla':['tesla.com'],'applied materials':['appliedmaterials.com'],'ford motor company':['ford.com'],'anduril industries':['anduril.com'],'boeing':['boeing.com'],'lockheed martin':['lockheedmartinjobs.com'],'baxter':['jobs.baxter.com'],'blue origin':['blueorigin.com'],'carrier':['carrier.com'],'eaton':['eaton.com'],'northrop grumman':['northropgrumman.com'],'oracle':['oracle.com'],'stryker':['stryker.com']};
  return (hosts[C.norm(company)]||[]).some(h=>u.hostname===h||u.hostname.endsWith('.'+h));}catch{return false;}}
 module.exports={create,parsePage,firstParty};

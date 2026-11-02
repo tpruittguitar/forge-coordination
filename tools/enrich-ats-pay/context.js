@@ -1,6 +1,6 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='employer-role-scope-v3',DAY=86400000;
+const VERSION='employer-role-scope-v4',DAY=86400000;
 const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
@@ -13,7 +13,7 @@ function lookup(row,ref={},now=Date.now()){
  const sites=(company?.sites||[]).filter(s=>[s.location,...s.aliases||[]].some(n=>norm(n)===norm(row.LOCATION)));
  const roles=(ref.roles||[]).filter(r=>r.primaryId===row.PRIMARY_ID&&norm(r.company)===norm(row.COMPANY)&&norm(r.title)===norm(row.TITLE)&&norm(r.location)===norm(row.LOCATION));const role=roles.length===1?roles[0]:null;
  const out={};
- for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['industry',company?.facts?.industry],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
+ for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['industry',company?.facts?.industry],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch','clearance'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
  return out;
 }
 function postingKey(a){
@@ -30,7 +30,7 @@ function similarity(target,other){
  for(const key of ['employees','revenueUsd','siteEmployees','teamSize','minExperienceYears','minLeadershipYears']){
   if(number(target[key])&&number(other[key])){known++;weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}else{missing.push(key);if(number(target[key]))weight*=0.75;}
  }
- for(const key of ['industry','management','reach','launch']){
+ for(const key of ['industry','management','reach','launch','clearance']){
   if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else{missing.push(key);if(target[key])weight*=0.75;}
  }
  return{weight,known,missing};
@@ -51,16 +51,28 @@ function rank(row,anchors,ref,now=Date.now()){
  }
  return out.sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page)));
 }
-function select(row,anchors,ref={},now=Date.now()){
+function select(row,anchors,ref={},now=Date.now(),limit=Infinity){
  const ranked=rank(row,anchors,ref,now),dated=ranked.filter(a=>a.ageKnown),eligible=dated.length?dated:ranked,employer=eligible.filter(a=>a.sameEmployer);
  // Strong employer evidence must not be outvoted by the number of peer postings.
  // An undated same-company row cannot displace dated evidence from peers.
- const pool=employer.length?employer:eligible;
- return pool;
+ // Blend both sources. Employer identity is evidence weight, not a veto over peers.
+ // Cap each employer's aggregate weight to two ordinary postings, preventing
+ // a prolific employer (including the target) from overwhelming the population.
+ const totals={};for(const a of eligible){const k=norm(a.co)||a.postingKey;totals[k]=(totals[k]||0)+a.weight;}
+ const pool=eligible.map(a=>({...a,weight:a.weight*Math.min(1,2/totals[norm(a.co)||a.postingKey])})).sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page))).slice(0,limit);
+ const own=pool.filter(a=>a.sameEmployer),peers=pool.filter(a=>!a.sameEmployer);
+ if(own.length&&peers.length){
+  // One employer posting is balanced against the independent peer cohort;
+  // repeated employer disclosures increase support without discarding peers.
+  const share=own.length/(own.length+1),ownWeight=own.reduce((s,a)=>s+a.weight,0),peerWeight=peers.reduce((s,a)=>s+a.weight,0);
+  for(const a of pool)a.weight*=a.sameEmployer?share/ownWeight:(1-share)/peerWeight;
+ }
+ return pool.sort((a,b)=>b.weight-a.weight||String(a.id||a.page).localeCompare(String(b.id||b.page)));
 }
 function weightedMedian(items,key){const a=items.slice().sort((a,b)=>a[key]-b[key]);const half=a.reduce((s,x)=>s+x.weight,0)/2;let sum=0;for(let i=0;i<a.length;i++){sum+=a[i].weight;if(Math.abs(sum-half)<1e-10&&a[i+1])return(a[i][key]+a[i+1][key])/2;if(sum>=half)return a[i][key];}return null;}
+function salaryValue(items,key){const own=items.filter(a=>a.sameEmployer),peers=items.filter(a=>!a.sameEmployer);if(!own.length||!peers.length)return weightedMedian(items,key);const share=own.length/(own.length+1);return share*weightedMedian(own,key)+(1-share)*weightedMedian(peers,key);}
 function confidence(est,used){return used.length<2||used.some(a=>!a.ageKnown)||used.filter(a=>a.contextKnown>=3).length<2?'LOW':est.conf;}
-function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':'peer tier')+'; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
+function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':used.some(a=>a.sameEmployer)?'blended employer/peer evidence':'peer tier')+'; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
 function learn(ref,row,text,sourceUrl,asOf){
  // Only explicit responsibility wording; never infer headcount from a title or production volume.
  if(!text||!sourceUrl)return false;
@@ -73,6 +85,7 @@ function learn(ref,row,text,sourceUrl,asOf){
  m=text.match(/\b(\d{1,2})\+?\s+years\s+(?:of\s+)?(?:experience\s+)?in\s+high.volume[^.\n]{0,100}manufacturing/i);if(m)put('minExperienceYears',Number(m[1]),m[0]);
  m=text.match(/\b(\d{1,2})\+?\s+years of (?:progressive )?(?:operations |production )?leadership/i);if(m)put('minLeadershipYears',Number(m[1]),m[0]);
  m=text.match(/\b(?:new )?greenfield (?:manufacturing )?facility\b/i);if(m)put('launch','GREENFIELD',m[0]);
+ m=text.match(/\b(?:active|current|required|maintain|obtain)[^.\n]{0,60}\b(top secret|secret|TS\/SCI)\s+(?:security\s+)?clearance\b/i);if(m)put('clearance',/top secret|TS\/SCI/i.test(m[1])?'TOP_SECRET':'SECRET',m[0]);
  const companyFacts={};
  const escape=s=>String(s).replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
  const count=String(text).match(new RegExp('\\b'+escape(row.COMPANY)+'\\s+(?:employs|has)\\s+([0-9][0-9,]*)\\s+(?:employees|people)\\s+(?:worldwide|globally)\\b','i'));
@@ -100,4 +113,4 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,confidence,annotation,postingKey,identityKey,learn,merge};
+module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge};

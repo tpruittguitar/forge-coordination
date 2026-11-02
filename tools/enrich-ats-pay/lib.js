@@ -1,6 +1,7 @@
 'use strict';
 const Context = require('./context');
 const Scope = require('./anchor-scope');
+const Pay=require('./pay-values'),Employer=require('./employer-identity');
 /* REV-116 (Tim 2026-10-20 18:09-18:17 ET): pay and degree from the posting first, estimates only after the posting was
    checked, done off the Writer. Pure functions here; run.js does the network. */
 
@@ -14,10 +15,10 @@ const LEVELS = [
 ];
 function level(title) { for (const [n, re] of LEVELS) if (re.test(title || '')) return n; return 0; }
 const FUNCS = [
-  ['QUALITY', /\bquality\b/i], ['MFG', /\b(manufactur\w*|production|plant|assembly|fabrication)\b/i],
-  ['OPS', /\b(operations?|ops|supply chain|industrial)\b/i], ['ENG', /\bengineering\b/i], ['PROGRAM', /\b(program|project)\b/i],
+  ['QUALITY', /\bquality\b/i], ['ENG', /\bengineering\b/i], ['PROGRAM', /\b(program|project)\b/i],
+  ['MFG', /\b(manufactur\w*|production|plant|assembly|fabrication)\b/i], ['OPS', /\b(operations?|ops|supply chain|industrial)\b/i],
 ];
-function func(title) { for (const [k, re] of FUNCS) if (re.test(title || '')) return k; return 'OTHER'; }
+function func(title) { if(Scope.family(title)==='SUPPLY_CHAIN')return 'OPS';if(Scope.family(title)==='MANUFACTURING_TECHNOLOGY')return 'ENG';for (const [k, re] of FUNCS) if (re.test(title || '')) return k; return 'OTHER'; }
 const REGION = { NE: 'CT ME MA NH RI VT NJ NY PA', MW: 'IL IN MI OH WI IA KS MN MO NE ND SD', S: 'DE FL GA MD NC SC VA DC WV AL KY MS TN AR LA OK TX', W: 'AZ CO ID MT NV NM UT WY AK CA HI OR WA' };
 const STATE_REGION = {}; Object.keys(REGION).forEach(r => REGION[r].split(' ').forEach(s => { STATE_REGION[s] = r; }));
 function stateOf(loc) { const m = String(loc || '').match(/,\s*([A-Z]{2})\b/); return m ? m[1] : ''; }
@@ -82,7 +83,7 @@ function parseAts(kind, j, id) {
   if (kind === 'workday') {
     const info = j && j.jobPostingInfo; if (!info) return null;
     const text = strip(info.jobDescription);
-    return { pay: payFromText(text), text };
+    return { pay: Pay.workday(info)||payFromText(text), text };
   }
   if (kind === 'ashby') {
     const job = (j.jobs || []).find(x => x.id === id); if (!job) return null;
@@ -95,6 +96,7 @@ function parseAts(kind, j, id) {
 }
 /* employer-posted comparables from the master; one per row */
 function postedAnchor(r, p) {
+  r=Employer.resolve(r);if(r.employerUnknown)return null;
   const basis = String(p.SALARY_BASIS || '');
   // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
   if (/estimate/i.test(String(p.PAY_POSTED || '')) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
@@ -123,14 +125,15 @@ function invalidSavedAnchors(row, rows) {
 /* Tim's COMPENSATION_ESTIMATION: 1 employer-posted comparable = LOW; 2 = LOW (MED when role/geo close); 3+ strong = MED.
    Comparables must share level and function; same-region ones first. */
 function estimate(row, anchors, context) {
+  row=Employer.resolve(row);
   const L = level(row.TITLE), F = func(row.TITLE), R = regionOf(row.LOCATION);
   const same = anchors.filter(a => comparable(row, a) && a.id !== row.PRIMARY_ID);
   if (!same.length) return null;
   // Always use the same employer-first, deduplicated selector, including callers
   // without a context reference. Missing context remains unknown, not a premium.
-  const use = Context.select({...row,state:stateFrom(row.LOCATION)},same,context||{}).slice(0, 7);
+  const use = Context.select({...row,state:stateFrom(row.LOCATION)},same,context||{},Date.now(),7);
   if(!use.length)return null;
-  const low = Math.round(Context.weightedMedian(use,'low') / 1000) * 1000, high = Math.round(Context.weightedMedian(use,'high') / 1000) * 1000;
+  const low = Math.round(Context.salaryValue(use,'low') / 1000) * 1000, high = Math.round(Context.salaryValue(use,'high') / 1000) * 1000;
   // COMPENSATION_ESTIMATION: 1 comparable LOW; 2 LOW, MED when close; 3+ strong anchors may go higher.
   // close = same region; strong = same region and the comparables' midpoints within 20% of their median.
   const close = use.filter(a=>R&&a.region===R).length >= 2, mids = use.map(a => (a.low + a.high) / 2), med = median(mids);
@@ -245,7 +248,7 @@ function similarPostings(row, postings) {
 function sameEmployerEstimate(row, comps, ratio, context) {
   // Revalidate here too: remembered/cache callers must not bypass title matching.
   const valid=comps.filter(c => comparable(row, c));
-  const use = Context.select({...row,state:stateFrom(row.LOCATION)},valid.map(c=>({...c,co:c.co||row.COMPANY,low:c.pay.low,high:c.pay.high})),context||{}).slice(0, 5); if (!use.length) return null;
+  const use = Context.select({...row,state:stateFrom(row.LOCATION)},valid.map(c=>({...c,co:c.co||row.COMPANY,low:c.pay.low,high:c.pay.high})),context||{},Date.now(),5); if (!use.length) return null;
   const rowState = stateFrom(row.LOCATION), adj = [], notes = [];
   use.forEach(c => {
     let k = 1; if (c.state && rowState && c.state !== rowState) { const r = ratio && ratio(c.state); if (r) k = Math.min(1.1, Math.max(0.75, r)); }
@@ -261,7 +264,7 @@ function sameEmployerEstimate(row, comps, ratio, context) {
 }
 /** Master anchors from the same employer (step 1, no network). */
 function sameEmployerAnchors(row, anchors) {
-  const co = normCo(row.COMPANY), L = level(row.TITLE), F = func(row.TITLE);
+  row=Employer.resolve(row);const co = normCo(row.COMPANY), L = level(row.TITLE), F = func(row.TITLE);
   return co ? anchors.filter(a => a.id !== row.PRIMARY_ID && normCo(a.co) === co && comparable(row, a))
     .map(a => ({ id: a.id, co:a.co, title: a.title, location:a.location, asOf:a.asOf,sourceUrl:a.sourceUrl,state: a.state || '', pay: { low: a.low, high: a.high }, page: '' })) : [];
 }
@@ -295,7 +298,7 @@ function blsEstimate(row, w, mlPoints) {
   const scorePoint = Math.round(low + 0.75 * (high - low));
   const mlNote = points.length ? ` + ${points.length} ML point(s)` : '';
   return {
-    low, high, mid: scorePoint, conf: 'LOW', n: points.length, close: false, tight: false, ids: [],
+    low, high, mid: Math.round((low+high)/2), scorePoint, conf: 'LOW', n: points.length, close: false, tight: false, ids: [],
     source: points.length ? 'BLS_ML_RANGE' : 'BLS_OEWS',
     basis: `BLS OEWS ${w.state} SOC ${w.soc} 30-110% of P25-P90 $${Math.round(w.p25/1000)}K-$${Math.round(w.p90/1000)}K${mlNote} (no anchors; required)`
   };

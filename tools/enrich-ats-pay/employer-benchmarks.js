@@ -22,7 +22,7 @@ function merge(base,incoming){
 function learn(ref,a,parsed,at){
  if(!parsed?.identityVerified||parsed.basis!=='EMPLOYER_POSTED'||!parsed.pay||!S.firstParty(a.sourceUrl,a.co))return false;
  const id='PAYBENCH-'+crypto.createHash('sha256').update(C.postingKey(a)).digest('hex').slice(0,20).toUpperCase(),e={id,company:a.co,title:a.title,location:a.location,currency:'USD',salaryType:'ANNUAL_BASE',status:'VERIFIED',low:parsed.pay.low,high:parsed.pay.high,quote:'$'+parsed.pay.low.toLocaleString('en-US')+' - $'+parsed.pay.high.toLocaleString('en-US')+'/annual salary',sourceUrl:a.sourceUrl,observedAt:at,evidenceKind:'EMPLOYER_PAGE'};
- e.evidenceKind='EMPLOYER_STRUCTURED_BASE_SALARY';e.structuredBaseSalary=parsed.structuredBaseSalary;delete e.quote;if(!valid(e,Date.parse(at)))return false;const i=ref.entries.findIndex(x=>x.id===id);if(i<0)ref.entries.push(e);else ref.entries[i]=e;return true;
+ if(parsed.structuredBaseSalary){e.evidenceKind='EMPLOYER_STRUCTURED_BASE_SALARY';e.structuredBaseSalary=parsed.structuredBaseSalary;delete e.quote;}else{e.quote=parsed.quote||'';}if(!valid(e,Date.parse(at)))return false;const i=ref.entries.findIndex(x=>x.id===id);if(i<0)ref.entries.push(e);else ref.entries[i]=e;return true;
 }
 // Only observed, linked job URLs on the configured first-party host, never guessed requisitions.
 function links(html,searchUrl,row){
@@ -44,7 +44,21 @@ function create({reference,read,canRead=()=>true,now=()=>Date.now(),maxReads=6})
     cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:stats.found>foundBefore?'DISCLOSURES_CAPTURED':'NO_VERIFIED_MATCH'};
    }catch{stats.blocked++;cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'ACCESS_UNAVAILABLE'};}
   }return candidates(row,reference,now());
- }return{find,stats};
+ }
+ async function findExact(row){
+  const req=String(row.REQ_ID||row.p?.REQ_ID||'').trim();if(!req||/^(unknown|not stated)$/i.test(req))return null;
+  const routes=(reference.employers||[]).filter(e=>C.norm(e.company)===C.norm(row.COMPANY)).flatMap(e=>e.searchUrls||[]);
+  for(const url of routes){
+   const k='EXACT|'+row.PRIMARY_ID;if(Date.parse(cache[k]?.retryAt)>now()||!canRead()||stats.discoveryReads+stats.postingReads>=maxReads||!S.firstParty(url,row.COMPANY))continue;
+   try{stats.discoveryReads++;const html=await read(url),found=links(html,url,row).filter(a=>C.norm(a.title)===C.norm(row.TITLE));
+    for(const a of found){if(!canRead()||stats.discoveryReads+stats.postingReads>=maxReads)break;stats.postingReads++;const parsed=S.parsePage(await read(a.sourceUrl),{...a,location:row.LOCATION});
+     if(parsed&&C.norm(parsed.identifier)===C.norm(req)){cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString()};return{...parsed,sourceUrl:a.sourceUrl};}
+    }
+    cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'EXACT_REQUISITION_NOT_CONFIRMED'};
+   }catch{stats.blocked++;cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'ACCESS_UNAVAILABLE'};}
+  }return null;
+ }
+ return{find,findExact,stats};
 }
 function parseEmployer(html,a){
  const jobs=[];function visit(x){if(Array.isArray(x))return x.forEach(visit);if(!x||typeof x!=='object')return;if([].concat(x['@type']||[]).includes('JobPosting'))jobs.push(x);if(x['@graph'])visit(x['@graph']);}
