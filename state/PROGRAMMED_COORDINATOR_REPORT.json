@@ -1,7 +1,7 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-02T07:14:15.289Z",
-  "instructionCommit": "4fb0b86ea49dfd9b3853f923d13e6eb14920f783",
+  "at": "2026-11-02T07:21:47.170Z",
+  "instructionCommit": "d5c28e686948de25d9b0a674f21f2e03b6f53334",
   "batches": 247,
   "statuses": {
     "EXCEPTION": 67,
@@ -555,11 +555,6 @@
     },
     {
       "owner": "CODE",
-      "reason": "NATIVE_REPORT_CAPTURE_PENDING",
-      "errorSha256": "5e7e1a18f1a196a24c435515e0b8a8670392f113f0b802bdfb66ed2d5712aab9"
-    },
-    {
-      "owner": "CODE",
       "reason": "RESULT_PAGE_CAPTURE_PENDING",
       "errorSha256": "c289d670558f28e51366317e89912f6b5ef19eff5c2a5c9210d80980c77d3186",
       "sourceIdHash": "c722dcdbd8d50b7791a95ba5238b98c1f5ca070fff9fcf9acce73c213376ed58",
@@ -596,14 +591,37 @@
     {
       "owner": "CODE",
       "jobId": "16fee5db8199611e5398bb7376b19863ff61b4bb838f915a6519c0ba14f3073d",
-      "at": "2026-11-02T07:12:59.483Z",
+      "at": "2026-11-02T07:20:29.340Z",
+      "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+    },
+    {
+      "owner": "CODE",
+      "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
+      "at": "2026-11-02T07:20:29.351Z",
+      "reason": "RUN_LIST_INACCESSIBLE"
+    },
+    {
+      "owner": "CODE",
+      "jobId": "524e5438bf859d93d99c3b9121016ac40cd31c521c1e2c02141c4e6dec4f7bdf",
+      "at": "2026-11-02T07:20:29.360Z",
       "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
     },
     {
       "owner": "CODE",
       "jobId": "5b9e0f1eb52efd3b9200db07aa6723cd13e06f1548759bda4f1d5b32e4951d6f",
-      "at": "2026-11-02T07:12:59.492Z",
+      "at": "2026-11-02T07:20:29.371Z",
       "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+    },
+    {
+      "owner": "CODE",
+      "jobId": "fbd8e75d22c8c213326511441234bd4ac370317354ab44d7cc246b38c8d10a6f",
+      "at": "2026-11-02T07:20:29.382Z",
+      "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+    },
+    {
+      "owner": "CODE",
+      "reason": "NO_COMPLETE_BATCH_IN_REPORT",
+      "sourceHash": "e9a8cbb9b7effcb5d030bbed4affe5e2d68763063f6758380411dd4bb67154b5"
     }
   ],
   "aiExceptions": [
@@ -1436,9 +1454,9 @@
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-02T07:13:07.495Z",
-    "sha256": "5464788d4797556ee57640a234b38c2da9d543f209fcf90cc5714822e7d7b295",
-    "rows": 4062
+    "readAt": "2026-11-02T07:20:39.518Z",
+    "sha256": "9144884dd1b82205815a71fbe93537dcbd3d1dbc22e7208a48a4e9b60000a936",
+    "rows": 4063
   },
   "coverage": {
     "schema": "forge.email-recovery-summary.v1",
@@ -1462,7 +1480,7 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261102T071255496Z",
+  "runId": "FORGE-CODE-CHATGPT-20261102T072024456Z",
   "mode": "apply",
   "collected": {
     "newBatches": 0,
@@ -1474,10 +1492,15 @@
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T071255496Z",
-      "at": "2026-11-02T07:12:59.589Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T072024456Z",
+      "at": "2026-11-02T07:20:29.699Z",
       "imported": 0,
-      "reportFeeds": [],
+      "reportFeeds": [
+        {
+          "imported": 0,
+          "exhausted": true
+        }
+      ],
       "pagination": {
         "pagesCaptured": 0,
         "advances": 0,
@@ -1517,22 +1540,32 @@
         "failures": [
           {
             "jobId": "16fee5db8199611e5398bb7376b19863ff61b4bb838f915a6519c0ba14f3073d",
-            "at": "2026-11-02T07:12:59.483Z",
+            "at": "2026-11-02T07:20:29.340Z",
+            "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+          },
+          {
+            "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
+            "at": "2026-11-02T07:20:29.351Z",
+            "reason": "RUN_LIST_INACCESSIBLE"
+          },
+          {
+            "jobId": "524e5438bf859d93d99c3b9121016ac40cd31c521c1e2c02141c4e6dec4f7bdf",
+            "at": "2026-11-02T07:20:29.360Z",
             "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
           },
           {
             "jobId": "5b9e0f1eb52efd3b9200db07aa6723cd13e06f1548759bda4f1d5b32e4951d6f",
-            "at": "2026-11-02T07:12:59.492Z",
+            "at": "2026-11-02T07:20:29.371Z",
+            "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+          },
+          {
+            "jobId": "fbd8e75d22c8c213326511441234bd4ac370317354ab44d7cc246b38c8d10a6f",
+            "at": "2026-11-02T07:20:29.382Z",
             "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
           }
         ]
       },
       "exceptions": [
-        {
-          "owner": "CODE",
-          "reason": "NATIVE_REPORT_CAPTURE_PENDING",
-          "errorSha256": "5e7e1a18f1a196a24c435515e0b8a8670392f113f0b802bdfb66ed2d5712aab9"
-        },
         {
           "owner": "CODE",
           "reason": "NATIVE_REPORT_CAPTURE_PENDING",
@@ -1586,14 +1619,37 @@
         {
           "owner": "CODE",
           "jobId": "16fee5db8199611e5398bb7376b19863ff61b4bb838f915a6519c0ba14f3073d",
-          "at": "2026-11-02T07:12:59.483Z",
+          "at": "2026-11-02T07:20:29.340Z",
+          "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+        },
+        {
+          "owner": "CODE",
+          "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
+          "at": "2026-11-02T07:20:29.351Z",
+          "reason": "RUN_LIST_INACCESSIBLE"
+        },
+        {
+          "owner": "CODE",
+          "jobId": "524e5438bf859d93d99c3b9121016ac40cd31c521c1e2c02141c4e6dec4f7bdf",
+          "at": "2026-11-02T07:20:29.360Z",
           "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
         },
         {
           "owner": "CODE",
           "jobId": "5b9e0f1eb52efd3b9200db07aa6723cd13e06f1548759bda4f1d5b32e4951d6f",
-          "at": "2026-11-02T07:12:59.492Z",
+          "at": "2026-11-02T07:20:29.371Z",
           "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+        },
+        {
+          "owner": "CODE",
+          "jobId": "fbd8e75d22c8c213326511441234bd4ac370317354ab44d7cc246b38c8d10a6f",
+          "at": "2026-11-02T07:20:29.382Z",
+          "reason": "COMPLETE_STRUCTURED_SOURCE_REQUIRED"
+        },
+        {
+          "owner": "CODE",
+          "reason": "NO_COMPLETE_BATCH_IN_REPORT",
+          "sourceHash": "e9a8cbb9b7effcb5d030bbed4affe5e2d68763063f6758380411dd4bb67154b5"
         }
       ],
       "sourceLedgerChanged": false,
@@ -1603,12 +1659,12 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T071255496Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T072024456Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-02T07:13:07.495Z",
-        "sha256": "5464788d4797556ee57640a234b38c2da9d543f209fcf90cc5714822e7d7b295",
-        "rows": 4062
+        "readAt": "2026-11-02T07:20:39.518Z",
+        "sha256": "9144884dd1b82205815a71fbe93537dcbd3d1dbc22e7208a48a4e9b60000a936",
+        "rows": 4063
       },
       "counts": {
         "seededCodeIntake": 0,
@@ -1934,7 +1990,7 @@
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261102T071255496Z",
+      "runId": "FORGE-CODE-CHATGPT-20261102T072024456Z",
       "read": 720,
       "processed": 717,
       "pending": 201,
