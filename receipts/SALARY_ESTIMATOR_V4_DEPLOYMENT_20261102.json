@@ -1,0 +1,63 @@
+{
+  "schema": "forge.salary-estimator-deployment.v1",
+  "at": "2026-11-02T09:57:20.528Z",
+  "actor": "CHATGPT",
+  "authorization": "Tim 2026-11-02: implement five salary estimator improvements and make live",
+  "coordination": {
+    "pr": 192,
+    "commit": "4af408c6dcd484086e85dea8fe72029a0e2f2e3e",
+    "modelVersion": "employer-role-scope-v4"
+  },
+  "cockpit": {
+    "pr": 252,
+    "commit": "82a1daf911208dc7fb8f68ceffa65168c4419604",
+    "appsScriptVersion": 88
+  },
+  "verification": {
+    "writerBuildReadback": {
+      "commit": "82a1daf",
+      "pr": 252,
+      "subject": "Separate salary midpoint from policy scoring point (#252)",
+      "deployedAt": "2026-11-02T09:55:11.650Z"
+    },
+    "frontendScoringReadback": true,
+    "frontendEvidenceReadback": true,
+    "localEstimatorTests": 83,
+    "localCockpitTests": 758,
+    "githubChecks": "passed"
+  },
+  "policy": {
+    "blob": "cf8e4265939e70cce6c10d9968e2cee83b490df7",
+    "geographyChanged": false,
+    "scorePointFraction": 0.75,
+    "midpointFraction": 0.5,
+    "assumedCompanyPremium": false,
+    "assumedLevelPremium": false
+  },
+  "canonicalChangesThisDeployment": 0,
+  "existingEstimateMigration": "Active rotating review and stale-model recalculation via normal hourly pay worker; protected rows excluded; no blanket range inflation",
+  "readOnlyImpact": {
+    "activeDerivedPursuitChanges": 34,
+    "estimateOnly": 21,
+    "posted": 13
+  },
+  "calibration": {
+    "method": "Leave one posting out; aliases excluded; same canonical posted-pay cohort; geographic ratio not applied in either diagnostic",
+    "all": {
+      "eligible": 574,
+      "oldCoverage": 537,
+      "newCoverage": 546,
+      "common": 534,
+      "oldMAE": 18.6,
+      "newMAE": 18.8
+    },
+    "directorAndUp": {
+      "eligible": 363,
+      "oldCoverage": 349,
+      "newCoverage": 351,
+      "common": 347,
+      "oldMAE": 18.3,
+      "newMAE": 18.5
+    }
+  }
+}
