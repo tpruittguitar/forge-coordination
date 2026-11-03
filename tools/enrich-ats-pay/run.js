@@ -51,7 +51,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('startup');
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
-  await loadModule('PipelineEvidence.gs'); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
+  const Evidence=require(await loadModule('PipelineEvidence.gs')); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
   const productModule=path.join(require('os').tmpdir(),'PipelineProducts.js');fs.writeFileSync(productModule,await fcFile('pipeline-products.js'));const Products=require(productModule);
   const productsRefFile=process.env.ENRICH_PRODUCTS_REFERENCE||path.join(ROOT,'reference/COMPANY_SITE_PRODUCTS.json'),productsReference=fs.existsSync(productsRefFile)?JSON.parse(fs.readFileSync(productsRefFile,'utf8')):null;
   // Read one complete canonical snapshot. A delayed structured mirror must not hide new jobs or repeat completed work.
@@ -62,6 +62,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const lines = jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean);
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
+  const decisionIds=require('./decision-queue').ids(rows,built,Evidence);
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
   // REV-140 (Tim 2026-10-21 03:30 ET): roles archived after they closed still carry valid employer-posted pay; they stay comparables.
   let archiveText = '',archiveComplete=false;
@@ -209,7 +210,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // gets its aggregator read and estimate.
   const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
   const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
-  const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger).sort((a,b)=>(b.BUCKET==='TIM_DECISION_REQUIRED')-(a.BUCKET==='TIM_DECISION_REQUIRED'));
+  const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger).sort((a,b)=>decisionIds.has(b.PRIMARY_ID)-decisionIds.has(a.PRIMARY_ID));
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   // Old estimates are otherwise invisible to the missing-salary worklist. Audit their
@@ -229,7 +230,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 >= CONFIG.maxRunMs || researchUnavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
-    progress('salary_repair',{id:r.PRIMARY_ID,decision:r.BUCKET==='TIM_DECISION_REQUIRED'});
+    progress('salary_repair',{id:r.PRIMARY_ID,decision:decisionIds.has(r.PRIMARY_ID)});
     const est = await estimateFor(r, { noBoard: true }); if (!est || !runtime.canStart()) continue;
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
@@ -242,9 +243,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   // Tim: refresh estimates awaiting his decision before spending the run on other jobs.
   progress('decision_salary_repairs');
-  await repairSalaries(rows.filter(r=>r.BUCKET==='TIM_DECISION_REQUIRED'));
+  stats.decision_waiting=decisionIds.size;
+  await repairSalaries(rows.filter(r=>decisionIds.has(r.PRIMARY_ID)));
   progress('active_salary_review',{planned:requests.length});
-  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
+  const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds,Date.now(),decisionIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
@@ -268,7 +270,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   reviewDeadline=0;
   progress('other_salary_repairs',{planned:requests.length});
-  await repairSalaries(rows.filter(r=>r.BUCKET!=='TIM_DECISION_REQUIRED'));
+  await repairSalaries(rows.filter(r=>!decisionIds.has(r.PRIMARY_ID)));
   progress('missing_fields',{planned:requests.length});
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
