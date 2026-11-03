@@ -56,3 +56,18 @@ Removed: 20 AI sessions/day (8 Opus, 12 Sonnet), plus ~12 skip/duplicate commits
 ## Proposed consolidation (not executed)
 
 Lower the watchdog threshold in enrichment-watchdog.js from 90 to ~35 min. Then the Claude pay dispatcher becomes fully redundant and can be paused with no cadence loss. This is a code change for the code owner, outside this audit's authority.
+
+## Addendum 2026-11-02 21:51 ET — Tim approved both packages
+
+1. Watchdog 90→35 min (ChatGPT/Codex code change: enrichment-watchdog.js, tests, operating-model cron inventory).
+2. Relevance-review coordinator recovery (checkpoint, routingActive flag, duplicate deliveries), owned by ChatGPT/Codex. Target: diagnosis and tested fix by 2026-11-03.
+
+Claude created **trig_01FiwHGctxqbkRkEzayniUyU "Forge pay-starter cutover monitor (Stage A/B)"**, hourly at :51 UTC, cloud-only. It works in three phases:
+
+- **Stage A gate.** It waits until main's watchdog threshold is 35 minutes or less. It then needs one successful github-actions[bot] dispatch of enrich-ats-pay created after the watchdog commit. Only then does it pause trig_01PfbsRJxFsXkwRDRtKUKta9.
+- **Stage B.** For 24 hours it checks that every gap between pay-job starts stays at or under 50 minutes and that no run fails or times out. Cancelled runs are ignored.
+- **Outcome.** On a breach it re-enables the starter, dispatches a pay-job run immediately, commits a FAILED receipt and alerts Tim. On a pass it leaves the starter retired and commits a PASSED receipt. Either way it then disables itself.
+
+State is kept in the starter task's name. If the watchdog change has not merged by 2026-11-06, the monitor sends one stall alert.
+
+Do not pause or rename the starter manually. The monitor owns that change.
