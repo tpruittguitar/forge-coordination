@@ -1,0 +1,580 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "task": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "scheduledAt": "2026-11-03T12:43:17.300Z",
+  "at": "2026-11-03T12:43:58.415Z",
+  "readOnly": true,
+  "status": "AUDIT_COMPLETED_WITH_FINDINGS",
+  "sharedInstructionRevision": "926f20db28939d13f2dec43744c0f333ca836df9",
+  "revisions": {
+    "coordination": "926f20db28939d13f2dec43744c0f333ca836df9",
+    "githubObservedMain": "926f20db28939d13f2dec43744c0f333ca836df9",
+    "cockpit": "2cab46b8159be5eeb8174bde9cede4da0e521a7b"
+  },
+  "sourceEvidenceSha256": "b49f398e2da8f764e76d9f5d3d53c723ecf42cc2384a1f46123088e735653047",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "canonicalMaster": true,
+    "explorerHealth": true
+  },
+  "writer": {
+    "build": {
+      "commit": "82a1daf",
+      "pr": 252,
+      "subject": "Separate salary midpoint from policy scoring point (#252)",
+      "deployedAt": "2026-11-02T09:55:11.650Z"
+    },
+    "level": "ok",
+    "errors": [],
+    "freeze": null,
+    "fileQueue": {
+      "pending": 0,
+      "oldestPendingAt": "",
+      "processing": [],
+      "hold": []
+    },
+    "unverifiedDirectWrites": {
+      "count": 0,
+      "oldestWrittenAt": ""
+    },
+    "fileQueue24h": {
+      "arrived": 1,
+      "finished": 1,
+      "failed": 0,
+      "held": 0,
+      "peakFinishedPerHour": 1,
+      "waitMsMax": 30726
+    },
+    "fileQueueBasis": "WRITER_QUEUE_LOG.jsonl; a request is counted once it finishes; backlogAtEnd counts logged requests that had arrived and not yet finished",
+    "triggerInstalled": true,
+    "initialUnverified": {
+      "count": 1,
+      "oldestWrittenAt": "2026-11-03T12:42:59.819Z"
+    },
+    "transientUnverifiedCleared": true,
+    "fence": "No active freeze exposed; individual execution fence not independently inspected.",
+    "rotation": "Current source not re-reviewed; live log size and rotation timing not exposed.",
+    "metadataNotice": "Blank undated failed metadata remains; queue_stats reports zero failed file requests."
+  },
+  "canonical": {
+    "masterRows": 4385,
+    "archiveRows": 785,
+    "readAt": "2026-11-03T12:44:07.090Z"
+  },
+  "flow": {
+    "at": "2026-11-03T12:07:06.189Z",
+    "queues": {
+      "verification": 0,
+      "enrichment": 635,
+      "readyForReview": 886,
+      "blockedClosed": 107
+    },
+    "population": {
+      "total": 1628,
+      "accounted": 1628,
+      "reconciled": true
+    },
+    "enrichmentOutput": {
+      "count36": 1144,
+      "count": 1144,
+      "windowHours": 36,
+      "perHour": 31.77777777777778,
+      "last24h": 811,
+      "partial": true,
+      "coverageHours": 36,
+      "collectionGaps": 17,
+      "available": true,
+      "countsAvailable": true,
+      "startedAt": "2026-10-31T04:35:30.337Z",
+      "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
+    },
+    "intakeOutput": {
+      "count": 836,
+      "windowHours": 36,
+      "perHour": 23.22222222222222,
+      "partial": true,
+      "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
+    },
+    "discoveryOutput": {
+      "count": 307,
+      "windowHours": 36,
+      "perHour": 8.527777777777779,
+      "partial": true,
+      "candidateCount": 1046,
+      "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 36 hours; unresolved candidate identities excluded from job rate."
+    },
+    "upstreamWaiting": 5254,
+    "units": "Distinct observed canonical job completions, not field updates; rates partial due collection gaps."
+  },
+  "programmedCoordinator": {
+    "at": "2026-11-02T14:47:06.945Z",
+    "lock": {
+      "token": "FORGE-CODE-CHATGPT-20261102T145024250Z",
+      "at": "2026-11-02T14:50:24.303Z"
+    },
+    "sourceCaptureLastKnownSuccess": "2026-11-02T14:24:00Z",
+    "sourceCaptureDeferred": true,
+    "currentExceptionWorkPublished": false
+  },
+  "enrichmentWorker": {
+    "at": "2026-11-03T12:05:49.335Z",
+    "run": "FORGE-ENRICH_ATS-ATSBOT-20261103T1153Z",
+    "submittedUpdates": 50,
+    "writerOk": 50,
+    "writerFailed": 0,
+    "note": "50 field updates are not 50 completed jobs."
+  },
+  "github": {
+    "workflows": [
+      {
+        "name": "source-trial",
+        "runs": [
+          {
+            "id": 41630927547,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T11:51:45Z",
+            "updated": "2026-11-03T11:59:41Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41630927547"
+          },
+          {
+            "id": 41599288661,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T07:53:12Z",
+            "updated": "2026-11-03T08:01:11Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41599288661"
+          },
+          {
+            "id": 41564831061,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T02:14:08Z",
+            "updated": "2026-11-03T02:20:48Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41564831061"
+          }
+        ]
+      },
+      {
+        "name": "source-intake-auto",
+        "runs": [
+          {
+            "id": 41631982674,
+            "status": "in_progress",
+            "conclusion": null,
+            "at": "2026-11-03T11:59:43Z",
+            "updated": "2026-11-03T11:59:47Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41631982674"
+          },
+          {
+            "id": 41573097611,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T03:35:18Z",
+            "updated": "2026-11-03T03:55:21Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41573097611"
+          },
+          {
+            "id": 41565534063,
+            "status": "completed",
+            "conclusion": "failure",
+            "at": "2026-11-03T02:20:51Z",
+            "updated": "2026-11-03T03:46:10Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41565534063"
+          }
+        ]
+      },
+      {
+        "name": "board-discovery",
+        "runs": [
+          {
+            "id": 41606280427,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T08:50:29Z",
+            "updated": "2026-11-03T08:56:32Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41606280427"
+          },
+          {
+            "id": 41572431417,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T03:28:43Z",
+            "updated": "2026-11-03T03:35:16Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41572431417"
+          },
+          {
+            "id": 41562536061,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T01:52:26Z",
+            "updated": "2026-11-03T01:58:36Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41562536061"
+          }
+        ]
+      },
+      {
+        "name": "enrich-ats-pay",
+        "runs": [
+          {
+            "id": 41631126356,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T11:53:15Z",
+            "updated": "2026-11-03T12:06:05Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41631126356"
+          },
+          {
+            "id": 41622371922,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T10:48:53Z",
+            "updated": "2026-11-03T11:03:18Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41622371922"
+          },
+          {
+            "id": 41616241138,
+            "status": "completed",
+            "conclusion": "success",
+            "at": "2026-11-03T10:04:53Z",
+            "updated": "2026-11-03T10:18:46Z",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41616241138"
+          }
+        ]
+      }
+    ],
+    "openPrs": {
+      "forge-coordination": [
+        {
+          "number": 224,
+          "title": "Claude relevance review evidence receipt P11A (evidence-only)",
+          "updatedAt": "2026-11-03T12:15:47Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/224"
+        },
+        {
+          "number": 223,
+          "title": "Claude relevance review: page 11 evidence receipt",
+          "updatedAt": "2026-11-03T11:12:31Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/223"
+        },
+        {
+          "number": 222,
+          "title": "Claude relevance evidence receipt P11D",
+          "updatedAt": "2026-11-03T10:10:08Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/222"
+        },
+        {
+          "number": 221,
+          "title": "Claude relevance review evidence S01 (evidence-only)",
+          "updatedAt": "2026-11-03T09:11:23Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/221"
+        },
+        {
+          "number": 220,
+          "title": "Claude relevance review: P11D evidence receipt",
+          "updatedAt": "2026-11-03T08:10:59Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/220"
+        },
+        {
+          "number": 219,
+          "title": "Proposed: pay-job heartbeat loop that does not depend on GitHub cron",
+          "updatedAt": "2026-11-03T08:02:27Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/219"
+        },
+        {
+          "number": 218,
+          "title": "Claude relevance review evidence P11D (evidence-only)",
+          "updatedAt": "2026-11-03T07:12:31Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/218"
+        },
+        {
+          "number": 217,
+          "title": "Claude relevance review evidence batch F0001 (evidence-only)",
+          "updatedAt": "2026-11-03T06:11:15Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/217"
+        },
+        {
+          "number": 215,
+          "title": "Claude relevance evidence C0011A (evidence-only)",
+          "updatedAt": "2026-11-03T04:09:58Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/215"
+        },
+        {
+          "number": 214,
+          "title": "Claude relevance review evidence: CLAUDE-RELEVANCE-20261103T1200Z-P11D",
+          "updatedAt": "2026-11-03T03:10:05Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/214"
+        },
+        {
+          "number": 210,
+          "title": "Claude relevance evidence batch P11D (evidence-only)",
+          "updatedAt": "2026-11-03T02:11:24Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/210"
+        },
+        {
+          "number": 209,
+          "title": "Claude relevance review batch P11-A (evidence only)",
+          "updatedAt": "2026-11-03T01:11:16Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/209"
+        },
+        {
+          "number": 208,
+          "title": "Claude relevance review batch P11A (evidence-only)",
+          "updatedAt": "2026-11-03T00:10:31Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/208"
+        },
+        {
+          "number": 201,
+          "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+          "updatedAt": "2026-11-02T23:10:58Z",
+          "url": "https://github.com/tpruittguitar/forge-coordination/pull/201"
+        }
+      ],
+      "foreman-cockpit": []
+    },
+    "latest50Failures": {
+      "forge-coordination": [],
+      "foreman-cockpit": [
+        {
+          "id": 41541283400,
+          "name": "unit-tests",
+          "status": "failure"
+        },
+        {
+          "id": 41479456167,
+          "name": "browser-tests-compare",
+          "status": "failure"
+        },
+        {
+          "id": 41469045801,
+          "name": "browser-tests-compare",
+          "status": "failure"
+        },
+        {
+          "id": 41457211157,
+          "name": "browser-tests-compare",
+          "status": "failure"
+        }
+      ]
+    },
+    "priorIntakeFailure": {
+      "runId": 41565534063,
+      "failedStep": "Intake",
+      "laterSuccessfulRun": 41573097611,
+      "latestRun": 41631982674,
+      "latestStatus": "in_progress",
+      "rootCauseNotYetEstablished": true
+    }
+  },
+  "explorer": {
+    "http": 200,
+    "ok": true,
+    "sourceRevision": "926f20db28939d13f2dec43744c0f333ca836df9",
+    "checks": {
+      "emailRecovery": {
+        "ok": true,
+        "at": "2026-11-02T09:50:39.503Z"
+      },
+      "attention": {
+        "ok": true,
+        "at": "2026-11-03T10:44:37.700Z"
+      },
+      "applicationOutcomes": {
+        "ok": true,
+        "at": "2026-11-02T06:34:32.639Z"
+      },
+      "processFlow": {
+        "ok": true,
+        "at": "2026-11-03T12:07:06.189Z"
+      },
+      "processStates": {
+        "ok": true,
+        "at": "2026-11-03T12:07:06.189Z"
+      },
+      "sources": {
+        "ok": true,
+        "at": "2026-11-03T11:59:25.921Z",
+        "failedBoards": 0,
+        "candidates": 173
+      },
+      "schedules": {
+        "ok": true,
+        "at": "2026-11-03T10:12:40.312767Z",
+        "configured": 5,
+        "ids": [
+          "forge-ai-usage-reader",
+          "forge-application-outcome-tracker",
+          "forge-application-writer-gofer",
+          "forge-posting-validation",
+          "pe-stack-health-daily"
+        ],
+        "executionVerified": false
+      },
+      "execution": {
+        "ok": true,
+        "at": "2026-11-03T10:13:07.629Z"
+      },
+      "emailCoverage": {
+        "ok": true,
+        "at": "2026-11-02T00:34:59.611Z",
+        "run": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET",
+        "window": [
+          "2026-11-01T17:04:14.039Z",
+          "2026-11-01T20:04:14.039Z"
+        ],
+        "continuityWindow": [
+          "2026-11-01T16:06:39.133Z",
+          "2026-11-01T17:04:14.039Z"
+        ],
+        "bodiesRead": 0,
+        "savedBodiesResumed": 0,
+        "unresolvedWindows": [
+          [
+            "2026-10-30T23:02:00Z",
+            "2026-10-31T04:49:18.420Z"
+          ],
+          [
+            "2026-10-31T07:49:18.420Z",
+            "2026-10-31T08:01:21.383Z"
+          ],
+          [
+            "2026-10-31T11:01:21.383Z",
+            "2026-10-31T11:59:55.210Z"
+          ],
+          [
+            "2026-10-31T14:59:55.210Z",
+            "2026-10-31T16:06:29.048Z"
+          ],
+          [
+            "2026-10-31T16:06:29.048Z",
+            "2026-10-31T19:06:29.048Z"
+          ],
+          {
+            "from": "2026-10-31T20:03:32.801Z",
+            "to": "2026-10-31T23:03:32.801Z",
+            "reason": "Visible source identity holds; LinkedIn advertised unshown minimum24 and ZipRecruiter view-more remain; no coverage completion inferred"
+          },
+          {
+            "from": "2026-10-31T23:03:32.801Z",
+            "to": "2026-11-01T00:00:05.165Z",
+            "reason": "Continuity window remains pending; tracker-captured source IDs retained in immutable handoffs, not presumed intake complete"
+          },
+          {
+            "from": "2026-11-01T00:00:05.165Z",
+            "to": "2026-11-01T03:00:05.165Z",
+            "reason": "Visible identity holds and 26 overlapping unshown LinkedIn occurrences remain"
+          },
+          {
+            "from": "2026-11-01T03:00:05.165Z",
+            "to": "2026-11-01T07:10:03.548Z",
+            "reason": "Continuity window not advanced in this run; preserve source IDs and prior pending dispositions"
+          },
+          {
+            "from": "2026-11-01T07:10:03.548Z",
+            "to": "2026-11-01T10:10:03.548Z",
+            "reason": "All four alert bodies read; 17 displayed candidates accounted, two identity holds, at least 56 overlapping unseen occurrences and one linked-only recommendation source remain"
+          },
+          {
+            "from": "2026-11-01T09:04:35.390Z",
+            "to": "2026-11-01T12:04:35.390Z",
+            "reason": "Three new full alert bodies evaluated; current LinkedIn view-all has12 overlapping unseen occurrences and3 identity exceptions remain. Previously evaluated overlapping alert and all saved source windows retained."
+          },
+          {
+            "from": "2026-11-01T12:04:35.390Z",
+            "to": "2026-11-01T13:06:39.133Z",
+            "reason": "Continuity alert evaluated; Ladders matching-source exceptions retained."
+          },
+          {
+            "from": "2026-11-01T13:06:39.133Z",
+            "to": "2026-11-01T16:06:39.133Z",
+            "reason": "Current visible cards accounted; exact identity holds and6 overlapping unseen LinkedIn occurrences remain."
+          },
+          {
+            "from": "2026-11-01T17:04:14.039Z",
+            "to": "2026-11-01T20:04:14.039Z",
+            "reason": "Full bodies and 76 visible cards captured; current candidates remain pending, 31 overlapping advertised LinkedIn occurrences need linked-result coverage, one Glassdoor subject card absent from body."
+          }
+        ],
+        "pendingSourceWindows": 14,
+        "historicalBodiesRevisited": 0,
+        "visibleOccurrences": 20,
+        "verifiedInserted": 490,
+        "held": 121,
+        "coverageComplete": false,
+        "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
+        "writerProofsVerified": true,
+        "pendingCapturedJobs": 3371,
+        "pendingResultSources": 0,
+        "pendingResultPageCount": null,
+        "pendingResultPages": 0
+      },
+      "boardHealth": {
+        "ok": true,
+        "at": "2026-11-03T08:56:18.475Z",
+        "tracked": 102,
+        "pending": 0
+      },
+      "boards": {
+        "ok": true,
+        "at": "2026-11-03T08:50:41.958Z",
+        "failedBoards": 0,
+        "candidates": 41
+      },
+      "revision": {
+        "ok": true,
+        "sha": "926f20db28939d13f2dec43744c0f333ca836df9"
+      }
+    },
+    "browserOutbox": "NOT_INSPECTED: browser-local state not established by server readback",
+    "polling": "Server health HTTP/JSON succeeded; client polling and payload outbox not independently inspected"
+  },
+  "schedule": {
+    "at": "2026-11-03T12:43:57.627679Z",
+    "configured": 6,
+    "active": 5,
+    "configurationOnly": true
+  },
+  "comparison": {
+    "prior": "receipts/HEALTH_AUDIT_20261102_0741ET.json",
+    "priorQueues": {
+      "verification": 0,
+      "enrichment": 1413,
+      "readyForReview": 525,
+      "blockedClosed": 106
+    },
+    "priorEnrichmentLast24h": 458
+  },
+  "findings": [
+    {
+      "priority": 1,
+      "code": "LOCAL_COORDINATOR_STALLED",
+      "detail": "Shared production lock remains owned by 20261102T145024250Z. Its dirty checkout and unpublished accounting remain unchanged. Last coordinator report14:47Z Nov2; source bridge cannot run from the required clean merged checkout. This is not a Writer queue blockage.",
+      "next": "Reconcile holder terminal and in-flight Writer transactions, preserve its dirty work, then recover through the owner procedure. Never expire or steal lock."
+    },
+    {
+      "priority": 2,
+      "code": "ENRICHMENT_BACKLOG_DRAINING",
+      "detail": "Backlog635 vs1413 prior audit;811 distinct completions last24h vs458. Observed36h enrichment31.78jobs/hr vs intake23.22jobs/hr. Rates remain partial; this does not establish maximum capacity.",
+      "next": "Continue missing-evidence enrichment without WIP caps; prioritize restoration of intake and source capture."
+    },
+    {
+      "priority": 3,
+      "code": "HELPER_RETURNS_NOT_CONSUMED",
+      "detail": "New Claude evidence-only PRs continue arriving while coordinator report is stale; multiple page11-labeled returns require current assignment/source deduplication. Do not infer distinct work or merge automatically.",
+      "next": "After coordinator recovery, consume immutable source-bound returns through existing validator and Writer path."
+    },
+    {
+      "priority": 4,
+      "code": "INTAKE_WORKFLOW_RECOVERY_UNCERTAIN",
+      "detail": "Source-trial now triggers automatic intake. One prior Intake step failed; later board-triggered run succeeded. Latest source-triggered run remains in progress at audit; no new completion is claimed.",
+      "next": "Inspect original run terminal and pending writes before retry; do not dispatch duplicate intake."
+    }
+  ],
+  "masterMutations": 0,
+  "driveMutations": 0,
+  "codeChanges": 0,
+  "scheduleChanges": 0,
+  "workflowDispatches": 0
+}
