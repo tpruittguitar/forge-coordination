@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-03T12:46:22.985Z",
- "sourceCommit": "bfd1f52c0105c1f5eb38967c887a4906d418d299",
+ "builtAt": "2026-11-03T13:08:19.663Z",
+ "sourceCommit": "090af062dbd42cb9922b96c9565cbead74d2305f",
  "counts": {
-  "total": 48,
-  "BLOCKING": 0,
+  "total": 49,
+  "BLOCKING": 1,
   "ACTION": 19,
   "WATCH": 29,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 11,
+  "FAILED": 12,
   "UPKEEP": 29
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261103T120041Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261103T120041Z is unfinished",
+   "detail": "BLOCKED: Writer freeze/health. Open request: FORGE-SOURCE-4457683EDD1D16640F0BCCD1. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261103T120041Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261103T120041Z.json",
+   "at": "2026-11-03T12:47:27.376Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -903,7 +915,7 @@
    "lastAt": "2026-11-03T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
-   "runs7d": 13,
+   "runs7d": 12,
    "usualGapHours": 3.1,
    "overdue": true
   },
