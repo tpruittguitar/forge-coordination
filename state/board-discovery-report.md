@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261103T1408Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261103T1937Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (102 read, 0 failed) | 129 | 41 | 88 |
+| Employer job boards (102 read, 0 failed) | 128 | 41 | 87 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,9 +19,9 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 12 | 64 |
-| SR_MANAGER | 8 | 19 |
-| SR_STAFF | 21 | 5 |
+| DIRECTOR_PLUS | 13 | 64 |
+| SR_MANAGER | 8 | 18 |
+| SR_STAFF | 20 | 5 |
 
 ## New roles
 
@@ -29,6 +29,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 |---|---|---|---|---|---|---|
 | BOARD:lever | DREAM Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.lever.co/shieldai/a25edcee-69a9-47b4-a325-ec549b2e0d28) | United States | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:lever | DREAM Shield AI | [Director, Ops Analysis (R5036)](https://jobs.lever.co/shieldai/a25b91a5-9933-46f1-a9a2-eb06866ac65a) | Washington, D.C. | MFG_PROD | DIRECTOR_PLUS | $210K-$320K |
+| BOARD:lever | DREAM Shield AI | [Head of Operational Excellence](https://jobs.lever.co/shieldai/1cd23ede-77b3-4981-8ba6-7d0a373e985c) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $174K-$261K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
@@ -46,6 +47,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Propulsion Systems Advance Manufacturing (R5185)](https://jobs.lever.co/shieldai/a7747154-cc00-48e4-b89d-663bbeb4ca47) | Seattle, Washington | MFG_PROD | SR_STAFF | $150K-$230K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R4840)](https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5) | Seattle, Washington | QUALITY | SR_STAFF | $149K-$223K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R5512)](https://jobs.lever.co/shieldai/664414ae-6aa0-4dc1-8e24-e89e7466428b) | Dallas, Texas | QUALITY | SR_STAFF | $120K-$180K |
+| BOARD:ashby | P2 Skydio | [Director, NPI Operations Engineering](https://jobs.ashbyhq.com/skydio/b9f12e20-1a67-4196-bb3e-379b2cb1bae6) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER | $166K-$228K |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
 | BOARD:greenhouse | P2 Divergent Technologies | [VP, Washington Operations ](https://job-boards.greenhouse.io/divergent/jobs/5461638008) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $282K-$317K |
@@ -53,7 +55,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Primary Structures](https://boards.greenhouse.io/relativity/jobs/8889038002?gh_jid=8889038002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Manufacturing Engineer, Structures](https://boards.greenhouse.io/relativity/jobs/8862013002?gh_jid=8862013002) | Long Beach, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P3 Relativity Space | [Staff Mechanical Engineer, Factory Automation](https://boards.greenhouse.io/relativity/jobs/8033633002?gh_jid=8033633002) | Long Beach, California | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | P3 Relativity Space | [Staff Quality Engineer](https://boards.greenhouse.io/relativity/jobs/8889666002?gh_jid=8889666002) | Cape Canaveral, Florida, United States | QUALITY | SR_STAFF |  |
 | BOARD:greenhouse | Anduril Industries | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations, Air Dominance & Strike](https://boards.greenhouse.io/andurilindustries/jobs/5198760007?gh_jid=5198760007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations - Tactical Effects](https://boards.greenhouse.io/andurilindustries/jobs/5253340007?gh_jid=5253340007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
@@ -67,4 +68,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
 | BOARD:workday | GE Appliances (Haier) | [Manufacturing Quality Director](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-LaFayette-GA/Manufacturing-Quality-Director_REQ-27183) | USA, LaFayette, GA | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Northrop Grumman | [Operations and Integration Director 1](https://ngc.wd1.myworkdayjobs.com/Northrop_Grumman_External_Site/job/United-States-Utah-Roy/Operations-and-Integration-Director-1_R10258865) | United States-Utah-Roy | MFG_PROD | DIRECTOR_PLUS |  |
