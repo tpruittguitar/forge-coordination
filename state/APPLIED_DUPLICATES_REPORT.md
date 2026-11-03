@@ -1,28 +1,20 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-03T15:52:41.484Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-03T23:32:18.244Z from CANONICAL_WRITER_MASTER.
 
-Of 1073 jobs waiting on Tim, 39 match a role he already applied to, was rejected from, or declined:
-- **Closed as duplicates (same posting): 8**
+Of 1067 jobs waiting on Tim, 31 match a role he already applied to, was rejected from, or declined:
+- **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 31
 
-Writer: 8 closed, 31 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
-## Closed: same posting (8)
+## Closed: same posting (0)
 Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is wrong.
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
-| 64 | GE Vernova | Repair Quality Leader | Applied 2026-10-25 · likely the same posting | Posting first seen 2026-10-25, on or before application 2026-10-25; same title | V2I-DC81ECB99A8A → V2E-005E2464AD7F |
-| 63 | Hadrian | Director, Supplier Quality & Development | Applied 2026-10-19 · likely the same posting | Posting first seen 2026-10-17, on or before application 2026-10-19; same title | V2I-DAFB95887088 → V2E-2BF55E23FA87 |
-| 56 | Alpha Executive Search | Plant Manager | You declined 2026-10-23 · likely the same posting | Posting first seen 2026-10-13, on or before decline 2026-10-23; same title | V2I-34639C615BE0 → V2I-42C749FD0F1F |
-| 56 | Silgan Containers Mfg Corp | Director of Continuous Improvement | You declined 2026-11-02 · likely the same posting | Posting first seen 2026-10-26, on or before decline 2026-11-02; same title | V2I-84D38C989F4B → V2I-636359491168 |
-| 55 | Tutor | Head of Quality | You declined 2026-10-31 · likely the same posting | Posting first seen 2026-11-02, on or before decline 2026-10-31; same title | V2I-89E5B83511D5 → V2I-145C3D745CAA |
-| 54 | Cascades Tissue Group | Plant Manager | You declined 2026-10-26 · likely the same posting | Posting first seen 2026-10-17, on or before decline 2026-10-26; same title | V2I-234EDA23285A → V2I-34F99496D7B4 |
-| 54 | Lockheed Martin | Assembly, Integration, & Test Director | Applied 2026-10-26 · likely the same posting | Posting first seen 2026-10-23, on or before application 2026-10-26; same title | V2I-919523995653 → V2E-569172A53147 |
-| 51 | Re:Build | Plant Manager | You declined 2026-10-31 · likely the same posting | Posting first seen 2026-11-01, on or before decline 2026-10-31; same title | V2I-CEAD636116A7 → V2I-39B4FE765C62 |
 
 ## Kept, labeled (31)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
@@ -31,11 +23,11 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 |---|---|---|---|---|---|
 | 64 | Cummins Inc. | Site Manufacturing/Quality Leader | You declined 2026-10-26 · different site | Different worksite: Manning, SC vs earlier York, SC | V2I-DAE0286DF646 → V2I-AC46B508E878 |
 | 64 | Blue Origin | Lunar Manufacturing & Assembly Manager | Applied 2026-10-25 · this is a new posting | Different wd posting: wd:R69279 vs earlier wd:R68774 | V2I-A5230F14AEB6 → V2I-9D90D416AC88 |
-| 63 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
 | 63 | Blue Origin | Manager - Lunar Operations and Manufacturing | Applied 2026-10-25 · different site | Different worksite: Merritt Island, FL vs earlier Space Coast, FL | V2I-9CB4095FB587 → V2I-9D90D416AC88 |
+| 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
 | 60 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
-| 60 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
+| 59 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
 | 59 | L3Harris Technologies | Associate Manager, Manufacturing Engineering | You declined 2026-10-30 · different site | Different worksite: Malabar, FL vs earlier Huntsville, AL | V2I-FDB8B06FBD13 → V2I-B6E9763E305F |
 | 59 | Hadrian | Manager, Build Engineering - Commodities | Applied 2026-10-20 · this is a new posting | Different ashby posting: ashby:7fd37625-df20-4dba-9b91-c4aacf7feabb vs earlier ashby:9ae37da4-77bd-477f-a928-add6700d8635 | V2I-579069794D7E → V2I-BC9ACFFD3C2B |
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
