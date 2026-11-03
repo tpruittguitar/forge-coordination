@@ -1,41 +1,41 @@
 {
- "at": "2026-11-03T19:42:19.747Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261103T1938Z",
+ "at": "2026-11-03T20:31:36.871Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261103T2030Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-03T19:38:16.756Z",
-  "sha256": "8584ae6db76e64b34ed83e89be4875c8a914b8316f36c9c6b2c97fc9230e16bc",
+  "readAt": "2026-11-03T20:30:19.359Z",
+  "sha256": "f5b1edd6f61974df2dd7083c8fde30ec943b3b89ada15f61633f36e2aef8774b",
   "rows": 4402
  },
  "rows": 4402,
- "eligible": 501,
+ "eligible": 500,
  "anchors": 1001,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 1,
- "estimates": 1,
- "estimate_waiting_for_posting": 244,
- "skipped_recent": 104,
- "submitted": 1,
- "guard_dropped": 0,
- "writer_ok": 1,
+ "degree": 0,
+ "estimates": 0,
+ "estimate_waiting_for_posting": 215,
+ "skipped_recent": 132,
+ "submitted": 0,
+ "guard_dropped": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 1
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
- "agg_wall": {
-  "linkedin": 3
- },
+ "agg_wall": {},
  "est_same_employer": 0,
  "est_comparables": 1,
  "boards_read": 9,
@@ -47,7 +47,7 @@
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -57,7 +57,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
+  "targets": 2,
   "candidates": 24,
   "saved_reused": 24,
   "cache_hits": 0,
@@ -68,7 +68,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-03T19:38:21.226Z",
+  "profile_as_of": "2026-11-03T20:30:24.133Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -81,9 +81,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 32,
- "public_read": 1,
- "public_failed": 31,
+ "public_tried": 3,
+ "public_read": 0,
+ "public_failed": 3,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -188,24 +188,30 @@
   }
  ],
  "salary_review": {
-  "eligible": 682,
-  "due": 0,
-  "reviewed": 0,
+  "eligible": 683,
+  "due": 1,
+  "reviewed": 1,
   "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-9CBD4115AF86",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ]
  },
- "decision_waiting": 1066,
+ "decision_waiting": 1067,
  "not_attempted": 269,
- "nothing_found": 300,
+ "nothing_found": 271,
  "products_planned": 0,
  "upgraded": 0,
  "planned": 1,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
@@ -217,7 +223,7 @@
   "WRITER_REQUEST_PENDING_NO_REPLAY": 47,
   "GROK_RESEARCH_RESERVED": 346,
   "NOT_YET_ATTEMPTED": 12,
-  "EVIDENCE_FOUND": 2
+  "EVIDENCE_FOUND": 1
  },
  "pending": [
   {
@@ -7764,604 +7770,15 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-7BCEBF9F001E",
-   "company": "Randolph Health",
-   "title": "Director - Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:38:49.822Z",
-   "retryAt": "2026-11-04T03:38:49.822Z",
-   "attempts": [
-    {
-     "url": "https://pm.healthcaresource.com/CS/randolph/#/job/7965?source=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-92B638E17FF2",
-   "company": "Quest Diagnostics",
-   "title": "Senior Director, Quality Assurance - Southeast Region",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:38:52.569Z",
-   "retryAt": "2026-11-04T03:38:52.569Z",
-   "attempts": [
-    {
-     "url": "https://hdox.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/job/72109",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-08B72A73BF9F",
-   "company": "Nivagen Pharmaceuticals",
-   "title": "Director of Quality Control",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:38:54.354Z",
-   "retryAt": "2026-11-04T03:38:54.354Z",
-   "attempts": [
-    {
-     "url": "https://grnh.se/yr6ycfsy8us",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-567A7F8E3AD1",
-   "company": "SI-BONE",
-   "title": "Director, Quality Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:38:56.088Z",
-   "retryAt": "2026-11-04T03:38:56.088Z",
-   "attempts": [
-    {
-     "url": "https://grnh.se/cd6fgnv17us",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-26861E8AD7A2",
-   "company": "PAM Health",
-   "title": "Director of Quality Management (RN) / Tulsa LTACH",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:38:59.132Z",
-   "retryAt": "2026-11-04T03:38:59.132Z",
-   "attempts": [
-    {
-     "url": "https://careers-pamhealth.icims.com/jobs/97544/job",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E2BC6841E7F2",
-   "company": "Texas Health and Human Services Commission",
-   "title": "Quality Assurance Director-Manager III",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:01.482Z",
-   "retryAt": "2026-11-04T03:39:01.482Z",
-   "attempts": [
-    {
-     "url": "https://career41.sapsf.com/career?company=northgat01&career_ns=job_listing&career_job_req_id=22679&lang=en_US&source=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C062B08F8EAA",
-   "company": "Aeris Communications Inc.",
-   "title": "Head of Network Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:03.315Z",
-   "retryAt": "2026-11-04T03:39:03.315Z",
-   "attempts": [
-    {
-     "url": "https://ats.rippling.com/aeris-communications-inc/jobs/0c1a525b-f2e9-47d8-8de6-45369b36a520?jobSite=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-68719CF8D618",
-   "company": "The Sanctuary at the Woodlands",
-   "title": "Director of Quality Assurance and Risk Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:05.093Z",
-   "retryAt": "2026-11-04T03:39:05.093Z",
-   "attempts": [
-    {
-     "url": "https://apply-jobs.apploi.com/job/1998157?utm_campaign=integration&utm_medium=job-board-feed&utm_source=indeed-apply-feed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-39CC1E99DBAE",
-   "company": "Nestlé USA",
-   "title": "Senior Manager, Manufacturing Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:07.473Z",
-   "retryAt": "2026-11-04T03:39:07.473Z",
-   "attempts": [
-    {
-     "url": "https://jobdetails.nestle.com/job/Eau-Claire-Senior-Manager%2C-Manufacturing-Excellence-WI-54703/1452318533/?feedId=392933&utm_source=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0BFA1C1D846D",
-   "company": "Alkermes, Inc.",
-   "title": "Director, External Development & Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:11.177Z",
-   "retryAt": "2026-11-04T03:39:11.177Z",
-   "attempts": [
-    {
-     "url": "https://hbap.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/14219",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-EE8C16D8D2D3",
-   "company": "Killdeer Mountain Manufacturing, Inc.",
-   "title": "Director of Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:16.114Z",
-   "retryAt": "2026-11-04T03:39:16.114Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4480804844",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B2413570AFED",
-   "company": "McGean",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:20.871Z",
-   "retryAt": "2026-11-04T03:39:20.871Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4480152057",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1F27168B14BF",
-   "company": "Cuero Regional Hospital",
-   "title": "Quality Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:22.815Z",
-   "retryAt": "2026-11-04T03:39:22.815Z",
-   "attempts": [
-    {
-     "url": "https://www.cueroregionalhospital.org/jobs/job-categories/quality/quality-director-ft/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5E4BDAE1C7F3",
-   "company": "Gables Search Group",
-   "title": "Quality Manager (Automotive)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:27.753Z",
-   "retryAt": "2026-11-04T03:39:27.753Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4479133571/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C68C5CD8C839",
-   "company": "W3Global",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:29.390Z",
-   "retryAt": "2026-11-04T03:39:29.390Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4477848942/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-76091BAC19F9",
-   "company": "Krush Tech",
-   "title": "Director of Program Management, Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:31.160Z",
-   "retryAt": "2026-11-04T03:39:31.160Z",
-   "attempts": [
-    {
-     "url": "https://apply.workable.com/j/E9F0238A73",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8D91801EC6A6",
-   "company": "Jobot",
-   "title": "Senior Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:32.754Z",
-   "retryAt": "2026-11-04T03:39:32.754Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4475618159/",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2F9484015C1",
-   "company": "Xpertise Recruitment",
-   "title": "Chief engineer, data center",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:34.388Z",
-   "retryAt": "2026-11-04T03:39:34.388Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4485356681/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BAFB012E0B15",
-   "company": "F&S Produce",
-   "title": "Vice President, Quality & Food Safety",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:36.647Z",
-   "retryAt": "2026-11-04T03:39:36.647Z",
-   "attempts": [
-    {
-     "url": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4632460/F-S-Produce-Company-Inc/Vice-President-Quality-Food-Safety?source=Indeed_Feed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2D647207400",
-   "company": "nexform",
-   "title": "Director of Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:48.848Z",
-   "retryAt": "2026-11-04T03:39:48.848Z",
-   "attempts": [
-    {
-     "url": "https://nexforminc.com/careers?gnk=job&gni=8a7885aca18473fa01a19da08e5850d9&gns=Indeed+Free",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B0B138A58E67",
-   "company": "Jubilant Radiopharma",
-   "title": "Director, Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:51.530Z",
-   "retryAt": "2026-11-04T03:39:51.530Z",
-   "attempts": [
-    {
-     "url": "https://jubilantcareer.jubl.com/career?company=jubilantphP2&career_ns=job_listing&career_job_req_id=1828&lang=en_US&source=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AFD0D230E1BD",
-   "company": "ElevateBio",
-   "title": "Senior Director, Quality Control",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:54.324Z",
-   "retryAt": "2026-11-04T03:39:54.324Z",
-   "attempts": [
-    {
-     "url": "https://grnh.se/t54saajz4us",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-152D388F9BB2",
-   "company": "Andritz",
-   "title": "Director of Quality - PFR NA",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:57.129Z",
-   "retryAt": "2026-11-04T03:39:57.129Z",
-   "attempts": [
-    {
-     "url": "https://careers.andritz.com/andritz/job/Raleigh-Director-of-Quality-PFR-NA-NC-27615/1376248557/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7E37E355C5A8",
-   "company": "PACE",
-   "title": "PACE Director of Quality & Compliance",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:39:58.901Z",
-   "retryAt": "2026-11-04T03:39:58.901Z",
-   "attempts": [
-    {
-     "url": "https://apply-jobs.apploi.com/job/baj46bb9493?utm_campaign=integration&utm_medium=job-board-feed&utm_source=indeed-apply-feed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BA971F4C2890",
-   "company": "Signode",
-   "title": "Sr. Multi-Site Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:00.571Z",
-   "retryAt": "2026-11-04T03:40:00.571Z",
-   "attempts": [
-    {
-     "url": "https://jobs.smartrecruiters.com/Signode/3743990016568670-sr-multi-site-plant-manager-",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-904CB0FBAD0B",
-   "company": "LSI - Landscape Services Inc.",
-   "title": "Enhancements Production Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:05.969Z",
-   "retryAt": "2026-11-04T03:40:05.969Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4480882694/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8AA0F2BBE825",
-   "company": "Protingent",
-   "title": "Supplier Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:07.574Z",
-   "retryAt": "2026-11-04T03:40:07.574Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4483254479/",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FC76C8D602A1",
-   "company": "Delaware Dynamics LLC",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:09.250Z",
-   "retryAt": "2026-11-04T03:40:09.250Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4481126090/",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8E02863EA454",
-   "company": "PERFORMANCE HEALTH",
-   "title": "Plant Manager, Fab",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:11.293Z",
-   "retryAt": "2026-11-04T03:40:11.293Z",
-   "attempts": [
-    {
-     "url": "https://jobs.performancehealth.com/job/watertown/plant-manager-fab/26431/102524473632",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7E2FD0142E96",
-   "company": "Constellation Energy",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:18.021Z",
-   "retryAt": "2026-11-04T03:40:18.021Z",
-   "attempts": [
-    {
-     "url": "https://jobs.constellationenergy.com/jobs/141176/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-023C2596A19D",
-   "company": "Constellation Energy",
-   "title": "General Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-03T19:40:19.743Z",
-   "retryAt": "2026-11-04T03:40:19.743Z",
-   "attempts": [
-    {
-     "url": "https://jobs.constellationenergy.com/jobs/141173/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A91EC8B39048",
    "company": "DAP Global Inc.",
    "title": "Plant Manager",
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-03T16:30:56.828Z",
-   "retryAt": "2026-11-03T20:30:56.828Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-03T20:31:10.547Z",
+   "retryAt": "2026-11-04T04:31:10.547Z",
    "attempts": [
     {
      "url": "https://hcwx.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_20/requisitions/preview/16380",
@@ -8377,9 +7794,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-03T16:31:00.431Z",
-   "retryAt": "2026-11-03T20:31:00.431Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-03T20:31:13.774Z",
+   "retryAt": "2026-11-04T04:31:13.774Z",
    "attempts": [
     {
      "url": "https://careers-smyrnareadymix.icims.com/jobs/3715/job?in_iframe=1",
@@ -8430,69 +7847,604 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-6F4DCF811A7C",
-   "company": "d-Matrix",
-   "title": "Director, Quality and Reliability Engineering – AI Hardware",
+   "id": "V2I-7BCEBF9F001E",
+   "company": "Randolph Health",
+   "title": "Director - Quality",
    "needs": [
-    "SALARY"
+    "SALARY",
+    "DEGREE"
    ],
    "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-03T18:59:03.612Z",
-   "retryAt": "2026-11-03T19:59:03.612Z",
-   "attempts": [],
+   "lastAttemptAt": "2026-11-03T19:38:49.822Z",
+   "retryAt": "2026-11-04T03:38:49.822Z",
+   "attempts": [
+    {
+     "url": "https://pm.healthcaresource.com/CS/randolph/#/job/7965?source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-92B638E17FF2",
+   "company": "Quest Diagnostics",
+   "title": "Senior Director, Quality Assurance - Southeast Region",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:38:52.569Z",
+   "retryAt": "2026-11-04T03:38:52.569Z",
+   "attempts": [
+    {
+     "url": "https://hdox.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/job/72109",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-08B72A73BF9F",
+   "company": "Nivagen Pharmaceuticals",
+   "title": "Director of Quality Control",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:38:54.354Z",
+   "retryAt": "2026-11-04T03:38:54.354Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/yr6ycfsy8us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-567A7F8E3AD1",
+   "company": "SI-BONE",
+   "title": "Director, Quality Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:38:56.088Z",
+   "retryAt": "2026-11-04T03:38:56.088Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/cd6fgnv17us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-26861E8AD7A2",
+   "company": "PAM Health",
+   "title": "Director of Quality Management (RN) / Tulsa LTACH",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:38:59.132Z",
+   "retryAt": "2026-11-04T03:38:59.132Z",
+   "attempts": [
+    {
+     "url": "https://careers-pamhealth.icims.com/jobs/97544/job",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E2BC6841E7F2",
+   "company": "Texas Health and Human Services Commission",
+   "title": "Quality Assurance Director-Manager III",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:01.482Z",
+   "retryAt": "2026-11-04T03:39:01.482Z",
+   "attempts": [
+    {
+     "url": "https://career41.sapsf.com/career?company=northgat01&career_ns=job_listing&career_job_req_id=22679&lang=en_US&source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C062B08F8EAA",
+   "company": "Aeris Communications Inc.",
+   "title": "Head of Network Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:03.315Z",
+   "retryAt": "2026-11-04T03:39:03.315Z",
+   "attempts": [
+    {
+     "url": "https://ats.rippling.com/aeris-communications-inc/jobs/0c1a525b-f2e9-47d8-8de6-45369b36a520?jobSite=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-68719CF8D618",
+   "company": "The Sanctuary at the Woodlands",
+   "title": "Director of Quality Assurance and Risk Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:05.093Z",
+   "retryAt": "2026-11-04T03:39:05.093Z",
+   "attempts": [
+    {
+     "url": "https://apply-jobs.apploi.com/job/1998157?utm_campaign=integration&utm_medium=job-board-feed&utm_source=indeed-apply-feed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-39CC1E99DBAE",
+   "company": "Nestlé USA",
+   "title": "Senior Manager, Manufacturing Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:07.473Z",
+   "retryAt": "2026-11-04T03:39:07.473Z",
+   "attempts": [
+    {
+     "url": "https://jobdetails.nestle.com/job/Eau-Claire-Senior-Manager%2C-Manufacturing-Excellence-WI-54703/1452318533/?feedId=392933&utm_source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0BFA1C1D846D",
+   "company": "Alkermes, Inc.",
+   "title": "Director, External Development & Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:11.177Z",
+   "retryAt": "2026-11-04T03:39:11.177Z",
+   "attempts": [
+    {
+     "url": "https://hbap.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/14219",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EE8C16D8D2D3",
+   "company": "Killdeer Mountain Manufacturing, Inc.",
+   "title": "Director of Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:16.114Z",
+   "retryAt": "2026-11-04T03:39:16.114Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4480804844",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B2413570AFED",
+   "company": "McGean",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:20.871Z",
+   "retryAt": "2026-11-04T03:39:20.871Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4480152057",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1F27168B14BF",
+   "company": "Cuero Regional Hospital",
+   "title": "Quality Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:22.815Z",
+   "retryAt": "2026-11-04T03:39:22.815Z",
+   "attempts": [
+    {
+     "url": "https://www.cueroregionalhospital.org/jobs/job-categories/quality/quality-director-ft/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5E4BDAE1C7F3",
+   "company": "Gables Search Group",
+   "title": "Quality Manager (Automotive)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:27.753Z",
+   "retryAt": "2026-11-04T03:39:27.753Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4479133571/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C68C5CD8C839",
+   "company": "W3Global",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:29.390Z",
+   "retryAt": "2026-11-04T03:39:29.390Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4477848942/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-76091BAC19F9",
+   "company": "Krush Tech",
+   "title": "Director of Program Management, Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:31.160Z",
+   "retryAt": "2026-11-04T03:39:31.160Z",
+   "attempts": [
+    {
+     "url": "https://apply.workable.com/j/E9F0238A73",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8D91801EC6A6",
+   "company": "Jobot",
+   "title": "Senior Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:32.754Z",
+   "retryAt": "2026-11-04T03:39:32.754Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4475618159/",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2F9484015C1",
+   "company": "Xpertise Recruitment",
+   "title": "Chief engineer, data center",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:34.388Z",
+   "retryAt": "2026-11-04T03:39:34.388Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4485356681/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BAFB012E0B15",
+   "company": "F&S Produce",
+   "title": "Vice President, Quality & Food Safety",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:36.647Z",
+   "retryAt": "2026-11-04T03:39:36.647Z",
+   "attempts": [
+    {
+     "url": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4632460/F-S-Produce-Company-Inc/Vice-President-Quality-Food-Safety?source=Indeed_Feed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2D647207400",
+   "company": "nexform",
+   "title": "Director of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:48.848Z",
+   "retryAt": "2026-11-04T03:39:48.848Z",
+   "attempts": [
+    {
+     "url": "https://nexforminc.com/careers?gnk=job&gni=8a7885aca18473fa01a19da08e5850d9&gns=Indeed+Free",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B0B138A58E67",
+   "company": "Jubilant Radiopharma",
+   "title": "Director, Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:51.530Z",
+   "retryAt": "2026-11-04T03:39:51.530Z",
+   "attempts": [
+    {
+     "url": "https://jubilantcareer.jubl.com/career?company=jubilantphP2&career_ns=job_listing&career_job_req_id=1828&lang=en_US&source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AFD0D230E1BD",
+   "company": "ElevateBio",
+   "title": "Senior Director, Quality Control",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:54.324Z",
+   "retryAt": "2026-11-04T03:39:54.324Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/t54saajz4us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-152D388F9BB2",
+   "company": "Andritz",
+   "title": "Director of Quality - PFR NA",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:57.129Z",
+   "retryAt": "2026-11-04T03:39:57.129Z",
+   "attempts": [
+    {
+     "url": "https://careers.andritz.com/andritz/job/Raleigh-Director-of-Quality-PFR-NA-NC-27615/1376248557/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-7E37E355C5A8",
+   "company": "PACE",
+   "title": "PACE Director of Quality & Compliance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:39:58.901Z",
+   "retryAt": "2026-11-04T03:39:58.901Z",
+   "attempts": [
+    {
+     "url": "https://apply-jobs.apploi.com/job/baj46bb9493?utm_campaign=integration&utm_medium=job-board-feed&utm_source=indeed-apply-feed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BA971F4C2890",
+   "company": "Signode",
+   "title": "Sr. Multi-Site Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:00.571Z",
+   "retryAt": "2026-11-04T03:40:00.571Z",
+   "attempts": [
+    {
+     "url": "https://jobs.smartrecruiters.com/Signode/3743990016568670-sr-multi-site-plant-manager-",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-904CB0FBAD0B",
+   "company": "LSI - Landscape Services Inc.",
+   "title": "Enhancements Production Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:05.969Z",
+   "retryAt": "2026-11-04T03:40:05.969Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4480882694/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8AA0F2BBE825",
+   "company": "Protingent",
+   "title": "Supplier Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:07.574Z",
+   "retryAt": "2026-11-04T03:40:07.574Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4483254479/",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FC76C8D602A1",
+   "company": "Delaware Dynamics LLC",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:09.250Z",
+   "retryAt": "2026-11-04T03:40:09.250Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4481126090/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8E02863EA454",
+   "company": "PERFORMANCE HEALTH",
+   "title": "Plant Manager, Fab",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:11.293Z",
+   "retryAt": "2026-11-04T03:40:11.293Z",
+   "attempts": [
+    {
+     "url": "https://jobs.performancehealth.com/job/watertown/plant-manager-fab/26431/102524473632",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-7E2FD0142E96",
+   "company": "Constellation Energy",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:18.021Z",
+   "retryAt": "2026-11-04T03:40:18.021Z",
+   "attempts": [
+    {
+     "url": "https://jobs.constellationenergy.com/jobs/141176/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-023C2596A19D",
+   "company": "Constellation Energy",
+   "title": "General Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-03T19:40:19.743Z",
+   "retryAt": "2026-11-04T03:40:19.743Z",
+   "attempts": [
+    {
+     "url": "https://jobs.constellationenergy.com/jobs/141173/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   }
  ],
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-9CBD4115AF86",
+   "id": "V2I-6F4DCF811A7C",
    "fields": {
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4406201616/",
-    "DEGREE_ASOF": "2026-11-03",
-    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 120000,
-    "SALARY_BASE_HIGH": 150000,
-    "SALARY_MIDPOINT": 135000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-03",
-    "SALARY_SOURCE": "comparables:V2I-41E5794B76A9,V2I-0000F5B7E6AE,V2I-02FF975B1DA1,V2I-033A2BAFF638,V2I-0F9A04DB8D05,V2I-12000988BB85,V2I-1E05934D2928",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-41E5794B76A9, V2I-0000F5B7E6AE, V2I-02FF975B1DA1, V2I-033A2BAFF638, V2I-0F9A04DB8D05, V2I-12000988BB85, V2I-1E05934D2928]; 7 employer-posted comparable(s), level 1 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; BLS GA 113051 P25-P90 $99K-$194K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-03",
-    "SALARY_SCORE_POINT": 142500
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-03"
    }
   }
  ],
- "estimate_samples": [
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-9CBD4115AF86",
-   "company": "CPS, Inc.",
-   "title": "Production Manager",
-   "location": "Atlanta, GA",
-   "posting": "https://www.linkedin.com/jobs/view/4406201616/",
-   "est": [
-    120000,
-    150000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
-   "comparables": [
-    "V2I-41E5794B76A9",
-    "V2I-0000F5B7E6AE",
-    "V2I-02FF975B1DA1",
-    "V2I-033A2BAFF638",
-    "V2I-0F9A04DB8D05",
-    "V2I-12000988BB85",
-    "V2I-1E05934D2928"
-   ]
-  }
- ],
+ "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
