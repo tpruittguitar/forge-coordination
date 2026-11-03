@@ -5,7 +5,7 @@ and `reference/COMPANY_SITE_CONTEXT.json`. The programmed worker owns matching, 
 bounded migration; Writer owns canonical updates/scoring. AI research is for ambiguous evidence, not every calculation.
 See [salary data sources](../../docs/SALARY_DATA_SOURCES.md) for posted-pay priority, public DOL/BLS data and calibration requirements.
 
-Hourly GitHub Action (`.github/workflows/enrich-ats-pay.yml`, :40) that fills SALARY and DEGREE on FORGE_ENRICH_FEASIBILITY
+Serialized GitHub Action (`.github/workflows/enrich-ats-pay.yml`, every 15 minutes) that fills SALARY and DEGREE on FORGE_ENRICH_FEASIBILITY
 rows without loading the Writer.
 
 Order per row (Tim 2026-10-20 18:17 and 18:21 ET):
@@ -22,6 +22,12 @@ Reads: Cloudflare structured copy and the Writer's own worklist code (same selec
 Writes: at most `maxBatches` x 25 rows per run, one Writer `batch` call at a time; a `remainder` waits for the next run.
 `state/enrich-ats-pay.json` keeps submitted / tried rows for `resubmitHours`. `state/enrich-ats-pay-report.json` is the
 per-run report. `config.json` `"submit": false` = dry run: report only, Writer untouched, ledger unchanged.
+
+Research has a nine-minute budget and Writer work an eighteen-minute overall deadline,
+including transport bodies, receipt polls and retry waits. Two Writer batches are the
+maximum, with no cooldown after the final batch. Deferred work stays for a later run;
+uncertain submissions stay fenced until RESULT, GitHub index and readback agree.
+See [runtime repair](../../docs/PAY_RUNTIME_REPAIR_20261103.md).
 
 Tests: `ENRICH_FC_DIR=../foreman-cockpit node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js`
 

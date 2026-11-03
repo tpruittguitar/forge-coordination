@@ -24,19 +24,31 @@ const contextKey=r=>crypto.createHash('sha256').update(JSON.stringify(Context.lo
 const modelFields=r=>salaryContext?{SALARY_MODEL_VERSION:Context.VERSION,SALARY_CONTEXT_KEY:contextKey(r)}:{};
 const Recovery=require('./recovery');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
+if(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_CONFIG)Object.assign(CONFIG,JSON.parse(process.env.ENRICH_TEST_CONFIG));
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
-const sleep = ms => new Promise(r => setTimeout(r, process.env.ENRICH_TEST_FAST ? 0 : ms));
-async function get(url, opts) { const r = await fetch(url, {signal:AbortSignal.timeout(30000),...opts,headers:{'Accept-Language':'en-US',...opts?.headers}}); if (!r.ok) { const e = new Error(url.replace(/key=[^&]+/, 'key=…') + ' HTTP ' + r.status); e.status = r.status; throw e; } return r; }
+const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
+  pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
+const sleep = ms => runtime.wait(process.env.ENRICH_TEST_FAST?0:ms);
+const progress = (phase, detail={}) => console.log(JSON.stringify({event:'PAY_PROGRESS',phase,elapsed_ms:runtime.elapsed(),...detail}));
+async function get(url, opts={}) {
+  runtime.check();
+  const signal=AbortSignal.any([AbortSignal.timeout(Math.max(1,Math.min(30000,runtime.remaining()))),...(opts.signal?[opts.signal]:[])]);
+  const r=await runtime.bounded(abort=>fetch(url,{...opts,signal:AbortSignal.any([signal,abort]),headers:{'Accept-Language':'en-US',...opts.headers}}),30000);
+  if(!r.ok){const e=new Error(url.replace(/key=[^&]+/,'key=…')+' HTTP '+r.status);e.status=r.status;throw e;}
+  // Fetch resolves at headers; a stalled body must obey the same budget too.
+  return {ok:r.ok,status:r.status,json:()=>runtime.bounded(()=>r.json(),30000),text:()=>runtime.bounded(()=>r.text(),30000)};
+}
 const FC_DIR = process.env.ENRICH_FC_DIR || '';   // tests: a local foreman-cockpit checkout instead of raw GitHub
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + rel)).text(); }
 async function loadModule(name) { const src = await fcFile('apps-script/' + name); const file = path.join(require('os').tmpdir(), name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./$1.js')")); return file; }
 
 (async () => {
   const T0 = Date.now();
+  progress('startup');
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
   await loadModule('PipelineEvidence.gs'); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
@@ -45,7 +57,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Read one complete canonical snapshot. A delayed structured mirror must not hide new jobs or repeat completed work.
   let jobs = [], total = null;
   if (process.env.ENRICH_MASTER_FILE) { jobs = fs.readFileSync(process.env.ENRICH_MASTER_FILE, 'utf8').split('\n').filter(l => /^\d+ \| /.test(l)).map(l => ({ SOURCE_LINE: l })); total = jobs.length; }   // tests only
-  let masterSource=null;if(!process.env.ENRICH_MASTER_FILE){const snapshot=await require('../pipeline-observability/canonical-snapshot').readCanonical({key,W});jobs=snapshot.rows.map(r=>({SOURCE_LINE:r.line}));total=jobs.length;masterSource=snapshot.source;}
+  let masterSource=null;if(!process.env.ENRICH_MASTER_FILE){const snapshot=await require('../pipeline-observability/canonical-snapshot').readCanonical({key,W,reader:(action,opts)=>require('../source-intake/writer-reader').read(action,{...opts,transport:get})});jobs=snapshot.rows.map(r=>({SOURCE_LINE:r.line}));total=jobs.length;masterSource=snapshot.source;}
+  progress('snapshot',{rows:jobs.length});
   const lines = jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean);
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
@@ -60,7 +73,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if(archiveComplete&&!process.env.ENRICH_MASTER_FILE)try{const effective=W.parseRows(require('../source-intake/writer-reader').parseArchive(archiveText).map(r=>r.RAW_ROW).join('\n'));payProfile=SourceProfile.build([...rows.map(r=>({...r,store:'MASTER'})),...effective.filter(r=>!liveIds.has(r.PRIMARY_ID)).map(r=>({...r,store:'ARCHIVE'}))],{context:salaryContext||{}});profileRebuilt=true;profileRefreshStatus='COMPLETE_CANONICAL_SNAPSHOT';}catch{profileRefreshStatus='PROFILE_REFRESH_UNCONFIRMED_PREVIOUS_RETAINED';}
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
-  const inFlightIds=new Set();for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){const probe=entry.requestIds?.[0]||requestId;try{const d=await(await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(probe)}`)).json();if(d.source==='GITHUB'&&d.request?.s==='COMPLETE'&&(entry.ids||[]).every(id=>(d.request.items||[]).some(x=>x.pid===id))){delete ledger.pendingWrites[requestId];continue;}}catch{}for(const id of entry.ids||[])inFlightIds.add(id);}
+  const writerRead=async(action,params={})=>{const u=new URL(conn.PipelineConnection.url);u.searchParams.set('key',key);u.searchParams.set('action',action);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return(await get(u.toString())).json();};
+  const receiptIndex=async()=> (await get('https://raw.githubusercontent.com/tpruittguitar/forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json?pay='+Date.now())).json();
+  const inFlightIds=new Set();progress('pending_receipts',{batches:Object.keys(ledger.pendingWrites).length});
+  let pendingIndex;for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){
+    try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();if(await require('./writer-proof').verify(entry.requests,{index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]})){delete ledger.pendingWrites[requestId];continue;}}}catch{}
+    for(const id of entry.ids||[])inFlightIds.add(id);
+  }
   const grokResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
   const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds]);
   const researchUnavailableIds=new Set([...unavailableIds,...grokResearchIds]);
@@ -75,6 +94,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const boards = {}; let boardFetches = 0;
   Object.assign(stats, { est_same_employer: 0, est_comparables: 0, boards_read: 0, boards_failed: 0, bls: { OK: 0, ABOVE: 0, BELOW: 0, NO_BLS: 0 }, bls_queries: 0 });
   async function employerPostings(b, row) {
+    if(!runtime.canStart())return [];
     const key = b.kind === 'workday' ? b.key + '|' + row.TITLE : b.key;
     if (boards[key]) return boards[key];
     if (boardFetches >= (CONFIG.maxBoardFetches || 20)) return [];
@@ -97,6 +117,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Grok Bot QA #21: cache finite numbers only (BLS suppresses some cells with "-" or "*"); retry a missing value after 7 days;
   // count queries per UTC day in the cache and stop at 20 (BLS v1 allows 25 a day; the job runs hourly).
   async function blsWages(state, soc) {
+    if(!runtime.canStart())return null;
     const ids = ['12', '13', '15'].map(dt => L.blsSeries(state, soc, dt)); if (!ids[0]) return null;
     const day = new Date().toISOString().slice(0, 10); if (!blsCache.daily || blsCache.daily.day !== day) blsCache.daily = { day, queries: 0 };
     const age = id => blsCache.series[id] ? Date.now() - Date.parse(blsCache.series[id].at) : Infinity;
@@ -117,6 +138,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const shared = {}; list.forEach(r => { if (!/SALARY/.test(needsOf(r))) return; const e = L.estimate(r, anchors, salaryContext), k = shareKey(e); if (k) shared[k] = (shared[k] || 0) + 1; });
   stats.est_shared_low = 0;
   async function estimateFor(r, opts) {
+    if(!runtime.canStart())return null;
     r=Employer.resolve(r);
     opts = opts || {};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
@@ -129,6 +151,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       rememberPostings(co, fresh);
       comps = L.similarPostings(r, fresh.concat(remembered(co)).filter((x, i, a) => a.findIndex(y => y.page === x.page && y.title === x.title) === i));
     }
+    if(!runtime.canStart())return null;
     let est = null;
     if (comps.length) {
       const med = {}; const home = rowState ? await blsWages(rowState, soc) : null;
@@ -151,7 +174,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       est = L.blsEstimate(r, w, []);   // mlPoints: JobPredictor / nginyc numbers when a lightweight call is available; empty = BLS range only
       if (est) { stats.est_bls = (stats.est_bls || 0) + 1; if (!opts.noNetwork) stats.bls.BLS_EST = (stats.bls.BLS_EST || 0) + 1; }
     }
-    if (!est) return null;
+    if (!est || !runtime.canStart()) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); if (!opts.noNetwork) stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
     if(!opts.noNetwork)sourceSearch?.count(est);
@@ -200,12 +223,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
   async function repairSalaries(candidates) {
   for (const r of PRODUCTS_ONLY ? [] : candidates) {
+    if(!runtime.canStart())break;
     if(requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
     if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 >= CONFIG.maxRunMs || researchUnavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
-    const est = await estimateFor(r, { noBoard: true }); if (!est) continue;
+    progress('salary_repair',{id:r.PRIMARY_ID,decision:r.BUCKET==='TIM_DECISION_REQUIRED'});
+    const est = await estimateFor(r, { noBoard: true }); if (!est || !runtime.canStart()) continue;
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
       ...modelFields(r),SALARY_BASE_LOW:est.low, SALARY_BASE_HIGH:est.high, SALARY_MIDPOINT:est.mid, SALARY_BASIS:'FORGE-ESTIMATE', SALARY_CONF:est.conf, SALARY_ASOF:today,
@@ -216,11 +241,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 
   }
   // Tim: refresh estimates awaiting his decision before spending the run on other jobs.
+  progress('decision_salary_repairs');
   await repairSalaries(rows.filter(r=>r.BUCKET==='TIM_DECISION_REQUIRED'));
+  progress('active_salary_review',{planned:requests.length});
   const reviewDue=PRODUCTS_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
+    progress('salary_review',{id:r.PRIMARY_ID});
     review.reviewed++;let exact=null,source=null,attempts=0;
     for(const url of Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY))){
       if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
@@ -239,14 +267,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     review.samples.push({id:r.PRIMARY_ID,status,priorConfidence:r.p.SALARY_CONF||null,basis:fields?.SALARY_BASIS||r.p.SALARY_BASIS});
   }
   reviewDeadline=0;
+  progress('other_salary_repairs',{planned:requests.length});
   await repairSalaries(rows.filter(r=>r.BUCKET!=='TIM_DECISION_REQUIRED'));
+  progress('missing_fields',{planned:requests.length});
   for (const r of ordered) {
-    if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 > CONFIG.maxRunMs) break;
+    if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
     if (repairOriginal.has(r.PRIMARY_ID)||reviewOriginal.has(r.PRIMARY_ID)) continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
+    progress('missing_row',{id:r.PRIMARY_ID});
     const saved=Recovery.cached(ledger,r),helperResearch=grokResearchIds.has(r.PRIMARY_ID);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let checked = false, attempted = false, postedPay = null, atsUnconfirmed = false;
@@ -334,6 +365,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Shared location facts are looked up once per site, then copied through the Writer.
   // They are supporting decision context, never a new readiness gate or reason to re-research a complete job.
   const productSample=[],productGaps={};let priorProductGaps={};try{const prior=JSON.parse(fs.readFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),'utf8'));priorProductGaps=Object.fromEntries((prior.unmappedSites||[]).map(g=>[Products.company(g.company)+'|'+Products.location(g.location),g]));}catch{}stats.products_planned=0;
+  progress('products',{planned:requests.length});
   function activeProductRow(r){return ['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET)&&!/^YES/i.test(r.p.ANTI_RESURRECTION||'')&&!r.p.DO_NOT_REWORK&&!/^CLOSED/.test(r.p.LIVENESS||'')&&!/^CLOSED/.test(r.p.ATS_CHECK_RESULT||'');}
   for(const r of rows){if(unavailableIds.has(r.PRIMARY_ID)||!activeProductRow(r))continue;const entry=Products.lookup(r,productsReference);if(Products.known(r.p.PRODUCT)&&!Products.needsUpdate(r,entry))continue;
     if(!entry){const k=Products.company(r.COMPANY)+'|'+Products.location(r.LOCATION),g=productGaps[k]||(productGaps[k]={...priorProductGaps[k],company:r.COMPANY,location:r.LOCATION,jobs:0,primaryIds:[],status:priorProductGaps[k]?.status||'PENDING_ENRICHMENT_RESEARCH'});g.jobs++;g.primaryIds.push(r.PRIMARY_ID);continue;}
@@ -348,6 +380,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const weak = r => val(r, 'SALARY_BASIS') === 'FORGE-ESTIMATE' && val(r, 'SALARY_CONF') === 'LOW' && /^comparables:/.test(val(r, 'SALARY_SOURCE'));
   for (const r of rows) {
     if(PRODUCTS_ONLY)break;
+    if(!runtime.canStart())break;
     if (requests.length >= CONFIG.maxBatches * 25 || stats.upgraded >= (CONFIG.maxUpgradesPerRun || 10)) break;
     if (unavailableIds.has(r.PRIMARY_ID) || !ActiveReview.eligible(r) || !weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
     const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER' || est.conf === 'LOW') continue;   // LOW for LOW is no upgrade
@@ -358,8 +391,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Every pay write carries an arithmetic midpoint and a separate policy scoring point.
   for(const q of requests){const f=q.ruling.fields,v=Pay.values(f.SALARY_BASE_LOW,f.SALARY_BASE_HIGH);if(v){f.SALARY_MIDPOINT=v.mid;f.SALARY_SCORE_POINT=v.scorePoint;}}
   stats.planned = requests.length;
+  stats.research_budget_exhausted=runtime.expired();
+  runtime.setPhase('writer');
+  progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
+    if(!runtime.canStart(60000)){stats.writer_budget_deferred=requests.length-b*25;break;}
     let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
+    progress('writer_readback',{batch:b+1,rows:batch.length});
     try {
       // Grok Bot QA: the structured copy can lag; re-read these rows from the Writer (read-only, no lock) and drop what a lane
       // filled in meanwhile, so posted pay is never overwritten by an estimate.
@@ -386,7 +424,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
       let res, fenced = 0;
       for (;;) {
-        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
+        if(!runtime.canStart(30000)){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break batches;}
+        progress('writer_post',{batch:b+1,attempt:fenced+1,rows:batch.length});
+        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
@@ -401,6 +441,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(res.mode==='WRITE_FENCE')delete ledger.pendingWrites[requestId];
         if (res.mode !== 'WRITE_FENCE' || res.frozen || fenced >= CONFIG.fenceRetries) break;
         fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
+        progress('writer_fence_wait',{batch:b+1});
         await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
       }
       if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue batches; }
@@ -413,18 +454,25 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
-    } catch (e) { if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue batches; }
-    await sleep(CONFIG.batchGapMs);
+    } catch (e) { if(e.code==='RUN_BUDGET'){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break;} if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue batches; }
+    progress('writer_batch_done',{batch:b+1,accepted:stats.writer_ok});
+    // No final cooldown: it used to waste 130 seconds after the last batch.
+    if((b+1)*25<requests.length&&b+1<CONFIG.maxBatches){try{await sleep(CONFIG.batchGapMs);}catch(e){if(e.code!=='RUN_BUDGET')throw e;stats.writer_budget_deferred=requests.length-(b+1)*25;break;}}
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
   // is PENDING (the Writer verifies a save no sooner than 120 s after it), up to replyCheckPolls x replyCheckGapMs.
   async function receiptFor(batch) {
     const rid = batch[0].ruling.requestId; let s = 'NO_ENTRY';
     for (let i = 0; i < (CONFIG.replyCheckPolls || 6); i++) {
+      if(!runtime.canStart((CONFIG.replyCheckGapMs||30000)+30000))return {status:s};
+      progress('writer_receipt_poll',{requestId:rid,poll:i+1});
       await sleep(CONFIG.replyCheckGapMs || 30000);
       let d; try { d = await (await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(rid)}`)).json(); } catch (e) { continue; }
       const entry = d && d.request; s = entry ? String(entry.s || 'UNKNOWN') : 'NO_ENTRY';
-      if (s === 'COMPLETE') return { status: s, pids: new Set((entry.items || []).map(x => x && x.pid)) };
+      if (s === 'COMPLETE' && d.source==='GITHUB'){
+        try{if(await require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0]}))return {status:s,pids:new Set(batch.map(q=>q.ruling.primaryId))};}catch{}
+        s='COMPLETE_READBACK_UNCONFIRMED';
+      }
       if (['NEEDS_RESOLUTION', 'NOT_PERSISTED', 'FALSE_COMPLETE'].includes(s)) return { status: s, failed: true };
     }
     return { status: s };
@@ -438,6 +486,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if(!DRY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(BENCHMARK_FILE,JSON.stringify(benchmarks,null,2)+'\n');
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
+  progress('publish_report');
   if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
   const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,grokResearchIds.has(r.PRIMARY_ID)?'GROK_RESEARCH_RESERVED':helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
@@ -450,4 +499,5 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const prev = fs.existsSync(REPORT) ? JSON.parse(fs.readFileSync(REPORT, 'utf8')) : null;
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
+  progress('complete',{planned:stats.planned,accepted:stats.writer_ok});
 })().catch(e => { console.error(e.message); process.exit(1); });
