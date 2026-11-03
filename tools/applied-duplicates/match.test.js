@@ -33,9 +33,10 @@ test('posting seen before the application date is likely the same posting; Linke
   assert.equal(r.outcome, 'CLOSE_CANDIDATE'); assert.equal(r.rule, 'SAME_BY_TIMELINE');
 });
 
-test('first seen after the rejection asks Tim; reworded titles never close on timeline', () => {
+test('first seen after the rejection stays open as a possible repost; reworded titles never close on timeline', () => {
   const rejected = line('V2F-B', 'Anduril Industries', 'Deputy Head of Production, Connected Warfare', 'REJECTED_BY_EMPLOYER', { tags: 'APPLIED_2026-09-28; EMPLOYER_REJECTION_2026-10-16' });
-  assert.equal(one([line('V2I-A', 'Anduril Industries', 'Deputy Head of Production, Connected Warfare', 'SCOUT_INTAKE', { kv: 'DATE_ADDED=2026-10-18' }), rejected], 'V2I-A').rule, 'POSSIBLE_REPOST');
+  const repost = one([line('V2I-A', 'Anduril Industries', 'Deputy Head of Production, Connected Warfare', 'SCOUT_INTAKE', { kv: 'DATE_ADDED=2026-10-18' }), rejected], 'V2I-A');
+  assert.equal(repost.rule, 'POSSIBLE_REPOST'); assert.equal(repost.outcome, 'KEEP_LABEL'); assert.match(repost.label, /Rejected 2026-10-16 · possible repost/);
   const reworded = one([line('V2I-C', 'Anduril', 'Production Deputy Head - Connected Warfare Programs', 'SCOUT_INTAKE', { kv: 'DATE_ADDED=2026-09-20' }), rejected], 'V2I-C');
   assert.notEqual(reworded?.outcome, 'CLOSE_CANDIDATE');
 });
@@ -63,5 +64,5 @@ test('decided rows are never reported, and counts add up', () => {
   const rows = [line('V2I-A', 'Acme Robotics', 'Plant Manager', 'SCOUT_INTAKE', { kv: 'DATE_ADDED=2026-10-01' }), line('V2E-B', 'Acme Robotics', 'Plant Manager', 'APPLIED', { tags: 'APPLIED_2026-10-02' })];
   const r = M.classify(rows);
   assert.equal(r.counts.waiting, 1); assert.equal(r.counts.matched, 1); assert.equal(r.items[0].id, 'V2I-A');
-  assert.equal(r.counts.CLOSE_CANDIDATE + r.counts.KEEP_LABEL + r.counts.ASK_TIM, r.counts.matched);
+  assert.equal(r.counts.CLOSE_CANDIDATE + r.counts.KEEP_LABEL, r.counts.matched);
 });

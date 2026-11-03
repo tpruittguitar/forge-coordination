@@ -1,7 +1,7 @@
 name: applied-duplicates
-# Tim 2026-11-03: dry-run report of jobs waiting on Tim that repeat a role he already applied to, was rejected from,
-# or declined. Reads the canonical master read-only and publishes state/APPLIED_DUPLICATES_REPORT.{json,md}.
-# It never submits to the Writer or changes a row; automatic closing needs Tim's separate approval.
+# Tim 2026-11-03 ("solve it and forget it"): jobs waiting on Tim that repeat a role he already applied to, was rejected
+# from, or declined. Same posting -> Writer DUPLICATE of the decided row. Anything else stays active with a
+# PRIOR_APPLICATION label shown in the Explorer. No question is ever queued for Tim. Report: state/APPLIED_DUPLICATES_REPORT.md
 on:
   workflow_dispatch: {}
   schedule:
@@ -14,7 +14,7 @@ concurrency:
 jobs:
   report:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
       - uses: actions/checkout@v4
@@ -25,18 +25,20 @@ jobs:
         with:
           node-version: '22'
       - run: node --test tools/applied-duplicates/*.test.js
-      - name: Publish dry-run report
+      - name: Apply and publish report
         env:
           APPLIED_DUP_FC_DIR: _fc
         run: |
           set -euo pipefail
           git config user.name forge-duplicates-bot
           git config user.email forge-duplicates-bot@users.noreply.github.com
+          node tools/applied-duplicates/run.js
+          cp state/APPLIED_DUPLICATES_REPORT.json state/APPLIED_DUPLICATES_REPORT.md "$RUNNER_TEMP/"
           for attempt in 1 2 3 4; do
-            node tools/applied-duplicates/run.js
+            cp "$RUNNER_TEMP/APPLIED_DUPLICATES_REPORT.json" "$RUNNER_TEMP/APPLIED_DUPLICATES_REPORT.md" state/
             git add state/APPLIED_DUPLICATES_REPORT.json state/APPLIED_DUPLICATES_REPORT.md
             git diff --cached --quiet && exit 0
-            git commit -m "DUPLICATES-BOT: applied-duplicate dry-run report"
+            git commit -m "DUPLICATES-BOT: applied-duplicate report"
             git push origin HEAD:main && exit 0
             git fetch origin main
             git reset --hard origin/main

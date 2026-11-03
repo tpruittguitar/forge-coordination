@@ -8,8 +8,8 @@
      2. Different worksite with the same title -> different opening (keep).
      3. Timeline: posting first seen on or before the decision date (+2 days) -> likely the same posting.
         First seen after the rejection, or more than 30 days after applying -> possible repost (ask Tim).
-     4. Anything else -> ask Tim (one tap: Same role / Different role).
-   Title match alone never closes a job. */
+     4. Anything else -> keep, labeled "possible repeat". Tim's own Apply/Decline on the job settles it; nothing waits on him.
+   Title match alone never closes a job. Only CLOSE_CANDIDATE rows are closed; every other match stays active with a label. */
 const DAY = 86400000;
 const PLACEHOLDER = /^(|-|n\/?a|none|unknown|uncaptured|required|preferred|not[_ ]stated.*|pending.*|tbd)$/i;
 const GENERIC_CO = /^(confidential( company)?|stealth|stealth startup|private company|unknown|undisclosed|n a)$/;
@@ -117,19 +117,19 @@ function compare(w, d, wIds, dIds) {
   const overlap = fw.includes(' ' + pd + ' ') || fd.includes(' ' + pw + ' ');
   if (!NO_PLACE.test(pw) && !NO_PLACE.test(pd) && pw !== pd && !overlap) return { rule: 'DIFFERENT_SITE', outcome: 'KEEP_LABEL', evidence: `Different worksite: ${w.location} vs earlier ${d.location}` };
   const seen = firstSeen(w), { decided, rejected } = decisionDates(d), sim = similarity(w.title, d.title);
-  if (seen == null || decided == null) return { rule: 'NO_DATES', outcome: 'ASK_TIM', evidence: `Missing ${seen == null ? 'posting first-seen date' : 'decision date'}; no shared posting identity` };
-  if (rejected != null && seen > rejected) return { rule: 'POSSIBLE_REPOST', outcome: 'ASK_TIM', evidence: `Posting first seen ${iso(seen)}, after rejection ${iso(rejected)}` };
-  if (d.status !== 'DECLINED_BY_TIM' && seen > decided + 30 * DAY) return { rule: 'POSSIBLE_REPOST', outcome: 'ASK_TIM', evidence: `Posting first seen ${iso(seen)}, more than 30 days after applying ${iso(decided)}` };
+  if (seen == null || decided == null) return { rule: 'NO_DATES', outcome: 'KEEP_LABEL', evidence: `Missing ${seen == null ? 'posting first-seen date' : 'decision date'}; no shared posting identity` };
+  if (rejected != null && seen > rejected) return { rule: 'POSSIBLE_REPOST', outcome: 'KEEP_LABEL', evidence: `Posting first seen ${iso(seen)}, after rejection ${iso(rejected)}` };
+  if (d.status !== 'DECLINED_BY_TIM' && seen > decided + 30 * DAY) return { rule: 'POSSIBLE_REPOST', outcome: 'KEEP_LABEL', evidence: `Posting first seen ${iso(seen)}, more than 30 days after applying ${iso(decided)}` };
   if (seen <= decided + 2 * DAY && sim >= 0.9) return { rule: 'SAME_BY_TIMELINE', outcome: 'CLOSE_CANDIDATE', evidence: `Posting first seen ${iso(seen)}, on or before ${d.status === 'DECLINED_BY_TIM' ? 'decline' : 'application'} ${iso(decided)}; same title` };
-  return { rule: 'UNCERTAIN', outcome: 'ASK_TIM', evidence: `Posting first seen ${iso(seen)}, ${Math.round((seen - decided) / DAY)} days after ${iso(decided)}; no posting identity to compare` };
+  return { rule: 'UNCERTAIN', outcome: 'KEEP_LABEL', evidence: `Posting first seen ${iso(seen)}, ${Math.round((seen - decided) / DAY)} days after ${iso(decided)}; no posting identity to compare` };
 }
 
-const RANK = { CLOSE_CANDIDATE: 3, ASK_TIM: 2, KEEP_LABEL: 1 };
+const RANK = { CLOSE_CANDIDATE: 2, KEEP_LABEL: 1 };
 function label(m) {
   const dd = decisionDates(m.row), verb = m.row.status === 'APPLIED' ? 'Applied' : m.row.status === 'DECLINED_BY_TIM' ? 'You declined' : 'Applied';
   const parts = [`${verb} ${iso(dd.decided) || '(date unknown)'}`];
   if (m.row.status === 'REJECTED_BY_EMPLOYER') parts.push(`Rejected ${iso(dd.rejected) || '(date unknown)'}`);
-  parts.push({ SAME_POSTING_ID: 'same posting', SAME_BY_TIMELINE: 'likely the same posting', NEW_REQUISITION: 'this is a new posting', DIFFERENT_SITE: 'different site', POSSIBLE_REPOST: 'possible repost', UNCERTAIN: 'same or different?', NO_DATES: 'same or different?' }[m.rule]);
+  parts.push({ SAME_POSTING_ID: 'same posting', SAME_BY_TIMELINE: 'likely the same posting', NEW_REQUISITION: 'this is a new posting', DIFFERENT_SITE: 'different site', POSSIBLE_REPOST: 'possible repost', UNCERTAIN: 'possible repeat', NO_DATES: 'possible repeat' }[m.rule]);
   return parts.join(' · ');
 }
 
@@ -158,7 +158,7 @@ function classify(rows, { waitingIds = null, minSimilarity = 0.75 } = {}) {
     });
   }
   items.sort((a, b) => RANK[b.outcome] - RANK[a.outcome] || (b.score ?? -1) - (a.score ?? -1));
-  const counts = { waiting: waiting.length, matched: items.length, CLOSE_CANDIDATE: 0, KEEP_LABEL: 0, ASK_TIM: 0 }, rules = {};
+  const counts = { waiting: waiting.length, matched: items.length, CLOSE_CANDIDATE: 0, KEEP_LABEL: 0 }, rules = {};
   for (const i of items) { counts[i.outcome]++; rules[i.rule] = (rules[i.rule] || 0) + 1; }
   return { counts, rules, items };
 }
