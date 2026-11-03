@@ -55,3 +55,12 @@ test('an ok result without a committed write is not counted as written', async (
   const s = await A.apply([close], opts(w));
   assert.equal(s.closed, 0); assert.equal(s.deferred, 1);
 });
+
+test('row readback never asks the Writer for more than 25 IDs at once', async () => {
+  const items = [], lines = {}, sizes = [];
+  for (let n = 0; n < 39; n++) { const id = 'V2I-' + String(n).padStart(4, '0'); items.push({ ...keep, id, title: 'Lunar Manager' }); lines[id] = line(id, 'Blue Origin', 'Lunar Manager', 'SCOUT_INTAKE'); }
+  const w = writer(lines, [ok, ok]), inner = w.fetchJson;
+  w.fetchJson = async (url, o) => { if (!o) { const n = new URL(url).searchParams.get('ids').split(',').length; sizes.push(n); if (n > 25) return { ok: false, error: 'row_readback accepts at most 25 PRIMARY_IDs per request' }; } return inner(url, o); };
+  const s = await A.apply(items, opts(w));
+  assert.deepEqual(sizes, [25, 14]); assert.equal(s.labeled, 39);
+});

@@ -35,8 +35,8 @@ function stillApplies(p, line, parseLine) {
 async function apply(items, { url, key, parseLine, fetchJson, wait = sleep, today = new Date().toISOString().slice(0, 10), fenceRetries = 3, batchGapMs = 130000 }) {
   const planned = plan(items, today), stats = { planned: planned.length, closed: 0, labeled: 0, already: 0, skipped: {}, failed: 0, deferred: 0, errors: [] };
   const live = [];
-  for (let i = 0; i < planned.length; i += 50) {
-    const chunk = planned.slice(i, i + 50);
+  for (let i = 0; i < planned.length; i += 25) {   // Writer row_readback accepts at most 25 IDs per request
+    const chunk = planned.slice(i, i + 25);
     const rb = await fetchJson(`${url}?action=row_readback&key=${encodeURIComponent(key)}&ids=${chunk.map(p => p.ruling.primaryId).join(',')}`);
     if (!rb || !rb.ok) throw Error('row_readback failed: ' + (rb && rb.error || 'no reply'));
     const lines = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) lines[x.primaryId] = x.line; });
