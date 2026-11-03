@@ -47,6 +47,13 @@ test('different worksite keeps the job; unrelated titles and other companies do 
   assert.equal(one([line('V2I-D', 'Blue Bird', 'Production Manager', 'SCOUT_INTAKE', { loc: 'Austin, TX' }), applied], 'V2I-D'), undefined);
 });
 
+test('unstated or overlapping locations never count as a different site', () => {
+  const applied = line('V2E-B', 'GE Vernova', 'Repair Quality Leader', 'APPLIED', { loc: 'NOT_STATED', tags: 'APPLIED_2026-10-25' });
+  assert.equal(one([line('V2I-A', 'GE Vernova', 'Repair Quality Leader', 'SCOUT_INTAKE', { loc: 'Greenville, SC', kv: 'DATE_ADDED=2026-10-25' }), applied], 'V2I-A').rule, 'SAME_BY_TIMELINE');
+  const seattle = line('V2E-C', 'Blue Origin', 'Sr. Manager - Quality', 'APPLIED', { loc: 'Central Texas / Greater Seattle Area', tags: 'APPLIED_2026-10-25' });
+  assert.notEqual(one([line('V2I-D', 'Blue Origin', 'Sr. Manager - Quality', 'SCOUT_INTAKE', { loc: 'Greater Seattle Area', kv: 'DATE_ADDED=2026-10-20' }), seattle], 'V2I-D').rule, 'DIFFERENT_SITE');
+});
+
 test('generic confidential employers match only on a shared posting identity', () => {
   const rows = [line('V2I-A', 'Confidential Company', 'Plant Manager', 'SCOUT_INTAKE', { kv: 'DATE_ADDED=2026-09-01' }), line('V2I-B', 'Confidential Company', 'Plant Manager', 'DECLINED_BY_TIM', { tags: 'TIM_DECLINE_2026-10-01' })];
   assert.equal(one(rows, 'V2I-A'), undefined);

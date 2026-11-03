@@ -13,7 +13,7 @@
 const DAY = 86400000;
 const PLACEHOLDER = /^(|-|n\/?a|none|unknown|uncaptured|required|preferred|not[_ ]stated.*|pending.*|tbd)$/i;
 const GENERIC_CO = /^(confidential( company)?|stealth|stealth startup|private company|unknown|undisclosed|n a)$/;
-const NO_PLACE = /^(|unknown|uncaptured|remote|hybrid|multiple|various|several|united states|us|usa|n a|nationwide|anywhere|tbd)$/;
+const NO_PLACE = /^(|unknown|uncaptured|remote|hybrid|multiple|various|several|united states|us|usa|n a|nationwide|anywhere|tbd|not stated.*|not specified|pending.*|see posting|none|multiple locations)$/;
 const STOP = new Set('of the and a an for to in at with on or by'.split(' '));
 const ABBR = { sr: 'senior', snr: 'senior', mgr: 'manager', dir: 'director', vp: 'vice president', svp: 'senior vice president', ops: 'operations', mfg: 'manufacturing', eng: 'engineering', qa: 'quality' };
 const DECIDED = new Set(['APPLIED', 'REJECTED_BY_EMPLOYER', 'DECLINED_BY_TIM']);
@@ -113,8 +113,9 @@ function compare(w, d, wIds, dIds) {
   }
   const a = [...wIds].filter(x => kind(x) === 'req'), b = [...dIds].filter(x => kind(x) === 'req');
   if (a.length && b.length) return { rule: 'NEW_REQUISITION', outcome: 'KEEP_LABEL', evidence: `Different requisition: ${a.join(', ')} vs earlier ${b.join(', ')}` };
-  const pw = place(w.location), pd = place(d.location);
-  if (!NO_PLACE.test(pw) && !NO_PLACE.test(pd) && pw !== pd) return { rule: 'DIFFERENT_SITE', outcome: 'KEEP_LABEL', evidence: `Different worksite: ${w.location} vs earlier ${d.location}` };
+  const pw = place(w.location), pd = place(d.location), fw = ' ' + words(w.location).join(' ') + ' ', fd = ' ' + words(d.location).join(' ') + ' ';
+  const overlap = fw.includes(' ' + pd + ' ') || fd.includes(' ' + pw + ' ');
+  if (!NO_PLACE.test(pw) && !NO_PLACE.test(pd) && pw !== pd && !overlap) return { rule: 'DIFFERENT_SITE', outcome: 'KEEP_LABEL', evidence: `Different worksite: ${w.location} vs earlier ${d.location}` };
   const seen = firstSeen(w), { decided, rejected } = decisionDates(d), sim = similarity(w.title, d.title);
   if (seen == null || decided == null) return { rule: 'NO_DATES', outcome: 'ASK_TIM', evidence: `Missing ${seen == null ? 'posting first-seen date' : 'decision date'}; no shared posting identity` };
   if (rejected != null && seen > rejected) return { rule: 'POSSIBLE_REPOST', outcome: 'ASK_TIM', evidence: `Posting first seen ${iso(seen)}, after rejection ${iso(rejected)}` };
