@@ -1,0 +1,52 @@
+# Pay-job heartbeat (proposed 2026-11-03 after the pay-starter cutover Stage B failure).
+# GitHub's own schedules for enrich-ats-pay and pipeline-observability are not firing, so the 35-minute
+# enrichment watchdog only ran when a pay run finished; once a pay run stopped coming, nothing restarted it
+# (receipts/CLAUDE_PAY_STARTER_CUTOVER_FAILED_20261103T0752Z.md, 95-minute gap).
+#
+# This workflow does not depend on GitHub cron. One long job checks the watchdog every 10 minutes for about
+# 5h20m, then starts its own next run with workflow_dispatch (GITHUB_TOKEN dispatches do start new runs).
+# Worst-case gap between pay starts = 35 min threshold + 10 min check interval = 45 min, under the 50-min limit.
+# The hourly schedule is only a backstop that restarts the loop if the chain ever breaks.
+# Kill switch: set repository variable PAY_HEARTBEAT=off.
+name: enrich-pay-heartbeat
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '33 * * * *'   # backstop only; a run already looping makes this one wait in the queue
+  push:
+    branches: [main]
+    paths: ['.github/workflows/enrich-pay-heartbeat.yml', 'tools/pipeline-observability/enrichment-watchdog.js']
+permissions:
+  contents: read
+  actions: write
+concurrency:
+  group: enrich-pay-heartbeat
+  cancel-in-progress: false   # at most one loop running and one waiting
+jobs:
+  loop:
+    if: vars.PAY_HEARTBEAT != 'off'
+    runs-on: ubuntu-latest
+    timeout-minutes: 345
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Check the enrichment watchdog every 10 minutes
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          set -u
+          end=$(( $(date +%s) + 320*60 ))
+          while :; do
+            echo "::group::watchdog check $(date -u +%FT%TZ)"
+            node tools/pipeline-observability/enrichment-watchdog.js || echo "watchdog check failed; retrying next interval"
+            echo "::endgroup::"
+            [ $(( $(date +%s) + 600 )) -lt "$end" ] || break
+            sleep 600
+          done
+      - name: Start the next heartbeat run
+        if: ${{ !cancelled() }}   # a manual cancel stops the chain; the hourly backstop restarts it
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run enrich-pay-heartbeat.yml --ref main -R "$GITHUB_REPOSITORY"
