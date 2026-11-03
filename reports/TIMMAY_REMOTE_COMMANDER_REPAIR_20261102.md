@@ -34,7 +34,7 @@ No new startup system was created.
   - Backup: `Workstation-Supervisor.ps1.before-heartbeat-20261102-2207.bak`.
 - **Task XML backups:** `Task-Forge-Remote-Desktop-Commander.before-heartbeat-20261102-2207.xml` and `Task-Forge-Workstation-Supervisor.before-heartbeat-20261102-2207.xml`.
 - **NOT changed:**
-  - Commander battery settings: `Set-ScheduledTask` returned Access denied because the task is elevated. This needs Tim in an admin shell.
+  - Commander battery settings: Tim set StopIfGoingOnBatteries=False and DisallowStartIfOnBatteries=False from an admin shell at 22:31 ET (Claude's non-elevated attempt was denied). Claude verified both values from TIMMAY; the task kept running and the heartbeat stayed current (03:31:39Z).
   - Power settings, firewall, credentials, Forge code, pipeline data and Writer configuration.
 
 ## Verification
