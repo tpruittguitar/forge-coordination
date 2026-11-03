@@ -1,0 +1,22 @@
+name: enrich-ats-pay-test
+on:
+  pull_request:
+    paths: ['tools/enrich-ats-pay/**', '.github/workflows/enrich-ats-pay*.yml']
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/checkout@v4
+        with:
+          repository: tpruittguitar/foreman-cockpit
+          path: _fc
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: node --test tools/enrich-ats-pay/*.test.js
+        env:
+          ENRICH_FC_DIR: ${{ github.workspace }}/_fc
