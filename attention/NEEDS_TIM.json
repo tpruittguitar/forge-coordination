@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-03T16:33:47.630Z",
- "sourceCommit": "f3f873f52d84e626823625e206ddd57999fbf6bc",
+ "builtAt": "2026-11-03T18:22:58.806Z",
+ "sourceCommit": "ee3e91ddd5f199c3578c7e8ec9569b1b2ad17e55",
  "counts": {
-  "total": 54,
+  "total": 55,
   "BLOCKING": 1,
-  "ACTION": 19,
+  "ACTION": 20,
   "WATCH": 34,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 13,
-  "UPKEEP": 33
+  "UPKEEP": 34
  },
  "items": [
   {
@@ -300,6 +300,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
    "at": "2026-11-02T03:05:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "GOFER lane has gone quiet (usually reports every 0 h)",
+   "detail": "Last receipt FORGE-GOFER-CLAUDE-20261103-SKIP.txt (CLAUDE, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
+   "at": "2026-11-03T00:00:00-05:00",
+   "raisedBy": "CLAUDE"
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -610,18 +622,6 @@
    "raisedBy": "CLAUDE"
   },
   {
-   "id": "lane-overdue:GOFER",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "GOFER lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-GOFER-CLAUDE-20261103-SKIP.txt (CLAUDE, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
-   "at": "2026-11-03T00:00:00-05:00",
-   "raisedBy": "CLAUDE"
-  },
-  {
    "id": "pr:forge-coordination#217",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -700,6 +700,18 @@
    "title": "POSTVAL · CHATGPT — run never wrote a terminal receipt",
    "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
    "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json",
+   "at": "2026-11-03T05:12:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "POSTVAL lane has gone quiet (usually reports every 4 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
    "source": "receipts/FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json",
    "at": "2026-11-03T05:12:00-05:00",
@@ -975,7 +987,7 @@
    "lastAt": "2026-11-03T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-GOFER-CLAUDE-20261103-SKIP.txt",
-   "runs7d": 11,
+   "runs7d": 10,
    "usualGapHours": 3.1,
    "overdue": true
   },
@@ -1087,7 +1099,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261103-0512ET_DEFERRED.json",
    "runs7d": 339,
    "usualGapHours": 4,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1097,7 +1109,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
    "runs7d": 11,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1107,7 +1119,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "runs7d": 2,
    "usualGapHours": 8,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "RELEVANCE",
