@@ -45,7 +45,7 @@ No new startup system was created.
 | Termination recovery | PASS. Stop-ScheduledTask at 22:21:21; the supervisor restarted the task at 22:21:30; the channel rejoined at +36 s. |
 | No duplicate instances | PASS. One running instance after each restart, and the task setting MultipleInstances=IgnoreNew. |
 | Claude access | PASS through the Claude desktop-app link; every command in this report ran there. Claude does not use the DC remote device. |
-| ChatGPT access | PENDING. ChatGPT must run a read-only command through its Desktop Commander connector. |
+| ChatGPT access | PASS 2026-11-02 22:24 ET (reported by ChatGPT). The connector showed TIMMAY Online, and `Get-Date; $env:COMPUTERNAME` returned "Monday, November 2, 2026 10:24:13 PM / TIMMAY". No changes were made. |
 | Grok access | NOT VERIFIED. Grok supports custom MCP connectors with public URLs (grok.com/connectors → New Connector → Custom). Whether the DC remote endpoint and its auth work there is untested. |
 | Network-drop recovery | PENDING. Not run because it would cut this session. The agent has built-in channel reconnect; if it wedges instead, the heartbeat check restarts it within about 15–25 min. |
 | Reboot / normal startup | PENDING (disruptive). |
