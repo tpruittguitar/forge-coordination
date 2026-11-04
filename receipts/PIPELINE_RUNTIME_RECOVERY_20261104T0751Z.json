@@ -1,0 +1,75 @@
+{
+  "schema": "forge.pipeline-runtime-recovery.v1",
+  "at": "2026-11-04T07:51:30.751327+00:00",
+  "authorizedBy": "Tim: do it; use Desktop Commander",
+  "status": "PROCESSING_RESTORED_WITH_BACKLOG_REMAINING",
+  "codePullRequests": [
+    236,
+    237
+  ],
+  "tests": "Both PRs passed all GitHub checks; 233 intake/discovery/routing tests and 43 coordinator tests passed locally (overlapping suites).",
+  "intakeRecovery": {
+    "status": "RECOVERED",
+    "run": "FORGE-AUTO-20261104T051757Z",
+    "verified": 13,
+    "noWrite": 4,
+    "carriedForward": 3,
+    "proof": "receipts/auto-intake/recovery/FORGE-AUTO-20261104T051757Z-20261104074008865-75a56a26.json",
+    "writerSubmissions": 0
+  },
+  "newIntakeReadback": {
+    "at": "2026-11-04T07:50:30.283Z",
+    "readOnly": true,
+    "writerSubmissions": 0,
+    "requests": [
+      {
+        "requestId": "FORGE-SOURCE-0BEDA5D252A4ABAFCCD998F2",
+        "writeId": "W-20261104074409137-eb5f4c",
+        "receiptState": "COMPLETE",
+        "durable": true,
+        "primaryIds": [
+          "V2I-66F33B5A92E9"
+        ],
+        "postCompleteReadback": true,
+        "sourceRunIds": [
+          "FORGE-AUTO-20261104T074256Z-C2"
+        ]
+      },
+      {
+        "requestId": "FORGE-SOURCE-10CCEE3DD928CA5D5C4D699B",
+        "writeId": "W-20261104074823590-1d26a9",
+        "receiptState": "COMPLETE",
+        "durable": true,
+        "primaryIds": [
+          "V2I-772B42ED6574"
+        ],
+        "postCompleteReadback": true,
+        "sourceRunIds": [
+          "FORGE-AUTO-20261104T074256Z-C4"
+        ]
+      }
+    ]
+  },
+  "nativeScheduleReadback": "state/AUTOMATION_SCHEDULE_READBACK.json",
+  "coordinator": {
+    "host": "TIMMAY",
+    "scheduledTask": "FORGE_PROGRAMMED_COORDINATOR",
+    "intervalMinutes": 5,
+    "taskEnabled": true,
+    "launcher": "Direct PowerShell 7, existing configuration and dedicated clean coordinator repository",
+    "manualRun": "FORGE-CODE-CHATGPT-20261104T074546699Z",
+    "manualRunExitCode": 0,
+    "publishedCommit": "31da6b7b8045fc784192c816cee860788fe6133a",
+    "normalLockReleaseObserved": true,
+    "scheduledStartObservedAt": "2026-11-04T07:50:23Z",
+    "scheduledRun": "FORGE-CODE-CHATGPT-20261104T075023841Z",
+    "scheduledRunStatusAtObservation": "RUNNING",
+    "oldLockBackup": "Retained privately on TIMMAY; no active prior coordinator or active rebase directories were present; prior immutable evidence matched published main."
+  },
+  "remaining": [
+    "Fresh GitHub intake workflow 41794114752 is still processing; its final batch completion is not claimed.",
+    "Source/research exceptions and historical coverage gaps remain visible.",
+    "Restored local AI configuration is read back; first execution of every restored AI schedule is not yet established.",
+    "External Grok/Claude native schedules were not changed; the coordinator collected and validated a newly published Claude helper batch."
+  ]
+}
