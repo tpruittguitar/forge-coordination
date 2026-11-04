@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261104T1139Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261104T1209Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -7,9 +7,9 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
-| JobSpy linkedin (720 returned) | 267 | 50 | 217 |
-| JobSpy indeed (720 returned) | 108 | 42 | 66 |
-| HiringCafe (346 returned; 25 already found by JOBSPY 25) | 90 (65 unique) | 46 | 19 |
+| JobSpy linkedin (720 returned) | 269 | 51 | 218 |
+| JobSpy indeed (720 returned) | 112 | 47 | 65 |
+| HiringCafe (346 returned; 23 already found by JOBSPY 23) | 90 (67 unique) | 46 | 21 |
 
 JobSpy errors: none
 
@@ -21,9 +21,9 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 114 | 247 |
-| SR_MANAGER | 22 | 53 |
-| SR_STAFF | 2 | 2 |
+| DIRECTOR_PLUS | 118 | 247 |
+| SR_MANAGER | 24 | 54 |
+| SR_STAFF | 2 | 3 |
 
 ## New roles
 
@@ -45,6 +45,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | MOBIS Corporate Center of America | [Chief Quality Officer](https://www.linkedin.com/jobs/view/4484732219) | West Point, GA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Hunter Recruiting | [Vice President Operations](https://www.linkedin.com/jobs/view/4474343012) | El Paso, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Diality | [Vice President, Operations](https://www.linkedin.com/jobs/view/4459117379) | Irvine, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | Unusual Machines | [Director of Production - Headset and Battery](https://www.linkedin.com/jobs/view/4458661304) | Orlando, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Sterling Engineering | [Director of Manufacturing](https://www.linkedin.com/jobs/view/4486475217) | Dallas, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Boutique Recruiting | [Operations Director](https://www.linkedin.com/jobs/view/4486452248) | Roswell, GA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | London Approach | [Director of Operations](https://www.linkedin.com/jobs/view/4484366421) | Raleigh, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -87,8 +88,8 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Alphapointe | [Director, Quality Assurance (On-Site)](https://secure7.saashr.com/ta/6212653.careers?ShowJob=654777859) | Kansas City, MO, USA | QUALITY | DIRECTOR_PLUS | $80K-$100K |
 | JOBSPY:indeed | El Pollo Loco | [SR. DIRECTOR, QUALITY ASSURANCE](https://jobs.dayforcehcm.com/en-US/loco/CANDIDATEPORTAL/jobs/33492) | Costa Mesa, CA, USA | QUALITY | DIRECTOR_PLUS | $158K-$214K |
 | JOBSPY:indeed | Elanco | [Executive Director, Quality](https://elanco.wd5.myworkdayjobs.com/External_Career/job/US---Remote/Executive-Director--Quality_R0026800) | Indianapolis, IN, USA | QUALITY | DIRECTOR_PLUS | $182K-$273K |
-| JOBSPY:indeed | Inox Solar Americas LLC | [Quality Director](https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=441f93f3-ac7e-4447-bfe0-5e4a72055436&ccId=65408349_3&jobId=15664&jwId=65408349_1&source=IN&lang=en_US) | Greenville, NC, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Catholic Charities of Baltimore | [Director, Data & Quality](https://recruiting.ultipro.com/CAT1002CC/JobBoard/c709ab38-ff71-4cc1-9c24-5a3e75528c74/OpportunityDetail?opportunityId=e2ed8e17-3680-4e68-9de1-e876e9f96f8d&postingId=8f120be4-57f6-4a90-94b5-9eb3e1fb6451) | Baltimore, MD, USA | QUALITY | DIRECTOR_PLUS | $93K-$98K |
+| JOBSPY:indeed | Inox Solar Americas LLC | [Quality Director](https://workforcenow.cloud.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=441f93f3-ac7e-4447-bfe0-5e4a72055436&ccId=65408349_3&jobId=15664&jwId=65408349_1&source=IN&lang=en_US) | Greenville, NC, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | SOUTHLAND STEEL FABRICATORS | [Director of Quality](https://secure7.saashr.com/ta/6215176.careers?ShowJob=638057227) | Amite, LA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | GORDON MEMORIAL HOSPITAL DISTRICT | [QUALITY IMPROVEMENT DIRECTOR](https://www.paycomonline.net/v4/ats/web.php/portal/D75E5F777567445E85BBB07AD2BA82A6/jobs/547864?source=Indeed) | Gordon, NE, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Chromalloy | [Director, Quality Assurance - Engine Component Repair Services](https://jobs.dayforcehcm.com/en-US/chromalloy/CANDIDATEPORTAL/jobs/40321) | Newnan, GA, USA | QUALITY | DIRECTOR_PLUS | $173K-$227K |
@@ -97,11 +98,12 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Mama's Creations Deli Solutions | [SVP Manufacturing](https://100hires.com/j/9n7Y4rA) | East Rutherford, NJ, USA | MFG_PROD | DIRECTOR_PLUS | $250K-$300K |
 | JOBSPY:indeed | Strategic Factory | [Production Director](https://secure7.saashr.com/ta/6222474.careers?ShowJob=638045354) | Owings Mills, MD, USA | MFG_PROD | DIRECTOR_PLUS | $75K-$110K |
 | JOBSPY:indeed | bioMerieux | [Director, Site Manufacturing Controller](https://app.jobvite.com/CompanyJobs/Job.aspx?j=oLN2AfwU&s=Indeed) | Salt Lake City, UT, USA | MFG_PROD | DIRECTOR_PLUS | $150K-$210K |
+| JOBSPY:indeed | Checkers | [Director Operations](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001230291506&c=1185127&d=External&rb=INDEED&idUnique=5001230291506) | Broomfield, CO, USA | MFG_PROD | DIRECTOR_PLUS | $140K-$200K |
 | JOBSPY:indeed | Trex Company | [Director, Manufacturing Operations FP&A](https://recruiting.ultipro.com/TRE1006TRCI/JobBoard/699366e7-23c6-46d9-ae0d-4f649323dabf/OpportunityDetail?opportunityId=501d494b-852f-4e97-b363-3b6ae636584d&postingId=e7143e76-f35c-4726-958f-d326f12c9094) | Winchester, VA, USA | MFG_PROD | DIRECTOR_PLUS | $163K-$210K |
 | JOBSPY:indeed | Howmet Aerospace | [Director, Continuous Improvement](https://fa-exty-saasfaprod1.fa.ocs.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/120199) | La Porte, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Jackson Furniture Industries | [Plant Manager](https://phx.us-west.paycomonline.net/v4/ats/web.php/portal/6D21AEE5C3770E38D6E8AE4DEEABE4B3/jobs/11186?source=Indeed) | Myrtle, MS, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Villaseñor Supremo Foods | [Plant Manager](https://100hires.com/j/b5S6ryK) | Arena, WI, USA | MFG_PROD | DIRECTOR_PLUS | $125K-$135K |
-| JOBSPY:indeed | Justrite | [Plant Manager](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001230293806&c=1185127&d=External&rb=INDEED&idUnique=5001230293806) | Wellsburg, WV, USA | MFG_PROD | DIRECTOR_PLUS | $180K-$190K |
+| JOBSPY:indeed | Spring Gardens Pioneer Valley | [Plant Operations Director](https://www.paycomonline.net/v4/ats/web.php/portal/B67B556678993873C145AC7413BF2846/jobs/241286?source=Indeed) | North Logan, UT, USA | MFG_PROD | DIRECTOR_PLUS | $45K-$50K |
 | JOBSPY:indeed | Morton Industries | [Plant Manager](https://www.paycomonline.net/v4/ats/web.php/portal/3A8455426035EB1AC64CD0D27BC8A909/jobs/313506?source=Indeed) | Morton, IL, USA | MFG_PROD | DIRECTOR_PLUS | $100K-$150K |
 | JOBSPY:indeed | DP World | [Senior Plant Manager, Contract Logistics Site Operations](https://ehpv.fa.em2.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/27862) | Olive Branch, MS, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Swire Coca-Cola | [Sr. Manager, Quality](https://jobs.dayforcehcm.com/en-US/swirecc/CANDIDATEPORTAL/jobs/119584) | Tempe, AZ, USA | QUALITY | SR_MANAGER |  |
@@ -112,8 +114,12 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | New England Village Inc. | [Senior Director of Quality, Compliance and Risk](http://www.newenglandvillage.org/employment-opportunities.php?gnk=job&gni=8a7887a8a18473d601a18db0c2123213&gns=Indeed+Free) | Pembroke, MA, USA | QUALITY | DIRECTOR_PLUS | $105K-$120K |
 | JOBSPY:indeed | Sunlife | [Sr. Manager, Quality Assurance](https://sunlife.wd3.myworkdayjobs.com/en-US/Experienced-Jobs/job/Milwaukee-Wisconsin/Sr-Manager--Quality-Assurance_JR00128547) | Milwaukee, WI, USA | QUALITY | SR_MANAGER | $76K-$115K |
 | JOBSPY:indeed | Alcon | [Sr. Manager, Quality Control Labs](https://alcon.wd5.myworkdayjobs.com/en-US/careers_alcon/job/Houston-Texas/Sr-Manager--Quality-Control-Labs_R-2026-50259-2) | Houston, TX, USA | QUALITY | SR_MANAGER |  |
+| JOBSPY:indeed | Medtronic | [Sr. Engineering Program Director, Quality Strategy & Investigation Excellence](https://medtronic.wd1.myworkdayjobs.com/en-US/MedtronicCareers/job/Mounds-View-Minnesota-United-States-of-America/Sr-Engineering-Program-Director--Quality-Strategy---Investigation-Excellence_R80053) | Mounds View, MN, USA | QUALITY | DIRECTOR_PLUS | $223K-$335K |
 | JOBSPY:indeed | Premera Blue Cross | [Senior Manager, Claims Quality & Workforce Readiness](https://premera.wd5.myworkdayjobs.com/en-US/premera/job/Mountlake-Terrace-WA/Manager--Claims-Quality---Workforce-Readiness_R29157) | Mountlake Terrace, WA, USA | QUALITY | SR_MANAGER | $89K-$152K |
 | JOBSPY:indeed | GE Appliances | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/en-US/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | Decatur, AL, USA | QUALITY | SR_MANAGER |  |
+| JOBSPY:indeed | L3Harris | [Senior Manager, Operations Management](https://careers.harris.com/job/-/-/4832/102832368752) | Camden, NJ, USA | MFG_PROD | SR_MANAGER | $126K-$234K |
+| JOBSPY:indeed | Campbell's | [VP, Manufacturing - Fresh Bakery](https://campbellsoup.wd5.myworkdayjobs.com/en-US/ExternalCareers_GlobalSite/job/USA---Remote/VP--Manufacturing---Fresh-Bakery_Req-69144) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $222K-$305K |
+| JOBSPY:indeed | WK Kellogg Co | [Senior Manager, Plant Operations](https://jobs.wkkellogg.com/us/en/job/18340) | Lancaster, PA, USA | MFG_PROD | SR_MANAGER | $164K-$205K |
 | JOBSPY:indeed | Generac Power Systems | [Sr. Director Operations Engineering - C&I](https://generac.wd5.myworkdayjobs.com/External/job/Sussex-WI---USA/Sr-Director-Operations-Engineering---C-I_JR18104) | Sussex, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Generac Power Systems | [Senior Manager, Manufacturing Test Engineering](https://generac.wd5.myworkdayjobs.com/External/job/Reno-NV---USA/Senior-Manager--Manufacturing-Test-Engineering_JR17908) | Santa Monica, CA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:indeed | First Watch | [Director of Operations](https://firstwatch.hrmdirect.com/employment/view.php?req=3855734&jbsrc=1014&location=a6526fb3-1a83-0d41-7c96-494f6188520d) | Tucson, AZ, USA | MFG_PROD | DIRECTOR_PLUS | $85K-$95K |
@@ -152,7 +158,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | HIRINGCAFE | Saint-Gobain | [Plant Manager](https://hiringcafe.com/job/plant-manager-saint-gobain-watervliet-new-york-dn9p2o5ric30f00p) | Watervliet, New York, United States | MFG_PROD | DIRECTOR_PLUS | $133K-$213K |
 | HIRINGCAFE | Sika AG | [Plant Manager](https://hiringcafe.com/job/plant-manager-sika-ag-lancaster-texas-qlmxr16il5wyxqps) | Lancaster, Texas, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Kaman Corporation | [Director of Product & Process Engineering](https://hiringcafe.com/job/director-of-product-and-process-engineering-kaman-corporation-long-t8xfqotbzg92y9w4) | Long Beach, California, United States | MFG_ENG | DIRECTOR_PLUS | $195K-$236K |
-| HIRINGCAFE | Crown Technical Systems | [Sr. Director of Operations](https://hiringcafe.com/job/sr-director-of-operations-crown-technical-systems-dallas-texas-lzrdxre2git8kija) | Dallas, Texas, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| HIRINGCAFE | Crown Technical Systems | [Sr. Director of Operations](https://hiringcafe.com/job/sr-director-of-operations-crown-technical-systems-dallas-texas-9g5di4nbpc94ad5h) | Dallas, Texas, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Bevi | [Director, Hardware Quality Engineering](https://hiringcafe.com/job/director-hardware-quality-engineering-bevi-boston-massachusetts-0685e3dxmkicvjze) | Boston, Massachusetts, United States | QUALITY | DIRECTOR_PLUS | $185K-$228K |
 | HIRINGCAFE | MKS Instruments | [Senior Manager Engineering - NPI](https://hiringcafe.com/job/senior-manager-engineering-npi-mks-instruments-wilmington-ngk3id84keu37i3t) | Wilmington, Massachusetts, United States | MFG_PROD | SR_MANAGER | $155K-$205K |
 | HIRINGCAFE | Oklahoma Department of Human Services | [Deputy Director - Continuous Quality Improvement](https://hiringcafe.com/job/deputy-director-continuous-quality-improvement-oklahoma-department-of-4ejyu53xt1a07283) | Oklahoma City, Oklahoma, United States | QUALITY | DIRECTOR_PLUS | $105K-$105K |
@@ -162,7 +168,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | HIRINGCAFE | Jack Link's Protein Snacks | [Sr. Director Operational Excellence](https://hiringcafe.com/job/sr-director-operational-excellence-jack-links-protein-snacks-0h526z2yijjk01t8) | Minneapolis, Minnesota, United States | MFG_PROD | DIRECTOR_PLUS | $195K-$225K |
 | HIRINGCAFE | CRH Healthcare | [Sr. Director, Operational Excellence](https://hiringcafe.com/job/sr-director-operational-excellence-crh-healthcare-vinings-georgia-pjfm2qvma79mmnl2) | Vinings, Georgia, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | YQN | [Director of Operational Excellence](https://hiringcafe.com/job/director-of-operational-excellence-yqn-fontana-california-p6catbhrdkn04na2) | Fontana, California, United States | MFG_PROD | DIRECTOR_PLUS | $150K-$150K |
-| HIRINGCAFE | Trivium Packaging | [Senior Director Operational Excellence Americas](https://hiringcafe.com/job/senior-director-operational-excellence-americas-trivium-packaging-ir1zvs09z1tj6kqb) | Youngstown, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| HIRINGCAFE | Trivium Packaging | [Senior Director Operational Excellence Americas](https://hiringcafe.com/job/senior-director-operational-excellence-americas-trivium-packaging-k0y3793g2bkgjhgn) | Youngstown, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Sodexo | [Senior Director, Operational Excellence](https://hiringcafe.com/job/senior-director-operational-excellence-sodexo-aubrey-texas-a2vaxhpib1gf7o4i) | Aubrey or Dallas or Charlotte or Atlanta or Washington or United States | MFG_PROD | DIRECTOR_PLUS | $156K-$243K |
 | HIRINGCAFE | Scan.com | [Director of Integration & Operational Excellence](https://hiringcafe.com/job/director-of-integration-and-operational-excellence-scan-com-georgia-x6l60rbaqmung22k) | Georgia, United States | MFG_PROD | DIRECTOR_PLUS | $150K-$175K |
 | HIRINGCAFE | LEAP of California | [Director of Operational Excellence & Strategy](https://hiringcafe.com/job/director-of-operational-excellence-and-strategy-leap-of-california-o846ub3x2f5t5bdk) | California, United States | MFG_PROD | DIRECTOR_PLUS | $160K-$185K |
