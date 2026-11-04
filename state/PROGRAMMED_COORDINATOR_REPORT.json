@@ -1,7 +1,7 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-04T08:13:17.527Z",
-  "instructionCommit": "12674a14ebbc8f2fce1f151b89195f6a99e14797",
+  "at": "2026-11-04T08:17:33.069Z",
+  "instructionCommit": "1c582569c65e0b199b749b16d87399c03fc8aa6f",
   "batches": 284,
   "statuses": {
     "EXCEPTION": 267,
@@ -2396,14 +2396,19 @@
     {
       "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-04T08:10:40.857Z",
+      "at": "2026-11-04T08:15:40.458Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     },
     {
       "owner": "CODE",
       "messageId": "1a1a3e80f7aacf73",
       "sourceSha256": "b79e7f465e840d5b6f8f8b2dd540c16822ea48ddda1de56f1ca41569270bba89",
-      "reason": "LIVE_WRITER_GATE"
+      "reason": "MAIL_SOURCE_OR_WRITE_FAILURE"
+    },
+    {
+      "owner": "CODE",
+      "reason": "EXACT_MAIL_EFFECT_NOT_PROVEN",
+      "requestId": "FORGE-MAIL-CHATGPT-04ed9df29816755f43c4bdc29d4256f7"
     }
   ],
   "aiExceptions": [
@@ -3693,8 +3698,8 @@
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-04T08:10:52.852Z",
-    "sha256": "dcb451bc83898cbbc1a18d1478e4b838c20afaa9181b8e18e16bd469b3410f36",
+    "readAt": "2026-11-04T08:15:56.434Z",
+    "sha256": "b571c142c21009ba1adbf3badaf7dd7bf9167c22f1d003fb0d6c2ab02f0e0c18",
     "rows": 4464
   },
   "coverage": {
@@ -3719,7 +3724,7 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261104T081023893Z",
+  "runId": "FORGE-CODE-CHATGPT-20261104T081523863Z",
   "mode": "apply",
   "collected": {
     "newBatches": 0,
@@ -3731,8 +3736,8 @@
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261104T081023893Z",
-      "at": "2026-11-04T08:10:41.987Z",
+      "runId": "FORGE-CODE-CHATGPT-20261104T081523863Z",
+      "at": "2026-11-04T08:15:41.554Z",
       "imported": 0,
       "reportFeeds": [
         {
@@ -3927,7 +3932,7 @@
         "failures": [
           {
             "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-            "at": "2026-11-04T08:10:40.857Z",
+            "at": "2026-11-04T08:15:40.458Z",
             "reason": "RUN_LIST_INACCESSIBLE"
           }
         ]
@@ -4076,7 +4081,7 @@
         {
           "owner": "CODE",
           "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-          "at": "2026-11-04T08:10:40.857Z",
+          "at": "2026-11-04T08:15:40.458Z",
           "reason": "RUN_LIST_INACCESSIBLE"
         }
       ],
@@ -4087,11 +4092,11 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261104T081023893Z",
+      "runId": "FORGE-CODE-CHATGPT-20261104T081523863Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-04T08:10:52.852Z",
-        "sha256": "dcb451bc83898cbbc1a18d1478e4b838c20afaa9181b8e18e16bd469b3410f36",
+        "readAt": "2026-11-04T08:15:56.434Z",
+        "sha256": "b571c142c21009ba1adbf3badaf7dd7bf9167c22f1d003fb0d6c2ab02f0e0c18",
         "rows": 4464
       },
       "counts": {
@@ -4579,9 +4584,9 @@
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261104T081023893Z",
+      "runId": "FORGE-CODE-CHATGPT-20261104T081523863Z",
       "read": 459,
-      "processed": 459,
+      "processed": 458,
       "pending": 57,
       "exceptions": [
         {
@@ -4876,7 +4881,7 @@
           "owner": "CODE",
           "messageId": "1a1a3e80f7aacf73",
           "sourceSha256": "b79e7f465e840d5b6f8f8b2dd540c16822ea48ddda1de56f1ca41569270bba89",
-          "reason": "LIVE_WRITER_GATE"
+          "reason": "MAIL_SOURCE_OR_WRITE_FAILURE"
         },
         {
           "owner": "AI",
@@ -4925,6 +4930,11 @@
           "reason": "UNRESOLVED_CORRESPONDENCE",
           "messageId": "1a1a3bee28474ca8",
           "sourceSha256": "22efff163334b4d5b54aff7189279f0b46c82eb881423606937da729c9571269"
+        },
+        {
+          "owner": "CODE",
+          "reason": "EXACT_MAIL_EFFECT_NOT_PROVEN",
+          "requestId": "FORGE-MAIL-CHATGPT-04ed9df29816755f43c4bdc29d4256f7"
         }
       ],
       "noProcessingCap": true,
@@ -4937,8 +4947,7 @@
         "VERIFIED_NOT_RECRUITING": 194,
         "REVIEWED_CORRESPONDENCE": 5,
         "VERIFIED": 1,
-        "RECORDED_EVENT": 4,
-        "AWAITING_VERIFICATION": 1
+        "RECORDED_EVENT": 4
       },
       "transactions": [
         {
