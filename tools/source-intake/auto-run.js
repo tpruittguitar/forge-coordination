@@ -2,15 +2,15 @@
 'use strict';
 /* AUTO source intake (Tim 2026-10-23): run by .github/workflows/source-intake-auto.yml after each source trial on main.
  * Does nothing unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and FORGE_WRITER_KEY is set.
- * 1. Refuses to start while an earlier AUTO run in receipts/auto-intake/ is unfinished (it needs a person). That refusal
- *    happens before any Writer call and exits 0 with a warning; the latch is listed on attention/NEEDS_TIM.json.
+ * 1. Reconciles captured, completed prior writes without POSTing; preserves untouched candidates for fresh admission.
+ *    If independent proof is unavailable, the unresolved latch fails this run and remains on attention/NEEDS_TIM.json.
  * 2. Ranks saved cards through the shared relevance screen, preserves all prior request fences,
  *    and sends eligible work in successive maxBatch transactions (not a daily/pass quota).
  * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
  *    executor gates as the stage. The Writer decides Never Consider; what it declines without writing is SKIPPED.
  * State and outcome go to receipts/auto-intake/<run>.json (Writer responses only, never the key).
  * Exit 1 = THIS run halted and needs a person (halt or reconcile HOLD); the workflow commits the state first.
- * Exit 0 = done, off, or latched by an earlier halted run (see tools/source-intake/auto-latch.js).
+ * Exit 0 = done or explicitly switched off. A prior unresolved latch is not success.
  * Run: node tools/source-intake/auto-run.js [--report state/source-trial-report.json] [--dry-run] */
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {snapshot,auto,finalize}=require('./intake-cli');
@@ -65,15 +65,20 @@ async function main(argv=process.argv.slice(2)){
  const rules=releaseRules(JSON.parse(fs.readFileSync(SWITCH,'utf8')));
  if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
  const key=process.env.FORGE_WRITER_KEY;
- if(!key)return console.log('AUTO intake off: FORGE_WRITER_KEY is not set');
+ if(!key)throw Error('AUTO intake blocked: FORGE_WRITER_KEY is not set');
  let prior=previous();
  // One bounded transport recovery per scheduled pass; same workflow concurrency and Writer locks apply.
  if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();const unresolved=prior.find(p=>p.state.quarantine&&!require("./unknown-recovery").resolved(p.state));if(unresolved){console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));prior=previous();}}
- // An earlier run that halted needs a person (UNKNOWN POST, HOLD, a switch change, ...). This run then stops HERE, before
- // any Writer call, and exits 0: it is a deliberate latch, not a new failure (2026-10-24 11:30Z to 2026-10-26: 8 red runs in a row
- // only repeated the 2026-10-24 05:11Z UNKNOWN halt). The halt itself was red once; the latch is on attention/NEEDS_TIM.json and
- // in a ::warning:: annotation. Never auto-clears: UNKNOWN is reconciled against the receipt index, never retried.
+ // Reconcile accepted writes read-only before deciding whether a prior interruption
+ // still blocks. Uncertain responses retain their existing fences and are never replayed here.
  // A single, DURABLY captured identity mismatch may be isolated from unrelated future work (quarantined below).
+ if(!dry){
+  for(const pending of latch(prior).blocking){
+   try{console.log('INTERRUPTED recovery',JSON.stringify(await require('./interrupted-recovery').recover(pending.file,{key})));}
+   catch(e){console.error('INTERRUPTED recovery blocked: '+e.message);}
+  }
+  prior=previous();
+ }
  const {blocking,quarantined}=latch(prior);
  if(blocking.length){
   for(const b of blocking){
@@ -81,7 +86,7 @@ async function main(argv=process.argv.slice(2)){
    console.log('::warning title=AUTO intake latched::'+msg);
    console.error(msg);
   }
-  return {latched:blocking};
+  throw Error('AUTO intake blocked by '+blocking.length+' unresolved prior run(s); no new intake submitted');
  }
  if(quarantined.length)console.error('NEEDS TIM: isolated identity HOLD(s), NOT resolved: '+JSON.stringify(quarantined));
  // Count only attempts actually recorded; unattempted tail candidates are safe to
