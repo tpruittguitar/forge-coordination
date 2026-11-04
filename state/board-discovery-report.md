@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261104T1428Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261104T1951Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (101 read, 0 failed) | 127 | 39 | 88 |
+| Employer job boards (101 read, 1 failed) | 130 | 42 | 88 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,8 +19,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 11 | 65 |
-| SR_MANAGER | 8 | 18 |
+| DIRECTOR_PLUS | 13 | 66 |
+| SR_MANAGER | 9 | 17 |
 | SR_STAFF | 20 | 5 |
 
 ## New roles
@@ -29,7 +29,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 |---|---|---|---|---|---|---|
 | BOARD:lever | DREAM Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.lever.co/shieldai/a25edcee-69a9-47b4-a325-ec549b2e0d28) | United States | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:lever | DREAM Shield AI | [Director, Ops Analysis (R5036)](https://jobs.lever.co/shieldai/a25b91a5-9933-46f1-a9a2-eb06866ac65a) | Washington, D.C. | MFG_PROD | DIRECTOR_PLUS | $210K-$320K |
-| BOARD:lever | DREAM Shield AI | [Head of Operational Excellence](https://jobs.lever.co/shieldai/1cd23ede-77b3-4981-8ba6-7d0a373e985c) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $174K-$261K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
@@ -56,6 +55,10 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations, Air Dominance & Strike](https://boards.greenhouse.io/andurilindustries/jobs/5198760007?gh_jid=5198760007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Business Line Operations - Tactical Effects](https://boards.greenhouse.io/andurilindustries/jobs/5253340007?gh_jid=5253340007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Head Of Production, TRS ](https://boards.greenhouse.io/andurilindustries/jobs/5089724007?gh_jid=5089724007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Program Director, Air Dominance & Strike (Production)](https://boards.greenhouse.io/andurilindustries/jobs/5284884007?gh_jid=5284884007) | Ashville, Ohio, United States; Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Program Director, Missiles (Production) ](https://boards.greenhouse.io/andurilindustries/jobs/5284917007?gh_jid=5284917007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Product Operations](https://boards.greenhouse.io/andurilindustries/jobs/5279956007?gh_jid=5279956007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
