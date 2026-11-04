@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-04T06:04:53.163Z",
- "sourceCommit": "a381df3a3957afd63589d7c35dc1bfb0c801060c",
+ "builtAt": "2026-11-04T07:38:40.987Z",
+ "sourceCommit": "e600b275710e5323e28ab485540e362398094dd5",
  "counts": {
-  "total": 59,
-  "BLOCKING": 0,
+  "total": 60,
+  "BLOCKING": 1,
   "ACTION": 20,
   "WATCH": 39,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 13,
-  "UPKEEP": 38
+  "UPKEEP": 39
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261104T051757Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261104T051757Z is unfinished",
+   "detail": "HOLD: Writer accepted intake record; durable receipt and exact-row readback required before proceeding. Open request: FORGE-SOURCE-675441AEF89C2C1AC1008171. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261104T051757Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T051757Z.json",
+   "at": "2026-11-04T06:12:57.878Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -386,18 +398,6 @@
      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/proposals/CHATGPT_20261024_ACTION_CENTER_MOBILE.svg"
     }
    ]
-  },
-  {
-   "id": "run-unfinished:APPWRITER|CLAUDE",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "APPWRITER · CLAUDE — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-APPWRITER-CLAUDE-20261028-0252ET.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-APPWRITER-CLAUDE-20261028-0252ET.txt",
-   "at": "2026-10-28T02:52:00-04:00",
-   "raisedBy": "CLAUDE"
   },
   {
    "id": "ask:ASK-20261028-GROK-SALARY-EST",
@@ -826,6 +826,18 @@
    "raisedBy": "CHATGPT"
   },
   {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "POSTVAL lane has gone quiet (usually reports every 4 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CHATGPT-20261103-1737ET_DEFERRED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261103-1737ET_DEFERRED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261103-1737ET_DEFERRED.json",
+   "at": "2026-11-03T17:37:00-05:00",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "pr:forge-coordination#235",
    "section": "UPKEEP",
    "level": "WATCH",
@@ -855,7 +867,7 @@
    "lastAt": "2026-10-28T02:52:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-APPWRITER-CLAUDE-20261028-0252ET.txt",
-   "runs7d": 1,
+   "runs7d": 0,
    "usualGapHours": 2.9,
    "overdue": false
   },
@@ -1157,7 +1169,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261103-1737ET_DEFERRED.json",
    "runs7d": 341,
    "usualGapHours": 4,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1165,9 +1177,9 @@
    "lastAt": "2026-10-28T10:32:00-04:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
-   "runs7d": 5,
+   "runs7d": 4,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1177,7 +1189,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "runs7d": 2,
    "usualGapHours": 8,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "RELEVANCE",
