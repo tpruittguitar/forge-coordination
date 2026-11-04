@@ -1,30 +1,56 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-03T23:32:18.244Z",
+ "at": "2026-11-04T06:45:35.817Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-03T23:32:17.753Z",
-  "rows": 4402,
-  "sha256": "f5b1edd6f61974df2dd7083c8fde30ec943b3b89ada15f61633f36e2aef8774b"
+  "readAt": "2026-11-04T06:45:35.312Z",
+  "rows": 4457,
+  "sha256": "4b3f9d5403c91f4e720e8869e6a60bca732c2851935694d4637e07b5dcded3b6"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-03T23:14:44.869Z",
-  "decision": 1067
+  "at": "2026-11-04T06:18:52.801Z",
+  "decision": 1111
  },
  "counts": {
-  "waiting": 1067,
-  "matched": 31,
-  "CLOSE_CANDIDATE": 0,
+  "waiting": 1111,
+  "matched": 32,
+  "CLOSE_CANDIDATE": 1,
   "KEEP_LABEL": 31
  },
  "rules": {
+  "SAME_BY_TIMELINE": 1,
   "DIFFERENT_SITE": 13,
   "NEW_REQUISITION": 5,
   "POSSIBLE_REPOST": 3,
   "UNCERTAIN": 10
  },
  "items": [
+  {
+   "id": "V2I-C3DDBC9526C6",
+   "company": "Baxter",
+   "title": "VP, Global Quality & Regulatory Excellence",
+   "location": "Deerfield, IL, USA",
+   "score": 45,
+   "outcome": "CLOSE_CANDIDATE",
+   "rule": "SAME_BY_TIMELINE",
+   "label": "You declined 2026-11-02 · likely the same posting",
+   "evidence": "Posting first seen 2026-11-04, on or before decline 2026-11-02; same title",
+   "matches": [
+    {
+     "id": "V2I-FF8118104E84",
+     "status": "DECLINED_BY_TIM",
+     "title": "VP, Global Quality & Regulatory Excellence",
+     "location": "Deerfield, IL, USA",
+     "decided": "2026-11-02",
+     "rejected": null,
+     "rule": "SAME_BY_TIMELINE",
+     "outcome": "CLOSE_CANDIDATE",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-04, on or before decline 2026-11-02; same title"
+    }
+   ]
+  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -851,8 +877,8 @@
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 31,
-  "closed": 0,
+  "planned": 32,
+  "closed": 1,
   "labeled": 0,
   "already": 0,
   "skipped": {

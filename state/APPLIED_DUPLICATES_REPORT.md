@@ -1,20 +1,21 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-03T23:32:18.244Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-04T06:45:35.817Z from CANONICAL_WRITER_MASTER.
 
-Of 1067 jobs waiting on Tim, 31 match a role he already applied to, was rejected from, or declined:
-- **Closed as duplicates (same posting): 0**
+Of 1111 jobs waiting on Tim, 32 match a role he already applied to, was rejected from, or declined:
+- **Closed as duplicates (same posting): 1**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 31
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 1 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
-## Closed: same posting (0)
+## Closed: same posting (1)
 Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is wrong.
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
+| 45 | Baxter | VP, Global Quality & Regulatory Excellence | You declined 2026-11-02 · likely the same posting | Posting first seen 2026-11-04, on or before decline 2026-11-02; same title | V2I-C3DDBC9526C6 → V2I-FF8118104E84 |
 
 ## Kept, labeled (31)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
