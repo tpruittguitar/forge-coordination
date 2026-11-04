@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261104T0741Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261104T1248Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (102 read, 0 failed) | 130 | 41 | 89 |
+| Employer job boards (101 read, 0 failed) | 128 | 40 | 88 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,8 +19,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 11 | 66 |
-| SR_MANAGER | 10 | 18 |
+| DIRECTOR_PLUS | 11 | 65 |
+| SR_MANAGER | 9 | 18 |
 | SR_STAFF | 20 | 5 |
 
 ## New roles
@@ -62,7 +62,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | oura | [Senior Manager, Operations Program Manager](https://job-boards.greenhouse.io/oura/jobs/4266351009) | Hybrid - San Francisco, California | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
