@@ -1,53 +1,53 @@
 {
- "at": "2026-11-04T00:44:31.089Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261104T0043Z",
+ "at": "2026-11-04T01:32:17.700Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261104T0128Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-04T00:43:37.703Z",
-  "sha256": "eb97adad3ed25c24e80f0b2560cde5b29b44680d766dff0ec5192651989fa730",
-  "rows": 4402
+  "readAt": "2026-11-04T01:28:50.049Z",
+  "sha256": "ba5ce4930b768fb008648b612b2fddc4f6d098c93efd1abf38bfad68b2de7a88",
+  "rows": 4412
  },
- "rows": 4402,
- "eligible": 500,
+ "rows": 4412,
+ "eligible": 510,
  "anchors": 1001,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
- "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 213,
- "skipped_recent": 134,
- "submitted": 0,
- "guard_dropped": 1,
- "writer_ok": 0,
+ "posted_pay": 1,
+ "degree": 4,
+ "estimates": 3,
+ "estimate_waiting_for_posting": 219,
+ "skipped_recent": 135,
+ "submitted": 4,
+ "guard_dropped": 0,
+ "writer_ok": 4,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 2
  },
  "agg_read": {
-  "linkedin": 1
+  "linkedin": 2
  },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 3,
  "boards_read": 9,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 3,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 2,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -57,18 +57,18 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 3,
+  "candidates": 15,
+  "saved_reused": 14,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "unsupported_routes": 1,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-04T00:43:42.517Z",
+  "profile_as_of": "2026-11-04T01:28:53.774Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -81,9 +81,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 0,
- "public_read": 0,
- "public_failed": 0,
+ "public_tried": 8,
+ "public_read": 2,
+ "public_failed": 6,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -199,26 +199,103 @@
   "samples": []
  },
  "decision_waiting": 1067,
+ "nothing_found": 275,
  "not_attempted": 269,
- "nothing_found": 269,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 1,
+ "planned": 4,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
-  "roles": 96,
+  "roles": 97,
   "nonblocking": true
  },
  "recovery_statuses": {
-  "SOURCE_RESEARCH_REQUIRED": 45,
+  "EVIDENCE_FOUND": 5,
+  "SOURCE_RESEARCH_REQUIRED": 51,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 47,
   "GROK_RESEARCH_RESERVED": 346,
-  "NOT_YET_ATTEMPTED": 12,
-  "EVIDENCE_FOUND": 1
+  "NOT_YET_ATTEMPTED": 12
  },
  "pending": [
+  {
+   "id": "V2I-942D59E6E639",
+   "company": "DOWN INC",
+   "title": "Down Inc. Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:01.870Z",
+   "retryAt": "2026-11-04T03:29:01.870Z",
+   "attempts": [
+    {
+     "url": "https://recruiting.ultipro.com/MAP1005MALE/JobBoard/b075ab68-3cc0-4535-b8e3-3eee02871e27/OpportunityDetail?opportunityId=be6bb01b-3d5b-4207-9aa7-20c5a897279a&postingId=4f461323-e77e-46d8-94d4-2e35a2ad87a0",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F7B9B6125954",
+   "company": "Signode",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:06.474Z",
+   "retryAt": "2026-11-04T03:29:06.474Z",
+   "attempts": [
+    {
+     "url": "https://jobs.smartrecruiters.com/Signode/3743990016589345-plant-manager-",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FDC1783F241A",
+   "company": "Kailera Therapeutics, Inc.",
+   "title": "Senior Director, Drug Substance Commercial Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:08.509Z",
+   "retryAt": "2026-11-04T03:29:08.509Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/m49uy0xq8us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E7378D563BE5",
+   "company": "Rich Products",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:14.450Z",
+   "retryAt": "2026-11-04T03:29:14.450Z",
+   "attempts": [
+    {
+     "url": "https://careers.rich.com/job/Lodi-Plant-Manager-CA-95240/1362350400/",
+     "status": "READ_ERROR"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
   {
    "id": "V2I-E4F07F729E6F",
    "company": "Hadrian Automation",
@@ -298,6 +375,44 @@
    "lastAttemptAt": null,
    "retryAt": null,
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AFF90C7DF6B7",
+   "company": "Link Snacks",
+   "title": "Sr. Director Operational Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:33.112Z",
+   "retryAt": "2026-11-04T03:29:33.112Z",
+   "attempts": [
+    {
+     "url": "https://jobs.smartrecruiters.com/JackLinksProteinSnacks/744000159499028-sr-director-operational-excellence",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-39D3EBBE6D9F",
+   "company": "Nestlé USA",
+   "title": "Senior Manager, Factory Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-04T01:29:35.740Z",
+   "retryAt": "2026-11-04T03:29:35.740Z",
+   "attempts": [
+    {
+     "url": "https://jobdetails.nestle.com/job/Leonia-Senior-Manager%2C-Factory-Engineering-NJ-07605/1453141533/?feedId=392933&utm_source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -8427,17 +8542,181 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6F4DCF811A7C",
+   "company": "d-Matrix",
+   "title": "Director, Quality and Reliability Engineering – AI Hardware",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-04T00:44:13.078Z",
+   "retryAt": "2026-11-04T01:44:13.078Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   }
  ],
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-6F4DCF811A7C",
+   "id": "V2I-642823AE104E",
    "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-04"
+    "DEGREE_TEXT": "Preferred Bachelors with 7+ years relevant experience or Associates Degree with 9+ years relevant experience or 11+ years of relevant experience",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4478708085",
+    "DEGREE_ASOF": "2026-11-04",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 150000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 175000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-04",
+    "SALARY_SOURCE": "comparables:V2I-1785E00ACF11,V2I-209009CBC28E,V2I-24034EF4E675,V2I-25F43582536B,V2I-4656E817AD44,V2I-690C051DE9C8,V2I-78BECD6C8A38",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-1785E00ACF11, V2I-209009CBC28E, V2I-24034EF4E675, V2I-25F43582536B, V2I-4656E817AD44, V2I-690C051DE9C8, V2I-78BECD6C8A38]; 7 employer-posted comparable(s), level 2 MFG same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 17 eligible roles from the same comparables, so LOW; BLS IN 113051 P25-P90 $99K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-04",
+    "SALARY_SCORE_POINT": 187500
+   }
+  },
+  {
+   "id": "V2I-4CE495215C0D",
+   "fields": {
+    "DEGREE_TEXT": "Associate's or Bachelor's in Operations Management, Industrial Technology, or a related field preferred.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4636563/Davis-Furniture-Industries-Inc/Plant-Manager-Sewing-and-Cutting-Department?source=Indeed_Feed",
+    "DEGREE_ASOF": "2026-11-04",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 140000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 160000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-04",
+    "SALARY_SOURCE": "comparables:V2I-18EA344207B1,V2I-62CF12460FA4,V2I-5A07B07EC9D4,V2I-62808DD65A9C,V2I-DE781358981E,V2I-1785E00ACF11,V2I-209009CBC28E",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-18EA344207B1, V2I-62CF12460FA4, V2I-5A07B07EC9D4, V2I-62808DD65A9C, V2I-DE781358981E, V2I-1785E00ACF11, V2I-209009CBC28E]; 7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-04",
+    "SALARY_SCORE_POINT": 170000
+   }
+  },
+  {
+   "id": "V2I-061ADD8A4372",
+   "fields": {
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 150000,
+    "SALARY_MIDPOINT": 135000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://100hires.com/j/7RNZNeT",
+    "SALARY_ASOF": "2026-11-04",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Manufacturing, Business Administration, or a related field.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://100hires.com/j/7RNZNeT",
+    "DEGREE_ASOF": "2026-11-04",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-04",
+    "SALARY_SCORE_POINT": 142500
+   }
+  },
+  {
+   "id": "V2I-937921B86816",
+   "fields": {
+    "DEGREE_TEXT": "Oversee SAP master data governance with ownership of PP and EWM master data processes.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4454183016",
+    "DEGREE_ASOF": "2026-11-04",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "812ebb9e7410b390bc536f90e88bd262e7ad3e6be4bb659055f34c88a6b763bd",
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 225000,
+    "SALARY_MIDPOINT": 172500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-04",
+    "SALARY_SOURCE": "comparables:V2I-31010F018D27,V2I-72C649CFA097,V2I-A885C5B4E39D,V2I-D27C1A1F1A22,V2I-EFE4250B732B,V2I-F67006F73DAB,V2I-1E7CA29F642E",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-31010F018D27, V2I-72C649CFA097, V2I-A885C5B4E39D, V2I-D27C1A1F1A22, V2I-EFE4250B732B, V2I-F67006F73DAB, V2I-1E7CA29F642E]; 7 employer-posted comparable(s), level 1.5 MFG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; BLS IN 113051 P25-P90 $99K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-04",
+    "SALARY_SCORE_POINT": 198750
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-642823AE104E",
+   "company": "Valmont Industries, Inc.",
+   "title": "Plant Manager",
+   "location": "Elkhart, IN, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4478708085",
+   "est": [
+    150000,
+    200000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 17 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-1785E00ACF11",
+    "V2I-209009CBC28E",
+    "V2I-24034EF4E675",
+    "V2I-25F43582536B",
+    "V2I-4656E817AD44",
+    "V2I-690C051DE9C8",
+    "V2I-78BECD6C8A38"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-4CE495215C0D",
+   "company": "Davis Furniture Industries",
+   "title": "Plant Manager- Sewing and Cutting Department",
+   "location": "High Point, NC, USA",
+   "posting": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4636563/Davis-Furniture-Industries-Inc/Plant-Manager-Sewing-and-Cutting-Department?source=Indeed_Feed",
+   "est": [
+    140000,
+    180000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-18EA344207B1",
+    "V2I-62CF12460FA4",
+    "V2I-5A07B07EC9D4",
+    "V2I-62808DD65A9C",
+    "V2I-DE781358981E",
+    "V2I-1785E00ACF11",
+    "V2I-209009CBC28E"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-937921B86816",
+   "company": "Daifuku North America",
+   "title": "ILUS -Sr. Manager Production and Material Control",
+   "location": "Hobart, IN, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4454183016",
+   "est": [
+    120000,
+    225000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 MFG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-31010F018D27",
+    "V2I-72C649CFA097",
+    "V2I-A885C5B4E39D",
+    "V2I-D27C1A1F1A22",
+    "V2I-EFE4250B732B",
+    "V2I-F67006F73DAB",
+    "V2I-1E7CA29F642E"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
