@@ -206,11 +206,12 @@ async function caseReadbacks(candidate,rid,ids,{key,transport}){
  return rb.rows;
 }
 // READ-ONLY proof for a previously accepted insert. Called only after receipt_index reports COMPLETE.
-async function verifyAcceptedCase(candidate,rid,prior,indexEntry,{key,transport}={}){
+async function verifyAcceptedCase(candidate,rid,prior,indexEntry,{key,transport,expectedWriteId}={}){
  const hold=reason=>{throw Error('HOLD: resumed case not verified ('+reason+')')};
  if(!prior||!Array.isArray(prior.results)||prior.results.length!==1||!prior.results[0]?.PRIMARY_ID)hold('CAPTURED_WRITER_RESULT_REQUIRED');
  const detail=(await read('request_result',{key,transport,requestId:rid})).data;
  if(!detail.found||detail.source!=='index'||detail.requestId!==rid||detail.status!=='COMPLETE'||detail.durable!==true)hold('RECEIPT_NOT_DURABLE');
+ if(expectedWriteId&&(prior.writeId!==expectedWriteId||indexEntry?.w!==expectedWriteId||detail.entry?.w!==expectedWriteId))hold('RECEIPT_WRITE_ID_MISMATCH');
  const a=Array.isArray(indexEntry?.items)?indexEntry.items.map(x=>x?.pid):null,b=Array.isArray(detail.entry?.items)?detail.entry.items.map(x=>x?.pid):null;
  if(candidate.expectedOutcome==='PROTECTED_NOOP')hold('PROTECTED_ROLE_OPENED_MASTER_TRANSACTION');
  let ids,receipt=detail,binding='RECEIPT_INDEX';

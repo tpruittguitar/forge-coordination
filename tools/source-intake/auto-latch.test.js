@@ -42,7 +42,7 @@ test('stoppedAt falls back to the first unaccounted request id',()=>{
 });
 
 // The intake run itself: latched -> exits normally, makes NO Writer or web call, writes nothing.
-test('auto-run stops before any network call and does not fail when latched',async()=>{
+test('auto-run reports failure without replay or network calls for an unresolved unknown run',async()=>{
  const root=repo({'control/SOURCE_INTAKE_RELEASE.json':fs.readFileSync(path.join(__dirname,'../../control/SOURCE_INTAKE_RELEASE.json'),'utf8'),
   'receipts/auto-intake/FORGE-AUTO-1.json':unknownRun});
  const cwd=process.cwd(),fetch0=globalThis.fetch,key0=process.env.FORGE_WRITER_KEY,log0=console.log,err0=console.error;
@@ -54,9 +54,8 @@ test('auto-run stops before any network call and does not fail when latched',asy
   const cfg=JSON.parse(fs.readFileSync('control/SOURCE_INTAKE_RELEASE.json','utf8'));
   if(cfg.mode!=='AUTO'||cfg.enabled!==true){cfg.mode='AUTO';cfg.enabled=true;fs.writeFileSync('control/SOURCE_INTAKE_RELEASE.json',JSON.stringify(cfg))}
   const {main}=require('./auto-run');
-  const r=await main(['--report','state/none.json']);
+  await assert.rejects(main(['--report','state/none.json']),/AUTO intake blocked by 1 unresolved prior run/);
   assert.strictEqual(calls,0);
-  assert.strictEqual(r.latched[0].requestId,'R4');
   assert.ok(out.some(m=>m.startsWith('::warning title=AUTO intake latched::')));
   assert.deepStrictEqual(fs.readdirSync('receipts/auto-intake'),['FORGE-AUTO-1.json']);
  }finally{process.chdir(cwd);globalThis.fetch=fetch0;console.log=log0;console.error=err0;if(key0===undefined)delete process.env.FORGE_WRITER_KEY;else process.env.FORGE_WRITER_KEY=key0}
