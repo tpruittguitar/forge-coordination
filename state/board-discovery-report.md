@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261104T0218Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261104T0741Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (101 read, 0 failed) | 127 | 40 | 87 |
+| Employer job boards (102 read, 0 failed) | 130 | 41 | 89 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,8 +19,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 12 | 64 |
-| SR_MANAGER | 8 | 18 |
+| DIRECTOR_PLUS | 11 | 66 |
+| SR_MANAGER | 10 | 18 |
 | SR_STAFF | 20 | 5 |
 
 ## New roles
@@ -47,7 +47,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Propulsion Systems Advance Manufacturing (R5185)](https://jobs.lever.co/shieldai/a7747154-cc00-48e4-b89d-663bbeb4ca47) | Seattle, Washington | MFG_PROD | SR_STAFF | $150K-$230K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R4840)](https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5) | Seattle, Washington | QUALITY | SR_STAFF | $149K-$223K |
 | BOARD:lever | DREAM Shield AI | [Staff Engineer, Quality (R5512)](https://jobs.lever.co/shieldai/664414ae-6aa0-4dc1-8e24-e89e7466428b) | Dallas, Texas | QUALITY | SR_STAFF | $120K-$180K |
-| BOARD:ashby | P2 Skydio | [Director, NPI Operations Engineering](https://jobs.ashbyhq.com/skydio/b9f12e20-1a67-4196-bb3e-379b2cb1bae6) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER | $166K-$228K |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF | $129K-$177K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Operations Planning and Special Projects](https://jobs.ashbyhq.com/bedrock-robotics/ef4ed0a0-a27a-48e0-8c85-418e26c1faff) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -63,7 +62,9 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | oura | [Senior Manager, Operations Program Manager](https://job-boards.greenhouse.io/oura/jobs/4266351009) | Hybrid - San Francisco, California | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
+| BOARD:workday | Collins Aerospace (RTX) | [Sr. Manager, Program Performance Operational Excellence (Onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-CT-EAST-HARTFORD-ETC--400-Main-St--BLDG-ETC/Sr-Manager--Program-Performance-Operational-Excellence--Onsite-_01885618) | US-CT-EAST HARTFORD-ETC ~ 400 Main St ~ BLDG ETC | MFG_PROD | SR_MANAGER |  |
 | BOARD:workday | GE Appliances (Haier) | [Manufacturing Quality Director](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-LaFayette-GA/Manufacturing-Quality-Director_REQ-27183) | USA, LaFayette, GA | QUALITY | DIRECTOR_PLUS |  |
