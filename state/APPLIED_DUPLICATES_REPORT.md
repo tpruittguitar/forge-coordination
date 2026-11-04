@@ -1,10 +1,10 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-04T17:23:54.369Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-04T23:49:30.032Z from CANONICAL_WRITER_MASTER.
 
-Of 810 jobs waiting on Tim, 20 match a role he already applied to, was rejected from, or declined:
+Of 822 jobs waiting on Tim, 21 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 20
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 21
 
 Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (20)
+## Kept, labeled (21)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -41,4 +41,5 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Alvarez & Marsal | PEPI: Manager, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS) | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-01, -1 days after 2026-11-02; no posting identity to compare | V2I-7449584F440A → V2I-AA7724B3A2EF |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 50 | Spirit Defense, A Boeing Company | Spirit Defense - Operations Engineering Manager | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare | V2I-A737617CDBD9 → V2I-7F8C36E54D1A |
+| 38 | Chromalloy | Senior Manager, Aerospace Manufacturing Operations | You declined 2026-10-31 · possible repeat | Posting first seen 2026-11-04, 4 days after 2026-10-31; no posting identity to compare | V2I-BA815F4F0A69 → V2I-2C963E9B41C5 |
 

@@ -1,28 +1,28 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-04T17:23:54.369Z",
+ "at": "2026-11-04T23:49:30.032Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-04T17:23:53.906Z",
-  "rows": 4477,
-  "sha256": "5d4506123967bef60dca14d16a62425a2d46f006d83791096fc858142f017b2f"
+  "readAt": "2026-11-04T23:49:29.665Z",
+  "rows": 4491,
+  "sha256": "d5b51e438dfd7837676e5404d6b06f9818a9e28c2bfb9b11bfa3670e6656054b"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-04T17:17:20.746Z",
-  "decision": 810
+  "at": "2026-11-04T23:46:12.988Z",
+  "decision": 822
  },
  "counts": {
-  "waiting": 810,
-  "matched": 20,
+  "waiting": 822,
+  "matched": 21,
   "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 20
+  "KEEP_LABEL": 21
  },
  "rules": {
   "DIFFERENT_SITE": 8,
   "NEW_REQUISITION": 5,
   "POSSIBLE_REPOST": 1,
-  "UNCERTAIN": 6
+  "UNCERTAIN": 7
  },
  "items": [
   {
@@ -548,16 +548,41 @@
      "evidence": "Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare"
     }
    ]
+  },
+  {
+   "id": "V2I-BA815F4F0A69",
+   "company": "Chromalloy",
+   "title": "Senior Manager, Aerospace Manufacturing Operations",
+   "location": "Windsor, CT, USA",
+   "score": 38,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-31 · possible repeat",
+   "evidence": "Posting first seen 2026-11-04, 4 days after 2026-10-31; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-2C963E9B41C5",
+     "status": "DECLINED_BY_TIM",
+     "title": "Senior Manager, Manufacturing Operations",
+     "location": "Windsor, CT, USA",
+     "decided": "2026-10-31",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.8,
+     "evidence": "Posting first seen 2026-11-04, 4 days after 2026-10-31; no posting identity to compare"
+    }
+   ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 20,
+  "planned": 21,
   "closed": 0,
   "labeled": 1,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 19
+   "ALREADY_LABELED": 20
   },
   "failed": 0,
   "deferred": 0,
