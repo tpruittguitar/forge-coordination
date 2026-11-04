@@ -1,23 +1,22 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-04T06:45:35.817Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-04T17:23:54.369Z from CANONICAL_WRITER_MASTER.
 
-Of 1111 jobs waiting on Tim, 32 match a role he already applied to, was rejected from, or declined:
-- **Closed as duplicates (same posting): 1**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 31
+Of 810 jobs waiting on Tim, 20 match a role he already applied to, was rejected from, or declined:
+- **Closed as duplicates (same posting): 0**
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 20
 
-Writer: 1 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
-## Closed: same posting (1)
+## Closed: same posting (0)
 Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is wrong.
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
-| 45 | Baxter | VP, Global Quality & Regulatory Excellence | You declined 2026-11-02 · likely the same posting | Posting first seen 2026-11-04, on or before decline 2026-11-02; same title | V2I-C3DDBC9526C6 → V2I-FF8118104E84 |
 
-## Kept, labeled (31)
+## Kept, labeled (20)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -32,6 +31,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 59 | L3Harris Technologies | Associate Manager, Manufacturing Engineering | You declined 2026-10-30 · different site | Different worksite: Malabar, FL vs earlier Huntsville, AL | V2I-FDB8B06FBD13 → V2I-B6E9763E305F |
 | 59 | Hadrian | Manager, Build Engineering - Commodities | Applied 2026-10-20 · this is a new posting | Different ashby posting: ashby:7fd37625-df20-4dba-9b91-c4aacf7feabb vs earlier ashby:9ae37da4-77bd-477f-a928-add6700d8635 | V2I-579069794D7E → V2I-BC9ACFFD3C2B |
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
+| 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Hadrian | Director of Engineering, Forward Deployed Engineering | You declined 2026-10-31 · possible repeat | Posting first seen 2026-11-02, 2 days after 2026-10-31; no posting identity to compare | V2I-0471206B9480 → V2I-DD139754B419 |
 | 55 | Tesla | Associate Production Control Manager, Megapack | You declined 2026-11-02 · different site | Different worksite: Lathrop, CA vs earlier Sparks, NV | V2I-61C5639005B6 → V2I-85CE6BB68F72 |
 | 54 | The Clorox Company | Customer Supply Chain Manager | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare | V2I-66C621B91F30 → V2I-FB0FDFFCF795 |
@@ -41,16 +41,4 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Alvarez & Marsal | PEPI: Manager, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS) | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-01, -1 days after 2026-11-02; no posting identity to compare | V2I-7449584F440A → V2I-AA7724B3A2EF |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 50 | Spirit Defense, A Boeing Company | Spirit Defense - Operations Engineering Manager | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare | V2I-A737617CDBD9 → V2I-7F8C36E54D1A |
-| 48 | Blue Origin | Lunar Lander Manufacturing Engineering Manager Sr | You declined 2026-10-26 · different site | Different worksite: Merritt Island, FL vs earlier Space Coast, FL | V2I-9909A0E4601A → V2I-830EF02C83B6 |
-| 44 | ECKART | Director - Manufacturing | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-1744A61C5725 → V2I-FF436C59F2D4 |
-| 44 | Blue Origin | Sr. Manager - Quality | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare | V2I-4577FF94FE09 → V2I-44329764890F |
-| 44 | Confidential Careers | Plant Manager | You declined 2026-11-02 · different site | Different worksite: Akron, OH vs earlier New Jersey, United States | V2I-A0A7779D3B27 → V2I-6CE9A84646CC |
-| 42 | Siemens | Advanced Manufacturing Manager | You declined 2026-10-31 · different site | Different worksite: Fort Worth, TX vs earlier Pendergrass, GA | V2I-2B42C49C4D51 → V2I-40E86DD7FC87 |
-| 41 | Anduril Industries | Manager, Product Quality Engineering - Anvil | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare | V2I-D0ACB9BD014B → V2I-144783C1A217 |
-| 41 | Honeywell Aerospace | Senior Director Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-01, after rejection 2026-10-30 | V2I-786B118CFCC4 → V2E-6920E7E88F4B |
-| 40 | Thermo Fisher Scientific | Sr. Manager, Quality | You declined 2026-10-31 · different site | Different worksite: Oakwood Village, OH, USA vs earlier Rochester, NY, USA | V2I-10D243C2EFC0 → V2I-C1CE8D7077FE |
-| 39 | Lockheed Martin | Program Quality Engineering Mgr - L5 | Applied 2026-09-20 · possible repost | Posting first seen 2026-11-01, more than 30 days after applying 2026-09-20 | V2I-1900DA981F95 → V2E-1A9E405618CA |
-| 39 | L3Harris Technologies | Manager, Manufacturing Engineer | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare | V2I-D936B86CAEB3 → V2I-B2895E9A1711 |
-| 39 | BioSpace | Senior Director Engineering | You declined 2026-11-02 · different site | Different worksite: Thousand Oaks, CA vs earlier North Chicago, IL | V2I-796D66656B27 → V2I-3731C1DEEFF5 |
-| 36 | L3Harris Technologies | Quality Engineering Manager | You declined 2026-11-03 · different site | Different worksite: San Diego, CA vs earlier Camden, NJ | V2I-4EC6E82DFBD0 → V2I-401EDB623638 |
 

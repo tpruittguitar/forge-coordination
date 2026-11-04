@@ -1,56 +1,30 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-04T06:45:35.817Z",
+ "at": "2026-11-04T17:23:54.369Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-04T06:45:35.312Z",
-  "rows": 4457,
-  "sha256": "4b3f9d5403c91f4e720e8869e6a60bca732c2851935694d4637e07b5dcded3b6"
+  "readAt": "2026-11-04T17:23:53.906Z",
+  "rows": 4477,
+  "sha256": "5d4506123967bef60dca14d16a62425a2d46f006d83791096fc858142f017b2f"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-04T06:18:52.801Z",
-  "decision": 1111
+  "at": "2026-11-04T17:17:20.746Z",
+  "decision": 810
  },
  "counts": {
-  "waiting": 1111,
-  "matched": 32,
-  "CLOSE_CANDIDATE": 1,
-  "KEEP_LABEL": 31
+  "waiting": 810,
+  "matched": 20,
+  "CLOSE_CANDIDATE": 0,
+  "KEEP_LABEL": 20
  },
  "rules": {
-  "SAME_BY_TIMELINE": 1,
-  "DIFFERENT_SITE": 13,
+  "DIFFERENT_SITE": 8,
   "NEW_REQUISITION": 5,
-  "POSSIBLE_REPOST": 3,
-  "UNCERTAIN": 10
+  "POSSIBLE_REPOST": 1,
+  "UNCERTAIN": 6
  },
  "items": [
-  {
-   "id": "V2I-C3DDBC9526C6",
-   "company": "Baxter",
-   "title": "VP, Global Quality & Regulatory Excellence",
-   "location": "Deerfield, IL, USA",
-   "score": 45,
-   "outcome": "CLOSE_CANDIDATE",
-   "rule": "SAME_BY_TIMELINE",
-   "label": "You declined 2026-11-02 · likely the same posting",
-   "evidence": "Posting first seen 2026-11-04, on or before decline 2026-11-02; same title",
-   "matches": [
-    {
-     "id": "V2I-FF8118104E84",
-     "status": "DECLINED_BY_TIM",
-     "title": "VP, Global Quality & Regulatory Excellence",
-     "location": "Deerfield, IL, USA",
-     "decided": "2026-11-02",
-     "rejected": null,
-     "rule": "SAME_BY_TIMELINE",
-     "outcome": "CLOSE_CANDIDATE",
-     "similarity": 1,
-     "evidence": "Posting first seen 2026-11-04, on or before decline 2026-11-02; same title"
-    }
-   ]
-  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -326,6 +300,31 @@
    ]
   },
   {
+   "id": "V2I-A168D592C34D",
+   "company": "EY",
+   "title": "SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN",
+   "location": "Huntsville, AL",
+   "score": 57,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-04 · different site",
+   "evidence": "Different worksite: Huntsville, AL vs earlier Chattanooga, TN",
+   "matches": [
+    {
+     "id": "V2I-3A2F23AAE156",
+     "status": "DECLINED_BY_TIM",
+     "title": "SAP - Production Planning - Digital Manufacturing Cloud - DMC - Manager - Consulting - Location OPEN",
+     "location": "Chattanooga, TN",
+     "decided": "2026-11-04",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.83,
+     "evidence": "Different worksite: Huntsville, AL vs earlier Chattanooga, TN"
+    }
+   ]
+  },
+  {
    "id": "V2I-0471206B9480",
    "company": "Hadrian",
    "title": "Director of Engineering, Forward Deployed Engineering",
@@ -549,340 +548,16 @@
      "evidence": "Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare"
     }
    ]
-  },
-  {
-   "id": "V2I-9909A0E4601A",
-   "company": "Blue Origin",
-   "title": "Lunar Lander Manufacturing Engineering Manager Sr",
-   "location": "Merritt Island, FL",
-   "score": 48,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-26 · different site",
-   "evidence": "Different worksite: Merritt Island, FL vs earlier Space Coast, FL",
-   "matches": [
-    {
-     "id": "V2I-830EF02C83B6",
-     "status": "DECLINED_BY_TIM",
-     "title": "Lunar Lander Manufacturing Engineering Manager",
-     "location": "Space Coast, FL",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.83,
-     "evidence": "Different worksite: Merritt Island, FL vs earlier Space Coast, FL"
-    }
-   ]
-  },
-  {
-   "id": "V2I-1744A61C5725",
-   "company": "ECKART",
-   "title": "Director - Manufacturing",
-   "location": "Tamaqua, PA",
-   "score": 44,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-23 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-FF436C59F2D4",
-     "status": "DECLINED_BY_TIM",
-     "title": "Director - Manufacturing",
-     "location": "Tamaqua, PA",
-     "decided": "2026-10-23",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
-    }
-   ]
-  },
-  {
-   "id": "V2I-4577FF94FE09",
-   "company": "Blue Origin",
-   "title": "Sr. Manager - Quality",
-   "location": "Greater Seattle Area",
-   "score": 44,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-26 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-44329764890F",
-     "status": "DECLINED_BY_TIM",
-     "title": "Sr. Quality Program Manager",
-     "location": "Central Texas / Greater Seattle Area",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare"
-    },
-    {
-     "id": "V2I-C6F0714F130B",
-     "status": "DECLINED_BY_TIM",
-     "title": "Sr. Quality Program Manager",
-     "location": "Hutto, TX",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Greater Seattle Area vs earlier Hutto, TX"
-    }
-   ]
-  },
-  {
-   "id": "V2I-A0A7779D3B27",
-   "company": "Confidential Careers",
-   "title": "Plant Manager",
-   "location": "Akron, OH",
-   "score": 44,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-11-02 · different site",
-   "evidence": "Different worksite: Akron, OH vs earlier New Jersey, United States",
-   "matches": [
-    {
-     "id": "V2I-6CE9A84646CC",
-     "status": "DECLINED_BY_TIM",
-     "title": "Plant Manager",
-     "location": "New Jersey, United States",
-     "decided": "2026-11-02",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Different worksite: Akron, OH vs earlier New Jersey, United States"
-    },
-    {
-     "id": "V2I-C7DE8D0DFFAA",
-     "status": "DECLINED_BY_TIM",
-     "title": "Plant Manager",
-     "location": "City of Industry, CA",
-     "decided": "2026-10-23",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Different worksite: Akron, OH vs earlier City of Industry, CA"
-    }
-   ]
-  },
-  {
-   "id": "V2I-2B42C49C4D51",
-   "company": "Siemens",
-   "title": "Advanced Manufacturing Manager",
-   "location": "Fort Worth, TX",
-   "score": 42,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-31 · different site",
-   "evidence": "Different worksite: Fort Worth, TX vs earlier Pendergrass, GA",
-   "matches": [
-    {
-     "id": "V2I-40E86DD7FC87",
-     "status": "DECLINED_BY_TIM",
-     "title": "Advanced Manufacturing Engineering Manager",
-     "location": "Pendergrass, GA",
-     "decided": "2026-10-31",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Fort Worth, TX vs earlier Pendergrass, GA"
-    }
-   ]
-  },
-  {
-   "id": "V2I-D0ACB9BD014B",
-   "company": "Anduril Industries",
-   "title": "Manager, Product Quality Engineering - Anvil",
-   "location": "Santa Ana, CA",
-   "score": 41,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-26 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-144783C1A217",
-     "status": "DECLINED_BY_TIM",
-     "title": "Manager, Product Quality Engineering",
-     "location": "Santa Ana, CA",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare"
-    }
-   ]
-  },
-  {
-   "id": "V2I-786B118CFCC4",
-   "company": "Honeywell Aerospace",
-   "title": "Senior Director Operational Excellence",
-   "location": "Phoenix, AZ",
-   "score": 41,
-   "outcome": "KEEP_LABEL",
-   "rule": "POSSIBLE_REPOST",
-   "label": "Applied 2026-09-09 · Rejected 2026-10-30 · possible repost",
-   "evidence": "Posting first seen 2026-11-01, after rejection 2026-10-30",
-   "matches": [
-    {
-     "id": "V2E-6920E7E88F4B",
-     "status": "REJECTED_BY_EMPLOYER",
-     "title": "Director of Operational Excellence",
-     "location": "NOT_STATED",
-     "decided": "2026-09-09",
-     "rejected": "2026-10-30",
-     "rule": "POSSIBLE_REPOST",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Posting first seen 2026-11-01, after rejection 2026-10-30"
-    }
-   ]
-  },
-  {
-   "id": "V2I-10D243C2EFC0",
-   "company": "Thermo Fisher Scientific",
-   "title": "Sr. Manager, Quality",
-   "location": "Oakwood Village, OH, USA",
-   "score": 40,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-31 · different site",
-   "evidence": "Different worksite: Oakwood Village, OH, USA vs earlier Rochester, NY, USA",
-   "matches": [
-    {
-     "id": "V2I-C1CE8D7077FE",
-     "status": "DECLINED_BY_TIM",
-     "title": "Sr Manager, Supplier Quality",
-     "location": "Rochester, NY, USA",
-     "decided": "2026-10-31",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Oakwood Village, OH, USA vs earlier Rochester, NY, USA"
-    }
-   ]
-  },
-  {
-   "id": "V2I-1900DA981F95",
-   "company": "Lockheed Martin",
-   "title": "Program Quality Engineering Mgr - L5",
-   "location": "Grand Prairie, TX",
-   "score": 39,
-   "outcome": "KEEP_LABEL",
-   "rule": "POSSIBLE_REPOST",
-   "label": "Applied 2026-09-20 · possible repost",
-   "evidence": "Posting first seen 2026-11-01, more than 30 days after applying 2026-09-20",
-   "matches": [
-    {
-     "id": "V2E-1A9E405618CA",
-     "status": "APPLIED",
-     "title": "Quality Engineering Mgr - L5",
-     "location": "NOT_STATED",
-     "decided": "2026-09-20",
-     "rejected": null,
-     "rule": "POSSIBLE_REPOST",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Posting first seen 2026-11-01, more than 30 days after applying 2026-09-20"
-    }
-   ]
-  },
-  {
-   "id": "V2I-D936B86CAEB3",
-   "company": "L3Harris Technologies",
-   "title": "Manager, Manufacturing Engineer",
-   "location": "Tempe, AZ",
-   "score": 39,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-26 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-B2895E9A1711",
-     "status": "DECLINED_BY_TIM",
-     "title": "Sr Mgr., Manufacturing Engineer",
-     "location": "Tempe, AZ",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Posting first seen 2026-11-01, 6 days after 2026-10-26; no posting identity to compare"
-    }
-   ]
-  },
-  {
-   "id": "V2I-796D66656B27",
-   "company": "BioSpace",
-   "title": "Senior Director Engineering",
-   "location": "Thousand Oaks, CA",
-   "score": 39,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-11-02 · different site",
-   "evidence": "Different worksite: Thousand Oaks, CA vs earlier North Chicago, IL",
-   "matches": [
-    {
-     "id": "V2I-3731C1DEEFF5",
-     "status": "DECLINED_BY_TIM",
-     "title": "Senior Director Process Engineering",
-     "location": "North Chicago, IL",
-     "decided": "2026-11-02",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Thousand Oaks, CA vs earlier North Chicago, IL"
-    }
-   ]
-  },
-  {
-   "id": "V2I-4EC6E82DFBD0",
-   "company": "L3Harris Technologies",
-   "title": "Quality Engineering Manager",
-   "location": "San Diego, CA",
-   "score": 36,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-11-03 · different site",
-   "evidence": "Different worksite: San Diego, CA vs earlier Camden, NJ",
-   "matches": [
-    {
-     "id": "V2I-401EDB623638",
-     "status": "DECLINED_BY_TIM",
-     "title": "Manager, Quality Engineering",
-     "location": "Camden, NJ",
-     "decided": "2026-11-03",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Different worksite: San Diego, CA vs earlier Camden, NJ"
-    }
-   ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 32,
-  "closed": 1,
-  "labeled": 0,
+  "planned": 20,
+  "closed": 0,
+  "labeled": 1,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 31
+   "ALREADY_LABELED": 19
   },
   "failed": 0,
   "deferred": 0,
