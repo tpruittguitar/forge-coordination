@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261104T1248Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261104T1428Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (101 read, 0 failed) | 128 | 40 | 88 |
+| Employer job boards (101 read, 0 failed) | 127 | 39 | 88 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -20,7 +20,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 11 | 65 |
-| SR_MANAGER | 9 | 18 |
+| SR_MANAGER | 8 | 18 |
 | SR_STAFF | 20 | 5 |
 
 ## New roles
@@ -65,5 +65,4 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | xAI (SpaceXAI) | [Director, Power Plant Operations - Memphis](https://job-boards.greenhouse.io/xai/jobs/5216112007) |  Southaven, MS | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
-| BOARD:workday | Collins Aerospace (RTX) | [Sr. Manager, Program Performance Operational Excellence (Onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-CT-EAST-HARTFORD-ETC--400-Main-St--BLDG-ETC/Sr-Manager--Program-Performance-Operational-Excellence--Onsite-_01885618) | US-CT-EAST HARTFORD-ETC ~ 400 Main St ~ BLDG ETC | MFG_PROD | SR_MANAGER |  |
 | BOARD:workday | GE Appliances (Haier) | [Manufacturing Quality Director](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-LaFayette-GA/Manufacturing-Quality-Director_REQ-27183) | USA, LaFayette, GA | QUALITY | DIRECTOR_PLUS |  |
