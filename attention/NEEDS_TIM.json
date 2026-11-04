@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-04T08:18:14.188Z",
- "sourceCommit": "153bae55efb72116e6b1bc3532ece3b64872cfd7",
+ "builtAt": "2026-11-04T08:22:57.839Z",
+ "sourceCommit": "3d19a02896522a75c98a6b60dca663943335e32e",
  "counts": {
-  "total": 57,
-  "BLOCKING": 0,
+  "total": 58,
+  "BLOCKING": 1,
   "ACTION": 19,
   "WATCH": 38,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 11,
+  "FAILED": 12,
   "UPKEEP": 38
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261104T074256Z is unfinished",
+   "detail": "UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay. Open request: FORGE-SOURCE-3D0E6F9DFD1953FAD80F3716. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+   "at": "2026-11-04T08:17:49.723Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -840,8 +852,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-04T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261104T081523863Z_TRANSPORT.json",
-   "runs7d": 644,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261104T082023863Z_TRANSPORT.json",
+   "runs7d": 649,
    "usualGapHours": 0,
    "overdue": false
   },
