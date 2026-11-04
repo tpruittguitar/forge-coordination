@@ -29,8 +29,11 @@ function finishRebase(root){
  }
 }
 function publish(root,{maxAttempts=4,beforePush}={}){
- // A pre-existing rebase is an operator recovery obligation, not permission to start production.
- if(git(root,['rev-parse','--verify','REBASE_HEAD'],true)!==null)throw Error('Prior rebase requires reconciliation; preserve checkout and lock');
+ // REBASE_HEAD can survive a finished/quit rebase. Git's actual operation
+ // directories identify an interrupted rebase; a leftover pseudoref alone does not.
+ // Retained commits and immutable evidence still pass the checks below.
+ if(['rebase-merge','rebase-apply'].some(name=>fs.existsSync(path.resolve(root,git(root,['rev-parse','--git-path',name]).trim()))))
+  throw Error('Prior rebase requires reconciliation; preserve checkout and lock');
  const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
  for(const line of status){const f=line.slice(3);if(!allowed(f)||/[RCU]/.test(line.slice(0,2)))throw Error('Unexpected changed accounting path; preserve checkout and lock');if(!paths.has(f)&&!['??','A'].includes(line.slice(0,2).trim()))throw Error('Immutable accounting evidence changed; preserve checkout and lock');}
  if(status.length){git(root,['add','--',...status.map(s=>s.slice(3))]);if(git(root,['diff','--cached','--quiet'],true)===null)git(root,['-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com','commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects']);}

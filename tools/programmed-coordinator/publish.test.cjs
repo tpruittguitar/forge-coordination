@@ -26,3 +26,16 @@ test('new transport accounting and immutable helper deliveries publish while pri
 test('committed modifications to immutable evidence cannot bypass retained accounting checks',t=>{
  const f=fixture(t),file='receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json';save(f.local,file,{runId:'original'});publish(f.local);save(f.local,file,{runId:'changed'});commit(f.local,'incorrect retained edit');a.throws(()=>publish(f.local),/Committed immutable evidence changed/);
 });
+test('leftover REBASE_HEAD without an active rebase does not strand published accounting',t=>{
+ const f=fixture(t),old=g(f.local,'rev-parse','HEAD');g(f.local,'update-ref','REBASE_HEAD',old);
+ save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{runId:'after-rebase'});
+ a.equal(publish(f.local).published,true);
+ a.equal(JSON.parse(g(f.local,'show','origin/main:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'after-rebase');
+ // Git may clear the leftover pseudoref during the normal successful rebase.
+});
+for(const directory of ['rebase-merge','rebase-apply'])test('active '+directory+' blocks publication and preserves evidence',t=>{
+ const f=fixture(t);fs.mkdirSync(p.resolve(f.local,g(f.local,'rev-parse','--git-path',directory)));
+ save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{runId:'must-retain'});
+ a.throws(()=>publish(f.local),/Prior rebase requires reconciliation/);
+ a.ok(fs.existsSync(p.join(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')));
+});
