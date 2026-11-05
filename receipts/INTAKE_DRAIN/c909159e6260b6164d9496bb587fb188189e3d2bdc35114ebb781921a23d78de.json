@@ -1,0 +1,69 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:37f6bc33f4fcee993401a9fa",
+  "sourceVersion": "f5a7e8b24be26b14325fbc013f7457c7967ad61836b10f014cff912a38a6d7a2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T234907049Z-ef1e48",
+  "instructionCommit": "f036a800b4bae35fbfd3fe5fbfdce31ddfaabdc3",
+  "observedAt": "2026-11-05T23:49:07.049Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original acceptance, fresh COMPLETE receipt-index state and current accepted-ID rows are available. Current rows retain exact original source; Writer verification/provenance conclusion awaits the registered read-only probe. A present row alone is not declared proof that original write completed.",
+  "nextAction": "Consume the recorded read-only probe workflow request_result/exact-row findings; existing source-intake-auto owns supported recovery. Preserve original request and do not replay.",
+  "retryCondition": "The recorded read-only probe completes and publishes candidate-specific evidence, or original evidence changes.",
+  "attempts": [
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Authenticated fresh independent read of exact original request; {\"requestId\":\"FORGE-SOURCE-220074C1D401CCF158AF6142\",\"independentReceiptState\":\"COMPLETE\",\"indexUpdatedAt\":\"2026-11-05T23:45:21.539Z\",\"indexSha256\":\"cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81\"}"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
+      "result": "Original accepted receipt binds exact request, write ID and accepted primary IDs; no replay. Registered read-only probe dispatched for the fence-bound AUTO run; distinct added runs are queued separately without duplicating active runs. Outcome pending.",
+      "sha256": "b5dffea374b9b4441a5501e7029fbd8101918d545015bcd1237684bd440992e6"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw read; END marker checked. Exact IDs and original source bindings compared; no private row prose published.",
+      "fileSha256": "ad4452c6f3e73b343473ffe86e20be0694cfd175c29b1d29ec1dda1089510287",
+      "modifiedAt": "2026-11-05T23:44:55.284Z",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-5AB31DC8CB67",
+          "bucket": "SCOUT_INTAKE",
+          "rowSha256": "b564dde0c2e667c73bb965504c56af844e55d28895c5d53bf25b5314030d718c",
+          "companyMatch": true,
+          "titleMatch": true,
+          "sourceMatch": true,
+          "location": "Seattle, Washington"
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "requestId": "FORGE-SOURCE-220074C1D401CCF158AF6142",
+    "independentReceiptState": "COMPLETE",
+    "indexUpdatedAt": "2026-11-05T23:45:21.539Z",
+    "indexSha256": "cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81",
+    "originalReceiptSha256": "b5dffea374b9b4441a5501e7029fbd8101918d545015bcd1237684bd440992e6",
+    "acceptedPrimaryIds": [
+      "V2I-5AB31DC8CB67"
+    ],
+    "writeId": "W-20261105080136066-1e9b72",
+    "probeWorkflowId": 42131876135,
+    "rowProofs": [
+      {
+        "primaryId": "V2I-5AB31DC8CB67",
+        "bucket": "SCOUT_INTAKE",
+        "rowSha256": "b564dde0c2e667c73bb965504c56af844e55d28895c5d53bf25b5314030d718c",
+        "companyMatch": true,
+        "titleMatch": true,
+        "sourceMatch": true,
+        "location": "Seattle, Washington"
+      }
+    ]
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedProtectedExisting": 0
+}
