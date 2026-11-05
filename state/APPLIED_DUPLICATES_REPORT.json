@@ -1,30 +1,56 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-04T23:49:30.032Z",
+ "at": "2026-11-05T07:05:14.882Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-04T23:49:29.665Z",
-  "rows": 4491,
-  "sha256": "d5b51e438dfd7837676e5404d6b06f9818a9e28c2bfb9b11bfa3670e6656054b"
+  "readAt": "2026-11-05T07:05:14.588Z",
+  "rows": 4564,
+  "sha256": "544ff0c6bfc6145a599e13b12d4e8cf536d3b28493d8ac83fcd9ac1b3f066b84"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-04T23:46:12.988Z",
-  "decision": 822
+  "at": "2026-11-05T07:04:51.060Z",
+  "decision": 644
  },
  "counts": {
-  "waiting": 822,
-  "matched": 21,
-  "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 21
+  "waiting": 644,
+  "matched": 18,
+  "CLOSE_CANDIDATE": 1,
+  "KEEP_LABEL": 17
  },
  "rules": {
-  "DIFFERENT_SITE": 8,
+  "SAME_BY_TIMELINE": 1,
+  "DIFFERENT_SITE": 6,
   "NEW_REQUISITION": 5,
   "POSSIBLE_REPOST": 1,
-  "UNCERTAIN": 7
+  "UNCERTAIN": 5
  },
  "items": [
+  {
+   "id": "V2I-9A2BAD906FDF",
+   "company": "ImageFIRST Healthcare Laundry Specialists",
+   "title": "Director, Operational Excellence",
+   "location": "Elmsford, NY, USA",
+   "score": 54,
+   "outcome": "CLOSE_CANDIDATE",
+   "rule": "SAME_BY_TIMELINE",
+   "label": "You declined 2026-11-05 · likely the same posting",
+   "evidence": "Posting first seen 2026-11-05, on or before decline 2026-11-05; same title",
+   "matches": [
+    {
+     "id": "V2I-41D7C7F38C42",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director, Operational Excellence",
+     "location": "Elmsford, NY, USA",
+     "decided": "2026-11-05",
+     "rejected": null,
+     "rule": "SAME_BY_TIMELINE",
+     "outcome": "CLOSE_CANDIDATE",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-05, on or before decline 2026-11-05; same title"
+    }
+   ]
+  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -97,31 +123,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-10-18, after rejection 2026-10-16"
-    }
-   ]
-  },
-  {
-   "id": "V2I-9CB4095FB587",
-   "company": "Blue Origin",
-   "title": "Manager - Lunar Operations and Manufacturing",
-   "location": "Merritt Island, FL",
-   "score": 63,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "Applied 2026-10-25 · different site",
-   "evidence": "Different worksite: Merritt Island, FL vs earlier Space Coast, FL",
-   "matches": [
-    {
-     "id": "V2I-9D90D416AC88",
-     "status": "APPLIED",
-     "title": "Manager Lunar - Manufacturing, Ops & Assembly",
-     "location": "Space Coast, FL",
-     "decided": "2026-10-25",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Different worksite: Merritt Island, FL vs earlier Space Coast, FL"
     }
    ]
   },
@@ -350,31 +351,6 @@
    ]
   },
   {
-   "id": "V2I-61C5639005B6",
-   "company": "Tesla",
-   "title": "Associate Production Control Manager, Megapack",
-   "location": "Lathrop, CA",
-   "score": 55,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-11-02 · different site",
-   "evidence": "Different worksite: Lathrop, CA vs earlier Sparks, NV",
-   "matches": [
-    {
-     "id": "V2I-85CE6BB68F72",
-     "status": "DECLINED_BY_TIM",
-     "title": "Associate Manager, Production Control",
-     "location": "Sparks, NV",
-     "decided": "2026-11-02",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Different worksite: Lathrop, CA vs earlier Sparks, NV"
-    }
-   ]
-  },
-  {
    "id": "V2I-66C621B91F30",
    "company": "The Clorox Company",
    "title": "Customer Supply Chain Manager",
@@ -475,31 +451,6 @@
    ]
   },
   {
-   "id": "V2I-7449584F440A",
-   "company": "Alvarez & Marsal",
-   "title": "PEPI: Manager, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
-   "location": "Atlanta, GA",
-   "score": 51,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-11-02 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, -1 days after 2026-11-02; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-AA7724B3A2EF",
-     "status": "DECLINED_BY_TIM",
-     "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
-     "location": "Atlanta, GA",
-     "decided": "2026-11-02",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Posting first seen 2026-11-01, -1 days after 2026-11-02; no posting identity to compare"
-    }
-   ]
-  },
-  {
    "id": "V2I-40226DB46F8D",
    "company": "CIRCOR International, Inc.",
    "title": "Director of Quality",
@@ -525,64 +476,39 @@
    ]
   },
   {
-   "id": "V2I-A737617CDBD9",
-   "company": "Spirit Defense, A Boeing Company",
-   "title": "Spirit Defense - Operations Engineering Manager",
-   "location": "Wichita, KS",
-   "score": 50,
+   "id": "V2I-1D08BD27F007",
+   "company": "Alvarez & Marsal",
+   "title": "PEPI: Director, Supply Chain: Procurement & Sourcing (OPEN TO ALL U.S. LOCATIONS)",
+   "location": "Atlanta, GA",
+   "score": 49,
    "outcome": "KEEP_LABEL",
    "rule": "UNCERTAIN",
-   "label": "You declined 2026-11-03 · possible repeat",
-   "evidence": "Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare",
+   "label": "You declined 2026-11-05 · possible repeat",
+   "evidence": "Posting first seen 2026-11-02, -3 days after 2026-11-05; no posting identity to compare",
    "matches": [
     {
-     "id": "V2I-7F8C36E54D1A",
+     "id": "V2I-43E8E1CE6D48",
      "status": "DECLINED_BY_TIM",
-     "title": "Spirit Defense - Senior Operations Engineering Manager",
-     "location": "Wichita, KS",
-     "decided": "2026-11-03",
+     "title": "PEPI: Manager, Supply Chain -- Procurement & Sourcing (OPEN TO ALL U.S. LOCATIONS)",
+     "location": "Atlanta, GA",
+     "decided": "2026-11-05",
      "rejected": null,
      "rule": "UNCERTAIN",
      "outcome": "KEEP_LABEL",
      "similarity": 0.83,
-     "evidence": "Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare"
-    }
-   ]
-  },
-  {
-   "id": "V2I-BA815F4F0A69",
-   "company": "Chromalloy",
-   "title": "Senior Manager, Aerospace Manufacturing Operations",
-   "location": "Windsor, CT, USA",
-   "score": 38,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-31 · possible repeat",
-   "evidence": "Posting first seen 2026-11-04, 4 days after 2026-10-31; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-2C963E9B41C5",
-     "status": "DECLINED_BY_TIM",
-     "title": "Senior Manager, Manufacturing Operations",
-     "location": "Windsor, CT, USA",
-     "decided": "2026-10-31",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Posting first seen 2026-11-04, 4 days after 2026-10-31; no posting identity to compare"
+     "evidence": "Posting first seen 2026-11-02, -3 days after 2026-11-05; no posting identity to compare"
     }
    ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 21,
-  "closed": 0,
+  "planned": 18,
+  "closed": 1,
   "labeled": 1,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 20
+   "ALREADY_LABELED": 16
   },
   "failed": 0,
   "deferred": 0,
