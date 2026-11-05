@@ -2789,8 +2789,8 @@
   "V2I-D5E76DAFB07B": "2026-11-05T12:19:47.538Z",
   "V2I-E352F5D223F9": "2026-11-05T12:19:49.613Z",
   "V2I-2A863D5463C7": "2026-11-05T15:56:15.450Z",
-  "V2I-EE19A03E7C8A": "2026-11-05T08:15:24.857Z",
-  "V2I-EC8FC51511D9": "2026-11-05T08:15:26.907Z",
+  "V2I-EE19A03E7C8A": "2026-11-05T16:27:37.063Z",
+  "V2I-EC8FC51511D9": "2026-11-05T16:27:39.634Z",
   "V2I-8F7E25FAE33A": "2026-11-05T09:21:17.852Z",
   "V2I-C7D075F51242": "2026-11-05T12:56:03.104Z",
   "V2I-F8503D0FC488": "2026-11-05T12:56:06.495Z",
@@ -2802,7 +2802,7 @@
   "V2I-C05889F5A4D7": "2026-11-05T14:46:35.528Z",
   "V2I-69AD38BF0D6A": "2026-11-05T15:56:17.261Z",
   "V2I-866FCD423820": "2026-11-05T14:07:36.259Z",
-  "V2I-0B4B8812A2C5": "2026-11-05T15:20:04.385Z",
+  "V2I-0B4B8812A2C5": "2026-11-05T16:27:41.336Z",
   "V2I-B6DA71E4881D": "2026-11-05T14:46:39.633Z",
   "V2I-5D43C0848E45": "2026-11-05T15:20:02.647Z"
  },
@@ -5299,7 +5299,9 @@
   "V2I-E4477C47B355": "SALARY,DEGREE",
   "V2I-93BE87A241CC": "SALARY,DEGREE",
   "V2I-B9FAD3AE2EDB": "SALARY,DEGREE",
-  "V2I-2C8AFDCFE8D8": "SALARY,DEGREE"
+  "V2I-2C8AFDCFE8D8": "SALARY,DEGREE",
+  "V2I-4A52694BE303": "SALARY,DEGREE",
+  "V2I-F3AFE2D1A5C0": "SALARY,DEGREE"
  },
  "pendingWrites": {
   "FORGE-ENRICH_ATS-ATSBOT-20261102T1445Z-B02": {
@@ -5997,6 +5999,71 @@
     }
    ],
    "at": "2026-11-05T15:56:20.616Z",
+   "status": "POSTING_OR_UNCONFIRMED"
+  },
+  "FORGE-ENRICH_ATS-ATSBOT-20261105T1626Z-B01": {
+   "ids": [
+    "V2I-4A52694BE303",
+    "V2I-F3AFE2D1A5C0"
+   ],
+   "requestIds": [
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1626Z-R001",
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1626Z-R002"
+   ],
+   "requests": [
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1626Z-R001",
+      "primaryId": "V2I-4A52694BE303",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 200000,
+       "SALARY_BASE_HIGH": 275000,
+       "SALARY_MIDPOINT": 237500,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://e2helo.breezy.hr/p/0cff1327471f-director-of-manufacturing",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_CONF": "HIGH",
+       "DEGREE_TEXT": "Bachelor’s degree.",
+       "DEGREE_REQ": "REQUIRED",
+       "DEGREE_EVIDENCE_URL": "https://e2helo.breezy.hr/p/0cff1327471f-director-of-manufacturing",
+       "DEGREE_ASOF": "2026-11-05",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 256250
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1626Z-R002",
+      "primaryId": "V2I-F3AFE2D1A5C0",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "DEGREE_TEXT": "Bachelor’s degree in engineering, engineering technology, or HS Diploma/GED and 5 years of technical / engineering experience in automotive manufacturing environment",
+       "DEGREE_REQ": "REQUIRED",
+       "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4482843130",
+       "DEGREE_ASOF": "2026-11-05",
+       "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+       "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+       "SALARY_BASE_LOW": 122000,
+       "SALARY_BASE_HIGH": 215000,
+       "SALARY_MIDPOINT": 168500,
+       "SALARY_BASIS": "FORGE-ESTIMATE",
+       "SALARY_CONF": "LOW",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_SOURCE": "comparables:V2I-2CFF67AD7244,V2I-4B5798D0D6C5,V2I-76BCCC01B8B1,V2I-793F8D6F6AC5,V2I-0E5A2785A450,V2I-263B6156C98B,V2I-335EDA0F98F6",
+       "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-2CFF67AD7244, V2I-4B5798D0D6C5, V2I-76BCCC01B8B1, V2I-793F8D6F6AC5, V2I-0E5A2785A450, V2I-263B6156C98B, V2I-335EDA0F98F6]; 7 employer-posted comparable(s), level 0 MFG same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS IN 113051 P25-P90 $99K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 191750
+      }
+     }
+    }
+   ],
+   "at": "2026-11-05T16:27:45.150Z",
    "status": "POSTING_OR_UNCONFIRMED"
   }
  },
@@ -25328,10 +25395,10 @@
   },
   "V2I-EE19A03E7C8A": {
    "fingerprint": "d42d42d41045135f5e9047df38fdab32bba0700e15d37271146f74f4b00c402f",
-   "lastAttemptAt": "2026-11-05T08:15:24.857Z",
-   "retryAt": "2026-11-05T16:15:24.857Z",
+   "lastAttemptAt": "2026-11-05T16:27:37.063Z",
+   "retryAt": "2026-11-06T08:27:37.063Z",
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "failures": 3,
+   "failures": 4,
    "attempts": [
     {
      "url": "https://jobs.infineon.com/careers/job/563808972294505?utm_source=indeed&domain=infineon.com",
@@ -25354,10 +25421,10 @@
   },
   "V2I-EC8FC51511D9": {
    "fingerprint": "c7e5ca6bb0be53feef88209841c9889541c9a3be66880ad1c8003d0ed9a019a1",
-   "lastAttemptAt": "2026-11-05T08:15:26.907Z",
-   "retryAt": "2026-11-05T16:15:26.907Z",
+   "lastAttemptAt": "2026-11-05T16:27:39.634Z",
+   "retryAt": "2026-11-06T08:27:39.634Z",
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "failures": 3,
+   "failures": 4,
    "attempts": [
     {
      "url": "https://grnh.se/36g7by2y3us",
@@ -26111,10 +26178,10 @@
   },
   "V2I-0B4B8812A2C5": {
    "fingerprint": "4b192610347e19d1922b549a97ce5938e4665ecd03c32e34e4ccafc0d64437e4",
-   "lastAttemptAt": "2026-11-05T15:20:04.385Z",
-   "retryAt": "2026-11-05T16:20:04.385Z",
+   "lastAttemptAt": "2026-11-05T16:27:41.336Z",
+   "retryAt": "2026-11-05T17:27:41.336Z",
    "status": "EVIDENCE_FOUND",
-   "failures": 4,
+   "failures": 5,
    "attempts": []
   },
   "V2I-AD4987B97E43": {
@@ -26369,6 +26436,27 @@
    "fingerprint": "61ccb732e66bbe4679f39c73f6ce323314fb54599fdbed7153709a0df20c2f0b",
    "lastAttemptAt": "2026-11-05T15:55:49.725Z",
    "retryAt": "2026-11-05T16:55:49.725Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-4A52694BE303": {
+   "fingerprint": "ba9329e55fd42848f8c0881ed8987fb43a4dd6c9e792f299c94a67746b6909e3",
+   "lastAttemptAt": "2026-11-05T16:26:56.775Z",
+   "retryAt": "2026-11-05T17:26:56.775Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": [
+    {
+     "url": "https://e2helo.breezy.hr/p/0cff1327471f-director-of-manufacturing",
+     "status": "FULL_POSTING_READ"
+    }
+   ]
+  },
+  "V2I-F3AFE2D1A5C0": {
+   "fingerprint": "4ccb5169f78df911072d49516adeb6b1ad848bad48a44b34801ca468c5832542",
+   "lastAttemptAt": "2026-11-05T16:27:20.673Z",
+   "retryAt": "2026-11-05T17:27:20.673Z",
    "status": "EVIDENCE_FOUND",
    "failures": 1,
    "attempts": []
@@ -30260,6 +30348,23 @@
     "high": 160000,
     "mid": 152500,
     "scorePoint": 156250
+   }
+  },
+  "V2I-4A52694BE303": {
+   "identity": "[\"Endovascular Engineering\",\"Director of Manufacturing\",\"Menlo Park, California, United States\"]",
+   "at": "2026-11-05T16:26:56.774Z",
+   "url": "https://e2helo.breezy.hr/p/0cff1327471f-director-of-manufacturing",
+   "fullPosting": true,
+   "degree": {
+    "text": "Bachelor’s degree.",
+    "req": "REQUIRED"
+   },
+   "basis": "EMPLOYER_POSTED",
+   "pay": {
+    "low": 200000,
+    "high": 275000,
+    "mid": 237500,
+    "scorePoint": 256250
    }
   }
  },
