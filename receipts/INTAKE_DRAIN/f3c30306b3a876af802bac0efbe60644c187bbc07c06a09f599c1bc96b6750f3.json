@@ -1,0 +1,106 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483558700",
+  "sourceVersion": "c83ef0b3bbe7fda486194826cd679f30f9f6de1e0ad9225bf76d110d44c458f3",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224804059Z-LIVE-ca6bad",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:48:04.059Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh independent canonical receipt index confirms original batch COMPLETE, while saved original candidate outcome remains WRITE_FAILED: IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED. Exact candidate-ID row observations do not establish source/requisition/site identity or turn the failed candidate into a completed write. Preserve original request and decisions.",
+  "nextAction": "Existing authenticated coordinator may now read original request_result under the independently COMPLETE gate and reconcile exact original payload/response plus employer requisition/site against current master/archive; never replay original request.",
+  "retryCondition": "Original candidate-level request_result and original source-to-employer/site binding establish an unambiguous canonical disposition.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4483558700",
+      "result": "Saved evidenceStatus=HELD_WRITER_REVIEW; status=HELD; proof=receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_VERIFIED.json. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_CHECKPOINT.json",
+      "sha256": "d6ec6c84fae528a99f67b8b924f1f8243f0e5c4d1a9884c8c97db139e1a19971",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"payloadSha256\":\"81951dd26ac142781ce1343f23e76ff5612e53d8396823c8729cbd810c9fc039\"}"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_ACCEPTANCE.json",
+      "sha256": "e6e2aa49750a49bf03e8713d172795ca8cd19a8243aad06717b89d3047f51868",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"writeId\":\"W-20261102002103358-18e29a\",\"responseSha256\":\"e36b0cb6d457619103c292b9ea0c9fba0c451ebd6d5f1b8814be610ffdf86083\"}"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_VERIFIED.json",
+      "sha256": "50595c70e7ab7c5d36cba4c4226f3d01e45f670105504c70a5b415c7596bdc91",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"writeId\":\"W-20261102002103358-18e29a\",\"independentCompleteObservedAt\":\"2026-11-02T00:22:48.617Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4483558700",
+      "result": "Original saved source identity, original candidate disposition and fence inspected; {\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2I-25CC56B6E2F0\"],\"reason\":\"IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED\"}"
+    },
+    {
+      "source": ".github/workflows/source-intake-reconcile-probe.yml; tools/source-intake/reconcile-probe.js",
+      "result": "Registered path requires fence-bound FORGE-AUTO run ID; this legacy fence binds FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003 instead. No fabricated AUTO binding or dispatch. Current environment exposes no configured Writer credential; no live authenticated exact-row evidence available here."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Independently authenticated read via GitHub; exact original request FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003 state COMPLETE. Compacted index retains write ID and snapshot hash but no candidate row detail.",
+      "blobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e",
+      "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+      "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+      "requestState": "COMPLETE",
+      "writeId": "W-20261102002103358-18e29a"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw Drive read, 12781664 bytes, modified 2026-11-05T22:45:11.860Z; exact candidate-ID rows compared after independent receipt read. Missing live rows are not absence from archive.",
+      "fileSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-25CC56B6E2F0",
+          "found": true,
+          "matches": 1,
+          "bucket": "DECLINED_BY_TIM",
+          "rowSha256": "07add9b38f0307331439882f37da515fe6094b625fb5e110e3ab2b8225e09e6e",
+          "titleMatch": true,
+          "sourceUrlMatch": false,
+          "location": "Greenville-Spartanburg-Anderson, SC area"
+        }
+      ]
+    }
+  ],
+  "savedEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2I-25CC56B6E2F0"
+    ],
+    "reason": "IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0,
+  "supersedesReview": "receipts/INTAKE_DRAIN/0a9c8872554710f3f966999c99fd481407d2ba7efd3e6cc47f13d5ec402d09bf.json",
+  "liveReceiptEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+    "state": "COMPLETE",
+    "writeId": "W-20261102002103358-18e29a",
+    "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+    "indexBlobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e"
+  },
+  "canonicalRowEvidence": {
+    "masterSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+    "masterModifiedAt": "2026-11-05T22:45:11.860Z",
+    "rows": [
+      {
+        "primaryId": "V2I-25CC56B6E2F0",
+        "found": true,
+        "matches": 1,
+        "bucket": "DECLINED_BY_TIM",
+        "rowSha256": "07add9b38f0307331439882f37da515fe6094b625fb5e110e3ab2b8225e09e6e",
+        "titleMatch": true,
+        "sourceUrlMatch": false,
+        "location": "Greenville-Spartanburg-Anderson, SC area"
+      }
+    ]
+  }
+}

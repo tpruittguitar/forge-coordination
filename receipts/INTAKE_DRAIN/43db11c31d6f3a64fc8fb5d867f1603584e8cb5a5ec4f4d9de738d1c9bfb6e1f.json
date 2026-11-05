@@ -1,0 +1,106 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4465919643",
+  "sourceVersion": "60e09d9d66473992d5397050b9ef8af198267a27e4dbacce83b7b855b2db0ad0",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224744762Z-LIVE-788dfc",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:47:44.762Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh independent canonical receipt index confirms original batch COMPLETE, while saved original candidate outcome remains WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Exact candidate-ID row observations do not establish source/requisition/site identity or turn the failed candidate into a completed write. Preserve original request and decisions.",
+  "nextAction": "Existing authenticated coordinator may now read original request_result under the independently COMPLETE gate and reconcile exact original payload/response plus employer requisition/site against current master/archive; never replay original request.",
+  "retryCondition": "Original candidate-level request_result and original source-to-employer/site binding establish an unambiguous canonical disposition.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4465919643",
+      "result": "Saved evidenceStatus=HELD_WRITER_REVIEW; status=HELD; proof=receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_CHECKPOINT.json",
+      "sha256": "4c903bfd7ace8db031d1d6afb622f933915cd9b74ea3e68326dad318afea9de2",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"payloadSha256\":\"ae962ccff3141b6110cc625b7085163e40ed406a3ec823135a0efd80c6790a21\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_ACCEPTANCE.json",
+      "sha256": "ee456d983c0fcf8f5c0f12eaed176f467f89bc707d87c0ff25bf7b4ecfe1839b",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"writeId\":\"W-20261101210436699-169590\",\"responseSha256\":\"ad2b49d8f738ae7a06fc6257059ed41ca0fa51ba88839cdd83688ec0f4bdfc5f\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json",
+      "sha256": "c8e185d1b4d7df6d594bedd8a97fff935d87022652b05bafd6aa128b6ec9971a",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"writeId\":\"W-20261101210436699-169590\",\"independentCompleteObservedAt\":\"2026-11-01T21:06:09.430Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4465919643",
+      "result": "Original saved source identity, original candidate disposition and fence inspected; {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2I-559FEEAE5BE1\"],\"reason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\"}"
+    },
+    {
+      "source": ".github/workflows/source-intake-reconcile-probe.yml; tools/source-intake/reconcile-probe.js",
+      "result": "Registered path requires fence-bound FORGE-AUTO run ID; this legacy fence binds FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001 instead. No fabricated AUTO binding or dispatch. Current environment exposes no configured Writer credential; no live authenticated exact-row evidence available here."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Independently authenticated read via GitHub; exact original request FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001 state COMPLETE. Compacted index retains write ID and snapshot hash but no candidate row detail.",
+      "blobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e",
+      "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+      "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+      "requestState": "COMPLETE",
+      "writeId": "W-20261101210436699-169590"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw Drive read, 12781664 bytes, modified 2026-11-05T22:45:11.860Z; exact candidate-ID rows compared after independent receipt read. Missing live rows are not absence from archive.",
+      "fileSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-559FEEAE5BE1",
+          "found": true,
+          "matches": 1,
+          "bucket": "DECLINED_BY_TIM",
+          "rowSha256": "8684948c3a8e1806f2d6d9e65dabcfb7862d24e682a66adaeb3eab51c90d04ae",
+          "titleMatch": true,
+          "sourceUrlMatch": false,
+          "location": "Lucedale, MS, USA"
+        }
+      ]
+    }
+  ],
+  "savedEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2I-559FEEAE5BE1"
+    ],
+    "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0,
+  "supersedesReview": "receipts/INTAKE_DRAIN/c0c84789d3d49ec5d06ca109e0de4952b575d30d73df1875248d7d1477180ef1.json",
+  "liveReceiptEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "state": "COMPLETE",
+    "writeId": "W-20261101210436699-169590",
+    "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+    "indexBlobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e"
+  },
+  "canonicalRowEvidence": {
+    "masterSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+    "masterModifiedAt": "2026-11-05T22:45:11.860Z",
+    "rows": [
+      {
+        "primaryId": "V2I-559FEEAE5BE1",
+        "found": true,
+        "matches": 1,
+        "bucket": "DECLINED_BY_TIM",
+        "rowSha256": "8684948c3a8e1806f2d6d9e65dabcfb7862d24e682a66adaeb3eab51c90d04ae",
+        "titleMatch": true,
+        "sourceUrlMatch": false,
+        "location": "Lucedale, MS, USA"
+      }
+    ]
+  }
+}

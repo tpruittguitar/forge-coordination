@@ -1,0 +1,106 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480711061",
+  "sourceVersion": "b293a9919fa54f5846d2562ce26cc074f4df6cdcee27414fdaaf52dd6aa095c7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224728194Z-LIVE-015d91",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:47:28.194Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh independent canonical receipt index confirms original batch COMPLETE, while saved original candidate outcome remains WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Exact candidate-ID row observations do not establish source/requisition/site identity or turn the failed candidate into a completed write. Preserve original request and decisions.",
+  "nextAction": "Existing authenticated coordinator may now read original request_result under the independently COMPLETE gate and reconcile exact original payload/response plus employer requisition/site against current master/archive; never replay original request.",
+  "retryCondition": "Original candidate-level request_result and original source-to-employer/site binding establish an unambiguous canonical disposition.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4480711061",
+      "result": "Saved evidenceStatus=HELD_WRITER_REVIEW; status=HELD; proof=receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_CHECKPOINT.json",
+      "sha256": "9ef3aabf83b14c6270cdb9679ee392cb2d96eba718fd5ab031f947b4435e3fab",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002\",\"payloadSha256\":\"3710b7312d2036dcd8ab34ee5f29f623839eb609412dd7d4d315d13fc069a599\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_ACCEPTANCE.json",
+      "sha256": "8874458330976f0036bac2f8a7261ba2aa933ebbc0cb4f57924dde8aa6dd2449",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002\",\"writeId\":\"W-20261101210739345-133ced\",\"responseSha256\":\"78e1e7e51bddd19420853a9da828967537533ba7d71d54fdeb042730c62c6535\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+      "sha256": "2e633624b0e23664a4c801833b59bcfca5a8e69d6e6066aaf483d9290025f4c7",
+      "result": "{\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002\",\"writeId\":\"W-20261101210739345-133ced\",\"independentCompleteObservedAt\":\"2026-11-01T21:08:57.638Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4480711061",
+      "result": "Original saved source identity, original candidate disposition and fence inspected; {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2I-602E1129F89E\"],\"reason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\"}"
+    },
+    {
+      "source": ".github/workflows/source-intake-reconcile-probe.yml; tools/source-intake/reconcile-probe.js",
+      "result": "Registered path requires fence-bound FORGE-AUTO run ID; this legacy fence binds FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002 instead. No fabricated AUTO binding or dispatch. Current environment exposes no configured Writer credential; no live authenticated exact-row evidence available here."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Independently authenticated read via GitHub; exact original request FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002 state COMPLETE. Compacted index retains write ID and snapshot hash but no candidate row detail.",
+      "blobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e",
+      "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+      "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+      "requestState": "COMPLETE",
+      "writeId": "W-20261101210739345-133ced"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw Drive read, 12781664 bytes, modified 2026-11-05T22:45:11.860Z; exact candidate-ID rows compared after independent receipt read. Missing live rows are not absence from archive.",
+      "fileSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-602E1129F89E",
+          "found": true,
+          "matches": 1,
+          "bucket": "DECLINED_BY_TIM",
+          "rowSha256": "ad265cf960ad873d5655b568fdf2eb120b4152fbe914722a3a078db1c0f5a51e",
+          "titleMatch": true,
+          "sourceUrlMatch": false,
+          "location": "Greensboro, NC"
+        }
+      ]
+    }
+  ],
+  "savedEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2I-602E1129F89E"
+    ],
+    "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0,
+  "supersedesReview": "receipts/INTAKE_DRAIN/40ed67dd5bed13426665b9ec937b48418fc9e9a7dd651efa819eac2be5e67248.json",
+  "liveReceiptEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "state": "COMPLETE",
+    "writeId": "W-20261101210739345-133ced",
+    "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+    "indexBlobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e"
+  },
+  "canonicalRowEvidence": {
+    "masterSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+    "masterModifiedAt": "2026-11-05T22:45:11.860Z",
+    "rows": [
+      {
+        "primaryId": "V2I-602E1129F89E",
+        "found": true,
+        "matches": 1,
+        "bucket": "DECLINED_BY_TIM",
+        "rowSha256": "ad265cf960ad873d5655b568fdf2eb120b4152fbe914722a3a078db1c0f5a51e",
+        "titleMatch": true,
+        "sourceUrlMatch": false,
+        "location": "Greensboro, NC"
+      }
+    ]
+  }
+}
