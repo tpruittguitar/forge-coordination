@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:6cbfd48786426f5dacb34ebb",
+  "sourceVersion": "51156f2d785aaa92cf9c2b24174d464384ff8dda16c36c067b1816971deac489",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B4-6",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:30:44.989Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact saved Houston field. Targeted search returned Sterling Pharma Solutions aggregator summary and different Sterling Specialty Chemicals manufacturing role with polymers/surfactants/Saudi site. Similar Sterling labels are not proof of same employer; preserve company conflict instead of importing specialty-chemical scope into pharmaceutical identity.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Recovered exact saved Houston worksite."
+    },
+    {
+      "source": "https://jobs.weekday.works/sterling-pharma-solutions-sr.-director%2C-manufacturing",
+      "result": "Search summary labels Sterling Pharma Solutions but chemical scope also appears under Sterling Specialty Chemicals; no authoritative exact employer binding found. Blocked HiringCafe route not retried."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Houston, Texas, United States"
+  },
+  "sourceEvidence": {
+    "company": "Sterling Pharma Solutions",
+    "title": "Sr. Director, Manufacturing",
+    "location": "Houston, Texas, United States",
+    "url": "https://hiringcafe.com/job/sr-director-manufacturing-sterling-pharma-solutions-houston-texas-etdn4dyf6i0bqech",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact original employer posting resolves Sterling Pharma Solutions versus Sterling Specialty Chemicals identity and actual responsibilities."
+}
