@@ -1,0 +1,105 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483724499",
+  "sourceVersion": "985e8a42f4b10f8366877f013142d1e99d77e39bd4e0fe62b21e24262930861d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B2-5",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:49:45.521Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Captured Honeywell Clearwater FL is not bound to rejected canonical V2E-03C6DDFCA971 with NOT_STATED site and saved employer requisition121080. Need original Apply/employer requisition evidence; do not overwrite rejection or infer same posting. Original accepted batch is independently COMPLETE with matching writeId, but this exact entry explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION with no primary ID; batch completion is not candidate admission.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code matched company/title and inspected exact saved original posting/requisition/site; candidates and row hashes recorded."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0045.json",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@0d0192aa",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@643cbb34",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json and independent receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Bound exact checkpoint key/index to original candidate failure and current independent COMPLETE/writeId; no replay."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2E-03C6DDFCA971",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Honeywell Aerospace",
+    "title": "Director Operational Excellence Site Leader",
+    "location": "Clearwater, FL, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483724499/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:47:20.544Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2E-03C6DDFCA971",
+        "company": "Honeywell Aerospace",
+        "title": "Director Operational Excellence Site Leader",
+        "location": "NOT_STATED",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "reqId": "121080",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "d89276fdb04258b1c645f5711f7cc7d55d8887821580596c6a02f79e296fec33"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "checkpoint": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261101211126834-c5b206",
+    "candidateIndex": 183,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "5b7a39a5f6969121a3cd6fb0d9b29553f1165d5018eabd3713c40b8b1e29742f",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T21:12:02.615Z",
+    "candidateInsertVerified": false
+  }
+}

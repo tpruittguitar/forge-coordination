@@ -1,0 +1,116 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4462070912",
+  "sourceVersion": "d9b3e83feb3788c90ad1fe685b0a9d4921959cce8b6e70ed7a1e4c638c394671",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B2-7",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:49:48.822Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh archive uniquely labels exact captured LI4462070912 on SkyWater Director of Quality, Sioux Falls SD (per inventory), V2F-2B053D4B4A69 CLOSED_DEAD. This proves existing canonical identity and preserves closed status. Original candidate WRITE_FAILED is not an insertion. Original accepted batch is independently COMPLETE with matching writeId, but this exact entry explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION with no primary ID; batch completion is not candidate admission.",
+  "conclusion": "VERIFIED_EXISTING_EXACT_ORIGINAL_LISTING_IN_ARCHIVE",
+  "nextAction": "Existing coordinator may account this captured identity as the verified existing closed canonical role; preserve original request and closed status.",
+  "retryCondition": "Existing source coordinator consumes exact canonical-presence proof into upstream accounting; no new intake.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code matched company/title and inspected exact saved original posting/requisition/site; candidates and row hashes recorded."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0011.json",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@643cbb34",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@643cbb34",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_ACCEPTANCE.json and independent receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Bound exact checkpoint key/index to original candidate failure and current independent COMPLETE/writeId; no replay."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2F-2B053D4B4A69",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "SkyWater Search Partners",
+    "title": "Director of Quality",
+    "location": "Sioux Falls, SD, USA",
+    "url": "https://www.linkedin.com/jobs/view/4462070912/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:47:20.544Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2F-2B053D4B4A69",
+    "company": "SkyWater Search Partners",
+    "title": "Director of Quality",
+    "location": "Sioux Falls, SD (per inventory)",
+    "bucket": "CLOSED_DEAD",
+    "disposition": "CLOSED_DEAD/CLOSED_DEAD",
+    "reqId": "LI-4462070912 (removed)",
+    "store": "ARCHIVE",
+    "exactPostingMatch": false,
+    "labelledReqMatch": false,
+    "canonicalPostingKeys": [],
+    "locationMatch": true,
+    "rowSha256": "d716a0552b4b7e4f107116857307ed0aaebe3796b957c211ed5d55ac294c6df1",
+    "exactOriginalListingInReqId": true,
+    "existingIdentityOnly": true
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002",
+    "checkpoint": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261102001857269-18cfd8",
+    "candidateIndex": 67,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "fb8c1ab1f44f46668366456f7cf1990bbb7924acd044da9f78f493a4c20cdadb",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-02T00:19:16.861Z",
+    "candidateInsertVerified": false
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}

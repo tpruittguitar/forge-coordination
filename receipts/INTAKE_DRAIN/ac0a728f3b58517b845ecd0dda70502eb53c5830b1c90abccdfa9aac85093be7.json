@@ -1,0 +1,101 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480623295",
+  "sourceVersion": "11b2bff981a5059fdc47d988e4e472444a4f614a0c5f9e9c2120908c2a367fd6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B2-9",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:49:52.284Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact historical original Air Vent Dallas TX differs from canonical Cincinnati OH. Preserve this listing4480623295 separately from captured4480614730 until observed employer posting evidence establishes any alias; same employer/title/site does not establish that mapping. Original accepted batch is independently COMPLETE with matching writeId, but this exact entry explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION with no primary ID; batch completion is not candidate admission.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code matched company/title and inspected exact saved original posting/requisition/site; candidates and row hashes recorded."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0084.json",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@643cbb34",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json and independent receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Bound exact checkpoint key/index to original candidate failure and current independent COMPLETE/writeId; no replay."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-E75E8FE1D2F9",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Air Vent",
+    "title": "Plant Manager",
+    "location": "Dallas, TX, USA",
+    "url": "https://www.linkedin.com/jobs/view/4480623295/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:47:20.544Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-E75E8FE1D2F9",
+        "company": "Air Vent Inc",
+        "title": "Plant Manager",
+        "location": "Cincinnati, OH",
+        "bucket": "MANUAL_RESEARCH",
+        "disposition": "RESOLVED/NEEDS_RESOLUTION",
+        "reqId": "UNKNOWN",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "84d078498e98941b4fd7f11ebe2abba3e9db46d9825b2557c971fb4704281aa6"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "checkpoint": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261101221828306-5713a3",
+    "candidateIndex": 92,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "64984384a6fc0dbd40971195bdc73f2e03ef3b9ec60590aece6794d2fa3ac717",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T22:18:51.497Z",
+    "candidateInsertVerified": false
+  }
+}

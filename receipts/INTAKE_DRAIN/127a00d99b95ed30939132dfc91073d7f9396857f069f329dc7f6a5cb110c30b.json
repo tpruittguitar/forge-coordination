@@ -1,0 +1,105 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482763776",
+  "sourceVersion": "9b9acd88fc096b6c0ed7de72bb180de4eb542b5cd208024379b11708394d79a9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B2-1",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:49:37.907Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact historical original St Louis MO differs from canonical Vertiv Westerville OH. Corporate/operations-planning same-title collision cannot be resolved by treating different cities/states as aliases. Original accepted batch is independently COMPLETE with matching writeId, but this exact entry explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION with no primary ID; batch completion is not candidate admission.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code matched company/title and inspected exact saved original posting/requisition/site; candidates and row hashes recorded."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0084.json",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@0d0192aa",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@643cbb34",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json and independent receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Bound exact checkpoint key/index to original candidate failure and current independent COMPLETE/writeId; no replay."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-2F0BC30F539C",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Vertiv",
+    "title": "Senior Manager - Manufacturing Operations Planning Hyperscale",
+    "location": "St Louis, MO, USA",
+    "url": "https://www.linkedin.com/jobs/view/4482763776/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:47:20.544Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-2F0BC30F539C",
+        "company": "Vertiv",
+        "title": "Senior Manager - Manufacturing Operations Planning Hyperscale",
+        "location": "Westerville, OH, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "325e5548da7adcb660a25da6fbe18eff1f0a48036099237b830cb8be50ed084c"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "checkpoint": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261101221828306-5713a3",
+    "candidateIndex": 85,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "345fc5ce93dd48ec8b5bd8e8ded93b1e0ef27220a53be898250f2a7d656cf619",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T22:18:51.497Z",
+    "candidateInsertVerified": false
+  }
+}

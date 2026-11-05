@@ -1,0 +1,97 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483246659",
+  "sourceVersion": "f661fc004f3fa3572154488b1152b0cd70963fbd043f11f9c12edd4c55f78f26",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B2-3",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:49:41.751Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact historical original Spokane WA differs from canonical McKinstry Austin TX, whose original board listing is LI4452897668. Different known sites require original facility/requisition evidence, not a forced company/title match. Original accepted batch is independently COMPLETE with matching writeId, but this exact entry explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION with no primary ID; batch completion is not candidate admission.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code matched company/title and inspected exact saved original posting/requisition/site; candidates and row hashes recorded."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0080.json",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "state/source-trial-report.json@0d0192aa",
+      "result": "Reused exact saved original identity fields; historical helper recommendations/filters are not an admission verdict."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json and independent receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Bound exact checkpoint key/index to original candidate failure and current independent COMPLETE/writeId; no replay."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-EADD3BFBC51A",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "McKinstry",
+    "title": "Senior Manager, Manufacturing Operations",
+    "location": "Spokane, WA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483246659/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:47:20.544Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-EADD3BFBC51A",
+        "company": "McKinstry",
+        "title": "Senior Manager, Manufacturing Operations",
+        "location": "Austin, TX",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "LI-4452897668",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "d0bc33e717e89fdc51acd8f8118e484233c5cda546f454918632318556f5382c"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "checkpoint": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261101221828306-5713a3",
+    "candidateIndex": 99,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "b51831bbe2c3878d7e9fd06316f9c6d12f733ae3b15b2821de21f64a4e622249",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T22:18:51.497Z",
+    "candidateInsertVerified": false
+  }
+}
