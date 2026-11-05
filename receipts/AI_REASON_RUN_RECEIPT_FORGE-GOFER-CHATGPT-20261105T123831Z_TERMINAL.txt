@@ -1,0 +1,86 @@
+{
+  "runId": "FORGE-GOFER-CHATGPT-20261105T123831Z",
+  "taskKey": "FORGE_APPLICATION_WRITER_GOFER",
+  "provider": "ChatGPT",
+  "instructionSha": "f2ca1978066085d2c6e3b46bd02dc112ebbb15ca",
+  "release": "dddd2f8afdd31a7ccfdd",
+  "packetBlob": "24a9e556cdb3ce7e5b9f947d8bfdecc5de62570b",
+  "at": "2026-11-05T12:39:27.000Z",
+  "results": [
+    {
+      "requestId": "FORGE-SOURCE-772D2A3A38FAAD37B4E2BC73",
+      "sourceFile": "receipts/auto-intake/FORGE-AUTO-20261105T113317Z.json",
+      "originalError": "Lock timeout: another process was holding the lock for too long.",
+      "receipt": null,
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    },
+    {
+      "requestId": "FORGE-SOURCE-B3310F6FBB45A824B37B00CA",
+      "sourceFile": "receipts/auto-intake/FORGE-AUTO-20261105T113317Z.json",
+      "originalError": "Lock timeout: another process was holding the lock for too long.",
+      "receipt": null,
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    },
+    {
+      "requestId": "FORGE-SOURCE-DEC1EE5FCA2C11DCF063219B",
+      "sourceFile": "receipts/auto-intake/FORGE-AUTO-20261105T121101Z.json",
+      "originalError": "Lock timeout: another process was holding the lock for too long.",
+      "receipt": null,
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    },
+    {
+      "requestId": "FORGE-SOURCE-63ED92FF617F52211DF8BAAE",
+      "sourceFile": "receipts/auto-intake/FORGE-AUTO-20261105T121101Z.json",
+      "originalError": null,
+      "receipt": {
+        "s": "COMPLETE",
+        "at": "2026-11-05T12:15:03.215Z",
+        "w": "W-20261105121353395-93cbea",
+        "items": [
+          {
+            "pid": "V2I-5DD254613E0C",
+            "op": "INSERT",
+            "b": "",
+            "a": "1232b6cf76fde6:1409"
+          }
+        ],
+        "snapshotHash": "560da83470f5b:12579691"
+      },
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    },
+    {
+      "requestId": "FORGE-SOURCE-5E7CD26738F8FEAA4142645D",
+      "sourceFile": "receipts/auto-intake/FORGE-AUTO-20261105T121101Z.json",
+      "originalError": "Lock timeout: another process was holding the lock for too long.",
+      "receipt": null,
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    },
+    {
+      "requestId": "FORGE-CODE-CHATGPT-20261105T123023543Z-B001",
+      "sourceFile": "state/RELEVANCE_INTAKE_PLAN.json",
+      "originalError": null,
+      "receipt": {
+        "s": "COMPLETE",
+        "at": "2026-11-05T12:38:22.416Z",
+        "w": "W-20261105123752882-8e0540",
+        "items": [
+          {
+            "pid": "V2I-EEAD235771C8",
+            "op": "INSERT",
+            "b": "",
+            "a": "153f416d3713db:1416"
+          }
+        ],
+        "snapshotHash": "c46254e111de3:12594063"
+      },
+      "indexSha": "c527b51ef41dbb30beed99bf46588faf0869aa57"
+    }
+  ],
+  "groupedFailure": "Four original submissions returned the same Writer lock-timeout error and have no current receipt entry. Two other requests independently COMPLETE; row verification remains coordinator-owned.",
+  "submitted": 0,
+  "verified": 0,
+  "resolved": 0,
+  "noReplay": true,
+  "owner": "FORGE_APPLICATION_WRITER_GOFER",
+  "next": "Investigate shared Writer contention from original service evidence; retain every unknown request. No replay, canonical bypass or code change authorized by scheduled run."
+}
