@@ -15,7 +15,7 @@ function eligible({prior,attemptedAt,now,receipt,rows,record}){
  if(rows.some(r=>norm(r.COMPANY)===norm(record.COMPANY)&&norm(r.TITLE)===norm(record.TITLE)))return 'AMBIGUOUS_JOB_IDENTITY';
  return 'RETRY_ABSENT_JOB';
 }
-function resolved(s){const r=s.unknownRecovery;return r?.schema==='forge.unknown-recovery.v1'&&r.requestId===s.quarantine?.requestId&&((r.status==='VERIFIED'&&r.receiptState==='COMPLETE')||(r.status==='EXISTING_SATISFIED'&&r.receiptState==='NOT_REQUIRED_NO_WRITE'))&&r.exactRowVerified===true&&/^V2[A-Z]-/.test(r.primaryId||'')&&/^receipts\/auto-intake\/recovery\//.test(r.proof||'');}
+function resolved(s){if(s.quarantine?.additionalUnknowns?.length)return false;const r=s.unknownRecovery;return r?.schema==='forge.unknown-recovery.v1'&&r.requestId===s.quarantine?.requestId&&((r.status==='VERIFIED'&&r.receiptState==='COMPLETE')||(r.status==='EXISTING_SATISFIED'&&r.receiptState==='NOT_REQUIRED_NO_WRITE'))&&r.exactRowVerified===true&&/^V2[A-Z]-/.test(r.primaryId||'')&&/^receipts\/auto-intake\/recovery\//.test(r.proof||'');}
 function save(file,data){const tmp=file+'.tmp',fd=fs.openSync(tmp,'w');try{fs.writeFileSync(fd,JSON.stringify(data,null,1));fs.fsyncSync(fd);}finally{fs.closeSync(fd);}fs.renameSync(tmp,file);}
 async function recover(file,{key=process.env.FORGE_WRITER_KEY,transport=fetch,root=process.cwd()}={}){
  const full=path.resolve(root,file),s=JSON.parse(fs.readFileSync(full)),q=s.quarantine;if(!q||resolved(s))return {status:'NOT_NEEDED'};
@@ -56,8 +56,9 @@ async function recover(file,{key=process.env.FORGE_WRITER_KEY,transport=fetch,ro
 function contain(file,{root=process.cwd()}={}){
  const full=path.resolve(root,file),s=JSON.parse(fs.readFileSync(full));if(s.quarantine||s.reconciliation||s.noCandidates)return false;
  if(s.continuation)return false;
- const rid=require('./auto-latch').stoppedAt(s),prior=s.results?.[rid];if(!prior||prior.WRITE_ACCEPTED||prior.writeId||!(prior.ok===false||prior.status==='POST_IN_FLIGHT_UNKNOWN'||/timeout|aborted/i.test(prior.error||'')))return false;
+ const uncertain=s.requestIds.filter(id=>{const r=s.results?.[id];return r&&!r.WRITE_ACCEPTED&&!r.writeId&&(r.ok===false||r.status==='POST_IN_FLIGHT_UNKNOWN'||/timeout|aborted/i.test(r.error||''));});
+ const rid=uncertain[0]||require('./auto-latch').stoppedAt(s),prior=s.results?.[rid];if(!prior||prior.WRITE_ACCEPTED||prior.writeId||!(prior.ok===false||prior.status==='POST_IN_FLIGHT_UNKNOWN'||/timeout|aborted/i.test(prior.error||'')))return false;
  const candidates=JSON.parse(fs.readFileSync(full.replace(/\.json$/,'.candidates.json')));if(digest(candidates)!==s.candidatesHash)throw Error('Original candidate binding changed');const candidate=candidates.find(c=>E.requestId(c.record)===rid);if(!candidate)return false;
- s.quarantine={schema:'forge.intake-quarantine.v1',status:'UNKNOWN_NO_REPLAY',authorizedBy:'Tim',at:new Date().toISOString(),record:candidate.record,requestId:rid,candidatesHash:s.candidatesHash,proofs:[file],carryForwardRequestIds:s.requestIds.filter(id=>!Object.hasOwn(s.results||{},id)),policy:'ABSENT_JOB_AFTER_TRANSPORT_TIMEOUT_V1'};save(full,s);return true;
+ s.quarantine={schema:'forge.intake-quarantine.v1',status:'UNKNOWN_NO_REPLAY',authorizedBy:'Tim',at:new Date().toISOString(),record:candidate.record,requestId:rid,candidatesHash:s.candidatesHash,proofs:[file],carryForwardRequestIds:s.requestIds.filter(id=>!Object.hasOwn(s.results||{},id)),policy:'ABSENT_JOB_AFTER_TRANSPORT_TIMEOUT_V1',additionalUnknowns:uncertain.slice(1).map(id=>({requestId:id,record:candidates.find(c=>E.requestId(c.record)===id)?.record}))};save(full,s);return true;
 }
 module.exports={eligible,resolved,recover,contain};

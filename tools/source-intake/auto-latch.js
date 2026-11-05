@@ -68,7 +68,13 @@ function latch(prior){
    continue;
   }
   const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state)||isolatedUnknown(p.state);
-  if(iso){quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});continue}
+  if(iso){
+   const extra=p.state.quarantine?.additionalUnknowns||[];
+   if(!Array.isArray(extra)||new Set(extra.map(x=>x.requestId)).size!==extra.length||extra.some(x=>!x.record||requestId(x.record)!==x.requestId||x.requestId===iso.requestId||!p.state.requestIds.includes(x.requestId)||!p.state.results?.[x.requestId]||p.state.results[x.requestId].WRITE_ACCEPTED||p.state.results[x.requestId].writeId)){blocking.push({file:p.file,message:'Invalid additional request fences'});continue;}
+   quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});
+   for(const x of extra)quarantined.push({file:p.file,run:p.state.sourceRunId||'',...x,identityKey:identityKey(x.record),reason:'UNKNOWN_NO_REPLAY; additional original contention'});
+   continue;
+  }
   blocking.push({file:p.file,run:p.state.sourceRunId||'',haltAt:halt?.at||null,message:halt?.message||'run stopped without a recorded halt',requestId:stoppedAt(p.state)});
  }
  return {blocking,quarantined};
