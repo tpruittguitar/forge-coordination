@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4435127762",
+  "sourceVersion": "7ad7bcb99920fa9d04b47a9c70f825eeea4deb5cda7921deeba443a9d29262b0",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B1-06",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:27:13.494Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved historical report recovers location and marks the exact source EXISTING. Preserve that identity for fresh canonical reconciliation rather than preparing a new intake without checking the existing row.",
+  "nextAction": "Fresh exact canonical master/archive reconciliation of historical existing/protected source; preserve decisions and original Writer requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: South Hill, VA, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4435127762",
+      "result": "Historical EXISTING hint; no fresh canonical verification available in evidence-only review"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "ALKEGEN",
+    "title": "Plant Manager",
+    "location": "South Hill, VA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4435127762/",
+    "quote": "Saved source identity: ALKEGEN | Plant Manager | South Hill, VA, USA",
+    "observedAt": "2026-11-05T06:27:13.494Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "South Hill, VA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "unresolvedFacts": [
+    "Fresh master/archive exact-row proof is required; historical EXISTING alone is not current canonical verification."
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}

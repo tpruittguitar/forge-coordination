@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4275790798",
+  "sourceVersion": "bca1dbb2342c55d0f16f8d52ffdc15a6629b289b61ec98aa51cf4350158ccf3e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B1-03",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:27:04.864Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved historical report recovers the location, while the upstream evidence marks this exact source EXISTING_PROTECTED. Preserve decisions and reconcile the exact canonical identity before any intake.",
+  "nextAction": "Fresh exact canonical master/archive reconciliation of historical existing/protected source; preserve decisions and original Writer requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Costa Mesa, CA, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4275790798",
+      "result": "Historical EXISTING_PROTECTED hint; no fresh canonical verification available in evidence-only review"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Director, Manufacturing Engineering",
+    "location": "Costa Mesa, CA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4275790798/",
+    "quote": "Saved source identity: Anduril Industries | Director, Manufacturing Engineering | Costa Mesa, CA, USA",
+    "observedAt": "2026-11-05T06:27:04.864Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Costa Mesa, CA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "unresolvedFacts": [
+    "Fresh exact master/archive proof is required; no protected role was researched."
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}

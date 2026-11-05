@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4445209035",
+  "sourceVersion": "f863254cb7e70a218c04049d386bdd4d078feac5408fc81e7923cbbb0c8b55c7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B1-09",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:27:22.162Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact historical discovery record recovers the missing location. The exact public posting fetch timed out, so current responsibilities and active source status remain unresolved.",
+  "nextAction": "Retain recovered location; retry exact source when source content or timeout condition changes",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: La Mirada, CA, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4445209035/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no current full posting content"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "RealREPP",
+    "title": "Director of Fabrication",
+    "location": "La Mirada, CA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4445209035/",
+    "quote": "Saved source identity: RealREPP | Director of Fabrication | La Mirada, CA, USA",
+    "observedAt": "2026-11-05T06:27:22.162Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "La Mirada, CA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "unresolvedFacts": [
+    "No verified full posting content; no end-client or replacement posting is inferred."
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_SOURCE_CONTENT_AVAILABLE_OR_TIMEOUT_CONDITION_CHANGED"
+}

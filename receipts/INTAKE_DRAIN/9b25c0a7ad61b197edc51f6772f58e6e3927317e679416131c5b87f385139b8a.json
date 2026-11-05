@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4435309646",
+  "sourceVersion": "2e25f0f6a8b006716752b5a6d4e439205e7327cf1bcf0eb170f8ab7d61b476fe",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B1-07",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:27:16.396Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved historical report recovers location and marks the exact source EXISTING. Preserve that identity for fresh canonical reconciliation rather than preparing a new intake without checking the existing row.",
+  "nextAction": "Fresh exact canonical master/archive reconciliation of historical existing/protected source; preserve decisions and original Writer requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Tullahoma, TN, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4435309646",
+      "result": "Historical EXISTING hint; no fresh canonical verification available in evidence-only review"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Cubic Corporation",
+    "title": "Director, Manufacturing Engineering",
+    "location": "Tullahoma, TN, USA",
+    "url": "https://www.linkedin.com/jobs/view/4435309646/",
+    "quote": "Saved source identity: Cubic Corporation | Director, Manufacturing Engineering | Tullahoma, TN, USA",
+    "observedAt": "2026-11-05T06:27:16.396Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Tullahoma, TN, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "unresolvedFacts": [
+    "Fresh master/archive exact-row proof is required; historical EXISTING alone is not current canonical verification."
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}
