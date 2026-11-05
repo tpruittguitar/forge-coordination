@@ -15,7 +15,10 @@ async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThi
   ended=clock();
   if(ended<attemptStart||ended-attemptStart>30000)throw Error('BLOCKED: Writer '+action+' attempt timed out');
   if(resp.ok)break;
-  if(attempt===0&&resp.status>=500&&resp.status<=599)continue;
+  if(attempt===0&&(resp.status===404||resp.status>=500&&resp.status<=599)){
+   if(resp.status===404)await new Promise(resolve=>setTimeout(resolve,500));
+   continue;
+  }
   throw Error('BLOCKED: Writer HTTP '+resp.status);
  }
  let data;try{data=await resp.json()}catch{throw Error('BLOCKED: Writer JSON invalid')}
