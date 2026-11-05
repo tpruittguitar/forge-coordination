@@ -1,0 +1,11 @@
+'use strict';
+const fs=require('fs'),p=require('path'),crypto=require('crypto');
+const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
+function valid(root,state,id){try{const r=state.requestResolutions?.[id];if(!r||r.schema!=='forge.intake-request-resolution.v1'||r.candidatesHash!==state.candidatesHash||r.requestId!==id||!/^receipts\/auto-intake\/reconciliation\/[A-Za-z0-9_-]+-[a-f0-9]{64}\.json$/.test(r.proof))return false;const proof=JSON.parse(fs.readFileSync(p.join(root,r.proof)));if(hash(proof)!==r.proofSha256||proof.requestId!==id||proof.candidatesHash!==state.candidatesHash||proof.writerSubmissions!==0)return false;
+ if(proof.status==='CONFIRMED_NO_MASTER_WRITE'){
+  if(!/^receipts\/auto-intake\/reconciliation\/contracts\/[a-f0-9]{64}\.json$/.test(proof.contract||''))return false;
+  const c=JSON.parse(fs.readFileSync(p.join(root,proof.contract))),original=state.results?.[id];
+  return hash(c)===proof.contractSha256&&c.schema==='forge.audited-entry-lock-failure.v1'&&c.reviewedBy==='CHATGPT'&&c.source?.repository==='tpruittguitar/foreman-cockpit'&&/^[a-f0-9]{40}$/.test(c.source.commit||'')&&c.source.waitLockLine===1910&&c.preWritePrefix==='function applyIntakeToMaster_(req, internal) {\n  var lock = LockService.getScriptLock();\n  lock.waitLock(30000);\n  try {'&&c.cases?.some(x=>x.requestId===id&&x.responseSha256===hash(original))&&original?.ok===false&&!original.WRITE_ACCEPTED&&!original.writeId&&/^Exception: Lock timeout: another process was holding the lock for too long\. \| at applyIntakeToMaster_ \(Code:1910:8\)/.test(original.errorStack||'')&&proof.receipt?.state==='NO_ENTRY'&&/^[a-f0-9]{40}$/.test(proof.receipt.indexSha||'');
+ }
+ return hash(proof)===r.proofSha256&&proof.requestId===id&&proof.candidatesHash===state.candidatesHash&&proof.status==='VERIFIED_COMPLETE'&&proof.writerSubmissions===0&&proof.receipt?.state==='COMPLETE'&&/^[a-f0-9]{40}$/.test(proof.receipt.indexSha)&&proof.receipt.writeId&&proof.binding?.writeId===proof.receipt.writeId&&proof.binding.primaryId===proof.row?.primaryId&&proof.row.found===true&&proof.row.matches===1&&/^[a-f0-9]{64}$/.test(proof.row.sha256)&&proof.row.identity?.company===true&&proof.row.identity?.title===true&&(proof.row.identity.location===true||proof.row.identity.source===true);}catch{return false;}}
+module.exports={hash,valid};

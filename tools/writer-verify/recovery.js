@@ -11,10 +11,11 @@ const digest=x=>crypto.createHash('sha256').update(typeof x==='string'?x:canonic
 // Verbatim Writer cyrb53 row hash; also retain SHA-256 in the independent readback proof.
 function textHash(s){s=String(s);let h1=0xdeadbeef,h2=0x41c6ce57;for(let i=0;i<s.length;i++){const c=s.charCodeAt(i);h1=Math.imul(h1^c,2654435761);h2=Math.imul(h2^c,1597334677);}h1=Math.imul(h1^(h1>>>16),2246822507)^Math.imul(h2^(h2>>>13),3266489909);h2=Math.imul(h2^(h2>>>16),2246822507)^Math.imul(h1^(h1>>>13),3266489909);return (4294967296*(2097151&h2)+(h1>>>0)).toString(16)+':'+s.length;}
 function indexValid(j){return j&&j.version===1&&j.requests&&typeof j.requests==='object'&&!Array.isArray(j.requests)&&Array.isArray(j.pending);}
-async function loadIndex({transport=fetch,token=process.env.GITHUB_TOKEN}={}){
+async function loadIndex({transport=fetch,token=process.env.GITHUB_TOKEN,ref='main'}={}){
+ if(ref!=='main'&&!/^[a-f0-9]{40}$/.test(ref))throw Error('Invalid receipt index revision');
  const headers={Accept:'application/vnd.github+json','Cache-Control':'no-cache','User-Agent':'forge-receipt-recovery',...(token?{Authorization:'Bearer '+token}:{})};
  async function get(url){const r=await transport(url,{headers,signal:AbortSignal.timeout(30000)});if(!r.ok)throw Error('Receipt index source HTTP '+r.status);const t=await r.text();if(t.length>16*1024*1024)throw Error('Receipt index source too large');return JSON.parse(t);}
- const base='https://api.github.com/repos/tpruittguitar/forge-writer-state',meta=await get(base+'/contents/PIPELINE_RECEIPT_INDEX.json?ref=main');
+ const base='https://api.github.com/repos/tpruittguitar/forge-writer-state',meta=await get(base+'/contents/PIPELINE_RECEIPT_INDEX.json?ref='+ref);
  if(!/^[a-f0-9]{40}$/.test(meta.sha||''))throw Error('Receipt index revision missing');
  const blob=meta.content?meta:await get(base+'/git/blobs/'+meta.sha),raw=Buffer.from(blob.content||'','base64');
  if(raw.length>8*1024*1024||crypto.createHash('sha1').update(Buffer.from('blob '+raw.length+'\0')).update(raw).digest('hex')!==meta.sha)throw Error('Receipt index blob integrity failed');

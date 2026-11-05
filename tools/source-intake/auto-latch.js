@@ -28,7 +28,7 @@ function previous(root='.'){
  const dir=path.join(root,DIR);
  if(!fs.existsSync(dir))return [];
  return fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&!f.endsWith('.candidates.json')).sort()
-  .map(f=>({file:path.join(DIR,f).split(path.sep).join('/'),state:JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'))}));
+  .map(f=>{const state=JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'));return {file:path.join(DIR,f).split(path.sep).join('/'),state,resolvedRequestIds:Object.keys(state.requestResolutions||{}).filter(id=>require('./reconciliation-proof').valid(root,state,id))};});
 }
 // The single exact shape that may be isolated (unchanged from auto-run.js before 2026-10-26).
 function isolatedIdentityHold(state){
@@ -64,15 +64,15 @@ function latch(prior){
      p.state.outcomes.every(x=>p.state.requestIds.includes(x.requestId)&&['SKIPPED','NOOP_ACCOUNTED','RESUMED_ACCOUNTED','DEFERRED'].includes(x.status))&&
      p.state.outcomes.filter(x=>x.status==='DEFERRED').length===continuation.pending.length&&new Set(continuation.pending.map(x=>x.requestId)).size===continuation.pending.length&&
      continuation.pending.every(x=>requestId(x.record)===x.requestId&&Object.hasOwn(p.state.results||{},x.requestId)&&p.state.outcomes.some(o=>o.requestId===x.requestId&&o.status==='DEFERRED'))){
-   for(const item of continuation.pending)quarantined.push({file:p.file,run:p.state.sourceRunId||'',...item,identityKey:identityKey(item.record),reason:item.reason||'PENDING_GOFER_RECONCILIATION'});
+   for(const item of continuation.pending.filter(x=>!(p.resolvedRequestIds||[]).includes(x.requestId)))quarantined.push({file:p.file,run:p.state.sourceRunId||'',...item,identityKey:identityKey(item.record),reason:item.reason||'PENDING_GOFER_RECONCILIATION'});
    continue;
   }
   const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state)||isolatedUnknown(p.state);
   if(iso){
    const extra=p.state.quarantine?.additionalUnknowns||[];
    if(!Array.isArray(extra)||new Set(extra.map(x=>x.requestId)).size!==extra.length||extra.some(x=>!x.record||requestId(x.record)!==x.requestId||x.requestId===iso.requestId||!p.state.requestIds.includes(x.requestId)||!p.state.results?.[x.requestId]||p.state.results[x.requestId].WRITE_ACCEPTED||p.state.results[x.requestId].writeId)){blocking.push({file:p.file,message:'Invalid additional request fences'});continue;}
-   quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});
-   for(const x of extra)quarantined.push({file:p.file,run:p.state.sourceRunId||'',...x,identityKey:identityKey(x.record),reason:'UNKNOWN_NO_REPLAY; additional original contention'});
+   if(!(p.resolvedRequestIds||[]).includes(iso.requestId))quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});
+   for(const x of extra.filter(x=>!(p.resolvedRequestIds||[]).includes(x.requestId)))quarantined.push({file:p.file,run:p.state.sourceRunId||'',...x,identityKey:identityKey(x.record),reason:'UNKNOWN_NO_REPLAY; additional original contention'});
    continue;
   }
   blocking.push({file:p.file,run:p.state.sourceRunId||'',haltAt:halt?.at||null,message:halt?.message||'run stopped without a recorded halt',requestId:stoppedAt(p.state)});
