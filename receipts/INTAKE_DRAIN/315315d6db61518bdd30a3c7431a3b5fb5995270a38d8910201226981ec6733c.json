@@ -1,0 +1,85 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:d0a5216bb4548882a873b246",
+  "sourceVersion": "ad69b1a5d31d9448ebc76aa17274910a7db8de1c530b68eefacc23373521b28e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1427Z-SOURCE-B2-5",
+  "instructionCommit": "d7a66134e03e0dbf0b2b1a83538409d87325d2a4",
+  "observedAt": "2026-11-05T14:40:28.053Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact saved RosemontIllinois. Captured employer URL explicitly contains R26_04497,and existing active unique same-title V2I-C1BDE315EDD7 has canonical REQ_ID R26_04497;distinct declined V2I-10B8E942C30D has R26_02869. Existing employer-identity parser does not recognize underscore format and exact current page returned empty,so no invented visible requisition label or location alias. Strong saved request-ID correspondence is recorded for coordinator;original source alias not independently claimed complete.",
+  "nextAction": "AI/local coordinator recovers original R26_04497 source/label and accounts existing role without new insertion.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0116.json; state/board-discovery-report.json@b922aa31",
+      "result": "Reused exact saved worksite fields first; current full private resume/version and fresh complete canonical master/archive checked before outside lookup."
+    },
+    {
+      "source": "https://regalrexnord.wd1.myworkdayjobs.com/Careers/job/Rosemont-Illinois-United-States/Director--Continuous-Improvement_R26_04497",
+      "result": "Exact employer source empty;deterministic same-company/title canonical requisition comparison foundR26_04497 versus distinct declinedR26_02869;no source label fabricated."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Rosemont, Illinois, United States"
+  },
+  "sourceEvidence": {
+    "company": "Regal Rexnord",
+    "title": "Director, Continuous Improvement",
+    "location": "Rosemont, Illinois, United States",
+    "url": "https://regalrexnord.wd1.myworkdayjobs.com/Careers/job/Rosemont-Illinois-United-States/Director--Continuous-Improvement_R26_04497",
+    "references": [
+      "state/board-discovery-report.json@b922aa31"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact employer source visible requisition or original canonical source evidence confirms R26_04497 binding;preserve distinct declined R26_02869 and all original identities.",
+  "publicEvidence": {
+    "canonicalSnapshot": {
+      "masterSha256": "b38511dd46c1f8be59f62931a2e3ff0fe826e79a5e83a690bb6b307f256b9c75",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 4616,
+      "archiveRows": 785,
+      "masterEndMarker": true,
+      "archiveHeader": true,
+      "rowReadAt": "2026-11-05T14:34:58.457Z",
+      "masterModifiedAt": "2026-11-05T13:32:39.688Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z"
+    },
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-C1BDE315EDD7",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Remote",
+        "bucket": "DISCOVERY_LEAD",
+        "disposition": "INTAKE/IDENTITY_UNRESOLVED",
+        "reqId": "R26_04497",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "6e87ce3af6065f201ade924d5bbac1e9275e9abe8476442c6d05d137553d677a"
+      },
+      {
+        "primaryId": "V2I-10B8E942C30D",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Downers Grove, IL (remote from approved location)",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "R26_02869",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "651d962824314a62d2e0b3f1d62935353a13ed7be7764f30f044db77c6be8001"
+      }
+    ],
+    "postingContentSha256": "f810ddb87f417fcaf1e864aa4591696f6ad19531b5011d64e0e5b135dd0e64ab"
+  }
+}
