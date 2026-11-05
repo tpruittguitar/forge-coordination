@@ -150,6 +150,17 @@ function build(opts) {
   /* REV-155: a lane Tim paused (control/PAUSED_LANES.json) is quiet on purpose; it is marked paused, never "gone quiet". */
   let paused = {};
   try { const pj = JSON.parse(read(path.join(root, 'control', 'PAUSED_LANES.json')) || '{}'); Object.keys(pj.lanes || {}).forEach(k => { paused[normLane(k)] = pj.lanes[k]; }); } catch (e) { paused = {}; }
+  // Native schedules now have separate configuration and execution proof feeds. Old ad-hoc
+  // receipt intervals are not additional schedules; retain their obligations, not silence alarms.
+  let nativeScheduleAuthority = false;
+  try {
+    const cfg = JSON.parse(read(path.join(root, 'state', 'AUTOMATION_SCHEDULE_READBACK.json')) || '{}');
+    const age = now - Date.parse(cfg.at);
+    const required = ['forge-email-discovery', 'forge-application-outcome-tracker', 'forge-application-writer-gofer', 'forge-posting-validation'];
+    nativeScheduleAuthority = cfg.schema === 'forge.schedule-readback.v1' && age >= 0 && age < DAY &&
+      required.every(id => (cfg.local || []).some(x => x.id === id && ['ACTIVE', 'PAUSED', 'DISABLED'].includes(x.status) &&
+        /^RRULE:/.test(x.rrule || '') && /^[a-f0-9]{64}$/.test(x.nativeConfigurationSha256 || '')));
+  } catch (_) { /* absent/invalid native inventory keeps the legacy diagnostic fallback */ }
   const byLane = {};
   Object.keys(runs).forEach(k => { const r = runs[k]; (byLane[r.lane] = byLane[r.lane] || []).push(r); });
   Object.keys(byLane).sort().forEach(ln => {
@@ -159,7 +170,7 @@ function build(opts) {
     const gaps = []; for (let i = Math.max(1, rs.length - 6); i < rs.length; i++) gaps.push((Date.parse(rs[i].at) - Date.parse(rs[i - 1].at)) / H);
     const med = median(gaps), sinceH = (now - Date.parse(last.at)) / H, limit = Math.max(2 * med, 6);
     if (paused[ln]) { lanes.filter(l => l.lane === ln).forEach(l => { l.paused = paused[ln].since || true; }); return; }
-    if (med == null || sinceH <= limit) return;
+    if (nativeScheduleAuthority || med == null || sinceH <= limit) return;
     lanes.filter(l => l.lane === ln).forEach(l => { l.overdue = true; });
     add({ id: 'lane-overdue:' + ln, section: 'UPKEEP', level: sinceH > 4 * Math.max(med, 3) ? 'ACTION' : 'WATCH', title: ln + ' lane has gone quiet (usually reports every ' + (Math.round(med * 10) / 10) + ' h)', detail: 'Last receipt ' + last.file.replace(/^receipts[\\/]/, '') + ' (' + last.provider + ', status ' + (last.body.status || 'unstated') + '). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.', action: 'Check the lane\'s scheduled task and its AI usage; restart it if stopped.', source: last.file, sourceUrl: ghUrl('forge-coordination', last.file), at: last.at, raisedBy: last.provider });
   });
