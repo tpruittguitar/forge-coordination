@@ -1,53 +1,55 @@
 {
- "at": "2026-11-05T22:53:21.911Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T2247Z",
+ "at": "2026-11-05T23:30:53.732Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T2328Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-05T22:48:01.611Z",
-  "sha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
-  "rows": 4680
+  "readAt": "2026-11-05T23:28:52.467Z",
+  "sha256": "1419e3c646db084f9c5e72c0f40c7443b71e03fab64a024707ee69959468fc09",
+  "rows": 4686
  },
- "rows": 4680,
- "eligible": 566,
+ "rows": 4686,
+ "eligible": 569,
  "anchors": 1104,
  "archive_anchors": 5,
  "ats_rows": 1,
  "ats_read": 1,
  "ats_failed": 0,
- "posted_pay": 0,
- "degree": 3,
- "estimates": 3,
- "estimate_waiting_for_posting": 218,
- "skipped_recent": 166,
- "submitted": 0,
- "guard_dropped": 1,
- "writer_ok": 0,
+ "posted_pay": 2,
+ "degree": 4,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 217,
+ "skipped_recent": 170,
+ "submitted": 4,
+ "guard_dropped": 0,
+ "writer_ok": 4,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 2
  },
  "agg_read": {
-  "linkedin": 3
+  "linkedin": 2
  },
- "agg_pay": {},
+ "agg_pay": {
+  "linkedin": 1
+ },
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 3,
+ "est_comparables": 4,
  "boards_read": 8,
  "boards_failed": 0,
  "bls": {
   "OK": 3,
-  "ABOVE": 0,
+  "ABOVE": 1,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 2,
+ "est_shared_low": 3,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -57,9 +59,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 3,
-  "candidates": 18,
-  "saved_reused": 16,
+  "targets": 4,
+  "candidates": 19,
+  "saved_reused": 17,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -68,13 +70,13 @@
   "unsupported_routes": 1,
   "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-05T22:48:04.754Z",
+  "profile_as_of": "2026-11-05T23:28:56.125Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 25,
+ "ats_candidates": 26,
  "ats_by_kind": {
-  "lever": 3,
+  "lever": 4,
   "greenhouse": 8,
   "ashby": 5,
   "workday": 9
@@ -82,8 +84,8 @@
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
  "public_tried": 7,
- "public_read": 0,
- "public_failed": 7,
+ "public_read": 1,
+ "public_failed": 6,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -188,26 +190,44 @@
   }
  ],
  "salary_review": {
-  "eligible": 473,
-  "due": 0,
-  "reviewed": 0,
+  "eligible": 476,
+  "due": 3,
+  "reviewed": 3,
   "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 3,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-4B2EF9C7709E",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-722A82E2791F",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-F167AB793730",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ]
  },
- "decision_waiting": 727,
- "nothing_found": 274,
- "not_attempted": 267,
+ "decision_waiting": 730,
  "ats_pay_seen": 1,
+ "ats_need_salary": 1,
+ "nothing_found": 273,
+ "not_attempted": 267,
  "products_planned": 0,
  "upgraded": 0,
  "planned": 4,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 3,
- "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
@@ -215,65 +235,46 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "SOURCE_RESEARCH_REQUIRED": 84,
-  "EVIDENCE_FOUND": 4,
+  "SOURCE_RESEARCH_REQUIRED": 86,
+  "EVIDENCE_FOUND": 5,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 73,
   "GROK_RESEARCH_RESERVED": 345,
   "NOT_YET_ATTEMPTED": 11
  },
  "pending": [
   {
-   "id": "V2I-5FD3CB05D712",
-   "company": "Novo",
-   "title": "Director, United States Operations Quality Audits & Inspections",
+   "id": "V2I-6FBFF54154BF",
+   "company": "CSL Plasma",
+   "title": "Senior Manager, Quality Puerto Rico",
    "needs": [
     "SALARY",
     "DEGREE"
    ],
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:48:10.752Z",
-   "retryAt": "2026-11-06T00:48:10.752Z",
+   "lastAttemptAt": "2026-11-05T23:29:32.352Z",
+   "retryAt": "2026-11-06T01:29:32.352Z",
    "attempts": [
     {
-     "url": "https://careers.novonordisk.com/job/Plainsboro-Director%2C-United-States-Operations-Quality-Audits-&-Inspections-NJ/1454872233/",
+     "url": "https://jobs.csl.com/en/jobs/senior-manager-quality-puerto-rico-en-r-294561",
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-8DE7728829D2",
-   "company": "Kairos Power",
-   "title": "Director, Balance of Plant",
+   "id": "V2I-20F843744DF7",
+   "company": "B. Braun",
+   "title": "Director Quality Control Labs",
    "needs": [
     "SALARY",
     "DEGREE"
    ],
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:48:18.238Z",
-   "retryAt": "2026-11-06T00:48:18.238Z",
+   "lastAttemptAt": "2026-11-05T23:29:35.033Z",
+   "retryAt": "2026-11-06T01:29:35.033Z",
    "attempts": [
     {
-     "url": "https://grnh.se/mezh9zov4us",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-33F255FD8AA4",
-   "company": "WM",
-   "title": "Recycling Plant Manager III",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:48:20.932Z",
-   "retryAt": "2026-11-06T00:48:20.932Z",
-   "attempts": [
-    {
-     "url": "https://emcm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/job/2355598/?utm_medium=jobboard&utm_source=Indeed.com+Sponsored",
+     "url": "https://jobs.bbraun.com/job/Director-Quality-Control-Labs/14755-en_US",
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
@@ -344,44 +345,6 @@
    "lastAttemptAt": null,
    "retryAt": null,
    "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-339B002123B3",
-   "company": "University of North Carolina at Chapel Hill",
-   "title": "Director of Continuous Improvement & Transformation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:48:52.678Z",
-   "retryAt": "2026-11-06T00:48:52.678Z",
-   "attempts": [
-    {
-     "url": "https://unc.peopleadmin.com/postings/328221",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1BE46DB40F2B",
-   "company": "Honeywell",
-   "title": "Director of Cyber Operational Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:48:55.370Z",
-   "retryAt": "2026-11-06T00:48:55.370Z",
-   "attempts": [
-    {
-     "url": "https://ibqbjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/156285",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -6280,25 +6243,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2E084DA4C720",
-   "company": "bioMerieux",
-   "title": "Director, Site Manufacturing Controller",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:49:12.185Z",
-   "retryAt": "2026-11-06T14:49:12.185Z",
-   "attempts": [
-    {
-     "url": "https://app.jobvite.com/CompanyJobs/Job.aspx?j=oLN2AfwU&s=Indeed",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-38B17136FC7E",
    "company": "PowerSecure International",
    "title": "Director Manufacturing & Industrial Engineering",
@@ -6306,9 +6250,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-05T06:54:09.092Z",
-   "retryAt": "2026-11-05T22:54:09.092Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T23:30:00.112Z",
+   "retryAt": "2026-11-06T15:30:00.112Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&ea=1&cs=1_7789ec83&cb=1793523214157&jobListingId=1010306702765&jrtk=5-yul1-1-1k6b50p9l2933000-cf33bd5659acc020&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos2-ag",
@@ -6325,9 +6269,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-05T06:54:10.605Z",
-   "retryAt": "2026-11-05T22:54:10.605Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T23:30:01.625Z",
+   "retryAt": "2026-11-06T15:30:01.625Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_0a6d80a4&cb=1793523214157&jobListingId=1010303725708&jrtk=5-yul1-1-1k6b50p9l2933000-6576c33f7dc5a8b3&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos1-age9d-1",
@@ -6344,9 +6288,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-05T06:54:12.830Z",
-   "retryAt": "2026-11-05T22:54:12.830Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T23:30:03.705Z",
+   "retryAt": "2026-11-06T15:30:03.705Z",
    "attempts": [
     {
      "url": "https://recruiting2.ultipro.com/NAE1000NAES/JobBoard/f858dd65-f751-41a6-add7-7b877e9b6076/OpportunityDetail?opportunityId=6c2fbd15-9a36-4e79-8d8e-3a6c272899df&postingId=eedba24a-5839-47e8-8b49-833ac0876f0c",
@@ -6363,9 +6307,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-05T06:54:15.264Z",
-   "retryAt": "2026-11-05T22:54:15.264Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T23:30:05.993Z",
+   "retryAt": "2026-11-06T15:30:05.993Z",
    "attempts": [
     {
      "url": "https://alohacare.hrmdirect.com/employment/view.php?req=3846577&jbsrc=1014&location=bbc7254a-c437-c7a8-4db4-81b49482142b",
@@ -7224,25 +7168,6 @@
    "attempts": [
     {
      "url": "https://jobs.constellationenergy.com/jobs/141173/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C05889F5A4D7",
-   "company": "Manatts",
-   "title": "Ready Mix Plant Manager - Marshalltown, IA",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T22:49:13.845Z",
-   "retryAt": "2026-11-06T14:49:13.845Z",
-   "attempts": [
-    {
-     "url": "https://jobs.ourcareerpages.com/job/1015198?source=Indeed",
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
@@ -9515,154 +9440,257 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5FD3CB05D712",
+   "company": "Novo",
+   "title": "Director, United States Operations Quality Audits & Inspections",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:48:10.752Z",
+   "retryAt": "2026-11-06T00:48:10.752Z",
+   "attempts": [
+    {
+     "url": "https://careers.novonordisk.com/job/Plainsboro-Director%2C-United-States-Operations-Quality-Audits-&-Inspections-NJ/1454872233/",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8DE7728829D2",
+   "company": "Kairos Power",
+   "title": "Director, Balance of Plant",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:48:18.238Z",
+   "retryAt": "2026-11-06T00:48:18.238Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/mezh9zov4us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-33F255FD8AA4",
+   "company": "WM",
+   "title": "Recycling Plant Manager III",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:48:20.932Z",
+   "retryAt": "2026-11-06T00:48:20.932Z",
+   "attempts": [
+    {
+     "url": "https://emcm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/job/2355598/?utm_medium=jobboard&utm_source=Indeed.com+Sponsored",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-339B002123B3",
+   "company": "University of North Carolina at Chapel Hill",
+   "title": "Director of Continuous Improvement & Transformation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:48:52.678Z",
+   "retryAt": "2026-11-06T00:48:52.678Z",
+   "attempts": [
+    {
+     "url": "https://unc.peopleadmin.com/postings/328221",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1BE46DB40F2B",
+   "company": "Honeywell",
+   "title": "Director of Cyber Operational Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:48:55.370Z",
+   "retryAt": "2026-11-06T00:48:55.370Z",
+   "attempts": [
+    {
+     "url": "https://ibqbjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/156285",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2E084DA4C720",
+   "company": "bioMerieux",
+   "title": "Director, Site Manufacturing Controller",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:49:12.185Z",
+   "retryAt": "2026-11-06T14:49:12.185Z",
+   "attempts": [
+    {
+     "url": "https://app.jobvite.com/CompanyJobs/Job.aspx?j=oLN2AfwU&s=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C05889F5A4D7",
+   "company": "Manatts",
+   "title": "Ready Mix Plant Manager - Marshalltown, IA",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:49:13.845Z",
+   "retryAt": "2026-11-06T14:49:13.845Z",
+   "attempts": [
+    {
+     "url": "https://jobs.ourcareerpages.com/job/1015198?source=Indeed",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0B4B8812A2C5",
+   "company": "Visby Medical",
+   "title": "Director of Quality",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T22:49:15.931Z",
+   "retryAt": "2026-11-05T23:49:15.931Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   }
  ],
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-4B2EF9C7709E",
+   "id": "V2I-4DA28FCC8F8C",
+   "fields": {
+    "SALARY_BASE_LOW": 170000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 175000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.lever.co/charcuterie/e24a8630-181e-43e7-908d-d288e9a94ebb?lever-source=Indeed",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Education and Experience: Bachelor’s degree in food science, Microbiology, or a related field is required.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.lever.co/charcuterie/e24a8630-181e-43e7-908d-d288e9a94ebb?lever-source=Indeed",
+    "DEGREE_ASOF": "2026-11-05",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 177500
+   }
+  },
+  {
+   "id": "V2I-ED0C319C2800",
+   "fields": {
+    "SALARY_BASE_LOW": 195000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 207500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4488034661",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelors Degree in Electrical, Electronics, or Mechatronics with 10+ years of experience in quality management.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4488034661",
+    "DEGREE_ASOF": "2026-11-05",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 213750
+   }
+  },
+  {
+   "id": "V2I-A9627FF8EA37",
    "fields": {
     "DEGREE_TEXT": "NOT_STATED",
     "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4454401433",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4470671435",
     "DEGREE_ASOF": "2026-11-05",
     "SALARY_MODEL_VERSION": "employer-upper-range-v5",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 150000,
-    "SALARY_BASE_HIGH": 230000,
-    "SALARY_MIDPOINT": 190000,
+    "SALARY_BASE_LOW": 270000,
+    "SALARY_BASE_HIGH": 359000,
+    "SALARY_MIDPOINT": 314500,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-05",
-    "SALARY_SOURCE": "comparables:V2I-095A2B84CD8D,V2I-E5BAC2768D36,V2I-24375E5AC668,V2I-379164C0A54D,V2I-4A52694BE303,V2I-B7C89F72AA4F,V2I-BDA00AA09045",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-095A2B84CD8D, V2I-E5BAC2768D36, V2I-24375E5AC668, V2I-379164C0A54D, V2I-4A52694BE303, V2I-B7C89F72AA4F, V2I-BDA00AA09045]; 7 employer-posted comparable(s), level 2 MFG same region NE; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; BLS NY 113051 P25-P90 $101K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables:V2I-0BDA9CD1B708,V2I-7EFC07AD3A2A,V2I-1659642BFEED,V2I-C3DDBC9526C6,V2I-1C6249E61595,V2I-24A3A2EA3314,V2I-11C7ABAD3349",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-0BDA9CD1B708, V2I-7EFC07AD3A2A, V2I-1659642BFEED, V2I-C3DDBC9526C6, V2I-1C6249E61595, V2I-24A3A2EA3314, V2I-11C7ABAD3349]; 7 employer-posted comparable(s), level 4 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW; BLS GA 113051 P90 $194K: estimate is >1.5x P90; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 210000
+    "SALARY_SCORE_POINT": 336750
    }
   },
   {
-   "id": "V2I-F167AB793730",
+   "id": "V2I-85500E9C0022",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree.",
+    "SALARY_BASE_LOW": 173200,
+    "SALARY_BASE_HIGH": 272600,
+    "SALARY_MIDPOINT": 222900,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.merck.com/us/en/job/R424136",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor’s degree in Chemistry, Biochemistry, Pharmacy, Engineering, Life Sciences, or related discipline required; advanced degree (Master’s, PhD, PharmD, or MBA) strongly preferred.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485865107",
+    "DEGREE_EVIDENCE_URL": "https://jobs.merck.com/us/en/job/R424136",
     "DEGREE_ASOF": "2026-11-05",
-    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
-    "SALARY_CONTEXT_KEY": "9d924cbcd22db50c2edf6f5451c4892e7fb238538660fd640256ea82cd82a34d",
-    "SALARY_BASE_LOW": 150000,
-    "SALARY_BASE_HIGH": 220000,
-    "SALARY_MIDPOINT": 185000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_SOURCE": "comparables:V2I-533A0B0754C0,V2I-D1C77D2D7715,V2I-2A06F771CC55,V2I-892B7D8AC44C,V2I-16B19650D291,V2I-321AF4A959CE,V2I-D68CB07849B0",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-533A0B0754C0, V2I-D1C77D2D7715, V2I-2A06F771CC55, V2I-892B7D8AC44C, V2I-16B19650D291, V2I-321AF4A959CE, V2I-D68CB07849B0]; 7 employer-posted comparable(s), level 2 OTHER same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS OH 111021 P25-P90 $63K-$216K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 202500
-   }
-  },
-  {
-   "id": "V2I-722A82E2791F",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's Degree Manufacturing, Engineering or Applied Sciences required.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4462482084",
-    "DEGREE_ASOF": "2026-11-05",
-    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 135000,
-    "SALARY_BASE_HIGH": 206000,
-    "SALARY_MIDPOINT": 170500,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_SOURCE": "comparables:V2I-33F8DEF7C4AC,V2I-B1404CAB0B61,V2I-BA815F4F0A69,V2I-31010F018D27,V2I-72C649CFA097,V2I-A885C5B4E39D,V2I-BA3EB78CA0C0",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-33F8DEF7C4AC, V2I-B1404CAB0B61, V2I-BA815F4F0A69, V2I-31010F018D27, V2I-72C649CFA097, V2I-A885C5B4E39D, V2I-BA3EB78CA0C0]; 7 employer-posted comparable(s), level 1.5 MFG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 188250
-   }
-  },
-  {
-   "id": "V2I-0B4B8812A2C5",
-   "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05"
+    "SALARY_SCORE_POINT": 247750
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-4B2EF9C7709E",
-   "company": "Maxima Apparel",
-   "title": "Production Director",
-   "location": "Westbury, NY, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4454401433",
+   "id": "V2I-A9627FF8EA37",
+   "company": "SS&C Technologies",
+   "title": "Vice President, Enterprise Quality & Automation",
+   "location": "Atlanta, GA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4470671435",
    "est": [
-    150000,
-    230000,
+    270000,
+    359000,
     "LOW"
    ],
    "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region NE; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "bls": "ABOVE",
+   "basis_detail": "7 employer-posted comparable(s), level 4 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-095A2B84CD8D",
-    "V2I-E5BAC2768D36",
-    "V2I-24375E5AC668",
-    "V2I-379164C0A54D",
-    "V2I-4A52694BE303",
-    "V2I-B7C89F72AA4F",
-    "V2I-BDA00AA09045"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-F167AB793730",
-   "company": "The Wasserstrom Company",
-   "title": "Director of Continuous Improvement - Turn Warehouse and Business Data into Decisions - Turn Processes into Performance - Columbus, Ohio",
-   "location": "Columbus, OH, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4485865107",
-   "est": [
-    150000,
-    220000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 OTHER same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2I-533A0B0754C0",
-    "V2I-D1C77D2D7715",
-    "V2I-2A06F771CC55",
-    "V2I-892B7D8AC44C",
-    "V2I-16B19650D291",
-    "V2I-321AF4A959CE",
-    "V2I-D68CB07849B0"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-722A82E2791F",
-   "company": "West Pharmaceutical Services",
-   "title": "Sr. Manager, Production",
-   "location": "Kinston, NC, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4462482084",
-   "est": [
-    135000,
-    206000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1.5 MFG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2I-33F8DEF7C4AC",
-    "V2I-B1404CAB0B61",
-    "V2I-BA815F4F0A69",
-    "V2I-31010F018D27",
-    "V2I-72C649CFA097",
-    "V2I-A885C5B4E39D",
-    "V2I-BA3EB78CA0C0"
+    "V2I-0BDA9CD1B708",
+    "V2I-7EFC07AD3A2A",
+    "V2I-1659642BFEED",
+    "V2I-C3DDBC9526C6",
+    "V2I-1C6249E61595",
+    "V2I-24A3A2EA3314",
+    "V2I-11C7ABAD3349"
    ]
   }
  ],
