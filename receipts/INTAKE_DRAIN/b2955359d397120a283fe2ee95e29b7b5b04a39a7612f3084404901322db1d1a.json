@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:416bf6f1dc6b47aca9f4a1f5",
+  "sourceVersion": "4ffbe37849bbf5b2dfe4a2c4697a7a9dd8e2c346a1de62882bfe989972af2e0f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B1-5",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:23:44.310Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact historical same-source Springfield IL field without inferring a site from IAD-02 URL. Employer Workday URL returned empty content; source location and actual responsibilities are not independently corroborated.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://aligneddc.wd12.myworkdayjobs.com/aligneddc/job/IAD-02/Senior-Director--Corporate-Operations_JR101267-1",
+      "result": "Exact employer Workday posting returned CRAWL_EMPTY_CONTENT; no location alias, closure or target-function scope inferred."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Springfield, IL, USA"
+  },
+  "sourceEvidence": {
+    "company": "Aligned Data Centers",
+    "title": "Senior Director, Corporate Operations",
+    "location": "Springfield, IL, USA",
+    "url": "https://aligneddc.wd12.myworkdayjobs.com/aligneddc/job/IAD-02/Senior-Director--Corporate-Operations_JR101267-1",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Original employer posting becomes readable or new saved exact-posting content corroborates actual worksite and responsibilities."
+}

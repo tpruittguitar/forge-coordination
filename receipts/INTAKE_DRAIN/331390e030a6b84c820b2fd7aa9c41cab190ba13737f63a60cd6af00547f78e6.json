@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:3e6d64004075d2c905c6ee88",
+  "sourceVersion": "7343ccf5a22888442ca26ed60e45f5de9745a74f8dfc9f791d38ef52690c6330",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B1-2",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:23:39.504Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact historical Normal location, supported by current multi-location employer posting. Same-source historical card marked EXISTING; source/canonical identity must be reconciled before re-intake. Preserve Normal, Plymouth, Irvine and MX-Remote options without merging jobs or inferring a different base.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://us-careers-rivian.icims.com/jobs/34944/job",
+      "result": "Exact employer iCIMS 34944 lists Normal/Plymouth/Irvine/MX-Remote and supplier industrialization/PPAP scope; historical EXISTING marker retained."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Normal, IL, USA"
+  },
+  "sourceEvidence": {
+    "company": "Rivian",
+    "title": "Director - Supplier Development, Industrialization and Quality",
+    "location": "Normal, IL, USA",
+    "url": "https://us-careers-rivian.icims.com/jobs/34944/job",
+    "references": [
+      "state/source-trial-report.json@b922aa31",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Fresh canonical master/archive and exact employer posting 34944/source provenance establish existing-job identity and protected disposition before any new intake."
+}
