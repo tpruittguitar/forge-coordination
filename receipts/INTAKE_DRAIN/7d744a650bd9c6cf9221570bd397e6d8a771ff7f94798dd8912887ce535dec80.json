@@ -1,0 +1,74 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:4354612604a8d469f8a7f43a",
+  "sourceVersion": "0ae59954362d4ed65b39b250e8d2c9862214199d97320561a8dd63b72f904da2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1224Z-SOURCE-B2-9",
+  "instructionCommit": "18b8d1d57ebe7f6080287cffd6b50ebf501178bf",
+  "observedAt": "2026-11-05T12:43:49.665Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Captured Upside Innovations Paycom job249944 has no recovered original worksite; original exact portal extraction returned CRAWL_EMPTY_CONTENT. One exact portal/job-ID search returned unrelated catalog products,not a vacancy,discarded. Known active same-role V2I-6FBE6DE444C0 uses Cincinnati Metropolitan Area; do not copy a different West Chester advertisement or infer original site from metro/company address. Existing exact-ID evidence read blocked; retain original missing field and source identity.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original Paycom249944 location/Apply payload and reconciles active canonical role without duplicate intake.",
+  "attempts": [
+    {
+      "source": "Captured source identity and saved helper/source evidence at instruction18b8d1d57ebe7f6080287cffd6b50ebf501178bf",
+      "result": "Reused exact saved fields first; no city, client or requisition guessed."
+    },
+    {
+      "source": "https://www.paycomonline.net/v4/ats/web.php/portal/84A3B1A44134E9D4710727973651E0FB/jobs/249944",
+      "result": "CRAWL_EMPTY_CONTENT, not closure; no original location or duties returned."
+    },
+    {
+      "source": "Exact Paycom tenant84A3B1A44134E9D4710727973651E0FB job249944 identity search",
+      "result": "No matching posting recovered; unrelated catalog-number results discarded without identity inference."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-6FBE6DE444C0",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "recoveredFields": {},
+  "sourceEvidence": {
+    "company": "Upside Innovations, LLC",
+    "title": "Director of Quality",
+    "location": "",
+    "url": "https://www.paycomonline.net/v4/ats/web.php/portal/84A3B1A44134E9D4710727973651E0FB/jobs/249944",
+    "references": [
+      "Captured exact source at instruction18b8d1d57ebe7f6080287cffd6b50ebf501178bf"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact original source/requisition/Apply evidence changes through existing read-only recovery.",
+  "publicEvidence": {
+    "canonicalCandidate": {
+      "primaryId": "V2I-6FBE6DE444C0",
+      "company": "Upside Innovations, LLC",
+      "title": "Director of Quality",
+      "location": "Cincinnati Metropolitan Area",
+      "bucket": "SCOUT_INTAKE",
+      "disposition": "INTAKE/AWAITING_ANALYSIS",
+      "reqId": "UNCAPTURED",
+      "store": "MASTER",
+      "exactPostingMatch": false,
+      "labelledReqMatch": false,
+      "canonicalPostingKeys": [],
+      "locationMatch": false,
+      "rowSha256": "d9d8319226454195a43687464d0c72ae9aab72748c6450ede642a5128455d5af"
+    },
+    "canonicalSnapshot": {
+      "masterSha256": "fd8643d11219936c2d77fcbef286936c5c59bebf9429b6a7a01b9d47a9476672",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 4611,
+      "archiveRows": 785,
+      "masterEndMarker": true,
+      "archiveHeader": true,
+      "rowReadAt": "2026-11-05T12:42:10.439Z"
+    },
+    "missingOriginalFields": [
+      "location"
+    ]
+  }
+}

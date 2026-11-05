@@ -1,0 +1,61 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:2e24568cd901ed9ac29eb108",
+  "sourceVersion": "987878d9a0fa2e28c4ff418f1acb162aac057ce0e54c6d714445f45d90dfdadb",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1224Z-SOURCE-B2-6",
+  "instructionCommit": "18b8d1d57ebe7f6080287cffd6b50ebf501178bf",
+  "observedAt": "2026-11-05T12:43:43.261Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered saved Fort WorthTX. Observed Marmon employerWorkdayJR0000046612 explicitly names M&M Manufacturing subsidiary at that site. Fresh active canonical M&M Manufacturing Company Plant Manager V2I-337E3139493F has same site/title but prior LinkedIn4482797763, no exact original/employer posting binding recovered. Preserve source-specific parent/subsidiary facts; no global Marmon alias or new intake under different company name.",
+  "nextAction": "Existing authenticated AI/local coordinator resolves exact original HiringCafe/Workday posting against active M&M canonical identity before a new submission.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Reused exact saved fields first; no city, client or requisition guessed."
+    },
+    {
+      "source": "https://marmon.wd501.myworkdayjobs.com/en-US/Marmon_Careers/job/Plant-Manager_JR0000046612",
+      "result": "Read exact employer identity/site and explicit parent/subsidiary relationship; found active same-site M&M role, preserved alias reconciliation without a company rename."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Fort Worth, Texas, United States"
+  },
+  "sourceEvidence": {
+    "company": "Marmon Holdings",
+    "title": "Plant Manager",
+    "location": "Fort Worth, Texas, United States",
+    "url": "https://hiringcafe.com/job/plant-manager-marmon-holdings-fort-worth-texas-p8rmuuz8y8srk2nn",
+    "references": [
+      "state/source-trial-report.json@b922aa31"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact original source/requisition/Apply evidence changes through existing read-only recovery.",
+  "publicEvidence": {
+    "observedEmployerPosting": "https://marmon.wd501.myworkdayjobs.com/en-US/Marmon_Careers/job/Plant-Manager_JR0000046612",
+    "sourceEmployerBrand": "M&M Manufacturing",
+    "capturedParentLabel": "Marmon Holdings",
+    "canonicalCandidate": {
+      "primaryId": "V2I-337E3139493F",
+      "company": "M&M Manufacturing Company",
+      "title": "Plant Manager",
+      "location": "Fort Worth, TX",
+      "bucket": "SCOUT_INTAKE",
+      "rowSha256": "e59c5953a570e67789ab00c6832f1b3879ccd7d09f850219f955a2151352eec7"
+    },
+    "canonicalSnapshot": {
+      "masterSha256": "fd8643d11219936c2d77fcbef286936c5c59bebf9429b6a7a01b9d47a9476672",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 4611,
+      "archiveRows": 785,
+      "masterEndMarker": true,
+      "archiveHeader": true,
+      "rowReadAt": "2026-11-05T12:42:10.439Z"
+    }
+  }
+}
