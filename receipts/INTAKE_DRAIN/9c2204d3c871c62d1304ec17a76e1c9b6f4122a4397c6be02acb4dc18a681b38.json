@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:0726b8feadaafc6100e50f34",
+  "sourceVersion": "4ddc12a6b89caef510f7b9338e4cb6cefc88459ac633f82ad61a8067958eb372",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B3-4",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:33:03.512Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered historical Columbus worksite, but exact redirected employer source now explicitly lists Ashville Ohio. Actual warehouse/manufacturing lean-system scope is plausible, yet nearby cities are not automatically the same facility. Preserve both site observations and employer branding without overwriting the captured identity.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://grnh.se/7g4hiwr47us",
+      "result": "Exact grnh.se source resolves to Anduril Industries posting with Ashville Ohio header and Arsenal-1 material-flow scope, conflicting with saved Columbus location."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Columbus, OH, USA"
+  },
+  "sourceEvidence": {
+    "company": "Anduril",
+    "title": "Sr. Manager, Warehouse Ops Excellence",
+    "location": "Columbus, OH, USA",
+    "url": "https://grnh.se/7g4hiwr47us",
+    "quote": "Ashville, Ohio, United States",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Source-bound employer requisition/facility evidence explains Columbus advertisement versus Ashville assigned site and permits grounded identity accounting; no inferred nearby-city alias."
+}

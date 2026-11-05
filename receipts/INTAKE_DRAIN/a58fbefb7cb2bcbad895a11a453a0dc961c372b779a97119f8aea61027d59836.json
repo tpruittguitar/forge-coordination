@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481398327",
+  "sourceVersion": "5af334cff9ac4de5b630355c81bd585a575c7cca66ebf384f22028cf77ea6514",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B3-1",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:32:58.344Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Bossier City worksite. Exact ClearBridge steel-fabrication source returned generic Plant Director results rather than this captured role; no employer/client or scope inferred from unrelated results.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4481398327/",
+      "result": "Exact requested LinkedIn URL returned generic multi-employer results, not the saved Steel Fabrication Plant Manager posting."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Bossier City, LA, USA"
+  },
+  "sourceEvidence": {
+    "company": "ClearBridge Executive Search",
+    "title": "Steel Fabrication Plant Manager",
+    "location": "Bossier City, LA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4481398327/",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact original job content or a source-bound employer destination is recovered with captured agency/title/site preserved."
+}

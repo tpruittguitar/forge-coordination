@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481387227",
+  "sourceVersion": "c1df8228245eeeb1c7d670521fe25756ecdf738ab2100bb652db776a4eb6fcc3",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B3-0",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:32:56.432Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Hamlet worksite. Exact ClearBridge paper-mill source returned a generic Plant Director results page containing unrelated employers, not the captured job. No substitute employer or inferred client identity.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4481387227/",
+      "result": "Exact requested LinkedIn URL returned generic multi-employer Plant Director search results; no source-bound responsibilities for the captured role."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Hamlet, NC, USA"
+  },
+  "sourceEvidence": {
+    "company": "ClearBridge Executive Search",
+    "title": "Plant Manager – Paper Mill Operations",
+    "location": "Hamlet, NC, USA",
+    "url": "https://www.linkedin.com/jobs/view/4481387227/",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Saved full original advertisement or exact employer destination restores same-role responsibilities and source identity; no unrelated result-card substitution."
+}

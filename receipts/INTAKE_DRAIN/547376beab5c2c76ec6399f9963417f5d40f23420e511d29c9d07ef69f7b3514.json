@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482028663",
+  "sourceVersion": "3e634713e792e1b4a8e7eaccb7f2f3f05c89ba8e88821c8f45cd1c60bc2a519e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B3-2",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:33:00.020Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Prescott worksite. Exact Employbridge NPI source returned unrelated Decorating Consultant search results; this is source-content mismatch, not evidence that the captured role changed function or identity.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482028663/",
+      "result": "Exact LinkedIn URL returned generic Decorating Consultant results; no same-posting responsibility evidence."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Prescott, WI, USA"
+  },
+  "sourceEvidence": {
+    "company": "Employbridge",
+    "title": "Senior Manager, New Product Introduction",
+    "location": "Prescott, WI, USA",
+    "url": "https://www.linkedin.com/jobs/view/4482028663/",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Original saved full NPI posting or exact employer destination is recovered, retaining agency identity and Prescott worksite."
+}

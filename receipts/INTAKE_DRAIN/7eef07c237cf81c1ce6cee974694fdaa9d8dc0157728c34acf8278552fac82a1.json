@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:074f52b42dc0243bae148475",
+  "sourceVersion": "65dbcb5a4ca3f26a55ea8792a39880266a1ad49579acdf92999c46c338dd2ffa",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B3-5",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:33:05.224Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved San Antonio worksite corroborated by the board, which explicitly labels the posting expired and no longer accepting applications. Actual manufacturing responsibilities are present but do not make a closed advertisement ready for new intake.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://hiringcafe.com/job/director-manufacturing-9834-tower-semiconductor-san-antonio-texas-sairshnopxs4nm6c",
+      "result": "Exact saved HiringCafe posting confirms location and explicit expired/no-longer-active status."
+    }
+  ],
+  "recoveredFields": {
+    "location": "San Antonio, Texas, United States"
+  },
+  "sourceEvidence": {
+    "company": "Tower Semiconductor",
+    "title": "Director, Manufacturing (9834)",
+    "location": "San Antonio, Texas, United States",
+    "url": "https://hiringcafe.com/job/director-manufacturing-9834-tower-semiconductor-san-antonio-texas-sairshnopxs4nm6c",
+    "quote": "This job posting is no longer active and is not accepting applications.",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "A reopened same advertisement or source-bound active employer posting is observed; retain requisition 9834 as originally captured, with no inferred reopening."
+}
