@@ -13741,7 +13741,7 @@
       "aliases": [
         "url:896bdf7741a53f455bcf5ede"
       ],
-      "sourceVersion": "a2be9da31dd0c0220850feb787ddfced0c7c7e5db11d254f933a397b0f967487",
+      "sourceVersion": "219a966cf0fba8dbbd8590b311cab31602e1d9611b21fa289caa926ad1a7caae",
       "card": {
         "company": "Shield AI",
         "title": "Staff Engineer, Electrical System Advance Manufacturing (R5183)",
@@ -13764,8 +13764,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
@@ -13780,105 +13780,15 @@
         "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Independent exact-posting identity, quote and resume-overlap validation; then existing controlled intake path with canonical receipt verification",
-      "canonicalCompletion": false,
-      "status": "READY_FOR_CONTROLLED_INTAKE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/e89bb03995620c03e8692737888358b81928df9a99eebc218fd3e5470f3dab40.json",
-        "sha256": "e89bb03995620c03e8692737888358b81928df9a99eebc218fd3e5470f3dab40",
-        "observedAt": "2026-11-05T06:14:47.202Z",
-        "outcome": "SOURCE_READY"
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-6A3C7446365E16F673CEABC7"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json"
       },
-      "validation": {
-        "status": "READY_FOR_CONTROLLED_INTAKE",
-        "reviewSha256": "e89bb03995620c03e8692737888358b81928df9a99eebc218fd3e5470f3dab40",
-        "observedAt": "2026-11-05T07:07:11.976Z",
-        "resumeMatch": {
-          "schema": "forge.resume-overlap.v1",
-          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
-          "resumeVersion": "2026-10-13T22:42:09.660Z",
-          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
-          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
-          "contentBasis": "TITLE_AND_ROLE_CONTENT",
-          "matches": [
-            {
-              "competencyId": "manufacturing_leadership",
-              "postingTerms": [
-                "manufacturing",
-                "production",
-                "assembly"
-              ],
-              "postingQuotes": [
-                "Staff Engineer, Electrical System Advance Manufacturing (R5183)",
-                "We are seeking a highly skilled Staff Electrical Systems Advance Manufacturing Engineer to lead the development, integration, and production support of advanced electrical systems for complex aerospace and defense platforms."
-              ],
-              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
-            },
-            {
-              "competencyId": "quality_systems",
-              "postingTerms": [
-                "quality",
-                "ISO 9001"
-              ],
-              "postingQuotes": [
-                "Develop work instructions, quality standards, and inspection methods",
-                "Develop electrical assembly standards, inspection methods, and quality control processes"
-              ],
-              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
-            },
-            {
-              "competencyId": "manufacturing_systems",
-              "postingTerms": [
-                "MES",
-                "data"
-              ],
-              "postingQuotes": [
-                "MES & QMS systems",
-                "Experience with ERP/MES systems and manufacturing data analysis"
-              ],
-              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
-            },
-            {
-              "competencyId": "lean_operations",
-              "postingTerms": [
-                "continuous improvement"
-              ],
-              "postingQuotes": [
-                "This role is responsible for driving manufacturability, production readiness, process development, root cause resolution, and continuous improvement across electrical assemblies and subsystems."
-              ],
-              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
-            },
-            {
-              "competencyId": "supplier_quality",
-              "postingTerms": [
-                "corrective action",
-                "root cause"
-              ],
-              "postingQuotes": [
-                "This role is responsible for driving manufacturability, production readiness, process development, root cause resolution, and continuous improvement across electrical assemblies and subsystems.",
-                "Drive root cause investigations and corrective actions for electrical manufacturing issues"
-              ],
-              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
-            },
-            {
-              "competencyId": "engineering_design",
-              "postingTerms": [
-                "CAD"
-              ],
-              "postingQuotes": [
-                "Proficiency in CAD software"
-              ],
-              "resumeEvidenceSha256": "a2636a6055df96618dde6711f0a53c0eaa680e1eae94f94150a2da2d57505701"
-            }
-          ],
-          "unresolved": [],
-          "finalFit": false,
-          "automaticRejection": false
-        },
-        "sourceSha256": "3f1f67cb8279c972e6c4c96223be3015fc4176fefa7cc1e751e2a947dadd2284",
-        "sourceUrl": "https://jobs.lever.co/shieldai/3ec09bbc-6f52-4adc-b79d-61935a72c098"
-      }
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
+      "canonicalCompletion": false,
+      "status": "ACTION_REQUIRED"
     },
     "url:ddea16f924464f3b7e3091b1": {
       "key": "url:ddea16f924464f3b7e3091b1",
@@ -15381,7 +15291,7 @@
       "aliases": [
         "url:bc255f6f32d3c1b743d69940"
       ],
-      "sourceVersion": "b463549921763d69e249133a6950323ef09937559f2a99f8a9eb5277ea252b13",
+      "sourceVersion": "94acd92a549321dc4f853aaa0135992106ccd22e2f690a9f8619456b25896996",
       "card": {
         "company": "Relativity Space",
         "title": "Staff Manufacturing Engineer, Primary Structures",
@@ -15404,8 +15314,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-26T13:38:20.456Z",
       "sourceReferences": [
@@ -15419,83 +15329,15 @@
         "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Independently validate exact posting identity, scope quote and current resume overlap; then existing controlled Writer path and canonical verification",
-      "canonicalCompletion": false,
-      "status": "READY_FOR_CONTROLLED_INTAKE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/fd7b990e26770fcce96be0f9bac5abdc2c626a0da3d06184cb3904b8e3afb4c8.json",
-        "sha256": "fd7b990e26770fcce96be0f9bac5abdc2c626a0da3d06184cb3904b8e3afb4c8",
-        "observedAt": "2026-11-05T06:17:34.476Z",
-        "outcome": "SOURCE_READY"
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-D10BC99EAA546F204B9FA0F5"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json"
       },
-      "validation": {
-        "status": "READY_FOR_CONTROLLED_INTAKE",
-        "reviewSha256": "fd7b990e26770fcce96be0f9bac5abdc2c626a0da3d06184cb3904b8e3afb4c8",
-        "observedAt": "2026-11-05T07:07:11.976Z",
-        "resumeMatch": {
-          "schema": "forge.resume-overlap.v1",
-          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
-          "resumeVersion": "2026-10-13T22:42:09.660Z",
-          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
-          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
-          "contentBasis": "TITLE_AND_ROLE_CONTENT",
-          "matches": [
-            {
-              "competencyId": "manufacturing_leadership",
-              "postingTerms": [
-                "manufacturing",
-                "production",
-                "factory",
-                "assembly"
-              ],
-              "postingQuotes": [
-                "Staff Manufacturing Engineer, Primary Structures",
-                "Here, you're not just executing tasks; you're solving problems that haven’t been solved before, helping develop a rocket, a factory, and a business from the ground up."
-              ],
-              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
-            },
-            {
-              "competencyId": "startup_launch",
-              "postingTerms": [
-                "launch",
-                "new product introduction"
-              ],
-              "postingQuotes": [
-                "Our&nbsp;Terran R vehicle will deliver customer payloads to orbit, meeting the growing demand for launch&nbsp;capacity.",
-                "With a manifest and a launch date, it’s up to the team to deliver on Terran R: solving challenges in real time, optimizing for scale, and constantly improving processes."
-              ],
-              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
-            },
-            {
-              "competencyId": "automation_robotics",
-              "postingTerms": [
-                "automation"
-              ],
-              "postingQuotes": [
-                "As the vehicle evolves, so will the factory, with opportunities to apply automation, machine learning, and advanced technologies."
-              ],
-              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
-            },
-            {
-              "competencyId": "torque_fastening",
-              "postingTerms": [
-                "fastening"
-              ],
-              "postingQuotes": [
-                "Strong engineering fundamentals in statics, mechanics of materials, process improvement/factory design, fastening and joining, machining.&nbsp;&nbsp;",
-                "Direct experience with forming, welding, drill, trim and fastening operations for aerospace products"
-              ],
-              "resumeEvidenceSha256": "acb4db75801fa943714891431f9122137223b3fb5f581c8c46304f4c5a91ede1"
-            }
-          ],
-          "unresolved": [],
-          "finalFit": false,
-          "automaticRejection": false
-        },
-        "sourceSha256": "c07ca1fa4db36f4392ddd589bb8d16d5589666a931c31c48b59427d388321222",
-        "sourceUrl": "https://boards.greenhouse.io/relativity/jobs/8889038002?gh_jid=8889038002"
-      }
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
+      "canonicalCompletion": false,
+      "status": "ACTION_REQUIRED"
     },
     "url:55a3e74780b8dade3b54f130": {
       "key": "url:55a3e74780b8dade3b54f130",
@@ -217188,20 +217030,20 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T07:34:44.310Z",
-  "upstreamAt": "2026-11-05T07:34:43.387Z",
+  "at": "2026-11-05T07:36:56.785Z",
+  "upstreamAt": "2026-11-05T07:36:55.821Z",
   "counts": {
     "SOURCE_VALIDATION_REQUIRED": 39,
-    "ACTION_REQUIRED": 5239,
+    "ACTION_REQUIRED": 5241,
     "WAITING_EVIDENCE_CHANGE": 113,
-    "READY_FOR_CONTROLLED_INTAKE": 18,
+    "READY_FOR_CONTROLLED_INTAKE": 16,
     "PENDING_INDEPENDENT_VALIDATION": 1,
     "INVENTORY_RECONCILIATION_REQUIRED": 19
   },
   "actions": {
-    "REVIEW_SCOPE": 3059,
+    "REVIEW_SCOPE": 3057,
     "RESOLVE_IDENTITY": 433,
-    "RECONCILE_WRITER": 498,
+    "RECONCILE_WRITER": 500,
     "RECOVER_SOURCE": 1370,
     "INTAKE": 69
   },
