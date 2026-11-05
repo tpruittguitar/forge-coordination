@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T23:26:09.799Z",
- "sourceCommit": "dd9cffd153787a0527aa072c28843d063251db56",
+ "builtAt": "2026-11-05T23:38:20.505Z",
+ "sourceCommit": "d44f2952d2423d9d2f26fead4e722b4df0fcf676",
  "counts": {
-  "total": 67,
-  "BLOCKING": 0,
+  "total": 68,
+  "BLOCKING": 1,
   "ACTION": 33,
   "WATCH": 34,
   "DECIDE": 5,
   "JOBS": 1,
-  "FAILED": 36,
+  "FAILED": 37,
   "UPKEEP": 25
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261105T220727Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261105T220727Z is unfinished",
+   "detail": "BLOCKED: Writer freeze/health. Open request: FORGE-SOURCE-526BD0A26930C8F470F840A9. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261105T220727Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T220727Z.json",
+   "at": "2026-11-05T23:25:38.110Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-1001075C35BCBEA09F1830D1",
    "section": "FAILED",
@@ -875,8 +887,8 @@
    "title": "CODE · CHATGPT — run never wrote a terminal receipt",
    "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
    "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261105T231523546Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261105T231523546Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261105T233023559Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261105T233023559Z_TRANSPORT.json",
    "at": "2026-11-05T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -919,8 +931,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-05T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261105T231523546Z_TRANSPORT.json",
-   "runs7d": 1468,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261105T233023559Z_TRANSPORT.json",
+   "runs7d": 1473,
    "usualGapHours": 0,
    "overdue": false
   },
