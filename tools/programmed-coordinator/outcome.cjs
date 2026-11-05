@@ -3,8 +3,9 @@
 // event persistence and Writer verification remain required by the tracker.
 function classify({subject='',body='',fullBody=false}) {
   if(!fullBody) return {owner:'CODE',reason:'FULL_MESSAGE_REQUIRED'};
-  const text=(subject+'\n'+body).replace(/\s+/g,' ');
-  const confirmation=/\b(?:we have received your application|your application has been received|thank you for applying for the (?:position|role))\b/i.exec(text);
+  // This exact Lever footer is delivery advice, not an interview invitation.
+  const text=(subject+'\n'+body).replace(/\s+/g,' ').replace(/\*?Please note\s*[-–—]?\s*should you advance through our interview process and you do not receive timely email responses from our team, please double check your spam folder as they may get caught in there\. Thank you!?/i,'');
+  const confirmation=/\b(?:we (?:have )?received your application|your application has been received|thank you for applying for the (?:position|role))\b/i.exec(text);
   const rejection=/\b(?:we (?:will not|won't) be (?:moving|proceeding) forward with your application|we have decided (?:not to (?:move|proceed) forward|to move forward with other candidates)|you were not selected to move forward in our hiring process)\b/i.exec(text);
   // A polite "thank you for applying" opening is not a competing confirmation
   // when the same full notice explicitly rejects the application.
