@@ -1,0 +1,85 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483949896",
+  "sourceVersion": "b15c6c34dcc0c735eaa89d588583119592b8408e8c52c1a60b623e758aea5bdc",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B4-6",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T12:01:20.368Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index87 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Image Associates Storm Lake IA capture versus declined Waterloo IA agency role; client/placement identity and distinct known cities cannot be forced together. Existing read-only evidence/request_result recovery blocked by absent cloud credential. No candidate insert, no original request replay and no guessed facility/client identity.",
+  "conclusion": "Original exact candidate failed; original source/site/placement identity remains unresolved.",
+  "nextAction": "Existing authenticated AI/local coordinator retains exact identity/original-request evidence recovery; preserve all decisions and original request fences.",
+  "retryCondition": "Exact original employer requisition/Apply/site or original request_result evidence changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0099.json; state/source-trial-report.json@2f514732; state/source-trial-report.json@826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused exact saved identity and original source/helper pointers before external lookup; withdrawn legacy filtering not used."
+    },
+    {
+      "source": "Fresh complete authenticated canonical master4601/archive785",
+      "result": "Compared role/site/original posting evidence without canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-34162C7B8959",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:00:11.184Z"
+    },
+    {
+      "source": "Original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound exact candidate WRITE_FAILED and independently COMPLETE batch; no POST attempted."
+    },
+    {
+      "source": "Original request_result after independently COMPLETE batch",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Image Associates Inc.",
+    "title": "Plant Manager",
+    "location": "Storm Lake, IA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483949896/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+    "candidateIndex": 87,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-34162C7B8959"
+    ],
+    "originalWriteId": "W-20261102001527752-1f819c",
+    "independentIndexCommit": "00ee4c5b1ad50e1656768d2e67596183bdce1e78",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:16:02.219Z",
+      "w": "W-20261102001527752-1f819c",
+      "snapshotHash": "3b993f87db56:9097673"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-34162C7B8959",
+        "company": "Image Associates Inc.",
+        "title": "Plant Manager",
+        "location": "Waterloo, IA, USA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "2dce03ea85b9b0232dd79df8f7d0fe14a592521032457982979abbf7b8cc88e1"
+      }
+    ]
+  }
+}
