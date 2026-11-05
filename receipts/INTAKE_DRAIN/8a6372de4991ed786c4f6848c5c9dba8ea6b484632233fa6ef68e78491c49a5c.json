@@ -1,0 +1,38 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4466744058",
+  "sourceVersion": "01598e70cdbd802eb3efa57e0ad328644cfead3730c8b6f37cf9e364c2376c8a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T1810Z-SCOPE-B2-4",
+  "instructionCommit": "a3e3bf075609326bcf95d6d9f78c6d5710bb287e",
+  "observedAt": "2026-11-05T18:16:34.455Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Actual avionics manufacturing engineering scope is resolved (SMT, qualification, acceptance testing and box build), but captured employer label Northwood differs from new source Northwood Space. Preserve captured identity and require explicit employer alias/original board binding rather than overwrite known employer field.",
+  "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/62cb5635bb5f3ac2c1a054871a520622c44115ef508c652d1d391bd521767634.json",
+      "result": "Reused prior source-bound actual manufacturing scope."
+    },
+    {
+      "source": "https://jobs.a16z.com/jobs/northwood-space/daaca82f-759c-412e-8a9e-9a437c638213--lead-avionics-manufacturing-engineer",
+      "result": "Observed exact title, Torrance location and actual avionics manufacturing duties; employer-label alias remains a specific unresolved identity fact."
+    }
+  ],
+  "unresolved": [
+    "SMT/PCBA specialization and mandatory bachelor degree unverified; no assumed aerospace electronics expertise."
+  ],
+  "retryCondition": "Existing identity coordinator supplies observed company alias and binds LinkedIn 4466744058 to the exact Northwood Space posting, then passes the retained scope evidence to controlled validation.",
+  "publicEvidence": {
+    "url": "https://jobs.a16z.com/jobs/northwood-space/daaca82f-759c-412e-8a9e-9a437c638213--lead-avionics-manufacturing-engineer",
+    "actualResponsibilityQuote": "Northwood Space is looking for a Lead Avionics Manufacturing Engineer to lead the manufacturing engineering team responsible for our avionics production processes. This role will own the manufacturing engineering strategy and execution from SMT assembly through board-level acceptance testing, environmental screening, and final box build.",
+    "capturedEmployer": "Northwood",
+    "observedEmployer": "Northwood Space",
+    "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "resumeCompetencyIds": [
+      "manufacturing_leadership"
+    ]
+  }
+}
