@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:5b09219cce8a50fc3fe22693",
+  "sourceVersion": "49b215d4d64c5bb47d7fc361befbc392ef83dfeb06c1a9b17b311f0b84e474a9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B4-07",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:34:20.849Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact saved Simi Valley location recovered; upstream marks this source EXISTING_PROTECTED. Preserve protected identity and reconcile fresh canonical evidence.",
+  "nextAction": "Fresh exact canonical master/archive reconciliation of existing/protected identity; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Simi Valley, CA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:5b09219cce8a50fc3fe22693",
+      "result": "EXISTING_PROTECTED hint retained; no fresh canonical verification"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "AeroVironment",
+    "title": "Director, Planning and Production Control",
+    "location": "Simi Valley, CA",
+    "url": "https://avav.wd1.myworkdayjobs.com/AVAV/job/Simi-Valley-CA/Director--Planning-and-Production-Control_9155",
+    "quote": "Saved exact source identity",
+    "observedAt": "2026-11-05T06:34:20.849Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Simi Valley, CA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Protected role was not researched; fresh canonical proof is required."
+  ],
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}

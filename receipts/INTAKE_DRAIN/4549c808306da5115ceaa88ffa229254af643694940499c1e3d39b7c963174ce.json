@@ -1,0 +1,55 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:45029757c898dbeffac82510",
+  "sourceVersion": "64c7f4dea588a94c2e41c1a8740280f85273f3061cf7350efa4580e21493bb45",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B4-04",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:34:11.987Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact saved Petaluma location recovered. Page fetch returned CRAWL_EMPTY_CONTENT and the existing exact Workday API reader could not resolve the host (EAI_AGAIN). Full source responsibilities remain unavailable.",
+  "nextAction": "Retain recovered location and wait for exact source content or public ATS transport recovery",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Petaluma, CA"
+    },
+    {
+      "source": "https://avav.wd1.myworkdayjobs.com/AVAV/job/Petaluma-CA/Chief-Engineer--Production_8845",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "CRAWL_EMPTY_CONTENT"
+    },
+    {
+      "source": "https://avav.wd1.myworkdayjobs.com/AVAV/job/Petaluma-CA/Chief-Engineer--Production_8845",
+      "transport": "Existing tools/enrich-ats-pay/lib.js atsApi and programmed-coordinator/source.cjs page reader",
+      "result": "Exact public Workday ATS API route attempted; getaddrinfo EAI_AGAIN avav.wd1.myworkdayjobs.com"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "AeroVironment",
+    "title": "Chief Engineer, Production",
+    "location": "Petaluma, CA",
+    "url": "https://avav.wd1.myworkdayjobs.com/AVAV/job/Petaluma-CA/Chief-Engineer--Production_8845",
+    "quote": "Source content unavailable from exact page and existing ATS reader",
+    "observedAt": "2026-11-05T06:34:11.987Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Petaluma, CA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "No responsibility or source status is inferred from the URL path or title."
+  ],
+  "retryCondition": "EXACT_POSTING_CONTENT_OR_PUBLIC_WORKDAY_TRANSPORT_RECOVERED"
+}
