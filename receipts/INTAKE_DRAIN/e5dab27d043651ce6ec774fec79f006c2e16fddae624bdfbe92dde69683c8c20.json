@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4434636903",
+  "sourceVersion": "8188ca6fe618e3fe2b4547f22625b0bfc6dd18e359e15e623a1f9beab81dc038",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B2-2",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:30:33.880Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Lisle worksite. Exact Molex posting timed out; separate Austin posting remains a distinct source and location, not an identity substitute.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4434636903/",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT on exact captured LinkedIn source; no repeat lookup or cross-site merge."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Lisle, IL, USA"
+  },
+  "sourceEvidence": {
+    "company": "Molex",
+    "title": "Director, New Product Development",
+    "location": "Lisle, IL, USA",
+    "url": "https://www.linkedin.com/jobs/view/4434636903/",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Readable exact Lisle posting or saved full same-source responsibilities/employer destination is recovered; retain separate Austin identity unless an employer requisition proves an alias."
+}
