@@ -46,6 +46,9 @@ function isolatedIdentityHold(state){
 }
 // The request the halted run was on when it stopped: the first request with no accounted outcome in the last halt.
 function stoppedAt(state){
+ // A crash can leave a newer durable intent after the last accepted-write halt.
+ const inFlight=(state.requestIds||[]).find(id=>state.results?.[id]?.status==='POST_IN_FLIGHT_UNKNOWN');
+ if(inFlight)return inFlight;
  const halt=state.halts?.at(-1),done=new Set((halt?.outcomes||[]).filter(x=>['SKIPPED','RESUMED_ACCOUNTED','NOOP_ACCOUNTED','IDENTITY_MISMATCH_SKIPPED'].includes(x.status)).map(x=>x.requestId));
  const open=(halt?.outcomes||[]).find(x=>!done.has(x.requestId));
  if(open)return open.requestId;
