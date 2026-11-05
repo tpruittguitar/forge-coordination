@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-05T08:38:27.500Z",
+  "at": "2026-11-05T08:43:07.464Z",
   "source": "Immutable lane receipts and verified native configuration; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -106,30 +106,11 @@
       "executionVerified": false
     },
     {
-      "id": "forge-application-writer-gofer",
-      "at": "2026-11-05T02:40:31.907Z",
-      "status": "DEFERRED_SHARED_LOCK",
-      "evidenceFiles": [
-        "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T023952Z_TERMINAL.txt"
-      ],
-      "executionVerified": false
-    },
-    {
       "id": "forge-email-discovery",
       "at": "2026-11-05T08:36:55.749Z",
       "status": "COORDINATED_WITH_PENDING_WORK",
       "evidenceFiles": [
         "receipts/FORGE-CODE-CHATGPT-20261105T083024128Z_TERMINAL.json"
-      ],
-      "executionVerified": true
-    },
-    {
-      "id": "forge-application-outcome-tracker",
-      "at": "2026-11-02T06:34:32.639Z",
-      "status": "SUCCESS_WITH_PENDING_HELPER_SOURCE_RESEARCH",
-      "evidenceFiles": [
-        "receipts/FORGE-OUTCOME-CHATGPT-20261102T063159Z_SUMMARY.json",
-        "receipts/FORGE-OUTCOME-CHATGPT-20261102T063159Z_VERIFICATION.json"
       ],
       "executionVerified": true
     },
@@ -150,6 +131,28 @@
         "receipts/HEALTH_AUDIT_20261104_0745ET.json"
       ],
       "executionVerified": true
+    },
+    {
+      "id": "forge-application-writer-gofer",
+      "at": "2026-11-05T07:44:36.337Z",
+      "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T074326Z_TERMINAL.txt",
+        "receipts/AI_EXCEPTION_REVIEWS/440adc19ea451871fbacd50e81c9cb962bf88f3a5a36743508263ad256269e31-61c9c0ad7699f09d99e6d789a5db24c271c238ff5c47058ca6719f0f8193dd11.json",
+        "receipts/AI_EXCEPTION_REVIEWS/33c1cb3274fe988ee0e5b9f1caeac25593a5134a482b9ca557c4a3f7b21bcfd7-a457d2c78e042128f2ad8e78334a0d95bc7f64a4da4e7f0bdd644298bee584da.json",
+        "receipts/AI_EXCEPTION_REVIEWS/3a8c467674211bbb1e26db84263300de0bdde18ca0bf05d3f7985efcfa38682e-c4a0a13dd6336788ed2566021e0f1e7d375c3cd4bace9c63c5e5e2258cca855e.json"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-application-outcome-tracker",
+      "at": "2026-11-05T08:21:01.124Z",
+      "status": "SOURCE_CAPTURE_CORROBORATED_CODE_CONSUMPTION_PENDING",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261105T081957Z_TERMINAL.txt",
+        "receipts/FORGE-CODE-CHATGPT-20261105T083024128Z_TERMINAL.json"
+      ],
+      "executionVerified": true
     }
   ],
   "helperCoordination": {
@@ -157,6 +160,16 @@
     "runId": "FORGE-CODE-CHATGPT-20261105T083024128Z",
     "coverageComplete": false,
     "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261105T083024128Z_TERMINAL.json"
+  },
+  "emailCapture": {
+    "at": "2026-11-05T08:36:55.749Z",
+    "run": "FORGE-CODE-CHATGPT-20261105T083024128Z",
+    "messagesRead": 597,
+    "pendingMessages": 319,
+    "fullyReadThrough": "2026-11-02T14:23:41.000Z",
+    "coverageComplete": false,
+    "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261105T083024128Z_MAIL.json",
+    "corroborated": true
   },
   "schedules": {
     "configurationObservedAt": "2026-11-05T08:21:01.115752Z",
@@ -174,22 +187,25 @@
       {
         "id": "forge-application-outcome-tracker",
         "lastDueAt": "2026-11-05T06:22:00.000Z",
-        "lastRunAt": "2026-11-02T06:34:32.639Z",
-        "status": "SUCCESS_WITH_PENDING_HELPER_SOURCE_RESEARCH",
-        "executionVerified": false,
+        "lastRunAt": "2026-11-05T08:21:01.124Z",
+        "status": "SOURCE_CAPTURE_CORROBORATED_CODE_CONSUMPTION_PENDING",
+        "executionVerified": true,
         "evidenceFiles": [
-          "receipts/FORGE-OUTCOME-CHATGPT-20261102T063159Z_SUMMARY.json",
-          "receipts/FORGE-OUTCOME-CHATGPT-20261102T063159Z_VERIFICATION.json"
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261105T081957Z_TERMINAL.txt",
+          "receipts/FORGE-CODE-CHATGPT-20261105T083024128Z_TERMINAL.json"
         ]
       },
       {
         "id": "forge-application-writer-gofer",
         "lastDueAt": "2026-11-05T06:42:00.000Z",
-        "lastRunAt": "2026-11-05T02:40:31.907Z",
-        "status": "DEFERRED_SHARED_LOCK",
-        "executionVerified": false,
+        "lastRunAt": "2026-11-05T07:44:36.337Z",
+        "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
+        "executionVerified": true,
         "evidenceFiles": [
-          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T023952Z_TERMINAL.txt"
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T074326Z_TERMINAL.txt",
+          "receipts/AI_EXCEPTION_REVIEWS/440adc19ea451871fbacd50e81c9cb962bf88f3a5a36743508263ad256269e31-61c9c0ad7699f09d99e6d789a5db24c271c238ff5c47058ca6719f0f8193dd11.json",
+          "receipts/AI_EXCEPTION_REVIEWS/33c1cb3274fe988ee0e5b9f1caeac25593a5134a482b9ca557c4a3f7b21bcfd7-a457d2c78e042128f2ad8e78334a0d95bc7f64a4da4e7f0bdd644298bee584da.json",
+          "receipts/AI_EXCEPTION_REVIEWS/3a8c467674211bbb1e26db84263300de0bdde18ca0bf05d3f7985efcfa38682e-c4a0a13dd6336788ed2566021e0f1e7d375c3cd4bace9c63c5e5e2258cca855e.json"
         ]
       },
       {

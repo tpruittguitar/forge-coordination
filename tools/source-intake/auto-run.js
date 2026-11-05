@@ -72,8 +72,9 @@ async function main(argv=process.argv.slice(2)){
  const key=process.env.FORGE_WRITER_KEY;
  if(!key)throw Error('AUTO intake blocked: FORGE_WRITER_KEY is not set');
  let prior=previous();
+ if(!dry&&prior.some(p=>p.state.quarantine||p.state.continuation)){const index=await require('../writer-verify/recovery').loadIndex({token:process.env.GITHUB_TOKEN||process.env.GH_TOKEN});for(const p of prior.filter(x=>x.state.quarantine||x.state.continuation)){try{console.log('READ_ONLY reconciliation',JSON.stringify(await require('./reconcile-pending').reconcile('.',p.file,{key,index})));}catch(e){console.error('GOFER reconciliation: '+e.message);}}prior=previous();}
  // One bounded transport recovery per scheduled pass; same workflow concurrency and Writer locks apply.
- if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();for(const unresolved of prior.filter(p=>p.state.quarantine&&!require("./unknown-recovery").resolved(p.state))){try{console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));}catch(e){console.error('GOFER_RECONCILIATION_REQUIRED: '+unresolved.file+' '+e.message);} }prior=previous();}
+ if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();for(const unresolved of prior.filter(p=>p.state.quarantine&&!(p.resolvedRequestIds||[]).includes(p.state.quarantine.requestId)&&!require("./unknown-recovery").resolved(p.state))){try{console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));}catch(e){console.error('GOFER_RECONCILIATION_REQUIRED: '+unresolved.file+' '+e.message);} }prior=previous();}
  // Reconcile accepted writes read-only before deciding whether a prior interruption
  // still blocks. Uncertain responses retain their existing fences and are never replayed here.
  // A single, DURABLY captured identity mismatch may be isolated from unrelated future work (quarantined below).
