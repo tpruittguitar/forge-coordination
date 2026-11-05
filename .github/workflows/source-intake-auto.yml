@@ -11,6 +11,8 @@ on:
     types: [completed]
     branches: [main]
   workflow_dispatch: {}
+  schedule:
+    - cron: '17 * * * *'
 permissions:
   contents: write
 concurrency:
@@ -18,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   intake:
-    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 330   # 25 inserts at ~6 min each waiting for durable receipts
     steps:
@@ -33,7 +35,7 @@ jobs:
           FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
           GITHUB_TOKEN: ${{ github.token }}
           INTAKE_REPORT: ${{ github.event.workflow_run.name == 'board-discovery' && 'state/board-discovery-report.json' || 'state/source-trial-report.json' }}
-        run: node tools/source-intake/auto-run.js --report "$INTAKE_REPORT"
+        run: node tools/source-intake/auto-run.js --catch-up --report "$INTAKE_REPORT"
       # The run record holds every Writer response (the recovery evidence after a halt), so it is kept twice.
       - name: Keep the run record as an artifact
         if: always()
