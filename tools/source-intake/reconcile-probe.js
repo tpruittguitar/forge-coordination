@@ -17,6 +17,8 @@ function targets(state){
  const ids=new Set();
  for(const [rid,r] of Object.entries(state.results||{}))if(r?.WRITE_ACCEPTED===true)ids.add(rid);
  for(const o of state.halts?.at(-1)?.outcomes||[])if(['HOLD','UNKNOWN','PENDING_VERIFICATION'].includes(o.status))ids.add(o.requestId);
+ for(const p of state.continuation?.pending||[])ids.add(p.requestId);
+ if(state.quarantine?.requestId)ids.add(state.quarantine.requestId);
  const s=stoppedAt(state);if(s&&!Object.hasOwn(state.results||{},s))ids.add(s);
  return [...ids];
 }
