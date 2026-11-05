@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:a860b08f30a2d69d15a36ccc",
+  "sourceVersion": "77d56b2a2102f5347c8466985da6083f3f4f6ff7b57801adf656cc3d57c51f44",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1023Z-SOURCE-B2-2",
+  "instructionCommit": "92f5a21eb03711904d519560e3facaeff8032ac9",
+  "observedAt": "2026-11-05T10:34:28.704Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered Rockwall, TX, USA from original saved card. Original exact Paycom posting 342650 returned CRAWL_EMPTY_CONTENT. No role responsibilities or independently readable employer identity/location could be recovered from that response; empty content is not proof the job closed.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://www.paycomonline.net/v4/ats/web.php/portal/705686342CB57A35DD007CBED73F2455/jobs/342650",
+      "result": "Read original exact Paycom URL once; extraction returned CRAWL_EMPTY_CONTENT."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Rockwall, TX, USA"
+  },
+  "sourceEvidence": {
+    "company": "Channell Commercial Corporation",
+    "title": "Director of Operations",
+    "location": "Rockwall, TX, USA",
+    "url": "https://www.paycomonline.net/v4/ats/web.php/portal/705686342CB57A35DD007CBED73F2455/jobs/342650",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Original exact employer posting or source-bound structured content becomes accessible."
+}

@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:b71f7e8acf2325f9b245cb07",
+  "sourceVersion": "e5684f3ca144bfad7ec0492bf1efeb3ee97450d0c53197949c2df9f2ddb72483",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1023Z-SOURCE-B2-6",
+  "instructionCommit": "92f5a21eb03711904d519560e3facaeff8032ac9",
+  "observedAt": "2026-11-05T10:34:35.239Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered Banning, California, United States from exact card. Full secondary BuiltIn11698753 header truncates title to Director of Product Development while body says Product Development and Industrialization and describes actual tooling/equipment/manufacturing-readiness work. Search source separately identifies requisition DIREC001937, but no exact employer ATS binding was returned. Preserve title discrepancy and secondary responsibility evidence; do not substitute or infer employer requisition identity.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://hiringcafe.com/job/director-of-product-development-and-industrialization-horizon-hobby-byk0mpq2eg4qu43f",
+      "result": "One targeted search and full secondary BuiltIn11698753 read; original exact employer posting not observed."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Banning, California, United States"
+  },
+  "sourceEvidence": {
+    "company": "Horizon Hobby",
+    "title": "Director of Product Development and Industrialization",
+    "location": "Banning, California, United States",
+    "url": "https://hiringcafe.com/job/director-of-product-development-and-industrialization-horizon-hobby-byk0mpq2eg4qu43f",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact employer requisition/Apply destination corroborates captured full title, Banning site and DIREC001937, resolving secondary header/body discrepancy."
+}
