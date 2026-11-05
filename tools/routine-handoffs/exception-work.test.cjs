@@ -90,3 +90,6 @@ test('replacement evidence cannot bypass a live protected row or contradictory p
  await Run.inspectReturns({root:f.root,privateDir:f.root,state:f.state,snapshot:{rows:[row]},apply:true,now,sourceVerify:async()=>{calls++;throw Error('SOURCE_IDENTITY_AMBIGUOUS');}});
  a.equal(calls,1);a.equal(f.item.status,'EXCEPTION');a.equal(f.state.exceptions[f.key].owner,'AI');a.deepEqual(f.state.transactions,{});
 });
+test('drain-owned intake exceptions are not assigned twice while unrelated historical work remains open',t=>{
+ const f=fixture(t);S.save(f.root,'state/INTAKE_DRAIN.json',{schema:'forge.intake-drain.v1',items:{[f.original.key]:{key:f.original.key,aliases:[f.original.key],status:'ACTION_REQUIRED',taskKey:'FORGE_INTAKE_SOURCE_RECOVERY'}}});const work=f.sync();a.equal(Object.values(work.cases).some(c=>c.kind==='SOURCE'),false);a.equal(Object.values(work.cases).some(c=>c.kind==='HISTORICAL'),true);
+});

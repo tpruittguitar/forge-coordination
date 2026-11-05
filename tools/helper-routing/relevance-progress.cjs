@@ -18,17 +18,17 @@ function handoffs(w){
 }
 function next(root,w,validate,start=1){
   if(!Number.isInteger(start)||start<1||start>Math.max(1,w.pages.length))throw Error('Unknown page; do not restart');
-  const done=completed(root,w,validate),owned=handoffs(w);
+  const drainOwned=require('../intake-drain/queue.cjs').ownedKeys(root),done=completed(root,w,validate),owned=handoffs(w);
   for(const k of require('../routine-handoffs/next.cjs').returned(root,w))done.add(k);
   for(let n=start;n<=w.pages.length;n++){
     const p=JSON.parse(fs.readFileSync(path.join(root,w.pages[n-1].path)));
-    const items=p.items.filter(i=>!done.has(i.key)&&!owned[i.key]);
+    const items=p.items.filter(i=>!done.has(i.key)&&!owned[i.key]&&!drainOwned.has(i.key));
     if(items.length)return {...p,items,page:n,pagePath:w.pages[n-1].path,publishedKeys:p.items.filter(i=>done.has(i.key)).map(i=>i.key),coordinatorOwnedKeys:p.items.filter(i=>owned[i.key]).map(i=>i.key),pageComplete:false};
   }
   return {assignmentId:w.assignmentId,items:[],helperResearchExhausted:true,assignmentComplete:false,reason:'All helper keys have published evidence or explicit coordinator ownership; canonical completion is not inferred'};
 }
 function checkpoint(root,w,validate,b){
-  validate(b,w);const done=completed(root,w,validate),owned=handoffs(w);
+  validate(b,w);const drainOwned=require('../intake-drain/queue.cjs').ownedKeys(root),done=completed(root,w,validate),owned=handoffs(w);
   for(const i of b.items){
     if(owned[i.key])throw Error('Coordinator-owned key; do not duplicate research');
     if(done.has(i.key))throw Error('Already published key; reuse immutable evidence');
