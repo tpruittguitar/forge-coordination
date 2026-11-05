@@ -1,0 +1,29 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:870b2f77b5fd43a2882388cf",
+  "sourceVersion": "0e10f1e583467b36c4c8c556b73f6382d3eeaec0f0637499f64a7fb3719d2388",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T212118763Z-rocket-source",
+  "instructionCommit": "fd8c5dcf64566a105088fe866ed3baf0e4f8e405",
+  "observedAt": "2026-11-05T21:21:18.763Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Prior SOURCE_READY review failed independent source validation with SOURCE_HTTP_404. Current exact-posting request failed at the execution network proxy (tunnel 403 Forbidden), before an employer HTTP response. Saved location and responsibility evidence are retained; current posting availability and identity have not been verified.",
+  "nextAction": "Retain saved evidence and independent validation failure. Recheck only after authorized source access changes or a new exact employer posting binding becomes available; do not replay any Writer request.",
+  "retryCondition": "Authorized source route can reach the exact employer posting, or a newly captured exact employer posting with corroborated identity is published.",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/f5692d52c30e6d31fb75a5d46ebef5466e956f1c9ce7d03ae341c4bb76f063ea.json",
+      "result": "Reused prior saved Stennis Space Center, MS identity and responsibility evidence; no fresh resume interpretation or canonical verification claimed."
+    },
+    {
+      "source": "https://job-boards.greenhouse.io/rocketlab/jobs/6592909003",
+      "result": "urllib request failed with URLError: Tunnel connection failed: 403 Forbidden. Stopped requests to this host; this is a proxy denial, not proof the employer closed the job."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json",
+      "result": "Retained SOURCE_HTTP_404 independent validation at 2026-11-05T15:20:27.446Z; timed retry eligibility does not establish source recovery."
+    }
+  ]
+}
