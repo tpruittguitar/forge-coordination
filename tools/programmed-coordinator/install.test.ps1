@@ -25,9 +25,10 @@ try {
     function Get-Command { param($Name, $ErrorAction) @{Source='C:\Program Files\PowerShell\7\pwsh.exe'} }
     function New-ScheduledTaskAction { param($Execute,$Argument,$WorkingDirectory) @{Execute=$Execute;Arguments=$Argument;WorkingDirectory=$WorkingDirectory} }
     function New-ScheduledTaskPrincipal { param($UserId,$LogonType,$RunLevel) @{} }
+    $capture = @{}
     function Register-ScheduledTask {
         param($TaskName,$Action,$Trigger,$Settings,$Principal,[switch]$Force)
-        $script:registered = @{Name=$TaskName;Action=$Action;Trigger=$Trigger}
+        $capture.registered = @{Name=$TaskName;Action=$Action;Trigger=$Trigger}
     }
     function Get-ScheduledTask { param($TaskName) @{TaskName=$TaskName;State='Ready'} }
     # Switch parameters in the native cmdlets are accepted by these mock functions.
@@ -36,6 +37,7 @@ try {
     $expected = '--headless "C:\Program Files\PowerShell\7\pwsh.exe" -NoProfile -NonInteractive -WindowStyle Hidden -File "' + $launcher + '" -ConfigFile "' + $configPath + '"'
     foreach ($installation in 1..2) {
         & $installer -ConfigFile $configPath | Out-Null
+        $registered = $capture.registered
         if ($registered.Name -ne 'FORGE_PROGRAMMED_COORDINATOR' -or
             $registered.Action.Execute -ne $consoleHost -or
             $registered.Action.Arguments -cne $expected -or
@@ -43,13 +45,13 @@ try {
             $registered.Trigger.Interval.TotalMinutes -ne 5) { throw 'Install/reinstall changed the headless launch contract or schedule' }
     }
     Remove-Item -LiteralPath $consoleHost
-    $script:registered = $null
+    $capture.registered = $null
     $rejected = $false
     try { & $installer -ConfigFile $configPath | Out-Null } catch {
         if ($_.Exception.Message -notlike 'Headless console host is required*') { throw }
         $rejected = $true
     }
-    if (-not $rejected -or $registered) { throw 'Missing conhost must fail before replacing the task' }
+    if (-not $rejected -or $capture.registered) { throw 'Missing conhost must fail before replacing the task' }
     Write-Output 'Installer headless launch, reinstall, quoted paths, schedule and missing-host checks passed.'
 } finally {
     $env:SystemRoot = $originalSystemRoot
