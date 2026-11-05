@@ -62,7 +62,7 @@ async function main(argv=process.argv.slice(2)){
  const key=process.env.FORGE_WRITER_KEY;if(!key)throw Error('BLOCKED: FORGE_WRITER_KEY not set');
  const report={schema:'forge.auto-intake-probe.v1',at:new Date().toISOString(),readOnly:true,writerSubmissions:0,runs:[]};
  for(const run of runs){
-  if(!/^FORGE-AUTO-\d{8}T\d{4}Z$/.test(run))throw Error('bad run id '+run);
+  if(!/^FORGE-AUTO-\d{8}T\d{4,6}Z$/.test(run))throw Error('bad run id '+run);
   const state=JSON.parse(fs.readFileSync(path.join(DIR,run+'.json'),'utf8'));
   let cands=[];try{cands=JSON.parse(fs.readFileSync(path.join(DIR,run+'.candidates.json'),'utf8'))}catch{}
   const byRid=new Map(cands.map(c=>[require('./production-executor').requestId(c.record),c]));

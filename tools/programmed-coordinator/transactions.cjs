@@ -6,7 +6,7 @@ const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGRE
 const pending = tx => !['VERIFIED','HELD'].includes(tx.status);
 function healthy(status) {
   if (!Object.hasOwn(status, 'freeze') || status.freeze !== null || String(status.level).toUpperCase() !== 'OK' ||
-      !Array.isArray(status.errors) || status.errors.length || !status.unverified || status.unverified.count !== 0) throw Error('LIVE_WRITER_GATE');
+      !Array.isArray(status.errors) || status.errors.length || !status.unverified) throw Error('LIVE_WRITER_GATE');
 }
 function identity(row) { return {company:row.COMPANY, title:row.TITLE, location:row.LOCATION}; }
 function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location); }

@@ -97,6 +97,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  if(!recorderReady)throw Error('BLOCKED: durable Writer-response recorder failed its write/read-back check');
  const outcomes=[];
  const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
+ const defer=(rid,reason,result)=>outcomes.push({requestId:rid,status:'DEFERRED',reason,owner:'FORGE_APPLICATION_WRITER_GOFER',nextAction:'Reconcile original request, receipt and exact identity; do not replay an uncertain write',...(result?{writerResult:result}:{})});
  for(const [i,candidate] of records.entries()){
   const rules=releaseRules(await fetchRelease(switchTransport)); // fresh kill switch before each write
   if(rules.mode!==expectedMode)halt('BLOCKED: release switch is '+rules.mode+' but this run is '+expectedMode);
@@ -110,18 +111,24 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
   const prior=Object.hasOwn(priorResults,rid)?priorResults[rid]:undefined;
+  if(auto&&prior!==undefined&&classifyWriterResponse(prior,rid).kind==='UNKNOWN'&&!autoSkip(prior,rid,'UNKNOWN',candidate)){
+   defer(rid,'ORIGINAL_REQUEST_RECONCILIATION_REQUIRED',prior);continue;
+  }
   if(pre.mode==='EXISTING_REQUEST_HOLD'){
    // Resume only a case whose earlier accepted POST is now proven by fresh authenticated reads.
-   if(pre.state!=='COMPLETE'||prior===undefined){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode,state:pre.state});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
+   if(pre.state!=='COMPLETE'||prior===undefined){
+    if(auto){if(prior===undefined)await recorder.record(rid,{status:'EXISTING_REQUEST_UNCERTAIN',requestId:rid,observedAt:new Date().toISOString()});defer(rid,'ORIGINAL_REQUEST_RECONCILIATION_REQUIRED');continue;}
+    outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode,state:pre.state});halt('BLOCKED: existing or uncertain request; reconcile before retry');
+   }
    let accounting;
    try{accounting=await verifyAcceptedCase(candidate,rid,prior,pre.entry,{key,transport})}
    catch(e){
     // Global (entire project): single-case verification failures are documented as SKIPPED and the batch continues.
     // Systemic failures (UNKNOWN, recorder, switch, freeze) still halt.
     const singleCase=/INSERT_IDENTITY_MISMATCH|CAPTURED_ID_UNBOUND|INDEX_RESULT_ID_MISMATCH|RECEIPT_NOT_DURABLE|RECEIPT_IDS_UNBOUND|EXACT_ROW_READBACK_MISSING|PROTECTED_ID_MISMATCH|PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN|NEW_MATCHED_EXISTING|CAPTURED_WRITER_RESULT_REQUIRED|PROTECTED_ROLE_OPENED_MASTER_TRANSACTION/;
-    if(singleCase.test(e.message||'')){
+    if(auto||singleCase.test(e.message||'')){
      const reason=(e.message||'').match(/\(([^)]+)\)/)?.[1]||'VERIFICATION_SKIPPED';
-     outcomes.push(skipped(rid,reason,prior));
+     if(auto)defer(rid,reason,prior);else outcomes.push(skipped(rid,reason,prior));
      continue;
     }
     outcomes.push({requestId:rid,status:'HOLD',reason:e.message});halt(e.message)
@@ -137,7 +144,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    if(priorSkip){outcomes.push(skipped(rid,priorSkip,prior));continue}
    let accounting;
    try{accounting=await verifyNoopCase(candidate,rid,prior,{key,transport})}
-   catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:prior});halt(e.message)}
+   catch(e){if(auto){defer(rid,e.message,prior);continue;}outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:prior});halt(e.message)}
    outcomes.push({requestId:rid,status:'RESUMED_ACCOUNTED',accounting,writerResult:prior});
    continue;
   }
@@ -157,9 +164,9 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(JSON.stringify(await recorder.read(rid))!==JSON.stringify(intent))halt('BLOCKED: durable pre-POST intent readback failed');
   let response;
   try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(180000)}); }
-  catch(e){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'POST_UNCONFIRMED',writerResult:intent});halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay');}
+  catch(e){if(auto){defer(rid,'POST_UNCONFIRMED',intent);continue;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'POST_UNCONFIRMED',writerResult:intent});halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay');}
   let result;
-  try{result=await response.json()}catch{outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_INVALID',writerResult:intent});halt('UNKNOWN: invalid Writer response; reconcile, never replay');}
+  try{result=await response.json()}catch{if(auto){defer(rid,'RESPONSE_INVALID',intent);continue;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_INVALID',writerResult:intent});halt('UNKNOWN: invalid Writer response; reconcile, never replay');}
   // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
   let recorded=false;
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
@@ -170,6 +177,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
   if(verdict.kind==='UNKNOWN'){
    const reason=result&&result.ok===false?'WRITER_ERROR':'CONTRACT_MISMATCH';
+   if(auto){defer(rid,reason,result);continue;}
    outcomes.push({requestId:rid,status:'UNKNOWN',reason,writerResult:result});
    halt('UNKNOWN: Writer response cannot prove a no-write outcome; reconcile, never replay');
   }
@@ -185,7 +193,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(candidate.expectedOutcome==='NEW'){outcomes.push(skipped(rid,'NEW_MATCHED_EXISTING',result));continue}
   let accounting;
   try{accounting=await verifyNoopCase(candidate,rid,result,{key,transport})}
-  catch(e){outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:result});halt(e.message)}
+  catch(e){if(auto){defer(rid,e.message,result);continue;}outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:result});halt(e.message)}
   outcomes.push({requestId:rid,status:'NOOP_ACCOUNTED',accounting,writerResult:result});
  }
  return outcomes;

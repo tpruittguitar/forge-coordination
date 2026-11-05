@@ -59,6 +59,12 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
   const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
+  if(outcomes.length===candidates.length&&state.mode==='AUTO'&&outcomes.some(x=>x.status==='DEFERRED')&&outcomes.every(x=>ACCOUNTED.has(x.status)||x.status==='DEFERRED')){
+   state.outcomes=outcomes;
+   state.continuation={schema:'forge.intake-continuation.v1',at:new Date().toISOString(),candidatesHash:state.candidatesHash,
+    pending:outcomes.filter(x=>x.status==='DEFERRED').map(x=>({requestId:x.requestId,reason:x.reason,record:candidates.find(c=>requestId(c.record)===x.requestId).record,owner:'FORGE_APPLICATION_WRITER_GOFER'})),carryForwardRequestIds:[]};
+   saveState(statePath,state);return {status:'PROGRESS_WITH_PENDING',outcomes,pending:state.continuation.pending};
+  }
   if(outcomes.length!==candidates.length||outcomes.some(x=>!ACCOUNTED.has(x.status)))throw Error('BLOCKED: run returned without every case accounted');
   state.outcomes=outcomes;state.completedAt=new Date().toISOString();saveState(statePath,state);
   return {status:'ALL_CASES_ACCOUNTED',outcomes};
@@ -86,7 +92,7 @@ async function waitReceiptComplete(rid,{key,transport,timeoutMs=30*60000,pollMs=
   const d=(await read('receipt_index',{key,transport,requestId:rid})).data,s=d.request?d.request.s:'NO_ENTRY';
   if(s==='COMPLETE')return s;
   if(['NEEDS_RESOLUTION','NOT_PERSISTED','FALSE_COMPLETE'].includes(s))throw Error('HOLD: receipt '+rid+' is '+s);
-  if(now()-t0>timeoutMs)throw Error('HOLD: receipt '+rid+' still '+s+' after '+Math.round(timeoutMs/60000)+' min');
+  if(now()-t0>=timeoutMs)throw Error('HOLD: receipt '+rid+' still '+s+' after '+Math.round(timeoutMs/60000)+' min');
   await sleep(pollMs);
  }
 }
@@ -98,7 +104,7 @@ async function auto(opts){
   if(r.status!=='HALTED')return r;
   const last=r.outcomes[r.outcomes.length-1];
   if(!/^HOLD: Writer accepted/.test(r.message)||!last||last.status!=='PENDING_VERIFICATION')return r;
-  try{await waitFn(last.requestId,{key,transport})}catch(e){return {status:'HALTED',message:e.message,outcomes:r.outcomes}}
+  try{await waitFn(last.requestId,{key,transport,...(loadState(statePath).mode==='AUTO'?{timeoutMs:0}:{})})}catch(e){if(loadState(statePath).mode!=='AUTO')return {status:'HALTED',message:e.message,outcomes:r.outcomes};/* Original acceptance is durable; next pass defers it and processes other identities. */}
  }
  return {status:'HALTED',message:'BLOCKED: auto exceeded its iteration limit',outcomes:[]};
 }

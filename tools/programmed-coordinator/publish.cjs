@@ -5,7 +5,7 @@ const paths=new Set(['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORD
 for(const p of ['state/HELPER_TRANSPORT.json','state/ROUTINE_HANDOFFS_REPORT.json','state/HELPER_HANDOFFS.json','state/HELPER_ROUTING_CURRENT.json','state/CODE_INTAKE_CONSUMPTION.json','control/GROK_INTAKE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json'])paths.add(p);
 paths.add('state/AI_EXCEPTION_WORK.json');
 for(const p of ['state/MAIL_PROCESSING.json','state/MAIL_PROCESSING_REPORT.json','state/MAIL_SOURCE_HANDOFFS.json','state/APPLICATION_TRACKER_EVENTS.json','state/APPLICATION_OUTCOMES.json','state/APPLICATION_TRACKER_CURSOR.json','control/OUTCOME_HELPER_WORK.json'])paths.add(p);
-function allowed(p){return paths.has(p)||/^receipts\/AI_EXCEPTION_REVIEWS\/[a-f0-9]{64}-[a-f0-9]{64}\.json$/.test(p)||/^receipts\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+_(CHECKPOINT|ACCEPTANCE|VERIFIED|NOT_ACCEPTED|SCREEN|TERMINAL|TRANSPORT|HANDOFFS|MAIL)\.json$/.test(p)||/^receipts\/FORGE-MAIL-CHATGPT-[a-f0-9]{32}_(CHECKPOINT|VERIFIED)\.json$/.test(p)||/^control\/(grok-intake|claude-relevance)\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+-\d{4}\.json$/.test(p)||/^receipts\/(CLAUDE_HELPERS|GROK_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+\.json$/.test(p)||/^receipts\/CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+\.json$/.test(p);}
+function allowed(p){return paths.has(p)||/^receipts\/AI_EXCEPTION_REVIEWS\/[a-f0-9]{64}-[a-f0-9]{64}\.json$/.test(p)||/^receipts\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+_(CHECKPOINT|ACCEPTANCE|VERIFIED|NOT_ACCEPTED|SCREEN|TERMINAL|TRANSPORT|HANDOFFS|MAIL|DEFERRED)\.json$/.test(p)||/^receipts\/FORGE-MAIL-CHATGPT-[a-f0-9]{32}_(CHECKPOINT|VERIFIED)\.json$/.test(p)||/^control\/(grok-intake|claude-relevance)\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+-\d{4}\.json$/.test(p)||/^receipts\/(CLAUDE_HELPERS|GROK_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+\.json$/.test(p)||/^receipts\/CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+\.json$/.test(p);}
 function git(root,args,optional=false){
  const r=cp.spawnSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:64*1024*1024,env:{...process.env,GIT_TERMINAL_PROMPT:'0',GIT_EDITOR:'true'}});
  if(r.error||r.status!==0){if(optional)return null;throw Error('Accounting Git operation failed: '+args[0]+'; preserve checkout and lock');}return r.stdout;
@@ -27,6 +27,14 @@ function finishRebase(root){
   fs.writeFileSync(path.join(root,guard),JSON.stringify(merged,null,2)+'\n');git(root,['add','--',guard]);
   if(git(root,['-c','core.editor=true','rebase','--continue'],true)!==null)return;
  }
+}
+function retainedSafe(root){
+ for(const name of ['rebase-merge','rebase-apply','MERGE_HEAD','CHERRY_PICK_HEAD'])if(fs.existsSync(path.resolve(root,git(root,['rev-parse','--git-path',name]).trim())))throw Error('Interrupted Git operation requires reconciliation');
+ const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
+ if(status.some(line=>!allowed(line.slice(3))||/[RCU]/.test(line.slice(0,2))))throw Error('Unexpected retained checkout changes');
+ const retained=git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean);
+ if(retained.some(f=>!allowed(f)))throw Error('Unpublished code requires reconciliation');
+ return {safe:true};
 }
 function publish(root,{maxAttempts=4,beforePush}={}){
  // REBASE_HEAD can survive a finished/quit rebase. Git's actual operation
@@ -54,5 +62,5 @@ function publish(root,{maxAttempts=4,beforePush}={}){
  }
  throw Error('Accounting publication retry boundary reached; preserve committed receipts and lock');
 }
-if(require.main===module){try{console.log(JSON.stringify(publish(path.resolve(process.argv[2]||'.'))));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={publish,timestampMerge,allowed};
+if(require.main===module){try{console.log(JSON.stringify(process.argv.includes('--check-retained')?retainedSafe(path.resolve(process.argv[2]||'.')):publish(path.resolve(process.argv[2]||'.'))));}catch(e){console.error(e.message);process.exitCode=1;}}
+module.exports={publish,timestampMerge,allowed,retainedSafe};

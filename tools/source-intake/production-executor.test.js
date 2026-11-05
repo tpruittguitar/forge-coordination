@@ -461,12 +461,18 @@ test('lost POST response is durably fenced UNKNOWN and cannot be replayed',async
  const rows=newOnly(2),rec=memRecorder(),base=mockWriter();let posts=0;
  const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;assert.equal(rec.store[rid].status,'POST_IN_FLIGHT_UNKNOWN');throw Error('timeout');}return base(u,o);};
  const o=opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO'});
- const first=await runIntake(rows,o).catch(e=>e);assert.match(first.message,/UNKNOWN/);assert.equal(first.outcomes[0].status,'UNKNOWN');assert.equal(posts,1);
- await assert.rejects(()=>runIntake(rows,{...o,priorResults:rec.store}),/HOLD|uncertain|UNKNOWN/);assert.equal(posts,1);
+ const first=await runIntake(rows,o);assert.equal(first[0].status,'DEFERRED');assert.equal(first[1].status,'DEFERRED');assert.equal(posts,2);
+ const later=await runIntake(rows,{...o,priorResults:rec.store});assert.ok(later.every(x=>x.status==='DEFERRED'));assert.equal(posts,2);
 });
 test('malformed Writer response never becomes accounted SKIPPED',async()=>{
  const rows=newOnly(2),base=mockWriter();let posts=0;const transport=async(u,o)=>o.method==='POST'?(posts++,{ok:true,json:async()=>{throw Error('bad JSON')}}):base(u,o);
- const err=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);assert.match(err.message,/UNKNOWN/);assert.equal(err.outcomes[0].status,'UNKNOWN');assert.equal(posts,1);
+ const result=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO'}));assert.ok(result.every(x=>x.status==='DEFERRED'));assert.equal(posts,2);
+});
+test('AUTO documents one busy Writer response and still submits the next independent job',async()=>{
+ const rows=newOnly(2),rec=memRecorder(),base=mockWriter(),posted=[];
+ const transport=async(u,o)=>{if(o.method==='POST'){const rid=JSON.parse(o.body).requestId;posted.push(rid);if(posted.length===1)return{ok:true,json:async()=>({ok:false,error:'Lock timeout'})};return{ok:true,json:async()=>insertResponse(rid,'V2I-NEXT')};}return base(u,o);};
+ const result=await runIntake(rows,opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.equal(posted.length,2);assert.equal(result.outcomes[0].status,'DEFERRED');assert.equal(result.outcomes[1].status,'PENDING_VERIFICATION');assert.equal(rec.store[posted[0]].error,'Lock timeout');
 });
 
 test('Writer delimiter escaping does not create false identity holds; actual differences still hold',()=>{

@@ -68,7 +68,7 @@ async function main(argv=process.argv.slice(2)){
  if(!key)throw Error('AUTO intake blocked: FORGE_WRITER_KEY is not set');
  let prior=previous();
  // One bounded transport recovery per scheduled pass; same workflow concurrency and Writer locks apply.
- if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();const unresolved=prior.find(p=>p.state.quarantine&&!require("./unknown-recovery").resolved(p.state));if(unresolved){console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));prior=previous();}}
+ if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();for(const unresolved of prior.filter(p=>p.state.quarantine&&!require("./unknown-recovery").resolved(p.state))){try{console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));}catch(e){console.error('GOFER_RECONCILIATION_REQUIRED: '+unresolved.file+' '+e.message);} }prior=previous();}
  // Reconcile accepted writes read-only before deciding whether a prior interruption
  // still blocks. Uncertain responses retain their existing fences and are never replayed here.
  // A single, DURABLY captured identity mismatch may be isolated from unrelated future work (quarantined below).
@@ -133,6 +133,7 @@ async function main(argv=process.argv.slice(2)){
  };
  const r=await auto({statePath,candidates,key,refreshReview});
  console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
+ if(r.status==='PROGRESS_WITH_PENDING'){console.log('GOFER_RECONCILIATION_REQUIRED: '+JSON.stringify(r.pending));return r;}
  if(r.status!=='ALL_CASES_ACCOUNTED'&&r.status!=='ALREADY_COMPLETE')throw Error('NEEDS TIM: AUTO run halted: '+r.message);
  await snapshot('after',{statePath,candidates,key});
  const rec=finalize({statePath,candidates});

@@ -55,6 +55,15 @@ function latch(prior){
  const blocking=[],quarantined=[];
  for(const p of prior){
   if(p.state.reconciliation||p.state.noCandidates||require("./unknown-recovery").resolved(p.state))continue;
+  const continuation=p.state.continuation;
+  if(continuation?.schema==='forge.intake-continuation.v1'&&continuation.candidatesHash===p.state.candidatesHash&&Array.isArray(continuation.pending)&&continuation.pending.length&&
+     Array.isArray(p.state.outcomes)&&p.state.outcomes.length===p.state.requestIds?.length&&new Set(p.state.outcomes.map(x=>x.requestId)).size===p.state.requestIds.length&&
+     p.state.outcomes.every(x=>p.state.requestIds.includes(x.requestId)&&['SKIPPED','NOOP_ACCOUNTED','RESUMED_ACCOUNTED','DEFERRED'].includes(x.status))&&
+     p.state.outcomes.filter(x=>x.status==='DEFERRED').length===continuation.pending.length&&new Set(continuation.pending.map(x=>x.requestId)).size===continuation.pending.length&&
+     continuation.pending.every(x=>requestId(x.record)===x.requestId&&Object.hasOwn(p.state.results||{},x.requestId)&&p.state.outcomes.some(o=>o.requestId===x.requestId&&o.status==='DEFERRED'))){
+   for(const item of continuation.pending)quarantined.push({file:p.file,run:p.state.sourceRunId||'',...item,identityKey:identityKey(item.record),reason:item.reason||'PENDING_GOFER_RECONCILIATION'});
+   continue;
+  }
   const halt=p.state.halts?.at(-1)||null,iso=isolatedIdentityHold(p.state)||isolatedUnknown(p.state);
   if(iso){quarantined.push({file:p.file,run:p.state.sourceRunId||'',...iso});continue}
   blocking.push({file:p.file,run:p.state.sourceRunId||'',haltAt:halt?.at||null,message:halt?.message||'run stopped without a recorded halt',requestId:stoppedAt(p.state)});

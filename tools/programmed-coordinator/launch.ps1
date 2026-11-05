@@ -12,9 +12,17 @@ function Git-Checked([string[]]$GitArgs) {
     return $result
 }
 # Publish retained accounting even when a failed push left a clean committed checkout.
-function Publish-Accounting {
-    & node tools/programmed-coordinator/publish.cjs $repo
-    if ($LASTEXITCODE -ne 0) { throw 'Accounting publication needs reconciliation; retained evidence and lock preserved' }
+function Publish-Accounting([string]$Phase) {
+    & node tools/programmed-coordinator/publish.cjs $repo | Out-Host
+    if ($LASTEXITCODE -eq 0) { return $true }
+    # This is an audit delivery failure, not ownership of a live Writer operation.
+    # Retain every local commit/checkpoint and make the failure available to Gofer.
+    $failure = @{ schema='forge.audit-publication-failure.v1'; at=(Get-Date).ToUniversalTime().ToString('o'); runId=$env:FORGE_COORDINATOR_HELD_RUN_ID; phase=$Phase; status='AUDIT_PENDING'; owner='FORGE_APPLICATION_WRITER_GOFER'; nextAction='Reconcile and publish retained accounting; never replay canonical writes'; writerSubmissions=0 }
+    $directory = Join-Path $config.privateDirectory 'audit-failures'
+    [IO.Directory]::CreateDirectory($directory) | Out-Null
+    $failure | ConvertTo-Json | Set-Content -LiteralPath (Join-Path $directory ($env:FORGE_COORDINATOR_HELD_RUN_ID + '-' + $Phase + '.json')) -Encoding utf8
+    Write-Warning 'AUDIT_PENDING: retained accounting needs publication; independent jobs may continue.'
+    return $false
 }
 $env:ACTIVITY_FC_DIR = $config.cockpitDirectory
 $env:FORGE_CONNECTION_FILE = $config.connectionFile
@@ -27,16 +35,25 @@ if ($LASTEXITCODE -ne 0) { throw 'Production lock held; preserve prior run and d
 # The existing connection stays local. No Writer credential is put in Git,
 # scheduler arguments, output, a helper prompt or an environment configuration.
 try {
-    Publish-Accounting
-    Git-Checked @('fetch','origin','main') | Out-Null
-    Git-Checked @('merge','--ff-only','origin/main') | Out-Null
+    $published = Publish-Accounting 'before'
+    if ($published) {
+        Git-Checked @('fetch','origin','main') | Out-Null
+        Git-Checked @('merge','--ff-only','origin/main') | Out-Null
+    } else {
+        # Work from the retained trusted revision while delivery is unavailable.
+        # An interrupted merge or changed code still requires reconciliation.
+        & node tools/programmed-coordinator/publish.cjs $repo --check-retained
+        if ($LASTEXITCODE -ne 0) { throw 'Retained checkout requires code or merge reconciliation' }
+    }
     & node tools/programmed-coordinator/run.cjs apply
     $runExit = $LASTEXITCODE
 } finally {
-    # A failed publication deliberately retains the shared lock and all local
-    # evidence. Resolve that failure before allowing a second coordinator.
-    Publish-Accounting
-    & node $lockScript release $config.productionLock $env:FORGE_COORDINATOR_HELD_RUN_ID
-    if ($LASTEXITCODE -ne 0) { throw 'Accounting persisted, but shared lock release failed' }
+    # Publication, including failure recording, cannot prevent lock release.
+    # Original transaction checkpoints keep uncertain requests fenced after release.
+    try { Publish-Accounting 'after' | Out-Null }
+    finally {
+        & node $lockScript release $config.productionLock $env:FORGE_COORDINATOR_HELD_RUN_ID
+        if ($LASTEXITCODE -ne 0) { throw 'Shared lock release failed; inspect actual owner' }
+    }
 }
 if ($runExit -ne 0) { throw "Coordinator retained unfinished work (exit $runExit)" }
