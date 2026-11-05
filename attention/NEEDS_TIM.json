@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T01:25:55.929Z",
- "sourceCommit": "49f4f9181d19b7ef72372f6be9cb8a7247977c9f",
+ "builtAt": "2026-11-05T02:03:23.998Z",
+ "sourceCommit": "2f2cd666b2b8135b28b5ca31fb01420eaaf8481a",
  "counts": {
-  "total": 60,
+  "total": 62,
   "BLOCKING": 1,
-  "ACTION": 22,
-  "WATCH": 37,
+  "ACTION": 23,
+  "WATCH": 38,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 13,
-  "UPKEEP": 39
+  "UPKEEP": 41
  },
  "items": [
   {
@@ -318,10 +318,10 @@
    "section": "UPKEEP",
    "level": "ACTION",
    "title": "CODE lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json",
    "at": "2026-11-04T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -336,6 +336,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-GOFER-CHATGPT-20261104T220818Z_DEFERRED.json",
    "at": "2026-11-04T00:00:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#240",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #240: Keep Writer volume moving; route exceptions to Gofer",
+   "detail": "Open since 2026-11-05. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #240",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/240",
+   "at": "2026-11-05T02:02:31Z",
+   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -796,8 +808,8 @@
    "title": "CODE · CHATGPT — run never wrote a terminal receipt",
    "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
    "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json",
    "at": "2026-11-04T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -848,6 +860,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
    "at": "2026-11-04T13:09:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:POSTVAL",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "POSTVAL lane has gone quiet (usually reports every 4 h)",
+   "detail": "Last receipt FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
+   "at": "2026-11-04T13:09:00-05:00",
+   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
@@ -876,8 +900,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-04T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261104T105524157Z_TRANSPORT.json",
-   "runs7d": 804,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261104T110024168Z_TRANSPORT.json",
+   "runs7d": 809,
    "usualGapHours": 0,
    "overdue": true
   },
@@ -1169,7 +1193,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
    "runs7d": 344,
    "usualGapHours": 4,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1179,7 +1203,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-CLAUDE-20261028-1032ET-SKIP.txt",
    "runs7d": 0,
    "usualGapHours": 2,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "POSTVAL",
@@ -1189,7 +1213,7 @@
    "lastFile": "receipts/FORGE-POSTVAL-GROK-20261028-1313ET.txt",
    "runs7d": 0,
    "usualGapHours": 8,
-   "overdue": false
+   "overdue": true
   },
   {
    "lane": "RELEVANCE",
