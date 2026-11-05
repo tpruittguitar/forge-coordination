@@ -1,7 +1,7 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-05T22:42:37.217Z",
-  "instructionCommit": "2dd23b74c63dcad1ab6f3ed9944c56fa325bf5f0",
+  "at": "2026-11-05T22:52:12.874Z",
+  "instructionCommit": "5650eca4d89a78e0d80531953b7c0fc7f2f942b0",
   "batches": 284,
   "statuses": {
     "EXCEPTION": 267,
@@ -2412,7 +2412,7 @@
     {
       "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-05T22:35:40.136Z",
+      "at": "2026-11-05T22:45:40.429Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
@@ -4264,6 +4264,12 @@
     },
     {
       "owner": "AI",
+      "reason": "UNRESOLVED_CORRESPONDENCE",
+      "messageId": "1a1ada7fd7b6ea5e",
+      "sourceSha256": "e21e9d167e57df551a8ef5bb037dbe44dead3666352b0476ae1f72fcb897f6c2"
+    },
+    {
+      "owner": "AI",
       "messageId": "1a19da40f0039652",
       "sourceSha256": "7276a0eb4ca3f1169191fa3ff70d519735f09fc38d57b462e4409d4988b05a7d",
       "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -4527,12 +4533,6 @@
       "sourceSha256": "865e78ce1ee197ca51690ed2e9f6aec14978b2091eb04f04252d1af78652f38e",
       "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
       "nextAction": "Evaluate the full saved alert, repair abnormal card identities, and capture exact candidates; never mark a handoff complete without acknowledgment."
-    },
-    {
-      "owner": "AI",
-      "reason": "UNRESOLVED_CORRESPONDENCE",
-      "messageId": "1a1ada7fd7b6ea5e",
-      "sourceSha256": "e21e9d167e57df551a8ef5bb037dbe44dead3666352b0476ae1f72fcb897f6c2"
     },
     {
       "owner": "AI",
@@ -5314,9 +5314,9 @@
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-05T22:36:01.601Z",
-    "sha256": "22dca3afb915930769983f321a61d1080d4640ff8ae97a8f1fc879ed585df844",
-    "rows": 4677
+    "readAt": "2026-11-05T22:45:59.254Z",
+    "sha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+    "rows": 4680
   },
   "coverage": {
     "schema": "forge.email-recovery-summary.v1",
@@ -5340,7 +5340,7 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261105T223523494Z",
+  "runId": "FORGE-CODE-CHATGPT-20261105T224523855Z",
   "mode": "apply",
   "collected": {
     "newBatches": 0,
@@ -5352,8 +5352,8 @@
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261105T223523494Z",
-      "at": "2026-11-05T22:35:42.367Z",
+      "runId": "FORGE-CODE-CHATGPT-20261105T224523855Z",
+      "at": "2026-11-05T22:45:42.482Z",
       "imported": 0,
       "reportFeeds": [
         {
@@ -5554,7 +5554,7 @@
         "failures": [
           {
             "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-            "at": "2026-11-05T22:35:40.136Z",
+            "at": "2026-11-05T22:45:40.429Z",
             "reason": "RUN_LIST_INACCESSIBLE"
           }
         ]
@@ -5713,7 +5713,7 @@
         {
           "owner": "CODE",
           "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-          "at": "2026-11-05T22:35:40.136Z",
+          "at": "2026-11-05T22:45:40.429Z",
           "reason": "RUN_LIST_INACCESSIBLE"
         }
       ],
@@ -5724,16 +5724,16 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261105T223523494Z",
+      "runId": "FORGE-CODE-CHATGPT-20261105T224523855Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-05T22:36:01.601Z",
-        "sha256": "22dca3afb915930769983f321a61d1080d4640ff8ae97a8f1fc879ed585df844",
-        "rows": 4677
+        "readAt": "2026-11-05T22:45:59.254Z",
+        "sha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+        "rows": 4680
       },
       "counts": {
-        "seededCodeIntake": 1,
-        "canonical": 2,
+        "seededCodeIntake": 0,
+        "canonical": 0,
         "fenced": 426,
         "alreadyAssigned": 2395
       },
@@ -6470,24 +6470,13 @@
           "reason": "CANONICAL_NEAR_MATCH_REQUIRES_IDENTITY"
         }
       ],
-      "canonicalMatches": [
-        {
-          "key": "linkedin:4486893493",
-          "primaryId": "V2I-7FF6B8008643",
-          "rowSha256": "018b4e21c421b557ad25c299b4a0a6b535d522183cc75a4aab07a5eec2f9ce6f"
-        },
-        {
-          "key": "linkedin:4487021955",
-          "primaryId": "V2I-5973129AF72F",
-          "rowSha256": "bdb9d65cd9d707580d67b542e088612e95e4005a762a65102101a2395d3c3f26"
-        }
-      ],
+      "canonicalMatches": [],
       "writerSubmissions": 0,
       "noProcessingCap": true
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261105T223523494Z",
+      "runId": "FORGE-CODE-CHATGPT-20261105T224523855Z",
       "read": 721,
       "processed": 720,
       "pending": 255,
@@ -7132,6 +7121,12 @@
         },
         {
           "owner": "AI",
+          "reason": "UNRESOLVED_CORRESPONDENCE",
+          "messageId": "1a1ada7fd7b6ea5e",
+          "sourceSha256": "e21e9d167e57df551a8ef5bb037dbe44dead3666352b0476ae1f72fcb897f6c2"
+        },
+        {
+          "owner": "AI",
           "messageId": "1a19da40f0039652",
           "sourceSha256": "7276a0eb4ca3f1169191fa3ff70d519735f09fc38d57b462e4409d4988b05a7d",
           "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -7395,12 +7390,6 @@
           "sourceSha256": "865e78ce1ee197ca51690ed2e9f6aec14978b2091eb04f04252d1af78652f38e",
           "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
           "nextAction": "Evaluate the full saved alert, repair abnormal card identities, and capture exact candidates; never mark a handoff complete without acknowledgment."
-        },
-        {
-          "owner": "AI",
-          "reason": "UNRESOLVED_CORRESPONDENCE",
-          "messageId": "1a1ada7fd7b6ea5e",
-          "sourceSha256": "e21e9d167e57df551a8ef5bb037dbe44dead3666352b0476ae1f72fcb897f6c2"
         },
         {
           "owner": "AI",
@@ -8183,7 +8172,7 @@
       "noProcessingCap": true,
       "observations": 1449,
       "duplicateObservations": 728,
-      "recoveredAlertCards": 4,
+      "recoveredAlertCards": 0,
       "statuses": {
         "VERIFIED_NOT_RECRUITING": 344,
         "EXCEPTION": 97,
@@ -8230,9 +8219,9 @@
   },
   "exceptionWork": {
     "counts": {
-      "ACTION_REQUIRED": 364,
+      "ACTION_REQUIRED": 363,
       "NO_LONGER_OPEN": 141,
-      "WAITING_SOURCE_CHANGE": 22
+      "WAITING_SOURCE_CHANGE": 23
     },
     "owner": "FORGE_APPLICATION_OUTCOME_TRACKER",
     "reviewErrors": {}
