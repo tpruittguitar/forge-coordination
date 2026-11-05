@@ -20,3 +20,12 @@ test('screened-out captures remain discovery output; old WIP is not divided into
  const j=U.build({records:[{...c(123),firstSeen:new Date(now-40*3600000).toISOString()},c(456,'OUT_OF_SCOPE')],rows:[],now}).summary;
  assert.equal(j.rates.discovery.count,1);assert.equal(j.total,2);
 });
+
+test('salary comparables and review evidence cannot create identity conflicts or prove a job present',()=>{
+ const anchor={...row,PRIMARY_ID:'V2I-OTHER',COMPANY:'Other Factory',TITLE:'Plant Manager',p:{SALARY_ANCHORS:row.p.SOURCE_URL,CLAUDE_REVIEW_EVIDENCE_URL:row.p.SOURCE_URL}};
+ let j=U.build({records:[c(123)],rows:[row,anchor],now}).summary;assert.equal(j.counts.PRESENT,1);assert.equal(j.counts.IDENTITY_HOLD,0);
+ j=U.build({records:[c(123)],rows:[anchor],now}).summary;assert.equal(j.counts.PRESENT,0);assert.equal(j.waiting,1);
+});
+test('multiple actual posting identity URLs remain an identity hold',()=>{
+ const j=U.build({records:[c(123)],rows:[row,{...row,PRIMARY_ID:'V2I-SECOND',p:{LINKEDIN_URL:row.p.SOURCE_URL}}],now}).summary;assert.equal(j.counts.IDENTITY_HOLD,1);assert.equal(j.counts.PRESENT,0);
+});

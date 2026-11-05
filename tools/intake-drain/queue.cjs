@@ -11,6 +11,11 @@ const read=(root,file,fallback)=>S.read(root,file,fallback);
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
 function safeUrl(raw){try{const key=U.key(raw);if(key?.startsWith('indeed:'))return 'https://www.indeed.com/viewjob?jk='+key.slice(7);if(key?.startsWith('linkedin:'))return 'https://www.linkedin.com/jobs/view/'+key.slice(9)+'/';const u=new URL(raw);if(u.protocol!=='https:')return '';for(const k of [...u.searchParams.keys()])if(/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k))u.searchParams.delete(k);u.hash='';return u.href;}catch{return '';}}
 function sourceCard(e){return{company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
+function rekeyedRepresentation(item,up){
+ const aliases=item.aliases?.length?item.aliases:[item.key],matches=Object.entries(up.groups).filter(([k,g])=>g.status==='PRESENT'&&/^pid:V2[A-Z]-[A-Za-z0-9_-]+$/.test(k)&&aliases.every(a=>g.aliases?.includes(a)));
+ if(matches.length!==1)return null;
+ return {groupKey:matches[0][0],primaryId:matches[0][0].slice(4),status:'PRESENT',aliases,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};
+}
 function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const up=read(root,'state/UPSTREAM_LEDGER.json'),old=read(root,FILE,empty()),mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),present=new Set(),at=new Date(now).toISOString();
  if(old.schema!=='forge.intake-drain.v1'||!old.items||Array.isArray(old.items))throw Error('VALID_DURABLE_DRAIN_INVENTORY_REQUIRED');
@@ -42,9 +47,17 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   old.items[key]=item;
  }
  // Missing inventory is an error, never an invented completion.
- for(const [key,item]of Object.entries(old.items))if(!present.has(key)&&item.status!=='ACCOUNTED_UPSTREAM'){item.status='INVENTORY_RECONCILIATION_REQUIRED';item.nextAction='Recover missing upstream group before processing';}
+ for(const [key,item]of Object.entries(old.items))if(!present.has(key)&&item.status!=='ACCOUNTED_UPSTREAM'){
+  const represented=rekeyedRepresentation(item,up);
+  if(represented){
+   item.currentRepresentation=represented;
+   const fence=(item.aliases||[key]).map(k=>fences.get(k)).find(Boolean)||item.fence;
+   if(fence){item.fence=fence;item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Job already represented; reconcile the original Writer request independently. Never replay or infer write completion from presence.';}
+   else{item.status='ACCOUNTED_UPSTREAM';item.outcome=represented;item.nextAction='Already represented in master/archive; no new intake.';}
+  }else{delete item.currentRepresentation;item.status='INVENTORY_RECONCILIATION_REQUIRED';item.nextAction='Recover missing upstream group before processing';}
+ }
  old.at=at;old.upstreamAt=up.at;old.reviewErrors={};
- for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];if(!item||item.sourceVersion!==review.sourceVersion||item.status==='ACCOUNTED_UPSTREAM')continue;validate(review,item,now);if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
+ for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];if(!item||item.sourceVersion!==review.sourceVersion||item.status==='ACCOUNTED_UPSTREAM'||item.status==='INVENTORY_RECONCILIATION_REQUIRED'||item.currentRepresentation)continue;validate(review,item,now);if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
   if(item.review&&Date.parse(item.review.observedAt)>Date.parse(review.observedAt))continue;
   item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome};
   item.nextAction=review.nextAction||item.nextAction;
