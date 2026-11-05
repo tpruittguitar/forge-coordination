@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:4a7413051c21ba35ffb2635f",
+  "sourceVersion": "0fe6e7b44c1f51c4c3c0f2801e7d9827ae5a1d6988a37951fbe3edff6685b576",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B2-2",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:25:20.010Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Palo Alto worksite. Workday returned empty content; preserve Head versus URL Sr Manager wording and do not infer actual responsibilities or title equivalence.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://onehealthineers.wd3.myworkdayjobs.com/SHSJB/job/PAO-H/Sr-Manager--New-Product-Introduction-Project-Management-Office-Palo-Alto--CA_R-28999",
+      "result": "Exact Siemens R-28999 Workday URL returned CRAWL_EMPTY_CONTENT; no guessed scope or final exclusion based on medical company name."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Palo Alto, CA, USA"
+  },
+  "sourceEvidence": {
+    "company": "Siemens Healthineers",
+    "title": "Head of New Product Introduction Project Management Office-Palo Alto, CA",
+    "location": "Palo Alto, CA, USA",
+    "url": "https://onehealthineers.wd3.myworkdayjobs.com/SHSJB/job/PAO-H/Sr-Manager--New-Product-Introduction-Project-Management-Office-Palo-Alto--CA_R-28999",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Readable original R-28999 evidence corroborates actual title/worksite and responsibility scope."
+}

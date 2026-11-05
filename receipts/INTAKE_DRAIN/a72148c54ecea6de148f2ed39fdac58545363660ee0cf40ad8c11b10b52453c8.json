@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:490cfae22f5a962ca25aa194",
+  "sourceVersion": "54f741c0bce982b493240690c91ebd0107a4d826bba26b50d99f44f04f51d006",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B2-1",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:25:18.319Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Portage worksite. Exact employer Workday posting returned empty content, so actual plant responsibility quote could not be recovered; do not infer responsibility or closure from title alone.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://msiexpress.wd5.myworkdayjobs.com/MSI_Express_External_Careers/job/6515-Portage-IN-Ameriplex/Plant-Manager_R-101931",
+      "result": "Exact MSI R-101931 Workday URL returned CRAWL_EMPTY_CONTENT."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Portage, IN, USA"
+  },
+  "sourceEvidence": {
+    "company": "MSI Express, Inc",
+    "title": "Plant Manager",
+    "location": "Portage, IN, USA",
+    "url": "https://msiexpress.wd5.myworkdayjobs.com/MSI_Express_External_Careers/job/6515-Portage-IN-Ameriplex/Plant-Manager_R-101931",
+    "references": [
+      "state/source-trial-report.json@b922aa31",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact employer posting or newly captured original source provides readable responsibility and worksite evidence."
+}
