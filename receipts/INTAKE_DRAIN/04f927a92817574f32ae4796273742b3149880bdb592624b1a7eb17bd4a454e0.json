@@ -1,0 +1,56 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:6470bcf10c91af9ec832dac5",
+  "sourceVersion": "81db89cd6c18b63e9fb1ed8237686ca8129ad4f84c7d5781e36d26701919213e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B1-02",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T07:51:25.996Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh complete canonical master/archive comparison identifies one exact source-bound role with its existing protected disposition. Preserve that decision; canonical inventory accounting still requires the existing coordinator.",
+  "nextAction": "Existing coordinator must propagate verified existing/protected presence into upstream accounting without new intake or changes to the protected job",
+  "retryCondition": "VERIFIED_EXISTING_PROTECTED_ACCOUNTING_PROPAGATED_BY_EXISTING_COORDINATOR",
+  "attempts": [
+    {
+      "source": "control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt#AUTHORITIES",
+      "result": "Existing canonical Drive master reference reused; archive reference from shared adapter"
+    },
+    {
+      "source": "Authorized connected Drive canonical master/archive read",
+      "result": "Existing reader parseMaster/parseArchive passes complete snapshot; exact source posting, employer/title and site evidence compared with hashes only published"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Anduril Industries",
+    "title": "Deputy Head of Production, Autonomous Airpower (Fury)",
+    "location": "Ashville, Ohio, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/4962385007?gh_jid=4962385007"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:50:41.927Z"
+  },
+  "conclusion": {
+    "kind": "FRESH_VERIFIED_EXISTING_PROTECTED_IDENTITY",
+    "canonicalPresenceVerified": true,
+    "verifiedBy": "EXACT_SOURCE_POSTING_AND_IDENTITY",
+    "primaryId": "V2S-ANDURIL-FURY-5577",
+    "bucket": "REJECTED_BY_EMPLOYER",
+    "rowSha256": "eec9f4c889dbf66f6bdaa6342020b0c10477768951f92febd1d64fcc5adfb911",
+    "candidates": [],
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false
+  },
+  "owner": "ChatGPT"
+}

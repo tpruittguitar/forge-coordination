@@ -1,0 +1,66 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:c4128e107acf93091bebec1a",
+  "sourceVersion": "5f3b48cf789d60f534d9795d3c5dcb03397fc307511ab90714b12a518a6beeff",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B1-09",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T07:51:47.097Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh canonical snapshot contains multiple source-bound records with protected/duplicate lineage. Preserve all records and decisions; do not select one by title or invent canonical closure.",
+  "nextAction": "Existing coordinator must reconcile the exact source-bound canonical records and duplicate lineage while preserving all protected outcomes",
+  "retryCondition": "EXACT_SOURCE_BOUND_CANONICAL_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "control/FORGE_AUTOMATION_CONTROL_ACTIVE.txt#AUTHORITIES",
+      "result": "Existing canonical Drive master reference reused; archive reference from shared adapter"
+    },
+    {
+      "source": "Authorized connected Drive canonical master/archive read",
+      "result": "Existing reader parseMaster/parseArchive passes complete snapshot; exact source posting, employer/title and site evidence compared with hashes only published"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Anduril Industries",
+    "title": "Director, Manufacturing Engineering",
+    "location": "Ashville, Ohio, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5118136007?gh_jid=5118136007"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:50:41.927Z"
+  },
+  "conclusion": {
+    "kind": "FRESH_CANONICAL_DUPLICATE_OR_DISPOSITION_CONFLICT",
+    "canonicalPresenceVerified": false,
+    "verifiedBy": "UNRESOLVED_MULTIPLE_RECORDS",
+    "candidates": [
+      {
+        "primaryId": "V2I-FF06D1E8F521",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "rowSha256": "6b5ac81fab2ee1e01f3c676882993e7a587d562232681ac99b9e84a32e680682"
+      },
+      {
+        "primaryId": "V2F-7F2BB2E33491",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "rowSha256": "b0372774db225c268d8b183f6b6f0726e822982717dcc47b09991ce25a0e915d"
+      }
+    ],
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false
+  },
+  "owner": "ChatGPT"
+}
