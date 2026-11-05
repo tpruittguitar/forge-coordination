@@ -133,7 +133,7 @@ async function main(argv=process.argv.slice(2)){
  };
  const r=await auto({statePath,candidates,key,refreshReview});
  console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
- if(r.status==='PROGRESS_WITH_PENDING'){console.log('GOFER_RECONCILIATION_REQUIRED: '+JSON.stringify(r.pending));return r;}
+ if(r.status==='PROGRESS_WITH_PENDING'){console.log('GOFER_RECONCILIATION_REQUIRED: '+JSON.stringify(r.pending));if(!argv.includes('--one-transaction'))return main(argv);return r;}
  if(r.status!=='ALL_CASES_ACCOUNTED'&&r.status!=='ALREADY_COMPLETE')throw Error('NEEDS TIM: AUTO run halted: '+r.message);
  await snapshot('after',{statePath,candidates,key});
  const rec=finalize({statePath,candidates});
