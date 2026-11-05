@@ -1,56 +1,30 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-05T17:30:01.321Z",
+ "at": "2026-11-05T23:44:38.842Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-05T17:30:00.873Z",
-  "rows": 4627,
-  "sha256": "eb981ab15f96e4a3222256abd086890c857355eb575a6a153094e17a8901b30a"
+  "readAt": "2026-11-05T23:44:38.462Z",
+  "rows": 4686,
+  "sha256": "b544ae79de196d6e57f7bf9d9eb8a0dde99e59d65280abf6a4ef166a3e654dbd"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-05T17:28:19.467Z",
-  "decision": 691
+  "at": "2026-11-05T23:41:49.476Z",
+  "decision": 734
  },
  "counts": {
-  "waiting": 691,
+  "waiting": 734,
   "matched": 18,
-  "CLOSE_CANDIDATE": 1,
-  "KEEP_LABEL": 17
+  "CLOSE_CANDIDATE": 0,
+  "KEEP_LABEL": 18
  },
  "rules": {
-  "SAME_BY_TIMELINE": 1,
   "DIFFERENT_SITE": 6,
   "NEW_REQUISITION": 5,
   "POSSIBLE_REPOST": 1,
-  "UNCERTAIN": 5
+  "UNCERTAIN": 6
  },
  "items": [
-  {
-   "id": "V2I-EEAD235771C8",
-   "company": "Shield",
-   "title": "Head of Operational Excellence",
-   "location": "Dallas, TX",
-   "score": 44,
-   "outcome": "CLOSE_CANDIDATE",
-   "rule": "SAME_BY_TIMELINE",
-   "label": "Applied 2026-11-03 · likely the same posting",
-   "evidence": "Posting first seen 2026-11-05, on or before application 2026-11-03; same title",
-   "matches": [
-    {
-     "id": "V2I-1E6BF0D41018",
-     "status": "APPLIED",
-     "title": "Head of Operational Excellence",
-     "location": "Dallas, Texas",
-     "decided": "2026-11-03",
-     "rejected": null,
-     "rule": "SAME_BY_TIMELINE",
-     "outcome": "CLOSE_CANDIDATE",
-     "similarity": 1,
-     "evidence": "Posting first seen 2026-11-05, on or before application 2026-11-03; same title"
-    }
-   ]
-  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -499,13 +473,38 @@
      "evidence": "Posting first seen 2026-11-02, -3 days after 2026-11-05; no posting identity to compare"
     }
    ]
+  },
+  {
+   "id": "V2I-0BDA9CD1B708",
+   "company": "Treeline Biosciences",
+   "title": "Vice President, Head of Quality Assurance",
+   "location": "Watertown, MA, USA",
+   "score": 45,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-26 · possible repeat",
+   "evidence": "Posting first seen 2026-11-05, 10 days after 2026-10-26; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-A808BA44334C",
+     "status": "DECLINED_BY_TIM",
+     "title": "Vice President, Head of Quality Assurance",
+     "location": "Watertown, MA, USA",
+     "decided": "2026-10-26",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-05, 10 days after 2026-10-26; no posting identity to compare"
+    }
+   ]
   }
  ],
  "mode": "APPLY",
  "applied": {
   "planned": 18,
-  "closed": 1,
-  "labeled": 0,
+  "closed": 0,
+  "labeled": 1,
   "already": 0,
   "skipped": {
    "ALREADY_LABELED": 17
