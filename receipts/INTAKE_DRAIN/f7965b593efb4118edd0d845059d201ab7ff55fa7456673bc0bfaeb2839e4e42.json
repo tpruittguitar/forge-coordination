@@ -1,0 +1,196 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4441205041",
+  "sourceVersion": "0cadb5e23402f39ff80238728b8724e6c7343355beec03e9fa9b61338d27d643",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1656Z-HELD-B3-2",
+  "instructionCommit": "7b4e5afb17ae840b41758031613a616973525ded",
+  "observedAt": "2026-11-05T17:02:13.120Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "A&M DirectorOperationsManufacturing Tampa captured exact allUS title but current canonical has eight matching same-title rows:Atlanta decline, distinct archived decline and six marked duplicates. Do not collapse multiple decided identities into a guessed unique row or infer employer requisition from board ID. Original candidate explicitly WRITE_FAILED in independently COMPLETE batch; no admitted-job or original-write completion claim.",
+  "conclusion": "ORIGINAL_IDENTITY_BINDING_UNRESOLVED",
+  "nextAction": "Existing AI/local coordinator reconciles exact original source/requisition, permitted worksites and canonical candidate evidence; preserve protected decisions and original request, never replay.",
+  "retryCondition": "Original authenticated evidence, exact employer requisition or explicit source-bound permitted-worksite evidence resolves this recorded conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive and original saved cards/helper returns",
+      "result": "Code compared original exact company/title/sites/source keys and protected dispositions before outside identity research; complete4625master/785archive."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_CHECKPOINT.json",
+      "result": "Exact original key/index and candidate WRITE_FAILED in accepted batch; current independent index COMPLETE with samewriteId. No original replay or admission claim."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0005.json",
+      "result": "Reused original exact source card and full canonical duplicate graph; multiple existing protected identities already establish precise reconciliation need, no redundant qualification lookup."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T17:00:02.429Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Alvarez & Marsal",
+    "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+    "location": "Tampa, FL",
+    "url": "https://www.linkedin.com/jobs/view/4441205041/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "c94e9d03878d06dc0550c4d6a81c3444952434ed42b07c3b0dc8a7a245b6d4f1",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4625,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T16:59:30.763Z",
+    "masterModifiedAt": "2026-11-05T16:28:07.121Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-AA7724B3A2EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "Atlanta, GA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "4440982880",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "4c0d8c64fae47975b96115371ebbc4e5fa1783a44fbf47db7f0ca4d1c3609aab"
+      },
+      {
+        "primaryId": "V2F-2D0D5E23A03E",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "Open to all US offices (Atlanta, Nashville etc.)",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "a3ecc14294c626e6c101aa41d6e02a454d6f763ec28adca6299e5feed26d587d"
+      },
+      {
+        "primaryId": "V2F-A2A49FEBF3F1",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "12b847e208c1f2789ce8bf96e938c992225b466d97209048d661e412a78fe181"
+      },
+      {
+        "primaryId": "V2F-0ACDB80CF3EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "0d0caad3d6ad7a6f41f78136fdaaa7de8824204427e7d3f809e30a576f948838"
+      },
+      {
+        "primaryId": "V2F-9FA49B32F3F1",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "a467fc4e054ce1fd3d3ba32508d614de9d45693cb4df001ed9817986c3da7b0b"
+      },
+      {
+        "primaryId": "V2F-182CA0E9F3EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "769d8131509760f6d781899ea9abe26b35e75173814fca8b293e5f36242ddbc2"
+      },
+      {
+        "primaryId": "V2F-9620A1CCA03F",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "edc2e480171e26d5e099b016c74fb1f5861ab43460e4d55ba116d817bbf7e832"
+      },
+      {
+        "primaryId": "V2F-3B6B250DA06F",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "e8da640c87f6133b14a09341289b684d0da581060ae9e6e0d24b02f47659e603"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 19,
+    "candidateOutcome": "WRITE_FAILED",
+    "receipt": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_ACCEPTANCE.json",
+    "writeAcceptedForBatch": true,
+    "originalBatchWriteId": "W-20261101210436699-169590",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:05:01.608Z",
+      "w": "W-20261101210436699-169590",
+      "snapshotHash": "1b54ecc0a56573:8057820"
+    },
+    "independentIndexCommit": "5508ca870c1e7d99fa321755d781c678ff9fc763",
+    "replayed": false
+  },
+  "additionalEvidence": {
+    "newCanonicalAdmissionVerified": false
+  }
+}
