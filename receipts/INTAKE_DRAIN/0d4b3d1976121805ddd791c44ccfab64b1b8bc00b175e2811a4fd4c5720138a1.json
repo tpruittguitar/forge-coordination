@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:164ec64b3673bbedfeefdd98",
+  "sourceVersion": "6e97e790ef2692ceb64a23be725f4bc6c6287e0dd81fce331dbcb6ba935a382c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B4-6",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:35:17.218Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Manning worksite. Exact Latitude Corp vacancy returned no usable content, so actual responsibility scope and current posting status remain unresolved rather than guessed.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://secure5.saashr.com/ta/LatCorp.careers?ShowJob=537262095",
+      "result": "CRAWL_EMPTY_CONTENT on exact saashr posting; no repeat lookup or inferred closure."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Manning, SC, USA"
+  },
+  "sourceEvidence": {
+    "company": "Latitude Corp",
+    "title": "Vice President, Operations",
+    "location": "Manning, SC, USA",
+    "url": "https://secure5.saashr.com/ta/LatCorp.careers?ShowJob=537262095",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact same posting becomes readable or original saved full role content/employer destination is recovered with identity binding."
+}
