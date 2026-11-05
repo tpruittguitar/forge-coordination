@@ -1,0 +1,34 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8fe061442867b2322ad8f0f7",
+  "sourceVersion": "ec26b7618044692883041ea6c7f6855f759ee2938380ada82248eafbd41f3c16",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B1-1",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:27:40.087Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Current third source failure renewed the xAI backoff to 09:22:44.173Z. Retain saved Southaven MS location and both historical title observations; no repeat fetch during backoff or assertion that a failed source is closed.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/catch-up/state.json",
+      "result": "Reused latest failed-source state: lastAttempt 2026-11-05T08:22:44.173Z, attempts=3, retryAfter 2026-11-05T09:22:44.173Z. Existing review used an older elapsed backoff; updated next-condition evidence only."
+    }
+  ],
+  "recoveredFields": {},
+  "sourceEvidence": {
+    "company": "xAI (SpaceXAI)",
+    "title": "Director, Power Plant Operations - Memphis",
+    "location": " Southaven, MS",
+    "url": "https://job-boards.greenhouse.io/xai/jobs/5216112007",
+    "references": [
+      "receipts/auto-intake/catch-up/state.json"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Current recorded source backoff expires or materially changed exact-posting evidence is captured; preserve Director, Power Plant Operations - Memphis and historical Director, Memphis Power Plant Operations observations.",
+  "retryAfter": "2026-11-05T09:22:44.173Z"
+}

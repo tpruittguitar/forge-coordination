@@ -1,0 +1,36 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "indeed:1caf2d67d9048aec",
+  "sourceVersion": "a493e92f5a6e0cc70e7fde6c3957e66d9dfc0eea1252ac2e795b9ca1cdbf17c6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B1-7",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:28:25.544Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact saved worksite from historical same-posting card marked EXISTING_PROTECTED. Retain protected disposition and defer canonical/source reconciliation; no new research or re-intake.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact source-key historical card, observed location and EXISTING_PROTECTED status; no external lookup."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Barnesville, OH, USA"
+  },
+  "sourceEvidence": {
+    "company": "Ohio Hills Health Centers",
+    "title": "Director of Quality and Risk Management",
+    "location": "Barnesville, OH, USA",
+    "url": "https://www.indeed.com/viewjob?jk=1caf2d67d9048aec",
+    "references": [
+      "state/source-trial-report.json@920c0d8d",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Fresh authorized canonical/source reconciliation resolves the existing protected identity and original hold while preserving prior decisions."
+}

@@ -1,0 +1,34 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4479953247",
+  "sourceVersion": "bd4d540018549890401a02d7a9dc65a290f48bbd53184542a71f479e8b56f816",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0825Z-SOURCE-B1-0",
+  "instructionCommit": "b9839725d6f5b8f29be989860740d1b5812c2df5",
+  "observedAt": "2026-11-05T08:27:38.115Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved United States location retained, but the original Jobgether source has two failed attempts and a future retry time. No new request before backoff and no client employer or actual role scope inferred.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4479953247",
+      "result": "Retained exact saved location United States. Source failure lastAttempt 2026-11-05T07:38:00.314Z; no additional source request before recorded retry time."
+    }
+  ],
+  "recoveredFields": {},
+  "sourceEvidence": {
+    "company": "Jobgether",
+    "title": "Director, Engineering",
+    "location": "United States",
+    "url": "https://www.linkedin.com/jobs/view/4479953247/",
+    "references": [
+      "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4479953247"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Recorded source backoff expires or new saved exact-posting evidence resolves actual client/role identity and responsibilities.",
+  "retryAfter": "2026-11-05T08:38:00.314Z"
+}
