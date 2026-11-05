@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480232321",
+  "sourceVersion": "1c05e4cd8716816ca80e75bb10e198d3f1b6535b218ac948c2f50c88f382dc9e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T1002Z-SCOPE-B4-8",
+  "instructionCommit": "1a102a46371757e19382eddaf58a3a448e5d97a8",
+  "observedAt": "2026-11-05T10:16:08.499Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact same LinkedIn source changed header/title from Director Physical Automation & Robotics at Macon GA to Director Automation & Robotics - Manufacturing at Lewistown PA. Body explicitly permits Lewistown PA, Macon GA or Anderson SC and retains relevant manufacturing/warehouse automation scope. Preserve updated title and site alternatives; do not silently replace original fields or infer client.",
+  "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0025.json",
+      "result": "Reused exact original helper identity/title-only quote; no repeated source capture or acceptance of withdrawn title-based exclusions."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4480232321/",
+      "result": "One exact posting lookup read actual scope and identity labels; changed/conflicting titles/sites retained for reconciliation."
+    }
+  ],
+  "unresolved": [],
+  "retryCondition": "Exact employer/agency posting evidence resolves title/worksite labels and originating candidate identity while preserving undisclosed client and all original source variants.",
+  "publicEvidence": {
+    "originalTitle": "Director, Physical Automation & Robotics",
+    "currentTitle": "Director, Automation & Robotics - Manufacturing",
+    "originalLocation": "Macon, GA",
+    "currentHeaderLocation": "Lewistown, PA",
+    "bodyLocations": "Lewistown PA, Macon GA or Anderson SC"
+  }
+}
