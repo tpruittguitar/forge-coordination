@@ -1,0 +1,103 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484856400",
+  "sourceVersion": "6c0e9b9fd68e4128c5a95d29a9c13866171733c0c82fd1d7f3fd78b5d7f56319",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1945Z-HELD-B2-8",
+  "instructionCommit": "1745fc7a40fa0c5e2f1eeb75fc97de3b8885fb99",
+  "observedAt": "2026-11-05T19:48:13.420Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original CVG Michigan EngineeringManager candidate WRITE_FAILED in COMPLETE batch. Exact original confirms Michigan recruiting label and TrimSystems engineering/product-process scope but not exact city or employer requisition binding to protected Tennessee V2I-12983B81E501. No state-to-city inference, blanket company exclusion or facility-manager exception for engineering title; original request remains fenced.",
+  "conclusion": "ORIGINAL_FAILED_CANDIDATE_AND_SITE_CONFLICT_RETAINED",
+  "nextAction": "AI retains exact original source/requisition/site reconciliation; no uncertain request replay or protected-record change.",
+  "retryCondition": "An observed original Apply/employer requisition or authoritative site binding resolves this exact conflict against the saved canonical role; unchanged generic lookup is not a retry condition.",
+  "attempts": [
+    {
+      "source": "Complete authenticated current master/archive at 2026-11-05T19:47:01.441Z",
+      "result": "Code compared4653 master and785 archive identities before source recovery; original requests and protected decisions retained."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006_ACCEPTANCE.json",
+      "result": "Exact checkpoint key/index binds original candidate WRITE_FAILED. Fresh independent index COMPLETE matches original batch writeId; batch completion did not admit this candidate."
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Original manual request has no bound FORGE-AUTO run ID; no arbitrary read-only probe run fabricated."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4484856400/",
+      "result": "One exact original source read for employer/title/site or requisition identity only; no protected qualification research."
+    },
+    {
+      "source": "Authorized read-only Writer evidence FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T19:47:01.573Z"
+    },
+    {
+      "source": "Authorized read-only Writer evidence V2I-12983B81E501",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T19:47:01.574Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Commercial Vehicle Group, Inc.",
+    "title": "Engineering Manager",
+    "location": "Michigan, United States",
+    "url": "https://www.linkedin.com/jobs/view/4484856400/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "77b05604337a055c5916ed7498bec1423cfc3357f9c66ba131c6dcd25c2d3e56",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4653,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T19:47:01.441Z",
+    "masterModifiedAt": "2026-11-05T19:41:10.728Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-12983B81E501",
+        "company": "Commercial Vehicle Group, Inc.",
+        "title": "Engineering Manager",
+        "location": "Tennessee, United States",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "341178bb5840d73701693b703d693da4336f697aba188f378b66b6a1e88f0d88"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006",
+    "candidateIndex": 79,
+    "candidateOutcome": "WRITE_FAILED",
+    "originalBatchWriteId": "W-20261102003038529-53ecf1",
+    "writeAcceptedForBatch": true,
+    "receipt": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006_ACCEPTANCE.json",
+    "checkpoint": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B006_CHECKPOINT.json",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:31:03.648Z",
+      "w": "W-20261102003038529-53ecf1",
+      "snapshotHash": "1a51fbe12fa81c:9672245"
+    },
+    "independentIndexCommit": "4fd066d2c4e8c6bd374a582ca7aaeb9441062a4a",
+    "replayed": false
+  },
+  "additionalEvidence": {
+    "originalRequestReplayed": false,
+    "newCanonicalAdmissionVerified": false,
+    "sourceIdentityExcerpt": "Current CVG employees, please click HERE to login and apply. Position Summary The Engineering Manager plans and directs all aspects of the engineering team, oversees product & process planning, design, and execution while managing budgets, resources, and personnel within the Trim Systems Division. The Engineering Manager collaborates closely with customers and cross-functional teams to effectively develop/validate/launch product/process/material solutions and value propositions for CVG’s customers, streamline operations, implement new technologies, drive VAVE/continuous improvement initiatives, and maintain safety standards Essential Duties And Responsibilities"
+  }
+}
