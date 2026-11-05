@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4377538199",
+  "sourceVersion": "12ad7531bb37f5cc4ef4aad3d4a6b505ab5b55511932206a9b7f6e7b02b577d3",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B1-02",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:42:11.230Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved exact employer-posting alias and row-hash proof already identify this Inversion advertisement as the declined canonical role V2I-EE73E85EDE7A. The upstream identity hold conflicts with that saved disposition; preserve the decline and reconcile inventory against fresh canonical evidence.",
+  "nextAction": "Existing coordinator must re-read exact canonical/archive role and propagate the existing protected disposition to upstream accounting; no new intake or role research",
+  "retryCondition": "FRESH_EXACT_CANONICAL_CONFIRMATION_AND_UPSTREAM_DISPOSITION_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4377538199",
+      "result": "Saved VERIFIED_EXISTING disposition with exactRowVerified=true, prior row hash and protected decline retained"
+    },
+    {
+      "source": "receipts/EMAIL_HOLD_SOURCE_IDENTITY_20261101.json",
+      "result": "Exact canonical identity V2I-EE73E85EDE7A; original write success was not inferred"
+    },
+    {
+      "source": "receipts/EMAIL_EMPLOYER_DESTINATIONS_20261101.json",
+      "result": "Saved observed Apply destination binds LinkedIn advertisement to exact employer posting 4665959005"
+    },
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Saved exact location: Los Angeles, CA, USA; retained as evidence, not substituted into canonical identity"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Inversion",
+    "title": "Director of Engineering, Manufacturing",
+    "location": "Los Angeles, CA",
+    "url": "https://www.linkedin.com/jobs/view/4377538199/"
+  },
+  "conclusion": {
+    "kind": "SAVED_PROTECTED_EXISTING_WITH_STALE_UPSTREAM_HOLD",
+    "primaryId": "V2I-EE73E85EDE7A",
+    "employerUrl": "https://job-boards.greenhouse.io/inversionspace/jobs/4665959005",
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT"
+}

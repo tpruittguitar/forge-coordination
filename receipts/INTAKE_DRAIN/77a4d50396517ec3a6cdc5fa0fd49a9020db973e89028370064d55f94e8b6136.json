@@ -1,0 +1,66 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4477319423",
+  "sourceVersion": "35c3ab6e2bc9a87dbfee4c54aa8ee7a0f093213d1a9a14eef2755ff9f490819d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B1-08",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:42:29.206Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original indexed acceptance reports AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION and saved completed-batch verification retains this candidate as HELD_WRITER_IDENTITY. No new canonical verification or retry is inferred.",
+  "nextAction": "Existing local coordinator must verify the original request and exact candidate rows, using saved source/site evidence and preserving protected decisions; never replay the original request",
+  "retryCondition": "FRESH_ORIGINAL_LOCAL_REQUEST_RECEIPT_AND_EXACT_CANONICAL_IDENTITY_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_CHECKPOINT.json",
+      "result": "Original candidate key at batch index 5; checkpoint has payload hash/count, not a full original payload"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+      "result": "Indexed outcome AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION; candidate IDs retained"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json",
+      "result": "Original response hash and writeId bindings match acceptance; saved independent COMPLETE timestamp 2026-11-01T22:12:48.176Z; exact candidate effect remains held"
+    },
+    {
+      "source": "tools/source-intake/reconcile-probe.js",
+      "result": "Current authorized cloud probe accepts FORGE-AUTO run files only; this local request has no AUTO binding. No unsupported probe or Writer POST attempted"
+    },
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Saved exact location: Sumterville, FL, USA; retained as evidence, not substituted into canonical identity"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Ash Grove Cement Company",
+    "title": "Plant Manager",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4477319423/",
+    "recoveredLocation": "Sumterville, FL, USA",
+    "recoveryProof": "state/source-trial-report.json@d184421a"
+  },
+  "conclusion": {
+    "kind": "ORIGINAL_TERMINAL_IDENTITY_HOLD",
+    "originalRequest": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "originalOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-B184841C3989"
+    ],
+    "proofPaths": {
+      "checkpoint": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_CHECKPOINT.json",
+      "acceptance": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+      "verification": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json"
+    },
+    "writeId": "W-20261101220906182-1e3f21",
+    "savedCompleteObservedAt": "2026-11-01T22:12:48.176Z",
+    "responseBindingMatches": true,
+    "writeBindingMatches": true,
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}
