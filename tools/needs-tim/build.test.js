@@ -167,3 +167,20 @@ test('brief reporting failures stay quiet; recovery removes persistent notice au
  fs.writeFileSync(path.join(root,'state/REPORTING_HEALTH.json'),JSON.stringify({components:{flow:{status:'STALE',failureSince:NOW}}}));assert.ok(!ids(build({root,now:NOW})).includes('reporting:flow'));
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+
+
+test('fresh native schedule inventory supersedes inferred ad-hoc silence without closing unfinished work', () => {
+  const files = {};
+  ['0100', '0400', '0700', '1000', '1300'].forEach(t => { files['receipts/FORGE-EMAIL-CHATGPT-20261017-' + t + 'ET_TERMINAL.txt'] = 'RUN_STATUS=COMPLETE\n'; });
+  files['receipts/FORGE-EMAIL-CHATGPT-20261018-0800ET_START.txt'] = 'RUN_STATUS=IN_PROGRESS\n';
+  const key = 'state/AUTOMATION_SCHEDULE_READBACK.json';
+  files[key] = {schema:'forge.schedule-readback.v1', at:NOW, local:['forge-email-discovery','forge-application-outcome-tracker','forge-application-writer-gofer','forge-posting-validation'].map(id => ({id,status:'ACTIVE',rrule:'RRULE:FREQ=HOURLY',nativeConfigurationSha256:'a'.repeat(64)}))};
+  let r = build({root:repo(files),now:NOW});
+  assert.ok(!r.items.some(x => x.id.startsWith('lane-overdue:')));
+  assert.ok(r.items.some(x => /never wrote a terminal receipt/.test(x.title)), 'unfinished obligations stay open');
+  files[key].at='2026-10-16T16:00:00-04:00';
+  r = build({root:repo(files),now:NOW});
+  assert.ok(r.items.some(x => x.id.startsWith('lane-overdue:')), 'stale inventory cannot retire the fallback');
+  files[key].at=NOW;files[key].local.pop();
+  assert.ok(build({root:repo(files),now:NOW}).items.some(x => x.id.startsWith('lane-overdue:')), 'partial inventory cannot retire the fallback');
+});
