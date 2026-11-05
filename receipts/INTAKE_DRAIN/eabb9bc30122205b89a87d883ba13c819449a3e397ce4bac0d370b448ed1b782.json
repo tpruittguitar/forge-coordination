@@ -1,0 +1,51 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482724292",
+  "sourceVersion": "4aebaf352edefa20006b343660c00ef72c892c3e739b7a1deeba0203343ffdc6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105-SCOPE-B3-10",
+  "instructionCommit": "984c21a402e4e0664d725f74168539d7e91164e0",
+  "observedAt": "2026-11-05T06:17:43.109Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Posting contains explicit manufacturing responsibility but states No longer accepting applications. Preserve the source closure observation and do not prepare active intake from a closed posting. Recruiting publisher is not proof of end-client identity.",
+  "nextAction": "Retain closure evidence for existing source/canonical disposition handling; retry active intake only after an observed reopened posting",
+  "attempts": [
+    {
+      "source": [
+        "state/source-trial-report.json",
+        "EMAIL_RECOVERY"
+      ],
+      "result": "Saved original identity and selection retained; no saved full responsibilities or discoveryReview on assigned card"
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0039.json",
+      "result": "Reused prior TITLE_SCOPE_REVIEW and recruiter identity; no invented end-client"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482724292/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "Readable manufacturing responsibilities and explicit No longer accepting applications notice",
+      "targetedLookups": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "SCOPE Recruiting - Supply Chain Recruiters",
+    "title": "Vice President of Global Operations",
+    "location": "Syracuse, NY",
+    "url": "https://www.linkedin.com/jobs/view/4482724292/",
+    "quote": "No longer accepting applications",
+    "observedAt": "2026-11-05T06:17:43.109Z",
+    "references": [
+      "state/source-trial-report.json",
+      "EMAIL_RECOVERY",
+      "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0039.json"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Client employer remains undisclosed; no company identity is inferred."
+  ],
+  "retryCondition": "EXACT_POSTING_REOPENED_OR_CANONICAL_SOURCE_CLOSURE_ACCOUNTED"
+}
