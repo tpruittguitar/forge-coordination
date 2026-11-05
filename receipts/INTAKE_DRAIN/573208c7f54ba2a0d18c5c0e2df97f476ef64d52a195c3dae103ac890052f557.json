@@ -1,0 +1,100 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:d5ad4c893a9973cf23f4576f",
+  "sourceVersion": "9ef1b8a193dfa31eb894332f18e91e5e39f4efc38e1bd7199fd3b913825766cc",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1245Z-HELD-B1-1",
+  "instructionCommit": "93b8c960e98e80eb7670f6ede537c2d7522ce655",
+  "observedAt": "2026-11-05T12:53:11.076Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Code zero-write classifier validates terminal original request with zero accepted writes, no writeId, no new primary IDs and exact candidate WRITE_FAILED AMBIGUOUS_MATCH:EMPLOYER_TITLE_NEEDS_LOCATION. Original Oracle120199 LaPorte IN conflicts with other saved Whitehall MI identity and declined Cleveland OH canonical role. Actual saved duties show manufacturing CI, but do not settle this site identity. No transaction COMPLETE receipt is applicable; do not create a probe or replay a zero-write request.",
+  "conclusion": "Original request independently accounted as terminal zero-write; site conflict remains AI-owned.",
+  "nextAction": "AI recovers exact original employer120199 assigned worksite and original Apply binding while retaining Cleveland decline and both conflicting saved sites.",
+  "retryCondition": "Exact employer120199 source-bound worksite evidence changes; no repeated original request.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0110.json; state/source-trial-report.json@0a30489f; state/source-trial-report.json@HEAD",
+      "result": "Reused saved original fields and helper evidence before any outside lookup; no new public-source request."
+    },
+    {
+      "source": "Fresh authenticated canonical master4612/archive785",
+      "result": "Checked exact source identity, title/worksite and protected same-role candidates; complete snapshot hashes recorded."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-F88BF084C73D",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:52:28.713Z"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs classify against exact original result source",
+      "result": "Validated canonicalWrites0/writeReceiptNotApplicable true; no outstanding accepted transaction."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Howmet Aerospace",
+    "title": "Director, Continuous Improvement",
+    "location": "",
+    "url": "https://fa-exty-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/job/120199"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-SOURCE-ED9A02FB187C404827D3A298",
+    "proof": "receipts/auto-intake/FORGE-AUTO-20261105T054324Z.json",
+    "zeroWriteClassification": {
+      "requestId": "FORGE-SOURCE-ED9A02FB187C404827D3A298",
+      "canonicalWrites": 0,
+      "writeReceiptNotApplicable": true,
+      "originalRequestMustNotBeReplayed": true,
+      "outcomes": [
+        {
+          "result": "WRITE_FAILED",
+          "primaryId": null,
+          "source": {
+            "COMPANY": "Howmet Aerospace",
+            "TITLE": "Director, Continuous Improvement",
+            "LOCATION": "La Porte, IN, USA",
+            "SOURCE_URL": "https://fa-exty-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/job/120199",
+            "INITIATING_URL": "https://fa-exty-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/job/120199",
+            "SCOUT_NOTES": "title family=MFG_PROD; title level=DIRECTOR_PLUS; location=IN; source=JOBSPY:indeed",
+            "INITIAL_UNKNOWN_FIELDS": [
+              "PAY",
+              "DEGREE",
+              "FLEX"
+            ],
+            "EMPLOYER_PRIMARY_BUSINESS": "Howmet Aerospace"
+          },
+          "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+          "requiresCanonicalReadback": false
+        }
+      ]
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-F88BF084C73D",
+        "company": "Howmet Aerospace",
+        "title": "Director, Continuous Improvement",
+        "location": "Cleveland, OH",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNKNOWN",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "4740c8e39d8e753a2fa377b5949c7bb11623e18df9b62c9359aa9ecb93438d61"
+      }
+    ],
+    "savedSites": [
+      "LaPorte, IN, USA",
+      "Whitehall, MI, USA"
+    ]
+  }
+}
