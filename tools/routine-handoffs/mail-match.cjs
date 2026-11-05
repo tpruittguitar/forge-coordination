@@ -1,6 +1,7 @@
 'use strict';
 const Source=require('../programmed-coordinator/source.cjs'),U=require('../pipeline-observability/upstream-flow'),E=require('../email-recovery/employer-identity.cjs');
 const phrase=s=>' '+String(s||'').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]+/g,' ').replace(/\s+/g,' ').trim()+' ';
+function employerNames(name){const names=[String(name||'')],tenant=/^([^()]+)\s+\(([^()]+) Workday tenant "([^"]+)"\)$/.exec(String(name||''));if(tenant)names.push(tenant[1].trim(),tenant[2].trim());return names;}
 function urls(text){return[...new Set((String(text).match(/https:\/\/[^\s<>"')]+/g)||[]).map(u=>u.replace(/&amp;/g,'&').replace(/[.,;]+$/,'')))];}
 // A shared careers home/search/login link is not a posting identity. Keep exact
 // ATS/board IDs and specific job paths; unfamiliar routes need interpretation.
@@ -25,7 +26,7 @@ function match(message,{rows,archiveRows=[],events=[]}){
   if(exact)found.set(row.PRIMARY_ID,'EXACT_POSTING_URL');
  }
  if(bindings.size===1){const id=[...bindings][0];if(found.size&&![...found.keys()].every(k=>k===id))throw Error('THREAD_AND_POSTING_CONFLICT');return{row:rowFor(id),method:'VERIFIED_THREAD_BINDING',archived:archiveRows.some(r=>r.PRIMARY_ID===id)};}
- if(!found.size){const text=phrase(message.subject+' '+message.body);for(const row of all){const co=phrase(String(row.COMPANY).replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,'')),title=phrase(row.TITLE);if(co.trim().length>=4&&title.trim().length>=8&&text.includes(co)&&text.includes(title))found.set(row.PRIMARY_ID,'UNIQUE_COMPANY_TITLE_IN_FULL_SOURCE');}}
+ if(!found.size){const text=phrase(message.subject+' '+message.body);for(const row of all){const companies=employerNames(row.COMPANY).map(name=>phrase(name.replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''))),title=phrase(row.TITLE);if(title.trim().length>=8&&companies.some(co=>co.trim().length>=4&&text.includes(co))&&text.includes(title))found.set(row.PRIMARY_ID,'UNIQUE_COMPANY_TITLE_IN_FULL_SOURCE');}}
  if(found.size!==1)throw Error(found.size?'AMBIGUOUS_CANONICAL_MATCH':'CANONICAL_MATCH_REQUIRED');
  const [id,method]=[...found][0];return{row:rowFor(id),method,archived:archiveRows.some(r=>r.PRIMARY_ID===id)};
 }
