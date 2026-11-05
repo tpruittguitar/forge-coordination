@@ -1,0 +1,55 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4459117379",
+  "sourceVersion": "811c7b5cb858b28a8cd44ef7dcf9a23283a1a62f4080d30515be67cab1ceb47a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T2102Z-SCOPE-DEST-02",
+  "instructionCommit": "0277004ac3f18881e3ca221f841a0ffd8273b83f",
+  "observedAt": "2026-11-05T21:05:54.102408+00:00",
+  "writerSubmitted": false,
+  "outcome": "SOURCE_READY",
+  "reason": "Recovered exact Diality employer Paylocity posting 4450905. Captured LinkedIn ad and employer posting match title, Irvine worksite, Moda-flx product description and verbatim manufacturing responsibility. Current resume production/quality/launch experience supports plausible target function only; degree and medical-device regulatory/product credentials remain unverified.",
+  "nextAction": "Existing source-intake-auto independently fetches the exact Paylocity posting, verifies preserved captured identity and quoted responsibilities, and uses normal Writer gates. No AI canonical write or original request replay.",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/b765918a0b5b0c0baee72b3adb2740a32a409136c3d1e7ede7c57505810f947d.json",
+      "result": "Reused original saved LinkedIn identity and manufacturing quote; prior independent validation failed STRUCTURED_POSTING_UNAVAILABLE."
+    },
+    {
+      "source": "https://recruiting.paylocity.com/recruiting/jobs/All/21d70d04-8276-411f-9c86-b54e142a196e/Diality-Inc",
+      "result": "Employer board lists separate Vice President Operations and Vice President Manufacturing roles; did not conflate them."
+    },
+    {
+      "source": "https://recruiting.paylocity.com/recruiting/jobs/Details/4450905/Diality-Inc/Vice-President-Operations",
+      "transport": "Connected Exa exact URL fetch",
+      "result": "Read full employer posting: Vice President, Operations; Irvine, CA; Diality Inc with body Diality. Exact product description and manufacturing quote match original captured LinkedIn 4459117379. Preserve captured company label Diality; no inferred requisition from board ID."
+    }
+  ],
+  "unresolved": [
+    "Final eligibility, detailed qualifications and source validation remain for controlled intake/enrichment."
+  ],
+  "sourceEvidence": {
+    "company": "Diality",
+    "title": "Vice President, Operations",
+    "location": "Irvine, CA",
+    "url": "https://recruiting.paylocity.com/recruiting/jobs/Details/4450905/Diality-Inc/Vice-President-Operations",
+    "quote": "Direct all manufacturing operations (internal facilities and/or outsourced/CMO partnerships), ensuring production schedules are met with the highest standards of safety and quality."
+  },
+  "scope": {
+    "verdict": "PLAUSIBLE_TARGET_FUNCTION",
+    "reason": "Employer explicitly directs manufacturing, safety, production schedules and quality; supported resume competencies manufacturing_leadership and quality_systems establish plausible scope. Specialized medical-device, ISO13485, FDA and degree requirements remain for enrichment/Writer eligibility.",
+    "quote": "Direct all manufacturing operations (internal facilities and/or outsourced/CMO partnerships), ensuring production schedules are met with the highest standards of safety and quality.",
+    "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "resumeCompetencyIds": [
+      "manufacturing_leadership",
+      "quality_systems"
+    ]
+  },
+  "resumeReference": {
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "modifiedAt": "2026-10-13T22:42:09.660Z",
+    "driveReadThisRun": true
+  },
+  "canonicalVerified": false
+}
