@@ -1,0 +1,77 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481493051",
+  "sourceVersion": "d53c52515efd0ca92cd6cf3d8a9f5dd2122be2974dd41b7236f70ed5d2992e5c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-7",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:56:05.504Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original ASTEC batch independently COMPLETE; captured candidate originally WRITE_FAILED. Saved held-against primary V2I-97A1A7F59437 currently says Director, Manufacturing in Parsons KS, while exact current source is Director of Manufacturing at Airport Road facility in Eugene OR. Preserve title punctuation/source and different known onsite facilities; this director title does not automatically qualify for the facility-manager exception.",
+  "conclusion": "ORIGINAL_BATCH_COMPLETE_KNOWN_DIFFERENT_FACILITIES_AND_TITLE_LABELS",
+  "nextAction": "AI recovers exact employer requisition/cycle evidence for Eugene source and saved Parsons role, then normal controlled Writer identity adjudication decides without changing the prior row.",
+  "retryCondition": "Source-bound employer evidence resolves separate role/cycle or explicit alias; no special facility-manager permission inferred from a Director title.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+      "result": "Checkpoint candidate index, acceptance response hash and write ID match saved independent verification; original candidate WRITE_FAILED."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4481493051/",
+      "result": "One exact source read confirms actual Eugene OR onsite Airport Road facility; saved held-against row remains Parsons KS."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "ASTEC",
+    "title": "Director of Manufacturing",
+    "location": "Eugene, OR",
+    "url": "https://www.linkedin.com/jobs/view/4481493051/",
+    "quote": "LOCATION: This position is located onsite at our Airport Road facility in Eugene, OR."
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [],
+    "savedHeldAgainst": {
+      "primaryId": "V2I-97A1A7F59437",
+      "company": "ASTEC",
+      "title": "Director, Manufacturing",
+      "location": "Parsons, KS, USA",
+      "bucket": "SCOUT_INTAKE"
+    }
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "index": 42,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:12:02.615Z",
+      "w": "W-20261101211126834-c5b206",
+      "snapshotHash": "9a06c7cde003d:8508117"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101211126834-c5b206",
+    "responseSha256": "c20b4a91fcbfe1967f17d67c39aca80457e064e672c9dbe066b25b0f9e920058",
+    "acceptancePath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "originalVerificationObservedAt": "2026-11-01T21:12:47.634Z"
+  }
+}

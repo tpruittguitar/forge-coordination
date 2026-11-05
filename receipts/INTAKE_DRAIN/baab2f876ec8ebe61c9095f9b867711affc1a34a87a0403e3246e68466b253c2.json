@@ -1,0 +1,96 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4464244686",
+  "sourceVersion": "77a3f520baa56426dddb6a5a1d056092eac4ced5ccdd0f1369598f6ad366ad8f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-3",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:55:58.521Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original Regal Rexnord batch independently COMPLETE, but this candidate originally WRITE_FAILED. Fresh canonical read has two same-title rows with different known requisitions: R26_04497 Remote DISCOVERY_LEAD and R26_02869 Downers Grove/approved-remote DECLINED_BY_TIM. Matching the Downers Grove label alone cannot select a requisition or erase the other identity.",
+  "conclusion": "MULTIPLE_CANONICAL_ROWS_DIFFERENT_REQUISITIONS_NO_FORCED_MATCH",
+  "nextAction": "AI recovers exact employer Apply/requisition binding for captured LinkedIn 4464244686 and compares it to both existing rows; preserve each disposition and original failed request.",
+  "retryCondition": "Exact captured-source employer requisition or saved verified alias binding uniquely identifies one row or a distinct cycle; no title/site-only selection.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+      "result": "Checkpoint candidate index, acceptance response hash and write ID match saved independent verification; original candidate WRITE_FAILED."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Regal Rexnord",
+    "title": "Director, Continuous Improvement",
+    "location": "Downers Grove, IL",
+    "url": "https://www.linkedin.com/jobs/view/4464244686/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-C1BDE315EDD7",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Remote",
+        "bucket": "DISCOVERY_LEAD",
+        "disposition": "INTAKE/IDENTITY_UNRESOLVED",
+        "reqId": "R26_04497",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "6e87ce3af6065f201ade924d5bbac1e9275e9abe8476442c6d05d137553d677a"
+      },
+      {
+        "primaryId": "V2I-10B8E942C30D",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Downers Grove, IL (remote from approved location)",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "R26_02869",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "651d962824314a62d2e0b3f1d62935353a13ed7be7764f30f044db77c6be8001"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "index": 34,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T22:10:06.594Z",
+      "w": "W-20261101220906182-1e3f21",
+      "snapshotHash": "374140e3c69d8:8665862"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101220906182-1e3f21",
+    "responseSha256": "f1d2fa0a86f2a5540052ab9fd99d59d8aff1d8a06d83745c07dee38f62303411",
+    "acceptancePath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "originalVerificationObservedAt": "2026-11-01T22:12:48.176Z"
+  }
+}

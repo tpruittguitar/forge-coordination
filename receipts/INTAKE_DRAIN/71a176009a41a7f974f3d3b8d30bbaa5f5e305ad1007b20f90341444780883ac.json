@@ -1,0 +1,85 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4453490471",
+  "sourceVersion": "5e76383eb1145da803c8d18b538eaaa5492002c786fd5bf3db488c3201cd0dc9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-1",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:55:54.833Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE; candidate originally WRITE_FAILED. Same-title canonical McKinstry row is Austin TX and labelled LI-4452897668, while captured source is LinkedIn 4453490471 with missing site. Current exact lookup returned generic multi-employer search results, not the captured job.",
+  "conclusion": "ORIGINAL_BATCH_COMPLETE_SOURCE_UNAVAILABLE_DIFFERENT_SAVED_BOARD_ID",
+  "nextAction": "AI recovers original full captured card/employer destination for 4453490471 and source-bound worksite before comparing its cycle with the Austin row.",
+  "retryCondition": "Exact original source or saved full alert resolves assigned worksite and employer posting; no site inferred from the unrelated search results or the Austin candidate.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+      "result": "Checkpoint candidate index, acceptance response hash and write ID match saved independent verification; original candidate WRITE_FAILED."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4453490471/",
+      "result": "Exact request returned generic Senior Manufacturing Manager results; no target role/site evidence and no inferred closure."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "McKinstry",
+    "title": "Senior Manager, Manufacturing Operations",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4453490471/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-EADD3BFBC51A",
+        "company": "McKinstry",
+        "title": "Senior Manager, Manufacturing Operations",
+        "location": "Austin, TX",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "LI-4452897668",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "d0bc33e717e89fdc51acd8f8118e484233c5cda546f454918632318556f5382c"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "index": 88,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T22:18:51.497Z",
+      "w": "W-20261101221828306-5713a3",
+      "snapshotHash": "37e21dd3392ab:8896984"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101221828306-5713a3",
+    "responseSha256": "723c3ee69884649686cfa1ba358a143adf85d978f8fb14747e5a0af89240bfce",
+    "acceptancePath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "originalVerificationObservedAt": "2026-11-01T22:19:29.809Z"
+  }
+}

@@ -1,0 +1,67 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481465671",
+  "sourceVersion": "07cb681a5f650321bdd9145c92cd4a5b81381c9d45c31184c8717aa98e80ceda",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-6",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:56:03.811Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh canonical row V2I-5910E7FACF01 has the same PowerSecure company, title and Durham site but no captured requisition/source key. Exact current posting confirms actual manufacturing/industrial-engineering scope, yet supplies no binding to the older canonical row. Do not turn a title/site collision into a proven existing match or a new intake.",
+  "conclusion": "SAME_ROLE_SITE_CANONICAL_CANDIDATE_MISSING_SOURCE_BINDING",
+  "nextAction": "AI recovers saved original source, employer destination or prior verified alias evidence for canonical V2I-5910E7FACF01, then existing coordinator accounts for the exact identity.",
+  "retryCondition": "Source-bound saved original employer posting or verified receipt/candidate evidence links the captured source to the canonical row or proves a distinct role/cycle.",
+  "attempts": [
+    {
+      "source": "Saved original exact-posting/source records",
+      "result": "Reused saved exact source identity and prior status without assuming current completion."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4481465671/",
+      "result": "One exact source read confirms Durham NC and actual engineering/CI responsibilities. No historical posting alias found in existing verified receipts searched by captured source ID."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "PowerSecure, Inc.",
+    "title": "Director Manufacturing & Industrial Engineering",
+    "location": "Durham, NC",
+    "url": "https://www.linkedin.com/jobs/view/4481465671/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-5910E7FACF01",
+        "company": "PowerSecure, Inc.",
+        "title": "Director Manufacturing & Industrial Engineering",
+        "location": "Durham, NC",
+        "bucket": "MANUAL_RESEARCH",
+        "disposition": "RESOLVED/NEEDS_RESOLUTION",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "6398549954ecc692382b736acdf821bad0af71f6a5e75e4ffecc9cd5423e651c"
+      }
+    ]
+  }
+}

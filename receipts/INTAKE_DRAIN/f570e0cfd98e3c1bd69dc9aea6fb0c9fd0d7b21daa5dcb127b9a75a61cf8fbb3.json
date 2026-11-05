@@ -1,0 +1,63 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:7b3af73e06b568bf0170057e",
+  "sourceVersion": "8236173d8e7ec8c54a74a49dd8db24f82a8b512e94beb9c43ed6efe8a5ff57be",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-4",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:56:00.329Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh canonical read has a unique same-title Ursa Major role V2E-3BCB39745CA0 already REJECTED_BY_EMPLOYER with NOT_STATED site and no captured requisition. Saved source is Berthoud CO posting 4729125005. Rejection alone does not establish an exact posting alias, and the declined/applied repeat rule does not apply to this rejected row.",
+  "conclusion": "PROTECTED_REJECTED_ROLE_SOURCE_BINDING_UNRESOLVED",
+  "nextAction": "AI recovers existing original-source/employer-posting evidence for the rejected row and compares it with captured posting 4729125005; preserve rejection and avoid repeat protected-role research.",
+  "retryCondition": "Source-bound original posting/alias evidence uniquely establishes the same role/cycle or proves a distinct role; no unsupported rejection-repeat closure.",
+  "attempts": [
+    {
+      "source": "Saved original exact-posting/source records",
+      "result": "Reused saved exact source identity and prior status without assuming current completion."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Ursa Major",
+    "title": "Director of Operations",
+    "location": "Berthoud, Colorado",
+    "url": "https://ursamajor.com/careers/?gh_jid=4729125005"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2E-3BCB39745CA0",
+        "company": "Ursa Major",
+        "title": "Director of Operations",
+        "location": "NOT_STATED",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "b404c9d2ed24b69822d08992731fef6afb4ccc112cde80e3a7b8317784e9c260"
+      }
+    ]
+  }
+}

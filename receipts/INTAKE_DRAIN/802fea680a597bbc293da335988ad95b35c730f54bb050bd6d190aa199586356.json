@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4454901121",
+  "sourceVersion": "023027ceed43ae11a425129873b98d7c579494a81a9426ca04617e5eae9fd373",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B2-0",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:55:52.706Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch is independently COMPLETE but this exact Cascades candidate originally WRITE_FAILED. Saved and current exact source place this plant in Rockingham NC; same-title declined canonical row V2I-34F99496D7B4 is Niagara Falls NY. Preserve the declined plant and source distinction; facility-specific intake requires actual scope for both facilities through existing Writer rules.",
+  "conclusion": "ORIGINAL_BATCH_COMPLETE_DIFFERENT_KNOWN_PLANT_SITES_RETAINED",
+  "nextAction": "AI recovers existing saved Niagara Falls facility-scope evidence and pairs it with current Rockingham plant evidence for controlled facility-identity adjudication; preserve original failed request and old decision.",
+  "retryCondition": "Source-bound operating-scope/facility evidence for both known onsite plants supports existing facility exception or proves an alias; no old-site rewrite or generic title match.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+      "result": "Checkpoint candidate index, acceptance response hash and write ID match saved independent verification; original candidate WRITE_FAILED."
+    },
+    {
+      "source": "Fresh complete canonical master/archive and authoritative GitHub receipt index at e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+      "result": "Exact role/site/posting comparisons recorded; original batch COMPLETE only where independently bound to saved write ID."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4454901121/",
+      "result": "One exact source read corroborates Rockingham NC and onsite plant/paper-machine operating scope; does not identify the Niagara Falls role as an alias."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Cascades",
+    "title": "Plant Manager",
+    "location": "Rockingham, NC, USA",
+    "url": "https://www.linkedin.com/jobs/view/4454901121/",
+    "quote": "Optimize paper machine performance, equipment uptime, productivity, and product quality."
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:52:23.175Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-34F99496D7B4",
+        "company": "Cascades",
+        "title": "Plant Manager",
+        "location": "Niagara Falls, New York",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "14305085ef3af7a6788676bbdd285d66cea3c6e01127de26b41e5cf4ee106b6e"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "index": 89,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T22:18:51.497Z",
+      "w": "W-20261101221828306-5713a3",
+      "snapshotHash": "37e21dd3392ab:8896984"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101221828306-5713a3",
+    "responseSha256": "723c3ee69884649686cfa1ba358a143adf85d978f8fb14747e5a0af89240bfce",
+    "acceptancePath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "originalVerificationObservedAt": "2026-11-01T22:19:29.809Z"
+  }
+}
