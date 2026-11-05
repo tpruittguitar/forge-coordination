@@ -1,0 +1,38 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484451344",
+  "sourceVersion": "abbb4ea96d24a4fca66f7d75f18e57cd65a656e75b18b211c0cdcd0b96d4a5d8",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T1105Z-SCOPE-B4-6",
+  "instructionCommit": "ce5f7cfd6db429d3a7653ce924e39d9afae7b131",
+  "observedAt": "2026-11-05T11:19:53.019Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Ford employer job73097 header advertises Engineering Supervisor in Dearborn MI, but role body explicitly seeks a Manufacturing Program Supervisor for battery-cell equipment installation, commissioning and ramp-up at Marshall MI. Real scope overlaps resume battery/equipment commissioning and launch, but title/assignment/site discrepancy must be reconciled; no Dearborn/Marshall alias or silent overwrite.",
+  "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0078.json",
+      "result": "Reused saved original identity fields before targeted source lookup; no full prior role description. Withdrawn title filters ignored."
+    },
+    {
+      "source": "Targeted exact company/title/site search for Ford Motor Company",
+      "result": "Recovered observed posting URL https://www.careers.ford.com/en/job/dearborn/engineering-supervisor/48560/102524325408; no requisition guessed."
+    },
+    {
+      "source": "https://www.careers.ford.com/en/job/dearborn/engineering-supervisor/48560/102524325408",
+      "result": "Read returned posting; actual responsibility evidence and known identity conflicts recorded."
+    }
+  ],
+  "unresolved": [],
+  "retryCondition": "Exact employer requisition or corrected source clarifies Dearborn advertised site versus Marshall onsite assignment and observed Engineering/Manufacturing Program Supervisor title relationship.",
+  "publicEvidence": {
+    "originalCapturedUrl": "https://www.linkedin.com/jobs/view/4484451344/",
+    "citedPostingSource": "EMPLOYER_HOSTED",
+    "employerPostingAliasIndependentlyVerified": false,
+    "employerRequisition": "73097",
+    "headerLocation": "Dearborn, Michigan",
+    "bodyQuote": "We are seeking a results-driven Manufacturing Program Supervisor to lead the installation, commissioning, qualification, production ramp-up of battery cell manufacturing equipment at Marshall, Michigan."
+  }
+}
