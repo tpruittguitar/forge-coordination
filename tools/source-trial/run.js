@@ -171,7 +171,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
 
   // Reuse ATS content already fetched; Workday list cards get one exact detail read within this run's budget.
-  await require('./discovery-review').reviewAll(found,{deadline:T0+CONFIG.boardBudgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
+  const screenContext=await require('./preliminary-screen').context({key});
+  await require('./discovery-review').reviewAll(found,{screenContext,deadline:T0+CONFIG.boardBudgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
 
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;

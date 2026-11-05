@@ -30,11 +30,12 @@ const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
-function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
+function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map()}){
+function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map(),screenContext}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
+  if(screenContext&&require('../source-trial/preliminary-screen').screen(r,screenContext).decision==='EXCLUDE_NEVER_CONSIDER')continue;
   if(out.length>=max)break;
   const proof=reviewed.get(Upstream.key(r.url));
   const reviewedScope=proof&&['company','title','location'].every(k=>String(proof.role[k]||'')===String(r[k]||''));
@@ -118,11 +119,12 @@ async function main(argv=process.argv.slice(2)){
   if(!uniqueRoles.has(id))uniqueRoles.set(id,r);
  }
  report.new_roles=[...uniqueRoles.values()];
- const rulesHash=sha((await read('rules',{key})).data.rules.raw);
+ const screenContext=await require('../source-trial/preliminary-screen').context({key});
+ const rulesHash=sha(screenContext.rules?.raw||(await read('rules',{key})).data.rules.raw);
  const blockedIdentities=new Set([...quarantined.filter(q=>q.identityKey).map(q=>q.identityKey),...Drain.fences('.').map(identityKey)]);
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
  const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const business=await evidence(r.url,r.company);
