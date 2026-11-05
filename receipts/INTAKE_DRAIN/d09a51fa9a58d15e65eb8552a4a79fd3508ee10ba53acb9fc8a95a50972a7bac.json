@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4463029742",
+  "sourceVersion": "1e9e574ff6dd439fc5a7822b5766047d1072a323e92e81970fa6cc5ca7312507",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-7",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:18.673Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved queue says original Coherent candidate WRITE_FAILED, and independent index lists original request COMPLETE. Legacy RESULT_SUMMARY response hash matches VERIFIED acceptedResultSha256 and write IDs match, but exact per-candidate source-identity binding remains pending. Captured Fremont CA differs from the current declined same-title Sunnyvale CA row; preserve both known cities.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI binds exact legacy candidate sourceIdentitySha256 to its original outcome, then resolves Fremont versus Sunnyvale employer-posting/base evidence without changing prior decline.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4463029742",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    },
+    {
+      "source": "receipts/FORGE-EMAIL-CHATGPT-20261101-1504ET-B01_RESULT_SUMMARY.json and _VERIFIED.json",
+      "result": "Legacy batch hashes/write ID match COMPLETE index; candidate-level mapping still required."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Coherent Corp.",
+    "title": "Director of Indium Phosphide (InP) Wafer Fab Operations",
+    "location": "Fremont, CA",
+    "url": "https://www.linkedin.com/jobs/view/4463029742/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-5CE615DF9E38",
+        "company": "Coherent Corp.",
+        "title": "Director of Indium Phosphide (InP) Wafer Fab Operations",
+        "location": "Sunnyvale, CA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "07bc5162b23ed0a9debe0f6e9a72d5a940e8c6c01024209ac7c87b6cda6ebeb0"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-EMAIL-CHATGPT-20261101-1504ET-B01",
+    "savedCheckpointPresent": true,
+    "savedAcceptancePresent": false,
+    "savedVerificationPresent": true,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T20:13:04.692Z",
+      "w": "W-20261101201212690-11fa5f",
+      "snapshotHash": "1814387969898c:7927422"
+    },
+    "conclusion": "ORIGINAL_ACCEPTANCE_BINDING_NOT_RECOVERED"
+  }
+}

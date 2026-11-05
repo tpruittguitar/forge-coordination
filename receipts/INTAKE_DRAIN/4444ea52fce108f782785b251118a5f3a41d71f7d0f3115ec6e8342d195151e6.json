@@ -1,0 +1,64 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482214686",
+  "sourceVersion": "9fa0c06c689aaf4a14d20bf80fb7d1035b4c979bed603b332b99c80c24fbad6f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-4",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:13.911Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved queue says the original Blue Origin candidate WRITE_FAILED, and authoritative index independently lists the original request COMPLETE. Legacy RESULT_SUMMARY and VERIFIED files exist, but this pass did not reconstruct the exact candidate source-identity hash/index binding; no original candidate success or new write completion is invented. Strict current company/title matching found no exact role candidate.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI binds legacy RESULT_SUMMARY/sourceIdentitySha256 to exact captured Blue Origin candidate and saved original verification, then checks returned primary ID or normalized role lineage; no replay.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4482214686",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    },
+    {
+      "source": "receipts/FORGE-EMAIL-CHATGPT-20261101-0510ET-B01_RESULT_SUMMARY.json and _VERIFIED.json",
+      "result": "Legacy sourceResponseSha256 equals acceptedResultSha256; write IDs match independently COMPLETE index entry. Exact per-candidate mapping remains pending."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Blue Origin",
+    "title": "Sr Manager - Manufacturing Engineering & Technology",
+    "location": "Merritt Island, FL",
+    "url": "https://www.linkedin.com/jobs/view/4482214686/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": []
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-EMAIL-CHATGPT-20261101-0510ET-B01",
+    "savedCheckpointPresent": true,
+    "savedAcceptancePresent": false,
+    "savedVerificationPresent": true,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T10:14:01.737Z",
+      "w": "W-20261101101323548-b09f42",
+      "snapshotHash": "107c4276e20957:7723820"
+    },
+    "conclusion": "ORIGINAL_ACCEPTANCE_BINDING_NOT_RECOVERED"
+  }
+}

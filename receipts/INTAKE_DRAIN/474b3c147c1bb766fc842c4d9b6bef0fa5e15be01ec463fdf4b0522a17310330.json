@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4463785849",
+  "sourceVersion": "6446f171e16793fde1cc64c9264e78692551a86cda7aef522bc7b27769f05450",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-8",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:20.241Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE; exact Hyve candidate originally WRITE_FAILED. Protected archive candidate explicitly records estimated/unverified Reno primary worksite and a separate Las Vegas sibling posting, with different old LinkedIn source. Captured current worksite is missing; neither the estimate nor a sibling city is an observed location for this source.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI recovers current exact saved source/employer requisition and actual site, preserving protected archive uncertainty and sibling-role distinction.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Hyve Solutions",
+    "title": "Director of Quality",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4463785849/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2S-HYVE-DIRQUALITY-NV",
+        "company": "Hyve Solutions",
+        "title": "Director of Quality",
+        "location": "Reno, NV estimated primary worksite MED; separate Las Vegas sibling posting surfaced",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "LI-4462086594 (Reno); exact employer ATS req UNVERIFIED_PROTECTED",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "1aba1e12bbd2ebb6dff097febba52ec87efd7db58f1b0d44a19b4e1594652c9e"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B005",
+    "index": 72,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:28:19.417Z",
+      "w": "W-20261102002729161-1b4ca0",
+      "snapshotHash": "bb848492e25a0:9551743"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261102002729161-1b4ca0",
+    "responseSha256": "0158da49df14b149ef43587d14317b4d43bb00e891b31c513c4c4f0a159d03b7",
+    "acceptancePath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B005_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B005_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "primaryId": null,
+    "candidateIds": [
+      "V2S-HYVE-DIRQUALITY-NV"
+    ],
+    "sourceSha256": "a79804e0265ed72098622baadbe4c2646dcbe1e77bdceff43b24805add6054a2",
+    "originalVerificationObservedAt": "2026-11-02T00:29:34.813Z"
+  }
+}

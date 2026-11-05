@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4448321198",
+  "sourceVersion": "bca03771c902bc12ea9842681cb711c190b3ab28d82be1a7014dec27c2a5bb0a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-2",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:10.591Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE with matching saved acceptance/verification write ID; exact Arcosa candidate originally WRITE_FAILED. Captured location is missing and the same-title canonical candidate is Houston TX. Do not recover a missing original worksite by copying a generic canonical candidate.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI recovers the exact original full Arcosa source/card or employer destination and actual assigned site before comparing with Houston canonical candidate.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Arcosa Inc.",
+    "title": "Manufacturing Ops Mgr / Plant Manager",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4448321198/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-BCDC373210A8",
+        "company": "Arcosa Inc.",
+        "title": "Manufacturing Ops Mgr / Plant Manager",
+        "location": "Houston, TX, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "a9586595c9ff216844ad68f73dda695757d948d410a05999a79a24b43fdf3e56"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+    "index": 1,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:16:02.219Z",
+      "w": "W-20261102001527752-1f819c",
+      "snapshotHash": "3b993f87db56:9097673"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261102001527752-1f819c",
+    "responseSha256": "d83304e3bf76f06bebb11ea8bc203dfde61f43ce6b89f3583c03d97d55c56fcf",
+    "acceptancePath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "primaryId": null,
+    "candidateIds": [
+      "V2I-BCDC373210A8"
+    ],
+    "sourceSha256": "2182a2441095d192fa108cf18dd50fcb4a5a27a5cc0770b007891e81048e0bde",
+    "originalVerificationObservedAt": "2026-11-02T00:16:54.277Z"
+  }
+}

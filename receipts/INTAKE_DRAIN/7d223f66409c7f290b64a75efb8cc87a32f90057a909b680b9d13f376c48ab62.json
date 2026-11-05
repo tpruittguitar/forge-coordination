@@ -1,0 +1,79 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483274816",
+  "sourceVersion": "0bd29d3d8a658714420ab223e1075beeb98da0f8f127877c3381867eccb74e3f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-1",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:08.706Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved checkpoint candidate, accepted EXISTING_MATCH result, matching original response hash and independently COMPLETE original batch bind captured LinkedIn 4483274816 to V2I-5910E7FACF01. Fresh canonical read confirms same employer, Durham site and title under the existing ampersand/and presentation normalization. This confirms existing identity, not a new write or queue closure.",
+  "conclusion": "ORIGINAL_EXISTING_MATCH_SOURCE_BINDING_AND_CURRENT_CANONICAL_IDENTITY_CONFIRMED",
+  "nextAction": "Existing coordinator persists/reuses the exact verified existing-source accounting and repairs stale held projection without altering canonical job identity or disposition.",
+  "retryCondition": "Coordinator records source-bound existing accounting; only contradictory identity evidence reopens this role.",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4483274816",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "PowerSecure, Inc.",
+    "title": "Director Manufacturing and Industrial Engineering",
+    "location": "Durham, NC",
+    "url": "https://www.linkedin.com/jobs/view/4483274816/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-5910E7FACF01",
+    "company": "PowerSecure, Inc.",
+    "title": "Director Manufacturing & Industrial Engineering",
+    "location": "Durham, NC",
+    "bucket": "MANUAL_RESEARCH",
+    "disposition": "RESOLVED/NEEDS_RESOLUTION",
+    "reqId": "UNCAPTURED",
+    "store": "MASTER",
+    "originalAcceptedSourceBinding": true,
+    "titlePresentation": "Ampersand and and normalize identically under existing reconciliation title rules",
+    "rowSha256": "6398549954ecc692382b736acdf821bad0af71f6a5e75e4ffecc9cd5423e651c"
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "index": 150,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:12:02.615Z",
+      "w": "W-20261101211126834-c5b206",
+      "snapshotHash": "9a06c7cde003d:8508117"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101211126834-c5b206",
+    "responseSha256": "c20b4a91fcbfe1967f17d67c39aca80457e064e672c9dbe066b25b0f9e920058",
+    "acceptancePath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_VERIFIED.json",
+    "originalCandidateOutcome": "EXISTING_MATCH",
+    "detail": "",
+    "primaryId": "V2I-5910E7FACF01",
+    "candidateIds": [],
+    "sourceSha256": "644fbbe26f9969f2813997a2bcfda247710ae111a69a66bae7c80e2fd6fdd728",
+    "originalVerificationObservedAt": "2026-11-01T21:12:47.634Z"
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}

@@ -1,0 +1,102 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484249462",
+  "sourceVersion": "efa3215fd45f5a05ce7d033a5e4c7818875d8bead4709bdaa09386879b21a218",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-5",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:15.496Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE; exact DSJ candidate originally WRITE_FAILED. Fresh master has two APPLIED same-company/title identities, both bound to historical LinkedIn 4443967895 and unknown sites. Multiple protected rows and undisclosed client/site prevent unique applied-repeat accounting; preserve both applications and do not pick one.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI recovers exact current agency placement/client/site and original applied-role lineage before coordinator repeat/duplicate accounting; no company-wide exclusion.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "DSJ Global",
+    "title": "Plant Manager",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4484249462/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2E-28D5A79CA507",
+        "company": "DSJ Global",
+        "title": "Plant Manager",
+        "location": "NOT_STATED",
+        "bucket": "APPLIED",
+        "disposition": "RESOLVED/APPLIED_CONFIRMED",
+        "reqId": "LI-4443967895",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "94745c8ff39cc08b6876eb84e4fd42f1ca18f7ee24a2b4dd6aa142ab66dc120c"
+      },
+      {
+        "primaryId": "V2E-1A5E532B3309",
+        "company": "DSJ Global",
+        "title": "Plant Manager",
+        "location": "NOT_STATED",
+        "bucket": "APPLIED",
+        "disposition": "RESOLVED/APPLIED_CONFIRMED",
+        "reqId": "LinkedIn 4443967895",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "756ec3444fe39d86b16ae7b98f82c5d3ca940eed25bbfebfece827b724c4287a"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+    "index": 6,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:16:02.219Z",
+      "w": "W-20261102001527752-1f819c",
+      "snapshotHash": "3b993f87db56:9097673"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261102001527752-1f819c",
+    "responseSha256": "d83304e3bf76f06bebb11ea8bc203dfde61f43ce6b89f3583c03d97d55c56fcf",
+    "acceptancePath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "primaryId": null,
+    "candidateIds": [
+      "V2E-28D5A79CA507",
+      "V2E-1A5E532B3309"
+    ],
+    "sourceSha256": "90d33c927d820e62151756ad7c851eb5ceecb03555cedb106f1ae9cf72ee6cdb",
+    "originalVerificationObservedAt": "2026-11-02T00:16:54.277Z"
+  }
+}

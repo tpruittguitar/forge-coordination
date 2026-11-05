@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481866877",
+  "sourceVersion": "153a3a4cee802b3de516f171f716afee932c42b2b0ef4ec4e4c45b470f9cfc7e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B3-3",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T09:00:12.320Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE; this exact Eaton candidate originally WRITE_FAILED. Captured Arden NC and declined canonical Greenwood SC are different known sites; preserve the declined record and do not infer a location alias or facility-manager exception for a CI Director.",
+  "conclusion": "SOURCE_BOUND_IDENTITY_INVESTIGATION_RETAINS_OPEN_OBLIGATION",
+  "nextAction": "AI resolves exact original/employer requisition and base-location evidence for Arden source versus Greenwood declined record; never replay the failed original.",
+  "retryCondition": "New exact original-source, employer requisition/site or verified alias evidence resolves the recorded identity distinction; no unchanged blind retry or original replay.",
+  "attempts": [
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Read existing source/request records without altering dispositions or replaying writes."
+    },
+    {
+      "source": "Fresh complete canonical master/archive snapshot",
+      "result": "Compared exact source/company/title/site and known posting identifiers; retained all role candidates without arbitrary selection."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Eaton",
+    "title": "Director, Continuous Improvement (Electrical)",
+    "location": "Arden, NC",
+    "url": "https://www.linkedin.com/jobs/view/4481866877/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:56:45.528Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-F18388792F84",
+        "company": "Eaton",
+        "title": "Director, Continuous Improvement (Electrical)",
+        "location": "Greenwood, SC",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNKNOWN",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "504f46d8f767a2f18dcd01db0cea236eba0c629018cf7cf8d769a042ead9929e"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "index": 64,
+    "liveReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:12:02.615Z",
+      "w": "W-20261101211126834-c5b206",
+      "snapshotHash": "9a06c7cde003d:8508117"
+    },
+    "indexCommit": "e9bb99c9d4eb255e780ee7a274ee70b661c3a43c",
+    "writeId": "W-20261101211126834-c5b206",
+    "responseSha256": "c20b4a91fcbfe1967f17d67c39aca80457e064e672c9dbe066b25b0f9e920058",
+    "acceptancePath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "verificationPath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_VERIFIED.json",
+    "originalCandidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "primaryId": null,
+    "candidateIds": [
+      "V2I-F18388792F84"
+    ],
+    "sourceSha256": "ec569e2f0b797cc53b74256db0703d711c82b970318526c797f049257cbb5a94",
+    "originalVerificationObservedAt": "2026-11-01T21:12:47.634Z"
+  }
+}
