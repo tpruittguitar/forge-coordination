@@ -1,0 +1,90 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4450793412",
+  "sourceVersion": "3f70bbaf0866309a7e88ea73faec31dce4ae0f609eeb89bd5aba1197e7b1cb7c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1544Z-HELD-B4-0-CANONICAL-SNAPSHOT",
+  "instructionCommit": "658b5d0acf387eb7b235a12d3a7db48a0d1039c6",
+  "observedAt": "2026-11-05T16:07:42.022Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Unique BlueOrigin QualityManager decline V2I-FFB21100CD39 has same literal GreaterSeattleArea region plus WA annotation. Private code checked exact literal-region equality after removing only old WA qualifier, then decidedRepeatRule confirmed current row; no region-to-Kent/city mapping, new employer req or outside qualification research. Original failed candidate in independentlyCOMPLETE batch is accounted as existing identity, not an inserted job; protected R69122 decision unchanged.",
+  "conclusion": "VERIFIED_EXISTING_DECIDED_REPEAT",
+  "nextAction": "Existing AI/local coordinator consumes verified existing-role proof and preserves original request/decline; no new intake.",
+  "retryCondition": "Existing coordinator accounts source-bound verified existing identity without new write.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0006.json",
+      "result": "Reused exact saved original identity/worksite first; no inferred city, employer client or requisition."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master/archive",
+      "result": "Code compared exact original role/source/site and any original failed-candidate IDs; current snapshot4624rows, prior decisions preserved."
+    },
+    {
+      "source": "Existing read-only Writer recovery V2I-FFB21100CD39",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T16:03:00.096Z"
+    },
+    {
+      "source": "Existing read-only Writer recovery FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T16:03:00.097Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Blue Origin",
+    "title": "Quality Manager",
+    "location": "Greater Seattle Area",
+    "url": "https://www.linkedin.com/jobs/view/4450793412/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "4d9489f4bbcd6368f587ce54b2cdce0c6206923e96f522b6e1abb667d0472bbf",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4624,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T16:03:00.027Z",
+    "masterModifiedAt": "2026-11-05T15:56:39.470Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-FFB21100CD39",
+    "company": "Blue Origin",
+    "title": "Quality Manager",
+    "location": "Greater Seattle Area, WA",
+    "bucket": "DECLINED_BY_TIM",
+    "disposition": "RESOLVED/DECLINED_BY_TIM",
+    "reqId": "R69122",
+    "store": "MASTER",
+    "exactPostingMatch": false,
+    "labelledReqMatch": false,
+    "canonicalPostingKeys": [
+      "wd:blueorigin:R69122"
+    ],
+    "locationMatch": false,
+    "rowSha256": "4dbc2be11221452b158643fba7568570f97ab98327e61a1d0b9f481418e2af1b",
+    "proofMethod": "DECIDED_REPEAT_SAME_EXACT_REGION_OR_EXPLICIT_PERMITTED_WORKSITE",
+    "existingIdentityOnly": true
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 34,
+    "candidateOutcome": "WRITE_FAILED",
+    "originalWriteId": "W-20261101210436699-169590",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101210436699-169590",
+      "at": "2026-11-01T21:05:01.608Z"
+    },
+    "replayed": false
+  },
+  "additionalEvidence": {
+    "postingContentSha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "originalRequestReplayed": false
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}
