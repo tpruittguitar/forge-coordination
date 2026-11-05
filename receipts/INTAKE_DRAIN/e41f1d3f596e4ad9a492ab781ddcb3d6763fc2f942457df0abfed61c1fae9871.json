@@ -1,0 +1,81 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:ec543481e24e3cac483e45db",
+  "sourceVersion": "ad8b941672f7caed4b258831a86daddf1453d2756976538f9dc858f2454c7b28",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0940Z-HELD-B3-2",
+  "instructionCommit": "642dc102c6a25bc1a9bfec3ef1219551be81e754",
+  "observedAt": "2026-11-05T09:56:48.832Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Anduril GH5199174007 appears in master and archive as DECLINED_BY_TIM under two primary IDs. Both decisions agree, but duplicate/survivor relationship is unstated. Preserve both protected records and require canonical source accounting, no new intake.",
+  "conclusion": "SOURCE_IDENTITY_OR_SURVIVOR_ACCOUNTING_UNRESOLVED",
+  "nextAction": "AI/authorized coordinator investigates exact original source, requisition and survivor/site evidence; keep protected jobs and original requests unchanged, no replay.",
+  "retryCondition": "Materially changed exact original evidence or authorized read-only canonical provenance resolves the specified alias/site/survivor obligation; ordinary recovery remains AI-owned.",
+  "attempts": [
+    {
+      "source": "Fresh authenticated Drive complete4591rowmaster/785rowarchive; mastermodified2026-11-05T09:50:19.329Z",
+      "result": "Read exact candidate canonical rows and source IDs; no primary selected from unresolved multiple matches."
+    },
+    {
+      "source": "Original saved card/source records at instructioncommit642dc102c6a25bc1a9bfec3ef1219551be81e754",
+      "result": "Reused original employer/title/site/posting and existing protected/source markers; no repeated outside lookup."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "VP Production, Mission Systems ",
+    "location": "Costa Mesa, California, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5199174007?gh_jid=5199174007"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "440132bed4941c901d8b4f2cdeecac7ef4352c56d4c978e60039b768b049bb95",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4591,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T09:56:44.276Z",
+    "masterModifiedAt": "2026-11-05T09:50:19.329Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "identityConfirmed": false,
+    "matches": [
+      {
+        "primaryId": "V2I-7506B47A8EAD",
+        "company": "Anduril Industries",
+        "title": "VP Production, Mission Systems",
+        "location": "Costa Mesa, California, United States",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "12461",
+        "store": "MASTER",
+        "exactPostingMatch": true,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "gh:andurilindustries:5199174007"
+        ],
+        "locationMatch": true,
+        "rowSha256": "7d374eaec952dd761abda7d284cf021bed86892b3279c3b7c2a2421567449027"
+      },
+      {
+        "primaryId": "V2S-ANDURIL-VPPROD-MS-5199174007",
+        "company": "Anduril Industries",
+        "title": "VP Production, Mission Systems",
+        "location": "Costa Mesa, CA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "GH-5199174007",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": true,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "082cd53b5e168b869aef8f9fd35ab8e659c233a3c81471b11a087cb679693fce"
+      }
+    ]
+  }
+}
