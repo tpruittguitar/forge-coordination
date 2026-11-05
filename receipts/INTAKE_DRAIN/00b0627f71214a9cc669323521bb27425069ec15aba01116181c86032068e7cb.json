@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:12392fb8db756b0fdd013832",
+  "sourceVersion": "b0e0b3ccb4f2caa5b43b1af2a9eece2bf4ac614174244cb8c599bbceec9c47c2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0844Z-HELD-B1-0",
+  "instructionCommit": "6bf4de37c97578a7c4f9e03f135e555cd6965dc1",
+  "observedAt": "2026-11-05T08:51:36.130Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Code validated the exact original Anduril response and original candidate as terminal zero-write WRITE_FAILED, with no accepted write or write ID. Fresh canonical candidate V2I-3D9B55BDEB38 is Columbus OH while captured source is Ashville OH. Preserve the original request and both sites; do not wait for a nonexistent write receipt or force a nearby-city match.",
+  "conclusion": "ORIGINAL_TERMINAL_ZERO_WRITE_CONFIRMED_LOCATION_IDENTITY_UNRESOLVED",
+  "nextAction": "AI resolves exact employer posting/facility relationship between Ashville advertisement and Columbus canonical candidate, then existing coordinator applies source-bound accounting without changing the prior job.",
+  "retryCondition": "Exact employer requisition or explicit assigned-facility evidence explains both city observations; no nearby-city inference or original replay.",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
+      "result": "Existing zero-write classifier validated original response against exact original candidates file and computed request identity; WRITE_FAILED has no canonical write transaction."
+    },
+    {
+      "source": "Fresh complete canonical master",
+      "result": "One same-company/title canonical candidate has different known location and no captured employer-posting key."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Sr. Manager, Warehouse Ops Excellence",
+    "location": "Ashville, Ohio, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "fcc4d3ab7214b7bb50890b45aafb496a2300c916ad27bb7ee6570fac3d1874fe",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4585,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T08:46:20.163Z",
+    "masterModifiedAt": "2026-11-05T08:32:28.159Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "roleCandidates": [
+      {
+        "primaryId": "V2I-3D9B55BDEB38",
+        "company": "Anduril Industries",
+        "title": "Sr. Manager, Warehouse Ops Excellence",
+        "location": "Columbus, OH",
+        "bucket": "MANUAL_RESEARCH",
+        "disposition": "RESOLVED/NEEDS_RESOLUTION",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "cfe8b854c63932760ba1b55c282650a55339ed0e578f88b8b90298c034f90ebe"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-SOURCE-A40AABC3BBFF2225818A2F99",
+    "responsePath": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
+    "responseSha256": "e35dd1f350b01b925ee3d69f7a2e818ef4298ef0a67471a46ec2ecd56e936b7b",
+    "candidatePath": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.candidates.json",
+    "candidateSha256": "2f16b66321ecc0ba81d77c12459cc8a00cf195a3f536520ca65a6e54da67acc9",
+    "canonicalWrites": 0,
+    "writeReceiptNotApplicable": true,
+    "originalRequestMustNotBeReplayed": true,
+    "outcomes": [
+      {
+        "result": "WRITE_FAILED",
+        "primaryId": null,
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+      }
+    ]
+  }
+}
