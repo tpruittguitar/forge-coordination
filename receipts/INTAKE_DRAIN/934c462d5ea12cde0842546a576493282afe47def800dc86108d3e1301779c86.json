@@ -1,0 +1,87 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483700120",
+  "sourceVersion": "85467fbc72300474d22d1c62ca6abcaf0ab8c8212d00414751a83e6c6fe93256",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B5-8",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T12:04:45.308Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index178 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. SpaceX Texas-region capture versus rejected Starbase role GH8639961002. No original LinkedIn-to-employer requisition binding observed for this advertisement; no automatic rejected-repeat inference. Existing read-only evidence/request_result blocked by absent cloud credential; no new candidate insert or original replay.",
+  "conclusion": "Exact original candidate failed; source-bound identity reconciliation remains AI-owned.",
+  "nextAction": "Existing authenticated AI/local coordinator retains source-bound original request and employer Apply/requisition/site recovery; preserve decisions, no original request replay.",
+  "retryCondition": "Original source/requisition/site evidence or exact request_result changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0044.json",
+      "result": "Reused exact original identities and saved helper evidence before outside research; no withdrawn title/agency exclusion used."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4601/archive785",
+      "result": "Compared same-role candidates, explicit original source identities and exact prior row hashes; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-07990AD36C22",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:04:28.953Z"
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound original candidate WRITE_FAILED after independently COMPLETE batch; no POST or replay."
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "SpaceX",
+    "title": "Production Director (Starship)",
+    "location": "Texas, United States",
+    "url": "https://www.linkedin.com/jobs/view/4483700120/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "candidateIndex": 178,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-07990AD36C22"
+    ],
+    "originalWriteId": "W-20261101211126834-c5b206",
+    "independentIndexCommit": "00ee4c5b1ad50e1656768d2e67596183bdce1e78",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:12:02.615Z",
+      "w": "W-20261101211126834-c5b206",
+      "snapshotHash": "9a06c7cde003d:8508117"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-07990AD36C22",
+        "company": "SpaceX",
+        "title": "Production Director (Starship)",
+        "location": "Starbase, TX",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "reqId": "8639961002",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "gh:spacex:8639961002"
+        ],
+        "locationMatch": false,
+        "rowSha256": "d79f922a1ec4c3b25720996abc1b0e345b1e6382055b03883b40ec7fc01f90f3"
+      }
+    ]
+  }
+}

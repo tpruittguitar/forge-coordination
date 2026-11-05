@@ -1,0 +1,87 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4447313081",
+  "sourceVersion": "b1205367f6fd2852a47a814e3c92f58328d3c377939257668c5ab75417e93b3e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B5-3",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T12:04:36.074Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index28 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Blue Origin captured Greater Seattle Area versus declined same metro WA role with employerR69506. Metro-state display difference alone is not a site contradiction, but original LinkedIn-to-employer requisition binding is missing. Existing read-only evidence/request_result blocked by absent cloud credential; no new candidate insert or original replay.",
+  "conclusion": "Exact original candidate failed; source-bound identity reconciliation remains AI-owned.",
+  "nextAction": "Existing authenticated AI/local coordinator retains source-bound original request and employer Apply/requisition/site recovery; preserve decisions, no original request replay.",
+  "retryCondition": "Original source/requisition/site evidence or exact request_result changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0006.json",
+      "result": "Reused exact original identities and saved helper evidence before outside research; no withdrawn title/agency exclusion used."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4601/archive785",
+      "result": "Compared same-role candidates, explicit original source identities and exact prior row hashes; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-4324B4C608BC",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:04:28.953Z"
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound original candidate WRITE_FAILED after independently COMPLETE batch; no POST or replay."
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Blue Origin",
+    "title": "Director of Avionics, Manufacturing, Multi-Mission",
+    "location": "Greater Seattle Area",
+    "url": "https://www.linkedin.com/jobs/view/4447313081/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 28,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-4324B4C608BC"
+    ],
+    "originalWriteId": "W-20261101210436699-169590",
+    "independentIndexCommit": "00ee4c5b1ad50e1656768d2e67596183bdce1e78",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:05:01.608Z",
+      "w": "W-20261101210436699-169590",
+      "snapshotHash": "1b54ecc0a56573:8057820"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-4324B4C608BC",
+        "company": "Blue Origin",
+        "title": "Director of Avionics, Manufacturing, Multi-Mission",
+        "location": "Greater Seattle Area, WA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "R69506",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "wd:blueorigin:R69506"
+        ],
+        "locationMatch": false,
+        "rowSha256": "c6cd77299eae4f16f6d56ee216b1e4755adf6769bf631097bd63ca1af958cefd"
+      }
+    ]
+  }
+}

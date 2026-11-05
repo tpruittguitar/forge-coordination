@@ -1,0 +1,87 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4472978782",
+  "sourceVersion": "8da8f864b58f45ce18903750c7170b02eb0e09a56c19cf121871a0ea23ed19f2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B5-2",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T12:04:33.880Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index50 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Charter Steel Cleveland OH capture versus declined Saukville WI employer WorkdayR08219 role; original Apply binding and actual site/territory unresolved. Existing read-only evidence/request_result blocked by absent cloud credential; no new candidate insert or original replay.",
+  "conclusion": "Exact original candidate failed; source-bound identity reconciliation remains AI-owned.",
+  "nextAction": "Existing authenticated AI/local coordinator retains source-bound original request and employer Apply/requisition/site recovery; preserve decisions, no original request replay.",
+  "retryCondition": "Original source/requisition/site evidence or exact request_result changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0017.json",
+      "result": "Reused exact original identities and saved helper evidence before outside research; no withdrawn title/agency exclusion used."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4601/archive785",
+      "result": "Compared same-role candidates, explicit original source identities and exact prior row hashes; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-81A73F0D2C27",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:04:28.953Z"
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound original candidate WRITE_FAILED after independently COMPLETE batch; no POST or replay."
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Charter Steel",
+    "title": "Director of Operations Technology & Automation",
+    "location": "Cleveland, OH",
+    "url": "https://www.linkedin.com/jobs/view/4472978782/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "candidateIndex": 50,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-81A73F0D2C27"
+    ],
+    "originalWriteId": "W-20261101210739345-133ced",
+    "independentIndexCommit": "00ee4c5b1ad50e1656768d2e67596183bdce1e78",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:08:03.971Z",
+      "w": "W-20261101210739345-133ced",
+      "snapshotHash": "182b7b43efbed4:8283652"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-81A73F0D2C27",
+        "company": "Charter Steel",
+        "title": "Director of Operations Technology & Automation",
+        "location": "Saukville, WI",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "d0e990196c2fc070",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "wd:chartermfg:R08219"
+        ],
+        "locationMatch": false,
+        "rowSha256": "7505e059f2d4289c8b3609c565f1ec7bb8e72faf51abf28f3560dffa757bb3c0"
+      }
+    ]
+  }
+}

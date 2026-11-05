@@ -1,0 +1,106 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4440970645",
+  "sourceVersion": "2378e1950aacf41ffb92596fa5cafda276c22ee49123f3bfbd1fbbbf906359bb",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B5-1",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T12:04:31.639Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index16 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Two APPLIED canonical Arke rows explicitly reference same original LinkedIn4440970645, but duplicate canonical records and missing legacy sites prevent selecting one primary ID; preserve both applications. Existing read-only evidence/request_result blocked by absent cloud credential; no new candidate insert or original replay.",
+  "conclusion": "Exact original candidate failed; source-bound identity reconciliation remains AI-owned.",
+  "nextAction": "Existing authenticated AI/local coordinator retains source-bound original request and employer Apply/requisition/site recovery; preserve decisions, no original request replay.",
+  "retryCondition": "Original source/requisition/site evidence or exact request_result changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0004.json",
+      "result": "Reused exact original identities and saved helper evidence before outside research; no withdrawn title/agency exclusion used."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4601/archive785",
+      "result": "Compared same-role candidates, explicit original source identities and exact prior row hashes; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2E-523E7BB6E735",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:04:28.953Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2E-A42BDF5BAEC6",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:04:28.953Z"
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound original candidate WRITE_FAILED after independently COMPLETE batch; no POST or replay."
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Arke",
+    "title": "Manufacturing Manager",
+    "location": "Dallas, TX",
+    "url": "https://www.linkedin.com/jobs/view/4440970645/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 16,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2E-523E7BB6E735",
+      "V2E-A42BDF5BAEC6"
+    ],
+    "originalWriteId": "W-20261101210436699-169590",
+    "independentIndexCommit": "00ee4c5b1ad50e1656768d2e67596183bdce1e78",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:05:01.608Z",
+      "w": "W-20261101210436699-169590",
+      "snapshotHash": "1b54ecc0a56573:8057820"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2E-523E7BB6E735",
+        "company": "Arke",
+        "title": "Manufacturing Manager",
+        "location": "NOT_STATED",
+        "bucket": "APPLIED",
+        "disposition": "RESOLVED/APPLIED_CONFIRMED",
+        "reqId": "LI-4440970645",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "f695691063c57cedb81358f148e99606daed6925a4bbdbc15c1f53935e0b6b88"
+      },
+      {
+        "primaryId": "V2E-A42BDF5BAEC6",
+        "company": "Arke",
+        "title": "Manufacturing Manager",
+        "location": "NOT_STATED",
+        "bucket": "APPLIED",
+        "disposition": "RESOLVED/APPLIED_CONFIRMED",
+        "reqId": "LinkedIn 4440970645",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "1a91dea84a3078abc5ad2dc5a2e3e5018c072aab9613db2aaa539107024b131b"
+      }
+    ]
+  }
+}
