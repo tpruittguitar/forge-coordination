@@ -1,4 +1,3 @@
-WHAT=Rebase completed reporting commits over unrelated bot updates before rebuilding, reducing repeated non-fast-forward publication races while preserving conflicting policy and queue updates for fresh recomputation.
+WHAT=Rebase completed reporting commits over unrelated bot updates before rebuilding, reducing repeated non-fast-forward publication races while preserving conflicting policy and queue updates for fresh recomputation. Also retry transient Writer HTTP 404 GET reads once without replaying submissions.
 REPO=forge-coordination
 DATE=2026-11-05
-DETAIL=Also retry a temporary HTTP 404 once on authenticated Writer GET reads, without replaying POST submissions or bypassing final read failures and authentication errors.
