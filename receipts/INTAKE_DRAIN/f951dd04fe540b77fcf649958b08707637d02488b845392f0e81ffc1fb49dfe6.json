@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480452893",
+  "sourceVersion": "4603c9006d4fb530d7410ac76193360dba0df53c99a4d9ca0c4ce6f3183bc26a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-04",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:21.607Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved location recovered; actual role is hospital patient-safety/QAPI work rather than established manufacturing quality. Retain the sourced function finding for approved disposition handling.",
+  "nextAction": "Preserve hospital patient-safety function evidence for approved function-disposition handling",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Amarillo, TX, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4480452893/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "Readable exact hospital patient-safety/QAPI responsibilities"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Oceans Healthcare",
+    "title": "Quality Director",
+    "location": "Amarillo, TX, USA",
+    "url": "https://www.linkedin.com/jobs/view/4480452893/",
+    "quote": "Works with VP, Quality and Patient Safety implementing organization-wide quality programs at the hospital level.",
+    "observedAt": "2026-11-05T06:31:21.607Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Amarillo, TX, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "No target manufacturing function established; quality vocabulary alone is not target-function evidence."
+  ],
+  "retryCondition": "APPROVED_FUNCTION_DISPOSITION_OR_CHANGED_TARGET_FUNCTION_EVIDENCE"
+}

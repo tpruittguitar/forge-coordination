@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482096869",
+  "sourceVersion": "32d100225a9c4f6a342c03efda7f60ab039fea6846c6e12526ac53d8c912b47d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-10",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:38.915Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved location recovered for historical EXISTING source. Preserve identity for fresh canonical reconciliation before new intake.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected identity; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Stanton, CA, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4482096869",
+      "result": "EXISTING hint retained; no fresh canonical verification"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Infosoft, Inc.",
+    "title": "Manufacturing Engineering & Facilities Director",
+    "location": "Stanton, CA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4482096869/",
+    "quote": "Saved exact source identity",
+    "observedAt": "2026-11-05T06:31:38.915Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Stanton, CA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Historical EXISTING alone is not current canonical verification."
+  ],
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}

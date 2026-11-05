@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480756423",
+  "sourceVersion": "597a3e913fa2661d37eeaf734484db803ced4542337651c0d209ca0aa0e7d263",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-08",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:33.142Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved exact location recovered; exact public posting fetch timed out, leaving current responsibilities and source status unresolved.",
+  "nextAction": "Retain recovered location; retry when exact source content or timeout condition changes",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Corpus Christi, TX, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4480756423/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no full posting"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "TRC Talent Solutions",
+    "title": "Head of Quality Control",
+    "location": "Corpus Christi, TX, USA",
+    "url": "https://www.linkedin.com/jobs/view/4480756423/",
+    "quote": "Exact source fetch timed out",
+    "observedAt": "2026-11-05T06:31:33.142Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Corpus Christi, TX, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "No end-client identity, role scope or replacement URL is inferred."
+  ],
+  "retryCondition": "EXACT_SOURCE_CONTENT_AVAILABLE_OR_TIMEOUT_CONDITION_CHANGED"
+}

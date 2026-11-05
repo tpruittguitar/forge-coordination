@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480135904",
+  "sourceVersion": "a7fe76416434fcdaa4615c94eae183185fa06b3af49269314a39890bbe7bd7cc",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-02",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:15.851Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved location recovered and public posting matches Cary, NC, but explicitly states No longer accepting applications. Preserve closure evidence instead of preparing active intake.",
+  "nextAction": "Retain explicit posting closure; retry only upon observed reopening or canonical source-closure accounting",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Cary, NC, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4480135904/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "Readable exact posting with No longer accepting applications notice"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Temposonics",
+    "title": "Director of Operations",
+    "location": "Cary, NC, USA",
+    "url": "https://www.linkedin.com/jobs/view/4480135904/",
+    "quote": "No longer accepting applications",
+    "observedAt": "2026-11-05T06:31:15.851Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Cary, NC, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Current reopening or canonical closure accounting remains required."
+  ],
+  "retryCondition": "EXACT_POSTING_REOPENED_OR_CANONICAL_CLOSURE_ACCOUNTED"
+}

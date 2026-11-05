@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481101922",
+  "sourceVersion": "6a7e1a686c99a1dbb925caa7c6932e3e94c908b8d7b19f1dc9dc60eeb5748f98",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-09",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:36.072Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved location recovered for source marked EXISTING_PROTECTED upstream. Preserve protected identity and reconcile fresh canonical evidence; no new research or intake preparation.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected identity; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Dayton, TN, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4481101922",
+      "result": "EXISTING_PROTECTED hint retained; no fresh canonical verification"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Insight Global",
+    "title": "Vice President of Quality",
+    "location": "Dayton, TN, USA",
+    "url": "https://www.linkedin.com/jobs/view/4481101922/",
+    "quote": "Saved exact source identity",
+    "observedAt": "2026-11-05T06:31:36.072Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Dayton, TN, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Fresh canonical master/archive exact-row proof is required."
+  ],
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}

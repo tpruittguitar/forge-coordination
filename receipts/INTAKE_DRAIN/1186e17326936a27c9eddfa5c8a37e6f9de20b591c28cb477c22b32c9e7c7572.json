@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4479607810",
+  "sourceVersion": "9537b0c71a752b04635b881425349dd656fbe7c248c775342fb2046086652221",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B3-01",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:31:12.973Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Historical exact EXISTING source location recovered; retain identity for fresh canonical reconciliation before any new intake.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected identity; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Menomonee Falls, WI, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4479607810",
+      "result": "EXISTING hint retained; no fresh canonical verification"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Alto-Shaam, Inc.",
+    "title": "Director of Advanced Manufacturing Engineering",
+    "location": "Menomonee Falls, WI, USA",
+    "url": "https://www.linkedin.com/jobs/view/4479607810/",
+    "quote": "Saved exact source identity",
+    "observedAt": "2026-11-05T06:31:12.973Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Menomonee Falls, WI, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Fresh canonical master/archive row proof is required."
+  ],
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}
