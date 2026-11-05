@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:856f8f305bad6f406e9ea4e0",
+  "sourceVersion": "f85bb05e1c40182b7d586e81dca994d0abaa54198a50858d35d2b31055bfcd92",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B5-8",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:33:33.372Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Palmetto worksite. Exact employer Workday R12816 returned empty content; no invented location or duty quote.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://powerdesigninc.wd5.myworkdayjobs.com/LFG/job/FL-Palmetto-LINK/Plant-Manager_R12816",
+      "result": "Exact Workday R12816 returned CRAWL_EMPTY_CONTENT."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Palmetto, FL, USA"
+  },
+  "sourceEvidence": {
+    "company": "Power Design, Inc.",
+    "title": "Plant Manager",
+    "location": "Palmetto, FL, USA",
+    "url": "https://powerdesigninc.wd5.myworkdayjobs.com/LFG/job/FL-Palmetto-LINK/Plant-Manager_R12816",
+    "references": [
+      "state/source-trial-report.json@b922aa31",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Original employer R12816 posting becomes readable or new saved source supplies actual role responsibility content."
+}

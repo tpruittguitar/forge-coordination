@@ -1,0 +1,39 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8920856f51f85e9df50d3939",
+  "sourceVersion": "f07ed5875822c07c8922740ad65389c1c94a87939e0a89af7ed00e9858b49fec",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B5-9",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:33:35.365Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Hopkins worksite. Exact ADP source returned redirect failure, so original identity and actual food-safety quality duties remain uncorroborated; no industry-name exclusion or qualification invented.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://recruiting.adp.com/srccsh/public/RTI.home?r=5001232913906&c=1182315&d=SchwansCompany&rb=INDEED&idUnique=5001232913906",
+      "result": "Exact employer ADP5001232913906 returned CRAWL_REDIRECT."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Hopkins, MN, USA"
+  },
+  "sourceEvidence": {
+    "company": "CJ Schwan’s",
+    "title": "Senior Director, Food Safety Quality (FSQ)",
+    "location": "Hopkins, MN, USA",
+    "url": "https://recruiting.adp.com/srccsh/public/RTI.home?r=5001232913906&c=1182315&d=SchwansCompany&rb=INDEED&idUnique=5001232913906",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Original exact ADP posting or saved source content becomes readable and supplies actual identity/responsibility evidence."
+}
