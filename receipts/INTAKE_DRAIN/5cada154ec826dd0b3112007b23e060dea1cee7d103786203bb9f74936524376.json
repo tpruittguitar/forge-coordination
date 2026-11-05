@@ -1,0 +1,107 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4433117597",
+  "sourceVersion": "5b9cb0966bf4de010766cdafc88a8dfbfc07976565b41ab067f0c251f71c7159",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B2-07",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T08:00:45.685Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current authoritative receipt index confirms original batch COMPLETE with the write ID bound to saved acceptance and verification. This candidate's original result is WRITE_FAILED with an identity hold; fresh canonical target-row evidence is retained without inferring original write success.",
+  "nextAction": "Existing coordinator must reconcile exact source/requisition/site facts with the original terminal candidate outcome and canonical target rows; preserve original request fence and all decisions",
+  "retryCondition": "EXACT_SOURCE_IDENTITY_AND_ORIGINAL_TERMINAL_HOLD_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "Authorized connected Drive master/archive read",
+      "result": "Existing completeness/unique-identity parser passes; authoritative COUNTS and END row totals agree; exact source identity and same-role candidates compared"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_CHECKPOINT.json",
+      "result": "Original candidate key bound to batch index 53"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_ACCEPTANCE.json",
+      "result": "Original indexed result WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION; saved response and write ID bindings validated"
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json@3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "result": "Fresh authenticated read of immutable authoritative index revision: COMPLETE with matching original write ID; not a new submission"
+    },
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Recovered exact captured worksite: Dearborn, MI, USA"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Ford Energy",
+    "title": "Senior Manager Quality Assurance, Ford Energy",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4433117597/",
+    "recoveredSourceLocation": "Dearborn, MI, USA",
+    "recoveryProof": "state/source-trial-report.json@eb8532c8"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:54:59.072Z"
+  },
+  "conclusion": {
+    "kind": "ORIGINAL_BATCH_COMPLETE_CANDIDATE_IDENTITY_HOLD",
+    "canonicalIdentityVerified": false,
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false,
+    "candidates": [
+      {
+        "primaryId": "V2I-1E90D3493D82",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "location": "Dearborn, MI (hybrid)",
+        "reqId": "62954",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "rowSha256": "ba9ccd0d2eea99e667b6a86569232c00288d56476e73911796d92357b69df0e1"
+      }
+    ],
+    "originalRequest": {
+      "key": "linkedin:4433117597",
+      "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002",
+      "originalIndex": 53,
+      "originalResult": "WRITE_FAILED",
+      "originalDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "originalCandidateIds": [
+        "V2I-1E90D3493D82"
+      ],
+      "originalResponseSha256": "02901412a39c0d7bc6b35cf8ff249b9fa10b8049f10ce216a9d6743333bb6bf9",
+      "writeId": "W-20261102001857269-18cfd8",
+      "indexCommit": "3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "indexSha256": "1510a4144c64621cfa854e5716e135ae7c0951a2332216d98940e85ef254b4e2",
+      "independentIndexState": "COMPLETE",
+      "independentIndexAt": "2026-11-02T00:19:16.861Z",
+      "indexWriteIdMatches": true,
+      "currentRows": [
+        {
+          "primaryId": "V2I-1E90D3493D82",
+          "company": "Ford Energy",
+          "title": "Senior Manager Quality Assurance, Ford Energy",
+          "location": "Dearborn, MI (hybrid)",
+          "bucket": "REJECTED_BY_EMPLOYER",
+          "store": "ARCHIVE",
+          "rowSha256": "ba9ccd0d2eea99e667b6a86569232c00288d56476e73911796d92357b69df0e1"
+        }
+      ]
+    },
+    "independentOriginalBatchComplete": true,
+    "freshRequestResultRead": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

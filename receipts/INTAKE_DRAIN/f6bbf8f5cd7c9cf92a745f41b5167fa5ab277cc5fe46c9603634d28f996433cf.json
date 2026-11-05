@@ -1,0 +1,103 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4471192535",
+  "sourceVersion": "510f7893ad976a5a1e913aed059ba4775dbf838710826619ad2825d49dc5db0e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B2-09",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T08:00:51.712Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current authoritative receipt index confirms original batch COMPLETE and its write ID matches saved acceptance. Saved candidate outcome remains WRITE_FAILED. Recovered source is Logan, UT, while the held-against canonical row is Oakwood Village, OH; preserve both sites and do not force a title-only match.",
+  "nextAction": "Existing coordinator must reconcile exact source/requisition/site facts with the original terminal candidate outcome and canonical target rows; preserve original request fence and all decisions",
+  "retryCondition": "EXACT_SOURCE_IDENTITY_AND_ORIGINAL_TERMINAL_HOLD_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "Authorized connected Drive master/archive read",
+      "result": "Existing completeness/unique-identity parser passes; authoritative COUNTS and END row totals agree; exact source identity and same-role candidates compared"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_CHECKPOINT.json",
+      "result": "Original candidate key bound to batch index 39"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_ACCEPTANCE.json",
+      "result": "Original indexed result WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION; saved response and write ID bindings validated"
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json@3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "result": "Fresh authenticated read of immutable authoritative index revision: COMPLETE with matching original write ID; not a new submission"
+    },
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Recovered exact captured worksite: Logan, UT, USA"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Thermo Fisher Scientific",
+    "title": "Senior Manager, Quality",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4471192535/",
+    "recoveredSourceLocation": "Logan, UT, USA",
+    "recoveryProof": "state/source-trial-report.json@eb8532c8"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:54:59.072Z"
+  },
+  "conclusion": {
+    "kind": "ORIGINAL_BATCH_COMPLETE_CANDIDATE_IDENTITY_HOLD",
+    "canonicalIdentityVerified": false,
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false,
+    "candidates": [],
+    "originalRequest": {
+      "key": "linkedin:4471192535",
+      "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002",
+      "originalIndex": 39,
+      "originalResult": "WRITE_FAILED",
+      "originalDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "originalCandidateIds": [
+        "V2I-10D243C2EFC0"
+      ],
+      "originalResponseSha256": "02901412a39c0d7bc6b35cf8ff249b9fa10b8049f10ce216a9d6743333bb6bf9",
+      "writeId": "W-20261102001857269-18cfd8",
+      "indexCommit": "3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "indexSha256": "1510a4144c64621cfa854e5716e135ae7c0951a2332216d98940e85ef254b4e2",
+      "independentIndexState": "COMPLETE",
+      "independentIndexAt": "2026-11-02T00:19:16.861Z",
+      "indexWriteIdMatches": true,
+      "currentRows": [
+        {
+          "primaryId": "V2I-10D243C2EFC0",
+          "company": "Thermo Fisher Scientific",
+          "title": "Sr. Manager, Quality",
+          "location": "Oakwood Village, OH, USA",
+          "bucket": "DECLINED_BY_TIM",
+          "store": "MASTER",
+          "rowSha256": "a5f36d0808a37e36cb829a196eeb74d7cbbe2279197d699889418fa53d9e8005"
+        }
+      ]
+    },
+    "independentOriginalBatchComplete": true,
+    "freshRequestResultRead": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT",
+  "sourceConflictEvidence": {
+    "capturedLocation": "Logan, UT, USA",
+    "canonicalLocation": "Oakwood Village, OH, USA",
+    "canonicalPrimaryId": "V2I-10D243C2EFC0",
+    "decision": "Known different sites; no identity substitution or original replay"
+  }
+}

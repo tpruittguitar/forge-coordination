@@ -1,0 +1,107 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4469615679",
+  "sourceVersion": "ac597f8613ccc568add62f10ee2790a0043d85ecd08b14d314d64e37b1a7fa5a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B2-08",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T08:00:48.721Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current authoritative receipt index confirms original batch COMPLETE with the write ID bound to saved acceptance and verification. This candidate's original result is WRITE_FAILED with an identity hold; fresh canonical target-row evidence is retained without inferring original write success.",
+  "nextAction": "Existing coordinator must reconcile exact source/requisition/site facts with the original terminal candidate outcome and canonical target rows; preserve original request fence and all decisions",
+  "retryCondition": "EXACT_SOURCE_IDENTITY_AND_ORIGINAL_TERMINAL_HOLD_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "Authorized connected Drive master/archive read",
+      "result": "Existing completeness/unique-identity parser passes; authoritative COUNTS and END row totals agree; exact source identity and same-role candidates compared"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_CHECKPOINT.json",
+      "result": "Original candidate key bound to batch index 2"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+      "result": "Original indexed result WRITE_FAILED: IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED; saved response and write ID bindings validated"
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json@3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "result": "Fresh authenticated read of immutable authoritative index revision: COMPLETE with matching original write ID; not a new submission"
+    },
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Recovered exact captured worksite: Torrance, CA, USA"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Unusual Machines",
+    "title": "Senior Manager of Production - Battery",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4469615679/",
+    "recoveredSourceLocation": "Torrance, CA, USA",
+    "recoveryProof": "state/source-trial-report.json@eb8532c8"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:54:59.072Z"
+  },
+  "conclusion": {
+    "kind": "ORIGINAL_BATCH_COMPLETE_CANDIDATE_IDENTITY_HOLD",
+    "canonicalIdentityVerified": false,
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false,
+    "candidates": [
+      {
+        "primaryId": "V2F-A153EFE40250",
+        "bucket": "DECLINED_BY_TIM",
+        "location": "Torrance, CA",
+        "reqId": "GH-4418073009",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "rowSha256": "50ba3a2b3e8c04afb2cd6bf9458ee873ee174b1b883c28ed0cb7d0c00c829af7"
+      }
+    ],
+    "originalRequest": {
+      "key": "linkedin:4469615679",
+      "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+      "originalIndex": 2,
+      "originalResult": "WRITE_FAILED",
+      "originalDetail": "IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED",
+      "originalCandidateIds": [
+        "V2F-A153EFE40250"
+      ],
+      "originalResponseSha256": "f1d2fa0a86f2a5540052ab9fd99d59d8aff1d8a06d83745c07dee38f62303411",
+      "writeId": "W-20261101220906182-1e3f21",
+      "indexCommit": "3b20da17a0e58efa92e88188523049cfd2768e2f",
+      "indexSha256": "1510a4144c64621cfa854e5716e135ae7c0951a2332216d98940e85ef254b4e2",
+      "independentIndexState": "COMPLETE",
+      "independentIndexAt": "2026-11-01T22:10:06.594Z",
+      "indexWriteIdMatches": true,
+      "currentRows": [
+        {
+          "primaryId": "V2F-A153EFE40250",
+          "company": "Unusual Machines",
+          "title": "Senior Manager of Production - Battery",
+          "location": "Torrance, CA",
+          "bucket": "DECLINED_BY_TIM",
+          "store": "ARCHIVE",
+          "rowSha256": "50ba3a2b3e8c04afb2cd6bf9458ee873ee174b1b883c28ed0cb7d0c00c829af7"
+        }
+      ]
+    },
+    "independentOriginalBatchComplete": true,
+    "freshRequestResultRead": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

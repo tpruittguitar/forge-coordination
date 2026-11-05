@@ -1,0 +1,59 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:dc56c3ef152b029bafe58e3f",
+  "sourceVersion": "cd8928644281dc0a168b8d6ed7bb6f6ebf48966e36eb776e6b8d1902d05088d9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T0743Z-HELD-B2-02",
+  "instructionCommit": "9b8f24ae2ccb8982b1bc193f7112bb5bab903f9b",
+  "observedAt": "2026-11-05T08:00:30.395Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh canonical read finds same-role candidates, but a unique exact source identity is not proven. Preserve saved protected/existing hints, source requisitions and site labels rather than forcing a new intake or same-title match.",
+  "nextAction": "Existing coordinator must reconcile exact source identity and duplicate lineage against the saved canonical proof without altering protected jobs",
+  "retryCondition": "EXACT_SOURCE_BOUND_CANONICAL_IDENTITY_OR_DUPLICATE_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "Authorized connected Drive master/archive read",
+      "result": "Existing completeness/unique-identity parser passes; authoritative COUNTS and END row totals agree; exact source identity and same-role candidates compared"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Formlabs",
+    "title": "Head of Manufacturing Engineering",
+    "location": "Somerville, MA",
+    "url": "https://careers.formlabs.com/job/8203847/apply/?gh_jid=8203847"
+  },
+  "canonicalEvidence": {
+    "masterFileId": "1My9QYVPBblw8c7vFMFxGOAqgTSuH9gS8",
+    "archiveFileId": "1ZkrvevfdSbaIpyUw5Z1X2rLlYSqqKz58",
+    "masterModifiedAt": "2026-11-05T07:48:29.173Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "masterSha256": "d35eb620ca3d9335c95c9a5f2ebab08e22e73c645bd474f6470d66278a23a31b",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4575,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T07:54:59.072Z"
+  },
+  "conclusion": {
+    "kind": "CANONICAL_ROLE_CANDIDATES_SOURCE_BINDING_UNRESOLVED",
+    "canonicalIdentityVerified": false,
+    "canonicalAccountingApplied": false,
+    "originalWriteSuccessInferred": false,
+    "candidates": [
+      {
+        "primaryId": "V2I-E71056BEA7EE",
+        "bucket": "SCOUT_INTAKE",
+        "location": "Somerville, MA",
+        "reqId": "5a7c6ca5cb706dfd",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "rowSha256": "b51c0c7265ced8c2f587ad26d5340aeef4d211ce034811690a46745e552251ef"
+      }
+    ]
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT"
+}
