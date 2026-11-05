@@ -1,0 +1,89 @@
+{
+  "schema": "forge.intake-drain-rollout.v1",
+  "at": "2026-11-05T05:41:45.779Z",
+  "authorizedBy": "Tim's November 5, 2026 intake support/code/automation instructions in this chat",
+  "pullRequest": "https://github.com/tpruittguitar/forge-coordination/pull/251",
+  "mergeCommit": "25b81cd978500a33e35ad76404363dee69034e86",
+  "queue": {
+    "at": "2026-11-05T05:39:43.616Z",
+    "upstreamAt": "2026-11-05T05:39:42.642Z",
+    "counts": {
+      "ACTION_REQUIRED": 5418
+    },
+    "actions": {
+      "REVIEW_SCOPE": 3059,
+      "RESOLVE_IDENTITY": 428,
+      "RECONCILE_WRITER": 460,
+      "RECOVER_SOURCE": 1267,
+      "INTAKE": 204
+    },
+    "pending": 5418,
+    "unowned": 0
+  },
+  "resume": {
+    "title": "Tim_Pruitt_Resume_Oct_13_2026.pdf",
+    "pdfSha256": "9826cd84213202815649cd9ce3febc9e1c3509b0d11f805813ee38c122a6301e",
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "driveCopyVerifiedAgainstUpload": true
+  },
+  "nativeConfigurationReadback": [
+    {
+      "id": "Automation_3bc596d6c2c08191b62f9386ba3e0e20",
+      "title": "Forge Intake Reconciliation",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=America/New_York:20261105T014200\nRRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0\nEND:VEVENT",
+      "timing_mode": "flexible_schedule",
+      "default_timezone": "America/New_York",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION"
+    },
+    {
+      "id": "Automation_b243c8a5b1588191ba6ef9ae7d26af0a",
+      "title": "Forge Intake Sources",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=America/New_York:20261105T012200\nRRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0\nEND:VEVENT",
+      "timing_mode": "flexible_schedule",
+      "default_timezone": "America/New_York",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY"
+    },
+    {
+      "id": "Automation_cb804a363f3c81918bb8be3c577d3cb0",
+      "title": "Forge Intake Scope",
+      "is_enabled": true,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=America/New_York:20261105T010200\nRRULE:FREQ=HOURLY;BYMINUTE=2;BYSECOND=0\nEND:VEVENT",
+      "timing_mode": "flexible_schedule",
+      "default_timezone": "America/New_York",
+      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW"
+    },
+    {
+      "id": "6aeb3b6b2a8c8191ba15377a1eb8a5ea",
+      "title": "Forge — Claude Relevance Coverage",
+      "is_enabled": false,
+      "schedule": "BEGIN:VEVENT\nDTSTART;TZID=America/New_York:20261104T120800\nRRULE:FREQ=DAILY;BYHOUR=0,6,12,18;BYMINUTE=8;BYSECOND=0\nEND:VEVENT",
+      "timing_mode": "exact_schedule",
+      "default_timezone": "America/New_York",
+      "taskKey": null
+    }
+  ],
+  "observerRun": {
+    "id": 41975281690,
+    "status": "completed",
+    "conclusion": "success"
+  },
+  "controlledIntakeRun": {
+    "id": 41975532125,
+    "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41975532125",
+    "observedStatus": "in_progress",
+    "canonicalCompletion": false
+  },
+  "validation": {
+    "broadNodeTestsPassed": 551,
+    "cleanStartCoordinatorTestsPassed": 243,
+    "pythonUnitTestsPassed": 27,
+    "alertParserTestsPassed": 6,
+    "runtimeCheck": "passed",
+    "changeRecordCheck": "passed",
+    "nativeConfigurationIsExecutionProof": false
+  },
+  "canonicalCompletionsClaimed": 0,
+  "outstanding": "First scheduled AI executions and sustained canonical throughput remain to be verified; no whole-backlog completion is claimed."
+}
