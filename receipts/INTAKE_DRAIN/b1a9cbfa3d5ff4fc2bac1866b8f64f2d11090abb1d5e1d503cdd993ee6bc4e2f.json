@@ -1,0 +1,37 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:431eaf94f1c0a51739706039",
+  "sourceVersion": "bd6aad3724965c2a2eeb20d17542ec2d124dd6eaeba59c88f42b255e9d0a58f0",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T222340864399Z-6",
+  "instructionCommit": "03a493cd6ffdd78e2d6de817e5cba4fabaa615f8",
+  "observedAt": "2026-11-05T22:23:40.864399Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved source evidence remains available, but independent validation failed with SOURCE_IDENTITY_AMBIGUOUS. Current enforced environment HTTP policy excludes original and saved evidence hosts. No posting request was sent and no new identity, scope or canonical verification is claimed.",
+  "nextAction": "Resume exact source recovery after authorized host access or newly published exact structured employer evidence changes; preserve prior source bindings and independent validation failure.",
+  "retryCondition": "Authorized environment source access includes the exact original/evidence host, or new source-bound employer evidence resolves SOURCE_IDENTITY_AMBIGUOUS. Time alone does not resolve the current access restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/6ef153a534876b24833189c453fa96a86ab304b0d829d0dc915e45aee946a9b7.json",
+  "savedIdentity": {
+    "company": "Autoneum",
+    "title": "Plant Manager Oregon",
+    "location": "Oregon, Ohio, United States",
+    "url": "https://www.ihiremanufacturing.com/jobs/view/542916261"
+  },
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/6ef153a534876b24833189c453fa96a86ab304b0d829d0dc915e45aee946a9b7.json",
+      "result": "Read saved identity, responsibility quote, original references and prior attempt record; retained as prior evidence without promoting it to current verification."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:431eaf94f1c0a51739706039",
+      "result": "Independent validation SOURCE_IDENTITY_AMBIGUOUS at 2026-11-05T15:55:13.228Z remains unresolved."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current policy restricted/enforced; posting hosts absent: hiringcafe.com, www.ihiremanufacturing.com. No denied-host network retry or alternate route attempted."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:6e0645802007170c72a5cbb1",
+  "sourceVersion": "8dac09166b4e574a1e4232fa83082899cb86b1fe6c27db1cf61b9283343c2aa6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T222326627965Z-0",
+  "instructionCommit": "03a493cd6ffdd78e2d6de817e5cba4fabaa615f8",
+  "observedAt": "2026-11-05T22:23:26.627965Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved source evidence remains available, but independent validation failed with SOURCE_IDENTITY_AMBIGUOUS. Current enforced environment HTTP policy excludes original and saved evidence hosts. No posting request was sent and no new identity, scope or canonical verification is claimed.",
+  "nextAction": "Resume exact source recovery after authorized host access or newly published exact structured employer evidence changes; preserve prior source bindings and independent validation failure.",
+  "retryCondition": "Authorized environment source access includes the exact original/evidence host, or new source-bound employer evidence resolves SOURCE_IDENTITY_AMBIGUOUS. Time alone does not resolve the current access restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/9403ffd36342eb313c6534b379ffef6050689086d581167b448f17f25a3493a1.json",
+  "savedIdentity": {
+    "company": "Gatik",
+    "title": "Senior Manager, Truck Assets & Operations",
+    "location": "Santa Clara, CA",
+    "url": "https://boards.greenhouse.io/gatikaiinc/jobs/4596842006?gh_jid=4596842006"
+  },
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/9403ffd36342eb313c6534b379ffef6050689086d581167b448f17f25a3493a1.json",
+      "result": "Read saved identity, responsibility quote, original references and prior attempt record; retained as prior evidence without promoting it to current verification."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:6e0645802007170c72a5cbb1",
+      "result": "Independent validation SOURCE_IDENTITY_AMBIGUOUS at 2026-11-05T15:20:27.446Z remains unresolved."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current policy restricted/enforced; posting hosts absent: boards.greenhouse.io. No denied-host network retry or alternate route attempted."
+    }
+  ]
+}

@@ -1,0 +1,37 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:c55f34bb8a5ed6ac7c218e6e",
+  "sourceVersion": "5e0b363a70ec0bee6bb327cb9d6e192aca05250d4b90f26c347797aa84a1ed52",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T222345503102Z-8",
+  "instructionCommit": "03a493cd6ffdd78e2d6de817e5cba4fabaa615f8",
+  "observedAt": "2026-11-05T22:23:45.503102Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved source evidence remains available, but independent validation failed with STRUCTURED_POSTING_UNAVAILABLE. Current enforced environment HTTP policy excludes original and saved evidence hosts. No posting request was sent and no new identity, scope or canonical verification is claimed.",
+  "nextAction": "Resume exact source recovery after authorized host access or newly published exact structured employer evidence changes; preserve prior source bindings and independent validation failure.",
+  "retryCondition": "Authorized environment source access includes the exact original/evidence host, or new source-bound employer evidence resolves STRUCTURED_POSTING_UNAVAILABLE. Time alone does not resolve the current access restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/8b1e669886c4275bed1b35356b0535f2b32166dd67f977a1ecabebed324eba8d.json",
+  "savedIdentity": {
+    "company": "Flex",
+    "title": "Director, Operations",
+    "location": "Salt Lake City, Utah, United States",
+    "url": "https://www.themuse.com/jobs/flex/director-operations-44a081"
+  },
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/8b1e669886c4275bed1b35356b0535f2b32166dd67f977a1ecabebed324eba8d.json",
+      "result": "Read saved identity, responsibility quote, original references and prior attempt record; retained as prior evidence without promoting it to current verification."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:c55f34bb8a5ed6ac7c218e6e",
+      "result": "Independent validation STRUCTURED_POSTING_UNAVAILABLE at 2026-11-05T15:20:27.446Z remains unresolved."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current policy restricted/enforced; posting hosts absent: hiringcafe.com, www.themuse.com. No denied-host network retry or alternate route attempted."
+    }
+  ]
+}
