@@ -12734,12 +12734,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates original exact posting, role scope and identity before controlled Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2e36d3494084a5e529383e3efa17fc248a313c0202cc34ec6c5a9ab2132fd49b.json",
         "sha256": "2e36d3494084a5e529383e3efa17fc248a313c0202cc34ec6c5a9ab2132fd49b",
         "observedAt": "2026-11-05T11:47:44.079Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "2e36d3494084a5e529383e3efa17fc248a313c0202cc34ec6c5a9ab2132fd49b",
+        "observedAt": "2026-11-05T11:52:31.513Z",
+        "reason": "SOURCE_HTTP_401",
+        "retryAfter": "2026-11-05T17:52:31.513Z"
       }
     },
     "url:f770baa3e0eb1a502eb73cd7": {
@@ -27030,12 +27037,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates original exact posting, role scope and identity before controlled Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/6aedac225a129fc2b1593f92b7ffd0853a09b19adb7d027a1018120a5f58e11c.json",
         "sha256": "6aedac225a129fc2b1593f92b7ffd0853a09b19adb7d027a1018120a5f58e11c",
         "observedAt": "2026-11-05T11:47:34.844Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "6aedac225a129fc2b1593f92b7ffd0853a09b19adb7d027a1018120a5f58e11c",
+        "observedAt": "2026-11-05T11:52:31.513Z",
+        "reason": "SOURCE_HTTP_401",
+        "retryAfter": "2026-11-05T17:52:31.513Z"
       }
     },
     "url:c25838263626db75b00fb39b": {
@@ -41565,12 +41579,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/368d9510ed3b406b324d267b1ddc92ea82f6251d8f71b8d1f376aebb968b944b.json",
         "sha256": "368d9510ed3b406b324d267b1ddc92ea82f6251d8f71b8d1f376aebb968b944b",
         "observedAt": "2026-11-05T11:42:54.713Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "368d9510ed3b406b324d267b1ddc92ea82f6251d8f71b8d1f376aebb968b944b",
+        "observedAt": "2026-11-05T11:52:31.513Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T17:52:31.513Z"
       }
     },
     "url:380fb3a505f32c25cacd7b9a": {
@@ -43505,12 +43526,89 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/6a8fca0476a904dd6ae09815d223c7fc5c19705fc2282b72f56b15e3f60bf086.json",
         "sha256": "6a8fca0476a904dd6ae09815d223c7fc5c19705fc2282b72f56b15e3f60bf086",
         "observedAt": "2026-11-05T11:43:12.226Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "6a8fca0476a904dd6ae09815d223c7fc5c19705fc2282b72f56b15e3f60bf086",
+        "observedAt": "2026-11-05T11:52:31.513Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production"
+              ],
+              "postingQuotes": [
+                "This position oversees conventional caged and cage-free layer production, pullet operations where assigned, shell egg grading and packing, egg breaking and liquid egg processing, feed mills, and supporting operational functions.",
+                "Lead regional operations to achieve production, processing, quality, service, and financial goals."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "Lead regional operations to achieve production, processing, quality, service, and financial goals.",
+                "Drive flock performance through effective management of production, mortality, livability, egg quality, feed conversion, body weight, and flock uniformity."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training",
+                "staffing"
+              ],
+              "postingQuotes": [
+                "Partner with Human Resources on staffing, retention, training, employee relations, and leadership development.",
+                "Ensure employees receive appropriate training and have the resources needed to perform their work safely and effectively."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "traceability",
+                "data"
+              ],
+              "postingQuotes": [
+                "Partner with Quality Assurance to maintain sanitation, traceability, food safety programs, audit readiness, and timely corrective actions.",
+                "Ensure controls for batching accuracy, mixing consistency, ingredient receiving, storage, sanitation, and feed traceability."
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "supplier_quality",
+              "postingTerms": [
+                "corrective action"
+              ],
+              "postingQuotes": [
+                "People and safety: Leadership development, retention, training completion, safety performance, and corrective action closure."
+              ],
+              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "b3be11d24b174718fbca1d83d53e0d5ae0614519803d580f0da2af24e9ce412c",
+        "sourceUrl": "https://www.milwaukeejobs.com/job/detail/88661858/DIRECTOR-OF-OPERATIONS-WI-IL"
       }
     },
     "url:fbcf2e35075ac3529f487e69": {
@@ -78287,12 +78385,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, contiguous quote and resume evidence before controlled Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/3732a4db9c857fdadbd2b8e53b69f6f182271f334519191d0dd9199060b1a040.json",
         "sha256": "3732a4db9c857fdadbd2b8e53b69f6f182271f334519191d0dd9199060b1a040",
         "observedAt": "2026-11-05T11:51:10.572Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "3732a4db9c857fdadbd2b8e53b69f6f182271f334519191d0dd9199060b1a040",
+        "observedAt": "2026-11-05T11:52:31.513Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:52:31.513Z"
       }
     },
     "linkedin:4418408673": {
@@ -231000,15 +231105,14 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T11:54:23.341Z",
-  "upstreamAt": "2026-11-05T11:54:22.573Z",
+  "at": "2026-11-05T11:54:28.959Z",
+  "upstreamAt": "2026-11-05T11:51:32.372Z",
   "counts": {
-    "SOURCE_VALIDATION_REQUIRED": 233,
+    "SOURCE_VALIDATION_REQUIRED": 237,
     "WAITING_EVIDENCE_CHANGE": 365,
     "ACTION_REQUIRED": 4784,
-    "PENDING_INDEPENDENT_VALIDATION": 5,
     "INVENTORY_RECONCILIATION_REQUIRED": 43,
-    "READY_FOR_CONTROLLED_INTAKE": 12
+    "READY_FOR_CONTROLLED_INTAKE": 13
   },
   "actions": {
     "REVIEW_SCOPE": 3048,
