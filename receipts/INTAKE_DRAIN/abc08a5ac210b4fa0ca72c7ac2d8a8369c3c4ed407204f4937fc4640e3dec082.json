@@ -1,0 +1,29 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:7c6c2d0bca50507c89596c70",
+  "sourceVersion": "a6a8b363ef61d7c6c3d18c9fd293beaab059c01f42d5e21cc8cbf42fab18690c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224506275Z-7b2ac6",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:45:06.275Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved inventory reports EXISTING for the original employer/title/site but lacks exact canonical proof. Treat as identity/accounting reconciliation, preserve existing/protected decisions and do not prepare another job from a board match.",
+  "nextAction": "Existing authenticated coordinator reads exact master/archive identity and saved protected disposition; reconcile original posting/requisition and upstream accounting without new intake or scope research.",
+  "retryCondition": "Fresh exact canonical identity/protection proof or original employer-posting binding becomes available.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#url:7c6c2d0bca50507c89596c70",
+      "result": "Saved evidenceStatus=EXISTING; status=HELD; proof=absent. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Reused original source card and saved discovery report. Existing/protected marker found; it does not supply exact current canonical row proof."
+    }
+  ],
+  "savedEvidence": {},
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0
+}

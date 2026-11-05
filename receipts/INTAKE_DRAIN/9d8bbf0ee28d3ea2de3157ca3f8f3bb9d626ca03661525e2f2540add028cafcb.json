@@ -1,0 +1,56 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481861543",
+  "sourceVersion": "109d5ae293b8001d42d85d42eb8c44c8dd7738130165b2966c9c68f261cc07d2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224458083Z-eb715c",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:44:58.083Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved candidate result WRITE_FAILED; AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Saved batch COMPLETE is not proof this ambiguous candidate became a verified job. Preserve possible canonical matches, site differences, decisions and original transaction.",
+  "nextAction": "Existing authenticated coordinator reads independent receipt_index, request_result only after COMPLETE, and exact possible-match rows; bind original employer requisition/site before resolving this identity. Never replay FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003.",
+  "retryCondition": "Original identity/site/requisition evidence or independently authenticated exact-row/request evidence changes.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4481861543",
+      "result": "Saved evidenceStatus=HELD_WRITER_REVIEW; status=HELD; proof=receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_VERIFIED.json. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_CHECKPOINT.json",
+      "sha256": "d6ec6c84fae528a99f67b8b924f1f8243f0e5c4d1a9884c8c97db139e1a19971",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"payloadSha256\":\"81951dd26ac142781ce1343f23e76ff5612e53d8396823c8729cbd810c9fc039\"}"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_ACCEPTANCE.json",
+      "sha256": "e6e2aa49750a49bf03e8713d172795ca8cd19a8243aad06717b89d3047f51868",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"writeId\":\"W-20261102002103358-18e29a\",\"responseSha256\":\"e36b0cb6d457619103c292b9ea0c9fba0c451ebd6d5f1b8814be610ffdf86083\"}"
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_VERIFIED.json",
+      "sha256": "50595c70e7ab7c5d36cba4c4226f3d01e45f670105504c70a5b415c7596bdc91",
+      "result": "{\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"writeId\":\"W-20261102002103358-18e29a\",\"independentCompleteObservedAt\":\"2026-11-02T00:22:48.617Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4481861543",
+      "result": "Original saved source identity, original candidate disposition and fence inspected; {\"requestId\":\"FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2I-B7C32AE80A23\"],\"reason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\"}"
+    },
+    {
+      "source": ".github/workflows/source-intake-reconcile-probe.yml; tools/source-intake/reconcile-probe.js",
+      "result": "Registered path requires fence-bound FORGE-AUTO run ID; this legacy fence binds FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003 instead. No fabricated AUTO binding or dispatch. Current environment exposes no configured Writer credential; no live authenticated exact-row evidence available here."
+    }
+  ],
+  "savedEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2I-B7C32AE80A23"
+    ],
+    "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0
+}
