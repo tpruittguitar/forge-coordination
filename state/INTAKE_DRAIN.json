@@ -14903,7 +14903,7 @@
       "aliases": [
         "url:f18b5ec0b5ee2d25386084fb"
       ],
-      "sourceVersion": "0fb765fab3e155860dbd94fb284fbc808e68dc56614f97cef22d12d3a68f2df8",
+      "sourceVersion": "68e5ba96b5d502b072f8ec39cee51d30d7e239728bd0ecf3524929659a5966ab",
       "card": {
         "company": "Shield AI",
         "title": "Staff Engineer, Manufacturing Equipment",
@@ -14914,8 +14914,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
@@ -14929,16 +14929,15 @@
         "rank": 8,
         "reason": "Missing card company, title, location or exact source URL"
       },
-      "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-7EE0155856594CA1D0190E10"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T113317Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/7925358fa83608c60890839c064337e45c1fe1bba96a7ee764a4c35dd8785adf.json",
-        "sha256": "7925358fa83608c60890839c064337e45c1fe1bba96a7ee764a4c35dd8785adf",
-        "observedAt": "2026-11-05T11:31:09.639Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:2085bd115148705b5a3e9eb4": {
       "key": "url:2085bd115148705b5a3e9eb4",
@@ -31494,15 +31493,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/a08016a7c0cdad7d2195ed47c29fd717153db264e589daa4e81fd32b5b890599.json",
-        "sha256": "a08016a7c0cdad7d2195ed47c29fd717153db264e589daa4e81fd32b5b890599",
-        "observedAt": "2026-11-05T11:43:01.831Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:10ae3838567ef70acace15e3": {
       "key": "url:10ae3838567ef70acace15e3",
@@ -32694,12 +32687,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/3e472c7e790229cc58bb72ae0d477b1001b45ae3ea8cfa6530bdbed0eab17ff5.json",
         "sha256": "3e472c7e790229cc58bb72ae0d477b1001b45ae3ea8cfa6530bdbed0eab17ff5",
         "observedAt": "2026-11-05T11:30:58.288Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "3e472c7e790229cc58bb72ae0d477b1001b45ae3ea8cfa6530bdbed0eab17ff5",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "url:902566683f7fc6c00c43ca64": {
@@ -33839,15 +33839,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/287e81db32ba61353517d3d6eedb8da372eb2eb24fd27ec22cb7769f289578cb.json",
-        "sha256": "287e81db32ba61353517d3d6eedb8da372eb2eb24fd27ec22cb7769f289578cb",
-        "observedAt": "2026-11-05T11:43:14.257Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:51d9940b54de6f98eb46490a": {
       "key": "url:51d9940b54de6f98eb46490a",
@@ -37305,12 +37299,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/a350404316950b4caf993bb740aa5b2c94efd682a5224b758dbda80d0c4ccbc8.json",
         "sha256": "a350404316950b4caf993bb740aa5b2c94efd682a5224b758dbda80d0c4ccbc8",
         "observedAt": "2026-11-05T11:30:56.463Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "a350404316950b4caf993bb740aa5b2c94efd682a5224b758dbda80d0c4ccbc8",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "url:7c6337c835ebc5fcb59825a1": {
@@ -39373,15 +39374,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing coordinator consumes independently verified existing-role identity proof; preserve saved decline, no new intake or replay.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/c463b73f007702541e79a753799eca3dcba99e9dc4e0d5e5254ddbe82676754d.json",
-        "sha256": "c463b73f007702541e79a753799eca3dcba99e9dc4e0d5e5254ddbe82676754d",
-        "observedAt": "2026-11-05T11:42:59.576Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:167f99af846beee68e34367b": {
       "key": "url:167f99af846beee68e34367b",
@@ -39562,12 +39557,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/533dcfa11b35298dc8945b81b69fcfb34d65763b11a3e60e2c8b0c53287b6727.json",
         "sha256": "533dcfa11b35298dc8945b81b69fcfb34d65763b11a3e60e2c8b0c53287b6727",
         "observedAt": "2026-11-05T11:31:03.654Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "533dcfa11b35298dc8945b81b69fcfb34d65763b11a3e60e2c8b0c53287b6727",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "url:ef116ee5f007b02e51d420c1": {
@@ -41465,15 +41467,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/368d9510ed3b406b324d267b1ddc92ea82f6251d8f71b8d1f376aebb968b944b.json",
-        "sha256": "368d9510ed3b406b324d267b1ddc92ea82f6251d8f71b8d1f376aebb968b944b",
-        "observedAt": "2026-11-05T11:42:54.713Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:380fb3a505f32c25cacd7b9a": {
       "key": "url:380fb3a505f32c25cacd7b9a",
@@ -41856,15 +41852,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing coordinator consumes independently verified existing-role identity proof; preserve saved decline, no new intake or replay.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/0842e2cf18b980e6c3c853a092024fc93cdd0af793c25179c1e79bfe1fef2d37.json",
-        "sha256": "0842e2cf18b980e6c3c853a092024fc93cdd0af793c25179c1e79bfe1fef2d37",
-        "observedAt": "2026-11-05T11:43:06.091Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:1190d010bb1d4bba8049af6b": {
       "key": "url:1190d010bb1d4bba8049af6b",
@@ -43405,15 +43395,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/6a8fca0476a904dd6ae09815d223c7fc5c19705fc2282b72f56b15e3f60bf086.json",
-        "sha256": "6a8fca0476a904dd6ae09815d223c7fc5c19705fc2282b72f56b15e3f60bf086",
-        "observedAt": "2026-11-05T11:43:12.226Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:fbcf2e35075ac3529f487e69": {
       "key": "url:fbcf2e35075ac3529f487e69",
@@ -44106,15 +44090,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing coordinator consumes independently verified existing-role identity proof; preserve saved decline, no new intake or replay.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/b652d40067bd5ad466c8e8c85d52c50c0ce827556b36f338ce574246587af776.json",
-        "sha256": "b652d40067bd5ad466c8e8c85d52c50c0ce827556b36f338ce574246587af776",
-        "observedAt": "2026-11-05T11:42:57.375Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:1f8e765b8ce5d5c24b2d3059": {
       "key": "url:1f8e765b8ce5d5c24b2d3059",
@@ -44808,12 +44786,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/abf40719eddba4fc399e7a7163dde72d9ad8f570df7115a6987588971cbfee46.json",
         "sha256": "abf40719eddba4fc399e7a7163dde72d9ad8f570df7115a6987588971cbfee46",
         "observedAt": "2026-11-05T11:31:05.591Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "abf40719eddba4fc399e7a7163dde72d9ad8f570df7115a6987588971cbfee46",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "url:5e653a2d154c5c597f61237c": {
@@ -46655,15 +46640,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/9ff2178346eafd6711fbf39cb69ca05c88d0d1eebd38d59d09a134e53c3431cd.json",
-        "sha256": "9ff2178346eafd6711fbf39cb69ca05c88d0d1eebd38d59d09a134e53c3431cd",
-        "observedAt": "2026-11-05T11:43:03.742Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:a04d05dac8f0e25b832a04a7": {
       "key": "url:a04d05dac8f0e25b832a04a7",
@@ -47780,15 +47759,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/626af01a548c00d5834a345431a206a229bda1a45f384652e20b47f10d684663.json",
-        "sha256": "626af01a548c00d5834a345431a206a229bda1a45f384652e20b47f10d684663",
-        "observedAt": "2026-11-05T11:43:08.148Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:431eaf94f1c0a51739706039": {
       "key": "url:431eaf94f1c0a51739706039",
@@ -48646,15 +48619,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/49bd9afc6a5e2575f8223df7a96b953b546284a514f03dc8a920a2ae094ed012.json",
-        "sha256": "49bd9afc6a5e2575f8223df7a96b953b546284a514f03dc8a920a2ae094ed012",
-        "observedAt": "2026-11-05T11:43:10.131Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:6222fa8e5797d3b9a06d97e1": {
       "key": "url:6222fa8e5797d3b9a06d97e1",
@@ -92938,12 +92905,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/319cd58c31ad490f76d713e7d929b55feb4e61e85684e0ac1c283a95ea8fbf8f.json",
         "sha256": "319cd58c31ad490f76d713e7d929b55feb4e61e85684e0ac1c283a95ea8fbf8f",
         "observedAt": "2026-11-05T11:11:57.051Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "319cd58c31ad490f76d713e7d929b55feb4e61e85684e0ac1c283a95ea8fbf8f",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4477466760": {
@@ -92980,12 +92954,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2ce5e35c26bcc682a0e1bb25a914aceea64027c2dc235ebf9fd4fb4d613ecf02.json",
         "sha256": "2ce5e35c26bcc682a0e1bb25a914aceea64027c2dc235ebf9fd4fb4d613ecf02",
         "observedAt": "2026-11-05T11:11:52.999Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "2ce5e35c26bcc682a0e1bb25a914aceea64027c2dc235ebf9fd4fb4d613ecf02",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4483750937": {
@@ -93106,12 +93087,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/e4e3a9c9aafb6a4e056c36c26546c6a8ebb476d740dbef5db5d3abde141692e2.json",
         "sha256": "e4e3a9c9aafb6a4e056c36c26546c6a8ebb476d740dbef5db5d3abde141692e2",
         "observedAt": "2026-11-05T11:11:55.077Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e4e3a9c9aafb6a4e056c36c26546c6a8ebb476d740dbef5db5d3abde141692e2",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4471975044": {
@@ -93322,12 +93310,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8040a9764e3991c3ba2691cdf11e1f38d32314d5584bb0a7e7bf409b469c39eb.json",
         "sha256": "8040a9764e3991c3ba2691cdf11e1f38d32314d5584bb0a7e7bf409b469c39eb",
         "observedAt": "2026-11-05T11:12:02.693Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8040a9764e3991c3ba2691cdf11e1f38d32314d5584bb0a7e7bf409b469c39eb",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4480410127": {
@@ -93447,12 +93442,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c5ede0b7c7ee11fc16535089d808d1b47ef93949e755f23b068574eb905d20de.json",
         "sha256": "c5ede0b7c7ee11fc16535089d808d1b47ef93949e755f23b068574eb905d20de",
         "observedAt": "2026-11-05T11:12:06.550Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c5ede0b7c7ee11fc16535089d808d1b47ef93949e755f23b068574eb905d20de",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485229672": {
@@ -93530,12 +93532,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c52eab89ef521aef496caa9e359fcd3b1ec65c0ef03847f5fb2f1d3490a49260.json",
         "sha256": "c52eab89ef521aef496caa9e359fcd3b1ec65c0ef03847f5fb2f1d3490a49260",
         "observedAt": "2026-11-05T11:12:10.314Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c52eab89ef521aef496caa9e359fcd3b1ec65c0ef03847f5fb2f1d3490a49260",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4459022714": {
@@ -93572,12 +93581,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/b66edd31878a0956cf5dd80e8ad96f3a1281f2a4d6751b1a35fabeec373c1b64.json",
         "sha256": "b66edd31878a0956cf5dd80e8ad96f3a1281f2a4d6751b1a35fabeec373c1b64",
         "observedAt": "2026-11-05T11:12:08.422Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "b66edd31878a0956cf5dd80e8ad96f3a1281f2a4d6751b1a35fabeec373c1b64",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4480792272": {
@@ -93655,12 +93671,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/94c72d70ef326d0b669c111fbe3a149004c82c0b90bbdddc1b280614cad6d667.json",
         "sha256": "94c72d70ef326d0b669c111fbe3a149004c82c0b90bbdddc1b280614cad6d667",
         "observedAt": "2026-11-05T11:16:09.611Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "94c72d70ef326d0b669c111fbe3a149004c82c0b90bbdddc1b280614cad6d667",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485282057": {
@@ -93697,12 +93720,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/f32b97ecce9ba43b9727c4213726a38bd60e654d668b6d03ebb2f01da6d945b3.json",
         "sha256": "f32b97ecce9ba43b9727c4213726a38bd60e654d668b6d03ebb2f01da6d945b3",
         "observedAt": "2026-11-05T11:16:07.706Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "f32b97ecce9ba43b9727c4213726a38bd60e654d668b6d03ebb2f01da6d945b3",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4482178431": {
@@ -93739,12 +93769,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c544c227ec7ef85f2b94c5fa478dae8a5fb56419bf3e27f4028d2d8bf2760fb2.json",
         "sha256": "c544c227ec7ef85f2b94c5fa478dae8a5fb56419bf3e27f4028d2d8bf2760fb2",
         "observedAt": "2026-11-05T11:16:05.870Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c544c227ec7ef85f2b94c5fa478dae8a5fb56419bf3e27f4028d2d8bf2760fb2",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_406",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485294880": {
@@ -93781,12 +93818,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/4817b8510af3c9a813360edd4b5a233a5c0af55bc81f34ed062f84149500a5f5.json",
         "sha256": "4817b8510af3c9a813360edd4b5a233a5c0af55bc81f34ed062f84149500a5f5",
         "observedAt": "2026-11-05T11:16:20.751Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "4817b8510af3c9a813360edd4b5a233a5c0af55bc81f34ed062f84149500a5f5",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_410",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484568808": {
@@ -93823,12 +93867,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/e7c516d1b49aa7f6f1a7d3c2171f1883f4349cd3d423dd8803920f3a40f7ccf0.json",
         "sha256": "e7c516d1b49aa7f6f1a7d3c2171f1883f4349cd3d423dd8803920f3a40f7ccf0",
         "observedAt": "2026-11-05T11:16:18.864Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e7c516d1b49aa7f6f1a7d3c2171f1883f4349cd3d423dd8803920f3a40f7ccf0",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484944270": {
@@ -93906,12 +93957,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/a283abb849bb1df890123510389c9b3bac8a69476aa4601b9dfd8a787350714c.json",
         "sha256": "a283abb849bb1df890123510389c9b3bac8a69476aa4601b9dfd8a787350714c",
         "observedAt": "2026-11-05T11:16:15.246Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "a283abb849bb1df890123510389c9b3bac8a69476aa4601b9dfd8a787350714c",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4465346497": {
@@ -93948,12 +94006,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8998fa7d2900e792801319563dc5bc51587bee279053e4c4755a28d5709e9ff5.json",
         "sha256": "8998fa7d2900e792801319563dc5bc51587bee279053e4c4755a28d5709e9ff5",
         "observedAt": "2026-11-05T11:16:11.555Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8998fa7d2900e792801319563dc5bc51587bee279053e4c4755a28d5709e9ff5",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484209149": {
@@ -93990,12 +94055,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/9f2c65b73e0806f8e21d4f840c23dbf896e7cf2e6d78e7f98d52cf699bd27904.json",
         "sha256": "9f2c65b73e0806f8e21d4f840c23dbf896e7cf2e6d78e7f98d52cf699bd27904",
         "observedAt": "2026-11-05T11:16:17.063Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "9f2c65b73e0806f8e21d4f840c23dbf896e7cf2e6d78e7f98d52cf699bd27904",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4474781482": {
@@ -94032,12 +94104,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/028b3c10cbc4afe8ddc58d85af4c60a88d067d6515a3d70727d43d52b582e787.json",
         "sha256": "028b3c10cbc4afe8ddc58d85af4c60a88d067d6515a3d70727d43d52b582e787",
         "observedAt": "2026-11-05T11:16:13.463Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "028b3c10cbc4afe8ddc58d85af4c60a88d067d6515a3d70727d43d52b582e787",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4447703447": {
@@ -94074,12 +94153,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/3d54e5e3cfe10844e8be0e86f21bfdcb264e081e3ca309fd677d2b075c2f12c7.json",
         "sha256": "3d54e5e3cfe10844e8be0e86f21bfdcb264e081e3ca309fd677d2b075c2f12c7",
         "observedAt": "2026-11-05T11:19:44.031Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "3d54e5e3cfe10844e8be0e86f21bfdcb264e081e3ca309fd677d2b075c2f12c7",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4482117620": {
@@ -94116,12 +94202,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c5b1b5f048ca7f977e95f56b82afe67c95d54499b7abe2c3b7334ad99a8b6775.json",
         "sha256": "c5b1b5f048ca7f977e95f56b82afe67c95d54499b7abe2c3b7334ad99a8b6775",
         "observedAt": "2026-11-05T11:19:49.421Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c5b1b5f048ca7f977e95f56b82afe67c95d54499b7abe2c3b7334ad99a8b6775",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484418948": {
@@ -94158,12 +94251,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5ec14f356390a47731d5f4c449789f125c724b96df18abdfccfba00dfd55bb08.json",
         "sha256": "5ec14f356390a47731d5f4c449789f125c724b96df18abdfccfba00dfd55bb08",
         "observedAt": "2026-11-05T11:19:51.189Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5ec14f356390a47731d5f4c449789f125c724b96df18abdfccfba00dfd55bb08",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_410",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4475033511": {
@@ -94200,12 +94300,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/b6ea59bb838b227726d341653df51940a678fe712e07645f10e2df71d7e2d356.json",
         "sha256": "b6ea59bb838b227726d341653df51940a678fe712e07645f10e2df71d7e2d356",
         "observedAt": "2026-11-05T11:19:45.812Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "b6ea59bb838b227726d341653df51940a678fe712e07645f10e2df71d7e2d356",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4476780347": {
@@ -94242,12 +94349,96 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2e9f0ac0732001e85de63e41e9c9294485fb6a0a3101103913c404fe632c5e71.json",
         "sha256": "2e9f0ac0732001e85de63e41e9c9294485fb6a0a3101103913c404fe632c5e71",
         "observedAt": "2026-11-05T11:19:47.627Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "2e9f0ac0732001e85de63e41e9c9294485fb6a0a3101103913c404fe632c5e71",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "plant"
+              ],
+              "postingQuotes": [
+                "Monitor and confirm that manufacturing operating system standards are being applied and adhered to throughout the area",
+                "Provide necessary resources to maintain production flow and confirm critical inputs are being performed to the acceptable standard(s)"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "ramp"
+              ],
+              "postingQuotes": [
+                "Flexible family care days, paid parental leave, new parent ramp-up programs, subsidized back-up child care and more"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "Immediate medical, dental, vision and prescription drug coverage"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "Strong ability to present continuous improvement ideas to plant management, using data"
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Drive continuous improvement on systemic abnormalities to prevent recurrence.",
+                "Drive continuous improvement on systemic abnormalities to prevent recurrence"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            },
+            {
+              "competencyId": "supplier_quality",
+              "postingTerms": [
+                "containment"
+              ],
+              "postingQuotes": [
+                "Coach, teach, and provide feedback on the resolution of abnormalities, and validate closure of concerns (facilitates interim containment actions)"
+              ],
+              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "18412afe098e8ec41ccfe3acbfca4cf55251e4753fadad92c158dba41b21cf2a",
+        "sourceUrl": "https://www.careers.ford.com/en/job/avon-lake/team-manager/48560/101618641248"
       }
     },
     "linkedin:4484451344": {
@@ -94326,12 +94517,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8a4c0933dbde0c17cc5c3e7197897c7b6d99cb325f3997630325be7072e5e598.json",
         "sha256": "8a4c0933dbde0c17cc5c3e7197897c7b6d99cb325f3997630325be7072e5e598",
         "observedAt": "2026-11-05T11:19:42.141Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8a4c0933dbde0c17cc5c3e7197897c7b6d99cb325f3997630325be7072e5e598",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "HELPER_QUOTE_NOT_IN_POSTING",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485644694": {
@@ -94368,12 +94566,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5971ca5189e9d3dcf7725d007078770fa3e54d2a30d5e8a42f607ed97624ca10.json",
         "sha256": "5971ca5189e9d3dcf7725d007078770fa3e54d2a30d5e8a42f607ed97624ca10",
         "observedAt": "2026-11-05T11:19:58.457Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5971ca5189e9d3dcf7725d007078770fa3e54d2a30d5e8a42f607ed97624ca10",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484572599": {
@@ -94452,12 +94657,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/e41596094f7b3ea483810bf70f24360f5f852ae39e022baf2e7218ab33b49073.json",
         "sha256": "e41596094f7b3ea483810bf70f24360f5f852ae39e022baf2e7218ab33b49073",
         "observedAt": "2026-11-05T11:19:56.722Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e41596094f7b3ea483810bf70f24360f5f852ae39e022baf2e7218ab33b49073",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485277289": {
@@ -94494,12 +94706,98 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/09246b60c1cc9adba381f60be3e8a3a7b6208897e2316fc63597a9978464a2c9.json",
         "sha256": "09246b60c1cc9adba381f60be3e8a3a7b6208897e2316fc63597a9978464a2c9",
         "observedAt": "2026-11-05T11:22:43.557Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "09246b60c1cc9adba381f60be3e8a3a7b6208897e2316fc63597a9978464a2c9",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "assembly"
+              ],
+              "postingQuotes": [
+                "Production Supervisor, Powerwall",
+                "As a Production Supervisor, you will be playing a critical role on the Gigafactory Production team."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "Build a strong, motivated production team capable of consistently delivering high quality products against aggressive production targets",
+                "Ensure quality standards are being met throughout the entire production process and support no defects from leaving a station or team area"
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "NPI"
+              ],
+              "postingQuotes": [
+                "In this role, you will work cross-functionally with our manufacturing and operations teams, interfacing with Engineering, NPI, and Material Flow, to ensure production goals are being met."
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training"
+              ],
+              "postingQuotes": [
+                "Develop training programs and hiring plans for assembly team members",
+                "Tesla people leaders are responsible for a variety of Environmental Health and Safety (EHS) assurance functions, including ensuring their teams' safety training is current, documenting EHS incidents, proactively correcting workplace hazards in the areas, and empowering others to continuously improve operations"
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "Dental (including orthodontic coverage) and vision plans, both have options with a $0 paycheck contribution"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "supplier_quality",
+              "postingTerms": [
+                "corrective action",
+                "root cause"
+              ],
+              "postingQuotes": [
+                "Support issue resolution including root cause investigation & corrective action tracking"
+              ],
+              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "e5054da33d219675d96fdd3892da4c80b94ebe981cf6ec8294bdb5aa26ec566f",
+        "sourceUrl": "https://www.ihiremanufacturing.com/jobs/view/544696156"
       }
     },
     "linkedin:4477417112": {
@@ -94536,12 +94834,98 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/cabf58342102a86c935e61c19ce12d1974858737c363e133e6dac59b995dc659.json",
         "sha256": "cabf58342102a86c935e61c19ce12d1974858737c363e133e6dac59b995dc659",
         "observedAt": "2026-11-05T11:22:32.467Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "cabf58342102a86c935e61c19ce12d1974858737c363e133e6dac59b995dc659",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production"
+              ],
+              "postingQuotes": [
+                "As part of our Manufacturing team, you’ll help build the world-class, state-of-the-art smart vehicles we're known for.",
+                "Partner with engineering, manufacturing, and quality teams to resolve process and dimensional issues."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "As the Team Manager – Stamping, you will lead the Stamping team, providing technical guidance and people leadership to support safe, efficient, and high-quality operations.",
+                "Guide the development and optimization of stamping processes to improve safety, quality, productivity, and dimensional accuracy."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "launch",
+                "ramp"
+              ],
+              "postingQuotes": [
+                "Support product development through prototype and launch build phases, with a focus on quality analysis and inspection processes.",
+                "Flexible family care, parental leave, new parent ramp-up programs, subsidized back-up childcare and more"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "workforce"
+              ],
+              "postingQuotes": [
+                "We are an Equal Opportunity Employer committed to a culturally diverse workforce."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "Use coordinate measurement, vision, and optical systems to conduct inspections and verify dimensional accuracy."
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "A strong engineering background will help you understand the team’s technical challenges, guide problem-solving, and support continuous improvement.",
+                "A record of contributing to continuous improvement in dimensional quality and process optimization."
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "490180dcb4f7bb5f1e1868b0918dacaea41521e0704a79076d7fef9864f46334",
+        "sourceUrl": "https://www.careers.ford.com/en/job/wayne/team-manager-stamping/48560/101637705904"
       }
     },
     "linkedin:4484499485": {
@@ -94578,12 +94962,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8b57e0136c25a623ff24f2a94247dc3436bcd056479b6b79e5d5c894f817d5be.json",
         "sha256": "8b57e0136c25a623ff24f2a94247dc3436bcd056479b6b79e5d5c894f817d5be",
         "observedAt": "2026-11-05T11:22:41.636Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8b57e0136c25a623ff24f2a94247dc3436bcd056479b6b79e5d5c894f817d5be",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4484420887": {
@@ -94620,12 +95011,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c7acc4570a5ab91d6fc5d332671c4a9f1daecd6a1348a1b7300bc96065e745e3.json",
         "sha256": "c7acc4570a5ab91d6fc5d332671c4a9f1daecd6a1348a1b7300bc96065e745e3",
         "observedAt": "2026-11-05T11:22:39.811Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c7acc4570a5ab91d6fc5d332671c4a9f1daecd6a1348a1b7300bc96065e745e3",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4482828291": {
@@ -94662,12 +95060,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8220f0a1390858d200d69d402b1c61ea0d87249ab2bfac65d74a3c5e2b54a1e8.json",
         "sha256": "8220f0a1390858d200d69d402b1c61ea0d87249ab2bfac65d74a3c5e2b54a1e8",
         "observedAt": "2026-11-05T11:22:36.187Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8220f0a1390858d200d69d402b1c61ea0d87249ab2bfac65d74a3c5e2b54a1e8",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485322598": {
@@ -94740,12 +95145,109 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/df7985f6283d345b9ae18895da981cf6901b9224cecf6428c1d4cfb790e08dad.json",
         "sha256": "df7985f6283d345b9ae18895da981cf6901b9224cecf6428c1d4cfb790e08dad",
         "observedAt": "2026-11-05T11:22:37.969Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "df7985f6283d345b9ae18895da981cf6901b9224cecf6428c1d4cfb790e08dad",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production"
+              ],
+              "postingQuotes": [
+                "As part of our Manufacturing team, you’ll help build the world-class, state-of-the-art smart vehicles we're known for.",
+                "5+ years supervisor experience in a manufacturing environment"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "Ensure quality inspections are being performed and that quality issues are address quickly"
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "ramp"
+              ],
+              "postingQuotes": [
+                "Flexible family care, parental leave, new parent ramp-up programs, subsidized back-up childcare and more"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training",
+                "workforce"
+              ],
+              "postingQuotes": [
+                "Identify requirements, develop training plans and track skill level for automation tenders and skilled trades.",
+                "We are an Equal Opportunity Employer committed to a culturally diverse workforce."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "automation",
+                "vision",
+                "PLC"
+              ],
+              "postingQuotes": [
+                "Team Manager, Paint Automation",
+                "Review, audit and update PM activities for automation equipment."
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "Drive team to identify and break bottleneck issues using FIS data"
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Six Sigma problem solving skills to support continuous improvement mindset"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "20a0a9e1b33fb93c11c018196d4f3660dfe459d1a756790bf0f86d4af7a63ab6",
+        "sourceUrl": "https://www.careers.ford.com/en/job/dearborn/team-manager-paint-automation/48560/102471577712"
       }
     },
     "linkedin:4485679303": {
@@ -94854,12 +95356,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/9e9d63bbd4944a58e9896699ad87127e197fa99c03c9bb7c205c12c95f6d97cd.json",
         "sha256": "9e9d63bbd4944a58e9896699ad87127e197fa99c03c9bb7c205c12c95f6d97cd",
         "observedAt": "2026-11-05T11:22:30.529Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "9e9d63bbd4944a58e9896699ad87127e197fa99c03c9bb7c205c12c95f6d97cd",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "HELPER_QUOTE_NOT_IN_POSTING",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4437860124": {
@@ -94938,12 +95447,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/51a41f09e9edd7930e26a041f2713aad239156707d0bc26de71c9d2961ef296c.json",
         "sha256": "51a41f09e9edd7930e26a041f2713aad239156707d0bc26de71c9d2961ef296c",
         "observedAt": "2026-11-05T11:22:34.397Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "51a41f09e9edd7930e26a041f2713aad239156707d0bc26de71c9d2961ef296c",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4485674732": {
@@ -95088,12 +95604,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/ddfae32b8284378061c2c03d71c3bb71a13967ea89da597ee11d2ba2899a61cd.json",
         "sha256": "ddfae32b8284378061c2c03d71c3bb71a13967ea89da597ee11d2ba2899a61cd",
         "observedAt": "2026-11-05T11:22:45.328Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "ddfae32b8284378061c2c03d71c3bb71a13967ea89da597ee11d2ba2899a61cd",
+        "observedAt": "2026-11-05T11:32:32.666Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-05T17:32:32.666Z"
       }
     },
     "linkedin:4482846084": {
@@ -221301,7 +221824,7 @@
       "aliases": [
         "url:2d3612bf0b0bf7e430ec5dbe"
       ],
-      "sourceVersion": "4c479532950a6c511b0fea485b75839d75eda7a18b58581823fb77cea2119bdb",
+      "sourceVersion": "83694729a6de0099c51588bdce4179a23859ebf250596bb5b040aee4f6aaa76a",
       "card": {
         "company": "Justrite",
         "title": "Plant Manager",
@@ -221310,16 +221833,11 @@
       },
       "sourceRecovery": null,
       "sourceConflict": null,
-      "sourceFailure": {
-        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 5,
-        "lastAttempt": "2026-11-05T10:33:14.205Z",
-        "retryAfter": "2026-11-05T11:33:14.205Z"
-      },
+      "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
       "firstSeen": "2026-11-04T11:39:19.444Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -221477,7 +221995,7 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -222756,9 +223274,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 5,
-        "lastAttempt": "2026-11-05T10:33:00.483Z",
-        "retryAfter": "2026-11-05T11:33:00.483Z"
+        "attempts": 6,
+        "lastAttempt": "2026-11-05T11:33:08.929Z",
+        "retryAfter": "2026-11-05T12:33:08.929Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -229519,7 +230037,7 @@
       "aliases": [
         "linkedin:4460651707"
       ],
-      "sourceVersion": "b1ccc62e6304bc42b18d63f705a1203b4fe489fcef2cf5dec940bb80f5157d72",
+      "sourceVersion": "66edf1160dc99a042e1521fd86c5be9604ae3764da4402453896f1d5c2c3c27c",
       "card": {
         "company": "AprilAire",
         "title": "Director of Manufacturing - Poynette",
@@ -229530,9 +230048,9 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "owner": "ChatGPT",
       "firstSeen": "2026-11-05T11:18:03.744Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -229596,10 +230114,15 @@
         "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Recover missing upstream group before processing",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-100FDB502929CD784E571119"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T113317Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "INVENTORY_RECONCILIATION_REQUIRED"
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4485813056": {
       "key": "linkedin:4485813056",
@@ -229680,7 +230203,7 @@
       "aliases": [
         "linkedin:4443589383"
       ],
-      "sourceVersion": "9fbf8067a773a60032422dd578cbdda329fb9b7c9eb8a99217c9c674a6afc342",
+      "sourceVersion": "c282ec0de3b85cd8cb90644fdf97c17fbb232dd971547397e695cde745e7f412",
       "card": {
         "company": "Michael Foods",
         "title": "Plant Director",
@@ -229691,9 +230214,9 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "owner": "ChatGPT",
       "firstSeen": "2026-11-05T11:18:03.744Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -229757,10 +230280,15 @@
         "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Recover missing upstream group before processing",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-3DA349CC9282E2C5824FCAA9"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T113317Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "INVENTORY_RECONCILIATION_REQUIRED"
+      "status": "ACTION_REQUIRED"
     },
     "url:50a050fd72fe7ac854415791": {
       "key": "url:50a050fd72fe7ac854415791",
@@ -230292,22 +230820,21 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T11:46:50.124Z",
-  "upstreamAt": "2026-11-05T11:46:49.135Z",
+  "at": "2026-11-05T11:48:03.236Z",
+  "upstreamAt": "2026-11-05T11:25:25.253Z",
   "counts": {
-    "SOURCE_VALIDATION_REQUIRED": 200,
-    "ACTION_REQUIRED": 4804,
-    "WAITING_EVIDENCE_CHANGE": 348,
-    "INVENTORY_RECONCILIATION_REQUIRED": 42,
-    "READY_FOR_CONTROLLED_INTAKE": 8,
-    "PENDING_INDEPENDENT_VALIDATION": 40
+    "SOURCE_VALIDATION_REQUIRED": 233,
+    "ACTION_REQUIRED": 4817,
+    "WAITING_EVIDENCE_CHANGE": 340,
+    "INVENTORY_RECONCILIATION_REQUIRED": 40,
+    "READY_FOR_CONTROLLED_INTAKE": 12
   },
   "actions": {
     "REVIEW_SCOPE": 3048,
     "RESOLVE_IDENTITY": 437,
-    "RECONCILE_WRITER": 517,
-    "RECOVER_SOURCE": 1408,
-    "INTAKE": 32
+    "RECONCILE_WRITER": 520,
+    "RECOVER_SOURCE": 1406,
+    "INTAKE": 31
   },
   "noProcessingCap": true
 }
