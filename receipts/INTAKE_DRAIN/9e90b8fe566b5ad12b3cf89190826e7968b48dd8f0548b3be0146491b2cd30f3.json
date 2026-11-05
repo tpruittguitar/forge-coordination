@@ -1,0 +1,84 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4434865369",
+  "sourceVersion": "e2a4d41704a4bac36e57215da1120489973a850639ba72de26832d36c921ebe8",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1348Z-HELD-B2-9",
+  "instructionCommit": "a7cb6671aa5943efd2cd435bc9c87fb2b7217151",
+  "observedAt": "2026-11-05T14:04:35.511Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact original candidate index12 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE original batch. Original Eaton Quality Manager explicitly onsite Cleveland Tennessee manufacturing plant, versus declined Arden North Carolina role. Different known states/worksites remain material; no guessed requisition, generic city alias or company-wide exclusion.",
+  "conclusion": "Source/original request accounting remains AI-owned; no original replay or new insertion.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original source-to-employer requisition/site binding through read-only evidence; preserve applications/decisions and exact original requests.",
+  "retryCondition": "Authoritative exact employer posting/site or original request_result changes the identity conclusion.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0004.json",
+      "result": "Reused saved original fields and helper evidence first; full actual resume/version checked this run."
+    },
+    {
+      "source": "Fresh complete canonical master4616/archive785",
+      "result": "Compared exact source and same-role/site records before outside lookup."
+    },
+    {
+      "source": "Exact original checkpoint/acceptance or result_summary/verified plus independent receipt_index",
+      "result": "Candidate failed within independently COMPLETE batch; no candidate INSERT inferred. Original read-only request_result after COMPLETE requires unavailable cloud credential."
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-0974EB22F954",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:01:05.441Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4434865369/",
+      "result": "Read exact original source; identity/site only for fenced/known roles, actual responsibilities for unfenced unresolved role."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Eaton",
+    "title": "Quality Manager",
+    "location": "Cleveland, TN",
+    "url": "https://www.linkedin.com/jobs/view/4434865369/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-CONSUME-CHATGPT-20261101-V1-B001",
+    "candidateIndex": 12,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [],
+    "originalWriteId": "W-20261101204523364-630924",
+    "acceptanceProof": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1-B001_RESULT_SUMMARY.json",
+    "independentIndexCommit": "86a791ea39747f7fe71e1878e8ea50eba2fadc86",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101204523364-630924",
+      "at": "2026-11-01T20:45:52.074Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-0974EB22F954",
+        "company": "Eaton",
+        "title": "Quality Manager",
+        "location": "Arden, NC",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "e1b4af54a1061198c156c54fbd0231c8a26d270b1520203ff17c760920afe400"
+      }
+    ],
+    "originalPostingContentSha256": "3ecd42c6c15f82cfbb772eb6d5b7da7752ba77413a38f1a671e5148aa25ec157"
+  }
+}

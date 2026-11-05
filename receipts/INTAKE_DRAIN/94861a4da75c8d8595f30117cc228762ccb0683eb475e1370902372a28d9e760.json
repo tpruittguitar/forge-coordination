@@ -1,0 +1,87 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4474887460",
+  "sourceVersion": "f4707ba5ceb06b171b8fe8edeb7c79cf8052218256767195f8f332f428ee9799",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1348Z-HELD-B2-5",
+  "instructionCommit": "a7cb6671aa5943efd2cd435bc9c87fb2b7217151",
+  "observedAt": "2026-11-05T14:04:27.022Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact original candidate index76 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE original batch. Original Scout Novi Body MSL ad explicitly permits Charlotte NC or Novi Michigan, so header/canonical city difference alone does not prove distinct roles. Employer requisition/original source-alias still unbound; preserve decline and both actual permitted sites.",
+  "conclusion": "Source/original request accounting remains AI-owned; no original replay or new insertion.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original source-to-employer requisition/site binding through read-only evidence; preserve applications/decisions and exact original requests.",
+  "retryCondition": "Authoritative exact employer posting/site or original request_result changes the identity conclusion.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0064.json",
+      "result": "Reused saved original fields and helper evidence first; full actual resume/version checked this run."
+    },
+    {
+      "source": "Fresh complete canonical master4616/archive785",
+      "result": "Compared exact source and same-role/site records before outside lookup."
+    },
+    {
+      "source": "Exact original checkpoint/acceptance or result_summary/verified plus independent receipt_index",
+      "result": "Candidate failed within independently COMPLETE batch; no candidate INSERT inferred. Original read-only request_result after COMPLETE requires unavailable cloud credential."
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-95D8B42F9546",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:01:05.441Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4474887460/",
+      "result": "Read exact original source; identity/site only for fenced/known roles, actual responsibilities for unfenced unresolved role."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Scout Motors Inc.",
+    "title": "Engineering Manager, Body Main Systems Leader (MSL) – Body Metals",
+    "location": "Novi, MI",
+    "url": "https://www.linkedin.com/jobs/view/4474887460/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B004",
+    "candidateIndex": 76,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-95D8B42F9546"
+    ],
+    "originalWriteId": "W-20261102002351369-fc8e3d",
+    "acceptanceProof": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B004_ACCEPTANCE.json",
+    "independentIndexCommit": "86a791ea39747f7fe71e1878e8ea50eba2fadc86",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261102002351369-fc8e3d",
+      "at": "2026-11-02T00:24:24.708Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-95D8B42F9546",
+        "company": "Scout Motors Inc.",
+        "title": "Engineering Manager, Body Main Systems Leader (MSL) – Body Metals",
+        "location": "Charlotte, NC",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "f89dc4a8ab9572ac42ee89ce7d55f3cdb0ed9db070e47025d6e47295ad5ab98a"
+      }
+    ],
+    "originalPostingContentSha256": "b5b0b46b0d4ee225443f8a3d8c68e80c8a7e158b21c99bd14bf242a0d534721f",
+    "actualAlternativeSiteQuote": "This role will be based out of the Scout Motors corporate headquarters in Charlotte, NC or Novi, Michigan."
+  }
+}

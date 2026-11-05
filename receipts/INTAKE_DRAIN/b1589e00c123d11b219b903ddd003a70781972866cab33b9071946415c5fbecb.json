@@ -1,0 +1,123 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4485278227",
+  "sourceVersion": "9d3dd85d391399a2ef932be204f33496598e0f523dcf7806994de110476515dc",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1348Z-HELD-B2-1",
+  "instructionCommit": "a7cb6671aa5943efd2cd435bc9c87fb2b7217151",
+  "observedAt": "2026-11-05T14:04:18.162Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original source-bound Tesla Brookshire NPI Solar TPM request is terminal zero-write with exact EXISTING_MATCH to V2I-1249207812B4. Code zero-write classifier confirms zero accepted writes/no writeId/no new primary IDs and NOT_APPLICABLE write receipt. Fresh exact company/title/Brookshire canonical row independently present. No nonexistent COMPLETE transaction is awaited, no read-only recovery probe or replay needed. Original LinkedIn-to-Indeed alias was not written and is not newly claimed verified; original existing-match outcome is distinct from a new insert.",
+  "conclusion": "Original terminal zero-write EXISTING_MATCH independently accounted with fresh exact canonical row; zero new insertion.",
+  "nextAction": "Existing coordinator consumes source-bound terminal zero-write/existing-row proof; preserve original request and canonical role.",
+  "retryCondition": "Coordinator consumes independently accounted original outcome or new contradictory exact source identity evidence arrives.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0080.json",
+      "result": "Reused saved original fields and helper evidence first; full actual resume/version checked this run."
+    },
+    {
+      "source": "Fresh complete canonical master4616/archive785",
+      "result": "Compared exact source and same-role/site records before outside lookup."
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-1249207812B4",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:01:05.441Z"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs classifier on exact original result",
+      "result": "Validated canonicalWrites0/writeReceiptNotApplicable true; no outstanding accepted transaction or blind replay."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Tesla",
+    "title": "Sr. Technical Program Manager, NPI, Solar Manufacturing",
+    "location": "Brookshire, TX",
+    "url": "https://www.linkedin.com/jobs/view/4485278227/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "b38511dd46c1f8be59f62931a2e3ff0fe826e79a5e83a690bb6b307f256b9c75",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4616,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T13:59:23.398Z",
+    "masterModifiedAt": "2026-11-05T13:32:39.688Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-1249207812B4",
+    "company": "Tesla",
+    "title": "Sr. Technical Program Manager, NPI, Solar Manufacturing",
+    "location": "Brookshire, TX",
+    "bucket": "SCOUT_INTAKE",
+    "disposition": "INTAKE/AWAITING_ANALYSIS",
+    "reqId": "UNKNOWN",
+    "store": "MASTER",
+    "exactPostingMatch": false,
+    "labelledReqMatch": false,
+    "canonicalPostingKeys": [],
+    "locationMatch": true,
+    "rowSha256": "a28726496f0660be8f2b836ff7531d14daebb2b3896cf014ad553f3fa31c5ae4"
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-SOURCE-404DEF1EE20814B067D7E813",
+    "candidateOutcome": "EXISTING_MATCH",
+    "primaryId": "V2I-1249207812B4",
+    "proof": "receipts/auto-intake/FORGE-AUTO-20261105T054324Z.json",
+    "zeroWriteClassification": {
+      "requestId": "FORGE-SOURCE-404DEF1EE20814B067D7E813",
+      "canonicalWrites": 0,
+      "writeReceiptNotApplicable": true,
+      "originalRequestMustNotBeReplayed": true,
+      "outcomes": [
+        {
+          "result": "EXISTING_MATCH",
+          "primaryId": "V2I-1249207812B4",
+          "source": {
+            "COMPANY": "Tesla",
+            "TITLE": "Sr. Technical Program Manager, NPI, Solar Manufacturing",
+            "LOCATION": "Brookshire, TX",
+            "SOURCE_URL": "https://www.linkedin.com/jobs/view/4485278227/",
+            "INITIATING_URL": "https://www.linkedin.com/jobs/view/4485278227/",
+            "SCOUT_NOTES": "Original discovery rationale not recorded; do not invent it",
+            "INITIAL_UNKNOWN_FIELDS": [
+              "PAY",
+              "DEGREE",
+              "FLEX"
+            ],
+            "EMPLOYER_PRIMARY_BUSINESS": "Tesla in Brookshire, TX. Full-time Mid-Senior level role. See responsibilities, qualifications, and similar jobs on LinkedIn."
+          },
+          "reason": "",
+          "requiresCanonicalReadback": true
+        }
+      ]
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-1249207812B4",
+        "company": "Tesla",
+        "title": "Sr. Technical Program Manager, NPI, Solar Manufacturing",
+        "location": "Brookshire, TX",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNKNOWN",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "a28726496f0660be8f2b836ff7531d14daebb2b3896cf014ad553f3fa31c5ae4"
+      }
+    ]
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}
