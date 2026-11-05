@@ -9,7 +9,7 @@ Audited 2026-11-05. WIP stock is never divided by the rate window.
 | process-flow enrichment | Distinct job IDs with observed enrichment-completion transitions in the selected window; baseline stock and partial updates excluded; short history/gaps partial | jobs/hour |
 | activity discovery compatibility path | The same reconciled UPSTREAM_FLOW discovery rate, freshness checked independently; no automatic-source-only report reconstruction | candidates/hour |
 | Writer receipt rates | Distinct job IDs from independently COMPLETE receipts in 36 hours; alias writes deduplicated and incomplete history marked partial. Receipt enrichment writes do not establish process-stage completion | receipt-observed jobs/hour |
-| desktop badges / mobile summary | Shared window selector; current upstream rates preferred. Missing/expired discovery is unknown, not zero. Receipt-only intake fallback explicitly partial. No 36-hour fallback for 6/12/24-hour windows | stage-specific units |
+| desktop badges / mobile summary | Shared window selector; current upstream rates preferred. Missing/expired discovery is unknown, not zero. Receipt-only intake cannot replace canonical admission history and stays unknown. No 36-hour fallback for 6/12/24-hour windows | stage-specific units |
 | Writer queue hourly charts / peak | Arrived/finished Writer request counts per hourly bucket; a request may contain multiple jobs. Peak and its sparkline both use finished requests | requests/hour |
 | Writer activity chart | COMPLETE master writes by verification hour; insert/update operations explicitly separate from unique jobs | writes/hour |
 
