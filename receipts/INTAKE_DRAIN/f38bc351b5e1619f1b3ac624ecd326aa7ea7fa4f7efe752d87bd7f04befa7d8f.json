@@ -1,0 +1,63 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482719237",
+  "sourceVersion": "f2e43418bd434de26ef440ddcc4ad4325ea204f70d56d2649d78ba12332986a0",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1224Z-SOURCE-B1-9",
+  "instructionCommit": "18b8d1d57ebe7f6080287cffd6b50ebf501178bf",
+  "observedAt": "2026-11-05T12:33:26.792Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact company/title canonical V2I-5C90BBB6D6DD TBC role is DECLINED_BY_TIM at Palm Beach GardensFL. Original captured LinkedIn has no saved worksite; current original-source extraction returns unrelated Circulation Director search results, not this vacancy. Do not copy a nearby search-card city or infer captured posting site from prior declined role. Existing read-only exact-ID evidence blocked by cloud credential absence. Preserve possible declined identity and original source, no re-intake.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "Captured original identity and saved source/helper evidence at instruction18b8d1d57ebe7f6080287cffd6b50ebf501178bf",
+      "result": "Recovered exact saved fields when present; no worksite, client or requisition inferred."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-5C90BBB6D6DD",
+      "result": "BLOCKED: credential required"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482719237/",
+      "result": "Read original source for missing identity only; unrelated job-search landing supplied no TBC worksite/requisition and was not treated as closure."
+    }
+  ],
+  "recoveredFields": {},
+  "sourceEvidence": {
+    "company": "TBC Corporation",
+    "title": "Director, Supply Chain Continuous Improvement",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4482719237/",
+    "references": [
+      "Captured source identity at instruction18b8d1d57ebe7f6080287cffd6b50ebf501178bf"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Existing authenticated AI/local coordinator recovers original LinkedIn/employer Apply/worksite identity and resolves repeat advertisement against saved declined TBC role.",
+  "publicEvidence": {
+    "canonicalCandidate": {
+      "primaryId": "V2I-5C90BBB6D6DD",
+      "company": "TBC Corporation",
+      "title": "Director, Supply Chain Continuous Improvement",
+      "location": "Palm Beach Gardens, FL, USA",
+      "bucket": "DECLINED_BY_TIM",
+      "disposition": "RESOLVED/DECLINED_BY_TIM",
+      "reqId": "UNCAPTURED",
+      "store": "MASTER",
+      "rowSha256": "7b5f9f77ba8dc3e04673e15fd78daa794ea5717ecf724f44cdbd26da4700acbf"
+    },
+    "canonicalSnapshot": {
+      "masterSha256": "948e070b6a1ab06409fb9da8a0da9efcf5e98a8eb6ae007d6cb01cda4cd06d02",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 4604,
+      "archiveRows": 785,
+      "masterEndMarker": true,
+      "archiveHeader": true,
+      "rowReadAt": "2026-11-05T12:25:36.102Z"
+    }
+  }
+}
