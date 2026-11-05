@@ -1,0 +1,14 @@
+{
+  "runId": "FORGE-INSPECTION-CHATGPT-20261105T050024Z",
+  "taskKey": "FORGE_EMAIL_DISCOVERY",
+  "provider": "ChatGPT",
+  "instructionSha": "18a5cd63622ca33c75b9f675ff14ae4aee2397fb",
+  "at": "2026-11-05T05:02:18.498Z",
+  "status": "RECOVERY_LAUNCHED_PENDING",
+  "finding": "Native task exit zero did not prove processing: report remained at 04:26Z. Manual launcher revealed an unexpected changed native readback created by this AI in the live checkout.",
+  "recovery": "Preserved the exact generated readback privately, acquired shared lock, verified it was the only changed file, restored only that own generated file to HEAD and released lock. Normal launcher then acquired its own lock and resumed.",
+  "masterSubmittedByAI": 0,
+  "masterVerifiedByAI": 0,
+  "noReplay": true,
+  "next": "Existing coordinator owns running recovery and all original transactions; no second launch or lock removal."
+}
