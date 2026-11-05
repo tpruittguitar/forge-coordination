@@ -7,7 +7,7 @@ const repeated=new Set(['STRUCTURED_POSTING_UNAVAILABLE','INCOMPLETE_POSTING','I
 const empty=()=>({schema:'forge.ai-exception-work.v1',cases:{},reviewErrors:{}});
 const terminal=s=>/^(VERIFIED|PROTECTED|EXISTING|NO_MISSING)/.test(s||'');
 function candidates(root,report,state,now=Date.now()){
- const jobs=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{},sources:{}}),items=[];
+ const jobs=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{},sources:{}}),items=[],drain=S.read(root,'state/INTAKE_DRAIN.json',{items:{}});
  const input=[...(report.aiExceptions||[]),...(report.routineHandoffs?.assignments?.exceptions||[]),...(report.routineHandoffs?.mail?.exceptions||[])];
  // Writer exceptions have an actual research/reconciliation owner, not just a log entry.
  for(const q of require('../source-intake/auto-latch').latch(require('../source-intake/auto-latch').previous(root)).quarantined)
@@ -20,6 +20,7 @@ function candidates(root,report,state,now=Date.now()){
   if(immediate.has(e.reason)||repeated.has(e.reason)&&(item.attempts||0)>=2)input.push({...e,escalatedFrom:'CODE'});
  }
  for(const e of input){if(e.owner!=='AI'&&!e.escalatedFrom)continue;const item=state.items?.[e.key];if(item?.transactionId||terminal(item?.status))continue;
+  if(Object.values(drain.items).some(i=>i.status!=='ACCOUNTED_UPSTREAM'&&(i.key===e.key||i.aliases?.includes(e.key)||i.key===item?.itemKey||i.aliases?.includes(item?.itemKey)||e.requestId&&i.fence?.requestIds?.includes(e.requestId))))continue;
   const job=jobs.jobs[e.key]||jobs.jobs[item?.itemKey],identity=job?{company:job.company,title:job.title,location:job.location,url:job.url}:null;
   const reason=/^SOURCE_(?:HTTP_(?:403|429)|ROUTE_BACKOFF)$/.test(e.reason)?'SOURCE_ACCESS_BLOCKED':e.reason;
   const binding={key:e.key||null,messageId:e.messageId||null,requestId:e.requestId||null,reason,sourceVersion:e.itemVersion||item?.version||e.sourceSha256||S.hash(identity||{key:e.key,messageId:e.messageId,requestId:e.requestId,reason}),recoveryReview:item?.sourceRecoveryReview||null};

@@ -15,7 +15,7 @@ function ingest(state,reports,now=Date.now()) {
  return state;
 }
 function due(state,now=Date.now()){return Object.values(state.roles).filter(x=>!x.retryAfter||Date.parse(x.retryAfter)<=now).map(x=>x.role);}
-function defer(state,role,now=Date.now()){const x=state.roles[id(role)];if(!x)return;x.status='WAITING_SOURCE_RETRY';x.reason='SOURCE_EVIDENCE_UNAVAILABLE';x.lastAttempt=new Date(now).toISOString();x.retryAfter=new Date(now+3600000).toISOString();x.owner='CODE';}
+function defer(state,role,now=Date.now()){const x=state.roles[id(role)];if(!x)return;x.attempts=(x.attempts||0)+1;x.status='WAITING_SOURCE_RETRY';x.reason='SOURCE_EVIDENCE_UNAVAILABLE';x.lastAttempt=new Date(now).toISOString();x.retryAfter=new Date(now+3600000).toISOString();x.owner='CODE';}
 function report(state,{sent=new Set(),quarantined=[],blocking=[]}={},now=Date.now()){
  const pending=new Set(quarantined.map(x=>x.requestId));let unattempted=0,waitingRetry=0,attempted=0;
  for(const [key,x]of Object.entries(state.roles)){if(sent.has(key)||sent.has(requestId({COMPANY:x.role.company,TITLE:x.role.title,LOCATION:x.role.location,SOURCE_URL:x.role.url}))){attempted++;continue;}if(x.retryAfter&&Date.parse(x.retryAfter)>now)waitingRetry++;else unattempted++;}

@@ -43,3 +43,6 @@ test('an expired independent validation returns to source verification rather th
 test('resume-backed scope and identity are necessary even with an AI positive verdict',t=>{
  const {root,key}=fixture(t),item=Q.sync(root,{now}).items[key],r=proposal(item);a.throws(()=>Q.validate({...r,scope:{...r.scope,resumeTextSha256:'0'.repeat(64)}},item,now),/CURRENT_RESUME/);a.throws(()=>Q.validate({...r,scope:{...r.scope,resumeCompetencyIds:['invented_clearance']}},item,now),/CURRENT_RESUME/);
 });
+test('repeated code source failures get an AI recovery owner rather than retrying forever in intake',t=>{
+ const {root,key,cards}=fixture(t,[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:cards[0],status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});const item=Q.sync(root,{now}).items[key];a.equal(item.action,'RECOVER_SOURCE');a.equal(item.taskKey,'FORGE_INTAKE_SOURCE_RECOVERY');a.equal(item.sourceFailure.attempts,2);
+});
