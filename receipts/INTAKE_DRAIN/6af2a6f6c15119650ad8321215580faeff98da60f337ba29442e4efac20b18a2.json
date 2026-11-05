@@ -1,0 +1,54 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:2085bd115148705b5a3e9eb4",
+  "sourceVersion": "32151ec1376bc1139d68c937e54d3eb824c9e0ec5a3d63c87ac8dfb6d7c9fb66",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B1-0",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:46:24.800Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Lever UUID e3f0520a-a155-438e-afc2-8215f67aa8d7 has changed saved title from Staff Engineer, Manufacturing Equipment to Staff Manufacturing Engineer, Automation Equipment, both Seattle, Washington. Current saved full ATS responsibilities demonstrate real automation-equipment design/commissioning, but conflicting known titles require reconciliation, not a silent overwrite. Fresh canonical master/archive has no matching Shield equipment title; this is not final admission.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing AI/local coordinator retains exact original evidence and canonical identity reconciliation through the authorized read-only path; no new intake or replay.",
+  "retryCondition": "Existing source coordinator reconciles observed title-version change for the exact same Lever UUID while retaining original title provenance, then normal independent source validation can evaluate current intake.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer, title, site and original posting keys; snapshot hashes and candidate identity evidence retained."
+    },
+    {
+      "source": "state/board-discovery-report.json@HEAD",
+      "result": "Reused exact saved original fields and historical protection markers before any outside research."
+    },
+    {
+      "source": "state/board-discovery-report.json@b922aa31",
+      "result": "Reused exact saved original fields and historical protection markers before any outside research."
+    },
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved original fields and historical protection markers before any outside research."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Shield AI",
+    "title": "Staff Engineer, Manufacturing Equipment",
+    "location": "Seattle, Washington",
+    "url": "https://jobs.lever.co/shieldai/e3f0520a-a155-438e-afc2-8215f67aa8d7"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "additionalEvidence": {
+    "originalSavedTitle": "Staff Engineer, Manufacturing Equipment",
+    "currentObservedSavedTitle": "Staff Manufacturing Engineer, Automation Equipment",
+    "exactEmployerPostingUuid": "e3f0520a-a155-438e-afc2-8215f67aa8d7",
+    "actualResponsibilitiesQuote": "We are seeking a Staff Manufacturing Engineer to lead the design and implementation of production automation equipment for advanced manufacturing."
+  }
+}

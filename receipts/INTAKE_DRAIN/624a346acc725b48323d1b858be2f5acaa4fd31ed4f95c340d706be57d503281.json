@@ -1,0 +1,89 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4468316918",
+  "sourceVersion": "7a13a143b91f10b94a4e5031caadbdbf004fdd1abee707b5e9b4a10c0fc218b5",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B1-8",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:46:40.597Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact original Stuttgart, AR, USA from historical source report0d0192aa and saved helper return. Original accepted batch FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003 is independently COMPLETE with matching writeId, but this exact candidate index81 explicitly returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION and no primary ID. Canonical candidate V2I-23382AE2ED40 is at Mesquite, TX, USA, a different known state/site. Batch completion and existing row do not prove this candidate wrote. Exact read-only original evidence/request-result access blocked by missing existing cloud credential; no replay.",
+  "conclusion": "ORIGINAL_BATCH_COMPLETE_CANDIDATE_WRITE_FAILED_DISTINCT_KNOWN_SITE",
+  "nextAction": "Existing AI/local coordinator retains exact original evidence and canonical identity reconciliation through the authorized read-only path; no new intake or replay.",
+  "retryCondition": "Existing authenticated AI/local coordinator recovers original canonical posting/site scope and source-bound facility evidence for both sites, then reconciles through the existing controlled recovery path; original request stays fenced.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer, title, site and original posting keys; snapshot hashes and candidate identity evidence retained."
+    },
+    {
+      "source": "state/source-trial-report.json@0d0192aa",
+      "result": "Reused exact saved original fields and historical protection markers before any outside research."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-23382AE2ED40",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:44:50.102Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Revolution Sustainable Solutions, LLC",
+    "title": "Plant Manager",
+    "location": "Stuttgart, AR, USA",
+    "url": "https://www.linkedin.com/jobs/view/4468316918/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:43:08.665Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-23382AE2ED40",
+        "company": "Revolution Sustainable Solutions, LLC",
+        "title": "Plant Manager",
+        "location": "Mesquite, TX, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "08138a0614e4112a223b09963efd6b3310662fec36030bc6420381facae6aa90"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "acceptanceProof": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+    "checkpointProof": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_CHECKPOINT.json",
+    "originalWriteAccepted": true,
+    "originalWriteId": "W-20261101221828306-5713a3",
+    "candidateIndex": 81,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "e4f3d0901d2e14745659bc89b5e9cfcd9f23526692406c73680ca073ba185a49",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T22:18:51.497Z",
+    "exactCandidateInsertVerified": false
+  }
+}
