@@ -1,0 +1,101 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483133162",
+  "sourceVersion": "84730c3fb6dc67ab580a968c9a14a5842bfa8113e14a0a204d8ed55018a9d074",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B3-2",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:52:53.385Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Ford Energy captured Dearborn MI role is not bound to rejected archivedV2I-1E90D3493D82 employer requisition62954. Same company/title/hybrid-site context is a lead, but no exact Apply/requisition mapping or repeat-rule authority for rejected jobs. Original accepted batch independently COMPLETE with matching writeId; exact entry returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION and no primary ID. This candidate was not admitted by that batch.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer/title/site and original posting keys; row hashes and original evidence retained."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0041.json",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_ACCEPTANCE.json and receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Exact original checkpoint key/index and acceptance linked to independently COMPLETE batch; candidate failure preserved, no replay."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-1E90D3493D82",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:52:49.612Z"
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:52:49.613Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Ford Energy",
+    "title": "Senior Manager Quality Assurance, Ford Energy",
+    "location": "Dearborn, MI, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483133162/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:50:27.879Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-1E90D3493D82",
+        "company": "Ford Energy",
+        "title": "Senior Manager Quality Assurance, Ford Energy",
+        "location": "Dearborn, MI (hybrid)",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "reqId": "62954",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "ba9ccd0d2eea99e667b6a86569232c00288d56476e73911796d92357b69df0e1"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+    "checkpoint": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261102002103358-18e29a",
+    "candidateIndex": 63,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "cad269b6a3ad2dc5dc95e4608708def8183b01dc24989cae1a74318afd648f9a",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-02T00:22:02.244Z",
+    "candidateInsertVerified": false
+  }
+}

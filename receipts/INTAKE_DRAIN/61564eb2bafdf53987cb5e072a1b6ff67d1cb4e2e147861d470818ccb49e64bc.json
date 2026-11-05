@@ -1,0 +1,117 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483241740",
+  "sourceVersion": "3579c5a647523c0ed425d52234369e4176c5e3ea4447affddcbb67544360fe49",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B3-3",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T10:52:55.147Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "CiresiMorek captured Wichita KS differs from two declined canonical Director Operations roles in Kentucky and Knoxville TN; no client/facility identity may be guessed from agency/title. Original accepted batch independently COMPLETE with matching writeId; exact entry returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION and no primary ID. This candidate was not admitted by that batch.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer/title/site and original posting keys; row hashes and original evidence retained."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0043.json",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json and receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Exact original checkpoint key/index and acceptance linked to independently COMPLETE batch; candidate failure preserved, no replay."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:48:37.194Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-5C3A5CAF161B",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:52:49.612Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-4FDD746D1996",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:52:49.612Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "CiresiMorek",
+    "title": "Director of Operations",
+    "location": "Wichita, KS, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483241740/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:50:27.879Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-5C3A5CAF161B",
+        "company": "CiresiMorek",
+        "title": "Director of Operations",
+        "location": "Kentucky, United States",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "LI-4465169281",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "112c2c6998298118fafe46d499cae3d0518e287a0ee2623a431ffd4fc03121c1"
+      },
+      {
+        "primaryId": "V2I-4FDD746D1996",
+        "company": "CiresiMorek",
+        "title": "Director of Operations",
+        "location": "Knoxville, TN",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "8cfa230ce2da40bf0339ce7220f2c4423d1273a21e2aefe19ade148f94ed5fc8"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "checkpoint": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261101211126834-c5b206",
+    "candidateIndex": 147,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "5c08373f578782d623ab4350be6786aa66df73e8d6f199695e4f8c6f3289571b",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-01T21:12:02.615Z",
+    "candidateInsertVerified": false
+  }
+}
