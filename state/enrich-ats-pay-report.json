@@ -1,55 +1,55 @@
 {
- "at": "2026-11-05T01:02:20.999Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T0100Z",
+ "at": "2026-11-05T01:24:50.583Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T0121Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-05T01:00:51.853Z",
-  "sha256": "14957912578ee22b7e95d5e74a976c028410363654b906a1867b85248eca4574",
-  "rows": 4497
+  "readAt": "2026-11-05T01:21:46.653Z",
+  "sha256": "0ca61423b5b21f9e1faa656245a40542bf07805b9e596670b28292d2c61d02e4",
+  "rows": 4504
  },
- "rows": 4497,
- "eligible": 526,
- "anchors": 1023,
+ "rows": 4504,
+ "eligible": 527,
+ "anchors": 1028,
  "archive_anchors": 5,
- "ats_rows": 3,
- "ats_read": 3,
+ "ats_rows": 0,
+ "ats_read": 0,
  "ats_failed": 0,
- "posted_pay": 3,
- "degree": 6,
- "estimates": 1,
- "estimate_waiting_for_posting": 212,
- "skipped_recent": 148,
- "submitted": 6,
+ "posted_pay": 0,
+ "degree": 5,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 215,
+ "skipped_recent": 147,
+ "submitted": 5,
  "guard_dropped": 0,
- "writer_ok": 6,
+ "writer_ok": 5,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 3
+  "linkedin": 4
  },
  "agg_pay": {
-  "linkedin": 2
+  "linkedin": 3
  },
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 3,
  "boards_read": 8,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 3,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 2,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -59,33 +59,33 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 14,
-  "saved_reused": 14,
+  "targets": 3,
+  "candidates": 35,
+  "saved_reused": 33,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 0,
+  "backoff": 2,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 1,
+  "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-05T01:00:55.655Z",
+  "profile_as_of": "2026-11-05T01:21:49.677Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 22,
+ "ats_candidates": 19,
  "ats_by_kind": {
-  "greenhouse": 9,
   "workday": 9,
   "ashby": 3,
-  "lever": 1
+  "lever": 1,
+  "greenhouse": 6
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 1,
- "public_read": 0,
- "public_failed": 1,
+ "public_tried": 5,
+ "public_read": 1,
+ "public_failed": 4,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -190,25 +190,31 @@
   }
  ],
  "salary_review": {
-  "eligible": 541,
-  "due": 0,
-  "reviewed": 0,
+  "eligible": 542,
+  "due": 1,
+  "reviewed": 1,
   "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-C68D1666B532",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ]
  },
- "decision_waiting": 822,
- "ats_pay_seen": 3,
- "ats_need_salary": 3,
- "nothing_found": 268,
+ "decision_waiting": 828,
+ "nothing_found": 271,
  "not_attempted": 267,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 6,
+ "planned": 5,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
@@ -216,27 +222,46 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "SOURCE_RESEARCH_REQUIRED": 60,
-  "EVIDENCE_FOUND": 6,
+  "SOURCE_RESEARCH_REQUIRED": 62,
+  "EVIDENCE_FOUND": 5,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 55,
   "GROK_RESEARCH_RESERVED": 345,
   "NOT_YET_ATTEMPTED": 11
  },
  "pending": [
   {
-   "id": "V2I-2A863D5463C7",
-   "company": "Terumo Neuro",
-   "title": "Director, Quality Engineering Production Support",
+   "id": "V2I-EE19A03E7C8A",
+   "company": "Infineon Technologies",
+   "title": "Director Quality Management / Vertical Core Power",
    "needs": [
     "SALARY",
     "DEGREE"
    ],
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-05T01:01:05.323Z",
-   "retryAt": "2026-11-05T03:01:05.323Z",
+   "lastAttemptAt": "2026-11-05T01:22:04.172Z",
+   "retryAt": "2026-11-05T03:22:04.172Z",
    "attempts": [
     {
-     "url": "https://www.microvention.com/jobs/15046BR",
+     "url": "https://jobs.infineon.com/careers/job/563808972294505?utm_source=indeed&domain=infineon.com",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EC8FC51511D9",
+   "company": "Metrostar Systems",
+   "title": "Program Director - Quality & Customer Success",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T01:22:10.486Z",
+   "retryAt": "2026-11-05T03:22:10.486Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/36g7by2y3us",
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
@@ -6190,9 +6215,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-04T17:19:19.310Z",
-   "retryAt": "2026-11-05T01:19:19.310Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T01:22:49.934Z",
+   "retryAt": "2026-11-05T17:22:49.934Z",
    "attempts": [
     {
      "url": "https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a7885a8a184742e01a19e1c0a1d1685&source=Indeed+Free",
@@ -6209,9 +6234,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-04T17:19:21.548Z",
-   "retryAt": "2026-11-05T01:19:21.548Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T01:22:52.048Z",
+   "retryAt": "2026-11-05T17:22:52.048Z",
    "attempts": [
     {
      "url": "https://career4.successfactors.com/career?company=C0004920031P&career_ns=job_listing&career_job_req_id=46027&lang=en_US&source=Indeed",
@@ -8799,127 +8824,178 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2A863D5463C7",
+   "company": "Terumo Neuro",
+   "title": "Director, Quality Engineering Production Support",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-05T01:01:05.323Z",
+   "retryAt": "2026-11-05T03:01:05.323Z",
+   "attempts": [
+    {
+     "url": "https://www.microvention.com/jobs/15046BR",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   }
  ],
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-6D47A2897198",
+   "id": "V2I-B11223A177B6",
    "fields": {
-    "SALARY_BASE_LOW": 241000,
-    "SALARY_BASE_HIGH": 319000,
-    "SALARY_MIDPOINT": 280000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://boards.greenhouse.io/andurilindustries/jobs/5284917007?gh_jid=5284917007",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor’s degree in Engineering, Business Administration, or a related field (technical background preferred)",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5284917007?gh_jid=5284917007",
+    "DEGREE_TEXT": "Bachelor’s degree required, or an equivalent combination of education and related experience.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://ht-jobs.net/waokvbj?s=in",
     "DEGREE_ASOF": "2026-11-05",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 156000,
+    "SALARY_BASE_HIGH": 266000,
+    "SALARY_MIDPOINT": 211000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_SOURCE": "comparables:V2I-CD6D847E452A,V2I-F7D0A8471967,V2I-271845BFBE3A,V2I-421144E1D25D,V2I-64203184BEE3,V2I-C72C8C430AEB,V2I-0B73004B8783",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-CD6D847E452A, V2I-F7D0A8471967, V2I-271845BFBE3A, V2I-421144E1D25D, V2I-64203184BEE3, V2I-C72C8C430AEB, V2I-0B73004B8783]; 7 employer-posted comparable(s), level 2 QUALITY same region NE; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 14 eligible roles from the same comparables, so LOW; BLS CT 113051 P25-P90 $106K-$203K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 299500
+    "SALARY_SCORE_POINT": 238500
    }
   },
   {
-   "id": "V2I-B01EA37632B3",
-   "fields": {
-    "SALARY_BASE_LOW": 241000,
-    "SALARY_BASE_HIGH": 319000,
-    "SALARY_MIDPOINT": 280000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://boards.greenhouse.io/andurilindustries/jobs/5284884007?gh_jid=5284884007",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor’s degree in Engineering, Business Administration, or a related field (technical background preferred)",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5284884007?gh_jid=5284884007",
-    "DEGREE_ASOF": "2026-11-05",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 299500
-   }
-  },
-  {
-   "id": "V2I-34D44D08563B",
-   "fields": {
-    "SALARY_BASE_LOW": 220000,
-    "SALARY_BASE_HIGH": 330000,
-    "SALARY_MIDPOINT": 275000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://boards.greenhouse.io/andurilindustries/jobs/5089724007?gh_jid=5089724007",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Education: Bachelor's degree in Engineering or a related technical discipline strongly preferred; equivalent practical experience with a proven track record will be considered.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5089724007?gh_jid=5089724007",
-    "DEGREE_ASOF": "2026-11-05",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 302500
-   }
-  },
-  {
-   "id": "V2I-0E31DE43CD39",
+   "id": "V2I-6CB6988D9FC9",
    "fields": {
     "SALARY_BASE_LOW": 70000,
     "SALARY_BASE_HIGH": 80000,
     "SALARY_MIDPOINT": 75000,
     "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487511714",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487567765",
     "SALARY_ASOF": "2026-11-05",
     "SALARY_CONF": "HIGH",
     "SALARY_NOTE": "pay shown on the linkedin posting",
     "DEGREE_TEXT": "NOT_STATED",
     "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487511714",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487567765",
     "DEGREE_ASOF": "2026-11-05",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
     "SALARY_SCORE_POINT": 77500
    }
   },
   {
-   "id": "V2I-BDA00AA09045",
+   "id": "V2I-7F9EB684D966",
    "fields": {
-    "SALARY_BASE_LOW": 140000,
-    "SALARY_BASE_HIGH": 175000,
-    "SALARY_MIDPOINT": 157500,
+    "DEGREE_TEXT": "Bachelor’s degree in Engineering, Operations, Manufacturing, Business, or a related field.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487536905",
+    "DEGREE_ASOF": "2026-11-05",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 170000,
+    "SALARY_BASE_HIGH": 248000,
+    "SALARY_MIDPOINT": 209000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_SOURCE": "comparables:V2I-BDA00AA09045,V2I-00E4871C1BF3,V2I-4DC05F90D9EB,V2I-43451F7D1FBC,V2I-940180A9C89B,V2I-B72CAB58C00A,V2I-095A2B84CD8D",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-BDA00AA09045, V2I-00E4871C1BF3, V2I-4DC05F90D9EB, V2I-43451F7D1FBC, V2I-940180A9C89B, V2I-B72CAB58C00A, V2I-095A2B84CD8D]; 7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW; BLS AL 113051 P25-P90 $92K-$204K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 228500
+   }
+  },
+  {
+   "id": "V2I-D49A3BEC8CC2",
+   "fields": {
+    "SALARY_BASE_LOW": 90000,
+    "SALARY_BASE_HIGH": 100000,
+    "SALARY_MIDPOINT": 95000,
     "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487501744",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487298964",
     "SALARY_ASOF": "2026-11-05",
     "SALARY_CONF": "HIGH",
     "SALARY_NOTE": "pay shown on the linkedin posting",
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Operations, Supply Chain, Business, or a related field",
+    "DEGREE_TEXT": "Bachelor’s degree in culinary arts, Hospitality Management, Operations Management, or a related field.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487501744",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487298964",
     "DEGREE_ASOF": "2026-11-05",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 166250
+    "SALARY_SCORE_POINT": 97500
+   }
+  },
+  {
+   "id": "V2I-9D9A217D3FF5",
+   "fields": {
+    "SALARY_BASE_LOW": 121000,
+    "SALARY_BASE_HIGH": 171000,
+    "SALARY_MIDPOINT": 146000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4476495606",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor’s Degree with experience in supply chain production planning in a manufacturing environment or equivalent work experience based on Edwards criteria.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4476495606",
+    "DEGREE_ASOF": "2026-11-05",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 158500
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-C68D1666B532",
-   "company": "Kelvion",
-   "title": "Continuous Improvement Engineering Director",
-   "location": "Catoosa, OK, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4487511549",
+   "id": "V2I-B11223A177B6",
+   "company": "Sound Community Services, Inc.",
+   "title": "Director of Quality Assurance",
+   "location": "New London, CT, USA",
+   "posting": "https://ht-jobs.net/waokvbj?s=in",
    "est": [
-    180000,
-    303000,
+    156000,
+    266000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 ENG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region NE; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 14 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-E7670CC3E3BB",
-    "V2I-1EF233307C25",
-    "V2I-7FF6B8008643",
-    "V2I-D5973C33A4E6",
-    "V2I-1C33B90877FB",
-    "V2I-1F0997BF7AD0",
-    "V2I-33BFB0FCF1A9"
+    "V2I-CD6D847E452A",
+    "V2I-F7D0A8471967",
+    "V2I-271845BFBE3A",
+    "V2I-421144E1D25D",
+    "V2I-64203184BEE3",
+    "V2I-C72C8C430AEB",
+    "V2I-0B73004B8783"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-7F9EB684D966",
+   "company": "Revere Control Systems",
+   "title": "Director of Manufacturing and Operational Excellence",
+   "location": "Hoover, AL, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4487536905",
+   "est": [
+    170000,
+    248000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-BDA00AA09045",
+    "V2I-00E4871C1BF3",
+    "V2I-4DC05F90D9EB",
+    "V2I-43451F7D1FBC",
+    "V2I-940180A9C89B",
+    "V2I-B72CAB58C00A",
+    "V2I-095A2B84CD8D"
    ]
   }
  ],
