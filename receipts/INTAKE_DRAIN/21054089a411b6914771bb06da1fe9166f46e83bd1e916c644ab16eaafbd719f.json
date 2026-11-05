@@ -1,0 +1,57 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4487296077",
+  "sourceVersion": "c417b18e4fdc1ef2e9311d2a753335a9c3e3822f8580ac4e8e4f7e50f1ddd31a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-AUTO-07",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:47:16.205Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original captured response is a Writer lock timeout. Fresh authorized read-only probe reports NOT_IN_RECEIPT_INDEX for this exact request. Missing receipt entry is not proof of no write; preserve the original request fence.",
+  "nextAction": "Reconcile original request through existing coordinator/read-only recovery when authoritative receipt or original execution evidence changes; retain fence and never replay",
+  "retryCondition": "ORIGINAL_REQUEST_RECEIPT_OR_AUTHORITATIVE_EXECUTION_EVIDENCE_CHANGED",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T195320Z.candidates.json",
+      "result": "Original candidate record derives exact request ID FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59 using existing production-executor requestId code"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
+      "result": "Original captured error: Lock timeout: another process was holding the lock for too long."
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs#classify",
+      "result": "Terminal zero-write classification rejected; no no-write conclusion inferred"
+    },
+    {
+      "source": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41982070926",
+      "result": "Fresh authenticated read-only probe: FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59 NOT_IN_RECEIPT_INDEX at 2026-11-05T06:44:43Z; no Writer POST"
+    },
+    {
+      "source": "GitHub workflow job 127094227388 decoded logs",
+      "transport": "Connected GitHub fetch_workflow_job_logs",
+      "result": "Recovered exact request verdict from job logs; probe-summary Git push failed on concurrent appends and no JSON artifact exists. Do not reconstruct missing full probe JSON from summary."
+    }
+  ],
+  "identityEvidence": {
+    "company": "Technifite",
+    "title": "Plant Manager-tissue and paper manufacturing",
+    "location": "Rockingham, NC, USA",
+    "url": "https://www.linkedin.com/jobs/view/4487296077/"
+  },
+  "conclusion": {
+    "kind": "UNKNOWN_ORIGINAL_LOCK_TIMEOUT_WITH_NO_INDEX_ENTRY",
+    "requestId": "FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59",
+    "probeWorkflowId": 41982070926,
+    "probeJobId": 127094227388,
+    "probeVerdict": "NOT_IN_RECEIPT_INDEX",
+    "probeObservedAt": "2026-11-05T06:44:43Z",
+    "probePublication": "ORIGINAL_JSON_PUSH_FAILED",
+    "logExcerpt": "2026-11-05T06:44:43.2882177Z ##[notice]FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59 NOT_IN_RECEIPT_INDEX",
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

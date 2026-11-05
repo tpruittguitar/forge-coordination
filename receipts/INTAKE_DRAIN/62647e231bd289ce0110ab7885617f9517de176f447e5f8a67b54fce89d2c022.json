@@ -1,0 +1,56 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4464848074",
+  "sourceVersion": "45999ba43049fa6f7da185812e8f8ec87568b8413afa6af675bc09d53407afc5",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-AUTO-03",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:47:04.624Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Existing zero-write accounting code validates the original source-bound terminal response as WRITE_FAILED with an employer/title/location identity hold. There is no original mutation transaction to wait for; exact identity reconciliation remains open and no request is replayed.",
+  "nextAction": "Existing coordinator must apply validated original zero-write accounting and reconcile exact candidate identity against fresh canonical/site/requisition evidence; preserve protected decisions and no-replay fence",
+  "retryCondition": "FRESH_EXACT_CANONICAL_IDENTITY_AND_ORIGINAL_ZERO_WRITE_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.candidates.json",
+      "result": "Original candidate record derives exact request ID FORGE-SOURCE-5E5DCCA403BF4983BB1C56C4 using existing production-executor requestId code"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+      "result": "Original terminal response and source identity retained"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs#classify",
+      "result": "Passed source-bound terminal zero-write validation; no new canonical mutation"
+    }
+  ],
+  "identityEvidence": {
+    "company": "DISH TV",
+    "title": "Senior Manager of Quality",
+    "location": "Englewood, CO, USA",
+    "url": "https://www.linkedin.com/jobs/view/4464848074/"
+  },
+  "conclusion": {
+    "kind": "VALIDATED_ORIGINAL_ZERO_WRITE",
+    "requestId": "FORGE-SOURCE-5E5DCCA403BF4983BB1C56C4",
+    "canonicalWrites": 0,
+    "writeReceiptNotApplicable": true,
+    "originalRequestMustNotBeReplayed": true,
+    "outcomes": [
+      {
+        "result": "WRITE_FAILED",
+        "primaryId": null,
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requiresCanonicalReadback": false
+      }
+    ],
+    "candidateIds": [
+      "V2I-96B07D3DB371"
+    ],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

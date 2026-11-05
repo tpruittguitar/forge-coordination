@@ -1,0 +1,56 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:873ef34ba6b1f771a9b020f6",
+  "sourceVersion": "b04496c374e89ce54bbdc51b4426250a5ad36e89f91e1dc156c154d0300ca051",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-AUTO-05",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:47:10.298Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Existing zero-write accounting code validates the original source-bound terminal response as WRITE_FAILED with an employer/title/location identity hold. There is no original mutation transaction to wait for; exact identity reconciliation remains open and no request is replayed.",
+  "nextAction": "Existing coordinator must apply validated original zero-write accounting and reconcile exact candidate identity against fresh canonical/site/requisition evidence; preserve protected decisions and no-replay fence",
+  "retryCondition": "FRESH_EXACT_CANONICAL_IDENTITY_AND_ORIGINAL_ZERO_WRITE_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.candidates.json",
+      "result": "Original candidate record derives exact request ID FORGE-SOURCE-2927B6A61C07A56BF9177B35 using existing production-executor requestId code"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+      "result": "Original terminal response and source identity retained"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs#classify",
+      "result": "Passed source-bound terminal zero-write validation; no new canonical mutation"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Hirsh Precision",
+    "title": "Senior Manager, Production Planning & Control (PP&C)",
+    "location": "Frederick, CO, USA",
+    "url": "https://100hires.com/j/Ndi2Qhh"
+  },
+  "conclusion": {
+    "kind": "VALIDATED_ORIGINAL_ZERO_WRITE",
+    "requestId": "FORGE-SOURCE-2927B6A61C07A56BF9177B35",
+    "canonicalWrites": 0,
+    "writeReceiptNotApplicable": true,
+    "originalRequestMustNotBeReplayed": true,
+    "outcomes": [
+      {
+        "result": "WRITE_FAILED",
+        "primaryId": null,
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requiresCanonicalReadback": false
+      }
+    ],
+    "candidateIds": [
+      "V2I-69FEF351EABA"
+    ],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

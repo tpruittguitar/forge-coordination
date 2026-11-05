@@ -1,0 +1,57 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4487550538",
+  "sourceVersion": "1ae02a00359a3029808db06e0ae75d54750fd518c5f8298951f6c701fffb8f4e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-AUTO-11",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:47:27.864Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original captured response is a Writer lock timeout. Fresh authorized read-only probe reports NOT_IN_RECEIPT_INDEX for this exact request. Missing receipt entry is not proof of no write; preserve the original request fence.",
+  "nextAction": "Reconcile original request through existing coordinator/read-only recovery when authoritative receipt or original execution evidence changes; retain fence and never replay",
+  "retryCondition": "ORIGINAL_REQUEST_RECEIPT_OR_AUTHORITATIVE_EXECUTION_EVIDENCE_CHANGED",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T021933Z.candidates.json",
+      "result": "Original candidate record derives exact request ID FORGE-SOURCE-1001075C35BCBEA09F1830D1 using existing production-executor requestId code"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T021933Z.json",
+      "result": "Original captured error: Lock timeout: another process was holding the lock for too long."
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs#classify",
+      "result": "Terminal zero-write classification rejected; no no-write conclusion inferred"
+    },
+    {
+      "source": "https://github.com/tpruittguitar/forge-coordination/actions/runs/41982070926",
+      "result": "Fresh authenticated read-only probe: FORGE-SOURCE-1001075C35BCBEA09F1830D1 NOT_IN_RECEIPT_INDEX at 2026-11-05T06:44:43Z; no Writer POST"
+    },
+    {
+      "source": "GitHub workflow job 127094227388 decoded logs",
+      "transport": "Connected GitHub fetch_workflow_job_logs",
+      "result": "Recovered exact request verdict from job logs; probe-summary Git push failed on concurrent appends and no JSON artifact exists. Do not reconstruct missing full probe JSON from summary."
+    }
+  ],
+  "identityEvidence": {
+    "company": "Avnet",
+    "title": "Director of Quality & EHS",
+    "location": "Chandler, AZ, USA",
+    "url": "https://www.linkedin.com/jobs/view/4487550538/"
+  },
+  "conclusion": {
+    "kind": "UNKNOWN_ORIGINAL_LOCK_TIMEOUT_WITH_NO_INDEX_ENTRY",
+    "requestId": "FORGE-SOURCE-1001075C35BCBEA09F1830D1",
+    "probeWorkflowId": 41982070926,
+    "probeJobId": 127094227388,
+    "probeVerdict": "NOT_IN_RECEIPT_INDEX",
+    "probeObservedAt": "2026-11-05T06:44:43Z",
+    "probePublication": "ORIGINAL_JSON_PUSH_FAILED",
+    "logExcerpt": "2026-11-05T06:44:43.2890763Z ##[notice]FORGE-SOURCE-1001075C35BCBEA09F1830D1 NOT_IN_RECEIPT_INDEX",
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

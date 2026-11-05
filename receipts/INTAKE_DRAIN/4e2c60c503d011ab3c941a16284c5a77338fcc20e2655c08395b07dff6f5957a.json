@@ -1,0 +1,54 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484535138",
+  "sourceVersion": "8790640f02ac45cfd89f62f53b80ca38940c8cad1db6587a40e0ff941f23470e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-AUTO-01",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:46:58.847Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Existing zero-write accounting code validates the original source-bound terminal response as no new write transaction, with an EXISTING_MATCH. Fresh exact canonical row readback remains required; this is not a newly verified job.",
+  "nextAction": "Existing coordinator must read fresh exact canonical row for the returned primary ID, then reconcile upstream no-write/existing accounting without a new submission",
+  "retryCondition": "FRESH_EXACT_CANONICAL_IDENTITY_AND_ORIGINAL_ZERO_WRITE_ACCOUNTING_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261030T0551Z.candidates.json",
+      "result": "Original candidate record derives exact request ID FORGE-SOURCE-102656A674DE39C56824B54D using existing production-executor requestId code"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261030T0551Z.json",
+      "result": "Original terminal response and source identity retained"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs#classify",
+      "result": "Passed source-bound terminal zero-write validation; no new canonical mutation"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Summit Polymers",
+    "title": "Corporate Director of Quality",
+    "location": "Portage, MI, USA",
+    "url": "https://www.linkedin.com/jobs/view/4484535138/"
+  },
+  "conclusion": {
+    "kind": "VALIDATED_ORIGINAL_ZERO_WRITE",
+    "requestId": "FORGE-SOURCE-102656A674DE39C56824B54D",
+    "canonicalWrites": 0,
+    "writeReceiptNotApplicable": true,
+    "originalRequestMustNotBeReplayed": true,
+    "outcomes": [
+      {
+        "result": "EXISTING_MATCH",
+        "primaryId": "V2I-9DF3E65BBF21",
+        "reason": "",
+        "requiresCanonicalReadback": true
+      }
+    ],
+    "candidateIds": [],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}
