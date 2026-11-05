@@ -1,0 +1,40 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:64e8053860a554f41f60f8eb",
+  "sourceVersion": "21ce64241b26d38c9b1450081f119b5f3d877afb0094258dc936be58fe61c163",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B3-7",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:27:29.743Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved Illinois state location; source says Field Illinois but provides only generic company information and no substantive role responsibility description. Do not infer a city or positive scope from Plant Manager title and generated summary alone.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://hiringcafe.com/job/plant-manager-cnh-industrial-illinois-united-states-5rczayqe6rayccmh",
+      "result": "Exact source returned req6170 and Illinois onsite label but no actual detailed duties under role description."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Illinois, United States"
+  },
+  "sourceEvidence": {
+    "company": "CNH Industrial",
+    "title": "Plant Manager",
+    "location": "Illinois, United States",
+    "url": "https://hiringcafe.com/job/plant-manager-cnh-industrial-illinois-united-states-5rczayqe6rayccmh",
+    "references": [
+      "state/source-trial-report.json@b922aa31",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Employer req6170 or original saved source supplies actual plant responsibility content and any more specific worksite; no unrelated same-title posting substitution."
+}
