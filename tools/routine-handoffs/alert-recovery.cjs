@@ -14,7 +14,7 @@ function cards(message){
  }
  return result;
 }
-function recover(root,message,{privateDir}={}){
+function recover(root,message,{privateDir,screenContext}={}){
  const reviewed=require('./alert-review.cjs').importReview(root,message,privateDir);if(reviewed)return reviewed;
  const file='state/EMAIL_RECOVERY_QUEUE.json',ledger=S.read(root,file,L.empty());let source=ledger.sources[message.id];
  if(source?.originalAlertRecovery?.sourceSha256===message.sourceSha256)return{recovered:0,duplicate:true};
@@ -26,7 +26,7 @@ function recover(root,message,{privateDir}={}){
  // Reuse card validation/dedup while restoring all live cursor/coverage fields.
  const original=structuredClone(source),before=new Set(Object.keys(ledger.jobs));
  for(const card of found){const old=ledger.jobs['linkedin:'+card.jobId],identity=card.paragraphs;if(old&&[old.title,old.company,old.location].some((v,n)=>String(v).toLowerCase().replace(/[^a-z0-9]/g,'')!==identity[n].toLowerCase().replace(/[^a-z0-9]/g,'')))throw Error('CONFLICTING_ORIGINAL_ALERT_IDENTITY');}
- L.capture(ledger,{gmailId:message.id,url:source.url,at:message.at,jobs:found,next:true});
+ L.capture(ledger,{gmailId:message.id,url:source.url,at:message.at,jobs:found,next:true},{screenContext});
  const keys=found.map(j=>'linkedin:'+j.jobId),recovered=keys.filter(k=>!before.has(k));
  ledger.sources[message.id]={...original,jobKeys:[...new Set([...original.jobKeys,...keys])],originalAlertRecovery:{sourceSha256:message.sourceSha256,at:new Date().toISOString(),originalDate:message.at,visibleKeys:keys,newKeys:recovered,unseenHistoricalCoverage:'UNPROVEN'}};
  for(const key of keys){const e=ledger.jobs[key].evidence.find(e=>e.gmailId===message.id&&e.at===message.at);if(e){e.source='FULL_ORIGINAL_ALERT';e.sourceSha256=message.sourceSha256;}}

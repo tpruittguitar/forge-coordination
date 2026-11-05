@@ -103,7 +103,7 @@ test('source-only collection does not probe employer boards or alter board healt
   const health='{"schema":"forge.board-health.v1","boards":{}}\n';fs.writeFileSync(path.join(out,'board-health.json'),health);
   const log=path.join(dir,'fetch.log');
   cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,TRIAL_FC_DIR:FC,TRIAL_MASTER_FILE:path.join(dir,'master.txt'),TRIAL_ARCHIVE_FILE:path.join(dir,'archive.txt'),TRIAL_PRIORITY_FILE:path.join(dir,'priority.txt'),TRIAL_JOBSPY_FILE:path.join(dir,'jobspy.json'),TRIAL_HIRINGCAFE_FILE:path.join(dir,'absent.json'),TRIAL_OUT_DIR:out,TRIAL_SKIP_BOARDS:'1',TRIAL_FAST:'1',TRIAL_FETCH_LOG:log},stdio:'pipe',timeout:10000});
-  assert.equal(fs.existsSync(log),false,'source-only mode must make no board HTTP calls');
+  const reads=fs.existsSync(log)?fs.readFileSync(log,'utf8').trim().split('\n').filter(Boolean):[];assert.ok(reads.every(url=>['rules','documents'].includes(new URL(url).searchParams.get('action'))),'source-only mode may read current screening policy/resume inventory, never employer boards');
   assert.equal(fs.readFileSync(path.join(out,'board-health.json'),'utf8'),health,'board evidence belongs to board workflow');
   assert.equal(JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json'))).new_roles.length,1,'source results still publish');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}

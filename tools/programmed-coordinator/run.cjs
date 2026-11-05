@@ -149,7 +149,8 @@ async function main(mode='inventory') {
       let canonical=await snapshot();
       state.canonicalSource=canonical.source;
       if(apply)state.interviewReviews=require('../routine-handoffs/interview-reviews.cjs').consume({root,privateDir,snapshot:canonical,checkLock:deps.checkLock});
-      const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply});
+      const discoveryScreenContext=await require('../source-trial/preliminary-screen').context({key});
+      const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply,screenContext:discoveryScreenContext});
       if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
       const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply});
       state.routineHandoffs={transport:routine,assignments,mail};
