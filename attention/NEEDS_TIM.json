@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T07:29:40.022Z",
- "sourceCommit": "a6ed33e0d16bce1d708ca174dbd6e15d1ef6458b",
+ "builtAt": "2026-11-05T07:32:26.401Z",
+ "sourceCommit": "1c9dec5a03acdbe3131a69c0046b228409ccb721",
  "counts": {
-  "total": 61,
-  "BLOCKING": 0,
-  "ACTION": 27,
+  "total": 63,
+  "BLOCKING": 1,
+  "ACTION": 28,
   "WATCH": 34,
   "DECIDE": 7,
   "JOBS": 1,
   "FAILED": 17,
-  "UPKEEP": 36
+  "UPKEEP": 38
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261105T070929Z is unfinished",
+   "detail": "BLOCKED: Writer HTTP 404. Open request: FORGE-SOURCE-10DDB825685602740BCFD506. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "at": "2026-11-05T07:20:50.223Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-3D0E6F9DFD1953FAD80F3716",
    "section": "FAILED",
@@ -118,18 +130,6 @@
    "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
    "source": "receipts/auto-intake/FORGE-AUTO-20261105T063702Z.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T063702Z.json",
-   "at": null,
-   "raisedBy": "AUTO-INTAKE"
-  },
-  {
-   "id": "auto-intake-identity-hold:FORGE-SOURCE-D10BC99EAA546F204B9FA0F5",
-   "section": "FAILED",
-   "level": "ACTION",
-   "title": "Unconfirmed intake: Relativity Space · Staff Manufacturing Engineer, Primary Structures",
-   "detail": "Long Beach, California, United States. The submission timed out; receipt and exact job identity remain unproven. Other jobs continue normally. Request: FORGE-SOURCE-D10BC99EAA546F204B9FA0F5",
-   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
    "at": null,
    "raisedBy": "AUTO-INTAKE"
   },
@@ -384,6 +384,30 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
    "at": "2026-11-02T03:05:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#254",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #254: Keep mixed intake failures from blocking unrelated work",
+   "detail": "Open since 2026-11-05. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #254",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/254",
+   "at": "2026-11-05T07:31:40Z",
+   "raisedBy": ""
+  },
+  {
+   "id": "pr:foreman-cockpit#259",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "foreman-cockpit PR #259: Reduce technical recovery notice clutter",
+   "detail": "Open since 2026-11-05. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "foreman-cockpit #259",
+   "sourceUrl": "https://github.com/tpruittguitar/foreman-cockpit/pull/259",
+   "at": "2026-11-05T07:32:04Z",
+   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
