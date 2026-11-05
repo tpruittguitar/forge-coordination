@@ -51,7 +51,7 @@ These actions are disjoint. Old intake/relevance helpers skip the drain-owned ke
 
 ## Worker rules and handoff
 
-Three thin shared-entry ChatGPT utilities run hourly, staggered. The scope worker starts at :02, source recovery at :22 and held reconciliation at :42 Eastern time; configuration readback must confirm activation. These are operating choices for the authorized processing request, not promises of measured throughput. The existing Writer workflow keeps its hourly :17 catch-up plus successful discovery triggers; discovery schedules stay unchanged.
+Three thin shared-entry ChatGPT utilities run hourly, with nominal scheduling anchors near :02 for scope, :22 for source recovery and :42 for held reconciliation, Eastern time. Provider scheduling is flexible and actual starts may vary; configuration readback must confirm activation. These are operating choices for the authorized processing request, not promises of measured throughput. The existing Writer workflow keeps its hourly :17 catch-up plus successful discovery triggers; discovery schedules stay unchanged.
 
 Workers reuse saved full-source evidence, previous research, exact ATS details and the resume profile. Only missing/ambiguous facts require targeted AI research. Existing one-fact-changing-lookup rules remain; artifact sizes are checkpoint boundaries, not daily/WIP/processing caps. A blocked host does not stop accessible independent sources. Capture usable evidence before moving to the next candidate.
 
