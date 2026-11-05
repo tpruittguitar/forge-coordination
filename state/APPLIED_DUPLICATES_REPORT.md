@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-05T07:05:14.882Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-05T17:30:01.321Z from CANONICAL_WRITER_MASTER.
 
-Of 644 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 691 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 1**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 17
 
-Writer: 1 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 1 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -15,7 +15,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
-| 54 | ImageFIRST Healthcare Laundry Specialists | Director, Operational Excellence | You declined 2026-11-05 · likely the same posting | Posting first seen 2026-11-05, on or before decline 2026-11-05; same title | V2I-9A2BAD906FDF → V2I-41D7C7F38C42 |
+| 44 | Shield | Head of Operational Excellence | Applied 2026-11-03 · likely the same posting | Posting first seen 2026-11-05, on or before application 2026-11-03; same title | V2I-EEAD235771C8 → V2I-1E6BF0D41018 |
 
 ## Kept, labeled (17)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
