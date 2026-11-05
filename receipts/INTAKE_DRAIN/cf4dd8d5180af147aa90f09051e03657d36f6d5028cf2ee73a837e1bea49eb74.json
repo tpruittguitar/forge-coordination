@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:57213ef2aac463decb5e6a79",
+  "sourceVersion": "db5862a70f4a3681acf9b92c77652bab6f41204ad20ece688c61c340be018d4e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224350419Z-e7e48c",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:43:50.419Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Existing prepared evidence did not pass independent structured-posting validation; retain SOURCE_HTTP_403. Upstream flags EXISTING_PROTECTED without exact canonical proof, while prior review describes a gh_jid query-identity collision; preserve that conflict and protected decisions.",
+  "nextAction": "Existing read-only coordinator recovers exact original employer posting/requisition/site and independently validates source; preserve existing protected roles and original card fields.",
+  "retryCondition": "Exact structured posting or source-to-employer/site binding changes, with canonical match/protection evidence independently checked.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#url:57213ef2aac463decb5e6a79",
+      "result": "Saved evidenceStatus=EXISTING_PROTECTED; status=HELD; proof=absent. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/13f89eb884bd479184a1b5d30585f43b12bd2e2e80a6ee75817813cdda3f8f88.json",
+      "result": "Reused saved source-bound preparation and original source identity. No repeated interpretive scope decision or resume re-evaluation."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:57213ef2aac463decb5e6a79",
+      "result": "{\"sourceConflict\":null,\"validation\":{\"status\":\"SOURCE_VALIDATION_REQUIRED\",\"reviewSha256\":\"13f89eb884bd479184a1b5d30585f43b12bd2e2e80a6ee75817813cdda3f8f88\",\"observedAt\":\"2026-11-05T15:55:13.228Z\",\"reason\":\"SOURCE_HTTP_403\",\"retryAfter\":\"2026-11-05T21:55:13.228Z\"}}"
+    }
+  ],
+  "savedEvidence": {},
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0
+}

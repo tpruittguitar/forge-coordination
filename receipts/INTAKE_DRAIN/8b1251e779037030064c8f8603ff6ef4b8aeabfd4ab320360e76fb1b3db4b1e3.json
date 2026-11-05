@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4479911963",
+  "sourceVersion": "d7eead7d09691abb8f573131ed0df4ac55ebc0dc351115fe221d01bff44468bf",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224359473Z-68bdde",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:43:59.473Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Existing prepared evidence did not pass independent structured-posting validation; retain STRUCTURED_POSTING_UNAVAILABLE. Saved source identity conflicts and missing original location remain reconciliation obligations; prior preparation alone cannot overwrite them.",
+  "nextAction": "Existing read-only coordinator recovers exact original employer posting/requisition/site and independently validates source; preserve existing protected roles and original card fields.",
+  "retryCondition": "Exact structured posting or source-to-employer/site binding changes, with canonical match/protection evidence independently checked.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4479911963",
+      "result": "Saved evidenceStatus=UNSCREENED; status=WAITING; proof=absent. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/2ecd19d2d2b4b0868d57b027bf365e81ebac3f2f3a5e44cc33ba933717f74054.json",
+      "result": "Reused saved source-bound preparation and original source identity. No repeated interpretive scope decision or resume re-evaluation."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#linkedin:4479911963",
+      "result": "{\"sourceConflict\":\"CONFLICTING_SAVED_IDENTITY\",\"validation\":{\"status\":\"SOURCE_VALIDATION_REQUIRED\",\"reviewSha256\":\"2ecd19d2d2b4b0868d57b027bf365e81ebac3f2f3a5e44cc33ba933717f74054\",\"observedAt\":\"2026-11-05T16:18:07.805Z\",\"reason\":\"STRUCTURED_POSTING_UNAVAILABLE\",\"retryAfter\":\"2026-11-05T22:18:07.805Z\"}}"
+    }
+  ],
+  "savedEvidence": {},
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0
+}
