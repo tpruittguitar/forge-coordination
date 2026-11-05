@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4462447154",
+  "sourceVersion": "fd3c9bc36636acb00fced82e1c2d94d7239f909f84d618ea494d44ceed006cf1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-08",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:27.466Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Seattle location recovered from historical EXISTING evidence. Public posting fetch timed out; retain source identity for fresh canonical reconciliation rather than treating the prior role as new.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected source; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Code matches exact source identity and recovers saved location: Seattle, WA, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4462447154/",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no current responsibilities returned",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Shield AI",
+    "title": "Senior Staff Engineer, Advanced Manufacturing",
+    "location": "Seattle, WA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4462447154/",
+    "observedAt": "2026-11-05T07:24:27.466Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@eb8532c8"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Seattle, WA, USA",
+      "proof": "state/source-trial-report.json@eb8532c8",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4348364375",
+  "sourceVersion": "78173962de8e7941037b3c4c5cc80a0ff172ef57485c2823a16ee530f347676d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-06",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:21.639Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Code matching of historical exact LinkedIn identity recovers Hebron, KY. Exact public posting fetch timed out; actual current responsibilities remain unresolved.",
+  "nextAction": "Retain recovered exact worksite and shift identity; retry when exact source content or timeout condition changes",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Code matches exact source identity and recovers saved location: Hebron, KY, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4348364375/",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no current responsibilities returned",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Beckman Coulter Diagnostics",
+    "title": "Senior Manager, Manufacturing Engineering",
+    "location": "Hebron, KY, USA",
+    "url": "https://www.linkedin.com/jobs/view/4348364375/",
+    "observedAt": "2026-11-05T07:24:21.639Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@b922aa31"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Hebron, KY, USA",
+      "proof": "state/source-trial-report.json@b922aa31",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_POSTING_CONTENT_AVAILABLE_OR_TIMEOUT_CONDITION_CHANGED"
+}

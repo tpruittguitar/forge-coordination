@@ -1,0 +1,45 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:d112760a9346fe00d08e1c2c",
+  "sourceVersion": "05f9a45304fcd2022bf253a5440a90db9824586ca78b33230d2a1643062a3319",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-02",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:10.048Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Houston (TAS-Cullen HQ) location recovered from a historical EXISTING source, while upstream now labels it NEW. Retain this accounting discrepancy for fresh canonical reconciliation before new intake.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected source; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Code matches exact source identity and recovers saved location: Houston, TX (TAS-Cullen HQ)"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:d112760a9346fe00d08e1c2c",
+      "result": "NEW upstream hint differs from saved historical EXISTING; fresh canonical proof required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Comfort Systems USA",
+    "title": "Director of Manufacturing",
+    "location": "Houston, TX (TAS-Cullen HQ)",
+    "url": "https://comfortsystemsusa.wd1.myworkdayjobs.com/corpcareers/job/Houston-TX-TAS-Cullen-HQ/Director-of-Manufacturing_JR108045-1",
+    "observedAt": "2026-11-05T07:24:10.048Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Houston, TX (TAS-Cullen HQ)",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}

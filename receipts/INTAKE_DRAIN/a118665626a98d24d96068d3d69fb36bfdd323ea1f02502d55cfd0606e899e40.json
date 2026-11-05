@@ -1,0 +1,45 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:d45da3d5466cb7d939789d1f",
+  "sourceVersion": "3c8cfe82b3894dcfe5997720f21dede0262945170971906df7eb5dea84431d64",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-03",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:12.921Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Costa Mesa location recovered for a source marked EXISTING_PROTECTED. Preserve protected identity and reconcile fresh canonical evidence.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected source; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Code matches exact source identity and recovers saved location: Costa Mesa, California, United States"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:d45da3d5466cb7d939789d1f",
+      "result": "EXISTING_PROTECTED hint retained; no protected role research"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Director of Quality",
+    "location": "Costa Mesa, California, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5131489007?gh_jid=5131489007",
+    "observedAt": "2026-11-05T07:24:12.921Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Costa Mesa, California, United States",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}

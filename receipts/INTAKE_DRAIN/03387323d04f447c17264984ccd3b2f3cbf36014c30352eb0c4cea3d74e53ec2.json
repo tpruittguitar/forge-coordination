@@ -1,0 +1,45 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:e0f0f3c6ae14023661902c34",
+  "sourceVersion": "fbf82ad97feeabe5f0d114727e20370e4fec1aef826919e368887eb813dae189",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-05",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:18.767Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact Phoenix location recovered for a source marked EXISTING_PROTECTED. Preserve protected identity and reconcile fresh canonical evidence.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected source; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Code matches exact source identity and recovers saved location: Phoenix, AZ"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:e0f0f3c6ae14023661902c34",
+      "result": "EXISTING_PROTECTED hint retained; no protected role research"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Fluidstack",
+    "title": "Director of Manufacturing",
+    "location": "Phoenix, AZ",
+    "url": "https://jobs.ashbyhq.com/fluidstack/0d40c137-298f-41c1-8fd3-2c0eb6bd20d1",
+    "observedAt": "2026-11-05T07:24:18.767Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Phoenix, AZ",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4471923785",
+  "sourceVersion": "b62bf4ae05669932c75fb52422b4f379cf5fc7efcbd45ddbdd47b27c548eccc8",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B2-10",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:24:33.163Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact historical source matching recovers Boston, MA for the distinct 2nd Shift role. Public source fetch timed out; current responsibilities and availability remain unresolved.",
+  "nextAction": "Retain recovered exact worksite and shift identity; retry when exact source content or timeout condition changes",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@744b98f8",
+      "result": "Code matches exact source identity and recovers saved location: Boston, MA, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4471923785/",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no current responsibilities returned",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Vertex Pharmaceuticals",
+    "title": "Senior Manager, Manufacturing Operations (2nd Shift)",
+    "location": "Boston, MA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4471923785/",
+    "observedAt": "2026-11-05T07:24:33.163Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@744b98f8"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Boston, MA, USA",
+      "proof": "state/source-trial-report.json@744b98f8",
+      "method": "Code match of exact saved source identity; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_POSTING_CONTENT_AVAILABLE_OR_TIMEOUT_CONDITION_CHANGED"
+}
