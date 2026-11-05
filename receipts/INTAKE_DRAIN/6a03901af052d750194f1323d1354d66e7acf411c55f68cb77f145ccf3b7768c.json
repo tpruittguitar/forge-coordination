@@ -1,0 +1,42 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:a45971f77024f8ffc50f14d1",
+  "sourceVersion": "aeeab3412d1c777227eb8435f4574ec6ba578e3d82b3aea6dc288b57b33954e1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1023Z-SOURCE-B1-6",
+  "instructionCommit": "92f5a21eb03711904d519560e3facaeff8032ac9",
+  "observedAt": "2026-11-05T10:31:18.210Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered Fremont, CA, USA from exact historical card. Exact Pinpoint employer posting confirms Director of Quality, onsite and reporting to President/CEO, but returned no role duties and labels location only Swagelok Northern California. It describes the local company as a sales/service center; parent-company manufacturing does not prove this role owns manufacturing quality.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Reused exact saved fields and original source identity; no guessed employer, worksite or requisition."
+    },
+    {
+      "source": "https://swagelok.pinpointhq.com/postings/7b6bc64c-4632-41a2-9731-aadd2fc2023c",
+      "result": "Read original exact Pinpoint posting; identity metadata and company about text returned, actual responsibility section absent."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Fremont, CA, USA"
+  },
+  "sourceEvidence": {
+    "company": "Swagelok Northern California",
+    "title": "Director of Quality",
+    "location": "Fremont, CA, USA",
+    "url": "https://swagelok.pinpointhq.com/postings/7b6bc64c-4632-41a2-9731-aadd2fc2023c",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [
+    "Actual quality responsibilities",
+    "Exact posting worksite corroboration"
+  ],
+  "retryCondition": "Exact original employer posting and role responsibilities become available from a saved or accessible source."
+}
