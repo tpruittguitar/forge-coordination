@@ -1,0 +1,82 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482800171",
+  "sourceVersion": "a6f6dd5bb871562fea78dfeab4633ea11773ac41797bafcc839d597e8ca1d7bb",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1443Z-HELD-B2-6",
+  "instructionCommit": "7988b3a48e434eae1e3d44a7ffbbea3cfa09e73f",
+  "observedAt": "2026-11-05T14:55:35.252Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original candidate index119 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE batch;no original candidate INSERT. Original PrecisionCastparts board says PlantManager/DouglasGA,but actual role body says AreaManager responsible for designated manufacturing departments. Original failed-candidate target V2I-02E6CF9B904C is PrecisionCastpartsCorp(GreerStopNut,Nashville),NashvilleTN plant manager PCC-TAL-8588. Both site and Plant-versus-AreaManager scope differ;no generic parent/division alias or facility exception is forced until actual role classification and original employer identity are resolved.",
+  "conclusion": "Original failed candidate and actual source identity/site/classification investigated;exact unresolved binding remains AI-owned,not a Tim research task or a completed canonical job.",
+  "nextAction": "AI/local coordinator obtains exact original source/requisition/site evidence and authenticated original request_result;preserve all original Writer requests and application/decline/closure decisions.",
+  "retryCondition": "Exact original employer posting,permitted worksite or canonical source evidence resolves recorded binding/classification question;unchanged evidence is not replayed.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0039.json",
+      "result": "Reused exact saved fields,helper card and original source;full current private resume/version checked."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_CHECKPOINT.json and _ACCEPTANCE.json plus independent immutable receipt_index",
+      "result": "Exact candidate index,key,result and originalwriteId independently COMPLETE compared;failed candidate not an insertion."
+    },
+    {
+      "source": "Existing exact read-only Writer request_result FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:51:56.271Z"
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-02E6CF9B904C",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:55:23.096Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482800171/",
+      "result": "One exact original ad read for unresolved source/site identity;full source duty and site wording retained."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Precision Castparts",
+    "title": "Plant Manager",
+    "location": "Douglas, GA",
+    "url": "https://www.linkedin.com/jobs/view/4482800171/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "candidateIndex": 119,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-02E6CF9B904C"
+    ],
+    "originalWriteId": "W-20261101211126834-c5b206",
+    "acceptanceProof": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003_ACCEPTANCE.json",
+    "independentIndexCommit": "cf7b54323113fa2c88fabb76edae9cc14b81627f",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101211126834-c5b206",
+      "at": "2026-11-01T21:12:02.615Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-02E6CF9B904C",
+        "company": "Precision Castparts Corp. (Greer Stop Nut, Nashville)",
+        "title": "Plant Manager",
+        "location": "Nashville, TN",
+        "bucket": "MANUAL_RESEARCH",
+        "reqId": "PCC-TAL-8588",
+        "rowSha256": "3d186343b29a29d542347968b2884e7eb834fa122d8eae0aba545fff0dc0ad55"
+      }
+    ],
+    "originalSourceContentSha256": "22328837559584c38e90b7d857c5b5d5c2687814024b4fdcf561aab5ab1eec37",
+    "exactSourceQuote": "The Area Manager will be responsible for the management, directing, and coordination of manufacturing operations for designated departments."
+  }
+}

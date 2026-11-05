@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4475231453",
+  "sourceVersion": "e3326434dba62ee62422d579c5ba4e2869b0d93c811cfa11ea0282952fa96097",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1443Z-HELD-B2-4",
+  "instructionCommit": "7988b3a48e434eae1e3d44a7ffbbea3cfa09e73f",
+  "observedAt": "2026-11-05T14:55:31.340Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original candidate index47 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE batch;no original candidate INSERT. Exact Eaton MenomoneeFalls source timed out. Existing same-title PeachtreeCityGA V2I-2F36B5E0844B has old board4475225798,but actual allowed-worksite list/requisition for this original ad remains unobserved this pass. Do not claim that a site list is absent merely because fetch failed;reuse original-request fence and recover exact full source next.",
+  "conclusion": "Original failed candidate and actual source identity/site/classification investigated;exact unresolved binding remains AI-owned,not a Tim research task or a completed canonical job.",
+  "nextAction": "AI/local coordinator obtains exact original source/requisition/site evidence and authenticated original request_result;preserve all original Writer requests and application/decline/closure decisions.",
+  "retryCondition": "Exact original employer posting,permitted worksite or canonical source evidence resolves recorded binding/classification question;unchanged evidence is not replayed.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0019.json",
+      "result": "Reused exact saved fields,helper card and original source;full current private resume/version checked."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_CHECKPOINT.json and _ACCEPTANCE.json plus independent immutable receipt_index",
+      "result": "Exact candidate index,key,result and originalwriteId independently COMPLETE compared;failed candidate not an insertion."
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-2F36B5E0844B",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:51:56.271Z"
+    },
+    {
+      "source": "Existing exact read-only Writer request_result FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:51:56.271Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4475231453/",
+      "result": "One exact original posting fetch CRAWL_LIVECRAWL_TIMEOUT;no immediate retry,no sourcebody invented."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Eaton",
+    "title": "Manager, Supplier Development Engineering - Special Process & Mechanical Assembly",
+    "location": "Menomonee Falls, WI",
+    "url": "https://www.linkedin.com/jobs/view/4475231453/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "candidateIndex": 47,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-2F36B5E0844B"
+    ],
+    "originalWriteId": "W-20261101220906182-1e3f21",
+    "acceptanceProof": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+    "independentIndexCommit": "cf7b54323113fa2c88fabb76edae9cc14b81627f",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101220906182-1e3f21",
+      "at": "2026-11-01T22:10:06.594Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-2F36B5E0844B",
+        "company": "Eaton",
+        "title": "Manager, Supplier Development Engineering - Special Process & Mechanical Assembly",
+        "location": "Peachtree City, GA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "4475225798",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "3ddc65ef1579c3d28cb722cd9a7abfca1851dac19c382a93cc625256921f0b86"
+      }
+    ]
+  }
+}

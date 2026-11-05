@@ -1,0 +1,90 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4466254605",
+  "sourceVersion": "4024d8978d4a9403843093adeb9ea773089e97549e114a1608b9d86bbc120764",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1443Z-HELD-B2-2",
+  "instructionCommit": "7988b3a48e434eae1e3d44a7ffbbea3cfa09e73f",
+  "observedAt": "2026-11-05T14:55:27.361Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original candidate index2 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE batch;no original candidate INSERT. Original BlueOrigin MerrittIsland ManufacturingQualityManager AShift source states NewGlenn manufacturing and day shift Mon-Fri07-17. Declined V2I-790C3F5CA8C4 is SpaceCoastFL R72111;no exact req/observed region alias found. Retain this Manager source distinct from separate SeniorManager advertisement,R72114 and applied record.",
+  "conclusion": "Original failed candidate and actual source identity/site/classification investigated;exact unresolved binding remains AI-owned,not a Tim research task or a completed canonical job.",
+  "nextAction": "AI/local coordinator obtains exact original source/requisition/site evidence and authenticated original request_result;preserve all original Writer requests and application/decline/closure decisions.",
+  "retryCondition": "Exact original employer posting,permitted worksite or canonical source evidence resolves recorded binding/classification question;unchanged evidence is not replayed.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0013.json",
+      "result": "Reused exact saved fields,helper card and original source;full current private resume/version checked."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_CHECKPOINT.json and _ACCEPTANCE.json plus independent immutable receipt_index",
+      "result": "Exact candidate index,key,result and originalwriteId independently COMPLETE compared;failed candidate not an insertion."
+    },
+    {
+      "source": "Existing exact read-only Writer evidence V2I-790C3F5CA8C4",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:51:56.271Z"
+    },
+    {
+      "source": "Existing exact read-only Writer request_result FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T14:51:56.271Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4466254605/",
+      "result": "One exact original ad read for unresolved source/site identity;full source duty and site wording retained."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Blue Origin",
+    "title": "Manufacturing Quality Manager - A Shift",
+    "location": "Merritt Island, FL",
+    "url": "https://www.linkedin.com/jobs/view/4466254605/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "candidateIndex": 2,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-790C3F5CA8C4"
+    ],
+    "originalWriteId": "W-20261101210739345-133ced",
+    "acceptanceProof": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_ACCEPTANCE.json",
+    "independentIndexCommit": "cf7b54323113fa2c88fabb76edae9cc14b81627f",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101210739345-133ced",
+      "at": "2026-11-01T21:08:03.971Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-790C3F5CA8C4",
+        "company": "Blue Origin",
+        "title": "Manufacturing Quality Manager - A Shift",
+        "location": "Space Coast, FL",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "R72111",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "wd:blueorigin:R72111"
+        ],
+        "locationMatch": false,
+        "rowSha256": "1bb9ce17ddc62866f7f4a180269d4c3539c2ed7117ab566834b051a1d4367ae2"
+      }
+    ],
+    "originalSourceContentSha256": "e38604e1efc04d1f14e4f0daf030d7c6e3bb692a541ab2427c9fc64da1798dbc",
+    "exactSourceQuote": "Support the Supplier Quality team in addressing supplier nonconformances that impact New Glenn manufacturing"
+  }
+}
