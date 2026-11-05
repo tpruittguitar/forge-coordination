@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-05T17:30:17.934Z",
+    "at": "2026-11-05T17:37:02.848Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -266,7 +266,7 @@
     },
     "coverage": {
       "baselineCompletionTimeUnknown": 338,
-      "finalDecisionTimeUnknown": 5,
+      "finalDecisionTimeUnknown": 6,
       "partial": true,
       "note": "Historical completion/decision timestamps are incomplete. Baseline stock without an observed completion is excluded; missing history is not zero loss. Failed checks mean unconfirmed freshness, not proven closure. Posting age or an overdue check alone is not failure."
     },
@@ -274,20 +274,20 @@
   },
   "freshness": {
     "due": 360,
-    "current": 832,
+    "current": 831,
     "undated": 0
   },
-  "at": "2026-11-05T17:30:17.934Z",
+  "at": "2026-11-05T17:37:02.848Z",
   "queues": {
     "verification": 0,
     "enrichment": 501,
-    "readyForReview": 691,
+    "readyForReview": 690,
     "blockedClosed": 107
   },
   "needsEnrichment": 501,
   "population": {
-    "total": 1299,
-    "accounted": 1299,
+    "total": 1298,
+    "accounted": 1298,
     "reconciled": true
   },
   "oldestWaiting": {
@@ -296,8 +296,8 @@
     "readyForReview": "2026-10-31T04:35:30.337Z"
   },
   "reconciliation": {
-    "from": "2026-11-05T17:28:19.467Z",
-    "to": "2026-11-05T17:30:17.934Z",
+    "from": "2026-11-05T17:30:17.934Z",
+    "to": "2026-11-05T17:37:02.848Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -321,9 +321,9 @@
         "opening": 691,
         "entered": 0,
         "completed": 0,
-        "otherExits": 0,
-        "closing": 691,
-        "delta": 0,
+        "otherExits": 1,
+        "closing": 690,
+        "delta": -1,
         "reconciled": true
       },
       "blockedClosed": {
@@ -492,26 +492,26 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: measured fit, salary, posting-based degree evidence and Writer-calculated final score with model provenance; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-05T17:30:09.566Z",
-    "sha256": "eb981ab15f96e4a3222256abd086890c857355eb575a6a153094e17a8901b30a",
+    "readAt": "2026-11-05T17:36:52.824Z",
+    "sha256": "e856a09982a3e2303d6b0a31148b6e031dd7f59967cd32287fc31add8d640b94",
     "rows": 4627
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-05T17:30:17.168Z",
-    "total": 9590,
-    "sourceIdentities": 10097,
-    "aliasesMerged": 507,
+    "at": "2026-11-05T17:37:02.123Z",
+    "total": 9627,
+    "sourceIdentities": 10135,
+    "aliasesMerged": 508,
     "counts": {
-      "WAITING": 4005,
+      "WAITING": 4033,
       "PRESENT": 3179,
       "EXCLUDED": 1029,
-      "HELD": 1150,
+      "HELD": 1159,
       "IDENTITY_HOLD": 227,
       "MISSING_PREVIOUSLY_PRESENT": 0
     },
-    "waiting": 5382,
-    "accounted": 9590,
+    "waiting": 5419,
+    "accounted": 9627,
     "canonicalPopulation": {
       "total": 5409,
       "linked": 3179,
@@ -519,14 +519,14 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-05T17:28:18.694Z",
-      "to": "2026-11-05T17:30:17.168Z",
+      "from": "2026-11-05T17:30:17.168Z",
+      "to": "2026-11-05T17:37:02.123Z",
       "opening": 5382,
-      "arrivals": 0,
+      "arrivals": 37,
       "admitted": 0,
       "excluded": 0,
       "otherExits": 0,
-      "closing": 5382
+      "closing": 5419
     },
     "rates": {
       "discovery": {
@@ -534,13 +534,13 @@
         "windowHours": 36,
         "perHour": 2.388888888888889,
         "partial": true,
-        "candidateCount": 209,
+        "candidateCount": 246,
         "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 36 hours; unresolved candidate identities excluded from job rate."
       },
       "intake": {
-        "count": 179,
+        "count": 177,
         "windowHours": 36,
-        "perHour": 4.972222222222222,
+        "perHour": 4.916666666666667,
         "partial": true,
         "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
       }
@@ -552,13 +552,13 @@
           "windowHours": 6,
           "perHour": 1,
           "partial": true,
-          "candidateCount": 22,
+          "candidateCount": 59,
           "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 6 hours; unresolved candidate identities excluded from job rate."
         },
         "intake": {
-          "count": 32,
+          "count": 30,
           "windowHours": 6,
-          "perHour": 5.333333333333333,
+          "perHour": 5,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
         }
@@ -569,7 +569,7 @@
           "windowHours": 12,
           "perHour": 1.1666666666666667,
           "partial": true,
-          "candidateCount": 49,
+          "candidateCount": 86,
           "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 12 hours; unresolved candidate identities excluded from job rate."
         },
         "intake": {
@@ -586,7 +586,7 @@
           "windowHours": 24,
           "perHour": 1.625,
           "partial": true,
-          "candidateCount": 117,
+          "candidateCount": 154,
           "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 24 hours; unresolved candidate identities excluded from job rate."
         },
         "intake": {
@@ -603,20 +603,20 @@
           "windowHours": 36,
           "perHour": 2.388888888888889,
           "partial": true,
-          "candidateCount": 209,
+          "candidateCount": 246,
           "basis": "Confirmed distinct canonical jobs first captured by recorded sources within 36 hours; unresolved candidate identities excluded from job rate."
         },
         "intake": {
-          "count": 179,
+          "count": 177,
           "windowHours": 36,
-          "perHour": 4.972222222222222,
+          "perHour": 4.916666666666667,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
         }
       }
     },
     "coverage": {
-      "reportRevisions": 114,
+      "reportRevisions": 115,
       "emailFiles": 68,
       "identityUnresolved": 227,
       "unreadSourceWindows": 96,
