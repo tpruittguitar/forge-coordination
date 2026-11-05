@@ -40,7 +40,7 @@ for site in cfg["sites"]:
             for r in rows:
                 r["site"] = r.get("site") or site
                 out["jobs"].append({k: r.get(k) for k in ("site", "title", "company", "location", "job_url", "job_url_direct",
-                                                          "min_amount", "max_amount", "interval", "date_posted")})
+                                                          "min_amount", "max_amount", "interval", "date_posted", "description")})
             rec["returned"] = len(rows)
         except Exception as e:
             rec["error"] = str(e)[:200]

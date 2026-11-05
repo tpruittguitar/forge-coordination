@@ -23,25 +23,29 @@ const {knownRequestIds}=require('./known-requests');
 const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
-const CatchUp=require('./catch-up');
+const CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs');
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
+function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load()}){
+function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(out.length>=max)break;
-  if(screenReason(r,config))continue;
+  const proof=reviewed.get(Upstream.key(r.url));
+  const reviewedScope=proof&&['company','title','location'].every(k=>String(proof.role[k]||'')===String(r[k]||''));
+  const outcome=screenReason(r,config);
+  if(outcome&&!(reviewedScope&&outcome==='RANKED_DISCOVERY'))continue;
   if(!/^https:\/\/[^\s/]+\//i.test(r.url||'')||!r.location)continue;
   // Employer as the Writer compares it (text before " | "); the raw name's request ID is still checked so a role an
   // earlier run sent under the raw name is never sent again under the normalized one.
   const company=normalizeCompany(r.company).company;
   const k=company.toLowerCase(); // No per-employer throughput cap.
-  const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url};
+  const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||r.url,SCOUT_NOTES:discoveryNotes(r)};
   if(blockedIdentities.has(identityKey(record)))continue; // a changed URL cannot bypass an uncertain prior write
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
@@ -93,11 +97,14 @@ async function main(argv=process.argv.slice(2)){
  // Count only attempts actually recorded; unattempted tail candidates are safe to
  // consider again. Quarantined and all other attempted requests remain excluded.
  const sent=knownRequestIds(prior);
+ Drain.sync('.',{apply:!dry});
+ const reviewed=Drain.approved('.');
+ const drainSeeds=Drain.seeds('.');
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
  const carried=carryForwardRoles(prior);
  let catchUp=null;
  if(argv.includes('--catch-up')){
-  catchUp=CatchUp.load();const reports=[report];
+  catchUp=CatchUp.load();const reports=[report,{new_roles:[...drainSeeds,...reviewed.roles]}];
   for(const file of ['state/source-trial-report.json','state/board-discovery-report.json'])if(fs.existsSync(file))reports.push(JSON.parse(fs.readFileSync(file)));
   CatchUp.ingest(catchUp,[...reports,{new_roles:carried}]);catchUp.progress=CatchUp.report(catchUp,{sent,quarantined,blocking});
   if(!dry)CatchUp.save('.',catchUp);
@@ -111,10 +118,10 @@ async function main(argv=process.argv.slice(2)){
  }
  report.new_roles=[...uniqueRoles.values()];
  const rulesHash=sha((await read('rules',{key})).data.rules.raw);
- const blockedIdentities=new Set(quarantined.filter(q=>q.identityKey).map(q=>q.identityKey));
+ const blockedIdentities=new Set([...quarantined.filter(q=>q.identityKey).map(q=>q.identityKey),...Drain.fences('.').map(identityKey)]);
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
  const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const business=await evidence(r.url,r.company);
@@ -153,4 +160,4 @@ async function main(argv=process.argv.slice(2)){
  if(!argv.includes('--one-transaction'))return main(argv);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,main,screenReason};
+module.exports={pick,evidence,main,screenReason,discoveryNotes};

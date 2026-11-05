@@ -118,7 +118,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           const company = [...b.companies][0];
           if (!staffEligible(company, x.title)) return;
           st.matches++;
-          addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
+          addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, description: x.description || '', detailUrl: x.detail || '', pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
     });
     // Persist each completed board check before moving on. A later crash cannot erase failed-source obligations.
     fs.mkdirSync(OUT,{recursive:true});const healthTmp=healthFile+'.tmp',healthFd=fs.openSync(healthTmp,'w');
@@ -148,7 +148,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       s.matches++;
       const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url, x.location); if (status === 'NEW') s.new++; if (status === 'EXISTING_PROTECTED') s.protected++;
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || 'yearly') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, posted: x.date_posted || '' });
+      addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, description: x.description || '', posted: x.date_posted || '' });
     });
   }
 
@@ -163,12 +163,15 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       hc.matches++;
       const status = T.novelty(idx, x.company, x.title, x.job_url, x.location);
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, pay, status, posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
+      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, pay, status, description: x.description || '', posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
       if (addFound(item)) { hc.unique++; return; }
       const prior = discovered.get(T.identityKey(item.company, item.title, item.location)), from = String(prior.source).split(':')[0];
       hc.overlap[from] = (hc.overlap[from] || 0) + 1;
     });
   }
+
+  // Reuse ATS content already fetched; Workday list cards get one exact detail read within this run's budget.
+  await require('./discovery-review').reviewAll(found,{deadline:T0+CONFIG.boardBudgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
 
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
