@@ -1,0 +1,104 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480692150",
+  "sourceVersion": "ca1e55f05afdd08fddac2b0480be55ee09ee52df0bfe6776dc45d1ba56a29a1b",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T224904342Z-ARCHIVE",
+  "instructionCommit": "2fa7e5a5acad029fdb9ca007065858a1dacd19bb",
+  "observedAt": "2026-11-05T22:49:04.342Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh independent receipt index confirms original batch COMPLETE; saved candidate result WRITE_FAILED remains historical. Possible-match primary ID V2F-F5110AF4C8A3 is absent from the live master but independently present once in the canonical terminal archive, exact recruiter/title, CLOSED_DEAD and saved location unknown. Archive presence resolves the live-row absence, but does not prove the new Lexington advertisement is the same employer requisition/site or reopen the terminal role.",
+  "nextAction": "Existing coordinator compares original employer requisition/site with the archived terminal identity and saved original request_result under the independently COMPLETE gate. Preserve CLOSED_DEAD and original request; do not resubmit or infer a client/site.",
+  "retryCondition": "Grounded original requisition/site evidence resolves whether the captured Lexington advertisement repeats the archived terminal role or proves a distinct role.",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4480692150",
+      "result": "Saved evidenceStatus=HELD_WRITER_REVIEW; status=HELD; proof=receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json. This is inventory evidence, not fresh canonical verification."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_CHECKPOINT.json",
+      "sha256": "e6811f6e59509e7e7db3fdc9e0a37101f5ac0faf71d61ee9854dbd7867be5a81",
+      "result": "{\"requestId\":\"FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001\",\"payloadSha256\":\"584b2af9ffefc17a8e05d9f22d456a95e3828bbc30881fa16eb5d82f9663e484\"}"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_ACCEPTANCE.json",
+      "sha256": "52418fabb659ed43e8332b5dfb5eae3965763e9a008708078fc8c2f71552d9f6",
+      "result": "{\"requestId\":\"FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001\",\"writeId\":\"W-20261101220906182-1e3f21\",\"responseSha256\":\"f1d2fa0a86f2a5540052ab9fd99d59d8aff1d8a06d83745c07dee38f62303411\"}"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json",
+      "sha256": "8e4e55e9a8cb8b6de758488b27ea1a362491b468948397e3dc5ffa3c1032d5be",
+      "result": "{\"requestId\":\"FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001\",\"writeId\":\"W-20261101220906182-1e3f21\",\"independentCompleteObservedAt\":\"2026-11-01T22:12:48.176Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4480692150",
+      "result": "Original saved source identity, original candidate disposition and fence inspected; {\"requestId\":\"FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2F-F5110AF4C8A3\"],\"reason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\"}"
+    },
+    {
+      "source": ".github/workflows/source-intake-reconcile-probe.yml; tools/source-intake/reconcile-probe.js",
+      "result": "Registered path requires fence-bound FORGE-AUTO run ID; this legacy fence binds FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001 instead. No fabricated AUTO binding or dispatch. Current environment exposes no configured Writer credential; no live authenticated exact-row evidence available here."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Independently authenticated read via GitHub; exact original request FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001 state COMPLETE. Compacted index retains write ID and snapshot hash but no candidate row detail.",
+      "blobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e",
+      "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+      "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+      "requestState": "COMPLETE",
+      "writeId": "W-20261101220906182-1e3f21"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw Drive read, 12781664 bytes, modified 2026-11-05T22:45:11.860Z; exact candidate-ID rows compared after independent receipt read. Missing live rows are not absence from archive.",
+      "fileSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+      "rowProofs": [
+        {
+          "primaryId": "V2F-F5110AF4C8A3",
+          "found": false,
+          "matches": 0
+        }
+      ]
+    },
+    {
+      "source": "Canonical V2_TERMINAL_ARCHIVE.txt",
+      "result": "Authenticated complete raw Drive read, 1141212 bytes, modified 2026-10-21T06:56:08.252Z; exact primary ID found once. No new write or identity equivalence claimed.",
+      "fileSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "primaryId": "V2F-F5110AF4C8A3",
+      "bucket": "CLOSED_DEAD",
+      "rowSha256": "1ba69efc0b8f1ca349f6b020d4a0313cae79ec715c827024f882a4c660b5fa77"
+    }
+  ],
+  "savedEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2F-F5110AF4C8A3"
+    ],
+    "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0,
+  "supersedesReview": "receipts/INTAKE_DRAIN/1bcba5365619797bb9c1de8056e1456426f4df2b4d3e00dd3962a0930c11397d.json",
+  "liveReceiptEvidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "state": "COMPLETE",
+    "writeId": "W-20261101220906182-1e3f21",
+    "indexUpdatedAt": "2026-11-05T22:45:15.019Z",
+    "indexBlobSha": "433faf7f5b474bd5fa590ce86145ce48389a199e"
+  },
+  "canonicalRowEvidence": {
+    "masterSha256": "ee7ce7d05ab3c366975bb258f62ba8b02d531870d9851a000a067e273190e7dd",
+    "masterModifiedAt": "2026-11-05T22:45:11.860Z",
+    "rows": [
+      {
+        "primaryId": "V2F-F5110AF4C8A3",
+        "found": false,
+        "matches": 0
+      }
+    ]
+  }
+}
