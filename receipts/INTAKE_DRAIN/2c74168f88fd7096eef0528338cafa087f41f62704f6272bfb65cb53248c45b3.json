@@ -1,0 +1,44 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480558300",
+  "sourceVersion": "31de5e9c8ac4a2df800d80fa9861310dea47622a20e054c683f9c8e97d7257fa",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B3-05",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:27:57.248Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved exact Uxbridge location recovered for historical EXISTING source. Retain identity for fresh canonical master/archive reconciliation before new intake.",
+  "nextAction": "Existing coordinator must reconcile fresh canonical master/archive identity and any source alias/requisition evidence; preserve original requests and decisions",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Code match of exact captured source recovers location: Uxbridge, MA, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4480558300",
+      "result": "Historical EXISTING hint retained; no fresh canonical completion inferred"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Lenze Americas Corporation",
+    "title": "Senior Manager, Operations (Manufacturing)",
+    "location": "Uxbridge, MA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4480558300/",
+    "observedAt": "2026-11-05T07:27:57.248Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@eb8532c8"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Uxbridge, MA, USA",
+      "proof": "state/source-trial-report.json@eb8532c8",
+      "method": "Code match of exact saved source identity; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_AND_SOURCE_ALIAS_RECONCILIATION"
+}

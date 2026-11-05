@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:3ee77363327756e7d3f7ac53",
+  "sourceVersion": "5c061ad3521c435afc36df62aeb99b224dfc8f172add989bc4384d7b8462f5dc",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B3-09",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:28:09.069Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved Portland location recovered; exact Workday posting returned CRAWL_EMPTY_CONTENT. No design/manufacturing scope inferred from title alone.",
+  "nextAction": "Retain recovered exact identity; retry when exact responsibilities or source availability changes, without guessing employer or scope",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@cfbad968",
+      "result": "Code match of exact captured source recovers location: Portland, Oregon"
+    },
+    {
+      "source": "https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "CRAWL_EMPTY_CONTENT",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Deckers Brands",
+    "title": "Sr. Manager, Design Operations - HOKA",
+    "location": "Portland, Oregon",
+    "url": "https://deckers.wd5.myworkdayjobs.com/deckers/job/Portland-Oregon/Sr-Manager--Design-Operations---HOKA_21505",
+    "observedAt": "2026-11-05T07:28:09.069Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@cfbad968"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Portland, Oregon",
+      "proof": "state/source-trial-report.json@cfbad968",
+      "method": "Code match of exact saved source identity; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_POSTING_RESPONSIBILITIES_OR_SOURCE_AVAILABILITY_CHANGED"
+}

@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482434024",
+  "sourceVersion": "790c47a20bbc8b90327555a6ad0ff27a62e6eb8b2337c363b75895cc43f2b133",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B3-07",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:28:03.222Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved New Albany location corroborated by current source metadata, but exact page returns no responsibilities or actual end-employer details beyond BioSpace publisher identity.",
+  "nextAction": "Retain recovered exact identity; retry when exact responsibilities or source availability changes, without guessing employer or scope",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@89739176",
+      "result": "Code match of exact captured source recovers location: New Albany, OH, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482434024/",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "Readable publisher/title/site metadata only; responsibilities absent",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "BioSpace",
+    "title": "Senior Manager Manufacturing  Night Shift Operations Performance & Integration",
+    "location": "New Albany, OH, USA",
+    "url": "https://www.linkedin.com/jobs/view/4482434024/",
+    "observedAt": "2026-11-05T07:28:03.222Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@89739176"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "New Albany, OH, USA",
+      "proof": "state/source-trial-report.json@89739176",
+      "method": "Code match of exact saved source identity; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_POSTING_RESPONSIBILITIES_OR_SOURCE_AVAILABILITY_CHANGED"
+}

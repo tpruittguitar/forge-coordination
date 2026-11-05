@@ -1,0 +1,50 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:543c70fc7d2fd0b8c56bd5d6",
+  "sourceVersion": "965a48be39549f7d707f0b596c2f85e9aa72a9a389653bffa8b59d4cfe08af11",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B3-10",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:28:12.053Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved exact Dallas location recovered for historical EXISTING Flex source. A separately captured case-variant Workday URL shares requisition WD232436; preserve both employer display names and sources pending exact canonical/alias reconciliation.",
+  "nextAction": "Existing coordinator must reconcile fresh canonical master/archive identity and any source alias/requisition evidence; preserve original requests and decisions",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@eb8532c8",
+      "result": "Code match of exact captured source recovers location: USA, TX, Dallas"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:543c70fc7d2fd0b8c56bd5d6",
+      "result": "Historical EXISTING hint retained; no fresh canonical completion inferred"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Flex LTD",
+    "title": "Director, Quality",
+    "location": "USA, TX, Dallas",
+    "url": "https://flextronics.wd1.myworkdayjobs.com/careers/job/USA-TX-Dallas/Director--Quality_WD232436",
+    "observedAt": "2026-11-05T07:28:12.053Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@eb8532c8"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "USA, TX, Dallas",
+      "proof": "state/source-trial-report.json@eb8532c8",
+      "method": "Code match of exact saved source identity; no geographic inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_AND_SOURCE_ALIAS_RECONCILIATION",
+  "relatedSourceEvidence": {
+    "otherCapturedKey": "url:2015ec71777eef155fbdb9b3",
+    "observedWorkdayRequisition": "WD232436",
+    "relationship": "Same observed host and requisition with Careers/careers path case variants; not canonically merged",
+    "distinctSourceCardsPreserved": true
+  }
+}
