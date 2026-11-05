@@ -195,6 +195,7 @@ async function main(mode='inventory') {
     if(apply) {
       const exceptionWork=require('../routine-handoffs/exception-work.cjs').sync({root,state,report,apply:true});report.exceptionWork={counts:exceptionWork.counts,owner:'FORGE_APPLICATION_OUTCOME_TRACKER',reviewErrors:exceptionWork.reviewErrors};
       S.save(root,STATE,state);S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);
+      const catchUp=require('./catch-up.cjs');S.save(root,catchUp.FILE,catchUp.summarize(root,runId));
       S.immutable(root,'receipts/'+runId+'_TERMINAL.json',report);
     } else if(privateDir) {S.save(privateDir,'coordinator-'+mode+'.json',report);}
     console.log(JSON.stringify({mode,collected,statuses:report.statuses,aiExceptions:report.aiExceptions.length,codeExceptions:report.codeExceptions.length,noProcessingCap:true}));

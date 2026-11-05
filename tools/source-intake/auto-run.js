@@ -23,6 +23,7 @@ const {knownRequestIds}=require('./known-requests');
 const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
+const CatchUp=require('./catch-up');
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -94,9 +95,17 @@ async function main(argv=process.argv.slice(2)){
  const sent=knownRequestIds(prior);
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
  const carried=carryForwardRoles(prior);
+ let catchUp=null;
+ if(argv.includes('--catch-up')){
+  catchUp=CatchUp.load();const reports=[report];
+  for(const file of ['state/source-trial-report.json','state/board-discovery-report.json'])if(fs.existsSync(file))reports.push(JSON.parse(fs.readFileSync(file)));
+  CatchUp.ingest(catchUp,[...reports,{new_roles:carried}]);catchUp.progress=CatchUp.report(catchUp,{sent,quarantined,blocking});
+  if(!dry)CatchUp.save('.',catchUp);
+  report.new_roles=CatchUp.due(catchUp);
+ }
  // A rolled-over discovery report must not lose a reconciled run's untouched candidates.
  const uniqueRoles=new Map();
- for(const r of [...carried,...(report.new_roles||[])]){
+ for(const r of [...(catchUp?[]:carried),...(report.new_roles||[])]){
   const id=requestId({COMPANY:normalizeCompany(r.company).company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url});
   if(!uniqueRoles.has(id))uniqueRoles.set(id,r);
  }
@@ -109,7 +118,7 @@ async function main(argv=process.argv.slice(2)){
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const business=await evidence(r.url,r.company);
-  if(!business)continue;
+  if(!business){if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}continue;}
   candidates.push({record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
@@ -119,6 +128,7 @@ async function main(argv=process.argv.slice(2)){
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
  const statePath=path.join(DIR,run+'.json');
+ if(catchUp&&!dry){catchUp.progress={...CatchUp.report(catchUp,{sent,quarantined,blocking}),eligibleBeforeSourceCheck:picked.length,preparedThisBatch:candidates.length,status:candidates.length?'ACTIVE':quarantined.length?'WAITING_RECONCILIATION':Object.values(catchUp.roles).some(x=>x.retryAfter&&Date.parse(x.retryAfter)>Date.now())?'WAITING_SOURCE_RETRY':'NO_ACTIONABLE_WORK'};CatchUp.save('.',catchUp);}
  if(!candidates.length){fs.writeFileSync(statePath,JSON.stringify({run,noCandidates:true,at:new Date().toISOString()}));return}
  fs.writeFileSync(path.join(DIR,run+'.candidates.json'),JSON.stringify(candidates,null,1));
  await snapshot('before',{statePath,candidates,sourceRunId:run,key,mode:'AUTO'});
