@@ -4,7 +4,8 @@ function consume({root,privateDir,snapshot,checkLock}){
  const report={recorded:0,unchanged:0,exceptions:[]};
  for(const file of S.files(path.join(privateDir,'interview-reviews'))){try{
   const r=JSON.parse(fs.readFileSync(file,'utf8'));if(typeof r.sourceFile!=='string'||path.isAbsolute(r.sourceFile)||r.sourceFile.split(/[\\/]/).includes('..'))throw Error('PRIVATE_SOURCE_PATH_REQUIRED');const source=S.read(privateDir,r.sourceFile),e=r.event;
-  if(r.schema!=='forge.interview-source-review.v1'||r.reviewedBy!=='CHATGPT'||!Number.isFinite(Date.parse(r.reviewedAt))||r.reviewedAt>new Date().toISOString()||S.hash(source)!==r.sourceSha256||!e?.evidenceVerified||!['EMAIL','GOOGLE_CALENDAR'].includes(e.sourceType)||!['INTERVIEW_PREPARATION','INTERVIEW_STATUS','INTERVIEW_SCHEDULED'].includes(e.type)||!['INVITED','SCHEDULED','COMPLETED','RECEIVED','AWAITING_SCHEDULING'].includes(e.progress)||!Number.isFinite(Date.parse(e.eventDate)))throw Error('SOURCE_BOUND_INTERVIEW_REVIEW_REQUIRED');
+  const correspondence=['RECRUITER_CONTACT','USER_REPLIED'].includes(e?.type);
+  if(r.schema!=='forge.interview-source-review.v1'||r.reviewedBy!=='CHATGPT'||!Number.isFinite(Date.parse(r.reviewedAt))||r.reviewedAt>new Date().toISOString()||S.hash(source)!==r.sourceSha256||!e?.evidenceVerified||!['EMAIL','GOOGLE_CALENDAR'].includes(e.sourceType)||!['INTERVIEW_PREPARATION','INTERVIEW_STATUS','INTERVIEW_SCHEDULED','RECRUITER_CONTACT','USER_REPLIED'].includes(e.type)||!correspondence&&!['INVITED','SCHEDULED','COMPLETED','RECEIVED','AWAITING_SCHEDULING','CANCELED'].includes(e.progress)||!Number.isFinite(Date.parse(e.eventDate)))throw Error('SOURCE_BOUND_INTERVIEW_REVIEW_REQUIRED');
   if(path.isAbsolute(r.sourceFile)||r.sourceFile.split(/[\\/]/).includes('..'))throw Error('PRIVATE_SOURCE_PATH_REQUIRED');
   const hits=snapshot.rows.concat(snapshot.archiveRows||[]).filter(x=>x.PRIMARY_ID===e.primaryId);
   if(hits.length!==1||hits[0].COMPANY!==r.company||hits[0].TITLE!==r.title)throw Error('EXACT_INTERVIEW_IDENTITY_REQUIRED');
@@ -19,6 +20,17 @@ function consume({root,privateDir,snapshot,checkLock}){
    if(index>=0)ledger.events[index]={...ledger.events[index],...event};else ledger.events.push(event);
    ledger.at=new Date().toISOString();S.save(root,f,ledger);changed=true;
   }report[changed?'recorded':'unchanged']++;
+  // A recorded interpretation must also discharge that exact captured message;
+  // keep different messages, hashes and uncertain Writer transactions untouched.
+  if(e.sourceType==='EMAIL'&&e.gmailMessageId){
+   let message=source.id===e.gmailMessageId?source:source.messages?.find(m=>m.id===e.gmailMessageId);
+   if(message?.payload)message=require('./mail.cjs').normalize(message);
+   const mail=S.read(root,'state/MAIL_PROCESSING.json',{messages:{},transactions:{},exceptions:{}}),entry=mail.messages[e.gmailMessageId];
+   if(message?.fullBody&&entry&&!entry.transactionId&&entry.sourceSha256===message.sourceSha256){
+    checkLock();entry.status='RECORDED_EVENT';entry.reviewSha256=event.reviewSha256;entry.event=event;
+    delete mail.exceptions[e.gmailMessageId];S.save(root,'state/MAIL_PROCESSING.json',mail);
+   }
+  }
  }catch(e){report.exceptions.push({reviewHash:S.hash(file),reason:e.message,owner:'FORGE_APPLICATION_OUTCOME_TRACKER'});}}
  return report;
 }
