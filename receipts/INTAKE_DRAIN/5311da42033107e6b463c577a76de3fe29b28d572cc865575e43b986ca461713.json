@@ -1,0 +1,109 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482174425",
+  "sourceVersion": "da4052f3a2a2f77220736d35fff6bdc10cf9fc549788db916c612f7b75e6760f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1245Z-HELD-B2-3",
+  "instructionCommit": "93b8c960e98e80eb7670f6ede537c2d7522ce655",
+  "observedAt": "2026-11-05T12:57:58.484Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact original candidate index92 WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION in independently COMPLETE batch. Original Costa Mesa CA, declined Santa Ana CA GH5225757007 and declined McHenry MS GH4782697007 remain distinct. Exact original ad lookup timed out; no closure inferred.",
+  "conclusion": "Original request accounting and source identity remain distinct; unresolved identity stays AI-owned.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact source-bound employer Apply/requisition and assigned site through authorized read-only recovery; preserve all original requests and protected decisions.",
+  "retryCondition": "Exact original employer posting/requisition/site binding or authoritative original request_result evidence changes the identity conclusion.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0036.json",
+      "result": "Reused original captured identities and helper fields before outside lookup."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4612/archive785",
+      "result": "Compared original exact posting and role/site candidates before identity-only outside research; snapshot hashes recorded."
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent immutable receipt_index",
+      "result": "Bound candidate WRITE_FAILED; completed batch is not candidate insertion. Original request_result attempted read-only after independent COMPLETE; cloud credential required."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-D906CBD280C0",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:54:59.008Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-1A612DB3C83B",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T12:54:59.008Z"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4482174425/",
+      "result": "CRAWL_LIVECRAWL_TIMEOUT; no closure inference or repeat request."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Manager, Manufacturing Engineering",
+    "location": "Costa Mesa, CA",
+    "url": "https://www.linkedin.com/jobs/view/4482174425/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B003",
+    "candidateIndex": 92,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-D906CBD280C0",
+      "V2I-1A612DB3C83B"
+    ],
+    "originalWriteId": "W-20261101211126834-c5b206",
+    "independentIndexCommit": "1444ed982784b91da47087c6752d762b76b37dee",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101211126834-c5b206",
+      "at": "2026-11-01T21:12:02.615Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-D906CBD280C0",
+        "company": "Anduril Industries",
+        "title": "Manager, Manufacturing Engineering",
+        "location": "McHenry, MS",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "4782697007",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "gh:andurilindustries:4782697007"
+        ],
+        "locationMatch": false,
+        "rowSha256": "d42f877cfd0d2c79d76caf980a16a1886b62126ef6eccb048fc8c212326817e7"
+      },
+      {
+        "primaryId": "V2I-1A612DB3C83B",
+        "company": "Anduril Industries",
+        "title": "Manager, Manufacturing Engineering",
+        "location": "Santa Ana, CA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "5225757007",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [
+          "gh:andurilindustries:5225757007"
+        ],
+        "locationMatch": false,
+        "rowSha256": "60dd75e0d9944df10df00abb8722acae1668d8da46d256970342b3f9eb56e873"
+      }
+    ]
+  }
+}

@@ -1,0 +1,74 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4475035391",
+  "sourceVersion": "b017a8783f8743667044ba1dd18ea91127991b6459c20b04ad7afb7321a61c23",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1245Z-HELD-B2-0",
+  "instructionCommit": "93b8c960e98e80eb7670f6ede537c2d7522ce655",
+  "observedAt": "2026-11-05T12:57:52.570Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original LinkedIn4475035391 explicitly identifies Pratt & Whitney/RTX, exact Associate Director Engine Overhaul Operations Onsite title, US-FL-JUPITER-ADR and 17900 Beeline Hwy ADR building. Fresh canonical V2I-6C209441ACA2 has that exact title, employer brand with RTX parent, physical address and onsite designation, and remains DECLINED_BY_TIM. This source-specific street/building evidence independently confirms the existing role without a global brand/geographic alias. Original saved candidate ledger records WRITE_FAILED and its batch is independently COMPLETE; existing row identity is not a claim that this candidate inserted.",
+  "conclusion": "Independently confirmed existing declined role through exact title and physical site; original request remains fenced and never replayed.",
+  "nextAction": "Existing coordinator consumes source-specific exact physical-site/title/brand proof while retaining decline and original request fence.",
+  "retryCondition": "Coordinator consumes immutable existing-role identity proof or source-bound facts change.",
+  "attempts": [
+    {
+      "source": "Original saved email candidate ledger and source identity",
+      "result": "Reused original captured identities and helper fields before outside lookup."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4612/archive785",
+      "result": "Compared original exact posting and role/site candidates before identity-only outside research; snapshot hashes recorded."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4475035391/",
+      "result": "Read original advertisement for unresolved identity/site after exact read-only evidence unavailable; role header/site retained, no protected-role scope research."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Pratt & Whitney",
+    "title": "Associate Director, Engine Overhaul Operations (Onsite)",
+    "location": "Jupiter, FL",
+    "url": "https://www.linkedin.com/jobs/view/4475035391/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "107e467eca338e777c6231b98a7835567ce3b256bdd1c26c72a7672172df472c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4612,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T12:53:57.677Z",
+    "masterModifiedAt": "2026-11-05T12:42:51.419Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-6C209441ACA2",
+    "company": "Pratt & Whitney (RTX)",
+    "title": "Associate Director, Engine Overhaul Operations (Onsite)",
+    "location": "Jupiter, FL (US-FL-JUPITER-ADR, 17900 Beeline Hwy, ADR Bldg, onsite)",
+    "bucket": "DECLINED_BY_TIM",
+    "reqId": "01878984",
+    "store": "MASTER",
+    "rowSha256": "89d8ab126231b8b51583a48426c54cca29fcab79ac3de2464564b1f1a0db4d7c"
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-EMAIL-CHATGPT-20261101-1504ET-B01",
+    "savedCandidateOutcome": "WRITE_FAILED",
+    "proof": "receipts/EMAIL_CANDIDATE_LEDGER_20261101_1504ET.json",
+    "independentIndexCommit": "1444ed982784b91da47087c6752d762b76b37dee",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101201212690-11fa5f",
+      "at": "2026-11-01T20:13:04.692Z"
+    },
+    "originalCandidateInsertionClaimed": false
+  },
+  "additionalEvidence": {
+    "originalPostingContentSha256": "15e0eb899e44d290fc0edbb625e0dc3feb5ed1c36d551f18b5529cdda614309c"
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}
