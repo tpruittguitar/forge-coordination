@@ -83,8 +83,8 @@ async function drain({ready, step, reconcile, gated = () => false}) {
   while (!gated()) {
     const before=await ready(); if (!before) return {exhausted:true};
     const result=await step();
-    if (result?.pending) return {pending:true};
-    const after=await ready(); if (after >= before) throw Error('NO_DURABLE_PROGRESS');
+    const after=await ready();
+    if (result?.pending && after >= before) return {pending:true}; if (after >= before) throw Error('NO_DURABLE_PROGRESS');
   }
   return {gated:true};
 }
@@ -169,7 +169,7 @@ async function main(mode='inventory') {
         }
         // Existing preparation owns canonical dedup, relevance and source-ledger
         // accounting. Its transaction count is never a coordinator run quota.
-        if(!intakePending) {
+        { // Pending requests fence their own items; independent READY jobs continue.
           try{
             await child(root,['prepare','--apply'],env);
             await drain({ready:async()=>S.read(root,'state/RELEVANCE_INTAKE_PLAN.json').items.filter(i=>i.status==='READY').length,
@@ -182,9 +182,9 @@ async function main(mode='inventory') {
         for(const item of Object.values(state.items).filter(i=>i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED')) {
           try {
             const tx=await T.submit({root,privateDir,state,jobs:[item.prepared],runId,deps});
-            for(let n=0;n<8 && T.pending(tx);n++) {
+            for(let n=0;n<1 && T.pending(tx);n++) {
               await T.reconcile({root,privateDir,state,tx,deps});
-              if(T.pending(tx)) await new Promise(r=>setTimeout(r,20000));
+              if(T.pending(tx)) state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
             }
           } catch(e) {exception(state,item,e.message,'CODE');if(e.message==='LIVE_WRITER_GATE')break;}
         }

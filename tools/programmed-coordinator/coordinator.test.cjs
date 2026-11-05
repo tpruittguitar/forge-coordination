@@ -53,7 +53,7 @@ test('protected decisions, conflicting evidence and global Writer gates reject b
   const f=transaction(t);let posts=0;f.deps.post=async()=>{posts++;};
   f.deps.snapshot=async()=>({rows:[{...row(),BUCKET:'DECLINED_BY_TIM'}],status:status()});await a.rejects(T.submit(f),/FENCE/);
   f.deps.snapshot=async()=>({rows:[{...row(),p:{DEGREE_REQ:'REQUIRED'}}],status:status()});await a.rejects(T.submit(f),/CONFLICT/);
-  f.deps.snapshot=async()=>({rows:[row()],status:{...status(),unverified:{count:1}}});await a.rejects(T.submit(f),/GATE/);a.equal(posts,0);
+  f.deps.snapshot=async()=>({rows:[row()],status:{...status(),freeze:{reason:'owner freeze'}}});await a.rejects(T.submit(f),/GATE/);a.equal(posts,0);
 });
 test('unresolved checkpoints from earlier coordinators fence exact IDs across the cutover',async t=>{
  const f=transaction(t);S.immutable(f.root,'receipts/OLD-RUN_CHECKPOINT.json',{requests:[{primaryId:'V2I-ONE',requestId:'OLD-1'}]});
@@ -219,3 +219,6 @@ test('externalized evidence verifies only against its exact stable canonical ref
  const bad=async(action,args)=>action==='evidence'?{data:{active:true,primaryId:'V2I-ONE',evidenceRef:'EVC1:2',fields:{}}}:reader(action,args);
  await a.rejects(Readback.rows({requestId:'REQ',ids:['V2I-ONE'],W,reader:bad}),/COMPANION/);
 });
+
+test('unrelated pending verification is not a global submission gate',async t=>{const f=transaction(t);f.deps.snapshot=async()=>({rows:[row()],status:{...status(),unverified:{count:1}}});let posted=0;f.deps.post=async()=>{posted++;throw Error('network lost')};const tx=await T.submit(f);a.equal(posted,1);a.equal(tx.status,'POST_IN_FLIGHT_UNKNOWN');a.equal(T.fenced(f.root,f.state,'V2I-ONE'),true);});
+test('a pending batch does not stop remaining READY jobs after durable progress',async()=>{let n=3,calls=0;const r=await Run.drain({ready:async()=>n,reconcile:async()=>{},step:async()=>{calls++;n--;return {pending:true}}});a.equal(calls,3);a.equal(r.exhausted,true);});

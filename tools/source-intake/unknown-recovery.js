@@ -55,7 +55,8 @@ async function recover(file,{key=process.env.FORGE_WRITER_KEY,transport=fetch,ro
 }
 function contain(file,{root=process.cwd()}={}){
  const full=path.resolve(root,file),s=JSON.parse(fs.readFileSync(full));if(s.quarantine||s.reconciliation||s.noCandidates)return false;
- const rid=require('./auto-latch').stoppedAt(s),prior=s.results?.[rid];if(!prior||prior.WRITE_ACCEPTED||prior.writeId||!(prior.status==='POST_IN_FLIGHT_UNKNOWN'||/timeout|aborted/i.test(prior.error||'')))return false;
+ if(s.continuation)return false;
+ const rid=require('./auto-latch').stoppedAt(s),prior=s.results?.[rid];if(!prior||prior.WRITE_ACCEPTED||prior.writeId||!(prior.ok===false||prior.status==='POST_IN_FLIGHT_UNKNOWN'||/timeout|aborted/i.test(prior.error||'')))return false;
  const candidates=JSON.parse(fs.readFileSync(full.replace(/\.json$/,'.candidates.json')));if(digest(candidates)!==s.candidatesHash)throw Error('Original candidate binding changed');const candidate=candidates.find(c=>E.requestId(c.record)===rid);if(!candidate)return false;
  s.quarantine={schema:'forge.intake-quarantine.v1',status:'UNKNOWN_NO_REPLAY',authorizedBy:'Tim',at:new Date().toISOString(),record:candidate.record,requestId:rid,candidatesHash:s.candidatesHash,proofs:[file],carryForwardRequestIds:s.requestIds.filter(id=>!Object.hasOwn(s.results||{},id)),policy:'ABSENT_JOB_AFTER_TRANSPORT_TIMEOUT_V1'};save(full,s);return true;
 }

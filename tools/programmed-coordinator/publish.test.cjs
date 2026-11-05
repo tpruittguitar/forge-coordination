@@ -39,3 +39,11 @@ for(const directory of ['rebase-merge','rebase-apply'])test('active '+directory+
  a.throws(()=>publish(f.local),/Prior rebase requires reconciliation/);
  a.ok(fs.existsSync(p.join(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')));
 });
+test('retained safe revision allows independent work during audit outage, but rejects changed code or active rebase',t=>{
+ const f=fixture(t),{retainedSafe}=require('./publish.cjs');
+ save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{pending:true});commit(f.local,'retained audit');
+ a.equal(retainedSafe(f.local).safe,true);
+ save(f.local,'unsafe-code.js',{changed:true});a.throws(()=>retainedSafe(f.local),/Unexpected retained/);
+ fs.unlinkSync(p.join(f.local,'unsafe-code.js'));fs.mkdirSync(p.resolve(f.local,g(f.local,'rev-parse','--git-path','rebase-merge')));
+ a.throws(()=>retainedSafe(f.local),/Interrupted Git operation/);
+});

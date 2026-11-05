@@ -9,6 +9,11 @@ const terminal=s=>/^(VERIFIED|PROTECTED|EXISTING|NO_MISSING)/.test(s||'');
 function candidates(root,report,state,now=Date.now()){
  const jobs=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{},sources:{}}),items=[];
  const input=[...(report.aiExceptions||[]),...(report.routineHandoffs?.assignments?.exceptions||[]),...(report.routineHandoffs?.mail?.exceptions||[])];
+ // Writer exceptions have an actual research/reconciliation owner, not just a log entry.
+ for(const q of require('../source-intake/auto-latch').latch(require('../source-intake/auto-latch').previous(root)).quarantined)
+  input.push({owner:'AI',requestId:q.requestId,reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({record:q.record,reason:q.reason,file:q.file}),sourceFile:q.file,identity:q.record,nextAction:'Read original payload/response, independent receipt_index, then request_result only after COMPLETE and exact rows. Investigate identity or source ambiguity; never replay an uncertain write.'});
+ for(const tx of Object.values(state.transactions||{}))if(!['VERIFIED','HELD'].includes(tx.status))input.push({owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({requestId:tx.requestId,payloadSha256:tx.payloadSha256}),sourceFile:'state/PROGRAMMED_COORDINATOR.json'});
+ for(const item of S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(/POST_IN_FLIGHT|HELD_CARD/.test(item.status))input.push({owner:'AI',key:item.key,requestId:item.requestId,reason:item.reason||'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({key:item.key,requestId:item.requestId,sourceProof:item.sourceProof}),sourceFile:'state/RELEVANCE_INTAKE_PLAN.json'});
  for(const e of report.codeExceptions||[]){const item=state.items?.[e.key];if(!item||item.transactionId||terminal(item.status)||state.batches?.[item.batch]?.status!=='VALIDATED')continue;
   // Escalate after repeated code attempts, while retaining the code retry clock.
   // A host backoff must not hide an already-persistent failure from its reviewer.
@@ -18,8 +23,8 @@ function candidates(root,report,state,now=Date.now()){
   const job=jobs.jobs[e.key]||jobs.jobs[item?.itemKey],identity=job?{company:job.company,title:job.title,location:job.location,url:job.url}:null;
   const reason=/^SOURCE_(?:HTTP_(?:403|429)|ROUTE_BACKOFF)$/.test(e.reason)?'SOURCE_ACCESS_BLOCKED':e.reason;
   const binding={key:e.key||null,messageId:e.messageId||null,requestId:e.requestId||null,reason,sourceVersion:e.itemVersion||item?.version||e.sourceSha256||S.hash(identity||{key:e.key,messageId:e.messageId,requestId:e.requestId,reason}),recoveryReview:item?.sourceRecoveryReview||null};
-  const exceptionId=S.hash(binding);items.push({...e,exceptionId,binding,kind:item?'SOURCE':e.messageId?'MAIL':'IDENTITY',owner:'ChatGPT',taskKey:OWNER,originalTaskKey:item?.taskKey||null,identity,
-   nextAction:e.escalatedFrom?'Review the saved source failure. Supply exact replacement source evidence for independent code verification, or record a source-bound waiting disposition.':'Resolve interpretation or identity with source evidence; preserve protected decisions and pending writes.',
+  const exceptionId=S.hash(binding);items.push({...e,exceptionId,binding,kind:e.requestId?'WRITER':item?'SOURCE':e.messageId?'MAIL':'IDENTITY',owner:'ChatGPT',taskKey:OWNER,alsoAssignedTo:e.requestId?'FORGE_APPLICATION_WRITER_GOFER':undefined,originalTaskKey:item?.taskKey||null,identity:identity||e.identity||null,
+   nextAction:e.nextAction||(e.escalatedFrom?'Review the saved source failure. Supply exact replacement source evidence for independent code verification, or record a source-bound waiting disposition.':'Resolve interpretation or identity with source evidence; preserve protected decisions and pending writes.'),
    accessRule:'Respect source refusals and retry-after. Never bypass a refused platform through another provider.',canonicalCompletion:false});
  }
  for(const [sourceId,source] of Object.entries(jobs.sources))if(source.status==='HISTORICAL_RESULTS_UNAVAILABLE'){
@@ -30,11 +35,12 @@ function candidates(root,report,state,now=Date.now()){
 }
 function validateReview(record,work,now=Date.now(),allowClosed=false){
  const item=work.cases[record.exceptionId];
- if(record.schema!=='forge.ai-exception-review.v1'||!item||!allowClosed&&item.status==='NO_LONGER_OPEN'||record.exceptionId!==S.hash(item.binding)||record.sourceVersion!==item.binding.sourceVersion||record.reviewedBy!=='CHATGPT'||record.taskKey!==OWNER||!Number.isFinite(Date.parse(record.reviewedAt))||Date.parse(record.reviewedAt)>now+60000||!/^FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}$/.test(record.runId||''))throw Error('CURRENT_SOURCE_BOUND_EXCEPTION_REVIEW_REQUIRED');
+ if(record.schema!=='forge.ai-exception-review.v1'||!item||!allowClosed&&item.status==='NO_LONGER_OPEN'||record.exceptionId!==S.hash(item.binding)||record.sourceVersion!==item.binding.sourceVersion||record.reviewedBy!=='CHATGPT'||![OWNER,'FORGE_APPLICATION_WRITER_GOFER'].includes(record.taskKey)||!Number.isFinite(Date.parse(record.reviewedAt))||Date.parse(record.reviewedAt)>now+60000||!/^FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}$/.test(record.runId||''))throw Error('CURRENT_SOURCE_BOUND_EXCEPTION_REVIEW_REQUIRED');
  const allowed=['schema','exceptionId','sourceVersion','reviewedBy','taskKey','reviewedAt','runId','disposition','reason','retryCondition','retryAfter','evidenceSha256','sourceEvidence','askPath'];
  if(Object.keys(record).some(k=>!allowed.includes(k))||!/^[a-f0-9]{64}$/.test(record.evidenceSha256||''))throw Error('EXCEPTION_REVIEW_EVIDENCE_REQUIRED');
  if(record.disposition==='WAITING_SOURCE_CHANGE'){
-  if(!['SOURCE_ACCESS_BLOCKED','ORIGINAL_IDENTITIES_UNAVAILABLE','IDENTITY_CONFLICT','SOURCE_EVIDENCE_UNAVAILABLE'].includes(record.reason)||!['NEW_ORIGINAL_SOURCE_EVIDENCE','SOURCE_ACCESS_RESTORED','NEW_IDENTITY_EVIDENCE'].includes(record.retryCondition)||record.sourceEvidence||record.askPath)throw Error('EXPLICIT_SOURCE_RETRY_CONDITION_REQUIRED');
+  const writerWait=item.kind==='WRITER'&&record.reason==='ORIGINAL_WRITER_EVIDENCE_INCOMPLETE'&&record.retryCondition==='ORIGINAL_WRITER_EVIDENCE_CHANGED';
+  if(!writerWait&&(!['SOURCE_ACCESS_BLOCKED','ORIGINAL_IDENTITIES_UNAVAILABLE','IDENTITY_CONFLICT','SOURCE_EVIDENCE_UNAVAILABLE'].includes(record.reason)||!['NEW_ORIGINAL_SOURCE_EVIDENCE','SOURCE_ACCESS_RESTORED','NEW_IDENTITY_EVIDENCE'].includes(record.retryCondition))||record.sourceEvidence||record.askPath)throw Error('EXPLICIT_SOURCE_RETRY_CONDITION_REQUIRED');
   if(record.retryAfter&&(!Number.isFinite(Date.parse(record.retryAfter))||Date.parse(record.retryAfter)<=Date.parse(record.reviewedAt)))throw Error('FUTURE_RETRY_TIME_REQUIRED');
  }else if(record.disposition==='AWAITING_TIM'){
   if(!/^asks\/open\/[A-Za-z0-9_-]+\.json$/.test(record.askPath||'')||record.sourceEvidence)throw Error('EXISTING_TIM_QUESTION_REQUIRED');

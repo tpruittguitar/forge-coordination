@@ -55,6 +55,15 @@ const CANDIDATES=[
  candidate({COMPANY:'Third New',TITLE:'Head of NPI',LOCATION:'Columbus, OH',REQ_ID:'R-N3'},'NEW')
 ];
 const tmpState=()=>path.join(fs.mkdtempSync(path.join(os.tmpdir(),'canary-')),'state.json');
+test('busy case remains pending for Gofer while a later insert completes and the next run is not globally latched',async()=>{
+ const w=fakeWriter(),statePath=tmpState(),candidates=[CANDIDATES[0],CANDIDATES[3]],ids=candidates.map(c=>requestId(c.record));let posts=0;
+ const transport=async(url,o)=>{if(o.method==='POST'){posts++;if(posts===1)return{ok:true,json:async()=>({ok:false,error:'Lock timeout'})};}return w.transport(url,o);};
+ const opts={statePath,candidates,key:'fixture',transport,switchTransport:async()=>({ok:true,json:async()=>({enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:25,approvedBy:'Tim'})}),waitFn:async()=>w.verifyPending()};
+ await snapshot('before',{...opts,sourceRunId:'FORGE-AUTO-VOLUME-TEST',mode:'AUTO'});
+ const result=await require('./intake-cli').auto(opts),s=JSON.parse(fs.readFileSync(statePath));
+ assert.equal(result.status,'PROGRESS_WITH_PENDING');assert.equal(posts,2);assert.equal(s.completedAt,null);assert.equal(s.outcomes[0].status,'DEFERRED');assert.equal(s.outcomes[1].status,'RESUMED_ACCOUNTED');
+ const l=require('./auto-latch').latch([{file:'original.json',state:s}]);assert.equal(l.blocking.length,0);assert.equal(l.quarantined[0].requestId,ids[0]);assert.equal(s.results[ids[0]].error,'Lock timeout');
+});
 
 test('full five-case canary: halts after each insert, resumes only after verification, reconciles exactly',async()=>{
  const w=fakeWriter(),statePath=tmpState(),opts={statePath,candidates:CANDIDATES,key:'fixture',transport:w.transport,switchTransport:ENABLED};
@@ -158,4 +167,13 @@ test('a 25-job STAGE runs end to end with the same proof and reconciles in STAGE
  await snapshot('before', {statePath: s3, candidates: stage, key: 'fixture', transport: wrong.transport, sourceRunId: 'FORGE-STAGE-TEST', mode: 'STAGE'});
  const r3 = await auto({statePath: s3, candidates: stage, key: 'fixture', transport: wrong.transport, switchTransport: ENABLED, waitFn: async () => {}});
  // ENABLED is now STAGE; mode mismatch no longer applies. The run may proceed or stop on other gates.
+});
+test('AUTO does not wait for one pending receipt before submitting other independent jobs',async()=>{
+ const {auto}=require('./intake-cli'),w=fakeWriter(),statePath=tmpState();
+ const candidates=[candidate({COMPANY:'Pending One',TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH'},'NEW'),candidate({COMPANY:'Independent Two',TITLE:'Director of Manufacturing',LOCATION:'Dayton, OH'},'NEW')];
+ const opts={statePath,candidates,key:'fixture',transport:w.transport,switchTransport:async()=>({ok:true,json:async()=>({enabled:true,mode:'AUTO',revision:'SOURCE_INTAKE_AUTO_V1',maxBatch:25,approvedBy:'Tim'})})};
+ await snapshot('before',{...opts,sourceRunId:'FORGE-AUTO-TEST',mode:'AUTO'});
+ let checks=0;const result=await auto({...opts,waitFn:async(_id,o)=>{checks++;assert.equal(o.timeoutMs,0);throw Error('PENDING');}});
+ assert.equal(result.status,'PROGRESS_WITH_PENDING');assert.equal(checks,2);assert.equal(w.log.filter(x=>x==='POST').length,2);
+ assert.equal(result.pending.length,2);assert.ok(!JSON.parse(fs.readFileSync(statePath)).completedAt);
 });
