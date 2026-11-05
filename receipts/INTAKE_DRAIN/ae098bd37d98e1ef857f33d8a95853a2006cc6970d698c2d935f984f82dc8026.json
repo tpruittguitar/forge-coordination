@@ -1,0 +1,106 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4458412638",
+  "sourceVersion": "8ba97eba0221ea1ae9ad7b1bbee4ccbedc7ca511c311720ad27a2505cce04ded",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B3-7",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:57:23.250Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch independently COMPLETE, exact candidate index62 explicitly WRITE_FAILED AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Regal Rexnord Des Plaines capture versus DISCOVERY_LEAD remote R26_04497 and declined Downers Grove R26_02869; different known employer requisitions and site/remote labels cannot be forced together. Existing read-only evidence/request_result recovery blocked by unavailable cloud credential; original request remains fenced, no new insertion or replay.",
+  "conclusion": "Original exact candidate failed; unresolved protected/source/site identity preserved.",
+  "nextAction": "Existing authenticated AI/local coordinator retains source-bound identity/original-request recovery; no new intake or replay.",
+  "retryCondition": "Original employer requisition/Apply/site evidence or exact request_result changes through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0010.json; state/source-trial-report.json@2a109cea; state/source-trial-report.json@826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused original saved identity/helper pointers; withdrawn legacy recommendation is not current function evidence."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4600/archive785",
+      "result": "Compared exact employer/title/site/posting evidence and original fences, preserved all canonical dispositions."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-C1BDE315EDD7",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:55:43.096Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-10B8E942C30D",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:55:43.096Z"
+    },
+    {
+      "source": "Exact original checkpoint/acceptance/verified and independent receipt_index",
+      "result": "Bound original candidate WRITE_FAILED after independently COMPLETE batch; no POST or replay."
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Regal Rexnord",
+    "title": "Director, Continuous Improvement",
+    "location": "Des Plaines, IL, USA",
+    "url": "https://www.linkedin.com/jobs/view/4458412638/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 62,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-C1BDE315EDD7",
+      "V2I-10B8E942C30D"
+    ],
+    "originalWriteId": "W-20261101210436699-169590",
+    "independentIndexCommit": "d5976a79f6c724a5d19d887c10be2c264ab98108",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:05:01.608Z",
+      "w": "W-20261101210436699-169590",
+      "snapshotHash": "1b54ecc0a56573:8057820"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-C1BDE315EDD7",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Remote",
+        "bucket": "DISCOVERY_LEAD",
+        "disposition": "INTAKE/IDENTITY_UNRESOLVED",
+        "reqId": "R26_04497",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "6e87ce3af6065f201ade924d5bbac1e9275e9abe8476442c6d05d137553d677a"
+      },
+      {
+        "primaryId": "V2I-10B8E942C30D",
+        "company": "Regal Rexnord",
+        "title": "Director, Continuous Improvement",
+        "location": "Downers Grove, IL (remote from approved location)",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "R26_02869",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "651d962824314a62d2e0b3f1d62935353a13ed7be7764f30f044db77c6be8001"
+      }
+    ]
+  }
+}
