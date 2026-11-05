@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:de4b41adacbb5e4ee06b68a0",
+  "sourceVersion": "c286334511c89d7c2b58e670152f2e03abd628c4bd306608ceff5474d1f742a0",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B5-0",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T11:00:21.021Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "ANDRITZ captured HiringCafe Raleigh NC matches title/site of SCOUTV2I-152D388F9BB2 but no exact original employer requisition/Apply binding; source identity remains unresolved, no new intake.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer/title/site and original posting keys; row hashes and original evidence retained."
+    },
+    {
+      "source": "state/source-trial-report.json@HEAD",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0110.json",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@1fc359a1",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-152D388F9BB2",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:00:20.978Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "ANDRITZ",
+    "title": "Director of Quality - PFR NA",
+    "location": "Raleigh, North Carolina, United States",
+    "url": "https://hiringcafe.com/job/director-of-quality-pfr-na-andritz-raleigh-north-carolina-2ah5ftfujys4imis"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:58:38.719Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-152D388F9BB2",
+        "company": "Andritz",
+        "title": "Director of Quality - PFR NA",
+        "location": "Raleigh, NC, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "5a242a88a95eee22249d3e0dac6de1665fa0acf6e95b12a5068d53aa0b148089"
+      }
+    ]
+  }
+}

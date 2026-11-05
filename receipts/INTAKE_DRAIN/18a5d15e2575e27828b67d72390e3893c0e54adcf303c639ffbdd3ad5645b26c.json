@@ -1,0 +1,101 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4422062031",
+  "sourceVersion": "aab00a538af6f579aa2563519604c43fec107fe8d96c2231571ed87196d4b5ab",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1041Z-HELD-B5-1",
+  "instructionCommit": "d87ee395fac7c68da8b218f58c794a05c44b9106",
+  "observedAt": "2026-11-05T11:00:23.033Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "CPS captured Cleveland OH differs from declined East Cleveland OH canonicalV2I-97C8563E0878. These are different municipality labels; agency client and exact facility must not be guessed. Original accepted batch independently COMPLETE with matching writeId; exact entry returned WRITE_FAILED/AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION and no primary ID. This candidate was not admitted by that batch.",
+  "conclusion": "ORIGINAL_IDENTITY_EVIDENCE_INCOMPLETE",
+  "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+  "retryCondition": "Original canonical posting/requisition/site or observed employer Apply evidence changes and resolves the recorded specific identity conflict.",
+  "attempts": [
+    {
+      "source": "Authenticated complete canonical master/archive",
+      "result": "Code compared exact employer/title/site and original posting keys; row hashes and original evidence retained."
+    },
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0085.json",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@0a30489f",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "state/source-trial-report.json@1fc359a1",
+      "result": "Reused exact saved fields and historical protection markers; ignored withdrawn helper admission filters."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_ACCEPTANCE.json and receipt index@4a48e1f889565c4683bceb8263956dd97d938564",
+      "result": "Exact original checkpoint key/index and acceptance linked to independently COMPLETE batch; candidate failure preserved, no replay."
+    },
+    {
+      "source": "Existing read-only Writer request_result FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T10:52:49.613Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-97C8563E0878",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:00:20.978Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "CPS, Inc.",
+    "title": "Plant Manager",
+    "location": "Cleveland, OH, USA",
+    "url": "https://www.linkedin.com/jobs/view/4422062031/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "206b24c73bc933bc2023b4323a7d311a62257819d79b5b3b3bb502266392db6c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4594,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T10:58:38.719Z",
+    "masterModifiedAt": "2026-11-05T10:32:38.597Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "candidates": [
+      {
+        "primaryId": "V2I-97C8563E0878",
+        "company": "CPS, Inc.",
+        "title": "Plant Manager",
+        "location": "East Cleveland, OH, USA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "7916620645e9f60954451c64d30c563ec08ab5f260d210b8f4db26f9ee2a53c8"
+      }
+    ]
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+    "checkpoint": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_CHECKPOINT.json",
+    "acceptance": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001_ACCEPTANCE.json",
+    "originalWriteAccepted": true,
+    "writeId": "W-20261102001527752-1f819c",
+    "candidateIndex": 13,
+    "candidateResult": "WRITE_FAILED",
+    "candidateDetail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateSourceSha256": "8affaa800bf7cbd4c39bf4fb9bbe60d3a6959a43b2e9af9b0a4fd608d8d36352",
+    "candidatePrimaryId": null,
+    "independentIndexCommit": "4a48e1f889565c4683bceb8263956dd97d938564",
+    "independentIndexSha256": "2c05be9084026e6570c3f5ced6371dec1effcd082a8320b5cd0b2746d176fe4d",
+    "independentCompleteAt": "2026-11-02T00:16:02.219Z",
+    "candidateInsertVerified": false
+  }
+}
