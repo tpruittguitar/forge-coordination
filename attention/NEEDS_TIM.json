@@ -1,11 +1,11 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T02:14:04.818Z",
- "sourceCommit": "842027de7ebeb96f8deb13301e8a309ff909b15c",
+ "builtAt": "2026-11-05T02:16:32.236Z",
+ "sourceCommit": "a79352990815c9fd89e14531d403af0049cca74f",
  "counts": {
   "total": 58,
-  "BLOCKING": 1,
-  "ACTION": 22,
+  "BLOCKING": 0,
+  "ACTION": 23,
   "WATCH": 35,
   "DECIDE": 7,
   "JOBS": 1,
@@ -13,18 +13,6 @@
   "UPKEEP": 38
  },
  "items": [
-  {
-   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261105T010119Z.json",
-   "section": "FAILED",
-   "level": "BLOCKING",
-   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261105T010119Z is unfinished",
-   "detail": "HOLD: Writer accepted intake record; durable receipt and exact-row readback required before proceeding. Open request: FORGE-SOURCE-CFEDFDDE490C49BAF1E933A7. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
-   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261105T010119Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T010119Z.json",
-   "at": "2026-11-05T02:04:22.087Z",
-   "raisedBy": "AUTO-INTAKE"
-  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-3D0E6F9DFD1953FAD80F3716",
    "section": "FAILED",
@@ -58,6 +46,18 @@
    "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
    "source": "receipts/auto-intake/FORGE-AUTO-20261104T234624Z.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T234624Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-B74ADF235958790BEE3E5F36",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: Syner-G · Vice President, Quality",
+   "detail": "USA. The submission timed out; receipt and exact job identity remain unproven. Other jobs continue normally. Request: FORGE-SOURCE-B74ADF235958790BEE3E5F36",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261105T010119Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T010119Z.json",
    "at": null,
    "raisedBy": "AUTO-INTAKE"
   },
