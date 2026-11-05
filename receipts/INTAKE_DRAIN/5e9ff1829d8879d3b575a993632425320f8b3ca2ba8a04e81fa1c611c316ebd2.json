@@ -1,0 +1,115 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4480792272",
+  "sourceVersion": "85c823900c6b76ac59b5de284aa6260ed038fe51a9428b1c561d7b88e47b9efe",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1348Z-HELD-B1-8",
+  "instructionCommit": "a7cb6671aa5943efd2cd435bc9c87fb2b7217151",
+  "observedAt": "2026-11-05T13:57:13.611Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original exact candidate188 authoritative Writer response is EXISTING_MATCH to LANXESS V2I-E8F258130FE7, not WRITE_FAILED or INSERT. Original batch independently COMPLETE. Fresh canonical exact row hash equals prior verification proof and company/title/Fords NJ match, so original no-new-insert existing-match outcome is independently accounted. Saved proof correctly says NO_MUTATION_TO_EXISTING_ROW and source=false: original LinkedIn alias was not written into that row and is not newly claimed verified. Preserve current MANUAL_RESEARCH/NEEDS_RESOLUTION status and original request; source-alias accounting remains AI-owned, no replay or new job.",
+  "conclusion": "Original Writer EXISTING_MATCH/no-new-insert outcome independently verified against exact current canonical row; no source-alias completion claim.",
+  "nextAction": "Existing coordinator consumes original existing-match/no-mutation proof while preserving manual-research canonical state and handling original source-alias accounting; never resubmit original.",
+  "retryCondition": "Coordinator consumes verified original result, or authoritative exact alias evidence changes; no replay.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0027.json",
+      "result": "Reused exact captured/helper fields and original evidence before outside lookup."
+    },
+    {
+      "source": "Fresh complete authenticated canonical master4616/archive785",
+      "result": "Compared exact source and role/site candidates before source-identity research."
+    },
+    {
+      "source": "Exact checkpoint/acceptance/verified plus immutable independent receipt_index",
+      "result": "Bound exact candidate index and independently COMPLETE original batch. Read-only request_result attempted only after COMPLETE; cloud credential required."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-E8F258130FE7",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T13:50:00.828Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "LANXESS",
+    "title": "Vice President - Global Production & Technology",
+    "location": "Fords, NJ",
+    "url": "https://www.linkedin.com/jobs/view/4480792272/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "b38511dd46c1f8be59f62931a2e3ff0fe826e79a5e83a690bb6b307f256b9c75",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4616,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T13:50:00.758Z",
+    "masterModifiedAt": "2026-11-05T13:32:39.688Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-E8F258130FE7",
+    "company": "LANXESS Corporation",
+    "title": "Vice President - Global Production & Technology",
+    "location": "Fords, NJ",
+    "bucket": "MANUAL_RESEARCH",
+    "disposition": "RESOLVED/NEEDS_RESOLUTION",
+    "reqId": "UNCAPTURED",
+    "store": "MASTER",
+    "exactPostingMatch": false,
+    "labelledReqMatch": false,
+    "canonicalPostingKeys": [],
+    "locationMatch": true,
+    "rowSha256": "9dd871360ec3f438f208a30eb579bb7c7d4215940e81d88e555ba9a00b4bcc1a"
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "candidateIndex": 188,
+    "candidateOutcome": "EXISTING_MATCH",
+    "detail": "",
+    "primaryId": "V2I-E8F258130FE7",
+    "candidateIds": [],
+    "originalWriteId": "W-20261101210739345-133ced",
+    "independentIndexCommit": "86a791ea39747f7fe71e1878e8ea50eba2fadc86",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "w": "W-20261101210739345-133ced",
+      "at": "2026-11-01T21:08:03.971Z"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-E8F258130FE7",
+        "company": "LANXESS Corporation",
+        "title": "Vice President - Global Production & Technology",
+        "location": "Fords, NJ",
+        "bucket": "MANUAL_RESEARCH",
+        "disposition": "RESOLVED/NEEDS_RESOLUTION",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "9dd871360ec3f438f208a30eb579bb7c7d4215940e81d88e555ba9a00b4bcc1a"
+      }
+    ],
+    "savedNoMutationProof": {
+      "proof": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+      "matches": {
+        "company": true,
+        "title": true,
+        "location": true,
+        "source": false
+      },
+      "independentReceipt": "NO_MUTATION_TO_EXISTING_ROW",
+      "rowSha256": "9dd871360ec3f438f208a30eb579bb7c7d4215940e81d88e555ba9a00b4bcc1a"
+    }
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}
