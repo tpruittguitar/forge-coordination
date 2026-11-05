@@ -1,0 +1,44 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:9662b7712d107225ac70e524",
+  "sourceVersion": "275372b45e5f253b9060e58e720d418b38a762c4ffe58a7ac5a4f19a0b6cad0f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0920Z-SOURCE-B7-0",
+  "instructionCommit": "ea8c9ab64a8eaa083fba450c3f6d5e523978bda6",
+  "observedAt": "2026-11-05T09:39:43.175Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact saved Boston worksite. Targeted employer search returned one exact-title source saying filled and another global posting with live role text/US remote Boston-HQ travel. Exact original identity between job13062 and global1373348355 is unproven; do not claim original closed or substitute the alternate live role.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Recovered exact saved Boston location."
+    },
+    {
+      "source": "https://jobs.servier.us/us/en/job/13062/Senior-Manager-External-Manufacturing",
+      "result": "Search result explicitly says filled."
+    },
+    {
+      "source": "https://jobs.servier.com/job/Boston-Senior-Manager%2C-External-Manufacturing-KY-40107/1373348355/",
+      "result": "Same-title global source has manufacturing/CMO text and US-remote/Boston-HQ travel condition; relationship to original and filled job13062 unproven. No assumed Kentucky worksite from URL; blocked aggregator not requested."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Boston, Massachusetts, United States"
+  },
+  "sourceEvidence": {
+    "company": "Servier",
+    "title": "Senior Manager, External Manufacturing",
+    "location": "Boston, Massachusetts, United States",
+    "url": "https://hiringcafe.com/job/senior-manager-external-manufacturing-servier-boston-massachusetts-7v2uywzu6wv9xtjn",
+    "references": [
+      "state/source-trial-report.json@b922aa31",
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Exact original employer posting binding resolves filled13062 versus global1373348355 and worksite/remote conditions before intake or source-closure accounting."
+}
