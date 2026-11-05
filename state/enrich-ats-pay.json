@@ -2817,7 +2817,7 @@
   "V2I-866FCD423820": "2026-11-05T18:17:52.178Z",
   "V2I-0B4B8812A2C5": "2026-11-05T18:53:19.285Z",
   "V2I-B6DA71E4881D": "2026-11-05T18:53:17.324Z",
-  "V2I-5D43C0848E45": "2026-11-05T15:20:02.647Z",
+  "V2I-5D43C0848E45": "2026-11-05T19:32:15.508Z",
   "V2I-FC6A03737FB7": "2026-11-05T18:52:58.738Z"
  },
  "failedReads": {
@@ -5335,7 +5335,11 @@
   "V2I-BD9F6583E0AD": "SALARY,DEGREE",
   "V2I-51914A1E6FC1": "SALARY,DEGREE",
   "V2I-ED57410A82DD": "SALARY,DEGREE",
-  "V2I-FC6A03737FB7": "SALARY,DEGREE"
+  "V2I-FC6A03737FB7": "SALARY,DEGREE",
+  "V2I-E88E936F3100": "SALARY,DEGREE",
+  "V2I-FC3820283619": "SALARY,DEGREE",
+  "V2I-97810BD699F9": "SALARY,DEGREE",
+  "V2I-610535F72A97": "SALARY,DEGREE"
  },
  "pendingWrites": {
   "FORGE-ENRICH_ATS-ATSBOT-20261102T1445Z-B02": {
@@ -6208,6 +6212,127 @@
     }
    ],
    "at": "2026-11-05T18:53:22.007Z",
+   "status": "POSTING_OR_UNCONFIRMED"
+  },
+  "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-B01": {
+   "ids": [
+    "V2I-E88E936F3100",
+    "V2I-FC3820283619",
+    "V2I-97810BD699F9",
+    "V2I-610535F72A97"
+   ],
+   "requestIds": [
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R001",
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R002",
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R003",
+    "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R004"
+   ],
+   "requests": [
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R001",
+      "primaryId": "V2I-E88E936F3100",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 120000,
+       "SALARY_BASE_HIGH": 180000,
+       "SALARY_MIDPOINT": 150000,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://www.nh3jobs.com/jobs/mkt_198139",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_CONF": "HIGH",
+       "DEGREE_TEXT": "* Bachelor's (Required)",
+       "DEGREE_REQ": "REQUIRED",
+       "DEGREE_EVIDENCE_URL": "https://www.nh3jobs.com/jobs/mkt_198139",
+       "DEGREE_ASOF": "2026-11-05",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 165000
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R002",
+      "primaryId": "V2I-FC3820283619",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 135000,
+       "SALARY_BASE_HIGH": 175000,
+       "SALARY_MIDPOINT": 155000,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4477186668",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_CONF": "HIGH",
+       "SALARY_NOTE": "pay shown on the linkedin posting",
+       "DEGREE_TEXT": "Bachelor's degree in Business, Engineering, Operations or a related field",
+       "DEGREE_REQ": "REQUIRED",
+       "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4477186668",
+       "DEGREE_ASOF": "2026-11-05",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 165000
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R003",
+      "primaryId": "V2I-97810BD699F9",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "DEGREE_TEXT": "Minimum of Bachelor’s degree required.",
+       "DEGREE_REQ": "REQUIRED",
+       "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4471111360",
+       "DEGREE_ASOF": "2026-11-05",
+       "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+       "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+       "SALARY_BASE_LOW": 170000,
+       "SALARY_BASE_HIGH": 266000,
+       "SALARY_MIDPOINT": 218000,
+       "SALARY_BASIS": "FORGE-ESTIMATE",
+       "SALARY_CONF": "LOW",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_SOURCE": "comparables:V2I-0B4B8812A2C5,V2I-21CE74E188B4,V2I-EEF41787DE82,V2I-F906E5D757A8,V2I-CD6D847E452A,V2I-F7D0A8471967,V2I-271845BFBE3A",
+       "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-0B4B8812A2C5, V2I-21CE74E188B4, V2I-EEF41787DE82, V2I-F906E5D757A8, V2I-CD6D847E452A, V2I-F7D0A8471967, V2I-271845BFBE3A]; 7 employer-posted comparable(s), level 2 QUALITY same region MW; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 14 eligible roles from the same comparables, so LOW; BLS IN 113051 P25-P90 $99K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 242000
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261105T1931Z-R004",
+      "primaryId": "V2I-610535F72A97",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "DEGREE_TEXT": "NOT_STATED",
+       "DEGREE_REQ": "NOT_STATED",
+       "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4483216907",
+       "DEGREE_ASOF": "2026-11-05",
+       "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+       "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+       "SALARY_BASE_LOW": 143000,
+       "SALARY_BASE_HIGH": 215000,
+       "SALARY_MIDPOINT": 179000,
+       "SALARY_BASIS": "FORGE-ESTIMATE",
+       "SALARY_CONF": "LOW",
+       "SALARY_ASOF": "2026-11-05",
+       "SALARY_SOURCE": "comparables:V2I-14A51E2D6797,V2I-2CFF67AD7244,V2I-4B5798D0D6C5,V2I-76BCCC01B8B1,V2I-793F8D6F6AC5,V2I-0E5A2785A450,V2I-263B6156C98B",
+       "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-14A51E2D6797, V2I-2CFF67AD7244, V2I-4B5798D0D6C5, V2I-76BCCC01B8B1, V2I-793F8D6F6AC5, V2I-0E5A2785A450, V2I-263B6156C98B]; 7 employer-posted comparable(s), level 0 MFG same region W; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS CO 113051 P25-P90 $108K-$230K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+       "SALARY_SCORE_POINT": 197000
+      }
+     }
+    }
+   ],
+   "at": "2026-11-05T19:32:19.322Z",
    "status": "POSTING_OR_UNCONFIRMED"
   }
  },
@@ -26424,10 +26549,10 @@
   },
   "V2I-5D43C0848E45": {
    "fingerprint": "8c82c9248ab73c41428cdda444053f0ba519fc13e8ae9bedae2b094e3cd43de8",
-   "lastAttemptAt": "2026-11-05T15:20:02.647Z",
-   "retryAt": "2026-11-05T19:20:02.647Z",
+   "lastAttemptAt": "2026-11-05T19:32:15.508Z",
+   "retryAt": "2026-11-06T03:32:15.508Z",
    "status": "SOURCE_RESEARCH_REQUIRED",
-   "failures": 2,
+   "failures": 3,
    "attempts": [
     {
      "url": "https://ats.rippling.com/mayzo-inc/jobs/8895529b-8242-4964-b3e0-4666861eaaa1?jobSite=Indeed",
@@ -26788,6 +26913,43 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ]
+  },
+  "V2I-E88E936F3100": {
+   "fingerprint": "1b3850d28eebc02b3045798d565261107f293cba3799e12d8fc29bef4762fbb6",
+   "lastAttemptAt": "2026-11-05T19:31:36.114Z",
+   "retryAt": "2026-11-05T20:31:36.114Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": [
+    {
+     "url": "https://www.nh3jobs.com/jobs/mkt_198139",
+     "status": "FULL_POSTING_READ"
+    }
+   ]
+  },
+  "V2I-FC3820283619": {
+   "fingerprint": "aa766409416b7265ec8dd10419ef7fa7118cf426942f8acaab2d1b924d45c59b",
+   "lastAttemptAt": "2026-11-05T19:31:39.403Z",
+   "retryAt": "2026-11-05T20:31:39.403Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-97810BD699F9": {
+   "fingerprint": "5b76b4aa9711e235ffdac2ff380021e9a2cc73d859c1cb488084af71191ea92d",
+   "lastAttemptAt": "2026-11-05T19:31:44.752Z",
+   "retryAt": "2026-11-05T20:31:44.752Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-610535F72A97": {
+   "fingerprint": "292918c03b52cc263018acfc63ba43f0fe7fa95ea26fac70aec019c82b75fedb",
+   "lastAttemptAt": "2026-11-05T19:31:59.071Z",
+   "retryAt": "2026-11-05T20:31:59.071Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
   }
  },
  "postingEvidence": {
@@ -30738,6 +30900,23 @@
    },
    "basis": "EMPLOYER_POSTED",
    "pay": null
+  },
+  "V2I-E88E936F3100": {
+   "identity": "[\"Matrix Bottling Group\",\"Plant Manager\",\"Morganton, NC, USA\"]",
+   "at": "2026-11-05T19:31:36.112Z",
+   "url": "https://www.nh3jobs.com/jobs/mkt_198139",
+   "fullPosting": true,
+   "degree": {
+    "text": "* Bachelor's (Required)",
+    "req": "REQUIRED"
+   },
+   "basis": "EMPLOYER_POSTED",
+   "pay": {
+    "low": 120000,
+    "high": 180000,
+    "mid": 150000,
+    "scorePoint": 165000
+   }
   }
  },
  "salaryReview": {
