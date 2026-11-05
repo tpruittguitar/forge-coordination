@@ -1,19 +1,11 @@
 'use strict';
-const {execFileSync}=require('node:child_process');
-const files=['state/source-trial-report.json','state/board-discovery-report.json'];
-function summarize(reports,now){
- const urls=new Set(),seen=new Set();let passes=0;
- for(const r of reports){const at=Date.parse(r?.summary?.at);if(!Number.isFinite(at)||at<now-36*3600000||at>now||!Array.isArray(r.new_roles))continue;const key=r.summary.at+JSON.stringify(r.new_roles);if(seen.has(key))continue;seen.add(key);passes++;
- for(const job of r.new_roles){try{const u=new URL(job.url);if(u.protocol!=='https:')continue;u.hash='';for(const k of [...u.searchParams.keys()])if(/^utm_|^trk$|^trackingId$/.test(k))u.searchParams.delete(k);urls.add(u.href);}catch{}}
- }
- return {count:urls.size,perHour:urls.size/36,passes,scope:'Automatic source and employer board reports; email candidate history not included'};
+// Compatibility call path: use the same all-source capture ledger as the main flow.
+// A rolling source report is not a history of first discovery and cannot supply a fallback rate.
+const fs=require('node:fs'),path=require('node:path');
+function fromFlow(flow,now=Date.now()){
+ const age=now-Date.parse(flow?.at),r=flow?.ratesByWindow?.[36]?.discovery||flow?.rates?.discovery;
+ if(flow?.schema!=='forge.upstream-flow.v1'||flow.reconciled!==true||!Number.isInteger(flow.total)||flow.total!==flow.accounted||Object.values(flow.counts||{}).reduce((a,b)=>a+b,0)!==flow.total||!Number.isFinite(age)||age<0||age>30*60000||r?.unit!=='candidate identities'||r.windowHours!==36||!Number.isInteger(r.count)||r.count<0||!Number.isFinite(r.perHour)||Math.abs(r.perHour-r.count/36)>1e-9)throw Error('Discovery rate unavailable: current reconciled all-source capture history required');
+ return {...r,hours:36,available:true,partial:true,sourceAt:flow.at,source:'state/UPSTREAM_FLOW.json'};
 }
-function build(root,now){
- const git=args=>execFileSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:32*1024*1024});
- if(git(['rev-parse','--is-shallow-repository']).trim()==='true')throw Error('Discovery rate requires complete report history');
- const revisions=git(['log','--since='+new Date(now-48*3600000).toISOString(),'--format=%H','--',...files]).trim().split(/\s+/).filter(Boolean);
- if(revisions.length>300)throw Error('Discovery history budget exceeded');
- const reports=[];for(const sha of revisions)for(const file of files){try{reports.push(JSON.parse(git(['show',sha+':'+file])));}catch(e){if(!String(e.stderr||'').includes('does not exist'))throw e;}}
- return summarize(reports,now);
-}
-module.exports={build,summarize};
+function build(root,now){return fromFlow(JSON.parse(fs.readFileSync(path.join(root,'state/UPSTREAM_FLOW.json'),'utf8')),now);}
+module.exports={build,fromFlow};
