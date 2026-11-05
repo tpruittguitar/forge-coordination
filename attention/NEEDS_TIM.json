@@ -1,28 +1,28 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-04T22:09:39.804Z",
- "sourceCommit": "d012b96f3e3f6cac97044fb57dac8900fcd10fe5",
+ "builtAt": "2026-11-05T01:08:59.437Z",
+ "sourceCommit": "a5b0da5fc5c9bf56165f9afcfdf2a548ffaba985",
  "counts": {
-  "total": 58,
+  "total": 60,
   "BLOCKING": 1,
-  "ACTION": 21,
-  "WATCH": 36,
+  "ACTION": 22,
+  "WATCH": 37,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 11,
+  "FAILED": 13,
   "UPKEEP": 39
  },
  "items": [
   {
-   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261104T234624Z.json",
    "section": "FAILED",
    "level": "BLOCKING",
-   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261104T195320Z is unfinished",
-   "detail": "UNKNOWN: Writer response cannot prove a no-write outcome; reconcile, never replay. Open request: FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261104T234624Z is unfinished",
+   "detail": "UNKNOWN: Writer response cannot prove a no-write outcome; reconcile, never replay. Open request: FORGE-SOURCE-8EFD286BF40C8F9471D81382. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
    "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
-   "at": "2026-11-04T20:59:53.827Z",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261104T234624Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T234624Z.json",
+   "at": "2026-11-05T00:10:53.156Z",
    "raisedBy": "AUTO-INTAKE"
   },
   {
@@ -34,6 +34,18 @@
    "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
    "source": "receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T074256Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: Technifite · Plant Manager-tissue and paper manufacturing",
+   "detail": "Rockingham, NC, USA. The submission timed out; receipt and exact job identity remain unproven. Other jobs continue normally. Request: FORGE-SOURCE-C4BF0E003EFB99E3F00A9D59",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261104T195320Z.json",
    "at": null,
    "raisedBy": "AUTO-INTAKE"
   },
@@ -824,6 +836,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/238",
    "at": "2026-11-04T11:11:58Z",
    "raisedBy": ""
+  },
+  {
+   "id": "run-unfinished:POSTVAL|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "POSTVAL · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261104-1309ET_DEFERRED.json",
+   "at": "2026-11-04T13:09:00-05:00",
+   "raisedBy": "CHATGPT"
   }
  ],
  "lanes": [
