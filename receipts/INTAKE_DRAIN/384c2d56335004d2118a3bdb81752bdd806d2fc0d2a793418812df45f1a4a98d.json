@@ -1,0 +1,36 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484049532",
+  "sourceVersion": "e3f0cb6021b6872e4b32e8425aa4546a8d9874da324af347e5a43fde0bc0f98e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105-RUN2-SCOPE-21",
+  "instructionCommit": "b3713c117928fd78aaf32a7f522326ec835cee61",
+  "observedAt": "2026-11-05T22:07:11.073851+00:00",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "resumeReference": {
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "modifiedAt": "2026-10-13T22:42:09.660Z",
+    "driveReadThisRun": true
+  },
+  "canonicalVerified": false,
+  "reason": "One targeted exact Ford KansasCity lookup found two employer Production Supervisor postings with same site and generic duties but distinct JobIDs73441 and73255. Neither original LinkedIn4484049532 nor second captured4485694507 has observed Apply/requisition binding here. Do not arbitrarily choose or infer they are one job from matching text.",
+  "nextAction": "Existing source identity coordinator must bind each captured LinkedIn original Apply destination or employer requisition;retain plausible production/quality scope and both distinct employer postings. No original request replay.",
+  "retryCondition": "Observed original Apply destination or source-bound employer requisition resolves captured Ford KansasCity source to exactJob73441 or73255 or another proven posting. No repeated generic-title lookup.",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/dc583347b72ef77d1b3ccd7724757ada496fa8b86e0dce19b4c1b71ddc96e757.json",
+      "result": "Reused published exact identity and positive scope. Prior independent validation STRUCTURED_POSTING_UNAVAILABLE."
+    },
+    {
+      "source": "https://www.careers.ford.com/en/job/kansas-city/production-supervisor/48560/102644374784",
+      "transport": "Connected Exa one targeted employer lookup shared by two captured keys",
+      "result": "Exact title/site,JobID73441;no original LinkedIn Apply binding observed."
+    },
+    {
+      "source": "https://www.careers.ford.com/en/job/kansas-city/production-supervisor/48560/102480735280",
+      "result": "Same lookup exact title/site,JobID73255;generic same production/quality duty,distinct employer requisition. Neither arbitrarily selected."
+    }
+  ]
+}
