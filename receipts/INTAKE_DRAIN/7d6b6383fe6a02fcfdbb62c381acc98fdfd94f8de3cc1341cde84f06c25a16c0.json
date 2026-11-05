@@ -1,0 +1,36 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4485220617",
+  "sourceVersion": "fc12fbb50fc54a48f012913c058e3f2c8301bdef9740543336afbbe800496895",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105-RUN2-SCOPE-17",
+  "instructionCommit": "b3713c117928fd78aaf32a7f522326ec835cee61",
+  "observedAt": "2026-11-05T22:05:17.900893+00:00",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "resumeReference": {
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "modifiedAt": "2026-10-13T22:42:09.660Z",
+    "driveReadThisRun": true
+  },
+  "canonicalVerified": false,
+  "reason": "Exact indexed WorkdayJR101644 matches Warsaw captured Technical Program ManagerII Launch and automotive production ramp/quality scope, but source labels company Recar while body says Slate and role wording Program Management Lead Launch. Prior independent SOURCE_IDENTITY_AMBIGUOUS not resolved by semantic similarity. Other captured LinkedIn4485399842 references same employer posting;not two distinct jobs.",
+  "nextAction": "Existing source/identity coordinator binds structured company/title/site and source alias without changing captured identity or replaying any request. Reuse existing launch evidence and treat sharedJR101644 as one posting-level obligation.",
+  "retryCondition": "Independent exact employer/requisition and supported company/title alias evidence resolve SOURCE_IDENTITY_AMBIGUOUS for captured Slate source. No repeated unchanged scope lookup.",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/b312a2b12d85b5d8881eb9a2e3b7c413aeddde4f76d6de614744e2d7d8115ef7.json",
+      "result": "Reused published exact identity and positive scope. Prior independent validation SOURCE_IDENTITY_AMBIGUOUS."
+    },
+    {
+      "source": "https://recar.wd108.myworkdayjobs.com/en-US/SLATEcareers/job/Technical-Program-Manager-II---Launch_JR101644",
+      "transport": "Connected Exa one targeted employer lookup shared by two captured source IDs",
+      "result": "Same WarsawIN header and launch responsibility;source labels Recar,bodySlate. Exact employer-ID/title binding remains unresolved,not overwritten."
+    },
+    {
+      "source": "https://jobs.hardwarefyi.com/jobs/slate-auto-technical-program-manager-ii-launch",
+      "result": "Same lookup corroborates Slate body/title/site but aggregate does not resolve independent structured employer identity."
+    }
+  ]
+}
