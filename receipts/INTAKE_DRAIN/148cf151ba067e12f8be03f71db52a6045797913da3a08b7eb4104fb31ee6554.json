@@ -1,0 +1,55 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8ff1d70ff5dd29849e90bf91",
+  "sourceVersion": "5ca47db7154627ffc057d70801fb07f9c8cda4dfb439f4694454f615ef08d585",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B1-05",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:20:29.873Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved Denver location recovered. Exact posting header says Director HSE in Denver while body describes a DC Operations & Deployments EHS Safety Manager based in San Francisco. Retain title/worksite conflict; do not choose a replacement identity.",
+  "nextAction": "Reconcile source header/body title and Denver/San Francisco worksite conflict without overwriting saved identity",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Denver, CO - US"
+    },
+    {
+      "source": "https://jobs.ashbyhq.com/crusoe/ef7dfa42-4de8-48e3-87d6-88edcf459314",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "Readable exact posting responsibilities and saved matching header location",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Crusoe",
+    "title": "Director HSE, Data Center Operations",
+    "location": "Denver, CO - US",
+    "url": "https://jobs.ashbyhq.com/crusoe/ef7dfa42-4de8-48e3-87d6-88edcf459314",
+    "quote": "This new role, based in our San Francisco office, will be an integral member of the Global Safety Pillar, reporting directly to the Senior Director of Global Safety, supporting deployments, data center operations, and R&D projects.",
+    "observedAt": "2026-11-05T07:20:29.873Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Denver, CO - US",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "EXACT_SOURCE_TITLE_AND_DENVER_SAN_FRANCISCO_WORKSITE_RECONCILIATION",
+  "sourceConflictEvidence": {
+    "savedLocation": "Denver, CO - US",
+    "headerTitle": "Director HSE, Data Center Operations",
+    "bodyTitle": "DC Operations & Deployments EHS Safety Manager",
+    "bodyLocation": "San Francisco"
+  }
+}

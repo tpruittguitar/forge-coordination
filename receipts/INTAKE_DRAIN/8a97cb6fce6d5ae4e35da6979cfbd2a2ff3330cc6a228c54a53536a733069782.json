@@ -1,0 +1,45 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:c2f2d262cde986c7f6ac8337",
+  "sourceVersion": "084d5b1c1b491f6fe2346165daee15b2a9f737672d6d81f140ab49f7824947f1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B1-09",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:20:41.659Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved exact Ashville location recovered; upstream marks this Anduril source EXISTING_PROTECTED. Preserve protected identity for fresh canonical reconciliation.",
+  "nextAction": "Existing coordinator must read fresh exact master/archive identity and reconcile original existing/protected accounting without new intake",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Ashville, Ohio, United States"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:c2f2d262cde986c7f6ac8337",
+      "result": "EXISTING_PROTECTED hint retained; no protected role research"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Deputy Head of Production, Altius",
+    "location": "Ashville, Ohio, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5220654007?gh_jid=5220654007",
+    "observedAt": "2026-11-05T07:20:41.659Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Ashville, Ohio, United States",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}

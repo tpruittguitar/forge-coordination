@@ -1,0 +1,50 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8fe061442867b2322ad8f0f7",
+  "sourceVersion": "ec26b7618044692883041ea6c7f6855f759ee2938380ada82248eafbd41f3c16",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B1-04",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:20:27.037Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Existing captured source location retained. Two recorded source failures already set a future retry time; no new source request made before that time. Historical title variant is retained rather than substituted.",
+  "nextAction": "Honor recorded source retry time; retain saved title variants and current source identity",
+  "attempts": [
+    {
+      "source": "state/board-discovery-report.json",
+      "result": "Retained saved exact location and historical title observations"
+    },
+    {
+      "source": "receipts/auto-intake/catch-up/state.json",
+      "result": "Two prior source failures; last attempt 2026-11-05T06:58:28.798Z; next allowed retry 2026-11-05T07:58:28.798Z; no additional fetch"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "xAI (SpaceXAI)",
+    "title": "Director, Power Plant Operations - Memphis",
+    "location": " Southaven, MS",
+    "url": "https://job-boards.greenhouse.io/xai/jobs/5216112007",
+    "observedAt": "2026-11-05T07:20:27.037Z",
+    "references": [
+      "state/board-discovery-report.json",
+      "state/source-trial-report.json",
+      "state/board-discovery-report.json"
+    ]
+  },
+  "recoveredFields": {},
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "RECORDED_SOURCE_BACKOFF_ELAPSED_OR_CHANGED_SAVED_SOURCE_EVIDENCE",
+  "retryAfter": "2026-11-05T07:58:28.798Z",
+  "savedTitleVariants": [
+    {
+      "title": "Director, Power Plant Operations - Memphis",
+      "proof": "state/board-discovery-report.json"
+    },
+    {
+      "title": "Director, Memphis Power Plant Operations ",
+      "proof": "state/source-trial-report.json@d184421a"
+    }
+  ]
+}

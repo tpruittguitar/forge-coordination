@@ -1,0 +1,44 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:c09999cacd952dafeadc96e7",
+  "sourceVersion": "d09b92d40ec0206935d196ed02c16b651de4775406ebb7f4714a10779357ae1b",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T0718Z-SOURCE-B1-08",
+  "instructionCommit": "7024eebf6819c63706181218df0d25349439acf6",
+  "observedAt": "2026-11-05T07:20:38.670Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved exact Costa Mesa location recovered for a historical EXISTING Anduril source. Retain identity for fresh canonical reconciliation before any new intake.",
+  "nextAction": "Existing coordinator must read fresh exact master/archive identity and reconcile original existing/protected accounting without new intake",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Costa Mesa, California, United States"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:c09999cacd952dafeadc96e7",
+      "result": "Historical EXISTING hint retained; no fresh canonical proof"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Anduril Industries",
+    "title": "Director, Manufacturing Engineering",
+    "location": "Costa Mesa, California, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/4800095007?gh_jid=4800095007",
+    "observedAt": "2026-11-05T07:20:38.670Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Costa Mesa, California, United States",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_RECONCILIATION"
+}
