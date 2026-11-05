@@ -14452,15 +14452,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/dd9959c456ee9fdfbeecfbcfb7b3c544a1c3aab43bbe6bd6f10365c4ee05eb80.json",
-        "sha256": "dd9959c456ee9fdfbeecfbcfb7b3c544a1c3aab43bbe6bd6f10365c4ee05eb80",
-        "observedAt": "2026-11-05T08:33:10.306Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:eee94834d8dd395cfa733c48": {
       "key": "url:eee94834d8dd395cfa733c48",
@@ -24972,15 +24966,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/0a081616a74f805ab9b4c4a9e998926e21ec1035e46965bb138af66fb8106edf.json",
-        "sha256": "0a081616a74f805ab9b4c4a9e998926e21ec1035e46965bb138af66fb8106edf",
-        "observedAt": "2026-11-05T08:33:01.783Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:5950716b25a48ea585eac355": {
       "key": "url:5950716b25a48ea585eac355",
@@ -25223,15 +25211,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/ba88fd36d0f6fb51888b4cd5dc8b2f82cd593d799d660e1da712e6d057883f7d.json",
-        "sha256": "ba88fd36d0f6fb51888b4cd5dc8b2f82cd593d799d660e1da712e6d057883f7d",
-        "observedAt": "2026-11-05T08:33:06.995Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:fde064dc4ce328558346ce60": {
       "key": "url:fde064dc4ce328558346ce60",
@@ -27873,7 +27855,7 @@
       "aliases": [
         "url:56e36888ea8bbbf34b00f676"
       ],
-      "sourceVersion": "d455c65c49b480dc1e28d08349bbc0cc754b498f2c71c28254c9ecd8c21c5390",
+      "sourceVersion": "6eb0d27252a64f8d2b4e4717951b429059ee2ae2f8cfda859c9ac55128e922bf",
       "card": {
         "company": "Crusoe",
         "title": "Senior Manager, Facilities Remote Operations Center",
@@ -27884,8 +27866,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-22T05:00:36.815Z",
       "sourceReferences": [
@@ -27899,16 +27881,15 @@
         "rank": 8,
         "reason": "Missing card company, title, location or exact source URL"
       },
-      "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-3B9DB210EA9C102281560722"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T083136Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/ef0f830516d475ba6dfbc322bdc409dc35af0860c2a632c368c465addfc26eb0.json",
-        "sha256": "ef0f830516d475ba6dfbc322bdc409dc35af0860c2a632c368c465addfc26eb0",
-        "observedAt": "2026-11-05T08:28:17.172Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:7a8b59b959669a1149a607c6": {
       "key": "url:7a8b59b959669a1149a607c6",
@@ -28119,12 +28100,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/047ffd1cf8925bfe9ed86c29589d60e76755cb953c95c43f50b3e026ef88361c.json",
         "sha256": "047ffd1cf8925bfe9ed86c29589d60e76755cb953c95c43f50b3e026ef88361c",
         "observedAt": "2026-11-05T08:28:20.634Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "047ffd1cf8925bfe9ed86c29589d60e76755cb953c95c43f50b3e026ef88361c",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "url:1c402de9738dc5f7be38cd43": {
@@ -30425,15 +30413,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/1f060131288459c3378425ff91a69aa49c56ba71792761c7a0637857de6bc120.json",
-        "sha256": "1f060131288459c3378425ff91a69aa49c56ba71792761c7a0637857de6bc120",
-        "observedAt": "2026-11-05T08:33:11.995Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4483264126": {
       "key": "linkedin:4483264126",
@@ -31646,15 +31628,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/9d1bb1b880cc8e05690f321a10d1087cd81e4fe6e44e40db4417f8c547b51aa7.json",
-        "sha256": "9d1bb1b880cc8e05690f321a10d1087cd81e4fe6e44e40db4417f8c547b51aa7",
-        "observedAt": "2026-11-05T08:33:08.733Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:7c2e91754736cdbd99977a7b": {
       "key": "url:7c2e91754736cdbd99977a7b",
@@ -31973,15 +31949,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/fb34d2e840d42fc768bf996509732ab7d14df49fd4416f9d85b4375ff5cc86bf.json",
-        "sha256": "fb34d2e840d42fc768bf996509732ab7d14df49fd4416f9d85b4375ff5cc86bf",
-        "observedAt": "2026-11-05T08:30:43.805Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:8eb4125d392ac0b82b4ee86e": {
       "key": "url:8eb4125d392ac0b82b4ee86e",
@@ -33538,12 +33508,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/a6afe3775a24fef6b4e713d291adff00142fc80f80429b39accf6444ae98e704.json",
         "sha256": "a6afe3775a24fef6b4e713d291adff00142fc80f80429b39accf6444ae98e704",
         "observedAt": "2026-11-05T08:28:22.187Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "a6afe3775a24fef6b4e713d291adff00142fc80f80429b39accf6444ae98e704",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "url:d2ec1659e2c256703bea584a": {
@@ -33862,15 +33839,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/547376beab5c2c76ec6399f9963417f5d40f23420e511d29c9d07ef69f7b3514.json",
-        "sha256": "547376beab5c2c76ec6399f9963417f5d40f23420e511d29c9d07ef69f7b3514",
-        "observedAt": "2026-11-05T08:33:00.020Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4482719237": {
       "key": "linkedin:4482719237",
@@ -33938,15 +33909,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/0b6898bb4ffa18ddb868f230d7487014fde173c69ad5bcabd83e6fc1dd1bc1eb.json",
-        "sha256": "0b6898bb4ffa18ddb868f230d7487014fde173c69ad5bcabd83e6fc1dd1bc1eb",
-        "observedAt": "2026-11-05T08:30:37.078Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:3b62dc8630bbc799a968237f": {
       "key": "url:3b62dc8630bbc799a968237f",
@@ -34049,15 +34014,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/9c2204d3c871c62d1304ec17a76e1c9b6f4122a4397c6be02acb4dc18a681b38.json",
-        "sha256": "9c2204d3c871c62d1304ec17a76e1c9b6f4122a4397c6be02acb4dc18a681b38",
-        "observedAt": "2026-11-05T08:33:03.512Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:169ab7787a479c62cc25e4e6": {
       "key": "url:169ab7787a479c62cc25e4e6",
@@ -37779,15 +37738,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/5e4ba0a3aad5a69c20a7401e75ece42bdab68b265605e2a21cb46458050e2bdc.json",
-        "sha256": "5e4ba0a3aad5a69c20a7401e75ece42bdab68b265605e2a21cb46458050e2bdc",
-        "observedAt": "2026-11-05T08:30:32.163Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:f8a539156a0a3d65b625a7b7": {
       "key": "url:f8a539156a0a3d65b625a7b7",
@@ -37890,15 +37843,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/e49d83812f7f79a6502024e0c6c2c7c6b3970f39c44903ce2c6735224c03add2.json",
-        "sha256": "e49d83812f7f79a6502024e0c6c2c7c6b3970f39c44903ce2c6735224c03add2",
-        "observedAt": "2026-11-05T08:30:35.518Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4481973209": {
       "key": "linkedin:4481973209",
@@ -38001,15 +37948,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/7eef07c237cf81c1ce6cee974694fdaa9d8dc0157728c34acf8278552fac82a1.json",
-        "sha256": "7eef07c237cf81c1ce6cee974694fdaa9d8dc0157728c34acf8278552fac82a1",
-        "observedAt": "2026-11-05T08:33:05.224Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4480551853": {
       "key": "linkedin:4480551853",
@@ -38206,15 +38147,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/08099b27056d35b60f1ddefc2852026f3f03c08c6c85d6f4197a6d396d997fc9.json",
-        "sha256": "08099b27056d35b60f1ddefc2852026f3f03c08c6c85d6f4197a6d396d997fc9",
-        "observedAt": "2026-11-05T08:30:40.388Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:301d36fe0c1d1ae835c4d56e": {
       "key": "url:301d36fe0c1d1ae835c4d56e",
@@ -39104,15 +39039,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/72375fed278432f1f21b1f920d9b8a51bf284358f5501d65c43158841ba4a64d.json",
-        "sha256": "72375fed278432f1f21b1f920d9b8a51bf284358f5501d65c43158841ba4a64d",
-        "observedAt": "2026-11-05T08:32:56.432Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4481398327": {
       "key": "linkedin:4481398327",
@@ -39145,15 +39074,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/a58fbefb7cb2bcbad895a11a453a0dc961c372b779a97119f8aea61027d59836.json",
-        "sha256": "a58fbefb7cb2bcbad895a11a453a0dc961c372b779a97119f8aea61027d59836",
-        "observedAt": "2026-11-05T08:32:58.344Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4477357614": {
       "key": "linkedin:4477357614",
@@ -39280,15 +39203,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/e5dab27d043651ce6ec774fec79f006c2e16fddae624bdfbe92dde69683c8c20.json",
-        "sha256": "e5dab27d043651ce6ec774fec79f006c2e16fddae624bdfbe92dde69683c8c20",
-        "observedAt": "2026-11-05T08:30:33.880Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4473564049": {
       "key": "linkedin:4473564049",
@@ -39321,15 +39238,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, responsibility quote and resume overlap before controlled Writer intake; preserve original requests and protected decisions.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/6a0f77aa008394f2a24f26b39a0ac9e39fdf094056fa29a7207f7d502d9a0268.json",
-        "sha256": "6a0f77aa008394f2a24f26b39a0ac9e39fdf094056fa29a7207f7d502d9a0268",
-        "observedAt": "2026-11-05T08:30:38.707Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4481314638": {
       "key": "linkedin:4481314638",
@@ -39362,15 +39273,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/51d40d3d96b09f9ab3b8b02a2e3c4863423e36f436c2e337ca06e959297125b0.json",
-        "sha256": "51d40d3d96b09f9ab3b8b02a2e3c4863423e36f436c2e337ca06e959297125b0",
-        "observedAt": "2026-11-05T08:30:45.431Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4462863408": {
       "key": "linkedin:4462863408",
@@ -39443,15 +39348,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/f709095b3bdcd2bda3658d2b336e339168c9189fe28f147ef6e8d77c64868759.json",
-        "sha256": "f709095b3bdcd2bda3658d2b336e339168c9189fe28f147ef6e8d77c64868759",
-        "observedAt": "2026-11-05T08:30:42.082Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:7958782d76e9a2c1de0d8c99": {
       "key": "url:7958782d76e9a2c1de0d8c99",
@@ -40533,15 +40432,9 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/82909663d6accf9862279896c8354278ae72e8895cb1844700e99d493eb87e5b.json",
-        "sha256": "82909663d6accf9862279896c8354278ae72e8895cb1844700e99d493eb87e5b",
-        "observedAt": "2026-11-05T08:30:30.546Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:cf97cf6aeb7fc7ad96b84999": {
       "key": "url:cf97cf6aeb7fc7ad96b84999",
@@ -66430,12 +66323,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/f1b3127121eef6911c976731f847b230f0fb54eb983368037b7e0cdd80d897d8.json",
         "sha256": "f1b3127121eef6911c976731f847b230f0fb54eb983368037b7e0cdd80d897d8",
         "observedAt": "2026-11-05T08:12:02.785Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "f1b3127121eef6911c976731f847b230f0fb54eb983368037b7e0cdd80d897d8",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4482259354": {
@@ -74512,12 +74412,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/484cf3b8eff9c2cd7e8602ea45188052a2f474b8ee575ed6721e2ffdae7d8950.json",
         "sha256": "484cf3b8eff9c2cd7e8602ea45188052a2f474b8ee575ed6721e2ffdae7d8950",
         "observedAt": "2026-11-05T08:10:04.402Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "484cf3b8eff9c2cd7e8602ea45188052a2f474b8ee575ed6721e2ffdae7d8950",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "url:ebb520cf385c68a982ae7ecf": {
@@ -74690,12 +74597,103 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/719c587da63bd4b18d2d2fd2a3d58d1ba1cafd475ec5323523e826b8790f793f.json",
         "sha256": "719c587da63bd4b18d2d2fd2a3d58d1ba1cafd475ec5323523e826b8790f793f",
         "observedAt": "2026-11-05T08:10:08.156Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "719c587da63bd4b18d2d2fd2a3d58d1ba1cafd475ec5323523e826b8790f793f",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "plant",
+                "factory"
+              ],
+              "postingQuotes": [
+                "SVP Manufacturing",
+                "The Senior Vice President, Manufacturing is the enterprise leader responsible for the strategy, performance, scalability, and continuous improvement of Mama’s Creations’ manufacturing network."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "This executive owns the development and execution of an enterprise manufacturing strategy that enables profitable growth while delivering uncompromising safety, food safety, Grandma Quality, service, cost, capacity, and operational performance.",
+                "Safety, Food Safety & Grandma Quality"
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "workforce",
+                "staffing"
+              ],
+              "postingQuotes": [
+                "External benchmarks similarly position manufacturing VPs/SVPs as responsible for budgets, capacity, workforce requirements, cost control, quality and resource planning.",
+                "Partner with People Operations on organizational design, workforce planning, leadership development, performance management, employee engagement, and succession."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "automation"
+              ],
+              "postingQuotes": [
+                "Determine when capacity should be created through existing facilities, expansion, automation, new facilities, acquisitions, or external manufacturing.",
+                "Capacity, Capital & Automation Strategy"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "MES",
+                "data"
+              ],
+              "postingQuotes": [
+                "Champion appropriate manufacturing technology, automation, ERP/MES capabilities, data visibility, and digital tools."
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean",
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "The Senior Vice President, Manufacturing is the enterprise leader responsible for the strategy, performance, scalability, and continuous improvement of Mama’s Creations’ manufacturing network.",
+                "Drive measurable, sustainable improvement across facilities using Lean manufacturing, structured problem-solving, root-cause analysis, and continuous improvement methodologies."
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "93895b6a380cdda9214d8682a3af05156bee7e92753d38150fe50632eac27f45",
+        "sourceUrl": "https://100hires.com/j/9n7Y4rA"
       }
     },
     "url:7a84e1f3b839d8daa1ed4258": {
@@ -75083,12 +75081,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/b7cea6bfb943360717751f5ba7b6200e8d17317da02b08c940c96eea2c5c5ba8.json",
         "sha256": "b7cea6bfb943360717751f5ba7b6200e8d17317da02b08c940c96eea2c5c5ba8",
         "observedAt": "2026-11-05T08:10:12.989Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "b7cea6bfb943360717751f5ba7b6200e8d17317da02b08c940c96eea2c5c5ba8",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4484744208": {
@@ -75250,12 +75255,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/efddc154bf6f4fafa22aef6598d376e48c896e29bd79f658104576cb5c55465b.json",
         "sha256": "efddc154bf6f4fafa22aef6598d376e48c896e29bd79f658104576cb5c55465b",
         "observedAt": "2026-11-05T08:11:51.406Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "efddc154bf6f4fafa22aef6598d376e48c896e29bd79f658104576cb5c55465b",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_HTTP_429",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4448841535": {
@@ -75292,12 +75304,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/60d313098591efbe0a86e8164da6cee7c4b2dbad19f32394b81fef0a4bf53733.json",
         "sha256": "60d313098591efbe0a86e8164da6cee7c4b2dbad19f32394b81fef0a4bf53733",
         "observedAt": "2026-11-05T08:11:54.822Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "60d313098591efbe0a86e8164da6cee7c4b2dbad19f32394b81fef0a4bf53733",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4474076948": {
@@ -75334,12 +75353,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/677fafd9748f3016d4fb457e3906808068aed00eb3edb8b386c87d8941581589.json",
         "sha256": "677fafd9748f3016d4fb457e3906808068aed00eb3edb8b386c87d8941581589",
         "observedAt": "2026-11-05T08:11:56.455Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "677fafd9748f3016d4fb457e3906808068aed00eb3edb8b386c87d8941581589",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4458531544": {
@@ -75376,12 +75402,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/12ca7bc375ca6917d50acd2d0215581421ca38a97060b6a8a508931d5fb6b46b.json",
         "sha256": "12ca7bc375ca6917d50acd2d0215581421ca38a97060b6a8a508931d5fb6b46b",
         "observedAt": "2026-11-05T08:11:59.542Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "12ca7bc375ca6917d50acd2d0215581421ca38a97060b6a8a508931d5fb6b46b",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4474379027": {
@@ -75418,12 +75451,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/0ada49b9f4bd8fa5b3b61f780688b48170e29ffa9352c43436ea7ec4b8996859.json",
         "sha256": "0ada49b9f4bd8fa5b3b61f780688b48170e29ffa9352c43436ea7ec4b8996859",
         "observedAt": "2026-11-05T08:12:01.079Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "0ada49b9f4bd8fa5b3b61f780688b48170e29ffa9352c43436ea7ec4b8996859",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4484118852": {
@@ -75502,12 +75542,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/821c46c9e56cf61b74fbcc00a5c19062989f7aae2cf965d617ccf9ed190406ef.json",
         "sha256": "821c46c9e56cf61b74fbcc00a5c19062989f7aae2cf965d617ccf9ed190406ef",
         "observedAt": "2026-11-05T08:11:58.020Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "821c46c9e56cf61b74fbcc00a5c19062989f7aae2cf965d617ccf9ed190406ef",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4483700120": {
@@ -75626,12 +75673,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/ba9c860628c71f958568286595a39e926a6685b44894b194959613a782b69169.json",
         "sha256": "ba9c860628c71f958568286595a39e926a6685b44894b194959613a782b69169",
         "observedAt": "2026-11-05T08:12:05.950Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "ba9c860628c71f958568286595a39e926a6685b44894b194959613a782b69169",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4478677930": {
@@ -75668,12 +75722,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/383137b69a8828becc5ee814d6f1a46943f9f899dd3cfc119ca3c04b865065da.json",
         "sha256": "383137b69a8828becc5ee814d6f1a46943f9f899dd3cfc119ca3c04b865065da",
         "observedAt": "2026-11-05T08:13:44.626Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "383137b69a8828becc5ee814d6f1a46943f9f899dd3cfc119ca3c04b865065da",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4442914141": {
@@ -75828,12 +75889,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/14ca0838764ab93d6512fdc00f2752a47e71d0ff539bf23f1e0b8ab9cff88401.json",
         "sha256": "14ca0838764ab93d6512fdc00f2752a47e71d0ff539bf23f1e0b8ab9cff88401",
         "observedAt": "2026-11-05T08:13:46.236Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "14ca0838764ab93d6512fdc00f2752a47e71d0ff539bf23f1e0b8ab9cff88401",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4482843130": {
@@ -75870,12 +75938,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/be4bf5e57fd3fda7bd199312640e00ea6e9d9fd8a04646b5f9d6d9d45d162734.json",
         "sha256": "be4bf5e57fd3fda7bd199312640e00ea6e9d9fd8a04646b5f9d6d9d45d162734",
         "observedAt": "2026-11-05T08:13:47.859Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "be4bf5e57fd3fda7bd199312640e00ea6e9d9fd8a04646b5f9d6d9d45d162734",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4472182387": {
@@ -75948,12 +76023,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5b0f569dce7f0017681fac0228803eab8dec82fbcb6dbf1a4c1320e18243f71f.json",
         "sha256": "5b0f569dce7f0017681fac0228803eab8dec82fbcb6dbf1a4c1320e18243f71f",
         "observedAt": "2026-11-05T08:13:49.568Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5b0f569dce7f0017681fac0228803eab8dec82fbcb6dbf1a4c1320e18243f71f",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4442698809": {
@@ -76156,12 +76238,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/d0d18fcee689b4fec2a73f371d0dce92e66da9276ab19ea04f77eaee18e9ffb1.json",
         "sha256": "d0d18fcee689b4fec2a73f371d0dce92e66da9276ab19ea04f77eaee18e9ffb1",
         "observedAt": "2026-11-05T08:13:57.476Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "d0d18fcee689b4fec2a73f371d0dce92e66da9276ab19ea04f77eaee18e9ffb1",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4485104792": {
@@ -76198,12 +76287,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/009ad58ee6f05c9440366e03cee73c27b873bfcc16f262cb0189436a31a393b2.json",
         "sha256": "009ad58ee6f05c9440366e03cee73c27b873bfcc16f262cb0189436a31a393b2",
         "observedAt": "2026-11-05T08:13:59.043Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "009ad58ee6f05c9440366e03cee73c27b873bfcc16f262cb0189436a31a393b2",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4474795876": {
@@ -76240,12 +76336,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/a95abdce684d6228c08058ebed6de426bdda6f15bba3e0afc9a4dd4f32179eaf.json",
         "sha256": "a95abdce684d6228c08058ebed6de426bdda6f15bba3e0afc9a4dd4f32179eaf",
         "observedAt": "2026-11-05T08:13:55.883Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "a95abdce684d6228c08058ebed6de426bdda6f15bba3e0afc9a4dd4f32179eaf",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4485259097": {
@@ -76282,12 +76385,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/960cb240a7bce6278f3a922e22ffc224245be79c49f1dff1e11134840e499bab.json",
         "sha256": "960cb240a7bce6278f3a922e22ffc224245be79c49f1dff1e11134840e499bab",
         "observedAt": "2026-11-05T08:15:39.869Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "960cb240a7bce6278f3a922e22ffc224245be79c49f1dff1e11134840e499bab",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4481892780": {
@@ -76365,12 +76475,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8184c65c67c35d735c9cc8a3bf0806e83a7dbbcbc94790eb39a23a6c650f662b.json",
         "sha256": "8184c65c67c35d735c9cc8a3bf0806e83a7dbbcbc94790eb39a23a6c650f662b",
         "observedAt": "2026-11-05T08:13:54.308Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "8184c65c67c35d735c9cc8a3bf0806e83a7dbbcbc94790eb39a23a6c650f662b",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4446882987": {
@@ -76407,12 +76524,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2e560531df8b7437685e30b1d34d4e4c64430d51cb2082515a34cb34f1219599.json",
         "sha256": "2e560531df8b7437685e30b1d34d4e4c64430d51cb2082515a34cb34f1219599",
         "observedAt": "2026-11-05T08:15:43.492Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "2e560531df8b7437685e30b1d34d4e4c64430d51cb2082515a34cb34f1219599",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4481989780": {
@@ -76449,12 +76573,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/1fc54b6bd0edacfa2f128ed9fbbbc2db782630e6153fff6812f1095f0a4b458a.json",
         "sha256": "1fc54b6bd0edacfa2f128ed9fbbbc2db782630e6153fff6812f1095f0a4b458a",
         "observedAt": "2026-11-05T08:15:48.493Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "1fc54b6bd0edacfa2f128ed9fbbbc2db782630e6153fff6812f1095f0a4b458a",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4484416580": {
@@ -76491,12 +76622,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/febb266c461d0142a7526dd859d52e1d999e807762bfe4f0376afc4d6ba54cb6.json",
         "sha256": "febb266c461d0142a7526dd859d52e1d999e807762bfe4f0376afc4d6ba54cb6",
         "observedAt": "2026-11-05T08:15:50.030Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "febb266c461d0142a7526dd859d52e1d999e807762bfe4f0376afc4d6ba54cb6",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4477477717": {
@@ -76617,12 +76755,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c6a3e09d4853510d2e702e84f0c0dd0b1b246b69b545c1d579837e2031cdad2f.json",
         "sha256": "c6a3e09d4853510d2e702e84f0c0dd0b1b246b69b545c1d579837e2031cdad2f",
         "observedAt": "2026-11-05T08:15:46.976Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c6a3e09d4853510d2e702e84f0c0dd0b1b246b69b545c1d579837e2031cdad2f",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4485603440": {
@@ -76659,12 +76804,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/a949ce7a46d2400da169ea4175ce18a5afcb3bb82e7dccaa6447048cb7372f9c.json",
         "sha256": "a949ce7a46d2400da169ea4175ce18a5afcb3bb82e7dccaa6447048cb7372f9c",
         "observedAt": "2026-11-05T08:15:51.610Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "a949ce7a46d2400da169ea4175ce18a5afcb3bb82e7dccaa6447048cb7372f9c",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4463792227": {
@@ -76701,12 +76853,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/bc8641867ee8e2b31c8c08872813da7735966d6527e74328690d47ffae1d62d1.json",
         "sha256": "bc8641867ee8e2b31c8c08872813da7735966d6527e74328690d47ffae1d62d1",
         "observedAt": "2026-11-05T08:15:54.979Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "bc8641867ee8e2b31c8c08872813da7735966d6527e74328690d47ffae1d62d1",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4386137584": {
@@ -76743,12 +76902,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/40ca8f63e25ab73e7e2f96e0e4243a4ade118907011c56c94002c30cbd33fcb0.json",
         "sha256": "40ca8f63e25ab73e7e2f96e0e4243a4ade118907011c56c94002c30cbd33fcb0",
         "observedAt": "2026-11-05T08:15:53.335Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "40ca8f63e25ab73e7e2f96e0e4243a4ade118907011c56c94002c30cbd33fcb0",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4474474044": {
@@ -76785,12 +76951,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2df0cd56f8319db6942db1382925cc1f0e0f1b134b1b43f45c3837cc9e8cf162.json",
         "sha256": "2df0cd56f8319db6942db1382925cc1f0e0f1b134b1b43f45c3837cc9e8cf162",
         "observedAt": "2026-11-05T08:17:32.083Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "2df0cd56f8319db6942db1382925cc1f0e0f1b134b1b43f45c3837cc9e8cf162",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4485601832": {
@@ -76827,12 +77000,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/099ba70c6458c4b9c853a0009919beb1a55ff3bbbc5c236009944961d45a1a14.json",
         "sha256": "099ba70c6458c4b9c853a0009919beb1a55ff3bbbc5c236009944961d45a1a14",
         "observedAt": "2026-11-05T08:17:37.633Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "099ba70c6458c4b9c853a0009919beb1a55ff3bbbc5c236009944961d45a1a14",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4481910726": {
@@ -77037,12 +77217,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5c943970cce920d199cdff56bb4d985e55c35c21f43e7ad23fcce8541ba6664b.json",
         "sha256": "5c943970cce920d199cdff56bb4d985e55c35c21f43e7ad23fcce8541ba6664b",
         "observedAt": "2026-11-05T08:17:45.678Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5c943970cce920d199cdff56bb4d985e55c35c21f43e7ad23fcce8541ba6664b",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4474461587": {
@@ -77120,12 +77307,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/56215c95e0dc7157557d929769b168cdbc62ca47fb3649b98961984a611f35e5.json",
         "sha256": "56215c95e0dc7157557d929769b168cdbc62ca47fb3649b98961984a611f35e5",
         "observedAt": "2026-11-05T08:17:44.107Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "56215c95e0dc7157557d929769b168cdbc62ca47fb3649b98961984a611f35e5",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4437310675": {
@@ -77162,12 +77356,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/b961b6ad43758cf96f2704768c29c92458d14b505cbc117ba2968e42cde6e54a.json",
         "sha256": "b961b6ad43758cf96f2704768c29c92458d14b505cbc117ba2968e42cde6e54a",
         "observedAt": "2026-11-05T08:17:42.546Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "b961b6ad43758cf96f2704768c29c92458d14b505cbc117ba2968e42cde6e54a",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4482184892": {
@@ -214698,12 +214899,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5a3ec47d0df684dc61bb1b9f26e27ee64a781f31d5590cfb6dee4ed656a1073f.json",
         "sha256": "5a3ec47d0df684dc61bb1b9f26e27ee64a781f31d5590cfb6dee4ed656a1073f",
         "observedAt": "2026-11-05T08:10:11.418Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5a3ec47d0df684dc61bb1b9f26e27ee64a781f31d5590cfb6dee4ed656a1073f",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4485605568": {
@@ -214947,12 +215155,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/ad9789c08034c05e48aeb2a155d58a555e6994197af4dc3623cf2b5149fb2b8f.json",
         "sha256": "ad9789c08034c05e48aeb2a155d58a555e6994197af4dc3623cf2b5149fb2b8f",
         "observedAt": "2026-11-05T08:09:59.398Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "ad9789c08034c05e48aeb2a155d58a555e6994197af4dc3623cf2b5149fb2b8f",
+        "observedAt": "2026-11-05T08:29:21.455Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-05T14:29:21.455Z"
       }
     },
     "linkedin:4484735850": {
@@ -216949,21 +217164,20 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T08:33:44.183Z",
-  "upstreamAt": "2026-11-05T08:33:43.152Z",
+  "at": "2026-11-05T08:34:28.490Z",
+  "upstreamAt": "2026-11-05T08:28:32.029Z",
   "counts": {
-    "SOURCE_VALIDATION_REQUIRED": 40,
-    "ACTION_REQUIRED": 5141,
-    "WAITING_EVIDENCE_CHANGE": 169,
+    "SOURCE_VALIDATION_REQUIRED": 75,
+    "ACTION_REQUIRED": 5162,
+    "WAITING_EVIDENCE_CHANGE": 155,
     "INVENTORY_RECONCILIATION_REQUIRED": 33,
-    "READY_FOR_CONTROLLED_INTAKE": 5,
-    "PENDING_INDEPENDENT_VALIDATION": 43
+    "READY_FOR_CONTROLLED_INTAKE": 6
   },
   "actions": {
     "REVIEW_SCOPE": 3047,
     "RESOLVE_IDENTITY": 433,
-    "RECONCILE_WRITER": 515,
-    "RECOVER_SOURCE": 1413,
+    "RECONCILE_WRITER": 516,
+    "RECOVER_SOURCE": 1412,
     "INTAKE": 23
   },
   "noProcessingCap": true
