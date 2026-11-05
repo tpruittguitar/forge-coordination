@@ -1,0 +1,79 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4418408673",
+  "sourceVersion": "499666ecf5e4eb99f414b1683a7ffecd0bfdad706af7e051ef0e0475fdfc2a6f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B2-6",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:51:16.285Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Canonical True Anomaly role V2I-246717CA5C76 is REJECTED_BY_EMPLOYER with Denver CO or Long Beach CA scope, plus archived Long Beach duplicate. Captured original LinkedIn4418408673 has Denver Metropolitan Area. Multiple same-role rows and unbound original employer posting prevent unique identity conclusion; no rejection-wide company exclusion or geography alias inferred. Existing read-only original evidence blocked.",
+  "conclusion": "Rejected role and duplicate retained; exact original source/site binding unresolved.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition evidence and resolves source-bound identity without re-intake or original-request replay.",
+  "retryCondition": "Original source identity evidence or existing read-only recovery becomes available.",
+  "attempts": [
+    {
+      "source": "Current captured drain source identity at 826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused exact captured identity and original saved source/helper references; withdrawn helper title/agency exclusions are not scope evidence."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4599/archive785",
+      "result": "Compared exact role/site/source identities; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-246717CA5C76",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:49:39.742Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-AD8987901DB4",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:49:39.742Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "True Anomaly",
+    "title": "Vice President, Production",
+    "location": "Denver Metropolitan Area",
+    "url": "https://www.linkedin.com/jobs/view/4418408673/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-246717CA5C76",
+        "company": "True Anomaly",
+        "title": "Vice President, Production",
+        "location": "Denver, CO or Long Beach, CA",
+        "bucket": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_BY_EMPLOYER",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "bb2128ec4b1e3dd9e01bfa66ea4e1ce6d23c401dd84bbe3528eb4abfb0590a3d"
+      },
+      {
+        "primaryId": "V2I-AD8987901DB4",
+        "company": "True Anomaly",
+        "title": "Vice President, Production",
+        "location": "Long Beach, CA",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2I-246717CA5C76",
+        "reqId": "UNCAPTURED",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "367d16e8661e2eae785150f71188c648f379cddd64b368196694d65e285cbb08"
+      }
+    ]
+  }
+}

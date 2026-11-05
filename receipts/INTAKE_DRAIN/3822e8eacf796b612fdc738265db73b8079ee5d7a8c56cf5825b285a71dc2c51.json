@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4483930217",
+  "sourceVersion": "0ed140eec5b9b9f991ab262cb0b9d00211aae581804cd7862dbdd3ef1306355b",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B2-8",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:51:19.944Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original local batch independently COMPLETE but exact WK Kellogg candidate index29 explicitly WRITE_FAILED AMBIGUOUS_MATCH EMPLOYER_TITLE_NEEDS_LOCATION. Captured Battle Creek MI differs from canonical candidate V2I-BD011E430063 Memphis TN. No same-facility or remote alias inferred, no candidate insert claimed. Existing read-only evidence/request_result recovery blocked; keep original request fenced.",
+  "conclusion": "Exact original candidate failed, site conflict remains; batch completion is not candidate insertion.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition evidence and resolves source-bound identity without re-intake or original-request replay.",
+  "retryCondition": "Existing authenticated AI/local coordinator recovers original request_result and exact employer requisition/site evidence to reconcile Battle Creek versus Memphis without replay.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0093.json; state/source-trial-report.json@2a109cea; state/source-trial-report.json@826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused exact captured identity and original saved source/helper references; withdrawn helper title/agency exclusions are not scope evidence."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4599/archive785",
+      "result": "Compared exact role/site/source identities; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-BD011E430063",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:49:39.742Z"
+    },
+    {
+      "source": "Original checkpoint/acceptance/verified and independently COMPLETE receipt_index",
+      "result": "Bound exact candidate index29 and explicit WRITE_FAILED; no POST or replay."
+    },
+    {
+      "source": "Existing request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "WK Kellogg Co",
+    "title": "Senior Manager, Plant Operations",
+    "location": "Battle Creek, MI, USA",
+    "url": "https://www.linkedin.com/jobs/view/4483930217/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B001",
+    "candidateIndex": 29,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "candidateIds": [
+      "V2I-BD011E430063"
+    ],
+    "originalWriteId": "W-20261102001527752-1f819c",
+    "independentIndexCommit": "6bbb359bc49afc08e99d7d7bf62699690e948171",
+    "independentIndexSha256": "76f3366276893912415e30bb716ccf202d8be07e354356ed0938cbfeb93172ce",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-02T00:16:02.219Z",
+      "w": "W-20261102001527752-1f819c",
+      "snapshotHash": "3b993f87db56:9097673"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-BD011E430063",
+        "company": "WK Kellogg Co",
+        "title": "Senior Manager, Plant Operations",
+        "location": "Memphis, TN, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "486fdecb875a7e45d5b28a1fd21f5db12d7e6452aa8f58cd51a8aacc23b2ba4f"
+      }
+    ]
+  }
+}

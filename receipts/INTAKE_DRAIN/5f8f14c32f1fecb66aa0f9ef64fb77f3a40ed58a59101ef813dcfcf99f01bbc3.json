@@ -1,0 +1,98 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:76be6727af51d8d257ecdf66",
+  "sourceVersion": "8f98a32e550e64df7d5bb0f11b13560ce7e43a01245a0b8a81ea19f2eab1f601",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B2-9",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:51:21.729Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original fenced AUTO054324Z request explicitly returns EXISTING_MATCH V2I-ED5433FC9194 with terminal zero new IDs, no accepted write/writeId and WRITE_VERIFIED NOT_APPLICABLE. Existing zero-write classifier validates source-bound accounting; fresh canonical same employer/title/Huntsville row confirms identity. No nonexistent COMPLETE write transaction awaited, original request never replayed.",
+  "conclusion": "Independently confirmed existing canonical identity; zero new canonical inserts.",
+  "nextAction": "Existing coordinator consumes source-bound verified existing-role proof into upstream accounting; preserve current canonical disposition and original fences.",
+  "retryCondition": "Existing coordinator consumes existing-role proof, or bound original evidence changes; no replay.",
+  "attempts": [
+    {
+      "source": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0111.json",
+      "result": "Reused exact captured identity and original saved source/helper references; withdrawn helper title/agency exclusions are not scope evidence."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4599/archive785",
+      "result": "Compared exact role/site/source identities; no canonical mutation."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-ED5433FC9194",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:49:39.742Z"
+    },
+    {
+      "source": "tools/email-recovery/zero-write.cjs classify plus exact post-response canonical row",
+      "result": "Fresh exact canonical row and source-bound original accounting verified; private derived evidence only, no shared disposition change."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "American Welding & Gas Inc.",
+    "title": "Plant Manager",
+    "location": "Huntsville, AL, USA",
+    "url": "https://americanweldingandgas.betterteam.com/plant-manager"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "canonicalEvidence": {
+    "masterSha256": "8835091893ce62864e339b081ef6995d09a688d08af19ee0cdb33fd56e8bc57c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "masterRows": 4599,
+    "archiveRows": 785,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "rowReadAt": "2026-11-05T11:48:20.571Z",
+    "masterModifiedAt": "2026-11-05T11:44:04.120Z",
+    "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+    "primaryId": "V2I-ED5433FC9194",
+    "company": "American Welding & Gas",
+    "title": "Plant Manager",
+    "location": "Huntsville, AL",
+    "bucket": "SCOUT_INTAKE",
+    "disposition": "INTAKE/AWAITING_ANALYSIS",
+    "reqId": "UNCAPTURED",
+    "store": "MASTER",
+    "exactPostingMatch": false,
+    "labelledReqMatch": false,
+    "canonicalPostingKeys": [],
+    "locationMatch": true,
+    "rowSha256": "141a8a47b8860f548ca87b3b07ba09ef332f04e279aaf773f2970d3ddf240d9f"
+  },
+  "originalRequestEvidence": {
+    "requestId": "FORGE-SOURCE-11A0A33252017E8703E0B01A",
+    "proof": "receipts/auto-intake/FORGE-AUTO-20261105T054324Z.json",
+    "terminalZeroWrite": true,
+    "responseSha256": "270eea77cd25a02d2c6434d8b7fe768a54ae00a2ddd54ffb559229aeed9104df",
+    "originalCandidateOutcome": "EXISTING_MATCH",
+    "primaryId": "V2I-ED5433FC9194",
+    "canonicalWrites": 0,
+    "writeReceiptNotApplicable": true
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-ED5433FC9194",
+        "company": "American Welding & Gas",
+        "title": "Plant Manager",
+        "location": "Huntsville, AL",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "141a8a47b8860f548ca87b3b07ba09ef332f04e279aaf773f2970d3ddf240d9f"
+      }
+    ]
+  },
+  "independentlyVerifiedCanonicalPresence": true
+}
