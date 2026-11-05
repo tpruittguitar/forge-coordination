@@ -1,0 +1,52 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4464902788",
+  "sourceVersion": "f5bafa16af084f4a3ed18885038b2772df81ec80fe676e914d3ea2b1ea4277f2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T214714365Z-30d651",
+  "instructionCommit": "52271f249038cd66af33021862bc661e2b9c3673",
+  "observedAt": "2026-11-05T21:47:14.365Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved original candidate disposition is WRITE_FAILED with AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. The batch has saved COMPLETE evidence, but this candidate was held for ambiguous employer/title/site identity. Existing candidate IDs are possible matches, not independent live exact-row or employer-requisition proof. Retain original request and protected decisions; no completed write or identity resolution claimed.",
+  "nextAction": "Existing authenticated local coordinator reads receipt_index for FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001, request_result only after independently COMPLETE, and exact candidate rows; reconcile grounded original requisition/site evidence without replay.",
+  "retryCondition": "Original source-to-employer requisition/site evidence or independently authenticated exact candidate-row evidence becomes available through the existing coordinator, with original request and COMPLETE evidence retained.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_CHECKPOINT.json",
+      "sha256": "4c903bfd7ace8db031d1d6afb622f933915cd9b74ea3e68326dad318afea9de2",
+      "result": "Read original request evidence; {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"payloadSha256\":\"ae962ccff3141b6110cc625b7085163e40ed406a3ec823135a0efd80c6790a21\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_ACCEPTANCE.json",
+      "sha256": "ee456d983c0fcf8f5c0f12eaed176f467f89bc707d87c0ff25bf7b4ecfe1839b",
+      "result": "Read original request evidence; {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"writeId\":\"W-20261101210436699-169590\"}"
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json",
+      "sha256": "c8e185d1b4d7df6d594bedd8a97fff935d87022652b05bafd6aa128b6ec9971a",
+      "result": "Read original request evidence; {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"writeId\":\"W-20261101210436699-169590\",\"independentCompleteObservedAt\":\"2026-11-01T21:06:09.430Z\"}"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4464902788",
+      "result": "Saved original source identity and card-hash bindings inspected privately; disposition {\"requestId\":\"FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001\",\"candidateOutcome\":\"WRITE_FAILED\",\"batchStatus\":\"COMPLETE\",\"candidateIds\":[\"V2I-4302C096B397\"],\"savedReason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\"}"
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Fence binds legacy request FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001; no FORGE-AUTO run ID. Registered reconcile-probe accepts explicitly fence-bound AUTO runs only; dispatch not authorized for this legacy fence. Current cloud has no configured Writer credential binding; no live authenticated receipt_index or exact canonical row read was performed."
+    }
+  ],
+  "originalEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateOutcome": "WRITE_FAILED",
+    "batchStatus": "COMPLETE",
+    "candidateIds": [
+      "V2I-4302C096B397"
+    ],
+    "savedReason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedOutcomes": 0
+}
