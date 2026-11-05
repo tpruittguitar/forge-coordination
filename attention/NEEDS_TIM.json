@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T07:11:10.957Z",
- "sourceCommit": "45bd32aa29237ce0e329c82ad3ee0dfd1e0fa566",
+ "builtAt": "2026-11-05T07:21:42.655Z",
+ "sourceCommit": "b64426dd6c943be79b4320a1341402df4c1d9e15",
  "counts": {
-  "total": 60,
-  "BLOCKING": 0,
-  "ACTION": 26,
+  "total": 62,
+  "BLOCKING": 1,
+  "ACTION": 27,
   "WATCH": 34,
   "DECIDE": 7,
   "JOBS": 1,
-  "FAILED": 16,
-  "UPKEEP": 36
+  "FAILED": 17,
+  "UPKEEP": 37
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261105T070929Z is unfinished",
+   "detail": "BLOCKED: Writer HTTP 404. Open request: FORGE-SOURCE-10DDB825685602740BCFD506. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T070929Z.json",
+   "at": "2026-11-05T07:20:50.223Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-3D0E6F9DFD1953FAD80F3716",
    "section": "FAILED",
@@ -372,6 +384,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
    "at": "2026-11-02T03:05:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#252",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #252: Recover reporting failures and clear recovered notices automatically",
+   "detail": "Open since 2026-11-05. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #252",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/252",
+   "at": "2026-11-05T07:20:08Z",
+   "raisedBy": ""
   },
   {
    "id": "ask:ASK-20261018-02",
@@ -876,8 +900,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-05T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261105T070523962Z_TRANSPORT.json",
-   "runs7d": 978,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261105T071523966Z_TRANSPORT.json",
+   "runs7d": 983,
    "usualGapHours": 0,
    "overdue": false
   },
