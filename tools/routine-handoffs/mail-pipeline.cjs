@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),M=require('./mail.cjs'),W=require('./mail-writer.cjs');
 async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'mail-inbox')],apply=false}){
+ const matching=require('./matching-snapshot.cjs').wrap(deps);deps=matching.deps;
  const state=S.read(root,W.FILE,W.empty()),verifiedBefore=new Set(Object.values(state.transactions).filter(t=>t.status==='VERIFIED').map(t=>t.requestId)),result={schema:'forge.mail-processing-report.v1',runId,read:0,processed:0,pending:0,exceptions:[],noProcessingCap:true};
  W.recoverOrphans(root,state);
  if(apply)try{require('./mail-connector.cjs').ingest(root,privateDir);delete state.exceptions.inventory;}catch(e){state.exceptions.inventory={owner:'CODE',reason:reason(e)};}
@@ -36,6 +37,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
   catch(e){state.exceptions['alert:'+message.id]={owner:'AI',messageId:message.id,sourceSha256:message.sourceSha256,reason:reason(e),nextAction:'Evaluate the full saved alert, repair abnormal card identities, and capture exact candidates; never mark a handoff complete without acknowledgment.'};result.pending++;}
  }
  result.exceptions=Object.values(state.exceptions);result.transactions=Object.values(state.transactions).map(t=>({requestId:t.requestId,status:t.status,primaryId:t.primaryId}));result.masterVerifiedThisRun=Object.values(state.transactions).filter(t=>t.status==='VERIFIED'&&!verifiedBefore.has(t.requestId)).length;
+ result.matchingSnapshot=matching.stats;
  if(apply){deps.checkLock();S.save(root,W.FILE,state);S.save(root,'state/MAIL_PROCESSING_REPORT.json',result);S.immutable(root,'receipts/'+runId+'_MAIL.json',result);updateCursor(root,state);}
  return result;
 }
