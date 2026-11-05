@@ -1,55 +1,55 @@
 {
- "at": "2026-11-05T02:09:12.438Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T0203Z",
+ "at": "2026-11-05T02:51:58.132Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261105T0241Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-05T02:03:58.984Z",
-  "sha256": "fe2607dd1f3c8192abe2540e4b20147656de0d197ea36085a74f8145c4f33720",
-  "rows": 4511
+  "readAt": "2026-11-05T02:41:32.187Z",
+  "sha256": "12265cf7a3f9a683ad43433e55e47b7ae65df81f252edad52d8ee2b46952fb02",
+  "rows": 4542
  },
- "rows": 4511,
- "eligible": 529,
+ "rows": 4542,
+ "eligible": 560,
  "anchors": 1031,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 7,
- "estimates": 2,
- "estimate_waiting_for_posting": 211,
+ "degree": 30,
+ "estimates": 21,
+ "estimate_waiting_for_posting": 212,
  "skipped_recent": 151,
- "submitted": 0,
+ "submitted": 30,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 30,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
-  "linkedin": 7
+  "linkedin": 30
  },
  "agg_read": {
-  "linkedin": 7
+  "linkedin": 30
  },
  "agg_pay": {
-  "linkedin": 5
+  "linkedin": 9
  },
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "est_same_employer": 0,
- "est_comparables": 4,
+ "est_same_employer": 2,
+ "est_comparables": 21,
  "boards_read": 8,
  "boards_failed": 0,
  "bls": {
-  "OK": 4,
-  "ABOVE": 0,
+  "OK": 16,
+  "ABOVE": 2,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 5
  },
  "bls_queries": 0,
- "est_shared_low": 3,
+ "est_shared_low": 12,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -59,18 +59,18 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 4,
-  "candidates": 37,
-  "saved_reused": 34,
+  "targets": 21,
+  "candidates": 224,
+  "saved_reused": 222,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 3,
+  "backoff": 2,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 2,
+  "estimates_with_profile_sources": 15,
   "samples": [],
-  "profile_as_of": "2026-11-05T02:04:03.287Z",
+  "profile_as_of": "2026-11-05T02:41:35.989Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -83,9 +83,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 0,
+ "public_tried": 1,
  "public_read": 0,
- "public_failed": 0,
+ "public_failed": 1,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -190,7 +190,7 @@
   }
  ],
  "salary_review": {
-  "eligible": 544,
+  "eligible": 534,
   "due": 2,
   "reviewed": 2,
   "target_reads": 0,
@@ -200,42 +200,60 @@
   "guard_dropped": 0,
   "samples": [
    {
-    "id": "V2I-7F9EB684D966",
+    "id": "V2I-4CE495215C0D",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    },
    {
-    "id": "V2I-B11223A177B6",
+    "id": "V2I-642823AE104E",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    }
   ]
  },
- "decision_waiting": 833,
+ "decision_waiting": 818,
+ "nothing_found": 268,
  "not_attempted": 267,
- "nothing_found": 267,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 7,
+ "planned": 30,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 7,
- "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
+ "writer_reply_lost": 2,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
-  "roles": 104,
+  "roles": 107,
   "nonblocking": true
  },
  "recovery_statuses": {
-  "EVIDENCE_FOUND": 7,
-  "SOURCE_RESEARCH_REQUIRED": 62,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 55,
+  "EVIDENCE_FOUND": 30,
+  "SOURCE_RESEARCH_REQUIRED": 63,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 62,
   "GROK_RESEARCH_RESERVED": 345,
   "NOT_YET_ATTEMPTED": 11
  },
  "pending": [
+  {
+   "id": "V2I-8F7E25FAE33A",
+   "company": "ADMA Biologics",
+   "title": "Senior Director, Quality Assurance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-05T02:42:07.975Z",
+   "retryAt": "2026-11-05T04:42:07.975Z",
+   "attempts": [
+    {
+     "url": "https://careers.admabiologics.com/job/Senior-Director%2C-Quality-Assurance/1178-en_US",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
   {
    "id": "V2I-E4F07F729E6F",
    "company": "Hadrian Automation",
@@ -8850,94 +8868,114 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6277845B640A",
+   "company": "Robert Half",
+   "title": "Director of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:19.103Z",
+   "retryAt": "2026-11-05T03:04:19.103Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-64F534E098AE",
+   "company": "Prismier",
+   "title": "Director of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:22.291Z",
+   "retryAt": "2026-11-05T03:04:22.291Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9DB6ABE570F5",
+   "company": "Mitsubishi Power Americas",
+   "title": "Director, Quality Management - NGS",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:27.594Z",
+   "retryAt": "2026-11-05T03:04:27.594Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E6B59BE60437",
+   "company": "Confidential Manufacturing Company",
+   "title": "Director of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:30.749Z",
+   "retryAt": "2026-11-05T03:04:30.749Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-013EBA59B821",
+   "company": "NetApp",
+   "title": "VP of Engineering, Reliability & Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:36.139Z",
+   "retryAt": "2026-11-05T03:04:36.139Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-20FF5E0B4549",
+   "company": "WSP in the U.S.",
+   "title": "Vice President, Regional Quality Lead",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:39.344Z",
+   "retryAt": "2026-11-05T03:04:39.344Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DEBED2E10A8F",
+   "company": "Dexcom",
+   "title": "Sr. Manager, Design Quality Engineering - Product Compliance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-05T02:04:51.261Z",
+   "retryAt": "2026-11-05T03:04:51.261Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   }
  ],
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-6277845B640A",
+   "id": "V2I-B59114B33E89",
    "fields": {
-    "SALARY_BASE_LOW": 135000,
-    "SALARY_BASE_HIGH": 160000,
-    "SALARY_MIDPOINT": 147500,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4486881096",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "SALARY_NOTE": "pay shown on the linkedin posting",
-    "DEGREE_TEXT": "Bachelor’s degree in Quality Assurance, Quality Systems, Industrial Engineering, or a related field, or equivalent progressive quality leadership experience.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4486881096",
-    "DEGREE_ASOF": "2026-11-05",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 153750
-   }
-  },
-  {
-   "id": "V2I-64F534E098AE",
-   "fields": {
-    "SALARY_BASE_LOW": 125000,
-    "SALARY_BASE_HIGH": 150000,
-    "SALARY_MIDPOINT": 137500,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4486523777",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "SALARY_NOTE": "pay shown on the linkedin posting",
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Manufacturing, Quality, Industrial Technology, or a related field",
+    "DEGREE_TEXT": "Ph.D. or M.S. in a related field with a minimum of 5 years of relevant experience, or a B.S. in a related field with a minimum of 10 years of relevant experience.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4486523777",
-    "DEGREE_ASOF": "2026-11-05",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 143750
-   }
-  },
-  {
-   "id": "V2I-9DB6ABE570F5",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor’s degree in Mechanical, Electrical, Industrial, or Civil Engineering from an accredited college or university preferred.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4486461386",
-    "DEGREE_ASOF": "2026-11-05",
-    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 150000,
-    "SALARY_BASE_HIGH": 266000,
-    "SALARY_MIDPOINT": 208000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_SOURCE": "comparables:V2I-2CAB10F85530,V2I-28434A1C97DB,V2I-4438F9C025EB,V2I-CD6D847E452A,V2I-F7D0A8471967,V2I-271845BFBE3A,V2I-421144E1D25D",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-2CAB10F85530, V2I-28434A1C97DB, V2I-4438F9C025EB, V2I-CD6D847E452A, V2I-F7D0A8471967, V2I-271845BFBE3A, V2I-421144E1D25D]; 7 employer-posted comparable(s), level 2 QUALITY same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 237000
-   }
-  },
-  {
-   "id": "V2I-E6B59BE60437",
-   "fields": {
-    "SALARY_BASE_LOW": 180000,
-    "SALARY_BASE_HIGH": 200000,
-    "SALARY_MIDPOINT": 190000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4485502304",
-    "SALARY_ASOF": "2026-11-05",
-    "SALARY_CONF": "HIGH",
-    "SALARY_NOTE": "pay shown on the linkedin posting",
-    "DEGREE_TEXT": "Bachelor’s degree in engineering, quality, manufacturing, or a related discipline, or an equivalent combination of education and relevant experience.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485502304",
-    "DEGREE_ASOF": "2026-11-05",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
-    "SALARY_SCORE_POINT": 195000
-   }
-  },
-  {
-   "id": "V2I-013EBA59B821",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor’s or Master’s degree in Computer Science, Electrical Engineering, or a related field.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485099773",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487575494",
     "DEGREE_ASOF": "2026-11-05",
     "SALARY_MODEL_VERSION": "employer-upper-range-v5",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
@@ -8947,62 +8985,217 @@
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-05",
-    "SALARY_SOURCE": "comparables:V2I-93E1F0EE150A,V2I-E2A4B7249CB4,V2I-1659642BFEED,V2I-C3DDBC9526C6,V2I-1C6249E61595,V2I-24A3A2EA3314,V2I-11C7ABAD3349",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-93E1F0EE150A, V2I-E2A4B7249CB4, V2I-1659642BFEED, V2I-C3DDBC9526C6, V2I-1C6249E61595, V2I-24A3A2EA3314, V2I-11C7ABAD3349]; 7 employer-posted comparable(s), level 4 QUALITY same region W; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; BLS CA 113051 P25-P90 $102K-$222K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables:V2I-1659642BFEED,V2I-C3DDBC9526C6,V2I-1C6249E61595,V2I-24A3A2EA3314,V2I-11C7ABAD3349,V2I-6D96131677B7,V2I-93E1F0EE150A",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-1659642BFEED, V2I-C3DDBC9526C6, V2I-1C6249E61595, V2I-24A3A2EA3314, V2I-11C7ABAD3349, V2I-6D96131677B7, V2I-93E1F0EE150A]; 7 employer-posted comparable(s), level 4 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW; BLS GA 113051 P90 $194K: estimate is >1.5x P90; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
     "SALARY_SCORE_POINT": 336750
+   }
+  },
+  {
+   "id": "V2I-21CE74E188B4",
+   "fields": {
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 140000,
+    "SALARY_MIDPOINT": 130000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487562965",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Quality, Manufacturing, or a related field preferred.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487562965",
+    "DEGREE_ASOF": "2026-11-05",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 135000
+   }
+  },
+  {
+   "id": "V2I-678C3140D0FF",
+   "fields": {
+    "DEGREE_TEXT": "A bachelor's degree",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487526204",
+    "DEGREE_ASOF": "2026-11-05",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 149000,
+    "SALARY_BASE_HIGH": 240000,
+    "SALARY_MIDPOINT": 194500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_SOURCE": "comparables:V2I-2F31666D08EE,V2I-420F6ACBC775,V2I-4577FF94FE09,V2I-70F03DF3856B,V2I-B40AF641852D,V2I-053861D8BF8E,V2I-37863609AC0F",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-2F31666D08EE, V2I-420F6ACBC775, V2I-4577FF94FE09, V2I-70F03DF3856B, V2I-B40AF641852D, V2I-053861D8BF8E, V2I-37863609AC0F]; 7 employer-posted comparable(s), level 1.5 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW; BLS OH 113051 P25-P90 $89K-$171K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 217250
+   }
+  },
+  {
+   "id": "V2I-7EFC07AD3A2A",
+   "fields": {
+    "SALARY_BASE_LOW": 220000,
+    "SALARY_BASE_HIGH": 235000,
+    "SALARY_MIDPOINT": 227500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4487517489",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_CONF": "HIGH",
+    "SALARY_NOTE": "pay shown on the linkedin posting",
+    "DEGREE_TEXT": "Bachelor’s degree in Engineering required; advanced degree preferred.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487517489",
+    "DEGREE_ASOF": "2026-11-05",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 231250
+   }
+  },
+  {
+   "id": "V2I-968320B32035",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Manufacturing, Operations, Business, or a related discipline.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485750973",
+    "DEGREE_ASOF": "2026-11-05",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 118000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 149000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-05",
+    "SALARY_SOURCE": "comparables:V2I-4656E817AD44,V2I-061ADD8A4372,V2I-4C3B65A39D23,V2I-B2CD5C313FD4,V2I-F6A91C5E18E1,V2I-1785E00ACF11,V2I-209009CBC28E",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-4656E817AD44, V2I-061ADD8A4372, V2I-4C3B65A39D23, V2I-B2CD5C313FD4, V2I-F6A91C5E18E1, V2I-1785E00ACF11, V2I-209009CBC28E]; 7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; BLS SC 113051 P25-P90 $100K-$205K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-05",
+    "SALARY_SCORE_POINT": 164500
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-9DB6ABE570F5",
-   "company": "Mitsubishi Power Americas",
-   "title": "Director, Quality Management - NGS",
-   "location": "Lake Mary, FL, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4486461386",
-   "est": [
-    150000,
-    266000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2I-2CAB10F85530",
-    "V2I-28434A1C97DB",
-    "V2I-4438F9C025EB",
-    "V2I-CD6D847E452A",
-    "V2I-F7D0A8471967",
-    "V2I-271845BFBE3A",
-    "V2I-421144E1D25D"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-013EBA59B821",
-   "company": "NetApp",
-   "title": "VP of Engineering, Reliability & Quality",
-   "location": "San Jose, CA, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4485099773",
+   "id": "V2I-B59114B33E89",
+   "company": "VERO Biotech",
+   "title": "VP, Quality",
+   "location": "Atlanta, GA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4487575494",
    "est": [
     270000,
     359000,
     "LOW"
    ],
    "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 4 QUALITY same region W; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "bls": "ABOVE",
+   "basis_detail": "7 employer-posted comparable(s), level 4 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-93E1F0EE150A",
-    "V2I-E2A4B7249CB4",
     "V2I-1659642BFEED",
     "V2I-C3DDBC9526C6",
     "V2I-1C6249E61595",
     "V2I-24A3A2EA3314",
-    "V2I-11C7ABAD3349"
+    "V2I-11C7ABAD3349",
+    "V2I-6D96131677B7",
+    "V2I-93E1F0EE150A"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-678C3140D0FF",
+   "company": "The J.M. Smucker Co.",
+   "title": "Senior Manager, Quality Assurance",
+   "location": "Orrville, OH, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4487526204",
+   "est": [
+    149000,
+    240000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-2F31666D08EE",
+    "V2I-420F6ACBC775",
+    "V2I-4577FF94FE09",
+    "V2I-70F03DF3856B",
+    "V2I-B40AF641852D",
+    "V2I-053861D8BF8E",
+    "V2I-37863609AC0F"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-968320B32035",
+   "company": "EnerSys",
+   "title": "Plant Manager III",
+   "location": "Greenville, SC",
+   "posting": "https://www.linkedin.com/jobs/view/4485750973/",
+   "est": [
+    118000,
+    180000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-4656E817AD44",
+    "V2I-061ADD8A4372",
+    "V2I-4C3B65A39D23",
+    "V2I-B2CD5C313FD4",
+    "V2I-F6A91C5E18E1",
+    "V2I-1785E00ACF11",
+    "V2I-209009CBC28E"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-0E8507DA5B99",
+   "company": "WNC Corporation",
+   "title": "Head of US Manufacturing Site",
+   "location": "Texas, United States",
+   "posting": "https://www.linkedin.com/jobs/view/4486153639/",
+   "est": [
+    169000,
+    300000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 3 MFG any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-D012EAA6523A",
+    "V2I-0E31DE43CD39",
+    "V2I-34D44D08563B",
+    "V2I-6CB6988D9FC9",
+    "V2I-E11803A9CF2C",
+    "V2I-14339F2DD960",
+    "V2I-1D85E1D7B2F2"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-9CB15CDFBEFB",
+   "company": "Syner-G",
+   "title": "Vice President, Quality",
+   "location": "USA",
+   "posting": "https://www.linkedin.com/jobs/view/4487292964",
+   "est": [
+    270000,
+    359000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "NO_BLS",
+   "basis_detail": "7 employer-posted comparable(s), level 4 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-1659642BFEED",
+    "V2I-C3DDBC9526C6",
+    "V2I-1C6249E61595",
+    "V2I-24A3A2EA3314",
+    "V2I-11C7ABAD3349",
+    "V2I-6D96131677B7",
+    "V2I-93E1F0EE150A"
    ]
   }
  ],
