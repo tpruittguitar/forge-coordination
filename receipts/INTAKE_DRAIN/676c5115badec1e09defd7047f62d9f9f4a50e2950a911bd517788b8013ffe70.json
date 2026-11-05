@@ -1,0 +1,59 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:21f35342421ab755830830c7",
+  "sourceVersion": "68089dd8e9717fca06d35d9dc199c46e08449d3f7d215dcf96767f36651545b5",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B1-8",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:47:47.728Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved original is labelled EXISTING and fresh canonical same-role candidate V2I-4633CBA06FB5 is SCOUT_INTAKE. Company/title and captured site/region alone do not prove exact original employer posting; no original Apply/requisition alias binding found. Existing exact-ID evidence read blocked by unavailable cloud credential. Preserve possible existing role without duplicate intake.",
+  "conclusion": "Existing same-role candidate identified, exact source binding not independently verified.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition binding and reconciles exact identity without new intake or replay.",
+  "retryCondition": "Original employer posting/Apply/site evidence becomes available through existing read-only recovery.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused original saved card, exact location and any full source content before outside research."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4599/archive785",
+      "result": "Compared exact employer/title/site and source identity; retained candidate rows separately from verified identity."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-4633CBA06FB5",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:45:49.036Z"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "AbbVie",
+    "title": "Director, Operational Excellence, Government Affairs",
+    "location": "North Chicago, Illinois, United States",
+    "url": "https://hiringcafe.com/job/director-operational-excellence-government-affairs-abbvie-north-konm2ronn6bsf6re"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-4633CBA06FB5",
+        "company": "AbbVie",
+        "title": "Director, Operational Excellence, Government Affairs",
+        "location": "North Chicago, IL, USA",
+        "bucket": "SCOUT_INTAKE",
+        "disposition": "INTAKE/AWAITING_ANALYSIS",
+        "reqId": "UNCAPTURED",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": true,
+        "rowSha256": "bd9f0ef37da9f30e08476a2c3e5a1c3f7e32d1ff8d33f378197a61299b1c470f"
+      }
+    ]
+  }
+}

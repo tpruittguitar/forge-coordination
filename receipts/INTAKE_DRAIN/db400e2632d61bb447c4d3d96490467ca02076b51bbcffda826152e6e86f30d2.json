@@ -1,0 +1,191 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4440999241",
+  "sourceVersion": "aefce4019ef12adeb1bc599839730883eeb4c760301018f01736ed809b47d713",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T1143Z-HELD-B1-0",
+  "instructionCommit": "826a89b2de2c490e35648458593fa7839f1f88a3",
+  "observedAt": "2026-11-05T11:47:33.005Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original local batch independently COMPLETE, but this exact candidate index18 explicitly WRITE_FAILED AMBIGUOUS_MATCH EMPLOYER_TITLE_NEEDS_LOCATION with eight candidate IDs. No new job was inserted for this candidate. West Palm Beach capture, Atlanta declined row and open-US archived decline/duplicate rows remain unbound; no nearby-site or nationwide alias invented. Existing read-only evidence/request_result recovery blocked by unavailable cloud credential; request remains fenced.",
+  "conclusion": "Exact original candidate failed; batch completion does not establish candidate insertion or which prior role owns this advertisement.",
+  "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition binding and reconciles exact identity without new intake or replay.",
+  "retryCondition": "Existing authenticated AI/local coordinator recovers original request_result and employer requisition/Apply/territory evidence to resolve this exact held candidate; never replay original request.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@826a89b2de2c490e35648458593fa7839f1f88a3",
+      "result": "Reused original saved card, exact location and any full source content before outside research."
+    },
+    {
+      "source": "Fresh authenticated complete canonical master4599/archive785",
+      "result": "Compared exact employer/title/site and source identity; retained candidate rows separately from verified identity."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-AA7724B3A2EF",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:45:49.036Z"
+    },
+    {
+      "source": "Existing read-only Writer evidence V2F-2D0D5E23A03E",
+      "result": "BLOCKED: credential required",
+      "observedAt": "2026-11-05T11:45:49.036Z"
+    },
+    {
+      "source": "Original request_result after independent COMPLETE",
+      "result": "BLOCKED: credential required; no POST attempted."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Alvarez & Marsal",
+    "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+    "location": "West Palm Beach, FL",
+    "url": "https://www.linkedin.com/jobs/view/4440999241/"
+  },
+  "canonicalWrites": 0,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "originalRequestEvidence": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+    "candidateIndex": 18,
+    "candidateOutcome": "WRITE_FAILED",
+    "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+    "acceptancePath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_ACCEPTANCE.json",
+    "checkpointPath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_CHECKPOINT.json",
+    "verifiedPath": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json",
+    "independentIndexCommit": "6bbb359bc49afc08e99d7d7bf62699690e948171",
+    "independentIndexSha256": "76f3366276893912415e30bb716ccf202d8be07e354356ed0938cbfeb93172ce",
+    "independentReceipt": {
+      "s": "COMPLETE",
+      "at": "2026-11-01T21:05:01.608Z",
+      "w": "W-20261101210436699-169590",
+      "snapshotHash": "1b54ecc0a56573:8057820"
+    },
+    "originalCandidateInserted": false
+  },
+  "additionalEvidence": {
+    "canonicalCandidates": [
+      {
+        "primaryId": "V2I-AA7724B3A2EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "Atlanta, GA",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "4440982880",
+        "store": "MASTER",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "4c0d8c64fae47975b96115371ebbc4e5fa1783a44fbf47db7f0ca4d1c3609aab"
+      },
+      {
+        "primaryId": "V2F-2D0D5E23A03E",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "Open to all US offices (Atlanta, Nashville etc.)",
+        "bucket": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "a3ecc14294c626e6c101aa41d6e02a454d6f763ec28adca6299e5feed26d587d"
+      },
+      {
+        "primaryId": "V2F-A2A49FEBF3F1",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "12b847e208c1f2789ce8bf96e938c992225b466d97209048d661e412a78fe181"
+      },
+      {
+        "primaryId": "V2F-0ACDB80CF3EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "0d0caad3d6ad7a6f41f78136fdaaa7de8824204427e7d3f809e30a576f948838"
+      },
+      {
+        "primaryId": "V2F-9FA49B32F3F1",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "a467fc4e054ce1fd3d3ba32508d614de9d45693cb4df001ed9817986c3da7b0b"
+      },
+      {
+        "primaryId": "V2F-182CA0E9F3EF",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "769d8131509760f6d781899ea9abe26b35e75173814fca8b293e5f36242ddbc2"
+      },
+      {
+        "primaryId": "V2F-9620A1CCA03F",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "edc2e480171e26d5e099b016c74fb1f5861ab43460e4d55ba116d817bbf7e832"
+      },
+      {
+        "primaryId": "V2F-3B6B250DA06F",
+        "company": "Alvarez & Marsal",
+        "title": "PEPI: Director, Operations & Manufacturing (OPEN TO ALL U.S. LOCATIONS)",
+        "location": "-",
+        "bucket": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2F-2D0D5E23A03E",
+        "reqId": "LI-4440985743",
+        "store": "ARCHIVE",
+        "exactPostingMatch": false,
+        "labelledReqMatch": false,
+        "canonicalPostingKeys": [],
+        "locationMatch": false,
+        "rowSha256": "e8da640c87f6133b14a09341289b684d0da581060ae9e6e0d24b02f47659e603"
+      }
+    ]
+  }
+}
