@@ -1,0 +1,44 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:3fedc6579d11f0e5f47b0743",
+  "sourceVersion": "7b83a89f0a701f2036d0f0e2c6e66a722776156f8fb546ffbcc4fa628ca3b07c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T0704Z-SCOPE-B2-09",
+  "instructionCommit": "966ee971a63f3482c2669e4c90cfdbcc7804136b",
+  "observedAt": "2026-11-05T07:09:30.145Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved exact identity retained, but exact public Workday URL returned CRAWL_EMPTY_CONTENT. Scope and active source status remain unresolved.",
+  "nextAction": "Retain exact saved identity; retry when exact public posting content or source transport changes",
+  "attempts": [
+    {
+      "source": [
+        "state/source-trial-report.json"
+      ],
+      "result": "Saved identity and discovery/accepted helper evidence reused; actual scope not previously established"
+    },
+    {
+      "source": "https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---TX---Plano/Director--Franchise-Operations---North_R-148044",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "CRAWL_EMPTY_CONTENT; no exact responsibilities returned",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "No source content or source closure inferred from empty response."
+  ],
+  "sourceEvidence": {
+    "company": "The Coca-Cola Company",
+    "title": "Director, Franchise Operations - North",
+    "location": "Plano, TX, USA",
+    "url": "https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---TX---Plano/Director--Franchise-Operations---North_R-148044",
+    "observedAt": "2026-11-05T07:09:30.145Z",
+    "references": [
+      "state/source-trial-report.json"
+    ]
+  },
+  "retryCondition": "EXACT_POSTING_CONTENT_AVAILABLE_OR_SOURCE_TRANSPORT_CHANGED"
+}

@@ -1,0 +1,54 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4484134225",
+  "sourceVersion": "0516c54de57b0b1e8b694e213f0469eb7a3c932faaee37aeca998c417929888e",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261105T0704Z-SCOPE-B2-02",
+  "instructionCommit": "966ee971a63f3482c2669e4c90cfdbcc7804136b",
+  "observedAt": "2026-11-05T07:09:09.518Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact posting contains clear manufacturing responsibility but inconsistent role labels: header Director of Operations, body Assembly Production Manager and Fabrication Operations Director. Preserve all source labels for identity reconciliation rather than choosing one.",
+  "nextAction": "Reconcile exact posting title/worksite observations using saved source evidence; retain all original identities",
+  "attempts": [
+    {
+      "source": [
+        "state/source-trial-report.json",
+        "EMAIL_RECOVERY"
+      ],
+      "result": "Saved identity and discovery/accepted helper evidence reused; actual scope not previously established"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4484134225/",
+      "transport": "Connected Exa exact-URL fetch",
+      "result": "Readable exact posting responsibilities",
+      "targetedPostingReads": 1,
+      "targetedSearches": 0
+    }
+  ],
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Exact assigned job title needs source-bound reconciliation; no title is substituted."
+  ],
+  "sourceEvidence": {
+    "company": "Sanmina",
+    "title": "Director of Operations",
+    "location": "Fremont, CA",
+    "url": "https://www.linkedin.com/jobs/view/4484134225/",
+    "quote": "The Fabrication Operations Director is responsible for the direct management of all manufacturing and production activities for complex fabricated sheet metal, tubular frames, final assembly & test of a variety of technical components & products.",
+    "observedAt": "2026-11-05T07:09:09.518Z",
+    "references": [
+      "state/source-trial-report.json",
+      "EMAIL_RECOVERY"
+    ]
+  },
+  "retryCondition": "EXACT_SOURCE_TITLE_AND_WORKSITE_RECONCILIATION",
+  "sourceConflictEvidence": {
+    "headerTitle": "Director of Operations",
+    "bodyTitles": [
+      "Assembly Production Manager",
+      "Fabrication Operations Director"
+    ]
+  }
+}
