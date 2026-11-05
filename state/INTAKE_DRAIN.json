@@ -3533,9 +3533,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.097Z",
-        "retryAfter": "2026-11-05T10:05:43.097Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.009Z",
+        "retryAfter": "2026-11-05T11:07:20.009Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -3899,9 +3899,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:47.698Z",
-        "retryAfter": "2026-11-05T10:05:47.698Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:22.306Z",
+        "retryAfter": "2026-11-05T11:07:22.306Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -3939,9 +3939,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:34.996Z",
-        "retryAfter": "2026-11-05T10:05:34.996Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:18.376Z",
+        "retryAfter": "2026-11-05T11:07:18.376Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -15295,12 +15295,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/376192218daec5ed9928d13b3f95bea0c38fea8350e5eccdbf4b6b830bb880f4.json",
         "sha256": "376192218daec5ed9928d13b3f95bea0c38fea8350e5eccdbf4b6b830bb880f4",
         "observedAt": "2026-11-05T10:05:44.808Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "376192218daec5ed9928d13b3f95bea0c38fea8350e5eccdbf4b6b830bb880f4",
+        "observedAt": "2026-11-05T10:06:53.086Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-05T16:06:53.086Z"
       }
     },
     "url:07ed049d59481868c1db1f93": {
@@ -15892,7 +15899,7 @@
       "aliases": [
         "url:17b441f1cabaede077050885"
       ],
-      "sourceVersion": "9a36db2a8af0228151e97befed5c20676683e7fe09e0a7ad0ee3bb8cb6960e3f",
+      "sourceVersion": "c4b67b5b5ab1a29b579c20c0081e0a437d6e5089aaaaea966621b70537de0784",
       "card": {
         "company": "Anduril Industries",
         "title": "Head of Business Line Operations, Air Dominance & Strike",
@@ -15915,8 +15922,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
@@ -16026,16 +16033,15 @@
         "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-023A618D9B87312397D26B74"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T100723Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/41e11cc29f85c85a5d20db755b263cd531fd05887070b9f8879e41b051e4695f.json",
-        "sha256": "41e11cc29f85c85a5d20db755b263cd531fd05887070b9f8879e41b051e4695f",
-        "observedAt": "2026-11-05T10:05:31.679Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:ca7a69a812a823776d892cac": {
       "key": "url:ca7a69a812a823776d892cac",
@@ -16297,7 +16303,7 @@
       "aliases": [
         "url:8fcc84702728f06dba615e6c"
       ],
-      "sourceVersion": "9e1cc3efdda8caaddc8d18a264aad31f793db0fb03f70cc1949385b6231a619d",
+      "sourceVersion": "388409786c8d173da46ec64f20d7bedcdc6f21cce4a619e151c310784a66814f",
       "card": {
         "company": "Anduril Industries",
         "title": "Senior Manager, Growth Operations",
@@ -16320,8 +16326,8 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-22T05:00:36.815Z",
       "sourceReferences": [
@@ -16427,16 +16433,15 @@
         "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-C81EBBFAC0C77A0D7B49B2AD"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261105T100723Z.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/11bc125a2681f70fdccef4e5667f2960d7b8ae18e7fa994d9d44e36a56c21286.json",
-        "sha256": "11bc125a2681f70fdccef4e5667f2960d7b8ae18e7fa994d9d44e36a56c21286",
-        "observedAt": "2026-11-05T10:05:41.122Z",
-        "outcome": "SOURCE_READY"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:12392fb8db756b0fdd013832": {
       "key": "url:12392fb8db756b0fdd013832",
@@ -53377,9 +53382,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:45.351Z",
-        "retryAfter": "2026-11-05T10:05:45.351Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:21.596Z",
+        "retryAfter": "2026-11-05T11:07:21.596Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -58911,9 +58916,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.282Z",
-        "retryAfter": "2026-11-05T10:05:43.282Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.164Z",
+        "retryAfter": "2026-11-05T11:07:20.164Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59352,9 +59357,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:44.074Z",
-        "retryAfter": "2026-11-05T10:05:44.074Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.311Z",
+        "retryAfter": "2026-11-05T11:07:20.311Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59454,9 +59459,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:44.052Z",
-        "retryAfter": "2026-11-05T10:05:44.052Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.285Z",
+        "retryAfter": "2026-11-05T11:07:20.285Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59657,9 +59662,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.302Z",
-        "retryAfter": "2026-11-05T10:05:43.302Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.187Z",
+        "retryAfter": "2026-11-05T11:07:20.187Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59710,9 +59715,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.909Z",
-        "retryAfter": "2026-11-05T10:05:43.909Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.260Z",
+        "retryAfter": "2026-11-05T11:07:20.260Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59812,9 +59817,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.887Z",
-        "retryAfter": "2026-11-05T10:05:43.887Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.234Z",
+        "retryAfter": "2026-11-05T11:07:20.234Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -59865,9 +59870,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.193Z",
-        "retryAfter": "2026-11-05T10:05:43.193Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.087Z",
+        "retryAfter": "2026-11-05T11:07:20.087Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -60110,9 +60115,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:43.866Z",
-        "retryAfter": "2026-11-05T10:05:43.866Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:20.210Z",
+        "retryAfter": "2026-11-05T11:07:20.210Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -78699,9 +78704,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:31.702Z",
-        "retryAfter": "2026-11-05T10:05:31.702Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:16.569Z",
+        "retryAfter": "2026-11-05T11:07:16.569Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -78934,9 +78939,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:30.872Z",
-        "retryAfter": "2026-11-05T10:05:30.872Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:15.091Z",
+        "retryAfter": "2026-11-05T11:07:15.091Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -81793,9 +81798,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:32.382Z",
-        "retryAfter": "2026-11-05T10:05:32.382Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:17.302Z",
+        "retryAfter": "2026-11-05T11:07:17.302Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -89005,12 +89010,19 @@
       "fence": null,
       "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/3bfd3a2999fa0874cae6203ce18443dca774f8b982e9b78cb8c5f8dce127ef94.json",
         "sha256": "3bfd3a2999fa0874cae6203ce18443dca774f8b982e9b78cb8c5f8dce127ef94",
         "observedAt": "2026-11-05T10:05:46.682Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "3bfd3a2999fa0874cae6203ce18443dca774f8b982e9b78cb8c5f8dce127ef94",
+        "observedAt": "2026-11-05T10:06:53.086Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-05T16:06:53.086Z"
       }
     },
     "linkedin:4484424390": {
@@ -183397,9 +183409,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:33.477Z",
-        "retryAfter": "2026-11-05T10:05:33.477Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:18.159Z",
+        "retryAfter": "2026-11-05T11:07:18.159Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -205591,9 +205603,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:42.827Z",
-        "retryAfter": "2026-11-05T10:05:42.827Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:19.786Z",
+        "retryAfter": "2026-11-05T11:07:19.786Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -207572,9 +207584,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:42.577Z",
-        "retryAfter": "2026-11-05T10:05:42.577Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:19.508Z",
+        "retryAfter": "2026-11-05T11:07:19.508Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -207613,9 +207625,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:32.919Z",
-        "retryAfter": "2026-11-05T10:05:32.919Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:17.765Z",
+        "retryAfter": "2026-11-05T11:07:17.765Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -207736,9 +207748,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:30.600Z",
-        "retryAfter": "2026-11-05T10:05:30.600Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:14.673Z",
+        "retryAfter": "2026-11-05T11:07:14.673Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -207859,9 +207871,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:30.309Z",
-        "retryAfter": "2026-11-05T10:05:30.309Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:14.432Z",
+        "retryAfter": "2026-11-05T11:07:14.432Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -219213,9 +219225,9 @@
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-05T09:05:35.458Z",
-        "retryAfter": "2026-11-05T10:05:35.458Z"
+        "attempts": 4,
+        "lastAttempt": "2026-11-05T10:07:18.949Z",
+        "retryAfter": "2026-11-05T11:07:18.949Z"
       },
       "upstreamStatus": "WAITING",
       "action": "RECOVER_SOURCE",
@@ -226679,20 +226691,19 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T10:10:09.452Z",
-  "upstreamAt": "2026-11-05T10:10:08.644Z",
+  "at": "2026-11-05T10:10:50.471Z",
+  "upstreamAt": "2026-11-05T10:04:51.067Z",
   "counts": {
-    "SOURCE_VALIDATION_REQUIRED": 152,
-    "ACTION_REQUIRED": 4981,
+    "SOURCE_VALIDATION_REQUIRED": 154,
+    "ACTION_REQUIRED": 4983,
     "WAITING_EVIDENCE_CHANGE": 248,
     "INVENTORY_RECONCILIATION_REQUIRED": 38,
-    "READY_FOR_CONTROLLED_INTAKE": 8,
-    "PENDING_INDEPENDENT_VALIDATION": 4
+    "READY_FOR_CONTROLLED_INTAKE": 8
   },
   "actions": {
-    "REVIEW_SCOPE": 3047,
+    "REVIEW_SCOPE": 3045,
     "RESOLVE_IDENTITY": 433,
-    "RECONCILE_WRITER": 515,
+    "RECONCILE_WRITER": 517,
     "RECOVER_SOURCE": 1409,
     "INTAKE": 27
   },
