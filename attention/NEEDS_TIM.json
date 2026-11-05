@@ -1,42 +1,18 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-05T08:52:26.731Z",
- "sourceCommit": "e33a2f5a643332e93ba21482986e7d99488a32e1",
+ "builtAt": "2026-11-05T08:57:50.882Z",
+ "sourceCommit": "c08466b526c66ac9da54e9b7bc7b8e86284442b5",
  "counts": {
-  "total": 53,
+  "total": 40,
   "BLOCKING": 0,
-  "ACTION": 20,
+  "ACTION": 7,
   "WATCH": 33,
   "DECIDE": 5,
   "JOBS": 1,
-  "FAILED": 10,
-  "UPKEEP": 37
+  "FAILED": 8,
+  "UPKEEP": 26
  },
  "items": [
-  {
-   "id": "auto-intake-identity-hold:FORGE-SOURCE-2DF0AFF6E7F4C438BD24F2C6",
-   "section": "FAILED",
-   "level": "ACTION",
-   "title": "Unconfirmed intake: Manatts · Ready Mix Plant Manager - Marshalltown, IA",
-   "detail": "Marshalltown, IA, USA. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-2DF0AFF6E7F4C438BD24F2C6",
-   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
-   "at": null,
-   "raisedBy": "AUTO-INTAKE"
-  },
-  {
-   "id": "auto-intake-identity-hold:FORGE-SOURCE-3B9DB210EA9C102281560722",
-   "section": "FAILED",
-   "level": "ACTION",
-   "title": "Unconfirmed intake: Crusoe · Senior Manager, Facilities Remote Operations Center",
-   "detail": "Dallas, TX - US. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-3B9DB210EA9C102281560722",
-   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
-   "source": "receipts/auto-intake/FORGE-AUTO-20261105T083136Z.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261105T083136Z.json",
-   "at": null,
-   "raisedBy": "AUTO-INTAKE"
-  },
   {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
@@ -108,18 +84,6 @@
    ]
   },
   {
-   "id": "lane-overdue:REPAIR",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "REPAIR lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
-   "at": "2026-10-30T20:20:00-04:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "ask:ASK-CHATGPT-OUTCOME-DTNA-1a18f0746c61fd53",
    "section": "DECIDE",
    "level": "ACTION",
@@ -143,90 +107,6 @@
      "url": "https://mail.google.com/mail/u/0/#all/1a18f0746c61fd53"
     }
    ]
-  },
-  {
-   "id": "lane-overdue:EMAIL-FINISH",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "EMAIL-FINISH lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-EMAIL-FINISH-CHATGPT-20261101-SEARCHES_RELEASED.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-EMAIL-FINISH-CHATGPT-20261101-SEARCHES_RELEASED.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-EMAIL-FINISH-CHATGPT-20261101-SEARCHES_RELEASED.json",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:EMAIL-RECOVERY",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "EMAIL-RECOVERY lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:HELPER-CONSUME",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "HELPER-CONSUME lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:HELPER-DRAIN",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "HELPER-DRAIN lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-HELPER-DRAIN-CHATGPT-20261101-V2_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2_TERMINAL.json",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:META-PAY",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "META-PAY lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-META-PAY-CHATGPT-20261101T0136Z_TERMINAL.txt (CHATGPT, status VERIFIED_COMPLETE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-META-PAY-CHATGPT-20261101T0136Z_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-META-PAY-CHATGPT-20261101T0136Z_TERMINAL.txt",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:RELEVANCE",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "RELEVANCE lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-RELEVANCE-CHATGPT-20261101-LIVE_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE_TERMINAL.json",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:SALARY",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "SALARY lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt (CHATGPT, status COMPLETE). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
-   "at": "2026-11-01T00:00:00-05:00",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "ask:ASK-CHATGPT-OUTCOME-CONFIDENTIAL-1a197f70e87751b0",
@@ -254,46 +134,10 @@
    ]
   },
   {
-   "id": "lane-overdue:EMAIL",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "EMAIL lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
-   "at": "2026-11-01T19:10:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:INTAKE-INSPECT",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "INTAKE-INSPECT lane has gone quiet (usually reports every 0 h)",
-   "detail": "Last receipt FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
-   "at": "2026-11-01T19:10:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
-   "id": "lane-overdue:COORDINATOR",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "COORDINATOR lane has gone quiet (usually reports every 1.1 h)",
-   "detail": "Last receipt FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
-   "at": "2026-11-02T03:05:00-05:00",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "pr:forge-coordination#256",
    "section": "UPKEEP",
    "level": "ACTION",
-   "title": "forge-coordination PR #256: Reconcile newer Crusoe and Manatts intake alerts",
+   "title": "forge-coordination PR #256: Reconcile remaining intake alerts and remove inferred legacy schedule noise",
    "detail": "Open since 2026-11-05. Waiting for your review and merge.",
    "action": "Open the PR → review → Merge (or Close with a one-line reason).",
    "source": "forge-coordination #256",
@@ -764,7 +608,7 @@
    "lastFile": "receipts/FORGE-COORDINATOR-CHATGPT-20261102-0305ET_TERMINAL.json",
    "runs7d": 11,
    "usualGapHours": 1.1,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "EMAIL-FINISH",
@@ -774,7 +618,7 @@
    "lastFile": "receipts/FORGE-EMAIL-FINISH-CHATGPT-20261101-SEARCHES_RELEASED.json",
    "runs7d": 5,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "EMAIL-RECOVERY",
@@ -784,7 +628,7 @@
    "lastFile": "receipts/FORGE-EMAIL-RECOVERY-CHATGPT-20261101-IDENTITY_TERMINAL.json",
    "runs7d": 52,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "EMAIL-TINYFISH",
@@ -804,7 +648,7 @@
    "lastFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
    "runs7d": 262,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "EMAIL",
@@ -814,7 +658,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-GROK-20261028-0714ET_TERMINAL.txt",
    "runs7d": 0,
    "usualGapHours": null,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "EMAIL",
@@ -824,7 +668,7 @@
    "lastFile": "receipts/AI_REASON_RUN_RECEIPT_FORGE_EMAIL_DISCOVERY_20261016_1800ET.txt",
    "runs7d": 0,
    "usualGapHours": 27,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "ENRICH-FEASIBILITY",
@@ -954,7 +798,7 @@
    "lastFile": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1_TERMINAL.json",
    "runs7d": 7,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "HELPER-DRAIN",
@@ -964,7 +808,7 @@
    "lastFile": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2_TERMINAL.json",
    "runs7d": 10,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "INDEX-CUTOVER",
@@ -1004,7 +848,7 @@
    "lastFile": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET_TERMINAL.json",
    "runs7d": 34,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "META-PAY",
@@ -1014,7 +858,7 @@
    "lastFile": "receipts/FORGE-META-PAY-CHATGPT-20261101T0136Z_TERMINAL.txt",
    "runs7d": 5,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "OPS",
@@ -1084,7 +928,7 @@
    "lastFile": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE_TERMINAL.json",
    "runs7d": 11,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "REPAIR",
@@ -1094,7 +938,7 @@
    "lastFile": "receipts/FORGE-REPAIR-CHATGPT-20261030-2020ET_CLOSE_ROLE_VERIFIED.json",
    "runs7d": 5,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "ROTATION",
@@ -1114,7 +958,7 @@
    "lastFile": "receipts/FORGE-SALARY-CHATGPT-20261101-CONFIDENCE_TERMINAL.txt",
    "runs7d": 6,
    "usualGapHours": 0,
-   "overdue": true
+   "overdue": false
   },
   {
    "lane": "TRANSFER",
