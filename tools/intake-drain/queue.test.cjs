@@ -46,3 +46,19 @@ test('resume-backed scope and identity are necessary even with an AI positive ve
 test('repeated code source failures get an AI recovery owner rather than retrying forever in intake',t=>{
  const {root,key,cards}=fixture(t,[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:cards[0],status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});const item=Q.sync(root,{now}).items[key];a.equal(item.action,'RECOVER_SOURCE');a.equal(item.taskKey,'FORGE_INTAKE_SOURCE_RECOVERY');a.equal(item.sourceFailure.attempts,2);
 });
+
+test('a source key replaced by its canonical group is accounted without re-queuing a positive review',t=>{
+ const {root,key}=fixture(t),work=Q.sync(root,{now,apply:true});Q.publish(root,proposal(work.items[key]),now);
+ const up=S.read(root,'state/UPSTREAM_LEDGER.json');up.entries[key].status='PRESENT';up.entries[key].primaryId='V2I-ALREADY';delete up.groups[key];up.groups['pid:V2I-ALREADY']={status:'PRESENT',aliases:[key],firstSeen:at};S.save(root,'state/UPSTREAM_LEDGER.json',up);
+ const w=Q.sync(root,{now});a.equal(w.items[key].status,'ACCOUNTED_UPSTREAM');a.equal(w.items[key].outcome.primaryId,'V2I-ALREADY');a.equal(w.items[key].canonicalCompletion,false);a.equal(w.actions.INTAKE,undefined);
+});
+test('represented jobs with uncertain original writes retain receipt reconciliation and cannot replay',t=>{
+ const {root,key}=fixture(t),w=Q.sync(root,{now,apply:true});Q.publish(root,proposal(w.items[key]),now);S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[key]:{...w.items[key].card,key,status:'POST_IN_FLIGHT_UNKNOWN',submissions:[{requestId:'ORIGINAL-UNCERTAIN'}],evidence:[]}}});
+ const up=S.read(root,'state/UPSTREAM_LEDGER.json');delete up.groups[key];up.groups['pid:V2I-ALREADY']={status:'PRESENT',aliases:[key],firstSeen:at};S.save(root,'state/UPSTREAM_LEDGER.json',up);
+ const item=Q.sync(root,{now}).items[key];a.equal(item.status,'ACTION_REQUIRED');a.equal(item.action,'RECONCILE_WRITER');a.deepEqual(item.fence.requestIds,['ORIGINAL-UNCERTAIN']);a.equal(item.canonicalCompletion,false);a.match(item.nextAction,/Never replay/);
+});
+test('an old valid positive review cannot reactivate a group missing from current inventory',t=>{
+ const {root,key}=fixture(t),w=Q.sync(root,{now,apply:true});Q.publish(root,proposal(w.items[key]),now);
+ const up=S.read(root,'state/UPSTREAM_LEDGER.json');delete up.groups[key];S.save(root,'state/UPSTREAM_LEDGER.json',up);
+ a.equal(Q.sync(root,{now}).items[key].status,'INVENTORY_RECONCILIATION_REQUIRED');
+});
