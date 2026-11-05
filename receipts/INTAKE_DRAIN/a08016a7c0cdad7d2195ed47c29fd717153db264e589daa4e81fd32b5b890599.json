@@ -1,0 +1,65 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:f7e2618bb733545b1c639524",
+  "sourceVersion": "64428b1ef5f817b7f925d53e631f47fa3e5f9fa055afba2473aaa540b21b6992",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1124Z-SOURCE-B2-3",
+  "instructionCommit": "fb5154a04ab1e9548392200a23cc039860f025de",
+  "observedAt": "2026-11-05T11:43:01.831Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered West Chester Ohio. Existing same-role V2I-6FBE6DE444C0 SCOUT_INTAKE uses Cincinnati Metropolitan Area; municipality versus metro is not inherently contradictory but exact original employer posting/Apply binding is absent. Existing read-only canonical evidence probe blocked by unavailable cloud credential; preserve potential existing identity without duplicate intake.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@b922aa31",
+      "result": "Recovered exact saved worksite, no location guessed from URL or headquarters."
+    },
+    {
+      "source": "Existing read-only Writer evidence V2I-6FBE6DE444C0",
+      "result": "BLOCKED: credential required; no secrets sought, no protected-role outside research."
+    }
+  ],
+  "recoveredFields": {
+    "location": "West Chester, Ohio, United States"
+  },
+  "sourceEvidence": {
+    "company": "Upside Innovations",
+    "title": "Director of Quality",
+    "location": "West Chester, Ohio, United States",
+    "url": "https://hiringcafe.com/job/director-of-quality-upside-innovations-west-chester-ohio-819usrc3hmyiw0mo",
+    "references": [
+      "state/source-trial-report.json@b922aa31"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Existing authenticated AI/local coordinator recovers original employer requisition/Apply/site evidence and resolves municipality/metro identity.",
+  "publicEvidence": {
+    "canonicalCandidate": {
+      "primaryId": "V2I-6FBE6DE444C0",
+      "company": "Upside Innovations, LLC",
+      "title": "Director of Quality",
+      "location": "Cincinnati Metropolitan Area",
+      "bucket": "SCOUT_INTAKE",
+      "disposition": "INTAKE/AWAITING_ANALYSIS",
+      "reqId": "UNCAPTURED",
+      "store": "MASTER",
+      "exactPostingMatch": false,
+      "labelledReqMatch": false,
+      "canonicalPostingKeys": [],
+      "locationMatch": false,
+      "rowSha256": "d9d8319226454195a43687464d0c72ae9aab72748c6450ede642a5128455d5af"
+    },
+    "canonicalSnapshot": {
+      "masterSha256": "aa308b96146bf81852b739819864568ccac100ba694529e0df85f528a5dfdbbf",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 4595,
+      "archiveRows": 785,
+      "masterEndMarker": true,
+      "archiveHeader": true,
+      "rowReadAt": "2026-11-05T11:32:16.250Z"
+    }
+  }
+}

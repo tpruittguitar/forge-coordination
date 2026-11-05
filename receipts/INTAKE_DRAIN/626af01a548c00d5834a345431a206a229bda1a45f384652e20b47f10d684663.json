@@ -1,0 +1,45 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:f93a8493eb8ce0cff2b2476e",
+  "sourceVersion": "ea09b029eb1ffac13034d233c674700ede3dfe4807d1a3cab16d5faaf1482e64",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105T1124Z-SOURCE-B2-6",
+  "instructionCommit": "fb5154a04ab1e9548392200a23cc039860f025de",
+  "observedAt": "2026-11-05T11:43:08.148Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered Cleveland Ohio. Exact matching Wabtec employer page explicitly states vacancy expired. Its remanufacturing plant leadership function is relevant, but observed closure requires existing source-closure accounting, not new intake or an invented canonical decline. Other search result requisitions were not substituted or assumed the same vacancy.",
+  "nextAction": "AI retains source/identity recovery; resume only when the recorded evidence condition changes.",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@920c0d8d",
+      "result": "Recovered exact saved worksite, no location guessed from URL or headquarters."
+    },
+    {
+      "source": "https://careers.wabtec.com/job/director-plant-manager-in-cleveland-oh-united-states-jid-3571",
+      "result": "Read matching employer title/Cleveland and explicit vacancy expired notice; not inferred from HTTP failure."
+    }
+  ],
+  "recoveredFields": {
+    "location": "Cleveland, Ohio, United States",
+    "url": "https://careers.wabtec.com/job/director-plant-manager-in-cleveland-oh-united-states-jid-3571"
+  },
+  "sourceEvidence": {
+    "company": "Wabtec Corporation",
+    "title": "Director, Plant Manager",
+    "location": "Cleveland, Ohio, United States",
+    "url": "https://careers.wabtec.com/job/director-plant-manager-in-cleveland-oh-united-states-jid-3571",
+    "quote": "This vacancy has now expired. Please see similar roles below...",
+    "references": [
+      "state/source-trial-report.json@920c0d8d"
+    ]
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolved": [],
+  "retryCondition": "Existing coordinator consumes exact employer vacancy-closure evidence, or employer explicitly reopens this bound posting.",
+  "publicEvidence": {
+    "closureSource": "https://careers.wabtec.com/job/director-plant-manager-in-cleveland-oh-united-states-jid-3571",
+    "closureType": "EXPLICIT_EMPLOYER_VACANCY_EXPIRED"
+  }
+}
