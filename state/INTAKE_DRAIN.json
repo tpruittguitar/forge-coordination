@@ -221252,7 +221252,7 @@
       "aliases": [
         "linkedin:4486046821"
       ],
-      "sourceVersion": "ec133ca2506aad2c36d673829ce41ccfe4f9e26f9ec621ec984258d329576445",
+      "sourceVersion": "fda358fc4d283653dcdc7ea42cddc423dd7a9d74e63de32c0b986798f66d733c",
       "card": {
         "company": "French Oil Mill Machinery Co.",
         "title": "Director of Manufacturing",
@@ -221263,12 +221263,13 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RESOLVE_IDENTITY",
+      "action": "RECONCILE_WRITER",
       "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-11-03T17:54:42.686Z",
       "sourceReferences": [
-        "state/source-trial-report.json"
+        "state/source-trial-report.json",
+        "EMAIL_RECOVERY"
       ],
       "discoveryReview": {
         "schema": "forge.discovery-review.v1",
@@ -221329,8 +221330,13 @@
         "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
         "maxTargetedLookups": 1
       },
-      "fence": null,
-      "nextAction": "Investigate original hold and exact role identity; retain all protected decisions",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261105T142023724Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json"
+      },
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -236738,23 +236744,59 @@
       "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
+    },
+    "linkedin:4486090695": {
+      "key": "linkedin:4486090695",
+      "aliases": [
+        "linkedin:4486090695"
+      ],
+      "sourceVersion": "8a47f46c64febad49059b3563dfa294d45c566e549cccecc3fc263ac6c496f4d",
+      "card": {
+        "company": "Nter Talent",
+        "title": "Vice President Operations",
+        "location": "Terre Haute, IN",
+        "url": "https://www.linkedin.com/jobs/view/4486090695/"
+      },
+      "sourceRecovery": null,
+      "sourceConflict": null,
+      "sourceFailure": null,
+      "upstreamStatus": "WAITING",
+      "action": "REVIEW_SCOPE",
+      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "owner": "ChatGPT",
+      "firstSeen": "2026-11-05T13:53:04.000Z",
+      "sourceReferences": [
+        "EMAIL_RECOVERY"
+      ],
+      "discoveryReview": null,
+      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "screen": {
+        "outcome": "RANKED_DISCOVERY",
+        "rank": 2,
+        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
+        "maxTargetedLookups": 1
+      },
+      "fence": null,
+      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "canonicalCompletion": false,
+      "status": "ACTION_REQUIRED"
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-05T14:26:52.235Z",
-  "upstreamAt": "2026-11-05T14:26:50.923Z",
+  "at": "2026-11-05T14:29:54.895Z",
+  "upstreamAt": "2026-11-05T14:29:53.895Z",
   "counts": {
     "WAITING_EVIDENCE_CHANGE": 489,
-    "ACTION_REQUIRED": 4586,
+    "ACTION_REQUIRED": 4587,
     "SOURCE_VALIDATION_REQUIRED": 295,
     "INVENTORY_RECONCILIATION_REQUIRED": 43,
     "READY_FOR_CONTROLLED_INTAKE": 28,
     "PENDING_INDEPENDENT_VALIDATION": 12
   },
   "actions": {
-    "REVIEW_SCOPE": 3055,
-    "RESOLVE_IDENTITY": 437,
-    "RECONCILE_WRITER": 522,
+    "REVIEW_SCOPE": 3056,
+    "RESOLVE_IDENTITY": 436,
+    "RECONCILE_WRITER": 523,
     "RECOVER_SOURCE": 1413,
     "INTAKE": 26
   },
