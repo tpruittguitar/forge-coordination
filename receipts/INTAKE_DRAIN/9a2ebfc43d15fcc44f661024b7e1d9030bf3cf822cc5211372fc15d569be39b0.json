@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:2457c59ede1ae49bd7f3bd88",
+  "sourceVersion": "740f0943c3f265c83dc6add5286dd38f8282f2f2cabafbf52be630d1d80b1deb",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B2-04",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:44:19.472Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current upstream inventory holds a prior existing/protected identity. Code comparison with saved canonical evidence found 1 exact normalized employer/title candidates; preserve decisions and any conflicting site/requisition evidence pending fresh canonical reconciliation.",
+  "nextAction": "Existing coordinator must read exact fresh canonical/master/archive identities, reconcile source requisition and any duplicate lineage, then correct upstream accounting without changing protected jobs",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_OR_DUPLICATE_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:2457c59ede1ae49bd7f3bd88",
+      "result": "Prior existing/protected evidence retained; held inventory is not proof of fresh canonical absence"
+    },
+    {
+      "source": "receipts/EMAIL_RECOVERY_MASTER_20261031_0000ET.json",
+      "result": "1 exact normalized company/title matches in historical authenticated snapshot; this is saved evidence, not a fresh read"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Standard Bots",
+    "title": "Manufacturing Plant Manager ",
+    "location": "Glen Cove, NY",
+    "url": "https://jobs.ashbyhq.com/standardbots/110df2f6-84a2-43ce-a7db-1257fc4b94d2"
+  },
+  "conclusion": {
+    "kind": "HISTORICAL_CANONICAL_IDENTITY_RECONCILIATION",
+    "candidates": [
+      {
+        "primaryId": "V2I-4FE4FC185D1D",
+        "location": "Glen Cove, NY",
+        "status": "DECLINED_BY_TIM",
+        "disposition": "RESOLVED/DECLINED_BY_TIM",
+        "requisition": "110df2f6-84a2-43ce-a7db-1257fc4b94d2",
+        "savedLocationMatch": true
+      }
+    ],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT"
+}

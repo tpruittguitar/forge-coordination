@@ -1,0 +1,47 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:535a10acfd73c7a294aaad99",
+  "sourceVersion": "8af980886884d22580e7d0c996c75675035c7a4fd89b93cf82e7cd3e5d1975e4",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B2-07",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:44:28.381Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current upstream inventory holds a prior existing/protected identity. Code comparison with saved canonical evidence found 1 exact normalized employer/title candidates; preserve decisions and any conflicting site/requisition evidence pending fresh canonical reconciliation.",
+  "nextAction": "Existing coordinator must read exact fresh canonical/master/archive identities, reconcile source requisition and any duplicate lineage, then correct upstream accounting without changing protected jobs",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_OR_DUPLICATE_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:535a10acfd73c7a294aaad99",
+      "result": "Prior existing/protected evidence retained; held inventory is not proof of fresh canonical absence"
+    },
+    {
+      "source": "receipts/EMAIL_RECOVERY_MASTER_20261031_0000ET.json",
+      "result": "1 exact normalized company/title matches in historical authenticated snapshot; this is saved evidence, not a fresh read"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Shield AI",
+    "title": "Head of Aircraft Production (R6147)",
+    "location": "Seattle, Washington",
+    "url": "https://jobs.lever.co/shieldai/9675e116-f0a0-4b56-932d-12ea6649e941"
+  },
+  "conclusion": {
+    "kind": "HISTORICAL_CANONICAL_IDENTITY_RECONCILIATION",
+    "candidates": [
+      {
+        "primaryId": "V2I-E2665FC8978B",
+        "location": "Seattle, WA",
+        "status": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2M-SHIELDAI-HEAD-AIRCRAFT-PROD-R6147",
+        "requisition": "R6147",
+        "savedLocationMatch": true
+      }
+    ],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT"
+}

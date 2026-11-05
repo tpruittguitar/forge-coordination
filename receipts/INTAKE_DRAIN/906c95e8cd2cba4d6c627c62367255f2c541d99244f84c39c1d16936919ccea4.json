@@ -1,0 +1,70 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481786021",
+  "sourceVersion": "9e5e8a06a72fec09616529d44332c5eef5920267ee42601559212d83630a9628",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B2-01",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:44:10.255Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original indexed acceptance and saved completed-batch verification retain Pratt as an employer/title/location identity hold; no current canonical identity is established.",
+  "nextAction": "Existing coordinator must verify the original local request, exact candidate row and source/site evidence; never replay",
+  "retryCondition": "FRESH_ORIGINAL_LOCAL_REQUEST_RECEIPT_AND_EXACT_CANONICAL_IDENTITY_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_CHECKPOINT.json",
+      "result": "Candidate key bound to original batch index 22"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_ACCEPTANCE.json",
+      "result": "WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_VERIFIED.json",
+      "result": "Saved independently COMPLETE at 2026-11-01T22:19:29.809Z; original response and writeId bindings match; candidate remains held"
+    },
+    {
+      "source": "tools/source-intake/reconcile-probe.js",
+      "result": "Current read-only cloud probe supports AUTO runs only; this local batch has no AUTO binding"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Pratt Industries",
+    "title": "Plant Manager",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4481786021/"
+  },
+  "conclusion": {
+    "kind": "ORIGINAL_TERMINAL_IDENTITY_HOLD",
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "index": 22,
+    "result": {
+      "index": 22,
+      "result": "WRITE_FAILED",
+      "primaryId": "",
+      "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2I-7745EE88E325"
+      ],
+      "sourceSha256": "54c8a9d4adb4af1b5e13889c90f43e8010eb62b564663ea0b806b8fe7df324ad"
+    },
+    "effect": {
+      "key": "linkedin:4481786021",
+      "queueKey": null,
+      "status": "HELD_WRITER_IDENTITY",
+      "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2I-7745EE88E325"
+      ]
+    },
+    "savedCompleteObservedAt": "2026-11-01T22:19:29.809Z",
+    "writeId": "W-20261101221828306-5713a3",
+    "responseBinding": true,
+    "writeBinding": true,
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": true,
+  "owner": "ChatGPT"
+}

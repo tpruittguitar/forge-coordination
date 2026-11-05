@@ -1,0 +1,38 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:4a8ab637155f3b90b8d75980",
+  "sourceVersion": "e2e27c67394c24dc6c76f955a1f653c53ebdd143f6b33b6f00b6fda90fb34a9c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B2-05",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:44:22.570Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current upstream inventory holds a prior existing/protected identity. Code comparison with saved canonical evidence found 0 exact normalized employer/title candidates; preserve decisions and any conflicting site/requisition evidence pending fresh canonical reconciliation.",
+  "nextAction": "Existing coordinator must read exact fresh canonical/master/archive identities, reconcile source requisition and any duplicate lineage, then correct upstream accounting without changing protected jobs",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_OR_DUPLICATE_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:4a8ab637155f3b90b8d75980",
+      "result": "Prior existing/protected evidence retained; held inventory is not proof of fresh canonical absence"
+    },
+    {
+      "source": "receipts/EMAIL_RECOVERY_MASTER_20261031_0000ET.json",
+      "result": "0 exact normalized company/title matches in historical authenticated snapshot; this is saved evidence, not a fresh read"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Anduril Industries",
+    "title": "Head of Production, Compute & Comms",
+    "location": "Costa Mesa, California, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5213199007?gh_jid=5213199007"
+  },
+  "conclusion": {
+    "kind": "HISTORICAL_CANONICAL_IDENTITY_RECONCILIATION",
+    "candidates": [],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT"
+}

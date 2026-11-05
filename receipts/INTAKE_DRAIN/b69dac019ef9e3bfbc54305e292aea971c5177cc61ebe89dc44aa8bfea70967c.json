@@ -1,0 +1,82 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:5087418e56ba07b7edefeb55",
+  "sourceVersion": "96a8ec903ac0549639f8c39d2391da8068a87bb4a48e35fe879354302f8aaba7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105-HELD-B2-06",
+  "instructionCommit": "fc85f95bf9331e20cf3d41e67323bf0735bba85b",
+  "observedAt": "2026-11-05T06:44:25.502Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Current upstream inventory holds a prior existing/protected identity. Code comparison with saved canonical evidence found 5 exact normalized employer/title candidates; preserve decisions and any conflicting site/requisition evidence pending fresh canonical reconciliation.",
+  "nextAction": "Existing coordinator must read exact fresh canonical/master/archive identities, reconcile source requisition and any duplicate lineage, then correct upstream accounting without changing protected jobs",
+  "retryCondition": "FRESH_EXACT_CANONICAL_EXISTING_PROTECTED_OR_DUPLICATE_LINEAGE_RECONCILIATION",
+  "attempts": [
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/url:5087418e56ba07b7edefeb55",
+      "result": "Prior existing/protected evidence retained; held inventory is not proof of fresh canonical absence"
+    },
+    {
+      "source": "receipts/EMAIL_RECOVERY_MASTER_20261031_0000ET.json",
+      "result": "5 exact normalized company/title matches in historical authenticated snapshot; this is saved evidence, not a fresh read"
+    }
+  ],
+  "identityEvidence": {
+    "company": "Anduril Industries",
+    "title": "Director of Manufacturing Operations, AD&S",
+    "location": "Ashville, Ohio, United States",
+    "url": "https://boards.greenhouse.io/andurilindustries/jobs/5236720007?gh_jid=5236720007"
+  },
+  "conclusion": {
+    "kind": "HISTORICAL_CANONICAL_IDENTITY_RECONCILIATION",
+    "candidates": [
+      {
+        "primaryId": "V2S-ANDURIL-DIR-MFGOPS-REQ14251",
+        "location": "Ashville / Columbus, OH",
+        "status": "APPLIED",
+        "disposition": "RESOLVED/APPLIED_CONFIRMED",
+        "requisition": "internal Req 14251",
+        "savedLocationMatch": false
+      },
+      {
+        "primaryId": "V2I-98D221B22B77",
+        "location": "Ashville, OH",
+        "status": "CLOSED_DEAD",
+        "disposition": "RESOLVED/CLOSED_DEAD",
+        "requisition": "LI-4467275752",
+        "savedLocationMatch": true
+      },
+      {
+        "primaryId": "V2S-ANDURIL-DIR-MFGOPS-5236720007",
+        "location": "Ashville / Columbus, OH",
+        "status": "REJECTED_BY_EMPLOYER",
+        "disposition": "RESOLVED/REJECTED_CLOSED",
+        "requisition": "GH-5236720007",
+        "savedLocationMatch": false
+      },
+      {
+        "primaryId": "V2I-3A6D20884A6E",
+        "location": "Ashville, OH / Columbus, OH Arsenal-01",
+        "status": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2I-61DE70D2D49D",
+        "requisition": "UNKNOWN",
+        "savedLocationMatch": false
+      },
+      {
+        "primaryId": "V2I-45995D247BA0",
+        "location": "Columbus, OH (Arsenal-01)",
+        "status": "DUPLICATE",
+        "disposition": "DUPLICATE_CANDIDATE/DUP_OF V2I-98D221B22B77",
+        "requisition": "UNCAPTURED",
+        "savedLocationMatch": false
+      }
+    ],
+    "freshCanonicalVerification": false
+  },
+  "originalFencePreserved": false,
+  "owner": "ChatGPT",
+  "unresolvedFacts": [
+    "Multiple same-title identities and different saved requisitions must not be collapsed from title alone."
+  ]
+}
