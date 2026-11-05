@@ -1,0 +1,49 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4479364113",
+  "sourceVersion": "4f71cb8b9cd8aef252af4fbe223842934492b661cf87795253cabd435a5beaa1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B2-09",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:29:29.819Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Saved location recovered, but the exact URL returned a generic LinkedIn jobs-search page rather than the assigned J&T posting. No exact responsibility or current source identity is established.",
+  "nextAction": "Retain recovered identity and wait for exact posting content or an observed employer posting binding",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Seymour, CT, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4479364113/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "Exact URL returned generic jobs search, not the assigned posting"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "J&T",
+    "title": "Director of Engineering – Electronics Manufacturing Services (EMS / PCBA)",
+    "location": "Seymour, CT, USA",
+    "url": "https://www.linkedin.com/jobs/view/4479364113/",
+    "quote": "Exact source returned generic Director Engineering Services search results",
+    "observedAt": "2026-11-05T06:29:29.819Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Seymour, CT, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Do not substitute another company, employer requisition or role from search results."
+  ],
+  "retryCondition": "EXACT_ASSIGNED_POSTING_CONTENT_OR_OBSERVED_EMPLOYER_POSTING_BINDING"
+}

@@ -1,0 +1,55 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4471539717",
+  "sourceVersion": "503964676352b7fa410867f3cf88d521f6260b546a786d5b744b84752047951f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B2-04",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:29:15.478Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved and public header location is Boston, MA, while the job body explicitly places the manufacturing operation in Watertown, MA. Retain the worksite ambiguity for reconciliation; do not silently substitute either city.",
+  "nextAction": "Reconcile Boston advertisement and Watertown operating worksite using exact source evidence; preserve both observations",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Boston, MA, USA"
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4471539717/",
+      "transport": "connected Exa exact-URL fetch",
+      "result": "Header Boston, MA; responsibilities explicitly describe manufacturing operations in Watertown, MA"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Recipharm",
+    "title": "Director, Manufacturing",
+    "location": "Boston, MA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4471539717/",
+    "quote": "Recipharm is seeking an experienced and strategic Director of Manufacturing to lead and continuously improve our GMP manufacturing operations in Watertown, MA.",
+    "observedAt": "2026-11-05T06:29:15.478Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Boston, MA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Actual assigned worksite must be reconciled against the saved Boston advertisement; no site is inferred."
+  ],
+  "retryCondition": "SOURCE_BOUND_BOSTON_WATERTOWN_WORKSITE_RECONCILIATION",
+  "sourceConflictEvidence": {
+    "savedLocation": "Boston, MA, USA",
+    "postingHeader": "Boston, MA",
+    "postingBodyWorksite": "Watertown, MA",
+    "quote": "Recipharm is seeking an experienced and strategic Director of Manufacturing to lead and continuously improve our GMP manufacturing operations in Watertown, MA."
+  }
+}

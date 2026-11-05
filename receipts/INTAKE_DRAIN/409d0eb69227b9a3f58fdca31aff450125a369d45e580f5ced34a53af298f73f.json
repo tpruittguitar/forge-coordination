@@ -1,0 +1,48 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4471793068",
+  "sourceVersion": "eddb4e5dd90758c076a6f48350fb1637756ac6f6e3990f4389e680e0ff4764f1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261105-SOURCE-B2-05",
+  "instructionCommit": "c13fc0fc875637df6b003fef8249e233086718cb",
+  "observedAt": "2026-11-05T06:29:18.339Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved location recovered for an exact source marked EXISTING_PROTECTED upstream. Preserve the protected identity and reconcile fresh canonical evidence.",
+  "nextAction": "Fresh exact master/archive reconciliation of historical existing/protected identity; preserve decisions and original requests",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json@d184421a",
+      "result": "Recovered exact saved location: Santa Clara, CA, USA"
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#entries/linkedin:4471793068",
+      "result": "EXISTING_PROTECTED hint retained; no fresh canonical verification"
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Applied Materials",
+    "title": "Director of Quality – Photonics Manufacturing",
+    "location": "Santa Clara, CA, USA",
+    "url": "https://www.linkedin.com/jobs/view/4471793068/",
+    "quote": "Saved exact source identity",
+    "observedAt": "2026-11-05T06:29:18.339Z",
+    "references": [
+      "state/source-trial-report.json",
+      "state/source-trial-report.json@d184421a"
+    ]
+  },
+  "recoveredFields": {
+    "location": {
+      "value": "Santa Clara, CA, USA",
+      "proof": "state/source-trial-report.json@d184421a",
+      "method": "Exact saved source; no inference"
+    }
+  },
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "unresolvedFacts": [
+    "Fresh master/archive proof is required; no protected role researched."
+  ],
+  "retryCondition": "FRESH_EXACT_MASTER_ARCHIVE_EXISTING_PROTECTED_RECONCILIATION"
+}
