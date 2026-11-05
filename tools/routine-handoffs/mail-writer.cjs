@@ -9,8 +9,11 @@ function persistEvent(root,event){
  }
 }
 const same=(a,b)=>String(a||'').trim()===String(b||'').trim();
+// Code.gs clean_ is the storage contract for evidence scalar values. Normalize
+// only the submitted expectation, never a readback or an identity/state field.
+const storedEvidence=v=>String(v==null?'':v).replace(/[\r\n]+/g,' ').replace(/; /g,', ').replace(/ \| /g,' / ').trim();
 function finish(root,state,tx,proof){tx.status='VERIFIED';tx.proof=proof;const message=state.messages[tx.messageId];message.status='VERIFIED';message.proof=proof;persistEvent(root,{...message.event,masterWriteStatus:'VERIFIED',writerProof:proof});delete state.exceptions[tx.eventKey];S.save(root,FILE,state);return tx.status;}
-function verifyEffects(row,tx){if(!row||row.PRIMARY_ID!==tx.primaryId||!T.same(row,tx.identity)||Object.entries(tx.expected).some(([k,v])=>!same(k==='BUCKET'?row.BUCKET:row.p?.[k],v)))throw Error('EXACT_MAIL_EFFECT_NOT_PROVEN');}
+function verifyEffects(row,tx){if(!row||row.PRIMARY_ID!==tx.primaryId||!T.same(row,tx.identity)||Object.entries(tx.expected).some(([k,v])=>!same(k==='BUCKET'?row.BUCKET:row.p?.[k],['APP_EMAIL_EVIDENCE','APP_STATUS_EVIDENCE','REJECTION_EVIDENCE'].includes(k)?storedEvidence(v):v)))throw Error('EXACT_MAIL_EFFECT_NOT_PROVEN');}
 async function reconcile({root,privateDir,state,tx,deps}){
  if(tx.status==='VERIFIED'||tx.status==='HELD')return tx.status;deps.checkLock();
  const payload=S.read(privateDir,'mail/'+tx.requestId+'-payload.json',null),response=S.read(privateDir,'mail/'+tx.requestId+'-acceptance.json',null);
@@ -54,7 +57,7 @@ async function process({root,privateDir,state,message,deps,apply=true,runId}){
  if(plan.eventOnly){state.messages[message.id]=entry;entry.status='RECORDED_EVENT';entry.reason=plan.reason;persistEvent(root,{...event,masterWriteStatus:'EVENT_ONLY',canonicalStatePreserved:true});S.save(root,FILE,state);return entry.status;}
  T.healthy(snapshot.status);if(T.fenced(root,{transactions:{}},row.PRIMARY_ID))throw Error('ORIGINAL_MAIL_OR_WRITER_FENCE');
  const requestId='FORGE-MAIL-CHATGPT-'+key.slice(0,32),childRequestId=requestId+'-R1';if(await deps.exists(requestId)||await deps.exists(childRequestId))throw Error('ORIGINAL_MAIL_REQUEST_ALREADY_EXISTS');
- const ruling={requestId:childRequestId,primaryId:row.PRIMARY_ID,kind:plan.kind,eventDate:event.eventDate,actor:'CHATGPT',evidence:'Gmail '+message.id+'; source SHA256 '+message.sourceSha256,fields:{UPSERT_KEY:'UK-'+key.slice(0,24)}};
+ const ruling={requestId:childRequestId,primaryId:row.PRIMARY_ID,kind:plan.kind,eventDate:event.eventDate,actor:'CHATGPT',evidence:'Gmail '+message.id+', source SHA256 '+message.sourceSha256,fields:{UPSERT_KEY:'UK-'+key.slice(0,24)}};
  plan.expected[plan.kind==='REJECTED_BY_EMPLOYER'?'REJECTION_EVIDENCE':row.BUCKET==='APPLIED'?'APP_EMAIL_EVIDENCE':'APP_STATUS_EVIDENCE']=ruling.evidence;
  const payload={action:'batch',requestId,requests:[{action:'ruling',ruling}]};
  const tx={schema:'forge.mail-writer-transaction.v1',requestId,childRequestId,messageId:message.id,eventKey:key,event,sourceSha256:message.sourceSha256,primaryId:row.PRIMARY_ID,ids:[row.PRIMARY_ID],identity:T.identity(row),expected:plan.expected,payloadSha256:S.hash(payload),status:'POST_IN_FLIGHT_UNKNOWN',runId,at:new Date().toISOString()};
