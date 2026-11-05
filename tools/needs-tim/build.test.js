@@ -160,3 +160,10 @@ test('AUTO intake: an unfinished run is a BLOCKING item; an isolated identity HO
   assert.ok(hold); assert.strictEqual(hold.level, 'ACTION');
   assert.strictEqual(r.items.filter(i => /^auto-intake/.test(i.id)).length, 2);
 });
+test('brief reporting failures stay quiet; recovery removes persistent notice automatically',()=>{
+ const root=repo({'state/REPORTING_HEALTH.json':{components:{flow:{status:'STALE',failureSince:'2026-10-18T14:00:00-04:00',error:'Writer HTTP 404'}}}});
+ try{assert.ok(ids(build({root,now:NOW})).includes('reporting:flow'));
+ fs.writeFileSync(path.join(root,'state/REPORTING_HEALTH.json'),JSON.stringify({components:{flow:{status:'CURRENT',recoveredAt:NOW}}}));assert.ok(!ids(build({root,now:NOW})).includes('reporting:flow'));
+ fs.writeFileSync(path.join(root,'state/REPORTING_HEALTH.json'),JSON.stringify({components:{flow:{status:'STALE',failureSince:NOW}}}));assert.ok(!ids(build({root,now:NOW})).includes('reporting:flow'));
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});

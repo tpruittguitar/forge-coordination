@@ -184,6 +184,16 @@ function build(opts) {
     add({ id: 'edit-rejected:' + f, section: 'FAILED', level: 'ACTION', title: 'Edit request rejected: ' + f.replace(/\.result\.txt$/, ''), detail: clip(t, 300), action: 'Requesting lane: fix and resubmit, or drop it.', source: rel, sourceUrl: ghUrl('forge-coordination', rel), at: dm ? etIso(dm[1], dm[2]) : null, raisedBy: (f.match(/^(CLAUDE|CHATGPT|GROK)/) || [])[1] || '' });
   });
 
+  // Only persistent, CURRENTLY unresolved reporting failures need a visible notice.
+  // A successful component replaces STALE health and automatically removes its old card.
+  const reporting = JSON.parse(read(path.join(root, 'state/REPORTING_HEALTH.json')) || '{}');
+  for (const [component, health] of Object.entries(reporting.components || {})) {
+    if (health.status !== 'STALE' || !Number.isFinite(Date.parse(health.failureSince)) || now - Date.parse(health.failureSince) < 30 * 60000) continue;
+    add({id:'reporting:'+component, section:'UPKEEP', level:'WATCH', title:'Reporting delayed: '+component,
+      detail:'Last successful metrics are retained. '+(health.error||''), action:'Code retries automatically; investigate if reporting remains stale.',
+      source:'state/REPORTING_HEALTH.json', sourceUrl:ghUrl('forge-coordination','state/REPORTING_HEALTH.json'), at:health.failureSince, raisedBy:'CODE'});
+  }
+
   /* 5. open pull requests (fetched by the workflow; optional) */
   (opts.prs || []).forEach(pr => {
     const dnm = /DO NOT MERGE/i.test(pr.title || '');

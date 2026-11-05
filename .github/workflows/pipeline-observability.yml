@@ -50,14 +50,23 @@ jobs:
           git config user.name forge-activity-bot
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
-            node tools/pipeline-observability/activity.js
-            node tools/pipeline-observability/process-flow.js
-            node tools/intake-drain/queue.cjs sync
-            git add state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/INTAKE_DRAIN.json
+            node tools/pipeline-observability/publish-report.js
+            git add state/REPORTING_HEALTH.json state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/INTAKE_DRAIN.json
             git diff --cached --quiet && exit 0
             git commit -m "ACTIVITY-BOT: publish compact verified receipt activity"
             git push origin HEAD:main && exit 0
+            sleep $((attempt * 2 + RANDOM % 3))
             git fetch origin main
             git reset --hard origin/main
           done
           exit 1
+      - name: Retain reporting evidence
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: reporting-evidence
+          path: |
+            state/REPORTING_HEALTH.json
+            state/WRITER_ACTIVITY.json
+            state/ENRICHMENT_FLOW.json
+          if-no-files-found: ignore
