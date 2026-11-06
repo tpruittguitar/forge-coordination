@@ -1,0 +1,74 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:4913803804104171ac71efd5",
+  "sourceVersion": "83bdd221aaba503c784c2eae36bd01e243340b27f770f8e1e8bc99ce19fdde30",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261106T054423391Z-9c52c9",
+  "instructionCommit": "c8d7b7436b8784a3edabf1df972b4d18da775fdd",
+  "observedAt": "2026-11-06T05:44:23.391Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original ResourceTek candidate explicitly WRITE_FAILED in independently COMPLETE batch. Suggested canonical ResourceTek, LLC role has the same Vice President of Manufacturing title and Decatur AL worksite, and is APPLIED. Original Glassdoor listing is not bound in the canonical row; preserve the application and agency/client distinctions without claiming original transaction success.",
+  "nextAction": "Existing authenticated coordinator resolves exact original Glassdoor-to-employer requisition/site binding against saved payload and current master/archive; apply only supported repeat accounting while preserving decisions. Never replay FORGE-CODE-CHATGPT-20261106T050024071Z-B001.",
+  "retryCondition": "Original employer requisition/source alias or independently grounded site evidence resolves the failed candidate identity; protected canonical decisions remain unchanged.",
+  "attempts": [
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261106T050024071Z-B001_CHECKPOINT.json",
+      "sha256": "bec1f1a33222e1f42cd188425904ee8438d73157005a746a9a005cb6148bb80a",
+      "result": "Exact original candidate key and submission position bound to checkpoint; original request preserved."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261106T050024071Z-B001_ACCEPTANCE.json",
+      "sha256": "83554d1d007f33b649ad81c403049640a13449576d958ed760d8764916900303",
+      "result": "Original candidate explicitly WRITE_FAILED: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. No new primary ID for this candidate."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Authenticated fresh index says original batch COMPLETE with matching writeId. This does not turn failed candidates into completed writes."
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt and V2_TERMINAL_ARCHIVE.txt",
+      "result": "Authenticated complete raw Drive reads; exact IDs, current buckets and original source/requisition bindings compared. Private row prose remains private.",
+      "masterSha256": "cda9b7bf06cd24d49359126cc48a25330d5b7b33eb7ac78cb14f3eea47c8140c",
+      "masterModifiedAt": "2026-11-06T05:42:09.170Z",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "rowProofs": [
+        {
+          "primaryId": "V2E-FA121EBEEB88",
+          "matches": 1,
+          "source": "MASTER",
+          "bucket": "APPLIED",
+          "rowSha256": "2b9b7e63affc67366af07ff87c136affc8971d4c56a35a714bbe971e5c0379e4",
+          "title": "Vice President of Manufacturing",
+          "location": "Decatur, AL 35601",
+          "exactOriginalSourceBound": false
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "originalRequest": {
+      "requestId": "FORGE-CODE-CHATGPT-20261106T050024071Z-B001",
+      "position": 4,
+      "candidateResult": "WRITE_FAILED",
+      "detail": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2E-FA121EBEEB88"
+      ],
+      "writeId": "W-20261106051537325-13e68a",
+      "sourceSha256": "fb47f5351418462dffcf678e8393dd93c360971d744ad91a21010d4d340a57f3"
+    },
+    "independentReceipt": {
+      "state": "COMPLETE",
+      "writeId": "W-20261106051537325-13e68a",
+      "indexUpdatedAt": "2026-11-06T05:41:41.906Z",
+      "indexSha256": "dc2447cf23e57837de1908d3e0af319df04544505da6d2162bc4d7865ce95a30"
+    }
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedProtectedExisting": 0,
+  "canonicalCompletion": false
+}
