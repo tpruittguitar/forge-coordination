@@ -27,7 +27,7 @@ jobs:
         with:
           node-version: '22'
       - name: Test consolidator
-        run: node --test tools/change-register/consolidate.test.js
+        run: node --test tools/change-register/write.test.js tools/change-register/repair-records.test.js tools/change-register/consolidate.test.js
       - name: Consolidate and push
         env:
           GH_TOKEN: ${{ github.token }}
