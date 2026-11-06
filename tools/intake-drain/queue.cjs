@@ -104,7 +104,7 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
   if(item.status!=='PENDING_INDEPENDENT_VALIDATION')continue;const review=read(root,item.review.path);validate(review,item,now);
   try{
    if(review.outcome==='EXCLUSION_CANDIDATE'){
-    context=context||await require('../source-trial/preliminary-screen').context({key:process.env.FORGE_WRITER_KEY});
+    if(review.exclusionEvidence?.kind!=='TASK_GEOGRAPHY')context=context||await require('../source-trial/preliminary-screen').context({key:process.env.FORGE_WRITER_KEY});
     item.validation=await verifyExclusion(root,review,item,{...context,cache,now});item.status=item.validation.status;result.exclusionsVerified++;continue;
    }
    // Re-fetch and parse the exact structured employer/ATS posting. Helper prose alone never admits a role.
