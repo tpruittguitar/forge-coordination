@@ -1,0 +1,72 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "at": "2026-11-06T12:46:08.094Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_KNOWN_COORDINATOR_CONFLICT",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "c4b350cfce3f7b8dfdaf45f546c5212da508dd66",
+    "foremanCockpit": "ecd1c54f1d90418342f3044f7a549364a13d1b7b"
+  },
+  "sourceEvidenceSha256": "064e5e02ec506a0aa3f134953320dbc5d9ca5e250691648067cec355045433b8",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": false,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "level": "ok",
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "errors": [],
+      "warning": "One existing FAILED request notice; no new writes claimed"
+    },
+    "github": {
+      "coordinationHead": "c4b350cfce3f7b8dfdaf45f546c5212da508dd66",
+      "cockpitHead": "ecd1c54f1d90418342f3044f7a549364a13d1b7b",
+      "coordinationRecentRuns": {
+        "sample": 8,
+        "success": 7,
+        "inProgress": 1
+      },
+      "cockpitRecentRuns": {
+        "sample": 8,
+        "success": 7,
+        "failure": 1,
+        "failedWorkflow": "browser-tests-compare",
+        "failedRun": 42162514006
+      },
+      "openPRs": {
+        "coordination": 34,
+        "cockpit": 0
+      },
+      "oldestCoordinationPR": {
+        "number": 201,
+        "updatedAt": "2026-11-02T23:10:58Z"
+      }
+    },
+    "coordinator": {
+      "status": "KNOWN_PUBLICATION_CONFLICT",
+      "paths": [
+        "state/AI_EXCEPTION_WORK.json",
+        "state/RELEVANCE_SCREEN_GUARD.json"
+      ],
+      "lastReportAt": "2026-11-06T08:25:50.959Z",
+      "pendingPreserved": true
+    },
+    "limitations": [
+      "Explorer outbox/polling browser UI not inspected",
+      "No assumption of completed intake from native task success or saved config",
+      "Historical source and interview gaps remain open"
+    ]
+  },
+  "nextActions": [
+    "Recover unmerged coordinator accounting while preserving original transactions and staged receipts",
+    "Review browser-tests-compare failed run; later workflow success does not prove this comparison passed",
+    "Retain open evidence PRs and historical work; no automatic merge or schedule changes"
+  ]
+}
