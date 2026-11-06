@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-06T04:13:19.938Z",
- "sourceCommit": "7d6dedc209152e90fe8d278c1c6ff368036352c9",
+ "builtAt": "2026-11-06T04:20:13.767Z",
+ "sourceCommit": "d7ad1fb36df21f3e82c9a2c329a6b3ba14d6160c",
  "counts": {
-  "total": 72,
-  "BLOCKING": 0,
+  "total": 73,
+  "BLOCKING": 1,
   "ACTION": 40,
   "WATCH": 32,
   "DECIDE": 5,
   "JOBS": 1,
-  "FAILED": 37,
+  "FAILED": 38,
   "UPKEEP": 29
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261106T040612Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261106T040612Z is unfinished",
+   "detail": "BLOCKED: Writer read not authorized. Open request: FORGE-SOURCE-F6DDE5E2B37CE62033DE2652. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261106T040612Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261106T040612Z.json",
+   "at": "2026-11-06T04:14:11.782Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-1001075C35BCBEA09F1830D1",
    "section": "FAILED",
