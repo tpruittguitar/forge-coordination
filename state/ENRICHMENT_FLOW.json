@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-06T22:43:54.281Z",
+    "at": "2026-11-06T22:47:31.692Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -274,20 +274,20 @@
   },
   "freshness": {
     "due": 414,
-    "current": 1074,
+    "current": 1075,
     "undated": 0
   },
-  "at": "2026-11-06T22:43:54.281Z",
+  "at": "2026-11-06T22:47:31.692Z",
   "queues": {
     "verification": 0,
-    "enrichment": 644,
+    "enrichment": 645,
     "readyForReview": 844,
     "blockedClosed": 108
   },
-  "needsEnrichment": 644,
+  "needsEnrichment": 645,
   "population": {
-    "total": 1596,
-    "accounted": 1596,
+    "total": 1597,
+    "accounted": 1597,
     "reconciled": true
   },
   "oldestWaiting": {
@@ -296,8 +296,8 @@
     "readyForReview": "2026-10-31T04:35:30.337Z"
   },
   "reconciliation": {
-    "from": "2026-11-06T22:33:49.651Z",
-    "to": "2026-11-06T22:43:54.281Z",
+    "from": "2026-11-06T22:43:54.281Z",
+    "to": "2026-11-06T22:47:31.692Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -309,12 +309,12 @@
         "reconciled": true
       },
       "enrichment": {
-        "opening": 641,
-        "entered": 3,
+        "opening": 644,
+        "entered": 1,
         "completed": 0,
         "otherExits": 0,
-        "closing": 644,
-        "delta": 3,
+        "closing": 645,
+        "delta": 1,
         "reconciled": true
       },
       "readyForReview": {
@@ -492,41 +492,41 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: measured fit, salary, posting-based degree evidence and Writer-calculated final score with model provenance; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-06T22:43:05.570Z",
-    "sha256": "a3814511971c5a09b4b12d7503ac14682eab03f70413effc80acc0d736ac70cc",
-    "rows": 4925
+    "readAt": "2026-11-06T22:46:42.596Z",
+    "sha256": "ca531975e60f41f1ca06e8955603f7b82d7bdcb843642cfb4f6179683b5c7e18",
+    "rows": 4926
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-06T22:43:15.018Z",
+    "at": "2026-11-06T22:46:53.050Z",
     "total": 11125,
     "sourceIdentities": 11751,
     "aliasesMerged": 626,
     "counts": {
-      "WAITING": 4493,
-      "PRESENT": 3504,
+      "WAITING": 4492,
+      "PRESENT": 3505,
       "EXCLUDED": 1065,
       "HELD": 1225,
       "IDENTITY_HOLD": 837,
       "MISSING_PREVIOUSLY_PRESENT": 1
     },
-    "waiting": 6556,
+    "waiting": 6555,
     "accounted": 11125,
     "canonicalPopulation": {
-      "total": 5707,
-      "linked": 3504,
+      "total": 5708,
+      "linked": 3505,
       "withoutCapturedSource": 2203
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-06T22:33:11.183Z",
-      "to": "2026-11-06T22:43:15.018Z",
-      "opening": 6551,
-      "arrivals": 8,
-      "admitted": 3,
+      "from": "2026-11-06T22:43:15.018Z",
+      "to": "2026-11-06T22:46:53.050Z",
+      "opening": 6556,
+      "arrivals": 0,
+      "admitted": 1,
       "excluded": 0,
       "otherExits": 0,
-      "closing": 6556
+      "closing": 6555
     },
     "rates": {
       "discovery": {
@@ -539,9 +539,9 @@
         "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
       },
       "intake": {
-        "count": 331,
+        "count": 332,
         "windowHours": 36,
-        "perHour": 9.194444444444445,
+        "perHour": 9.222222222222221,
         "partial": true,
         "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
       }
@@ -576,9 +576,9 @@
           "basis": "Distinct captured candidate identities first observed within 12 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 56,
+          "count": 57,
           "windowHours": 12,
-          "perHour": 4.666666666666667,
+          "perHour": 4.75,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 12 hours."
         }
@@ -612,18 +612,18 @@
           "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 331,
+          "count": 332,
           "windowHours": 36,
-          "perHour": 9.194444444444445,
+          "perHour": 9.222222222222221,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
         }
       }
     },
     "screening": {
-      "at": "2026-11-06T22:43:15.018Z",
+      "at": "2026-11-06T22:46:53.050Z",
       "reviewedSourceIdentities": 11751,
-      "pendingCandidates": 6556,
+      "pendingCandidates": 6555,
       "storedEvidence": 503,
       "fullPostings": 178,
       "neverConsiderExcluded": 0,
@@ -637,10 +637,10 @@
       "emailFiles": 68,
       "identityUnresolved": 837,
       "unreadSourceWindows": 230,
-      "newReportCommits": 1,
+      "newReportCommits": 0,
       "unkeyedRecords": 1758,
       "missingAdmissionTimes": 724,
-      "masterRows": 4925,
+      "masterRows": 4926,
       "archiveRows": 785
     },
     "basis": "Every captured identity occupies exactly one outcome. Present means found in master or archive, not a new admission. Unseen recommendations are source work, not countable jobs."
