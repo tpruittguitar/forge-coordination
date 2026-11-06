@@ -1,14 +1,13 @@
 {
   "schema": "forge.programmed-coordinator-report.v1",
-  "at": "2026-11-06T06:51:07.186Z",
-  "instructionCommit": "2c2a4f198f9d024bc453a5859c9187d5ad81b68b",
-  "batches": 303,
+  "at": "2026-11-06T07:08:22.477Z",
+  "instructionCommit": "1c02c66fc2e6ca8af812e2065ca0a44759aef051",
+  "batches": 304,
   "statuses": {
-    "EXCEPTION": 461,
-    "VERIFIED": 15,
+    "EXCEPTION": 462,
+    "VERIFIED": 16,
     "PROTECTED_SKIP": 2,
     "NO_MISSING_SUPPORTED_FIELDS": 6,
-    "RETURNED": 2,
     "POST_IN_FLIGHT_UNKNOWN": 1
   },
   "transactions": [
@@ -124,6 +123,11 @@
     },
     {
       "requestId": "FORGE-CODE-CHATGPT-20261106T063524238Z-E00023",
+      "status": "VERIFIED",
+      "items": 1
+    },
+    {
+      "requestId": "FORGE-CODE-CHATGPT-20261106T065524243Z-E00024",
       "status": "AWAITING_VERIFICATION",
       "items": 1
     }
@@ -4052,8 +4056,25 @@
     },
     {
       "owner": "CODE",
+      "reason": "HELPER_ARTIFACTS_PENDING",
+      "pullRequest": 271,
+      "artifacts": [
+        {
+          "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B01.json",
+          "reason": "HELPER_PR_VALIDATION_REQUIRED",
+          "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+        },
+        {
+          "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B02.json",
+          "reason": "HELPER_PR_VALIDATION_REQUIRED",
+          "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+        }
+      ]
+    },
+    {
+      "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-06T06:36:04.939Z",
+      "at": "2026-11-06T06:56:04.377Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
@@ -4995,8 +5016,17 @@
       "retryCondition": "Resolved identity, scope or conflicting evidence"
     },
     {
+      "key": "FORGE_CHATGPT_ENRICHMENT_RESEARCH:V2I-118D72D0EDF9",
+      "itemVersion": "bcb078f9d77f2f2cb8593dcf40c4914188787892426d9c48616abe63b448f11a",
+      "batch": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T064448Z-RESEARCH.json",
+      "reason": "AMBIGUOUS_SCOPE_OR_IDENTITY",
       "owner": "AI",
-      "requestId": "FORGE-CODE-CHATGPT-20261106T063524238Z-E00023",
+      "attempts": 0,
+      "retryCondition": "Resolved identity, scope or conflicting evidence"
+    },
+    {
+      "owner": "AI",
+      "requestId": "FORGE-CODE-CHATGPT-20261106T065524243Z-E00024",
       "reason": "WRITER_RECONCILIATION_REQUIRED"
     },
     {
@@ -8444,6 +8474,12 @@
     },
     {
       "owner": "AI",
+      "reason": "UNRESOLVED_CORRESPONDENCE",
+      "messageId": "1a1af7bedee0dec0",
+      "sourceSha256": "7ded61c1b5ebb650bb95f40396d077015908e57458a6fc05c8650151168f9bb1"
+    },
+    {
+      "owner": "AI",
       "messageId": "1a1ae0b34c77b32f",
       "sourceSha256": "22cc5edc4d878bd0925fd5fc55cf8706571450087bb0c8a60e6aee9aa2eb5eb5",
       "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -8738,12 +8774,6 @@
     },
     {
       "owner": "AI",
-      "reason": "UNRESOLVED_CORRESPONDENCE",
-      "messageId": "1a1af7bedee0dec0",
-      "sourceSha256": "7ded61c1b5ebb650bb95f40396d077015908e57458a6fc05c8650151168f9bb1"
-    },
-    {
-      "owner": "AI",
       "messageId": "1a19c49e4cbf0ccc",
       "sourceSha256": "878a55b680371fac00281b921bb067f2d750a4e81327b6a635f208c4435577a7",
       "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -8808,9 +8838,9 @@
   ],
   "canonicalSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-06T06:36:33.545Z",
-    "sha256": "fc7b64bca9d00dedbabd9ce56bb763f09b51d97530e776b1323259442e4983e2",
-    "rows": 4857
+    "readAt": "2026-11-06T06:56:46.307Z",
+    "sha256": "7f90e7c2e2873d40c3a000cfe9d5f91d2246ba4828cbc84bc464ed58c0ebef0e",
+    "rows": 4862
   },
   "coverage": {
     "schema": "forge.email-recovery-summary.v1",
@@ -8824,8 +8854,8 @@
     "historicalGaps": 2,
     "capturedUniqueJobs": 7111,
     "awaitingIntake": 3939,
-    "pendingJobs": 4389,
-    "verifiedInserted": 1850,
+    "pendingJobs": 4388,
+    "verifiedInserted": 1851,
     "existing": 632,
     "outOfScope": 240,
     "coverageComplete": false,
@@ -8834,21 +8864,21 @@
   },
   "noProcessingCap": true,
   "savingsMeasured": false,
-  "runId": "FORGE-CODE-CHATGPT-20261106T063524238Z",
+  "runId": "FORGE-CODE-CHATGPT-20261106T065524243Z",
   "mode": "apply",
   "collected": {
-    "newBatches": 2,
-    "newItems": 40,
-    "updatedItems": 0,
-    "validated": 19,
+    "newBatches": 1,
+    "newItems": 0,
+    "updatedItems": 1,
+    "validated": 20,
     "quarantined": 51
   },
   "routineHandoffs": {
     "transport": {
       "schema": "forge.routine-handoffs-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261106T063524238Z",
-      "at": "2026-11-06T06:36:06.954Z",
-      "imported": 2,
+      "runId": "FORGE-CODE-CHATGPT-20261106T065524243Z",
+      "at": "2026-11-06T06:56:06.184Z",
+      "imported": 0,
       "reportFeeds": [
         {
           "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
@@ -8886,12 +8916,24 @@
         "schema": "forge.helper-delivery-repair.v1",
         "results": [
           {
-            "status": "RECORD_ADDED",
+            "status": "PENDING",
+            "captured": 0,
+            "sourceCommit": "703535b1e881f98a7c188c3b0d5d71857991455b",
+            "pendingArtifacts": [
+              {
+                "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B01.json",
+                "reason": "HELPER_PR_VALIDATION_REQUIRED",
+                "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+              },
+              {
+                "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B02.json",
+                "reason": "HELPER_PR_VALIDATION_REQUIRED",
+                "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+              }
+            ],
             "pullRequest": 271,
-            "record": "control/changes/chatgpt-20261106-helper-evidence-pr271.txt",
-            "captured": 2,
-            "sourceCommit": "f5bed8f7d4ea9bf6d233818e337711d816b6c45a",
-            "pendingArtifacts": []
+            "owner": "CODE",
+            "reason": "HELPER_ARTIFACTS_PENDING"
           },
           {
             "status": "PENDING",
@@ -9355,7 +9397,7 @@
         "failures": [
           {
             "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-            "at": "2026-11-06T06:36:04.939Z",
+            "at": "2026-11-06T06:56:04.377Z",
             "reason": "RUN_LIST_INACCESSIBLE"
           }
         ]
@@ -9744,8 +9786,25 @@
         },
         {
           "owner": "CODE",
+          "reason": "HELPER_ARTIFACTS_PENDING",
+          "pullRequest": 271,
+          "artifacts": [
+            {
+              "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B01.json",
+              "reason": "HELPER_PR_VALIDATION_REQUIRED",
+              "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+            },
+            {
+              "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B02.json",
+              "reason": "HELPER_PR_VALIDATION_REQUIRED",
+              "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+            }
+          ]
+        },
+        {
+          "owner": "CODE",
           "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-          "at": "2026-11-06T06:36:04.939Z",
+          "at": "2026-11-06T06:56:04.377Z",
           "reason": "RUN_LIST_INACCESSIBLE"
         }
       ],
@@ -9756,17 +9815,17 @@
     },
     "assignments": {
       "schema": "forge.assignment-replenishment.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261106T063524238Z",
+      "runId": "FORGE-CODE-CHATGPT-20261106T065524243Z",
       "canonicalSource": {
         "kind": "CANONICAL_WRITER_MASTER",
-        "readAt": "2026-11-06T06:36:33.545Z",
-        "sha256": "fc7b64bca9d00dedbabd9ce56bb763f09b51d97530e776b1323259442e4983e2",
-        "rows": 4857
+        "readAt": "2026-11-06T06:56:46.307Z",
+        "sha256": "7f90e7c2e2873d40c3a000cfe9d5f91d2246ba4828cbc84bc464ed58c0ebef0e",
+        "rows": 4862
       },
       "counts": {
-        "seededCodeIntake": 4,
+        "seededCodeIntake": 0,
         "canonical": 0,
-        "fenced": 447,
+        "fenced": 450,
         "alreadyAssigned": 2387
       },
       "appended": [],
@@ -12553,7 +12612,7 @@
     },
     "mail": {
       "schema": "forge.mail-processing-report.v1",
-      "runId": "FORGE-CODE-CHATGPT-20261106T063524238Z",
+      "runId": "FORGE-CODE-CHATGPT-20261106T065524243Z",
       "read": 756,
       "processed": 755,
       "pending": 162,
@@ -13228,6 +13287,12 @@
         },
         {
           "owner": "AI",
+          "reason": "UNRESOLVED_CORRESPONDENCE",
+          "messageId": "1a1af7bedee0dec0",
+          "sourceSha256": "7ded61c1b5ebb650bb95f40396d077015908e57458a6fc05c8650151168f9bb1"
+        },
+        {
+          "owner": "AI",
           "messageId": "1a1ae0b34c77b32f",
           "sourceSha256": "22cc5edc4d878bd0925fd5fc55cf8706571450087bb0c8a60e6aee9aa2eb5eb5",
           "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -13522,12 +13587,6 @@
         },
         {
           "owner": "AI",
-          "reason": "UNRESOLVED_CORRESPONDENCE",
-          "messageId": "1a1af7bedee0dec0",
-          "sourceSha256": "7ded61c1b5ebb650bb95f40396d077015908e57458a6fc05c8650151168f9bb1"
-        },
-        {
-          "owner": "AI",
           "messageId": "1a19c49e4cbf0ccc",
           "sourceSha256": "878a55b680371fac00281b921bb067f2d750a4e81327b6a635f208c4435577a7",
           "reason": "ALERT_FORMAT_RESEARCH_REQUIRED",
@@ -13593,7 +13652,7 @@
       "noProcessingCap": true,
       "observations": 1484,
       "duplicateObservations": 728,
-      "recoveredAlertCards": 4,
+      "recoveredAlertCards": 0,
       "statuses": {
         "HANDED_TO_DISCOVERY": 286,
         "VERIFIED_NOT_RECRUITING": 350,
@@ -13640,8 +13699,8 @@
   },
   "exceptionWork": {
     "counts": {
-      "ACTION_REQUIRED": 835,
-      "NO_LONGER_OPEN": 519,
+      "ACTION_REQUIRED": 832,
+      "NO_LONGER_OPEN": 525,
       "WAITING_SOURCE_CHANGE": 22
     },
     "owner": "FORGE_APPLICATION_OUTCOME_TRACKER",

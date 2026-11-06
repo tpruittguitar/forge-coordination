@@ -1,8 +1,8 @@
 {
   "schema": "forge.routine-handoffs-report.v1",
-  "runId": "FORGE-CODE-CHATGPT-20261106T063524238Z",
-  "at": "2026-11-06T06:36:06.954Z",
-  "imported": 2,
+  "runId": "FORGE-CODE-CHATGPT-20261106T065524243Z",
+  "at": "2026-11-06T06:56:06.184Z",
+  "imported": 0,
   "reportFeeds": [
     {
       "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
@@ -40,12 +40,24 @@
     "schema": "forge.helper-delivery-repair.v1",
     "results": [
       {
-        "status": "RECORD_ADDED",
+        "status": "PENDING",
+        "captured": 0,
+        "sourceCommit": "703535b1e881f98a7c188c3b0d5d71857991455b",
+        "pendingArtifacts": [
+          {
+            "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B01.json",
+            "reason": "HELPER_PR_VALIDATION_REQUIRED",
+            "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+          },
+          {
+            "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B02.json",
+            "reason": "HELPER_PR_VALIDATION_REQUIRED",
+            "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+          }
+        ],
         "pullRequest": 271,
-        "record": "control/changes/chatgpt-20261106-helper-evidence-pr271.txt",
-        "captured": 2,
-        "sourceCommit": "f5bed8f7d4ea9bf6d233818e337711d816b6c45a",
-        "pendingArtifacts": []
+        "owner": "CODE",
+        "reason": "HELPER_ARTIFACTS_PENDING"
       },
       {
         "status": "PENDING",
@@ -509,7 +521,7 @@
     "failures": [
       {
         "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-        "at": "2026-11-06T06:36:04.939Z",
+        "at": "2026-11-06T06:56:04.377Z",
         "reason": "RUN_LIST_INACCESSIBLE"
       }
     ]
@@ -898,8 +910,25 @@
     },
     {
       "owner": "CODE",
+      "reason": "HELPER_ARTIFACTS_PENDING",
+      "pullRequest": 271,
+      "artifacts": [
+        {
+          "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B01.json",
+          "reason": "HELPER_PR_VALIDATION_REQUIRED",
+          "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+        },
+        {
+          "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261106T062156Z-B02.json",
+          "reason": "HELPER_PR_VALIDATION_REQUIRED",
+          "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+        }
+      ]
+    },
+    {
+      "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-06T06:36:04.939Z",
+      "at": "2026-11-06T06:56:04.377Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
