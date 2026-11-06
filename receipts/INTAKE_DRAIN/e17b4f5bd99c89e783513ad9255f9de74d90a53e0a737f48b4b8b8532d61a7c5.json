@@ -1,0 +1,25 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:d52999d2a72ad8a621ce4d1a",
+  "sourceVersion": "895c911fe98e899eec2d6f882664f351e73152a16cce0b733e8cc74d3496a7d7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T192123Z-source-9",
+  "observedAt": "2026-11-06T19:21:23.100844Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact saved source records retain a blank worksite; no full posting evidence recovered. The managed environment restricted host policy excludes recruiting.adp.com. No employer response or closure was observed.",
+  "nextAction": "Recover explicit worksite and source-bound posting evidence when authorized source access or a complete saved capture becomes available.",
+  "retryCondition": "Source host becomes accessible under the managed policy, or an exact-URL saved full posting supplies the missing worksite. Unchanged policy alone does not warrant another request.",
+  "attempts": [
+    {
+      "source": "https://recruiting.adp.com/srccsh/public/RTI.home?r=5001233752906&c=1215401&d=ExternalCareerSite&rb=INDEED&idUnique=5001233752906",
+      "result": "Exact URL search across control, receipts, reference and state found only incomplete queue/ledger cards; no full source evidence."
+    },
+    {
+      "source": "/etc/codex/network-policy.json",
+      "result": "Restricted policy excludes the exact posting host; no denied request repeated."
+    }
+  ],
+  "instructionCommit": "267702ac6aaf55c1a17905705331e096c6ded797"
+}
