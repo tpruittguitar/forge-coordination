@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-06T07:04:56.328Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-06T16:51:16.934Z from CANONICAL_WRITER_MASTER.
 
-Of 779 jobs waiting on Tim, 17 match a role he already applied to, was rejected from, or declined:
+Of 807 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 17
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (17)
+## Kept, labeled (18)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -38,4 +38,5 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 49 | Alvarez & Marsal | PEPI: Director, Supply Chain: Procurement & Sourcing (OPEN TO ALL U.S. LOCATIONS) | You declined 2026-11-05 · possible repeat | Posting first seen 2026-11-02, -3 days after 2026-11-05; no posting identity to compare | V2I-1D08BD27F007 → V2I-43E8E1CE6D48 |
 | 45 | Treeline Biosciences | Vice President, Head of Quality Assurance | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-05, 10 days after 2026-10-26; no posting identity to compare | V2I-0BDA9CD1B708 → V2I-A808BA44334C |
+| 36 | Tutor Intelligence | Engineering Manager, Production Engineering | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-06, 3 days after 2026-11-03; no posting identity to compare | V2I-A60352D6AE30 → V2I-D52D7776CEF7 |
 
