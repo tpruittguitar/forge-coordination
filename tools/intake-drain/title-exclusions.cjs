@@ -18,7 +18,7 @@ function binding(root,rules,e,card){
  if(rules?.status!=='ACTIVE'||!rules.raw)throw Error('CURRENT_CANONICAL_RULES_REQUIRED');
  const list=matches(root,card),b=list.length===1?list[0]:null;
  if(!b||e.kind!=='TITLE_RULE'||e.ruleId!==b.ruleId||e.company!==card.company||e.title!==card.title||e.quote!==card.title||e.url!==card.url)throw Error('EXACT_UNAMBIGUOUS_TITLE_RULE_REQUIRED');
- const defs=rules.raw.split(/\r?\n/).filter(l=>l.startsWith('- '+b.ruleId+' '));
+ const defs=rules.raw.split(/\r?\n/).filter(l=>new RegExp('^- '+b.ruleId+' [A-Z_]+:').test(l));
  if(defs.length!==1||sha(defs[0])!==b.definitionSha256||!defs[0].startsWith('- '+b.ruleId+' '+b.category+':'))throw Error('ACTIVE_MATCHING_ROLE_RULE_REQUIRED');
  Source.publicUrl(card.url);
  return{...b,...e};
