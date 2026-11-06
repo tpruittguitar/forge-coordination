@@ -1,0 +1,30 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:1f3d453e25bdb27a8f447a28",
+  "sourceVersion": "ea7e3e7af884782a40874a238a84388d85408ba83c1d07908e58db6a014c669a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T091927738114Z-fibre-source",
+  "instructionCommit": "4c795ea193243e465e225ffe53c961eff96d0f79",
+  "observedAt": "2026-11-06T09:19:27.738114Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact captured employer/title and Paylocity posting are retained; worksite and actual responsibilities remain missing. No exact full-card source was recovered. A numeric-ID search hit an unrelated receipt hash and was rejected as unrelated evidence. Current enforced source-access policy excludes recruiting.paylocity.com; no location or scope is inferred from employer/title.",
+  "nextAction": "Recover exact original full card or employer posting with explicit worksite and responsibility evidence through authorized access; retain original identity and existing decisions.",
+  "retryCondition": "New exact original/employer source evidence becomes available or authorized access includes recruiting.paylocity.com. Elapsed time alone does not repair the restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Recursive exact URL/sourceUrl lookup returned no matching full-card object."
+    },
+    {
+      "source": "control/, receipts/, reference/ posting ID 4602454",
+      "result": "Only match was unrelated Mazda Toyota review referencing a receipt hash containing those digits; examined and rejected as a source identity match."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current restricted policy enforced; original host recruiting.paylocity.com absent from allowed hosts. No denied-host retry or bypass attempted."
+    }
+  ]
+}
