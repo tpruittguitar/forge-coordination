@@ -1,0 +1,34 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481931635",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "writerSubmitted": false,
+  "canonicalVerified": false,
+  "resumeReference": {
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "modifiedAt": "2026-10-13T22:42:09.660Z",
+    "driveReadThisRun": true
+  },
+  "attempts": [
+    {
+      "source": [
+        "EMAIL_RECOVERY",
+        "control/claude-relevance/page-0074.json"
+      ],
+      "result": "Read exact captured identity and saved source references; no original Writer request bound to key."
+    },
+    {
+      "source": "https://www.glassdoor.com/job-listing/jv?jl=1010282788633",
+      "result": "Captured employer Parker Aerospace, returned exact title/site source employer Parker Hannifin. Actual supplier development, supplier quality and corrective-action duties plausibly overlap resume, but employer identity binding is not proven; no parent/division alias forced. Glassdoor route under active backoff, not fetched."
+    }
+  ],
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Captured employer Parker Aerospace, returned exact title/site source employer Parker Hannifin. Actual supplier development, supplier quality and corrective-action duties plausibly overlap resume, but employer identity binding is not proven; no parent/division alias forced. Glassdoor route under active backoff, not fetched.",
+  "retryCondition": "Exact employer binding or permitted source evidence changes; respect recorded host retry condition without unchanged lookup.",
+  "runId": "FORGE-DRAIN-20261106-RUN27-B8",
+  "instructionCommit": "fdd6f4b7ff12d6c20c0d12ecb31b95e3593e1f38",
+  "observedAt": "2026-11-06T23:08:30.927120+00:00",
+  "sourceVersion": "ca9e735ec159713cf03478d251ae05ce5f932a276676fee2d3f349a48886bb84",
+  "nextAction": "Existing controlled intake independently validates prepared source/quote/current resume; unresolved exact identity or source access remains pending, no Writer replay or duplicate dispatch."
+}
