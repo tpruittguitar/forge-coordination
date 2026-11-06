@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:89ada5473c5861c8b1391b81",
+  "sourceVersion": "c5ab5efcb038a3dba59f6cd3b6bb1bd0c78869a55a0dfe17e1011ac98edd267b",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T052251778000Z-maritime-identity",
+  "instructionCommit": "1acc9b1448ab0b3f89635da992fb1dfe0da3805f",
+  "observedAt": "2026-11-06T05:22:51.778000Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Exact saved discovery evidence explicitly states Santa Ana CA and manufacturing responsibilities, but shares its source content hash and quoted role content with another saved Anduril Maritime posting carrying a different Greenhouse ID. Identical content does not prove an employer requisition alias or distinct role. Keep original source IDs separate until exact employer identity is established. No Writer request fence exists on this candidate, and no original request is replayed.",
+  "nextAction": "Reconcile employer requisition identity between exact Greenhouse IDs 5273710007 and 5248269007 using original employer posting evidence and controlled intake duplicate gates; preserve both originating identities and all prior decisions.",
+  "retryCondition": "Exact employer source evidence establishes whether the two posting IDs are a single requisition alias or distinct roles, or controlled workflow publishes source-bound identity accounting. Current environment policy excludes boards.greenhouse.io; no denied-host retry.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "recoveredFields": {
+    "location": "Santa Ana, CA"
+  },
+  "attempts": [
+    {
+      "source": "state/INTAKE_DRAIN.json#url:89ada5473c5861c8b1391b81.discoveryReview",
+      "result": "Read exact source-bound saved location sentence and responsibilities; sourceSha256=982bac7297556d3579644a4be272417384fb3fdb87a83e7ff682f6934920274b"
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:91437b6c27426f7fb6680655",
+      "result": "Different exact URL uses posting ID 5248269007 while sourceSha256 and role quotes match the current 5273710007 card. Earlier independent source validation does not by itself establish this original alias."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current enforced restricted policy excludes boards.greenhouse.io; no blocked-host request or alternative access bypass attempted."
+    }
+  ]
+}
