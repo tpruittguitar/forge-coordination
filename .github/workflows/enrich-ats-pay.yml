@@ -37,6 +37,7 @@ jobs:
         run: node --test tools/enrich-ats-pay/*.test.js
       - name: Enrich
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
           ENRICH_PRODUCTS_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.products_only && '1' || '' }}
         run: node tools/enrich-ats-pay/run.js

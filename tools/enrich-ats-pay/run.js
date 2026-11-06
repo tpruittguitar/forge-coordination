@@ -83,28 +83,43 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const writerRead=async(action,params={})=>{const u=new URL(conn.PipelineConnection.url);u.searchParams.set('key',key);u.searchParams.set('action',action);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return(await get(u.toString())).json();};
   const receiptIndex=async()=> (await get('https://raw.githubusercontent.com/tpruittguitar/forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json?pay='+Date.now())).json();
   const proofRoot=process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):ROOT;
+  const privateResponses=process.env.ENRICH_PRIVATE_WRITER_DIR||(process.env.ENRICH_MASTER_FILE?path.join(path.dirname(LEDGER),'private-writer-responses'):path.join(process.env.RUNNER_TEMP||require('node:os').tmpdir(),'forge-pay-private-writer'));
+  fs.mkdirSync(privateResponses,{recursive:true,mode:0o700});
+  function retainResponse(requestId,entry,response){
+    const sha=Store.hash(response),file=sha+'.json';
+    Object.assign(entry,{acceptanceSha256:sha,privateResponseRef:file,responseProjection:Outcome.project(response,{requestId,childRequestIds:entry.requests.map(q=>q.ruling.requestId)})});entry.responseProjectionSha256=Store.hash(entry.responseProjection);delete entry.response;
+    Store.immutable(privateResponses,file,response);
+  }
+  function retainedResponse(requestId,entry){
+    if(entry.response)retainResponse(requestId,entry,entry.response); // migrate any unmerged unsafe ledger entry privately
+    if(!/^[a-f0-9]{64}\.json$/.test(entry.privateResponseRef||''))return null;
+    const response=Store.read(privateResponses,entry.privateResponseRef,null);if(response&&Store.hash(response)!==entry.acceptanceSha256)throw Error('ORIGINAL_PAY_RESPONSE_BINDING');return response;
+  }
   const outcomeDeps={status:()=>writerRead('writer_status'),result:rid=>writerRead('request_result',{requestId:rid}),
     source:async revision=>(await get('https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/'+revision+'/apps-script/Code.gs')).text(),
     index:async()=>require('../writer-verify/recovery').loadIndex()};
   let writerBuild;
-  async function currentWriterBuild(){if(writerBuild===undefined)writerBuild=(await outcomeDeps.status()).build?.commit||'UNKNOWN';return writerBuild;}
+  async function currentWriterBuild(){if(writerBuild===undefined){const value=(await outcomeDeps.status()).build?.commit;writerBuild=/^[a-f0-9]{7,40}$/.test(value||'')?value:'UNKNOWN';}return writerBuild;}
   async function releaseRefusal(requestId,entry,response){
-    const children=entry.requests.map(q=>q.ruling.requestId),outcome=await Outcome.prove({response,requestId,childRequestIds:children,deps:outcomeDeps});
+    const children=entry.requests.map(q=>q.ruling.requestId),input=response?{response}:{responseProjection:entry.responseProjection,responseProjectionSha256:entry.responseProjectionSha256,acceptanceSha256:entry.acceptanceSha256};
+    const outcome=await Outcome.prove({...input,requestId,childRequestIds:children,deps:outcomeDeps});
     if(!outcome)return false;
-    const payload={action:'batch',requestId,requests:entry.requests},saved=Outcome.record(proofRoot,{requestId,payloadSha256:Store.hash(payload),acceptanceSha256:Store.hash(response),response,ids:entry.ids,childRequestIds:children,outcome});
-    const rejectedWriterCommit=outcome.retryable===false?(response.outcome?.writerCommit||await currentWriterBuild()):null;
-    (ledger.notAccepted||(ledger.notAccepted={}))[requestId]={ids:entry.ids,requests:entry.requests,payloadSha256:Store.hash(payload),acceptanceSha256:Store.hash(response),response,proof:saved.file,retryAfter:saved.proof.retryAfter,retryable:outcome.retryable!==false,code:outcome.code,clientRevision:PAY_CLIENT_REVISION,rejectedWriterCommit};
+    const payload={action:'batch',requestId,requests:entry.requests},saved=Outcome.record(proofRoot,{requestId,payloadSha256:Store.hash(payload),...input,acceptanceSha256:response?Store.hash(response):entry.acceptanceSha256,ids:entry.ids,childRequestIds:children,outcome});
+    const commit=(response||entry.responseProjection)?.outcome?.writerCommit,rejectedWriterCommit=outcome.retryable===false?(/^[a-f0-9]{7,40}$/.test(commit||'')?commit:await currentWriterBuild()):null;
+    if(response)retainResponse(requestId,entry,response);
+    (ledger.notAccepted||(ledger.notAccepted={}))[requestId]={ids:entry.ids,requests:entry.requests,payloadSha256:Store.hash(payload),acceptanceSha256:entry.acceptanceSha256,privateResponseRef:entry.privateResponseRef,responseProjection:entry.responseProjection,responseProjectionSha256:entry.responseProjectionSha256,proof:saved.file,retryAfter:saved.proof.retryAfter,retryable:outcome.retryable!==false,code:outcome.code,clientRevision:PAY_CLIENT_REVISION,rejectedWriterCommit};
     for(const id of entry.ids)delete ledger.progress?.[id];
     delete ledger.pendingWrites[requestId];return true;
   }
   const inFlightIds=new Set(),refusalStatuses=new Map();progress('pending_receipts',{batches:Object.keys(ledger.pendingWrites).length});
   let pendingIndex;for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){
-    try{if(entry.response&&entry.requests&&await releaseRefusal(requestId,entry,entry.response))continue;}catch{}
+    try{const response=retainedResponse(requestId,entry);if((response||entry.responseProjection)&&entry.requests&&await releaseRefusal(requestId,entry,response))continue;}catch{}
     try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();if(await require('./writer-proof').verify(entry.requests,{index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]})){delete ledger.pendingWrites[requestId];continue;}}}catch{}
     for(const id of entry.ids||[])inFlightIds.add(id);
   }
   for(const [requestId,entry]of Object.entries(ledger.notAccepted||{})){
-    if(!Outcome.released(proofRoot,{requestId,...entry}))try{if(entry.response&&entry.requests)await releaseRefusal(requestId,entry,entry.response);}catch{}
+    const response=retainedResponse(requestId,entry);
+    if(!Outcome.released(proofRoot,{requestId,...entry}))try{if((response||entry.responseProjection)&&entry.requests)await releaseRefusal(requestId,entry,response);}catch{}
     let serverChanged=false;if(entry.retryable===false)try{const current=await currentWriterBuild();serverChanged=/^[a-f0-9]{7,40}$/.test(current)&&current!==entry.rejectedWriterCommit;}catch{}
     if(!Outcome.released(proofRoot,{requestId,...entry})||Date.parse(entry.retryAfter)>Date.now()||entry.retryable===false&&entry.clientRevision===PAY_CLIENT_REVISION&&!serverChanged)for(const id of entry.ids){inFlightIds.add(id);refusalStatuses.set(id,!Outcome.released(proofRoot,{requestId,...entry})?'WRITER_REFUSAL_PROOF_REQUIRED':entry.retryable===false?'WRITER_REQUEST_REJECTED':'WRITER_RETRY_WAIT');}
   }
@@ -467,7 +482,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
-        if(res?.ok===false){ledger.pendingWrites[requestId].response=res;fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
+        if(res?.ok===false){retainResponse(requestId,ledger.pendingWrites[requestId],res);fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
           if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
         // A legacy mode/error string is not evidence of nonacceptance. Keep its
         // original checkpoint for read-only recovery; never retry it here.
