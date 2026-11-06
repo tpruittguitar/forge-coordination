@@ -14,7 +14,14 @@ function apiPosting(route,j,company){
   const hits=(j.jobs||[]).filter(x=>x.id===route.id);if(hits.length!==1)throw Error('ATS_POSTING_ID_CONFLICT');const x=hits[0];title=x.title;employer=j.name||company?.name;locations=[x.location];description=x.descriptionHtml||x.descriptionPlain;url=x.jobUrl;id=x.id;
  }else if(route.kind==='workday'){
   const x=j.jobPostingInfo;if(!x)throw Error('INCOMPLETE_ATS_POSTING');title=x.title;employer=x.companyName||j.hiringOrganization?.name||company?.name;locations=[x.location,...(x.additionalLocations||[])];description=x.jobDescription;url=x.externalUrl||route.page;id=x.jobReqId;
-  const expected=route.page.match(/_((?:R-?\d+|JR\d+)(?:-\d+)?)\/?$/i)?.[1];if(expected&&String(id).replace(/-/g,'').toUpperCase()!==expected.replace(/-/g,'').toUpperCase())throw Error('ATS_POSTING_ID_CONFLICT');
+  const page=new URL(route.page),slug=page.pathname.split('/').filter(Boolean).at(-1),match=slug.match(/_((?:R-?\d+|JR\d+))(-\d+)?$/i),expected=match&&match[1]+(match[2]||'');
+  const req=v=>String(v||'').replace(/-/g,'').toUpperCase();
+  if(expected&&req(id)!==req(expected)){
+   // Workday's posting suffix is not part of jobReqId. Accept the base only
+   // when both independent posting fields bind the exact requested slug/host.
+   let exactPosting=false;try{const external=new URL(x.externalUrl);exactPosting=external.origin===page.origin&&external.pathname.split('/').filter(Boolean).at(-1)===slug&&x.jobPostingId===slug;}catch{}
+   if(!match[2]||req(id)!==req(match[1])||!exactPosting)throw Error('ATS_POSTING_ID_CONFLICT');
+  }
  }else throw Error('UNSUPPORTED_ATS_FORMAT');
  if(!title||!employer||!description||!locations.filter(Boolean).length)throw Error('INCOMPLETE_ATS_POSTING_IDENTITY');
  const parsed=L.parseAts(route.kind,j,route.id);salary=parsed?.payFacts?annual({currency:'USD',interval:'YEAR',min:parsed.payFacts.low,max:parsed.payFacts.high}):null;
