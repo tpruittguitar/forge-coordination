@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-06T16:51:16.934Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-06T23:19:59.881Z from CANONICAL_WRITER_MASTER.
 
-Of 807 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 848 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
-Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
