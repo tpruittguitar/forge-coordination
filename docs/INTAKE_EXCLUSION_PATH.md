@@ -35,3 +35,39 @@ The initial template covers H&R Block's exact Multi-Office Leader title, whose s
 EY supply-chain templates are intentionally **not** enabled: the current canonical role categories and published discovery mismatch terms do not supply a corresponding active rule. A reviewed canonical authorization is needed before any such template can exclude. This implementation does not create a policy category or treat saved conversational preferences as runtime rule authority.
 
 The grouped producer now enumerates role bindings with both company and title through `roleMatches` and retains `kind`/`title` in evidence. Ambiguous overlapping role/business bindings are skipped. The existing queue publisher can already submit properly formed per-identity negative reviews. After merge, regenerate exact current reviews, publish only through authorized transport, and verify independent EXCLUDED proofs. Existing master matches, user decisions, original-request fences and immutable history retain priority.
+
+## Task-scoped nine-state backlog cleanup
+
+`geography-reviews.cjs` prepares negative reviews for NY, PA, CT, ME, MA, NH,
+NJ, RI and VT only within the reviewed `GEOGRAPHY_CLEANUP_AUTHORIZATION.json`
+snapshot. This is a one-time discovery cleanup, not a canonical Never Consider
+policy edit or authority to remove future jobs. Each authorized identity binds
+its key, sourceVersion, exact original-card hash and state. The initial snapshot
+is main `ff813225252c104a22d1184c7c49b93e1b7ee3b9`, queue timestamp
+`2026-11-06T18:05:13.758Z`: 278 unreviewed action-required cards match strict city/state
+syntax without recorded fences/conflicts. Preparation yields 254 review envelopes;
+7 CODE-owned cards stay with their existing owner, and 17 lack usable public source
+URLs. These are preparation counts, not verified removals.
+
+Pass explicit assigned keys and a FORGE-DRAIN run ID as JSON to
+`node tools/intake-drain/geography-reviews.cjs <assignment.json>`.
+The command prints a plan; it does not publish or mutate state. Existing reviews,
+changed source versions, owner mismatches and fences fail closed. Do not fabricate
+a ChatGPT review for the seven CODE-owned keys: retain controlled intake ownership
+until an explicit existing-owner handoff is available. No scheduler or worker is added.
+
+After implementation review/merge, regenerate against fresh main and publish
+eligible reviews through the existing append-only route. The independent verifier
+re-fetches the exact card URL and requires one structured JobPosting with exact
+employer/title, one US worksite matching the full city/state, and no remote/hybrid
+or multi-location indication. Login walls, missing structured evidence, ambiguous
+identities and redirects to another host stay open with an explicit validation
+failure. This path does not require irrelevant salary or degree evidence. Existing
+observer canonical-row matching, live Writer fences, 24-hour validation freshness,
+identity hashing and history retention still apply. Do not edit generated queue
+state or master/archive. Deactivate the authorization to revoke its consumer;
+changes to the authorization invalidate prior binding hashes.
+
+Report published, independently verified, actually EXCLUDED and blocked separately.
+Only an independently observed EXCLUDED disposition reduces the backlog; a merged
+implementation, prepared plan or READY status is not a completed cleanup.
