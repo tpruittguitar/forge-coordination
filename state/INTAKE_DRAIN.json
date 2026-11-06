@@ -24196,9 +24196,114 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Existing source-intake-auto must independently re-fetch exact posting, identity, scope quote and resume overlap before normal controlled Writer intake.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "READY_FOR_CONTROLLED_INTAKE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/255496b113c6196700b88476803b916830c0a894607e7944ab3f285181413824.json",
+        "sha256": "255496b113c6196700b88476803b916830c0a894607e7944ab3f285181413824",
+        "observedAt": "2026-11-06T00:27:32.699755Z",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "255496b113c6196700b88476803b916830c0a894607e7944ab3f285181413824",
+        "observedAt": "2026-11-06T00:28:12.054Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "assembly"
+              ],
+              "postingQuotes": [
+                "Head of Production, Maritime",
+                "Anduril’s Maritime Manufacturing Technology Team is responsible for rapidly developing and implementing manufacturing technologies, processes, and materials for cutting-edge defense hardware."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "You will build and lead the product line organization from scratch, establishing and managing manufacturing processes, quality systems, and the infrastructure needed to scale from prototype builds through full-rate production.",
+                "Build and lead the production organization, supporting hiring across manufacturing engineering, quality, and operations."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "NPI"
+              ],
+              "postingQuotes": [
+                "Drive NPI and the manufacturing development lifecycle: Concept, Prototype, LRIP, FRP.",
+                "Demonstrated experience scaling production from NPI through full-rate production."
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training"
+              ],
+              "postingQuotes": [
+                "Actual salary offer may vary based on (but not limited to) work experience, education and/or training, critical skills, and/or business considerations."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "As the world enters an era of strategic competition, Anduril is committed to bringing cutting-edge autonomy, AI, computer vision, sensor fusion, and networking technology to the military in months, not years."
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "MES",
+                "data"
+              ],
+              "postingQuotes": [
+                "Anduril’s family of systems is powered by Lattice OS, an AI-powered operating system that turns thousands of data streams into a realtime, 3D command and control center.",
+                "Implement and optimize production systems (ERP, MES, QMS)."
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean",
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Drive continuous improvement using Lean, Six Sigma, or equivalent methodologies.",
+                "Experience with Lean manufacturing and Six Sigma methodologies."
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "8f8ceffaa69d2c4c2b19a510db97eacbb4890b49f539c5ee2012920de8e63efd",
+        "sourceUrl": "https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007"
+      }
     },
     "url:f2db57665b201b2357dfa72a": {
       "key": "url:f2db57665b201b2357dfa72a",
@@ -56584,9 +56689,15 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Reuse recovered worksite and obtain exact posting responsibility evidence through authorized access before SOURCE_READY.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/51861f0249034693ef50ebe11ca8d740ceb1233c2eb3f5e9d6004e485381d4b2.json",
+        "sha256": "51861f0249034693ef50ebe11ca8d740ceb1233c2eb3f5e9d6004e485381d4b2",
+        "observedAt": "2026-11-06T00:27:27.452985Z",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4477319423": {
       "key": "linkedin:4477319423",
@@ -57626,9 +57737,15 @@
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Reuse recovered worksite and obtain exact posting responsibility evidence through authorized access before SOURCE_READY.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/9c50e295776f054b5fdd5c416035e75c03f2940b448e5a59086273151c53f25d.json",
+        "sha256": "9c50e295776f054b5fdd5c416035e75c03f2940b448e5a59086273151c53f25d",
+        "observedAt": "2026-11-06T00:27:29.982567Z",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4481786021": {
       "key": "linkedin:4481786021",
@@ -279784,14 +279901,15 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-06T00:26:47.306Z",
+  "at": "2026-11-06T00:28:12.054Z",
   "upstreamAt": "2026-11-06T00:23:42.291Z",
   "counts": {
-    "WAITING_EVIDENCE_CHANGE": 709,
-    "ACTION_REQUIRED": 5251,
+    "WAITING_EVIDENCE_CHANGE": 711,
+    "ACTION_REQUIRED": 5248,
     "ACCOUNTED_UPSTREAM": 67,
     "SOURCE_VALIDATION_REQUIRED": 34,
-    "READY_FOR_CONTROLLED_INTAKE": 7
+    "READY_FOR_CONTROLLED_INTAKE": 7,
+    "PENDING_INDEPENDENT_VALIDATION": 1
   },
   "actions": {
     "REVIEW_SCOPE": 3043,
