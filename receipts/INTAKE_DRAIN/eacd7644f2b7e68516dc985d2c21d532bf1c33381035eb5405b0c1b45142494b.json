@@ -1,0 +1,37 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:efb0b6a5b4291729dc36943b",
+  "sourceVersion": "244dda8fb7c9a0a30607f1c7ced7bfbba58879371bc5e4466255fe33435d5ecd",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T012824553853Z-9",
+  "instructionCommit": "0d8f0ea99d5af4c57aa4e79d67f7c4c2cc1ed511",
+  "observedAt": "2026-11-06T01:28:24.553853Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Prior exact saved evidence retained; independent validation SOURCE_HTTP_406 remains unresolved. Current enforced HTTP policy excludes original and evidence posting hosts; no current posting or canonical verification claimed.",
+  "nextAction": "Resume exact-source recovery after authorized access changes or new exact employer evidence resolves the recorded validation failure.",
+  "retryCondition": "Authorized source access includes the bound posting host, or newly captured source-bound evidence resolves SOURCE_HTTP_406. Time alone does not change this access restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/7f93089b4e9869c671e6bbd44d690f197573a079bae9a815d82817d1542b8d00.json",
+  "savedIdentity": {
+    "company": "Austin Powder",
+    "title": "Director of Manufacturing Technology",
+    "location": "Beachwood, Ohio, United States",
+    "url": "https://austinpowder.wd5.myworkdayjobs.com/en-US/AP/job/Director-of-Manufacturing-Technology_JR100589"
+  },
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/7f93089b4e9869c671e6bbd44d690f197573a079bae9a815d82817d1542b8d00.json",
+      "result": "Read saved exact identity, responsibilities and original source bindings. Reused prior evidence without new interpretation or claiming source validation."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:efb0b6a5b4291729dc36943b",
+      "result": "Independent validation remains SOURCE_HTTP_406 at 2026-11-05T15:20:27.446Z."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current enforced restricted policy excludes austinpowder.wd5.myworkdayjobs.com, hiringcafe.com. No blocked-host request or alternate access route attempted."
+    }
+  ]
+}
