@@ -1,19 +1,19 @@
 {
   "schema": "forge.upstream-flow.v1",
-  "at": "2026-11-06T00:02:32.533Z",
-  "total": 9700,
-  "sourceIdentities": 10210,
+  "at": "2026-11-06T00:05:56.844Z",
+  "total": 10222,
+  "sourceIdentities": 10732,
   "aliasesMerged": 510,
   "counts": {
     "WAITING": 4021,
     "PRESENT": 3257,
     "EXCLUDED": 1025,
     "HELD": 1166,
-    "IDENTITY_HOLD": 230,
+    "IDENTITY_HOLD": 752,
     "MISSING_PREVIOUSLY_PRESENT": 1
   },
-  "waiting": 5418,
-  "accounted": 9700,
+  "waiting": 5940,
+  "accounted": 10222,
   "canonicalPopulation": {
     "total": 5471,
     "linked": 3257,
@@ -21,14 +21,14 @@
   },
   "reconciled": true,
   "reconciliation": {
-    "from": "2026-11-06T00:00:21.520Z",
-    "to": "2026-11-06T00:02:32.533Z",
+    "from": "2026-11-06T00:02:32.533Z",
+    "to": "2026-11-06T00:05:56.844Z",
     "opening": 5418,
-    "arrivals": 0,
+    "arrivals": 522,
     "admitted": 0,
     "excluded": 0,
     "otherExits": 0,
-    "closing": 5418
+    "closing": 5940
   },
   "rates": {
     "discovery": {
@@ -60,9 +60,9 @@
         "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
       },
       "intake": {
-        "count": 54,
+        "count": 53,
         "windowHours": 6,
-        "perHour": 9,
+        "perHour": 8.833333333333334,
         "partial": true,
         "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
       }
@@ -96,9 +96,9 @@
         "basis": "Distinct captured candidate identities first observed within 24 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
       },
       "intake": {
-        "count": 194,
+        "count": 193,
         "windowHours": 24,
-        "perHour": 8.083333333333334,
+        "perHour": 8.041666666666666,
         "partial": true,
         "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 24 hours."
       }
@@ -122,12 +122,25 @@
       }
     }
   },
+  "screening": {
+    "at": "2026-11-06T00:05:56.844Z",
+    "reviewedSourceIdentities": 10732,
+    "pendingCandidates": 5940,
+    "storedEvidence": 383,
+    "fullPostings": 163,
+    "neverConsiderExcluded": 0,
+    "titleOnly": 5717,
+    "rulesSha256": "aafeef603026d495928acb9a0b7cce4fe54f1b9b1550a6dd790d98cfe132e198",
+    "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "canonicalWrites": 0
+  },
   "coverage": {
     "reportRevisions": 119,
     "emailFiles": 68,
-    "identityUnresolved": 230,
+    "identityUnresolved": 752,
     "unreadSourceWindows": 99,
-    "unkeyedRecords": 845,
+    "newReportCommits": 119,
+    "unkeyedRecords": 1430,
     "missingAdmissionTimes": 724,
     "masterRows": 4689,
     "archiveRows": 785
