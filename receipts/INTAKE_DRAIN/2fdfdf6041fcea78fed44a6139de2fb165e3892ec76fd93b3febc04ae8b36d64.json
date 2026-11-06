@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:e2e69165b90b86527f5684a4",
+  "sourceVersion": "8c4d4e7bf1bebecaf7cbe7e6acbe67c9998ee5ce8eb2ee591b8f7b2b7d3ee944",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T102154473223Z-3",
+  "instructionCommit": "751daa41660d12c3c52c6a0ab47e5750baa7e5fd",
+  "observedAt": "2026-11-06T10:21:54.473223Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "SOURCE_HTTP_406 remains unresolved after saved-evidence reuse. Current enforced policy excludes bound posting hosts. Missing or unvalidated identity and scope facts are not guessed; prior prepared evidence is not verification.",
+  "nextAction": "Resume exact-source recovery only when new bound employer evidence or authorized source-access changes can resolve the recorded missing facts or independent failure.",
+  "retryCondition": "New exact original/employer evidence resolves SOURCE_HTTP_406 or authorized access includes the bound posting host. Elapsed time alone does not change host policy.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/fe7776d7e055a8591c35f67b5681aa17424061e54602880a80ea0a64c4eb40d5.json",
+      "result": "Read and retained saved employer/title/worksite, responsibility quote and original bindings; independent failure SOURCE_HTTP_406 remains unresolved."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current restricted policy enforced; exact posting hosts excluded: flextronics.wd1.myworkdayjobs.com. No denied-host requests or bypass attempted."
+    }
+  ],
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/fe7776d7e055a8591c35f67b5681aa17424061e54602880a80ea0a64c4eb40d5.json",
+  "savedIdentity": {
+    "company": "Flex (Flextronics)",
+    "title": "Director, Engineering Labs & Validation Operations",
+    "location": "Austin, TX",
+    "url": "https://flextronics.wd1.myworkdayjobs.com/en-US/Careers/job/Director--Engineering-Labs---Validation-Operations_WD228493"
+  }
+}

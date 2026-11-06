@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:7fe260f5e4a975f7eb03f841",
+  "sourceVersion": "1f8330eb867f594a95651432bd10fd1560e9a0ff631cf4268f20d015d6d13ecb",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T102200580860Z-5",
+  "instructionCommit": "751daa41660d12c3c52c6a0ab47e5750baa7e5fd",
+  "observedAt": "2026-11-06T10:22:00.580860Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "SOURCE_IDENTITY_AMBIGUOUS remains unresolved after saved-evidence reuse. Current enforced policy excludes bound posting hosts. Missing or unvalidated identity and scope facts are not guessed; prior prepared evidence is not verification.",
+  "nextAction": "Resume exact-source recovery only when new bound employer evidence or authorized source-access changes can resolve the recorded missing facts or independent failure.",
+  "retryCondition": "New exact original/employer evidence resolves SOURCE_IDENTITY_AMBIGUOUS or authorized access includes the bound posting host. Elapsed time alone does not change host policy.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "attempts": [
+    {
+      "source": "receipts/INTAKE_DRAIN/7dd68f5c424a0a337af882d40ed0e003b5df30fddf22a709113c92d4e54cc698.json",
+      "result": "Read and retained saved employer/title/worksite, responsibility quote and original bindings; independent failure SOURCE_IDENTITY_AMBIGUOUS remains unresolved."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current restricted policy enforced; exact posting hosts excluded: hiringcafe.com, winlandfoods.wd1.myworkdayjobs.com. No denied-host requests or bypass attempted."
+    }
+  ],
+  "savedEvidenceReference": "receipts/INTAKE_DRAIN/7dd68f5c424a0a337af882d40ed0e003b5df30fddf22a709113c92d4e54cc698.json",
+  "savedIdentity": {
+    "company": "Winland Foods",
+    "title": "Plant Manager",
+    "location": "St. Louis, Missouri, United States",
+    "url": "https://winlandfoods.wd1.myworkdayjobs.com/en-US/External/job/Plant-Manager_R29134"
+  }
+}
