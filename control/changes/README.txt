@@ -23,3 +23,9 @@ Run: node tools/change-register/preflight.js control/changes/<provider>-<yyyymmd
 Exit 0 = syntax, filename, and consumed-ID checks passed; nonzero = do not push.
 After opening the PR, still require GitHub change-record-check PASS against latest head. This local check does not replace the PR diff check or attest Writer results.
 For tool-only AI sessions with no local shell, read and verify the exact new file contents and filename through GitHub and rely on the mandatory GitHub check before requesting merge; never claim the local command ran.
+
+VALIDATED RECORD CREATION
+Prefer: node tools/change-register/write.js control/changes/<unique-id>.txt --what "Brief publication summary"
+This rejects extra metadata, multiline/oversized summaries and consumed names, and never overwrites a record. Keep full checkpoint details in the existing source-bound review or an authorized receipt, not in WHAT. Then run the preflight above. Do not remove spaces or omit unresolved-work qualifications to fit the limit.
+
+Historical repairs preserve original bytes in receipts/CHANGE_RECORD_DETAILS/ with SHA-256 bindings in receipts/CHANGE_RECORD_REPAIRS/. The small corrected record links that archive; registration still records publication, not independent canonical completion. Register history, consumed identifiers, and original landing order are preserved.
