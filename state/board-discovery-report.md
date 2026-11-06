@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261106T1427Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261106T1728Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,20 +6,20 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (114 read, 0 failed) | 161 | 26 | 135 |
+| Employer job boards (117 read, 0 failed) | 163 | 26 | 137 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
 
 HiringCafe: did not run. Unique = matching US roles no board or JobSpy result already covered.
 
-Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, Pyka, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
+Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, Dexterity, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
 
 ## By level
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 13 | 90 |
+| DIRECTOR_PLUS | 13 | 92 |
 | SR_MANAGER | 9 | 25 |
 | SR_STAFF | 4 | 20 |
 
@@ -45,8 +45,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Product Operations](https://boards.greenhouse.io/andurilindustries/jobs/5279956007?gh_jid=5279956007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | ARS Pharmaceuticals Operations, Inc. | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Ketryx | [Head of Operations ](https://job-boards.greenhouse.io/ketryx/jobs/5429745008) | Boston, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Olema Oncology | [Senior Director, Commercial Manufacturing and Operations](https://job-boards.greenhouse.io/olema/jobs/6223609004) | San Francisco, California | MFG_PROD | DIRECTOR_PLUS |  |
