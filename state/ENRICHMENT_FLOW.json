@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-06T15:16:36.082Z",
+    "at": "2026-11-06T15:27:42.056Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,7 +277,7 @@
     "current": 1031,
     "undated": 0
   },
-  "at": "2026-11-06T15:16:36.082Z",
+  "at": "2026-11-06T15:27:42.056Z",
   "queues": {
     "verification": 0,
     "enrichment": 639,
@@ -296,8 +296,8 @@
     "readyForReview": "2026-10-31T04:35:30.337Z"
   },
   "reconciliation": {
-    "from": "2026-11-06T15:13:44.655Z",
-    "to": "2026-11-06T15:16:36.082Z",
+    "from": "2026-11-06T15:16:36.082Z",
+    "to": "2026-11-06T15:27:42.056Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -414,10 +414,10 @@
         "basis": "Observed distinct job transitions; baseline stock and partial field updates excluded. Counts / selected elapsed calendar hours. Short history and collection gaps are explicitly marked; only observed completions count."
       },
       "enrichment": {
-        "count36": 48,
-        "count": 48,
+        "count36": 47,
+        "count": 47,
         "windowHours": 12,
-        "perHour": 4,
+        "perHour": 3.9166666666666665,
         "last24h": 119,
         "partial": false,
         "coverageHours": 12,
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: measured fit, salary, posting-based degree evidence and Writer-calculated final score with model provenance; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-06T15:15:57.063Z",
+    "readAt": "2026-11-06T15:26:38.738Z",
     "sha256": "878275a53fca08d675b22eb0d4fe809b9d67aa082131e35ff9e90c024dca4596",
     "rows": 4882
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-06T15:16:05.573Z",
+    "at": "2026-11-06T15:26:48.910Z",
     "total": 11046,
     "sourceIdentities": 11665,
     "aliasesMerged": 619,
@@ -519,8 +519,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-06T15:13:16.279Z",
-      "to": "2026-11-06T15:16:05.573Z",
+      "from": "2026-11-06T15:16:05.573Z",
+      "to": "2026-11-06T15:26:48.910Z",
       "opening": 6526,
       "arrivals": 0,
       "admitted": 0,
@@ -549,12 +549,12 @@
     "ratesByWindow": {
       "6": {
         "discovery": {
-          "count": 16,
+          "count": 15,
           "windowHours": 6,
-          "perHour": 2.6666666666666665,
+          "perHour": 2.5,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 16,
+          "candidateCount": 15,
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -594,9 +594,9 @@
           "basis": "Distinct captured candidate identities first observed within 24 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 264,
+          "count": 261,
           "windowHours": 24,
-          "perHour": 11,
+          "perHour": 10.875,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 24 hours."
         }
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-06T15:16:05.573Z",
+      "at": "2026-11-06T15:26:48.910Z",
       "reviewedSourceIdentities": 11665,
       "pendingCandidates": 6526,
       "storedEvidence": 446,
