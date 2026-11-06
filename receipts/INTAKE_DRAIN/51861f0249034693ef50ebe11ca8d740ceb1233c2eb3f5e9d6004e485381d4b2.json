@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4469377310",
+  "sourceVersion": "7f51092012bf00b464dcc0e4a8738ba829ee9eb5456e3770e3fffe92f279f54c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T002727452985Z-0",
+  "instructionCommit": "36f3e9f075dbff6798fbd3d8ba514752469c311a",
+  "observedAt": "2026-11-06T00:27:27.452985Z",
+  "writerSubmitted": false,
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Recovered exact saved worksite from original source-bound relevance card. Responsibility evidence remains missing; current enforced policy excludes www.linkedin.com, so no posting request sent and no scope inferred from title.",
+  "nextAction": "Reuse recovered worksite and obtain exact posting responsibility evidence through authorized access before SOURCE_READY.",
+  "retryCondition": "New full exact-posting responsibility evidence is available or authorized environment access includes the original source host.",
+  "recoveredFields": {
+    "location": "Northfield, IL, USA"
+  },
+  "attempts": [
+    {
+      "source": "control/claude-relevance/page-0010.json",
+      "result": "Exact company/title/URL-bound original card explicitly records Northfield, IL, USA; no headquarters or title inference."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Current report contains no exact matching URL object."
+    },
+    {
+      "source": "environment_status",
+      "result": "Current enforced restricted policy excludes www.linkedin.com; no denied-host retry."
+    }
+  ]
+}
