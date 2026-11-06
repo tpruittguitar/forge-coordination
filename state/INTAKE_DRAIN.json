@@ -96842,7 +96842,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake may independently retry exact saved source and canonical gates on a subsequent pass; no duplicate dispatch or Writer replay.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/42221228eacae0a02f0a82603a2fa013f8d73c6a5a78048ef4a9b30948d92439.json",
         "sha256": "42221228eacae0a02f0a82603a2fa013f8d73c6a5a78048ef4a9b30948d92439",
@@ -96851,10 +96851,10 @@
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
-        "reviewSha256": "f15c1c5598fe593b13cf347ef91cdac417c1c12a04627cad017adaa9761cf3f6",
-        "observedAt": "2026-11-06T08:05:51.289Z",
+        "reviewSha256": "42221228eacae0a02f0a82603a2fa013f8d73c6a5a78048ef4a9b30948d92439",
+        "observedAt": "2026-11-06T15:04:09.020Z",
         "reason": "STRUCTURED_POSTING_UNAVAILABLE",
-        "retryAfter": "2026-11-06T14:05:51.289Z"
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "url:f167bcaa64671df3aa2ce4c9": {
@@ -119107,12 +119107,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates posting, exact identity/quote, current resume and canonical Writer gates on later pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/56557e090793b84f88866c7b0efbcf12c2d415bae63e2cc9a40f459999c7c96d.json",
         "sha256": "56557e090793b84f88866c7b0efbcf12c2d415bae63e2cc9a40f459999c7c96d",
         "observedAt": "2026-11-06T14:07:47.738622+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "56557e090793b84f88866c7b0efbcf12c2d415bae63e2cc9a40f459999c7c96d",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "linkedin:4459344597": {
@@ -119385,12 +119392,110 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates posting, exact identity/quote, current resume and canonical Writer gates on later pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/cff065de367ccc87566273d5aa38089249fcd9e32d65abd028212dd63212fccb.json",
         "sha256": "cff065de367ccc87566273d5aa38089249fcd9e32d65abd028212dd63212fccb",
         "observedAt": "2026-11-06T14:07:38.857349+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "cff065de367ccc87566273d5aa38089249fcd9e32d65abd028212dd63212fccb",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "factory"
+              ],
+              "postingQuotes": [
+                "As a key member of our start-up team, you’ll have a once-in-a-lifetime opportunity to launch a state-of-the-art manufacturing facility from the ground up.",
+                "As a Process Quality Control Engineer, you will collaborate closely with other function engineers to maintain the highest quality standards in manufacturing processes."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "Process Quality Engineer, Process Quality Control, BlueOval Battery Park Michigan",
+                "As a Process Quality Control Engineer, you will collaborate closely with other function engineers to maintain the highest quality standards in manufacturing processes."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "launch",
+                "ramp"
+              ],
+              "postingQuotes": [
+                "As a key member of our start-up team, you’ll have a once-in-a-lifetime opportunity to launch a state-of-the-art manufacturing facility from the ground up.",
+                "• Paid parental leave, new parent ramp-up programs, subsidized back-up child care and more"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "• Immediate medical, dental, vision, and prescription drug coverage"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "ev_battery",
+              "postingTerms": [
+                "battery"
+              ],
+              "postingQuotes": [
+                "Process Quality Engineer, Process Quality Control, BlueOval Battery Park Michigan",
+                "At BlueOval Battery Park Michigan, we’re not just assembling battery systems; we’re leading a transformation."
+              ],
+              "resumeEvidenceSha256": "af629f163601be0226c6b4a580124d5fc35c7d6f6f54e671c087e91770aa9445"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "• use your entrepreneurial skills and team mindset to come up with data-driven solutions",
+                "Lead the team in analyzing process quality data, identifying key issues, and ensure the continuous improvement of processes."
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Lead the team in analyzing process quality data, identifying key issues, and ensure the continuous improvement of processes."
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "7958ffac4425a6d7fe81d6833468602b4023c7f897f052441f3da471fb77bf93",
+        "sourceUrl": "https://www.careers.ford.com/en/job/marshall/process-quality-engineer-process-quality-control-blueoval-battery-park-michigan/48560/102639387280"
       }
     },
     "linkedin:4484427232": {
@@ -119564,12 +119669,115 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates posting, exact identity/quote, current resume and canonical Writer gates on later pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/cce70a775a6cb0c76d24baae8b0c0a1faff269638a54bb019feec3c0bcdac9a5.json",
         "sha256": "cce70a775a6cb0c76d24baae8b0c0a1faff269638a54bb019feec3c0bcdac9a5",
         "observedAt": "2026-11-06T14:07:28.633389+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "cce70a775a6cb0c76d24baae8b0c0a1faff269638a54bb019feec3c0bcdac9a5",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "plant",
+                "assembly"
+              ],
+              "postingQuotes": [
+                "We achieve this through deep vertical integration, with design, engineering, and production&nbsp;happening in-house&nbsp;across our global offices and&nbsp;manufacturing&nbsp;facilities.&nbsp;Our&nbsp;teams&nbsp;come&nbsp;from&nbsp;industries&nbsp;around the world, united by a shared commitment to excellence.&nbsp;By refusing to settle, you&nbsp;can&nbsp;help&nbsp;redefine&nbsp;what’s&nbsp;possible and&nbsp;shape the future of mobility.",
+                "Lead and continuously improve supplier APQP execution from initial design through PPAP approval and the start of mass production, ensuring deliverables, quality gates, and risks are visible and closed on time.&nbsp;"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality",
+                "ISO 9001",
+                "PPAP",
+                "FMEA"
+              ],
+              "postingQuotes": [
+                "We are seeking a S taff Supplier Industrialization Engineer, Chassis Systems to drive best-in-class product quality throughout industrialization development process.",
+                "To succeed, you must possess deep technical expertise in implementing quality and reliability best practices, driving innovation, and ensuring product validation."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "launch",
+                "industrialization"
+              ],
+              "postingQuotes": [
+                "Staff Supplier Industrialization Engineer, Chassis Systems",
+                "We are seeking a S taff Supplier Industrialization Engineer, Chassis Systems to drive best-in-class product quality throughout industrialization development process."
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training"
+              ],
+              "postingQuotes": [
+                "Salary Range : The compensation range for this position is specific to the locations listed below and is the range Lucid reasonably and in good faith expects to pay for the position taking into account the wide variety of factors that are considered in making compensation decisions, including job-related knowledge; skillset; experience, education and training; certifications; and other relevant business and organizational factors."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "Compensation &amp; Benefits: &nbsp; Lucid offers a comprehensive and competitive&nbsp; benefits package &nbsp;including medical, dental, and vision insurance; life and disability coverage; paid time off; paid holidays, paid sick leave; and a&nbsp;401(k) retirement&nbsp;plan."
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "Analyze supplier and assembly build data to assess process capability, identify emerging risks, and drive corrective and preventive actions that support build and launch requirements.&nbsp;",
+                "Candidate Data Privacy:&nbsp; By&nbsp;submitting&nbsp;your application, you understand and agree that your personal data will be processed&nbsp;in accordance with&nbsp;our&nbsp; Candidate Privacy Notice ."
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "supplier_quality",
+              "postingTerms": [
+                "supplier quality",
+                "corrective action"
+              ],
+              "postingQuotes": [
+                "Partner with Design Engineering, Manufacturing, Incoming Quality, Material Planning, Purchasing, and plant Supplier Quality teams to contain supplier issues, protect Lucid plants and customers, and deploy lessons learned across programs.",
+                "Maintain clear process documentation and ensure supplier quality activities align with ISO 9001 and AIAG/IATF 16949 expectations.&nbsp;"
+              ],
+              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "145aeaf7b8582b5586afe79664f5bc504eab3f2e4fbdfe3e986406465c7d6e6a",
+        "sourceUrl": "https://lucidmotors.com/careers/search/5187900007"
       }
     },
     "linkedin:4466662163": {
@@ -119789,12 +119997,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates posting, exact identity/quote, current resume and canonical Writer gates on later pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/c8dee44116d7be15c932890039dbad128b9c4adce0dea228d1c1c08b95cc0ae1.json",
         "sha256": "c8dee44116d7be15c932890039dbad128b9c4adce0dea228d1c1c08b95cc0ae1",
         "observedAt": "2026-11-06T14:07:31.862124+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "c8dee44116d7be15c932890039dbad128b9c4adce0dea228d1c1c08b95cc0ae1",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "linkedin:4450282574": {
@@ -120116,12 +120331,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates posting, exact identity/quote, current resume and canonical Writer gates on later pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/59b7cf8f79518d6d89880bd85ce5d89ded63d8575b61b1dfc82f6f24178edf66.json",
         "sha256": "59b7cf8f79518d6d89880bd85ce5d89ded63d8575b61b1dfc82f6f24178edf66",
         "observedAt": "2026-11-06T14:08:15.058478+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "59b7cf8f79518d6d89880bd85ce5d89ded63d8575b61b1dfc82f6f24178edf66",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "linkedin:4483323460": {
@@ -120250,9 +120472,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/18b1a8b04e3b9f1e6cee9484cfcb025d7f42373ec3d591b9e0327df91c9af33e.json",
+        "sha256": "18b1a8b04e3b9f1e6cee9484cfcb025d7f42373ec3d591b9e0327df91c9af33e",
+        "observedAt": "2026-11-06T15:03:07.771660+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4482063636": {
       "key": "linkedin:4482063636",
@@ -120332,12 +120560,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in subsequent pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5a72a4cc409b3e71c3f0eb79d2d035385763f36b788b287dd03633a66d62cf2a.json",
         "sha256": "5a72a4cc409b3e71c3f0eb79d2d035385763f36b788b287dd03633a66d62cf2a",
         "observedAt": "2026-11-06T14:10:31.694276+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5a72a4cc409b3e71c3f0eb79d2d035385763f36b788b287dd03633a66d62cf2a",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "RESUME_OVERLAP_NOT_IN_INDEPENDENT_POSTING",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "linkedin:4470892415": {
@@ -120416,9 +120651,22 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "SOURCE_VALIDATION_REQUIRED",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/92e4490b6b35863ef4eed8a2ea31d8cc88d5bef2b3e5d769099bebacea1a4bfe.json",
+        "sha256": "92e4490b6b35863ef4eed8a2ea31d8cc88d5bef2b3e5d769099bebacea1a4bfe",
+        "observedAt": "2026-11-06T15:02:37.285905+00:00",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "92e4490b6b35863ef4eed8a2ea31d8cc88d5bef2b3e5d769099bebacea1a4bfe",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
+      }
     },
     "linkedin:4481774762": {
       "key": "linkedin:4481774762",
@@ -120496,9 +120744,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Wait for recorded source-route condition; no Writer submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/0a2475a0328ab193d3a80062e6a2465621f568f7775875df4826cab23ed2af2d.json",
+        "sha256": "0a2475a0328ab193d3a80062e6a2465621f568f7775875df4826cab23ed2af2d",
+        "observedAt": "2026-11-06T15:03:04.686968+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4482075775": {
       "key": "linkedin:4482075775",
@@ -120750,12 +121004,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in subsequent pass; no duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/e0a90f376f6e47fa2a995f4d674174e9b2c0aad0898ac8befa24b6a4c47b0c00.json",
         "sha256": "e0a90f376f6e47fa2a995f4d674174e9b2c0aad0898ac8befa24b6a4c47b0c00",
         "observedAt": "2026-11-06T14:10:35.075390+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e0a90f376f6e47fa2a995f4d674174e9b2c0aad0898ac8befa24b6a4c47b0c00",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_HTTP_404",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "linkedin:4483399694": {
@@ -120791,9 +121052,22 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "SOURCE_VALIDATION_REQUIRED",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/906967ccc434a78bdb3ab397d2c87e8e00bcb8056028df13f1c1a488d9e636c6.json",
+        "sha256": "906967ccc434a78bdb3ab397d2c87e8e00bcb8056028df13f1c1a488d9e636c6",
+        "observedAt": "2026-11-06T15:02:47.291500+00:00",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "906967ccc434a78bdb3ab397d2c87e8e00bcb8056028df13f1c1a488d9e636c6",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
+      }
     },
     "linkedin:4483325953": {
       "key": "linkedin:4483325953",
@@ -120828,9 +121102,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Preserve original request fence; existing controlled reconciliation owns original evidence. No replay or duplicate admission.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/451fee9ccf12b2ec483fe834097f37f8bd4b38f7aa33c4073103abc3e28dac69.json",
+        "sha256": "451fee9ccf12b2ec483fe834097f37f8bd4b38f7aa33c4073103abc3e28dac69",
+        "observedAt": "2026-11-06T15:02:40.795346+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4465347360": {
       "key": "linkedin:4465347360",
@@ -120994,9 +121274,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/78775044491ae290f68b62d30fa445c8c90bff09d5f7986f9e96c9b00631235e.json",
+        "sha256": "78775044491ae290f68b62d30fa445c8c90bff09d5f7986f9e96c9b00631235e",
+        "observedAt": "2026-11-06T15:02:57.915625+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4484439011": {
       "key": "linkedin:4484439011",
@@ -121031,9 +121317,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Wait for recorded source-route condition; no Writer submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/1853a6f0bfefda5127308b10eb4d47b06ae3683da054e94baaef1a22148abe0b.json",
+        "sha256": "1853a6f0bfefda5127308b10eb4d47b06ae3683da054e94baaef1a22148abe0b",
+        "observedAt": "2026-11-06T15:02:54.567603+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4482076026": {
       "key": "linkedin:4482076026",
@@ -121111,9 +121403,22 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Existing source-intake-auto independently validates exact posting identity, quoted responsibilities and resume overlap before controlled Writer intake; preserve all original-request fences and protected decisions.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "SOURCE_VALIDATION_REQUIRED",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/b11779ba504efc764523381369edf9564aa34f7b444264d4006357040205ad4f.json",
+        "sha256": "b11779ba504efc764523381369edf9564aa34f7b444264d4006357040205ad4f",
+        "observedAt": "2026-11-06T15:02:44.011648+00:00",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "b11779ba504efc764523381369edf9564aa34f7b444264d4006357040205ad4f",
+        "observedAt": "2026-11-06T15:04:09.020Z",
+        "reason": "SOURCE_IDENTITY_AMBIGUOUS",
+        "retryAfter": "2026-11-06T21:04:09.020Z"
+      }
     },
     "linkedin:4484040731": {
       "key": "linkedin:4484040731",
@@ -121148,9 +121453,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/5fea3b6ddefbf36074235a7c3d83db359640af537054604e5dcf90b92ed957ff.json",
+        "sha256": "5fea3b6ddefbf36074235a7c3d83db359640af537054604e5dcf90b92ed957ff",
+        "observedAt": "2026-11-06T15:02:51.378683+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4485323687": {
       "key": "linkedin:4485323687",
@@ -121185,9 +121496,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "AI retains source/scope research; resume only when the recorded evidence condition changes.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/85809c4b232b821219ace1ae9bcbc689a40fdac01143207f921e9660bd8b8eae.json",
+        "sha256": "85809c4b232b821219ace1ae9bcbc689a40fdac01143207f921e9660bd8b8eae",
+        "observedAt": "2026-11-06T15:03:01.518452+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4485649464": {
       "key": "linkedin:4485649464",
@@ -330893,7 +331210,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake may independently retry exact saved source and canonical gates on a subsequent pass; no duplicate dispatch or Writer replay.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/9b2fca524fa3603be2fc0f0ed940c70747f85150bc0a0de81b47a3bfdd4932b1.json",
         "sha256": "9b2fca524fa3603be2fc0f0ed940c70747f85150bc0a0de81b47a3bfdd4932b1",
@@ -330902,10 +331219,10 @@
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
-        "reviewSha256": "606a20292eeb1368317c524cb25a6d48573a29b44f64f08d882012e9fadba545",
-        "observedAt": "2026-11-06T08:05:51.289Z",
+        "reviewSha256": "9b2fca524fa3603be2fc0f0ed940c70747f85150bc0a0de81b47a3bfdd4932b1",
+        "observedAt": "2026-11-06T15:04:09.020Z",
         "reason": "SOURCE_IDENTITY_AMBIGUOUS",
-        "retryAfter": "2026-11-06T14:05:51.289Z"
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "url:31f967344c3bc61d1327910e": {
@@ -330949,7 +331266,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake may independently retry exact saved source and canonical gates on a subsequent pass; no duplicate dispatch or Writer replay.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/bd84599b53177ab9920beadbefefaac40b78293d6e4fc3bcc0accb555a9f2d16.json",
         "sha256": "bd84599b53177ab9920beadbefefaac40b78293d6e4fc3bcc0accb555a9f2d16",
@@ -330958,10 +331275,10 @@
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
-        "reviewSha256": "a01de77a35fb877dcdfd5c666333512f5b4e6093ddd4339ffca09660f25bedcf",
-        "observedAt": "2026-11-06T08:05:51.289Z",
+        "reviewSha256": "bd84599b53177ab9920beadbefefaac40b78293d6e4fc3bcc0accb555a9f2d16",
+        "observedAt": "2026-11-06T15:04:09.020Z",
         "reason": "SOURCE_HTTP_406",
-        "retryAfter": "2026-11-06T14:05:51.289Z"
+        "retryAfter": "2026-11-06T21:04:09.020Z"
       }
     },
     "url:ccf2b3ded1fb7792736d4bfc": {
@@ -345144,16 +345461,16 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-06T15:01:49.691Z",
+  "at": "2026-11-06T15:04:09.020Z",
   "upstreamAt": "2026-11-06T15:00:54.443Z",
   "counts": {
-    "WAITING_EVIDENCE_CHANGE": 1024,
-    "ACTION_REQUIRED": 5476,
+    "WAITING_EVIDENCE_CHANGE": 1031,
+    "ACTION_REQUIRED": 5466,
     "ACCOUNTED_UPSTREAM": 131,
     "READY_FOR_CONTROLLED_EXCLUSION": 2,
     "SOURCE_VALIDATION_REQUIRED": 82,
     "READY_FOR_CONTROLLED_INTAKE": 11,
-    "PENDING_INDEPENDENT_VALIDATION": 10
+    "PENDING_INDEPENDENT_VALIDATION": 13
   },
   "actions": {
     "REVIEW_SCOPE": 3464,
