@@ -1,0 +1,42 @@
+{
+  "schema": "forge.ai-exception-progress-receipt.v1",
+  "runId": "FORGE-EXCEPTION-CHATGPT-20261106T142655Z",
+  "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER",
+  "startedAt": "2026-11-06T14:28:05.793Z",
+  "completedAt": "2026-11-06T14:28:53.873Z",
+  "inputSha256": "da494260c3d9566d79153afbbe298352ec8f99368a28ddf13d28a2fe56ce3e9c",
+  "selectionSha256": "e6bcf6b57c216622cdd5df5d34ec6aa50a34fc7ad9deca26ca8081558e13dfa2",
+  "selected": 20,
+  "attempted": 1,
+  "reviewed": 1,
+  "resolved": 0,
+  "waiting": 1,
+  "stillActionable": 19,
+  "superseded": [],
+  "awaitingIndependentCode": 0,
+  "sourceCaptures": 0,
+  "sourceCaptureIsReview": false,
+  "attempts": [
+    {
+      "exceptionId": "7197c9fdc25f2e75b8b72a500f4dc60152bdfd6aeceeb8444ea54c4e6a5687b5",
+      "sourceVersion": "2de00a6c183866b7ac4850018b10e4e8250b694208ea700c368a8f77e375c184",
+      "observedAt": "2026-11-06T14:28:53.810Z",
+      "evidenceSha256": "a0aaff483aa9b5099cebe8f9c12aa1be66f01dd99cffee08493f03c981d4151c",
+      "reason": "Original intake response and independent NOT_PERSISTED index inspected; incomplete verification remains fenced.",
+      "nextAction": "Wait for changed original Writer evidence; never replay.",
+      "reviewPath": "receipts/AI_EXCEPTION_REVIEWS/7197c9fdc25f2e75b8b72a500f4dc60152bdfd6aeceeb8444ea54c4e6a5687b5-b0855d14459d5d432d2b17bfb24264ec285d485d6e1812e01f427c7cc5ec4785.json",
+      "reviewDisposition": "WAITING_SOURCE_CHANGE"
+    }
+  ],
+  "resolutions": [],
+  "status": "PARTIAL_AI_REVIEW",
+  "stalled": false,
+  "consecutiveNoReviewProgress": 0,
+  "nextCase": {
+    "exceptionId": "0dc3cf66f25dbd8e85ff2177a70850c738dafd1fadf60bcb68395ef2200e85ed",
+    "sourceVersion": "8c8e247b1c1e983d5298d965e50853cb28a2f7e331c1040c83bb3434c569c149",
+    "kind": "INTERVIEW",
+    "nextAction": "Use interview-reviews.cjs inspect with the existing private coordinator config and exact sourceReviewRef/sourceVersion. Read the original full source, then publish a new immutable source-bound interview review with correctsReview={sourceReviewRef,sourceVersion}; for unknown prior chronology also bind supersedesReviewSha256. The coordinator validates and consumes the correction automatically. Never edit original evidence or infer a canonical write."
+  },
+  "canonicalCompletionsClaimed": 0
+}
