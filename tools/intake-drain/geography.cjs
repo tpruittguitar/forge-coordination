@@ -3,6 +3,10 @@
 const S=require('../programmed-coordinator/store.cjs'),Source=require('../programmed-coordinator/source.cjs');
 const FILE='reference/GEOGRAPHY_CLEANUP_AUTHORIZATION.json',ID='TIM-NORTHEAST-BACKLOG-20261106';
 const STATES={NY:'New York',PA:'Pennsylvania',CT:'Connecticut',ME:'Maine',MA:'Massachusetts',NH:'New Hampshire',NJ:'New Jersey',RI:'Rhode Island',VT:'Vermont'};
+// Recognize out-of-scope states too: any conflicting worksite must be held.
+const REGION_NAMES={AL:'Alabama',AK:'Alaska',AZ:'Arizona',AR:'Arkansas',CA:'California',CO:'Colorado',CT:'Connecticut',DE:'Delaware',FL:'Florida',GA:'Georgia',HI:'Hawaii',ID:'Idaho',IL:'Illinois',IN:'Indiana',IA:'Iowa',KS:'Kansas',KY:'Kentucky',LA:'Louisiana',ME:'Maine',MD:'Maryland',MA:'Massachusetts',MI:'Michigan',MN:'Minnesota',MS:'Mississippi',MO:'Missouri',MT:'Montana',NE:'Nebraska',NV:'Nevada',NH:'New Hampshire',NJ:'New Jersey',NM:'New Mexico',NY:'New York',NC:'North Carolina',ND:'North Dakota',OH:'Ohio',OK:'Oklahoma',OR:'Oregon',PA:'Pennsylvania',RI:'Rhode Island',SC:'South Carolina',SD:'South Dakota',TN:'Tennessee',TX:'Texas',UT:'Utah',VT:'Vermont',VA:'Virginia',WA:'Washington',WV:'West Virginia',WI:'Wisconsin',WY:'Wyoming',DC:'District of Columbia'};
+const REGION_BY_NAME=Object.fromEntries(Object.entries(REGION_NAMES).map(([code,name])=>[name.toLowerCase(),code]));
+const FULL_REGION=new RegExp('\\b('+Object.values(REGION_NAMES).join('|')+')\\b','gi');
 function state(location){
  if(typeof location!=='string'||/remote|hybrid|telecommut|multiple|various|nationwide|\bor\b|[;\/|]/i.test(location))return null;
  const clean=location.trim().replace(/,?\s+(?:USA|US|United States)\s*$/i,'').replace(/\s+\d{5}(?:-\d{4})?$/,'');
@@ -24,6 +28,7 @@ function inspect(raw,card,now){
  const j=matches[0];
  const prose=visible+' '+Source.text(j.description);
  const regions=[...prose.matchAll(/,\s*(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)\b/g)].map(m=>m[1]);
+ regions.push(...[...prose.matchAll(FULL_REGION)].map(m=>REGION_BY_NAME[m[1].toLowerCase()]));
  if(regions.length>1||regions.some(st=>st!==state(card.location))||/\b(?:locations|offices|sites|choose|choice|flexible location|location options)\b/i.test(prose)||/(?:based|worksite|located|locations?|offices?|sites?)[^.!?\n]{0,120}\bor\b/i.test(prose))throw Error('REMOTE_OR_MULTILOCATION_REQUIRES_REVIEW');
  for(const url of [j.url,j['@id']].filter(Boolean)){
   if(typeof url!=='string'||!/^https:\/\//.test(url)||require('../pipeline-observability/upstream-flow').key(url)!==require('../pipeline-observability/upstream-flow').key(card.url))throw Error('CONFLICTING_STRUCTURED_JOB_URL');

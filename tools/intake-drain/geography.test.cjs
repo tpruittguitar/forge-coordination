@@ -17,3 +17,21 @@ test('alternative-city prose, query-ID redirects and conflicting structured sour
 test('persisted geography proof survives status-only accounting but never changed current card or evidence',async t=>{const f=setup(t);Q.publish(f.root,f.r,now);await Q.verify(f.root,{privateDir:os.tmpdir(),now,apply:true,verifyExclusion:(root,r,item,opts)=>E.verify(root,r,item,{...opts,fetchPage:async url=>({url,raw:html(f.job)})})});const prior=S.read(f.root,'state/UPSTREAM_LEDGER.json'),entry=prior.entries[f.key],proof=E.approved(f.root,entry,{rows:[],now});a.ok(proof);entry.exclusionProof=proof;prior.groups[f.key].status='EXCLUDED';S.save(f.root,'state/UPSTREAM_LEDGER.json',prior);Q.sync(f.root,{now,apply:true});a.ok(E.approved(f.root,entry,{rows:[],now:now+86400000}));a.equal(E.approved(f.root,{...entry,discoveryReview:{sourceSha256:'new source'}},{rows:[],now}),null);const work=S.read(f.root,Q.FILE);work.items[f.key].card.location='Remote, US';S.save(f.root,Q.FILE,work);a.equal(E.approved(f.root,entry,{rows:[],now}),null);});
 
 test('plural sites and discretionary city choices are held even within the same state',t=>{const f=setup(t);for(const description of ['Locations: Albany, NY and Buffalo, NY.','Work location options include Albany, NY; Buffalo, NY.','The successful candidate may choose Albany, New York or Denver, Colorado.'])a.throws(()=>G.inspect(html({...f.job,description}),f.card,now),/MULTILOCATION/);});
+
+test('full-state alternative worksites fail closed, including same-state and visible disclosures',t=>{
+ const f=setup(t);
+ for(const description of [
+  'Work location: Albany, New York and Denver, Colorado. Manage operations.',
+  'Based in Albany, New York; Denver, Colorado is also available.',
+  'Work location: Albany, New York and Buffalo, New York. Manage operations.',
+  'Based in Albany, NY; Denver, colorado is also available.',
+  'Work location: Albany, New York and Denver Colorado. Manage operations.',
+  'Based in Albany New York; Denver Colorado is also available.',
+  'Work location: Denver, Colorado. Manage operations at this worksite.'
+ ]) {
+  a.throws(()=>G.inspect(html({...f.job,description}),f.card,now),/MULTILOCATION/,description);
+  a.throws(()=>G.inspect(html(f.job)+'<p>'+description+'</p>',f.card,now),/MULTILOCATION/,description);
+ }
+ for(const description of ['Work location: Albany, New York. Manage operations at this worksite.','Work location: Albany, NY. Manage operations at this worksite.'])
+  a.equal(G.inspect(html({...f.job,description}),f.card,now),'Albany, NY');
+});
