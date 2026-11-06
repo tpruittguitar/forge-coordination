@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-05T23:44:38.842Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-06T07:04:56.328Z from CANONICAL_WRITER_MASTER.
 
-Of 734 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 779 jobs waiting on Tim, 17 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 17
 
-Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (18)
+## Kept, labeled (17)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -34,7 +34,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 56 | Hadrian | Director of Engineering, Forward Deployed Engineering | You declined 2026-10-31 · possible repeat | Posting first seen 2026-11-02, 2 days after 2026-10-31; no posting identity to compare | V2I-0471206B9480 → V2I-DD139754B419 |
 | 54 | The Clorox Company | Customer Supply Chain Manager | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare | V2I-66C621B91F30 → V2I-FB0FDFFCF795 |
 | 54 | The Clorox Company | Manager, Customer Supply Chain | You declined 2026-11-03 · possible repeat | Posting first seen 2026-11-02, -1 days after 2026-11-03; no posting identity to compare | V2I-D9E700505343 → V2I-FB0FDFFCF795 |
-| 51 | Alkegen | Plant Manager | You declined 2026-10-26 · this is a new posting | Different wd posting: wd:R12682 vs earlier wd:R12579 | V2I-8103CE253318 → V2I-C9E99E71189A |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 49 | Alvarez & Marsal | PEPI: Director, Supply Chain: Procurement & Sourcing (OPEN TO ALL U.S. LOCATIONS) | You declined 2026-11-05 · possible repeat | Posting first seen 2026-11-02, -3 days after 2026-11-05; no posting identity to compare | V2I-1D08BD27F007 → V2I-43E8E1CE6D48 |
