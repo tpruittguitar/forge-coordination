@@ -1,0 +1,58 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:0c8d3b4716628349646ae5f7",
+  "sourceVersion": "d11ec40ff28c6c666ad0c25d77da9f37ebdf5de951828e885e0227674c4a4cb2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261106T224528815Z-2d31d6",
+  "instructionCommit": "4e717a8f3e8b5412a3fae7c330d3a5ff4fbef9eb",
+  "observedAt": "2026-11-06T22:45:28.815Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "newlyVerifiedOutcomes": 0,
+  "reason": "Current generated source card lost its location and now holds missing source identity. Exact saved original candidate for the same Ashby UUID still records Tulsa, OK - US (1); preserve that source history without inventing a current posting field. Original request returned lock timeout, and fresh independent receipt index still contains no entry. This confirms neither acceptance nor nonacceptance; original write remains unknown and fenced. The previously recorded NOT_IN_RECEIPT_INDEX finding is unchanged, so no duplicate probe or retry is dispatched.",
+  "nextAction": "Existing coordinator retains the exact saved original Tulsa candidate and request fence. Reconcile only when original independent receipt/request evidence or exact source-chain/site evidence changes; request_result only after independent COMPLETE. Never replay the original write or substitute a different Brighton role.",
+  "retryCondition": "Original independent Writer receipt/request evidence or exact same-source employer requisition/site evidence changes and resolves the recorded conflict.",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T152144Z.json",
+      "sha256": "e375376acee4c941a69690a8f8c90c3336d2c5bc4fbf1799deea76d803cd0258",
+      "result": "Exact original request FORGE-SOURCE-E01F6459F5AC7E40E94E00A3 retains error Lock timeout: another process was holding the lock for too long.; no acceptance invented."
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T152144Z.candidates.json",
+      "sha256": "32ffb7398c2a73cc9b6679c580b15dd86e9d49e47741f9fe4f505f7e12bd8f05",
+      "result": "Exact same original Ashby URL candidate retains company Crusoe, Director Accounting Manufacturing and saved Tulsa site; original source facts preserved privately and by hash."
+    },
+    {
+      "source": "state/INTAKE_DRAIN.json#url:0c8d3b4716628349646ae5f7",
+      "result": "Current source card location is empty and sourceRecovery is null. Missing generated data does not erase saved original candidate."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "sha256": "79868cdebaba2341259d793d4946295092725802298ee80b699dd8fe05c5ee1a",
+      "result": "Fresh authenticated read: exact original request absent; no request_result read performed.",
+      "indexUpdatedAt": "2026-11-06T22:42:56.218Z"
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/276aa2ac5a537b894a872c54e7004905683fe63ac410e1ef6f2ff67ef902482d.json",
+      "result": "Reused original unknown-write fence and prior read-only NOT_IN_RECEIPT_INDEX finding; current absence does not permit replay."
+    }
+  ],
+  "savedOriginalIdentity": {
+    "company": "Crusoe",
+    "title": "Director, Accounting – Manufacturing",
+    "location": "Tulsa, OK - US (1)",
+    "url": "https://jobs.ashbyhq.com/crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f"
+  },
+  "currentSourceCard": {
+    "company": "Crusoe",
+    "title": "Director, Accounting – Manufacturing",
+    "location": "",
+    "url": "https://jobs.ashbyhq.com/crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f"
+  },
+  "originalRequestId": "FORGE-SOURCE-E01F6459F5AC7E40E94E00A3"
+}
