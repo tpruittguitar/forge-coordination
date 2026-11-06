@@ -21,7 +21,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "8d727330fa627677544ea49cbf5d34e168d8dd0b8e1b5f121536e5b327c4a770"
+            "sourceSha256": "abe176605ef51b7397ddd184f706184cd305afe8e7fd33ed381c8bb595682751"
           }
         ],
         "postingFetched": false
@@ -255,19 +255,35 @@
       "aliases": [
         "url:a10723f9fb722b80076656df"
       ],
-      "sourceVersion": "2de9935c8f000c114ebacd9f281881d06b65acb973d2b384cdfa812d95daf882",
+      "sourceVersion": "34c85f064762cc4102ad27feed18dc44ae07a1e1ffbc11d920ae20c0fa3b9ac1",
       "card": {
         "company": "Blue Bird",
         "title": "Executive Director, Project Management, Industrialization",
-        "location": "",
+        "location": "Detroit, Michigan, United States",
         "url": "https://hiringcafe.com/job/executive-director-project-management-industrialization-blue-bird-utec2x861lsdjxor"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "13f2a11bc80e2dddf722b8263bb5727cf95e4e5679323939275a9b2476846b3c"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "13f2a11bc80e2dddf722b8263bb5727cf95e4e5679323939275a9b2476846b3c"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "RESOLVE_IDENTITY",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-31T03:12:12.849Z",
       "sourceReferences": [
@@ -375,14 +391,21 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location MI. Role content unavailable; retain for intake review. Resume-supported hits: startup_launch.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Existing coordinator consumes source-bound verified existing-role proof into upstream accounting; preserve current canonical disposition and original fences.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/26923c5d0577142b790769089e5c1ef4677af7a66a67b2a370a4790fbadc3cc5.json",
+        "sha256": "26923c5d0577142b790769089e5c1ef4677af7a66a67b2a370a4790fbadc3cc5",
+        "observedAt": "2026-11-05T11:51:08.684Z",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4474475373": {
       "key": "linkedin:4474475373",
@@ -1741,7 +1764,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "203541b98d4eb42a8de5499c528977cde07a00c0ecf72bcb318b1214a8a3e218"
+            "sourceSha256": "33306fb6d26f0d9bbe30a7bbaa43c7dde6cb5d33eaf29819bfbca67619a99fc7"
           }
         ],
         "postingFetched": false
@@ -3134,10 +3157,6 @@
           {
             "proof": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4440999241",
             "sourceSha256": "209658382d17e62015bad841d695cde0bba20d364e7c5cabd873b4074be3dfaf"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "ec8ef2be09c5a03db431e0cf0da8b047541ec8c32d62330cf67e831d3f6ce9c6"
           }
         ],
         "postingFetched": false
@@ -4024,7 +4043,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "970d97f9457f468c76493707193c0d63ce6b8d27b7d6aaac4fb81f3b829b2ec9"
+            "sourceSha256": "ccbf8b2bd7d3614575a9d2315eaf830f2cc91dbfa491b1188020c017b1376fbc"
           }
         ],
         "postingFetched": false
@@ -4327,14 +4346,26 @@
       "aliases": [
         "url:3fb415db83a47440d1fa3f2a"
       ],
-      "sourceVersion": "2568990a0d94157cf57ebc9714381b2b50d5d9b716cbe425e818c8ef316a7062",
+      "sourceVersion": "8a54a85e40e91016deff4162435280cd954651dc4cf4dadf4e629051c5bac14e",
       "card": {
         "company": "Catholic Charities of Baltimore",
         "title": "Director, Data & Quality",
-        "location": "",
+        "location": "Baltimore, MD, USA",
         "url": "https://recruiting.ultipro.com/CAT1002CC/JobBoard/c709ab38-ff71-4cc1-9c24-5a3e75528c74/OpportunityDetail?opportunityId=e2ed8e17-3680-4e68-9de1-e876e9f96f8d&postingId=8f120be4-57f6-4a90-94b5-9eb3e1fb6451"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "75aaad7f3dea9c1814664cea36e8869e9649294b1a2e943691fc3ceac63b55a0"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
@@ -4584,9 +4615,10 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location MD. Source content hits: quality, continuous improvement; responsibility hits: director, lead, accountable, management, accountability, responsibilities, leads, leadership, responsible, directs, leaders, oversees, leading, managing. Resume-supported hits: quality_systems, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
       "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
@@ -4940,11 +4972,11 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "0dc1e8ec23426792b1a92f1f0f8a291825e8501b2e4211b27add7e6830033db2"
+            "sourceSha256": "c5ad7aa6640f627c25d4b8216a708b54a3c04731ee52a71072730b68b067566c"
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "0dc1e8ec23426792b1a92f1f0f8a291825e8501b2e4211b27add7e6830033db2"
+            "sourceSha256": "c5ad7aa6640f627c25d4b8216a708b54a3c04731ee52a71072730b68b067566c"
           }
         ],
         "postingFetched": false
@@ -5340,31 +5372,19 @@
       "aliases": [
         "url:785fb1ec5fe66b4e75ee71ef"
       ],
-      "sourceVersion": "2734ac850090185cf7fbf0c0b415e0e0d65ad73a8114f4a2e6a8ff14b880fde8",
+      "sourceVersion": "17d44ff750a28b6828b68ef0bc5dad3525d33e370d52435a2dac4d08b982ba33",
       "card": {
         "company": "Sigil Partners Staffing",
         "title": "Director of Manufacturing Operations",
-        "location": "San Jose, CA, USA",
+        "location": "",
         "url": "https://100hires.com/j/QhYkQEF"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "f6e593ccbd4c3ec98563afcff02626ea1a69feaf1323ff7d8c798be31adf61b2"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RESOLVE_IDENTITY",
-      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -5638,47 +5658,28 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location CA. Source content hits: manufacturer, manufacturing, operational excellence, assembly, factory, continuous improvement, quality, production, supply chain, manufacturability; responsibility hits: director, leadership, responsible, overseeing, leader, accountability, managing, responsibilities, lead, direct, management, manage, managers, leading, accountable, leadershi. Resume-supported hits: manufacturing_leadership, quality_systems, startup_launch, team_building, manufacturing_systems, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 0,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition binding and reconciles exact identity without new intake or replay.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/ec02acd6ed5dac7381a7767106da68ef568d4661ca0455c7cd6a25770e06125b.json",
-        "sha256": "ec02acd6ed5dac7381a7767106da68ef568d4661ca0455c7cd6a25770e06125b",
-        "observedAt": "2026-11-05T11:47:40.340Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:592f74f37bd9a77380f902fd": {
       "key": "url:592f74f37bd9a77380f902fd",
       "aliases": [
         "url:592f74f37bd9a77380f902fd"
       ],
-      "sourceVersion": "404a66a8f43b715059405c2045820cf49498d33993e2045921e1014e8d4bd74e",
+      "sourceVersion": "c3cbefa998a38da564685493df84eebea77f2a334f2ef1da61a8cc8ad2fecb02",
       "card": {
         "company": "QUETICO LIFESTYLE BRANDS LLC",
         "title": "Director of Sourcing & Production",
-        "location": "Irvine, CA, USA",
+        "location": "",
         "url": "https://secure6.saashr.com/ta/6188285.careers?ShowJob=755421057"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "63911481aed135efaeb965e38e3ae59014338dabb6e2c9806ce5789bf387e87d"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": {
         "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
@@ -5883,10 +5884,9 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location CA. Source content hits: production, manufacturing, manufactured, quality, supply chain, factory, continuous improvement, operational excellence; responsibility hits: director, lead, responsible, oversee, leader, manage, responsibilities, management, accountability, leadership, managing. Resume-supported hits: manufacturing_leadership, quality_systems, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 0,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
       "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
@@ -6469,7 +6469,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "24b03e9208d27262f473a64a3d9fa478300aa3ca0d4c4e39ff8634bb26abec6a"
+            "sourceSha256": "224630aa05d68fb398bb25d8fb11a874b88de12ca6e89016188c11d410f1c979"
           }
         ],
         "postingFetched": false
@@ -8188,7 +8188,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "6b3938a501be566ade40cef935d4f80f481c591336565868a139e5f0250d0e76"
+            "sourceSha256": "7edcc89ede2f4fd689022ad506c2456d511669008c9b374931b9d485f6968f0e"
           }
         ],
         "postingFetched": false
@@ -8574,31 +8574,19 @@
       "aliases": [
         "url:8fe7ee5b8ca8975a8745825f"
       ],
-      "sourceVersion": "09937fb57af4aed04dc0a75edc29023bb5c05f1c09d8af70b97a66863f180a9e",
+      "sourceVersion": "7f5e7f6c1960e234c20dfe8c476a53548d46fe1620133f2e65584a693e4e0a6c",
       "card": {
         "company": "The Coca-Cola Company",
         "title": "Director, Franchise Operations - AH",
-        "location": "Remote, USA",
+        "location": "",
         "url": "https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US--REMOTE/Director--Franchise-Operations---AH_R-148049"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "eaf9bf73da4d3863bc65d9eee821c0ed4857c60e9de7f043b3b30edb7c3b27bb"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-31T03:12:12.849Z",
       "sourceReferences": [
@@ -8758,53 +8746,34 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location REMOTE_US. Source content hits: supply chain, continuous improvement; responsibility hits: director, leadership, leader, accountability, direction, manage, lead, management, leading, leaders. Resume-supported hits: automation_robotics, manufacturing_systems, lean_operations.",
       "screen": {
-        "outcome": "RANKED_DISCOVERY",
-        "rank": 2,
-        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "AI retains sourced function evidence and waits for changed responsibilities; no repeated lookup or canonical exclusion.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/4cc18bd2c755d8eb39d822b5a0244ac33bb15c4679a9a14929a0ecb9b66498bd.json",
-        "sha256": "4cc18bd2c755d8eb39d822b5a0244ac33bb15c4679a9a14929a0ecb9b66498bd",
-        "observedAt": "2026-11-05T13:07:49.506Z",
-        "outcome": "WAITING_SOURCE_CHANGE"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:6c6856a1d0d32b5a24f943cf": {
       "key": "url:6c6856a1d0d32b5a24f943cf",
       "aliases": [
         "url:6c6856a1d0d32b5a24f943cf"
       ],
-      "sourceVersion": "6cc68b5bd179c161b8b5b84595e78cb89f85e615b020e160db055d7c97499f19",
+      "sourceVersion": "501d1395c6d4e1661fe2fc90eea2b04ea11811bb06d603b506bca4f7fe4145c2",
       "card": {
         "company": "Merck",
         "title": "Director, US Quality (Analytical Technical Solutions) Lead",
-        "location": "De Soto, KS, USA",
+        "location": "",
         "url": "https://jobs.merck.com/us/en/job/R424572"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "078d2779847854a684119474e23c198adf3443b51e49093e604999c2698b224f"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-31T03:12:12.849Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -9012,13 +8981,12 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location KS. Source content hits: manufacturing, quality, manufacture, continuous improvement; responsibility hits: management, director, lead, leadership, responsible, managing, direction, oversee, responsibilities, manage, leader, responsibility, leading. Resume-supported hits: manufacturing_leadership, quality_systems, team_building, automation_robotics, lean_operations.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 1,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -9722,7 +9690,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "399892e817dd1df6fb5675c46c7ae5aa9fd7390e781454851d5b6aebb528793d"
+            "sourceSha256": "fdece34fbbee0940f3c6f4d1291050098c0651aae761ae29a9824fd7dce0749e"
           }
         ],
         "postingFetched": false
@@ -10174,31 +10142,19 @@
       "aliases": [
         "url:269fc3198ed40e0b77ceb757"
       ],
-      "sourceVersion": "514744bc63f6197ea518f4eb6fb107c3296ee5ea0760be90d8ab41bdf7513503",
+      "sourceVersion": "ed56b67beef2f6aab0e11a6d2fd7b2a63155c3dbce33da3dd5c84c161d632287",
       "card": {
         "company": "Formica Corporation",
         "title": "Director of Manufacturing",
-        "location": "Cincinnati, Ohio, United States",
+        "location": "",
         "url": "https://hiringcafe.com/job/director-of-manufacturing-formica-corporation-cincinnati-ohio-60y6n8s656lbrb81"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "ab72fe9bab78350b749ee62d7ef374eb44fb89e9f9930d21ba6f0698991293d8"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RESOLVE_IDENTITY",
-      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -10306,21 +10262,14 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location OH. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 0,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing authenticated AI/local coordinator recovers exact original posting/requisition/site and resolves the listed conflict; preserve protected jobs and original requests, never replay.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/aa5edd78e46e35e41e28eb0aa1e7cfbd14c9f56efc65f4435355b3d0e6e04ee5.json",
-        "sha256": "aa5edd78e46e35e41e28eb0aa1e7cfbd14c9f56efc65f4435355b3d0e6e04ee5",
-        "observedAt": "2026-11-05T11:00:37.878Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:080aa69bd3b113b497d22039": {
       "key": "url:080aa69bd3b113b497d22039",
@@ -10869,7 +10818,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "d2be76cd5bc488d162b288463ba1f1ea5bd7bf98d9f2e6adf3414af5516256a9"
+            "sourceSha256": "d43a6cd0f61994cd117246bd6d417448dba8d7968e0f8dbc90d9ddcd9dbe707b"
           }
         ],
         "postingFetched": false
@@ -11021,7 +10970,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "084294eac3323937a057ed941f113dcf955fd6af003b8c6e8895a63a62edf5f4"
+            "sourceSha256": "23e630a3583fff70c0e7dc515ad70f09d61b055634a9dd71bf55821e43aa0589"
           }
         ],
         "postingFetched": false
@@ -11158,19 +11107,35 @@
       "aliases": [
         "url:edb6ad7bdb031eb6010ae965"
       ],
-      "sourceVersion": "90be8083799bf95e8d945618f44c4b640572d366274bb58019323e685ad8316c",
+      "sourceVersion": "ecc9d70ce782c88fa015796fe451ab4bf5149e7fd6b96b31e6cc2dc961247d49",
       "card": {
         "company": "United Rolls Inc.",
         "title": "Plant Manager",
-        "location": "",
+        "location": "Canton, Ohio, United States",
         "url": "https://hiringcafe.com/job/plant-manager-united-rolls-inc-canton-ohio-e0bcgq4ry1gwipfk"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "13142152531ff04be26fab48800956e736dca6ef2a5bfe59140ddb3eacdd3cad"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "13142152531ff04be26fab48800956e736dca6ef2a5bfe59140ddb3eacdd3cad"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "RESOLVE_IDENTITY",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -11278,14 +11243,21 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location OH. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Existing authenticated coordinator reads exact master/archive identity and saved protected disposition; reconcile original posting/requisition and upstream accounting without new intake or scope research.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/b6bbc2c5ce8ad2554bd1026807382cbde3ec7ff27c53b4ce38262080a1f96033.json",
+        "sha256": "b6bbc2c5ce8ad2554bd1026807382cbde3ec7ff27c53b4ce38262080a1f96033",
+        "observedAt": "2026-11-05T22:43:57.249Z",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "url:6673ac94c58eaa1559530940": {
       "key": "url:6673ac94c58eaa1559530940",
@@ -12085,7 +12057,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "309f8f041749d51770e74817996063be8887f7f8377ffe90b80c2669b04c507a"
+            "sourceSha256": "7250b68de3c34031f1fd9e59406ced455e1f4cebfab0ea6539fc73adc5f6db28"
           }
         ],
         "postingFetched": false
@@ -12774,7 +12746,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "3f6b406ae71b1c06788a3b428fe5b05111142a5dcbd8fd33d83d7bf9299cf99e"
+            "sourceSha256": "5ddfbee2e3299f44d40042940ebfc00f33d11661f1f6a74becc98ab0eb34debb"
           }
         ],
         "postingFetched": false
@@ -12904,7 +12876,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "d50141bac9b5ce07a8755b60d3beca3f0e1ef317963754ffb387b8b0b3f252d0"
+            "sourceSha256": "88e913add2136e7d1e4cae771cea5179aa7f52e9f8efdd174f79602b637c5740"
           }
         ],
         "postingFetched": false
@@ -13139,7 +13111,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "a0ae096a6281a4b6d72acd8ea32569b4176646af41c43af2aff7e27a2f49f92d"
+            "sourceSha256": "2b6fd0b98fff4d269b64b1a1e1281b5c6ce7fb3135f2bbda090a55e83a7740ca"
           }
         ],
         "postingFetched": false
@@ -13431,11 +13403,11 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "be08ecc4233220a66be5c17ceda0b0f6e003d2cd389124d215dcf8727603d52d"
+            "sourceSha256": "6d67413808182ed1bee85ad94cbb1680a393004b980c22a298a36ccdc18cd208"
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "be08ecc4233220a66be5c17ceda0b0f6e003d2cd389124d215dcf8727603d52d"
+            "sourceSha256": "6d67413808182ed1bee85ad94cbb1680a393004b980c22a298a36ccdc18cd208"
           }
         ],
         "postingFetched": false
@@ -14149,11 +14121,11 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "8b487cc391adca69f834456c33d0b9639772fc76ab554902fe2e8887b48450fa"
+            "sourceSha256": "ebe93b1a479bd10a2d385d8db4d3a57a0e370589c488e387cb7d637db1bd5210"
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "8b487cc391adca69f834456c33d0b9639772fc76ab554902fe2e8887b48450fa"
+            "sourceSha256": "ebe93b1a479bd10a2d385d8db4d3a57a0e370589c488e387cb7d637db1bd5210"
           }
         ],
         "postingFetched": false
@@ -14397,19 +14369,35 @@
       "aliases": [
         "url:661c5565b760e9703c6c4053"
       ],
-      "sourceVersion": "87114b85528cf4550f2acbcfd09ad15740b3881f1b1fc68313c336b5c013b312",
+      "sourceVersion": "c618dad0e60ab0bbdad61f89ba5fa0338e4292015aa8e66c007a4ac6c2c491ca",
       "card": {
         "company": "BPG-Arrowhead Winch Inc.",
         "title": "Quality Assurance Director",
-        "location": "",
+        "location": "Broken Arrow, OK, USA",
         "url": "https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=5a9099fb-86f8-4497-8473-ef64d3b62bb0&ccId=19000101_000001&jobId=620675&lang=en_US"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "e5f521770600cb404bb8abc482c2bf473a742bc1f0db7a5c716d74b57dc78ebd"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "e5f521770600cb404bb8abc482c2bf473a742bc1f0db7a5c716d74b57dc78ebd"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "RESOLVE_IDENTITY",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -14685,14 +14673,21 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location OK. Source content hits: manufactures, quality, manufacturing, assembly, manufacturability, production; responsibility hits: director, leads, leader, accountability, oversees, management, responsibilities, leadership, lead, leading, oversee, manage. Resume-supported hits: manufacturing_leadership, quality_systems, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Existing authenticated AI/local coordinator recovers original employer Apply/requisition binding and reconciles exact identity without new intake or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/b715213d6b262699584265be066b0dab91ed6034c858b3f8770f27fcd553395f.json",
+        "sha256": "b715213d6b262699584265be066b0dab91ed6034c858b3f8770f27fcd553395f",
+        "observedAt": "2026-11-05T11:47:38.488Z",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "url:0f559106f4e8cd5087a12da1": {
       "key": "url:0f559106f4e8cd5087a12da1",
@@ -14929,35 +14924,19 @@
       "aliases": [
         "url:ce89ea5c76300eb8e41d9709"
       ],
-      "sourceVersion": "d29facb71ba5278c248f4a653ec583f2c868501d29b0f70a03568f5194a40bfa",
+      "sourceVersion": "ffe3827e2d4ec5addc5e827f050c33c01080f5cafd970714c4a8c9dca42258ac",
       "card": {
         "company": "Gotion, Inc.",
         "title": "Operations Director",
-        "location": "Manteno, IL, USA",
+        "location": "",
         "url": "https://grnh.se/vxhc10hf2us"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "67d5dfa16a308b9e7a48a5a76bee4726add944398105992a2797d531619915f5"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "67d5dfa16a308b9e7a48a5a76bee4726add944398105992a2797d531619915f5"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RESOLVE_IDENTITY",
-      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -15247,21 +15226,14 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location IL. Source content hits: manufacturing, production, supply chain, quality, plant, continuous improvement, commissioning, operational excellence, launch; responsibility hits: leading, director, responsible, leaders, responsibilities, lead, manage, management, oversee, leadership, managers, accountability, managing. Resume-supported hits: manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, ev_battery, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "RANKED_DISCOVERY",
-        "rank": 2,
-        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Existing coordinator consumes verified existing-role proof into upstream accounting while preserving decline.",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/21a4715e7b22a095d735446799ef4993110a3c8c4723ef54d1d55e0eec6d3699.json",
-        "sha256": "21a4715e7b22a095d735446799ef4993110a3c8c4723ef54d1d55e0eec6d3699",
-        "observedAt": "2026-11-05T11:47:42.191Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "indeed:edf343119a45d7c8": {
       "key": "indeed:edf343119a45d7c8",
@@ -33886,7 +33858,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "5693f352c2ddd72c0c32e575ffb5e9bd3f872c168fedd0c1c09d83b804655963"
+            "sourceSha256": "5aecf1d00be6ce1b5090965129548fd05db1526322ebb4eb1f7f6cea397b9e5a"
           }
         ],
         "postingFetched": false
@@ -34325,7 +34297,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "af13e792982728fe113dee7c216a01a4edd90f318873a83e727bb002d69f16be"
+            "sourceSha256": "12b28bae3e3d21bb33669f304e8e97b7b6c166bac9b091d12ec34e7b311abc34"
           }
         ],
         "postingFetched": false
@@ -36424,11 +36396,11 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "d7915e4a68ba02cfd78fb572685af511af0b6c13001954ec0a46fcf3a35cd9a7"
+            "sourceSha256": "ad9d9624dbd1bc69acd6bfe98d444ee5e5ae68d663584b4350bcdefff2c0e19e"
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "d7915e4a68ba02cfd78fb572685af511af0b6c13001954ec0a46fcf3a35cd9a7"
+            "sourceSha256": "ad9d9624dbd1bc69acd6bfe98d444ee5e5ae68d663584b4350bcdefff2c0e19e"
           }
         ],
         "postingFetched": false
@@ -36704,35 +36676,19 @@
       "aliases": [
         "url:42c03c99dd0452aff9da5f14"
       ],
-      "sourceVersion": "c8d97113eef7247d93db73684dceba49fabb2bfb1550723a567388ae5ae42d53",
+      "sourceVersion": "98e8e0122b5abb4156c92d71cbefedb177d018e36eddf415f3e3c461cd07eed3",
       "card": {
         "company": "Blue Bird Corporation",
         "title": "Executive Director, Project Management, Industrialization",
-        "location": "Detroit, MI, USA",
+        "location": "",
         "url": "https://recruiting.ultipro.com/BLU1004BBBC/JobBoard/1dfd3da7-cc1c-4f67-a1ca-2de669150f8c/OpportunityDetail?opportunityId=79e50075-6ca5-4fea-85ba-aec4e576278e&postingId=06a9586a-06f1-4e70-b693-c916b916bed2"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "50b289fc0a7922ace8675dc25f4347888a74e0bc3e00c9b475ecb562281a4a0e"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "50b289fc0a7922ace8675dc25f4347888a74e0bc3e00c9b475ecb562281a4a0e"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "HELD",
-      "action": "RESOLVE_IDENTITY",
-      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-30T20:49:59.778Z",
       "sourceReferences": [
@@ -37032,13 +36988,12 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location MI. Source content hits: manufacture, industrialization, manufacturing, production, continuous improvement, operational excellence, quality, plant, launch, supply chain; responsibility hits: leader, director, management, lead, accountable, direct, responsibilities, directly, manage, leadership, accountability, leading. Resume-supported hits: manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 0,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Investigate original hold and exact role identity; retain all protected decisions",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -64152,11 +64107,11 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "87f07334edd4953f2e0869046aa940864bc47657f3d37eb7f0b7069a2054211a"
+            "sourceSha256": "439091835375f0902a4c27a2bc375a91dc9ce70182cd13fe6fd3a27189979ff7"
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "87f07334edd4953f2e0869046aa940864bc47657f3d37eb7f0b7069a2054211a"
+            "sourceSha256": "439091835375f0902a4c27a2bc375a91dc9ce70182cd13fe6fd3a27189979ff7"
           }
         ],
         "postingFetched": false
@@ -64997,14 +64952,30 @@
       "aliases": [
         "linkedin:4469615679"
       ],
-      "sourceVersion": "ac597f8613ccc568add62f10ee2790a0043d85ecd08b14d314d64e37b1a7fa5a",
+      "sourceVersion": "d02ce051a5a9793e86c13dac6f7fc057abe5c857acaef9d6e05279ce0aa84adb",
       "card": {
         "company": "Unusual Machines",
         "title": "Senior Manager of Production - Battery",
-        "location": "",
+        "location": "Torrance, CA, USA",
         "url": "https://www.linkedin.com/jobs/view/4469615679/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "29f64aab14c090d6935e5152d47d87d39695c337b4187cb314b94e2ae147cc6a"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "29f64aab14c090d6935e5152d47d87d39695c337b4187cb314b94e2ae147cc6a"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
@@ -65016,11 +64987,12 @@
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / SR_MANAGER; location CA. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership, ev_battery.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": {
         "requestIds": [
@@ -65028,15 +65000,9 @@
         ],
         "proof": "state/RELEVANCE_INTAKE_PLAN.json"
       },
-      "nextAction": "Existing coordinator must reconcile exact source/requisition/site facts with the original terminal candidate outcome and canonical target rows; preserve original request fence and all decisions",
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/2eaca597967be6f6fa0e529f4ecfab1cafcf7bb4d7f6694d7a11562cca74833b.json",
-        "sha256": "2eaca597967be6f6fa0e529f4ecfab1cafcf7bb4d7f6694d7a11562cca74833b",
-        "observedAt": "2026-11-05T08:00:48.721Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4433117597": {
       "key": "linkedin:4433117597",
@@ -96024,7 +95990,7 @@
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location CA. Source content hits: quality, operational excellence, launch, plant, automation, supply chain, continuous improvement, manufacturing; responsibility hits: director, lead, managers, leader, accountable, management, manage, leadership, accountability, responsibility, managing, directly, direct. Resume-supported hits: manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality.",
       "screen": {
         "outcome": "RANKED_DISCOVERY",
         "rank": 2,
@@ -108568,14 +108534,14 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exactoriginal sourceidentity,contiguousrolequote andcurrentresume overlap,then freshcanonicaleligibility/Writer gates. No direct AIwrite or originalrequest replay.",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "SOURCE_VALIDATION_REQUIRED",
+      "status": "WAITING_EVIDENCE_CHANGE",
       "review": {
-        "path": "receipts/INTAKE_DRAIN/460227c16fc9dbe2ded78ec823ac4d73aabadd255ee4adc97065f1c896c2b360.json",
-        "sha256": "460227c16fc9dbe2ded78ec823ac4d73aabadd255ee4adc97065f1c896c2b360",
-        "observedAt": "2026-11-06T04:04:57.896524+00:00",
-        "outcome": "SOURCE_READY"
+        "path": "receipts/INTAKE_DRAIN/00efeb6753c5babfb107447a37d92c914ebf1be5f829290148bfd4283fe7007d.json",
+        "sha256": "00efeb6753c5babfb107447a37d92c914ebf1be5f829290148bfd4283fe7007d",
+        "observedAt": "2026-11-06T12:00:28.843781+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
@@ -109150,14 +109116,14 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact originalcompany/title/site,contiguous quote andcurrentresume overlap,then freshcanonical eligibility and Writergates. No originalrequest replay.",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "SOURCE_VALIDATION_REQUIRED",
+      "status": "WAITING_EVIDENCE_CHANGE",
       "review": {
-        "path": "receipts/INTAKE_DRAIN/f2f6d90043333268806d96517322a2ca4da085e6f208e000ba7da8f5de953cde.json",
-        "sha256": "f2f6d90043333268806d96517322a2ca4da085e6f208e000ba7da8f5de953cde",
-        "observedAt": "2026-11-06T05:07:20.192249+00:00",
-        "outcome": "SOURCE_READY"
+        "path": "receipts/INTAKE_DRAIN/00d355a1418ecfed290d645c4f3c29c4fa0eb0c8befe4d476c9e945545a9d1f6.json",
+        "sha256": "00d355a1418ecfed290d645c4f3c29c4fa0eb0c8befe4d476c9e945545a9d1f6",
+        "observedAt": "2026-11-06T12:00:32.428232+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
@@ -109290,14 +109256,14 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Existing source-intake-auto independently validates exact originalcompany/title/site,contiguous quote andcurrentresume overlap,then freshcanonical eligibility and Writergates. No originalrequest replay.",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "SOURCE_VALIDATION_REQUIRED",
+      "status": "WAITING_EVIDENCE_CHANGE",
       "review": {
-        "path": "receipts/INTAKE_DRAIN/4d729dd42edfbb4e78b05eb4d47d37af3d9909a0685c148b775f043c92246be3.json",
-        "sha256": "4d729dd42edfbb4e78b05eb4d47d37af3d9909a0685c148b775f043c92246be3",
-        "observedAt": "2026-11-06T05:07:31.035745+00:00",
-        "outcome": "SOURCE_READY"
+        "path": "receipts/INTAKE_DRAIN/bd83d6bdebebd9c98f48543a7a09269cde8ca6bbd489dd4686c180191b7462c8.json",
+        "sha256": "bd83d6bdebebd9c98f48543a7a09269cde8ca6bbd489dd4686c180191b7462c8",
+        "observedAt": "2026-11-06T12:00:36.116717+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
@@ -111641,12 +111607,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/d89091309d560792d2a9fb05a6eb01191dbecc17df5faaab45f7ebd5a792b34a.json",
         "sha256": "d89091309d560792d2a9fb05a6eb01191dbecc17df5faaab45f7ebd5a792b34a",
         "observedAt": "2026-11-06T11:05:12.812312+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "d89091309d560792d2a9fb05a6eb01191dbecc17df5faaab45f7ebd5a792b34a",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4484568808": {
@@ -111684,12 +111657,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/f2f4af6daabec6bbde6dc15fd30629f409c8365100b230d44086ed2fe75d138c.json",
         "sha256": "f2f4af6daabec6bbde6dc15fd30629f409c8365100b230d44086ed2fe75d138c",
         "observedAt": "2026-11-06T11:05:09.651654+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "f2f4af6daabec6bbde6dc15fd30629f409c8365100b230d44086ed2fe75d138c",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4484944270": {
@@ -111774,12 +111754,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/d2282a13d73bdc1bcc660b83cb25a85a281030e487704474fe59d31317dcfd0c.json",
         "sha256": "d2282a13d73bdc1bcc660b83cb25a85a281030e487704474fe59d31317dcfd0c",
         "observedAt": "2026-11-06T11:04:56.610680+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "d2282a13d73bdc1bcc660b83cb25a85a281030e487704474fe59d31317dcfd0c",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4465346497": {
@@ -111817,12 +111804,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/37369a11141f8ee4762561f8aac6a030840a5efe28ba26d8a372dd05af550341.json",
         "sha256": "37369a11141f8ee4762561f8aac6a030840a5efe28ba26d8a372dd05af550341",
         "observedAt": "2026-11-06T11:04:53.284614+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "37369a11141f8ee4762561f8aac6a030840a5efe28ba26d8a372dd05af550341",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4484209149": {
@@ -111860,12 +111854,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/57a6a8fe506938250e632e07eb5177d4a20741dda6195032714bc34bda7c0291.json",
         "sha256": "57a6a8fe506938250e632e07eb5177d4a20741dda6195032714bc34bda7c0291",
         "observedAt": "2026-11-06T11:05:00.054620+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "57a6a8fe506938250e632e07eb5177d4a20741dda6195032714bc34bda7c0291",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4474781482": {
@@ -112065,12 +112066,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/60013f0aade39e7e0c9c67da023cbeeac057cabea53cd88149a7bc243e164f4d.json",
         "sha256": "60013f0aade39e7e0c9c67da023cbeeac057cabea53cd88149a7bc243e164f4d",
         "observedAt": "2026-11-06T11:05:03.256823+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "60013f0aade39e7e0c9c67da023cbeeac057cabea53cd88149a7bc243e164f4d",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4482117620": {
@@ -112108,12 +112116,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/979182d5f6fec22966009f5da13b7753844ae89ead5b7035d7854468d5e5c1c9.json",
         "sha256": "979182d5f6fec22966009f5da13b7753844ae89ead5b7035d7854468d5e5c1c9",
         "observedAt": "2026-11-06T11:05:06.352456+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "979182d5f6fec22966009f5da13b7753844ae89ead5b7035d7854468d5e5c1c9",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4484418948": {
@@ -112151,12 +112166,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/e02e31d6fa6b17afecbc58ecb5ab45424cc1164765292cad0941a00f0d12ef3e.json",
         "sha256": "e02e31d6fa6b17afecbc58ecb5ab45424cc1164765292cad0941a00f0d12ef3e",
         "observedAt": "2026-11-06T11:05:19.230386+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e02e31d6fa6b17afecbc58ecb5ab45424cc1164765292cad0941a00f0d12ef3e",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4475033511": {
@@ -112194,12 +112216,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently fetches exact source and validates identity, contiguous quote, resume and all canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/08b8478a1ea2c121c573ba40bc83145dc4e1daf8ea201e89da23f0d6d692c0aa.json",
         "sha256": "08b8478a1ea2c121c573ba40bc83145dc4e1daf8ea201e89da23f0d6d692c0aa",
         "observedAt": "2026-11-06T11:05:15.929043+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "08b8478a1ea2c121c573ba40bc83145dc4e1daf8ea201e89da23f0d6d692c0aa",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4476780347": {
@@ -112560,12 +112589,107 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in a later pass; do not duplicate current workflow.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/73fe4fffe41c8bbfddaec87d065b0491e25d8b94cea06738cf4a48925cecf94f.json",
         "sha256": "73fe4fffe41c8bbfddaec87d065b0491e25d8b94cea06738cf4a48925cecf94f",
         "observedAt": "2026-11-06T11:07:23.919220+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "73fe4fffe41c8bbfddaec87d065b0491e25d8b94cea06738cf4a48925cecf94f",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production",
+                "factory"
+              ],
+              "postingQuotes": [
+                "Production Supervisor, Data Center Manufacturing",
+                "What to Expect The Production Supervisor is a member of the Manufacturing Production Team."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "They must have a broad background with the ability to work with engineering, production associates, quality, and suppliers across a wide variety of issues/ corrective actionsidentifiedin production and field performance.",
+                "Ensure quality standards aremetthroughout the entire production process and support no defects from leaving a station or team area"
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "launch"
+              ],
+              "postingQuotes": [
+                "Experience in new product development and launch activities"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training"
+              ],
+              "postingQuotes": [
+                "Develop training programs and hire plans for production associates"
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "vision"
+              ],
+              "postingQuotes": [
+                "Dental (including orthodontic coverage) and vision plans, both have options with a $0 paycheck contribution"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "Production Supervisor, Data Center Manufacturing"
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "supplier_quality",
+              "postingTerms": [
+                "corrective action",
+                "root cause"
+              ],
+              "postingQuotes": [
+                "Support issue resolution including root cause investigation & corrective action tracking"
+              ],
+              "resumeEvidenceSha256": "361e0936e1f57e4c6e767d745f9f806568448c4ab37a6a46c26bdaa20524a1d5"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "73baf32c32cd0edbbea7df232eb7c1e6af6952425d73a98ce4016edfa5380756",
+        "sourceUrl": "https://www.talent.com/view?id=644459980096933867"
       }
     },
     "linkedin:4484572599": {
@@ -112603,12 +112727,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in a later pass; do not duplicate current workflow.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/624dfa852ce57caea02b6e5a1e0e4c659503ff9e24ae2f18ed2216807d4e4b29.json",
         "sha256": "624dfa852ce57caea02b6e5a1e0e4c659503ff9e24ae2f18ed2216807d4e4b29",
         "observedAt": "2026-11-06T11:07:17.732661+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "624dfa852ce57caea02b6e5a1e0e4c659503ff9e24ae2f18ed2216807d4e4b29",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "HELPER_QUOTE_NOT_IN_POSTING",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4485266481": {
@@ -112687,9 +112818,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/2489a2aa79b8bed74039d41179c1cba57f7f3d13ce9e4c4583aef9aed519b2d6.json",
+        "sha256": "2489a2aa79b8bed74039d41179c1cba57f7f3d13ce9e4c4583aef9aed519b2d6",
+        "observedAt": "2026-11-06T12:00:39.786411+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4477417112": {
       "key": "linkedin:4477417112",
@@ -112917,12 +113054,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in a later pass; do not duplicate current workflow.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/2c31c83dbaaf2b5cb1f4d188dd7b024281196d05bbdc335b274e657f1228942e.json",
         "sha256": "2c31c83dbaaf2b5cb1f4d188dd7b024281196d05bbdc335b274e657f1228942e",
         "observedAt": "2026-11-06T11:07:39.335265+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "2c31c83dbaaf2b5cb1f4d188dd7b024281196d05bbdc335b274e657f1228942e",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
       }
     },
     "linkedin:4482828291": {
@@ -112960,12 +113104,77 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in a later pass; do not duplicate current workflow.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/8d63743f01f04b636317ceda6d673d289837cb46c0084f855e3dadf535fd14fb.json",
         "sha256": "8d63743f01f04b636317ceda6d673d289837cb46c0084f855e3dadf535fd14fb",
         "observedAt": "2026-11-06T11:07:33.101197+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "8d63743f01f04b636317ceda6d673d289837cb46c0084f855e3dadf535fd14fb",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "plant"
+              ],
+              "postingQuotes": [
+                "Knowledge of Continuous Improvement systems and Lean Manufacturing experience",
+                "Possess a high sense of urgency to the customer and plant KPI's"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "workforce"
+              ],
+              "postingQuotes": [
+                "This role owns nearterm execution while developing and driving a rolling fiveyear strategy aligned to network growth, customer expectations, technology evolution, workforce capability, and capital planning.",
+                "* Define the site roadmap for capacity expansion, layout evolution, workforce capability, digital enablement, and service reliability"
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "automation_robotics",
+              "postingTerms": [
+                "automation"
+              ],
+              "postingQuotes": [
+                "* Identify and sponsor multiyear initiatives focused on customer experience, lastmile performance, labor stability, automation, and productivity",
+                "* Identify and sponsor multiyear initiatives focused on customer experience, lastmile performance, labor stability, automation, and productivity"
+              ],
+              "resumeEvidenceSha256": "e4036c86848586f365d20820e4be7c5e51531e8e0f323eb1d35fdfd80f3b714e"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean",
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Knowledge of Continuous Improvement systems and Lean Manufacturing experience"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "79e7b3692f41a61335dd4e74474e6216d7e02f18f06d524fb6a784fdc1c36cb1",
+        "sourceUrl": "https://www.justjobs.com/career/18722151/Regional-Parts-Distribution-Center-Manager-New-York-Hopewell-Junction"
       }
     },
     "linkedin:4485322598": {
@@ -113001,9 +113210,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/6d11ae5e49d4f3ad00192f53050d0bdb0e848f0600f68bbaa1d58d00c35457cd.json",
+        "sha256": "6d11ae5e49d4f3ad00192f53050d0bdb0e848f0600f68bbaa1d58d00c35457cd",
+        "observedAt": "2026-11-06T12:00:43.128363+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4484054051": {
       "key": "linkedin:4484054051",
@@ -113130,9 +113345,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/81d50e4c2fe793a17e37912a9b760886dad901e01e510faddf15ae1f99c3821e.json",
+        "sha256": "81d50e4c2fe793a17e37912a9b760886dad901e01e510faddf15ae1f99c3821e",
+        "observedAt": "2026-11-06T12:00:46.140021+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4472978604": {
       "key": "linkedin:4472978604",
@@ -113362,12 +113583,55 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact posting, quote, current resume and canonical Writer gates in a later pass; do not duplicate current workflow.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/3f5accfac1a72d170541b00f76d44f216c05e68cb9bbe46b030668320017d8cd.json",
         "sha256": "3f5accfac1a72d170541b00f76d44f216c05e68cb9bbe46b030668320017d8cd",
         "observedAt": "2026-11-06T11:07:30.080683+00:00",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "3f5accfac1a72d170541b00f76d44f216c05e68cb9bbe46b030668320017d8cd",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing"
+              ],
+              "postingQuotes": [
+                "Supervisory/Managerial experience in logistics, distribution, manufacturing or warehousing",
+                "Strong knowledge of LEAN manufacturing systems"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean",
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "* Continuous improvement, execution, golive, and stabilization",
+                "Strong knowledge of LEAN manufacturing systems"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "a3f89c3e432a88b185ec1e20882413594974f9b3f02e4b33a3a9c90fe5e6211c",
+        "sourceUrl": "https://www.justjobs.com/career/18722161/Warehouse-Operations-Manager-California-Ontario"
       }
     },
     "linkedin:4485674732": {
@@ -113452,9 +113716,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/66cae8c6716471bd3d4402ccc0e2619caf8848510a0303d9cf7e4ca55f6b729c.json",
+        "sha256": "66cae8c6716471bd3d4402ccc0e2619caf8848510a0303d9cf7e4ca55f6b729c",
+        "observedAt": "2026-11-06T12:00:56.036906+00:00",
+        "outcome": "RECONCILIATION_REQUIRED"
+      }
     },
     "linkedin:4485654043": {
       "key": "linkedin:4485654043",
@@ -113489,9 +113759,22 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Existing controlled intake independently fetches exact posting and validates identity, quote, current resume and canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "SOURCE_VALIDATION_REQUIRED",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/e64f0d99d8704ab1d5245d56719bce951fcdee26244711478c97231d9874ef43.json",
+        "sha256": "e64f0d99d8704ab1d5245d56719bce951fcdee26244711478c97231d9874ef43",
+        "observedAt": "2026-11-06T12:00:52.894037+00:00",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "e64f0d99d8704ab1d5245d56719bce951fcdee26244711478c97231d9874ef43",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "reason": "HELPER_QUOTE_NOT_IN_POSTING",
+        "retryAfter": "2026-11-06T18:01:56.646Z"
+      }
     },
     "linkedin:4485311982": {
       "key": "linkedin:4485311982",
@@ -113526,9 +113809,91 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Existing controlled intake independently fetches exact posting and validates identity, quote, current resume and canonical Writer gates.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "READY_FOR_CONTROLLED_INTAKE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/d4d818103853fb526902ca994651c9ae961eadda60b72c2688d02a41570c2906.json",
+        "sha256": "d4d818103853fb526902ca994651c9ae961eadda60b72c2688d02a41570c2906",
+        "observedAt": "2026-11-06T12:00:49.498713+00:00",
+        "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "d4d818103853fb526902ca994651c9ae961eadda60b72c2688d02a41570c2906",
+        "observedAt": "2026-11-06T12:01:56.646Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality",
+                "PDCA"
+              ],
+              "postingQuotes": [
+                "Leverages data and insights to drive lean improvements that deliver on quality and cost targets",
+                "Continually seeks opportunities and inspire others to improve processes and outcomes, leveraging KPIs and the PDCA model"
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "startup_launch",
+              "postingTerms": [
+                "ramp"
+              ],
+              "postingQuotes": [
+                "Flexible family care, parental leave, new parent ramp-up programs, subsidized back-up childcare and more"
+              ],
+              "resumeEvidenceSha256": "6577fe96729ba23f8417ae442fa06c04f58d03db4e1ccbce6e37b9d90977145c"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training",
+                "workforce"
+              ],
+              "postingQuotes": [
+                "Provide leadership and direction to a diverse workforce, including salary staff (Traffic, Security, and Inventory) and hourly employees",
+                "Develops “leaders as teachers” and prioritizes ongoing development and evaluation of employee performance to continually create high performing teams that deliver results for the Ford Motor Company Develop salaried team thru training, coaching and mentoring"
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "manufacturing_systems",
+              "postingTerms": [
+                "data"
+              ],
+              "postingQuotes": [
+                "Leverages data and insights to drive lean improvements that deliver on quality and cost targets"
+              ],
+              "resumeEvidenceSha256": "c8871ea59aed1a05177768b719b4d81f7cf0f420ffdbf9a7dcfc4c0c46c581dd"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean",
+                "continuous improvement"
+              ],
+              "postingQuotes": [
+                "Leverages data and insights to drive lean improvements that deliver on quality and cost targets",
+                "Drive continuous improvement in Safety, Quality, On-Time Delivery, and Grid Times to meet or exceed performance targets"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "0d37d4e488e0a0ab35284d28ebe831e4196e426f3d925d72de3410d32884b73f",
+        "sourceUrl": "https://www.careers.ford.com/en/job/winchester/building-manager/48560/102577072032"
+      }
     },
     "linkedin:4482846084": {
       "key": "linkedin:4482846084",
@@ -114360,9 +114725,15 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Retain exact captured identity and original Writer requests for assigned reconciliation or permitted source recovery; no submission or replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/ff9f321f2750b0fd7c3b2ae2d86f7469021a2f8996ec0cd8a16c70fe139da0f8.json",
+        "sha256": "ff9f321f2750b0fd7c3b2ae2d86f7469021a2f8996ec0cd8a16c70fe139da0f8",
+        "observedAt": "2026-11-06T12:00:59.163425+00:00",
+        "outcome": "WAITING_SOURCE_CHANGE"
+      }
     },
     "linkedin:4485220617": {
       "key": "linkedin:4485220617",
@@ -242768,7 +243139,7 @@
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location WI. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 1,
@@ -339301,22 +339672,22 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-06T11:54:13.328Z",
+  "at": "2026-11-06T12:01:56.646Z",
   "upstreamAt": "2026-11-06T11:53:34.963Z",
   "counts": {
-    "WAITING_EVIDENCE_CHANGE": 957,
-    "ACTION_REQUIRED": 5622,
+    "WAITING_EVIDENCE_CHANGE": 963,
+    "ACTION_REQUIRED": 5617,
     "ACCOUNTED_UPSTREAM": 85,
     "READY_FOR_CONTROLLED_INTAKE": 7,
-    "SOURCE_VALIDATION_REQUIRED": 38,
-    "PENDING_INDEPENDENT_VALIDATION": 14
+    "SOURCE_VALIDATION_REQUIRED": 35,
+    "PENDING_INDEPENDENT_VALIDATION": 16
   },
   "actions": {
-    "REVIEW_SCOPE": 3503,
-    "RECOVER_SOURCE": 1527,
+    "REVIEW_SCOPE": 3502,
+    "RECOVER_SOURCE": 1530,
+    "RESOLVE_IDENTITY": 974,
     "RECONCILE_WRITER": 599,
-    "RESOLVE_IDENTITY": 975,
-    "INTAKE": 34
+    "INTAKE": 33
   },
   "noProcessingCap": true
 }
