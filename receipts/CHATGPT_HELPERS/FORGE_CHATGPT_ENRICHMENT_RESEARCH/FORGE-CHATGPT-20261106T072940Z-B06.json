@@ -1,0 +1,80 @@
+{
+  "schema": "forge.enrichment-helper-batch.v1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+  "assignmentId": "GROK-ENRICH-20261101-V1",
+  "runId": "FORGE-CHATGPT-20261106T072940Z-B06",
+  "instructionCommit": "230469153cf93fd16813c70c4113841823bac553",
+  "observedAt": "2026-11-06T07:29:40.994267+00:00",
+  "items": [
+    {
+      "primaryId": "V2I-F50E736493BC",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED",
+      "sourceEvidence": {
+        "references": [
+          "control/ENRICHMENT_HELPER_WORK.json",
+          "state/enrich-ats-pay.json",
+          "state/enrich-ats-pay-recovery.json",
+          "state/HELPER_HANDOFFS.json"
+        ],
+        "url": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4615361/Pick-Your-Part/Plant-Manager",
+        "originalSourceUrls": [
+          "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4615361/Pick-Your-Part/Plant-Manager?source=Indeed_Feed"
+        ],
+        "observedAt": "2026-11-06T07:29:40.994267+00:00",
+        "sourceAcquiredAt": "2026-11-06T00:00:00Z",
+        "company": "Pick Your Part",
+        "title": "Plant Manager",
+        "location": "Memphis, TN, USA",
+        "observedSourceTitle": "Pick Your Part - Plant Manager",
+        "sourceType": "PUBLIC_WEB_EXTRACT",
+        "sourceReferenceId": "extract_e28979bd64402ba8aaa2a505c3e51d12",
+        "quote": "* High School Diploma/GED.",
+        "supportingExcerpts": "Plant Manager\n[Memphis, TN](http://maps.google.com/maps?q=966+W+Mitchell+Rd+Memphis+TN+USA+38109 \"External Link Opens a New Window\")\n[Apply](https://recruiting.paylocity.com/Recruiting/Jobs/Apply/4615361)\nJob Type\nFull-time\nDescription\n\n...\n\n**Minimum Requirements**\n**Education & Experience**\n* High School Diploma/GED.\n* 5+ years of managerial/supervisory experience related to production, operations, and/or distribution.\n**Preferred Requirements**\n* Prior experience management in salvage yards.\n**Knowledge/Skills/Abilities**",
+        "sourceSha256": "6ae377a792b38e886a946fa94003e7c86b0562c56e40ae569ecdd2de411a9f5d",
+        "hashScope": "Exact selected provider-returned excerpts or explicitly identified shared record; not raw HTML or live acquisition proof",
+        "proposedRawFields": {
+          "DEGREE_TEXT": "* High School Diploma/GED.",
+          "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4615361/Pick-Your-Part/Plant-Manager",
+          "DEGREE_ASOF": "2026-11-06"
+        },
+        "workReadCommit": "82115e0b1a98b8419b7475d8384df8101fea6e69",
+        "currentSavedStatus": "ASSIGNED",
+        "currentSavedNeeds": "SALARY,DEGREE",
+        "priorRecoveryAttempts": [
+          {
+            "url": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4615361/Pick-Your-Part/Plant-Manager?source=Indeed_Feed",
+            "status": "NO_EXACT_COMPLETE_POSTING"
+          }
+        ],
+        "savedPostingEvidencePresent": false,
+        "pendingWriterProofPresent": false,
+        "fetchErrors": []
+      },
+      "reason": "Exact assigned Pick Your Part4615361 source explicitly states HS/GED; no college-degree absence or salary inferred.",
+      "researchOwner": "ChatGPT FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+      "nextOwner": "Existing programmed coordinator; canonical verification remains Writer-owned",
+      "retryCondition": "Recheck current canonical identity, exact original posting/requisition, remaining fields and all Writer fences. Unresolved sources retry only on changed access, full exact posting, original source identity or new fact-changing evidence. Never replay original uncertain Writer requests or repeat unchanged failed routes."
+    }
+  ],
+  "executionEvidence": {
+    "canonicalWritesSubmitted": 0,
+    "canonicalEffectsVerified": 0,
+    "nativeFileAudit": {
+      "status": "FAILED",
+      "error": "ValueError: Native automation directory unavailable; no empty inventory inferred"
+    },
+    "workReadCommit": "82115e0b1a98b8419b7475d8384df8101fea6e69",
+    "sourceFreshness": "Run observation is distinct from provider acquiredAt. Source extraction and historical unavailable-posting notices do not prove live posting freshness or closure.",
+    "snapshotEligibleCasesScanned": 101,
+    "casesReturnedThisRun": 101,
+    "rawFactsPreparedThisRun": 54,
+    "skippedOnFreshWorkReadback": [],
+    "scanEndReachedAfter": "V2I-F50E736493BC",
+    "remainingAfterCursorAtWorkReadCommit": 0,
+    "meaning": "All currently selected unreturned cases accounted for with raw evidence or precise source exceptions. This is not canonical job completion, validated employer identity, coordinator consumption or Writer verification.",
+    "nextAfter": "V2I-F50E736493BC"
+  }
+}
