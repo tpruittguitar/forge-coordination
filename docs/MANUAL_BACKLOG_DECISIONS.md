@@ -1,0 +1,13 @@
+# Manual discovery backlog decisions
+
+Pipeline Explorer submits explicit user selections to `/api/backlog-decisions`, authenticated with the existing Writer key. Each request binds up to 100 discovery identity keys, DECLINE or DELETE, and the exact coordination snapshot revision displayed. DELETE is recoverable exclusion from the active backlog, not erasure of evidence or canonical records. Remote and multi-location jobs are not inferred exclusions: only actual selected keys are considered.
+
+Requests are immutable and content-addressed in the existing cockpit KV. The browser must persist the normalized SHA256 receipt ID before POST. After timeout or disconnect it reads that receipt; it does not replay a mutation. Queued is not removed.
+
+The existing pipeline-observability worker reads this inbox using its existing Writer credential. No new schedule, worker identity, credential, or Writer action is introduced. The observer loads the exact hash-verified waiting-page snapshot once per selected revision, compares current identity, then checks fresh canonical master/archive and existing Writer fences. Only WAITING identities with no protection or conflict can be excluded. HELD, IDENTITY_HOLD, previously present, conflicting, stale, applied/canonical, and uncertain Writer cases remain protected. These require the established reconciliation path rather than forced deletion.
+
+The observer retains all ledger entries and proof, adds per-item receipts under receipts/manual-backlog, and publishes receipt plus reconciled ledger/counts together. Only an APPLIED result from a committed observer receipt is a completed exclusion. HELD, STALE, and ALREADY_ACCOUNTED are distinct outcomes. Existing canonical Writer ownership is unchanged. If an identity later appears in canonical state, canonical presence takes priority.
+
+Deploy the cockpit endpoint and merge the coordination worker implementation through their normal reviewed release paths. Capabilities remain disabled until a fresh waiting-queue snapshot advertises manualDecisions.version=1. Old cockpit 404 or HTML fallback is tolerated during rollout. Other inbox failures preserve the last successful reporting component. UI publication alone cannot remove candidates; coordination publication alone cannot accept new selections.
+
+Validation: node --test tools/manual-backlog/*.test.cjs tools/pipeline-observability/*.test.js (set ACTIVITY_FC_DIR to a foreman-cockpit checkout for aggregate tests).
