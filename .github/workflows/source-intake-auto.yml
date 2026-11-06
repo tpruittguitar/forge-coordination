@@ -31,6 +31,8 @@ jobs:
         with:
           node-version: '22'
       - name: Validate returned role research independently
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
         run: node tools/intake-drain/queue.cjs verify "$RUNNER_TEMP/intake-drain-sources"
       # Publish recovered bookkeeping before beginning another potentially long intake batch.
       - name: Reconcile earlier runs
