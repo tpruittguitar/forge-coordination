@@ -1,0 +1,35 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:1a2e9ae29076ceb914ca8369",
+  "sourceVersion": "cc9c8f9d1b6f47cf9a0663af20030fce9885b1f64a56561e6f158c229cf06d7d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T072619660093Z-glossier-source",
+  "instructionCommit": "dd3e868364ec20cb1310d4f7325cb246daab838f",
+  "observedAt": "2026-11-06T07:26:19.660093Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact captured short-link source is retained. A saved review for the same named employer/title binds a different original identity and employer posting, but no observed redirect or exact source binding proves this short link refers to that requisition. Do not copy its location or quote into this candidate as verified evidence. Original full-card identity remains missing and grnh.se is excluded by current enforced source-access policy.",
+  "nextAction": "Recover observed redirect/employer requisition for this exact original short link, then compare with saved employer posting 8304650 and retain all originating identities and protected decisions.",
+  "retryCondition": "An observed authorized redirect or exact saved original-source binding establishes this short link employer requisition, or authorized source access changes. Same employer/title alone is insufficient.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "relatedEvidenceReference": "receipts/INTAKE_DRAIN/9a61dd151c23b6adb7d74cc97b8cb7c11852a13b79bdbf3acae22a6cafc8fe66.json",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Recursive exact URL/sourceUrl search returned no matching current full-card object."
+    },
+    {
+      "source": "control/, receipts/, reference/ exact short-link token lk7net3k1us",
+      "result": "Fixed-string search found no saved exact binding."
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/9a61dd151c23b6adb7d74cc97b8cb7c11852a13b79bdbf3acae22a6cafc8fe66.json",
+      "result": "Reused related Glossier employer/title evidence as a research lead only; original source key differs and exact short-link alias not established."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current restricted policy enforced; grnh.se absent from allowed hosts. No denied-host request or bypass attempted."
+    }
+  ]
+}
