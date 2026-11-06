@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8fe061442867b2322ad8f0f7",
+  "sourceVersion": "98c48887e8b3be4debd3c60929a02396d4fb0c205b2bb0e436d5f6ba9b6c1bf7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261106T004902084Z-579eec",
+  "instructionCommit": "91880afb5a80dc128c60912b14d9923c6915f7c1",
+  "observedAt": "2026-11-06T00:49:02.084Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "reason": "New exact fence-bound original AUTO request has acceptance evidence but lacks an independently completed probe conclusion. Authorized read-only probe42139483376 dispatched once after confirming earlier probes terminal; no replay or canonical mutation.",
+  "nextAction": "Consume read-only probe42139483376 result, retaining original request and candidate fence; dispatch alone is not verified outcome.",
+  "retryCondition": "Read-only probe42139483376 completes with exact original-request evidence or original evidence changes.",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261106T001411Z.json",
+      "sha256": "8e24e687f30b8e9413aaa3ca1f92b18d868901b42ebab07db5fac57bf1056647",
+      "result": "Read saved original accepted receipt for exact request FORGE-SOURCE-F489207F6D41211AE4861293; captured IDs V2I-C58E89ADA3D1; writeId W-20261106001900449-630a50. No original write replayed."
+    }
+  ],
+  "originalEvidence": {
+    "requestId": "FORGE-SOURCE-F489207F6D41211AE4861293",
+    "writeId": "W-20261106001900449-630a50",
+    "acceptedPrimaryIds": [
+      "V2I-C58E89ADA3D1"
+    ]
+  },
+  "independentProbeFindingConfirmed": false
+}

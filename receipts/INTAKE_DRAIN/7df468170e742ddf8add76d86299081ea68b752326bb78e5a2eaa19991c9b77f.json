@@ -1,0 +1,50 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:af9d2b8887ef67c4e4cb7592",
+  "sourceVersion": "ef852be673d93f87779ba747225100635f7f16dab85e126b1c337a5030b6cb4c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261106T004935821Z-621983",
+  "instructionCommit": "91880afb5a80dc128c60912b14d9923c6915f7c1",
+  "observedAt": "2026-11-06T00:49:35.821Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "reason": "Registered read-only probe independently reports COMPLETE_CAPTURED_ID_ROW_MATCH for this exact original request, after independent COMPLETE receipt-index state, original request-result recovery and exact captured primary-ID row comparison. Original accepted request and IDs are bound in the saved run. This is a recovered candidate-specific reconciliation finding for a prior write, not new submission, new job throughput or a declaration that controlled recovery has closed the queue.",
+  "nextAction": "Existing source-intake-auto consumes original acceptance plus candidate-specific independent probe finding into supported recovery and upstream accounting. Retain any provenance ambiguity and all protected decisions; never replay original request.",
+  "retryCondition": "Controlled source-intake-auto recovery consumes the exact original request finding and publishes durable accounting, or contradictory provenance/row evidence changes the finding.",
+  "attempts": [
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T073802Z.json",
+      "sha256": "b5dffea374b9b4441a5501e7029fbd8101918d545015bcd1237684bd440992e6",
+      "result": "Read saved original accepted receipt for exact request FORGE-SOURCE-0759565768A895C249DEE8D7; captured IDs V2I-25444E51984B; writeId W-20261105074524536-1b96b1. No original write replayed."
+    },
+    {
+      "source": "https://github.com/tpruittguitar/forge-coordination/actions/runs/42131876135/job/127610241977",
+      "result": "Full decoded job log independently retrieved through authorized GitHub connector. Exact retained notice: FORGE-SOURCE-0759565768A895C249DEE8D7 COMPLETE_CAPTURED_ID_ROW_MATCH",
+      "observedAt": "2026-11-05T23:52:44.5586464Z"
+    },
+    {
+      "source": "Probe summary publication",
+      "result": "Workflow completed successfully, but summary push rejected because main advanced. Raw full summary JSON is not available on main. This immutable review preserves only the actual candidate-specific retained log finding; no missing index/row-hash fields reconstructed."
+    }
+  ],
+  "originalEvidence": {
+    "requestId": "FORGE-SOURCE-0759565768A895C249DEE8D7",
+    "writeId": "W-20261105074524536-1b96b1",
+    "acceptedPrimaryIds": [
+      "V2I-25444E51984B"
+    ]
+  },
+  "independentProbeFindingConfirmed": true,
+  "probeEvidence": {
+    "observedAt": "2026-11-05T23:52:44.5586464Z",
+    "requestId": "FORGE-SOURCE-0759565768A895C249DEE8D7",
+    "verdict": "COMPLETE_CAPTURED_ID_ROW_MATCH",
+    "workflowRunId": 42131876135,
+    "jobId": 127610241977,
+    "summaryPublication": "FAILED_NON_FAST_FORWARD"
+  }
+}
