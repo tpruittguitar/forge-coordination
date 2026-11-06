@@ -1,0 +1,54 @@
+{
+  "schema": "forge.enrichment-helper-batch.v1",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+  "assignmentId": "GROK-ENRICH-20261101-V1",
+  "runId": "FORGE-CHATGPT-20261106T024514Z-RESEARCH",
+  "instructionCommit": "4e7d6028e51364a087c605e217609fb4ad9b5a53",
+  "observedAt": "2026-11-06T02:46:49.183Z",
+  "items": [
+    {
+      "primaryId": "V2I-C1A6099F6FCE",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED",
+      "sourceEvidence": {
+        "references": [
+          "Targeted agency/title/location search; saved tracking URL previously HTTP_403"
+        ],
+        "url": "https://jooble.org/jdp/-2796220010543910672",
+        "observedAt": "2026-11-06T02:46:49.183Z",
+        "company": "LPC Personnel, Inc",
+        "title": "Plant Manager",
+        "location": "Houston, TX",
+        "sourceType": "SECONDARY_POSTING_COPY",
+        "quote": "Bachelors degree in Engineering Operations Management Business or a related field preferred",
+        "evidenceSha256": "d0e91915c1521ff2439ad67420fbaa914eddc648497db34246b18927af500c5f",
+        "hashScope": "exact quoted evidence",
+        "proposedRawFields": {
+          "DEGREE_PREFERRED": "Bachelors degree in Engineering Operations Management Business or a related field"
+        }
+      },
+      "reason": "Secondary full posting explicitly says preferred. Original requisition identity and client employer remain unproven. No salary proposed: board-displayed amount is not authenticated employer pay."
+    },
+    {
+      "primaryId": "V2I-3DA0F56E9D51",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_IDENTITY_AMBIGUOUS",
+      "canonicalCheck": "COORDINATOR_CANONICAL_CHECK_REQUIRED",
+      "sourceEvidence": {
+        "references": [
+          "Saved tracking source HTTP_403; targeted agency/title/site search"
+        ],
+        "url": "https://www.ziprecruiter.com/Jobs/Plant-Maintenance-Manager/-in-Hatboro%2CPA",
+        "observedAt": "2026-11-06T02:46:49.183Z",
+        "company": "Liberty Personnel Services, Inc",
+        "title": "Plant Manager",
+        "location": "Horsham, PA",
+        "quote": "Plant Manager - Own the Floor. Drive the Results.",
+        "proposedRawFields": {}
+      },
+      "reason": "Search listing labels Horsham but description says Hatboro; no original requisition proven. Search-only result is not full exact-posting evidence and supports no pay or degree proposal. Retry only with exact original posting or agency requisition/site evidence."
+    }
+  ]
+}
