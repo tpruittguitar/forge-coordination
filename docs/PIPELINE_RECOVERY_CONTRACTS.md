@@ -62,3 +62,7 @@ Collection advances from proven enumeration independently of semantic coverage, 
 Immutable artifact provenance is validated separately from current processing eligibility. Completed/protected work is skipped at consumption, not used to invalidate unrelated historical evidence. Valid PR artifacts are harvested even when another artifact fails. Malformed correction or reporting-health input produces a precise local obligation and cannot stop unrelated collection/attention work.
 
 Review and merge the backend and cockpit changes together. Preserve historical refusal witnesses before Writer replacement, then verify actual scheduled cycles using their source-bound receipts. Passing tests or prepared evidence do not prove that production has deployed, that all backlog jobs completed, or that historical application-status gaps are closed. No production deployment or backlog mutation is performed by the PR validation suite.
+
+## Reusable support procedures
+
+The user-directed [Forge Dot pilot](FORGE_DOT_PILOT.md) follows exceptions through actual attempts and verified outcomes using existing workers. Its [six specialist procedures](FORGE_REPAIR_SPECIALISTS.md) can also be used from ChatGPT Work and Codex. These documents grant no new task identity, canonical-write permission, schedules or delegation capability.
