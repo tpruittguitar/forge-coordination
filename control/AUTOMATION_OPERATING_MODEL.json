@@ -31,7 +31,11 @@
       "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof",
       "previousSharedRoutingStatus": "ACTIVE",
       "currentOwner": "ChatGPT",
-      "executeVia": "FORGE_APPLICATION_WRITER_GOFER",
+      "executeVia": [
+        "FORGE_INTAKE_SCOPE_REVIEW",
+        "FORGE_INTAKE_SOURCE_RECOVERY",
+        "FORGE_INTAKE_HELD_RECONCILIATION"
+      ],
       "nativeDisableVerified": false
     },
     {
@@ -46,7 +50,7 @@
       "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof",
       "previousSharedRoutingStatus": "ACTIVE",
       "currentOwner": "ChatGPT",
-      "executeVia": "FORGE_APPLICATION_WRITER_GOFER",
+      "executeVia": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
       "nativeDisableVerified": false
     },
     {
@@ -150,5 +154,15 @@
     "policy": "control/CHATGPT_OWNER_CUTOVER.json",
     "enrichmentTask": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
     "newNativeSchedule": false
+  },
+  "chatgptEnrichmentResearchNative": {
+    "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+    "nativeId": "Automation_f2c7009d140c8191a086de4a3ae8c680",
+    "enabled": true,
+    "schedule": "Hourly at minute 12, America/New_York",
+    "observedAt": "2026-11-06T00:06:56.454588+00:00",
+    "reason": "Native inventory confirms old Gofer disabled; active intake routines do not consume the enrichment research queue",
+    "writes": "Evidence only; existing programmed coordinator owns canonical writes",
+    "firstExecution": "NOT_YET_VERIFIED"
   }
 }
