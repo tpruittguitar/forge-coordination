@@ -3,7 +3,7 @@
 const R = {
   'https://boards-api.greenhouse.io/v1/boards/acme/jobs?content=true': { jobs: [
     { title: 'Director of Quality', location: { name: 'Dayton, OH' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/111', content: '' },
-    { title: 'Senior Director, Quality Assurance', location: { name: 'Austin, TX' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/222', content: 'Base pay $200,000 - $250,000' },
+    { title: 'Senior Director, Quality Assurance', location: { name: 'Austin, TX' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/222', content: 'Annual base salary USD $200,000 - $250,000' },
     { title: 'Director of Manufacturing Engineering', location: { name: 'Munich, Germany' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/333', content: '' },
     { title: 'Software Quality Director', location: { name: 'Remote, US' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/444', content: '' },
     { title: 'Quality Engineer', location: { name: 'Dayton, OH' }, absolute_url: 'https://job-boards.greenhouse.io/acme/jobs/555', content: '' } ] },

@@ -2,15 +2,14 @@
 const S=require('../programmed-coordinator/store.cjs');
 function htmlText(s){return String(s).replace(/<(script|style)\b[^>]*>[\s\S]*?<\/\1>/gi,' ').replace(/<[^>]*>/g,' ').replace(/&(?:#(\d+)|#x([0-9a-f]+)|(amp|lt|gt|quot|apos|nbsp));/gi,(_,n,h,k)=>n||h?String.fromCodePoint(Math.min(0x10ffff,parseInt(n||h,h?16:10))):({amp:'&',lt:'<',gt:'>',quot:'"',apos:"'",nbsp:' '}[k.toLowerCase()])).replace(/\s+/g,' ').trim();}
 function normalize(message){
- const headers=Object.fromEntries((message.payload?.headers||[]).map(h=>[h.name.toLowerCase(),h.value]));let missing=message.truncated===true;
- function parts(p){if(p.truncated===true||p.body?.truncated===true)missing=true;if(['text/plain','text/html'].includes(p.mime_type)){if(typeof p.body?.content!=='string'){missing=true;return[];}return[{mime:p.mime_type,text:p.body.content}];}return(p.parts||[]).flatMap(parts);}
- const content=parts(message.payload||{}),plain=content.filter(x=>x.mime==='text/plain'),body=(plain.length?plain:content).map(x=>x.mime==='text/html'?htmlText(x.text):x.text).join('\n'),sender=(headers.from?.match(/<([^>]+)>/)?.[1]||headers.from||'').trim().toLowerCase();
+ const headers=Object.fromEntries((message.payload?.headers||[]).map(h=>[h.name.toLowerCase(),h.value]));
+ const {content,body,fullBody}=require('./mail-content.cjs')(message),sender=(headers.from?.match(/<([^>]+)>/)?.[1]||headers.from||'').trim().toLowerCase();
  const immutable={id:message.id,thread_id:message.thread_id,internal_date:message.internal_date,payload:message.payload},canonical=require('./reports.cjs').canonical,legacySourceSha256=S.hash(canonical(immutable));
  // Gmail can rotate opaque binary-attachment read handles between full reads.
  // Preserve every raw capture and all MIME/header/body content, but do not treat
  // a changed download handle as changed correspondence. Text handles stay bound.
  function stable(part){const p=structuredClone(part);if(typeof p.body?.attachment_id==='string'&&!['text/plain','text/html'].includes(p.mime_type))delete p.body.attachment_id;if(p.parts)p.parts=p.parts.map(stable);return p;}
- return{id:message.id,threadId:message.thread_id,at:new Date(Number(message.internal_date)).toISOString(),subject:headers.subject||'',sender,body,notificationTemplate:headers['x-linkedin-template']||null,notificationClass:headers['x-linkedin-class']||null,links:[...new Set(content.flatMap(p=>[...p.text.matchAll(/https:\/\/[^\s<>"']+/g)].map(m=>m[0].replace(/&amp;/g,'&'))))],isSent:(message.label_ids||[]).includes('SENT'),fullBody:!missing&&content.length>0&&body.trim().length>0,sourceSha256:S.hash(canonical({...immutable,payload:stable(message.payload||{})})),legacySourceSha256,captureSha256:S.hash(message),hasUnsubscribe:!!headers['list-unsubscribe']};
+ return{id:message.id,threadId:message.thread_id,at:new Date(Number(message.internal_date)).toISOString(),subject:headers.subject||'',sender,body,htmlBody:content.filter(p=>p.mime==='text/html').map(p=>p.text).join('\n'),notificationTemplate:headers['x-linkedin-template']||null,notificationClass:headers['x-linkedin-class']||null,links:[...new Set(content.flatMap(p=>[...p.text.matchAll(/https:\/\/[^\s<>"']+/g)].map(m=>m[0].replace(/&amp;/g,'&'))))],isSent:(message.label_ids||[]).includes('SENT'),fullBody,sourceSha256:S.hash(canonical({...immutable,payload:stable(message.payload||{})})),legacySourceSha256,captureSha256:S.hash(message),hasUnsubscribe:!!headers['list-unsubscribe']};
 }
 function classify(m){
  if(!m.fullBody)return{owner:'CODE',classification:'FULL_MESSAGE_REQUIRED',status:'PENDING'};

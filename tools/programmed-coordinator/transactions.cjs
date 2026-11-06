@@ -1,9 +1,13 @@
 'use strict';
 const S = require('./store.cjs'), {normalizeCell:cell} = require('../source-intake/writer-cell');
 const Source = require('./source.cjs');
+const Outcome = require('../writer-outcome.cjs');
+const clientRevision=S.hash([__filename,require.resolve('./run.cjs'),require.resolve('./source.cjs'),require.resolve('./posting-formats.cjs')].map(f=>require('node:fs').readFileSync(f,'utf8')).join('\n'));
+const rejectedUnchanged=(item,writerCommit)=>!!item?.notAcceptedTerminal&&item.notAcceptedTerminal.version===item.version&&item.notAcceptedTerminal.clientRevision===clientRevision&&item.notAcceptedTerminal.sourceParserVersion===Source.PARSER_VERSION&&
+  (!/^[a-f0-9]{7,40}$/.test(writerCommit||'')||item.notAcceptedTerminal.writerCommit===writerCommit);
 const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',
   'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']);
-const pending = tx => !['VERIFIED','HELD'].includes(tx.status);
+const pending = (tx,root) => tx.status!=='VERIFIED'&&!(tx.status==='NOT_ACCEPTED'&&typeof root==='string'&&Outcome.released(root,tx));
 function healthy(status) {
   if (!Object.hasOwn(status, 'freeze') || status.freeze !== null || String(status.level).toUpperCase() !== 'OK' ||
       !Array.isArray(status.errors) || status.errors.length || !status.unverified) throw Error('LIVE_WRITER_GATE');
@@ -12,7 +16,7 @@ function identity(row) { return {company:row.COMPANY, title:row.TITLE, location:
 function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location); }
 function protectedRow(row) { return !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(row.BUCKET) || /^YES/i.test(row.p?.ANTI_RESURRECTION || '') || !!row.p?.DO_NOT_REWORK || !!row.p?.TIM_DECISION; }
 function fenced(root, state, id) {
-  if (Object.values(state.transactions).some(tx => tx.status !== 'VERIFIED' && tx.ids.includes(id))) return true;
+  if (Object.values(state.transactions).some(tx => tx.status !== 'VERIFIED' && !Outcome.released(root,tx) && tx.ids.includes(id))) return true;
   const ledger = S.read(root, 'state/enrich-ats-pay.json', {});
   if (Object.values(ledger.pendingWrites || {}).some(tx => tx.ids?.includes(id))) return true;
   const consumption = S.read(root, 'state/CLAUDE_HELPER_CONSUMPTION.json', {items:[]});
@@ -23,6 +27,7 @@ function fenced(root, state, id) {
   if(fs.existsSync(dir)) for(const name of fs.readdirSync(dir).filter(n=>n.endsWith('_CHECKPOINT.json'))) {
     if(fs.existsSync(require('node:path').join(dir,name.replace('_CHECKPOINT.json','_VERIFIED.json'))))continue;
     const cp=S.read(root,'receipts/'+name),ids=[...(cp.ids||[]),...(cp.primaryIds||[]),...(cp.requests||[]).map(r=>r.primaryId),...(cp.evidence||[]).map(e=>e.primaryId)];
+    if(Outcome.released(root,cp))continue;
     if(ids.includes(id))return true;
   }
   return false;
@@ -32,6 +37,7 @@ async function submit({root, privateDir, state, jobs, runId, deps}) {
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
   for (const job of jobs) {
+    if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fenced(root,state,job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
     if (!Object.keys(job.fields).length || Object.keys(job.fields).some(k => !allowed.has(k))) throw Error('Unsupported enrichment fields');
@@ -60,7 +66,7 @@ async function submit({root, privateDir, state, jobs, runId, deps}) {
   return tx;
 }
 async function reconcile({root, privateDir, state, tx, deps}) {
-  if (!pending(tx)) return tx.status;
+  if (!pending(tx,root)) return tx.status;
   deps.checkLock();
   const payload = S.read(privateDir, tx.requestId+'-payload.json', null);
   if (!payload || S.hash(payload) !== tx.payloadSha256) throw Error('ORIGINAL_PAYLOAD_MISSING_OR_CHANGED');
@@ -73,6 +79,17 @@ async function reconcile({root, privateDir, state, tx, deps}) {
     S.immutable(privateDir, tx.requestId+'-acceptance.json', response);
   }
   if (tx.acceptanceSha256 && S.hash(response) !== tx.acceptanceSha256) throw Error('ACCEPTANCE_CHANGED');
+  const refusal=await Outcome.prove({response,requestId:tx.requestId,childRequestIds:tx.requests.map(r=>r.requestId),deps});
+  if(refusal){
+    const writerCommit=refusal.retryable===false?(response.outcome?.writerCommit||(deps.status&&(await deps.status()).build?.commit)||'UNKNOWN'):null;
+    const saved=Outcome.record(root,{requestId:tx.requestId,payloadSha256:tx.payloadSha256,acceptanceSha256:S.hash(response),response,ids:tx.ids,childRequestIds:tx.requests.map(r=>r.requestId),outcome:refusal});
+    tx.status='NOT_ACCEPTED';tx.notAcceptedProof=saved.file;tx.retryAfter=saved.proof.retryAfter;tx.retryable=refusal.retryable!==false;
+    for(const key of tx.itemKeys){const item=state.items[key];if(!item)continue;
+      (item.transactionHistory||(item.transactionHistory=[])).push({requestId:tx.requestId,status:'NOT_ACCEPTED',proof:saved.file});
+      Object.assign(item,{status:tx.retryable?'RETURNED':'EXCEPTION',retryAfter:tx.retryAfter});delete item.transactionId;delete item.prepared;delete state.exceptions[key];
+      if(!tx.retryable){item.notAcceptedTerminal={version:item.version,clientRevision,sourceParserVersion:Source.PARSER_VERSION,writerCommit,proof:saved.file};state.exceptions[key]={owner:'CODE',reason:refusal.code,requestId:tx.requestId,proof:saved.file,nextAction:'Correct the rejected request or source evidence; changed evidence/client/Writer version is rechecked automatically. Original request was not accepted.'};}}
+    delete state.exceptions['tx:'+tx.requestId];S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);return tx.status;
+  }
   const results = response.results;
   if (!Array.isArray(results) || results.length !== tx.requests.length) throw Error('ORIGINAL_RESULT_BINDING_MISSING');
   const bound = tx.requests.map(r => results.filter(x => x.requestId === r.requestId && (!x.primaryId || x.primaryId === r.primaryId)));
@@ -119,4 +136,4 @@ async function reconcile({root, privateDir, state, tx, deps}) {
   S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
   return tx.status;
 }
-module.exports = {healthy, identity, same, protectedRow, fenced, pending, submit, reconcile};
+module.exports = {healthy, identity, same, protectedRow, fenced, pending, submit, reconcile,rejectedUnchanged};

@@ -132,6 +132,11 @@ test('fresh routing accepts unchanged snapshots across bot commits, but rejects 
   const old={...f.work,routingActive:false};
   a.throws(()=>C.routingProof(f.root,f.batch,f.commit,(_r,_c,file)=>file==='control/work.json'?JSON.stringify(old):f.historical(_r,_c,file)),/STALE_ASSIGNMENT_ROUTING/);
 });
+test('current assignment membership cannot authorize a return absent from its instruction revision',t=>{
+ const f=collection(t),before={...f.work,keys:['a']};
+ const batch={...f.batch,items:[{...f.batch.items[0],key:'b'}]};
+ a.throws(()=>C.routingProof(f.root,batch,f.commit,(_r,_c,file)=>file==='control/work.json'?JSON.stringify(before):f.historical(_r,_c,file)),/ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION/);
+});
 test('collector is idempotent, lists invalid URLs and preserves immutable collisions',t=>{
   const f=collection(t),routing=()=>({});C.collect({...f,routing});a.equal(Object.keys(f.state.items).length,1);
   a.equal(C.collect({...f,routing}).newItems,0);
@@ -144,6 +149,15 @@ test('linked complete corrections retire transport errors without replaying orig
  const f=collection(t),routing=()=>({});f.batch.runId='GROK:BAD';S.save(f.root,f.rel,f.batch);C.collect({...f,routing});
  const correction={...f.batch,runId:'GROK-INTAKE-CORRECTED',originalBatch:f.rel},rel=f.rel.replace('batch.json','correction.json');S.save(f.root,rel,correction);C.collect({...f,commit:'b'.repeat(40),routing});a.equal(f.state.batches[f.rel].status,'SUPERSEDED_BY_VALIDATED_RETURN');a.equal(f.state.exceptions['batch:'+f.rel],undefined);a.equal(Object.keys(f.state.items).length,1);
  S.save(f.root,f.rel,{...f.batch,notes:'changed original'});C.collect({...f,commit:'c'.repeat(40),routing});a.equal(f.state.exceptions['batch:'+f.rel].reason,'IMMUTABLE_BATCH_CHANGED');
+});
+test('a correction of malformed original evidence stays unresolved without aborting unrelated collection',t=>{
+ const f=collection(t),routing=()=>({}),correction=f.rel.replace('batch.json','correction.json'),other=f.rel.replace('batch.json','other.json');
+ fs.writeFileSync(path.join(f.root,f.rel),'{broken');
+ S.save(f.root,correction,{...f.batch,runId:'GROK-INTAKE-CORRECTION',originalBatch:f.rel});
+ S.save(f.root,other,{...f.batch,runId:'GROK-INTAKE-OTHER',items:[{...f.batch.items[0],key:'b'}]});
+ a.doesNotThrow(()=>C.collect({...f,routing}));
+ a.equal(f.state.batches[f.rel].status,'QUARANTINED');a.equal(f.state.batches[other].status,'VALIDATED');
+ a.equal(f.state.exceptions['correction:'+correction].reason,'CORRECTION_ORIGINAL_JSON_INVALID');a.ok(f.state.items[f.batch.taskKey+':b']);
 });
 test('partial invalid return salvages unchanged valid items and retains every missing item as an exception',t=>{
  const f=collection(t),routing=()=>({});f.batch.items.push({...f.batch.items[0],key:'b',recommendation:'SOURCE_BLOCKED',sourceEvidence:{url:null}});S.save(f.root,f.rel,f.batch);S.save(f.root,'control/GROK_INTAKE_HELPER_WORK.json',f.work);
@@ -222,3 +236,24 @@ test('externalized evidence verifies only against its exact stable canonical ref
 
 test('unrelated pending verification is not a global submission gate',async t=>{const f=transaction(t);f.deps.snapshot=async()=>({rows:[row()],status:{...status(),unverified:{count:1}}});let posted=0;f.deps.post=async()=>{posted++;throw Error('network lost')};const tx=await T.submit(f);a.equal(posted,1);a.equal(tx.status,'POST_IN_FLIGHT_UNKNOWN');a.equal(T.fenced(f.root,f.state,'V2I-ONE'),true);});
 test('a pending batch does not stop remaining READY jobs after durable progress',async()=>{let n=3,calls=0;const r=await Run.drain({ready:async()=>n,reconcile:async()=>{},step:async()=>{calls++;n--;return {pending:true}}});a.equal(calls,3);a.equal(r.exhausted,true);});
+
+test('pre-mutation busy proof automatically releases only its original fence, then a fresh attempt verifies',async t=>{
+ const f=transaction(t),sent=[];let write=false;
+ f.deps.post=async payload=>{sent.push(payload);const child=payload.requests[0].ruling.requestId;if(!write)return{ok:false,mode:'WRITER_NOT_ACCEPTED',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[child],retryAfterMs:60000}};return{ok:true,writeId:'W-RECOVERED',results:[{ok:true,requestId:child,primaryId:'V2I-ONE'}]};};
+ const original=await T.submit(f);a.equal(await T.reconcile({...f,tx:original}),'NOT_ACCEPTED');a.equal(T.fenced(f.root,f.state,'V2I-ONE'),false);a.equal(f.state.items[itemKey].status,'RETURNED');a.ok(Date.parse(f.state.items[itemKey].retryAfter)>Date.now());
+ await a.rejects(T.submit(f),/WRITER_RETRY_BACKOFF/);const clock=Date.now();t.mock.method(Date,'now',()=>clock+61000);write=true;const fresh=await T.submit(f);a.notEqual(fresh.requestId,original.requestId);f.deps.index=async()=>({sha:'b'.repeat(40),index:{requests:{[fresh.requests[0].requestId]:{s:'COMPLETE',w:'W-RECOVERED',items:[{pid:'V2I-ONE'}]}}}});
+ a.equal(await T.reconcile({...f,tx:fresh}),'VERIFIED');a.equal(sent.length,2);a.equal(T.fenced(f.root,f.state,'V2I-ONE'),false);a.equal(f.state.items[itemKey].status,'VERIFIED');a.ok(fs.existsSync(path.join(f.root,original.notAcceptedProof)));
+});
+test('a negative error without pre-mutation proof remains fenced even when the original receipt is absent',async t=>{
+ const f=transaction(t,async()=>({ok:false,error:'Lock timeout'})),tx=await T.submit(f);await a.rejects(T.reconcile({...f,tx}),/BINDING/);a.equal(T.fenced(f.root,f.state,'V2I-ONE'),true);
+});
+
+test('terminal pre-mutation schema refusal releases the write fence and reports actionable input error without retrying unchanged evidence',async t=>{
+ const f=transaction(t);f.deps.post=async p=>({ok:false,mode:'REJECTED_SCHEMA',error:'ruling fields must be nested',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'REJECTED_SCHEMA',masterMutations:0,requestIds:p.requests.map(q=>q.ruling.requestId),retryable:false}});
+ const tx=await T.submit(f);a.equal(await T.reconcile({...f,tx}),'NOT_ACCEPTED');a.equal(tx.retryable,false);a.equal(T.fenced(f.root,f.state,'V2I-ONE'),false);a.equal(T.rejectedUnchanged(f.state.items[itemKey]),true);a.equal(f.state.exceptions[itemKey].reason,'REJECTED_SCHEMA');f.state.items[itemKey].version='corrected-source';a.equal(T.rejectedUnchanged(f.state.items[itemKey]),false);
+});
+
+test('terminal refusal retry eligibility changes on a Writer-only schema upgrade',async t=>{
+ const f=transaction(t);f.deps.status=async()=>({build:{commit:'a'.repeat(40)}});f.deps.post=async p=>({ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'REJECTED_SCHEMA',masterMutations:0,requestIds:p.requests.map(q=>q.ruling.requestId),retryable:false}});
+ const tx=await T.submit(f);await T.reconcile({...f,tx});a.equal(T.rejectedUnchanged(f.state.items[itemKey],'a'.repeat(40)),true);a.equal(T.rejectedUnchanged(f.state.items[itemKey],'b'.repeat(40)),false);
+});

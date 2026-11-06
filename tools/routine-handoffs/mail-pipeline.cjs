@@ -5,7 +5,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
  const state=S.read(root,W.FILE,W.empty()),verifiedBefore=new Set(Object.values(state.transactions).filter(t=>t.status==='VERIFIED').map(t=>t.requestId)),result={schema:'forge.mail-processing-report.v1',runId,read:0,processed:0,pending:0,exceptions:[],noProcessingCap:true};
  W.recoverOrphans(root,state);
  if(apply)try{require('./mail-connector.cjs').ingest(root,privateDir);delete state.exceptions.inventory;}catch(e){state.exceptions.inventory={owner:'CODE',reason:reason(e)};}
- if(apply)for(const tx of Object.values(state.transactions).filter(t=>!['VERIFIED','HELD'].includes(t.status))){try{await W.reconcile({root,privateDir,state,tx,deps});}catch(e){state.exceptions[tx.eventKey]={owner:'CODE',reason:reason(e),requestId:tx.requestId};}}
+ if(apply)for(const tx of Object.values(state.transactions).filter(t=>!['VERIFIED','NOT_ACCEPTED'].includes(t.status))){try{await W.reconcile({root,privateDir,state,tx,deps});}catch(e){state.exceptions[tx.eventKey]={owner:'CODE',reason:reason(e),requestId:tx.requestId};}}
  const messages=new Map(),conflicts=new Set();result.observations=0;
  for(const directory of inboxes){
   if(!path.isAbsolute(directory))throw Error('ABSOLUTE_PRIVATE_MAIL_INBOX_REQUIRED');
@@ -31,7 +31,7 @@ async function run({root,privateDir,runId,deps,inboxes=[path.join(privateDir,'ma
  for(const message of messages.values()){
   if(conflicts.has(message.id)){state.exceptions[message.id]={owner:'CODE',messageId:message.id,reason:'CONFLICTING_FULL_MESSAGE_CAPTURES'};result.pending++;continue;}
   if(apply)try{deps.checkLock();const recovered=require('./alert-recovery.cjs').recover(root,message,{privateDir,screenContext});result.recoveredAlertCards=(result.recoveredAlertCards||0)+recovered.recovered;delete state.exceptions['alert:'+message.id];}catch(e){state.exceptions['alert:'+message.id]={owner:'AI',messageId:message.id,sourceSha256:message.sourceSha256,reason:reason(e)};}
-  try{const status=await W.process({root,privateDir,state,message,deps,apply,runId}),name=typeof status==='string'?status:status.status;result.statuses=result.statuses||{};result.statuses[name]=(result.statuses[name]||0)+1;result.processed++;if(/PENDING|IN_FLIGHT|AWAITING|EXCEPTION/.test(name))result.pending++;else delete state.exceptions[message.id];}
+  try{const status=await W.process({root,privateDir,state,message,deps,apply,runId}),name=typeof status==='string'?status:status.status;result.statuses=result.statuses||{};result.statuses[name]=(result.statuses[name]||0)+1;result.processed++;if(/PENDING|IN_FLIGHT|AWAITING|EXCEPTION|RETRY_WAIT|WRITER_NOT_ACCEPTED/.test(name))result.pending++;else delete state.exceptions[message.id];}
   catch(e){state.exceptions[message.id]={owner:/MATCH|IDENTIT|THREAD|CYCLE|INTERPRETATION/.test(e.message)?'AI':'CODE',messageId:message.id,sourceSha256:message.sourceSha256,reason:reason(e)};result.pending++;}
   if(apply)try{require('./alert-recovery.cjs').handoff(root,message);delete state.exceptions['alert:'+message.id];}
   catch(e){state.exceptions['alert:'+message.id]={owner:'AI',messageId:message.id,sourceSha256:message.sourceSha256,reason:reason(e),nextAction:'Evaluate the full saved alert, repair abnormal card identities, and capture exact candidates; never mark a handoff complete without acknowledgment.'};result.pending++;}

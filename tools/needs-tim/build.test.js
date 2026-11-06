@@ -109,6 +109,27 @@ test('rejected edit requests and open pull requests are listed with links', () =
   assert.strictEqual(r.items.find(i => i.id === 'pr:foreman-cockpit#120').sourceUrl, 'https://github.com/x/120');
 });
 
+test('malformed reporting health cannot suppress unrelated attention items', () => {
+  for (const health of ['{broken', 'null', '[]', '{"components":[]}', '{"components":{"flow":null}}']) {
+    const root = repo({ 'state/REPORTING_HEALTH.json': health });
+    try {
+      const r = build({ root, now: NOW, prs: [{ repo: 'forge-coordination', number: 999, title: 'Independent fix',
+        url: 'https://github.com/tpruittguitar/forge-coordination/pull/999', created_at: NOW }] });
+      assert.ok(ids(r).includes('pr:forge-coordination#999'), health);
+      assert.strictEqual(r.items.filter(i => i.id === 'reporting:unreadable').length, 1, health);
+    } finally { fs.rmSync(root, { recursive: true, force: true }); }
+  }
+});
+
+test('reporting health regeneration removes only its unreadable notice', () => {
+  const root = repo({ 'state/REPORTING_HEALTH.json': '{broken' });
+  try {
+    assert.ok(ids(build({ root, now: NOW })).includes('reporting:unreadable'));
+    fs.writeFileSync(path.join(root, 'state/REPORTING_HEALTH.json'), JSON.stringify({ components: { flow: { status: 'CURRENT', at: NOW } } }));
+    assert.ok(!ids(build({ root, now: NOW })).includes('reporting:unreadable'));
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});
+
 test('items sort blocking first and counts add up', () => {
   const r = build({ root: repo({ 'receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-0900ET_TERMINAL.txt': 'RUN_TERMINAL_STATUS=HARD_BLOCKED\n', 'asks/open/A.json': { id: 'A', level: 'WATCH' } }), now: NOW });
   assert.strictEqual(r.items[0].level, 'BLOCKING');

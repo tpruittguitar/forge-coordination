@@ -1,12 +1,14 @@
 'use strict';
 const S=require('../programmed-coordinator/store.cjs');
-function queue(root){
+const Dispatch=require('./exception-order.cjs');
+function queue(root,{size}={}){
+ if(size!==undefined&&(!Number.isInteger(size)||size<1||size>100))throw Error('EVIDENCE_CHUNK_SIZE_REQUIRED');
  const coordinator=S.read(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',{}),mail=S.read(root,'state/MAIL_PROCESSING_REPORT.json',{});
  const work=S.read(root,require('./exception-work.cjs').FILE,null);
- if(work){const cases=Object.values(work.cases);return{schema:'forge.ai-exception-queue.v1',coordinatorRunId:work.runId,mailRunId:mail.runId,items:cases.filter(i=>i.status==='ACTION_REQUIRED'),waiting:cases.filter(i=>['WAITING_SOURCE_CHANGE','AWAITING_TIM'].includes(i.status)),reviewErrors:work.reviewErrors,counts:work.counts,noProcessingCap:true};}
+ if(work){const cases=Object.values(work.cases),ordered=Dispatch.order(cases.filter(i=>i.status==='ACTION_REQUIRED'),work.dispatch),items=size===undefined?ordered:ordered.slice(0,size);return{schema:'forge.ai-exception-queue.v1',coordinatorRunId:work.runId,mailRunId:mail.runId,items,waiting:cases.filter(i=>['WAITING_SOURCE_CHANGE','AWAITING_TIM'].includes(i.status)),reviewErrors:work.reviewErrors,counts:work.counts,dispatchCursor:work.dispatch||null,progress:require('./exception-progress.cjs').snapshot(root),serviceOrder:'ROUND_ROBIN_CLASS_LEAST_RECENTLY_REVIEWED',actionable:ordered.length,hasMore:items.length<ordered.length,artifactSizeOnly:true,nextAction:'Start a bound review chunk, examine sources, publish dispositions, checkpoint actual attempts, then continue the next chunk; capture-only is not review progress.',noProcessingCap:true};}
  const items=[...(coordinator.aiExceptions||[]),...(coordinator.routineHandoffs?.assignments?.exceptions||[]),...(mail.exceptions||[])].filter(x=>x.owner==='AI');
  const unique=new Map();for(const item of items){const key=S.hash({key:item.key,messageId:item.messageId,requestId:item.requestId,reason:item.reason,sourceSha256:item.sourceSha256,itemVersion:item.itemVersion});unique.set(key,{...item,exceptionId:key});}
- return{schema:'forge.ai-exception-queue.v1',coordinatorRunId:coordinator.runId,mailRunId:mail.runId,items:[...unique.values()],noProcessingCap:true};
+ const ordered=Dispatch.order([...unique.values()]);return{schema:'forge.ai-exception-queue.v1',coordinatorRunId:coordinator.runId,mailRunId:mail.runId,items:size===undefined?ordered:ordered.slice(0,size),actionable:ordered.length,hasMore:size!==undefined&&ordered.length>size,artifactSizeOnly:true,noProcessingCap:true};
 }
-if(require.main===module){try{console.log(JSON.stringify(process.argv[2]==='review'?require('./exception-work.cjs').publishReview(process.argv[3]||process.cwd(),JSON.parse(require('node:fs').readFileSync(process.argv[4],'utf8'))):queue(process.argv[2]||process.cwd())));}catch(e){console.error(e.message);process.exitCode=1;}}
+if(require.main===module){try{let result;const [command,root,arg,size]=process.argv.slice(2);if(command==='review')result=require('./exception-work.cjs').publishReview(root||process.cwd(),JSON.parse(require('node:fs').readFileSync(arg,'utf8')));else if(command==='start')result=require('./exception-progress.cjs').start(root||process.cwd(),arg,Number(size||20));else if(command==='checkpoint')result=require('./exception-progress.cjs').checkpoint(root||process.cwd(),JSON.parse(require('node:fs').readFileSync(arg,'utf8')));else if(command==='next')result=queue(root||process.cwd(),{size:Number(arg||20)});else result=queue(command||process.cwd());console.log(JSON.stringify(result));}catch(e){console.error(e.message);process.exitCode=1;}}
 module.exports={queue};

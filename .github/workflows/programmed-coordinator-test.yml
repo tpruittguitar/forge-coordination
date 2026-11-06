@@ -10,6 +10,9 @@ on:
       - 'tools/relevance-screen/**'
       - 'tools/helper-routing/**'
       - 'tools/intake-drain/**'
+      - 'tools/writer-outcome*.cjs'
+      - 'tools/source-trial/**'
+      - 'control/NATIVE_AUTOMATION_BINDINGS.json'
       - '.github/workflows/programmed-coordinator-test.yml'
 permissions:
   contents: read
@@ -32,4 +35,5 @@ jobs:
           python-version: '3.12'
       - run: npm ci --prefix tools/routine-handoffs --ignore-scripts
       - run: npx --prefix tools/routine-handoffs playwright install --with-deps chromium
-      - run: node --test tools/intake-drain/*.test.cjs tools/routine-handoffs/*.test.cjs tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs tools/email-recovery/*.test.cjs tools/automation-health/*.test.js tests/automation-run-lock.test.cjs
+      - run: node --test tools/intake-drain/*.test.cjs tools/routine-handoffs/*.test.cjs tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs tools/email-recovery/*.test.cjs tools/automation-health/*.test.js tools/writer-outcome.test.cjs tools/source-trial/evidence-store.test.js tools/source-trial/preliminary-screen.test.js tools/needs-tim/build.test.js tests/automation-run-lock.test.cjs
+      - run: python -m unittest discover -s tools/automation-health -p '*test.py' -v

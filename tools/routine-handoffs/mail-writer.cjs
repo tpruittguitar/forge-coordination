@@ -1,5 +1,7 @@
 'use strict';
 const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Match=require('./mail-match.cjs');
+const Outcome=require('../writer-outcome.cjs');
+const clientRevision=S.hash([__filename,require.resolve('./mail-match.cjs'),require.resolve('../writer-outcome.cjs')].map(f=>require('node:fs').readFileSync(f,'utf8')).join('\n'));
 const FILE='state/MAIL_PROCESSING.json',eventKey=e=>require('../helper-routing/outcome.cjs').eventKey(e.gmailMessageId,e.type,e.primaryId);
 const empty=()=>({schema:'forge.mail-processing.v1',messages:{},transactions:{},exceptions:{}});
 function persistEvent(root,event){
@@ -15,11 +17,17 @@ const storedEvidence=v=>String(v==null?'':v).replace(/[\r\n]+/g,' ').replace(/; 
 function finish(root,state,tx,proof){tx.status='VERIFIED';tx.proof=proof;const message=state.messages[tx.messageId];message.status='VERIFIED';message.proof=proof;persistEvent(root,{...message.event,masterWriteStatus:'VERIFIED',writerProof:proof});delete state.exceptions[tx.eventKey];S.save(root,FILE,state);return tx.status;}
 function verifyEffects(row,tx){if(!row||row.PRIMARY_ID!==tx.primaryId||!T.same(row,tx.identity)||Object.entries(tx.expected).some(([k,v])=>!same(k==='BUCKET'?row.BUCKET:row.p?.[k],['APP_EMAIL_EVIDENCE','APP_STATUS_EVIDENCE','REJECTION_EVIDENCE'].includes(k)?storedEvidence(v):v)))throw Error('EXACT_MAIL_EFFECT_NOT_PROVEN');}
 async function reconcile({root,privateDir,state,tx,deps}){
- if(tx.status==='VERIFIED'||tx.status==='HELD')return tx.status;deps.checkLock();
+ if(tx.status==='VERIFIED'||tx.status==='NOT_ACCEPTED'&&Outcome.released(root,tx))return tx.status;deps.checkLock();
  const payload=S.read(privateDir,'mail/'+tx.requestId+'-payload.json',null),response=S.read(privateDir,'mail/'+tx.requestId+'-acceptance.json',null);
  if(!payload||S.hash(payload)!==tx.payloadSha256)throw Error('ORIGINAL_MAIL_PAYLOAD_REQUIRED');
  if(!response)return tx.status='POST_IN_FLIGHT_UNKNOWN'; // Never infer acceptance or repeat the POST.
  if(tx.acceptanceSha256&&tx.acceptanceSha256!==S.hash(response))throw Error('ORIGINAL_MAIL_ACCEPTANCE_CHANGED');
+ const refusal=await Outcome.prove({response,requestId:tx.requestId,childRequestIds:[tx.childRequestId],deps});
+ if(refusal){const saved=Outcome.record(root,{requestId:tx.requestId,payloadSha256:tx.payloadSha256,acceptanceSha256:S.hash(response),response,ids:tx.ids,childRequestIds:[tx.childRequestId],outcome:refusal});
+  Object.assign(tx,{status:'NOT_ACCEPTED',notAcceptedProof:saved.file,retryAfter:saved.proof.retryAfter,retryable:refusal.retryable!==false,clientRevision:tx.clientRevision||clientRevision});
+  if(!tx.retryable)tx.rejectedWriterCommit=response.outcome?.writerCommit||(deps.status&&(await deps.status()).build?.commit)||'UNKNOWN';
+  const message=state.messages[tx.messageId];if(message)Object.assign(message,{status:tx.retryable?'WRITER_RETRY_WAIT':'EXCEPTION',retryAfter:tx.retryAfter});
+  delete state.exceptions[tx.eventKey];delete state.exceptions[tx.messageId];if(!tx.retryable)state.exceptions[tx.messageId]={owner:'CODE',reason:refusal.code,messageId:tx.messageId,requestId:tx.requestId,proof:saved.file,nextAction:'Correct the rejected mail request builder; changed client code is rechecked automatically. Original request was not accepted.'};S.save(root,FILE,state);return tx.status;}
  const results=response.results||[],result=results.filter(r=>r.requestId===tx.childRequestId&&(!r.primaryId||r.primaryId===tx.primaryId));
  if(results.length!==1||result.length!==1||result[0].ok!==true){tx.status='HELD';state.exceptions[tx.eventKey]={owner:'CODE',reason:'ORIGINAL_MAIL_RESULT_REQUIRES_REVIEW',requestId:tx.requestId};S.save(root,FILE,state);return tx.status;}
  const proof='receipts/'+tx.requestId+'_VERIFIED.json',existing=S.read(root,proof,null);
@@ -36,10 +44,19 @@ async function process({root,privateDir,state,message,deps,apply=true,runId}){
  if(!/^[a-f0-9]{64}$/.test(message.sourceSha256||''))throw Error('IMMUTABLE_MAIL_SOURCE_CHANGED');
  const prior=state.messages[message.id];if(prior){
   if(prior.sourceSha256!==message.sourceSha256&&prior.sourceSha256!==message.legacySourceSha256&&!(message.legacySourceSha256s||[]).includes(prior.sourceSha256)&&!(prior.classification==='FULL_MESSAGE_REQUIRED'&&!prior.transactionId&&message.fullBody))throw Error('IMMUTABLE_MAIL_SOURCE_CHANGED');
-  if(prior.transactionId)return apply?reconcile({root,privateDir,state,tx:state.transactions[prior.transactionId],deps}):prior.status;
+  if(prior.transactionId){
+   if(!apply)return prior.status;
+   const tx=state.transactions[prior.transactionId],status=await reconcile({root,privateDir,state,tx,deps});
+   if(status!=='NOT_ACCEPTED')return status;
+   if(!Outcome.released(root,tx))throw Error('ORIGINAL_MAIL_NOT_ACCEPTED_PROOF_REQUIRED');
+   if(tx.retryable===false&&tx.clientRevision===clientRevision){const current=deps.status&&(await deps.status()).build?.commit;if(!/^[a-f0-9]{7,40}$/.test(current||'')||current===tx.rejectedWriterCommit)return 'EXCEPTION';}
+   if(Date.parse(tx.retryAfter)>Date.now())return 'WRITER_RETRY_WAIT';
+   (prior.requestHistory||(prior.requestHistory=[])).push({requestId:tx.requestId,status:'NOT_ACCEPTED',proof:tx.notAcceptedProof});
+   delete prior.transactionId;prior.status='MATCH_REQUIRED';
+  }
   if(!['PENDING','EXCEPTION','MATCH_REQUIRED'].includes(prior.status))return prior.status;
  }
- const classification=require('./mail.cjs').classify(message),entry={sourceSha256:message.sourceSha256,classification:classification.classification,status:classification.status,at:new Date().toISOString()};
+ const classification=require('./mail.cjs').classify(message),entry={sourceSha256:message.sourceSha256,classification:classification.classification,status:classification.status,at:new Date().toISOString(),...(prior?.requestHistory?{requestHistory:prior.requestHistory}:{})};
  const review=require('./mail-review.cjs').disposition(privateDir,message,classification);
  if(review){Object.assign(entry,review);if(apply){deps.checkLock();const ledger=S.read(root,'state/MAIL_SOURCE_HANDOFFS.json',{schema:'forge.mail-source-handoffs.v1',messages:{}});ledger.messages[message.id]={messageId:message.id,sourceSha256:message.sourceSha256,reviewSha256:review.reviewSha256,status:'PENDING_EMPLOYER_IDENTITY',owner:'TIM',nextAction:review.nextAction};S.save(root,'state/MAIL_SOURCE_HANDOFFS.json',ledger);state.messages[message.id]=entry;delete state.exceptions[message.id];S.save(root,FILE,state);}return entry.status;}
  if(classification.owner!=='CODE'||classification.status==='PENDING'){if(apply){state.messages[message.id]=entry;state.exceptions[message.id]={owner:classification.owner,reason:classification.classification,messageId:message.id,sourceSha256:message.sourceSha256};S.save(root,FILE,state);}return entry.status;}
@@ -56,14 +73,24 @@ async function process({root,privateDir,state,message,deps,apply=true,runId}){
  deps.checkLock();
  if(plan.eventOnly){state.messages[message.id]=entry;entry.status='RECORDED_EVENT';entry.reason=plan.reason;persistEvent(root,{...event,masterWriteStatus:'EVENT_ONLY',canonicalStatePreserved:true});S.save(root,FILE,state);return entry.status;}
  T.healthy(snapshot.status);if(T.fenced(root,{transactions:{}},row.PRIMARY_ID))throw Error('ORIGINAL_MAIL_OR_WRITER_FENCE');
- const requestId='FORGE-MAIL-CHATGPT-'+key.slice(0,32),childRequestId=requestId+'-R1';if(await deps.exists(requestId)||await deps.exists(childRequestId))throw Error('ORIGINAL_MAIL_REQUEST_ALREADY_EXISTS');
+ const baseRequestId='FORGE-MAIL-CHATGPT-'+key.slice(0,32),previous=Object.values(state.transactions).filter(t=>t.eventKey===key);
+ if(previous.some(t=>t.status!=='NOT_ACCEPTED'||!Outcome.released(root,t)))throw Error('ORIGINAL_MAIL_REQUEST_REQUIRES_RECONCILIATION');
+ const requestId=baseRequestId+(previous.length?'-A'+(previous.length+1):''),childRequestId=requestId+'-R1';if(await deps.exists(requestId)||await deps.exists(childRequestId))throw Error('ORIGINAL_MAIL_REQUEST_ALREADY_EXISTS');
  const ruling={requestId:childRequestId,primaryId:row.PRIMARY_ID,kind:plan.kind,eventDate:event.eventDate,actor:'CHATGPT',evidence:'Gmail '+message.id+', source SHA256 '+message.sourceSha256,fields:{UPSERT_KEY:'UK-'+key.slice(0,24)}};
  plan.expected[plan.kind==='REJECTED_BY_EMPLOYER'?'REJECTION_EVIDENCE':row.BUCKET==='APPLIED'?'APP_EMAIL_EVIDENCE':'APP_STATUS_EVIDENCE']=ruling.evidence;
  const payload={action:'batch',requestId,requests:[{action:'ruling',ruling}]};
- const tx={schema:'forge.mail-writer-transaction.v1',requestId,childRequestId,messageId:message.id,eventKey:key,event,sourceSha256:message.sourceSha256,primaryId:row.PRIMARY_ID,ids:[row.PRIMARY_ID],identity:T.identity(row),expected:plan.expected,payloadSha256:S.hash(payload),status:'POST_IN_FLIGHT_UNKNOWN',runId,at:new Date().toISOString()};
+ const tx={schema:'forge.mail-writer-transaction.v1',requestId,childRequestId,messageId:message.id,eventKey:key,event,sourceSha256:message.sourceSha256,primaryId:row.PRIMARY_ID,ids:[row.PRIMARY_ID],identity:T.identity(row),expected:plan.expected,payloadSha256:S.hash(payload),status:'POST_IN_FLIGHT_UNKNOWN',clientRevision,runId,at:new Date().toISOString()};
  S.immutable(privateDir,'mail/'+requestId+'-payload.json',payload);S.immutable(root,'receipts/'+requestId+'_CHECKPOINT.json',tx);state.messages[message.id]=entry;state.transactions[requestId]=tx;entry.transactionId=requestId;entry.status='POST_IN_FLIGHT_UNKNOWN';persistEvent(root,event);S.save(root,FILE,state);deps.checkLock();
  try{const response=await deps.post(payload);S.immutable(privateDir,'mail/'+requestId+'-acceptance.json',response);tx.acceptanceSha256=S.hash(response);tx.status='AWAITING_VERIFICATION';}catch{tx.status='POST_IN_FLIGHT_UNKNOWN';}
- S.save(root,FILE,state);return reconcile({root,privateDir,state,tx,deps});
+ S.save(root,FILE,state);const reconciled=await reconcile({root,privateDir,state,tx,deps});return reconciled==='NOT_ACCEPTED'?(tx.retryable?'WRITER_RETRY_WAIT':'EXCEPTION'):reconciled;
 }
-function recoverOrphans(root,state){for(const f of S.files(require('node:path').join(root,'receipts')).filter(f=>/FORGE-MAIL-CHATGPT-[a-f0-9]+_CHECKPOINT\.json$/.test(f))){const tx=JSON.parse(require('node:fs').readFileSync(f,'utf8'));if(!state.transactions[tx.requestId]){state.transactions[tx.requestId]=tx;state.messages[tx.messageId]={sourceSha256:tx.sourceSha256,event:tx.event,eventKey:tx.eventKey,status:'POST_IN_FLIGHT_UNKNOWN',transactionId:tx.requestId};}}}
+function recoverOrphans(root,state){
+ for(const f of S.files(require('node:path').join(root,'receipts')).filter(f=>/FORGE-MAIL-CHATGPT-[a-f0-9]+(?:-A[1-9][0-9]{0,5})?_CHECKPOINT\.json$/.test(f))){
+  const tx=JSON.parse(require('node:fs').readFileSync(f,'utf8'));if(state.transactions[tx.requestId])continue;
+  if(Outcome.released(root,tx)){const file='receipts/'+tx.requestId+'_NOT_ACCEPTED.json',proof=S.read(root,file);Object.assign(tx,{status:'NOT_ACCEPTED',acceptanceSha256:proof.acceptanceSha256,retryAfter:proof.retryAfter,retryable:proof.retryable,notAcceptedProof:file});}
+  state.transactions[tx.requestId]=tx;
+  const prior=state.transactions[state.messages[tx.messageId]?.transactionId],attempt=x=>Number(x.requestId.match(/-A(\d+)$/)?.[1]||1);
+  if(!prior||Date.parse(tx.at)>Date.parse(prior.at)||tx.at===prior.at&&attempt(tx)>attempt(prior))state.messages[tx.messageId]={sourceSha256:tx.sourceSha256,event:tx.event,eventKey:tx.eventKey,status:tx.status==='NOT_ACCEPTED'?(tx.retryable?'WRITER_RETRY_WAIT':'EXCEPTION'):'POST_IN_FLIGHT_UNKNOWN',transactionId:tx.requestId};
+ }
+}
 module.exports={empty,eventKey,process,reconcile,persistEvent,verifyEffects,recoverOrphans,FILE};

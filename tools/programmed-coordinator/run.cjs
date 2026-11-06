@@ -21,7 +21,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
   const cache = new Map();
   for (const item of Object.values(state.items)) {
     const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY)$/.test(state.exceptions[item.key]?.reason||'');
-    if (terminal(item.status) || item.transactionId || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
+    if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
@@ -138,13 +138,17 @@ async function main(mode='inventory') {
         return {rows:m.rows,archiveRows:a.rows.map(r=>W.parseRows(r.RAW_ROW)[0]),status:s.data,source:m.source,needsById};
       };
       deps={snapshot,checkLock:()=>Lock.lock(lock,'check',runId),index:()=>require('../writer-verify/recovery').loadIndex({token:cp.execFileSync('gh',['auth','token'],{encoding:'utf8'}).trim()}),
+        status:async()=>(await R.read('writer_status',{key})).data,
+        source:async revision=>cp.execFileSync('git',['show',revision+':apps-script/Code.gs'],{cwd:fc,encoding:'utf8',maxBuffer:4e6,stdio:['ignore','pipe','pipe']}),
+        result:async rid=>(await R.read('request_result',{key,requestId:rid})).data,
+        witness:async(rid,sha)=>S.read(privateDir,'writer-refusal-witnesses/'+sha+'.json',null),
         exists:async rid=>(await R.read('receipt_index',{key,requestId:rid})).data.request!=null,
         // The current endpoint exposes receipts, not retained acceptance bodies.
         // Missing original acceptance remains a recovery obligation, without POST.
         original:async rid=>{await R.read('request_result',{key,requestId:rid});return null;},
         post:async payload=>{const r=await fetch(cfg.PipelineConnection.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...payload,key}),signal:AbortSignal.timeout(240000)});return r.json();},
         rows:(rid,ids)=>require('./readback.cjs').rows({requestId:rid,ids,key,W})};
-      if(apply) for(const tx of Object.values(state.transactions).filter(T.pending)) {
+      if(apply) for(const tx of Object.values(state.transactions).filter(tx=>T.pending(tx,root))) {
         try {await T.reconcile({root,privateDir,state,tx,deps});} catch(e) {state.exceptions['tx:'+tx.requestId]={owner:'CODE',reason:e.message,requestId:tx.requestId};}
       }
       let canonical=await snapshot();
@@ -185,9 +189,9 @@ async function main(mode='inventory') {
         for(const item of Object.values(state.items).filter(i=>i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED')) {
           try {
             const tx=await T.submit({root,privateDir,state,jobs:[item.prepared],runId,deps});
-            for(let n=0;n<1 && T.pending(tx);n++) {
+            for(let n=0;n<1 && T.pending(tx,root);n++) {
               await T.reconcile({root,privateDir,state,tx,deps});
-              if(T.pending(tx)) state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
+              if(T.pending(tx,root)) state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
             }
           } catch(e) {exception(state,item,e.message,'CODE');if(e.message==='LIVE_WRITER_GATE')break;}
         }

@@ -23,3 +23,29 @@ test('source-bound AI correspondence review preserves follow-up without a canoni
  for(const change of [{sourceSha256:'b'.repeat(64)},{primaryId:f.row.PRIMARY_ID},{evidenceQuote:'invented evidence cannot be approved'}]){S.save(f.privateDir,'mail-reviews/'+f.message.id+'.json',{...record,...change});await a.rejects(W.process({...f,state:W.empty()}),/SOURCE_BOUND/);}
  S.save(f.privateDir,'mail-reviews/'+f.message.id+'.json',record);f.message.body='We have received your application.';await a.rejects(W.process({...f,state:W.empty()}),/SOURCE_BOUND/);
 });
+
+test('mail busy refusal recovers automatically after backoff with a new request and exact verified effects',async t=>{
+ const f=fixture(t),success=f.deps.post,requests=[];let busy=true;
+ f.deps.post=async payload=>{requests.push(payload.requestId);if(busy)return{ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[payload.requests[0].ruling.requestId],retryAfterMs:60000}};return success(payload);};
+ a.equal(await W.process(f),'WRITER_RETRY_WAIT');const old=Object.values(f.state.transactions)[0];a.equal(old.status,'NOT_ACCEPTED');a.equal(await W.process(f),'WRITER_RETRY_WAIT');a.equal(requests.length,1);
+ busy=false;const now=Date.now();t.mock.method(Date,'now',()=>now+61000);a.equal(await W.process(f),'VERIFIED');a.equal(requests.length,2);a.notEqual(requests[0],requests[1]);a.equal(old.status,'NOT_ACCEPTED');a.equal(f.state.messages[f.message.id].status,'VERIFIED');a.equal(S.read(f.root,'state/APPLICATION_OUTCOMES.json').events[0].masterWriteStatus,'VERIFIED');
+});
+test('historical HELD mail still reevaluates a request-bound nonacceptance proof',async t=>{
+ const f=fixture(t);f.deps.post=async payload=>({ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[payload.requests[0].ruling.requestId],retryAfterMs:60000}});
+ await W.process(f);const tx=Object.values(f.state.transactions)[0];tx.status='HELD';a.equal(await W.reconcile({...f,tx}),'NOT_ACCEPTED');
+});
+
+test('terminal schema refusal stays actionable without an infinite verification wait or repeated POST',async t=>{
+ const f=fixture(t);let posts=0;f.deps.post=async p=>{posts++;return{ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'REJECTED_SCHEMA',masterMutations:0,requestIds:p.requests.map(q=>q.ruling.requestId),retryable:false}};};
+ a.equal(await W.process(f),'EXCEPTION');a.equal(await W.process(f),'EXCEPTION');a.equal(posts,1);a.equal(f.state.exceptions[f.message.id].reason,'REJECTED_SCHEMA');a.equal(Object.values(f.state.transactions)[0].status,'NOT_ACCEPTED');
+});
+test('retry checkpoint can publish and recover after crash without reviving the refused original or replaying the uncertain retry',async t=>{
+ const f=fixture(t),publish=require('../programmed-coordinator/publish.cjs');let first=true,posts=0;f.deps.post=async p=>{posts++;if(first)return{ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:p.requests.map(q=>q.ruling.requestId),retryAfterMs:60000}};throw Error('reply lost after retry');};
+ await W.process(f);const now=Date.now();t.mock.method(Date,'now',()=>now+61000);first=false;a.equal(await W.process(f),'POST_IN_FLIGHT_UNKNOWN');const ids=Object.keys(f.state.transactions);a.equal(ids.length,2);a.ok(ids[1].endsWith('-A2'));for(const id of ids)a.equal(publish.allowed('receipts/'+id+'_CHECKPOINT.json'),true);
+ const recovered=W.empty();W.recoverOrphans(f.root,recovered);a.equal(recovered.transactions[ids[0]].status,'NOT_ACCEPTED');a.equal(recovered.messages[f.message.id].transactionId,ids[1]);a.equal(await W.process({...f,state:recovered}),'POST_IN_FLIGHT_UNKNOWN');a.equal(posts,2);
+});
+
+test('a server-only schema upgrade wakes a known terminal refusal without replaying its old request',async t=>{
+ const f=fixture(t),success=f.deps.post;let server='a'.repeat(40),posts=0;f.deps.status=async()=>({build:{commit:server}});f.deps.post=async p=>{posts++;return posts===1?{ok:false,outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'REJECTED_SCHEMA',masterMutations:0,requestIds:p.requests.map(q=>q.ruling.requestId),retryable:false,writerCommit:server}}:success(p);};
+ a.equal(await W.process(f),'EXCEPTION');a.equal(await W.process(f),'EXCEPTION');a.equal(posts,1);server='b'.repeat(40);a.equal(await W.process(f),'VERIFIED');a.equal(posts,2);const ids=Object.keys(f.state.transactions);a.notEqual(ids[0],ids[1]);
+});

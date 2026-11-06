@@ -32,25 +32,7 @@ function payFromText(text) {
   const lo = num(m[1]), hi = num(m[2]); if (!(lo >= 40000 && hi >= lo && hi <= 2000000)) return null;
   return { low: lo, high: hi };
 }
-/* Grok Bot QA 2026-10-20 19:32 ET: policy asks for the degree sentence verbatim. strip() keeps block breaks as newlines, so a
-   sentence ends at a newline, a bullet, or ". " before a capital (not after a B.S. / M.S. style abbreviation). */
-const DEG_WORD_RE = /\b(bachelor'?s?|master'?s?|b\.\s?s\.?|b\.\s?a\.?|m\.\s?s\.?|bs|ba|ms|mba|ph\.?\s?d\.?|associate'?s? degree|degree)(?![a-z])/i;
-function sentences(text) {
-  return String(text || '').split(/\n+|\s*[•·▪●]\s*|(?<!\b[A-Za-z]\.[A-Za-z])(?<!\b[A-Z])(?<=[.!?])\s+(?=[A-Z0-9(])/).map(x => x.replace(/[ \t]+/g, ' ').trim()).filter(Boolean);
-}
-function degreeFromText(text) {
-  const t = String(text || ''); if (!t.trim()) return null;
-  const hit = sentences(t).find(x => DEG_WORD_RE.test(x));
-  if (!hit) return { text: 'NOT_STATED', req: 'NOT_STATED' };
-  // verbatim; only a runaway block (a page with no sentence breaks) is cut, around the degree words
-  let s = hit;
-  if (hit.length > 500) { const at = hit.search(DEG_WORD_RE), a = Math.max(0, at - 150); s = (a ? '…' : '') + hit.slice(a, a + 498) + (a + 498 < hit.length ? '…' : ''); }
-  // judge the bachelor-level clause: "B.S. required; MBA preferred" is a required degree
-  const FLEX = /\b(preferred|or equivalent|equivalent (work )?experience|in lieu of|may substitute|a plus|nice to have|desired)\b/i;
-  const clauses = hit.split(/;|,\s*(?=(?:an?\s+)?(?:master|mba|m\.\s?s|ms|ph\.?\s?d|advanced|graduate))/i);
-  const base = clauses.find(c => /\b(bachelor|b\.\s?[sa]\b|bs\b|ba\b|associate|four-year|4-year|undergraduate)/i.test(c)) || hit;
-  return { text: s, req: FLEX.test(base) ? 'PREFERRED' : 'REQUIRED' };
-}
+function degreeFromText(text) { return require('./qualification').parse(text); }
 /* ATS posting URL -> JSON API URL (public, read-only). Workday needs a POST; left to the lanes. */
 function atsApi(url) {
   const u = String(url || '');
@@ -68,31 +50,14 @@ function atsApi(url) {
 function strip(html) { return String(html || '').replace(/&lt;/g, '<').replace(/&gt;/g, '>').replace(/&nbsp;/g, ' ').replace(/&#39;|&#x27;|&rsquo;/g, "'").replace(/&quot;/g, '"').replace(/<\s*(br|\/p|\/li|\/div|\/h[1-6]|\/tr|li)\b[^>]*>/gi, '\n').replace(/<[^>]+>/g, ' ').replace(/&amp;/g, '&').replace(/[ \t\r\f\v]+/g, ' ').replace(/ *\n[\n ]*/g, '\n').trim(); }
 /* parse an ATS API response into {pay, text} */
 function parseAts(kind, j, id) {
-  if (kind === 'lever') {
-    const text = [j.descriptionPlain, j.additionalPlain].concat((j.lists || []).map(l => l.text + ' ' + strip(l.content))).join(' ');
-    let pay = null; const s = j.salaryRange;
-    if (s && s.min && s.max && (!s.interval || /year|annual/i.test(s.interval))) pay = { low: +s.min, high: +s.max };
-    return { pay: pay || payFromText(text), text };
-  }
-  if (kind === 'greenhouse') {
-    const text = strip(j.content);
-    let pay = null; const r = (j.pay_input_ranges || [])[0];
-    if (r && r.min_cents && r.max_cents) pay = { low: r.min_cents / 100, high: r.max_cents / 100 };
-    return { pay: pay || payFromText(text), text };
-  }
-  if (kind === 'workday') {
-    const info = j && j.jobPostingInfo; if (!info) return null;
-    const text = strip(info.jobDescription);
-    return { pay: Pay.workday(info)||payFromText(text), text };
-  }
-  if (kind === 'ashby') {
-    const job = (j.jobs || []).find(x => x.id === id); if (!job) return null;
-    const text = job.descriptionPlain || strip(job.descriptionHtml);
-    let pay = null; const comp = job.compensation && (job.compensation.summaryComponents || []).find(c => /salary/i.test(c.compensationType || '') && /year/i.test(c.interval || 'year'));
-    if (comp && comp.minValue && comp.maxValue) pay = { low: +comp.minValue, high: +comp.maxValue };
-    return { pay: pay || payFromText(text) || payFromText(job.compensation && job.compensation.compensationTierSummary), text };
-  }
-  return null;
+  let text;
+  if(kind==='lever') text=[j.descriptionPlain||strip(j.description),...(j.lists||[]).map(l=>l.text+'\n'+strip(l.content)),j.additionalPlain||strip(j.additional)].filter(Boolean).join('\n');
+  else if(kind==='greenhouse') text=strip(j.content);
+  else if(kind==='workday'){if(!j?.jobPostingInfo)return null;text=strip(j.jobPostingInfo.jobDescription);}
+  else if(kind==='ashby'){const job=(j.jobs||[]).find(x=>x.id===id);if(!job)return null;text=job.descriptionPlain||strip(job.descriptionHtml);}
+  else return null;
+  const payFacts=Pay.ats(kind,j,{id,text,payFromText});
+  return {pay:Pay.range(payFacts),payFacts,text};
 }
 /* employer-posted comparables from the master; one per row */
 function postedAnchor(r, p) {
@@ -165,11 +130,10 @@ function looksLikePosting(text, row) {
 function parseAggregator(kind, html, row) {
   const text = strip(html || ''); if (text.length < 200) return null;
   if (row && !looksLikePosting(text, row)) return { wall: true, pay: null, basis: null, text: '' };
-  const pay = payFromText(text); let basis = null;
-  if (pay) {
-    const at = text.search(RANGE_RE), near = text.slice(Math.max(0, at - 120), at + 160);
-    basis = /\b(estimated|est\.|estimate)\b/i.test(near) && !/provided by (the )?employer|base pay range/i.test(near) ? 'THIRD_PARTY_ESTIMATE' : 'EMPLOYER_POSTED';
-  }
+  const at=text.search(RANGE_RE),near=at<0?'':text.slice(Math.max(0,at-120),at+220);
+  const estimated=/\b(?:estimated|est\.|estimate)\b/i.test(near)&&!/provided by (the )?employer/i.test(near);
+  const pay=Pay.employerText(text,payFromText,{currency:row&&stateFrom(row.LOCATION)?'USD':undefined});
+  const basis=pay?(estimated?'THIRD_PARTY_ESTIMATE':'EMPLOYER_POSTED'):null;
   return { pay, basis, text };
 }
 /** REV-136: the first field on a row that names a readable ATS posting (rows keep the ATS link in ATS_POSTING_URL more often
@@ -231,9 +195,9 @@ function boardListRequest(b, title) {
 /** Board answer -> [{ title, location, state, pay, page, detail? }]; Workday rows carry a detail URL (pay is on the job page). */
 function parseBoard(b, j) {
   const out = [];
-  if (b.kind === 'greenhouse') (j && j.jobs || []).forEach(x => out.push({ title: x.title, location: x.location && x.location.name || '', description: x.content || '', pay: payFromText(strip(x.content)), page: x.absolute_url || '' }));
-  if (b.kind === 'lever') (Array.isArray(j) ? j : []).forEach(x => { const s = x.salaryRange; const pay = s && s.min && s.max && (!s.interval || /year|annual/i.test(s.interval)) ? { low: +s.min, high: +s.max } : payFromText([x.descriptionPlain, x.additionalPlain].join(' ')); out.push({ title: x.text, location: x.categories && (x.categories.location || (x.categories.allLocations || []).join(', ')) || '', description: [x.descriptionPlain || x.description || '', ...(x.lists || []).map(l => l.text + ': ' + l.content), x.additionalPlain || ''].join('\n'), pay, page: x.hostedUrl || '' }); });
-  if (b.kind === 'ashby') (j && j.jobs || []).forEach(x => { const c = x.compensation && (x.compensation.summaryComponents || []).find(k => /salary/i.test(k.compensationType || '') && /year/i.test(k.interval || 'year')); const pay = c && c.minValue && c.maxValue ? { low: +c.minValue, high: +c.maxValue } : payFromText(x.compensation && x.compensation.compensationTierSummary); out.push({ title: x.title, location: x.location || '', description: x.descriptionHtml || x.descriptionPlain || '', pay, page: x.jobUrl || '' }); });
+  if (b.kind === 'greenhouse') (j && j.jobs || []).forEach(x => out.push({ title: x.title, location: x.location && x.location.name || '', description: x.content || '', pay: parseAts('greenhouse',x).pay, page: x.absolute_url || '' }));
+  if (b.kind === 'lever') (Array.isArray(j) ? j : []).forEach(x => { const parsed=parseAts('lever',x);out.push({title:x.text,location:x.categories&&(x.categories.location||(x.categories.allLocations||[]).join(', '))||'',description:parsed.text,pay:parsed.pay,page:x.hostedUrl||''}); });
+  if (b.kind === 'ashby') (j && j.jobs || []).forEach(x => {const parsed=parseAts('ashby',{jobs:[x]},x.id);out.push({title:x.title,location:x.location||'',description:parsed.text,pay:parsed.pay,page:x.jobUrl||''});});
   if (b.kind === 'workday') (j && j.jobPostings || []).forEach(x => out.push({ title: x.title, location: x.locationsText || '', pay: null, page: `https://${b.host}/${b.site}${x.externalPath || ''}`, detail: x.externalPath ? `https://${b.host}/wday/cxs/${b.tenant}/${b.site}${x.externalPath}` : '' }));
   out.forEach(x => { x.state = stateFrom(x.location); });
   return out;

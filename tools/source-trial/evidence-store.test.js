@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),path=require('path'),os=require('os'),E=require('./evidence-store');
-const now=Date.parse('2026-11-05T23:00:00Z'),at=new Date(now-3600000).toISOString(),proof='state/board-discovery-report.json@'+'a'.repeat(40),card={company:'Acme',title:'Director of Manufacturing',location:'Austin, TX',url:'https://jobs.example.test/1',description:('Lead manufacturing, assembly, quality and production engineering teams. ').repeat(7)+'\nBachelor degree preferred, or equivalent experience accepted.\nThe annual base salary range is $175,000 - $200,000.'};
+const now=Date.parse('2026-11-05T23:00:00Z'),at=new Date(now-3600000).toISOString(),proof='state/board-discovery-report.json@'+'a'.repeat(40),card={company:'Acme',title:'Director of Manufacturing',location:'Austin, TX',url:'https://jobs.example.test/1',description:('Lead manufacturing, assembly, quality and production engineering teams. ').repeat(7)+'\nBachelor degree preferred, or equivalent experience accepted.\nThe annual base salary range is USD $175,000 - $200,000.'};
 function dir(t){const r=fs.mkdtempSync(path.join(os.tmpdir(),'discovery-evidence-'));t.after(()=>fs.rmSync(r,{recursive:true,force:true}));return r;}
 test('save once, reuse exact fresh source identity, preserve facts and explicit source provenance',t=>{
  const root=dir(t),ref=E.capture(root,card,{observedAt:at,proof,fullPosting:true}),second=E.capture(root,card,{observedAt:new Date(now).toISOString(),proof,fullPosting:true});a.equal(ref.path,second.path);a.equal(fs.readdirSync(path.join(root,'state/discovery-evidence')).length,1);
@@ -18,4 +18,9 @@ test('content hash mismatches and ambiguous compensation never become reusable s
 test('manifest supports enrichment reuse without rescanning the discovery ledger',t=>{
  const root=dir(t),ref=E.capture(root,card,{observedAt:at,proof,fullPosting:true});fs.writeFileSync(path.join(root,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:{k:{sourceUrl:card.url,evidenceRefs:[ref]}}}));
  const r=E.forRow(E.index(root),{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now);a.equal(r.degree.req,'PREFERRED');a.equal(r.pay.high,200000);a.equal(r.discoveryEvidence,ref.path);
+});
+test('legacy discovery artifacts keep raw bytes while enrichment rederives current qualification/pay facts',()=>{
+ const row={COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},text='Lead plant operations. '.repeat(20)+"Bachelor's degree in Engineering (advanced degree preferred).\nAnnual base salary USD $180,000-$220,000.";
+ const doc={text,url:card.url,facts:{degree:{req:'PREFERRED',text:'old derived value'},pay:{low:1,high:2}}},before=JSON.stringify(doc),store={find:()=>({doc,ref:{observedAt:at,path:'saved-source.json'}})};
+ const r=E.forRow(store,row,now);a.equal(r.degree.req,'REQUIRED');a.equal(r.pay.low,180000);a.equal(r.at,at);a.equal(JSON.stringify(doc),before);
 });

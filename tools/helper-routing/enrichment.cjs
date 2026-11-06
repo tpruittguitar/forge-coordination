@@ -15,7 +15,20 @@ function validateBatch(b,w=load()){
  if(legacy&&!w.takeover?.acceptedHistoricalBatches?.some(x=>x.runId===b.runId&&x.sha256===digest(b)))throw Error('Retired Grok route: only exact already accepted historical evidence may be reused');
  const pair=legacy?{provider:'Grok',taskKey:'FORGE_GROK_ENRICHMENT'}:who;
  if(!w.enabled||b?.schema!=='forge.enrichment-helper-batch.v1'||b.provider!==pair.provider||b.taskKey!==pair.taskKey||b.assignmentId!==w.assignmentId||!(pair.provider==='Grok'?/^GROK-/:/^FORGE-CHATGPT-/).test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||!b.items.length||b.items.length>20)throw Error('Invalid enrichment evidence-only envelope');
- const seen=new Set();for(const i of b.items){const historical=legacy&&w.items.some(r=>r.primaryId===i.primaryId)||w.items.some(r=>r.primaryId===i.primaryId&&r.status==='CONSUMED'&&/^receipts\/[A-Za-z0-9_-]+_VERIFIED\.json$/.test((r.coordinatorConsumption?.proof||r.coordinatorProof)||''));if(seen.has(i.primaryId)||(!assignedIds(w).has(i.primaryId)&&!historical)||i.writerSubmitted!==false||!i.sourceEvidence||!i.recommendation)throw Error('Duplicate, unassigned or submitting helper item');seen.add(i.primaryId);const f=i.sourceEvidence.proposedRawFields||{};if(Object.keys(f).some(k=>/^(COMPANY|TITLE|LOCATION|PRIMARY_ID|BUCKET|DISPOSITION|STATE_|OVERALL_|SCORE_|TIM_|ACTOR)/.test(k)))throw Error('Helper cannot propose identity, decision or calculated score changes');}return{valid:true,items:seen.size,productionAuthorized:false};
+ // This validates immutable evidence, not current permission to process a job.
+ // routingProof separately binds membership at the instruction revision. Live
+ // protection, missing fields and original Writer fences are checked by the
+ // consumer before effects; a later completion must not invalidate siblings.
+ const assignment=new Set(w.items.map(i=>i.primaryId)),seen=new Set();
+ for(const i of b.items){
+  if(seen.has(i.primaryId))throw Error('DUPLICATE_ENRICHMENT_ITEM');
+  if(!assignment.has(i.primaryId))throw Error('ENRICHMENT_ITEM_OUTSIDE_ASSIGNMENT');
+  if(i.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
+  if(!i.sourceEvidence||!i.recommendation)throw Error('ENRICHMENT_ITEM_EVIDENCE_REQUIRED');
+  seen.add(i.primaryId);const f=i.sourceEvidence.proposedRawFields||{};
+  if(Object.keys(f).some(k=>/^(COMPANY|TITLE|LOCATION|PRIMARY_ID|BUCKET|DISPOSITION|STATE_|OVERALL_|SCORE_|TIM_|ACTOR)/.test(k)))throw Error('HELPER_PROTECTED_FIELDS_FORBIDDEN');
+ }
+ return{valid:true,items:seen.size,productionAuthorized:false};
 }
 function next(w,after){w=effectiveWork(w);const all=w.items,active=assignedIds(w),eligible=i=>active.has(i.primaryId)&&!/^RETURNED/.test(i.status||''),index=after?all.findIndex(i=>i.primaryId===after):-1;if(after&&index<0)throw Error('Unknown cursor; never restart');const items=all.slice(index+1).filter(eligible).slice(0,20);return{assignmentId:w.assignmentId,taskKey:owner(w).taskKey,provider:owner(w).provider,mode:'EVIDENCE_ONLY',total:all.filter(eligible).length,items,nextAfter:items.at(-1)?.primaryId||null};}
 if(require.main===module){try{const w=load();if(process.argv[2]==='validate')console.log(JSON.stringify(validateBatch(JSON.parse(fs.readFileSync(process.argv[3])),w)));else{if(!w.enabled)throw Error('Helper assignment disabled');console.log(JSON.stringify(next(w,process.argv[2]==='--after'?process.argv[3]:null)));}}catch(e){console.error(e.message);process.exitCode=1;}}

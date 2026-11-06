@@ -5,9 +5,7 @@ const Source=require('../programmed-coordinator/source.cjs'),L=require('../enric
 const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const identity=r=>[Source.employer(r.company||r.COMPANY),Source.norm(r.title||r.TITLE),Source.location(r.location||r.LOCATION)];
 function annualBase(text){
- const hits=[];
- for(const quote of text.split(/\n+/))if(/\b(?:base salary|base pay|salary range)\b/i.test(quote)&&/\b(?:annual|annually|year|yearly)\b|\/yr\b/i.test(quote)&&!/\b(?:hourly|per hour|total compensation|equity|bonus|estimated|OTE)\b/i.test(quote)){const p=L.payFromText(quote);if(p)hits.push({...p,quote});}
- const unique=new Map(hits.map(p=>[p.low+':'+p.high,p]));return unique.size===1?[...unique.values()][0]:null;
+ const pay=require('../enrich-ats-pay/pay-values').employerText(text,L.payFromText);return pay?{...pay,quote:text.split(/\n+/).find(s=>/base (?:salary|pay)/i.test(s))||text}:null;
 }
 function capture(root,card,{observedAt,proof,fullPosting=false}={}){
  const text=Source.text(card.description||''),url=card.url||card.SOURCE_URL,ids=identity(card);
@@ -38,6 +36,6 @@ function index(root,ledger){
 }
 function forRow(store,row,now=Date.now()){
  const urls=require('../enrich-ats-pay/recovery').urls(row);
- for(const url of urls){const found=store.find({...row,SOURCE_URL:url},{now,maxAgeMs:7*86400000});if(found)return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:found.ref.observedAt,url:found.doc.url,fullPosting:true,degree:found.doc.facts.degree,pay:found.doc.facts.pay,payAmbiguous:found.doc.facts.payAmbiguous,basis:'EMPLOYER_POSTED',discoveryEvidence:found.ref.path};}return null;
+ for(const url of urls){const found=store.find({...row,SOURCE_URL:url},{now,maxAgeMs:7*86400000});if(found){const text=found.doc.text,pay=annualBase(text);return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:found.ref.observedAt,url:found.doc.url,fullPosting:true,text,degree:L.degreeFromText(text),pay,payAmbiguous:!pay&&/\$\s*\d|USD\s*\d/i.test(text),basis:'EMPLOYER_POSTED',discoveryEvidence:found.ref.path,factsVersion:require('../enrich-ats-pay/pay-values').VERSION};}}return null;
 }
 module.exports={capture,read,index,forRow,annualBase,identity,hash};

@@ -6,6 +6,8 @@
    node tools/enrich-ats-pay/run.js [--dry] */
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
+const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
+const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
 const salarySource=e=>e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
@@ -29,7 +31,7 @@ const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pa
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const DRY = process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
-const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:]/g, '').slice(0, 13) + 'Z';
+const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:.]/g, '');
 const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
   pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
 const sleep = ms => runtime.wait(process.env.ENRICH_TEST_FAST?0:ms);
@@ -49,7 +51,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 (async () => {
   const T0 = Date.now();
   progress('startup');
-  const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
+  // Synthetic-master runs use a non-production fixture endpoint and no private
+  // connection file. Real runs still use the existing local Writer connection.
+  const conn = {}; if(process.env.ENRICH_MASTER_FILE)conn.PipelineConnection={url:'https://script.google.com/macros/s/FORGE_TEST_ONLY/exec',key:'TEST_ONLY'};
+  else vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
   const Evidence=require(await loadModule('PipelineEvidence.gs')); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
   const productModule=path.join(require('os').tmpdir(),'PipelineProducts.js');fs.writeFileSync(productModule,await fcFile('pipeline-products.js'));const Products=require(productModule);
@@ -77,10 +82,31 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
   const writerRead=async(action,params={})=>{const u=new URL(conn.PipelineConnection.url);u.searchParams.set('key',key);u.searchParams.set('action',action);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return(await get(u.toString())).json();};
   const receiptIndex=async()=> (await get('https://raw.githubusercontent.com/tpruittguitar/forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json?pay='+Date.now())).json();
-  const inFlightIds=new Set();progress('pending_receipts',{batches:Object.keys(ledger.pendingWrites).length});
+  const proofRoot=process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):ROOT;
+  const outcomeDeps={status:()=>writerRead('writer_status'),result:rid=>writerRead('request_result',{requestId:rid}),
+    source:async revision=>(await get('https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/'+revision+'/apps-script/Code.gs')).text(),
+    index:async()=>require('../writer-verify/recovery').loadIndex()};
+  let writerBuild;
+  async function currentWriterBuild(){if(writerBuild===undefined)writerBuild=(await outcomeDeps.status()).build?.commit||'UNKNOWN';return writerBuild;}
+  async function releaseRefusal(requestId,entry,response){
+    const children=entry.requests.map(q=>q.ruling.requestId),outcome=await Outcome.prove({response,requestId,childRequestIds:children,deps:outcomeDeps});
+    if(!outcome)return false;
+    const payload={action:'batch',requestId,requests:entry.requests},saved=Outcome.record(proofRoot,{requestId,payloadSha256:Store.hash(payload),acceptanceSha256:Store.hash(response),response,ids:entry.ids,childRequestIds:children,outcome});
+    const rejectedWriterCommit=outcome.retryable===false?(response.outcome?.writerCommit||await currentWriterBuild()):null;
+    (ledger.notAccepted||(ledger.notAccepted={}))[requestId]={ids:entry.ids,requests:entry.requests,payloadSha256:Store.hash(payload),acceptanceSha256:Store.hash(response),response,proof:saved.file,retryAfter:saved.proof.retryAfter,retryable:outcome.retryable!==false,code:outcome.code,clientRevision:PAY_CLIENT_REVISION,rejectedWriterCommit};
+    for(const id of entry.ids)delete ledger.progress?.[id];
+    delete ledger.pendingWrites[requestId];return true;
+  }
+  const inFlightIds=new Set(),refusalStatuses=new Map();progress('pending_receipts',{batches:Object.keys(ledger.pendingWrites).length});
   let pendingIndex;for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){
+    try{if(entry.response&&entry.requests&&await releaseRefusal(requestId,entry,entry.response))continue;}catch{}
     try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();if(await require('./writer-proof').verify(entry.requests,{index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]})){delete ledger.pendingWrites[requestId];continue;}}}catch{}
     for(const id of entry.ids||[])inFlightIds.add(id);
+  }
+  for(const [requestId,entry]of Object.entries(ledger.notAccepted||{})){
+    if(!Outcome.released(proofRoot,{requestId,...entry}))try{if(entry.response&&entry.requests)await releaseRefusal(requestId,entry,entry.response);}catch{}
+    let serverChanged=false;if(entry.retryable===false)try{const current=await currentWriterBuild();serverChanged=/^[a-f0-9]{7,40}$/.test(current)&&current!==entry.rejectedWriterCommit;}catch{}
+    if(!Outcome.released(proofRoot,{requestId,...entry})||Date.parse(entry.retryAfter)>Date.now()||entry.retryable===false&&entry.clientRevision===PAY_CLIENT_REVISION&&!serverChanged)for(const id of entry.ids){inFlightIds.add(id);refusalStatuses.set(id,!Outcome.released(proofRoot,{requestId,...entry})?'WRITER_REFUSAL_PROOF_REQUIRED':entry.retryable===false?'WRITER_REQUEST_REJECTED':'WRITER_RETRY_WAIT');}
   }
   const helperResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
   const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds]);
@@ -277,7 +303,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
     if (repairOriginal.has(r.PRIMARY_ID)||reviewOriginal.has(r.PRIMARY_ID)) continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
-    if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
+    if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
     progress('missing_row',{id:r.PRIMARY_ID});
@@ -288,7 +314,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       stats.ats_rows++; attempted = true;
       try {
         await sleep(CONFIG.fetchGapMs);
-        const parsed = L.parseAts(api.kind, await (await get(api.api, { headers: { accept: 'application/json' } })).json(), api.id);
+        const parsed = Recovery.exactApi(r,api,await (await get(api.api, { headers: { accept: 'application/json' } })).json());
         if (parsed) {
           stats.ats_read++; checked = true; postedPay = parsed.pay;
           if (parsed.pay) stats.ats_pay_seen = (stats.ats_pay_seen || 0) + 1; if (n.includes('SALARY')) stats.ats_need_salary = (stats.ats_need_salary || 0) + 1;   // REV-136 report: is pay missing from postings or not needed?
@@ -441,14 +467,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
-        if(res.mode==='WRITE_FENCE')delete ledger.pendingWrites[requestId];
-        if (res.mode !== 'WRITE_FENCE' || res.frozen || fenced >= CONFIG.fenceRetries) break;
-        fenced++; stats.writer_fenced = (stats.writer_fenced || 0) + 1;
-        progress('writer_fence_wait',{batch:b+1});
-        await sleep(Math.min(Math.max(+res.retryAfterMs || 30000, 30000), 150000));
+        if(res?.ok===false){ledger.pendingWrites[requestId].response=res;fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
+          if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
+        // A legacy mode/error string is not evidence of nonacceptance. Keep its
+        // original checkpoint for read-only recovery; never retry it here.
+        if(res.mode==='WRITE_FENCE'||res.mode==='BATCH_RULING_RETRY'){
+          stats.writer_unconfirmed=(stats.writer_unconfirmed||0)+batch.length;
+          stats.writer_error='Writer refusal lacks request-bound pre-mutation proof; original retained';continue batches;
+        }
+        break;
       }
-      if (res.mode === 'WRITE_FENCE') { stats.writer_deferred = (stats.writer_deferred || 0) + batch.length; stats.writer_error = String(res.error || 'WRITE_FENCE').slice(0, 200); continue batches; }
-      if(res.mode==='BATCH_RULING_RETRY'){delete ledger.pendingWrites[requestId];for(const q of batch)delete ledger.progress?.[q.ruling.primaryId];}else if(res.results?.every(x=>x.mode==='ALREADY_APPLIED'))delete ledger.pendingWrites[requestId];
       const results = res.results || [];
       // QA REV-139: ok:true alone is not a write. On BATCH_RULING_RETRY ("master changed") PLANNED items come back ok:true with
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
@@ -492,7 +520,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('publish_report');
   if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,helperResearchIds.has(r.PRIMARY_ID)?'AI_RESEARCH_RESERVED':helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
+  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,helperResearchIds.has(r.PRIMARY_ID)?'AI_RESEARCH_RESERVED':helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY':null));
   if(!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-recovery.json'),JSON.stringify({schema:'forge.enrichment-recovery.v1',at:new Date().toISOString(),run:RUN_ID,rows:recoveryRows,pendingWrites:ledger.pendingWrites,note:'Pre-write worklist; use reconciled process flow for completions. Never replay an uncertain original request.'},null,2)+'\n');
   if(salaryContext){stats.salary_model_version=Context.VERSION;stats.salary_context={companies:salaryContext.companies.length,roles:salaryContext.roles.length,nonblocking:true};const calibration=require('./calibration').evaluate(rows,anchors,salaryContext);if(!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-calibration.json'),JSON.stringify(calibration,null,2)+'\n');}
   stats.recovery_statuses=recoveryRows.reduce((out,r)=>(out[r.status]=(out[r.status]||0)+1,out),{});
