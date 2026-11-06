@@ -25,3 +25,31 @@ test('API route fallback continues after blocked HTML, retains original raw sour
  const args={item:{sourceEvidence:{url:source}},expected,privateDir,sourceUrls:[ats],fetchPage};const got=await Source.verify(args);a.equal(got.format,'ATS_API');a.equal(got.sourceSha256,S.hash(got.raw));await Source.verify(args);a.equal(reads,2);
  const file=fs.readdirSync(path.join(privateDir,'sources'))[0],cache=S.read(privateDir,'sources/'+file);cache.companyRaw='{}';S.save(privateDir,'sources/'+file,cache);await Source.verify(args);a.equal(reads,4);
 });
+
+// Observed 2026-11-06: Workday returns base jobReqId with suffixed posting slug.
+// GE: R5042263 / Director-of-Engineering---Power-Conversion-and-Controls_R5042263-2.
+// CVG: JR101232 / Quality-Engineer_JR101232-1. Synthetic description isolates ID parsing.
+test('Workday posting suffix requires exact slug, origin and base requisition corroboration',()=>{
+ for(const [host,board,slug,id] of [
+  ['geaerospace.wd5.myworkdayjobs.com','GE_ExternalSite','Director-of-Engineering---Power-Conversion-and-Controls_R5042263-2','R5042263'],
+  ['cvgrp.wd5.myworkdayjobs.com','CVG','Quality-Engineer_JR101232-1','JR101232']
+ ]){
+  const page=`https://${host}/en-US/${board}/job/${slug}`,route=F.routes([page])[0];
+  const info={title:expected.title,companyName:expected.company,location:expected.location,jobDescription:description,jobReqId:id,jobPostingId:slug,externalUrl:`https://${host}/${board}/job/Austin/${slug}`};
+  const job=F.apiPosting(route,{jobPostingInfo:info});a.equal(job.identifier.value,id);
+  a.match(Source.inspectJobs([job],expected).description,/quality/);
+  for(const patch of [{jobReqId:'R99999'},{jobPostingId:slug+'0'},{jobPostingId:undefined},{externalUrl:undefined},{externalUrl:`https://unrelated.example/${slug}`},{externalUrl:`https://${host}/${board}/job/${slug}0`}])
+   a.throws(()=>F.apiPosting(route,{jobPostingInfo:{...info,...patch}}),/ATS_POSTING_ID_CONFLICT/);
+  a.throws(()=>Source.inspectJobs([job],{...expected,company:'Different Employer'}),/SOURCE_IDENTITY_AMBIGUOUS/);
+  a.throws(()=>Source.inspectJobs([job],{...expected,location:'Dallas, TX'}),/SOURCE_IDENTITY_AMBIGUOUS/);
+  a.throws(()=>Source.inspectJobs([job],{...expected,title:'Different Role'}),/SOURCE_IDENTITY_AMBIGUOUS/);
+ }
+});
+test('Workday unsuffixed and genuine requisition suffix behavior remains unchanged',()=>{
+ for(const [suffix,id] of [['','R123'],['-2','R123-2']]){
+  const route=F.routes([`https://example.wd1.myworkdayjobs.com/jobs/job/Plant-Manager_R123${suffix}`])[0];
+  const info={title:expected.title,companyName:expected.company,location:expected.location,jobDescription:description,jobReqId:id};
+  a.equal(F.apiPosting(route,{jobPostingInfo:info}).identifier.value,id);
+  a.throws(()=>F.apiPosting(route,{jobPostingInfo:{...info,jobReqId:'R999'}}),/ATS_POSTING_ID_CONFLICT/);
+ }
+});
