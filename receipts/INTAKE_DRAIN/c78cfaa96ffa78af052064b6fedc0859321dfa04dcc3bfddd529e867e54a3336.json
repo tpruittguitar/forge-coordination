@@ -1,0 +1,30 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "indeed:d014b53f297ddc9d",
+  "sourceVersion": "3c8dc3e4b083fa722d1022e4f5085af48f4809aa8591e06d26cc204da0d57fa9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261106T062253518932Z-source",
+  "instructionCommit": "213943f9b10df86a8a28c0e24c5df5ec7fce0c78",
+  "observedAt": "2026-11-06T06:22:53.518932Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Captured employer/title and exact Indeed ID are retained, but worksite and actual responsibilities remain missing. No matching exact saved full card was found. Current enforced environment policy excludes www.indeed.com; no scope, site or industry eligibility is inferred from title/company.",
+  "nextAction": "Recover exact original full card or source-bound employer posting with explicit identity, worksite and responsibilities through authorized access; preserve all current decisions and original requests.",
+  "retryCondition": "New exact full-card/employer evidence becomes available or authorized source-host access changes. Elapsed time alone does not repair the policy restriction.",
+  "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Recursively checked exact URL/sourceUrl; no current matching full-card object."
+    },
+    {
+      "source": "control/, receipts/, reference/ exact Indeed ID d014b53f297ddc9d",
+      "result": "Fixed-string saved-source search returned no matching file."
+    },
+    {
+      "source": "environment_status and /etc/codex/network-policy.json",
+      "result": "Current restricted policy enforced; original host www.indeed.com not allowed. No denied-host request or bypass attempted."
+    }
+  ]
+}
