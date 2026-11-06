@@ -21,6 +21,13 @@ test('unavailable, inactive and changed rule definitions cannot exclude',()=>{
  const c={...card,description:'We are a food manufacturer.'};
  for(const r of [null,{...rules,status:'UNAVAILABLE'},{...rules,rules:rules.rules.map(x=>({...x,active:false}))},{...rules,rules:rules.rules.map(x=>({...x,MATCH:'Tim now excludes breweries only'}))}])a.equal(P.screen(c,{...ctx,rules:r}).decision,'PROGRESS_TO_INTAKE');
 });
+test('industry nouns cannot exclude makers of packaging, machines or device components',()=>{
+ for(const description of ['We manufacture food packaging.','We manufacture food processing machines.','We manufacture medical device components.','We are a manufacturer of medical device components.','We are a manufacturer of machines for food processing.','We manufacture restaurant equipment.','We are a packaging manufacturer for restaurants.']){
+  const r=P.screen({...card,description},ctx);a.equal(r.decision,'PROGRESS_TO_INTAKE',description);a.equal(r.neverConsider.status,'REVIEW_PROTECTED_SUPPLIER',description);
+ }
+ // The carveout does not change the canonical exclusion for an actual producer.
+ for(const description of ['We are a food manufacturer.','We manufacture medical devices.','We operate restaurants throughout Texas.','We are a restaurant group.','We manufacture restaurant meals.'])a.equal(P.screen({...card,description},ctx).decision,'EXCLUDE_NEVER_CONSIDER',description);
+});
 test('a newer resume invalidates preliminary matching while an older approved resume cannot replace the user attachment',()=>{
  let r=P.screen(card,{...ctx,documents:{resumes:[{id:'old-approved',modifiedTime:'2026-09-17T00:00:00Z'}]}});a.equal(r.ats.resumeTextSha256,profile.source.textSha256);
  r=P.screen(card,{...ctx,documents:{resumes:[{id:'new-resume',modifiedTime:'2026-11-05T20:00:00Z'}]}});a.equal(r.ats.status,'RESUME_UPDATE_REQUIRED');a.equal(r.decision,'PROGRESS_TO_INTAKE');a.equal(r.ats.matches.length,0);

@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 const S=require('../programmed-coordinator/store.cjs'),Source=require('../programmed-coordinator/source.cjs');
+const Dispatch=require('./exception-order.cjs');
 const FILE='state/AI_EXCEPTION_WORK.json',REVIEWS='receipts/AI_EXCEPTION_REVIEWS',OWNER='FORGE_APPLICATION_OUTCOME_TRACKER';
 const immediate=new Set(['WORKING_SOURCE_ROUTE_REQUIRED','INVALID_PUBLIC_SOURCE_URL','SOURCE_HTTP_404','SOURCE_HTTP_410']);
 const repeated=new Set(['STRUCTURED_POSTING_UNAVAILABLE','INCOMPLETE_POSTING','INCOMPLETE_ATS_POSTING_IDENTITY','SOURCE_HTTP_403','SOURCE_HTTP_429','SOURCE_ROUTE_BACKOFF']);
@@ -8,11 +9,11 @@ const empty=()=>({schema:'forge.ai-exception-work.v1',cases:{},reviewErrors:{}})
 const terminal=s=>/^(VERIFIED|PROTECTED|EXISTING|NO_MISSING)/.test(s||'');
 function candidates(root,report,state,now=Date.now()){
  const jobs=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{},sources:{}}),items=[],drain=S.read(root,'state/INTAKE_DRAIN.json',{items:{}});
- const input=[...(report.aiExceptions||[]),...(report.routineHandoffs?.assignments?.exceptions||[]),...(report.routineHandoffs?.mail?.exceptions||[])];
+ const input=[...(report.aiExceptions||[]),...(report.routineHandoffs?.assignments?.exceptions||[]),...(report.routineHandoffs?.mail?.exceptions||[]),...(state.interviewReviews?.exceptions||[])];
  // Writer exceptions have an actual research/reconciliation owner, not just a log entry.
  for(const q of require('../source-intake/auto-latch').latch(require('../source-intake/auto-latch').previous(root)).quarantined)
   input.push({owner:'AI',requestId:q.requestId,reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({record:q.record,reason:q.reason,file:q.file}),sourceFile:q.file,identity:q.record,nextAction:'Read original payload/response, independent receipt_index, then request_result only after COMPLETE and exact rows. Investigate identity or source ambiguity; never replay an uncertain write.'});
- for(const tx of Object.values(state.transactions||{}))if(!['VERIFIED','HELD'].includes(tx.status))input.push({owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({requestId:tx.requestId,payloadSha256:tx.payloadSha256}),sourceFile:'state/PROGRAMMED_COORDINATOR.json'});
+ for(const tx of Object.values(state.transactions||{}))if(!['VERIFIED','HELD'].includes(tx.status)&&!(tx.status==='NOT_ACCEPTED'&&require('../writer-outcome.cjs').released(root,tx)))input.push({owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({requestId:tx.requestId,payloadSha256:tx.payloadSha256}),sourceFile:'state/PROGRAMMED_COORDINATOR.json'});
  for(const item of S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(/POST_IN_FLIGHT|HELD_CARD/.test(item.status))input.push({owner:'AI',key:item.key,requestId:item.requestId,reason:item.reason||'WRITER_RECONCILIATION_REQUIRED',sourceSha256:S.hash({key:item.key,requestId:item.requestId,sourceProof:item.sourceProof}),sourceFile:'state/RELEVANCE_INTAKE_PLAN.json'});
  for(const e of report.codeExceptions||[]){const item=state.items?.[e.key];if(!item||item.transactionId||terminal(item.status)||state.batches?.[item.batch]?.status!=='VALIDATED')continue;
   // Escalate after repeated code attempts, while retaining the code retry clock.
@@ -23,8 +24,10 @@ function candidates(root,report,state,now=Date.now()){
   if(Object.values(drain.items).some(i=>i.status!=='ACCOUNTED_UPSTREAM'&&(i.key===e.key||i.aliases?.includes(e.key)||i.key===item?.itemKey||i.aliases?.includes(item?.itemKey)||e.requestId&&i.fence?.requestIds?.includes(e.requestId))))continue;
   const job=jobs.jobs[e.key]||jobs.jobs[item?.itemKey],identity=job?{company:job.company,title:job.title,location:job.location,url:job.url}:null;
   const reason=/^SOURCE_(?:HTTP_(?:403|429)|ROUTE_BACKOFF)$/.test(e.reason)?'SOURCE_ACCESS_BLOCKED':e.reason;
-  const binding={key:e.key||null,messageId:e.messageId||null,requestId:e.requestId||null,reason,sourceVersion:e.itemVersion||item?.version||e.sourceSha256||S.hash(identity||{key:e.key,messageId:e.messageId,requestId:e.requestId,reason}),recoveryReview:item?.sourceRecoveryReview||null};
-  const exceptionId=S.hash(binding);items.push({...e,exceptionId,binding,kind:e.requestId?'WRITER':item?'SOURCE':e.messageId?'MAIL':'IDENTITY',owner:'ChatGPT',taskKey:OWNER,alsoAssignedTo:e.requestId?'FORGE_APPLICATION_WRITER_GOFER':undefined,originalTaskKey:item?.taskKey||null,identity:identity||e.identity||null,
+  const interview=typeof e.sourceReviewRef==='string';
+  if(interview&&(!/^[a-f0-9]{64}$/.test(e.sourceReviewRef)||!/^[a-f0-9]{64}$/.test(e.reviewHash||'')||e.sourceVersion!==e.reviewHash))continue;
+  const binding={key:e.key||null,messageId:e.messageId||null,requestId:e.requestId||null,reason,sourceVersion:e.itemVersion||item?.version||e.sourceVersion||e.sourceSha256||S.hash(identity||{key:e.key,messageId:e.messageId,requestId:e.requestId,reason}),recoveryReview:item?.sourceRecoveryReview||null,...(interview?{sourceReviewRef:e.sourceReviewRef,reviewHash:e.reviewHash,eventKey:e.eventKey||null}:{})};
+  const exceptionId=S.hash(binding);items.push({...e,exceptionId,binding,kind:interview?'INTERVIEW':e.requestId?'WRITER':item?'SOURCE':e.messageId?'MAIL':'IDENTITY',owner:'ChatGPT',taskKey:OWNER,alsoAssignedTo:e.requestId?'FORGE_APPLICATION_WRITER_GOFER':undefined,originalTaskKey:item?.taskKey||null,identity:identity||e.identity||null,
    nextAction:e.nextAction||(e.escalatedFrom?'Review the saved source failure. Supply exact replacement source evidence for independent code verification, or record a source-bound waiting disposition.':'Resolve interpretation or identity with source evidence; preserve protected decisions and pending writes.'),
    accessRule:'Respect source refusals and retry-after. Never bypass a refused platform through another provider.',canonicalCompletion:false});
  }
@@ -66,7 +69,7 @@ function sync({root,state,report,now=Date.now(),apply=false}){
  const work=S.read(root,FILE,empty()),current=new Set(),at=new Date(now).toISOString();
  for(const item of candidates(root,report,state,now)){current.add(item.exceptionId);const old=work.cases[item.exceptionId];work.cases[item.exceptionId]={...old,...item,firstSeen:old?.firstSeen||at,lastSeen:at,status:'ACTION_REQUIRED'};delete work.cases[item.exceptionId].closedAt;}
  for(const item of Object.values(work.cases))if(!current.has(item.exceptionId)){item.status='NO_LONGER_OPEN';item.closedAt=item.closedAt||at;item.canonicalCompletion=false;}
- for(const {record,proof,sha256} of reviews(root,work,now)){const item=work.cases[record.exceptionId];item.review={proof,sha256,disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter};
+ for(const {record,proof,sha256} of reviews(root,work,now)){const item=work.cases[record.exceptionId];item.review={proof,sha256,disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter};Dispatch.reviewed(work,item,record);
   if(record.disposition==='WAITING_SOURCE_CHANGE'&&!(Date.parse(record.retryAfter)<=now))item.status='WAITING_SOURCE_CHANGE';
   else if(record.disposition==='AWAITING_TIM')item.status='AWAITING_TIM';
   // A proposed source is actionable until its independent verification changes the case.
@@ -99,6 +102,15 @@ function evidence(root,item,original){
  return{...original,sourceEvidence:record.sourceEvidence,recommendation:/ENRICHMENT/.test(item.taskKey)?'ENRICHMENT_EVIDENCE_READY':'INTAKE_READY'};
 }
 function publishReview(root,record,now=Date.now()){
- validateReview(record,S.read(root,FILE),now);if(record.disposition==='AWAITING_TIM'&&!fs.existsSync(path.join(root,record.askPath)))throw Error('EXISTING_TIM_QUESTION_REQUIRED');const file=REVIEWS+'/'+record.exceptionId+'-'+S.hash(record)+'.json';S.immutable(root,file,record);return{path:file,canonicalWrites:0,pendingCodeValidation:true};
+ const work=S.read(root,FILE),item=validateReview(record,work,now);if(record.disposition==='AWAITING_TIM'&&!fs.existsSync(path.join(root,record.askPath)))throw Error('EXISTING_TIM_QUESTION_REQUIRED');const sha256=S.hash(record),file=REVIEWS+'/'+record.exceptionId+'-'+sha256+'.json';S.immutable(root,file,record);
+ // Receipt first, then a recoverable dispatch checkpoint. A read-only queue
+ // peek never advances service; accepted reviews do, including waiting cases.
+ Dispatch.reviewed(work,item,record);
+ if(!item.review||Date.parse(record.reviewedAt)>=Date.parse(item.review.reviewedAt)){
+  item.review={proof:file,sha256,disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter};
+  item.status=record.disposition==='AWAITING_TIM'?'AWAITING_TIM':record.disposition==='WAITING_SOURCE_CHANGE'&&!(Date.parse(record.retryAfter)<=now)?'WAITING_SOURCE_CHANGE':'ACTION_REQUIRED';
+ }
+ work.counts={};for(const c of Object.values(work.cases))work.counts[c.status]=(work.counts[c.status]||0)+1;
+ S.save(root,FILE,work);return{path:file,canonicalWrites:0,pendingCodeValidation:true,dispatch:work.dispatch};
 }
 module.exports={FILE,REVIEWS,OWNER,empty,candidates,sync,applySourceReviews,evidence,validateReview,publishReview};

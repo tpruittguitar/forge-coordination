@@ -17,7 +17,7 @@ test('Writer deadline prevents a fenced batch from being posted again and still 
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-fence-deadline-')),master=path.join(dir,'master.txt'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const line=row(1,'V2I-TIM','Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111');fs.writeFileSync(master,line);fs.writeFileSync(writer,JSON.stringify({'V2I-TIM':line}));
  try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:writer,ENRICH_TEST_POSTS:posts,ENRICH_TEST_WRITER_MODE:'FENCE',ENRICH_TEST_CONFIG:JSON.stringify({maxRunMs:100000,totalRunMs:100000}),ENRICH_TEST_CLOCK_STEP:'40000',ENRICH_TEST_CLOCK_MATCH:'script.google.com'},stdio:'pipe',timeout:5000});
- assert.equal(fs.readFileSync(posts,'utf8').trim().split('\n').length,1);const out=JSON.parse(fs.readFileSync(report));assert.ok(out.writer_budget_deferred);assert.equal(out.writer_failed,0);assert.equal(Object.keys(JSON.parse(fs.readFileSync(ledger)).pendingWrites).length,0);
+ assert.equal(fs.readFileSync(posts,'utf8').trim().split('\n').length,1);const out=JSON.parse(fs.readFileSync(report));assert.equal(out.writer_deferred,1);assert.equal(out.writer_not_accepted,1);assert.equal(out.writer_failed,0);assert.equal(Object.keys(JSON.parse(fs.readFileSync(ledger)).pendingWrites).length,0);
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('live estimation route connects the shared source selector after target checks and caches public comparable reads',()=>{
@@ -227,54 +227,40 @@ test('submit: rows are re-read from the Writer first; pay a lane wrote meanwhile
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('QA REV-139: on BATCH_RULING_RETRY ("master changed") ok:true items are not counted as saved and are resubmitted next run', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+test('typed optimistic refusal is not a write; rows retry only after backoff with new request identities', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev139-retry-')), master = path.join(dir, 'master.txt'), rows = path.join(dir, 'writer.json'), posts = path.join(dir, 'posts.jsonl'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);
   const byId = {}; MASTER.trim().split('\n').forEach(l => { byId[l.split(' | ')[1]] = l; });
   fs.writeFileSync(rows, JSON.stringify(byId));
   const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
-  const run = mode => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
-    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_EMPLOYER_CACHE: path.join(os.tmpdir(), 'rev140-emp-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: ledger, ENRICH_TEST_WRITER_MODE: mode }), stdio: 'pipe', timeout: 60000 });
+  const run = (mode,now) => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
+    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_EMPLOYER_CACHE: path.join(os.tmpdir(), 'rev140-emp-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: ledger, ENRICH_TEST_WRITER_MODE: mode,...(now?{ENRICH_TEST_NOW:String(now)}:{}) }), stdio: 'pipe', timeout: 60000 });
   const ids = () => fs.readFileSync(posts, 'utf8').trim().split('\n').map(JSON.parse).flatMap(b => b.requests).map(q => q.ruling.primaryId).sort();
   try {
     run('RETRY');
     const first = ids(), out = JSON.parse(fs.readFileSync(report, 'utf8')), led = JSON.parse(fs.readFileSync(ledger, 'utf8'));
     assert.ok(first.length > 0);
-    assert.strictEqual(out.writer_ok, 0, 'nothing was written'); assert.strictEqual(out.writer_not_written, first.length); assert.strictEqual(out.writer_retry, 1);
+    assert.strictEqual(out.writer_ok, 0, 'nothing was written'); assert.strictEqual(out.writer_not_accepted, first.length); assert.strictEqual(out.writer_deferred, first.length);assert.strictEqual(Object.keys(led.pendingWrites).length,0);
     first.forEach(id => assert.strictEqual(led.submitted[id], undefined, id + ' must not be marked submitted'));
     fs.rmSync(posts, { force: true });
-    run('COMMIT');
+    run('COMMIT',Date.now()+61000);
     assert.deepStrictEqual(ids(), first, 'the same rows go again on the next run instead of waiting 48 h');
     const out2 = JSON.parse(fs.readFileSync(report, 'utf8')), led2 = JSON.parse(fs.readFileSync(ledger, 'utf8'));
     assert.strictEqual(out2.writer_ok, first.length); first.forEach(id => assert.ok(led2.submitted[id], id + ' saved after a committed batch'));
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
-test('REV-153: a batch refused with WRITE_FENCE waits and goes again; still fenced = deferred, never failed', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
-  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev153-')), master = path.join(dir, 'master.txt'), rows = path.join(dir, 'writer.json'), posts = path.join(dir, 'posts.jsonl'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
-  fs.writeFileSync(master, MASTER);
-  const byId = {}; MASTER.trim().split('\n').forEach(l => { byId[l.split(' | ')[1]] = l; });
-  fs.writeFileSync(rows, JSON.stringify(byId));
-  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
-  const run = mode => { fs.rmSync(posts, { force: true }); fs.rmSync(ledger, { force: true }); cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')],
-    { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(os.tmpdir(), 'rev138-bls-' + process.pid + '.json'), ENRICH_EMPLOYER_CACHE: path.join(os.tmpdir(), 'rev140-emp-' + process.pid + '.json'), ENRICH_TEST_SUBMIT: '1', ENRICH_TEST_WRITER_ROWS: rows, ENRICH_TEST_POSTS: posts, ENRICH_LEDGER: ledger, ENRICH_TEST_WRITER_MODE: mode }), stdio: 'pipe', timeout: 60000 });
-    return { out: JSON.parse(fs.readFileSync(report, 'utf8')), led: JSON.parse(fs.readFileSync(ledger, 'utf8')), posts: fs.readFileSync(posts, 'utf8').trim().split('\n').map(JSON.parse) }; };
-  try {
-    let r = run('FENCE_ONCE');
-    const n = r.posts[0].requests.length;
-    assert.ok(n > 0);
-    assert.strictEqual(r.posts.length, 2, 'the fenced batch is sent again');
-    assert.deepStrictEqual(r.posts[1].requests, r.posts[0].requests);
-    assert.strictEqual(r.posts[1].requestId, r.posts[0].requestId, 'same requestId: the Writer cannot apply it twice');
-    assert.strictEqual(r.out.writer_fenced, 1); assert.strictEqual(r.out.writer_ok, n); assert.strictEqual(r.out.writer_failed, 0);
-    r = run('FENCE');
-    assert.strictEqual(r.posts.length, 5, 'first try + fenceRetries (4)');
-    assert.strictEqual(r.out.writer_failed, 0, 'a fenced batch wrote nothing and failed nothing');
-    assert.strictEqual(r.out.writer_ok, 0); assert.strictEqual(r.out.writer_deferred, n);
-    assert.match(r.out.writer_error, /not yet independently verified/);
-    r.posts[0].requests.forEach(q => assert.strictEqual(r.led.submitted[q.ruling.primaryId], undefined, 'goes again next run'));
-    assert.strictEqual(JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8')).batchGapMs >= 125000, true, 'batches sit past the Writer 120 s verify grace');
-  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+test('typed WRITE_FENCE preserves volume and retries only after backoff under new request identities', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'rev153-')),master=path.join(dir,'master.txt'),rows=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json');
+  fs.writeFileSync(master,MASTER);const byId={};MASTER.trim().split('\n').forEach(l=>{byId[l.split(' | ')[1]]=l;});fs.writeFileSync(rows,JSON.stringify(byId));const before=fs.existsSync(report)?fs.readFileSync(report):null;
+  const run=(mode,now)=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_LEDGER:ledger,ENRICH_TEST_WRITER_MODE:mode,...(now?{ENRICH_TEST_NOW:String(now)}:{})},stdio:'pipe',timeout:60000});return{out:JSON.parse(fs.readFileSync(report)),led:JSON.parse(fs.readFileSync(ledger)),posts:fs.readFileSync(posts,'utf8').trim().split('\n').map(JSON.parse)};};
+  try{
+    let r=run('FENCE_ONCE');const n=r.posts[0].requests.length;assert.ok(n>0);assert.equal(r.posts.length,1,'no same-pass replay');assert.equal(r.out.writer_not_accepted,n);assert.equal(r.out.writer_deferred,n);assert.equal(r.out.writer_failed,0);assert.equal(Object.keys(r.led.pendingWrites).length,0);
+    r=run('FENCE_ONCE');assert.equal(r.posts.length,1,'no post while refusal backoff is active');
+    r=run('COMMIT',Date.now()+61000);assert.equal(r.posts.length,2);assert.notEqual(r.posts[0].requestId,r.posts[1].requestId);assert.notEqual(r.posts[0].requests[0].ruling.requestId,r.posts[1].requests[0].ruling.requestId);assert.deepEqual(r.posts[1].requests.map(q=>q.ruling.primaryId),r.posts[0].requests.map(q=>q.ruling.primaryId));assert.equal(r.out.writer_ok,n);assert.equal(r.out.writer_failed,0);
+    fs.rmSync(posts);fs.rmSync(ledger);r=run('FENCE');assert.equal(r.posts.length,1);assert.equal(r.out.writer_failed,0);assert.equal(r.out.writer_ok,0);assert.equal(r.out.writer_deferred,n);assert.equal(r.out.writer_not_accepted,n);r.posts[0].requests.forEach(q=>assert.equal(r.led.submitted[q.ruling.primaryId],undefined));
+    assert.equal(JSON.parse(fs.readFileSync(path.join(__dirname,'config.json'))).batchGapMs>=125000,true);
+  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('an unchanged dry run leaves the report byte for byte (no hourly commit)', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
@@ -337,3 +323,21 @@ test('remote Meta tracking source reaches its direct posting and uses structured
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
 
+
+test('pay bot records pre-mutation refusal, observes backoff, and retries only with new request identities',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-not-accepted-')),master=path.join(dir,'master.txt'),rows=path.join(dir,'rows.json'),posts=path.join(dir,'posts.jsonl'),attempts=path.join(dir,'attempts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const id='V2I-00000000000A',line=row(1,id,'Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19');fs.writeFileSync(master,line);fs.writeFileSync(rows,JSON.stringify({[id]:line}));
+ const run=(mode,now)=>cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_TEST_ATTEMPTS:attempts,ENRICH_TEST_WRITER_MODE:mode,...(now?{ENRICH_TEST_NOW:String(now)}:{})},stdio:'pipe'});
+ try{run('BUSY_NOT_ACCEPTED');let saved=JSON.parse(fs.readFileSync(ledger));assert.equal(Object.keys(saved.pendingWrites).length,0);assert.equal(Object.keys(saved.notAccepted).length,1);assert.equal(JSON.parse(fs.readFileSync(report)).writer_not_accepted,1);run('BUSY_NOT_ACCEPTED');assert.equal(fs.readFileSync(attempts,'utf8').trim().split('\n').length,1);run('OK',Date.now()+61000);const sent=fs.readFileSync(attempts,'utf8').trim().split('\n').map(JSON.parse);assert.equal(sent.length,2);assert.notEqual(sent[0].requestId,sent[1].requestId);assert.notEqual(sent[0].requests[0].ruling.requestId,sent[1].requests[0].ruling.requestId);assert.equal(JSON.parse(fs.readFileSync(report)).writer_ok,1);}finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('pay public ledgers and refusal proofs exclude private response bodies while retaining private original checksum',()=>{
+ for(const mode of ['PRIVATE_PLANNED_REFUSAL','PRIVATE_UNKNOWN_RESPONSE']){
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-response-privacy-')),master=path.join(dir,'master.txt'),rows=path.join(dir,'rows.json'),posts=path.join(dir,'posts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null,secret='PRIVATE_LEDGER_BODY_SENTINEL recruiter-private@example.invalid';
+ const id='V2I-00000000000A',line=row(1,id,'Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19');fs.writeFileSync(master,line);fs.writeFileSync(rows,JSON.stringify({[id]:line}));
+ try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_TEST_WRITER_MODE:mode,ENRICH_TEST_PRIVATE_SENTINEL:secret},stdio:'pipe'});
+ const publicText=fs.readFileSync(ledger,'utf8'),saved=JSON.parse(publicText),entry=Object.values(mode==='PRIVATE_PLANNED_REFUSAL'?saved.notAccepted:saved.pendingWrites)[0];assert.equal(publicText.includes(secret),false);assert.equal(entry.response,undefined);assert.equal(entry.responseProjectionSha256,require('../programmed-coordinator/store.cjs').hash(entry.responseProjection));const raw=JSON.parse(fs.readFileSync(path.join(dir,'private-writer-responses',entry.privateResponseRef)));assert.equal(JSON.stringify(raw).includes(secret),true);assert.equal(entry.acceptanceSha256,require('../programmed-coordinator/store.cjs').hash(raw));
+ if(mode==='PRIVATE_PLANNED_REFUSAL'){const proof=fs.readFileSync(path.join(dir,entry.proof),'utf8');assert.equal(proof.includes(secret),false);assert.equal(require('../writer-outcome.cjs').released(dir,{requestId:Object.keys(saved.notAccepted)[0],...entry}),true);}else assert.equal(require('../writer-outcome.cjs').classify(entry.responseProjection).kind,'UNKNOWN');
+ }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+ }
+});

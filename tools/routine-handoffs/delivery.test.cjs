@@ -8,3 +8,16 @@ test('validated evidence-only PRs are collected privately without merging or exe
  const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),privateDir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-delivery-'));t.after(()=>fs.rmSync(privateDir,{recursive:true,force:true}));const f={...fixture(),privateDir};f.files.push({filename:'control/changes/existing.txt',status:'added'});a.equal((await D.harvest(f)).captured,1);a.equal(f.created.length,0);a.equal(S.files(path.join(privateDir,'helper-inbox')).length,1);a.equal((await D.harvest(f)).captured,1);a.equal(S.files(path.join(privateDir,'helper-inbox')).length,1);
  f.api.head=async()=>'changed';await a.rejects(D.harvest(f),/HEAD_CHANGED/);f.files.push({filename:'tools/arbitrary.cjs',status:'added'});a.equal((await D.harvest(f)).captured,0);
 });
+test('one invalid receipt retains its exact diagnostic while a valid sibling is harvested',async t=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),privateDir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-delivery-isolated-'));t.after(()=>fs.rmSync(privateDir,{recursive:true,force:true}));
+ const f={...fixture(),privateDir},validPath=f.files[0].filename,bad={...f.batch,runId:'CLAUDE-RELEVANCE-BAD'};
+ f.files.push({filename:'receipts/CLAUDE_RELEVANCE/'+bad.runId+'.json',status:'added'});
+ f.api.content=async filename=>JSON.stringify(filename===validPath?f.batch:bad);
+ f.validate=(_root,batch)=>{if(batch.runId===bad.runId)throw Error('ENRICHMENT_ITEM_OUTSIDE_ASSIGNMENT');};
+ const r=await D.harvest(f);a.equal(r.captured,1);a.equal(r.pendingArtifacts.length,1);a.equal(r.pendingArtifacts[0].reason,'ENRICHMENT_ITEM_OUTSIDE_ASSIGNMENT');a.equal(r.pendingArtifacts[0].path,f.files[1].filename);a.equal(S.files(path.join(privateDir,'helper-inbox')).length,1);
+});
+test('malformed receipt JSON is an individual pending artifact, not a failed sibling harvest',async t=>{
+ const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),privateDir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-delivery-json-'));t.after(()=>fs.rmSync(privateDir,{recursive:true,force:true}));const f={...fixture(),privateDir};
+ f.files.push({filename:'receipts/CLAUDE_RELEVANCE/CLAUDE-RELEVANCE-BROKEN.json',status:'added'});f.api.content=async name=>name===f.files[0].filename?JSON.stringify(f.batch):'{broken';
+ const r=await D.harvest(f);a.equal(r.captured,1);a.equal(r.pendingArtifacts[0].reason,'HELPER_JSON_INVALID');a.equal(D.diagnostic(Error('Item outside assigned work')).reason,'ITEM_OUTSIDE_ASSIGNMENT');
+});

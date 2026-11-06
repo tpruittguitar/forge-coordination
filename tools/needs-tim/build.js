@@ -197,13 +197,28 @@ function build(opts) {
 
   // Only persistent, CURRENTLY unresolved reporting failures need a visible notice.
   // A successful component replaces STALE health and automatically removes its old card.
-  const reporting = JSON.parse(read(path.join(root, 'state/REPORTING_HEALTH.json')) || '{}');
+  let reporting = {}, reportingUnreadable = false;
+  try {
+    reporting = JSON.parse(read(path.join(root, 'state/REPORTING_HEALTH.json')) || '{}');
+    if (!reporting || typeof reporting !== 'object' || Array.isArray(reporting) ||
+        reporting.components != null && (typeof reporting.components !== 'object' || Array.isArray(reporting.components))) {
+      throw Error('Invalid reporting health');
+    }
+  } catch (_) { reporting = {}; reportingUnreadable = true; }
   for (const [component, health] of Object.entries(reporting.components || {})) {
+    if (!health || typeof health !== 'object' || Array.isArray(health) || !['CURRENT', 'STALE'].includes(health.status)) {
+      reportingUnreadable = true;
+      continue;
+    }
     if (health.status !== 'STALE' || !Number.isFinite(Date.parse(health.failureSince)) || now - Date.parse(health.failureSince) < 30 * 60000) continue;
     add({id:'reporting:'+component, section:'UPKEEP', level:'WATCH', title:'Reporting delayed: '+component,
       detail:'Last successful metrics are retained. '+(health.error||''), action:'Code retries automatically; investigate if reporting remains stale.',
       source:'state/REPORTING_HEALTH.json', sourceUrl:ghUrl('forge-coordination','state/REPORTING_HEALTH.json'), at:health.failureSince, raisedBy:'CODE'});
   }
+  if (reportingUnreadable) add({id:'reporting:unreadable', section:'UPKEEP', level:'WATCH', title:'Reporting status needs regeneration',
+    detail:'Reporting health contains unreadable evidence. Other attention items are still evaluated; reporting freshness is unknown.',
+    action:'Code: regenerate reporting health on the next publication and retain the last successful metrics.',
+    source:'state/REPORTING_HEALTH.json', sourceUrl:ghUrl('forge-coordination','state/REPORTING_HEALTH.json'), at:null, raisedBy:'CODE'});
 
   /* 5. open pull requests (fetched by the workflow; optional) */
   (opts.prs || []).forEach(pr => {

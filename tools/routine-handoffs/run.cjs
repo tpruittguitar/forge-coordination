@@ -8,7 +8,7 @@ async function run({root,privateDir,commit,runId,apply,config=settings(privateDi
  const save=async()=>{if(apply){S.save(root,FILE,state);L.save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),ledger);}};
  if(apply){
   S.save(root,'state/HELPER_ROUTING_CURRENT.json',require('./routing.cjs').snapshot(root,commit));
-  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
+  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest,artifacts:r.pendingArtifacts||[],...(r.errorSha256?{errorSha256:r.errorSha256}:{})};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
   catch(e){state.exceptions.delivery={owner:'CODE',reason:'HELPER_DELIVERY_ROUTE_UNAVAILABLE',errorSha256:S.hash(e.message)};}
  }
  if(apply){

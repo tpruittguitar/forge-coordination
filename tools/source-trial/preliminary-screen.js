@@ -2,7 +2,10 @@
 // Discovery evidence only. No canonical writes, final fit score, or rejection on missing facts.
 const crypto=require('node:crypto'),Resume=require('./resume-match'),Source=require('../programmed-coordinator/source.cjs');
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
-const protectedBusiness=/\b(supplier|supplies|serving|serves|customers?|for the|to the|machinery|machine|tooling|equipment for|equipment maker|equipment manufacturer|packaging equipment|process equipment|machine builder|automation|integrator|integration|consulting|consultancy|software|logistics|component|engineering firm|contract engineering|vendor)\b/i;
+const protectedBusiness=/\b(suppliers?|supplies|serving|serves|customers?|for the|to the|machinery|machines?|tooling|equipment for|equipment makers?|equipment manufacturers?|packaging equipment|process equipment|machine builders?|automation|integrators?|integration|consulting|consultancy|software|logistics|components?|engineering firms?|contract engineering|vendors?)\b/i;
+// Producing packaging or machinery for a category is not producing that category's
+// products. This is a supplier carveout, never evidence of an exclusion.
+const industryInputs=/\b(?:food|beverage|medical|surgical|diagnostic|pharmaceutical|drug|restaurants?|catering|food.service)(?:\s+[a-z-]+){0,3}\s+(?:packaging|machines?|machinery|components?|tooling|equipment)\b|\b(?:packaging|machines?|machinery|components?|tooling|equipment)(?:\s+(?:manufacturers?|makers?|suppliers?|products?))?\s+(?:for|to|serving)\s+(?:the\s+)?(?:restaurants?|caterers?|food.service)\b/i;
 const categories={
  PHARMACEUTICAL_MANUFACTURER:/\b(?:pharmaceutical|drug)\s+(?:development|manufacturer|manufacturing|production|developer)|\b(?:manufacture|produce|develop)\s+(?:pharmaceuticals|drugs|medicines)\b/i,
  MEDICAL_DEVICE_MANUFACTURER:/\b(?:medical|surgical|diagnostic)\s+devices?\b/i,
@@ -37,7 +40,7 @@ function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()
    const definition=require('./never-consider-patterns.json').rules.find(r=>r.id===rule.RULE_ID&&r.category===rule.CATEGORY&&r.matchSha256===hash(rule.MATCH||''));
    if(!definition){nc.status='REVIEW_RULE_CHANGED';continue;}
    const quote=quotes.find(q=>categories[rule.CATEGORY].test(q));if(!quote)continue;
-   nc.status=protectedBusiness.test(statements.join(' '))?'REVIEW_PROTECTED_SUPPLIER':'EXCLUDE';nc.ruleId=rule.RULE_ID;nc.quote=quote;nc.confidence=nc.status==='EXCLUDE'?'HIGH':'REVIEW';break;
+   nc.status=protectedBusiness.test(statements.join(' '))||industryInputs.test(quote)?'REVIEW_PROTECTED_SUPPLIER':'EXCLUDE';nc.ruleId=rule.RULE_ID;nc.quote=quote;nc.confidence=nc.status==='EXCLUDE'?'HIGH':'REVIEW';break;
   }
  }
  if(!active)unresolved.push('CANONICAL_RULES_NOT_VERIFIED');

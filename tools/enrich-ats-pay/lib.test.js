@@ -26,10 +26,10 @@ test('ATS URLs map to public APIs', () => {
   assert.strictEqual(L.atsApi('https://www.linkedin.com/jobs/view/123456789'), null);
 });
 test('ATS parse: structured pay first, then pay in the text', () => {
-  assert.deepStrictEqual(L.parseAts('lever', { salaryRange: { min: 180000, max: 220000, interval: 'per-year-salary' }, descriptionPlain: 'x', lists: [] }).pay, { low: 180000, high: 220000 });
-  assert.deepStrictEqual(L.parseAts('greenhouse', { content: '&lt;p&gt;Base $160,000 - $200,000&lt;/p&gt;', pay_input_ranges: [] }).pay, { low: 160000, high: 200000 });
-  assert.deepStrictEqual(L.parseAts('greenhouse', { content: 'x', pay_input_ranges: [{ min_cents: 15000000, max_cents: 19000000 }] }).pay, { low: 150000, high: 190000 });
-  const ash = { jobs: [{ id: 'J1', descriptionPlain: 'Masters preferred', compensation: { summaryComponents: [{ compensationType: 'Salary', interval: '1 YEAR', minValue: 170000, maxValue: 210000 }] } }] };
+  assert.deepStrictEqual(L.parseAts('lever', { salaryRange: { min: 180000, max: 220000, interval: 'per-year-salary', currency: 'USD' }, descriptionPlain: 'x', lists: [] }).pay, { low: 180000, high: 220000 });
+  assert.deepStrictEqual(L.parseAts('greenhouse', { content: '&lt;p&gt;Annual base salary USD $160,000 - $200,000&lt;/p&gt;', pay_input_ranges: [] }).pay, { low: 160000, high: 200000 });
+  assert.deepStrictEqual(L.parseAts('greenhouse', { content: 'x', pay_input_ranges: [{ min_cents: 15000000, max_cents: 19000000, currency_type: 'USD', title: 'Annual base salary' }] }).pay, { low: 150000, high: 190000 });
+  const ash = { jobs: [{ id: 'J1', descriptionPlain: 'Masters preferred', compensation: { summaryComponents: [{ compensationType: 'Salary', interval: '1 YEAR', currency: 'USD', minValue: 170000, maxValue: 210000 }] } }] };
   assert.deepStrictEqual(L.parseAts('ashby', ash, 'J1').pay, { low: 170000, high: 210000 });
   assert.strictEqual(L.parseAts('ashby', ash, 'missing'), null);
 });
@@ -37,9 +37,9 @@ test('aggregator postings: LinkedIn and Indeed pay counts as posting pay; a site
   const li = L.aggregatorPage('https://www.linkedin.com/jobs/view/director-quality-at-acme-4012345678?trk=x');
   assert.strictEqual(li.fetch, 'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4012345678');
   assert.strictEqual(L.aggregatorPage('https://www.indeed.com/viewjob?jk=0123456789abcdef').kind, 'indeed');
-  const posted = L.parseAggregator('linkedin', '<p>' + pad + 'Base pay range $150,000.00/yr - $190,000.00/yr</p>');
+  const posted = L.parseAggregator('linkedin', '<p>' + pad + 'Base pay range USD $150,000.00/yr - $190,000.00/yr</p>');
   assert.deepStrictEqual([posted.pay, posted.basis], [{ low: 150000, high: 190000 }, 'EMPLOYER_POSTED']);
-  assert.strictEqual(L.parseAggregator('indeed', '<p>' + pad + 'Estimated $120K - $150K a year</p>').basis, 'THIRD_PARTY_ESTIMATE');
+  assert.strictEqual(L.parseAggregator('indeed', '<p>' + pad + 'Estimated base salary USD $120K - $150K a year</p>').basis, 'THIRD_PARTY_ESTIMATE');
   assert.strictEqual(L.parseAggregator('indeed', '<p>blocked</p>'), null);
 });
 test('estimate follows COMPENSATION_ESTIMATION: comparables share level and function; 1 = LOW, 2 close = MED', () => {
@@ -57,7 +57,7 @@ test('Grok Bot QA: a sign-in or bot-check page is not a read posting, so it cann
   const row = { COMPANY: 'Acme Robotics', TITLE: 'Director of Quality Engineering' };
   const wall = '<div>' + 'Sign in to view more jobs. Join now to see who you know. '.repeat(10) + '</div>';
   assert.strictEqual(L.parseAggregator('linkedin', wall, row).wall, true);
-  const real = '<div>' + 'Acme Robotics is hiring a Director of Quality Engineering to lead the plant quality team. '.repeat(6) + 'Base pay range $150,000.00/yr - $190,000.00/yr</div>';
+  const real = '<div>' + 'Acme Robotics is hiring a Director of Quality Engineering to lead the plant quality team. '.repeat(6) + 'Base pay range USD $150,000.00/yr - $190,000.00/yr</div>';
   const ok = L.parseAggregator('linkedin', real, row);
   assert.strictEqual(ok.wall, undefined); assert.deepStrictEqual(ok.pay, { low: 150000, high: 190000 });
   const other = '<div>' + 'Globex is hiring a Senior Accountant for the finance team in Springfield. '.repeat(8) + '</div>';
@@ -95,7 +95,7 @@ test('REV-136: ATS links found in any posting field, API forms and Workday', () 
   assert.strictEqual(L.atsFor(p).key, 'ATS_POSTING_URL');
   assert.strictEqual(L.atsFor({ SOURCE_URL: 'https://www.linkedin.com/jobs/view/1', LIVENESS_EVIDENCE_URL: 'https://boards-api.greenhouse.io/v1/boards/a/jobs/9' }).kind, 'greenhouse');
   assert.strictEqual(L.atsFor({ SOURCE_URL: 'https://www.linkedin.com/jobs/view/1' }), null);
-  const info = { jobPostingInfo: { jobDescription: '<p>Requires a Bachelor&#39;s degree.</p><p>Pay range: $165,000 - $210,000 per year</p>' } };
+  const info = { jobPostingInfo: { jobDescription: '<p>Requires a Bachelor&#39;s degree.</p><p>Base salary USD $165,000 - $210,000 per year</p>' } };
   assert.deepStrictEqual(L.parseAts('workday', info).pay, { low: 165000, high: 210000 });
   assert.match(L.parseAts('workday', info).text, /Bachelor's degree/);
   assert.strictEqual(L.parseAts('workday', {}), null);
@@ -112,7 +112,7 @@ test('REV-138: same-employer source, board parsing, BLS series and cross-check',
   const q = L.boardListRequest(wd, 'Manufacturing Director - Lunar Tanks');
   assert.strictEqual(q.method, 'POST'); assert.match(q.url, /\/wday\/cxs\/blueorigin\/BlueOrigin\/jobs$/); assert.strictEqual(JSON.parse(q.body).searchText, 'Manufacturing Lunar Tanks');
   const gh = L.parseBoard({ kind: 'greenhouse' }, { jobs: [
-    { title: 'Director of Manufacturing', location: { name: 'Costa Mesa, CA' }, content: '&lt;p&gt;Base pay $200,000 - $260,000&lt;/p&gt;', absolute_url: 'u1' },
+    { title: 'Director of Manufacturing', location: { name: 'Costa Mesa, CA' }, content: '&lt;p&gt;Annual base pay USD $200,000 - $260,000&lt;/p&gt;', absolute_url: 'u1' },
     { title: 'Director, Manufacturing', location: { name: 'Atlanta, GA' }, content: 'no pay', absolute_url: 'u2' },
     { title: 'Technician', location: { name: 'Seattle, WA' }, content: '$60,000 - $80,000', absolute_url: 'u3' }] });
   assert.deepStrictEqual(gh.map(x => x.state), ['CA', 'GA', 'WA']);

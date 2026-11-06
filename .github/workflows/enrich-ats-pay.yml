@@ -37,6 +37,7 @@ jobs:
         run: node --test tools/enrich-ats-pay/*.test.js
       - name: Enrich
         env:
+          GITHUB_TOKEN: ${{ github.token }}
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
           ENRICH_PRODUCTS_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.products_only && '1' || '' }}
         run: node tools/enrich-ats-pay/run.js
@@ -45,11 +46,16 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: pay-runtime-${{ github.run_id }}
-          path: state/enrich-ats-pay*.json
+          path: |
+            state/enrich-ats-pay*.json
+            receipts/FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json
           retention-days: 14
       - name: Commit report and ledger
+        if: always()
         run: |
           mkdir -p /tmp/out && cp state/enrich-ats-pay*.json /tmp/out/
+          mkdir -p /tmp/pay-refusals
+          find receipts -maxdepth 1 -type f -name 'FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json' -exec cp -- {} /tmp/pay-refusals/ \;
           cp reference/COMPANY_SITE_CONTEXT.json /tmp/salary-context.json
           cp reference/EMPLOYER_PAY_SOURCES.json /tmp/pay-source-profile.json
           cp reference/EMPLOYER_PAY_BENCHMARKS.json /tmp/pay-benchmarks.json
@@ -57,10 +63,22 @@ jobs:
           git config user.email forge-ats-pay-bot@users.noreply.github.com
           # Same retry shape as build-needs-tim (REV-104): each retry starts from the latest main and re-copies only these files.
           for i in 1 2 3 4 5 6; do
+            # Restore immutable refusal proofs alongside the ledger on EVERY
+            # retry; never overwrite another publisher's different proof.
+            for proof in /tmp/pay-refusals/*.json; do
+              [ -f "$proof" ] || continue
+              dest="receipts/$(basename "$proof")"
+              if [ -f "$dest" ] && ! cmp -s "$proof" "$dest"; then
+                echo "Immutable refusal proof conflict: $dest" >&2
+                exit 1
+              fi
+              cp -n -- "$proof" "$dest"
+            done
             node tools/enrich-ats-pay/merge-context.cjs /tmp/salary-context.json
             node tools/enrich-ats-pay/merge-source-profile.cjs /tmp/pay-source-profile.json
             node tools/enrich-ats-pay/merge-benchmarks.cjs /tmp/pay-benchmarks.json
             git add state/enrich-ats-pay*.json reference/COMPANY_SITE_CONTEXT.json reference/EMPLOYER_PAY_SOURCES.json reference/EMPLOYER_PAY_BENCHMARKS.json
+            find receipts -maxdepth 1 -type f -name 'FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json' -print0 | xargs -0 -r git add --
             git diff --cached --quiet && { echo "No change"; exit 0; }
             git commit -q -m "ATS-PAY-BOT: enrichment report"
             git push -q origin HEAD:main && exit 0

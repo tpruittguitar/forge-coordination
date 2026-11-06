@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261102-ats-microdata-v1';
+const PARSER_VERSION='20261106-context-bound-facts-v2';
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -61,11 +61,14 @@ function inspect(raw, expected, quote = '', now = Date.now()) {
 }
 function inspectJobs(jobs,expected,quote='',now=Date.now()){
   if(!jobs.length)throw Error('STRUCTURED_POSTING_UNAVAILABLE');
+  const us=v=>/^(?:US|USA|United States(?: of America)?)$/i.test(typeof v==='string'?v:v?.name||'');
+  const usRemote=/^(?:Remote[,\s]+(?:US|USA|United States(?: of America)?)|(?:US|USA|United States(?: of America)?)[,\s]+Remote)$/i.test(String(expected.location||'').trim());
+  const remoteScope=j=>j.jobLocationType==='TELECOMMUTE'&&[].concat(j.applicantLocationRequirements||[]).some(us)||[].concat(j.jobLocation||[]).some(l=>/^remote$/i.test(l.address?.addressLocality||'')&&us(l.address?.addressCountry));
   const matches = jobs.filter(j => norm(j.title) === norm(expected.title) && [expected.company,...expected.companyAliases||[]].some(name=>employer(j.hiringOrganization?.name)===employer(name)) &&
-    [].concat(j.jobLocation || []).some(l => {
+    (usRemote?remoteScope(j):[].concat(j.jobLocation || []).some(l => {
       const a = l.address || {}, parts = [a.addressLocality, a.addressRegion].filter(Boolean).join(', ');
       return parts && location(parts) === location(expected.location);
-    }));
+    })));
   if (matches.length !== 1) throw Error('SOURCE_IDENTITY_AMBIGUOUS');
   const job = matches[0], description = text(job.description);
   if (description.length < 300 || /captcha|sign in to view|verify you are human/i.test(description)) throw Error('INCOMPLETE_POSTING');
@@ -74,8 +77,8 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
   const degree = require('./posting-formats.cjs').degree(job.description,text), sal = job.baseSalary, val = sal?.value;
   // A generic dollar range may be bonus/total compensation. Only structured,
   // explicitly annual USD base salary is eligible for automatic posted pay.
-  const low = Number(val?.minValue ?? val?.value), high = Number(val?.maxValue ?? val?.value);
-  const pay = sal?.currency === 'USD' && val?.unitText === 'YEAR' && low >= 40000 && high >= low && high <= 2000000 ? {low, high} : null;
+  const Pay=require('../enrich-ats-pay/pay-values'),structured=Pay.structured(sal);
+  const pay=structured&&!Pay.conflicts(description,structured,L.payFromText)?Pay.range(structured):null;
   return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
 async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
