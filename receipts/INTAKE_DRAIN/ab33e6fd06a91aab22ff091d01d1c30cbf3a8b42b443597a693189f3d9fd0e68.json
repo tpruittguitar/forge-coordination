@@ -1,0 +1,64 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "indeed:16a004ebe4f4aca2",
+  "sourceVersion": "1385abe73061a7a83ad965b3d9f557a6be8faa1d6ea049b72aeea1363bb0f537",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261106-RUN10-SCOPE-3-normalized-company",
+  "instructionCommit": "f33de86df197f2e979804fda7c175985b0fc28ed",
+  "observedAt": "2026-11-06T06:08:32.570476+00:00",
+  "writerSubmitted": false,
+  "outcome": "SOURCE_READY",
+  "resumeReference": {
+    "textSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "modifiedAt": "2026-10-13T22:42:09.660Z",
+    "driveReadThisRun": true
+  },
+  "canonicalVerified": false,
+  "reason": "Exact Ashby night-shift Weirton role provides factory maintenance-team leadership, equipment uptime, commissioning and corrective-action responsibilities. Existing shared source.employer normalization explicitly removes legal suffix Inc; captured Form Energy, Inc and observed Form Energy match under that existing rule, without a new alias. Night shift, actual Form Factory1 worksite and facilities scope retained. HVAC/electrical certifications and specialist depth remain unverified.",
+  "nextAction": "Existing source-intake-auto independently validates exact Ashby employer/title/night shift/Weirton source, contiguous quote/current resume overlap, then fresh canonical identity and Writer gates.",
+  "attempts": [
+    {
+      "source": [
+        "EMAIL_RECOVERY"
+      ],
+      "result": "Reused published exact identity and positive scope. Prior independent validation not recorded."
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#indeed:16a004ebe4f4aca2",
+      "result": "Read exact saved alert identity and public job-card excerpt; no full responsibilities or original request acceptance proof in this saved card."
+    },
+    {
+      "source": "https://jobs.ashbyhq.com/FormEnergy/a777875a-045d-41bf-b849-d3a9d42cbf66",
+      "result": "Read exact public role text through connected Exa; indexed evidence is not independent live source validation or canonical verification."
+    },
+    {
+      "source": "tools/programmed-coordinator/source.cjs#employer",
+      "result": "Read existing explicit legal-suffix normalization; employer(\"Form Energy, Inc\") equals employer(\"Form Energy\"). No new alias, software change or independent source validation claimed."
+    }
+  ],
+  "publicEvidence": {
+    "url": "https://jobs.ashbyhq.com/FormEnergy/a777875a-045d-41bf-b849-d3a9d42cbf66",
+    "quote": "Plan and oversee preventive, predictive, and corrective maintenance activities to maximize equipment uptime and production performance."
+  },
+  "targetedLookupCount": 1,
+  "instructionProcedureBlob": "072d476d4e427e3bb184041d46a1fd52b2672f37",
+  "sourceEvidence": {
+    "company": "Form Energy, Inc",
+    "title": "Facilities Maintenance Supervisor - Night Shift",
+    "location": "Weirton, WV",
+    "url": "https://jobs.ashbyhq.com/FormEnergy/a777875a-045d-41bf-b849-d3a9d42cbf66",
+    "quote": "Plan and oversee preventive, predictive, and corrective maintenance activities to maximize equipment uptime and production performance."
+  },
+  "scope": {
+    "verdict": "PLAUSIBLE_TARGET_FUNCTION",
+    "reason": "Actual factory equipment-reliability and maintenance-team leadership is adjacent manufacturing responsibility overlapping supported equipment commissioning, technical-team leadership and production uptime experience; no HVAC license, electrician credential or complete maintenance qualification inferred.",
+    "quote": "Plan and oversee preventive, predictive, and corrective maintenance activities to maximize equipment uptime and production performance.",
+    "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+    "resumeCompetencyIds": [
+      "manufacturing_leadership",
+      "automation_robotics"
+    ]
+  },
+  "supersedesReview": "receipts/INTAKE_DRAIN/805b3ec56129042d5c9284584afdf1c4ae78684c08503e41db5c9e9426b5f8e2.json"
+}
