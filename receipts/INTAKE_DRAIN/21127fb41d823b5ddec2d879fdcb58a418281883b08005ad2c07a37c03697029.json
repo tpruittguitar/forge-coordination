@@ -1,0 +1,69 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8fcc84702728f06dba615e6c",
+  "sourceVersion": "388409786c8d173da46ec64f20d7bedcdc6f21cce4a619e151c310784a66814f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T234750168Z-d306f1",
+  "instructionCommit": "f036a800b4bae35fbfd3fe5fbfdce31ddfaabdc3",
+  "observedAt": "2026-11-05T23:47:50.168Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original acceptance, fresh COMPLETE receipt-index state and current accepted-ID rows are available. Current rows retain exact original source; Writer verification/provenance conclusion awaits the registered read-only probe. A present row alone is not declared proof that original write completed.",
+  "nextAction": "Consume read-only probe42131876135 request_result/exact-row findings; existing source-intake-auto owns supported recovery. Preserve original request and do not replay.",
+  "retryCondition": "Read-only probe42131876135 completes and publishes candidate-specific evidence, or original evidence changes.",
+  "attempts": [
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Authenticated fresh independent read of exact original request; {\"requestId\":\"FORGE-SOURCE-C81EBBFAC0C77A0D7B49B2AD\",\"independentReceiptState\":\"COMPLETE\",\"indexUpdatedAt\":\"2026-11-05T23:45:21.539Z\",\"indexSha256\":\"cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81\"}"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T100723Z.json",
+      "result": "Original accepted receipt binds exact request, write ID and accepted primary IDs; no replay. Read-only probe workflow42131876135 dispatched after checking no active probe; outcome pending.",
+      "sha256": "301d8ff5da1848d20bfe44387bec454b723ea99806a02048c7af5d1d73c58659"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw read; END marker checked. Exact IDs and original source bindings compared; no private row prose published.",
+      "fileSha256": "ad4452c6f3e73b343473ffe86e20be0694cfd175c29b1d29ec1dda1089510287",
+      "modifiedAt": "2026-11-05T23:44:55.284Z",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-136B9F1281A3",
+          "bucket": "SCOUT_INTAKE",
+          "rowSha256": "5b4b58106efb1eb84ac3fd3c1684169b39a0128bbb5af9ee3d3181c99c347180",
+          "companyMatch": true,
+          "titleMatch": true,
+          "sourceMatch": true,
+          "location": "Costa Mesa, California, United States"
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "requestId": "FORGE-SOURCE-C81EBBFAC0C77A0D7B49B2AD",
+    "independentReceiptState": "COMPLETE",
+    "indexUpdatedAt": "2026-11-05T23:45:21.539Z",
+    "indexSha256": "cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81",
+    "originalReceiptSha256": "301d8ff5da1848d20bfe44387bec454b723ea99806a02048c7af5d1d73c58659",
+    "acceptedPrimaryIds": [
+      "V2I-136B9F1281A3"
+    ],
+    "writeId": "W-20261105100951450-141784",
+    "probeWorkflowId": 42131876135,
+    "rowProofs": [
+      {
+        "primaryId": "V2I-136B9F1281A3",
+        "bucket": "SCOUT_INTAKE",
+        "rowSha256": "5b4b58106efb1eb84ac3fd3c1684169b39a0128bbb5af9ee3d3181c99c347180",
+        "companyMatch": true,
+        "titleMatch": true,
+        "sourceMatch": true,
+        "location": "Costa Mesa, California, United States"
+      }
+    ]
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedProtectedExisting": 0
+}

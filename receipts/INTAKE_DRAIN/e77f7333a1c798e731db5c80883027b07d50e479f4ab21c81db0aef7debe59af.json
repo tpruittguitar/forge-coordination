@@ -1,0 +1,113 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4407509364",
+  "sourceVersion": "238392a422cac02a9155d93acca9b3ce70fd541467fa2797b0efdda748462c9c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261105T234730813Z-d4f172",
+  "instructionCommit": "f036a800b4bae35fbfd3fe5fbfdce31ddfaabdc3",
+  "observedAt": "2026-11-05T23:47:30.813Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original batch is independently COMPLETE but saved candidate WRITE_FAILED remains an identity hold. Fresh master has multiple same-title Anduril rows at different known sites; the captured Ashville site aligns with one declined row but exact original employer requisition/source alias is not proven. Preserve all decisions.",
+  "nextAction": "Existing authenticated coordinator reads original request_result after COMPLETE and resolves exact Ashville source-to-requisition binding; preserve declined rows and original request.",
+  "retryCondition": "Original source/requisition evidence resolves compatible-site identity without a conflicting employer posting.",
+  "attempts": [
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Authenticated fresh independent read of exact original request; {\"requestId\":\"FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001\",\"independentReceiptState\":\"COMPLETE\",\"indexUpdatedAt\":\"2026-11-05T23:45:21.539Z\",\"indexSha256\":\"cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81\"}"
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json",
+      "result": "Saved original candidate outcome remains {\"key\":\"linkedin:4407509364\",\"queueKey\":\"linkedin:4407509364\",\"status\":\"HELD_WRITER_IDENTITY\",\"reason\":\"AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION\",\"candidateIds\":[\"V2I-B63A6E3384F6\",\"V2I-FB44EF5AD478\",\"V2I-FF06D1E8F521\",\"V2S-ANDURIL-DIR-MFG-ENG-4800095007\",\"V2F-7F2BB2E33491\",\"V2S-ANDURIL-DME-NEW\",\"V2I-0F765A21E16C\"]}"
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt",
+      "result": "Authenticated complete raw read; END marker checked. Exact IDs and original source bindings compared; no private row prose published.",
+      "fileSha256": "ad4452c6f3e73b343473ffe86e20be0694cfd175c29b1d29ec1dda1089510287",
+      "modifiedAt": "2026-11-05T23:44:55.284Z",
+      "rowProofs": [
+        {
+          "primaryId": "V2I-B63A6E3384F6",
+          "bucket": "DECLINED_BY_TIM",
+          "rowSha256": "8007ca2f5d5f625d4706b9dc3235ed7d0e9314d9380e76d25029ba989d18e525",
+          "companyMatch": true,
+          "titleMatch": true,
+          "sourceMatch": false,
+          "location": "Costa Mesa, CA"
+        },
+        {
+          "primaryId": "V2I-FB44EF5AD478",
+          "bucket": "DISCOVERY_LEAD",
+          "rowSha256": "03c4f05c05eb3f02027a9b68ba936800ef0e3dcefe47c9cf49dcb6b789d08177",
+          "companyMatch": true,
+          "titleMatch": true,
+          "sourceMatch": false,
+          "location": "McHenry, MS"
+        },
+        {
+          "primaryId": "V2I-FF06D1E8F521",
+          "bucket": "DECLINED_BY_TIM",
+          "rowSha256": "6b5ac81fab2ee1e01f3c676882993e7a587d562232681ac99b9e84a32e680682",
+          "companyMatch": true,
+          "titleMatch": true,
+          "sourceMatch": false,
+          "location": "Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)"
+        }
+      ]
+    }
+  ],
+  "evidence": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "independentReceiptState": "COMPLETE",
+    "indexUpdatedAt": "2026-11-05T23:45:21.539Z",
+    "indexSha256": "cbbdf40302dafe196617cb8e6edabcbd4cf7ef797230c9eec4fbf1e5ef5b3d81",
+    "savedCandidateEffect": {
+      "key": "linkedin:4407509364",
+      "queueKey": "linkedin:4407509364",
+      "status": "HELD_WRITER_IDENTITY",
+      "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2I-B63A6E3384F6",
+        "V2I-FB44EF5AD478",
+        "V2I-FF06D1E8F521",
+        "V2S-ANDURIL-DIR-MFG-ENG-4800095007",
+        "V2F-7F2BB2E33491",
+        "V2S-ANDURIL-DME-NEW",
+        "V2I-0F765A21E16C"
+      ]
+    },
+    "rowProofs": [
+      {
+        "primaryId": "V2I-B63A6E3384F6",
+        "bucket": "DECLINED_BY_TIM",
+        "rowSha256": "8007ca2f5d5f625d4706b9dc3235ed7d0e9314d9380e76d25029ba989d18e525",
+        "companyMatch": true,
+        "titleMatch": true,
+        "sourceMatch": false,
+        "location": "Costa Mesa, CA"
+      },
+      {
+        "primaryId": "V2I-FB44EF5AD478",
+        "bucket": "DISCOVERY_LEAD",
+        "rowSha256": "03c4f05c05eb3f02027a9b68ba936800ef0e3dcefe47c9cf49dcb6b789d08177",
+        "companyMatch": true,
+        "titleMatch": true,
+        "sourceMatch": false,
+        "location": "McHenry, MS"
+      },
+      {
+        "primaryId": "V2I-FF06D1E8F521",
+        "bucket": "DECLINED_BY_TIM",
+        "rowSha256": "6b5ac81fab2ee1e01f3c676882993e7a587d562232681ac99b9e84a32e680682",
+        "companyMatch": true,
+        "titleMatch": true,
+        "sourceMatch": false,
+        "location": "Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)"
+      }
+    ]
+  },
+  "canonicalWrites": 0,
+  "independentlyVerifiedProtectedExisting": 0
+}
