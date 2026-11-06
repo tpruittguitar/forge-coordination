@@ -37,7 +37,7 @@ function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUT
 function collect({root, state, commit, routing = routingProof}) {
   const registry = S.read(root, 'control/AI_AUTOMATION_TASKS.json');
   const legacy = new Set(S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}).items.map(i=>i.batch));
-  const paths = ['receipts/CLAUDE_HELPERS', 'receipts/GROK_HELPERS', 'receipts/CLAUDE_RELEVANCE'];
+  const paths = ['receipts/CLAUDE_HELPERS', 'receipts/GROK_HELPERS', 'receipts/CHATGPT_HELPERS', 'receipts/CLAUDE_RELEVANCE'];
   let newBatches = 0, newItems = 0, updatedItems = 0;
   for (const dir of paths) for (const file of S.files(path.join(root, dir))) {
     const rel = path.relative(root, file).replace(/\\/g, '/'), raw = fs.readFileSync(file, 'utf8'), normalized=raw.replace(/\r\n/g,'\n'),sha256 = S.hash(normalized);

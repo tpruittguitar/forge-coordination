@@ -19,3 +19,10 @@ test('Greenhouse, Lever and Ashby board parsing preserves description evidence',
  a.match(P.parseBoard({kind:'lever'},[{text:card.title,descriptionPlain:'Plant leadership',lists:[{text:'Responsibilities',content:'Manage manufacturing'}]}])[0].description,/Manage manufacturing/);
  a.match(P.parseBoard({kind:'ashby'},{jobs:[{title:card.title,descriptionHtml:'Quality leadership'}]})[0].description,/Quality/);
 });
+
+test('detail reads are capped at three, retain order and isolate one failing source',async()=>{
+ let active=0,peak=0;
+ const cards=Array.from({length:8},(_,n)=>({...card,title:card.title+' '+n,detailUrl:String(n)}));
+ const result=await R.reviewAll(cards,{concurrency:30,detail:async url=>{active++;peak=Math.max(peak,active);await new Promise(resolve=>setTimeout(resolve,5));active--;if(url==='2')throw Error('offline');return {jobPostingInfo:{jobDescription:'Manage production '+url}};}});
+ a.equal(peak,3);a.deepEqual(result.map(r=>r.title),Array.from({length:8},(_,n)=>card.title+' '+n));a.equal(result[2].discoveryReview.detailStatus,'DETAIL_ACCESS_FAILED');a.equal(result[7].description,'Manage production 7');
+});

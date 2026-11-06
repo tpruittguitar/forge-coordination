@@ -1,0 +1,28 @@
+{
+  "schema": "forge.audited-entry-lock-failure.v1",
+  "reviewedBy": "CHATGPT",
+  "at": "2026-11-06T00:02:06.358Z",
+  "source": {
+    "repository": "tpruittguitar/foreman-cockpit",
+    "commit": "82a1daf911208dc7fb8f68ceffa65168c4419604",
+    "path": "apps-script/Code.gs",
+    "sha256": "227e3ecf05c21a8c713f73510ac9fdfbbe59c4382b53b9f3cc003638e771e1f6",
+    "waitLockLine": 1910
+  },
+  "preWritePrefix": "function applyIntakeToMaster_(req, internal) {\n  var lock = LockService.getScriptLock();\n  lock.waitLock(30000);\n  try {",
+  "basis": "These eight captured responses identify a ScriptLock exception before entering the try block, opening the master, creating intent or attempting mutation. Restricted to audited response hashes; never generalize from an absent receipt.",
+  "cases": [
+    {
+      "requestId": "FORGE-SOURCE-DB8A9348890B56052AE3ACAD",
+      "responseSha256": "613887b03404d6916ec78eba88b3534cf34bea8c977e1978fa7f5ffe4ba5f654"
+    },
+    {
+      "requestId": "FORGE-SOURCE-AF7F1AC983A022FD94936C6E",
+      "responseSha256": "613887b03404d6916ec78eba88b3534cf34bea8c977e1978fa7f5ffe4ba5f654"
+    },
+    {
+      "requestId": "FORGE-SOURCE-6A566C9B20B5DC7B0F7730D1",
+      "responseSha256": "613887b03404d6916ec78eba88b3534cf34bea8c977e1978fa7f5ffe4ba5f654"
+    }
+  ]
+}

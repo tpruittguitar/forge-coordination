@@ -1,0 +1,2 @@
+const {test}=require('node:test'),a=require('node:assert/strict'),H=require('./handoff-rates');
+test('reviewed handoffs use first durable handoff, not repeats, captures or stock',()=>{const now=Date.parse('2026-11-05T23:00:00Z'),at=h=>new Date(now-h*3600000).toISOString(),r=H.summarize([{id:'a',at:at(1)},{id:'a',at:at(2)},{id:'old',at:at(40)},{id:'future',at:at(-1)},{id:'no-clock'}],now);a.equal(r.ratesByWindow[6].count,1);a.equal(r.ratesByWindow[36].perHour,1/36);a.equal(H.summarize([],now).ratesByWindow[6].perHour,null);});

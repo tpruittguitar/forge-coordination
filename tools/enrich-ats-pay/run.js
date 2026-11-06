@@ -63,6 +63,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
   const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const decisionIds=require('./decision-queue').ids(rows,built,Evidence);
+  const discoveryEvidence=require('../source-trial/evidence-store').index(ROOT);
   const anchors = rows.map(r => L.postedAnchor(r, r.p)).filter(Boolean);
   // REV-140 (Tim 2026-10-21 03:30 ET): roles archived after they closed still carry valid employer-posted pay; they stay comparables.
   let archiveText = '',archiveComplete=false;
@@ -81,9 +82,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();if(await require('./writer-proof').verify(entry.requests,{index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]})){delete ledger.pendingWrites[requestId];continue;}}}catch{}
     for(const id of entry.ids||[])inFlightIds.add(id);
   }
-  const grokResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
+  const helperResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
   const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds]);
-  const researchUnavailableIds=new Set([...unavailableIds,...grokResearchIds]);
+  const researchUnavailableIds=new Set([...unavailableIds,...helperResearchIds]);
   const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
@@ -210,7 +211,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // gets its aggregator read and estimate.
   const closedByChecker = r => /^CLOSED/.test(val(r, 'LIVENESS')) || /^CLOSED/.test(val(r, 'ATS_CHECK_RESULT'));
   const first = list.filter(r => atsOf.get(r) && !closedByChecker(r)).slice(0, CONFIG.atsFirstPerRun || 25), firstSet = new Set(first);
-  const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger).sort((a,b)=>decisionIds.has(b.PRIMARY_ID)-decisionIds.has(a.PRIMARY_ID));
+  const ordered = PRODUCTS_ONLY?[]:Recovery.order(first.concat(list.filter(r => !firstSet.has(r))),ledger).sort((a,b)=>decisionIds.has(b.PRIMARY_ID)-decisionIds.has(a.PRIMARY_ID)||W.tier(a)-W.tier(b)||Number(Evidence.fit(b.p).value!=null&&need(b).length===1)-Number(Evidence.fit(a.p).value!=null&&need(a).length===1));
   stats.skipped_closed = 0; stats.ats_unconfirmed = 0; const unconfirmedRows = [];
   stats.public_tried=0; stats.public_read=0; stats.public_failed=0; const pending=[];
   // Old estimates are otherwise invisible to the missing-salary worklist. Audit their
@@ -280,10 +281,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
     progress('missing_row',{id:r.PRIMARY_ID});
-    const saved=Recovery.cached(ledger,r),helperResearch=grokResearchIds.has(r.PRIMARY_ID);
+    const saved=Recovery.cached(ledger,r)||require('../source-trial/evidence-store').forRow(discoveryEvidence,r),helperResearch=helperResearchIds.has(r.PRIMARY_ID);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let checked = false, attempted = false, postedPay = null, atsUnconfirmed = false;
-    if (api && !helperResearch && !saved) {
+    if (api && !helperResearch && (!saved||n.includes('SALARY')&&saved.payAmbiguous)) {
       stats.ats_rows++; attempted = true;
       try {
         await sleep(CONFIG.fetchGapMs);
@@ -302,7 +303,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }
         stats.ats_failed++; const k = api.kind; (stats.ats_errors = stats.ats_errors || {})[k] = stats.ats_errors[k] || []; stats.ats_errors[k].length < 3 && stats.ats_errors[k].push(String(e.status || e.message).slice(0, 60)); }
     }
-    // Grok reserves source research only; valid saved facts and calculations remain usable.
+    // Assigned helpers reserve source research only; valid saved facts and calculations remain usable.
     if(saved&&!checked){checked=true;postedPay=saved.pay;if(n.includes('SALARY')&&saved.pay)Object.assign(f,{SALARY_BASE_LOW:saved.pay.low,SALARY_BASE_HIGH:saved.pay.high,SALARY_MIDPOINT:Math.round((saved.pay.low+saved.pay.high)/2),SALARY_BASIS:saved.basis||'EMPLOYER_POSTED',SALARY_SOURCE:saved.url,SALARY_ASOF:saved.at.slice(0,10),SALARY_CONF:'HIGH'});if(n.includes('DEGREE')&&saved.degree)Object.assign(f,{DEGREE_TEXT:saved.degree.text,DEGREE_REQ:saved.degree.req,DEGREE_EVIDENCE_URL:saved.url,DEGREE_ASOF:saved.at.slice(0,10)});}
     // Tim 2026-10-20 18:21 ET: an aggregator posting (LinkedIn, Indeed, ZipRecruiter) with pay counts as posting pay
     // Tim 2026-10-26: Indeed viewjob pages answer 401 to this runner on every read; Indeed roles come in through JobSpy and HiringCafe.
@@ -353,7 +354,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       fr.dates = fr.dates.slice(-5); fr.n = fr.dates.length;
       noPostingRead = fr.n >= 2 && !val(r, 'FEASIBILITY_ATTEMPT_ASOF');
     }
-    const postingChecked = checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
+    const postingChecked = saved?.payAmbiguous&&!postedPay?false:checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
       else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
@@ -459,7 +460,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     } catch (e) { if(e.code==='RUN_BUDGET'){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break;} if (!e.counted) { stats.writer_failed += batch.length; stats.writer_error = String(e.message).slice(0, 200); } continue batches; }
     progress('writer_batch_done',{batch:b+1,accepted:stats.writer_ok});
     // No final cooldown: it used to waste 130 seconds after the last batch.
-    if((b+1)*25<requests.length&&b+1<CONFIG.maxBatches){try{await sleep(CONFIG.batchGapMs);}catch(e){if(e.code!=='RUN_BUDGET')throw e;stats.writer_budget_deferred=requests.length-(b+1)*25;break;}}
+    if((b+1)*25<requests.length&&b+1<CONFIG.maxBatches){try{await require('./readiness').wait({sleep,maxMs:CONFIG.batchGapMs,probe:async()=>require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0]})});}catch(e){if(e.code!=='RUN_BUDGET')throw e;stats.writer_budget_deferred=requests.length-(b+1)*25;break;}}
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
   // is PENDING (the Writer verifies a save no sooner than 120 s after it), up to replyCheckPolls x replyCheckGapMs.
@@ -491,7 +492,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('publish_report');
   if(!DRY&&profileRebuilt)fs.writeFileSync(PAY_SOURCE_FILE,JSON.stringify(payProfile,null,2)+'\n');
   if (!DRY) fs.writeFileSync(LEDGER, JSON.stringify(ledger, null, 1) + '\n');
-  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,grokResearchIds.has(r.PRIMARY_ID)?'GROK_RESEARCH_RESERVED':helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
+  const recoveryRows=list.filter(r=>!closedByChecker(r)).map(r=>Recovery.unresolved(r,need(r),ledger,helperResearchIds.has(r.PRIMARY_ID)?'AI_RESEARCH_RESERVED':helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':inFlightIds.has(r.PRIMARY_ID)?'WRITER_REQUEST_PENDING_NO_REPLAY':null));
   if(!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-recovery.json'),JSON.stringify({schema:'forge.enrichment-recovery.v1',at:new Date().toISOString(),run:RUN_ID,rows:recoveryRows,pendingWrites:ledger.pendingWrites,note:'Pre-write worklist; use reconciled process flow for completions. Never replay an uncertain original request.'},null,2)+'\n');
   if(salaryContext){stats.salary_model_version=Context.VERSION;stats.salary_context={companies:salaryContext.companies.length,roles:salaryContext.roles.length,nonblocking:true};const calibration=require('./calibration').evaluate(rows,anchors,salaryContext);if(!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-calibration.json'),JSON.stringify(calibration,null,2)+'\n');}
   stats.recovery_statuses=recoveryRows.reduce((out,r)=>(out[r.status]=(out[r.status]||0)+1,out),{});

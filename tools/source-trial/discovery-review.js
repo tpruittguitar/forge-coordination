@@ -14,12 +14,13 @@ function review(card,{description='',observedAt=new Date().toISOString(),detailS
  const reason=`Title selected as ${family||'UNCLASSIFIED'} / ${level||'UNKNOWN_LEVEL'}; location ${place||'UNKNOWN'}. `+(text?`Source content hits: ${scopeHits.join(', ')||'none'}; responsibility hits: ${leadershipHits.join(', ')||'none'}.`:'Role content unavailable; retain for intake review.')+' Resume-supported hits: '+(resumeMatch.matches.map(m=>m.competencyId).join(', ')||'none observed; retain unknown')+'.';
  return{...card,selectionReason:reason,discoveryReview:{schema:'forge.discovery-review.v1',observedAt,sourceUrl,source:card.source,decision:preliminaryScreen.decision,preliminaryScreen,basis:'PROVISIONAL_TITLE_FAMILY_LEVEL_AND_LOCATION',resumeMatch,checks:{family,level,place},titleHits,scopeHits,leadershipHits,detailStatus:text?'SOURCE_CONTENT_REVIEWED':detailStatus,sourceSha256:text?hash(text):null,evidenceQuotes:evidence,unknowns,canonicalEligibility:false},...(text?{description:text}:{} )};
 }
-async function reviewAll(cards,{now=()=>Date.now(),deadline=Infinity,detail=async()=>null,screenContext}={}){
- for(let n=0;n<cards.length;n++){
+async function reviewAll(cards,{now=()=>Date.now(),deadline=Infinity,detail=async()=>null,screenContext,concurrency=3}={}){
+ let cursor=0;async function worker(){for(;;){const n=cursor++;if(n>=cards.length)return;
   const card=cards[n];let description=card.description||'',status='NOT_RETURNED_BY_SOURCE';
   if(!description&&card.detailUrl){if(now()>=deadline)status='DEFERRED_RUNTIME_BOUNDARY';else try{const d=await detail(card.detailUrl);description=d?.jobPostingInfo?.jobDescription||'';status=description?'SOURCE_CONTENT_REVIEWED':'DETAIL_CONTENT_UNAVAILABLE';}catch{status='DETAIL_ACCESS_FAILED';}}
   cards[n]=review(card,{description,observedAt:new Date(now()).toISOString(),detailStatus:status,screenContext});delete cards[n].detailUrl;
  }
+ }await Promise.all(Array.from({length:Math.max(1,Math.min(3,concurrency,cards.length||1))},worker));
  return cards;
 }
 module.exports={review,reviewAll};

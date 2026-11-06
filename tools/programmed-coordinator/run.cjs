@@ -134,7 +134,8 @@ async function main(mode='inventory') {
       const W=require(path.join(fc,'apps-script/PipelineWorklists.gs')), key=cfg.PipelineConnection.key;
       const snapshot=async()=>{
         const [m,a,s]=await Promise.all([require('../pipeline-observability/canonical-snapshot').readCanonical({key,W}),R.fetchAuthenticatedArchive({key}),R.read('writer_status',{key})]);
-        return {rows:m.rows,archiveRows:a.rows.map(r=>W.parseRows(r.RAW_ROW)[0]),status:s.data,source:m.source};
+        const built=W.build(m.rows.map(r=>r.line).join('\n')),needsById=Object.fromEntries(m.rows.map(r=>[r.PRIMARY_ID,[]]));for(const r of built.lanes.FORGE_ENRICH_FEASIBILITY)needsById[r.PRIMARY_ID]=(W.render('FORGE_ENRICH_FEASIBILITY',{lanes:{FORGE_ENRICH_FEASIBILITY:[r]}},{generatedAt:'snapshot'}).match(/NEED=([A-Z,]*)/)?.[1]||'').split(',').filter(Boolean);
+        return {rows:m.rows,archiveRows:a.rows.map(r=>W.parseRows(r.RAW_ROW)[0]),status:s.data,source:m.source,needsById};
       };
       deps={snapshot,checkLock:()=>Lock.lock(lock,'check',runId),index:()=>require('../writer-verify/recovery').loadIndex({token:cp.execFileSync('gh',['auth','token'],{encoding:'utf8'}).trim()}),
         exists:async rid=>(await R.read('receipt_index',{key,requestId:rid})).data.request!=null,

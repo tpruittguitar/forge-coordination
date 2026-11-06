@@ -1,0 +1,19 @@
+# ChatGPT ownership and evidence-first discovery
+
+Tim requested that ChatGPT replace Grok, that current preliminary resume/never-consider screening cover the existing discovery backlog, and that downstream phases reuse facts already discovered.
+
+The current research owner is ChatGPT. The existing Gofer heartbeat executes an evidence-only enrichment utility; no additional native automation is required. The programmed coordinator retains canonical write authority. Retired Grok intake/outcome routes no longer reserve candidates or threads. Exact previously accepted historical batches remain readable through explicit content hashes; new returns cannot reclaim the retired routes. This does not claim that remote Grok native schedules were disabled: their native state remains unverified.
+
+The discovery ledger is the discovery table. Each observability refresh screens every retained identity using the current verified rules and resume context, including candidates omitted from rolled-over reports. Public board descriptions are stored as content-addressed evidence with exact employer/title/location, source URL, observation time, and report commit. Mail bodies and resume text are not copied to this public store. The small manifest allows intake and enrichment to reuse the data without reading the whole ledger. First refresh backfills report history; subsequent refreshes parse only new report revisions. Existing capture dates and source review bindings are preserved.
+
+Only recognized employer board descriptions of sufficient length without access challenges qualify as complete postings. Intake reuses an exact full identity match for six hours. Enrichment uses the existing seven-day posting evidence bound. Missing, stale, partial, or conflicting evidence falls back to normal reads/research. Salary requires an explicit annual base range; ambiguous compensation cannot establish a salary. Short excerpts cannot establish absence of degree requirements. Rules and canonical master/archive/receipt checks still run independently. Preliminary competency overlap is not a final ATS score, and absent content cannot cause automatic exclusion.
+
+Discovery detail reads use up to three workers, retain deterministic card order, and preserve independent source failures. Enrichment prioritizes jobs one field from completion within existing priority bands. Batch waiting can end early only after COMPLETE receipt and exact submitted-field readback; missing proof retains the bounded delay. The coordinator releases obsolete research only when a fresh canonical snapshot proves those requested fields already present or the row protected.
+
+## Recovery notice publication
+
+FORGE-AUTO-20261105T220727Z reached all 24 candidates, then stopped at a Writer health check. Its final original request, FORGE-SOURCE-025B189B060F31ED1350E2CD, has a COMPLETE durable receipt bound to W-20261105232025973-6062e7 and exact row V2I-ED0C319C2800. Subsequent intake was already submitting unrelated work while the dashboard still displayed the old stop. Recovery state had been retained in the active runner until its next long intake batch finished.
+
+The workflow now separates recovery from new-candidate processing and publishes recovered run records before starting the new batch, as well as after a halt. Every publication uses its own temporary snapshot. No uncertain request is replayed to dismiss a notice; unresolved requests retain their fences.
+
+Validation covers immutable cache bindings, freshness, private-data rejection, current-rule rescreening from saved posting text after report rollover, incremental history, exact historical ownership cutover, requested-field reconciliation, bounded source concurrency, receipt-aware readiness, and snapshot-pinned discovery evidence links in the app. Operational counts belong in the generated DISCOVERY_SCREEN_REPORT, not in this static document.
