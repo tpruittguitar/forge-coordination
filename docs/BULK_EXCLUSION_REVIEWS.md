@@ -1,0 +1,9 @@
+# Bulk exclusion review preparation
+
+Run `node tools/intake-drain/bulk-exclusion-reviews.cjs assignment.json > /tmp/review-plan.json` from a fresh current main checkout. The assignment JSON contains `keys` (explicit unique current keys assigned to this owner) and `runId` (`FORGE-DRAIN-...`). Coordinate key ownership before preparing work; this tool does not claim work or acquire a lease.
+
+The tool synchronizes inventory read-only and prepares source-version-bound EXCLUSION_CANDIDATE envelopes only for ACTION_REQUIRED ChatGPT research items with one exact reviewed employer binding. It skips existing reviews, in-progress dispositions, canonical representations, conflicts, Writer fences, unknown keys and CODE-owned work. It never expands employer bindings, fetches sources, asserts that a rule is active, publishes receipts, or changes queue/canonical state.
+
+Review the output, recheck current ownership, and submit each envelope through existing `queue.cjs review` and authorized append-only publication. That existing path revalidates current sourceVersion and guards; stale reviews fail rather than being rewritten. Independent source-intake verification must still read active canonical rules and official source evidence; the existing observer must independently protect canonical matches and account EXCLUDED identities. Prepared, published, independently verified and excluded are distinct counts. No schedule or automation changes are needed.
+
+Existing receipts are deliberately not superseded automatically, even when retry is due. Their owner must first reconcile the original work. A bulk plan is not authorization for duplicate work or uncertain Writer replay. Use the established reviewed-binding process for new employers; suppliers, subsidiaries and fuzzy employer matches never inherit a binding here.
