@@ -1,6 +1,6 @@
 {
   "schema": "forge.schedule-readback.v1",
-  "at": "2026-11-06T04:38:01.649625Z",
+  "at": "2026-11-06T05:01:55.140046Z",
   "timezone": "America/New_York",
   "owner": "ChatGPT/Codex until Tim explicitly changes it",
   "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
@@ -13,9 +13,12 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "FORGE_AI_USAGE_READER",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793778225938",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "fee80015d7cdf397bb1c9dd7c546332d078427de8fce0a306e213290e5b2beb9"
+      "nativeConfigurationSha256": "fee80015d7cdf397bb1c9dd7c546332d078427de8fce0a306e213290e5b2beb9",
+      "managed": true
     },
     {
       "id": "forge-application-outcome-tracker",
@@ -23,9 +26,12 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793778225921",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "bb47a772c21051d44f4c534b796bbbc5f5ce23e66fcead8b27a2d4bb8c608601"
+      "nativeConfigurationSha256": "bb47a772c21051d44f4c534b796bbbc5f5ce23e66fcead8b27a2d4bb8c608601",
+      "managed": true
     },
     {
       "id": "forge-application-writer-gofer",
@@ -33,9 +39,12 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "FORGE_APPLICATION_WRITER_GOFER",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793844608825",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "3c54003f5862e0351cae3d2aecf6eb05cf2d2dafe4a6ba4ecf689da903b8ca7b"
+      "nativeConfigurationSha256": "3c54003f5862e0351cae3d2aecf6eb05cf2d2dafe4a6ba4ecf689da903b8ca7b",
+      "managed": true
     },
     {
       "id": "forge-email-discovery",
@@ -43,9 +52,12 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=2;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "FORGE_EMAIL_DISCOVERY",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793778225914",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "0465b3334d73eec2bd50ce58c6a6a62c590d0bd38d27b80f8891b84f82ef53b4"
+      "nativeConfigurationSha256": "0465b3334d73eec2bd50ce58c6a6a62c590d0bd38d27b80f8891b84f82ef53b4",
+      "managed": true
     },
     {
       "id": "forge-posting-validation",
@@ -53,9 +65,12 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "FORGE_POSTING_VALIDATION",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793778225933",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "4a7047ba2cb02b38691d951e9ce479a2d5f11c37144e002255fedf817d007b7b"
+      "nativeConfigurationSha256": "4a7047ba2cb02b38691d951e9ce479a2d5f11c37144e002255fedf817d007b7b",
+      "managed": true
     },
     {
       "id": "pe-stack-health-daily",
@@ -63,16 +78,19 @@
       "status": "ACTIVE",
       "rrule": "RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45;BYSECOND=0",
       "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+      "taskKey": "PE_STACK_HEALTH_DAILY",
+      "provider": "ChatGPT",
       "nativeUpdatedAt": "1793424235084",
       "sharedEntry": true,
-      "nativeConfigurationSha256": "639cf21e2fe8e3a50289b006c601ceecdaad05c10b3192bac63c9f127e573803"
+      "nativeConfigurationSha256": "639cf21e2fe8e3a50289b006c601ceecdaad05c10b3192bac63c9f127e573803",
+      "managed": true
     }
   ],
   "githubScheduleCommit": "abec07fe23b344fd64de061632b7a0325ec26838",
   "runtimeRelease": "8c3556be433bd9736585",
   "priorReadbackAt": "2026-10-31T00:45:23.063Z",
   "configurationReadbackSource": "Current local Codex automation TOMLs; shared entry launcher verified",
-  "observationMethod": "Read local Codex automation.toml files; configuration only",
+  "observationMethod": "Enumerated all local automation.toml files; configuration only",
   "historicalExternalReadback": {
     "at": "2026-10-31T00:45:23.063Z",
     "observations": {
@@ -131,5 +149,18 @@
       "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof"
     }
   ],
-  "configurationReadbackScope": "LOCAL_CODEX_ONLY"
+  "configurationReadbackScope": "LOCAL_CODEX_ONLY",
+  "configurationDiscrepancies": [],
+  "configurationInformational": [],
+  "configurationAligned": true,
+  "observationScopes": {
+    "LOCAL_CODEX": {
+      "status": "READ",
+      "at": "2026-11-06T05:01:55.140046Z"
+    },
+    "CLOUD_AUTOMATIONS": {
+      "status": "NOT_READ",
+      "reason": "Local files cannot establish cloud task configuration"
+    }
+  }
 }
