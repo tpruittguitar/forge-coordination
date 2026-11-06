@@ -1,7 +1,7 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-06T04:49:01.457Z",
-  "source": "Immutable lane receipts and verified native configuration; no Writer/master mutations",
+  "at": "2026-11-06T04:52:47.015Z",
+  "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
     "run": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET",
@@ -107,10 +107,12 @@
     },
     {
       "id": "forge-email-discovery",
-      "at": "2026-11-06T04:48:20.422Z",
-      "status": "COORDINATED_WITH_PENDING_WORK",
+      "at": "2026-11-02T02:07:20.898Z",
+      "status": "RETURNS_COLLECTED_WITH_PENDING_SOURCE_CORRECTION",
       "evidenceFiles": [
-        "receipts/FORGE-CODE-CHATGPT-20261106T044024091Z_TERMINAL.json"
+        "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_TERMINAL.json",
+        "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_HELPER_COLLECTION.json",
+        "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET-E001_VERIFIED.json"
       ],
       "executionVerified": true
     },
@@ -155,11 +157,23 @@
       "executionVerified": true
     }
   ],
+  "services": [
+    {
+      "id": "programmed-coordinator",
+      "at": "2026-11-06T04:48:20.422Z",
+      "status": "COORDINATED_WITH_PENDING_WORK",
+      "workEvidenceVerified": true,
+      "nativeInvocationVerified": false,
+      "evidenceFiles": [
+        "receipts/FORGE-CODE-CHATGPT-20261106T044024091Z_TERMINAL.json"
+      ]
+    }
+  ],
   "helperCoordination": {
-    "at": "2026-11-06T04:48:20.422Z",
-    "runId": "FORGE-CODE-CHATGPT-20261106T044024091Z",
+    "at": "2026-11-02T02:07:20.898Z",
+    "runId": "FORGE-COORDINATOR-CHATGPT-20261101-2057ET",
     "coverageComplete": false,
-    "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261106T044024091Z_TERMINAL.json"
+    "sourceFile": "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_TERMINAL.json"
   },
   "emailCapture": {
     "at": "2026-11-06T04:48:20.422Z",
@@ -173,6 +187,19 @@
   },
   "schedules": {
     "configurationObservedAt": "2026-11-06T04:38:01.649625Z",
+    "configurationReadbackScope": "LOCAL_CODEX_ONLY",
+    "observationScopes": {
+      "LOCAL_CODEX": {
+        "status": "READ"
+      },
+      "CLOUD_AUTOMATIONS": {
+        "status": "NOT_READ"
+      }
+    },
+    "configurationDiscrepancies": [],
+    "nativeInvocationVerified": false,
+    "nativeInvocationStatus": "NOT_OBSERVED",
+    "nativeInvocationLimitation": "Task-work receipts are not scheduler invocation or destination-delivery records; no bound native execution-record producer is configured",
     "active": [
       {
         "id": "forge-ai-usage-reader",
@@ -180,16 +207,22 @@
         "lastRunAt": "2026-11-06T01:11:06.462Z",
         "status": "OK",
         "executionVerified": true,
+        "taskExecutionVerified": true,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "usage/AI_USAGE_READINGS.jsonl"
         ]
       },
       {
         "id": "forge-application-outcome-tracker",
-        "lastDueAt": "2026-11-06T02:22:00.000Z",
+        "lastDueAt": "2026-11-06T03:22:00.000Z",
         "lastRunAt": "2026-11-06T01:18:55.602Z",
         "status": "SOURCE_CAPTURE_CORROBORATED_CODE_CONSUMPTION_PENDING",
         "executionVerified": false,
+        "taskExecutionVerified": false,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "receipts/AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261106T011742Z_TERMINAL.txt",
           "receipts/FORGE-CODE-CHATGPT-20261106T044024091Z_TERMINAL.json"
@@ -201,6 +234,9 @@
         "lastRunAt": "2026-11-05T07:44:36.337Z",
         "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
         "executionVerified": false,
+        "taskExecutionVerified": false,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T074326Z_TERMINAL.txt",
           "receipts/AI_EXCEPTION_REVIEWS/440adc19ea451871fbacd50e81c9cb962bf88f3a5a36743508263ad256269e31-61c9c0ad7699f09d99e6d789a5db24c271c238ff5c47058ca6719f0f8193dd11.json",
@@ -211,11 +247,16 @@
       {
         "id": "forge-email-discovery",
         "lastDueAt": "2026-11-06T03:02:00.000Z",
-        "lastRunAt": "2026-11-06T04:48:20.422Z",
-        "status": "COORDINATED_WITH_PENDING_WORK",
-        "executionVerified": true,
+        "lastRunAt": "2026-11-02T02:07:20.898Z",
+        "status": "RETURNS_COLLECTED_WITH_PENDING_SOURCE_CORRECTION",
+        "executionVerified": false,
+        "taskExecutionVerified": false,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/FORGE-CODE-CHATGPT-20261106T044024091Z_TERMINAL.json"
+          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_TERMINAL.json",
+          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_HELPER_COLLECTION.json",
+          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET-E001_VERIFIED.json"
         ]
       },
       {
@@ -224,6 +265,9 @@
         "lastRunAt": "2026-11-05T02:12:10.458Z",
         "status": "DEFERRED_SHARED_LOCK",
         "executionVerified": false,
+        "taskExecutionVerified": false,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261104-2111ET_TERMINAL.txt"
         ]
@@ -234,6 +278,9 @@
         "lastRunAt": "2026-11-05T12:43:25.136Z",
         "status": "READBACKS_OK_WITH_EXISTING_WARNINGS",
         "executionVerified": true,
+        "taskExecutionVerified": true,
+        "nativeInvocationVerified": false,
+        "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "receipts/HEALTH_AUDIT_20261105_0742ET.json"
         ]
