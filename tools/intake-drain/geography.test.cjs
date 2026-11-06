@@ -27,6 +27,12 @@ test('full-state alternative worksites fail closed, including same-state and vis
   'Based in Albany, NY; Denver, colorado is also available.',
   'Work location: Albany, New York and Denver Colorado. Manage operations.',
   'Based in Albany New York; Denver Colorado is also available.',
+  'Work location: Albany, NY and Denver CO. Manage operations.',
+  'Work location: Albany and Buffalo, NY. Manage operations.',
+  'Work location: Albany, NY and Toronto, Canada. Manage operations.',
+  'Based in Albany, NY; London, UK is also available.',
+  'Based in Albany, NY. London, UK is also available.',
+  'Work location: Albany, NY. Toronto, Canada is an alternative.',
   'Work location: Denver, Colorado. Manage operations at this worksite.'
  ]) {
   a.throws(()=>G.inspect(html({...f.job,description}),f.card,now),/MULTILOCATION/,description);

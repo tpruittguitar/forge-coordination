@@ -27,7 +27,11 @@ function inspect(raw,card,now){
  if(matches.length!==1)throw Error('EXACT_SINGLE_GEOGRAPHY_POSTING_REQUIRED');
  const j=matches[0];
  const prose=visible+' '+Source.text(j.description);
- const regions=[...prose.matchAll(/,\s*(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)\b/g)].map(m=>m[1]);
+ // Fail closed on alternatives in a worksite sentence, including shared states and international cities.
+ if(/\b(?:also|alternative|alternatively|either|elsewhere|options)\b/i.test(prose))throw Error('REMOTE_OR_MULTILOCATION_REQUIRES_REVIEW');
+ const worksiteClauses=prose.split(/[.!?\n]/).filter(part=>/\b(?:based|worksite|located|locations?|offices?|sites?|work in|work at|stationed)\b/i.test(part));
+ if(worksiteClauses.some(part=>/\b(?:and|or|also|alternatively|either|available)\b|[;\/|&]/i.test(part)))throw Error('REMOTE_OR_MULTILOCATION_REQUIRES_REVIEW');
+ const regions=[...prose.matchAll(/\b(AL|AK|AZ|AR|CA|CO|CT|DE|FL|GA|HI|ID|IL|IN|IA|KS|KY|LA|ME|MD|MA|MI|MN|MS|MO|MT|NE|NV|NH|NJ|NM|NY|NC|ND|OH|OK|OR|PA|RI|SC|SD|TN|TX|UT|VT|VA|WA|WV|WI|WY|DC)\b/g)].map(m=>m[1]);
  regions.push(...[...prose.matchAll(FULL_REGION)].map(m=>REGION_BY_NAME[m[1].toLowerCase()]));
  if(regions.length>1||regions.some(st=>st!==state(card.location))||/\b(?:locations|offices|sites|choose|choice|flexible location|location options)\b/i.test(prose)||/(?:based|worksite|located|locations?|offices?|sites?)[^.!?\n]{0,120}\bor\b/i.test(prose))throw Error('REMOTE_OR_MULTILOCATION_REQUIRES_REVIEW');
  for(const url of [j.url,j['@id']].filter(Boolean)){
