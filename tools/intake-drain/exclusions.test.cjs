@@ -15,3 +15,37 @@ test('new submission after validation is fenced at consume time, before drain sy
 test('canonical company suffix variants are protected',async t=>{const f=await verified(t),e=S.read(f.root,'state/UPSTREAM_LEDGER.json').entries[f.key];a.equal(E.approved(f.root,e,{rules,rows:[{COMPANY:e.company+', Inc.',TITLE:e.title,LOCATION:'Other'}],now}),null);});
 
 test('unrelated rule additions preserve verified exclusions but matching rule changes reopen',async t=>{const f=await verified(t),e=S.read(f.root,'state/UPSTREAM_LEDGER.json').entries[f.key];a.ok(E.approved(f.root,e,{rules:{...rules,raw:'new unrelated rules',rules:[...rules.rules,{RULE_ID:'NC-006',active:true}]},rows:[],now}));a.equal(E.approved(f.root,e,{rules:{...rules,rules:rules.rules.map(r=>({...r,active:false}))},rows:[],now}),null);});
+
+function roleSetup(t){
+ const f=setup(t),definition='- NC-005 FINANCIAL_AND_ACCOUNTING_ROLES: exclude roles whose primary function is finance or accounting; preserve manufacturing budget responsibility.';
+ const b={...f.b,kind:'ROLE_TEMPLATE',title:f.item.card.title,ruleId:'NC-005',category:'FINANCIAL_AND_ACCOUNTING_ROLES',definitionSha256:require('node:crypto').createHash('sha256').update(definition).digest('hex')};
+ S.save(f.root,'reference/EXCLUSION_ROLE_EVIDENCE.json',{entries:[b]});
+ const r={...f.r,exclusionEvidence:{kind:b.kind,title:b.title,company:b.company,ruleId:b.ruleId,url:b.url,quote:b.quote}};
+ return{...f,b,r,rules:{status:'ACTIVE',raw:'SECTION=NEVER_CONSIDER\n'+definition+'\n',rules:[]},source:b.company+' '+b.title+' '+b.quote};
+}
+test('role templates require exact employer AND title, active canonical definition, and responsibility source',async t=>{
+ const f=roleSetup(t),opts={rules:f.rules,fetchPage:async url=>({url,raw:f.source}),now};
+ const v=await E.verify(f.root,f.r,f.item,opts);a.equal(v.status,'READY_FOR_CONTROLLED_EXCLUSION');
+ for(const card of [{...f.item.card,title:'Manufacturing Director'},{...f.item.card,title:'General Manager, Plant'},{...f.item.card,company:'Different'},{...f.item.card,title:'Other General Manager'}])a.throws(()=>E.binding(f.root,f.rules,f.r.exclusionEvidence,card),/BINDING/);
+ for(const raw of ['',f.rules.raw.replace('finance','other'),f.rules.raw+f.rules.raw])a.throws(()=>E.binding(f.root,{...f.rules,raw},f.r.exclusionEvidence,f.item.card),/RULE/);
+ await a.rejects(E.verify(f.root,f.r,f.item,{...opts,fetchPage:async url=>({url,raw:f.b.quote})}),/ROLE_SOURCE_IDENTITY/);
+ await a.rejects(E.verify(f.root,f.r,f.item,{...opts,fetchPage:async url=>({url,raw:f.b.company+' '+f.b.title})}),/QUOTE/);
+ a.throws(()=>E.binding(f.root,f.rules,{...f.r.exclusionEvidence,title:'Other'},f.item.card),/BINDING/);
+});
+test('role exclusions use existing observer protections and preserve history without canonical writes',async t=>{
+ const f=roleSetup(t);Q.publish(f.root,f.r,now);
+ await Q.verify(f.root,{privateDir:os.tmpdir(),now,apply:true,exclusionContext:{rules:f.rules},verifyExclusion:(root,r,item,opts)=>E.verify(root,r,item,{...opts,fetchPage:async url=>({url,raw:f.source})})});
+ const prior=S.read(f.root,'state/UPSTREAM_LEDGER.json');
+ let v=U.build({records:[],rows:[],root:f.root,prior,screenContext:{rules:f.rules},now});a.equal(v.summary.counts.EXCLUDED,1);a.equal(v.ledger.entries[f.key].exclusionProof.canonicalWrites,0);
+ const rows=[{PRIMARY_ID:'V2I-X',COMPANY:f.item.card.company,TITLE:f.item.card.title,LOCATION:'Other',BUCKET:'APPLIED',p:{}}];
+ v=U.build({records:[],rows,root:f.root,prior,screenContext:{rules:f.rules},now});a.equal(v.summary.counts.EXCLUDED,0);a.equal(rows[0].BUCKET,'APPLIED');
+});
+test('property-management rule templates are supported but industrial titles and unsupported categories remain fenced',t=>{
+ const f=roleSetup(t),b={...f.b,ruleId:'NC-006',category:'PROPERTY_MANAGEMENT_ROLES',title:'Community Manager'};
+ const definition='- NC-006 PROPERTY_MANAGEMENT_ROLES: exclude residential real-estate management; preserve industrial facilities.';
+ b.definitionSha256=require('node:crypto').createHash('sha256').update(definition).digest('hex');S.save(f.root,'reference/EXCLUSION_ROLE_EVIDENCE.json',{entries:[b]});
+ const e={kind:b.kind,title:b.title,company:b.company,ruleId:b.ruleId,url:b.url,quote:b.quote};
+ a.deepEqual(E.binding(f.root,{status:'ACTIVE',raw:definition},e,{company:b.company,title:b.title}),b);
+ a.equal(E.roleMatches({...b,title:'Industrial Facilities Manager'},{company:b.company,title:'Industrial Facilities Manager'}),false);
+ a.equal(E.roleMatches({...b,ruleId:'NC-007'},{company:b.company,title:b.title}),false);
+});
