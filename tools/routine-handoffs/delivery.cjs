@@ -1,6 +1,6 @@
 'use strict';
 const C=require('../programmed-coordinator/collect.cjs');
-const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
+const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
 async function harvest({root,privateDir,commit,pr,api,validate=C.validateEnvelope,routing=C.routingProof}){
  if(!privateDir||pr.base?.ref!=='main'||pr.head?.repo?.full_name!==repository)return{captured:0};
  const files=await api.pages(`/repos/${repository}/pulls/${pr.number}/files`),record=/^control\/changes\/[A-Za-z0-9_.-]+\.txt$/;

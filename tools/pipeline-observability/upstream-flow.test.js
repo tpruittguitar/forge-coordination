@@ -29,3 +29,25 @@ test('salary comparables and review evidence cannot create identity conflicts or
 test('multiple actual posting identity URLs remain an identity hold',()=>{
  const j=U.build({records:[c(123)],rows:[row,{...row,PRIMARY_ID:'V2I-SECOND',p:{LINKEDIN_URL:row.p.SOURCE_URL}}],now}).summary;assert.equal(j.counts.IDENTITY_HOLD,1);assert.equal(j.counts.PRESENT,0);
 });
+
+test('saved public posting survives report rollover and is screened again with current rules',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-rescreen-'));
+ try {
+  const profile=require('../source-trial/resume-match').load(),rules={status:'ACTIVE',raw:'current fixture',rules:require('../source-trial/never-consider-patterns.json').rules.map(r=>({RULE_ID:r.id,CATEGORY:r.category,MATCH:r.match,ACTION:'DO_NOT_ADD',active:true}))};
+  const description='We are a food manufacturer. '+('Lead manufacturing and production teams. '.repeat(12));
+  const record=U.candidate({company:'Acme',title:'Quality Director',location:'Austin',url:'https://example.test/1',source:'BOARD:greenhouse',description},at,'state/board-discovery-report.json');
+  const first=U.build({records:[record],rows:[],now,root,screenContext:{profile,rules:null}});const before=Object.values(first.ledger.entries)[0];assert.equal(before.evidenceRefs.length,1);assert.equal(before.discoveredFacts.fullPosting,true);
+  const second=U.build({records:[],rows:[],prior:first.ledger,now:now+60000,root,screenContext:{profile,rules}});const after=Object.values(second.ledger.entries)[0];assert.equal(after.preliminaryScreen.decision,'EXCLUDE_NEVER_CONSIDER');assert.equal(after.firstSeen,before.firstSeen);assert.deepEqual(after.sources,before.sources);assert.deepEqual(after.evidenceRefs,before.evidenceRefs);assert.equal(second.summary.screening.canonicalWrites,0);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+test('history checkpoint only parses new report revisions without dropping prior candidates',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-history-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');fs.writeFileSync(report,JSON.stringify({summary:{at},new_roles:[{company:'Acme',title:'Quality Director',location:'Austin',url:'https://example.test/1'}]}));git('add','.');git('commit','-m','first');
+  const first=U.collect(root,null),ledger=U.build({...first,rows:[],now}).ledger;assert.equal(first.coverage.newReportCommits,1);
+  const same=U.collect(root,ledger);assert.equal(same.coverage.newReportCommits,0);assert.equal(same.records.length,0);assert.equal(U.build({...same,prior:ledger,rows:[],now}).summary.total,1);
+  fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now).toISOString()},new_roles:[{company:'Acme',title:'Plant Manager',location:'Austin',url:'https://example.test/2'}]}));git('add','.');git('commit','-m','second');const next=U.collect(root,ledger);assert.equal(next.coverage.newReportCommits,1);assert.equal(next.coverage.reportRevisions,2);assert.equal(U.build({...next,prior:ledger,rows:[],now}).summary.total,2);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});

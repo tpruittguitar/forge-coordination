@@ -74,7 +74,11 @@
       "supplemental": true,
       "executionMode": "EVIDENCE_ONLY",
       "workAssignments": "control/ENRICHMENT_HELPER_WORK.json",
-      "authorizedBy": "Tim 2026-11-01: add an enrichment helper for Grok; usage reset"
+      "authorizedBy": "Tim 2026-11-01: add an enrichment helper for Grok; usage reset",
+      "retired": true,
+      "currentOwnerTask": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+      "currentOwner": "ChatGPT",
+      "executeVia": "FORGE_APPLICATION_WRITER_GOFER"
     },
     "FORGE_GROK_APPLICATION_OUTCOME_HELPER": {
       "owner": "Grok",
@@ -84,7 +88,10 @@
       "supplemental": true,
       "executionMode": "EVIDENCE_ONLY",
       "workAssignments": "control/OUTCOME_HELPER_WORK.json",
-      "authorizedBy": "Tim 2026-11-01: let Grok help check recruiter replies and application/rejection responses"
+      "authorizedBy": "Tim 2026-11-01: let Grok help check recruiter replies and application/rejection responses",
+      "retired": true,
+      "currentOwner": "ChatGPT",
+      "executeVia": "FORGE_APPLICATION_OUTCOME_TRACKER"
     },
     "FORGE_CLAUDE_RELEVANCE_REVIEW": {
       "owner": "ChatGPT",
@@ -105,7 +112,10 @@
       "executionMode": "EVIDENCE_ONLY",
       "supplemental": true,
       "workAssignments": "control/GROK_INTAKE_HELPER_WORK.json",
-      "authorizedBy": "Tim 2026-11-01: publish and activate intake routing and scheduled runs"
+      "authorizedBy": "Tim 2026-11-01: publish and activate intake routing and scheduled runs",
+      "retired": true,
+      "currentOwner": "ChatGPT",
+      "executeVia": "FORGE_APPLICATION_WRITER_GOFER"
     },
     "FORGE_INTAKE_SCOPE_REVIEW": {
       "owner": "ChatGPT",
@@ -133,6 +143,17 @@
       "executionMode": "EVIDENCE_ONLY",
       "workAssignments": "state/INTAKE_DRAIN.json",
       "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"
+    },
+    "FORGE_CHATGPT_ENRICHMENT_RESEARCH": {
+      "owner": "ChatGPT",
+      "route": "utility",
+      "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
+      "procedure": "lanes/CHATGPT_ENRICHMENT_RESEARCH.txt",
+      "supplemental": true,
+      "executionMode": "EVIDENCE_ONLY",
+      "workAssignments": "control/ENRICHMENT_HELPER_WORK.json",
+      "executeVia": "FORGE_APPLICATION_WRITER_GOFER",
+      "authorizedBy": "Tim 2026-11-05: It is ChatGPT now; implement coordination and evidence-first processing"
     }
   }
 }

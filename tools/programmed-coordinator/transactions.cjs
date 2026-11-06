@@ -106,7 +106,7 @@ async function reconcile({root, privateDir, state, tx, deps}) {
     let changed=false;
     for(const r of tx.requests) {
       const item=work.items.find(i=>i.primaryId===r.primaryId),row=rows.rows.find(i=>i.PRIMARY_ID===r.primaryId);
-      if(!item||item.taskKey!=='FORGE_GROK_ENRICHMENT')continue;
+      if(!item||!['FORGE_GROK_ENRICHMENT','FORGE_CHATGPT_ENRICHMENT_RESEARCH'].includes(item.taskKey))continue;
       const complete=(item.missingFields||[]).length>0&&(item.missingFields||[]).every(f=>f==='DEGREE'?(Source.known(row.p.DEGREE_REQ)||Source.known(row.p.DEGREE_TEXT)):f==='SALARY'?Source.known(row.p.SALARY_BASE_LOW):false);
       item.coordinatorConsumption={requestId:tx.requestId,proof:proofFile,verifiedFields:Object.keys(r.fields),sourceSha256:r.sourceSha256};
       item.status=complete?'CONSUMED':'RETURNED_PARTIALLY_CONSUMED';changed=true;

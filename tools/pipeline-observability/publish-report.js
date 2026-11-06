@@ -3,7 +3,7 @@ const fs=require('fs'),path=require('path'),os=require('os'),cp=require('child_p
 const FILE='state/REPORTING_HEALTH.json';
 const sections=[
  {id:'activity',script:'tools/pipeline-observability/activity.js',paths:['state/WRITER_ACTIVITY.json','state/WRITER_ACTIVITY_DETAILS.json']},
- {id:'flow',script:'tools/pipeline-observability/process-flow.js',paths:['state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_OUTCOMES.json','state/RELEVANCE_SCREEN_GUARD.json','state/ENRICHMENT_FLOW.json','state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues']},
+ {id:'flow',script:'tools/pipeline-observability/process-flow.js',paths:['state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_OUTCOMES.json','state/RELEVANCE_SCREEN_GUARD.json','state/ENRICHMENT_FLOW.json','state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/discovery-evidence','state/DISCOVERY_SCREEN_REPORT.json']},
  {id:'intake-queue',script:'tools/intake-drain/queue.cjs',args:['sync'],paths:['state/INTAKE_DRAIN.json']}
 ];
 async function publish({root=process.cwd(),run=(s)=>{const r=cp.spawnSync(process.execPath,[s.script,...s.args||[]],{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:4e6});return{ok:r.status===0,error:r.error?.message||r.stderr||'Report generation failed'};},sleep=ms=>new Promise(r=>setTimeout(r,ms)),now=()=>Date.now(),components=sections}={}){

@@ -4,7 +4,7 @@ const S=require('../programmed-coordinator/store.cjs'),C=require('../programmed-
 const schemas={
  'forge.claude-helper-batch.v1':b=>'receipts/CLAUDE_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
  'forge.intake-helper-batch.v1':b=>'receipts/GROK_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
- 'forge.enrichment-helper-batch.v1':b=>'receipts/GROK_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
+ 'forge.enrichment-helper-batch.v1':b=>'receipts/'+(b.provider==='ChatGPT'?'CHATGPT_HELPERS':'GROK_HELPERS')+'/'+b.taskKey+'/'+b.runId+'.json',
  'forge.relevance-helper-batch.v1':b=>'receipts/CLAUDE_RELEVANCE/'+b.runId+'.json',
  'forge.outcome-helper-batch.v1':b=>'helper-outcomes/'+b.runId+'.json'
 };
@@ -41,7 +41,7 @@ function ingest({root,privateDir,state,text,source,commit,validate=C.validateEnv
  // Native Claude reports often link the immutable receipt already delivered to
  // this repository. Read only allowlisted receipt paths and revalidate the full
  // envelope/routing below; prose never becomes fabricated structured evidence.
- const references=[...new Set(text.match(/receipts\/(?:CLAUDE_RELEVANCE\/|(?:CLAUDE_HELPERS|GROK_HELPERS)\/FORGE_[A-Z0-9_]+\/)[A-Za-z0-9_-]+\.json/g)||[])];
+ const references=[...new Set(text.match(/receipts\/(?:CLAUDE_RELEVANCE\/|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/)[A-Za-z0-9_-]+\.json/g)||[])];
  for(const relative of references){const filename=path.join(root,relative);if(!fs.existsSync(filename))continue;for(const b of batches(fs.readFileSync(filename,'utf8')))if(!parsed.some(p=>canonical(p.value)===canonical(b.value)))parsed.push(b);}
  for(const {value:b,raw} of parsed){
   try{

@@ -72,14 +72,14 @@ async function main(argv=process.argv.slice(2)){
  if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
  const key=process.env.FORGE_WRITER_KEY;
  if(!key)throw Error('AUTO intake blocked: FORGE_WRITER_KEY is not set');
- let prior=previous();
- if(!dry&&prior.some(p=>p.state.quarantine||p.state.continuation)){const index=await require('../writer-verify/recovery').loadIndex({token:process.env.GITHUB_TOKEN||process.env.GH_TOKEN});for(const p of prior.filter(x=>x.state.quarantine||x.state.continuation)){try{console.log('READ_ONLY reconciliation',JSON.stringify(await require('./reconcile-pending').reconcile('.',p.file,{key,index})));}catch(e){console.error('GOFER reconciliation: '+e.message);}}prior=previous();}
+ let prior=previous();const recover=!argv.includes('--skip-recovery');
+ if(recover&&!dry&&prior.some(p=>p.state.quarantine||p.state.continuation)){const index=await require('../writer-verify/recovery').loadIndex({token:process.env.GITHUB_TOKEN||process.env.GH_TOKEN});for(const p of prior.filter(x=>x.state.quarantine||x.state.continuation)){try{console.log('READ_ONLY reconciliation',JSON.stringify(await require('./reconcile-pending').reconcile('.',p.file,{key,index})));}catch(e){console.error('GOFER reconciliation: '+e.message);}}prior=previous();}
  // One bounded transport recovery per scheduled pass; same workflow concurrency and Writer locks apply.
- if(!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();for(const unresolved of prior.filter(p=>p.state.quarantine&&!(p.resolvedRequestIds||[]).includes(p.state.quarantine.requestId)&&!require("./unknown-recovery").resolved(p.state))){try{console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));}catch(e){console.error('GOFER_RECONCILIATION_REQUIRED: '+unresolved.file+' '+e.message);} }prior=previous();}
+ if(recover&&!dry){for(const p of prior)require("./unknown-recovery").contain(p.file);prior=previous();for(const unresolved of prior.filter(p=>p.state.quarantine&&!(p.resolvedRequestIds||[]).includes(p.state.quarantine.requestId)&&!require("./unknown-recovery").resolved(p.state))){try{console.log("UNKNOWN recovery",JSON.stringify(await require("./unknown-recovery").recover(unresolved.file,{key})));}catch(e){console.error('GOFER_RECONCILIATION_REQUIRED: '+unresolved.file+' '+e.message);} }prior=previous();}
  // Reconcile accepted writes read-only before deciding whether a prior interruption
  // still blocks. Uncertain responses retain their existing fences and are never replayed here.
  // A single, DURABLY captured identity mismatch may be isolated from unrelated future work (quarantined below).
- if(!dry){
+ if(recover&&!dry){
   for(const pending of latch(prior).blocking){
    try{console.log('INTERRUPTED recovery',JSON.stringify(await require('./interrupted-recovery').recover(pending.file,{key})));}
    catch(e){console.error('INTERRUPTED recovery blocked: '+e.message);}
@@ -95,6 +95,7 @@ async function main(argv=process.argv.slice(2)){
   }
   throw Error('AUTO intake blocked by '+blocking.length+' unresolved prior run(s); no new intake submitted');
  }
+ if(argv.includes('--recover-only'))return console.log(JSON.stringify({mode:'RECOVERY_ONLY',blocking:blocking.length,quarantined:quarantined.length,newCandidateSubmissions:0}));
  if(quarantined.length)console.error('NEEDS TIM: isolated identity HOLD(s), NOT resolved: '+JSON.stringify(quarantined));
  // Count only attempts actually recorded; unattempted tail candidates are safe to
  // consider again. Quarantined and all other attempted requests remain excluded.
@@ -124,10 +125,12 @@ async function main(argv=process.argv.slice(2)){
  const blockedIdentities=new Set([...quarantined.filter(q=>q.identityKey).map(q=>q.identityKey),...Drain.fences('.').map(identityKey)]);
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
  const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
+ const discoveryEvidence=require('../source-trial/evidence-store').index('.');
  const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
-  const business=await evidence(r.url,r.company);
+  const cached=discoveryEvidence.find(r),business=cached?.doc.text||await evidence(r.url,r.company);
+  if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(!business){if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}continue;}
   candidates.push({record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
