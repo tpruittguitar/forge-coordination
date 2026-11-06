@@ -16,6 +16,18 @@ function rekeyedRepresentation(item,up){
  if(matches.length!==1)return null;
  return {groupKey:matches[0][0],primaryId:matches[0][0].slice(4),status:'PRESENT',aliases,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};
 }
+function writerFences(root){
+ const mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),fences=new Map();
+ for(const job of Object.values(mail.jobs))if(job.submissions?.length||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||''))for(const k of [job.key,...job.aliases||[]])fences.set(k,{requestIds:(job.submissions||[]).map(s=>s.requestId).filter(Boolean),proof:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
+ for(const i of read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(i.requestId&&/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status||''))fences.set(i.key,{requestIds:[i.requestId],proof:'state/RELEVANCE_INTAKE_PLAN.json'});
+ const prior=require('../source-intake/auto-latch').previous(root),latched=require('../source-intake/auto-latch').latch(prior);
+ for(const q of latched.quarantined){const key=U.key(q.record?.SOURCE_URL);if(key)fences.set(key,{requestIds:[q.requestId],proof:q.file});}
+ // Every recorded attempt fences its original source, including accepted but not independently reconciled writes.
+ for(const p of prior)if(!p.state.reconciliation&&!p.state.noCandidates)for(const [requestId,result] of Object.entries(p.state.results||{})){
+  const record=result?.source||result?.record||result?.results?.[0]?.source;const k=U.key(record?.SOURCE_URL);if(k)fences.set(k,{requestIds:[requestId],proof:p.file});
+ }
+ return fences;
+}
 function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const up=read(root,'state/UPSTREAM_LEDGER.json'),old=read(root,FILE,empty()),mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),present=new Set(),at=new Date(now).toISOString();
  if(old.schema!=='forge.intake-drain.v1'||!old.items||Array.isArray(old.items))throw Error('VALID_DURABLE_DRAIN_INVENTORY_REQUIRED');
@@ -25,15 +37,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const reasons=new Map();for(const report of reports)for(const card of [...report.new_roles||[],...report.existing_roles||[]])reasons.set(U.key(card.url),selection(card));
  const saved=require('./saved-card.cjs'),savedIndex=saved.index(root,up,mail,reports);
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
- const fences=new Map();
- for(const job of Object.values(mail.jobs))if(job.submissions?.length||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||''))for(const k of [job.key,...job.aliases||[]])fences.set(k,{requestIds:(job.submissions||[]).map(s=>s.requestId).filter(Boolean),proof:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
- for(const i of read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(i.requestId&&/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status||''))fences.set(i.key,{requestIds:[i.requestId],proof:'state/RELEVANCE_INTAKE_PLAN.json'});
- const prior=require('../source-intake/auto-latch').previous(root),latched=require('../source-intake/auto-latch').latch(prior);
- for(const q of latched.quarantined){const key=U.key(q.record?.SOURCE_URL);if(key)fences.set(key,{requestIds:[q.requestId],proof:q.file});}
- // Every recorded attempt fences its original source, including accepted but not independently reconciled writes.
- for(const p of prior)if(!p.state.reconciliation&&!p.state.noCandidates)for(const [requestId,result] of Object.entries(p.state.results||{})){
-  const record=result?.source||result?.record||result?.results?.[0]?.source;const k=U.key(record?.SOURCE_URL);if(k)fences.set(k,{requestIds:[requestId],proof:p.file});
- }
+ const fences=writerFences(root);
  for(const [key,g] of Object.entries(up.groups)){
   if(!pending.has(g.status)&&!old.items[key])continue;
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
@@ -65,17 +69,18 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   if(item.review&&Date.parse(item.review.observedAt)>Date.parse(review.observedAt))continue;
   item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome};
   item.nextAction=review.nextAction||item.nextAction;
-  item.status=review.outcome==='SOURCE_READY'?'PENDING_INDEPENDENT_VALIDATION':review.retryAfter&&Date.parse(review.retryAfter)<=now?'ACTION_REQUIRED':'WAITING_EVIDENCE_CHANGE';
-  if(item.validation?.reviewSha256===S.hash(review))item.status=item.validation.status==='READY_FOR_CONTROLLED_INTAKE'&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
+  item.status=['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)?'PENDING_INDEPENDENT_VALIDATION':review.retryAfter&&Date.parse(review.retryAfter)<=now?'ACTION_REQUIRED':'WAITING_EVIDENCE_CHANGE';
+  if(item.validation?.reviewSha256===S.hash(review))item.status=['READY_FOR_CONTROLLED_INTAKE','READY_FOR_CONTROLLED_EXCLUSION'].includes(item.validation.status)&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
  }catch(e){old.reviewErrors[path.relative(root,file).split(path.sep).join('/')]={reason:e.message};}}
  old.counts={};old.actions={};for(const item of Object.values(old.items)){old.counts[item.status]=(old.counts[item.status]||0)+1;if(item.status!=='ACCOUNTED_UPSTREAM')old.actions[item.action]=(old.actions[item.action]||0)+1;}
  old.noProcessingCap=true;if(apply)S.save(root,FILE,old);return old;
 }
 function reviewPath(review){return REVIEWS+'/'+S.hash(review)+'.json';}
 function validate(r,item,now=Date.now()){
- if(r.schema!=='forge.intake-drain-review.v1'||r.key!==item.key||r.sourceVersion!==item.sourceVersion||r.provider!=='ChatGPT'||r.taskKey!==item.taskKey||!/^FORGE-DRAIN-[A-Za-z0-9_-]+$/.test(r.runId||'')||!Number.isFinite(Date.parse(r.observedAt))||Date.parse(r.observedAt)>now+60000||!['SOURCE_READY','WAITING_SOURCE_CHANGE','RECONCILIATION_REQUIRED'].includes(r.outcome)||typeof r.reason!=='string'||!r.reason.trim()||typeof r.nextAction!=='string'||!r.nextAction.trim()||r.writerSubmitted!==false||!Array.isArray(r.attempts)||!r.attempts.length)throw Error('SOURCE_BOUND_DRAIN_REVIEW_REQUIRED');
+ if(r.schema!=='forge.intake-drain-review.v1'||r.key!==item.key||r.sourceVersion!==item.sourceVersion||r.provider!=='ChatGPT'||r.taskKey!==item.taskKey||!/^FORGE-DRAIN-[A-Za-z0-9_-]+$/.test(r.runId||'')||!Number.isFinite(Date.parse(r.observedAt))||Date.parse(r.observedAt)>now+60000||!['SOURCE_READY','EXCLUSION_CANDIDATE','WAITING_SOURCE_CHANGE','RECONCILIATION_REQUIRED'].includes(r.outcome)||typeof r.reason!=='string'||!r.reason.trim()||typeof r.nextAction!=='string'||!r.nextAction.trim()||r.writerSubmitted!==false||!Array.isArray(r.attempts)||!r.attempts.length)throw Error('SOURCE_BOUND_DRAIN_REVIEW_REQUIRED');
  if(!Object.values(TASKS).includes(r.taskKey)||r.taskKey==='CODE')throw Error('AI_RESEARCH_TASK_REQUIRED');
- if(r.outcome==='SOURCE_READY'){
+ if(r.outcome==='EXCLUSION_CANDIDATE'){require('./exclusions.cjs').validate(r,item);}
+ else if(r.outcome==='SOURCE_READY'){
   if(item.fence||item.action==='RECONCILE_WRITER')throw Error('ORIGINAL_WRITER_REQUEST_MUST_BE_RECONCILED');
   const e=r.sourceEvidence;if(!e||!['company','title','location','url','quote'].every(k=>typeof e[k]==='string'&&e[k].trim())||e.quote.length<30||e.quote.length>12000)throw Error('COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED');Source.publicUrl(e.url);if(safeUrl(e.url)!==e.url)throw Error('PUBLIC_UNSIGNED_POSTING_URL_REQUIRED');
   for(const k of ['company','title','location'])if(item.card[k]&&(k==='location'?Source.location(item.card[k])!==Source.location(e[k]):Source.norm(item.card[k])!==Source.norm(e[k])))throw Error('CONFLICTING_ORIGINAL_IDENTITY_REQUIRES_RECONCILIATION');
@@ -85,18 +90,23 @@ function validate(r,item,now=Date.now()){
  return true;
 }
 function publish(root,review,now=Date.now()){
- const work=sync(root,{now,apply:true}),item=work.items[review.key];if(!item||item.status==='ACCOUNTED_UPSTREAM')throw Error('CURRENT_OPEN_DRAIN_ITEM_REQUIRED');validate(review,item,now);S.immutable(root,reviewPath(review),review);return{path:reviewPath(review),canonicalWrites:0,pendingIndependentValidation:review.outcome==='SOURCE_READY'};
+ const work=sync(root,{now,apply:true}),item=work.items[review.key];if(!item||item.status==='ACCOUNTED_UPSTREAM')throw Error('CURRENT_OPEN_DRAIN_ITEM_REQUIRED');validate(review,item,now);S.immutable(root,reviewPath(review),review);return{path:reviewPath(review),canonicalWrites:0,pendingIndependentValidation:['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)};
 }
 function next(root,taskKey,{limit=10,now=Date.now()}={}){
  if(!Number.isInteger(limit)||limit<1||limit>20)throw Error('BOUNDED_ARTIFACT_SIZE_REQUIRED');const work=sync(root,{now});
  return{schema:'forge.intake-drain-work.v1',at:work.at,taskKey,items:Object.values(work.items).filter(i=>i.taskKey===taskKey&&(i.status==='ACTION_REQUIRED'||i.status==='SOURCE_VALIDATION_REQUIRED'&&Date.parse(i.validation.retryAfter)<=now)).sort((a,b)=>a.firstSeen.localeCompare(b.firstSeen)||a.key.localeCompare(b.key)).slice(0,limit),counts:work.counts,actions:work.actions,artifactSizeOnly:true,canonicalWrites:0};
 }
-async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify,apply=false}={}){
+async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify,verifyExclusion=require('./exclusions.cjs').verify,exclusionContext,apply=false}={}){
  if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir)===path.resolve(root)||path.resolve(privateDir).startsWith(path.resolve(root)+path.sep))throw Error('PRIVATE_SOURCE_DIRECTORY_REQUIRED');
- const work=sync(root,{now}),result={verified:0,failed:0};
+ const work=sync(root,{now}),result={verified:0,failed:0,exclusionsVerified:0},cache=new Map();
+ let context=exclusionContext;
  for(const item of Object.values(work.items)){
   if(item.status!=='PENDING_INDEPENDENT_VALIDATION')continue;const review=read(root,item.review.path);validate(review,item,now);
   try{
+   if(review.outcome==='EXCLUSION_CANDIDATE'){
+    context=context||await require('../source-trial/preliminary-screen').context({key:process.env.FORGE_WRITER_KEY});
+    item.validation=await verifyExclusion(root,review,item,{...context,cache,now});item.status=item.validation.status;result.exclusionsVerified++;continue;
+   }
    // Re-fetch and parse the exact structured employer/ATS posting. Helper prose alone never admits a role.
    const source=await verifySource({item:{sourceEvidence:review.sourceEvidence},expected:review.sourceEvidence,privateDir,now});
    const overlap=Resume.match({title:review.sourceEvidence.title,description:source.description});if(review.scope.resumeCompetencyIds.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('RESUME_OVERLAP_NOT_IN_INDEPENDENT_POSTING');
@@ -128,4 +138,4 @@ if(require.main===module)(async()=>{
  else throw Error('Use sync, next <taskKey>, review <json>, or verify <privateDir>');
  console.log(JSON.stringify(command==='sync'?{counts:result.counts,actions:result.actions,reviewErrors:result.reviewErrors}:result));
 })().catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,next,verify,approved,seeds,fences,owned,ownedKeys,reviewPath};
+module.exports={writerFences,FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,next,verify,approved,seeds,fences,owned,ownedKeys,reviewPath};
