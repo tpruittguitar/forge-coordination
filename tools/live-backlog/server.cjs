@@ -2,7 +2,7 @@
 'use strict';
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {display:holdDisplay}=require('./hold-reason.cjs');
-const {GitStore}=require('./git-store.cjs'),{annotate}=require('./occurrences.cjs'),{display:atsDisplay}=require('./ats-hits.cjs'),{display:salaryDisplay}=require('./salary.cjs');
+const {GitStore}=require('./git-store.cjs'),{annotate}=require('./occurrences.cjs'),{display:atsDisplay}=require('./ats-hits.cjs'),{display:salaryDisplay}=require('./salary-sort.cjs');
 function createServer(store){const session=crypto.randomBytes(32).toString('hex');let busy=false,origin;
  const server=http.createServer(async(req,res)=>{
   const send=(code,body,type='application/json')=>{res.writeHead(code,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"});res.end(type==='application/json'?JSON.stringify(body):body);};
