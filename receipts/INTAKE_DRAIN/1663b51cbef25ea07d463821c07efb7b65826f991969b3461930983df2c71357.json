@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4470762665",
+  "sourceVersion": "fdbc8df2413cf47b32aeec77e62b2760138120ede24a52ac9c2da02dc9d3f025",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T034506142Z-66065a",
+  "instructionCommit": "52f78607043cfdd3d440e366e4759af979521a1a",
+  "observedAt": "2026-11-07T03:45:06.142Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "newlyVerifiedJobOutcomes": 0,
+  "reason": "Fresh independent receipt index confirms original batch COMPLETE with its saved writeId, while exact saved candidate effect remains HELD_WRITER_IDENTITY: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Fresh complete master/archive exact-ID readback retains the target rows and their current protected dispositions or different/unknown sites. No original posting alias is established by mere employer/title matching; current row observations do not prove this failed candidate wrote successfully or authorize modifying a protected job.",
+  "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
+  "retryCondition": "Grounded original employer-posting/site binding or candidate-specific controlled reconciliation resolves the held identity; original batch completion alone does not satisfy it.",
+  "originalCard": {
+    "company": "Weber Blackstone",
+    "title": "Director, Global Quality",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4470762665/"
+  },
+  "originalRequest": {
+    "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002",
+    "savedCandidateEffect": {
+      "key": "linkedin:4470762665",
+      "queueKey": null,
+      "status": "HELD_WRITER_IDENTITY",
+      "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2I-A131D9E47BED"
+      ]
+    },
+    "writeId": "W-20261102001857269-18cfd8"
+  },
+  "independentReceipt": {
+    "state": "COMPLETE",
+    "writeId": "W-20261102001857269-18cfd8",
+    "indexUpdatedAt": "2026-11-07T03:19:53.437Z",
+    "indexSha256": "aa08c88303794313b3d3fbcef1b8c0dd73565ac1378bf198b333a09d03da33fb"
+  },
+  "canonicalRowObservations": [
+    {
+      "primaryId": "V2I-A131D9E47BED",
+      "matches": 1,
+      "store": "MASTER",
+      "bucket": "DECLINED_BY_TIM",
+      "company": "Weber Blackstone",
+      "title": "Director, Global Quality",
+      "location": "Logan, UT",
+      "rowSha256": "33c1faf3284bda14a6eb627969277d3da4b674c03cdc4f0d7b8048a90493ae93",
+      "originalPostingIdInRow": false
+    }
+  ],
+  "attempts": [
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B002_VERIFIED.json",
+      "sha256": "247d146bccb25d733a7a480176775d0a3f04dd5156c7055c6b6a0676dd27c157",
+      "result": "Read exact original key-bound candidate effect and saved independent batch-completion proof; no success inferred for held candidate."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Fresh authenticated exact original request is COMPLETE; saved writeId matches."
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt and V2_TERMINAL_ARCHIVE.txt",
+      "result": "Authenticated complete raw Drive reads; exact candidate IDs and current disposition/site observations retained as row hashes, without private row prose.",
+      "masterSha256": "9bbfec70ceb4a2729532e738ac4913e71efe7c43c98a9b455b7e36edff586740",
+      "masterModifiedAt": "2026-11-07T03:18:21.959Z",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z"
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Fence binds legacy batch, not an eligible FORGE-AUTO run. No fabricated AUTO binding or duplicate probe dispatched."
+    }
+  ]
+}

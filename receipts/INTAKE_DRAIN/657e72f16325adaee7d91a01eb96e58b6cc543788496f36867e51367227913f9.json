@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481783492",
+  "sourceVersion": "e0e77f3169564cb32d26e417cec7c4282e3be7a59dba728fe29d747def0ac3e9",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T034515773Z-272d75",
+  "instructionCommit": "52f78607043cfdd3d440e366e4759af979521a1a",
+  "observedAt": "2026-11-07T03:45:15.773Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "newlyVerifiedJobOutcomes": 0,
+  "reason": "Fresh independent receipt index confirms original batch COMPLETE with its saved writeId, while exact saved candidate effect remains HELD_WRITER_IDENTITY: IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED. Fresh complete master/archive exact-ID readback retains the target rows and their current protected dispositions or different/unknown sites. No original posting alias is established by mere employer/title matching; current row observations do not prove this failed candidate wrote successfully or authorize modifying a protected job.",
+  "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
+  "retryCondition": "Grounded original employer-posting/site binding or candidate-specific controlled reconciliation resolves the held identity; original batch completion alone does not satisfy it.",
+  "originalCard": {
+    "company": "Anduril Industries",
+    "title": "Director of Production, Optics",
+    "location": "Waltham, MA",
+    "url": "https://www.linkedin.com/jobs/view/4481783492/"
+  },
+  "originalRequest": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001",
+    "savedCandidateEffect": {
+      "key": "linkedin:4481783492",
+      "queueKey": "linkedin:4481783492",
+      "status": "HELD_WRITER_IDENTITY",
+      "reason": "IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED",
+      "candidateIds": [
+        "V2I-EFD35D57DD0D"
+      ]
+    },
+    "writeId": "W-20261101220906182-1e3f21"
+  },
+  "independentReceipt": {
+    "state": "COMPLETE",
+    "writeId": "W-20261101220906182-1e3f21",
+    "indexUpdatedAt": "2026-11-07T03:19:53.437Z",
+    "indexSha256": "aa08c88303794313b3d3fbcef1b8c0dd73565ac1378bf198b333a09d03da33fb"
+  },
+  "canonicalRowObservations": [
+    {
+      "primaryId": "V2I-EFD35D57DD0D",
+      "matches": 1,
+      "store": "MASTER",
+      "bucket": "DECLINED_BY_TIM",
+      "company": "Anduril Industries",
+      "title": "Director of Production, Optics",
+      "location": "Waltham, Massachusetts, United States",
+      "rowSha256": "c7b6447c845163cc06bc34b2462c79e09313cc02da6a36ee632eeed90ac65878",
+      "originalPostingIdInRow": false
+    }
+  ],
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001_VERIFIED.json",
+      "sha256": "8e4e55e9a8cb8b6de758488b27ea1a362491b468948397e3dc5ffa3c1032d5be",
+      "result": "Read exact original key-bound candidate effect and saved independent batch-completion proof; no success inferred for held candidate."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Fresh authenticated exact original request is COMPLETE; saved writeId matches."
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt and V2_TERMINAL_ARCHIVE.txt",
+      "result": "Authenticated complete raw Drive reads; exact candidate IDs and current disposition/site observations retained as row hashes, without private row prose.",
+      "masterSha256": "9bbfec70ceb4a2729532e738ac4913e71efe7c43c98a9b455b7e36edff586740",
+      "masterModifiedAt": "2026-11-07T03:18:21.959Z",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z"
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Fence binds legacy batch, not an eligible FORGE-AUTO run. No fabricated AUTO binding or duplicate probe dispatched."
+    }
+  ]
+}

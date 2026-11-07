@@ -1,0 +1,80 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4481786021",
+  "sourceVersion": "bbec1eae203a9913968bfecf8ad124aa9e7b0cf61603d08de47743fb21b67148",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T034518849Z-06c638",
+  "instructionCommit": "52f78607043cfdd3d440e366e4759af979521a1a",
+  "observedAt": "2026-11-07T03:45:18.849Z",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalCompletion": false,
+  "canonicalWrites": 0,
+  "newlyVerifiedJobOutcomes": 0,
+  "reason": "Fresh independent receipt index confirms original batch COMPLETE with its saved writeId, while exact saved candidate effect remains HELD_WRITER_IDENTITY: AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION. Fresh complete master/archive exact-ID readback retains the target rows and their current protected dispositions or different/unknown sites. No original posting alias is established by mere employer/title matching; current row observations do not prove this failed candidate wrote successfully or authorize modifying a protected job.",
+  "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
+  "retryCondition": "Grounded original employer-posting/site binding or candidate-specific controlled reconciliation resolves the held identity; original batch completion alone does not satisfy it.",
+  "originalCard": {
+    "company": "Pratt Industries",
+    "title": "Plant Manager",
+    "location": "",
+    "url": "https://www.linkedin.com/jobs/view/4481786021/"
+  },
+  "originalRequest": {
+    "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003",
+    "savedCandidateEffect": {
+      "key": "linkedin:4481786021",
+      "queueKey": null,
+      "status": "HELD_WRITER_IDENTITY",
+      "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+      "candidateIds": [
+        "V2I-7745EE88E325"
+      ]
+    },
+    "writeId": "W-20261101221828306-5713a3"
+  },
+  "independentReceipt": {
+    "state": "COMPLETE",
+    "writeId": "W-20261101221828306-5713a3",
+    "indexUpdatedAt": "2026-11-07T03:19:53.437Z",
+    "indexSha256": "aa08c88303794313b3d3fbcef1b8c0dd73565ac1378bf198b333a09d03da33fb"
+  },
+  "canonicalRowObservations": [
+    {
+      "primaryId": "V2I-7745EE88E325",
+      "matches": 1,
+      "store": "MASTER",
+      "bucket": "DECLINED_BY_TIM",
+      "company": "Pratt Industries",
+      "title": "Plant Manager",
+      "location": "Conyers, GA, USA",
+      "rowSha256": "42711466b97c741fc57e4a322ee3af2ac8f256ddfca477eef037f5227e014e57",
+      "originalPostingIdInRow": false
+    }
+  ],
+  "attempts": [
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B003_VERIFIED.json",
+      "sha256": "6629d2df326c60ba844fbef0a5a7c4e37296054b6020e0785ee647b1839767c6",
+      "result": "Read exact original key-bound candidate effect and saved independent batch-completion proof; no success inferred for held candidate."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "result": "Fresh authenticated exact original request is COMPLETE; saved writeId matches."
+    },
+    {
+      "source": "Canonical V2_CURRENT_POPULATION_MASTER.txt and V2_TERMINAL_ARCHIVE.txt",
+      "result": "Authenticated complete raw Drive reads; exact candidate IDs and current disposition/site observations retained as row hashes, without private row prose.",
+      "masterSha256": "9bbfec70ceb4a2729532e738ac4913e71efe7c43c98a9b455b7e36edff586740",
+      "masterModifiedAt": "2026-11-07T03:18:21.959Z",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z"
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Fence binds legacy batch, not an eligible FORGE-AUTO run. No fabricated AUTO binding or duplicate probe dispatched."
+    }
+  ]
+}
