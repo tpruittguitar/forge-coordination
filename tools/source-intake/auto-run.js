@@ -48,6 +48,8 @@ function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load
   const company=normalizeCompany(r.company).company;
   const k=company.toLowerCase(); // No per-employer throughput cap.
   const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||r.url,SCOUT_NOTES:discoveryNotes(r)};
+  Object.assign(record,require('../source-trial/posted-pay').fields(r));
+  if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
   if(blockedIdentities.has(identityKey(record)))continue; // a changed URL cannot bypass an uncertain prior write
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
@@ -130,10 +132,12 @@ async function main(argv=process.argv.slice(2)){
  const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
-  const cached=discoveryEvidence.find(r),business=cached?.doc.text||await evidence(r.url,r.company);
+  const cached=discoveryEvidence.find(r),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity}),business=cached?.doc.text||await evidence(r.url,r.company);
+  const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
+  for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
   if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(!business){if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}continue;}
-  candidates.push({record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
+  candidates.push({...require('../source-trial/posted-pay').carry(salaryCard),record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
  }

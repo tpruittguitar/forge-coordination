@@ -29,3 +29,9 @@ test('carry-forward leaves employer Never Consider to Writer and logs off-functi
  const f=fixture(),roles=carryForwardRoles(f.prior,{root:f.root});
  roles[0].company='Medical Devices';assert.equal(pick({new_roles:roles},{max:25,sent:new Set()}).length,1);roles[0].title='Director of Clinical Care';assert.deepEqual(pick({new_roles:roles},{max:25,sent:new Set()}),[]);
 });
+test('untouched carry-forward preserves exact bound posted salary and original observation',()=>{
+ const f=fixture();try{const c=f.candidates[1],P=require('../source-trial/posted-pay');c.payFacts={low:180125,high:220875,currency:'USD',period:'YEAR',basis:'BASE',source:'STRUCTURED_ANNUAL_BASE'};c.postedPay=P.capture({...c.record,payFacts:c.payFacts},{observedAt:'2026-11-06T00:00:00Z'});
+ const bytes=JSON.stringify(f.candidates);fs.writeFileSync(path.join(f.root,f.prior[0].file.replace('.json','.candidates.json')),bytes);f.prior[0].state.candidatesHash=crypto.createHash('sha256').update(bytes).digest('hex');
+ const roles=carryForwardRoles(f.prior,{root:f.root}),record=pick({new_roles:roles},{max:25,sent:new Set()})[0].record;assert.deepEqual(roles[0].postedPay,c.postedPay);assert.equal(record.SALARY_BASE_LOW,180125);assert.equal(record.SALARY_SOURCE,c.record.SOURCE_URL);assert.equal(record.SALARY_ASOF,'2026-11-06');
+ }finally{fs.rmSync(f.root,{recursive:true,force:true});}
+});

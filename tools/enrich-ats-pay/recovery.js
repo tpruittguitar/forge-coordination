@@ -31,9 +31,40 @@ function cached(ledger,row,now=Date.now()){
  // Old derived values are not evidence. Reuse retained raw text conservatively;
  // a cache without raw text must return to source recovery, not keep old claims.
  if(typeof e.text!=='string'||e.text.length<300)return null;
- return {...e,factsVersion:Pay.VERSION,degree:L.degreeFromText(e.text),pay:Pay.employerText(e.text,L.payFromText,{currency:L.stateFrom(row.LOCATION)?'USD':undefined}),payAmbiguous:true};
+ return {...e,factsVersion:Pay.VERSION,degree:L.degreeFromText(e.text),pay:Pay.employerText(e.text,L.payFromText),payAmbiguous:true};
+}
+// Both inputs have already passed their store's exact-identity checks. Salary and
+// full-posting freshness are independent; a no-pay read cannot erase a disclosure.
+function combine(cachedEvidence,discoveryEvidence){
+ const Pay=require('./pay-values'),sources=[cachedEvidence,discoveryEvidence].filter(Boolean);if(!sources.length)return null;
+ const stamp=e=>Date.parse(e.at)||0,fullStamp=e=>Date.parse(e.degreeAt||e.at)||0;
+ const ordered=sources.slice().sort((a,b)=>stamp(b)-stamp(a)),full=sources.filter(e=>e.fullPosting).sort((a,b)=>fullStamp(b)-fullStamp(a))[0];
+ let salary=ordered.find(e=>e.pay&&e.basis!=='THIRD_PARTY_ESTIMATE')||ordered.find(e=>e.pay),blocked=null;
+ if(salary)for(const e of ordered){
+  if(e===salary||stamp(e)<stamp(salary)||e.basis==='THIRD_PARTY_ESTIMATE'||e.postedPay?.status==='ESTIMATED')continue;
+  const p=e.postedPay||e.pay||{},text=e.text||'';
+  const textConflict=String(text).split(/\n+|(?<=[.!?])\s+(?=[A-Z])/).some(line=>{
+   if(!/\b(?:salary|compensation|base pay|pay range|hourly pay)\b/i.test(line))return false;
+   const range=L.payFromText(line),money=/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(line);
+   return money&&/\b(?:CAD|AUD|NZD|EUR|GBP|hourly|per hour)\b/i.test(line)||range&&(range.low!==salary.pay.low||range.high!==salary.pay.high||Pay.conflicts(text,range,L.payFromText));
+  });
+  const contradiction=(p.low!=null&&p.low!==salary.pay.low)||(p.high!=null&&p.high!==salary.pay.high)||(p.currency!=null&&p.currency!=='USD')||(p.period!=null&&!Pay.annualUnit(p.period))||(p.basis!=null&&p.basis!=='BASE')||
+   textConflict;
+  if(contradiction){blocked=e;salary=null;break;}
+ }
+ const basis=salary||blocked||ordered[0];
+ return {...basis,pay:salary?.pay||null,payFacts:salary?.payFacts||null,payAmbiguous:!!blocked||basis.payAmbiguous||false,
+  fullPosting:!!full,text:full?.text||basis.text,degree:full?.degree||null,degreeAt:full?(full.degreeAt||full.at):null,degreeUrl:full?(full.degreeUrl||full.url):null};
+}
+// A read needed for another field may discover a changed exact posting range.
+// Preserve the original observation for unchanged/no-pay reads, and never replace
+// retained posting pay with a site estimate or an unbound page match.
+function preferFreshPay(current,parsed){
+ const p=parsed?.pay,Pay=require('./pay-values');if(!p||!Pay.values(p.low,p.high))return false;
+ if(!current)return true;
+ return parsed.identityVerified===true&&(!parsed.basis||parsed.basis==='EMPLOYER_POSTED')&&(p.low!==current.low||p.high!==current.high);
 }
 function saveEvidence(ledger,row,url,parsed,now=Date.now()){const degree=L.degreeFromText(parsed.text);ledger.postingEvidence=ledger.postingEvidence||{};return ledger.postingEvidence[row.PRIMARY_ID]={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now).toISOString(),url,fullPosting:true,text:parsed.text,identityVerified:parsed.identityVerified===true,sourceIdentity:parsed.sourceIdentity||null,factsVersion:require('./pay-values').VERSION,degree,basis:parsed.basis||'EMPLOYER_POSTED',pay:parsed.pay||null,payFacts:parsed.payFacts||null};}
 function unresolved(row,needs,ledger,status){const p=ledger.progress?.[row.PRIMARY_ID];return {id:row.PRIMARY_ID,company:row.COMPANY,title:row.TITLE,needs,status:status||p?.status||'NOT_YET_ATTEMPTED',lastAttemptAt:p?.lastAttemptAt||null,retryAt:p?.retryAt||null,attempts:p?.attempts||[],next:!urls(row).length?'Find an exact employer posting; preserve identity and missing fields.':'Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page.'};}
-module.exports={urls,readableRoute,exactApi,boardMatch,fingerprint,due,order,remember,cached,saveEvidence,unresolved};
+module.exports={urls,readableRoute,exactApi,boardMatch,fingerprint,due,order,remember,cached,combine,preferFreshPay,saveEvidence,unresolved};
 

@@ -1,5 +1,5 @@
 'use strict';
-const VERSION='20261106-context-bound-facts-v2';
+const VERSION='20261107-posted-pay-facts-v3';
 function values(low,high){low=+low;high=+high;if(!(Number.isFinite(low)&&Number.isFinite(high)&&low>=40000&&high>=low&&high<=2000000))return null;return{low,high,mid:Math.round((low+high)/2),scorePoint:Math.round(low+0.75*(high-low))};}
 const annualUnit=s=>/^(?:1\s+)?(?:YEAR|YEARLY|ANNUAL|ANNUALLY|PER-YEAR-SALARY)$/i.test(String(s||''));
 const mixed=/\b(?:total compensation|total cash|on.target earnings|ote|(?:includ\w*|compris\w*|consist\w*|plus variable)[^.\n]{0,90}(?:bonuses?|equity|incentives?|commissions?)|hourly|per hour|glassdoor|payscale|salary\.com)\b/i;
@@ -9,6 +9,14 @@ function conflicts(text,pay,parse){
  if(!pay||!parse)return false;const lines=statements(text);
  return lines.some((line,n)=>{const p=parse(line);return p&&p.low===pay.low&&p.high===pay.high&&mixed.test(scope(lines,n));});
 }
+// Employer wording about its own range is disclosure, not a salary-site estimate.
+function estimated(text){
+ const t=String(text||'');
+ if(!/\b(?:estimated|estimate|est\.)/i.test(t))return false;
+ if(/\b(?:glassdoor|payscale|salary\.com|indeed|ziprecruiter|linkedin|ladders|lensa|third.party|site)[^\n.]{0,50}\bestimat|\bestimat[^\n.]{0,50}\b(?:glassdoor|payscale|salary\.com|indeed|ziprecruiter|linkedin|ladders|lensa|third.party|site)\b/i.test(t))return true;
+ return !/provided by (?:the )?employer|employer[- ](?:provided|posted)|estimated (?:annual )?base (?:salary|pay)/i.test(t);
+}
+function estimatedPay(text,pay,parse){return statements(text).some((line,i,lines)=>{const p=parse(line);return p&&p.low===pay.low&&p.high===pay.high&&estimated(scope(lines,i));});}
 function structured(s){
  if(!s||typeof s!=='object')return null;
  const v=s.value||s,currencies=[s.currency,s.currencyCode,v.currency,v.currencyCode].filter(x=>x!=null&&x!==''),units=[v.unitText,s.interval,s.frequency,s.payFrequency].filter(x=>x!=null&&x!=='');
@@ -49,7 +57,8 @@ function ats(kind,j,{id,text='',payFromText}={}){
   const x=(j?.jobs||[]).find(x=>x.id===id),xs=(x?.compensation?.summaryComponents||[]).filter(x=>/salary/i.test(x.compensationType||''));declared=xs.length>0;
   if(xs.length===1)candidates=[structured({...xs[0],value:{unitText:xs[0].interval,minValue:xs[0].minValue,maxValue:xs[0].maxValue}})];
  }
- if(declared){const safe=candidates.filter(Boolean);return safe.length===1&&!conflicts(text,safe[0],payFromText)?fact(safe[0],'STRUCTURED_ANNUAL_BASE'):null;}
- return fact(payFromText?employerText(text,payFromText):null,'EXPLICIT_ANNUAL_BASE_TEXT');
+ if(declared){const safe=candidates.filter(Boolean);return safe.length===1&&!conflicts(text,safe[0],payFromText)&&!(payFromText&&estimatedPay(text,safe[0],payFromText))?fact(safe[0],'STRUCTURED_ANNUAL_BASE'):null;}
+ const candidate=payFromText?employerText(text,payFromText):null;
+ return fact(candidate&&!estimatedPay(text,candidate,payFromText)?candidate:null,'EXPLICIT_ANNUAL_BASE_TEXT');
 }
-module.exports={VERSION,values,structured,workday,employerText,annualUnit,mixed,conflicts,range,fact,ats};
+module.exports={VERSION,values,structured,workday,employerText,annualUnit,mixed,conflicts,estimated,estimatedPay,range,fact,ats};

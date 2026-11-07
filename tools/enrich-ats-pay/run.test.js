@@ -341,3 +341,39 @@ test('pay public ledgers and refusal proofs exclude private response bodies whil
  }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
  }
 });
+test('saved pay-only posting evidence needs no salary fetch and does not pretend degree was reviewed',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'enrich-posted-reuse-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const Evidence=require('../source-trial/evidence-store'),Posted=require('../source-trial/posted-pay'),Pay=require('./pay-values'),at='2026-10-01T00:00:00Z',url='https://www.indeed.com/viewjob?jk=111111111111';
+ const card={company:'Acme',title:'Director of Quality',location:'Dayton, OH',url,payFacts:Pay.fact({low:180000,high:220000},'STRUCTURED_ANNUAL_BASE'),salaryText:'Annual base salary USD $180,000-$220,000',source:'JOBSPY:indeed'};card.postedPay=Posted.capture(card,{observedAt:at});
+ const ref=Evidence.capture(dir,card,{observedAt:at,proof:'state/source-trial-report.json',fullPosting:false});assert.ok(ref);
+ fs.writeFileSync(path.join(dir,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:{x:{sourceUrl:url,evidenceRefs:[ref]}}}));
+ const run=payload=>{fs.writeFileSync(master,row(1,'V2I-POSTED-REUSE',card.title,card.location,'SOURCE_URL='+url+'; '+payload));cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_DISCOVERY_EVIDENCE_ROOT:dir,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json')},stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ try{
+  for(const payload of ['DEGREE_REQ=REQUIRED','']){const out=run(payload),fields=out.sample.find(x=>x.id==='V2I-POSTED-REUSE').fields;assert.equal(fields.SALARY_BASIS,'EMPLOYER_POSTED');assert.equal(fields.SALARY_BASE_LOW,180000);assert.equal(fields.SALARY_ASOF,'2026-10-01');assert.equal(fields.DEGREE_REQ,undefined);assert.equal(fields.FEASIBILITY_ATTEMPT_ASOF,undefined);assert.equal(out.public_read,0);assert.equal(out.ats_read,0);assert.equal(out.estimates,0);}
+  // A later full posting with no salary must not hide the original verified pay.
+  const degreeAt=new Date(Date.now()-3600000).toISOString(),full=Evidence.capture(dir,{company:card.company,title:card.title,location:card.location,url,description:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required.'},{observedAt:degreeAt,proof:'state/source-trial-report.json',fullPosting:true});assert.ok(full);
+  fs.writeFileSync(path.join(dir,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:{x:{sourceUrl:url,evidenceRefs:[ref,full]}}}));
+  const out=run(''),fields=out.sample.find(x=>x.id==='V2I-POSTED-REUSE').fields;
+  assert.equal(fields.SALARY_BASE_LOW,180000);assert.equal(fields.SALARY_ASOF,'2026-10-01');assert.equal(fields.SALARY_SOURCE,url);
+  assert.equal(fields.DEGREE_REQ,'REQUIRED');assert.equal(fields.DEGREE_ASOF,degreeAt.slice(0,10));assert.equal(fields.DEGREE_EVIDENCE_URL,url);
+  assert.equal(out.public_read,0);assert.equal(out.ats_read,0);assert.equal(out.estimates,0);
+  const cacheAt=Date.now()-1000,cacheUrl='https://careers.acme.com/job/quality',ledger={submitted:{},tried:{}};
+  require('./recovery').saveEvidence(ledger,{PRIMARY_ID:'V2I-POSTED-REUSE',COMPANY:card.company,TITLE:card.title,LOCATION:card.location},cacheUrl,{text:'Lead site quality operations. '.repeat(20)+'Bachelor degree required.',pay:null,identityVerified:true,sourceIdentity:{company:card.company,title:card.title,location:card.location}},cacheAt);
+  fs.writeFileSync(path.join(dir,'ledger.json'),JSON.stringify(ledger));
+  const combined=run(''),cf=combined.sample.find(x=>x.id==='V2I-POSTED-REUSE').fields;
+  assert.equal(cf.SALARY_BASE_LOW,180000);assert.equal(cf.SALARY_ASOF,'2026-10-01');assert.equal(cf.SALARY_SOURCE,url);
+  assert.equal(cf.DEGREE_ASOF,new Date(cacheAt).toISOString().slice(0,10));assert.equal(cf.DEGREE_EVIDENCE_URL,cacheUrl);assert.equal(combined.public_read,0);assert.equal(combined.estimates,0);
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
+test('degree-triggered exact posting reads replace changed posted salary but preserve unchanged original observation',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'enrich-pay-refresh-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null,pages=path.join(dir,'pages.json');
+ const Evidence=require('../source-trial/evidence-store'),Posted=require('../source-trial/posted-pay'),Pay=require('./pay-values'),at='2026-10-01T00:00:00Z',url='https://careers.acme.example/job/quality';
+ const card={company:'Acme',title:'Director of Quality',location:'Dayton, OH',url,payFacts:Pay.fact({low:180000,high:220000},'STRUCTURED_ANNUAL_BASE'),salaryText:'Annual base salary USD $180,000-$220,000',source:'EMPLOYER_POSTING'};card.postedPay=Posted.capture(card,{observedAt:at});
+ const ref=Evidence.capture(dir,card,{observedAt:at,proof:'state/source-trial-report.json',fullPosting:false});
+ fs.writeFileSync(path.join(dir,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:{x:{sourceUrl:url,evidenceRefs:[ref]}}}));fs.writeFileSync(master,row(1,'V2I-REFRESH-PAY',card.title,card.location,'SOURCE_URL='+url));
+ try{for(const [lo,hi,currency] of [[190000,230000,'USD'],[180000,220000,'USD'],[190000,230000,'CAD']]){
+ const j={'@type':'JobPosting',title:card.title,hiringOrganization:{name:card.company},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',baseSalary:{currency,value:{unitText:'YEAR',minValue:lo,maxValue:hi}}};fs.writeFileSync(pages,JSON.stringify({[url]:'<script type="application/ld+json">'+JSON.stringify(j)+'</script>'}));
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_DISCOVERY_EVIDENCE_ROOT:dir,ENRICH_TEST_PUBLIC_PAGES:pages,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json')},stdio:'pipe'});
+ const out=JSON.parse(fs.readFileSync(report)),f=out.sample.find(x=>x.id==='V2I-REFRESH-PAY').fields,changed=lo!==180000&&currency==='USD';assert.equal(f.SALARY_BASE_LOW,changed?190000:180000);assert.equal(f.SALARY_BASE_HIGH,changed?230000:220000);assert.equal(f.SALARY_ASOF,changed?new Date().toISOString().slice(0,10):at.slice(0,10));assert.equal(f.DEGREE_REQ,'REQUIRED');assert.equal(out.public_read,1);assert.equal(out.estimates,0);
+ }}finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});

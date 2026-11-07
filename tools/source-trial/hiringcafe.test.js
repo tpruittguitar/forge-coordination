@@ -82,3 +82,4 @@ test('MCP tool errors are surfaced, not parsed as empty success', async () => {
   const out = await H.run(config({ searches: ['a'] }), { fetcher: async () => ({ ok: true, status: 200, headers: { get: () => 'application/json' }, text: async () => JSON.stringify({ jsonrpc: '2.0', id: 1, result: { isError: true, content: [{ type: 'text', text: 'invalid location' }] } }) }) });
   assert.match(out.errors[0].error, /tool error: invalid location/);
 });
+test('keeps exact compensation wording and explicit third-party estimate attribution',()=>{const c=H.normalize({company:'Acme',title:'Director',compensation:'$85/hr',job_url:'https://hiringcafe.com/job/one'});assert.equal(c.salaryText,'$85/hr');assert.equal(c.interval,'hourly');assert.equal(H.normalize({compensation:'Indeed estimate $180k-$220k/yr'}).salary_source,'THIRD_PARTY_ESTIMATE');});

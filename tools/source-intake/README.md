@@ -22,3 +22,9 @@ Run a stage with the same operator and proof as the intake:
    mismatch, a switch turned off).
 3. `snapshot after`, `finalize` (STAGE reconciliation: exact insert set, no deletions, archive checks), disarm the switch.
 Every case keeps the intake's gates: durable recorder, receipt-index-first, one Writer transaction at a time, no retries.
+
+## Posted salary provenance
+
+A salary disclosure captured from the exact source posting is verified source evidence. Discovery retains a source-bound `postedPay` disclosure separately from strict `payFacts` used for annual USD base-pay scoring. Preserve the original amounts, wording, URL, company/title/location and observation date through saved reports, evidence manifests, waiting pages, intake candidates and carry-forward recovery. Unknown currency, period or base/total basis stays unknown; estimates remain explicitly estimated. Neither missing scoring metadata nor an expired full-posting freshness window requires a second salary verification.
+
+Only identity-bound, explicitly annual USD base-pay facts enter canonical `SALARY_*` intake fields. Older salary remains reusable when a newer complete posting merely omits it; newer contradictory amounts or units block obsolete reuse. Degree review and posting liveness retain their own freshness and provenance. These rules do not waive identity, source-scope, protected-state or Writer intake gates, and publication does not backfill live rows.

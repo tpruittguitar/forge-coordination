@@ -7,7 +7,7 @@ class GitStore{
  git(args,input,extra={}){return cp.execFileSync('git',args,{cwd:this.root,encoding:'utf8',maxBuffer:100*1024*1024,input,timeout:90000,env:{...process.env,GIT_TERMINAL_PROMPT:'0',...extra},stdio:['pipe','pipe','pipe']});}
  fresh(){this.git(['fetch','--no-tags','--no-write-fetch-head',this.remote,'refs/heads/main:'+this.fetchRef]);return this.git(['rev-parse',this.fetchRef]).trim();}
  read(revision,file){if(!/^[a-f0-9]{40}$/.test(revision)||!/^(state|receipts)\/[A-Za-z0-9_./-]+\.json$/.test(file)||file.includes('..'))throw Error('INVALID_SOURCE_PATH');return this.git(['show',revision+':'+file]);}
- snapshot(){const revision=this.fresh(),source=Model.load(p=>this.read(revision,p));return {revision,source};}
+ snapshot(){const revision=this.fresh(),source=Model.load(p=>this.read(revision,p));return {revision,source,salaryIndex:require('./salary.cjs').savedIndex(p=>this.read(revision,p)),holdIndex:require('./hold-reason.cjs').savedIndex(p=>this.read(revision,p),source)};}
  receipt(requestId){if(!/^[a-f0-9-]{36}$/i.test(requestId||''))throw Error('INVALID_REQUEST_ID');const revision=this.fresh();let paths=this.git(['ls-tree','-r','--name-only',revision,'receipts/live-backlog']).trim().split('\n').filter(Boolean);for(const p of paths){const r=JSON.parse(this.read(revision,p));if(r.requestId===requestId)return {ok:true,revision,...r};}return this.failed.has(requestId)?{ok:false,status:'failed',definitive:true,error:this.failed.get(requestId)}:{ok:false,status:'unknown',error:'No committed receipt found. Refresh and check again before another mutation.'};}
  apply(input,kind){
   if(!/^[a-f0-9]{40}$/.test(input.revision||'')||!/^[a-f0-9-]{36}$/i.test(input.requestId||''))throw Error('INVALID_REQUEST');
