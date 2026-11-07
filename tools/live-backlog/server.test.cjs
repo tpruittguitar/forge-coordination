@@ -9,5 +9,5 @@ test('snapshot adds full-dataset occurrence ordinals and totals without changing
 test('snapshot exposes saved ATS hit evidence only, retaining zero and unknown separately',async()=>{
  const Resume=require('../source-trial/resume-match'),ats=Resume.match({title:'General Manager'}),items=[{key:'title',preliminaryScreen:{checkedAt:'2026-11-07T03:00:00Z',ats}},{key:'unknown'}],before=JSON.stringify(items);
  const call=harness({snapshot(){return {revision:'a'.repeat(40),source:{index:{at:'test'},items}};}}),key=await token(call),result=await call('/api/snapshot',{headers:{'x-worksheet-session':key}}).promise,data=JSON.parse(result.body);
- assert.equal(result.code,200);assert.equal(data.items[0].atsHits,0);assert.equal(data.items[0].atsBasis,'Title only');assert.equal(data.items[1].atsHits,null);assert.equal(data.items[0].preliminaryScreen,undefined);assert.equal(JSON.stringify(items),before);
+ assert.equal(result.code,200);assert.equal(data.items[0].atsHits,0);assert.deepEqual(data.items[0].atsTerms,[]);assert.equal(data.items[1].atsTerms,null);assert.equal(data.items[0].atsBasis,'Title only');assert.equal(data.items[1].atsHits,null);assert.equal(data.items[0].preliminaryScreen,undefined);assert.equal(JSON.stringify(items),before);
 });
