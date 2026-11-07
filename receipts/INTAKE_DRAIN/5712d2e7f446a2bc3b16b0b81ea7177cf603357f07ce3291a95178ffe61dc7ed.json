@@ -1,0 +1,77 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4479920390",
+  "sourceVersion": "9c79b1561a22798107d3c92c3254d37de405dae35395336c3ee8589019396199",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094347956Z-709497",
+  "observedAt": "2026-11-07T09:43:47.956Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher does not establish unique compatible presence (AMBIGUOUS). Preserve the identity hold and protected decisions; do not force a match.",
+  "nextAction": "Resolve exact original source/employer/title/site/requisition conflicts using saved evidence and authorized read-only recovery; preserve all existing identities and original requests.",
+  "retryCondition": "New exact employer posting/requisition/site proof or candidate-specific controlled reconciliation resolves the identity ambiguity; retry denied source only after access changes.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "linkedin:4479920390",
+        "status": "AMBIGUOUS",
+        "primaryId": null,
+        "basis": [
+          "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-E4171CEB8252",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "Massachusetts, United States",
+            "hash": "868c4b284d34651f8dbab566162049b9e83c71877307ce3d2121a5fb71facbfa"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4479920390",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4479369490/",
+      "result": "Targeted public lookup denied by network tunnel: 403 Forbidden. Stopped further LinkedIn requests for this run; other same-host postings not retried."
+    }
+  ],
+  "evidence": {
+    "classification": "IDENTITY_HELD",
+    "canonicalMatch": {
+      "key": "linkedin:4479920390",
+      "status": "AMBIGUOUS",
+      "primaryId": null,
+      "basis": [
+        "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-E4171CEB8252",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "Massachusetts, United States",
+          "hash": "868c4b284d34651f8dbab566162049b9e83c71877307ce3d2121a5fb71facbfa"
+        }
+      ]
+    },
+    "originalRequests": [],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

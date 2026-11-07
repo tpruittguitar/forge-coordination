@@ -1,0 +1,73 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4478493642",
+  "sourceVersion": "bcf3ea6efacd882e285a3e29a5878a7985de51e1dc0435248abaf08a1ad1df74",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094342965Z-545e78",
+  "observedAt": "2026-11-07T09:43:42.965Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "linkedin:4478493642",
+        "status": "PRESENT",
+        "primaryId": "V2F-F3242F868AED",
+        "basis": [
+          "COMPANY_TITLE_LOCATION"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2F-F3242F868AED",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "San Jose, CA",
+            "hash": "0ff10e72917e06abcc99ef02d18be11765fb13c0d2ca77fc6b21342965b33409"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4478493642",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "linkedin:4478493642",
+      "status": "PRESENT",
+      "primaryId": "V2F-F3242F868AED",
+      "basis": [
+        "COMPANY_TITLE_LOCATION"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2F-F3242F868AED",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "San Jose, CA",
+          "hash": "0ff10e72917e06abcc99ef02d18be11765fb13c0d2ca77fc6b21342965b33409"
+        }
+      ]
+    },
+    "originalRequests": [],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

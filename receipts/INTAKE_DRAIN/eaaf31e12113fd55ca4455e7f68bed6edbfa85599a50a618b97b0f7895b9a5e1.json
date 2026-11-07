@@ -1,0 +1,111 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-35BBD6EFA02A",
+  "sourceVersion": "1df573ed39215ecc5867ab6117a40006f95fe32916159c91321d8f84978086c2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094320160Z-52c913",
+  "observedAt": "2026-11-07T09:43:20.160Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-35BBD6EFA02A",
+        "status": "PRESENT",
+        "primaryId": "V2I-35BBD6EFA02A",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-35BBD6EFA02A",
+            "bucket": "SCOUT_INTAKE",
+            "location": "Fulton, MO",
+            "hash": "f5773008dbe857172401f3c05afb2fbecaa5119904dcc108a69207c9ee879836"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#url:8dab696f97f6aa7964e3b1da",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261106T050024071Z-B001_VERIFIED.json",
+      "sha256": "a4baa0a0669c2b12235ca969f1c2d27b975c0ac6b2b895bef83b43d3b027d365",
+      "effects": [
+        {
+          "key": "url:8dab696f97f6aa7964e3b1da",
+          "queueKey": "url:8dab696f97f6aa7964e3b1da",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-35BBD6EFA02A"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "url:8dab696f97f6aa7964e3b1da",
+          "primaryId": "V2I-35BBD6EFA02A",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "0b8b5c084fcf1266e7c552d83c239904e4b0d8c9c8962bd1742d270c9a31d9e7"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-35BBD6EFA02A",
+      "status": "PRESENT",
+      "primaryId": "V2I-35BBD6EFA02A",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-35BBD6EFA02A",
+          "bucket": "SCOUT_INTAKE",
+          "location": "Fulton, MO",
+          "hash": "f5773008dbe857172401f3c05afb2fbecaa5119904dcc108a69207c9ee879836"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-CODE-CHATGPT-20261106T050024071Z-B001",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261106051537325-13e68a"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

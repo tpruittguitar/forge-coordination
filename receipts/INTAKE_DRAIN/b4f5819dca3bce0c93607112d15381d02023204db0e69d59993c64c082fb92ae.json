@@ -1,0 +1,111 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-879936EA4400",
+  "sourceVersion": "edb24661685b7df4a909063c442b6e44a110dd12bda178938dc8c3eccda89d9d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094325680Z-ccff70",
+  "observedAt": "2026-11-07T09:43:25.680Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-879936EA4400",
+        "status": "PRESENT",
+        "primaryId": "V2I-879936EA4400",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-879936EA4400",
+            "bucket": "SCOUT_INTAKE",
+            "location": "Mount Juliet, TN",
+            "hash": "de92436c5eb7491727a4ecd48c1e21f5d23bf99a4d1516bc7253c0a18ed33f5d"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#url:811e8fd887198a94bfb322f1",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261106T050024071Z-B001_VERIFIED.json",
+      "sha256": "a4baa0a0669c2b12235ca969f1c2d27b975c0ac6b2b895bef83b43d3b027d365",
+      "effects": [
+        {
+          "key": "url:811e8fd887198a94bfb322f1",
+          "queueKey": "url:811e8fd887198a94bfb322f1",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-879936EA4400"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "url:811e8fd887198a94bfb322f1",
+          "primaryId": "V2I-879936EA4400",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "842412e72c438b4385183c8161cfbafc01acc1efb5e3017c6a8c3875493a17ab"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-879936EA4400",
+      "status": "PRESENT",
+      "primaryId": "V2I-879936EA4400",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-879936EA4400",
+          "bucket": "SCOUT_INTAKE",
+          "location": "Mount Juliet, TN",
+          "hash": "de92436c5eb7491727a4ecd48c1e21f5d23bf99a4d1516bc7253c0a18ed33f5d"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-CODE-CHATGPT-20261106T050024071Z-B001",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261106051537325-13e68a"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

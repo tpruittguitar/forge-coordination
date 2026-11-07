@@ -1,0 +1,111 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-1C6249E61595",
+  "sourceVersion": "42bcea970155e5060ed5680d6c77c9f620920cdb463ab83de31520f3c2767d9f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094423726Z-1d06da",
+  "observedAt": "2026-11-07T09:44:23.726Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-1C6249E61595",
+        "status": "PRESENT",
+        "primaryId": "V2I-1C6249E61595",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-1C6249E61595",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "North Carolina, United States",
+            "hash": "0c1c2fdacf1c074e658f50f77e02c43d92881f5942cdd814adb42f72a8942265"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4480205571",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003_VERIFIED.json",
+      "sha256": "50595c70e7ab7c5d36cba4c4226f3d01e45f670105504c70a5b415c7596bdc91",
+      "effects": [
+        {
+          "key": "linkedin:4480205571",
+          "queueKey": "linkedin:4480205571",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-1C6249E61595"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "linkedin:4480205571",
+          "primaryId": "V2I-1C6249E61595",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "ec04aef4d7576a2046db2619d0d153c0652245b6c47497c45d10feb8fd11dd8d"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-1C6249E61595",
+      "status": "PRESENT",
+      "primaryId": "V2I-1C6249E61595",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-1C6249E61595",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "North Carolina, United States",
+          "hash": "0c1c2fdacf1c074e658f50f77e02c43d92881f5942cdd814adb42f72a8942265"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-INTAKE-INSPECT-CHATGPT-20261101-1910ET-B003",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261102002103358-18e29a"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

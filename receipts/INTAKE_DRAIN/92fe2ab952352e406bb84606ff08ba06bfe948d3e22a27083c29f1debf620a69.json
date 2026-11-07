@@ -1,0 +1,89 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4477731985",
+  "sourceVersion": "daceaf9f8fa1faa7b6dd3a18fca8c3bb60f6d3f558134365a878f8d178ecbe38",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094408386Z-ad6c9a",
+  "observedAt": "2026-11-07T09:44:08.386Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher does not establish unique compatible presence (UNRESOLVED). Preserve the identity hold and protected decisions; do not force a match.",
+  "nextAction": "Resolve exact original source/employer/title/site/requisition conflicts using saved evidence and authorized read-only recovery; preserve all existing identities and original requests.",
+  "retryCondition": "New exact employer posting/requisition/site proof or candidate-specific controlled reconciliation resolves the identity ambiguity; retry denied source only after access changes.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "linkedin:4477731985",
+        "status": "UNRESOLVED",
+        "primaryId": null,
+        "basis": [
+          "UNCERTAIN_WORKSITE_SCOPE"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-AB4185F4D66E",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "Central, TX",
+            "hash": "8f38a78c6a5c74c796adfd01adc166f1d5894c948e2b22a893fba71123f23459"
+          },
+          {
+            "primaryId": "V2I-A848F8CE9E78",
+            "bucket": "DUPLICATE",
+            "location": "Central Texas",
+            "hash": "7b5b85c576eabdfd494252e8c10a7708b2c812d5322f3c70ccaa91a5aa08995d"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4477731985",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "https://www.linkedin.com/jobs/view/4479369490/",
+      "result": "Targeted public lookup denied by network tunnel: 403 Forbidden. Stopped further LinkedIn requests for this run; other same-host postings not retried."
+    }
+  ],
+  "evidence": {
+    "classification": "IDENTITY_HELD",
+    "canonicalMatch": {
+      "key": "linkedin:4477731985",
+      "status": "UNRESOLVED",
+      "primaryId": null,
+      "basis": [
+        "UNCERTAIN_WORKSITE_SCOPE"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-AB4185F4D66E",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "Central, TX",
+          "hash": "8f38a78c6a5c74c796adfd01adc166f1d5894c948e2b22a893fba71123f23459"
+        },
+        {
+          "primaryId": "V2I-A848F8CE9E78",
+          "bucket": "DUPLICATE",
+          "location": "Central Texas",
+          "hash": "7b5b85c576eabdfd494252e8c10a7708b2c812d5322f3c70ccaa91a5aa08995d"
+        }
+      ]
+    },
+    "originalRequests": [],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

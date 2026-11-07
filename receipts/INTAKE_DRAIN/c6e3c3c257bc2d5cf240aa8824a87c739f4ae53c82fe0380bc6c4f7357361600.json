@@ -1,0 +1,111 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-40226DB46F8D",
+  "sourceVersion": "47c5559a93711314b9b7bfff166a617bbb28c384d7f78a7450580f89cdb07ffe",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T094428780Z-2823c7",
+  "observedAt": "2026-11-07T09:44:28.780Z",
+  "instructionCommit": "5bce1b2ace713a249c383314b698ef691a47ace6",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T09:38:53.218Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13451131,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-40226DB46F8D",
+        "status": "PRESENT",
+        "primaryId": "V2I-40226DB46F8D",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-40226DB46F8D",
+            "bucket": "SCOUT_INTAKE",
+            "location": "Corona, CA",
+            "hash": "cc8ead5ef561e0fcfdd00e83dc6b6c7c8b475c721650aed5c05e367243545c04"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4408531206",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json",
+      "sha256": "c8e185d1b4d7df6d594bedd8a97fff935d87022652b05bafd6aa128b6ec9971a",
+      "effects": [
+        {
+          "key": "linkedin:4408531206",
+          "queueKey": "linkedin:4408531206",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-40226DB46F8D"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "linkedin:4408531206",
+          "primaryId": "V2I-40226DB46F8D",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "a12e37a5661c30f7b87498166edf1d07b832ca1477ba24a2b6ff7be21e3ec7e8"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-40226DB46F8D",
+      "status": "PRESENT",
+      "primaryId": "V2I-40226DB46F8D",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-40226DB46F8D",
+          "bucket": "SCOUT_INTAKE",
+          "location": "Corona, CA",
+          "hash": "cc8ead5ef561e0fcfdd00e83dc6b6c7c8b475c721650aed5c05e367243545c04"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261101210436699-169590"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T09:40:01.670Z",
+    "indexSha256": "b58ca557f00bba4f472732f02878eb77ca1c782692181a851411d52b105654c1"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}
