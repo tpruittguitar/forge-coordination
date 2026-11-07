@@ -7,11 +7,12 @@
       ZipRecruiter, Glassdoor and Google dropped; each failed 18 of 18 searches on every run from the runner);
    3. HiringCafe (official read-only MCP connector, run by tools/source-trial/hiringcafe.js before this script), read
       last so the roles it alone contributes after cross-source dedupe are its measured incremental yield.
-   Every matching US role is marked NEW or EXISTING against the master. Writes only state/source-trial-report.{json,md}.
+   Every matching US role is marked NEW or EXISTING against the master. Writes discovery reports and lightweight health sidecars under state/.
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
 const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
 const P = require('../enrich-ats-pay/lib.js'), T = require('./lib.js');
 const H = require('./board-health'), PostedPay=require('./posted-pay');
+const { discoveryHealth } = require('./discovery-health');
 const ROOT = path.resolve(__dirname, '../..');
 const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/';
@@ -193,6 +194,7 @@ async function main(){
   }
   const reportName = process.env.TRIAL_BOARDS_ONLY ? 'board-discovery-report' : 'source-trial-report';
   fs.writeFileSync(path.join(OUT, reportName + '.json'), JSON.stringify(report, null, 1) + '\n');
+  fs.writeFileSync(path.join(OUT, reportName + '.health.json'), JSON.stringify(discoveryHealth(report)) + '\n');
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
