@@ -4,10 +4,10 @@
    (Lever, Greenhouse, Ashby public APIs), and only then estimates pay from employer-posted comparables in the master.
    Submits at most MAX_BATCHES x 25 rows per run to the Writer, one batch call at a time; CONFIG.submit=false = dry run.
    node tools/enrich-ats-pay/run.js [--dry] */
-const fs = require('fs'), path = require('path'), vm = require('vm');
+const fs = require('fs'), path = require('path');
 const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
-const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
+const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('../source-intake/writer-connection.js'),require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
 const salarySource=e=>e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
@@ -52,9 +52,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const T0 = Date.now();
   progress('startup');
   // Synthetic-master runs use a non-production fixture endpoint and no private
-  // connection file. Real runs still use the existing local Writer connection.
+  // connection file. Real runs require explicit private runtime configuration.
   const conn = {}; if(process.env.ENRICH_MASTER_FILE)conn.PipelineConnection={url:'https://script.google.com/macros/s/FORGE_TEST_ONLY/exec',key:'TEST_ONLY'};
-  else vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
+  else conn.PipelineConnection=require('../source-intake/writer-connection').connection({requireUrl:true});
   const key = conn.PipelineConnection.key;
   const Evidence=require(await loadModule('PipelineEvidence.gs')); await loadModule('PipelinePostingFreshness.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
   const productModule=path.join(require('os').tmpdir(),'PipelineProducts.js');fs.writeFileSync(productModule,await fcFile('pipeline-products.js'));const Products=require(productModule);
