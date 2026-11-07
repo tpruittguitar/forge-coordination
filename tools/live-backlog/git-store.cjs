@@ -2,12 +2,30 @@
 const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path'),os=require('node:os'),crypto=require('node:crypto');
 const Model=require('./model.cjs'),{annotate}=require('./occurrences.cjs');
 const REMOTE='https://github.com/tpruittguitar/forge-coordination.git';
+function validateRead(revision,file){if(!/^[a-f0-9]{40}$/.test(revision)||typeof file!=='string'||!/^(state|receipts)\/[A-Za-z0-9_./-]+\.json$/.test(file)||file.includes('..'))throw Error('INVALID_SOURCE_PATH');}
 class GitStore{
  constructor({root,remote=REMOTE,allowTestRemote=false}){this.root=root;this.remote=remote;this.failed=new Map();this.fetchRef='refs/forge-worksheet/'+crypto.randomUUID();if(remote!==REMOTE&&!allowTestRemote)throw Error('ONLY_FORGE_COORDINATION_REMOTE_ALLOWED');this.git(['rev-parse','--git-dir']);}
- git(args,input,extra={}){return cp.execFileSync('git',args,{cwd:this.root,encoding:'utf8',maxBuffer:100*1024*1024,input,timeout:90000,env:{...process.env,GIT_TERMINAL_PROMPT:'0',...extra},stdio:['pipe','pipe','pipe']});}
+ git(args,input,extra={},encoding='utf8'){return cp.execFileSync('git',args,{cwd:this.root,encoding,maxBuffer:100*1024*1024,input,timeout:90000,env:{...process.env,GIT_TERMINAL_PROMPT:'0',...extra},stdio:['pipe','pipe','pipe']});}
  fresh(){this.git(['fetch','--no-tags','--no-write-fetch-head',this.remote,'refs/heads/main:'+this.fetchRef]);return this.git(['rev-parse',this.fetchRef]).trim();}
- read(revision,file){if(!/^[a-f0-9]{40}$/.test(revision)||!/^(state|receipts)\/[A-Za-z0-9_./-]+\.json$/.test(file)||file.includes('..'))throw Error('INVALID_SOURCE_PATH');return this.git(['show',revision+':'+file]);}
- snapshot(){const revision=this.fresh(),source=Model.load(p=>this.read(revision,p));return {revision,source,salaryIndex:require('./salary.cjs').savedIndex(p=>this.read(revision,p)),holdIndex:require('./hold-reason.cjs').savedIndex(p=>this.read(revision,p),source)};}
+ read(revision,file){validateRead(revision,file);return this.git(['show',revision+':'+file]);}
+ readMany(revision,files){
+  if(!Array.isArray(files)||!/^[a-f0-9]{40}$/.test(revision))throw Error('INVALID_SOURCE_PATH');
+  const paths=[...new Set(files)];for(const file of paths)validateRead(revision,file);
+  const values=new Map();if(!paths.length)return values;
+  // One process, exact revision, no worktree reads or cross-revision cache.
+  // Batch sizes are byte counts, so decode each UTF-8 blob only after framing.
+  const raw=this.git(['cat-file','--batch'],paths.map(file=>revision+':'+file+'\n').join(''),{},null);let offset=0;
+  for(const file of paths){
+   const end=raw.indexOf(10,offset);if(end<0)throw Error('INVALID_GIT_BATCH');
+   const header=raw.subarray(offset,end).toString('utf8');offset=end+1;
+   if(header===revision+':'+file+' missing')continue;
+   const match=/^[a-f0-9]{40} blob (\d+)$/.exec(header),size=match?Number(match[1]):NaN;
+   if(!Number.isSafeInteger(size)||size<0||size>raw.length-offset-1||raw[offset+size]!==10)throw Error('INVALID_GIT_BATCH');
+   values.set(file,raw.subarray(offset,offset+size).toString('utf8'));offset+=size+1;
+  }
+  if(offset!==raw.length)throw Error('INVALID_GIT_BATCH');return values;
+ }
+ snapshot(){const revision=this.fresh(),source=Model.load(p=>this.read(revision,p));return {revision,source,salaryIndex:require('./salary.cjs').savedIndex(p=>this.read(revision,p)),holdIndex:require('./hold-reason.cjs').savedIndex(p=>this.read(revision,p),source,paths=>this.readMany(revision,paths))};}
  receipt(requestId){if(!/^[a-f0-9-]{36}$/i.test(requestId||''))throw Error('INVALID_REQUEST_ID');const revision=this.fresh();let paths=this.git(['ls-tree','-r','--name-only',revision,'receipts/live-backlog']).trim().split('\n').filter(Boolean);for(const p of paths){const r=JSON.parse(this.read(revision,p));if(r.requestId===requestId)return {ok:true,revision,...r};}return this.failed.has(requestId)?{ok:false,status:'failed',definitive:true,error:this.failed.get(requestId)}:{ok:false,status:'unknown',error:'No committed receipt found. Refresh and check again before another mutation.'};}
  apply(input,kind){
   if(!/^[a-f0-9]{40}$/.test(input.revision||'')||!/^[a-f0-9-]{36}$/i.test(input.requestId||''))throw Error('INVALID_REQUEST');

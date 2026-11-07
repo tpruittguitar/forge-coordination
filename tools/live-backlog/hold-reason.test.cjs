@@ -23,3 +23,15 @@ test('untrusted text is kept as data; no input object or arbitrary fields are re
 
 test('changed recorded card identity cannot borrow old research; recovered missing fields remain allowed',()=>{for(const field of ['company','title','location']){const f=fixture();f.item[field]='Changed source';f.d.card[field]='Old source';f.save();a.equal(H.savedIndex(f.read,f.source).get(f.item.key).holdOwner,null);}const f=fixture();f.d.card={company:'Recovered employer',title:'Recovered role',location:'Recovered location'};f.save();a.equal(H.savedIndex(f.read,f.source).get(f.item.key).holdReason,f.review.reason);});
 test('source URL must remain an exact original alias, and unsupported task/outcome are rejected',()=>{const f=fixture();f.item.sourceUrl='https://indeed.com/viewjob?jk=exact';f.d.card.url='https://indeed.com/viewjob?jk=other';f.save();a.equal(H.savedIndex(f.read,f.source).get(f.item.key).holdOwner,null);for(const mutate of [f=>{f.review.outcome='COMPLETE'},f=>{f.review.taskKey=f.d.taskKey='TASK'}]){const f=fixture();mutate(f);f.save();a.notEqual(H.savedIndex(f.read,f.source).get(f.item.key).holdReason,f.review.reason);}});
+
+test('batched reads preserve all source-bound checks and fallback behavior',()=>{
+ const mutations=[()=>{},f=>f.drain.upstreamAt='old',f=>f.d.key='other',f=>f.d.upstreamStatus='WAITING',f=>f.d.aliases=['other'],f=>f.d.status='ACCOUNTED_UPSTREAM',f=>f.d.currentRepresentation={primaryId:'pid'},f=>f.review.sourceVersion='b'.repeat(64),f=>f.review.key='other',f=>f.review.taskKey='wrong',f=>f.review.provider='other',f=>f.review.writerSubmitted=true,f=>f.review.observedAt='2099-01-01',f=>f.review.reason='',f=>f.review.attempts=[]];
+ for(const mutate of mutations){const f=fixture();mutate(f);f.save();let calls=0;const out=H.savedIndex(f.read,f.source,paths=>{calls++;return new Map(paths.map(p=>[p,f.files.get(p)]));});a.deepEqual(out,H.savedIndex(f.read,f.source));a.equal(calls,f.drain.upstreamAt==='old'?0:1);}
+ for(const mutate of [f=>f.d.review.sha256='b'.repeat(64),f=>f.d.review.path='receipts/../secret.json',f=>f.d.review.outcome='SOURCE_READY',f=>f.d.review.observedAt='old',f=>f.files.set(f.d.review.path,JSON.stringify({...f.review,reason:'tampered'})),f=>f.files.delete(f.d.review.path),f=>delete f.d.review]){
+  const f=fixture();mutate(f);f.files.set('state/INTAKE_DRAIN.json',JSON.stringify(f.drain));const out=H.savedIndex(f.read,f.source,paths=>{a.ok(paths.every(p=>/^receipts\/INTAKE_DRAIN\/[a-f0-9]{64}\.json$/.test(p)));return new Map(paths.filter(p=>f.files.has(p)).map(p=>[p,f.files.get(p)]));});a.deepEqual(out,H.savedIndex(f.read,f.source));
+ }
+});
+test('batch failure marks research unavailable without retrying hundreds of individual reads',()=>{
+ const f=fixture(),reads=[];const out=H.savedIndex(p=>{reads.push(p);return f.read(p);},f.source,()=>{throw Error('batch unavailable');});
+ a.deepEqual(reads,['state/INTAKE_DRAIN.json']);a.match(out.get(f.item.key).holdReviewAvailability,/unavailable/);a.match(out.get(f.item.key).holdReason,/HELD_WRITER_REVIEW/);
+});

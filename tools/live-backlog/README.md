@@ -40,6 +40,10 @@ Deletion removes discovery cards from the active backlog immediately in the sour
 
 A durable tombstone on each selected source identity prevents later discovery collection from restoring it. The observer retains the underlying current classification so undo does not turn a historically present card into a new job. Restoration can legitimately return fewer active rows when the source has since been accounted for elsewhere.
 
+## Loading performance
+
+Hold/wait review files are read in one Git batch at the fetched main revision rather than starting a Git process for each row. Review identity, source version, timestamp and content-hash checks are unchanged. Missing or invalid reviews retain the existing unavailable label. No worktree data or cross-revision cache is used, and refresh still fetches main. A batch failure leaves research unavailable without replaying hundreds of individual reads.
+
 ## Atomicity and safety
 
 Each edit fetches main, verifies the displayed card identities and all page hashes, regenerates the cards from the authoritative ledger, and checks summary consistency. A process-specific fetch ref avoids interference with other Git operations. A temporary Git index creates one commit; the local branch/worktree are never checked out, reset, staged, or rewritten. A normal non-force push rejects concurrent updates. Remote receipt readback is required before success is shown. Ambiguous writes keep the request ID available for reconciliation. If the browser repeats a disconnected request, the same request ID returns its existing committed receipt instead of applying another edit.
@@ -49,7 +53,7 @@ The HTTP server checks loopback Host, a per-run session header, exact Origin on 
 ## Tests
 
 ```sh
-node --test tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs tools/live-backlog/occurrences.test.cjs tools/live-backlog/match-evidence.test.cjs tools/live-backlog/ats-hits.test.cjs tools/live-backlog/ats-filter.test.cjs tools/live-backlog/salary.test.cjs tools/live-backlog/salary-sort.test.cjs tools/live-backlog/hold-reason.test.cjs
+node --test tools/live-backlog/git-store.test.cjs tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs tools/live-backlog/occurrences.test.cjs tools/live-backlog/match-evidence.test.cjs tools/live-backlog/ats-hits.test.cjs tools/live-backlog/ats-filter.test.cjs tools/live-backlog/salary.test.cjs tools/live-backlog/salary-sort.test.cjs tools/live-backlog/hold-reason.test.cjs
 node --test tools/manual-backlog/*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js tools/intake-drain/queue.test.cjs tools/intake-drain/exclusions.test.cjs
 ```
 
