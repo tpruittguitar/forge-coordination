@@ -4,6 +4,8 @@ const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const http = require('node:http');
 const {annotate}=require('./occurrences.cjs');
+const {display:atsDisplay}=require('./ats-hits.cjs');
+const Resume=require('../source-trial/resume-match');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 (async () => {
   let items = Array.from({length: 6540}, (_, i) => ({key: `k${i}`, company: `Company ${i}`, title: i===6539 ? 'Unique distant job' : 'Engineer', location: 'Remote', status: 'ready', sourceUrl: 'https://example.com/job', firstSeen: '2026-11-06'}));
@@ -13,7 +15,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     if (req.url === '/') {res.setHeader('content-type','text/html');return res.end(fs.readFileSync(__dirname+'/worksheet.html','utf8').replace('__SESSION_TOKEN__','test-session'));}
     res.setHeader('content-type','application/json');
     if(req.headers['x-worksheet-session']!=='test-session'){res.statusCode=403;return res.end(JSON.stringify({error:'Session header required'}));}
-    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items:annotate(items),count:items.length,at:'now'}));
+    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items:annotate(items).map(item=>({...item,...atsDisplay(item)})),count:items.length,at:'now'}));
     if(req.url.startsWith('/api/receipt')) {const id=new URL(req.url,'http://localhost').searchParams.get('requestId');return res.end(JSON.stringify(receiptPending?{ok:false,status:'unknown'}:receipts.get(id)?.result||{ok:false,status:'unknown'}));}
     let body='';for await(const chunk of req)body+=chunk;const data=JSON.parse(body);posts.push({path:req.url,data,token:req.headers['x-worksheet-session']});
     // Transport may replay a POST after a dropped connection. A committed request
@@ -70,6 +72,18 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.locator('#repeatFilter').selectOption('');assert.equal(await page.locator('#rows tr').count(),2);assert.match(await page.locator('#rows').textContent(),/Not counted: missing location/);
     await page.locator('#undo').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('11 jobs restored'));assert.equal(items.length,13);
     await page.locator('#repeatFilter').selectOption('groups');assert.equal(await page.locator('#rows tr').count(),12);await page.locator('#repeatFilter').selectOption('uncounted');assert.equal(await page.locator('#rows tr').count(),1);
+    const atsRecord=(title,description)=>({checkedAt:'2026-11-07T03:00:00Z',ats:Resume.match({title,description})});
+    items=[{key:'unknown',company:'ATS Fixture',title:'Unknown',location:'TX'},{key:'zero',company:'ATS Fixture',title:'Zero matches',location:'TX',preliminaryScreen:atsRecord('Unrelated','Revenue analytics')},{key:'title',company:'ATS Fixture',title:'Title only',location:'TX',preliminaryScreen:atsRecord('Manufacturing Director','')},{key:'content',company:'ATS Fixture',title:'Content matches',location:'TX',preliminaryScreen:atsRecord('Manufacturing Director','Lead greenfield assembly launch, robotics commissioning, PPAP and MES traceability.')}];
+    items[3].preliminaryScreen.ats.matches[0].postingQuotes.push('<img src=x onerror="window.injected=true">');revision='ats-fixture';
+    const postsBeforeATS=posts.length;await page.locator('#repeatFilter').selectOption('');await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);
+    const atsCells=()=>page.locator('#rows td').filter({has:page.locator('.ats-basis')});
+    await page.locator('[data-sort=atsHits]').click();assert.match(await atsCells().first().textContent(),/^0Captured content/);assert.match(await atsCells().last().textContent(),/^—Not recorded/);
+    await page.locator('[data-sort=atsHits]').click();assert.match(await atsCells().first().textContent(),/^5Captured content/);assert.match(await atsCells().last().textContent(),/^—Not recorded/);
+    await atsCells().first().locator('summary').click();assert.match(await atsCells().first().textContent(),/Saved resume version:/);assert.equal(await page.locator('#rows img').count(),0);assert.equal(await page.evaluate(()=>window.injected),undefined);
+    await page.locator('#search').fill('Title only');assert.equal(await page.locator('#rows tr').count(),1);assert.match(await atsCells().textContent(),/^1Title only/);await page.locator('#search').fill('PPAP');assert.equal(await page.locator('#rows tr').count(),1);
+    await page.locator('#search').fill('');await page.locator('#selectFiltered').click();await page.locator('#copy').click();const atsTSV=await page.evaluate(()=>window.copied),tsv=atsTSV.split('\n').map(line=>line.split('\t')),headers=tsv[0];assert.equal(tsv.length,5);assert.ok(headers.includes('ATS evidence basis'));assert.ok(headers.includes('ATS saved resume version'));assert.equal(tsv.find(row=>row.includes('Zero matches'))[headers.indexOf('ATS hits')],'0');assert.equal(tsv.find(row=>row.includes('Unknown'))[headers.indexOf('ATS hits')],'');
+    await page.locator('#delete').click();await page.locator('#cancelDelete').click();assert.equal(posts.length,postsBeforeATS);await page.locator('#clear').click();await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);assert.equal(await page.locator('#rows tr').count(),4);assert.equal(posts.length,postsBeforeATS);
+    console.log('PASS: ATS saved hit count, evidence, title-only, zero/unknown, numeric sorting with unknowns last, text-safe rendering, search, TSV, cancel and refresh without writes.');
     console.log('PASS: occurrence ordinal/total, numeric sort, stable filtered ranks, missing fields, source warnings, TSV, manual extras deletion retaining one, undo;  6,540 rows; full-dataset filtering; selection; range; keyboard; confirmation; delete; undo; uncertain outcome reconciliation without retry.');
   } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

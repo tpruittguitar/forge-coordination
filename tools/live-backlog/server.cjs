@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const {GitStore}=require('./git-store.cjs'),{annotate}=require('./occurrences.cjs');
+const {GitStore}=require('./git-store.cjs'),{annotate}=require('./occurrences.cjs'),{display:atsDisplay}=require('./ats-hits.cjs');
 function createServer(store){const session=crypto.randomBytes(32).toString('hex');let busy=false,origin;
  const server=http.createServer(async(req,res)=>{
   const send=(code,body,type='application/json')=>{res.writeHead(code,{'Content-Type':type,'Cache-Control':'no-store','X-Content-Type-Options':'nosniff','Referrer-Policy':'no-referrer','Content-Security-Policy':"default-src 'none'; script-src 'unsafe-inline'; style-src 'unsafe-inline'; connect-src 'self'; img-src 'none'; base-uri 'none'; form-action 'none'; frame-ancestors 'none'"});res.end(type==='application/json'?JSON.stringify(body):body);};
@@ -11,7 +11,7 @@ function createServer(store){const session=crypto.randomBytes(32).toString('hex'
   if(req.headers['x-worksheet-session']!==session)return send(403,{error:'SESSION_REQUIRED'});
   try{
    const url=new URL(req.url,origin);
-   if(req.method==='GET'&&url.pathname==='/api/snapshot'){const {revision,source}=store.snapshot();return send(200,{revision,at:source.index.at,updatedAt:source.index.worksheetUpdatedAt||source.index.at,count:source.items.length,items:annotate(source.items).map(({key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence})=>({key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence}))});}
+   if(req.method==='GET'&&url.pathname==='/api/snapshot'){const {revision,source}=store.snapshot();return send(200,{revision,at:source.index.at,updatedAt:source.index.worksheetUpdatedAt||source.index.at,count:source.items.length,items:annotate(source.items).map(item=>{const {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence}=item;return {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence,...atsDisplay(item)};})});}
    if(req.method==='GET'&&url.pathname==='/api/receipt')return send(200,store.receipt(url.searchParams.get('requestId')));
    if(req.method!=='POST'||!['/api/delete','/api/restore'].includes(url.pathname))return send(404,{error:'NOT_FOUND'});
    if(req.headers.origin!==origin||req.headers['content-type']!=='application/json')return send(403,{error:'SAME_ORIGIN_JSON_REQUIRED'});
