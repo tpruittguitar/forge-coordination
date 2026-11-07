@@ -8,6 +8,8 @@ This code must first be reviewed and merged. The server refuses deletions until 
 
 On the user's computer, use an existing Forge checkout with Node.js 18+ and existing authenticated Git access. No npm dependencies, installation, new token, credential storage, security change, Writer key, Writer read, or Writer write is required. Existing branch protection remains authoritative. A rejected push is not bypassed.
 
+Before using a new worksheet checkout, verify its existing Git author and committer identity with `git var GIT_AUTHOR_IDENT` and `git var GIT_COMMITTER_IDENT`. Clone/fetch and synthetic browser tests do not verify commit identity. If missing, configure `user.name` and `user.email` locally in that checkout using the user’s already-established Forge identity; do not invent an identity or change global settings. This correction needs no server restart, and must not replay a deletion. Local commit-preparation failures occur before push and are reported as no rows changed.
+
 After updating the checkout to include this change, run:
 
 ```sh

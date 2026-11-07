@@ -9,7 +9,7 @@ const Resume=require('../source-trial/resume-match');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 (async () => {
   let items = Array.from({length: 6540}, (_, i) => ({key: `k${i}`, company: `Company ${i}`, title: i===6539 ? 'Unique distant job' : 'Engineer', location: 'Remote', status: 'ready', sourceUrl: 'https://example.com/job', firstSeen: '2026-11-06'}));
-  let deleted = [], revision = 'rev1', posts = [], uncertain = false, disconnectOnce = false, receiptPending = false;
+  let deleted = [], revision = 'rev1', posts = [], uncertain = false, disconnectOnce = false, receiptPending = false, definitiveOnce = false;
   const receipts = new Map(), applications = [];
   const server = http.createServer(async (req, res) => {
     if (req.url === '/') {res.setHeader('content-type','text/html');return res.end(fs.readFileSync(__dirname+'/worksheet.html','utf8').replace('__SESSION_TOKEN__','test-session'));}
@@ -20,6 +20,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     let body='';for await(const chunk of req)body+=chunk;const data=JSON.parse(body);posts.push({path:req.url,data,token:req.headers['x-worksheet-session']});
     // Transport may replay a POST after a dropped connection. A committed request
     // returns its original receipt before stale revision checks or another effect.
+    if(definitiveOnce){definitiveOnce=false;res.statusCode=409;return res.end(JSON.stringify({error:'This worksheet checkout needs a Git author name and email. No rows changed. Configure its local identity, then refresh.'}));}
     const previous=receipts.get(data.requestId);
     if(previous){if(previous.path!==req.url||previous.body!==body){res.statusCode=409;return res.end(JSON.stringify({error:'Request ID reuse mismatch'}));}return res.end(JSON.stringify(previous.result));}
     if(req.url==='/api/delete'||req.url==='/api/restore') {
@@ -83,6 +84,8 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.locator('#search').fill('Title only');assert.equal(await page.locator('#rows tr').count(),1);assert.match(await atsCells().textContent(),/^1Title only/);await page.locator('#search').fill('PPAP');assert.equal(await page.locator('#rows tr').count(),1);
     await page.locator('#search').fill('');await page.locator('#selectFiltered').click();await page.locator('#copy').click();const atsTSV=await page.evaluate(()=>window.copied),tsv=atsTSV.split('\n').map(line=>line.split('\t')),headers=tsv[0];assert.equal(tsv.length,5);assert.ok(headers.includes('ATS evidence basis'));assert.ok(headers.includes('ATS saved resume version'));assert.equal(tsv.find(row=>row.includes('Zero matches'))[headers.indexOf('ATS hits')],'0');assert.equal(tsv.find(row=>row.includes('Unknown'))[headers.indexOf('ATS hits')],'');
     await page.locator('#delete').click();await page.locator('#cancelDelete').click();assert.equal(posts.length,postsBeforeATS);await page.locator('#clear').click();await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);assert.equal(await page.locator('#rows tr').count(),4);assert.equal(posts.length,postsBeforeATS);
+    const beforeDefinitive=items.length,appliedBeforeDefinitive=applications.length;definitiveOnce=true;await page.locator('#rows input').first().click();await page.locator('#delete').click();await page.locator('#confirmDelete').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('Git author name and email'));assert.equal(items.length,beforeDefinitive);assert.equal(applications.length,appliedBeforeDefinitive);assert.match(await page.locator('#counts').textContent(),/4 displayed rows · live total unavailable · 1 selected/);assert.equal(await page.locator('#delete').isDisabled(),true);assert.equal(await page.locator('#reconcile').isVisible(),false);await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);assert.match(await page.locator('#counts').textContent(),/4 of 4 jobs · 0 selected/);assert.equal(applications.length,appliedBeforeDefinitive);
+    console.log('PASS: definitive local commit failure retains visible rows without claiming zero live jobs; refresh recovers without replay.');
     console.log('PASS: ATS saved hit count, evidence, title-only, zero/unknown, numeric sorting with unknowns last, text-safe rendering, search, TSV, cancel and refresh without writes.');
     console.log('PASS: occurrence ordinal/total, numeric sort, stable filtered ranks, missing fields, source warnings, TSV, manual extras deletion retaining one, undo;  6,540 rows; full-dataset filtering; selection; range; keyboard; confirmation; delete; undo; uncertain outcome reconciliation without retry.');
   } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}

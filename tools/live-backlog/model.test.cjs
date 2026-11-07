@@ -28,3 +28,25 @@ test('a changed repeat group rejects stale extras even when selected card is unc
   assert.throws(()=>store.apply({revision:snap.revision,requestId,keys:[key2]},'delete'),/REPEAT_GROUP_CHANGED/);assert.equal(store.snapshot().source.items.length,1);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
+test('missing local author or committer identity fails before preparation or push and has a definitive receipt result',()=>{
+ for(const missing of ['GIT_AUTHOR_IDENT','GIT_COMMITTER_IDENT']){
+  const files=fixture(),store=Object.create(GitStore.prototype),calls=[];store.failed=new Map();store.fresh=()=>revision;store.read=(_,p)=>files.get(p);
+  store.git=args=>{calls.push(args[0]+':'+(args[1]||''));if(args[0]==='ls-tree')return '';if(args[0]==='var'&&args[1]===missing)throw Error('Author identity unknown');if(args[0]==='var')return 'Fixture <fixture@example.invalid> 0 +0000';throw Error('Unexpected mutation or read');};
+  assert.equal(store.snapshot().source.items.length,2,'read-only snapshot still works');
+  assert.throws(()=>store.apply({revision,requestId,keys:[key]},'delete'),/Git author name and email.*No rows changed/);
+  assert.equal(calls.some(c=>/^(commit-tree|push|hash-object|read-tree|update-index|write-tree):/.test(c)),false);
+  const result=store.receipt(requestId);assert.equal(result.ok,false);assert.equal(result.definitive,true);assert.equal(result.status,'failed');
+ }
+});
+test('local commit-tree failure is definitive and never reaches remote push',()=>{
+ const files=fixture(),store=Object.create(GitStore.prototype),calls=[];store.failed=new Map();store.fresh=()=>revision;store.read=(_,p)=>files.get(p);
+ store.git=args=>{calls.push(args[0]);if(args[0]==='ls-tree')return '';if(args[0]==='var')return 'Fixture <fixture@example.invalid> 0 +0000';if(args[0]==='show')return "require('../live-backlog/model.cjs').activeDeletion(e)";if(args[0]==='commit-tree')throw Error('Signing failed');if(['hash-object','write-tree'].includes(args[0]))return 'b'.repeat(40);if(['read-tree','update-index'].includes(args[0]))return '';throw Error('Unexpected command');};
+ assert.throws(()=>store.apply({revision,requestId,keys:[key]},'delete'),/before any push.*No rows changed/);
+ assert.equal(calls.includes('commit-tree'),true);assert.equal(calls.includes('push'),false);assert.equal(store.receipt(requestId).definitive,true);
+});
+test('retry after repaired identity clears old failure proof before an uncertain push',()=>{
+ const files=fixture(),store=Object.create(GitStore.prototype);let identityReady=false,pushes=0;store.failed=new Map();store.fresh=()=>revision;store.read=(_,p)=>files.get(p);
+ store.git=args=>{if(args[0]==='ls-tree')return '';if(args[0]==='var'){if(!identityReady)throw Error('Author identity unknown');return 'Fixture <fixture@example.invalid> 0 +0000';}if(args[0]==='show')return "require('../live-backlog/model.cjs').activeDeletion(e)";if(['hash-object','write-tree','commit-tree'].includes(args[0]))return 'b'.repeat(40);if(['read-tree','update-index'].includes(args[0]))return '';if(args[0]==='push'){pushes++;throw Error('Connection lost; outcome unknown');}throw Error('Unexpected command');};
+ const input={revision,requestId,keys:[key]};assert.throws(()=>store.apply(input,'delete'),/Git author name and email/);assert.equal(store.receipt(requestId).definitive,true);
+ identityReady=true;assert.throws(()=>store.apply(input,'delete'),/PUSH_NOT_CONFIRMED_CHECK_RECEIPT/);assert.equal(pushes,1);assert.equal(store.receipt(requestId).status,'unknown');assert.equal(store.receipt(requestId).definitive,undefined);
+});
