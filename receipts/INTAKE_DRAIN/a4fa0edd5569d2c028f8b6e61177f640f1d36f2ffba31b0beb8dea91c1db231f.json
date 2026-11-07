@@ -1,0 +1,120 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-16B19650D291",
+  "sourceVersion": "bdca0602ea71020bd9997df9325314a06a1251f077283366d578d8ce0497433f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T114430146Z-f5d283",
+  "observedAt": "2026-11-07T11:44:30.146Z",
+  "instructionCommit": "ea3e728179d6300cae63f6f8de66d389ad2656dc",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T11:40:38.995Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13458449,
+      "archiveBytes": 1141212,
+      "masterRows": 4974,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-16B19650D291",
+        "status": "PRESENT",
+        "primaryId": "V2I-16B19650D291",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-16B19650D291",
+            "company": "Viracon",
+            "title": "Director, Continuous Improvement",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "Owatonna, MN",
+            "hash": "cede0f8aecc100819d2e7c45f89d66697b6194566ccd374e9693036fb03e16c5"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4453795167",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001_VERIFIED.json",
+      "sha256": "c8e185d1b4d7df6d594bedd8a97fff935d87022652b05bafd6aa128b6ec9971a",
+      "effects": [
+        {
+          "key": "linkedin:4453795167",
+          "queueKey": "linkedin:4453795167",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-16B19650D291"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "linkedin:4453795167",
+          "primaryId": "V2I-16B19650D291",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "1d8f540a559c8c02ddde9bf0c106fa136634888fe5c2808f1a5f6da828e1fea5"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "031c0afbb3f546201cdc681744e6eeb79e784930c1df9c8e3becd7016f8d9268",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-16B19650D291",
+      "status": "PRESENT",
+      "primaryId": "V2I-16B19650D291",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-16B19650D291",
+          "company": "Viracon",
+          "title": "Director, Continuous Improvement",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "Owatonna, MN",
+          "hash": "cede0f8aecc100819d2e7c45f89d66697b6194566ccd374e9693036fb03e16c5"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B001",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261101210436699-169590"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T11:41:24.338Z",
+    "indexSha256": "9334ac50ee82554d9dd669b2a2619e7a8eb9e90ad389a71c805ad61c21f60f63"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

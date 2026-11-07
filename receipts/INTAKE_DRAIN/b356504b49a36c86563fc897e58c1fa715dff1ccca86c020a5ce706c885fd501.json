@@ -1,0 +1,112 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-923E7EBA64CD",
+  "sourceVersion": "0771c126d8e4d146ff149024a8966cd99de04013dd8c34c2fea8cec22c0fc117",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T114435030Z-16be90",
+  "observedAt": "2026-11-07T11:44:35.030Z",
+  "instructionCommit": "ea3e728179d6300cae63f6f8de66d389ad2656dc",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T11:40:38.995Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13458449,
+      "archiveBytes": 1141212,
+      "masterRows": 4974,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-923E7EBA64CD",
+        "status": "PRESENT",
+        "primaryId": "V2I-923E7EBA64CD",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-923E7EBA64CD",
+            "company": "Molex",
+            "title": "Senior Manager, Manufacturing Engineering",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "Lisle, IL",
+            "hash": "4fc7734a60a3e1bcee892b6a629fe9cb0eac6ac29a95f2a5b36340c4e954dbfc"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4434643624",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-CONSUME-CHATGPT-20261101-V1-B001_VERIFIED.json",
+      "sha256": "15ae39374884ad775a67fc8a965b9846b4a5b18da1421925ef55c93be03e7196",
+      "effects": [],
+      "proofs": [
+        {
+          "primaryId": "V2I-923E7EBA64CD",
+          "matches": {
+            "exactRow": true,
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true,
+            "gmailSourceBoundToAcceptedPayload": true
+          },
+          "rowSha256": "04a192ed678d4ec5cd548cf221b329abf2bd2ed809e475f2d3ccb7ceb0f6e21d"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "031c0afbb3f546201cdc681744e6eeb79e784930c1df9c8e3becd7016f8d9268",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-923E7EBA64CD",
+      "status": "PRESENT",
+      "primaryId": "V2I-923E7EBA64CD",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-923E7EBA64CD",
+          "company": "Molex",
+          "title": "Senior Manager, Manufacturing Engineering",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "Lisle, IL",
+          "hash": "4fc7734a60a3e1bcee892b6a629fe9cb0eac6ac29a95f2a5b36340c4e954dbfc"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-HELPER-CONSUME-CHATGPT-20261101-V1-B001",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261101204523364-630924"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T11:41:24.338Z",
+    "indexSha256": "9334ac50ee82554d9dd669b2a2619e7a8eb9e90ad389a71c805ad61c21f60f63"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}
