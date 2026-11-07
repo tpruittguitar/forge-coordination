@@ -90,6 +90,6 @@ function publish(root,prepared,up){
 function dismissedKeys(root){
  const ledger=JSON.parse(fs.readFileSync(path.join(root,'state/UPSTREAM_LEDGER.json'),'utf8'));
  if(ledger.schema!=='forge.upstream-ledger.v1'||!ledger.entries)throw Error('DISMISSAL_LEDGER_REQUIRED');
- return new Set(Object.values(ledger.entries).filter(e=>e.status==='EXCLUDED'&&e.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'&&e.manualDecision.cardSha256===hash(card(e))).map(e=>e.key));
+ return new Set(Object.values(ledger.entries).filter(e=>require('../live-backlog/model.cjs').activeDeletion(e)||(e.status==='EXCLUDED'&&e.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'&&e.manualDecision.cardSha256===hash(card(e)))).map(e=>e.key));
 }
 module.exports={dismissedKeys,hash,normalize,card,safe,approved,snapshot,load,prepare,publish};
