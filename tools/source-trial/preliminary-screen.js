@@ -13,19 +13,21 @@ const categories={
  RESTAURANT_OR_FOOD_SERVICE:/\b(?:restaurants?|fast.food|quick.service|catering|food.service)\b/i
 };
 async function context({key,reader=require('../source-intake/writer-reader').read,profile}={}){
- if(!profile)try{profile=Resume.load();}catch{}
+ if(profile===undefined)try{profile=Resume.load();}catch{}
  const answers=await Promise.allSettled(['rules','documents'].map(action=>reader(action,{key})));
  const rules=answers[0].status==='fulfilled'?answers[0].value.data.rules:null;
  const documents=answers[1].status==='fulfilled'?answers[1].value.data:null;
  return {profile,rules,documents,checkedAt:new Date().toISOString()};
 }
 function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()}={}){
- if(!profile)try{profile=Resume.load();}catch{}
+ if(profile===undefined)try{profile=Resume.load();}catch{}
  const text=Source.text(card.description||''),url=card.url||card.SOURCE_URL||'',company=card.company||card.COMPANY||'';
- const unresolved=[],newer=profile&&(documents?.resumes||[]).some(r=>Date.parse(r.modifiedTime)>Date.parse(profile.source.modifiedAt)||r.id===profile.source.fileId&&Date.parse(r.modifiedTime)!==Date.parse(profile.source.modifiedAt));
+ if(!Resume.valid(profile))profile=null;
+ const inventory=Array.isArray(documents?.resumes)&&documents.resumes.every(r=>r&&typeof r.id==='string'&&Number.isFinite(Date.parse(r.modifiedTime)));
+ const unresolved=[],newer=profile&&inventory&&documents.resumes.some(r=>Date.parse(r.modifiedTime)>Date.parse(profile.source.modifiedAt)||r.id===profile.source.fileId&&Date.parse(r.modifiedTime)!==Date.parse(profile.source.modifiedAt));
  let ats;
  if(!profile||newer){ats={status:profile?'RESUME_UPDATE_REQUIRED':'RESUME_UNAVAILABLE',matches:[],finalFit:false,automaticRejection:false};unresolved.push(ats.status);}
- else{ats={...Resume.match({title:card.title||card.TITLE,description:text},profile),status:!text?'ROLE_CONTENT_PENDING':'PRELIMINARY_OVERLAP',resumeAuthority:profile.source.authority};if(!documents)unresolved.push('LATEST_RESUME_INVENTORY_UNVERIFIED');}
+ else{ats={...Resume.match({title:card.title||card.TITLE,description:text},profile),status:!text?'ROLE_CONTENT_PENDING':'PRELIMINARY_OVERLAP',resumeAuthority:profile.source.authority};if(!inventory)unresolved.push('LATEST_RESUME_INVENTORY_UNVERIFIED');}
  const active=rules?.status==='ACTIVE'&&typeof rules.raw==='string'&&rules.raw.length>0;
  const nc={status:active?'NO_CONFIRMED_EXCLUSION':'RULES_UNAVAILABLE',rulesSha256:active?hash(rules.raw):null,ruleId:null,quote:null,sourceUrl:url,sourceSha256:text?hash(text):null,canonicalEligibility:false};
  // An employer's own explicit business statement is required. Job title, employer name,
@@ -45,6 +47,24 @@ function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()
  }
  if(!active)unresolved.push('CANONICAL_RULES_NOT_VERIFIED');
  if(!quotes.length)unresolved.push('EMPLOYER_BUSINESS_NOT_REVIEWED');
- return {schema:'forge.discovery-preliminary-screen.v1',checkedAt,ats,neverConsider:nc,unresolved,decision:nc.status==='EXCLUDE'?'EXCLUDE_NEVER_CONSIDER':'PROGRESS_TO_INTAKE',finalFit:false,canonicalWrites:0};
+ const atsGate=gate(card,{text,ats,inventory:inventory&&profile&&documents.resumes.some(r=>r.id===profile.source.fileId&&Date.parse(r.modifiedTime)===Date.parse(profile.source.modifiedAt))});
+ return {schema:'forge.discovery-preliminary-screen.v1',checkedAt,ats,atsGate,neverConsider:nc,unresolved,decision:nc.status==='EXCLUDE'?'EXCLUDE_NEVER_CONSIDER':atsGate.status==='EXCLUDE'?'EXCLUDE_ATS_ZERO':'PROGRESS_TO_INTAKE',finalFit:false,canonicalWrites:0};
 }
-module.exports={context,screen,hash};
+// A negative decision needs actual role content, not a title, pay card, selected
+// matching quotes or an access-error page. Reuse the existing posting parser's
+// 300-character completeness floor. This gate never fetches or calls a model.
+function gate(card,{text,ats,inventory}){
+ const sourceUrl=card.url||card.SOURCE_URL||'',sourceIdentity={company:card.company||card.COMPANY||'',title:card.title||card.TITLE||'',location:card.location||card.LOCATION||''};
+ const contentBasis=card.contentBasis||card.discoveryReview?.contentBasis||(text?'CAPTURED_ROLE_CONTENT':'TITLE_ONLY');
+ let reason=null;
+ if(ats.status==='RESUME_UNAVAILABLE'||ats.status==='RESUME_UPDATE_REQUIRED')reason=ats.status;
+ else if(!inventory)reason='LATEST_RESUME_INVENTORY_UNVERIFIED';
+ else if(!sourceIdentity.company||!sourceIdentity.title||!/^https:\/\//.test(sourceUrl))reason='SOURCE_IDENTITY_UNAVAILABLE';
+ else if(!text)reason='ROLE_CONTENT_UNAVAILABLE';
+ else if(contentBasis!=='CAPTURED_ROLE_CONTENT'||card.discoveryReview?.fullPosting===false)reason='ROLE_CONTENT_INCOMPLETE';
+ else if(text.length<300||Source.norm(text)===Source.norm(card.title||card.TITLE)||/captcha|sign in to view|verify you are human|access denied|enable javascript/i.test(text))reason='ROLE_CONTENT_INCOMPLETE';
+ const hits=reason?null:new Set(ats.matches.map(m=>m.competencyId)).size;
+ return {schema:'forge.discovery-ats-gate.v1',status:reason?'UNKNOWN':hits===0?'EXCLUDE':'PASS',hits,reason:reason||(hits===0?'NO_RESUME_COMPETENCY_HITS':'POSITIVE_RESUME_COMPETENCY_HITS'),contentBasis,sourceUrl,sourceIdentity,sourceSha256:text?hash(text):null,resumeTextSha256:ats.resumeTextSha256||null,resumeVersion:ats.resumeVersion||null,canonicalWrites:0};
+}
+const excluded=s=>['EXCLUDE_NEVER_CONSIDER','EXCLUDE_ATS_ZERO'].includes(s?.decision);
+module.exports={context,screen,hash,excluded};

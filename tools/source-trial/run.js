@@ -177,6 +177,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
+    screening:{atsZeroExcluded:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.decision==='EXCLUDE_ATS_ZERO').length,atsGateUnknown:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.preliminaryScreen?.atsGate?.status==='UNKNOWN').length,canonicalWrites:0},
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
     boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
