@@ -47,7 +47,7 @@ const contrast=(a,b)=>{const L=v=>rgb(v).map(c=>c/255).map(c=>c<=.04045?c/12.92:
   }
   await page.locator('#atsFilter').selectOption('range');await page.locator('#atsValue').fill('5');await page.locator('#atsMax').fill('2');
   assert.equal(await page.locator('#atsFilterError').isVisible(),true);
-  assert.equal(await page.locator('#atsValue').evaluate(e=>getComputedStyle(e).borderStyle),'dashed');
+  assert.equal(await page.locator('#atsMax').evaluate(e=>getComputedStyle(e).borderStyle),'dashed');
   await page.locator('#atsFilter').selectOption('');fail=true;await page.locator('#refresh').click();await page.waitForFunction(()=>document.querySelector('#notice').dataset.tone==='error');
   assert.match(await page.locator('#notice').evaluate(e=>getComputedStyle(e,'::before').content),/Error:/);
   assert.ok(contrast((await style('#notice')).color,(await style('#notice')).background)>=4.5);
