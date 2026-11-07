@@ -20,7 +20,7 @@ function carryForwardRoles(prior,{root='.'}={}){
    if(!p.state.requestIds.includes(id)||Object.hasOwn(p.state.results||{},id)||!byId.has(id))throw Error('BLOCKED: carry-forward is not an untouched original candidate');
    if(sent.has(id)||seen.has(id))continue;
    seen.add(id);const c=byId.get(id),r=c.record;
-   roles.push({company:r.COMPANY,title:r.TITLE,location:r.LOCATION,url:r.SOURCE_URL,level:c.level,family:c.family,source:c.source||'RECOVERY_CARRY_FORWARD',status:'NEW',recoveredFrom:p.state.sourceRunId});
+   roles.push({...require('../source-trial/posted-pay').carry({...r,...c,url:r.SOURCE_URL}),company:r.COMPANY,title:r.TITLE,location:r.LOCATION,url:r.SOURCE_URL,level:c.level,family:c.family,source:c.source||'RECOVERY_CARRY_FORWARD',status:'NEW',recoveredFrom:p.state.sourceRunId});
   }
  }
  return roles;

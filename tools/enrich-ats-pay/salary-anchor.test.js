@@ -33,3 +33,7 @@ test('AI manufacturing leadership cannot inherit generic plant operations pay',(
  const anchors=[{id:'GENERIC',title:'Plant Director',co:'Other',low:153000,high:180000,region:'NE'}];assert.equal(L.estimate(row,anchors),null);
  const old={...row,p:{SALARY_BASIS:'FORGE-ESTIMATE',SALARY_SOURCE:'comparables:V2I-ANCHOR'}};assert.deepEqual(L.invalidSavedAnchors(old,[{PRIMARY_ID:'V2I-ANCHOR',TITLE:'Plant Director',p:{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:153000,SALARY_BASE_HIGH:180000}}]),['V2I-ANCHOR']);
 });
+test('employer estimated base wording is disclosure but attributed salary-site estimates are not',()=>{
+ assert.ok(L.postedAnchor(assoc,{...assoc.p,PAY_POSTED:'Estimated annual base salary USD $96,000-$168,000.'}));
+ for(const text of ['Indeed estimated base salary USD $96,000-$168,000.','Base salary estimate by Glassdoor $96,000-$168,000.','Unattributed estimate $96,000-$168,000.'])assert.equal(L.postedAnchor(assoc,{...assoc.p,PAY_POSTED:text}),null,text);
+});

@@ -1,7 +1,7 @@
 name: enrich-ats-pay-test
 on:
   pull_request:
-    paths: ['tools/enrich-ats-pay/**', '.github/workflows/enrich-ats-pay*.yml']
+    paths: ['tools/enrich-ats-pay/**', 'tools/source-trial/**', 'tools/email-recovery/**', 'tools/routine-handoffs/alert-recovery*', 'tools/pipeline-observability/**', '.github/workflows/enrich-ats-pay*.yml']
 permissions:
   contents: read
 jobs:
@@ -17,6 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/enrich-ats-pay/*.test.js
+      - run: node --test tools/enrich-ats-pay/*.test.js tools/source-trial/*.test.js tools/email-recovery/*.test.cjs tools/routine-handoffs/alert-recovery*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc

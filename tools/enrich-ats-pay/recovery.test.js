@@ -12,3 +12,20 @@ test('Recruitics target is recovered before tracking, including clipped Meta que
  a.equal(R.urls({p:{SOURCE_URL:wrapped.replace('jsv3.recruitics.com','recruitics.com.other.example')}}).includes(direct),false);
  a.equal(R.urls({p:{SOURCE_URL:'https://jsv3.recruitics.com/redirect?rx_url='+encodeURIComponent('http://127.0.0.1/private')}}).length,1);
 });
+test('cross-store reuse keeps original pay and separate freshest full-posting degree provenance',()=>{
+ const old={at:'2026-10-01T00:00:00Z',url:'https://acme.com/old',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED',fullPosting:false},fresh={at:'2026-11-07T00:00:00Z',url:'https://acme.com/new',pay:null,text:'Bachelor degree required.',degree:{req:'REQUIRED',text:'Bachelor degree required.'},fullPosting:true},before=JSON.stringify([old,fresh]);
+ const got=R.combine(fresh,old);a.equal(got.pay.low,180000);a.equal(got.at,old.at);a.equal(got.url,old.url);a.equal(got.degreeAt,fresh.at);a.equal(got.degreeUrl,fresh.url);a.equal(got.degree.req,'REQUIRED');a.equal(JSON.stringify([old,fresh]),before);
+ a.equal(R.combine({...fresh,text:'Manage budgets of $100,000-$150,000. Salary details are available on request.'},old).pay.low,180000);
+ for(const change of [{postedPay:{status:'POSTED',low:150000,high:170000}},{postedPay:{status:'POSTED',currency:'CAD'}},{text:'Annual base salary USD $150,000-$170,000.'},{text:'Annual base salary CAD $180,000-$220,000.'},{text:'Hourly base pay USD $55-$75.'},{text:'Total compensation USD $180,000-$220,000 including bonuses.'}]){const out=R.combine({...fresh,...change},old);a.equal(out.pay,null,JSON.stringify(change));a.equal(out.payAmbiguous,true);}
+ a.equal(R.combine({...fresh,pay:{low:200000,high:240000},basis:'EMPLOYER_POSTED'},old).pay.low,200000);
+});
+test('old cache reparse never infers USD from US location',()=>{
+ const now=Date.now(),e={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now-1000).toISOString(),fullPosting:true,identityVerified:true,sourceIdentity:{company:row.COMPANY,title:row.TITLE,location:row.LOCATION},text:'Lead manufacturing quality operations. '.repeat(15)+'Annual base salary $180,000-$220,000.'};
+ a.equal(R.cached({postingEvidence:{x:e}},row,now).pay,null);
+ a.equal(R.cached({postingEvidence:{x:{...e,text:e.text.replace('salary $','salary USD $')}}},row,now).pay.low,180000);
+});
+test('fresh pay replaces retained pay only when changed, validated and posted',()=>{
+ const current={low:180000,high:220000},fresh={pay:{low:190000,high:230000},identityVerified:true,basis:'EMPLOYER_POSTED'};
+ a.equal(R.preferFreshPay(current,fresh),true);
+ for(const parsed of [{...fresh,pay:current},{...fresh,pay:null},{...fresh,pay:{low:230000,high:190000}},{...fresh,basis:'THIRD_PARTY_ESTIMATE'},{...fresh,identityVerified:false}])a.equal(R.preferFreshPay(current,parsed),false);
+});

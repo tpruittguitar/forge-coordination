@@ -25,7 +25,7 @@ function apiPosting(route,j,company){
  }else throw Error('UNSUPPORTED_ATS_FORMAT');
  if(!title||!employer||!description||!locations.filter(Boolean).length)throw Error('INCOMPLETE_ATS_POSTING_IDENTITY');
  const parsed=L.parseAts(route.kind,j,route.id);salary=parsed?.payFacts?annual({currency:'USD',interval:'YEAR',min:parsed.payFacts.low,max:parsed.payFacts.high}):null;
- return{'@type':'JobPosting',title,hiringOrganization:{name:employer},jobLocation:locations.filter(Boolean).map(x=>({address:address(x)})),description,baseSalary:salary,url,identifier:{value:id}};
+ return{'@type':'JobPosting',title,hiringOrganization:{name:employer},jobLocation:locations.filter(Boolean).map(x=>({address:address(x)})),description,baseSalary:salary,forgePayRejected:!parsed?.payFacts,url,identifier:{value:id}};
 }
 function degree(description,text){
  const d=require('../enrich-ats-pay/qualification').parse(description);return d?.text==='NOT_STATED'?null:d;

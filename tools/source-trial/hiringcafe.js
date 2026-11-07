@@ -37,7 +37,7 @@ function parseResults(text) {
 }
 function normalize(j) {
   return Object.assign({ site: 'hiringcafe', provenance: 'HIRINGCAFE_MCP', company: j.company, title: j.title, location: j.location, job_url: j.job_url, job_url_direct: '',
-    hiringcafe_id: j.hiringcafe_id, date_posted: j.date_posted, workplace: j.workplace, seniority: j.seniority, employment_type: j.employment_type }, parsePay(j.compensation));
+    salaryText:j.compensation||'', salary_source:/\b(?:indeed|glassdoor|payscale|salary\.com)\b.*\bestimat|third.party estimate/i.test(j.compensation||'')?'THIRD_PARTY_ESTIMATE':'HIRINGCAFE_MCP', hiringcafe_id: j.hiringcafe_id, date_posted: j.date_posted, workplace: j.workplace, seniority: j.seniority, employment_type: j.employment_type }, parsePay(j.compensation));
 }
 async function callTool(name, args, { fetcher = globalThis.fetch, id = 1 } = {}) {
   const r = await fetcher(ENDPOINT, { method: 'POST', signal: AbortSignal.timeout(45000),

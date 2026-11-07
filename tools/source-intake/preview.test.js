@@ -53,3 +53,7 @@ test('CLI loads the registry file and tags Shield AI JobSpy result DREAM',()=>{
  const rows=JSON.parse(fs.readFileSync(output,'utf8')).rows;assert.equal(rows[0].tier,'DREAM');assert.equal(rows[1].tier,'P1');
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
+test('posted annual USD base facts reach intake while unknown units remain unknown',()=>{
+ const P=require('../source-trial/posted-pay'),j={...job('Acme','Director Manufacturing','Austin, TX','https://example.com/jobs/1'),payFacts:{low:180125,high:220875,currency:'USD',period:'YEAR',basis:'BASE',source:'STRUCTURED_ANNUAL_BASE'}};j.postedPay=P.capture(j,{observedAt:'2026-11-06T12:00:00Z'});const r=adapt({new_roles:[j]}).rows[0].record;assert.equal(r.SALARY_BASE_LOW,180125);assert.equal(r.SALARY_SOURCE,j.url);assert(!r.INITIAL_UNKNOWN_FIELDS.includes('PAY'));
+ const unknown={...j,payFacts:null,postedPay:{...j.postedPay,currency:null,period:null,basis:null}};const u=adapt({new_roles:[unknown]}).rows[0].record;assert.equal(u.SALARY_BASE_LOW,undefined);assert(u.INITIAL_UNKNOWN_FIELDS.includes('PAY'));
+});
