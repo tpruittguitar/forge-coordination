@@ -3,6 +3,7 @@
 const assert = require('node:assert/strict');
 const fs = require('node:fs');
 const http = require('node:http');
+const {annotate}=require('./occurrences.cjs');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 (async () => {
   let items = Array.from({length: 6540}, (_, i) => ({key: `k${i}`, company: `Company ${i}`, title: i===6539 ? 'Unique distant job' : 'Engineer', location: 'Remote', status: 'ready', sourceUrl: 'https://example.com/job', firstSeen: '2026-11-06'}));
@@ -12,7 +13,7 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     if (req.url === '/') {res.setHeader('content-type','text/html');return res.end(fs.readFileSync(__dirname+'/worksheet.html','utf8').replace('__SESSION_TOKEN__','test-session'));}
     res.setHeader('content-type','application/json');
     if(req.headers['x-worksheet-session']!=='test-session'){res.statusCode=403;return res.end(JSON.stringify({error:'Session header required'}));}
-    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items,count:items.length,at:'now'}));
+    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items:annotate(items),count:items.length,at:'now'}));
     if(req.url.startsWith('/api/receipt')) {const id=new URL(req.url,'http://localhost').searchParams.get('requestId');return res.end(JSON.stringify(receiptPending?{ok:false,status:'unknown'}:receipts.get(id)?.result||{ok:false,status:'unknown'}));}
     let body='';for await(const chunk of req)body+=chunk;const data=JSON.parse(body);posts.push({path:req.url,data,token:req.headers['x-worksheet-session']});
     // Transport may replay a POST after a dropped connection. A committed request
@@ -55,6 +56,20 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     assert.equal(items.length,6538);assert.equal(applications.length,4);assert.equal(new Set(posts.map(p=>p.data.requestId)).size,4);assert.equal(await page.evaluate(()=>window.mutationFetches.length),4);assert.equal(await page.locator('#delete').isDisabled(),true);assert.equal(await page.locator('#reconcile').isVisible(),true);
     receiptPending=false;await page.locator('#reconcile').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('1 jobs deleted'));
     assert.equal(items.length,6538);assert.equal(applications.length,4);assert.equal(new Set(applications).size,4);assert.equal(new Set(posts.map(p=>p.data.requestId)).size,4);assert.equal(await page.evaluate(()=>window.mutationFetches.length),4);
-    console.log('PASS: 6,540 rows; full-dataset filtering; selection; range; keyboard; confirmation; delete; undo; uncertain outcome reconciliation without retry.');
+    items=Array.from({length:12},(_,i)=>({key:`repeat-${String(i).padStart(2,'0')}`,company:'Repeat Fixture',title:'Plant Manager',location:'Austin, TX',sourceUrl:`https://example.com/repeat/${i}`,status:'WAITING',firstSeen:'2026-11-06'}));
+    items.push({key:'missing',company:'Repeat Fixture',title:'Plant Manager',location:'',status:'HELD'});revision='repeat-fixture';uncertain=false;
+    await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);
+    await page.locator('#repeatFilter').selectOption('extras');assert.equal(await page.locator('#rows tr').count(),11);assert.match(await page.locator('#counts').textContent(),/0 selected/);
+    await page.locator('[data-sort=occurrence]').click();await page.locator('[data-sort=occurrence]').click();assert.equal(await page.locator('#rows tr').first().locator('td').nth(1).textContent(),'12');
+    await page.locator('#search').fill('/repeat/5');assert.equal(await page.locator('#rows tr').count(),1);assert.equal(await page.locator('#rows tr td').nth(1).textContent(),'6');assert.equal(await page.locator('#rows tr td').nth(2).textContent(),'12');
+    await page.locator('#search').fill('');await page.locator('#selectFiltered').click();assert.match(await page.locator('#counts').textContent(),/11 selected/);
+    await page.evaluate(()=>{navigator.clipboard.writeText=async text=>{window.copied=text;};});await page.locator('#copy').click();const copied=await page.evaluate(()=>window.copied);assert.match(copied,/Occurrence\tMatches/);assert.match(copied,/Source identity/);assert.equal(copied.split('\n').length,12);
+    await page.locator('#delete').click();await page.locator('#cancelDelete').click();assert.equal(items.length,13);
+    await page.locator('#delete').click();await page.locator('#confirmDelete').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('11 jobs deleted'));
+    assert.deepEqual(items.map(i=>i.key),['repeat-00','missing']);assert.match(await page.locator('#rows').textContent(),/No jobs match/);
+    await page.locator('#repeatFilter').selectOption('');assert.equal(await page.locator('#rows tr').count(),2);assert.match(await page.locator('#rows').textContent(),/Not counted: missing location/);
+    await page.locator('#undo').click();await page.waitForFunction(()=>document.querySelector('#notice').textContent.includes('11 jobs restored'));assert.equal(items.length,13);
+    await page.locator('#repeatFilter').selectOption('groups');assert.equal(await page.locator('#rows tr').count(),12);await page.locator('#repeatFilter').selectOption('uncounted');assert.equal(await page.locator('#rows tr').count(),1);
+    console.log('PASS: occurrence ordinal/total, numeric sort, stable filtered ranks, missing fields, source warnings, TSV, manual extras deletion retaining one, undo;  6,540 rows; full-dataset filtering; selection; range; keyboard; confirmation; delete; undo; uncertain outcome reconciliation without retry.');
   } finally {await browser?.close();await new Promise(resolve=>server.close(resolve));}
 })().catch(error=>{console.error(error);process.exitCode=1;});

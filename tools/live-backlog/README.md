@@ -39,7 +39,7 @@ The HTTP server checks loopback Host, a per-run session header, exact Origin on 
 ## Tests
 
 ```sh
-node --test tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs
+node --test tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs tools/live-backlog/occurrences.test.cjs tools/live-backlog/match-evidence.test.cjs
 node --test tools/manual-backlog/*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js tools/intake-drain/queue.test.cjs tools/intake-drain/exclusions.test.cjs
 ```
 
@@ -50,3 +50,13 @@ PLAYWRIGHT_MODULE=/path/to/playwright CHROMIUM_PATH=/path/to/chromium node tools
 ```
 
 Do not install a browser implicitly just to run this optional check. Record an unavailable browser as unverified, not passed.
+
+## Occurrence review
+
+`Occurrence` is a per-row number (1, 2, 3...), while `Matches` is the total in its possible-repeat group. Choose **Occurrence > 1** to inspect extras while leaving occurrence 1 outside that filter. Nothing is automatically selected or deleted. Selection still spans filters and pages; clear any earlier selection before selecting filtered extras. The confirmation includes all selected rows, including hidden ones.
+
+Groups require complete company, title and location. Only case, surrounding/repeated whitespace and Unicode canonical form are normalized; punctuation, company suffixes, title seniority, locations and requisition suffixes are not collapsed. Missing/unknown match fields are explicitly **Not counted**, not assumed equal. Matching names can still describe different vacancies. The oldest known first-seen date, then the exact source key, determines occurrence 1. Missing dates come last. The number is assigned across the full snapshot before filtering, sorting or paging; a refreshed snapshot recalculates the numbers.
+
+**Match evidence** distinguishes an identical source URL (vacancy unverified), a shared supported provider listing/requisition, a name/location-only match, and conflicting posting IDs. Supported parsers use exact host/path shapes and tenant-scoped identifiers for Recruitics, Glassdoor, Workday, Lever, BambooHR, BuildSubmarines, LinkedIn and Indeed. Only known Recruitics/BuildSubmarines wrappers are examined, one level deep, without fetching a destination. Unsupported or opaque links remain unproven. Different source links, identity/history holds and differing statuses remain visible warnings even when a requisition agrees. Source routes are preserved; destination liveness and vacancy equivalence are not checked. This is review evidence, not an automatic deduplication decision.
+
+Counts, evidence and warnings are computed in memory for the worksheet response only, never written into source pages or the ledger. TSV copying includes the ordinal, group total, evidence, warnings and original source key. If a repeated group changes between display and deletion, the edit is rejected with `REPEAT_GROUP_CHANGED_REFRESH_AND_RESELECT`, including when another process removes the row that would have been retained. Unrelated background changes are still tolerated. Existing confirmation, history, tombstone and undo behavior remains intact.
