@@ -1,8 +1,8 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-06T23:19:59.881Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-07T06:17:54.513Z from CANONICAL_WRITER_MASTER.
 
-Of 848 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 855 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
