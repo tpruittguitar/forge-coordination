@@ -1,59 +1,49 @@
 {
- "at": "2026-11-07T20:07:03.258Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T200525273Z",
+ "at": "2026-11-07T20:51:08.560Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T204720886Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-07T20:05:41.012Z",
-  "sha256": "b1b2b6e9cbec901ab8812c163af57c01e8d7d677033e93d7544e4a70909be254",
-  "rows": 4985
+  "readAt": "2026-11-07T20:47:25.149Z",
+  "sha256": "ac996aa069c85c3362138277bed28c9e3cb7ec8a0459fa90c55ad57d70fefe69",
+  "rows": 4986
  },
- "rows": 4985,
+ "rows": 4986,
  "eligible": 703,
  "anchors": 1129,
  "archive_anchors": 5,
- "ats_rows": 1,
- "ats_read": 1,
+ "ats_rows": 0,
+ "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 16,
- "skipped_recent": 551,
- "submitted": 0,
- "guard_dropped": 8,
- "writer_ok": 0,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 14,
+ "skipped_recent": 558,
+ "submitted": 1,
+ "guard_dropped": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
- "agg_tried": {
-  "linkedin": 4
- },
- "agg_read": {
-  "linkedin": 3
- },
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 1
- },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "est_same_employer": 0,
- "est_comparables": 0,
+ "est_same_employer": 1,
+ "est_comparables": 3,
  "boards_read": 14,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 4,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 2,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -63,18 +53,18 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 3,
+  "candidates": 45,
+  "saved_reused": 44,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 0,
+  "backoff": 1,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-07T20:05:44.014Z",
+  "profile_as_of": "2026-11-07T20:47:29.186Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -149,24 +139,43 @@
   }
  ],
  "salary_review": {
-  "eligible": 541,
-  "due": 0,
-  "reviewed": 0,
-  "target_reads": 0,
+  "eligible": 526,
+  "due": 3,
+  "reviewed": 3,
+  "target_reads": 1,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 3,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-4C21DED9D3FB",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-B6DA71E4881D",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-EB8DD0DB4721",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ]
  },
- "decision_waiting": 758,
+ "decision_waiting": 737,
  "not_attempted": 19,
  "nothing_found": 19,
- "ats_need_salary": 1,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 8,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
   "companies": 15,
@@ -175,9 +184,9 @@
  },
  "recovery_statuses": {
   "SOURCE_RESEARCH_REQUIRED": 552,
+  "EVIDENCE_FOUND": 8,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 76,
-  "NOT_YET_ATTEMPTED": 18,
-  "EVIDENCE_FOUND": 8
+  "NOT_YET_ATTEMPTED": 18
  },
  "pending": [
   {
@@ -1026,6 +1035,102 @@
      "status": "READ_ERROR"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2A476B8C9241",
+   "company": "Bausch Health Companies Inc.",
+   "title": "Senior Manager, Quality Engineering (Aesthetics Med Device)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:05:53.758Z",
+   "retryAt": "2026-11-07T21:05:53.758Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-68B5244FB331",
+   "company": "Revlon",
+   "title": "Director, Filling & Assembly",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:05:56.864Z",
+   "retryAt": "2026-11-07T21:05:56.864Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DAD62270C2F9",
+   "company": "Freudenberg Sealing Technologies",
+   "title": "Head of Quality",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:05:56.865Z",
+   "retryAt": "2026-11-07T21:05:56.865Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B7A365E937B2",
+   "company": "Carton Service CSI, LLC",
+   "title": "Director of Quality",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:06:01.674Z",
+   "retryAt": "2026-11-07T21:06:01.674Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4487328907",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-79830B23965B",
+   "company": "Champion Windows & Home Exteriors",
+   "title": "Director of Manufacturing",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:06:04.845Z",
+   "retryAt": "2026-11-07T21:06:04.845Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AF4495218805",
+   "company": "Anduril Industries",
+   "title": "Senior Manager, Product Operations",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:06:06.492Z",
+   "retryAt": "2026-11-07T21:06:06.492Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-816864AD9AEF",
+   "company": "AmeriHealth Caritas",
+   "title": "Director Quality Management",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T20:06:06.493Z",
+   "retryAt": "2026-11-07T21:06:06.493Z",
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -11959,36 +12064,53 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-2A476B8C9241",
+   "id": "V2I-10D14C833F9B",
    "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
-   }
-  },
-  {
-   "id": "V2I-68B5244FB331",
-   "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
-   }
-  },
-  {
-   "id": "V2I-DAD62270C2F9",
-   "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
-   }
-  },
-  {
-   "id": "V2I-B7A365E937B2",
-   "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
-   }
-  },
-  {
-   "id": "V2I-79830B23965B",
-   "fields": {
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://careers-svclnk.icims.com/jobs/3696/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+    "DEGREE_ASOF": "2026-11-07",
+    "SALARY_MODEL_VERSION": "employer-upper-range-v5",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 173000,
+    "SALARY_BASE_HIGH": 262000,
+    "SALARY_MIDPOINT": 217500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-07",
+    "SALARY_SOURCE": "comparables:V2I-308A8C264244,V2I-7E3CD27EA464,V2I-E1522714C4D0,V2I-0B4B8812A2C5,V2I-21CE74E188B4,V2I-4DA28FCC8F8C,V2I-85500E9C0022",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-308A8C264244, V2I-7E3CD27EA464, V2I-E1522714C4D0, V2I-0B4B8812A2C5, V2I-21CE74E188B4, V2I-4DA28FCC8F8C, V2I-85500E9C0022]; 7 employer-posted comparable(s), level 2 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07",
+    "SALARY_SCORE_POINT": 239750
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-10D14C833F9B",
+   "company": "ServiceLink",
+   "title": "Director, Quality Engineering and Automation -Information technology",
+   "location": "Plano, TX, USA",
+   "posting": "https://careers-svclnk.icims.com/jobs/3696/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+   "est": [
+    173000,
+    262000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY any region; context model employer-upper-range-v5; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-308A8C264244",
+    "V2I-7E3CD27EA464",
+    "V2I-E1522714C4D0",
+    "V2I-0B4B8812A2C5",
+    "V2I-21CE74E188B4",
+    "V2I-4DA28FCC8F8C",
+    "V2I-85500E9C0022"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
