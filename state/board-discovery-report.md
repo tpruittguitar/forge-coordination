@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261106T2306Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261107T0411Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 783 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (118 read, 0 failed) | 164 | 29 | 135 |
+| Employer job boards (118 read, 0 failed) | 163 | 27 | 136 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 15 | 90 |
+| DIRECTOR_PLUS | 13 | 91 |
 | SR_MANAGER | 10 | 25 |
 | SR_STAFF | 4 | 20 |
 
@@ -54,5 +54,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
 | BOARD:workday | Elanco | [Director, Technical Services/Manufacturing Science](https://elanco.wd5.myworkdayjobs.com/External_Career/job/Fort-Dodge-IA/Director--Technical-Services-Manufacturing-Science_R0026376) | Fort Dodge, IA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:workday | Freudenberg Sealing Technologies | [Head of Quality](https://freudenberg.wd3.myworkdayjobs.com/freudenberg-group/job/Durham-NC/Head-of-Quality_R_00108773) | Durham, NC | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Collins Aerospace (RTX) | [LTAMDS Production Execution Chief Engineer (Onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-MA-ANDOVER-AN0--366-Lowell-St--BLDG-AN0/LTAMDS-Production-Execution-Chief-Engineer--Onsite-_01884810) | US-MA-ANDOVER-AN0 ~ 366 Lowell St ~ BLDG AN0 | MFG_PROD | DIRECTOR_PLUS |  |
