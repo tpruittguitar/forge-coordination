@@ -59326,7 +59326,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "8d7b9e475c0ca3ce671e2b8f984b866893470db48943176f91816fdd1cc33bc9"
+            "sourceSha256": "75c1e8f7f4d93312bcc9b104b3a6f51c1debf0d504f48725f85db40ab4663f55"
           }
         ],
         "postingFetched": false
@@ -59625,7 +59625,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "ca3abf155b0098d0a8dd9134254e36f238793dfe3302946b6f64bb463bd7b46a"
+            "sourceSha256": "5ed000c9fec08ea1fa698b8335f65dbb90b70f7d98c5373e1fd6b048791ed14a"
           }
         ],
         "postingFetched": false
@@ -60459,31 +60459,19 @@
       "aliases": [
         "linkedin:4477741396"
       ],
-      "sourceVersion": "e5a950876856b5f68a1e3a745577f67be5527befd936d78ed5c1cfe369f820f7",
+      "sourceVersion": "96431a3185def05d202e80ac4c19ace8feed5596cf3b49cff03b8abd3c694e06",
       "card": {
         "company": "Mastercard",
         "title": "Director, GBSC Operations Excellence and Value Delivery",
-        "location": "O'Fallon, MO, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4477741396/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "0f9953357780b75981ecfce9e3c45feec88734ee75e58dfcacea8317c2eab9ea"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
@@ -60584,13 +60572,12 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location MO. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "RANKED_DISCOVERY",
-        "rank": 2,
-        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -61903,33 +61890,46 @@
       "aliases": [
         "linkedin:4434636903"
       ],
-      "sourceVersion": "fab2736a9eb5c403f85f2a6804d6a375555fad3d909e82da7fae32ccf5aea0a2",
+      "sourceVersion": "95e0b074da4937e78e8f0407c613db3970a0d060043c18587c28f57d64cc8cc2",
       "card": {
         "company": "Molex",
         "title": "Director, New Product Development",
-        "location": "",
+        "location": "Lisle, IL, USA",
         "url": "https://www.linkedin.com/jobs/view/4434636903/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "ab77c08a942fedbd42973f50633d4db2195d951c44ccf79fe1dca8f5887eeab8"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "REVIEW_SCOPE",
+      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location IL. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "RANKED_DISCOVERY",
+        "rank": 3,
+        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -63266,20 +63266,36 @@
       "aliases": [
         "linkedin:4479607810"
       ],
-      "sourceVersion": "ae430f4f21c2b431b94aefaf5a8a2078a39503ee4ce4190315f3319b6d88a081",
+      "sourceVersion": "fff294be4c60ce6def290a636fa5c16340756b5e7f15cd8fedf74ae9541bab4e",
       "card": {
         "company": "Alto-Shaam, Inc.",
         "title": "Director of Advanced Manufacturing Engineering",
-        "location": "",
+        "location": "Menomonee Falls, WI, USA",
         "url": "https://www.linkedin.com/jobs/view/4479607810/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "1b2c8f2fffee38761c4529937bad4930732a1ce1df7b2926f75188c12b4970a8"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "1b2c8f2fffee38761c4529937bad4930732a1ce1df7b2926f75188c12b4970a8"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -63287,12 +63303,13 @@
       "discoveryReview": null,
       "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -63586,31 +63603,19 @@
       "aliases": [
         "linkedin:4469377310"
       ],
-      "sourceVersion": "7e33aa06d16b16e7a2c46e81209a030ebc362e995911897f0d134546b2736371",
+      "sourceVersion": "11f80d93bc60bfdb48b81294cfe2f4e4cf2a64013b112107f715de3c5d663412",
       "card": {
         "company": "Medline",
         "title": "SVP Operations Quality",
-        "location": "Northfield, IL, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4469377310/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "4e7af5e9a27aae215f4b2e75f8652298035e04c9970f0dca26f15ca146eb45d4"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "REVIEW_SCOPE",
-      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
@@ -63736,13 +63741,12 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location IL. Role content unavailable; retain for intake review. Resume-supported hits: quality_systems.",
       "screen": {
-        "outcome": "RANKED_DISCOVERY",
-        "rank": 1,
-        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -63990,30 +63994,14 @@
       "aliases": [
         "linkedin:4469615679"
       ],
-      "sourceVersion": "edf3ba86ccf22e7b17d5649bd74fac8411f94cf86bc006009dc442687e65eb08",
+      "sourceVersion": "69cce4d877b9986d11d539cfbe248e9b524964fb5110a347e086c20b06d263d2",
       "card": {
         "company": "Unusual Machines",
         "title": "Senior Manager of Production - Battery",
-        "location": "Torrance, CA, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4469615679/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "f474f116b5bf36a1584345d67a55ec0d281426e61fef1cc2c699b8a486b68605"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "f474f116b5bf36a1584345d67a55ec0d281426e61fef1cc2c699b8a486b68605"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
@@ -64146,10 +64134,9 @@
       },
       "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 0,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": {
         "requestIds": [
@@ -64157,15 +64144,9 @@
         ],
         "proof": "state/RELEVANCE_INTAKE_PLAN.json"
       },
-      "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
+      "nextAction": "Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/48d5f7dd48a5a928caa324f434a82138c251065d42a0c3b5697dd329a3154c02.json",
-        "sha256": "48d5f7dd48a5a928caa324f434a82138c251065d42a0c3b5697dd329a3154c02",
-        "observedAt": "2026-11-07T03:45:25.073Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4433117597": {
       "key": "linkedin:4433117597",
@@ -64264,20 +64245,32 @@
       "aliases": [
         "linkedin:4461924886"
       ],
-      "sourceVersion": "6cac6f790f930c9ec97bc47ac33753102350e05feafb2a2f7b6d0a346bb69706",
+      "sourceVersion": "c0623e8f51367204da9a78b8f9ee9f843c8256e610f55aca3116ba7c37aa92a8",
       "card": {
         "company": "BeOne Medicines",
         "title": "Senior Manager, Process Engineering Drug Substance and Drug Product",
-        "location": "",
+        "location": "Hopewell, NJ, USA",
         "url": "https://www.linkedin.com/jobs/view/4461924886/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "3e49020cd4aa73f4a9d3e90ab336a1d6d5b06535f6e5e46e9475025f90e36198"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
       "firstSeen": "2026-10-22T05:00:36.815Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -64379,12 +64372,13 @@
       },
       "selectionReason": "Title selected as MFG_ENG / SR_MANAGER; location NJ. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -310020,36 +310014,20 @@
       "aliases": [
         "linkedin:4469367475"
       ],
-      "sourceVersion": "300c735b8db9932406a38bf4e4db45e0d21e0085cc91622fda03aede4828aee5",
+      "sourceVersion": "0ae2cfb9e96afe11bcfdf43569b6c59fcece85b7b370312320fe3adb10a70d1c",
       "card": {
         "company": "Medline",
         "title": "VP Product Quality",
-        "location": "Northfield, IL, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4469367475/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "63e2e20525669bf7fd32f386bb0a126d0b6f2895646e6b4416c3fa5500a2238a"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "63e2e20525669bf7fd32f386bb0a126d0b6f2895646e6b4416c3fa5500a2238a"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -310156,13 +310134,12 @@
       },
       "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 1,
-        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
-        "maxTargetedLookups": 1
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -344923,12 +344900,29 @@
       "aliases": [
         "url:4f423ed3794e2bca82f3ab0c"
       ],
-      "sourceVersion": "8f7db764804f68f199052f6e06dae8952a9242ffaa9ddab3907765c5e8a62fb1",
+      "sourceVersion": "40a0d1df330ddc6f86ec444b119d2978a09ee0c3d5a52c93f8d3bd17a8b6be77",
       "card": {
         "company": "Materion",
         "title": "Director of Operations",
         "location": "Mayfield Heights, OH, USA",
-        "url": "https://materion.wd5.myworkdayjobs.com/Materion/job/Buffalo-NY/Director-of-Operations_2026-R8876-1"
+        "url": "https://materion.wd5.myworkdayjobs.com/Materion/job/Buffalo-NY/Director-of-Operations_2026-R8876-1",
+        "postedPay": {
+          "schema": "forge.posted-pay.v1",
+          "company": "Materion",
+          "title": "Director of Operations",
+          "location": "Mayfield Heights, OH, USA",
+          "sourceUrl": "https://materion.wd5.myworkdayjobs.com/Materion/job/Buffalo-NY/Director-of-Operations_2026-R8876-1",
+          "text": "$149K-$237K",
+          "low": 148500,
+          "high": 237100,
+          "currency": "USD",
+          "period": "yearly",
+          "basis": null,
+          "status": "POSTED",
+          "observedAt": "2026-11-07T23:42:42.427Z",
+          "source": "direct_data"
+        },
+        "pay": "$149K-$237K"
       },
       "sourceRecovery": null,
       "sourceConflict": null,
@@ -345177,15 +345171,9 @@
         "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Existing identity/scope coordinator resolves exact source obligation without changing captured identity or replaying Writer requests.",
+      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
       "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/6404a89dfac65fafb69000b47380f030153ba1aa9d22bc406371f04e7ea9a61b.json",
-        "sha256": "6404a89dfac65fafb69000b47380f030153ba1aa9d22bc406371f04e7ea9a61b",
-        "observedAt": "2026-11-07T21:10:44.841Z",
-        "outcome": "RECONCILIATION_REQUIRED"
-      }
+      "status": "ACTION_REQUIRED"
     },
     "url:8328fa6e746e9126f7bc3b96": {
       "key": "url:8328fa6e746e9126f7bc3b96",
@@ -387263,7 +387251,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/beb2feff0115ac59a905193ed5ceb2cdb1836297d35fafedb4eb13955ca25296.json",
         "sha256": "beb2feff0115ac59a905193ed5ceb2cdb1836297d35fafedb4eb13955ca25296",
@@ -387272,10 +387260,10 @@
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
-        "reviewSha256": "9bae3ad940f2ce33542ec5ba16d11f9bd96d310f4c137c713f54fb338522c8a1",
-        "observedAt": "2026-11-07T16:31:32.001Z",
+        "reviewSha256": "beb2feff0115ac59a905193ed5ceb2cdb1836297d35fafedb4eb13955ca25296",
+        "observedAt": "2026-11-07T23:43:41.668Z",
         "reason": "SOURCE_HTTP_401",
-        "retryAfter": "2026-11-07T22:31:32.001Z"
+        "retryAfter": "2026-11-08T05:43:41.668Z"
       }
     },
     "indeed:226e122e86be48c8": {
@@ -387771,7 +387759,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/63a348ecd4943813bbfbbb5980f5aaba4c8c917816e86410e35ed8f7a7129162.json",
         "sha256": "63a348ecd4943813bbfbbb5980f5aaba4c8c917816e86410e35ed8f7a7129162",
@@ -387780,10 +387768,10 @@
       },
       "validation": {
         "status": "SOURCE_VALIDATION_REQUIRED",
-        "reviewSha256": "df22864b46e1b97304df2a88840bf864c70379d575870dcbeff2a9409fac38ce",
-        "observedAt": "2026-11-07T16:31:32.001Z",
+        "reviewSha256": "63a348ecd4943813bbfbbb5980f5aaba4c8c917816e86410e35ed8f7a7129162",
+        "observedAt": "2026-11-07T23:43:41.668Z",
         "reason": "SOURCE_HTTP_403",
-        "retryAfter": "2026-11-07T22:31:32.001Z"
+        "retryAfter": "2026-11-08T05:43:41.668Z"
       }
     },
     "linkedin:4486963329": {
@@ -669573,12 +669561,12 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-07T23:41:58.631Z",
+  "at": "2026-11-07T23:43:41.668Z",
   "upstreamAt": "2026-11-07T23:40:57.503Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 5984,
-    "ACTION_REQUIRED": 2591,
-    "WAITING_EVIDENCE_CHANGE": 248,
+    "ACTION_REQUIRED": 2593,
+    "WAITING_EVIDENCE_CHANGE": 246,
     "SOURCE_VALIDATION_REQUIRED": 123,
     "READY_FOR_CONTROLLED_INTAKE": 4,
     "PENDING_INDEPENDENT_VALIDATION": 2
