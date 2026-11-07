@@ -44,7 +44,15 @@ The historical agency amendment conflicts about a client discovered before first
 
 The edit-request Action now accepts only `proposals/` and `usage/` targets and requires base_blob_sha for an existing target. Controls, runtime, state and immutable receipts/handoffs cannot be rewritten through a self-declared requested_by field. Approved instruction changes use reviewed PRs. This is a data-integrity convention/check, not an assertion that free-plan repository permissions enforce every owner rule.
 
-Still required: actual scheduled-runtime acceptance, live throughput measurement, authoritative claim/lease support if the Writer does not already supply it, and a bounded identity/work-page endpoint if existing master reads prove costly. The email lane retains its current master/archive/in-flight dedupe obligation; this repository does not pretend row_readback can discover unknown identities. No new Writer API, scheduler integration, service, cloud account or auto-merge was added.
+Still required: actual scheduled-runtime acceptance, live throughput measurement, authoritative claim/lease support if the Writer does not already supply it, and a bounded identity/work-page endpoint if existing master reads prove costly. All discovery lanes retain fresh master/archive/in-flight checks; this repository does not pretend row_readback can discover unknown identities. No new Writer API, scheduler integration, service, cloud account or auto-merge was added.
+
+## Existing-first discovery
+
+`policy/current/DISCOVERY_IDENTITY.txt` is embedded in all three generated discovery packets and read by registered intake utilities through the shared automation contract. Board discovery and the recovery pilot follow the same contract. Use `tools/source-trial/job-identity.js` with fresh complete authenticated master/archive snapshots, locally parsed and indexed once per bounded run/batch; refresh before acting when older than 15 minutes. Never download a full snapshot for each candidate or put repeated full files into model context.
+
+A unique proven canonical match is `PRESENT`/`SKIP_EXISTING`, removed from the discovery worksheet/intake backlog before source research, relevance review, enrichment or Writer submission. Retain aliases/history and minimal row-hash proof; delete no canonical job or historical evidence. `EXISTING_SKIPPED` is separate from `IDENTITY_HELD` and new/submitted jobs. Real identity conflicts and independent unresolved original Writer attempts remain obligations. Presence never verifies or replays an original request, and only genuinely new roles reach Writer's live dedupe/protection gates. Snapshot/index benchmarks are local processing measurements, not network or native adoption proof.
+
+The registered email identity currently routes to `lanes/CHATGPT_INTAKE_INSPECTION.txt`; changing only the historical full email packet would miss active coordination. Intake-drain and evidence-only helper procedures stop repeat research and leave shared accounting/reservation changes to the authorized coordinator. Existing runtime release directories remain immutable, and regeneration alone changes no schedules, permissions, ownership or deployment.
 
 ## Rollout and rollback
 

@@ -14,7 +14,7 @@
  * Run: node tools/source-intake/auto-run.js [--report state/source-trial-report.json] [--dry-run] */
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {snapshot,auto,finalize}=require('./intake-cli');
-const {read}=require('./writer-reader');
+const {read,fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
 const {requestId,releaseRules}=require('./production-executor');
 const {DIR,previous,latch,identityKey}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
@@ -32,7 +32,7 @@ const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,dismissedKeys=new Set()}){
+function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,dismissedKeys=new Set()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url)))continue;
@@ -48,14 +48,31 @@ function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load
   // earlier run sent under the raw name is never sent again under the normalized one.
   const company=normalizeCompany(r.company).company;
   const k=company.toLowerCase(); // No per-employer throughput cap.
-  const record={COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||r.url,SCOUT_NOTES:discoveryNotes(r)};
+  const identityFields=require('./writer-identity-fields').writerIdentityFields(r);
+  const record={...identityFields,COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||identityFields.INITIATING_URL||r.url,SCOUT_NOTES:discoveryNotes(r)};
   Object.assign(record,require('../source-trial/posted-pay').fields(r));
   if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
-  if(blockedIdentities.has(identityKey(record)))continue; // a changed URL cannot bypass an uncertain prior write
+  if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>require('../source-trial/job-identity').fenceApplies({...r,...record},original)))continue; // a changed URL cannot bypass an uncertain prior write
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
  }
  return out;
+}
+// Discovery-only closure. Never turn canonical presence into proof of a prior Writer transaction.
+function partitionExisting(roles,{master,archive,sent=new Set(),blockedIdentities=new Set(),blockedRecords=[],writerFences=[],now=Date.now()}={}){
+ for(const snapshot of [master,archive])if(snapshot?.authenticated!==true||snapshot.source!=='WRITER'||!Array.isArray(snapshot.rows)||!Number.isFinite(Date.parse(snapshot.writerReadAt))||now-Date.parse(snapshot.writerReadAt)>900000||Date.parse(snapshot.writerReadAt)>now+120000)throw Error('Fresh authenticated canonical snapshots required');
+ const Identity=require('../source-trial/job-identity'),index=Identity.index([...master.rows,...archive.rows]),remaining=[],existing=[],held=[];
+ for(const role of roles){
+  const record={COMPANY:normalizeCompany(role.company).company,TITLE:role.title,LOCATION:role.location,SOURCE_URL:role.url};
+  if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>Identity.fenceApplies(role,original))||sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:role.company}))){remaining.push(role);continue;}
+  const fence=writerFences.find(f=>f.key&&f.key===Upstream.key(role.url)||Identity.fenceApplies(role,f.record));
+  if(fence){held.push({key:Upstream.key(role.url),source:role,status:'ORIGINAL_WRITER_FENCE',fence,writerSubmissions:0});continue;}
+  const found=Identity.match(index,role);
+  if(['AMBIGUOUS','UNRESOLVED'].includes(found.status)){held.push({key:Upstream.key(role.url),source:role,status:'IDENTITY_HOLD',reason:found.status,basis:found.basis,canonicalIds:[...new Set(found.rows.map(r=>r.PRIMARY_ID).filter(Boolean))],writerSubmissions:0});continue;}
+  if(found.status!=='PRESENT'||!found.primaryId){remaining.push(role);continue;}
+  existing.push({key:Upstream.key(role.url),source:role,primaryId:found.primaryId,basis:found.basis,canonicalReadAt:{master:master.writerReadAt,archive:archive.writerReadAt},rowSha256:found.rows.map(row=>sha(row.RAW_ROW||JSON.stringify(row))),status:'EXISTING_NO_WRITE',writerSubmissions:0,writeCompletionClaimed:false});
+ }
+ return {remaining,existing,held};
 }
 // The posting must load and name the employer; its description is the employer-business evidence the Writer screens.
 async function evidence(url,company,fetcher=globalThis.fetch){
@@ -126,11 +143,15 @@ async function main(argv=process.argv.slice(2)){
  report.new_roles=[...uniqueRoles.values()];
  const screenContext=await require('../source-trial/preliminary-screen').context({key});
  const rulesHash=sha(screenContext.rules?.raw||(await read('rules',{key})).data.rules.raw);
- const blockedIdentities=new Set([...quarantined.filter(q=>q.identityKey).map(q=>q.identityKey),...Drain.fences('.').map(identityKey)]);
+ const blockedRecords=[...quarantined.map(q=>q.record).filter(Boolean),...Drain.fences('.')];
+ // Keep a legacy family fence only when its original worksite evidence is unavailable.
+ const blockedIdentities=new Set(quarantined.filter(q=>q.identityKey&&!q.record).map(q=>q.identityKey));
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
- const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
+ const [master,archive]=await Promise.all([fetchAuthenticatedMaster({key}),fetchAuthenticatedArchive({key})]);
+ const config=Relevance.guarded(Relevance.load(),master.rows),represented=partitionExisting(report.new_roles,{master,archive,sent,blockedIdentities,blockedRecords,writerFences:[...[...Drain.writerFences('.')].map(([key,f])=>({key,...f})),...Drain.fences('.').map(record=>({record}))]});
+ report.new_roles=represented.remaining;
  const discoveryEvidence=require('../source-trial/evidence-store').index('.');
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const cached=discoveryEvidence.find(r),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity}),business=cached?.doc.text||await evidence(r.url,r.company);
@@ -143,14 +164,15 @@ async function main(argv=process.argv.slice(2)){
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
  }
  const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
- console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,filtered:picked.length,candidates:candidates.length}));
+ console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,candidates:candidates.length}));
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
  const statePath=path.join(DIR,run+'.json');
- if(catchUp&&!dry){catchUp.progress={...CatchUp.report(catchUp,{sent,quarantined,blocking}),eligibleBeforeSourceCheck:picked.length,preparedThisBatch:candidates.length,status:candidates.length?'ACTIVE':quarantined.length?'WAITING_RECONCILIATION':Object.values(catchUp.roles).some(x=>x.retryAfter&&Date.parse(x.retryAfter)>Date.now())?'WAITING_SOURCE_RETRY':'NO_ACTIONABLE_WORK'};CatchUp.save('.',catchUp);}
- if(!candidates.length){fs.writeFileSync(statePath,JSON.stringify({run,noCandidates:true,at:new Date().toISOString()}));return}
+ if(catchUp&&!dry){const presentIds=new Set(represented.existing.map(x=>CatchUp.id(x.source))),pendingInventory={...catchUp,roles:Object.fromEntries(Object.entries(catchUp.roles).filter(([id])=>!presentIds.has(id)))};catchUp.progress={...CatchUp.report(pendingInventory,{sent,quarantined,blocking}),existingNoWrite:represented.existing.length,identityHeld:represented.held.length,eligibleBeforeSourceCheck:picked.length,preparedThisBatch:candidates.length,status:candidates.length?'ACTIVE':quarantined.length||represented.held.length?'WAITING_RECONCILIATION':Object.values(pendingInventory.roles).some(x=>x.retryAfter&&Date.parse(x.retryAfter)>Date.now())?'WAITING_SOURCE_RETRY':'NO_ACTIONABLE_WORK'};CatchUp.save('.',catchUp);}
+ if(!candidates.length){fs.writeFileSync(statePath,JSON.stringify({run,noCandidates:true,at:new Date().toISOString(),existingNoWrite:represented.existing,identityHeld:represented.held}));return}
  fs.writeFileSync(path.join(DIR,run+'.candidates.json'),JSON.stringify(candidates,null,1));
  await snapshot('before',{statePath,candidates,sourceRunId:run,key,mode:'AUTO'});
+ const initialState=JSON.parse(fs.readFileSync(statePath));initialState.existingNoWrite=represented.existing;initialState.identityHeld=represented.held;fs.writeFileSync(statePath,JSON.stringify(initialState,null,1));
  const refreshReview=async(candidate,expectedHash)=>{
   // Re-read the actual posting and rules; never merely stamp the old review
   // with a new hash. Writer remains the canonical Never Consider adjudicator.
@@ -172,4 +194,4 @@ async function main(argv=process.argv.slice(2)){
  if(!argv.includes('--one-transaction'))return main(argv);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,main,screenReason,discoveryNotes};
+module.exports={pick,evidence,main,screenReason,discoveryNotes,partitionExisting};

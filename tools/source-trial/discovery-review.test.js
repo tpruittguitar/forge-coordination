@@ -26,10 +26,19 @@ test('detail reads are capped at three, retain order and isolate one failing sou
  const result=await R.reviewAll(cards,{concurrency:30,detail:async url=>{active++;peak=Math.max(peak,active);await new Promise(resolve=>setTimeout(resolve,5));active--;if(url==='2')throw Error('offline');return {jobPostingInfo:{jobDescription:'Manage production '+url}};}});
  a.equal(peak,3);a.deepEqual(result.map(r=>r.title),Array.from({length:8},(_,n)=>card.title+' '+n));a.equal(result[2].discoveryReview.detailStatus,'DETAIL_ACCESS_FAILED');a.equal(result[7].description,'Manage production 7');
 });
+test('proven canonical matches skip detail fetching and all preliminary/resume analysis',async()=>{
+ const Preliminary=require('./preliminary-screen'),original=Preliminary.screen;let calls=0;Preliminary.screen=()=>{calls++;throw Error('existing role analyzed');};
+ try{const cards=['EXISTING','EXISTING_PROTECTED'].map(status=>({...card,status,description:'Already fetched full source content',detailUrl:'https://example.com/never'}));await R.reviewAll(cards,{detail:async()=>{throw Error('existing detail fetched');}});a.equal(calls,0);for(const c of cards){a.equal(c.discoveryDisposition.status,'EXISTING_NO_WRITE');a.equal(c.discoveryDisposition.writerSubmissions,0);a.equal(c.discoveryReview,undefined);a.equal(c.detailUrl,undefined);a.match(c.selectionReason,/Already represented/);}}
+ finally{Preliminary.screen=original;}
+});
+test('ambiguous matches still receive source review while known existing roles do not',async()=>{
+ const details=[],cards=[{...card,status:'EXISTING',detailUrl:'existing'},{...card,status:'IDENTITY_HOLD',detailUrl:'ambiguous'},{...card,status:'NEW',detailUrl:'new'}];await R.reviewAll(cards,{detail:async url=>{details.push(url);return{jobPostingInfo:{jobDescription:'Lead plant manufacturing and production.'}};}});a.deepEqual(details.sort(),['ambiguous','new']);a.equal(cards[1].status,'IDENTITY_HOLD');a.equal(cards[1].discoveryReview.detailStatus,'SOURCE_CONTENT_REVIEWED');
+});
 
 test('all discovery sources apply the shared zero gate without new reads and retain captured identities',async()=>{
  const profile=require('./resume-match').load(),screenContext={profile,documents:{resumes:[{id:profile.source.fileId,modifiedTime:profile.source.modifiedAt}]}},description=('Oversee client appointments and customer support. Direct account administrators and oversee branch budgets. Coordinate customer correspondence and resolve service inquiries. ').repeat(3);
  const cards=['BOARD:greenhouse','BOARD:lever','BOARD:ashby','BOARD:workday','JOBSPY:linkedin','HIRINGCAFE'].map((source,n)=>({...card,source,url:card.url+'/'+n,title:'Director of Operational Excellence',description,status:n===0?'EXISTING_PROTECTED':'NEW'}));let calls=0;
  await R.reviewAll(cards,{screenContext,detail:async()=>{calls++;throw Error('No new lookup');}});a.equal(calls,0);a.equal(cards.length,6);a.equal(cards[0].status,'EXISTING_PROTECTED');
- for(const c of cards){a.equal(c.discoveryReview.decision,'EXCLUDE_ATS_ZERO');a.equal(c.discoveryReview.preliminaryScreen.atsGate.hits,0);a.equal(c.description,description.trim());a.match(c.selectionReason,/0; exclude from active discovery/);a.equal(c.discoveryReview.canonicalEligibility,false);}
+ a.equal(cards[0].discoveryReview,undefined);
+ for(const c of cards.slice(1)){a.equal(c.discoveryReview.decision,'EXCLUDE_ATS_ZERO');a.equal(c.discoveryReview.preliminaryScreen.atsGate.hits,0);a.equal(c.description,description.trim());a.match(c.selectionReason,/0; exclude from active discovery/);a.equal(c.discoveryReview.canonicalEligibility,false);}
 });

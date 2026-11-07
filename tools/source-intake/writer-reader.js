@@ -27,6 +27,11 @@ async function read(action,{key=process.env.FORGE_WRITER_KEY,transport=globalThi
  const completed=clock();if(completed<started||completed-started>65000)throw Error('BLOCKED: Writer read total time invalid');
  return {data,startedAt:new Date(started).toISOString(),completedAt:new Date(completed).toISOString()};
 }
+// Preserve identity and worksite-scope payload evidence for read-only duplicate/fence checks.
+function identityPayload(cells){
+ const allowed=new Set([...require('../source-trial/job-identity').URL_FIELDS,'REQ','REQ_ID','REQUISITION_ID','ATS_REQ_ID','JOB_ID','REMOTE_HYBRID','OPERATING_SCOPE','OPERATING_SCOPE_EVIDENCE','LOCATION_SCOPE']);
+ return Object.fromEntries([...cells.slice(9).join(' | ').matchAll(/(?:^|;\s*)([A-Z][A-Z0-9_]*)=([^;]*)/g)].filter(m=>allowed.has(m[1])).map(m=>[m[1],m[2].trim()]));
+}
 function parseArchive(text){
  if(typeof text!=='string')throw Error('BLOCKED: archive text unavailable');
  const lines=[],at=new Map();
@@ -36,7 +41,7 @@ function parseArchive(text){
    if(cells.length<10)throw Error('BLOCKED: malformed terminal archive row');
    if(at.has(id))lines[at.get(id)]=null;
    at.set(id,lines.length);
-   lines.push({PRIMARY_ID:cells[1],COMPANY:cells[2],TITLE:cells[3],BUCKET:cells[4],DISPOSITION:cells[5],REQ_ID:cells[7],LOCATION:cells[8],ARCHIVED_TERMINAL:true,RAW_ROW:line,ANTI_RESURRECTION:(line.match(/(?:^|[; |])ANTI_RESURRECTION\s*[=:]\s*([^;| ]+)/i)||[])[1]||'',DO_NOT_REWORK:(line.match(/(?:^|[; |])DO_NOT_REWORK\s*[=:]\s*([^;| ]+)/i)||[])[1]||''});
+   lines.push({PRIMARY_ID:cells[1],COMPANY:cells[2],TITLE:cells[3],BUCKET:cells[4],DISPOSITION:cells[5],REQ_ID:cells[7],LOCATION:cells[8],ARCHIVED_TERMINAL:true,p:identityPayload(cells),RAW_ROW:line,ANTI_RESURRECTION:(line.match(/(?:^|[; |])ANTI_RESURRECTION\s*[=:]\s*([^;| ]+)/i)||[])[1]||'',DO_NOT_REWORK:(line.match(/(?:^|[; |])DO_NOT_REWORK\s*[=:]\s*([^;| ]+)/i)||[])[1]||''});
   }else{
    const m=line.match(/^RESTORED\|([^|]+)\|(\d+)\|/);
    if(m){const id=m[1]+'#'+m[2];if(at.has(id)){lines[at.get(id)]=null;at.delete(id)}}
@@ -48,7 +53,7 @@ function parseMaster(text){
  if(typeof text!=='string'||!text.trim())throw Error('BLOCKED: no master text');
  const rows=text.split(/\r?\n/).filter(l=>/^\d+\s*\|\s*V2[A-Z]-/.test(l)).map(l=>{
  const c=l.trim().split(/\s+\|\s+/);if(c.length<10)throw Error('BLOCKED: short master row');
- return {PRIMARY_ID:c[1],COMPANY:c[2],TITLE:c[3],BUCKET:c[4],DISPOSITION:c[5],REQ_ID:c[7],LOCATION:c[8]};
+ return {PRIMARY_ID:c[1],COMPANY:c[2],TITLE:c[3],BUCKET:c[4],DISPOSITION:c[5],REQ_ID:c[7],LOCATION:c[8],p:identityPayload(c)};
  });
  if(!rows.length||!/^END V2_CURRENT_POPULATION_MASTER(?:\s|$)/m.test(text))throw Error('BLOCKED: master completeness marker missing');
  if(new Set(rows.map(x=>x.PRIMARY_ID)).size!==rows.length)throw Error('BLOCKED: duplicated master identities');
@@ -67,7 +72,7 @@ async function fetchAuthenticatedMaster(options={}){
  if(!Number.isFinite(fetched)||now-fetched>15*60000||fetched>now+120000)throw Error('BLOCKED: Writer master fetchedAt stale or invalid');
  const modified=master.data.modifiedTime?Date.parse(master.data.modifiedTime):null;
  if(modified!==null&&(!Number.isFinite(modified)||modified>fetched+120000))throw Error('BLOCKED: Writer master modifiedTime invalid or after fetch');
- return {source:'WRITER',authenticated:true,rows,writerModifiedTime:master.data.modifiedTime||null,writerFetchedAt:master.data.fetchedAt,writerReadAt:master.completedAt,writerBuild:ping.data.build||null};
+ return {source:'WRITER',authenticated:true,rows,writerModifiedTime:master.data.modifiedTime||null,writerFetchedAt:master.data.fetchedAt,writerReadAt:master.completedAt,writerBuild:ping.data.build||null,...(options.includeText===true?{text:master.data.text}:{})};
 }
 async function fetchAuthenticatedArchive(options={}){
  const r=await read('archive',options);

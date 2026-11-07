@@ -54,3 +54,7 @@ Modern COMPLETE receipt entries bind one or more canonical IDs through `entry.it
 ## PR #39 index timestamp correction
 
 `receipt_index.updatedAt` is the last **write** time, not the fetch time. Quiet indices remain valid: require a nonempty revision SHA, parseable nonfuture `updatedAt` (2-minute clock tolerance), and `request.at <= updatedAt` where available. Record idle age diagnostically, never use it as a 15-minute validity cutoff. Live GET response acquisition is timed separately by Writer transport. No `lineSha256` versus item `a` comparison is claimed because equivalent hash input formats are not established.
+
+## Existing-job discovery closure
+
+Current admission uses the shared read-only matcher described in `tools/source-trial/IDENTITY.md`. A unique same-job match returns `SKIP_EXISTING`, and controlled preview records it in `skipped`, not `held` or a Writer payload. Real ambiguity remains `IDENTITY_HOLD`. This supersedes older preview labels `PROTECTED_HOLD` and `EXISTING_REVIEW`; it does not clear protection, change canonical rows, or relax original-request receipt/readback verification.

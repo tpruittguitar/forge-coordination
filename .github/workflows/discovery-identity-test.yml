@@ -1,0 +1,46 @@
+name: Discovery identity regression tests
+on:
+  pull_request:
+    paths:
+      - 'tools/source-trial/**'
+      - 'tools/source-intake/**'
+      - 'tools/email-recovery/**'
+      - 'tools/pipeline-observability/**'
+      - 'tools/intake-drain/**'
+      - 'tools/relevance-screen/**'
+      - 'tools/live-backlog/**'
+      - 'tools/manual-backlog/**'
+      - '.github/workflows/discovery-identity-test.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - run: >-
+          node --test tools/source-trial/job-identity.test.js
+          tools/source-trial/benchmark-identity.test.js
+          tools/source-trial/canonical-read.test.js
+          tools/source-trial/discovery-review.test.js
+          tools/source-trial/lib.test.js
+          tools/source-intake/auto-existing.test.js
+          tools/source-intake/writer-reader-scope.test.js
+          tools/source-intake/admission.test.js
+          tools/source-intake/controlled-admission.test.js
+          tools/email-recovery/reconcile.test.cjs
+          tools/email-recovery/employer-identity.test.cjs
+          tools/email-recovery/zero-write.test.cjs
+          tools/email-recovery/ledger.test.cjs
+          tools/email-recovery/import-capture.test.cjs
+          tools/pipeline-observability/upstream-flow.test.js
+          tools/pipeline-observability/waiting-queues.test.js
+          tools/intake-drain/queue.test.cjs
+          tools/intake-drain/fence-adapters.test.cjs
+          tools/intake-drain/saved-card.test.cjs
+          tools/relevance-screen/prepare.test.cjs
+          tools/live-backlog/model.test.cjs
+          tools/manual-backlog/decisions.test.cjs

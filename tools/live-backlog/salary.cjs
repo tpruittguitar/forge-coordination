@@ -14,7 +14,7 @@ function savedIndex(read){
  for(const path of REPORTS){
   let report;try{report=JSON.parse(read(path));}catch{continue;}
   if(!validDate(report?.summary?.at))continue;
-  for(const field of ['new_roles','existing_roles','protected_roles'])for(const row of Array.isArray(report[field])?report[field]:[]){
+  for(const field of ['new_roles','existing_roles','protected_roles','identity_held_roles'])for(const row of Array.isArray(report[field])?report[field]:[]){
    if(!row||typeof row!=='object')continue;
    const key=sourceKey(row.url),ids=identity(row);if(!key||ids.some(x=>!x))continue;
    const id=JSON.stringify([key,...ids]);if(!index.has(id))index.set(id,[]);

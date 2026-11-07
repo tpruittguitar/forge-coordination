@@ -21,36 +21,32 @@ async function get(url, opts) { const r = await fetch(url, Object.assign({ signa
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + 'foreman-cockpit/main/' + rel)).text(); }
 async function loadModule(name) { const src = await fcFile('apps-script/' + name); const file = path.join(os.tmpdir(), 'trial-' + name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./trial-$1.js')")); return file; }
 
-(async () => {
+// One fresh canonical acquisition per run; all candidate lookups share its in-memory index.
+async function loadCanonical({W,key,transport=globalThis.fetch,clock,masterFile=process.env.TRIAL_MASTER_FILE,archiveFile=process.env.TRIAL_ARCHIVE_FILE}={}){
+ const Reader=require('../source-intake/writer-reader'),options={key,transport,...(clock?{clock}:{})};
+ let masterText,master;
+ if(masterFile){masterText=fs.readFileSync(masterFile,'utf8');master={source:'LOCAL_FIXTURE',authenticated:false};}
+ else{const snapshot=await Reader.fetchAuthenticatedMaster({...options,includeText:true});masterText=snapshot.text;master={source:snapshot.source,authenticated:snapshot.authenticated,writerFetchedAt:snapshot.writerFetchedAt,writerReadAt:snapshot.writerReadAt,writerModifiedTime:snapshot.writerModifiedTime};}
+ const rows=W.parseRows(masterText);
+ const archive={read:false,rows:0,error:''};let archived=[];
+ try{
+  if(archiveFile)archived=W.parseRows(fs.readFileSync(archiveFile,'utf8'));
+  else{const snapshot=await Reader.fetchAuthenticatedArchive(options);archived=W.parseRows('V2_CURRENT_POPULATION_MASTER\n'+snapshot.rows.map(r=>r.RAW_ROW).join('\n')+'\n');archive.writerReadAt=snapshot.writerReadAt;}
+  archive.read=true;archive.rows=archived.length;
+ }catch(e){archive.error=String(e.message||e).slice(0,80);}
+  const asIndexRow = (r, terminal) => ({ PRIMARY_ID: r.PRIMARY_ID, COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p, ARCHIVED_TERMINAL: terminal });
+  const idx = T.masterIndex(rows.map(r => asIndexRow(r, false)).concat(archived.map(r => asIndexRow(r, true))));
+
+ return {rows,archived,idx,archive,master};
+}
+
+async function main(){
   const T0 = Date.now(), at = new Date().toISOString();
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
   await loadModule('PipelineEvidence.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
 
-  /* the master, from the structured copy (KV reads only) */
-  let lines = [];
-  if (process.env.TRIAL_MASTER_FILE) lines = fs.readFileSync(process.env.TRIAL_MASTER_FILE, 'utf8').split('\n').filter(l => /^\d+ \| /.test(l));
-  else for (let off = 0, total = null; total == null || off < total; off += 250) {
-    const j = await (await get(`${CONFIG.structuredApi}/jobs?limit=250&offset=${off}`, { headers: { 'x-writer-key': key } })).json();
-    if (!j.ok) throw new Error('structured jobs: ' + (j.error || 'not ok')); total = +j.total || 0;
-    lines = lines.concat(j.jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean)); if (!j.jobs.length) break;
-  }
-  const rows = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + lines.join('\n') + '\n');
-  /* the terminal archive (Writer GET action=archive, read-only): declined, rejected and closed history is protected,
-     never NEW. The Writer dedupes intake against it, so a trial that ignores it overstates NEW. */
-  const archive = { read: false, rows: 0, error: '' };
-  let archived = [];
-  try {
-    const text = process.env.TRIAL_ARCHIVE_FILE ? fs.readFileSync(process.env.TRIAL_ARCHIVE_FILE, 'utf8') : await (async () => {
-      const j = await (await get(conn.PipelineConnection.url + '?action=archive&key=' + encodeURIComponent(key), { headers: { 'cache-control': 'no-store' } })).json();
-      if (!j.ok || j.degraded) throw new Error('archive ' + (j.degraded ? 'degraded' : 'not ok'));
-      return j.text || '';
-    })();
-    archived = W.parseRows('V2_CURRENT_POPULATION_MASTER\n' + text.split('\n').filter(l => /^\d+ \| /.test(l)).join('\n') + '\n');
-    archive.read = true; archive.rows = archived.length;
-  } catch (e) { archive.error = String(e.message || e).slice(0, 80); }   // never the URL: it carries the key
-  const asIndexRow = (r, terminal) => ({ COMPANY: r.COMPANY, TITLE: r.TITLE, LOCATION: r.LOCATION, REQ: r.REQ, BUCKET: r.BUCKET, DISPOSITION: r.DISPOSITION, ANTI_RESURRECTION: r.ANTI_RESURRECTION, DO_NOT_REWORK: r.DO_NOT_REWORK, STATUS: r.STATUS, APP_STATE: r.APP_STATE, p: r.p, ARCHIVED_TERMINAL: terminal });
-  const idx = T.masterIndex(rows.map(r => asIndexRow(r, false)).concat(archived.map(r => asIndexRow(r, true))));
+  const {rows,idx,archive,master}=await loadCanonical({W,key});
 
   /* boards: priority companies first, then every board the master links to */
   const boards = new Map(), add = (b, company, tier, from) => { if (!b) return; b=H.repair(b); const cur = boards.get(b.key); if (cur) { cur.companies.add(company); if (tier && !cur.tier) cur.tier = tier; return; } boards.set(b.key, Object.assign({}, b, { companies: new Set([company]), tier: tier || '', from })); };
@@ -102,7 +98,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
-  const addFound = item => { item.postedPay=PostedPay.capture(item,{observedAt:at}); const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
+  const Identity=require('./job-identity'),duplicates=new Map();
+  const addFound = item => { item.postedPay=PostedPay.capture(item,{observedAt:at}); const key = T.identityKey(item.company,item.title,item.location), peers=discovered.get(key)||[], match=Identity.match(Identity.index(peers),item), prior=match.status==='PRESENT'?match.rows[0]:null; if (prior) { duplicates.set(item,prior); if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } peers.push(item);discovered.set(key,peers); found.push(item); return true; };
   let consumed = 0;const attempted=new Set();
   for (const b of order) {
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
@@ -146,7 +143,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const k = T.identityKey(x.company, x.title, x.location); if (seen.has(k)) return; seen.add(k);
       const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
       s.matches++;
-      const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url, x.location); if (status === 'NEW') s.new++; if (status === 'EXISTING_PROTECTED') s.protected++;
+      const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url, x.location); if (status === 'NEW') s.new++; if (status === 'EXISTING_PROTECTED') s.protected++; if(status==='IDENTITY_HOLD')s.identityHeld=(s.identityHeld||0)+1;
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
       addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, ...{min_amount:x.min_amount,max_amount:x.max_amount,interval:x.interval,currency:x.currency,salary_source:x.salary_source,is_estimated:x.is_estimated,salaryText:x.salaryText}, pay, status, description: x.description || '', posted: x.date_posted || '' });
     });
@@ -165,28 +162,29 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
       const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, ...{min_amount:x.min_amount,max_amount:x.max_amount,interval:x.interval,currency:x.currency,salary_source:x.salary_source,is_estimated:x.is_estimated,salaryText:x.salaryText}, pay, status, description: x.description || '', posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
       if (addFound(item)) { hc.unique++; return; }
-      const prior = discovered.get(T.identityKey(item.company, item.title, item.location)), from = String(prior.source).split(':')[0];
+      const prior = duplicates.get(item), from = String(prior.source).split(':')[0];
       hc.overlap[from] = (hc.overlap[from] || 0) + 1;
     });
   }
 
   // Reuse ATS content already fetched; Workday list cards get one exact detail read within this run's budget.
-  const screenContext=await require('./preliminary-screen').context({key});
+  const needsReview=found.some(card=>!['EXISTING','EXISTING_PROTECTED'].includes(card.status));
+  const screenContext=needsReview?await require('./preliminary-screen').context({key}):undefined;
   await require('./discovery-review').reviewAll(found,{screenContext,deadline:T0+CONFIG.boardBudgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
 
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     screening:{atsZeroExcluded:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.decision==='EXCLUDE_ATS_ZERO').length,atsGateUnknown:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.preliminaryScreen?.atsGate?.status==='UNKNOWN').length,canonicalWrites:0},
-    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, archive, seconds: Math.round((Date.now() - T0) / 1000),
+    at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, master, archive, identityHeld: found.filter(f => f.status === 'IDENTITY_HOLD').length, seconds: Math.round((Date.now() - T0) / 1000),
     boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
-    by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && x.status !== 'NEW').length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
+    by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && ['EXISTING','EXISTING_PROTECTED'].includes(x.status)).length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
     priority_boards_probed: probes,
-    by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && x.status !== 'NEW').length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
+    by_level: ['DIRECTOR_PLUS','SR_MANAGER','SR_STAFF'].reduce((o, level) => (o[level] = { new: found.filter(x => x.level === level && x.status === 'NEW').length, existing: found.filter(x => x.level === level && ['EXISTING','EXISTING_PROTECTED'].includes(x.status)).length, protected: found.filter(x => x.level === level && x.status === 'EXISTING_PROTECTED').length }, o), {}),
   };
-  const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), existing_roles: found.filter(f => f.status !== 'NEW'), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
+  const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), identity_held_roles: found.filter(f => f.status === 'IDENTITY_HOLD'), existing_roles: found.filter(f => ['EXISTING','EXISTING_PROTECTED'].includes(f.status)), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
   if (!process.env.TRIAL_SKIP_BOARDS) {
     const cursorBody = { at, next: cursorNext, start, read: consumed, ranked: ranked.length, source: 'Pipeline Explorer Target Companies ranking via forge-policy derived/TARGET_COMPANIES_PRIORITY.txt', order: ranked.map(b => ({ key: b.key, tier: b.tier || '', company: [...b.companies][0] || '' })) };
@@ -198,7 +196,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
-    ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new} |`),
+    ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new - (js.sites[s].identityHeld||0)} |`),
     `| HiringCafe (${hc.returned} returned; ${hc.matches - hc.unique} already found by ${Object.entries(hc.overlap).map(([k, v]) => k + ' ' + v).join(', ') || 'no other source'}) | ${hc.matches} (${hc.unique} unique) | ${by('HIRINGCAFE', 'NEW')} | ${by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED')} |`,
     '', 'JobSpy errors: ' + (js.ran ? (js.errors.length ? js.errors.map(e => e.site + ': ' + e.error).join('; ') : 'none') : 'JobSpy did not run'), '',
     'HiringCafe: ' + (hc.ran ? (hc.errors.length ? hc.errors.map(e => (e.search ? e.search + ': ' : '') + e.error).join('; ') : 'no errors') : (hc.skipped || 'did not run')) + '. Unique = matching US roles no board or JobSpy result already covered.', '',
@@ -207,4 +205,6 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
   fs.writeFileSync(path.join(OUT, reportName + '.md'), md.join('\n'));
   console.log(JSON.stringify(summary));
-})().catch(e => { console.error(e); process.exit(1); });
+}
+if(require.main===module)main().catch(e => { console.error(e); process.exitCode=1; });
+module.exports={loadCanonical,main};

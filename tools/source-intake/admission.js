@@ -13,7 +13,7 @@ function plan(preview,master,{snapshotAsOf,runId='FORGE-SOURCE-ADMISSION-REVIEW'
  const rows=preview.rows.map(x=>{
   const rec=x.record||{},candidate=x.verdict==='CANDIDATE_REQUIRES_WRITER_CHECK';
   const status=candidate?L.novelty(index,rec.COMPANY,rec.TITLE,rec.SOURCE_URL,rec.LOCATION,rec.REQ_ID):'NOT_CANDIDATE';
-  let gate=!candidate?x.verdict:status==='EXISTING_PROTECTED'?'PROTECTED_HOLD':status==='EXISTING'?'EXISTING_REVIEW':'REVIEW_REQUIRED';
+  let gate=!candidate?x.verdict:['EXISTING_PROTECTED','EXISTING'].includes(status)?'SKIP_EXISTING':status==='IDENTITY_HOLD'?'IDENTITY_HOLD':'REVIEW_REQUIRED';
   // All apparent NEW records require canonical employer-business evidence and live Writer decisions.
   if(gate==='REVIEW_REQUIRED'&&!rec.EMPLOYER_PRIMARY_BUSINESS)gate='EMPLOYER_BUSINESS_REVIEW';
   return {index:x.index,company:rec.COMPANY,title:rec.TITLE,location:rec.LOCATION,url:rec.SOURCE_URL,masterStatus:status,gate,sourceVerdict:x.verdict,tier:x.tier||'UNKNOWN',flags:Array.isArray(x.flags)?x.flags:[],memphisStrongNegative:Array.isArray(x.flags)&&x.flags.includes('MEMPHIS_STRONG_NEGATIVE')};

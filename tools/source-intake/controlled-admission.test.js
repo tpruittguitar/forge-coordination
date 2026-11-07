@@ -11,14 +11,14 @@ test('eligible only with live audit and independent employer business evidence',
  const {preview,audit}=fixture();const r=eligibleFromAudit(audit,preview);
  assert.equal(r.proposed.length,1);assert.equal(r.admitted.length,0);assert.equal(r.writerSubmissions,0);assert.equal(r.submissionExecuted,false);
 });
-test('protected, existing, unverifiable and never consider candidates are held',()=>{
+test('verified existing candidates skip; unverifiable and never-consider candidates stay held',()=>{
  for(const [type,override] of [['protected',1],['existing',2],['unknown',3],['never',4]]){
   const {preview,audit}=fixture();
-  if(override===1){audit.rows[0].masterStatus='EXISTING_PROTECTED';audit.rows[0].gate='PROTECTED_HOLD'}
-  if(override===2)audit.rows[0].masterStatus='EXISTING';
+  if(override===1){audit.rows[0].masterStatus='EXISTING_PROTECTED';audit.rows[0].gate='SKIP_EXISTING'}
+  if(override===2){audit.rows[0].masterStatus='EXISTING';audit.rows[0].gate='SKIP_EXISTING';}
   if(override===3)delete preview.rows[0].employerEvidence;
   if(override===4)preview.rows[0].employerEvidence.neverConsider=true;
-  const r=eligibleFromAudit(audit,preview);assert.equal(r.admitted.length,0,type);assert.equal(r.held.length,1,type);
+  const r=eligibleFromAudit(audit,preview);assert.equal(r.admitted.length,0,type);assert.equal(r.held.length,override<=2?0:1,type);assert.equal(r.skipped.length,override<=2?1:0,type);
  }
 });
 test('reject injected Writer reader overrides and mismatched audit inputs',async()=>{

@@ -44,8 +44,8 @@ test('REV-163 NPI, continuous improvement and launch leadership', () => {
 test('REV-156 US places, novelty against the master, board roots, slug probes, priority digest', () => {
   assert.strictEqual(T.usPlace('Tampa, FL'), 'FL'); assert.strictEqual(T.usPlace('Remote'), 'REMOTE_US'); assert.strictEqual(T.usPlace('Munich, Germany'), ''); assert.strictEqual(T.usPlace('United States'), 'US');
   const idx = T.masterIndex([{ COMPANY: 'Acme Inc', TITLE: 'Sr. Director of Quality', p: { SOURCE_URL: 'https://job-boards.greenhouse.io/acme/jobs/111?gh_src=x' } }]);
-  assert.strictEqual(T.novelty(idx, 'Acme', 'Other', 'https://JOB-BOARDS.greenhouse.io/acme/jobs/111'), 'EXISTING', 'same URL');
-  assert.strictEqual(T.novelty(idx, 'ACME, LLC', 'Senior Director of Quality', ''), 'EXISTING', 'same company + title');
+  assert.strictEqual(T.novelty(idx, 'Acme', 'Other', 'https://JOB-BOARDS.greenhouse.io/acme/jobs/111'), 'IDENTITY_HOLD', 'same URL with conflicting title');
+  assert.strictEqual(T.novelty(idx, 'ACME, LLC', 'Senior Director of Quality', ''), 'IDENTITY_HOLD', 'company and title without a worksite is not an exact job');
   assert.strictEqual(T.novelty(idx, 'Acme', 'Plant Manager', 'https://x/1'), 'NEW');
   assert.deepStrictEqual(T.boardFromCareers('https://job-boards.greenhouse.io/aevexaerospace'), { kind: 'greenhouse', key: 'greenhouse:aevexaerospace', board: 'aevexaerospace' });
   assert.strictEqual(T.boardFromCareers('https://jobs.lever.co/hermeus').key, 'lever:hermeus');
@@ -116,7 +116,7 @@ test('Real master-shaped REQ BUCKET DISPOSITION ANTI_RESURRECTION DO_NOT_REWORK 
     {COMPANY:'Other',TITLE:'Plant Manager',LOCATION:'Atlanta, GA',REQ:'P-1',DO_NOT_REWORK:'YES',p:{}}
   ];
   const idx = T.masterIndex(rows);
-  assert.strictEqual(T.novelty(idx,'Acme','Director of Quality','https://jobs.example/2','Dallas, TX','R-9'),'EXISTING_PROTECTED');
+  assert.strictEqual(T.novelty(idx,'Acme','Director of Quality','https://jobs.example/2','Dallas, TX','R-9'),'IDENTITY_HOLD');
   assert.strictEqual(T.novelty(idx,'Other','Plant Manager','','Atlanta, GA'),'EXISTING_PROTECTED');
 });
 test('Mission Assurance allowed; mission operations/director/control excluded; Product Launch needs manufacturing context', () => {
@@ -133,8 +133,8 @@ test('Re-QA unpunctuated and long-form city normalization plus city-less fallbac
  assert.strictEqual(T.identityKey('Acme','Director NPI','Austin TX'),a);
  assert.strictEqual(T.identityKey('Acme','Director NPI','Austin, Texas'),a);
  const idx=T.masterIndex([{COMPANY:'Acme',TITLE:'Director NPI',LOCATION:'Austin, TX',ANTI_RESURRECTION:'YES'}]);
- assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','TX'),'EXISTING_PROTECTED');
- assert.strictEqual(T.novelty(idx,'Acme','Director NPI','',''),'EXISTING_PROTECTED');
+ assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','TX'),'IDENTITY_HOLD');
+ assert.strictEqual(T.novelty(idx,'Acme','Director NPI','',''),'IDENTITY_HOLD');
  assert.strictEqual(T.novelty(idx,'Acme','Director NPI','','Dallas, TX'),'NEW');
  assert.strictEqual(T.family('Director, Mission Production'),'MFG_PROD');
 });

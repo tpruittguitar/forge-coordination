@@ -11,6 +11,39 @@ test('programmed source inspection supplies exact fresh facts without trusting s
  program.batches[batch].status='QUARANTINED';f.save('state/PROGRAMMED_COORDINATOR.json',program);a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,1);
  program.batches[batch].status='VALIDATED';sourceEvidence.observedAt='2020-01-01T00:00:00Z';f.save('state/PROGRAMMED_COORDINATOR.json',program);a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,1);
 });
+test('existing discovery closure persists proof and removes helper reservation without canonical writes',()=>{
+ const f=fixture('Director, Manufacturing');f.rows=[{PRIMARY_ID:'V2I-EXISTING',COMPANY:'Factory',TITLE:'Director, Manufacturing',LOCATION:'Austin, TX',p:{SOURCE_URL:'https://www.linkedin.com/jobs/view/4481234567/'}}];
+ const lock=p.join(f.root,'lock.json'),prior=process.env.FORGE_PRODUCTION_LOCK;require('../automation-run-lock.cjs').lock(lock,'acquire',f.runId);process.env.FORGE_PRODUCTION_LOCK=lock;
+ try{const before=JSON.stringify(f.rows),out=P.prepare({...f,apply:true});a.equal(out.counts.EXISTING_CANONICAL,1);a.equal(JSON.stringify(f.rows),before);
+ const read=name=>JSON.parse(fs.readFileSync(p.join(f.root,name))),state=read('state/CLAUDE_HELPER_CONSUMPTION.json'),queue=read('state/EMAIL_RECOVERY_QUEUE.json'),work=read('control/CLAUDE_HELPER_WORK.json'),proof=read('receipts/'+f.runId+'_SCREEN.json');
+ a.equal(state.items[0].status,'VERIFIED_EXISTING');a.equal(queue.jobs[f.key].status,'VERIFIED_EXISTING');a.equal(work.intake.length,0);a.equal(work.released[0].reason,'VERIFIED_EXISTING');a.equal(proof.existingClosures[0].primaryId,'V2I-EXISTING');a.equal(proof.writerSubmissions,0);a.equal(proof.existingClosures[0].writeCompletionClaimed,false);
+ }finally{if(prior===undefined)delete process.env.FORGE_PRODUCTION_LOCK;else process.env.FORGE_PRODUCTION_LOCK=prior;}
+});
+test('duplicate canonical roles and original queue submissions are not closed as existing',()=>{
+ const f=fixture('Director, Manufacturing'),row={PRIMARY_ID:'V2I-ONE',COMPANY:'Factory',TITLE:'Director, Manufacturing',LOCATION:'Austin, TX',p:{SOURCE_URL:'https://www.linkedin.com/jobs/view/4481234567/'}};f.rows=[row,{...row,PRIMARY_ID:'V2I-TWO'}];a.equal(P.prepare(f).counts.EXISTING_CANONICAL,undefined);
+ f.rows=[row];const queue=JSON.parse(fs.readFileSync(p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json')));queue.jobs[f.key].submissions=[{requestId:'ORIGINAL'}];queue.jobs[f.key].evidence=[];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
+});
+test('a compatible canonical row with unresolved location cannot fall through to READY',()=>{const f=fixture('Director, Manufacturing');f.rows=[{PRIMARY_ID:'V2I-UNKNOWN',COMPANY:'Factory',TITLE:'Director, Manufacturing',LOCATION:'UNKNOWN',p:{}}];const out=P.prepare(f);a.equal(out.counts.HOLD_SOURCE_IDENTITY,1);a.equal(out.counts.READY,undefined);});
+test('unresolved auto-intake and saved drain fences survive existing discovery across workflow boundaries',()=>{
+ for(const source of ['auto','drain','prior']){const f=fixture('Director, Manufacturing');f.rows=[{PRIMARY_ID:'V2I-ONE',COMPANY:'Factory',TITLE:'Director, Manufacturing',LOCATION:'Austin, TX',p:{}}];
+  if(source==='auto'){fs.mkdirSync(p.join(f.root,'receipts/auto-intake'));f.save('receipts/auto-intake/ORIGINAL.json',{requestIds:['ORIGINAL-AUTO'],results:{'ORIGINAL-AUTO':{status:'POST_IN_FLIGHT_UNKNOWN',source:{COMPANY:'Factory Group',TITLE:'Director, Manufacturing',LOCATION:'Austin, TX',SOURCE_URL:'https://other.example/job'}}}});}
+  if(source==='drain')f.save('state/INTAKE_DRAIN.json',{items:{[f.key]:{key:f.key,aliases:[f.key],card:{company:'Factory',title:'Director, Manufacturing'},fence:{requestIds:['ORIGINAL-DRAIN'],proof:'original'}}}});
+  if(source==='prior')f.save('state/RELEVANCE_INTAKE_PLAN.json',{items:[{key:f.key,status:'ORIGINAL_WRITER_FENCE',requestId:'ORIGINAL-PLAN'}]});
+  const result=P.prepare(f);a.equal(result.counts.ORIGINAL_WRITER_FENCE,1,source);a.equal(result.counts.EXISTING_CANONICAL,undefined);a.match(result.items[0].requestId,/ORIGINAL/);a.equal(JSON.parse(fs.readFileSync(p.join(f.root,'control/CLAUDE_HELPER_WORK.json'))).intake.length,1);
+ }
+});
+test('same-title cross-workflow fence at another clear worksite does not hold a distinct role',()=>{
+ const f=fixture('Director, Manufacturing');fs.mkdirSync(p.join(f.root,'receipts/auto-intake'));f.save('receipts/auto-intake/ORIGINAL.json',{requestIds:['ORIGINAL-OTHER-SITE'],results:{'ORIGINAL-OTHER-SITE':{status:'POST_IN_FLIGHT_UNKNOWN',source:{COMPANY:'Factory',TITLE:'Director, Manufacturing',LOCATION:'La Porte, IN',SOURCE_URL:'https://other.example/job'}}}});
+ a.equal(P.prepare(f).counts.READY,1);const original=JSON.parse(fs.readFileSync(p.join(f.root,'receipts/auto-intake/ORIGINAL.json')));a.equal(original.results['ORIGINAL-OTHER-SITE'].status,'POST_IN_FLIGHT_UNKNOWN');
+ original.results['ORIGINAL-OTHER-SITE'].source.LOCATION='UNKNOWN';f.save('receipts/auto-intake/ORIGINAL.json',original);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
+});
+test('READY Writer record retains uppercase and aliased worksite scope without arbitrary fields or new request identity',()=>{
+ const f=fixture('Director, Manufacturing'),queue=JSON.parse(fs.readFileSync(p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'))),job=queue.jobs[f.key];
+ Object.assign(job,{REMOTE_HYBRID:'HYBRID',workArrangement:'ONSITE',OPERATING_SCOPE:'MULTI_SITE',OPERATING_SCOPE_EVIDENCE:'Oversees plants across states',REQ_ID:'SOURCE-REQ',COMPANY_SOURCE_URL:'https://ats.example.com/1',BUCKET:'APPLIED',UNSUPPORTED:'ignored'});f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);
+ const record=P.prepare(f).items[0].record;a.equal(record.REMOTE_HYBRID,'HYBRID');a.equal(record.OPERATING_SCOPE,'MULTI_SITE');a.equal(record.OPERATING_SCOPE_EVIDENCE,'Oversees plants across states');a.equal(record.COMPANY_SOURCE_URL,'https://ats.example.com/1');a.equal(record.REQUISITION_ID,undefined);a.equal(record.REQ_ID,undefined);a.equal(record.BUCKET,undefined);a.equal(record.UNSUPPORTED,undefined);
+ const requestId=require('../source-intake/production-executor').requestId;a.equal(requestId(record),requestId({COMPANY:job.company,TITLE:job.title,LOCATION:job.location,SOURCE_URL:job.url}));
+ delete job.REMOTE_HYBRID;delete job.OPERATING_SCOPE;delete job.OPERATING_SCOPE_EVIDENCE;job.workArrangement='REMOTE';job.operatingScope='REGIONAL';job.scopeEvidence='Across facilities';f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);const aliases=P.prepare(f).items[0].record;a.equal(aliases.REMOTE_HYBRID,'REMOTE');a.equal(aliases.OPERATING_SCOPE,'REGIONAL');a.equal(aliases.OPERATING_SCOPE_EVIDENCE,'Across facilities');
+});
 function atsContext(){const profile={schema:'forge.resume-match-profile.v1',source:{fileId:'synthetic-resume',modifiedAt:'2026-01-01T00:00:00Z',textSha256:'a'.repeat(64)},competencies:[{id:'robotics',terms:['robotics'],resumeEvidenceSha256:'b'.repeat(64)}]};return{profile,documents:{resumes:[{id:profile.source.fileId,modifiedTime:profile.source.modifiedAt}]}};}
 const unrelatedRole='The role develops editorial calendars and publishes articles for readers. Responsibilities include proofreading manuscripts, coordinating authors, and maintaining the publication schedule. The successful applicant writes clear prose, checks spelling and grammar, and communicates with subscribers about upcoming issues. This position reports to the publisher and works with freelance authors on weekly editions.';
 test('preparation excludes current ATS zero without terminal disposition and rechecks on context changes',()=>{

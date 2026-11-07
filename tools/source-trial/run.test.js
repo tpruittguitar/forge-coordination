@@ -110,3 +110,13 @@ test('source-only collection does not probe employer boards or alter board healt
   const roles=JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json'))).new_roles;assert.equal(roles.length,1,'source results still publish');assert.equal(roles[0].pay,'');assert.equal(roles[0].postedPay.period,null);assert.equal(roles[0].postedPay.currency,null);assert.equal(roles[0].postedPay.low,180125);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });
+test('all-existing discovery skips analysis context and detail/Writer calls entirely', {skip:!fs.existsSync(path.join(FC,'apps-script/PipelineWorklists.gs'))},()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'existing-source-only-')),out=path.join(dir,'out'),log=path.join(dir,'fetch.log');
+ try{
+  fs.writeFileSync(path.join(dir,'master.txt'),row(1,'V2I-00000000000A','Acme','Plant Manager','Dayton, OH','SOURCE_URL=https://example.com/jobs/1')+'\n');
+  fs.writeFileSync(path.join(dir,'archive.txt'),'V2_TERMINAL_ARCHIVE\n');fs.writeFileSync(path.join(dir,'priority.txt'),'');
+  fs.writeFileSync(path.join(dir,'jobspy.json'),JSON.stringify({jobs:[{site:'linkedin',company:'Acme',title:'Plant Manager',location:'Dayton, OH',job_url:'https://example.com/jobs/1',description:'Lead manufacturing and production.'}]}));
+  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,TRIAL_FC_DIR:FC,TRIAL_MASTER_FILE:path.join(dir,'master.txt'),TRIAL_ARCHIVE_FILE:path.join(dir,'archive.txt'),TRIAL_PRIORITY_FILE:path.join(dir,'priority.txt'),TRIAL_JOBSPY_FILE:path.join(dir,'jobspy.json'),TRIAL_HIRINGCAFE_FILE:path.join(dir,'absent.json'),TRIAL_OUT_DIR:out,TRIAL_SKIP_BOARDS:'1',TRIAL_FAST:'1',TRIAL_FETCH_LOG:log},stdio:'pipe',timeout:10000});
+  assert.equal(fs.existsSync(log)?fs.readFileSync(log,'utf8').trim():'','');const report=JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json')));assert.equal(report.new_roles.length,0);assert.equal(report.existing_roles.length,1);assert.equal(report.existing_roles[0].discoveryDisposition.status,'EXISTING_NO_WRITE');assert.equal(report.existing_roles[0].discoveryReview,undefined);
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+});
