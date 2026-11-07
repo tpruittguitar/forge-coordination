@@ -1,0 +1,116 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-6FFD9AF3B6ED",
+  "sourceVersion": "88f4ebfa56eb0cb8e6606df00b2a8292b3d1c3184cb9ad9abde62e04c9a4988b",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T104114705Z-a2e58f",
+  "observedAt": "2026-11-07T10:41:14.705Z",
+  "instructionCommit": "7ca8b5c9c4d446266e5b27817badac9c54f71a99",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T10:17:20.188Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13453484,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-6FFD9AF3B6ED",
+        "status": "PRESENT",
+        "primaryId": "V2I-6FFD9AF3B6ED",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-6FFD9AF3B6ED",
+            "bucket": "SCOUT_INTAKE",
+            "location": "Mesa, AZ",
+            "hash": "cf1e9e8cc674ba146ffca8860ef14441a69051068dd125532700c8f2436190d1"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4480990792",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+      "sha256": "2e633624b0e23664a4c801833b59bcfca5a8e69d6e6066aaf483d9290025f4c7",
+      "effects": [
+        {
+          "key": "linkedin:4480990792",
+          "queueKey": "linkedin:4480990792",
+          "status": "VERIFIED_INSERTED",
+          "primaryId": "V2I-6FFD9AF3B6ED"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "linkedin:4480990792",
+          "primaryId": "V2I-6FFD9AF3B6ED",
+          "result": "SCOUT_INTAKE_WRITTEN",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": true
+          },
+          "independentReceipt": "COMPLETE",
+          "rowSha256": "94f87964d4f8f86df8f3f3fd9f25a5fda616e7ace086d385cf14ee5f939af316"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "1b9f7be7990423d81ce2ba456d2ab2bafd0e52748ddb2e50ac9e1e86b4c25182",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-6FFD9AF3B6ED",
+      "status": "PRESENT",
+      "primaryId": "V2I-6FFD9AF3B6ED",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-6FFD9AF3B6ED",
+          "bucket": "SCOUT_INTAKE",
+          "location": "Mesa, AZ",
+          "hash": "cf1e9e8cc674ba146ffca8860ef14441a69051068dd125532700c8f2436190d1"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261101210739345-133ced"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T10:18:25.711Z",
+    "indexSha256": "ef988baf2cbbdb8a2b1f237a9641355eedd6fa3d60898c9a17c4ea94fe6554e4"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}
