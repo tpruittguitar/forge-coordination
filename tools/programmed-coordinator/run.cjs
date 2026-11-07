@@ -33,7 +33,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
         evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'CODE' : 'AI'); continue;
     }
     const enrichment = /ENRICHMENT/.test(item.taskKey);
-    let row, expected;
+    let row, expected, initiatingUrl;
     if (enrichment) {
       const rows = snapshot.rows.filter(r => r.PRIMARY_ID === evidence.primaryId);
       if (rows.length !== 1) { exception(state,item,'EXACT_LIVE_IDENTITY_REQUIRED','AI'); continue; }
@@ -49,7 +49,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       for (const page of work.pages || []) { const match=S.read(root,page.path).items.find(i => i.key === evidence.key); if (match) {card=match.sourceEvidence || match;break;} }
       if (!card) { exception(state,item,'ORIGINAL_ASSIGNMENT_CARD_REQUIRED','CODE'); continue; }
       try{card=require('../routine-handoffs/source-card.cjs').recover(root,evidence.key,card);}catch{exception(state,item,'CONFLICTING_ORIGINAL_SOURCE_CARDS','AI');continue;}
-      expected={company:card.company,title:card.title,location:card.location};
+      expected={company:card.company,title:card.title,location:card.location};initiatingUrl=card.url;
       const hits=snapshot.rows.concat(snapshot.archiveRows).filter(r => T.same(r,expected));
       if (hits.length === 1) { item.status='EXISTING_CANONICAL'; item.primaryId=hits[0].PRIMARY_ID; delete state.exceptions[item.key]; continue; }
       if (hits.length > 1) { exception(state,item,'CONFLICTING_CANONICAL_IDENTITIES','AI'); continue; }
@@ -64,7 +64,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
         item.prepared={primaryId:row.PRIMARY_ID,itemKey:item.key,identity:expected,fields,sourceSha256:source.sourceSha256};
         item.status='READY_ENRICHMENT';
       } else {
-        item.sourceEvidence={...expected,url:source.sourceUrl,observedAt:source.observedAt,sourceSha256:source.sourceSha256,independentlyVerified:true};
+        item.sourceEvidence={...expected,url:source.sourceUrl,initiatingUrl,observedAt:source.observedAt,sourceSha256:source.sourceSha256,independentlyVerified:true,...(typeof source.description==='string'&&source.description?{description:source.description,descriptionSha256:S.hash(source.description),contentBasis:'CAPTURED_ROLE_CONTENT'}:{})};
         item.status='SOURCE_VERIFIED';
       }
       delete item.retryAfter; delete state.exceptions[item.key];
@@ -157,14 +157,16 @@ async function main(mode='inventory') {
       const discoveryScreenContext=await require('../source-trial/preliminary-screen').context({key});
       const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply,screenContext:discoveryScreenContext});
       if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
-      const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply});
+      const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
       state.routineHandoffs={transport:routine,assignments,mail};
       if(apply)state.routineHandoffs.sourceReviews=require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state});
       await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
       if(apply) {
         S.save(root,STATE,state);
         state.routineHandoffs.verifiedIntake=require('../routine-handoffs/intake-state.cjs').seedVerified(root,state,true);
-        const env={...process.env,FORGE_RUN_ID:runId};
+        const screenContextFile=path.join(privateDir,'discovery-screen-context.json');
+        fs.writeFileSync(screenContextFile,JSON.stringify({runId,context:discoveryScreenContext})+'\n',{mode:0o600});
+        const env={...process.env,FORGE_RUN_ID:runId,FORGE_DISCOVERY_SCREEN_CONTEXT:screenContextFile};
         const pendingIds=[...new Set(S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items.filter(i=>i.status==='POST_IN_FLIGHT_UNKNOWN').map(i=>i.requestId))];
         let intakePending=false;
         for(const id of pendingIds) {

@@ -11,13 +11,14 @@ function annualBase(text){
 function capture(root,card,{observedAt,proof,fullPosting=false}={}){
  const text=Source.text(card.description||''),url=card.url||card.SOURCE_URL,ids=identity(card);
  if(!/^state\/(?:source-trial-report|board-discovery-report)\.json(?:@[a-f0-9]{40})?$/.test(proof||'')||(!text&&!card.postedPay)||text.length>500000||!ids[0]||!ids[1]||!/^https:\/\//.test(url||'')||!Number.isFinite(Date.parse(observedAt))||!proof)return null;
- const complete=fullPosting&&text.length>=300&&!/captcha|sign in to view|verify you are human/i.test(text);
+ const contentBasis=card.contentBasis||card.discoveryReview?.contentBasis||'CAPTURED_ROLE_CONTENT';
+ const complete=fullPosting&&contentBasis==='CAPTURED_ROLE_CONTENT'&&card.discoveryReview?.fullPosting!==false&&text.length>=300&&!/captcha|sign in to view|verify you are human/i.test(text);
  const derived=complete?annualBase(text):null,p=card.postedPay||PostedPay.capture(card,{observedAt});
  const compatible=!p||PostedPay.bound(p,card)&&p.status==='POSTED'&&(p.currency==null||p.currency==='USD')&&(p.period==null||Pay.annualUnit(p.period))&&(p.basis==null||p.basis==='BASE')&&(p.low==null||p.low===derived?.low)&&(p.high==null||p.high===derived?.high);
  const payFacts=PostedPay.eligible({...card,postedPay:p})||(derived&&compatible?Pay.fact(derived,'EXPLICIT_ANNUAL_BASE_TEXT'):null);
  let postedPay=PostedPay.capture({...card,postedPay:p,...(!p&&payFacts?{payFacts,salaryText:derived?.quote||card.salaryText||card.pay||''}: {})},{observedAt});
  if(postedPay&&payFacts&&!PostedPay.eligible(card))postedPay={...postedPay,low:payFacts.low,high:payFacts.high,currency:payFacts.currency,period:payFacts.period,basis:payFacts.basis};
- const doc={postedPay,payFacts,schema:'forge.discovery-evidence.v1',company:card.company||card.COMPANY,title:card.title||card.TITLE,location:card.location||card.LOCATION||'',url,identity:ids,text,textSha256:hash(text),fullPosting:!!complete,facts:{degree:complete?L.degreeFromText(text):null,pay:payFacts||null,payAmbiguous:complete&&!annualBase(text)&&/\$\s*\d|USD\s*\d/i.test(text)},canonicalWrites:0};
+ const doc={postedPay,payFacts,schema:'forge.discovery-evidence.v1',company:card.company||card.COMPANY,title:card.title||card.TITLE,location:card.location||card.LOCATION||'',url,identity:ids,contentBasis:card.discoveryReview?.fullPosting===false?'INCOMPLETE_ROLE_CONTENT':contentBasis,text,textSha256:hash(text),fullPosting:!!complete,facts:{degree:complete?L.degreeFromText(text):null,pay:payFacts||null,payAmbiguous:complete&&!annualBase(text)&&/\$\s*\d|USD\s*\d/i.test(text)},canonicalWrites:0};
  const sha=hash(doc),file='state/discovery-evidence/'+sha+'.json',full=path.join(root,file);fs.mkdirSync(path.dirname(full),{recursive:true});
  if(!fs.existsSync(full))fs.writeFileSync(full,JSON.stringify(doc)+'\n',{flag:'wx'});
  else if(hash(JSON.parse(fs.readFileSync(full)))!==sha)throw Error('DISCOVERY_EVIDENCE_CHANGED');

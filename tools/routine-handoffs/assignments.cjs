@@ -16,7 +16,7 @@ function progress({root,state}){
  }
  return result;
 }
-function replenish({root,state,snapshot,runId,apply=false,now=Date.now()}){
+function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenContext}){
  if(!Number.isFinite(Date.parse(snapshot?.source?.readAt))||now-Date.parse(snapshot.source.readAt)>900000||Date.parse(snapshot.source.readAt)>now+120000)throw Error('FRESH_CANONICAL_ASSIGNMENT_SNAPSHOT_REQUIRED');
  const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),legacy=S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}),code=S.read(root,'state/CODE_INTAKE_CONSUMPTION.json',{schema:'forge.code-intake-consumption.v1',items:[]});
  const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot);
@@ -27,7 +27,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now()}){
  const canonical=[...snapshot.rows,...snapshot.archiveRows],rules=Screen.guarded(Screen.load(),canonical),knownCode=new Set([...legacy.items,...code.items].map(i=>i.key));
  const identity=x=>[Source.norm(x.company||x.COMPANY),Source.norm(x.title||x.TITLE),Source.location(x.location||x.LOCATION)].join('|'),byIdentity=new Map(),byUrl=new Map(),urlKey=require('../pipeline-observability/upstream-flow').key;
  for(const row of canonical){const k=identity(row),list=byIdentity.get(k)||[];list.push(row);byIdentity.set(k,list);for(const key of new Set((String(row.p?.SOURCE_URL||'').match(/https:\/\/[^ ;|]+/g)||[]).map(urlKey).filter(Boolean))){const rows=byUrl.get(key)||[];rows.push(row);byUrl.set(key,rows);}}
- const newIntake=[],newRelevance=[],exceptions=[],canonicalMatches=[],counts={seededCodeIntake:0,canonical:0,fenced:0,alreadyAssigned:0};
+ const newIntake=[],newRelevance=[],exceptions=[],canonicalMatches=[],discoveryExclusions=[],counts={seededCodeIntake:0,canonical:0,fenced:0,alreadyAssigned:0,discoveryExcluded:0};
  for(const j of Object.values(queue.jobs).sort((a,b)=>String(a.observedAt||'').localeCompare(String(b.observedAt||''))||a.key.localeCompare(b.key))){
   if(terminal(j.status))continue;
   if(fenced(j)){counts.fenced++;continue;}
@@ -36,6 +36,10 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now()}){
   if(exact.length===1&&matches.includes(exact[0])){counts.canonical++;canonicalMatches.push({key:j.key,primaryId:exact[0].PRIMARY_ID,rowSha256:S.hash(exact[0].line||exact[0])});continue;}
   if(matches.length||exact.length){exceptions.push({key:j.key,owner:'AI',reason:'CANONICAL_NEAR_MATCH_REQUIRES_IDENTITY'});continue;}
   if(owners.has(j.key)){counts.alreadyAssigned++;continue;}
+  // Recompute against actual saved role content, never cached decisions or selected quotes.
+  if(screenContext){const preliminaryScreen=require('../source-trial/preliminary-screen').screen(j,screenContext);
+   if(require('../source-trial/preliminary-screen').excluded(preliminaryScreen)){counts.discoveryExcluded++;discoveryExclusions.push({key:j.key,sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key,preliminaryScreen});continue;}
+  }
   const screen=Screen.evaluate(j,rules),prepared=fullCard(j);
   if(prepared&&!knownCode.has(j.key)){
    const evidence=j.evidence.find(e=>e.cardHash&&e.paragraphs?.length>=3);
@@ -73,7 +77,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now()}){
    enrich.items.push({primaryId:r.id,owner:enrich.provider||'Grok',taskKey:enrich.taskKey||'FORGE_GROK_ENRICHMENT',status:'ASSIGNED',...T.identity(row),missingFields:missing,sourceUrls:(r.attempts||[]).map(x=>x.url).filter(Boolean),priorAttempts:r.attempts||[],canonicalObservedAt:snapshot.source.readAt,rowSha256:S.hash(row.line||row),sourceReport:'state/enrich-ats-pay-recovery.json'});oldIds.add(r.id);
   }
  }
- const result={schema:'forge.assignment-replenishment.v1',runId,canonicalSource:snapshot.source,counts,appended,exceptions,canonicalMatches,writerSubmissions:0,noProcessingCap:true};
+ const result={schema:'forge.assignment-replenishment.v1',runId,canonicalSource:snapshot.source,counts,appended,exceptions,canonicalMatches,discoveryExclusions,writerSubmissions:0,noProcessingCap:true};
  if(apply){
   S.immutable(root,'receipts/'+runId+'_HANDOFFS.json',result);
   for(const match of canonicalMatches)require('../email-recovery/ledger.cjs').disposition(queue,match.key,'VERIFIED_EXISTING',{...match,at:snapshot.source.readAt,proof:'receipts/'+runId+'_HANDOFFS.json',exactRowVerified:true,reason:'Unique exact source URL and role identity in fresh canonical master/archive; no canonical mutation'});
