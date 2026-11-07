@@ -34,6 +34,7 @@ function adapt(report,{runId='FORGE-SOURCE-TRIAL-DRYRUN',discoveredAt=new Date()
   if(/\bmemphis\b/i.test(j.location||''))flags.push('MEMPHIS_STRONG_NEGATIVE');
   if(industry==='NEVER_CONSIDER_REVIEW')flags.push('EMPLOYER_CORE_BUSINESS_UNVERIFIED');
   const record={COMPANY:j.company||'',TITLE:j.title||'',LOCATION:j.location||'',SOURCE_URL:j.url||'',SOURCE_PROVIDER:j.source||'Source Trial',REQ_ID:id,DISCOVERED_AT_ET:at,DISCOVERY_SOURCE:'GitHub source-trial',IDENTITY_CONFIDENCE:id?'HIGH':'UNKNOWN',INITIAL_UNKNOWN_FIELDS:['PAY','DEGREE','FLEX','LIVE_WRITER_DEDUPE','POSTING_LIVENESS','EMPLOYER_PRIMARY_BUSINESS'],SCOUT_NOTES:'PREVIEW_ONLY; TARGET_PRIORITY='+tier+'; '+flags.join('; ')};
+  Object.assign(record,require('../source-trial/posted-pay').fields(j));if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=record.INITIAL_UNKNOWN_FIELDS.filter(k=>k!=='PAY');
   return {index:i+1,verdict,industry,tier,flags,record,trial_status:j.status||'UNKNOWN'};
  });
  const counts={input:rows.length,writer_submission_count:0};for(const j of rows)counts[j.verdict]=(counts[j.verdict]||0)+1;

@@ -11,7 +11,7 @@
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
 const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
 const P = require('../enrich-ats-pay/lib.js'), T = require('./lib.js');
-const H = require('./board-health');
+const H = require('./board-health'), PostedPay=require('./posted-pay');
 const ROOT = path.resolve(__dirname, '../..');
 const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/';
@@ -102,7 +102,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
-  const addFound = item => { const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
+  const addFound = item => { item.postedPay=PostedPay.capture(item,{observedAt:at}); const key = T.identityKey(item.company,item.title,item.location); const prior = discovered.get(key); if (prior) { if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } discovered.set(key,item); found.push(item); return true; };
   let consumed = 0;const attempted=new Set();
   for (const b of order) {
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
@@ -118,7 +118,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           const company = [...b.companies][0];
           if (!staffEligible(company, x.title)) return;
           st.matches++;
-          addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, description: x.description || '', detailUrl: x.detail || '', pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
+          addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, description: x.description || '', detailUrl: x.detail || '', payFacts:x.payFacts||null,salaryText:x.salaryText||'', pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });
     });
     // Persist each completed board check before moving on. A later crash cannot erase failed-source obligations.
     fs.mkdirSync(OUT,{recursive:true});const healthTmp=healthFile+'.tmp',healthFd=fs.openSync(healthTmp,'w');
@@ -147,8 +147,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const fam = T.family(x.title), place = T.usPlace(x.location); if (!fam || !place || !staffEligible(x.company, x.title)) return;
       s.matches++;
       const status = T.novelty(idx, x.company, x.title, x.job_url_direct || x.job_url, x.location); if (status === 'NEW') s.new++; if (status === 'EXISTING_PROTECTED') s.protected++;
-      const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || 'yearly') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, pay, status, description: x.description || '', posted: x.date_posted || '' });
+      const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
+      addFound({ source: 'JOBSPY:' + site, company: x.company || '', tier: '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url_direct || x.job_url, ...{min_amount:x.min_amount,max_amount:x.max_amount,interval:x.interval,currency:x.currency,salary_source:x.salary_source,is_estimated:x.is_estimated,salaryText:x.salaryText}, pay, status, description: x.description || '', posted: x.date_posted || '' });
     });
   }
 
@@ -163,7 +163,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       hc.matches++;
       const status = T.novelty(idx, x.company, x.title, x.job_url, x.location);
       const pay = x.min_amount && x.max_amount && /year/i.test(x.interval || '') ? `$${Math.round(x.min_amount / 1000)}K-$${Math.round(x.max_amount / 1000)}K` : '';
-      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, pay, status, description: x.description || '', posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
+      const item = { source: 'HIRINGCAFE', company: x.company || '', tier: activePriority.get(P.normCo(x.company)) || '', title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.job_url, ...{min_amount:x.min_amount,max_amount:x.max_amount,interval:x.interval,currency:x.currency,salary_source:x.salary_source,is_estimated:x.is_estimated,salaryText:x.salaryText}, pay, status, description: x.description || '', posted: x.date_posted || '', hiringcafe_id: x.hiringcafe_id || '' };
       if (addFound(item)) { hc.unique++; return; }
       const prior = discovered.get(T.identityKey(item.company, item.title, item.location)), from = String(prior.source).split(':')[0];
       hc.overlap[from] = (hc.overlap[from] || 0) + 1;

@@ -19,7 +19,7 @@ function build(rows,{asOf=new Date().toISOString(),context={}}={}){
   for(const [identity,rs]of g.identities){
    const candidates=[];for(const r of rs){const p=r.p||{},a=L.postedAnchor(r,p),source=sourceUrl(p);
     if(p.SALARY_BASIS==='EMPLOYER_POSTED')rawPosted++;
-    const uncertain=/unconfirmed|not (?:yet )?(?:re-)?verified|not confirmed|binding.{0,15}(?:unclear|unknown)|identity.{0,15}(?:unclear|unknown)/i.test([p.SALARY_SOURCE,p.SALARY_NOTE,p.SALARY_BASIS].join(' '));
+    const uncertain=/unconfirmed|not (?:yet )?verified|not confirmed|binding.{0,15}(?:unclear|unknown)|identity.{0,15}(?:unclear|unknown)/i.test([p.SALARY_SOURCE,p.SALARY_NOTE,p.SALARY_BASIS].join(' '));
     if(a&&source&&!uncertain&&Number.isFinite(Date.parse(a.asOf))&&Date.parse(a.asOf)<=Date.parse(asOf)+86400000&&a.high<=2000000)candidates.push({primaryId:r.PRIMARY_ID,title:r.TITLE,location:r.LOCATION,state:L.stateFrom(r.LOCATION),level:L.level(r.TITLE),function:L.func(r.TITLE),low:a.low,high:a.high,asOf:a.asOf,sourceUrl:source,store:r.store||'UNSPECIFIED',basis:'EMPLOYER_POSTED',evidenceStatus:'SAVED_CANONICAL_DISCLOSURE_NOT_FRESH_PAGE_CHECK'});
     else if(/POSTED|MIRROR|EMPLOYER/i.test(p.SALARY_BASIS||'')&&!/ESTIMAT/i.test(p.SALARY_BASIS||'')){needsReview++;ambiguous++;}
    }

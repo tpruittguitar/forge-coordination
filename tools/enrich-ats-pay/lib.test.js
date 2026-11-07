@@ -136,3 +136,8 @@ test('REV-138: same-employer source, board parsing, BLS series and cross-check',
 });
 
 test('aggregator recovery uses saved direct evidence when the original source is a tracking URL',()=>{const a=L.aggregatorFor({SOURCE_URL:'https://www.ziprecruiter.com/km/tracking',LIVENESS_EVIDENCE_URL:'https://www.linkedin.com/jobs/view/4485233648/'});assert.equal(a.kind,'linkedin');assert.equal(a.id,'4485233648');assert.equal(L.aggregatorFor({SOURCE_URL:'https://email.lensa.com/opaque'}),null);});
+test('board discovery preserves strict payFacts rather than dropping currency, period and basis',()=>{
+ for(const [kind,j] of [['lever',[{text:'Director Quality',categories:{location:'Austin, TX'},salaryRange:{currency:'USD',interval:'year',min:150000,max:200000}}]],['greenhouse',{jobs:[{title:'Director Quality',location:{name:'Austin, TX'},content:'Annual base salary USD $150,000-$200,000.'}]}],['ashby',{jobs:[{id:'x',title:'Director Quality',location:'Austin, TX',descriptionPlain:'Annual base salary USD $150,000-$200,000.'}]}]]){
+ const x=L.parseBoard({kind},j)[0];assert.equal(x.payFacts.currency,'USD');assert.equal(x.payFacts.period,'YEAR');assert.equal(x.payFacts.basis,'BASE');assert.equal(x.pay.low,x.payFacts.low);
+ }
+});
