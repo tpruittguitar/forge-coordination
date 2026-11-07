@@ -1,0 +1,87 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:94ca62b91bf5d0caaa1f8cff",
+  "sourceVersion": "328b9897465722e3e70e0411575e408f3f5c3a4e7a4c56fdd1a0b1f78dcc7c0d",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T114322889Z-23384a",
+  "observedAt": "2026-11-07T11:43:22.889Z",
+  "instructionCommit": "ea3e728179d6300cae63f6f8de66d389ad2656dc",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher does not establish unique compatible presence (AMBIGUOUS). Preserve the identity hold and protected decisions; do not force a match.",
+  "nextAction": "Resolve exact original source/employer/title/site/requisition conflicts using saved evidence and authorized read-only recovery; preserve all existing identities and original requests.",
+  "retryCondition": "New exact employer posting/requisition/site proof or candidate-specific controlled reconciliation resolves the identity ambiguity; retry denied source only after access changes.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T11:40:38.995Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13458449,
+      "archiveBytes": 1141212,
+      "masterRows": 4974,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "url:94ca62b91bf5d0caaa1f8cff",
+        "status": "AMBIGUOUS",
+        "primaryId": null,
+        "basis": [
+          "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-21D2FCD3297D",
+            "company": "Hadrian Automation",
+            "title": "Quality Manager",
+            "bucket": "DECLINED_BY_TIM",
+            "location": "Los Angeles, CA",
+            "hash": "a230962574ca083fc6e78720ab007f363dd6c258b6412d7cfe5fc539c7dcceb9"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/board-discovery-report.json",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "state/board-discovery-report.json",
+      "sha256": "971acb4bb3189cd2b4333ed14897b56a44e00a4316d502bea9cb53516c9dad40",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "031c0afbb3f546201cdc681744e6eeb79e784930c1df9c8e3becd7016f8d9268",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    }
+  ],
+  "evidence": {
+    "classification": "IDENTITY_HELD",
+    "canonicalMatch": {
+      "key": "url:94ca62b91bf5d0caaa1f8cff",
+      "status": "AMBIGUOUS",
+      "primaryId": null,
+      "basis": [
+        "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-21D2FCD3297D",
+          "company": "Hadrian Automation",
+          "title": "Quality Manager",
+          "bucket": "DECLINED_BY_TIM",
+          "location": "Los Angeles, CA",
+          "hash": "a230962574ca083fc6e78720ab007f363dd6c258b6412d7cfe5fc539c7dcceb9"
+        }
+      ]
+    },
+    "originalRequests": [],
+    "indexUpdatedAt": "2026-11-07T11:41:24.338Z",
+    "indexSha256": "9334ac50ee82554d9dd669b2a2619e7a8eb9e90ad389a71c805ad61c21f60f63"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}

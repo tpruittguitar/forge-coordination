@@ -1,0 +1,111 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-C69993152058",
+  "sourceVersion": "469e711148e0fded2d40e2933f5364c98b0b8063046fe792eb6976b6ec7e290c",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T114332451Z-5d18f2",
+  "observedAt": "2026-11-07T11:43:32.451Z",
+  "instructionCommit": "ea3e728179d6300cae63f6f8de66d389ad2656dc",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T11:40:38.995Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13458449,
+      "archiveBytes": 1141212,
+      "masterRows": 4974,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-C69993152058",
+        "status": "PRESENT",
+        "primaryId": "V2I-C69993152058",
+        "basis": [
+          "POSTING_URL",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-C69993152058",
+            "company": "NOVO Health Services",
+            "title": "Plant Manager",
+            "bucket": "SCOUT_INTAKE",
+            "location": "Skokie, IL, USA",
+            "hash": "2b0b7bcc85ed281197b2d83e727f3f04d29f9d8ace4e844743aa2b4e82bab8c9"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4469357523",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-SOURCE-06BDB608024ACEA6846AC6FD_VERIFIED.json",
+      "result": "No readable matching saved verification file; original obligation retained."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "031c0afbb3f546201cdc681744e6eeb79e784930c1df9c8e3becd7016f8d9268",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261103T022152Z.json",
+      "sha256": "12ad7cc861ac745abb0d20358358d9ab0591d9953c75d7a7cfd0da0b966cd85d",
+      "requestId": "FORGE-SOURCE-06BDB608024ACEA6846AC6FD",
+      "writeId": "W-20261103023442529-6b7088",
+      "newPrimaryIds": [
+        "V2I-C69993152058"
+      ],
+      "completionStatus": "PENDING_VERIFICATION",
+      "result": "Saved original response read; independent receipt index consulted separately. No replay."
+    },
+    {
+      "source": "https://github.com/tpruittguitar/forge-coordination/actions/runs/42364979658",
+      "result": "Decoded completed job 128381032045 at 2026-11-07T10:44:58.3722562Z reports FORGE-SOURCE-06BDB608024ACEA6846AC6FD COMPLETE_CAPTURED_ID_ROW_MATCH. This fallback independently reads COMPLETE receipt, request_result, and matching captured-ID row. It is weaker than COMPLETE_AND_EXACT_ROW_MATCH. Workflow summary push failed; job-log evidence is retained here. No new write or controlled queue completion claimed."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-C69993152058",
+      "status": "PRESENT",
+      "primaryId": "V2I-C69993152058",
+      "basis": [
+        "POSTING_URL",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-C69993152058",
+          "company": "NOVO Health Services",
+          "title": "Plant Manager",
+          "bucket": "SCOUT_INTAKE",
+          "location": "Skokie, IL, USA",
+          "hash": "2b0b7bcc85ed281197b2d83e727f3f04d29f9d8ace4e844743aa2b4e82bab8c9"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-SOURCE-06BDB608024ACEA6846AC6FD",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261103023442529-6b7088"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T11:41:24.338Z",
+    "indexSha256": "9334ac50ee82554d9dd669b2a2619e7a8eb9e90ad389a71c805ad61c21f60f63"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}
