@@ -40,3 +40,43 @@ test('all currently published waiting-card key families are transportable',()=>{
  assert.ok(keys.length>0);
  for(let offset=0;offset<keys.length;offset+=100)assert.doesNotThrow(()=>D.normalize({...request,items:keys.slice(offset,offset+100).map(key=>({key}))}));
 });
+test('new dismissal scope removes exact unresolved and protected discovery cards without changing legacy requests',t=>{
+ const U=require('../pipeline-observability/upstream-flow'),Q=require('../intake-drain/queue.cjs');
+ for(const sample of [{key:'unresolved:'+'b'.repeat(24),status:'IDENTITY_HOLD'}, {key:'indeed:860163fdd4b3ab44',status:'HELD',evidenceStatus:'EXISTING_PROTECTED'}]){
+  const e={...entry,...sample,sources:[]},key=e.key,r={...request,scope:'DISCOVERY_CARD_DISMISSAL',items:[{key}]};r.receiptId=D.hash(D.normalize(r));
+  const dir=root(t),context={ledger:{entries:{[key]:e}},rows:[],snapshotReader:()=>new Map([[key,D.card(e)]])};
+  const p=D.prepare(dir,[r],context),up=U.build({records:[],rows:[],prior:{entries:{[key]:e},groups:{[key]:{status:e.status,aliases:[key]}}},manualContext:p});
+  D.publish(dir,p,up);assert.equal(up.ledger.entries[key].status,'EXCLUDED');assert.equal(up.summary.waiting,0);assert.equal(up.summary.reconciliation.excluded,1);
+  const receipt=JSON.parse(fs.readFileSync(path.join(dir,'receipts/manual-backlog',r.receiptId+'.json')));assert.equal(receipt.items[0].status,'APPLIED');assert.equal(receipt.items[0].reason,'USER_DISMISSED_DISCOVERY_CARD_HISTORY_RETAINED');
+  fs.writeFileSync(path.join(dir,'state/UPSTREAM_LEDGER.json'),JSON.stringify(up.ledger));assert.ok(D.dismissedKeys(dir).has(key));
+  fs.writeFileSync(path.join(dir,'state/INTAKE_DRAIN.json'),JSON.stringify({schema:'forge.intake-drain.v1',items:{[key]:{key,aliases:[key],status:'ACTION_REQUIRED',action:'INTAKE'}}}));
+  assert.equal(Q.sync(dir,{apply:true}).items[key].status,'ACCOUNTED_UPSTREAM');assert.equal(Q.seeds(dir).length,0);assert.equal(Q.approved(dir).roles.length,0);assert.equal(Q.sync(dir).actions.INTAKE,undefined);assert.equal(Q.next(dir,Q.TASKS.RESOLVE_IDENTITY).items.length,0);
+  const again=U.build({records:[],rows:[],prior:up.ledger,manualContext:{...p,decisions:new Map()}});assert.equal(again.ledger.entries[key].status,'EXCLUDED');
+  const changed={...e,title:'Different role'};assert.equal(D.approved(changed,p),null);
+  const legacy={...r};delete legacy.scope;legacy.receiptId=D.hash(D.normalize(legacy));assert.equal(D.prepare(dir,[legacy],context).decisions.size,0);
+ }
+});
+test('dismissal scope never conceals active Writer uncertainty or canonical presence',t=>{
+ const U=require('../pipeline-observability/upstream-flow'),key='indeed:860163fdd4b3ab44',r={...request,scope:'DISCOVERY_CARD_DISMISSAL',items:[{key}]};r.receiptId=D.hash(D.normalize(r));
+ const e={...entry,key,status:'HELD',evidenceStatus:'EXISTING_PROTECTED'},dir=root(t),options={ledger:{entries:{[key]:e}},rows:[],snapshotReader:()=>new Map([[key,D.card(e)]])};
+ for(const evidenceStatus of ['POST_IN_FLIGHT_UNKNOWN','SUBMITTED','HELD_WRITER_REVIEW','VERIFIED_INSERTED','HELD_INHERITED_NO_REPLAY'])assert.equal(D.prepare(dir,[r],{...options,ledger:{entries:{[key]:{...e,evidenceStatus}}}}).receipts[0].items[0].reason,'ACTIVE_WRITER_RECONCILIATION_REQUIRED');
+ fs.writeFileSync(path.join(dir,'state/INTAKE_DRAIN.json'),JSON.stringify({items:{[key]:{key,aliases:[key],fence:{requestIds:['original']},action:'RECONCILE_WRITER'}}}));assert.equal(D.prepare(dir,[r],options).decisions.size,0);
+ fs.writeFileSync(path.join(dir,'state/INTAKE_DRAIN.json'),JSON.stringify({items:{}}));const p=D.prepare(dir,[r],options);
+ const up=U.build({records:[],rows:[{PRIMARY_ID:'V2I-1',COMPANY:e.company,TITLE:e.title,LOCATION:e.location,p:{}}],prior:{entries:{[key]:e}},manualContext:p});assert.equal(up.ledger.entries[key].status,'PRESENT');D.publish(dir,p,up);assert.equal(p.receipts[0].items[0].status,'HELD');
+ const fenced={...p,fences:new Map([[key,{requestIds:['later']}]]),decisions:new Map()};const prior={...e,status:'EXCLUDED',manualDecision:p.decisions.get(key)};assert.equal(D.approved(prior,fenced),null);
+});
+test('scope normalization preserves old hashes and explicitly binds new dismissal semantics',()=>{
+ assert.deepEqual(Object.keys(D.normalize(request)),['schema','requestId','snapshotRevision','decision','items']);
+ assert.deepEqual(Object.keys(D.normalize({...request,scope:'DISCOVERY_CARD_DISMISSAL'})),['schema','requestId','snapshotRevision','decision','scope','items']);
+ assert.notEqual(D.hash(D.normalize(request)),D.hash(D.normalize({...request,scope:'DISCOVERY_CARD_DISMISSAL'})));
+ assert.throws(()=>D.normalize({...request,scope:'DELETE_CANONICAL'}),/INVALID_MANUAL_SCOPE/);
+});
+test('intake selection does not pursue rediscovered dismissed keys',()=>{
+ const {pick}=require('../source-intake/auto-run'),U=require('../pipeline-observability/upstream-flow');
+ const role={company:'Example',title:'Plant Manager',location:'Boston, MA',url:'https://example.com/jobs/123',level:'DIRECTOR_PLUS'};
+ const options={max:10,sent:new Set(),dismissedKeys:new Set([U.key(role.url)])};assert.deepEqual(pick({new_roles:[role]},options),[]);
+});
+test('observer advertises scoped dismissal only with its upgraded waiting queue implementation',()=>{
+ const Q=require('../pipeline-observability/waiting-queues');const result=Q.build({states:{},queues:{enrichment:0,readyForReview:0}},{summary:{reconciled:true,waiting:0},ledger:{groups:{},entries:{}}},new Date().toISOString());
+ assert.deepEqual(result.index.manualDecisions,{version:1,maxBatch:100,scopes:['DISCOVERY_CARD_DISMISSAL']});
+});

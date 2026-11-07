@@ -32,9 +32,10 @@ const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map(),screenContext}){
+function pick(report,{max,sent,blockedIdentities=new Set(),config=Relevance.load(),reviewed=new Map(),screenContext,dismissedKeys=new Set()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
+  if(dismissedKeys.has(Upstream.key(r.url)))continue;
   if(screenContext&&require('../source-trial/preliminary-screen').screen(r,screenContext).decision==='EXCLUDE_NEVER_CONSIDER')continue;
   if(out.length>=max)break;
   const proof=reviewed.get(Upstream.key(r.url));
@@ -126,7 +127,7 @@ async function main(argv=process.argv.slice(2)){
  const helperWork=HelperRouting.load(),deferred=report.new_roles.filter(r=>HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));report.new_roles=report.new_roles.filter(r=>!HelperRouting.intakeOwner(Upstream.key(r.url),helperWork));if(deferred.length)console.log(JSON.stringify({claudeHelperReserved:deferred.length,assignmentId:helperWork.assignmentId}));
  const live=await read('master',{key}),config=Relevance.guarded(Relevance.load(),require('./writer-reader').parseMaster(live.data.text));
  const discoveryEvidence=require('../source-trial/evidence-store').index('.');
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,config,reviewed:reviewed.proofs,screenContext,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const cached=discoveryEvidence.find(r),business=cached?.doc.text||await evidence(r.url,r.company);
