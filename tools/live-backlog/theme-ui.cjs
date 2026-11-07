@@ -25,14 +25,17 @@ const contrast=(a,b)=>{const L=v=>rgb(v).map(c=>c/255).map(c=>c<=.04045?c/12.92:
   const style=selector=>page.locator(selector).first().evaluate(e=>{const s=getComputedStyle(e);return {color:s.color,background:s.backgroundColor,outline:s.outlineColor,outlineWidth:s.outlineWidth,border:s.borderColor,scheme:s.colorScheme,opacity:s.opacity};});
   assert.equal((await style('body')).background,'rgb(17, 17, 17)');
   assert.equal((await style('html')).scheme,'dark');
-  for(const selector of ['#search','#statusFilter','#refresh','#notice','.subtle','.salary-basis','.ats-basis','.hold-basis','.source-key','.repeat-warning','a']){
+  for(const selector of ['#search','#statusFilter','#refresh','#notice','.subtle','.salary-basis','.ats-basis','.hold-basis','.source-key']){
    const s=await style(selector);assert.equal(new Set(rgb(s.color)).size,1,selector+' text is neutral');
    const bg=s.background==='rgba(0, 0, 0, 0)'?'rgb(25, 25, 25)':s.background;
    assert.ok(contrast(s.color,bg)>=4.5,selector+' text contrast');
   }
+  for(const [selector,color] of [['a','rgb(190, 212, 245)'],['.repeat-warning','rgb(207, 189, 232)']]){assert.equal((await style(selector)).color,color);assert.ok(contrast(color,'rgb(64, 64, 64)')>=4.5);}
   await page.locator('#rows input').first().check();
+  assert.equal((await style('#delete')).color,'rgb(243, 182, 192)');
+  assert.equal(await page.locator('#rows input').first().evaluate(e=>getComputedStyle(e).accentColor),'rgb(190, 212, 245)');
   await page.locator('#rows tr').first().hover();assert.equal((await style('#rows tr td')).background,'rgb(64, 64, 64)');
-  await page.locator('#search').focus();assert.equal((await style('#search')).outlineWidth,'3px');
+  await page.locator('#search').focus();assert.equal((await style('#search')).outlineWidth,'3px');assert.equal((await style('#search')).outline,'rgb(190, 212, 245)');
   await page.locator('.salary-details summary').click();await page.locator('.ats-details summary').click();
   await page.locator('#search').fill('no matches');assert.match(await page.locator('#counts').textContent(),/1 selected/);
   await page.locator('#search').fill('');await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);
@@ -51,8 +54,14 @@ const contrast=(a,b)=>{const L=v=>rgb(v).map(c=>c/255).map(c=>c<=.04045?c/12.92:
   await page.locator('#atsFilter').selectOption('');fail=true;await page.locator('#refresh').click();await page.waitForFunction(()=>document.querySelector('#notice').dataset.tone==='error');
   assert.match(await page.locator('#notice').evaluate(e=>getComputedStyle(e,'::before').content),/Error:/);
   assert.ok(contrast((await style('#notice')).color,(await style('#notice')).background)>=4.5);
+  assert.equal((await style('#notice')).background,'rgb(42, 32, 35)');
+  assert.equal(await page.locator('#notice').evaluate(e=>getComputedStyle(e,'::before').color),'rgb(243, 182, 192)');
+  await page.locator('#notice').evaluate(e=>{e.dataset.tone='success';e.textContent='Synthetic confirmed result for color verification only.';});
+  assert.equal((await style('#notice')).background,'rgb(30, 40, 35)');
+  assert.equal(await page.locator('#notice').evaluate(e=>getComputedStyle(e,'::before').color),'rgb(173, 214, 198)');
+  assert.ok(contrast((await style('#notice')).color,(await style('#notice')).background)>=4.5);
   await page.setViewportSize({width:650,height:900});assert.equal(await page.locator('#refresh').isVisible(),true);
   assert.equal(await page.locator('#grid').evaluate(e=>e.scrollWidth>e.clientWidth),true);
-  assert.equal(posts,0);console.log('PASS dark theme: neutral palette, contrast, native controls, selected hover, focus, evidence, retained selection, repeated cancel/Escape, invalid filter, error and narrow viewport; zero POSTs.');
+  assert.equal(posts,0);console.log('PASS dark theme: neutral surfaces, restrained semantic accents, contrast, native controls, selected hover, focus, evidence, retained selection, repeated cancel/Escape, invalid filter, error and narrow viewport; zero POSTs.');
  }finally{await browser?.close();await new Promise(r=>server.close(r));}
 })().catch(e=>{console.error(e);process.exitCode=1;});

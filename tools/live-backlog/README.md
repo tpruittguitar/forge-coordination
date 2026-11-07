@@ -20,7 +20,7 @@ Open the loopback URL printed in the terminal on that same computer. It binds on
 
 ## Appearance
 
-The worksheet uses a neutral black/grey dark theme, including native inputs, evidence, selected rows and confirmation dialogs. Selection remains visible on hover. Keyboard focus has a high-contrast outline; errors, warnings and destructive actions retain text and border cues rather than depending on color. The theme changes presentation only, with no data, selection or mutation behavior changes.
+The worksheet keeps black/grey backgrounds, rows and evidence. Restrained accents highlight links, keyboard focus and selection edges in muted blue, errors and enabled destructive controls in rose, confirmed success in mint, and repeat-review warnings in lavender. No orange is used. Selection remains visible on hover; errors, warnings and destructive actions retain text and border cues rather than depending on color. The theme changes presentation only, with no data, selection or mutation behavior changes.
 
 ## Use
 
