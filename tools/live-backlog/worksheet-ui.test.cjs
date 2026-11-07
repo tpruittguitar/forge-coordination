@@ -5,17 +5,20 @@ const fs = require('node:fs');
 const http = require('node:http');
 const {annotate}=require('./occurrences.cjs');
 const {display:atsDisplay}=require('./ats-hits.cjs');
+const {display:salaryDisplay,savedIndex}=require('./salary.cjs');
+const {key:sourceKey}=require('../pipeline-observability/upstream-flow');
 const Resume=require('../source-trial/resume-match');
 const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
 (async () => {
   let items = Array.from({length: 6540}, (_, i) => ({key: `k${i}`, company: `Company ${i}`, title: i===6539 ? 'Unique distant job' : 'Engineer', location: 'Remote', status: 'ready', sourceUrl: 'https://example.com/job', firstSeen: '2026-11-06'}));
+  let salaryIndex=new Map();
   let deleted = [], revision = 'rev1', posts = [], uncertain = false, disconnectOnce = false, receiptPending = false;
   const receipts = new Map(), applications = [];
   const server = http.createServer(async (req, res) => {
     if (req.url === '/') {res.setHeader('content-type','text/html');return res.end(fs.readFileSync(__dirname+'/worksheet.html','utf8').replace('__SESSION_TOKEN__','test-session'));}
     res.setHeader('content-type','application/json');
     if(req.headers['x-worksheet-session']!=='test-session'){res.statusCode=403;return res.end(JSON.stringify({error:'Session header required'}));}
-    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items:annotate(items).map(item=>({...item,...atsDisplay(item)})),count:items.length,at:'now'}));
+    if(req.url==='/api/snapshot') return res.end(JSON.stringify({revision,items:annotate(items).map(item=>({...item,...atsDisplay(item),...salaryDisplay(item,salaryIndex)})),count:items.length,at:'now'}));
     if(req.url.startsWith('/api/receipt')) {const id=new URL(req.url,'http://localhost').searchParams.get('requestId');return res.end(JSON.stringify(receiptPending?{ok:false,status:'unknown'}:receipts.get(id)?.result||{ok:false,status:'unknown'}));}
     let body='';for await(const chunk of req)body+=chunk;const data=JSON.parse(body);posts.push({path:req.url,data,token:req.headers['x-worksheet-session']});
     // Transport may replay a POST after a dropped connection. A committed request
@@ -117,6 +120,22 @@ const { chromium } = require(process.env.PLAYWRIGHT_MODULE || 'playwright');
     await page.locator('#atsFilter').selectOption('range');await page.locator('#atsValue').fill('1');await page.locator('#atsMax').fill('5');await countIs(120);
     if(process.env.WORKSHEET_SCREENSHOT)await page.screenshot({path:process.env.WORKSHEET_SCREENSHOT,fullPage:true});
     assert.equal(posts.length,filterPosts);assert.equal(applications.length,filterApplications);assert.equal(items.length,240);
+    // Salary fixtures stay on this isolated mock source. No production reads or edits.
+    const salaryRow={company:'Salary Fixture',title:'Saved report range',location:'TX',url:'https://jobs.example.test/123',pay:'$150K-$200K',source:'JOBSPY:indeed'};
+    const salaryRef={path:'state/discovery-evidence/'+'a'.repeat(64)+'.json',sha256:'a'.repeat(64)};
+    salaryIndex=savedIndex(()=>JSON.stringify({summary:{at:'2026-11-07T01:00:00Z'},new_roles:[salaryRow]}));
+    items=[{...salaryRow,key:sourceKey(salaryRow.url)},{key:'hourly',company:'Salary Fixture',title:'Hourly CAD',location:'TX',evidenceRefs:[salaryRef],discoveredFacts:{pay:{low:75.25,high:99.5,currency:'CAD',period:'HOUR',quote:'<img src=x onerror="window.salaryInjected=true">'},sourceRef:salaryRef.path,observedAt:'2026-11-07T01:00:00Z',fullPosting:true}},{key:'salary-missing',company:'Salary Fixture',title:'Missing salary',location:'TX'},{key:'salary-ambiguous',company:'Salary Fixture',title:'Ambiguous salary',location:'TX',discoveredFacts:{payAmbiguous:true}}];
+    revision='salary-fixture';await page.locator('#atsFilter').selectOption('');await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);
+    const salaryCells=()=>page.locator('#rows td').filter({has:page.locator('.salary-range')});
+    assert.equal(await salaryCells().count(),4);assert.match(await page.locator('#rows tr').filter({hasText:'Saved report range'}).textContent(),/\$150K-\$200K/);assert.match(await page.locator('#rows tr').filter({hasText:'Saved report range'}).textContent(),/Currency: not recorded · Period: not recorded/);
+    assert.match(await page.locator('#rows tr').filter({hasText:'Hourly CAD'}).textContent(),/CAD 75.25–99.5 \/ hour/);assert.match(await page.locator('#rows tr').filter({hasText:'Ambiguous salary'}).textContent(),/—Ambiguous saved pay/);
+    await page.locator('#rows tr').filter({hasText:'Hourly CAD'}).locator('.salary-details summary').click();assert.equal(await page.locator('#rows img').count(),0);assert.equal(await page.evaluate(()=>window.salaryInjected),undefined);
+    await page.locator('[data-sort=salaryRange]').click();assert.equal(await salaryCells().last().locator('.salary-range').textContent(),'—');await page.locator('[data-sort=salaryRange]').click();assert.equal(await salaryCells().last().locator('.salary-range').textContent(),'—');
+    await page.locator('#search').fill('$150K');assert.equal(await page.locator('#rows tr').count(),1);await page.locator('#search').fill('CAD');assert.equal(await page.locator('#rows tr').count(),1);await page.locator('#search').fill('');await page.locator('#selectFiltered').click();await page.locator('#copy').click();const salaryTSV=(await page.evaluate(()=>window.copied)).split('\n').map(line=>line.split('\t')),salaryHeaders=salaryTSV[0];
+    assert.equal(salaryTSV.find(r=>r.includes('Hourly CAD'))[salaryHeaders.indexOf('Salary currency')],'CAD');assert.equal(salaryTSV.find(r=>r.includes('Hourly CAD'))[salaryHeaders.indexOf('Salary period')],'hour');assert.equal(salaryTSV.find(r=>r.includes('Missing salary'))[salaryHeaders.indexOf('Salary range')],'');assert.ok(salaryHeaders.includes('Salary source'));assert.ok(salaryHeaders.includes('Salary observed at'));
+    await page.locator('#delete').click();await page.locator('#cancelDelete').click();await page.locator('#refresh').click();await page.waitForFunction(()=>!document.querySelector('#refresh').disabled);assert.equal(posts.length,filterPosts);assert.equal(applications.length,filterApplications);assert.equal(items.length,4);
+    if(process.env.WORKSHEET_SALARY_SCREENSHOT)await page.screenshot({path:process.env.WORKSHEET_SALARY_SCREENSHOT,fullPage:true});
+    console.log('PASS: saved salary ranges, explicit hourly CAD, missing currency/period warnings, unavailable/ambiguous values, provenance, safe text, salary sort/search, TSV, cancel and refresh without writes.');
     console.log('PASS: exact, minimum, maximum and inclusive range ATS filters, zero versus unavailable, compound filters, all pages, selection preservation, TSV, cancellation, invalid bounds, empty matches and refresh, without writes.');
     console.log('PASS: inline saved matched words, distinct competency counts, deduplication, zero/unavailable wording, explicit TSV words, shortened-excerpt caveat, ATS saved hit count, evidence, title-only, zero/unknown, numeric sorting with unknowns last, text-safe rendering, search, TSV, cancel and refresh without writes.');
     console.log('PASS: occurrence ordinal/total, numeric sort, stable filtered ranks, missing fields, source warnings, TSV, manual extras deletion retaining one, undo;  6,540 rows; full-dataset filtering; selection; range; keyboard; confirmation; delete; undo; uncertain outcome reconciliation without retry.');
