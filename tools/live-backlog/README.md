@@ -23,7 +23,7 @@ Open the loopback URL printed in the terminal on that same computer. It binds on
 - Delete selected rows only after the dialog confirms the exact count.
 - Wait for a committed remote revision. A queued request is never presented as a deletion.
 - Undo the last committed deletion in the same tab. Receipts retain recovery data under `receipts/live-backlog/` for older deletions.
-- Refresh after another process changes the source. Changed revisions clear selection. Stale edits are rejected rather than silently applied.
+- Refresh after another process changes the source. Changed revisions clear selection. Unrelated background commits are tolerated; a selected card whose identity changed is rejected rather than silently edited.
 - For an uncertain connection result, use Check pending request. The same mutation is never automatically replayed.
 
 Deletion removes discovery cards from the active backlog immediately in the source commit. The main app sees the updated snapshot on refresh. Full history is retained, and existing canonical jobs or applications are never erased, changed, or cancelled. An outstanding canonical action is not cancelled by removing its discovery card. The original source-observation timestamps remain visible; a worksheet edit does not claim that background work ran.
@@ -32,7 +32,7 @@ A durable tombstone on each selected source identity prevents later discovery co
 
 ## Atomicity and safety
 
-Each edit fetches main, verifies the displayed revision and all page hashes, regenerates the cards from the authoritative ledger, and checks summary consistency. A temporary Git index creates one commit; the local branch/worktree are never checked out, reset, staged, or rewritten. A normal non-force push rejects concurrent updates. Remote receipt readback is required before success is shown. Ambiguous writes keep the request ID available for reconciliation.
+Each edit fetches main, verifies the displayed card identities and all page hashes, regenerates the cards from the authoritative ledger, and checks summary consistency. A process-specific fetch ref avoids interference with other Git operations. A temporary Git index creates one commit; the local branch/worktree are never checked out, reset, staged, or rewritten. A normal non-force push rejects concurrent updates. Remote receipt readback is required before success is shown. Ambiguous writes keep the request ID available for reconciliation. If the browser repeats a disconnected request, the same request ID returns its existing committed receipt instead of applying another edit.
 
 The HTTP server checks loopback Host, a per-run session header, exact Origin on writes, JSON content type, payload size, and a single edit lock. It serves no remote assets and does not enable cross-origin access. Only this fixed Forge repository and main branch can be written by the CLI. A different remote is injectable only by unit tests.
 
