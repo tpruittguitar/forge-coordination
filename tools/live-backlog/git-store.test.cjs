@@ -41,3 +41,12 @@ test('snapshot batches reviews at the fetched revision and retains source-bound 
  a.deepEqual(snap.holdIndex,expected);a.equal(snap.holdIndex.get(key).holdReason,review.reason);a.deepEqual(reads,[{rev:revision,files:[reviewPath]}]);
  store.fresh=()=>newer;const changed=store.snapshot();a.match(changed.holdIndex.get(key).holdReviewAvailability,/does not match/);a.notEqual(changed.holdIndex.get(key).holdReason,'Tampered newer content');a.equal(f.git(['status','--porcelain']).trim(),'');
 });
+test('receipt lookup batches all receipts at exactly the fetched revision',t=>{
+ const f=fixture(t),first={requestId:'12345678-1234-4123-8123-123456789abc',receiptId:'a'.repeat(64),items:[]};
+ for(let n=0;n<70;n++)f.write('receipts/live-backlog/'+String(n).padStart(3,'0')+'.json',JSON.stringify(n===0?first:{requestId:'other-'+n,items:[]}));
+ const revision=f.commit();f.write('receipts/live-backlog/000.json',JSON.stringify({...first,requestId:'newer'}));f.commit();
+ const store=new GitStore({root:f.root}),calls=[],git=store.git.bind(store);store.fresh=()=>revision;
+ store.git=(args,...rest)=>{calls.push(args);return git(args,...rest);};
+ a.equal(store.receipt(first.requestId).receiptId,first.receiptId);
+ a.deepEqual(calls,[['ls-tree','-r','--name-only',revision,'receipts/live-backlog'],['cat-file','--batch']]);
+});
