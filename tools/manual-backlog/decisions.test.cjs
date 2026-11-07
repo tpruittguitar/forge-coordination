@@ -52,6 +52,10 @@ test('new dismissal scope removes exact unresolved and protected discovery cards
   fs.writeFileSync(path.join(dir,'state/INTAKE_DRAIN.json'),JSON.stringify({schema:'forge.intake-drain.v1',items:{[key]:{key,aliases:[key],status:'ACTION_REQUIRED',action:'INTAKE'}}}));
   assert.equal(Q.sync(dir,{apply:true}).items[key].status,'ACCOUNTED_UPSTREAM');assert.equal(Q.seeds(dir).length,0);assert.equal(Q.approved(dir).roles.length,0);assert.equal(Q.sync(dir).actions.INTAKE,undefined);assert.equal(Q.next(dir,Q.TASKS.RESOLVE_IDENTITY).items.length,0);
   const again=U.build({records:[],rows:[],prior:up.ledger,manualContext:{...p,decisions:new Map()}});assert.equal(again.ledger.entries[key].status,'EXCLUDED');
+  fs.writeFileSync(path.join(dir,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{[key]:{key,status:'POST_IN_FLIGHT_UNKNOWN',submissions:[{requestId:'late-writer'}]}}}));
+  const fencedItem=Q.sync(dir).items[key];assert.equal(fencedItem.status,'ACTION_REQUIRED');assert.equal(fencedItem.action,'RECONCILE_WRITER');
+  fs.writeFileSync(path.join(dir,'state/INTAKE_DRAIN.json'),JSON.stringify({schema:'forge.intake-drain.v1',items:{}}));assert.equal(Q.sync(dir).items[key].action,'RECONCILE_WRITER');
+  fs.unlinkSync(path.join(dir,'state/EMAIL_RECOVERY_QUEUE.json'));
   const changed={...e,title:'Different role'};assert.equal(D.approved(changed,p),null);
   const legacy={...r};delete legacy.scope;legacy.receiptId=D.hash(D.normalize(legacy));assert.equal(D.prepare(dir,[legacy],context).decisions.size,0);
  }

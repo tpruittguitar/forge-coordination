@@ -39,7 +39,8 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
  const fences=writerFences(root);
  for(const [key,g] of Object.entries(up.groups)){
-  if(!pending.has(g.status)&&!old.items[key])continue;
+  const dismissedFence=(g.aliases||[key]).some(k=>fences.has(k)&&up.entries[k]?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL');
+  if(!pending.has(g.status)&&!old.items[key]&&!dismissedFence)continue;
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
   const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean);
@@ -52,6 +53,8 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   const previous=old.items[key],unchanged=previous?.sourceVersion===sourceVersion;
   const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:'Read saved role content, then one targeted lookup for actual function and responsibility',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
+  // A Writer attempt discovered after dismissal still needs independent reconciliation.
+  if(fence&&es.some(e=>e.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
   old.items[key]=item;
  }
  // Missing inventory is an error, never an invented completion.
