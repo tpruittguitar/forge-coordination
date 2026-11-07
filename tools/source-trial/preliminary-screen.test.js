@@ -109,3 +109,41 @@ test('incomplete source report content stays unknown after evidence-store rollov
  const r=U.candidate({...gateCard,source:'BOARD:greenhouse',contentBasis:'CAPTURED_CARD_EXCERPT'},new Date(now).toISOString(),'state/board-discovery-report.json');const first=U.build({records:[r],rows:[],now,root,screenContext:ctx});a.equal(first.summary.waiting,1);
  const after=U.build({records:[],rows:[],prior:first.ledger,now:now+60000,root,screenContext:ctx});a.equal(after.summary.waiting,1);a.equal(after.ledger.entries[r.key].preliminaryScreen.atsGate.hits,null);a.equal(after.ledger.entries[r.key].discoveredFacts.fullPosting,false);
 });
+
+const metadataNow=Date.parse('2026-11-07T09:00:00Z');
+const metadata=patch=>({schema:'forge.profile-resume-metadata.v1',status:'VERIFIED',source:'DIRECT_FILE_METADATA',id:profile.source.fileId,modifiedTime:profile.source.modifiedAt,checkedAt:new Date(metadataNow).toISOString(),...patch});
+const olderResumes=[{id:'older-resume-fixture',modifiedTime:'2026-09-01T00:00:00Z'}];
+test('same documents read requests metadata for the grounded profile, not a folder substitution',async()=>{
+ const calls=[];const c=await P.context({profile,key:'fixture',reader:async(action,options)=>{calls.push({action,options});return{data:action==='rules'?{rules}:{resumes:olderResumes,profileResume:metadata()}};}});
+ a.equal(calls.length,2);a.deepEqual(calls.find(x=>x.action==='documents').options,{key:'fixture',profileResumeId:profile.source.fileId});a.deepEqual(calls.find(x=>x.action==='rules').options,{key:'fixture'});
+ a.equal(P.screen(gateCard,{...c,now:metadataNow}).atsGate.status,'EXCLUDE');
+ calls.length=0;await P.context({profile:null,reader:async(action,options)=>{calls.push({action,options});return{data:{}};}});a.equal(calls.some(x=>Object.hasOwn(x.options,'profileResumeId')),false);
+});
+test('fresh exact metadata permits an out-of-folder profile without changing the inventory or profile',()=>{
+ const documents={resumes:olderResumes,profileResume:metadata()},before=JSON.stringify({profile,documents});
+ const zero=P.screen(gateCard,{...ctx,documents,now:metadataNow});a.equal(zero.atsGate.status,'EXCLUDE');a.equal(zero.atsGate.hits,0);a.equal(zero.ats.resumeVersion,profile.source.modifiedAt);
+ a.equal(P.screen({...gateCard,description:unrelated+' PPAP'},{...ctx,documents,now:metadataNow}).atsGate.status,'PASS');
+ a.equal(P.screen({...gateCard,description:''},{...ctx,documents,now:metadataNow}).atsGate.hits,null);
+ a.equal(P.screen(gateCard,{...ctx,documents,now:metadataNow+15*60000}).atsGate.status,'EXCLUDE');a.equal(JSON.stringify({profile,documents}),before);
+});
+test('missing, wrong, unavailable or expired exact metadata stays unknown; folder copies cannot mask failure',()=>{
+ const bad=[undefined,null,{},metadata({schema:'other'}),metadata({status:'UNKNOWN'}),metadata({status:'UNAVAILABLE'}),metadata({source:'SAVED_NOTE'}),metadata({id:'different-resume'}),metadata({modifiedTime:'invalid'}),metadata({checkedAt:'invalid'}),metadata({checkedAt:new Date(metadataNow-15*60000-1).toISOString()}),metadata({checkedAt:new Date(metadataNow+120001).toISOString()})];
+ for(const proof of bad)for(const resumes of [olderResumes,ctx.documents.resumes]){
+  const s=P.screen(gateCard,{...ctx,documents:{resumes,profileResume:proof},now:metadataNow});a.equal(s.atsGate.status,'UNKNOWN');a.equal(s.atsGate.hits,null);a.equal(s.decision,'PROGRESS_TO_INTAKE');
+ }
+ for(const resumes of [undefined,null,{},[{id:'malformed',modifiedTime:'invalid'}]])a.equal(P.screen(gateCard,{...ctx,documents:{resumes,profileResume:metadata()},now:metadataNow}).atsGate.status,'UNKNOWN');
+ a.equal(P.screen(gateCard,{...ctx,documents:{resumes:olderResumes},now:metadataNow}).atsGate.status,'UNKNOWN','older Writer must not manufacture a current-profile confirmation');
+ a.equal(P.screen(gateCard,{...ctx,now:metadataNow}).atsGate.status,'EXCLUDE','legacy exact inventory confirmation remains valid');
+});
+test('fresh direct metadata cannot override newer inventory or a changed selected file',()=>{
+ for(const documents of [{resumes:[...olderResumes,{id:'newer-resume',modifiedTime:'2026-11-01T00:00:00Z'}],profileResume:metadata()},{resumes:olderResumes,profileResume:metadata({modifiedTime:'2026-10-14T00:00:00Z'})},{resumes:ctx.documents.resumes,profileResume:metadata({modifiedTime:'2026-10-12T00:00:00Z'})}]){
+  const s=P.screen(gateCard,{...ctx,documents,now:metadataNow});a.equal(s.ats.status,'RESUME_UPDATE_REQUIRED');a.equal(s.atsGate.status,'UNKNOWN');a.equal(s.atsGate.hits,null);
+ }
+});
+test('non-string metadata, profile and inventory timestamps fail closed without coercion or exceptions',()=>{
+ for(const invalid of [[profile.source.modifiedAt],{toString:null},[],null,0,true]){
+  for(const field of ['modifiedTime','checkedAt'])a.equal(P.screen(gateCard,{...ctx,documents:{resumes:olderResumes,profileResume:metadata({[field]:invalid})},now:metadataNow}).atsGate.status,'UNKNOWN');
+  a.equal(P.screen(gateCard,{...ctx,documents:{resumes:[{id:'fixture',modifiedTime:invalid}],profileResume:metadata()},now:metadataNow}).atsGate.status,'UNKNOWN');
+  a.equal(P.screen(gateCard,{...ctx,profile:{...profile,source:{...profile.source,modifiedAt:invalid}},now:metadataNow}).ats.status,'RESUME_UNAVAILABLE');
+ }
+});

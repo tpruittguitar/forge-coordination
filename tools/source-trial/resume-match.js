@@ -2,7 +2,7 @@
 const fs=require('node:fs'),path=require('node:path');
 const nonempty=s=>typeof s==='string'&&!!s.trim(),sha=s=>typeof s==='string'&&/^[a-f0-9]{64}$/.test(s);
 function valid(p){
- return !!p&&p.schema==='forge.resume-match-profile.v1'&&sha(p.source?.textSha256)&&nonempty(p.source.fileId)&&Number.isFinite(Date.parse(p.source.modifiedAt))&&Array.isArray(p.competencies)&&p.competencies.length>0&&p.competencies.every(c=>c&&nonempty(c.id)&&Array.isArray(c.terms)&&c.terms.length>0&&c.terms.every(nonempty)&&sha(c.resumeEvidenceSha256))&&new Set(p.competencies.map(c=>c.id)).size===p.competencies.length;
+ return !!p&&p.schema==='forge.resume-match-profile.v1'&&sha(p.source?.textSha256)&&nonempty(p.source.fileId)&&nonempty(p.source.modifiedAt)&&Number.isFinite(Date.parse(p.source.modifiedAt))&&Array.isArray(p.competencies)&&p.competencies.length>0&&p.competencies.every(c=>c&&nonempty(c.id)&&Array.isArray(c.terms)&&c.terms.length>0&&c.terms.every(nonempty)&&sha(c.resumeEvidenceSha256))&&new Set(p.competencies.map(c=>c.id)).size===p.competencies.length;
 }
 function load(file=path.resolve(__dirname,'../../control/RESUME_MATCH_PROFILE.json')){
  const p=JSON.parse(fs.readFileSync(file));if(!valid(p))throw Error('GROUNDED_RESUME_PROFILE_REQUIRED');return p;

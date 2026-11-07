@@ -1,5 +1,12 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
+test('documents read carries one exact profile ID without exposing it to other actions or adding requests',async()=>{
+ const {read}=require('./writer-reader');let calls=0;
+ await read('documents',{key:'fixture',profileResumeId:'fixture-resume-2026',transport:async(url,options)=>{calls++;const u=new URL(url);assert.equal(options.method,'GET');assert.equal(u.searchParams.get('profileResumeId'),'fixture-resume-2026');return{ok:true,json:async()=>({ok:true,resumes:[]})};}});assert.equal(calls,1);
+ const transport=async()=>{throw Error('must not fetch');};
+ for(const profileResumeId of ['bad/id','x','has spaces in its identifier',{},'a'.repeat(161)])await assert.rejects(read('documents',{key:'fixture',profileResumeId,transport}),/exact profile resume ID/);
+ await assert.rejects(read('rules',{key:'fixture',profileResumeId:'fixture-resume-2026',transport}),/exact profile resume ID/);
+});
 const {plan}=require('./admission');
 const item=(company,title,location,url)=>({index:1,verdict:'CANDIDATE_REQUIRES_WRITER_CHECK',record:{COMPANY:company,TITLE:title,LOCATION:location,SOURCE_URL:url,REQ_ID:'',EMPLOYER_PRIMARY_BUSINESS:''}});
 test('fails closed without canonical snapshot and timestamp',()=>{
