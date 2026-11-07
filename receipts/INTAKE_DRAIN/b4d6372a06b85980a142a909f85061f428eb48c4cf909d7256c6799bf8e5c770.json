@@ -1,0 +1,125 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-05F615DE6A0B",
+  "sourceVersion": "d226003527e4a5c633dd9708962e81ab24af3d09d63e930c5702643842cc2017",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261107T104342629Z-69c620",
+  "observedAt": "2026-11-07T10:43:42.629Z",
+  "instructionCommit": "7ca8b5c9c4d446266e5b27817badac9c54f71a99",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher proves existing canonical identity. Return EXISTING_MATCH_CANDIDATE for coordinator discovery accounting; preserve canonical disposition. Original request remains independently fenced; saved results and fresh independent index observations are attached, without claiming new job completion.",
+  "nextAction": "Coordinator accounts fresh existing-match evidence separately from original-request reconciliation; preserve all canonical jobs and decisions. No replay.",
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation.",
+  "attempts": [
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterModifiedAt": "2026-11-07T10:17:20.188Z",
+      "archiveModifiedAt": "2026-10-21T06:56:08.252Z",
+      "masterBytes": 13453484,
+      "archiveBytes": 1141212,
+      "masterRows": 4971,
+      "archiveRows": 785,
+      "result": "Parsed complete snapshots once and applied shared job-identity.js; row hashes below are SHA256 of parsed identity rows.",
+      "match": {
+        "key": "pid:V2I-05F615DE6A0B",
+        "status": "PRESENT",
+        "primaryId": "V2I-05F615DE6A0B",
+        "basis": [
+          "POSTING_URL",
+          "ATS_POSTING",
+          "REQUISITION",
+          "CLAIMED_PRIMARY_ID"
+        ],
+        "rows": [
+          {
+            "primaryId": "V2I-05F615DE6A0B",
+            "bucket": "SCOUT_INTAKE",
+            "location": "North Kingstown, Rhode Island, USA",
+            "hash": "5b02130e214e32c190c60eaa9f9bb507db41711c6d945080b90f0b82d1342378"
+          }
+        ]
+      }
+    },
+    {
+      "source": "state/UPSTREAM_LEDGER.json#linkedin:4464756397",
+      "result": "Reused saved original source identity. No source fields overwritten."
+    },
+    {
+      "source": "receipts/FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B002_VERIFIED.json",
+      "sha256": "7c0d70ee66145de980d57983dc5c681192d44f9441f48765f9bfece8ec279ac6",
+      "effects": [
+        {
+          "key": "linkedin:4464756397",
+          "queueKey": "linkedin:4464756397",
+          "status": "VERIFIED_EXISTING",
+          "primaryId": "V2I-05F615DE6A0B"
+        }
+      ],
+      "proofs": [
+        {
+          "key": "linkedin:4464756397",
+          "primaryId": "V2I-05F615DE6A0B",
+          "result": "EXISTING_MATCH",
+          "matches": {
+            "company": true,
+            "title": true,
+            "location": true,
+            "source": false
+          },
+          "independentReceipt": "NO_MUTATION_TO_EXISTING_ROW",
+          "rowSha256": "d757da4c8869788a27df220eac88b3424f0aa2f2e7a4b0c9fc89649d8bedb396"
+        }
+      ],
+      "result": "Saved original transaction evidence retained; current presence does not independently clear its fence."
+    },
+    {
+      "source": "state/board-discovery-report.json",
+      "sha256": "971acb4bb3189cd2b4333ed14897b56a44e00a4316d502bea9cb53516c9dad40",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    },
+    {
+      "source": "state/source-trial-report.json",
+      "sha256": "1b9f7be7990423d81ce2ba456d2ab2bafd0e52748ddb2e50ac9e1e86b4c25182",
+      "result": "Reused saved source report identity against fresh canonical match; protected record and conflicting fields preserved. No additional source or resume research performed on a protected comparison."
+    }
+  ],
+  "evidence": {
+    "classification": "EXISTING_MATCH_CANDIDATE",
+    "canonicalMatch": {
+      "key": "pid:V2I-05F615DE6A0B",
+      "status": "PRESENT",
+      "primaryId": "V2I-05F615DE6A0B",
+      "basis": [
+        "POSTING_URL",
+        "ATS_POSTING",
+        "REQUISITION",
+        "CLAIMED_PRIMARY_ID"
+      ],
+      "rows": [
+        {
+          "primaryId": "V2I-05F615DE6A0B",
+          "bucket": "SCOUT_INTAKE",
+          "location": "North Kingstown, Rhode Island, USA",
+          "hash": "5b02130e214e32c190c60eaa9f9bb507db41711c6d945080b90f0b82d1342378"
+        }
+      ]
+    },
+    "originalRequests": [
+      {
+        "requestId": "FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B002",
+        "independentIndexEntry": {
+          "state": "COMPLETE",
+          "writeId": "W-20261101221501359-135685"
+        }
+      }
+    ],
+    "indexUpdatedAt": "2026-11-07T10:18:25.711Z",
+    "indexSha256": "ef988baf2cbbdb8a2b1f237a9641355eedd6fa3d60898c9a17c4ea94fe6554e4"
+  },
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0
+}
