@@ -16,6 +16,10 @@ node tools/live-backlog/server.cjs
 
 Open the loopback URL printed in the terminal on that same computer. It binds only to `127.0.0.1` on a random available port. Stop with Ctrl+C. The random session value is local, ephemeral CSRF protection, not a persistent service credential.
 
+## Appearance
+
+The worksheet uses a neutral black/grey dark theme, including native inputs, evidence, selected rows and confirmation dialogs. Selection remains visible on hover. Keyboard focus has a high-contrast outline; errors, warnings and destructive actions retain text and border cues rather than depending on color. The theme changes presentation only, with no data, selection or mutation behavior changes.
+
 ## Use
 
 - Search/filter and sort across every live row, not just the displayed 100-row page.
@@ -51,6 +55,7 @@ The Git tests use disposable local bare repositories only. HTTP handler tests re
 
 ```sh
 PLAYWRIGHT_MODULE=/path/to/playwright CHROMIUM_PATH=/path/to/chromium node tools/live-backlog/worksheet-ui.test.cjs
+PLAYWRIGHT_MODULE=/path/to/playwright CHROMIUM_PATH=/path/to/chromium node tools/live-backlog/theme-ui.cjs
 PLAYWRIGHT_MODULE=/path/to/playwright CHROMIUM_PATH=/path/to/chromium node tools/live-backlog/hold-reason-ui.cjs
 ```
 
