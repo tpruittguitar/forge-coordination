@@ -21,6 +21,7 @@ function recoverFormat(root,message,format,{screenContext}={}){
   if(!job.evidence.some(x=>x.cardHash===e.cardHash&&x.gmailId===message.id))job.evidence.push(e);
   // Keep card evidence distinct from a complete employer job description.
   job.description=job.description||description;
+  const postedPay=require('../source-trial/posted-pay').fromText(job,description,{observedAt:message.at,source:'EXACT_ORIGINAL_ALERT_CARD'});if(postedPay)job.postedPay=postedPay;
   job.selectionReason=job.selectionReason||'Exact saved '+card.provider+' alert card; state/EMAIL_RECOVERY_QUEUE.json#'+key;
   job.discoveryReview=job.discoveryReview||{sourceSha256:message.sourceSha256,sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+key,contentBasis:'EXACT_ORIGINAL_ALERT_CARD',fullPosting:false,provider:card.provider,pendingFacts:card.url?[]:['SOURCE_URL']};
   job.preliminaryScreen=require('../source-trial/preliminary-screen').screen({...job,description},screenContext);

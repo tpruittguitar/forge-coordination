@@ -37,6 +37,8 @@ test('REV-156 trial: boards + JobSpy, NEW vs EXISTING, read-only', { skip: !fs.e
   assert.strictEqual(s.boards.new, 2); assert.strictEqual(s.jobspy.new, 1); assert.strictEqual(s.jobspy.sites.linkedin.returned, 2);
   assert.deepStrictEqual(s.priority_boards_probed.map(p => [p.company, p.found]), [['Shield AI', 'lever:shieldai'], ['Path Robotics', null]]);
   assert.strictEqual(r.new_roles.find(x => x.company === 'Acme').pay, '$200K-$250K');
+  const posted=r.new_roles.find(x=>x.company==='Acme');assert.strictEqual(posted.payFacts.low,200000);assert.strictEqual(posted.postedPay.status,'POSTED');assert.strictEqual(posted.postedPay.currency,'USD');assert.match(posted.postedPay.text,/Annual base salary USD/);assert.strictEqual(posted.postedPay.sourceUrl,posted.url);
+  const jobspyPosted=r.new_roles.find(x=>x.company==='Initech');assert.strictEqual(jobspyPosted.postedPay.low,180000);assert.strictEqual(jobspyPosted.postedPay.currency,null);assert.strictEqual(jobspyPosted.postedPay.basis,null);
   assert.strictEqual(r.new_roles[0].tier !== '', true, 'priority companies listed first');
   assert.deepStrictEqual([s.hiringcafe.returned, s.hiringcafe.matches, s.hiringcafe.unique, s.hiringcafe.new], [4, 3, 1, 1]);
   assert.deepStrictEqual(s.hiringcafe.already_found_by, { JOBSPY: 2 }, 'overlap attributed to the source that found the role first');
@@ -99,12 +101,12 @@ test('source-only collection does not probe employer boards or alter board healt
   fs.writeFileSync(path.join(dir,'master.txt'),row(1,'V2I-00000000000A','Acme','Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111')+'\n');
   fs.writeFileSync(path.join(dir,'archive.txt'),'V2_TERMINAL_ARCHIVE\n');
   fs.writeFileSync(path.join(dir,'priority.txt'),'P1 (x): 1\n- Unknown Industrial | careers: UNKNOWN | Dayton\n');
-  fs.writeFileSync(path.join(dir,'jobspy.json'),JSON.stringify({searches:[],errors:[],jobs:[{site:'linkedin',company:'Initech',title:'Director of Manufacturing',location:'Austin, TX',job_url:'https://www.linkedin.com/jobs/view/123'}]}));
+  fs.writeFileSync(path.join(dir,'jobspy.json'),JSON.stringify({searches:[],errors:[],jobs:[{site:'linkedin',company:'Initech',title:'Director of Manufacturing',location:'Austin, TX',job_url:'https://www.linkedin.com/jobs/view/123',min_amount:180125,max_amount:220875}]}));
   const health='{"schema":"forge.board-health.v1","boards":{}}\n';fs.writeFileSync(path.join(out,'board-health.json'),health);
   const log=path.join(dir,'fetch.log');
   cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,TRIAL_FC_DIR:FC,TRIAL_MASTER_FILE:path.join(dir,'master.txt'),TRIAL_ARCHIVE_FILE:path.join(dir,'archive.txt'),TRIAL_PRIORITY_FILE:path.join(dir,'priority.txt'),TRIAL_JOBSPY_FILE:path.join(dir,'jobspy.json'),TRIAL_HIRINGCAFE_FILE:path.join(dir,'absent.json'),TRIAL_OUT_DIR:out,TRIAL_SKIP_BOARDS:'1',TRIAL_FAST:'1',TRIAL_FETCH_LOG:log},stdio:'pipe',timeout:10000});
   const reads=fs.existsSync(log)?fs.readFileSync(log,'utf8').trim().split('\n').filter(Boolean):[];assert.ok(reads.every(url=>['rules','documents'].includes(new URL(url).searchParams.get('action'))),'source-only mode may read current screening policy/resume inventory, never employer boards');
   assert.equal(fs.readFileSync(path.join(out,'board-health.json'),'utf8'),health,'board evidence belongs to board workflow');
-  assert.equal(JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json'))).new_roles.length,1,'source results still publish');
+  const roles=JSON.parse(fs.readFileSync(path.join(out,'source-trial-report.json'))).new_roles;assert.equal(roles.length,1,'source results still publish');assert.equal(roles[0].pay,'');assert.equal(roles[0].postedPay.period,null);assert.equal(roles[0].postedPay.currency,null);assert.equal(roles[0].postedPay.low,180125);
  }finally{fs.rmSync(dir,{recursive:true,force:true});}
 });

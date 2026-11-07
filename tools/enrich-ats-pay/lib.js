@@ -64,7 +64,7 @@ function postedAnchor(r, p) {
   r=Employer.resolve(r);if(r.employerUnknown)return null;
   const basis = String(p.SALARY_BASIS || '');
   // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
-  if (/estimate/i.test(String(p.PAY_POSTED || '')) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
+  if (Pay.estimated(p.PAY_POSTED) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
   const lo = num(p.SALARY_BASE_LOW), hi = num(p.SALARY_BASE_HIGH);
   if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION) };
   return null;
@@ -195,9 +195,10 @@ function boardListRequest(b, title) {
 /** Board answer -> [{ title, location, state, pay, page, detail? }]; Workday rows carry a detail URL (pay is on the job page). */
 function parseBoard(b, j) {
   const out = [];
-  if (b.kind === 'greenhouse') (j && j.jobs || []).forEach(x => out.push({ title: x.title, location: x.location && x.location.name || '', description: x.content || '', pay: parseAts('greenhouse',x).pay, page: x.absolute_url || '' }));
-  if (b.kind === 'lever') (Array.isArray(j) ? j : []).forEach(x => { const parsed=parseAts('lever',x);out.push({title:x.text,location:x.categories&&(x.categories.location||(x.categories.allLocations||[]).join(', '))||'',description:parsed.text,pay:parsed.pay,page:x.hostedUrl||''}); });
-  if (b.kind === 'ashby') (j && j.jobs || []).forEach(x => {const parsed=parseAts('ashby',{jobs:[x]},x.id);out.push({title:x.title,location:x.location||'',description:parsed.text,pay:parsed.pay,page:x.jobUrl||''});});
+  const salaryText=(raw,parsed)=>raw?JSON.stringify(raw):(parsed.text||'').split(/\n+/).filter(line=>/\b(?:salary|base pay)\b/i.test(line)&&/\d/.test(line)).join('\n');
+  if (b.kind === 'greenhouse') (j && j.jobs || []).forEach(x => {const parsed=parseAts('greenhouse',x);out.push({ title: x.title, location: x.location && x.location.name || '', description: x.content || '', pay: parsed.pay, payFacts:parsed.payFacts, salaryText:salaryText(x.pay_input_ranges?.length?x.pay_input_ranges:null,parsed), page: x.absolute_url || '' });});
+  if (b.kind === 'lever') (Array.isArray(j) ? j : []).forEach(x => { const parsed=parseAts('lever',x);out.push({title:x.text,location:x.categories&&(x.categories.location||(x.categories.allLocations||[]).join(', '))||'',description:parsed.text,pay:parsed.pay,payFacts:parsed.payFacts,salaryText:salaryText(x.salaryRange,parsed),page:x.hostedUrl||''}); });
+  if (b.kind === 'ashby') (j && j.jobs || []).forEach(x => {const parsed=parseAts('ashby',{jobs:[x]},x.id);out.push({title:x.title,location:x.location||'',description:parsed.text,pay:parsed.pay,payFacts:parsed.payFacts,salaryText:salaryText(x.compensation?.summaryComponents,parsed),page:x.jobUrl||''});});
   if (b.kind === 'workday') (j && j.jobPostings || []).forEach(x => out.push({ title: x.title, location: x.locationsText || '', pay: null, page: `https://${b.host}/${b.site}${x.externalPath || ''}`, detail: x.externalPath ? `https://${b.host}/wday/cxs/${b.tenant}/${b.site}${x.externalPath}` : '' }));
   out.forEach(x => { x.state = stateFrom(x.location); });
   return out;

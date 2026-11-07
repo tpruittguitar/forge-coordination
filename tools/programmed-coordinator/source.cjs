@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261106-context-bound-facts-v2';
+const PARSER_VERSION='20261107-posted-pay-facts-v3';
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -75,11 +75,13 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
   if (job.validThrough && (!Number.isFinite(Date.parse(job.validThrough)) || Date.parse(job.validThrough) < now)) throw Error('POSTING_EXPIRED');
   if (quote && !norm(description).includes(norm(quote))) throw Error('HELPER_QUOTE_NOT_IN_POSTING');
   const degree = require('./posting-formats.cjs').degree(job.description,text), sal = job.baseSalary, val = sal?.value;
-  // A generic dollar range may be bonus/total compensation. Only structured,
-  // explicitly annual USD base salary is eligible for automatic posted pay.
+  // Reuse exact posting text only when no declared structured salary was rejected.
+  // Explicit currency, annual period and base basis remain mandatory for scoring.
   const Pay=require('../enrich-ats-pay/pay-values'),structured=Pay.structured(sal);
-  const pay=structured&&!Pay.conflicts(description,structured,L.payFromText)?Pay.range(structured):null;
-  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
+  const candidate=structured||(!sal&&!job.forgePayRejected?Pay.employerText(description,L.payFromText):null);
+  const safe=candidate&&!Pay.conflicts(description,candidate,L.payFromText)&&!Pay.estimatedPay(description,candidate,L.payFromText)?candidate:null;
+  const payFacts=Pay.fact(safe,structured?'STRUCTURED_ANNUAL_BASE':'EXPLICIT_ANNUAL_BASE_TEXT'),pay=Pay.range(payFacts);
+  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
 async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
   const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');
@@ -111,7 +113,7 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
 function enrichmentFields(source, row) {
   const fields = {}, p = row.p || {}, date = source.observedAt.slice(0,10);
   if (source.degree && !known(p.DEGREE_TEXT) && !known(p.DEGREE_REQ)) Object.assign(fields, {DEGREE_TEXT:source.degree.text, DEGREE_REQ:source.degree.req, DEGREE_EVIDENCE_URL:source.sourceUrl, DEGREE_ASOF:date, REQUIREMENTS_REVIEWED:'YES'});
-  if (source.pay && require('../enrich-ats-pay/source-search').firstParty(source.sourceUrl, row.COMPANY) && !known(p.SALARY_BASE_LOW)) Object.assign(fields, {
+  if (source.pay && source.identityVerified===true && source.sourceIdentity && ['company','title','location'].every(k=>source.sourceIdentity[k]===row[{company:'COMPANY',title:'TITLE',location:'LOCATION'}[k]]) && !known(p.SALARY_BASE_LOW)) Object.assign(fields, {
     SALARY_BASE_LOW:source.pay.low, SALARY_BASE_HIGH:source.pay.high, SALARY_MIDPOINT:Math.round((source.pay.low+source.pay.high)/2),
     SALARY_BASIS:'EMPLOYER_POSTED', SALARY_SOURCE:source.sourceUrl, SALARY_ASOF:date, SALARY_CONF:'HIGH'
   });

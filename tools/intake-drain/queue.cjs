@@ -3,7 +3,7 @@
 const fs=require('node:fs'),path=require('node:path');
 const S=require('../programmed-coordinator/store.cjs'),Source=require('../programmed-coordinator/source.cjs');
 const Screen=require('../relevance-screen/screen.cjs'),U=require('../pipeline-observability/upstream-flow');
-const Resume=require('../source-trial/resume-match');
+const Resume=require('../source-trial/resume-match'),PostedPay=require('../source-trial/posted-pay');
 const FILE='state/INTAKE_DRAIN.json',REVIEWS='receipts/INTAKE_DRAIN',TASKS={REVIEW_SCOPE:'FORGE_INTAKE_SCOPE_REVIEW',RECOVER_SOURCE:'FORGE_INTAKE_SOURCE_RECOVERY',RESOLVE_IDENTITY:'FORGE_INTAKE_HELD_RECONCILIATION',RECONCILE_WRITER:'FORGE_INTAKE_HELD_RECONCILIATION',INTAKE:'CODE'};
 const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRESENT']);
 const dismissed=e=>e?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'||require('../live-backlog/model.cjs').activeDeletion(e);
@@ -11,7 +11,7 @@ const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
 const read=(root,file,fallback)=>S.read(root,file,fallback);
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
 function safeUrl(raw){try{const key=U.key(raw);if(key?.startsWith('indeed:'))return 'https://www.indeed.com/viewjob?jk='+key.slice(7);if(key?.startsWith('linkedin:'))return 'https://www.linkedin.com/jobs/view/'+key.slice(9)+'/';const u=new URL(raw);if(u.protocol!=='https:')return '';for(const k of [...u.searchParams.keys()])if(/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k))u.searchParams.delete(k);u.hash='';return u.href;}catch{return '';}}
-function sourceCard(e){return{company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
+function sourceCard(e){return{...PostedPay.carry({...e,url:e.sourceUrl}),company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
 function rekeyedRepresentation(item,up){
  const aliases=item.aliases?.length?item.aliases:[item.key],matches=Object.entries(up.groups).filter(([k,g])=>g.status==='PRESENT'&&/^pid:V2[A-Z]-[A-Za-z0-9_-]+$/.test(k)&&aliases.every(a=>g.aliases?.includes(a)));
  if(matches.length!==1)return null;
@@ -115,7 +115,8 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
    const source=await verifySource({item:{sourceEvidence:review.sourceEvidence},expected:review.sourceEvidence,privateDir,now});
    const overlap=Resume.match({title:review.sourceEvidence.title,description:source.description});if(review.scope.resumeCompetencyIds.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('RESUME_OVERLAP_NOT_IN_INDEPENDENT_POSTING');
    if(!Source.norm(source.description).includes(Source.norm(review.scope.quote)))throw Error('SCOPE_QUOTE_NOT_IN_INDEPENDENT_POSTING');
-   item.validation={status:'READY_FOR_CONTROLLED_INTAKE',reviewSha256:S.hash(review),observedAt:new Date(now).toISOString(),resumeMatch:overlap,sourceSha256:source.sourceSha256,sourceUrl:source.sourceUrl};item.status=item.validation.status;result.verified++;
+   const payCard={company:review.sourceEvidence.company,title:review.sourceEvidence.title,location:review.sourceEvidence.location,url:source.sourceUrl,payFacts:source.payFacts,source:'INTAKE_DRAIN',observedAt:source.observedAt||new Date(now).toISOString()};payCard.postedPay=PostedPay.capture(payCard);
+   item.validation={...PostedPay.carry(payCard),status:'READY_FOR_CONTROLLED_INTAKE',reviewSha256:S.hash(review),observedAt:new Date(now).toISOString(),resumeMatch:overlap,sourceSha256:source.sourceSha256,sourceUrl:source.sourceUrl};item.status=item.validation.status;result.verified++;
   }catch(e){item.validation={status:'SOURCE_VALIDATION_REQUIRED',reviewSha256:S.hash(review),observedAt:new Date(now).toISOString(),reason:e.message,retryAfter:new Date(now+6*3600000).toISOString()};item.status=item.validation.status;result.failed++;}
  }
  if(apply)S.save(root,FILE,work);return{...result,canonicalWrites:0};
@@ -125,7 +126,7 @@ function approved(root,now=Date.now()){
  for(const item of Object.values(work.items)){
   const v=item.validation;if(item.status!=='READY_FOR_CONTROLLED_INTAKE'||item.fence||!v||now-Date.parse(v.observedAt)>=86400000||Date.parse(v.observedAt)>now)continue;
   const r=read(root,item.review.path);validate(r,item,now);if(v.reviewSha256!==S.hash(r)||item.review.path!==reviewPath(r)||r.outcome!=='SOURCE_READY')throw Error('DRAIN_VALIDATION_BINDING_REQUIRED');
-  const role={...r.sourceEvidence,discoveryReview:item.discoveryReview,initiatingUrl:item.card.url,source:'INTAKE_DRAIN',selectionReason:item.selectionReason,scopeReason:r.scope.reason+'; resume='+r.scope.resumeTextSha256+'; competencies='+r.scope.resumeCompetencyIds.join(','),drainKey:item.key,drainReview:item.review.path};roles.push(role);proofs.set(U.key(role.url),{role,review:r,validation:v});
+  const trustedPay=v.postedPay?PostedPay.carry({...r.sourceEvidence,...v,url:v.postedPay.sourceUrl}):PostedPay.carry(item.card);const role={...r.sourceEvidence,postedPay:undefined,payFacts:undefined,pay:undefined,...trustedPay,...(trustedPay.postedPay?{url:trustedPay.postedPay.sourceUrl}:{}),discoveryReview:item.discoveryReview,initiatingUrl:item.card.url,source:'INTAKE_DRAIN',selectionReason:item.selectionReason,scopeReason:r.scope.reason+'; resume='+r.scope.resumeTextSha256+'; competencies='+r.scope.resumeCompetencyIds.join(','),drainKey:item.key,drainReview:item.review.path};roles.push(role);proofs.set(U.key(role.url),{role,review:r,validation:v});
  }
  return{roles,proofs};
 }
