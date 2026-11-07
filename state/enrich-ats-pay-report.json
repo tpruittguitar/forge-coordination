@@ -1,10 +1,10 @@
 {
- "at": "2026-11-07T19:26:43.029Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T192454227Z",
+ "at": "2026-11-07T20:07:03.258Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T200525273Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-07T19:24:59.074Z",
+  "readAt": "2026-11-07T20:05:41.012Z",
   "sha256": "b1b2b6e9cbec901ab8812c163af57c01e8d7d677033e93d7544e4a70909be254",
   "rows": 4985
  },
@@ -12,38 +12,48 @@
  "eligible": 703,
  "anchors": 1129,
  "archive_anchors": 5,
- "ats_rows": 0,
- "ats_read": 0,
+ "ats_rows": 1,
+ "ats_read": 1,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 22,
+ "estimate_waiting_for_posting": 16,
  "skipped_recent": 551,
  "submitted": 0,
- "guard_dropped": 0,
+ "guard_dropped": 8,
  "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
- "agg_tried": {},
- "agg_read": {},
+ "agg_tried": {
+  "linkedin": 4
+ },
+ "agg_read": {
+  "linkedin": 3
+ },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 6,
+ "est_comparables": 0,
  "boards_read": 14,
  "boards_failed": 0,
  "bls": {
-  "OK": 5,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 1
+  "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 6,
+ "est_shared_low": 0,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -53,18 +63,18 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 6,
-  "candidates": 49,
-  "saved_reused": 46,
+  "targets": 0,
+  "candidates": 0,
+  "saved_reused": 0,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 3,
+  "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 5,
+  "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-07T19:25:02.256Z",
+  "profile_as_of": "2026-11-07T20:05:44.014Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -77,9 +87,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 8,
- "public_read": 0,
- "public_failed": 8,
+ "public_tried": 1,
+ "public_read": 1,
+ "public_failed": 0,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -140,58 +150,22 @@
  ],
  "salary_review": {
   "eligible": 541,
-  "due": 6,
-  "reviewed": 6,
+  "due": 0,
+  "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 6,
+  "no_improvement": 0,
   "guard_dropped": 0,
-  "samples": [
-   {
-    "id": "V2I-B45002AD382A",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-F7B9B6125954",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-465DDC170E72",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-526ECA8EFB16",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-99B1595EDE69",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-C2E5E4DFEE5F",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   }
-  ]
+  "samples": []
  },
  "decision_waiting": 758,
  "not_attempted": 19,
- "nothing_found": 27,
+ "nothing_found": 19,
+ "ats_need_salary": 1,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 0,
+ "planned": 8,
  "research_budget_exhausted": false,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
@@ -1052,115 +1026,6 @@
      "status": "READ_ERROR"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2A476B8C9241",
-   "company": "Bausch Health Companies Inc.",
-   "title": "Senior Manager, Quality Engineering (Aesthetics Med Device)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:26:55.758Z",
-   "retryAt": "2026-11-07T19:26:55.758Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-68B5244FB331",
-   "company": "Revlon",
-   "title": "Director, Filling & Assembly",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:00.497Z",
-   "retryAt": "2026-11-07T19:27:00.497Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4487342468",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DAD62270C2F9",
-   "company": "Freudenberg Sealing Technologies",
-   "title": "Head of Quality",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:00.499Z",
-   "retryAt": "2026-11-07T19:27:00.499Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B7A365E937B2",
-   "company": "Carton Service CSI, LLC",
-   "title": "Director of Quality",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:03.707Z",
-   "retryAt": "2026-11-07T19:27:03.707Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-79830B23965B",
-   "company": "Champion Windows & Home Exteriors",
-   "title": "Director of Manufacturing",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:06.860Z",
-   "retryAt": "2026-11-07T19:27:06.860Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF4495218805",
-   "company": "Anduril Industries",
-   "title": "Senior Manager, Product Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:08.493Z",
-   "retryAt": "2026-11-07T19:27:08.493Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-816864AD9AEF",
-   "company": "AmeriHealth Caritas",
-   "title": "Director Quality Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:08.494Z",
-   "retryAt": "2026-11-07T19:27:08.494Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-050EBA395C2F",
-   "company": "Ursa Major",
-   "title": "Senior Director, Quality",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T18:27:08.496Z",
-   "retryAt": "2026-11-07T19:27:08.496Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -7000,158 +6865,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-D7D47FEF57DD",
-   "company": "Amazon",
-   "title": "Supply Chain Manager, WWGS - SCOPE (Supply Chain Optimization Planning & Execution)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:16.537Z",
-   "retryAt": "2026-11-08T11:26:16.537Z",
-   "attempts": [
-    {
-     "url": "https://www.amazon.jobs/jobs/10590730/supply-chain-manager-wwgs--scope-supply-chain-optimization-planning--execution",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CB9B223AA01F",
-   "company": "Amazon",
-   "title": "Sr. Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:18.503Z",
-   "retryAt": "2026-11-08T11:26:18.503Z",
-   "attempts": [
-    {
-     "url": "https://www.amazon.jobs/jobs/10456493/sr-operations-manager",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AAF12E75D415",
-   "company": "Amazon",
-   "title": "Sr. Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:20.431Z",
-   "retryAt": "2026-11-08T11:26:20.431Z",
-   "attempts": [
-    {
-     "url": "https://www.amazon.jobs/jobs/10488827/sr-operations-manager",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6C8337A8C36F",
-   "company": "CPV Manufacturing",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:22.088Z",
-   "retryAt": "2026-11-08T11:26:22.088Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/635933184-quality-manager-at-cpv-manufacturing",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0B126BB95E56",
-   "company": "Kirkhill",
-   "title": "QMS & Supplier Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:23.628Z",
-   "retryAt": "2026-11-08T11:26:23.628Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/635933341-qms-supplier-quality-manager-at-kirkhill",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FEDFC06C14F3",
-   "company": "MSA, The Safety Company",
-   "title": "Quality Manager I/II, Global Manufacturing & Quality Management System",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:25.176Z",
-   "retryAt": "2026-11-08T11:26:25.176Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/635246811-quality-manager-i-ii-global-manufacturing-quality-management-system-at-msa-the-safety-company",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-465E599BC2D1",
-   "company": "Lockheed Martin",
-   "title": "Senior Manufacturing Planning Operations Leader",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:26.795Z",
-   "retryAt": "2026-11-08T11:26:26.795Z",
-   "attempts": [
-    {
-     "url": "https://www.theladders.com/job/senior-manufacturing-planning-operations-leader-lockheedmartin-virtual-travel_89029695",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0E335F9E9542",
-   "company": "Peraton",
-   "title": "Service Delivery Director (TX DIR)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T19:26:28.342Z",
-   "retryAt": "2026-11-08T11:26:28.342Z",
-   "attempts": [
-    {
-     "url": "https://www.theladders.com/job/service-delivery-director-tx-dir-peraton-virtual-travel_88883963",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-9FC8F9155034",
    "company": "Trivium Packaging",
    "title": "Senior Director Operational Excellence Americas",
@@ -12035,6 +11748,158 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-D7D47FEF57DD",
+   "company": "Amazon",
+   "title": "Supply Chain Manager, WWGS - SCOPE (Supply Chain Optimization Planning & Execution)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:16.537Z",
+   "retryAt": "2026-11-08T11:26:16.537Z",
+   "attempts": [
+    {
+     "url": "https://www.amazon.jobs/jobs/10590730/supply-chain-manager-wwgs--scope-supply-chain-optimization-planning--execution",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CB9B223AA01F",
+   "company": "Amazon",
+   "title": "Sr. Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:18.503Z",
+   "retryAt": "2026-11-08T11:26:18.503Z",
+   "attempts": [
+    {
+     "url": "https://www.amazon.jobs/jobs/10456493/sr-operations-manager",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AAF12E75D415",
+   "company": "Amazon",
+   "title": "Sr. Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:20.431Z",
+   "retryAt": "2026-11-08T11:26:20.431Z",
+   "attempts": [
+    {
+     "url": "https://www.amazon.jobs/jobs/10488827/sr-operations-manager",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6C8337A8C36F",
+   "company": "CPV Manufacturing",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:22.088Z",
+   "retryAt": "2026-11-08T11:26:22.088Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/635933184-quality-manager-at-cpv-manufacturing",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0B126BB95E56",
+   "company": "Kirkhill",
+   "title": "QMS & Supplier Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:23.628Z",
+   "retryAt": "2026-11-08T11:26:23.628Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/635933341-qms-supplier-quality-manager-at-kirkhill",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FEDFC06C14F3",
+   "company": "MSA, The Safety Company",
+   "title": "Quality Manager I/II, Global Manufacturing & Quality Management System",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:25.176Z",
+   "retryAt": "2026-11-08T11:26:25.176Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/635246811-quality-manager-i-ii-global-manufacturing-quality-management-system-at-msa-the-safety-company",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-465E599BC2D1",
+   "company": "Lockheed Martin",
+   "title": "Senior Manufacturing Planning Operations Leader",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:26.795Z",
+   "retryAt": "2026-11-08T11:26:26.795Z",
+   "attempts": [
+    {
+     "url": "https://www.theladders.com/job/senior-manufacturing-planning-operations-leader-lockheedmartin-virtual-travel_89029695",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E335F9E9542",
+   "company": "Peraton",
+   "title": "Service Delivery Director (TX DIR)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T19:26:28.342Z",
+   "retryAt": "2026-11-08T11:26:28.342Z",
+   "attempts": [
+    {
+     "url": "https://www.theladders.com/job/service-delivery-director-tx-dir-peraton-virtual-travel_88883963",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-82E7CC97C04E",
    "company": "DP World",
    "title": "Senior Plant Manager, Contract Logistics Site Operations",
@@ -12092,7 +11957,38 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-2A476B8C9241",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-68B5244FB331",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-DAD62270C2F9",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-B7A365E937B2",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-79830B23965B",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
