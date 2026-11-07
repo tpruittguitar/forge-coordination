@@ -11,3 +11,10 @@ test('snapshot exposes saved ATS hit evidence only, retaining zero and unknown s
  const call=harness({snapshot(){return {revision:'a'.repeat(40),source:{index:{at:'test'},items}};}}),key=await token(call),result=await call('/api/snapshot',{headers:{'x-worksheet-session':key}}).promise,data=JSON.parse(result.body);
  assert.equal(result.code,200);assert.equal(data.items[0].atsHits,0);assert.deepEqual(data.items[0].atsTerms,[]);assert.equal(data.items[1].atsTerms,null);assert.equal(data.items[0].atsBasis,'Title only');assert.equal(data.items[1].atsHits,null);assert.equal(data.items[0].preliminaryScreen,undefined);assert.equal(JSON.stringify(items),before);
 });
+test('snapshot includes salary display, units and provenance without mutation or extra source disclosure',async()=>{
+ const {savedIndex}=require('./salary.cjs'),{key:sourceKey}=require('../pipeline-observability/upstream-flow');
+ const row={company:'Example',title:'Manager',location:'TX',url:'https://example.test/job/1',pay:'$100K-$150K',source:'JOBSPY:indeed'},items=[{...row,key:sourceKey(row.url)},{key:'unknown'}],before=JSON.stringify(items);
+ const salaryIndex=savedIndex(()=>JSON.stringify({summary:{at:'2026-11-07T01:00:00Z'},new_roles:[row]}));
+ const call=harness({snapshot(){return {revision:'a'.repeat(40),source:{index:{at:'test'},items},salaryIndex};},apply(){throw Error('Unexpected write');}}),key=await token(call),result=await call('/api/snapshot',{headers:{'x-worksheet-session':key}}).promise,data=JSON.parse(result.body);
+ assert.equal(result.code,200);assert.equal(data.items[0].salaryRange,row.pay);assert.equal(data.items[0].salaryCurrency,null);assert.equal(data.items[0].salaryPeriod,null);assert.equal(data.items[1].salaryRange,null);assert.equal(data.items[0].pay,undefined);assert.equal(JSON.stringify(items),before);
+});
