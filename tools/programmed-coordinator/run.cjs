@@ -1,5 +1,5 @@
 'use strict';
-const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process'), vm = require('node:vm');
+const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
 const S = require('./store.cjs'), C = require('./collect.cjs'), Source = require('./source.cjs'), T = require('./transactions.cjs');
 const R = require('../source-intake/writer-reader'), Lock = require('../automation-run-lock.cjs');
 const ROOT = path.resolve(__dirname,'../..'), STATE = 'state/PROGRAMMED_COORDINATOR.json';
@@ -130,7 +130,7 @@ async function main(mode='inventory') {
     if(mode!=='inventory') {
       if(!privateDir || !path.isAbsolute(privateDir) || path.resolve(privateDir).toLowerCase()===root.toLowerCase() || path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep)) throw Error('Private output must be outside the public checkout');
       const cfg={}, fc=process.env.ACTIVITY_FC_DIR;
-      vm.runInNewContext(fs.readFileSync(process.env.FORGE_CONNECTION_FILE,'utf8'),cfg);
+      cfg.PipelineConnection=require('../source-intake/writer-connection').connection({requireUrl:true});
       const W=require(path.join(fc,'apps-script/PipelineWorklists.gs')), key=cfg.PipelineConnection.key;
       const snapshot=async()=>{
         const [m,a,s]=await Promise.all([require('../pipeline-observability/canonical-snapshot').readCanonical({key,W}),R.fetchAuthenticatedArchive({key}),R.read('writer_status',{key})]);

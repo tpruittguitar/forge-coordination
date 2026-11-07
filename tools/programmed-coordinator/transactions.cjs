@@ -2,7 +2,7 @@
 const S = require('./store.cjs'), {normalizeCell:cell} = require('../source-intake/writer-cell');
 const Source = require('./source.cjs');
 const Outcome = require('../writer-outcome.cjs');
-const clientRevision=S.hash([__filename,require.resolve('./run.cjs'),require.resolve('./source.cjs'),require.resolve('./posting-formats.cjs')].map(f=>require('node:fs').readFileSync(f,'utf8')).join('\n'));
+const clientRevision=S.hash([__filename,require.resolve('../source-intake/writer-connection.js'),require.resolve('./run.cjs'),require.resolve('./source.cjs'),require.resolve('./posting-formats.cjs')].map(f=>require('node:fs').readFileSync(f,'utf8')).join('\n'));
 const rejectedUnchanged=(item,writerCommit)=>!!item?.notAcceptedTerminal&&item.notAcceptedTerminal.version===item.version&&item.notAcceptedTerminal.clientRevision===clientRevision&&item.notAcceptedTerminal.sourceParserVersion===Source.PARSER_VERSION&&
   (!/^[a-f0-9]{7,40}$/.test(writerCommit||'')||item.notAcceptedTerminal.writerCommit===writerCommit);
 const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',

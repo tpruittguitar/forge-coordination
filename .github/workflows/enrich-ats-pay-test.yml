@@ -17,6 +17,6 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - run: node --test tools/enrich-ats-pay/*.test.js tools/source-trial/*.test.js tools/email-recovery/*.test.cjs tools/routine-handoffs/alert-recovery*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js
+      - run: node --test tools/relevance-screen/writer-identity.test.cjs tools/enrich-ats-pay/*.test.js tools/source-trial/*.test.js tools/email-recovery/*.test.cjs tools/routine-handoffs/alert-recovery*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
