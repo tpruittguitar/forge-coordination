@@ -1,0 +1,60 @@
+{
+  "schema": "forge.manual-backlog-receipt.v1",
+  "receiptId": "8ac4b5c1c08625d72b77b79b0f40eaeb567ba17b97b7e69f7ab23dbffe4ca08c",
+  "requestId": "5a45bdd9-e358-418c-85db-0b2648f77233",
+  "status": "COMPLETE",
+  "decision": "DECLINE",
+  "snapshotRevision": "631f442b70f724ca139d85704387b98a85c30da4",
+  "observedAt": "2026-11-07T01:24:17Z",
+  "canonicalWrites": 0,
+  "queueWrites": 0,
+  "items": [
+    {
+      "key": "unresolved:2d522a98a560884e62cde7da",
+      "decision": "DECLINE",
+      "status": "NOT_ACCEPTED",
+      "reason": "VALIDATOR_REJECTED_BEFORE_QUEUE"
+    }
+  ],
+  "evidence": {
+    "schema": "forge.manual-backlog-negative-evidence.v1",
+    "kind": "STATIC_PRE_QUEUE_REJECTION",
+    "request": {
+      "schema": "forge.manual-backlog-request.v1",
+      "requestId": "5a45bdd9-e358-418c-85db-0b2648f77233",
+      "snapshotRevision": "631f442b70f724ca139d85704387b98a85c30da4",
+      "decision": "DECLINE",
+      "items": [
+        {
+          "key": "unresolved:2d522a98a560884e62cde7da"
+        }
+      ]
+    },
+    "clientAttemptAt": "2026-11-07T00:54:34.520Z",
+    "implementation": {
+      "repository": "tpruittguitar/foreman-cockpit",
+      "commit": "fcc611db72617299ba6fc450a1db358a6b020519",
+      "path": "functions/api/backlog-decisions.js",
+      "gitBlobSha": "1673c6b8152d324319c7a2ea32228c60a8823fff",
+      "sha256": "82517557c54fc40c2ab85c756a180e4b832eb259f872e5ee07977116f3534bd8"
+    },
+    "rejectedKeys": [
+      "unresolved:2d522a98a560884e62cde7da"
+    ],
+    "validatorError": "UNIQUE_DISCOVERY_KEYS_REQUIRED",
+    "explanation": "The pinned deployed handler rejects the entire request in normalize before computing its receipt key or calling kv.put. Earlier auth, capability, or transport failures could also prevent acceptance; this is not an assertion of a captured HTTP response.",
+    "corroboration": {
+      "observedAt": "2026-11-07T01:07:00Z",
+      "timePrecision": "approximate minute",
+      "queueRead": {
+        "method": "GET",
+        "path": "/api/backlog-decisions?action=queue",
+        "httpStatus": 200,
+        "requests": 0,
+        "cursor": null
+      },
+      "committedManualReceipts": 0
+    },
+    "effects": "No candidate dismissal or canonical mutation. This receipt closes only the failed original submission; it does not resubmit, upgrade scope, or authorize a replacement request."
+  }
+}
