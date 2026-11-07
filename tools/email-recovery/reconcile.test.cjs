@@ -44,3 +44,32 @@ test('a verified employer-posting alias is reused against fresh canonical presen
  const l={jobs:{[prior.key]:structuredClone(prior),[next.key]:structuredClone(next)},sources:{}};assert.equal(reconcile(l,input).resolved.length,1);
  const conflict={jobs:{[prior.key]:structuredClone(prior),[next.key]:structuredClone(next),'linkedin:333':{...structuredClone(prior),key:'linkedin:333',disposition:{primaryId:'V2I-OTHER',proof:'receipts/other.json'}}},sources:{}};assert.equal(reconcile(conflict,input).resolved.length,0);
 });
+
+test('ordinary discovery shares title abbreviations and spelled-out state matching',()=>{
+ const j={key:'email:variant',company:'Acme LLC',title:'Sr. Mgr Manufacturing',location:'Austin, Texas, United States',url:'https://example.test/new-card',status:'HELD_IDENTITY'};
+ const ledger={jobs:{[j.key]:j},sources:{}};
+ const out=reconcile(ledger,{masterText:'1 | V2I-MATCH | Acme | Senior Manager Manufacturing | MANUAL_RESEARCH | OPEN | - | UNKNOWN | Austin, TX | SOURCE_URL=https://example.test/old-card\nEND V2_CURRENT_POPULATION_MASTER',archiveText:'',at:'2026-11-07T09:00:00Z',proof:'receipts/shared.json'});
+ assert.equal(out.resolved.length,1);assert.equal(out.writerSubmissions,0);assert.equal(j.disposition.primaryId,'V2I-MATCH');assert.match(j.disposition.reason,/no submission or Writer completion inferred/);
+});
+test('ordinary discovery preserves uncertain scope, different provider IDs and requisitions',()=>{
+ const base={key:'linkedin:222',jobId:'222',company:'Acme',title:'Senior Manager Manufacturing',location:'Austin, TX',url:'https://www.linkedin.com/jobs/view/222/',status:'HELD_IDENTITY'};
+ const row='1 | V2I-MATCH | Acme | Senior Manager Manufacturing | MANUAL_RESEARCH | OPEN | - | UNKNOWN | Austin, TX | ';
+ for(const [fields,payload] of [
+  [{},'SOURCE_URL=https://www.linkedin.com/jobs/view/111/'],
+  [{url:'https://example.test/new',key:'email:scope',jobId:''},'SOURCE_URL=https://example.test/old; OPERATING_SCOPE=LOCATION_OPEN'],
+  [{url:'https://example.test/new',key:'email:scope',jobId:'',REMOTE_HYBRID:'Remote'},'SOURCE_URL=https://example.test/old'],
+  [{REQ_ID:'R-NEW'},'SOURCE_URL=https://www.linkedin.com/jobs/view/222/; REQ_ID=R-OLD']
+ ]){
+  const j={...base,...fields},ledger={jobs:{[j.key]:j},sources:{}};
+  assert.equal(reconcile(ledger,{masterText:row+payload+'\nEND V2_CURRENT_POPULATION_MASTER',archiveText:'',at:'2026-11-07T09:00:00Z',proof:'receipts/shared.json'}).resolved.length,0);
+  assert.equal(j.status,'HELD_IDENTITY');
+ }
+});
+test('recorded original attempts fence even a nontransaction status and exact canonical presence',()=>{
+ const base={key:'linkedin:222',jobId:'222',company:'Acme',title:'Director',location:'Austin, TX',url:'https://www.linkedin.com/jobs/view/222/',status:'HELD_IDENTITY'};
+ for(const fence of [{requestId:'ORIGINAL'},{submission:{requestId:'ORIGINAL'}},{submissions:[{requestId:'ORIGINAL'}]},{status:'POST_IN_FLIGHT_UNKNOWN'}]){
+  const j={...base,...fence},ledger={jobs:{[j.key]:j},sources:{}},before=JSON.stringify(j);
+  assert.equal(reconcile(ledger,{masterText:'1 | V2I-MATCH | Acme | Director | APPLIED | OPEN | - | UNKNOWN | Austin, TX | SOURCE_URL='+base.url+'\nEND V2_CURRENT_POPULATION_MASTER',archiveText:'',at:'2026-11-07T09:00:00Z',proof:'receipts/shared.json',appliedRepeatRule:true}).resolved.length,0);
+  assert.equal(JSON.stringify(j),before);
+ }
+});

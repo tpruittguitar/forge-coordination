@@ -5,7 +5,7 @@ One scheduled ChatGPT task, Monday 01:00 America/New_York, TASK_KEY=FORGE_ZIPREC
 
 INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
 Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES. co, TITLE and SOURCE_URL are required. Never invent a deep link.
-Submit every kept role in this run. The Writer removes duplicates (EXISTING_MATCH) and applies Never-Consider; do not check the master.
+Apply DISCOVERY IDENTITY above before further research or intake: proven master/archive matches are PRESENT/SKIP_EXISTING with no Writer submission or repeated analysis. Submit only still-new kept roles in this run; Writer retains race-time dedupe and Never-Consider gates.
 
 SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)
 Nationwide: loc "United States" and country_admin_code "US" set explicitly on every call (an omitted loc lets the connector anchor to the user's city: ChatGPT test 2026-10-13 17:33 ET returned 6 Cleveland-TN-area results; Claude test with "United States" returned 905 nationwide), employment_types FULL_TIME, seniority_classes SENIOR, salary_min 180000, max_posted_minutes_ago 10080:
@@ -18,7 +18,7 @@ Check each response's search_url: it must show loc=United+States for searches 1-
 
 SONICJOBS TRIAL (4 ISO weeks: 2026W42 to 2026W45; stop after 2026W45 unless an approved current release extends it)
 After the ZipRecruiter searches, run three SonicJobs searches with the same nationwide filters (loc United States set explicitly, $180K floor, last 7 days, full time where supported): dir of mfg, Vice President of mfg, Plant mgr. Read 20 results each. Same quick screen and agy rule. Intake rows carry SOURCE_PROVIDER=SonicJobs and DISCOVERY_SOURCE "ChatGPT SonicJobs trial"; SOURCE_URL = the listing link SonicJobs returns, exactly as returned (if it returns none, use the SonicJobs job page URL; never build one). Never use any SonicJobs apply, submit or account workflow.
-A role found by both connectors goes to the Writer once, under ZipRecruiter, and counts as OVERLAP.
+A proven same role found by both connectors counts as OVERLAP. If already canonical, skip both with source aliases preserved; otherwise send it to the Writer once, under ZipRecruiter. Do not merge ambiguous role/site identities.
 Receipt adds: SONICJOBS_RESULTS_SEEN, SONICJOBS_KEPT, SONICJOBS_ONLY (kept roles ZipRecruiter did not return), OVERLAP, SONICJOBS_SUBMITTED.
 Success test at the end of 2026W45: an average of 3 or more SONICJOBS_ONLY roles a week that the Writer writes as new (not EXISTING_MATCH, not Never-Consider). Claude reports the result to Tim.
 
@@ -28,10 +28,10 @@ agy posts (staffing, recruit, executive search, placement firms): follow the agy
 
 INTAKE (schema and Writer route as INTAKE FILE above; name CHATGPT_<requestId>.json; requestId FORGE-ZIPR-CHATGPT-<YYYYMMDD-HHMMET>-B01...)
 SOURCE_URL = the job_redirect_url from search_jobs exactly as returned. SOURCE_PROVIDER = ZipRecruiter. DISCOVERY_SOURCE = "ChatGPT ZipRecruiter weekly pass". When the result has a sal it is ZipRecruiter's listing figure, not employer-posted pay: send SALARY_BASE_EST = "<min>-<max>", SALARY_BASIS = THIRD_PARTY_ESTIMATE, SALARY_CONF = LOW, SALARY_SOURCE = the job_redirect_url, SALARY_ASOF = run date, SALARY_NOTE = "ZipRecruiter listing sal". Never put it in PAY_POSTED. It is real pay for scoring and PAY_WORTH (sal RULE, Tim 2026-10-19); employer-posted pay found later replaces it. POSTING_DATE = run date minus days_ago. loc, co and TITLE exactly as returned. REQ_ID blank. INITIAL_UNKNOWN_FIELDS lists what the result lacks (DEGREE_TEXT always; REQ_ID; PAY when null).
-Do not check the master: the Writer dedupes (EXISTING_MATCH) and applies Never-Consider.
+Reuse the run's fresh local canonical identity index before submission; do not reread the full master for each result. Account proven existing roles separately from unresolved identity and original-request obligations.
 
 RECEIPT (receipts/FORGE-ZIPR-CHATGPT-<ISO week>-<YYYYMMDD-HHMMET>.txt, commit message starting "CHATGPT FORGE-ZIPR")
-SEARCHES_RUN, RESULTS_SEEN, KEPT, DROPPED (title | co | reason, one line each), AGENCY_ROWS, CLIENT_NAMED, SUBMITTED_TO_WRITER, REQUEST_IDS, STOP_REASON. The next weekly pass reports PRIOR_RUN_OUTCOMES from the intake RESULT.
+SEARCHES_RUN, RESULTS_SEEN, KEPT, DROPPED (title | co | reason, one line each), AGENCY_ROWS, CLIENT_NAMED, EXISTING_SKIPPED, IDENTITY_HELD, SUBMITTED_TO_WRITER, REQUEST_IDS, STOP_REASON. The next weekly pass reports PRIOR_RUN_OUTCOMES from the intake RESULT.
 END
 
-INTAKE IDENTITY (REV-196): REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED is a role Tim applied to, declined, was rejected for or protected, listed again; the Writer holds it for Tim. Count it RELISTED_HELD; never resubmit, merge or ask.
+INTAKE IDENTITY: REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). A historical WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED does not by itself keep a proven existing role in discovery. Apply PRESENT/SKIP_EXISTING with fresh canonical proof and preserve Tim's protected decision. Count RELISTED_HELD only for real unresolved relist identity or an independent unresolved original request; never resubmit, merge or override the decision.

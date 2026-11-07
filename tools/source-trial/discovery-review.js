@@ -16,7 +16,9 @@ function review(card,{description='',observedAt=new Date().toISOString(),detailS
 }
 async function reviewAll(cards,{now=()=>Date.now(),deadline=Infinity,detail=async()=>null,screenContext,concurrency=3}={}){
  let cursor=0;async function worker(){for(;;){const n=cursor++;if(n>=cards.length)return;
-  const card=cards[n];let description=card.description||'',status='NOT_RETURNED_BY_SOURCE';
+  const card=cards[n];
+  if(['EXISTING','EXISTING_PROTECTED'].includes(card.status)){cards[n]={...card,selectionReason:'Already represented in canonical master/archive; no further analysis or Writer submission.',discoveryDisposition:{status:'EXISTING_NO_WRITE',writerSubmissions:0}};delete cards[n].detailUrl;continue;}
+  let description=card.description||'',status='NOT_RETURNED_BY_SOURCE';
   if(!description&&card.detailUrl){if(now()>=deadline)status='DEFERRED_RUNTIME_BOUNDARY';else try{const d=await detail(card.detailUrl);description=d?.jobPostingInfo?.jobDescription||'';status=description?'SOURCE_CONTENT_REVIEWED':'DETAIL_CONTENT_UNAVAILABLE';}catch{status='DETAIL_ACCESS_FAILED';}}
   cards[n]=review(card,{description,observedAt:new Date(now()).toISOString(),detailStatus:status,screenContext});delete cards[n].detailUrl;
  }

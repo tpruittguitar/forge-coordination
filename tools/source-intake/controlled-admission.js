@@ -6,10 +6,11 @@ const MAX_BATCH=200;
 function eligibleFromAudit(audit,preview){
  if(audit?.mode!=='NON_SUBMITTABLE_REVIEW_ONLY'||audit.productionAdmission!=='BLOCKED_UNTIL_READER_CONTRACT_QA'||audit.writer_submissions!==0)throw Error('BLOCKED: unsupported audit');
  if(!Array.isArray(preview?.rows)||audit.rows.length!==preview.rows.length)throw Error('BLOCKED: preview/audit mismatch');
- const held=[],admitted=[];
+ const held=[],admitted=[],skipped=[];
  for(let i=0;i<audit.rows.length;i++){
   const gate=audit.rows[i],source=preview.rows[i],rec=source.record||{};
   if(gate.index!==source.index||gate.url!==rec.SOURCE_URL||gate.company!==rec.COMPANY||gate.title!==rec.TITLE)throw Error('BLOCKED: audit input divergence');
+  if(gate.gate==='SKIP_EXISTING'&&['EXISTING','EXISTING_PROTECTED'].includes(gate.masterStatus)){skipped.push({index:gate.index,reason:'ALREADY_REPRESENTED',masterStatus:gate.masterStatus});continue;}
   const proof=source.employerEvidence;
   const hasEvidence=proof&&proof.verified===true&&/^https:\/\//i.test(proof.url||'')&&
     typeof proof.primaryBusiness==='string'&&proof.primaryBusiness.trim().length>=3&&
@@ -22,7 +23,7 @@ function eligibleFromAudit(audit,preview){
   admitted.push({...rec,EMPLOYER_PRIMARY_BUSINESS:proof.primaryBusiness,EMPLOYER_EVIDENCE_URL:proof.url});
  }
  if(admitted.length>MAX_BATCH)throw Error('BLOCKED: admission exceeds 200');
- return {mode:'MANUAL_EVIDENCE_REVIEW_REQUIRED',proposed:admitted,admitted:[],held,submissionExecuted:false,writerSubmissions:0};
+ return {mode:'MANUAL_EVIDENCE_REVIEW_REQUIRED',proposed:admitted,admitted:[],held,skipped,submissionExecuted:false,writerSubmissions:0};
 }
 async function prepareLiveAdmission(preview,options={}){
  if(options.auditOverride||options.fetchMaster||options.fetchArchive)throw Error('BLOCKED: injected audit readers forbidden in production');

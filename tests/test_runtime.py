@@ -97,6 +97,108 @@ class ReleaseTests(unittest.TestCase):
         for h in range(0, 24, 3):
             self.assertFalse(r.select_task(self.manifest, 'Claude', 'ROTATION', h)[1])
 
+    def test_discovery_packets_share_existing_first_contract(self):
+        contract = (ROOT / 'policy/current/DISCOVERY_IDENTITY.txt').read_text().strip()
+        registry = json.loads((ROOT / 'policy/current/registry.json').read_text())
+        discovery = ('FORGE_EMAIL_DISCOVERY', 'FORGE_WEB_CAREER_DISCOVERY',
+                     'FORGE_ZIPRECRUITER_WEEKLY')
+        for task in discovery:
+            with self.subTest(task=task):
+                self.assertIn('DISCOVERY_IDENTITY.txt', registry['lanes'][task]['common'])
+                packet = self.outputs['runtime/releases/' + self.manifest['release_id'] + '/' + task + '.txt'].decode()
+                self.assertEqual(packet.count(contract), 1)
+                self.assertIn('EXISTING_SKIPPED', packet)
+                self.assertIn('IDENTITY_HELD', packet)
+                self.assertIn('PRESENT/SKIP_EXISTING', packet)
+                self.assertNotIn('do not check the master', packet.lower())
+                self.assertNotIn('SUBMIT EVERY PLAUSIBLE ROLE', packet)
+                self.assertNotIn('Submit every kept role', packet)
+                self.assertIn('only for real unresolved relist identity', packet)
+                self.assertIn('RESULT SUCCESS', packet)
+                self.assertIn('AFTER COMPLETE', packet)
+        for task in set(registry['lanes']) - set(discovery):
+            self.assertNotIn('DISCOVERY_IDENTITY.txt', registry['lanes'][task]['common'])
+
+    def test_existing_first_contract_keeps_freshness_identity_and_request_safety(self):
+        contract = (ROOT / 'policy/current/DISCOVERY_IDENTITY.txt').read_text()
+        for requirement in (
+            'fresh complete authenticated canonical master AND terminal archive',
+            'once per bounded run/batch', '15-minute freshness contract',
+            'never download full files per candidate',
+            'tools/source-trial/job-identity.js', 'tools/source-trial/IDENTITY.md',
+            'employer-scoped requisition', 'scoped ATS posting ID',
+            'compatible claimed PRIMARY_ID', 'unique normalized employer/title/precise city-and-state',
+            'Different LinkedIn/Indeed listing IDs need shared employer requisition/ATS evidence',
+            'regional, national/global, multi-site', 'Different clear sites are not duplicates',
+            'precise different-state single sites', 'Same-state/metro/unknown sites',
+            'remove it from the discovery worksheet/intake backlog immediately',
+            'before source fetch, relevance/enrichment work or Writer submission',
+            'Retain source aliases/history', 'delete no canonical job',
+            'No Writer call or new write-completion proof is needed',
+            'Job presence never proves that request COMPLETE',
+            'never clears its fence or authorizes replay',
+            'Evidence-only helpers return EXISTING_MATCH_CANDIDATE',
+            'they do not mutate queues or reservations',
+            'Writer remains decisive against races',
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, contract)
+
+    def test_registered_discovery_utilities_and_pilot_use_shared_contract(self):
+        registry = json.loads((ROOT / 'control/AI_AUTOMATION_TASKS.json').read_text())
+        common = (ROOT / registry['common']).read_text()
+        self.assertIn('policy/current/DISCOVERY_IDENTITY.txt', common)
+        self.assertIn('does not suppress authorized enrichment or application-outcome updates', common)
+        for task in ('FORGE_EMAIL_DISCOVERY', 'FORGE_INTAKE_SCOPE_REVIEW',
+                     'FORGE_INTAKE_SOURCE_RECOVERY', 'FORGE_INTAKE_HELD_RECONCILIATION',
+                     'FORGE_CLAUDE_INTAKE_A', 'FORGE_CLAUDE_INTAKE_B',
+                     'FORGE_CLAUDE_RELEVANCE_REVIEW'):
+            with self.subTest(task=task):
+                route = registry['tasks'][task]
+                self.assertEqual(route['route'], 'utility')
+                procedure = (ROOT / route['procedure']).read_text()
+                self.assertIn('policy/current/DISCOVERY_IDENTITY.txt', procedure)
+                self.assertIn('PRESENT/SKIP_EXISTING', procedure)
+        for path in ('policy/current/FORGE_BOARD_DISCOVERY.txt',
+                     'control/dot/FORGE_RECOVERY_BOOTSTRAP.txt',
+                     'docs/FORGE_REPAIR_SPECIALISTS.md', 'docs/FORGE_DOT_PILOT.md'):
+            with self.subTest(path=path):
+                self.assertIn('policy/current/DISCOVERY_IDENTITY.txt', (ROOT / path).read_text())
+
+    def test_worksite_rule_is_not_a_blanket_facility_title_whitelist(self):
+        registry = json.loads((ROOT / 'control/AI_AUTOMATION_TASKS.json').read_text())
+        sources = set((ROOT / 'policy/current').glob('*.txt'))
+        sources.update(ROOT / task['procedure'] for task in registry['tasks'].values()
+                       if task.get('procedure') and not task.get('retired'))
+        for path in sorted(sources):
+            with self.subTest(path=str(path.relative_to(ROOT))):
+                self.assertNotIn('permits this only for facility-manager titles', path.read_text())
+        common = (ROOT / registry['common']).read_text()
+        for requirement in (
+            'source-bound PROVEN_DISTINCT_FACILITIES branch',
+            'bound prior-site evidence',
+            'not a blanket title whitelist',
+            'proposed Writer DISTINCT_WORKSITES rule',
+            'explicit precise single sites in different states regardless of common title',
+            'including Manufacturing Manager',
+            'no protected same-site match',
+            'Positive posting, requisition, ATS or intake-key links still take precedence',
+            'regional, location-open, corporate, multi-site, duplicate-group, same-state/metro',
+            'Release this instruction together with the matching local Writer fix after approval',
+            'does not prove the Writer change is deployed',
+        ):
+            with self.subTest(requirement=requirement):
+                self.assertIn(requirement, common)
+
+    def test_email_existing_precheck_precedes_relevance_and_preserves_coverage(self):
+        procedure = (ROOT / 'policy/current/FORGE_EMAIL_DISCOVERY.txt').read_text()
+        self.assertLess(procedure.index('Apply DISCOVERY IDENTITY above first'),
+                        procedure.index('For remaining candidates use control/RELEVANCE_SCREEN.json'))
+        self.assertIn('Open the FULL body and enumerate every job', procedure)
+        self.assertIn('do not invent recovered jobs or silently close the historical coverage gap', procedure)
+        self.assertIn('Any independent original-request fence still needs reconciliation', procedure)
+        self.assertIn('NEW is not absence proof', procedure)
+
     def test_false_complete_or_readback_before_complete_never_verified(self):
         self.assertTrue(r.verified(True,True,True,True))
         for position in range(4):

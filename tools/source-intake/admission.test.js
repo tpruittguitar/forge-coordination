@@ -11,7 +11,7 @@ test('protects applied master rows and keeps unknown business in review',()=>{
  const p={rows:[item('Acme','Director Manufacturing','Austin TX','https://example.com/job1'),item('Other','Director Quality','Memphis, TN','https://example.com/job2')]};
  const master=[{COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',DISPOSITION:'APPLIED'}];
  const out=plan(p,master,{snapshotAsOf:new Date().toISOString()});
- assert.equal(out.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(out.rows[0].gate,'SKIP_EXISTING');
  assert.equal(out.rows[1].gate,'EMPLOYER_BUSINESS_REVIEW');
  assert.deepEqual(out.writer_payloads,[]);
  assert.equal(out.writer_submissions,0);
@@ -31,7 +31,7 @@ test('end-to-end Source Trial -> preview -> admission stays review-only',()=>{
  const preview=adapt(report,{runId:'FORGE-DRYRUN',discoveredAt:new Date().toISOString()});
  const master=[{COMPANY:'Shield AI',TITLE:'Director Manufacturing',LOCATION:'Dallas, TX',DISPOSITION:'APPLIED'}];
  const gated=plan(preview,master,{snapshotAsOf:new Date().toISOString()});
- assert.equal(gated.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(gated.rows[0].gate,'SKIP_EXISTING');
  assert.equal(gated.rows[1].gate,'EMPLOYER_BUSINESS_REVIEW');
  assert.equal(gated.writer_submissions,0);
  assert.deepEqual(gated.writer_payloads,[]);
@@ -53,12 +53,12 @@ test('authenticated audit requires both Writer reads and preserves flags',async(
  assert.equal(out.productionAdmission,'BLOCKED_UNTIL_READER_CONTRACT_QA');
  assert.equal(out.writer_submissions,0);
 });
-test('archived rejected identity gets protected hold',async()=>{
+test('archived rejected identity is skipped without changing its protection',async()=>{
  const {auditAuthenticated}=require('./admission');
  const preview={rows:[item('Acme','Director Manufacturing','Austin, TX','https://example.com/one')]};
  const good=rows=>({source:'WRITER',authenticated:true,rows});
  const x=await auditAuthenticated(preview,{fetchMaster:async()=>good([]),fetchArchive:async()=>good([{COMPANY:'Acme',TITLE:'Director Manufacturing',LOCATION:'Austin, TX',DISPOSITION:'REJECTED'}])});
- assert.equal(x.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(x.rows[0].gate,'SKIP_EXISTING');
 });
 test('missing archive, unauthenticated responses, and overlong reads block',async()=>{
  const {auditAuthenticated}=require('./admission');
@@ -92,7 +92,7 @@ test('archive RESTORED markers prevent obsolete terminal history from resurfacin
  assert.equal(parseArchive(row+'\nRESTORED|V2S-A1|1|2026-10-22|RUN').length,0);
  assert.equal(parseArchive(row).length,1);
 });
-test('actual authenticated Writer master+archive audit holds archive rejection',async()=>{
+test('actual authenticated Writer master+archive audit skips archived rejection',async()=>{
  const {auditLiveWriter}=require('./writer-reader');
  const row='1 | V2S-A1 | Acme | Director Quality | REJECTED_BY_EMPLOYER | REJECTED_BY_EMPLOYER | P1 | R1 | Austin, TX | DONE';
  const transport=async u=>{const action=new URL(u).searchParams.get('action');
@@ -103,7 +103,7 @@ test('actual authenticated Writer master+archive audit holds archive rejection',
  };
  const preview={rows:[item('Acme','Director Quality','Austin, TX','https://example.com/a')]};
  const out=await auditLiveWriter(preview,{key:'mock-key',transport});
- assert.equal(out.rows[0].gate,'PROTECTED_HOLD');
+ assert.equal(out.rows[0].gate,'SKIP_EXISTING');
  assert.equal(out.acquisition.archiveCount,1);
  assert.equal(out.writer_submissions,0);
 });
@@ -172,4 +172,13 @@ test('retry timing permits two individually valid attempts beyond 30s combined',
  };
  const out=await read('ping',{key:'fixture',transport,clock});
  assert.equal(calls,2);assert.equal(out.completedAt,new Date(37000).toISOString());
+});
+
+test('authenticated readers retain only identity payload fields for consistent URL dedupe',()=>{
+ const {parseMaster,parseArchive}=require('./writer-reader'),I=require('../source-trial/job-identity');
+ const line='1 | V2I-URL | Acme Group | Director | OPEN | OPEN | P1 | UNCAPTURED | Austin, TX | SOURCE_URL=https://www.indeed.com/viewjob?jk=original; SALARY_EVIDENCE_URL=https://example.com/comparable; ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/123';
+ for(const rows of [parseMaster(line+'\nEND V2_CURRENT_POPULATION_MASTER'),parseArchive(line)]){assert.equal(rows[0].p.SALARY_EVIDENCE_URL,undefined);assert.equal(I.match(I.index(rows),{company:'Acme',title:'Director',location:'',url:'https://www.indeed.com/viewjob?jk=original'}).status,'PRESENT');}
+});
+test('ambiguous canonical identity is a hold, never an employer-business candidate',()=>{
+ const p={rows:[item('Acme','Director','Austin, TX','https://example.com/new')]},master=[{PRIMARY_ID:'V2I-A',COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin, TX'},{PRIMARY_ID:'V2I-B',COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin, TX'}];assert.equal(plan(p,master,{snapshotAsOf:new Date().toISOString()}).rows[0].gate,'IDENTITY_HOLD');
 });

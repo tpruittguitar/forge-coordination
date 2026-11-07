@@ -28,28 +28,10 @@ function family(title) {
   return null;
 }
 
-/** US location? state code, 'REMOTE_US', or '' (abroad / unknown). */
-function usPlace(loc) {
-  const st = P.stateFrom(loc);
-  if (st) return st;
-  const t = String(loc || '');
-  if (/\b(united states|usa|u\.s\.)\b/i.test(t) && !/\b(canada|mexico|india|germany|united kingdom)\b/i.test(t)) return /remote/i.test(t) ? 'REMOTE_US' : 'US';
-  if (/^\s*remote\s*$/i.test(t)) return 'REMOTE_US';
-  return '';
-}
+// Shared identity normalization is also used by the upstream observer.
+const Identity = require('./job-identity');
+const {usPlace, normTitle, normUrl, atsId, locKey, identityKey} = Identity;
 
-const normTitle = s => String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(sr|senior)\b/g, 'senior').replace(/\s+/g, ' ').trim();
-const normUrl = u => String(u || '').toLowerCase().replace(/^https?:\/\//, '').replace(/[?#].*$/, '').replace(/\/+$/, '');
-
-/** ATS IDs are scoped to the employer; third-party URLs must not be treated as canonical IDs. */
-function atsId(url) {
-  const u = String(url || '');
-  let m = u.match(/(?:job-boards|boards)\.greenhouse\.io\/[^/]+\/jobs\/(\d+)/i)
-    || u.match(/jobs\.lever\.co\/[^/]+\/([a-f0-9-]{20,})/i)
-    || u.match(/jobs\.ashbyhq\.com\/[^/]+\/([a-f0-9-]{20,})/i)
-    || u.match(/(?:myworkdayjobs\.com|wd\d+\.myworkdayjobs\.com)\/[^?#]*?\/job\/[^?#]*?\/([A-Za-z0-9_-]+)(?:[?#]|$)/i);
-  return m ? m[1].toLowerCase() : '';
-}
 const PROTECTED_RE = /(?:^|[^a-z0-9])(applied|rejected(?:_[a-z0-9]+)*|declined(?:_[a-z0-9]+)*|withdrawn|interviewed|resolved|closed_dead|not_good_fit|off_target(?:_[a-z0-9]+)*)(?=$|[^a-z0-9])/i;
 const rowState = r => ['BUCKET','DISPOSITION','ANTI_RESURRECTION','DO_NOT_REWORK','STATUS','APP_STATE','APPLICATION_STATE'].map(k => [r[k],r.p && r.p[k]]).flat().filter(Boolean).join(' ');
 const protectedRow = r => r.ARCHIVED_TERMINAL === true || PROTECTED_RE.test(rowState(r)) || ['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k => [r[k],r.p && r.p[k]].some(v => !!String(v || '').trim() && !/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
@@ -59,50 +41,12 @@ function discoverySeed(r) {
  if(/^(DECLINED_BY_TIM|REJECTED_BY_EMPLOYER|CLOSED_DEAD|DUPLICATE|APPLIED)$/.test(bucket))return false;
  return !['ANTI_RESURRECTION','DO_NOT_REWORK'].some(k=>[r[k],r.p&&r.p[k]].some(v=>!!String(v||'').trim()&&!/^(false|no|0|none|unknown)$/i.test(String(v).trim())));
 }
-const locKey = loc => {
-  const raw = String(loc || '').trim();
-  const shortSuffix = raw.match(/^(.+?)\s+([A-Z]{2})$/);
-  const state = usPlace(raw) || (/^[A-Z]{2}$/.test(raw) ? P.stateFrom('City, ' + raw) :
-    shortSuffix ? P.stateFrom('City, ' + shortSuffix[2]) : '');
-  if (!state) return '';
-  let city = raw.includes(',') ? raw.split(',')[0] : '';
-  if (!city && shortSuffix && P.stateFrom('City, ' + shortSuffix[2]) === state) city = shortSuffix[1];
-  if (!city && !raw.includes(',') && state !== 'REMOTE_US' && state !== 'US') {
-    const m = raw.match(/^(.+?)\s+([A-Z][a-z]+(?:\s+[A-Z][a-z]+)*)$/);
-    if (m && P.stateFrom(m[2]) === state) city = m[1];
-  }
-  city = city.replace(/\b(remote|hybrid|onsite|on-site)\b/gi, '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
-  return city && !/^(united states|usa|us|[a-z]{2})$/.test(city) ? city + ',' + state : state;
-};
-const identityKey = (company, title, location) => P.normCo(company) + '|' + normTitle(title) + '|' + locKey(location);
-function masterIndex(rows) {
-  const keys = new Map(), urls = new Map(), reqIds = new Map(), locations = new Map(), companies = new Set();
-  for (const r of rows) {
-    const co = P.normCo(r.COMPANY || (r.p && r.p.COMPANY)), ti = normTitle(r.TITLE || (r.p && r.p.TITLE));
-    const status = protectedRow(r) ? 'EXISTING_PROTECTED' : 'EXISTING';
-    if (co) companies.add(co);
-    const put = (map, key) => { if (key) map.set(key, (map.get(key) === 'EXISTING_PROTECTED' || status === 'EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : status); };
-    put(keys, co && ti ? co + '|' + ti : '');
-    put(locations, co && ti ? identityKey(co, ti, r.LOCATION || (r.p && r.p.LOCATION)) : '');
-    const p = r.p || {};
-    P.ATS_URL_KEYS.forEach(k => {
-      const url = p[k]; if (!url) return;
-      put(urls, normUrl(url));
-      const id = atsId(url); if (id) put(reqIds, co + '|' + id);
-    });
-    for (const k of ['REQ','REQ_ID','REQUISITION_ID','ATS_REQ_ID','JOB_ID']) {
-      const id = String(p[k] || r[k] || '').trim().toLowerCase();
-      if (id) put(reqIds, co + '|' + id);
-    }
-  }
-  return { keys, urls, reqIds, locations, companies };
-}
-/** Provisional new is a discovery candidate, NOT a verified unique requisition. */
+function masterIndex(rows) { return Identity.index(rows); }
+/** Existing means a unique same job, not a company/title hint or an opaque status. */
 function novelty(idx, company, title, url, location = '', explicitReqId = '') {
-  const co = P.normCo(company), ti = normTitle(title), id = String(explicitReqId || atsId(url)).toLowerCase();
-  const matches = [url && idx.urls.get(normUrl(url)), id && idx.reqIds.get(co + '|' + id),
-    idx.locations.get(identityKey(company,title,location)), (!locKey(location) || !locKey(location).includes(',')) && idx.keys.get(co + '|' + ti)].filter(Boolean);
-  return matches.includes('EXISTING_PROTECTED') ? 'EXISTING_PROTECTED' : matches[0] || 'NEW';
+  const result = Identity.match(idx, {company, title, url, location, reqId: explicitReqId});
+  if (result.status === 'PRESENT') return result.rows.some(protectedRow) ? 'EXISTING_PROTECTED' : 'EXISTING';
+  return result.status === 'ABSENT' ? 'NEW' : 'IDENTITY_HOLD';
 }
 
 /** A board from a careers link written as the board root (the digest lists e.g. job-boards.greenhouse.io/aevexaerospace). */

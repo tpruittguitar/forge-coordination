@@ -9,7 +9,8 @@
 const fs=require('node:fs'),path=require('node:path');
 const DIR='receipts/auto-intake';
 const {requestId}=require('./production-executor');
-// Conservatively fence the employer/title family: a changed URL, country label, ZIP or site spelling cannot replay it.
+// Legacy fallback key for a fence whose original record is unavailable. Full-record fences use
+// job-identity.fenceApplies: a changed URL cannot replay the same job, but a proven different worksite is separate.
 const identityKey=r=>[String(r.COMPANY||'').replace(/\b(incorporated|corporation|corp|inc|llc|ltd|limited)\b/gi,''),r.TITLE].map(v=>String(v||'').toLowerCase().replace(/[^a-z0-9]+/g,' ').trim()).join('|');
 // Explicit operator containment is not reconciliation: the original outcome stays UNKNOWN.
 function isolatedUnknown(state){

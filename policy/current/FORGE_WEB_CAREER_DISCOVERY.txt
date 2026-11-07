@@ -16,19 +16,19 @@ TESLA and other co sites with no public board stay in this lane. Record NO_PUBLI
 ORACLE co sites: an empty search is not closure. CLOSED only when ExternalPostedEndDate is in the past.
 A 403, 429, 5xx, timeout, or unreadable page: record the co and the error, then take the next co in this slice. Do not end the slice on one blocked site.
 
-SUBMIT EVERY PLAUSIBLE ROLE IN THIS RUN
-Every plausible role you find goes to the Writer as intake in the same run. The Writer removes duplicates itself (intake key, requisition, canonical URL, employer + title + loc) and answers EXISTING_MATCH for roles already in the master, and it applies Never-Consider. Do not check the master. Do not hold a role for a later run. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
+SKIP EXISTING BEFORE INTAKE
+Apply DISCOVERY IDENTITY above before source research or submission. A proven master/archive match is PRESENT/SKIP_EXISTING, removed from discovery work with no Writer call or repeated analysis. Submit only still-new plausible roles in this run through the existing Writer gates, including race-time dedupe and Never-Consider. Keep real identity ambiguity and independent unresolved original requests explicit. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
 
 INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
 Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES; DISCOVERY_SOURCE="{{PROVIDER}} co disc". REQ_ID is the ATS number from the URL, else the posted requisition, else unknown.
 co, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
 
 LANE RECEIPT FIELDS
-COMPANIES_COVERED (list), LEFT_FOR_BOARD_LANE (list), NEXT_COMPANY_CURSOR, CANDIDATES_SCREENED, SUBMITTED_TO_WRITER, SKIPPED_BLOCKED (co | error), OUT_OF_SCOPE (title | co | reason).
+COMPANIES_COVERED (list), LEFT_FOR_BOARD_LANE (list), NEXT_COMPANY_CURSOR, CANDIDATES_SCREENED, EXISTING_SKIPPED, IDENTITY_HELD, SUBMITTED_TO_WRITER, SKIPPED_BLOCKED (co | error), OUT_OF_SCOPE (title | co | reason).
 Prior-run verif: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
 END BRIEF
 
 
-INTAKE IDENTITY (REV-196): REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED is a role Tim applied to, declined, was rejected for or protected, listed again; the Writer holds it for Tim. Count it RELISTED_HELD; never resubmit, merge or ask.
+INTAKE IDENTITY: REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). A historical WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED does not by itself keep a proven existing role in discovery. Apply PRESENT/SKIP_EXISTING with fresh canonical proof and preserve Tim's protected decision. Count RELISTED_HELD only for real unresolved relist identity or an independent unresolved original request; never resubmit, merge or override the decision.
 
-SOURCE-TRIAL NEW INTAKE (short): For a NEW role in the latest state/source-trial-report.json that passes screening, submit intake with the report's co, title, loc, url, and pay (if present). Set PAY_POSTED from the report string when present. SOURCE_URL is the report URL. Skip page research for sal/liveness when the report supplies them. Do not invent REQ_ID.
+SOURCE-TRIAL NEW INTAKE (short): First recheck report identities with the run's fresh canonical index; NEW is not absence proof. Skip PRESENT without source analysis or Writer submission. For a still-new role in the latest state/source-trial-report.json that passes screening, submit intake with the report's co, title, loc, url, and pay (if present). Set PAY_POSTED from the report string when present. SOURCE_URL is the report URL. Skip page research for sal/liveness when the report supplies them. Do not invent REQ_ID.

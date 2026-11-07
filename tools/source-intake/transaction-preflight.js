@@ -13,7 +13,7 @@ function prepareRequests(decision,{runId,sourceRunId}={}){
   const id=stableId(rec);if(identities.has(id))throw Error('BLOCKED: duplicate identity in run');identities.add(id);
   return {identityHash:id,record:structuredClone(rec),verification:'REQUIRES_FRESH_WRITER_DEDUPE_AND_RECEIPT_READBACK'};
  });
- return {status:'REQUIRES_MANUAL_CONFIRMATION_AND_VERIFIED_WRITER_EXECUTOR',runId,sourceRunId,grossFound:decision.proposed.length,proposed,held:decision.held||[],writerPayloads:[],writerSubmissions:0,submissionExecuted:false};
+ return {status:'REQUIRES_MANUAL_CONFIRMATION_AND_VERIFIED_WRITER_EXECUTOR',runId,sourceRunId,grossFound:decision.proposed.length,proposed,held:decision.held||[],skipped:decision.skipped||[],writerPayloads:[],writerSubmissions:0,submissionExecuted:false};
 }
 function classifyReceipt(result,requestId){
  if(!result||!requestId||result.requestId!==requestId)return 'PENDING_VERIFICATION';

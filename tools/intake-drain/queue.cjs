@@ -11,21 +11,23 @@ const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
 const read=(root,file,fallback)=>S.read(root,file,fallback);
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
 function safeUrl(raw){try{const key=U.key(raw);if(key?.startsWith('indeed:'))return 'https://www.indeed.com/viewjob?jk='+key.slice(7);if(key?.startsWith('linkedin:'))return 'https://www.linkedin.com/jobs/view/'+key.slice(9)+'/';const u=new URL(raw);if(u.protocol!=='https:')return '';for(const k of [...u.searchParams.keys()])if(/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k))u.searchParams.delete(k);u.hash='';return u.href;}catch{return '';}}
-function sourceCard(e){return{...PostedPay.carry({...e,url:e.sourceUrl}),company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
+function sourceCard(e){return{...require('./saved-card.cjs').identityMetadata(e,e.sourceUrl),...PostedPay.carry({...e,url:e.sourceUrl}),company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
 function rekeyedRepresentation(item,up){
  const aliases=item.aliases?.length?item.aliases:[item.key],matches=Object.entries(up.groups).filter(([k,g])=>g.status==='PRESENT'&&/^pid:V2[A-Z]-[A-Za-z0-9_-]+$/.test(k)&&aliases.every(a=>g.aliases?.includes(a)));
  if(matches.length!==1)return null;
  return {groupKey:matches[0][0],primaryId:matches[0][0].slice(4),status:'PRESENT',aliases,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};
 }
+// Keep original identity/scope evidence intact. Aliases only adapt legacy consumers.
+function fenceRecord(source={}){return {...source,COMPANY:source.COMPANY||source.company,TITLE:source.TITLE||source.title,LOCATION:source.LOCATION||source.location,SOURCE_URL:source.SOURCE_URL||source.url||source.sourceUrl};}
 function writerFences(root){
  const mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),fences=new Map();
- for(const job of Object.values(mail.jobs))if(job.submissions?.length||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||''))for(const k of [job.key,...job.aliases||[]])fences.set(k,{requestIds:(job.submissions||[]).map(s=>s.requestId).filter(Boolean),proof:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
- for(const i of read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(i.requestId&&/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status||''))fences.set(i.key,{requestIds:[i.requestId],proof:'state/RELEVANCE_INTAKE_PLAN.json'});
+ for(const job of Object.values(mail.jobs))if(job.submissions?.length||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||''))for(const k of [job.key,...job.aliases||[]])fences.set(k,{requestIds:(job.submissions||[]).map(s=>s.requestId).filter(Boolean),proof:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key,record:fenceRecord(job)});
+ for(const i of read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items)if(i.requestId&&/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status||''))fences.set(i.key,{requestIds:[i.requestId],proof:'state/RELEVANCE_INTAKE_PLAN.json',record:i.record||i.sourceEvidence});
  const prior=require('../source-intake/auto-latch').previous(root),latched=require('../source-intake/auto-latch').latch(prior);
- for(const q of latched.quarantined){const key=U.key(q.record?.SOURCE_URL);if(key)fences.set(key,{requestIds:[q.requestId],proof:q.file});}
+ for(const q of latched.quarantined){const key=U.key(q.record?.SOURCE_URL);if(key)fences.set(key,{requestIds:[q.requestId],proof:q.file,record:q.record});}
  // Every recorded attempt fences its original source, including accepted but not independently reconciled writes.
  for(const p of prior)if(!p.state.reconciliation&&!p.state.noCandidates)for(const [requestId,result] of Object.entries(p.state.results||{})){
-  const record=result?.source||result?.record||result?.results?.[0]?.source;const k=U.key(record?.SOURCE_URL);if(k)fences.set(k,{requestIds:[requestId],proof:p.file});
+  const record=result?.source||result?.record||result?.results?.[0]?.source;const k=U.key(record?.SOURCE_URL);if(k)fences.set(k,{requestIds:[requestId],proof:p.file,record});
  }
  return fences;
 }
@@ -35,13 +37,13 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  if(up.schema!=='forge.upstream-ledger.v1'||!up.entries||!up.groups||!Number.isFinite(Date.parse(up.at))||Date.parse(up.at)>now+120000||now-Date.parse(up.at)>24*3600000)throw Error('CURRENT_UPSTREAM_INVENTORY_REQUIRED');
  const resumeVersion=Resume.load().source.textSha256;
  const reports=['state/source-trial-report.json','state/board-discovery-report.json'].map(f=>read(root,f,{new_roles:[]}));
- const reasons=new Map();for(const report of reports)for(const card of [...report.new_roles||[],...report.existing_roles||[]])reasons.set(U.key(card.url),selection(card));
+ const reasons=new Map();for(const report of reports)for(const card of [...report.new_roles||[],...report.existing_roles||[],...report.identity_held_roles||[]])reasons.set(U.key(card.url),selection(card));
  const saved=require('./saved-card.cjs'),savedIndex=saved.index(root,up,mail,reports);
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
  const fences=writerFences(root);
  for(const [key,g] of Object.entries(up.groups)){
-  const dismissedFence=(g.aliases||[key]).some(k=>fences.has(k)&&dismissed(up.entries[k]));
-  if(!pending.has(g.status)&&!old.items[key]&&!dismissedFence)continue;
+  const currentFence=(g.aliases||[key]).some(k=>fences.has(k)),priorAlias=(g.aliases||[key]).some(k=>old.items[k]);
+  if(!pending.has(g.status)&&!old.items[key]&&(!currentFence||priorAlias))continue;
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
   const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean);
@@ -55,11 +57,11 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:'Read saved role content, then one targeted lookup for actual function and responsibility',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
   // A Writer attempt discovered after dismissal still needs independent reconciliation.
-  if(fence&&es.some(dismissed)){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
+  if(fence&&(es.some(dismissed)||g.status==='PRESENT')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
   old.items[key]=item;
  }
  // Missing inventory is an error, never an invented completion.
- for(const [key,item]of Object.entries(old.items))if(!present.has(key)&&item.status!=='ACCOUNTED_UPSTREAM'){
+ for(const [key,item]of Object.entries(old.items))if(!present.has(key)&&(item.status!=='ACCOUNTED_UPSTREAM'||(item.aliases||[key]).some(k=>fences.has(k)))){
   const represented=rekeyedRepresentation(item,up);
   if(represented){
    item.currentRepresentation=represented;
@@ -132,7 +134,7 @@ function approved(root,now=Date.now()){
 }
 function ownedKeys(root){return new Set(Object.values(read(root,FILE,empty()).items).filter(i=>i.status!=='ACCOUNTED_UPSTREAM').flatMap(i=>[i.key,...i.aliases]));}
 function owned(root,key){return ownedKeys(root).has(key);}
-function fences(root){return Object.values(read(root,FILE,empty()).items).filter(i=>i.fence).map(i=>({COMPANY:i.card.company,TITLE:i.card.title,LOCATION:i.card.location,SOURCE_URL:i.card.url}));}
+function fences(root){return Object.values(read(root,FILE,empty()).items).filter(i=>i.fence).map(i=>fenceRecord(i.fence.record||i.card));}
 function seeds(root){const work=read(root,FILE,empty());return Object.values(work.items).filter(i=>i.status==='ACTION_REQUIRED'&&i.action==='INTAKE'&&!i.fence&&i.screen.outcome==='ADMIT').map(i=>({...i.card,discoveryReview:i.discoveryReview,source:'SAVED_DISCOVERY',selectionReason:i.selectionReason,drainKey:i.key}));}
 if(require.main===module)(async()=>{
  const [command,arg]=process.argv.slice(2),root=path.resolve(__dirname,'../..');let result;
