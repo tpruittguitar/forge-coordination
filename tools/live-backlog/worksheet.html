@@ -6,6 +6,63 @@
 <style>
 :root{font:14px system-ui,sans-serif;color:#182c3c;background:#f4f7fa;color-scheme:light}*{box-sizing:border-box}[hidden]{display:none!important}body{margin:0}main{padding:24px;max-width:1800px;margin:auto}h1{font-size:25px;margin:0 0 5px}p{margin:6px 0}.subtle{color:#526477;font-size:13px}.bar{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin:16px 0}button,input,select{font:inherit;border:1px solid #bac7d3;border-radius:5px;padding:8px 11px;background:white;color:inherit}button{cursor:pointer}button:hover:not(:disabled){background:#eaf1f6}button:disabled{opacity:.5;cursor:not-allowed}button:focus-visible,input:focus-visible,select:focus-visible,a:focus-visible{outline:3px solid #256cc2;outline-offset:2px}.danger{background:#a92436;color:white;border-color:#a92436}.danger:hover:not(:disabled){background:#851a2b}.primary{background:#175eb0;color:white}.ats-filter{margin-top:-6px}.ats-filter input{width:105px}.filter-error{color:#a92436}.ats-filter [aria-invalid=true]{border-color:#a92436}#search{min-width:260px;flex:1}.status{border:1px solid #c6d4e0;border-radius:6px;padding:12px;background:white;min-height:45px}.status[data-tone=error]{border-color:#c74b55;background:#fff3f3}.status[data-tone=success]{border-color:#4a9671;background:#effbf4}.table-wrap{height:calc(100vh - 340px);min-height:280px;overflow:auto;background:white;border:1px solid #c6d4e0;border-radius:6px}table{border-collapse:separate;border-spacing:0;width:100%;table-layout:fixed}th{position:sticky;top:0;background:#eaf0f6;z-index:1;text-align:left;border-bottom:1px solid #b7c7d6;padding:4px 8px}th button{padding:9px 0;background:transparent;border:0;font-weight:650;width:100%;text-align:left}td{padding:9px 8px;border-bottom:1px solid #e2e9ef;overflow-wrap:anywhere;vertical-align:top}tr.selected td{background:#e8f1ff}tbody tr:hover td{background:#f1f6fc}input[type=checkbox]{width:17px;height:17px;cursor:pointer}a{color:#175eb0}.check{width:44px}.company{width:14%}.title{width:21%}.location{width:13%}.status-col{width:9%}.source{width:11%}.date{width:10%}.occurrence,.matches{width:75px}.salary{width:205px}.salary-basis{display:block;font-size:12px;color:#526477;margin-top:4px}.salary-details{font-size:12px;margin-top:5px}.salary-details p{white-space:pre-wrap}.ats{width:220px}.ats-terms{font-size:12px;margin:5px 0;line-height:1.45}.ats-basis{display:block;font-size:12px;color:#526477;margin:4px 0}.ats-details{font-size:12px}.ats-details summary{cursor:pointer}.ats-details p{white-space:pre-wrap}.ats-details summary:focus-visible{outline:3px solid #256cc2;outline-offset:2px}.review{width:15%}.evidence{width:12%}.repeat-warning{color:#8a4b00;font-size:12px}.source-key{display:block;font-size:11px;color:#526477;margin-top:5px}table{min-width:1600px}footer{display:flex;align-items:center;justify-content:space-between;gap:12px;flex-wrap:wrap;margin-top:12px}dialog{border:1px solid #bac7d3;border-radius:10px;max-width:480px;padding:24px;box-shadow:0 12px 70px #10273d44}dialog::backdrop{background:#11223570}dialog h2{margin-top:0}dialog .bar{justify-content:flex-end;margin-bottom:0}#revision{word-break:break-all}@media(max-width:700px){main{padding:12px}.table-wrap{height:55vh}table{min-width:950px}h1{font-size:22px}}
 </style>
+<style id="worksheet-dark-theme">
+/* Neutral dark palette, kept separate from worksheet layout and behavior. */
+:root {
+  color-scheme: dark;
+  --page: #111111;
+  --surface: #191919;
+  --control: #242424;
+  --hover: #2d2d2d;
+  --selected: #383838;
+  --selected-hover: #404040;
+  --text: #e6e6e6;
+  --muted: #bdbdbd;
+  --line: #555555;
+  --control-line: #999999;
+  --focus: #eeeeee;
+  color: var(--text);
+  background: var(--page);
+  scrollbar-color: #888888 var(--surface);
+}
+body { color: var(--text); background: var(--page); }
+::selection { color: #111111; background: #cccccc; }
+.subtle, .salary-basis, .ats-basis, .hold-basis, .source-key { color: var(--muted); }
+button, input, select { background: var(--control); color: var(--text); border-color: var(--control-line); }
+input::placeholder { color: var(--muted); opacity: 1; }
+button:hover:not(:disabled) { background: var(--hover); }
+button:disabled { background: var(--surface); color: #aaaaaa; border-color: var(--line); opacity: 1; }
+button:focus-visible, input:focus-visible, select:focus-visible, a:focus-visible,
+summary:focus-visible, .ats-details summary:focus-visible, #grid:focus-visible {
+  outline: 3px solid var(--focus);
+  outline-offset: 2px;
+}
+.primary, .danger { background: #333333; color: var(--text); border-color: #bdbdbd; font-weight: 650; }
+.primary:hover:not(:disabled), .danger:hover:not(:disabled) { background: #484848; }
+.danger { border-style: double; border-width: 3px; padding: 6px 9px; }
+.filter-error { color: var(--text); font-weight: 650; }
+.ats-filter [aria-invalid=true] { border-color: var(--focus); border-style: dashed; }
+.status { color: var(--text); background: var(--surface); border-color: var(--line); }
+.status[data-tone=error] { background: #262626; border: 3px double #bdbdbd; padding: 10px; }
+.status[data-tone=error]::before { content: 'Error: '; font-weight: 700; }
+.status[data-tone=success] { background: #222222; border-color: #aaaaaa; }
+.status[data-tone=success]::before { content: 'Confirmed: '; font-weight: 700; }
+.table-wrap { background: var(--surface); border-color: var(--line); }
+th { background: #262626; border-color: var(--control-line); }
+th button { background: transparent; }
+td { border-color: #3f3f3f; }
+tbody tr:hover td { background: var(--hover); }
+tr.selected td { background: var(--selected); }
+tbody tr.selected:hover td { background: var(--selected-hover); }
+tr.selected td:first-child { box-shadow: inset 3px 0 #cccccc; }
+input[type=checkbox] { accent-color: #cccccc; }
+a, a:visited { color: #dddddd; text-decoration: underline; text-underline-offset: 2px; }
+a:hover { color: var(--focus); }
+summary { cursor: pointer; text-decoration: underline; text-underline-offset: 2px; }
+.repeat-warning { color: var(--text); font-weight: 600; }
+dialog { color: var(--text); background: var(--surface); border-color: var(--control-line); box-shadow: 0 12px 70px #00000099; }
+dialog::backdrop { background: #000000b3; }
+</style>
 </head>
 <body><main>
 <h1>Live backlog worksheet</h1><p class="subtle">Authoritative live data · Deletions commit to the file the app uses.</p>
