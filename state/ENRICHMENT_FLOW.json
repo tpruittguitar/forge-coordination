@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-07T04:59:42.274Z",
+    "at": "2026-11-07T05:04:02.127Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -13,16 +13,8 @@
     "failedFreshnessBeforeDecision": 2,
     "closedOrFailedBeforeDecision": 3,
     "percent": 0.13986013986013987,
-    "lossDetectedToday": 2,
+    "lossDetectedToday": 0,
     "daily": [
-      {
-        "day": "2026-10-08",
-        "enriched": 0,
-        "closedBeforeDecision": 0,
-        "failedFreshnessBeforeDecision": 0,
-        "closedOrFailedBeforeDecision": 0,
-        "percent": null
-      },
       {
         "day": "2026-10-09",
         "enriched": 0,
@@ -254,12 +246,20 @@
         "failedFreshnessBeforeDecision": 0,
         "closedOrFailedBeforeDecision": 0,
         "percent": 0
+      },
+      {
+        "day": "2026-11-07",
+        "enriched": 0,
+        "closedBeforeDecision": 0,
+        "failedFreshnessBeforeDecision": 0,
+        "closedOrFailedBeforeDecision": 0,
+        "percent": null
       }
     ],
     "ageAtDecision": {
-      "sampleJobs": 1504,
-      "medianHours": 9.02190472222222,
-      "medianUpperHours": 9.439081527777777,
+      "sampleJobs": 1508,
+      "medianHours": 9.036218611111112,
+      "medianUpperHours": 9.439081944444444,
       "oldestHours": 112.73621333333334,
       "oldestUpperHours": 113.18139194444444,
       "basis": "Hours from the observed completion window to the first recorded post-completion Tim decision; displayed as bounds, not invented exact completion times."
@@ -273,21 +273,21 @@
     "measurementOnly": true
   },
   "freshness": {
-    "due": 554,
-    "current": 957,
+    "due": 553,
+    "current": 954,
     "undated": 0
   },
-  "at": "2026-11-07T04:59:42.274Z",
+  "at": "2026-11-07T05:04:02.127Z",
   "queues": {
     "verification": 0,
     "enrichment": 653,
-    "readyForReview": 858,
+    "readyForReview": 854,
     "blockedClosed": 109
   },
   "needsEnrichment": 653,
   "population": {
-    "total": 1620,
-    "accounted": 1620,
+    "total": 1616,
+    "accounted": 1616,
     "reconciled": true
   },
   "oldestWaiting": {
@@ -296,8 +296,8 @@
     "readyForReview": "2026-10-31T04:35:30.337Z"
   },
   "reconciliation": {
-    "from": "2026-11-07T04:56:44.663Z",
-    "to": "2026-11-07T04:59:42.274Z",
+    "from": "2026-11-07T04:59:42.274Z",
+    "to": "2026-11-07T05:04:02.127Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -321,9 +321,9 @@
         "opening": 858,
         "entered": 0,
         "completed": 0,
-        "otherExits": 0,
-        "closing": 858,
-        "delta": 0,
+        "otherExits": 4,
+        "closing": 854,
+        "delta": -4,
         "reconciled": true
       },
       "blockedClosed": {
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: measured fit, salary, posting-based degree evidence and Writer-calculated final score with model provenance; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-07T04:59:02.581Z",
-    "sha256": "00e3c38965c58e031ef81ad2dba61f2ae2385dcea00d678e2912b719b4ba98c3",
+    "readAt": "2026-11-07T05:02:56.935Z",
+    "sha256": "04b838dd1a31c83dd07bf75757dea9c815781b753ff24d96f7a2249513a25b2a",
     "rows": 4950
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-07T04:59:13.048Z",
+    "at": "2026-11-07T05:03:08.249Z",
     "total": 11159,
     "sourceIdentities": 11787,
     "aliasesMerged": 628,
@@ -519,8 +519,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-07T04:56:04.694Z",
-      "to": "2026-11-07T04:59:13.048Z",
+      "from": "2026-11-07T04:59:13.048Z",
+      "to": "2026-11-07T05:03:08.249Z",
       "opening": 746,
       "arrivals": 0,
       "admitted": 0,
@@ -558,9 +558,9 @@
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 20,
+          "count": 19,
           "windowHours": 6,
-          "perHour": 3.3333333333333335,
+          "perHour": 3.1666666666666665,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
         }
@@ -576,9 +576,9 @@
           "basis": "Distinct captured candidate identities first observed within 12 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 51,
+          "count": 50,
           "windowHours": 12,
-          "perHour": 4.25,
+          "perHour": 4.166666666666667,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 12 hours."
         }
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-07T04:59:13.048Z",
+      "at": "2026-11-07T05:03:08.249Z",
       "reviewedSourceIdentities": 11787,
       "pendingCandidates": 746,
       "storedEvidence": 526,
