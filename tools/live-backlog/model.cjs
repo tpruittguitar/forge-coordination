@@ -22,7 +22,7 @@ function load(read){
 function validateRequest(input){if(!/^[a-f0-9]{40}$/.test(input.revision||'')||!/^[a-f0-9-]{36}$/i.test(input.requestId||''))throw Error('INVALID_REQUEST');}
 function mutate(source,input,kind,original=null,now=new Date().toISOString()){
  validateRequest(input);const s=structuredClone(source),id=sha({requestId:input.requestId,revision:input.revision,kind,keys:input.keys||null,receiptId:input.receiptId||null});
- const receipt={schema:'forge.live-backlog-receipt.v1',receiptId:id,requestId:input.requestId,operation:kind,baseRevision:input.revision,at:now,canonicalWrites:0,items:[]};
+ const receipt={schema:'forge.live-backlog-receipt.v1',receiptId:id,requestId:input.requestId,operation:kind,baseRevision:input.revision,selectionRevision:input.selectionRevision||input.revision,at:now,canonicalWrites:0,items:[]};
  if(kind==='delete'){
   if(!Array.isArray(input.keys)||!input.keys.length||input.keys.length>10000||new Set(input.keys).size!==input.keys.length)throw Error('SELECT_UNIQUE_DISCOVERY_ROWS');
   const cards=new Map(s.items.map(i=>[i.key,i]));

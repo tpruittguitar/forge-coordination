@@ -62,3 +62,8 @@ test('an old valid positive review cannot reactivate a group missing from curren
  const up=S.read(root,'state/UPSTREAM_LEDGER.json');delete up.groups[key];S.save(root,'state/UPSTREAM_LEDGER.json',up);
  a.equal(Q.sync(root,{now}).items[key].status,'INVENTORY_RECONCILIATION_REQUIRED');
 });
+test('worksheet deletion hides the card but preserves outstanding request reconciliation',t=>{
+ const {root,key}=fixture(t),up=S.read(root,'state/UPSTREAM_LEDGER.json');up.entries[key].status='EXCLUDED';up.entries[key].worksheetDeletion={schema:'forge.worksheet-deletion.v1',key,receiptId:'a'.repeat(64),currentStatus:'HELD'};up.groups[key].status='EXCLUDED';S.save(root,'state/UPSTREAM_LEDGER.json',up);
+ S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[key]:{key,status:'POST_IN_FLIGHT_UNKNOWN',submissions:[{requestId:'ORIGINAL-123'}]}}});
+ const work=Q.sync(root,{now});a.equal(work.items[key].action,'RECONCILE_WRITER');a.equal(work.items[key].status,'ACTION_REQUIRED');a.equal(work.items[key].canonicalCompletion,false);a.equal(Q.seeds(root).length,0);
+});
