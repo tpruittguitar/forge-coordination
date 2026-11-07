@@ -1,10 +1,10 @@
 {
- "at": "2026-11-07T22:05:30.410Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T220346924Z",
+ "at": "2026-11-07T22:44:33.545Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261107T224226190Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-07T22:03:51.373Z",
+  "readAt": "2026-11-07T22:42:32.609Z",
   "sha256": "f5621cf9217777e12fbc13ca0be253134b7d50a2cfbedb11ed84d49f39bd94ce",
   "rows": 4986
  },
@@ -12,42 +12,50 @@
  "eligible": 702,
  "anchors": 1129,
  "archive_anchors": 5,
- "ats_rows": 0,
- "ats_read": 0,
+ "ats_rows": 1,
+ "ats_read": 1,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 27,
+ "estimate_waiting_for_posting": 21,
  "skipped_recent": 545,
  "submitted": 0,
- "guard_dropped": 0,
+ "guard_dropped": 7,
  "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "agg_tried": {
+  "linkedin": 4
+ },
+ "agg_read": {
   "linkedin": 1
  },
- "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
- "agg_wall": {
-  "linkedin": 1
+ "agg_failed": {
+  "linkedin": 3
  },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
+ "agg_wall": {},
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 4,
  "boards_read": 14,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 4,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 4,
  "employer_benchmarks": {
   "saved": 0,
   "discoveryReads": 0,
@@ -57,18 +65,18 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 4,
+  "candidates": 47,
+  "saved_reused": 46,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 0,
+  "backoff": 1,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-07T22:03:55.359Z",
+  "profile_as_of": "2026-11-07T22:42:35.957Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -81,9 +89,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 13,
- "public_read": 0,
- "public_failed": 13,
+ "public_tried": 10,
+ "public_read": 3,
+ "public_failed": 7,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -144,21 +152,47 @@
  ],
  "salary_review": {
   "eligible": 527,
-  "due": 0,
-  "reviewed": 0,
+  "due": 4,
+  "reviewed": 4,
   "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 4,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-3A569CDA8897",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-F74FFC00B024",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-FD3E46472C39",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-1BD1E7A13292",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ]
  },
  "decision_waiting": 738,
  "not_attempted": 19,
- "nothing_found": 32,
+ "nothing_found": 25,
+ "ats_need_salary": 1,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 0,
+ "planned": 7,
  "research_budget_exhausted": false,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
@@ -1022,97 +1056,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2A476B8C9241",
-   "company": "Bausch Health Companies Inc.",
-   "title": "Senior Manager, Quality Engineering (Aesthetics Med Device)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:28:54.151Z",
-   "retryAt": "2026-11-07T22:28:54.151Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-68B5244FB331",
-   "company": "Revlon",
-   "title": "Director, Filling & Assembly",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:28:57.338Z",
-   "retryAt": "2026-11-07T22:28:57.338Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DAD62270C2F9",
-   "company": "Freudenberg Sealing Technologies",
-   "title": "Head of Quality",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:28:57.340Z",
-   "retryAt": "2026-11-07T22:28:57.340Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B7A365E937B2",
-   "company": "Carton Service CSI, LLC",
-   "title": "Director of Quality",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:29:00.509Z",
-   "retryAt": "2026-11-07T22:29:00.509Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-79830B23965B",
-   "company": "Champion Windows & Home Exteriors",
-   "title": "Director of Manufacturing",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:29:03.656Z",
-   "retryAt": "2026-11-07T22:29:03.656Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF4495218805",
-   "company": "Anduril Industries",
-   "title": "Senior Manager, Product Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:29:05.350Z",
-   "retryAt": "2026-11-07T22:29:05.350Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-816864AD9AEF",
-   "company": "AmeriHealth Caritas",
-   "title": "Director Quality Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T21:29:05.351Z",
-   "retryAt": "2026-11-07T22:29:05.351Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-DCBEDCB272E4",
    "company": "Genesis",
    "title": "Head of Supply Chain (Robot Production)",
@@ -1801,177 +1744,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-C7D075F51242",
-   "company": "Kailera Therapeutics, Inc.",
-   "title": "Director, Drug Substance Commercial Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:13.691Z",
-   "retryAt": "2026-11-08T14:04:13.691Z",
-   "attempts": [
-    {
-     "url": "https://grnh.se/s7t3issi8us",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F8503D0FC488",
-   "company": "POWER ELECTRONICS",
-   "title": "Plant Manager / Houston",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:16.655Z",
-   "retryAt": "2026-11-08T14:04:16.655Z",
-   "attempts": [
-    {
-     "url": "https://career55.sapsf.eu/career?company=powerelect&career_ns=job_listing&career_job_req_id=4396&lang=es_ES",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-08E3112E362B",
-   "company": "UF Health Shands Hospital",
-   "title": "Director, Quality & Compliance",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:18.867Z",
-   "retryAt": "2026-11-08T14:04:18.867Z",
-   "attempts": [
-    {
-     "url": "https://jobs.ufhealth.org/jobs/jobs/70990/job?iis=Job+Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-291757EAD78B",
-   "company": "BAE Systems USA",
-   "title": "Senior Director of Supplier Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:20.895Z",
-   "retryAt": "2026-11-08T14:04:20.895Z",
-   "attempts": [
-    {
-     "url": "https://jobs.baesystems.com/global/en/job/131860BR",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E4295C789C9A",
-   "company": "The Fedcap Group",
-   "title": "Director of Quality Improvement",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:24.287Z",
-   "retryAt": "2026-11-08T14:04:24.287Z",
-   "attempts": [
-    {
-     "url": "https://eckb.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/requisitions/preview/103717",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B425BFB00F3D",
-   "company": "EMD Serono",
-   "title": "BPMM-0, Head of Strategy, Quality and Operation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:26.501Z",
-   "retryAt": "2026-11-08T14:04:26.501Z",
-   "attempts": [
-    {
-     "url": "https://careers.emdgroup.com/us/en/job/MQAEGZUS303708EXTERNALENUS/BPMM-0-Head-of-Strategy-Quality-and-Operation",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E75359CFCEBB",
-   "company": "Eli Lilly",
-   "title": "Advisor/Sr Advisor/Director – Manufacturing Science",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:28.446Z",
-   "retryAt": "2026-11-08T14:04:28.446Z",
-   "attempts": [
-    {
-     "url": "https://careers.lilly.com/us/en/job/R-114392",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1EBC3EE9638E",
-   "company": "SRM Concrete",
-   "title": "Plant Manager/ CDL Mixer Operator - Ready Mix Concrete",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:30.173Z",
-   "retryAt": "2026-11-08T14:04:30.173Z",
-   "attempts": [
-    {
-     "url": "https://careers-smyrnareadymix.icims.com/jobs/4086/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5C12C42E0CB4",
-   "company": "SRM Concrete",
-   "title": "Plant Manager - Ready Mix Concrete - Bowling Green KY",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:31.818Z",
-   "retryAt": "2026-11-08T14:04:31.818Z",
-   "attempts": [
-    {
-     "url": "https://careers-smyrnareadymix.icims.com/jobs/3784/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-5FD3CB05D712",
    "company": "Novo",
    "title": "Director, United States Operations Quality Audits & Inspections",
@@ -1979,9 +1751,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:00.173Z",
-   "retryAt": "2026-11-07T22:32:00.173Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:29.481Z",
+   "retryAt": "2026-11-08T14:43:29.481Z",
    "attempts": [
     {
      "url": "https://careers.novonordisk.com/job/Plainsboro-Director%2C-United-States-Operations-Quality-Audits-&-Inspections-NJ/1454872233/",
@@ -1998,9 +1770,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:02.149Z",
-   "retryAt": "2026-11-07T22:32:02.149Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:31.385Z",
+   "retryAt": "2026-11-08T14:43:31.385Z",
    "attempts": [
     {
      "url": "https://grnh.se/mezh9zov4us",
@@ -2017,9 +1789,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:04.946Z",
-   "retryAt": "2026-11-07T22:32:04.946Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:34.373Z",
+   "retryAt": "2026-11-08T14:43:34.373Z",
    "attempts": [
     {
      "url": "https://emcm.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/job/2355598/?utm_medium=jobboard&utm_source=Indeed.com+Sponsored",
@@ -2036,9 +1808,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:07.166Z",
-   "retryAt": "2026-11-07T22:32:07.166Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:36.727Z",
+   "retryAt": "2026-11-08T14:43:36.727Z",
    "attempts": [
     {
      "url": "https://jobs.csl.com/en/jobs/senior-manager-quality-puerto-rico-en-r-294561",
@@ -2055,9 +1827,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:09.979Z",
-   "retryAt": "2026-11-07T22:32:09.979Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:39.417Z",
+   "retryAt": "2026-11-08T14:43:39.417Z",
    "attempts": [
     {
      "url": "https://jobs.bbraun.com/job/Director-Quality-Control-Labs/14755-en_US",
@@ -4192,63 +3964,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-968EAF907586",
-   "company": "Revolution Medicines",
-   "title": "Senior Manager, Stability Management, Analytical Development and Quality Control",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:33.573Z",
-   "retryAt": "2026-11-08T14:04:33.573Z",
-   "attempts": [
-    {
-     "url": "https://www.revmed.com/careers-list/?gh_jid=7993228003",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AC282E868BA5",
-   "company": "Bluegrass Stream",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:38.420Z",
-   "retryAt": "2026-11-08T14:04:38.420Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4487372612",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FF458786B8C6",
-   "company": "Metrie",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:04:40.202Z",
-   "retryAt": "2026-11-08T14:04:40.202Z",
-   "attempts": [
-    {
-     "url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/viewRequisition?org=METRIE&cws=44&rid=2842",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-AEB9538B4013",
    "company": "Neon Aerospace",
    "title": "Aerospace Quality Director",
@@ -5371,6 +5086,234 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-C7D075F51242",
+   "company": "Kailera Therapeutics, Inc.",
+   "title": "Director, Drug Substance Commercial Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:13.691Z",
+   "retryAt": "2026-11-08T14:04:13.691Z",
+   "attempts": [
+    {
+     "url": "https://grnh.se/s7t3issi8us",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F8503D0FC488",
+   "company": "POWER ELECTRONICS",
+   "title": "Plant Manager / Houston",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:16.655Z",
+   "retryAt": "2026-11-08T14:04:16.655Z",
+   "attempts": [
+    {
+     "url": "https://career55.sapsf.eu/career?company=powerelect&career_ns=job_listing&career_job_req_id=4396&lang=es_ES",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-08E3112E362B",
+   "company": "UF Health Shands Hospital",
+   "title": "Director, Quality & Compliance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:18.867Z",
+   "retryAt": "2026-11-08T14:04:18.867Z",
+   "attempts": [
+    {
+     "url": "https://jobs.ufhealth.org/jobs/jobs/70990/job?iis=Job+Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-291757EAD78B",
+   "company": "BAE Systems USA",
+   "title": "Senior Director of Supplier Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:20.895Z",
+   "retryAt": "2026-11-08T14:04:20.895Z",
+   "attempts": [
+    {
+     "url": "https://jobs.baesystems.com/global/en/job/131860BR",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E4295C789C9A",
+   "company": "The Fedcap Group",
+   "title": "Director of Quality Improvement",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:24.287Z",
+   "retryAt": "2026-11-08T14:04:24.287Z",
+   "attempts": [
+    {
+     "url": "https://eckb.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_2/requisitions/preview/103717",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B425BFB00F3D",
+   "company": "EMD Serono",
+   "title": "BPMM-0, Head of Strategy, Quality and Operation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:26.501Z",
+   "retryAt": "2026-11-08T14:04:26.501Z",
+   "attempts": [
+    {
+     "url": "https://careers.emdgroup.com/us/en/job/MQAEGZUS303708EXTERNALENUS/BPMM-0-Head-of-Strategy-Quality-and-Operation",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E75359CFCEBB",
+   "company": "Eli Lilly",
+   "title": "Advisor/Sr Advisor/Director – Manufacturing Science",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:28.446Z",
+   "retryAt": "2026-11-08T14:04:28.446Z",
+   "attempts": [
+    {
+     "url": "https://careers.lilly.com/us/en/job/R-114392",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1EBC3EE9638E",
+   "company": "SRM Concrete",
+   "title": "Plant Manager/ CDL Mixer Operator - Ready Mix Concrete",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:30.173Z",
+   "retryAt": "2026-11-08T14:04:30.173Z",
+   "attempts": [
+    {
+     "url": "https://careers-smyrnareadymix.icims.com/jobs/4086/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C12C42E0CB4",
+   "company": "SRM Concrete",
+   "title": "Plant Manager - Ready Mix Concrete - Bowling Green KY",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:31.818Z",
+   "retryAt": "2026-11-08T14:04:31.818Z",
+   "attempts": [
+    {
+     "url": "https://careers-smyrnareadymix.icims.com/jobs/3784/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-968EAF907586",
+   "company": "Revolution Medicines",
+   "title": "Senior Manager, Stability Management, Analytical Development and Quality Control",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:33.573Z",
+   "retryAt": "2026-11-08T14:04:33.573Z",
+   "attempts": [
+    {
+     "url": "https://www.revmed.com/careers-list/?gh_jid=7993228003",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC282E868BA5",
+   "company": "Bluegrass Stream",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:38.420Z",
+   "retryAt": "2026-11-08T14:04:38.420Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4487372612",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FF458786B8C6",
+   "company": "Metrie",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:04:40.202Z",
+   "retryAt": "2026-11-08T14:04:40.202Z",
+   "attempts": [
+    {
+     "url": "https://phe.tbe.taleo.net/phe03/ats/careers/v2/viewRequisition?org=METRIE&cws=44&rid=2842",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-3E300502C27E",
    "company": "Ladders",
    "title": "Senior Director, Service Manager",
@@ -5403,9 +5346,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T06:32:19.265Z",
-   "retryAt": "2026-11-07T22:32:19.265Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-07T22:43:44.034Z",
+   "retryAt": "2026-11-08T14:43:44.034Z",
    "attempts": [
     {
      "url": "https://www.michaelpage.com/job-detail/traveling-quality-control-manager-federalcommercial-projects/ref/jn-102026-7124226",
@@ -6946,25 +6889,6 @@
    "lastAttemptAt": "2026-11-07T00:06:46.898Z",
    "retryAt": "2026-11-07T01:06:46.898Z",
    "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9FC8F9155034",
-   "company": "Trivium Packaging",
-   "title": "Senior Director Operational Excellence Americas",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-07T22:05:12.838Z",
-   "retryAt": "2026-11-08T14:05:12.838Z",
-   "attempts": [
-    {
-     "url": "https://careers.triviumpackaging.com/job/Senior-Director-Operational-Excellence-Americas/39786-pt_BR",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -11984,6 +11908,25 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-9FC8F9155034",
+   "company": "Trivium Packaging",
+   "title": "Senior Director Operational Excellence Americas",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-07T22:05:12.838Z",
+   "retryAt": "2026-11-08T14:05:12.838Z",
+   "attempts": [
+    {
+     "url": "https://careers.triviumpackaging.com/job/Senior-Director-Operational-Excellence-Americas/39786-pt_BR",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-82E7CC97C04E",
    "company": "DP World",
    "title": "Senior Plant Manager, Contract Logistics Site Operations",
@@ -12041,7 +11984,38 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-2A476B8C9241",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-68B5244FB331",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-DAD62270C2F9",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-B7A365E937B2",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  },
+  {
+   "id": "V2I-79830B23965B",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-07"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
