@@ -1,0 +1,69 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "unresolved:9abe239c805953195fd161dc",
+  "sourceVersion": "798a9851f0c1a11591fe815d393e51b3794cb6023ef30396d86460717d8fdb80",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261107T122216Z-source-7",
+  "observedAt": "2026-11-07T12:22:16.592488Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "instructionCommit": "6d7e396a951b133c386324dbc12645f6d0b12b08",
+  "reason": "Recovered exact LinkedIn posting URL by equality with original saved SHA256 and labeled posting ID. Fresh shared matcher then returns AMBIGUOUS. Original ledger records HELD_WRITER_IDENTITY and request FORGE-EMAIL-CHATGPT-20261101-1106ET-B02; preserve request obligation and do not replay or infer write completion from a batch receipt.",
+  "nextAction": "Existing identity/request coordinator reconciles recovered exact posting against canonical candidates and original request-specific evidence; no replay or new intake.",
+  "retryCondition": "Exact posting/canonical candidate lineage and original candidate disposition are independently reconciled.",
+  "canonicalIdentityCheck": {
+    "at": "2026-11-07T12:20:36.740Z",
+    "masterRows": 4976,
+    "archiveRows": 785,
+    "masterSha256": "3c0e7f7c44bf58ea2e5fdbd2e2cdc60ac02a9b7022d9565460378a65a00e0d3c",
+    "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+    "authenticated": true,
+    "masterEndMarker": true,
+    "archiveHeader": true,
+    "status": "AMBIGUOUS",
+    "basis": [
+      "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+    ],
+    "presenceClaimed": false,
+    "writerRequestCompletionClaimed": false
+  },
+  "attempts": [
+    {
+      "source": "policy/current/DISCOVERY_IDENTITY.txt",
+      "result": "Fresh complete authenticated master/archive parsed once with integrity markers and shared identity index; no supported presence claim."
+    },
+    {
+      "source": "receipts/EMAIL_CANDIDATE_LEDGER_20261101_1106ET.json",
+      "sha256": "99456ef7eae0b180586126b25ef7193c7de812431447d7a219825b192964fedd",
+      "result": "Read original exact company/title/site source record; safe posting URL fields absent. Private message bindings not published."
+    },
+    {
+      "source": "receipts/EMAIL_CANDIDATE_LEDGER_20261101_1106ET.json#linkedin:4479424908",
+      "result": "Recovered URL hash exactly equals 9c2ca242dd8380a6de6dc288d96a152234bd75bcd68b5a0bd1473adb379b39a8; retained source identity and original request ID."
+    },
+    {
+      "source": "receipts/FORGE-EMAIL-CHATGPT-20261101-1106ET-B02_VERIFIED.json",
+      "result": "Read historical batch verification; does not alone establish this held candidate accepted or original identity resolved. No transaction replay."
+    }
+  ],
+  "sourceEvidence": {
+    "company": "Power Flame Incorporated",
+    "title": "Director of Manufacturing-Combustion",
+    "location": "Parsons, KS",
+    "url": "https://www.linkedin.com/jobs/view/4479424908/"
+  },
+  "conclusion": "EXACT_SOURCE_URL_RECOVERED_IDENTITY_PENDING",
+  "canonicalCandidates": [
+    {
+      "PRIMARY_ID": "V2I-E39EE961935B",
+      "COMPANY": "Power Flame Incorporated",
+      "TITLE": "Director of Manufacturing",
+      "LOCATION": "Parsons, KS, USA",
+      "BUCKET": "MANUAL_RESEARCH",
+      "DISPOSITION": "RESOLVED/NEEDS_RESOLUTION",
+      "REQ_ID": "UNCAPTURED",
+      "rowSha256": "66e36555ad814ef804d7b4d5ae63b17222f1f98bc47aa5a910dc767e7bbc7ff1"
+    }
+  ]
+}
