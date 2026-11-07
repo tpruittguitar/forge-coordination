@@ -12,7 +12,9 @@ text hash, resume version/hash, and a reason. A supported zero produces
 Negative evidence requires:
 
 - A structurally valid, grounded resume profile and an already-read, valid resume
-  inventory confirming that exact file/version, with no newer or changed resume.
+  inventory with no newer or changed resume. The exact selected file/version must
+  be confirmed either in that inventory or by fresh direct metadata in the same
+  authenticated documents response, as described below.
 - Captured role content with a source URL and employer/title identity. The existing
   posting parser's 300-character minimum also applies here.
 - No title echo, selected saved quotes, alert/card excerpt, access-error text, or
@@ -34,7 +36,8 @@ itself still reports observational overlap; the separate gate owns filtering.
 - Routine assignments and source-bound relevance preparation use the shared
   screen before new CODE/AI intake work. The coordinator passes its existing
   context to child preparation using a private, same-run, 15-minute context file.
-  No extra resume lookup, source fetch, model call, or schedule is added.
+  No extra source fetch, model call, or schedule is added. Exact resume metadata
+  uses the existing documents HTTP request, not a second request.
 - Canonical master/archive representation, ambiguous canonical matches, prior
   submissions, in-flight work, durable Writer outcomes, and reconciliation fences
   take precedence. No canonical job is deleted or declined. Provisional exclusions
@@ -44,3 +47,30 @@ itself still reports observational overlap; the separate gate owns filtering.
 
 A PR does not activate this change. Merge and normal deployment/adoption remain
 separate; no live discovery records or schedules were modified for implementation.
+
+## Selected resume outside the inventory folder
+
+The Writer resume inventory lists a configured folder, not every accessible
+resume. A selected profile outside that folder must not be replaced by an older
+folder entry or accepted merely from its descriptive authority label.
+
+The existing authenticated `documents` GET accepts the optional
+`profileResumeId` and can return a separate `profileResume` object with schema
+`forge.profile-resume-metadata.v1`, source `DIRECT_FILE_METADATA`, status, exact
+`id`, `modifiedTime`, and `checkedAt`. Only `VERIFIED` metadata matching the
+selected ID and version is usable. It expires after 15 minutes, with two minutes
+of server clock tolerance. A changed selected file or newer inventory resume
+requires a profile refresh. Missing, malformed, failed, or stale metadata leaves
+the gate UNKNOWN even if an older folder snapshot claims an exact match.
+
+This requests one direct file-metadata lookup inside the existing documents read;
+it does not read resume bytes, move files, change an approved-resume setting,
+grant access, or create credentials. The ordinary folder inventory is preserved
+and must still be valid. Selected file IDs are sent only to the same authenticated
+Writer that already supports exact document reads, not to job sources.
+
+**Deployment dependency:** the coordination change is backward compatible, but an
+older Writer that omits `profileResume` cannot confirm an out-of-folder resume.
+Its gate remains UNKNOWN. A separate authorized Writer implementation/deployment
+and fresh runtime verification are required; a coordination merge alone does not
+establish effective ATS filtering.

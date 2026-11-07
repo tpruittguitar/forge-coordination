@@ -14,17 +14,26 @@ const categories={
 };
 async function context({key,reader=require('../source-intake/writer-reader').read,profile}={}){
  if(profile===undefined)try{profile=Resume.load();}catch{}
- const answers=await Promise.allSettled(['rules','documents'].map(action=>reader(action,{key})));
+ const answers=await Promise.allSettled(['rules','documents'].map(action=>reader(action,{key,...(action==='documents'&&Resume.valid(profile)?{profileResumeId:profile.source.fileId}:{})})));
  const rules=answers[0].status==='fulfilled'?answers[0].value.data.rules:null;
  const documents=answers[1].status==='fulfilled'?answers[1].value.data:null;
  return {profile,rules,documents,checkedAt:new Date().toISOString()};
 }
-function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()}={}){
+function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString(),now=Date.now()}={}){
  if(profile===undefined)try{profile=Resume.load();}catch{}
  const text=Source.text(card.description||''),url=card.url||card.SOURCE_URL||'',company=card.company||card.COMPANY||'';
  if(!Resume.valid(profile))profile=null;
- const inventory=Array.isArray(documents?.resumes)&&documents.resumes.every(r=>r&&typeof r.id==='string'&&Number.isFinite(Date.parse(r.modifiedTime)));
- const unresolved=[],newer=profile&&inventory&&documents.resumes.some(r=>Date.parse(r.modifiedTime)>Date.parse(profile.source.modifiedAt)||r.id===profile.source.fileId&&Date.parse(r.modifiedTime)!==Date.parse(profile.source.modifiedAt));
+ const inventory=Array.isArray(documents?.resumes)&&documents.resumes.every(r=>r&&typeof r.id==='string'&&typeof r.modifiedTime==='string'&&Number.isFinite(Date.parse(r.modifiedTime)));
+ // The selected resume may live outside the inventory folder. Verify that exact
+ // file through the same authenticated documents response, never a cached claim
+ // or descriptive authority label. An older Writer still fails closed unless
+ // the exact file/version is already in its current inventory.
+ const direct=documents?.profileResume,directProvided=documents!=null&&Object.hasOwn(documents,'profileResume');
+ const directAt=typeof direct?.checkedAt==='string'?Date.parse(direct.checkedAt):NaN,directVersion=typeof direct?.modifiedTime==='string'?Date.parse(direct.modifiedTime):NaN;
+ const directVerified=!!profile&&direct?.schema==='forge.profile-resume-metadata.v1'&&direct.status==='VERIFIED'&&direct.source==='DIRECT_FILE_METADATA'&&direct.id===profile.source.fileId&&Number.isFinite(directVersion)&&Number.isFinite(directAt)&&directVersion<=directAt+120000&&directAt<=now+120000&&now-directAt<=15*60000;
+ const version=profile&&Date.parse(profile.source.modifiedAt);
+ const unresolved=[],newer=!!profile&&((inventory&&documents.resumes.some(r=>Date.parse(r.modifiedTime)>version||r.id===profile.source.fileId&&Date.parse(r.modifiedTime)!==version))||(directVerified&&directVersion!==version));
+ const currentResume=inventory&&!!profile&&(directProvided?directVerified&&directVersion===version:documents.resumes.some(r=>r.id===profile.source.fileId&&Date.parse(r.modifiedTime)===version));
  let ats;
  if(!profile||newer){ats={status:profile?'RESUME_UPDATE_REQUIRED':'RESUME_UNAVAILABLE',matches:[],finalFit:false,automaticRejection:false};unresolved.push(ats.status);}
  else{ats={...Resume.match({title:card.title||card.TITLE,description:text},profile),status:!text?'ROLE_CONTENT_PENDING':'PRELIMINARY_OVERLAP',resumeAuthority:profile.source.authority};if(!inventory)unresolved.push('LATEST_RESUME_INVENTORY_UNVERIFIED');}
@@ -47,7 +56,7 @@ function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()
  }
  if(!active)unresolved.push('CANONICAL_RULES_NOT_VERIFIED');
  if(!quotes.length)unresolved.push('EMPLOYER_BUSINESS_NOT_REVIEWED');
- const atsGate=gate(card,{text,ats,inventory:inventory&&profile&&documents.resumes.some(r=>r.id===profile.source.fileId&&Date.parse(r.modifiedTime)===Date.parse(profile.source.modifiedAt))});
+ const atsGate=gate(card,{text,ats,inventory:currentResume});
  return {schema:'forge.discovery-preliminary-screen.v1',checkedAt,ats,atsGate,neverConsider:nc,unresolved,decision:nc.status==='EXCLUDE'?'EXCLUDE_NEVER_CONSIDER':atsGate.status==='EXCLUDE'?'EXCLUDE_ATS_ZERO':'PROGRESS_TO_INTAKE',finalFit:false,canonicalWrites:0};
 }
 // A negative decision needs actual role content, not a title, pay card, selected
