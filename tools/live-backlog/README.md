@@ -20,6 +20,7 @@ Open the loopback URL printed in the terminal on that same computer. It binds on
 
 - Search/filter and sort across every live row, not just the displayed 100-row page.
 - Sort the **ATS hits** column to compare counts of distinct saved resume-supported competencies. Expand Evidence for matched terms/excerpts, the saved resume version and check date. `Title only` and `Captured content` describe the available evidence, not complete posting verification. These counts are preliminary overlap, not an ATS-provider percentage, qualification verdict or a new scoring model. Zero means no observed matches in the saved text; an em dash means evidence is missing, invalid or needs a resume update. Missing values sort last in both directions. Search includes matched evidence; copied TSV includes the count, evidence basis and provenance. The display never runs the matcher, reads Writer, refreshes resume data or changes saved evidence.
+- Use **ATS hits** to filter by **Exactly**, **At least**, **At most**, or **Between** (inclusive whole numbers, including zero). Choose **Unavailable evidence (—)** separately; numeric filters never treat unavailable evidence as zero. **All counts** clears the ATS filter. Invalid or reversed bounds show an error and no matching rows. ATS filtering combines with search, status and occurrence filters across the full snapshot. It resets the page, but never automatically selects, deselects or deletes rows. Existing selections stay selected, including hidden rows; clear selection before selecting a new filtered group if needed.
 - Select individual rows, Shift-select a range, or select all filtered rows.
 - Delete selected rows only after the dialog confirms the exact count.
 - Wait for a committed remote revision. A queued request is never presented as a deletion.
@@ -40,7 +41,7 @@ The HTTP server checks loopback Host, a per-run session header, exact Origin on 
 ## Tests
 
 ```sh
-node --test tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs tools/live-backlog/occurrences.test.cjs tools/live-backlog/match-evidence.test.cjs tools/live-backlog/ats-hits.test.cjs
+node --test tools/live-backlog/model.test.cjs tools/live-backlog/server.test.cjs tools/live-backlog/occurrences.test.cjs tools/live-backlog/match-evidence.test.cjs tools/live-backlog/ats-hits.test.cjs tools/live-backlog/ats-filter.test.cjs
 node --test tools/manual-backlog/*.test.cjs tools/pipeline-observability/upstream-flow.test.js tools/pipeline-observability/waiting-queues.test.js tools/intake-drain/queue.test.cjs tools/intake-drain/exclusions.test.cjs
 ```
 
