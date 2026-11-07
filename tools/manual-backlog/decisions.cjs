@@ -7,13 +7,13 @@ const norm=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'');
 const file=id=>'receipts/manual-backlog/'+id+'.json';
 function normalize(r){
  if(r.schema!=='forge.manual-backlog-request.v1'||!/^[0-9a-f-]{36}$/.test(r.requestId||'')||!/^[a-f0-9]{40}$/.test(r.snapshotRevision||'')||!['DECLINE','DELETE'].includes(r.decision)||!Array.isArray(r.items)||!r.items.length||r.items.length>100)throw Error('INVALID_MANUAL_REQUEST');
- const keys=r.items.map(i=>i.key);if(keys.some(k=>typeof k!=='string'||!/^(linkedin:\d+|url:[a-f0-9]{24})$/.test(k))||new Set(keys).size!==keys.length)throw Error('INVALID_DISCOVERY_KEYS');
+ const keys=r.items.map(i=>i.key);if(keys.some(k=>typeof k!=='string'||!/^(linkedin:\d+|indeed:[a-f0-9]{16}|(?:url|unresolved):[a-f0-9]{24}|pid:V2[A-Z]-[A-Z0-9]+(?:-[A-Z0-9]+)*)$/.test(k))||new Set(keys).size!==keys.length)throw Error('INVALID_DISCOVERY_KEYS');
  return {schema:r.schema,requestId:r.requestId,snapshotRevision:r.snapshotRevision,decision:r.decision,items:keys.sort().map(key=>({key}))};
 }
 function card(e){return {key:e.key,company:e.company||'',title:e.title||'',location:e.location||'',sourceUrl:require('../pipeline-observability/waiting-queues').sourceUrl(e)};}
 function safe(e,{rows,fences=new Set(),item}={}){
  if(!Array.isArray(rows))return 'CANONICAL_READ_REQUIRED';
- if(e.primaryId||e.claimedPid||['PRESENT','MISSING_PREVIOUSLY_PRESENT','IDENTITY_HOLD','HELD'].includes(e.status)||/HOLD|HELD|UNKNOWN|SUBMITTED|IN_FLIGHT|EXISTING|VERIFIED_INSERTED/.test(e.evidenceStatus||''))return 'PROTECTED_IDENTITY';
+ if(/^(pid|unresolved):/.test(e.key)||e.primaryId||e.claimedPid||['PRESENT','MISSING_PREVIOUSLY_PRESENT','IDENTITY_HOLD','HELD'].includes(e.status)||/HOLD|HELD|UNKNOWN|SUBMITTED|IN_FLIGHT|EXISTING|VERIFIED_INSERTED/.test(e.evidenceStatus||''))return 'PROTECTED_IDENTITY';
  if(fences.has(e.key)||item?.fence||item?.sourceConflict||item?.currentRepresentation||item?.action==='RECONCILE_WRITER')return 'WRITER_OR_IDENTITY_FENCE';
  if(rows.some(r=>norm(r.COMPANY)===norm(e.company)&&norm(r.TITLE)===norm(e.title)))return 'CANONICAL_IDENTITY_PROTECTED';
  return null;
