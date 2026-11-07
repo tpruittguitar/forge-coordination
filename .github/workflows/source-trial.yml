@@ -1,5 +1,5 @@
 # REV-156 (Tim 2026-10-21 18:09 ET): one-off, read-only trial of employer job boards, JobSpy and (REV-187) HiringCafe for Tim's three role
-# families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md}; nothing is sent to the Writer.
+# families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md,health.json}; nothing is sent to the Writer.
 # Tim 2026-10-23: also every 6 hours (read-only discovery report; Writer intake stays the approved canary/stage path).
 name: source-trial
 on:
@@ -29,7 +29,7 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/source-trial/lib.test.js tools/source-trial/run.test.js tools/source-trial/hiringcafe.test.js tools/source-trial/discovery-review.test.js tools/source-trial/preliminary-screen.test.js tools/source-trial/resume-match.test.js
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/discovery-health.test.js tools/source-trial/run.test.js tools/source-trial/hiringcafe.test.js tools/source-trial/discovery-review.test.js tools/source-trial/preliminary-screen.test.js tools/source-trial/resume-match.test.js
       - uses: actions/setup-python@v5
         with:
           python-version: '3.11'

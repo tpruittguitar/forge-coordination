@@ -26,6 +26,7 @@ test('REV-156 trial: boards + JobSpy, NEW vs EXISTING, read-only', { skip: !fs.e
   const out = path.join(dir, 'out');
   cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')], { env: Object.assign({}, process.env, { TRIAL_FC_DIR: FC, TRIAL_MASTER_FILE: path.join(dir, 'master.txt'), TRIAL_PRIORITY_FILE: path.join(dir, 'priority.txt'), TRIAL_JOBSPY_FILE: path.join(dir, 'jobspy.json'), TRIAL_HIRINGCAFE_FILE: path.join(dir, 'hiringcafe.json'), TRIAL_ARCHIVE_FILE: path.join(dir, 'archive.txt'), TRIAL_OUT_DIR: out, TRIAL_FAST: '1' }), stdio: 'pipe', timeout: 60000 });
   const r = JSON.parse(fs.readFileSync(path.join(out, 'source-trial-report.json'), 'utf8')), s = r.summary;
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(out, 'source-trial-report.health.json'), 'utf8')), require('./discovery-health').discoveryHealth(r));
   const titles = r.new_roles.map(x => x.company + '|' + x.title).sort();
   assert.deepStrictEqual(titles, ['Acme|Senior Director, Quality Assurance', 'Hyperion Robotics|Director of Quality', 'Initech|Director of Manufacturing', 'Shield AI|Director of Production'].sort());
   assert.deepStrictEqual(r.existing_roles.map(x => x.company + '|' + x.title).sort(), ['AEVEX|Plant Manager', 'Acme|Director of Quality', 'Globex|Plant Manager']);
@@ -62,6 +63,7 @@ test('board cursor follows Explorer rank and resumes at next', { skip: !fs.exist
   const run = extra => cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js')], { env: env(extra), stdio: 'pipe', timeout: 60000 });
   run();
   const first = JSON.parse(fs.readFileSync(path.join(out, 'board-discovery-report.json'), 'utf8'));
+  assert.deepStrictEqual(JSON.parse(fs.readFileSync(path.join(out, 'board-discovery-report.health.json'), 'utf8')), require('./discovery-health').discoveryHealth(first));
   const cur = JSON.parse(fs.readFileSync(cursor, 'utf8'));
   assert.deepStrictEqual(first.boards.map(b => b.board), ['lever:shieldai']);
   assert.strictEqual(cur.next, 'greenhouse:aevexaerospace');
