@@ -6,6 +6,7 @@ const Screen=require('../relevance-screen/screen.cjs'),U=require('../pipeline-ob
 const Resume=require('../source-trial/resume-match');
 const FILE='state/INTAKE_DRAIN.json',REVIEWS='receipts/INTAKE_DRAIN',TASKS={REVIEW_SCOPE:'FORGE_INTAKE_SCOPE_REVIEW',RECOVER_SOURCE:'FORGE_INTAKE_SOURCE_RECOVERY',RESOLVE_IDENTITY:'FORGE_INTAKE_HELD_RECONCILIATION',RECONCILE_WRITER:'FORGE_INTAKE_HELD_RECONCILIATION',INTAKE:'CODE'};
 const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRESENT']);
+const dismissed=e=>e?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'||require('../live-backlog/model.cjs').activeDeletion(e);
 const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
 const read=(root,file,fallback)=>S.read(root,file,fallback);
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
@@ -39,7 +40,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
  const fences=writerFences(root);
  for(const [key,g] of Object.entries(up.groups)){
-  const dismissedFence=(g.aliases||[key]).some(k=>fences.has(k)&&up.entries[k]?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL');
+  const dismissedFence=(g.aliases||[key]).some(k=>fences.has(k)&&dismissed(up.entries[k]));
   if(!pending.has(g.status)&&!old.items[key]&&!dismissedFence)continue;
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
@@ -54,7 +55,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:'Read saved role content, then one targeted lookup for actual function and responsibility',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
   // A Writer attempt discovered after dismissal still needs independent reconciliation.
-  if(fence&&es.some(e=>e.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
+  if(fence&&es.some(dismissed)){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
   old.items[key]=item;
  }
  // Missing inventory is an error, never an invented completion.
