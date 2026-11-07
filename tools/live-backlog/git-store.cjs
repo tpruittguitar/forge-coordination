@@ -1,0 +1,27 @@
+'use strict';
+const cp=require('node:child_process'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
+const Model=require('./model.cjs');
+const REMOTE='https://github.com/tpruittguitar/forge-coordination.git';
+class GitStore{
+ constructor({root,remote=REMOTE,allowTestRemote=false}){this.root=root;this.remote=remote;this.failed=new Map();if(remote!==REMOTE&&!allowTestRemote)throw Error('ONLY_FORGE_COORDINATION_REMOTE_ALLOWED');this.git(['rev-parse','--git-dir']);}
+ git(args,input,extra={}){return cp.execFileSync('git',args,{cwd:this.root,encoding:'utf8',maxBuffer:100*1024*1024,input,timeout:90000,env:{...process.env,GIT_TERMINAL_PROMPT:'0',...extra},stdio:['pipe','pipe','pipe']});}
+ fresh(){this.git(['fetch','--no-tags',this.remote,'refs/heads/main']);return this.git(['rev-parse','FETCH_HEAD']).trim();}
+ read(revision,file){if(!/^[a-f0-9]{40}$/.test(revision)||!/^(state|receipts)\/[A-Za-z0-9_./-]+\.json$/.test(file)||file.includes('..'))throw Error('INVALID_SOURCE_PATH');return this.git(['show',revision+':'+file]);}
+ snapshot(){const revision=this.fresh(),source=Model.load(p=>this.read(revision,p));return {revision,source};}
+ receipt(requestId){if(!/^[a-f0-9-]{36}$/i.test(requestId||''))throw Error('INVALID_REQUEST_ID');const revision=this.fresh();let paths=this.git(['ls-tree','-r','--name-only',revision,'receipts/live-backlog']).trim().split('\n').filter(Boolean);for(const p of paths){const r=JSON.parse(this.read(revision,p));if(r.requestId===requestId)return {ok:true,revision,...r};}return this.failed.has(requestId)?{ok:false,status:'failed',definitive:true,error:this.failed.get(requestId)}:{ok:false,status:'unknown',error:'No committed receipt found. Refresh and check again before another mutation.'};}
+ apply(input,kind){
+  const {revision,source}=this.snapshot();if(!this.git(['show',revision+':tools/pipeline-observability/upstream-flow.js']).includes("require('../live-backlog/model.cjs').activeDeletion(e)"))throw Error('MERGE_WORKSHEET_SUPPORT_BEFORE_LIVE_EDITS');if(revision!==input.revision)throw Error('SOURCE_CHANGED_REFRESH_AND_RESELECT');
+  const existing=this.git(['ls-tree','-r','--name-only',revision,'receipts/live-backlog']).trim().split('\n').filter(Boolean);
+  for(const p of existing){const r=JSON.parse(this.read(revision,p));if(r.requestId===input.requestId)throw Error('REQUEST_ID_ALREADY_COMMITTED');}
+  const original=kind==='restore'?JSON.parse(this.read(revision,Model.receiptPath(input.receiptId))):null;
+  const {files,receipt}=Model.mutate(source,input,kind,original),dir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-worksheet-index-')),env={GIT_INDEX_FILE:path.join(dir,'index')};let commit;
+  try{this.git(['read-tree',revision],undefined,env);for(const [file,body]of files){if(body===null)this.git(['update-index','--force-remove','--',file],undefined,env);else{const blob=this.git(['hash-object','-w','--stdin'],body).trim();this.git(['update-index','--add','--cacheinfo','100644',blob,file],undefined,env);}}
+   const tree=this.git(['write-tree'],undefined,env);commit=this.git(['commit-tree',tree.trim(),'-p',revision],`TIM WORKSHEET ${input.requestId}: ${kind} ${receipt.removed??receipt.restored} discovery cards\n`,env).trim();
+  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+  // Normal fast-forward push is an atomic compare-and-swap: never force or replay.
+  try{this.git(['push',this.remote,commit+':refs/heads/main']);}
+  catch(e){let checked=false;try{const check=this.receipt(input.requestId);if(check.ok)return check;checked=true;}catch{}if(checked&&/\[rejected\].*(?:fetch first|non-fast-forward)|\[remote rejected\]/i.test(String(e.stderr||''))){this.failed.set(input.requestId,'SOURCE_CHANGED_OR_PUSH_REJECTED_REFRESH_AND_RESELECT');throw Error('SOURCE_CHANGED_OR_PUSH_REJECTED_REFRESH_AND_RESELECT');}throw Error('PUSH_NOT_CONFIRMED_CHECK_RECEIPT');}
+  let confirmed;try{confirmed=this.receipt(input.requestId);}catch{throw Error('COMMIT_READBACK_UNCONFIRMED_CHECK_RECEIPT');}if(!confirmed.ok)throw Error('COMMIT_READBACK_UNCONFIRMED_CHECK_RECEIPT');return confirmed;
+ }
+}
+module.exports={GitStore,REMOTE};
