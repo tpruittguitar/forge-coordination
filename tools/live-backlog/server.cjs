@@ -1,6 +1,7 @@
 #!/usr/bin/env node
 'use strict';
 const http=require('node:http'),fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
+const {display:holdDisplay}=require('./hold-reason.cjs');
 const {GitStore}=require('./git-store.cjs'),{annotate}=require('./occurrences.cjs'),{display:atsDisplay}=require('./ats-hits.cjs'),{display:salaryDisplay}=require('./salary.cjs');
 function createServer(store){const session=crypto.randomBytes(32).toString('hex');let busy=false,origin;
  const server=http.createServer(async(req,res)=>{
@@ -11,7 +12,7 @@ function createServer(store){const session=crypto.randomBytes(32).toString('hex'
   if(req.headers['x-worksheet-session']!==session)return send(403,{error:'SESSION_REQUIRED'});
   try{
    const url=new URL(req.url,origin);
-   if(req.method==='GET'&&url.pathname==='/api/snapshot'){const {revision,source,salaryIndex}=store.snapshot();return send(200,{revision,at:source.index.at,updatedAt:source.index.worksheetUpdatedAt||source.index.at,count:source.items.length,items:annotate(source.items).map(item=>{const {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence}=item;return {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence,...atsDisplay(item),...salaryDisplay(item,salaryIndex)};})});}
+   if(req.method==='GET'&&url.pathname==='/api/snapshot'){const {revision,source,salaryIndex,holdIndex}=store.snapshot();return send(200,{revision,at:source.index.at,updatedAt:source.index.worksheetUpdatedAt||source.index.at,count:source.items.length,items:annotate(source.items).map(item=>{const {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence}=item;return {key,company,title,location,sourceUrl,status,reason,firstSeen,occurrence,occurrences,repeatWarning,matchEvidence,...atsDisplay(item),...salaryDisplay(item,salaryIndex),...holdDisplay(item,holdIndex)};})});}
    if(req.method==='GET'&&url.pathname==='/api/receipt')return send(200,store.receipt(url.searchParams.get('requestId')));
    if(req.method!=='POST'||!['/api/delete','/api/restore'].includes(url.pathname))return send(404,{error:'NOT_FOUND'});
    if(req.headers.origin!==origin||req.headers['content-type']!=='application/json')return send(403,{error:'SAME_ORIGIN_JSON_REQUIRED'});
