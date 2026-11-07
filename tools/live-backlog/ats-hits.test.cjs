@@ -24,3 +24,29 @@ test('invalid or partial saved evidence does not become zero or inflate a count'
  for(const patch of [{schema:'other'},{method:'NEW_PERCENTAGE'},{resumeTextSha256:'missing'},{resumeVersion:''},{contentBasis:'UNKNOWN'},{finalFit:true},{automaticRejection:true},{matches:null},{matches:[{}]},{matches:[{...match().matches[0],postingQuotes:[]}]},{matches:[{...match().matches[0],postingTerms:['']}]},{matches:[{...match().matches[0],resumeEvidenceSha256:'no'}]}])assert.equal(display(card({...match(),...patch})).atsHits,null,JSON.stringify(patch));
  const item=card(match());item.preliminaryScreen.checkedAt='unknown';assert.equal(display(item).atsCheckedAt,null);
 });
+test('matched words use saved posting terms, deduplicate spelling variants, and never infer words',()=>{
+ const ats=match(),first=ats.matches[0];
+ first.postingTerms=['PPAP',' ppap ','MES','multi word phrase','<img src=x onerror=alert(1)>'];
+ ats.matches=[first,{...first,postingTerms:['mes','Additional saved term']}];
+ const item=card(ats),before=JSON.stringify(item),out=display(item);
+ assert.equal(out.atsHits,1);
+ assert.deepEqual(out.atsTerms,['PPAP','MES','multi word phrase','<img src=x onerror=alert(1)>','Additional saved term']);
+ assert.equal(out.atsTerms.includes(first.competencyId),false);
+ assert.equal(out.atsTerms.includes('Director of Manufacturing'),false);
+ assert.equal(JSON.stringify(item),before);
+});
+test('shortened excerpts do not truncate or invent saved matched words',()=>{
+ const ats=match(),terms=Array.from({length:80},(_,i)=>`Saved phrase ${i}`);
+ ats.matches=[{...ats.matches[0],postingTerms:terms,postingQuotes:['x'.repeat(600)]}];
+ assert.deepEqual(display(card(ats)).atsTerms,terms);
+ ats.matches[0].postingTerms=[];
+ assert.equal(display(card(ats)).atsTerms,null);
+ assert.equal(display(card(ats)).atsHits,null);
+});
+test('zero, missing, and failed evidence preserve distinct term states',()=>{
+ assert.deepEqual(display(card(Resume.match({description:'Revenue analytics'}))).atsTerms,[]);
+ assert.equal(display({}).atsTerms,null);
+ assert.equal(display(card({...match(),status:'RESUME_UPDATE_REQUIRED'})).atsTerms,null);
+ const ats=match();ats.matches[0].postingQuotes=[];
+ assert.equal(display(card(ats)).atsTerms,null);
+});
