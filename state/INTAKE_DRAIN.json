@@ -62912,33 +62912,50 @@
       "aliases": [
         "linkedin:4479607810"
       ],
-      "sourceVersion": "4e5419dc481170ab1b070a58a108ac4b3723c616ba35947b65eae0e863593462",
+      "sourceVersion": "79ee28889a8ff4f2954b7585fe6b56671dd797654b4a85518b861e420d9b95b6",
       "card": {
         "company": "Alto-Shaam, Inc.",
         "title": "Director of Advanced Manufacturing Engineering",
-        "location": "",
+        "location": "Menomonee Falls, WI, USA",
         "url": "https://www.linkedin.com/jobs/view/4479607810/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "1b2c8f2fffee38761c4529937bad4930732a1ce1df7b2926f75188c12b4970a8"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "1b2c8f2fffee38761c4529937bad4930732a1ce1df7b2926f75188c12b4970a8"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -63247,7 +63264,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "9582ac0ce3ff629882161d37b6c8820ff0419b17de197c00f132046a1b2fcb71"
+            "sourceSha256": "ca75fdcaf9442a1c1b10a28b288eedba87634baea0ee1518899ed87cf74d15c0"
           }
         ],
         "postingFetched": false
@@ -63925,7 +63942,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "543073aa8fc4a8c42b6fa67c367507bf607e8e247e6f22f7808649a79b733790"
+            "sourceSha256": "99b74dc070b847f0bd695fe20851ef9c124c92e1375f868c68080ca9979743f7"
           }
         ],
         "postingFetched": false
@@ -101399,7 +101416,7 @@
         "state/source-trial-report.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location MI. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 0,
@@ -372240,12 +372257,95 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/0decfb04868c368d6a947055a5706d5390f0438e1c375668b3a3e41d8c9d623b.json",
         "sha256": "0decfb04868c368d6a947055a5706d5390f0438e1c375668b3a3e41d8c9d623b",
         "observedAt": "2026-11-07T14:19:17.833Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "READY_FOR_CONTROLLED_INTAKE",
+        "reviewSha256": "0decfb04868c368d6a947055a5706d5390f0438e1c375668b3a3e41d8c9d623b",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "resumeMatch": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing",
+                "production"
+              ],
+              "postingQuotes": [
+                "Austal USA leverages a moving module production line and strict adherence to lean manufacturing principles to consistently deliver on-schedule and on-budget."
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            },
+            {
+              "competencyId": "quality_systems",
+              "postingTerms": [
+                "quality"
+              ],
+              "postingQuotes": [
+                "Quality Trades Support",
+                "REPORTS TO: Quality Inspection/Accuracy Control Supervisor or Quality Inspection/Accuracy Control Foreman SUPERVISES: Not Applicable DUTIES / RESPONSIBILITIES: • Performs VT inspection duties throughout the facility, which includes verifying attributes for welds, structures and components • Performs measuring tasks, material preparation and clean up."
+              ],
+              "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
+            },
+            {
+              "competencyId": "team_building",
+              "postingTerms": [
+                "training"
+              ],
+              "postingQuotes": [
+                "Internal candidates must have a minimum of three (3) months experience as a Quality Trades Assistant • Must have successfully completed classroom Visual Testing Level II training in accordance with ASNT-TC-1A.",
+                "• Candidates with successful “Certificate of Completion” for comprehensive Non-Destructive Testing (NDT) training and / or certifications from an industry recognized NDT training school in accordance with ASNT-TC-1A requirements, or a formal education supporting Metrology, AutoCAD, or Geological Surveying shall be preferred."
+              ],
+              "resumeEvidenceSha256": "13e9968fea76342015020ca1fcd3df63c7bb0f17844382a16d013b4d1d71ff24"
+            },
+            {
+              "competencyId": "ev_battery",
+              "postingTerms": [
+                "module"
+              ],
+              "postingQuotes": [
+                "Austal USA leverages a moving module production line and strict adherence to lean manufacturing principles to consistently deliver on-schedule and on-budget."
+              ],
+              "resumeEvidenceSha256": "af629f163601be0226c6b4a580124d5fc35c7d6f6f54e671c087e91770aa9445"
+            },
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Lean"
+              ],
+              "postingQuotes": [
+                "Austal USA leverages a moving module production line and strict adherence to lean manufacturing principles to consistently deliver on-schedule and on-budget."
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            },
+            {
+              "competencyId": "engineering_design",
+              "postingTerms": [
+                "AutoCAD"
+              ],
+              "postingQuotes": [
+                "• Candidates with successful “Certificate of Completion” for comprehensive Non-Destructive Testing (NDT) training and / or certifications from an industry recognized NDT training school in accordance with ASNT-TC-1A requirements, or a formal education supporting Metrology, AutoCAD, or Geological Surveying shall be preferred."
+              ],
+              "resumeEvidenceSha256": "a2636a6055df96618dde6711f0a53c0eaa680e1eae94f94150a2da2d57505701"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false
+        },
+        "sourceSha256": "e3517196b3b470eed4c257939dfbe82028fd497f3dbcedc4fc20199f888e7a8d",
+        "sourceUrl": "https://austalusa.wd1.myworkdayjobs.com/en-US/austal/job/Quality-Trades-Support_R0012184"
       }
     },
     "url:f5aa712f67fa724064036591": {
@@ -372386,12 +372486,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/4244773105527620a47bef4a057b8cde063e361561e2c6a9b1aa19ed1083c4eb.json",
         "sha256": "4244773105527620a47bef4a057b8cde063e361561e2c6a9b1aa19ed1083c4eb",
         "observedAt": "2026-11-07T14:19:13.056Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "4244773105527620a47bef4a057b8cde063e361561e2c6a9b1aa19ed1083c4eb",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "STRUCTURED_POSTING_UNAVAILABLE",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:3556bf72c7bfb3ecd0dc7381": {
@@ -372595,12 +372702,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/361cda42494667679da042a68db04056452e8233ee176e607e17a39adf8ff637.json",
         "sha256": "361cda42494667679da042a68db04056452e8233ee176e607e17a39adf8ff637",
         "observedAt": "2026-11-07T14:19:27.987Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "361cda42494667679da042a68db04056452e8233ee176e607e17a39adf8ff637",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "SOURCE_HTTP_403",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:19ea5adf9c5a86b9a93fe449": {
@@ -373041,12 +373155,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5af4c833984aa5d03aa0c1518d1c18a9e6bde1b83203adbc5c6f4317265371cf.json",
         "sha256": "5af4c833984aa5d03aa0c1518d1c18a9e6bde1b83203adbc5c6f4317265371cf",
         "observedAt": "2026-11-07T14:18:57.015Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "5af4c833984aa5d03aa0c1518d1c18a9e6bde1b83203adbc5c6f4317265371cf",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:f2d0a8fb117b7f320319ce35": {
@@ -373090,12 +373211,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/120de68c74f11cc5a025926d1e7203da08891fb21ab878a6c282d41623a104bd.json",
         "sha256": "120de68c74f11cc5a025926d1e7203da08891fb21ab878a6c282d41623a104bd",
         "observedAt": "2026-11-07T14:19:07.789Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "120de68c74f11cc5a025926d1e7203da08891fb21ab878a6c282d41623a104bd",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:22f571c7ea2b81eefa210e4a": {
@@ -373243,12 +373371,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/56e695df98d1258e64585e2ec4c5f25970aa9ca312432f3fb773f87ad6b2a984.json",
         "sha256": "56e695df98d1258e64585e2ec4c5f25970aa9ca312432f3fb773f87ad6b2a984",
         "observedAt": "2026-11-07T14:19:02.561Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "56e695df98d1258e64585e2ec4c5f25970aa9ca312432f3fb773f87ad6b2a984",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:3a316f62115b44317f2db766": {
@@ -373396,12 +373531,19 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently validates exact source identity, quote and current resume; preserve original Writer requests and use current/next pass without duplicate dispatch.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "SOURCE_VALIDATION_REQUIRED",
       "review": {
         "path": "receipts/INTAKE_DRAIN/26694f486fc5db68ba4564b26d4a0ea13919af36e0a9956d97cc64b49c55ebe5.json",
         "sha256": "26694f486fc5db68ba4564b26d4a0ea13919af36e0a9956d97cc64b49c55ebe5",
         "observedAt": "2026-11-07T14:18:51.413Z",
         "outcome": "SOURCE_READY"
+      },
+      "validation": {
+        "status": "SOURCE_VALIDATION_REQUIRED",
+        "reviewSha256": "26694f486fc5db68ba4564b26d4a0ea13919af36e0a9956d97cc64b49c55ebe5",
+        "observedAt": "2026-11-07T15:01:28.511Z",
+        "reason": "SOURCE_ROUTE_BACKOFF",
+        "retryAfter": "2026-11-07T21:01:28.511Z"
       }
     },
     "url:89fa54f9385bf774e08b7390": {
@@ -657573,7 +657715,7 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-07T14:54:59.196Z",
+  "at": "2026-11-07T15:01:28.511Z",
   "upstreamAt": "2026-11-07T14:54:16.463Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 5787,
