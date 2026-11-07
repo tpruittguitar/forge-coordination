@@ -25,7 +25,7 @@ const contrast=(a,b)=>{const L=v=>rgb(v).map(c=>c/255).map(c=>c<=.04045?c/12.92:
   const style=selector=>page.locator(selector).first().evaluate(e=>{const s=getComputedStyle(e);return {color:s.color,background:s.backgroundColor,outline:s.outlineColor,outlineWidth:s.outlineWidth,border:s.borderColor,scheme:s.colorScheme,opacity:s.opacity};});
   assert.equal((await style('body')).background,'rgb(17, 17, 17)');
   assert.equal((await style('html')).scheme,'dark');
-  for(const selector of ['#search','#statusFilter','#refresh','#notice','.subtle','.salary-basis','.ats-basis','.source-key','.repeat-warning','a']){
+  for(const selector of ['#search','#statusFilter','#refresh','#notice','.subtle','.salary-basis','.ats-basis','.hold-basis','.source-key','.repeat-warning','a']){
    const s=await style(selector);assert.equal(new Set(rgb(s.color)).size,1,selector+' text is neutral');
    const bg=s.background==='rgba(0, 0, 0, 0)'?'rgb(25, 25, 25)':s.background;
    assert.ok(contrast(s.color,bg)>=4.5,selector+' text contrast');
