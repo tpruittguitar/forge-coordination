@@ -1,6 +1,9 @@
 """Offline integration tests. All repos and managed pools live in temp directories."""
 import importlib.util
+import hashlib
 import json
+import os
+import time
 from pathlib import Path
 import subprocess
 import tempfile
@@ -114,6 +117,326 @@ class WorkspaceTests(unittest.TestCase):
             with self.assertRaisesRegex(w.Unsafe, 'all bounded slots'):
                 self.acquire()
         self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+
+    def failed_materialization(self, legacy=False):
+        native = w.git
+        message = ('git sparse-checkout failed (exit 128); checkout retained' if legacy else
+                   'git sparse-checkout disable failed (exit 128); checkout retained')
+        def fail(repo, *args):
+            if args[:2] == ('sparse-checkout', 'disable'):
+                raise w.Unsafe(message)
+            return native(repo, *args)
+        with patch.object(w, 'git', side_effect=fail):
+            with self.assertRaises(w.Unsafe):
+                self.acquire()
+        repo = self.root / 'slot-0'
+        # Model an interrupted materialization: some clean tracked data is present.
+        (repo / 'evidence.txt').write_bytes(subprocess.check_output(
+            ['git', '-C', str(self.origin), 'show', self.sha + ':evidence.txt']))
+        return repo
+
+    def recovery_args(self):
+        before = (self.root / 'manifest.json').read_bytes()
+        lease = json.loads(before)['leases']['0']
+        return dict(root=self.root, slot='0', token=lease['token'], task='hourly-task',
+                    expected_main_sha=self.sha, expected_manifest_sha256=hashlib.sha256(before).hexdigest(),
+                    audit_dir=self.base / 'private-audit', owner_terminal=True, no_consumers=True)
+
+    def test_recover_failed_parks_preserves_audit_and_reuses(self):
+        repo = self.failed_materialization(legacy=True)
+        before = (self.root / 'manifest.json').read_bytes()
+        args = self.recovery_args()
+        native = w.git
+        def no_fetch(repo, *args):
+            self.assertNotIn(args[0], ('fetch', 'checkout', 'reset', 'clean', 'gc', 'prune'))
+            return native(repo, *args)
+        with patch.object(w, 'git', side_effect=no_fetch):
+            result = w.recover_failed(**args)
+        self.assertEqual(result['state'], 'idle')
+        self.assertNotIn(args['token'], json.dumps(result))
+        self.assertEqual((args['audit_dir'] / 'manifest-before.json').read_bytes(), before)
+        self.assertTrue((args['audit_dir'] / 'parked.json').is_file())
+        self.assertFalse((repo / 'evidence.txt').exists())
+        self.assertIn('retained evidence', self.run_git(repo, 'show', self.sha + ':evidence.txt'))
+        idle = w.read(self.root)['leases']['0']
+        self.assertEqual(idle['state'], 'idle')
+        self.assertNotIn('token', idle)
+        self.assertEqual(idle['recovery']['original_manifest_sha256'], args['expected_manifest_sha256'])
+        if os.name != 'nt':
+            self.assertEqual((args['audit_dir'].stat().st_mode & 0o777), 0o700)
+            self.assertEqual(((args['audit_dir'] / 'manifest-before.json').stat().st_mode & 0o777), 0o600)
+        lease = self.acquire()
+        self.assertEqual(Path(lease['checkout']), repo)
+        self.assertTrue((repo / 'evidence.txt').exists())
+        self.release(lease)
+        self.assertEqual((args['audit_dir'] / 'manifest-before.json').read_bytes(), before)
+
+    def test_recovery_requires_exact_identity_and_attestations(self):
+        repo = self.failed_materialization()
+        args = self.recovery_args()
+        before = (self.root / 'manifest.json').read_bytes()
+        for change in ({'token': 'wrong'}, {'slot': '1'}, {'task': 'other'},
+                       {'expected_main_sha': 'a' * 40}, {'expected_manifest_sha256': 'b' * 64},
+                       {'owner_terminal': False}, {'no_consumers': False}):
+            with self.subTest(change=change), self.assertRaises(w.Unsafe):
+                w.recover_failed(**(args | change))
+            self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+            self.assertTrue((repo / 'evidence.txt').exists())
+            self.assertFalse(args['audit_dir'].exists())
+
+    def test_recovery_refuses_active_or_unknown_failure(self):
+        self.failed_materialization()
+        original = w.read(self.root)
+        for state, error in [('active', original['leases']['0']['error']),
+                             ('failed', 'git fetch failed (exit 128); checkout retained')]:
+            data = json.loads(json.dumps(original))
+            data['leases']['0'].update(state=state, error=error)
+            w.save(self.root, data)
+            before = (self.root / 'manifest.json').read_bytes()
+            with self.assertRaises(w.Unsafe):
+                w.recover_failed(**self.recovery_args())
+            self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+
+    def test_recovery_refuses_dirty_untracked_ignored_and_hidden_edits(self):
+        repo = self.failed_materialization()
+        before = (self.root / 'manifest.json').read_bytes()
+        for name in ('evidence.txt', 'untracked.txt', 'ignored.txt'):
+            path = repo / name
+            old = path.read_bytes() if path.exists() else None
+            path.write_text('private work must survive')
+            with self.assertRaises(w.Unsafe):
+                w.recover_failed(**self.recovery_args())
+            self.assertEqual(path.read_text(), 'private work must survive')
+            self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+            if old is None:
+                path.unlink()  # Synthetic fixture only.
+            else:
+                path.write_bytes(old)
+
+    def test_recovery_refuses_changed_head_ref_or_index(self):
+        repo = self.failed_materialization()
+        args = self.recovery_args()
+        self.run_git(repo, '-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                     'commit', '--allow-empty', '-m', 'later work')
+        later = self.run_git(repo, 'rev-parse', 'HEAD')
+        with self.assertRaises(w.Unsafe):
+            w.recover_failed(**args)
+        self.assertEqual(self.run_git(repo, 'rev-parse', 'HEAD'), later)
+        self.assertFalse(args['audit_dir'].exists())
+
+    def test_recovery_requires_detached_head(self):
+        repo = self.failed_materialization()
+        self.run_git(repo, 'symbolic-ref', 'HEAD', 'refs/remotes/origin/main')
+        with self.assertRaisesRegex(w.Unsafe, 'not detached'):
+            w.recover_failed(**self.recovery_args())
+
+    def test_acquisition_snapshot_detects_index_mismatch_independently(self):
+        repo = self.failed_materialization()
+        self.run_git(repo, 'update-index', '--force-remove', 'evidence.txt')
+        # Index proof must not rely solely on git status or clean's file hashes.
+        with patch.object(w, 'clean'), self.assertRaisesRegex(w.Unsafe, 'index differs'):
+            w.acquisition_snapshot(repo, str(self.origin), self.sha)
+
+    def test_recovery_refuses_changed_origin_ref(self):
+        repo = self.failed_materialization()
+        self.run_git(repo, '-c', 'user.name=Test', '-c', 'user.email=test@example.invalid',
+                     'commit', '--allow-empty', '-m', 'new ref')
+        new = self.run_git(repo, 'rev-parse', 'HEAD')
+        self.run_git(repo, 'checkout', '--detach', self.sha)
+        self.run_git(repo, 'update-ref', 'refs/remotes/origin/main', new)
+        with self.assertRaisesRegex(w.Unsafe, 'snapshot changed'):
+            w.recover_failed(**self.recovery_args())
+
+    def test_recovery_audit_must_be_new_and_outside_pool(self):
+        self.failed_materialization()
+        args = self.recovery_args()
+        with self.assertRaisesRegex(w.Unsafe, 'outside'):
+            w.recover_failed(**(args | {'audit_dir': self.root / 'audit'}))
+        args['audit_dir'].mkdir()
+        (args['audit_dir'] / 'notes').write_text('keep')
+        with self.assertRaises(FileExistsError):
+            w.recover_failed(**args)
+        self.assertEqual((args['audit_dir'] / 'notes').read_text(), 'keep')
+
+    def test_recovery_audit_failure_prevents_parking(self):
+        repo = self.failed_materialization()
+        before = (self.root / 'manifest.json').read_bytes()
+        with patch.object(w, 'durable_new', side_effect=OSError('audit full')):
+            with self.assertRaisesRegex(OSError, 'audit full'):
+                w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertTrue((repo / 'evidence.txt').exists())
+
+    def test_recovery_parking_failure_keeps_original_failed_manifest(self):
+        repo = self.failed_materialization()
+        args = self.recovery_args()
+        before = (self.root / 'manifest.json').read_bytes()
+        native = w.git
+        def fail(repo, *command):
+            if command[0] == 'sparse-checkout':
+                raise w.Unsafe('synthetic park failure')
+            return native(repo, *command)
+        with patch.object(w, 'git', side_effect=fail), self.assertRaisesRegex(w.Unsafe, 'park failure'):
+            w.recover_failed(**args)
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertEqual((args['audit_dir'] / 'manifest-before.json').read_bytes(), before)
+        self.assertTrue((repo / 'evidence.txt').exists())
+
+    def test_recovery_save_failure_retains_failed_lease_and_git_objects(self):
+        repo = self.failed_materialization()
+        before = (self.root / 'manifest.json').read_bytes()
+        with patch.object(w, 'save', side_effect=OSError('manifest failure')):
+            with self.assertRaisesRegex(OSError, 'manifest failure'):
+                w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertIn('retained evidence', self.run_git(repo, 'show', self.sha + ':evidence.txt'))
+
+    def test_recovery_measures_before_manifest_commit(self):
+        self.failed_materialization()
+        native_save, native_size = w.save, w.size
+        committed = False
+        def save(*args):
+            nonlocal committed
+            native_save(*args)
+            committed = True
+        def size(*args):
+            if committed:
+                raise AssertionError('fallible measurement after commit')
+            return native_size(*args)
+        with patch.object(w, 'save', side_effect=save), patch.object(w, 'size', side_effect=size):
+            self.assertEqual(w.recover_failed(**self.recovery_args())['state'], 'idle')
+
+    def test_recovery_does_not_overwrite_concurrently_changed_manifest(self):
+        self.failed_materialization()
+        native = w.git
+        changed = None
+        def concurrent(repo, *command):
+            nonlocal changed
+            result = native(repo, *command)
+            if command[0] == 'sparse-checkout':
+                data = json.loads((self.root / 'manifest.json').read_bytes())
+                data['operator_note'] = 'preserve external change'
+                changed = json.dumps(data).encode()
+                (self.root / 'manifest.json').write_bytes(changed)
+            return result
+        with patch.object(w, 'git', side_effect=concurrent), self.assertRaisesRegex(w.Unsafe, 'manifest changed'):
+            w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), changed)
+
+    def test_recovery_incomplete_parking_cannot_release_hold(self):
+        self.failed_materialization()
+        before = (self.root / 'manifest.json').read_bytes()
+        native = w.git
+        def incomplete(repo, *command):
+            return '' if command[0] == 'sparse-checkout' else native(repo, *command)
+        with patch.object(w, 'git', side_effect=incomplete), self.assertRaisesRegex(w.Unsafe, 'parking incomplete'):
+            w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+
+    def test_recovery_parked_audit_failure_keeps_hold_and_objects(self):
+        repo = self.failed_materialization()
+        before = (self.root / 'manifest.json').read_bytes()
+        native = w.durable_new
+        def fail(path, content):
+            if path.name == 'parked.json':
+                raise OSError('audit unavailable')
+            return native(path, content)
+        with patch.object(w, 'durable_new', side_effect=fail), self.assertRaises(OSError):
+            w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertIn('retained evidence', self.run_git(repo, 'show', self.sha + ':evidence.txt'))
+
+    def test_recovery_does_not_steal_lock(self):
+        self.failed_materialization()
+        (self.root / '.lock').mkdir()
+        with self.assertRaisesRegex(w.Unsafe, 'never steal'):
+            w.recover_failed(**self.recovery_args())
+        self.assertTrue((self.root / '.lock').is_dir())
+
+    def test_normal_release_still_refreshes_unchanged_file_metadata(self):
+        lease = self.acquire()
+        path = Path(lease['checkout']) / 'evidence.txt'
+        path.write_bytes(path.read_bytes())
+        future = time.time() + 60
+        os.utime(path, (future, future))
+        self.release(lease)
+        self.assertFalse(path.exists())
+
+    def test_recovery_missing_blob_preserves_only_surviving_worktree_bytes(self):
+        repo = self.failed_materialization()
+        blob = self.run_git(repo, 'rev-parse', self.sha + ':evidence.txt')
+        obj = repo / '.git' / 'objects' / blob[:2] / blob[2:]
+        obj.chmod(0o600)
+        obj.unlink()  # Synthetic corruption fixture.
+        before = (self.root / 'manifest.json').read_bytes()
+        with self.assertRaisesRegex(w.Unsafe, 'fsck'):
+            w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertEqual((repo / 'evidence.txt').read_bytes(), subprocess.check_output(
+            ['git', '-C', str(self.origin), 'show', self.sha + ':evidence.txt']))
+        self.assertFalse((self.base / 'private-audit').exists())
+
+    def test_recovery_corrupt_blob_preserves_worktree_bytes(self):
+        repo = self.failed_materialization()
+        blob = self.run_git(repo, 'rev-parse', self.sha + ':evidence.txt')
+        obj = repo / '.git' / 'objects' / blob[:2] / blob[2:]
+        obj.chmod(0o600)
+        obj.write_bytes(b'corrupt synthetic object')
+        before = (self.root / 'manifest.json').read_bytes()
+        with self.assertRaises(w.Unsafe):
+            w.recover_failed(**self.recovery_args())
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
+        self.assertTrue((repo / 'evidence.txt').exists())
+
+    def test_recovery_rejects_partial_storage_before_any_lazy_fetch(self):
+        repo = self.failed_materialization()
+        tree = self.run_git(repo, 'rev-parse', self.sha + '^{tree}')
+        obj = repo / '.git' / 'objects' / tree[:2] / tree[2:]
+        obj.chmod(0o600)
+        obj.unlink()  # Synthetic missing promised tree.
+        self.run_git(repo, 'config', 'extensions.partialclone', 'origin')
+        self.run_git(repo, 'config', 'remote.origin.promisor', 'true')
+        object_root = repo / '.git' / 'objects'
+        before = {str(p.relative_to(object_root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                  for p in object_root.rglob('*') if p.is_file()}
+        with self.assertRaisesRegex(w.Unsafe, 'partial/promisor'):
+            w.recover_failed(**self.recovery_args())
+        after = {str(p.relative_to(object_root)): hashlib.sha256(p.read_bytes()).hexdigest()
+                 for p in object_root.rglob('*') if p.is_file()}
+        self.assertEqual(after, before)
+
+    @unittest.skipUnless(os.name == 'nt', 'native Git for Windows failure boundary')
+    def test_native_windows_materialization_failure_recovers_and_reuses(self):
+        relative = Path('evidence') / ('x' * 140 + '.txt')
+        (self.origin / 'evidence').mkdir()
+        (self.origin / relative).write_text('long evidence survives')
+        self.run_git(self.origin, '-c', 'core.longpaths=true', 'add', '.')
+        self.run_git(self.origin, 'commit', '-m', 'long path')
+        self.sha = self.run_git(self.origin, 'rev-parse', 'HEAD')
+        self.root = self.base / ('deep-' + 'p' * max(30, 145 - len(str(self.base)) - 6))
+        w.init(self.root, str(self.origin), min_free_bytes=0, max_pool_bytes=10**8)
+        self.assertGreater(len(str(self.root / 'slot-0' / relative)), 260)
+        native = w.git
+        def old_windows_behavior(repo, *command):
+            if command[:2] == ('sparse-checkout', 'disable'):
+                # Git for Windows consults the persistent setting during early
+                # path setup too; reproduce the pre-fix repository configuration.
+                native(repo, 'config', 'core.longpaths', 'false')
+                try:
+                    native(repo, '-c', 'core.longpaths=false', *command)
+                except w.Unsafe:
+                    raise w.Unsafe('git sparse-checkout disable failed (exit 128); checkout retained')
+                self.fail('expected a real Windows MAX_PATH failure')
+            return native(repo, *command)
+        with patch.object(w, 'git', side_effect=old_windows_behavior), self.assertRaises(w.Unsafe):
+            self.acquire()
+        self.assertEqual(w.read(self.root)['leases']['0']['error'],
+                         'git sparse-checkout disable failed (exit 128); checkout retained')
+        args = self.recovery_args()
+        self.assertEqual(w.recover_failed(**args)['state'], 'idle')
+        lease = self.acquire()
+        self.assertEqual((Path(lease['checkout']) / relative).read_text(), 'long evidence survives')
+        self.release(lease)
 
     def test_active_collision_and_stale_token(self):
         lease = self.acquire()
