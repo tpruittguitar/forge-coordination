@@ -1,0 +1,72 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:3c3d77116a26c0d769ce5092",
+  "sourceVersion": "9d96bb20c3d86941c139267e5324d14bd189313790bae466d82d845933c7eff6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261108-RUN62-STORAGE-BLOCKED",
+  "instructionCommit": "ebd47fc7c24eaac4069b5a3ee2952f4bdcd68469",
+  "observedAt": "2026-11-08T10:06:41.046Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalVerified": false,
+  "priorReview": "receipts/INTAKE_DRAIN/d75a11a98daefd2792d7915cd55bf29c04984ac81fba4b4dcde861098e234dbf.json",
+  "reusedResearch": true,
+  "reason": "Research remains blocked by mandatory managed-workspace storage preflight. No current role-function or identity verdict is made for this refreshed source version; prior scope reasoning is historical and has not been revalidated.",
+  "nextAction": "Resume current registered queue only after successful managed-workspace acquisition; preserve prior evidence and original Writer fences.",
+  "attempts": [
+    {
+      "source": "docs/RESEARCH_WORKSPACE_STORAGE.md; scripts/research_workspace.py at current instructionCommit",
+      "result": "Verified bootstrap Git blob b400bd2bc817bfd971a8775bc71b79cd7a721b2d. Initialized stable one-slot scope pool; inspect measured 89174016 free bytes. Acquisition rejected: free disk floor would be violated. No checkout or lease acquired; no pool bypass or evidence cleanup."
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/d75a11a98daefd2792d7915cd55bf29c04984ac81fba4b4dcde861098e234dbf.json",
+      "result": "Historical evidence retained solely as source-bound accounting anchor; refreshed source version is unreviewed. No fresh source/resume/identity interpretation or canonical-presence claim."
+    }
+  ],
+  "retryCondition": "Reviewed storage maintenance permits mandated workspace acquisition and current research preflight, then the normal assigned queue resumes with fresh canonical/source/resume checks as required.",
+  "checkpoint": {
+    "status": "BLOCKED_WORKSPACE_STORAGE",
+    "poolRoot": "/workspace/forge-intake-scope-pool",
+    "bootstrapSourceCommit": "ebd47fc7c24eaac4069b5a3ee2952f4bdcd68469",
+    "bootstrapBlob": "b400bd2bc817bfd971a8775bc71b79cd7a721b2d",
+    "freeBytesAtInspect": 89174016,
+    "minFreeBytes": 536870912,
+    "projectedCheckoutBytes": 1610612736,
+    "requiredFreeBeforeAcquisitionBytes": 2147483648,
+    "acquireError": "free disk floor would be violated",
+    "leaseAcquired": false,
+    "researchPreflightRun": false,
+    "researchEligibility": "UNVERIFIED_NO_ACQUIRED_WORKSPACE",
+    "researchStarted": false,
+    "privateResumeLoaded": false,
+    "sourceQueries": 0,
+    "postingFetches": 0,
+    "preparedReviews": 0,
+    "canonicalWrites": 0,
+    "newCanonicalWriteCompletionVerified": 0,
+    "controlledHandoffDispatches": 0,
+    "backlogComplete": false,
+    "existingEvidenceAndWriterFencesPreserved": true,
+    "accountingOnlyInPriorCompletedOwnedCheckout": true,
+    "nextCondition": "Reviewed storage maintenance makes enough space for the mandated managed-pool acquisition; rerun current-main workspace and research preflight. Do not delete unknown/unpublished evidence or old unmanaged checkouts automatically.",
+    "model": {
+      "requested": "GPT-5.4",
+      "reasoningEffort": "high",
+      "configurationVerified": false
+    },
+    "environment": {
+      "id": "ccarenv_b64_Y2NhcmVudl8xODQ5YTFjNGVjNjQ4MTkxYTMzNGViYzI2YjFlY2FhZA",
+      "name": "foreman-cockpit",
+      "cwd": "/workspace",
+      "observationsCurrent": true,
+      "networkPolicyEnforced": true
+    },
+    "notification": {
+      "meaningfulFailure": false,
+      "requiredUserAction": false,
+      "previouslyReportedBlockerUnchanged": true,
+      "disposition": "QUIET_UNCHANGED_STORAGE_BLOCKER"
+    }
+  }
+}
