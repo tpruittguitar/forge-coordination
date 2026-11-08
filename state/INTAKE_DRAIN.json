@@ -59288,7 +59288,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "85f89978124de3c99e39e6f89077bbf7f28baee7eb69287ed1ed82c77e32adaf"
+            "sourceSha256": "82688cf95851dc105760d0c562a12f95b61d4537846cbd07b5dfc0672559010c"
           }
         ],
         "postingFetched": false
@@ -59588,7 +59588,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "7d0084806f8675d249b988aab9d9be5d502621d771de9332214d5fcb1ac5b37a"
+            "sourceSha256": "6f024816516fa40a07fa1946c71a7c4945fdb29c85bc44157ff0343d401f14fc"
           }
         ],
         "postingFetched": false
@@ -60437,7 +60437,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "8865b4bc370966d561912bd102bd3ca213128a4c0d7402580e7238cdc3fb5369"
+            "sourceSha256": "437061bc3d5af0285c727f2a889cac26817144083e4d59d1c109de473430a932"
           }
         ],
         "postingFetched": false
@@ -61867,19 +61867,31 @@
       "aliases": [
         "linkedin:4434636903"
       ],
-      "sourceVersion": "1deef84f86f403cdafc5320b1369f09547b3d48037322d343a7b336969ac3e87",
+      "sourceVersion": "5be4a068e1b47b1f0054b2d12c205aaa5fe0087a0dd41d6a1371ac86686b26da",
       "card": {
         "company": "Molex",
         "title": "Director, New Product Development",
-        "location": "",
+        "location": "Lisle, IL, USA",
         "url": "https://www.linkedin.com/jobs/view/4434636903/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "358f502ab67693c9851fa207f490629d416be14bbff40771dafc09d0f06e1fe8"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "action": "REVIEW_SCOPE",
+      "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
       "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
@@ -61980,12 +61992,13 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location IL. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "RANKED_DISCOVERY",
+        "rank": 3,
+        "reason": "Card scope unclear; retain visibly for one fact-changing targeted lookup",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Read saved role content, then one targeted lookup for actual function and responsibility",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -64051,14 +64064,30 @@
       "aliases": [
         "linkedin:4469615679"
       ],
-      "sourceVersion": "69cce4d877b9986d11d539cfbe248e9b524964fb5110a347e086c20b06d263d2",
+      "sourceVersion": "edf3ba86ccf22e7b17d5649bd74fac8411f94cf86bc006009dc442687e65eb08",
       "card": {
         "company": "Unusual Machines",
         "title": "Senior Manager of Production - Battery",
-        "location": "",
+        "location": "Torrance, CA, USA",
         "url": "https://www.linkedin.com/jobs/view/4469615679/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "f474f116b5bf36a1584345d67a55ec0d281426e61fef1cc2c699b8a486b68605"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "f474f116b5bf36a1584345d67a55ec0d281426e61fef1cc2c699b8a486b68605"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
@@ -64191,9 +64220,10 @@
       },
       "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": {
         "requestIds": [
@@ -64201,9 +64231,16 @@
         ],
         "proof": "state/RELEVANCE_INTAKE_PLAN.json"
       },
-      "nextAction": "Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.",
+      "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
       "canonicalCompletion": false,
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_EVIDENCE_CHANGE",
+      "review": {
+        "path": "receipts/INTAKE_DRAIN/48d5f7dd48a5a928caa324f434a82138c251065d42a0c3b5697dd329a3154c02.json",
+        "sha256": "48d5f7dd48a5a928caa324f434a82138c251065d42a0c3b5697dd329a3154c02",
+        "observedAt": "2026-11-07T03:45:25.073Z",
+        "outcome": "RECONCILIATION_REQUIRED",
+        "retryCondition": "Grounded original employer-posting/site binding or candidate-specific controlled reconciliation resolves the held identity; original batch completion alone does not satisfy it."
+      }
     },
     "linkedin:4433117597": {
       "key": "linkedin:4433117597",
@@ -64304,20 +64341,32 @@
       "aliases": [
         "linkedin:4461924886"
       ],
-      "sourceVersion": "6cac6f790f930c9ec97bc47ac33753102350e05feafb2a2f7b6d0a346bb69706",
+      "sourceVersion": "c0623e8f51367204da9a78b8f9ee9f843c8256e610f55aca3116ba7c37aa92a8",
       "card": {
         "company": "BeOne Medicines",
         "title": "Senior Manager, Process Engineering Drug Substance and Drug Product",
-        "location": "",
+        "location": "Hopewell, NJ, USA",
         "url": "https://www.linkedin.com/jobs/view/4461924886/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "ea60071b71fbfad7fb75b66bee12dd5f0129be1f5664d2373f1ce7017d1b8b3d"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
       "firstSeen": "2026-10-22T05:00:36.815Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -64419,12 +64468,13 @@
       },
       "selectionReason": "Title selected as MFG_ENG / SR_MANAGER; location NJ. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Plausible target function; Writer decides canonical admission and Never Consider",
+        "maxTargetedLookups": 1
       },
       "fence": null,
-      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -188297,7 +188347,7 @@
       "fence": null,
       "nextAction": "Existing controlled intake independently checks exact source, identity, quote and supported current resume; preserve original Writer requests, office distinctions and normal deduplication.",
       "canonicalCompletion": false,
-      "status": "PENDING_INDEPENDENT_VALIDATION",
+      "status": "READY_FOR_CONTROLLED_INTAKE",
       "review": {
         "path": "receipts/INTAKE_DRAIN/5daf316d89f902f3627349ec0fa9f7052d72077d5ac8f0ceb8bb1bbd61113b81.json",
         "sha256": "5daf316d89f902f3627349ec0fa9f7052d72077d5ac8f0ceb8bb1bbd61113b81",
@@ -188307,7 +188357,7 @@
       "validation": {
         "status": "READY_FOR_CONTROLLED_INTAKE",
         "reviewSha256": "5daf316d89f902f3627349ec0fa9f7052d72077d5ac8f0ceb8bb1bbd61113b81",
-        "observedAt": "2026-11-07T11:03:55.676Z",
+        "observedAt": "2026-11-08T15:12:12.397Z",
         "resumeMatch": {
           "schema": "forge.resume-overlap.v1",
           "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
@@ -188392,7 +188442,7 @@
           "finalFit": false,
           "automaticRejection": false
         },
-        "sourceSha256": "6555186c6531a90ad837278d8c46607b34482f04433440e3065c5549c4f17a17",
+        "sourceSha256": "28da7eceebc01560e537fbd93d8414c094f308a4ccaf45c18a90693f76d9a3a5",
         "sourceUrl": "https://emploive.com/jobs/7305270/senior-manager-automation-ichor-candidate-experience"
       }
     },
@@ -430258,6 +430308,14 @@
           {
             "proof": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4434643624",
             "sourceSha256": "c86a5b07ff2d97d1848445c59819b4b1dc2dec7c9aeb9b9bb6f26d2acb353410"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "7cf406c450abf7088f1eec4d8124fa851beb6baca084e26f469a879b52280a62"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "7cf406c450abf7088f1eec4d8124fa851beb6baca084e26f469a879b52280a62"
           }
         ],
         "postingFetched": false
@@ -430274,7 +430332,7 @@
         "EMAIL_RECOVERY"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 0,
@@ -675718,12 +675776,12 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-08T15:07:05.237Z",
+  "at": "2026-11-08T15:12:12.397Z",
   "upstreamAt": "2026-11-08T15:06:29.741Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 6014,
-    "ACTION_REQUIRED": 2604,
-    "WAITING_EVIDENCE_CHANGE": 233,
+    "ACTION_REQUIRED": 2603,
+    "WAITING_EVIDENCE_CHANGE": 234,
     "SOURCE_VALIDATION_REQUIRED": 122,
     "READY_FOR_CONTROLLED_INTAKE": 2,
     "PENDING_INDEPENDENT_VALIDATION": 1
