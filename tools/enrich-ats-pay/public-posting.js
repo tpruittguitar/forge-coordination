@@ -6,7 +6,7 @@ function parse(html,row){
  // even when salary is absent. A rejected site cannot fall back to a regex.
  try {
   const Source=require('../programmed-coordinator/source.cjs'),facts=Source.inspect(html,{company:row.COMPANY,title:row.TITLE,location:row.LOCATION});
-  return {text:facts.description,pay:facts.pay,payFacts:facts.payFacts,identityVerified:true,sourceIdentity:{company:row.COMPANY,title:row.TITLE,location:row.LOCATION},postingFacts:facts.postingFacts};
+  return {text:facts.description,pay:facts.pay,payFacts:facts.payFacts,payAmbiguous:facts.payAmbiguous,identityVerified:true,sourceIdentity:{company:row.COMPANY,title:row.TITLE,location:row.LOCATION},postingFacts:facts.postingFacts};
  }catch{return null;}
 }
 function publicUrl(raw){try{const u=new URL(String(raw||'').split(/\s/)[0]);return u.protocol==='https:'&&!u.username&&!u.password&&!/^(localhost|127\.|10\.|192\.168\.|169\.254\.|\[)/i.test(u.hostname)?u.href:null;}catch{return null;}}

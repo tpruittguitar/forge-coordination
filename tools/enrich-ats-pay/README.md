@@ -50,3 +50,27 @@ in `salary_invalid` in the report. The pre-submit readback requires the original
 Protected application/decline states, closed jobs and pending Writer requests are excluded. Missing historical anchor
 records alone do not prove a bad estimate. Replacements retain estimate provenance; they do not claim employer-posted
 pay or include equity/bonus. This corrects comparison errors in either direction, without an invented salary floor.
+
+Complete, identity-matched public posting reads share a seven-day evidence cache in
+`state/enrich-ats-pay-employer.json`. Primary ATS reads, structured aggregator
+postings, public fallback, active salary review, employer-board details, comparable
+source refresh and benchmark research all save through the same cache. Existing
+request limits and research routes are unchanged. Legacy aggregator text without
+independent exact identity does not qualify, nor do search snippets, access walls,
+failed reads or salary-only anchors.
+
+Each observation retains its source URL, employer/title/location binding, full
+posting text, observation time, parser version and available posting facts. Cache
+reuse preserves the original salary and degree evidence dates. ATS URL aliases are
+matched conservatively; distinct Ashby requisitions remain separate despite their
+shared board API. Changed identities, unrelated URLs, expired postings, invalid or
+future timestamps and observations seven days old cannot be reused. Old evidence
+is pruned when the existing public employer cache is saved, including dry runs;
+canonical Writer state and the submission ledger keep their existing dry-run rules.
+
+`PAY_FOUND`, `NO_PAY_STATED` and `PAY_UNRESOLVED` distinguish a retained disclosure,
+a successful full read without pay and a read whose compensation was not usable.
+An unreadable source creates no successful posting cache entry. An unchanged/no-pay
+read does not erase an earlier disclosure; contradictory or unresolved newer pay
+cannot turn into a confirmed salary. The report's `posting_cache` counters describe
+successful saves and reuse, separately from physical source reads.

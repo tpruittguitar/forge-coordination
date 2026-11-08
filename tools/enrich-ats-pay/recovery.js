@@ -24,7 +24,7 @@ function order(rows,ledger){return rows.map((row,i)=>({row,i,last:Date.parse(led
 function remember(ledger,row,needs,status,attempts,now=Date.now()){ledger.progress=ledger.progress||{};const prior=ledger.progress[row.PRIMARY_ID]||{},at=new Date(now).toISOString(),fp=fingerprint(row,needs),failures=prior.fingerprint===fp?(prior.failures||0)+1:1;ledger.progress[row.PRIMARY_ID]={fingerprint:fp,lastAttemptAt:at,retryAt:new Date(now+Math.min(status==='EVIDENCE_FOUND'?1:24,Math.pow(2,Math.min(failures,4)))*3600000).toISOString(),status,failures,attempts:attempts.slice(-8)};return ledger.progress[row.PRIMARY_ID];}
 function cached(ledger,row,now=Date.now()){
  const e=ledger.postingEvidence?.[row.PRIMARY_ID],Pay=require('./pay-values');
- if(!e||e.identity!==JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION])||e.fullPosting!==true||now<Date.parse(e.at)||now-Date.parse(e.at)>=7*86400000)return null;
+ if(!e||!Number.isFinite(Date.parse(e.at))||e.identity!==JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION])||e.fullPosting!==true||now<Date.parse(e.at)||now-Date.parse(e.at)>=7*86400000)return null;
  const bound=e.identityVerified===true&&e.sourceIdentity&&JSON.stringify([e.sourceIdentity.company,e.sourceIdentity.title,e.sourceIdentity.location])===e.identity;
  if(!bound)return null;
  if(e.factsVersion===Pay.VERSION)return e;
@@ -48,12 +48,12 @@ function combine(cachedEvidence,discoveryEvidence){
    const range=L.payFromText(line),money=/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(line);
    return money&&/\b(?:CAD|AUD|NZD|EUR|GBP|hourly|per hour)\b/i.test(line)||range&&(range.low!==salary.pay.low||range.high!==salary.pay.high||Pay.conflicts(text,range,L.payFromText));
   });
-  const contradiction=(p.low!=null&&p.low!==salary.pay.low)||(p.high!=null&&p.high!==salary.pay.high)||(p.currency!=null&&p.currency!=='USD')||(p.period!=null&&!Pay.annualUnit(p.period))||(p.basis!=null&&p.basis!=='BASE')||
+  const contradiction=e.payAmbiguous===true&&!e.pay||(p.low!=null&&p.low!==salary.pay.low)||(p.high!=null&&p.high!==salary.pay.high)||(p.currency!=null&&p.currency!=='USD')||(p.period!=null&&!Pay.annualUnit(p.period))||(p.basis!=null&&p.basis!=='BASE')||
    textConflict;
   if(contradiction){blocked=e;salary=null;break;}
  }
  const basis=salary||blocked||ordered[0];
- return {...basis,pay:salary?.pay||null,payFacts:salary?.payFacts||null,payAmbiguous:!!blocked||basis.payAmbiguous||false,
+ return {...basis,pay:salary?.pay||null,payFacts:salary?.payFacts||null,payAmbiguous:!!blocked||!salary&&sources.some(e=>e.payAmbiguous===true)||basis.payAmbiguous||false,
   fullPosting:!!full,text:full?.text||basis.text,degree:full?.degree||null,degreeAt:full?(full.degreeAt||full.at):null,degreeUrl:full?(full.degreeUrl||full.url):null};
 }
 // A read needed for another field may discover a changed exact posting range.
@@ -64,7 +64,7 @@ function preferFreshPay(current,parsed){
  if(!current)return true;
  return parsed.identityVerified===true&&(!parsed.basis||parsed.basis==='EMPLOYER_POSTED')&&(p.low!==current.low||p.high!==current.high);
 }
-function saveEvidence(ledger,row,url,parsed,now=Date.now()){const degree=L.degreeFromText(parsed.text);ledger.postingEvidence=ledger.postingEvidence||{};return ledger.postingEvidence[row.PRIMARY_ID]={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now).toISOString(),url,fullPosting:true,text:parsed.text,identityVerified:parsed.identityVerified===true,sourceIdentity:parsed.sourceIdentity||null,factsVersion:require('./pay-values').VERSION,degree,basis:parsed.basis||'EMPLOYER_POSTED',pay:parsed.pay||null,payFacts:parsed.payFacts||null};}
+function saveEvidence(ledger,row,url,parsed,now=Date.now()){const degree=L.degreeFromText(parsed.text);ledger.postingEvidence=ledger.postingEvidence||{};return ledger.postingEvidence[row.PRIMARY_ID]={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now).toISOString(),url,fullPosting:true,text:parsed.text,identityVerified:parsed.identityVerified===true,sourceIdentity:parsed.sourceIdentity||null,factsVersion:require('./pay-values').VERSION,degree,basis:parsed.basis||'EMPLOYER_POSTED',pay:parsed.pay||null,payFacts:parsed.payFacts||null,payAmbiguous:parsed.payAmbiguous===true};}
 function unresolved(row,needs,ledger,status){const p=ledger.progress?.[row.PRIMARY_ID];return {id:row.PRIMARY_ID,company:row.COMPANY,title:row.TITLE,needs,status:status||p?.status||'NOT_YET_ATTEMPTED',lastAttemptAt:p?.lastAttemptAt||null,retryAt:p?.retryAt||null,attempts:p?.attempts||[],next:!urls(row).length?'Find an exact employer posting; preserve identity and missing fields.':'Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page.'};}
 module.exports={urls,readableRoute,exactApi,boardMatch,fingerprint,due,order,remember,cached,combine,preferFreshPay,saveEvidence,unresolved};
 

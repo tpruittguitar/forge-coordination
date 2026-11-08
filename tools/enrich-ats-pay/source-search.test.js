@@ -25,3 +25,14 @@ test('explicit US remote job evidence is required for a remote target and Meta r
  assert.equal(S.firstParty('https://www.metacareers.com/jobs/123','Meta'),true);assert.equal(S.parsePage(page(j),a).pay.high,309000);
  for(const change of [x=>delete x.jobLocationType,x=>x.applicantLocationRequirements=[{name:'Canada'}],x=>delete x.baseSalary]){const k=structuredClone(j);change(k);assert.equal(S.parsePage(page(k),a),null);}
 });
+test('comparable refresh shares full no-pay reads separately from failed sources and ignores stale failure backoff',async()=>{
+ const Cache=require('./posting-cache'),cache={},postingCache=Cache.create({cache,now:()=>Date.parse(at)}),anchors={},p=profile(),a=p.companies[0].disclosures[0],r={PRIMARY_ID:a.primaryId,COMPANY:'Payco',TITLE:a.title,LOCATION:a.location};
+ let reads=0;const s=S.create({profile:p,cache:anchors,postingCache,now:()=>Date.parse(at),maxReads:1,maxPerTarget:1,readSource:async a=>{reads++;return{identityVerified:true,sourceIdentity:{company:a.co,title:a.title,location:a.location},text:'Lead manufacturing quality operations. '.repeat(20),basis:'EMPLOYER_POSTED',pay:null};}});
+ {const out=await s.find(target,[]);assert.equal(out.length,0);assert.equal(reads,1);assert.equal(s.stats.no_pay_read,1);assert.equal(s.stats.failed,0);}
+ const got=postingCache.find(r,[a.sourceUrl]);assert.equal(got.payStatus,'NO_PAY_STATED');
+ await s.find(target,[]);assert.equal(reads,1);assert.equal(s.stats.cache_hits,1);
+});
+test('full comparable evidence cannot bind a city substring to another city',()=>{
+ const a={co:'Acme',title:'Director Quality',location:'South Dayton, OH'},j={'@type':'JobPosting',title:a.title,hiringOrganization:{name:a.co},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Full manufacturing role description. '.repeat(20)};
+ assert.equal(S.parsePosting('<script type="application/ld+json">'+JSON.stringify(j)+'</script>',a),null);
+});

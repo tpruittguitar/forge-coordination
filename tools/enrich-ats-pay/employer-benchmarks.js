@@ -34,13 +34,13 @@ function links(html,searchUrl,row){
   }catch{}
  }return out;
 }
-function create({reference,read,canRead=()=>true,now=()=>Date.now(),maxReads=6}){
+function create({reference,read,canRead=()=>true,now=()=>Date.now(),maxReads=6,postingCache}){
  const stats={saved:0,discoveryReads:0,postingReads:0,found:0,blocked:0},cache=reference.searches||(reference.searches={});
  async function find(row){
   const saved=candidates(row,reference,now());if(saved.length){stats.saved+=saved.length;return saved;}
   const routes=(reference.employers||[]).filter(e=>C.norm(e.company)===C.norm(row.COMPANY)).flatMap(e=>e.searchUrls||[]);
   for(const url of routes){const k=C.norm(row.COMPANY)+'|'+L.level(row.TITLE)+'|'+require('./anchor-scope').family(row.TITLE);if(Date.parse(cache[k]?.retryAt)>now()||stats.discoveryReads+stats.postingReads>=maxReads||!canRead()||!S.firstParty(url,row.COMPANY))continue;
-   const foundBefore=stats.found;try{stats.discoveryReads++;const html=await read(url),found=links(html,url,row).slice(0,2);for(const a of found){if(stats.discoveryReads+stats.postingReads>=maxReads||!canRead())break;stats.postingReads++;const page=await read(a.sourceUrl),parsed=parseEmployer(page,a);if(parsed&&learn(reference,{...a,location:parsed.location},parsed,new Date(now()).toISOString()))stats.found++;}
+   const foundBefore=stats.found;try{stats.discoveryReads++;const html=await read(url),found=links(html,url,row).slice(0,2);for(const a of found){const saved=postingCache?.forSource(a.co,a.title,a.sourceUrl);if(saved&&!saved.payNeedsRefresh){if(learn(reference,{...a,location:saved.sourceIdentity.location},saved,saved.at))stats.found++;continue;}if(stats.discoveryReads+stats.postingReads>=maxReads||!canRead())break;stats.postingReads++;const page=await read(a.sourceUrl),parsed=parseEmployer(page,a,{fullPosting:true});if(parsed){postingCache?.save({COMPANY:a.co,TITLE:a.title,LOCATION:parsed.location},a.sourceUrl,parsed,{at:new Date(now()).toISOString()});if(learn(reference,{...a,location:parsed.location},parsed,new Date(now()).toISOString()))stats.found++;}}
     cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:stats.found>foundBefore?'DISCLOSURES_CAPTURED':'NO_VERIFIED_MATCH'};
    }catch{stats.blocked++;cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'ACCESS_UNAVAILABLE'};}
   }return candidates(row,reference,now());
@@ -51,8 +51,8 @@ function create({reference,read,canRead=()=>true,now=()=>Date.now(),maxReads=6})
   for(const url of routes){
    const k='EXACT|'+row.PRIMARY_ID;if(Date.parse(cache[k]?.retryAt)>now()||!canRead()||stats.discoveryReads+stats.postingReads>=maxReads||!S.firstParty(url,row.COMPANY))continue;
    try{stats.discoveryReads++;const html=await read(url),found=links(html,url,row).filter(a=>C.norm(a.title)===C.norm(row.TITLE));
-    for(const a of found){if(!canRead()||stats.discoveryReads+stats.postingReads>=maxReads)break;stats.postingReads++;const parsed=S.parsePage(await read(a.sourceUrl),{...a,location:row.LOCATION});
-     if(parsed&&C.norm(parsed.identifier)===C.norm(req)){cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString()};return{...parsed,sourceUrl:a.sourceUrl};}
+    for(const a of found){const saved=postingCache?.find(row,[a.sourceUrl]);if(saved&&!saved.payNeedsRefresh){if(saved.pay&&C.norm(saved.identifier)===C.norm(req))return{...saved,sourceUrl:saved.url};continue;}if(!canRead()||stats.discoveryReads+stats.postingReads>=maxReads)break;stats.postingReads++;const parsed=S.parsePosting(await read(a.sourceUrl),{...a,location:row.LOCATION});
+     if(parsed&&C.norm(parsed.identifier)===C.norm(req)){postingCache?.save(row,a.sourceUrl,parsed,{at:new Date(now()).toISOString()});if(!parsed.pay)continue;cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString()};return{...parsed,sourceUrl:a.sourceUrl};}
     }
     cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'EXACT_REQUISITION_NOT_CONFIRMED'};
    }catch{stats.blocked++;cache[k]={at:new Date(now()).toISOString(),retryAt:new Date(now()+DAY).toISOString(),status:'ACCESS_UNAVAILABLE'};}
@@ -60,11 +60,11 @@ function create({reference,read,canRead=()=>true,now=()=>Date.now(),maxReads=6})
  }
  return{find,findExact,stats};
 }
-function parseEmployer(html,a){
+function parseEmployer(html,a,{fullPosting=false}={}){
  const jobs=[];function visit(x){if(Array.isArray(x))return x.forEach(visit);if(!x||typeof x!=='object')return;if([].concat(x['@type']||[]).includes('JobPosting'))jobs.push(x);if(x['@graph'])visit(x['@graph']);}
  for(const m of String(html).matchAll(/<script\b[^>]*type\s*=\s*["']application\/ld\+json["'][^>]*>([\s\S]*?)<\/script>/gi))try{visit(JSON.parse(m[1]));}catch{}
  const j=jobs.filter(j=>C.norm(j.title)===C.norm(a.title)&&C.norm(j.hiringOrganization?.name)===C.norm(a.co));if(j.length!==1)return null;
  const loc=[].concat(j[0].jobLocation||[]).map(l=>l.address).filter(x=>x?.addressLocality&&x.addressRegion&&/^(US|USA|United States|United States of America)$/i.test(typeof x.addressCountry==='string'?x.addressCountry:x.addressCountry?.name||''));if(loc.length!==1)return null;
- const location=loc[0].addressLocality+', '+loc[0].addressRegion,parsed=S.parsePage(html,{...a,location});return parsed?{...parsed,location}:null;
+ const location=loc[0].addressLocality+', '+loc[0].addressRegion,parsed=(fullPosting?S.parsePosting:S.parsePage)(html,{...a,location});return parsed?{...parsed,location}:null;
 }
 module.exports={SCHEMA,valid,anchor,candidates,merge,learn,links,create,parseEmployer};

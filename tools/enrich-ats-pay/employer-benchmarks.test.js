@@ -4,3 +4,18 @@ test('external employer benchmark stays base-only and requires exact first-party
 test('production control and technology cannot anchor production leadership',()=>{for(const title of ['Production Control Manager','Production Technology Manager'])a.notEqual(S.family(title),S.family(row.TITLE));a.equal(L.comparable(row,{title:'Production Control Manager'}),false);a.equal(L.comparable(row,{title:'Production Manager, Optimus'}),true);});
 test('missing known responsibility facts lower comparator weight',()=>{a.ok(C.similarity({employees:100000,launch:'GREENFIELD'},{}).weight<C.similarity({employees:100000,launch:'GREENFIELD'},{employees:100000,launch:'GREENFIELD'}).weight);});
 test('search uses only observed first-party links; saved evidence needs no network',async()=>{a.deepEqual(B.links('<a href="https://evil.test/job/1">Production Manager</a><a href="/careers/search/job/production-manager-265725">Production Manager, Optimus</a>','https://www.tesla.com/careers/search/',row).map(x=>x.sourceUrl),[e.sourceUrl.replace('production-manager-optimus','production-manager')]);let reads=0;const x=B.create({reference:ref,read:()=>{reads++;throw Error('unexpected');},now:()=>now});a.equal((await x.find(row)).length,1);a.equal(reads,0);});
+
+test('benchmark and exact-requisition research retain full no-pay and paid postings in the shared cache',async()=>{
+ const Cache=require('./posting-cache'),search='https://www.tesla.com/careers/search/',url='https://www.tesla.com/careers/search/job/production-manager-123',r={PRIMARY_ID:'x',COMPANY:'Tesla',TITLE:'Production Manager',LOCATION:'Fremont, CA',REQ_ID:'REQ123'},at=Date.now();
+ const searchPage='<a href="'+url+'">Production Manager</a>',job={'@type':'JobPosting',title:r.TITLE,hiringOrganization:{name:r.COMPANY},identifier:{value:r.REQ_ID},jobLocation:{address:{addressLocality:'Fremont',addressRegion:'CA',addressCountry:'US'}},description:'Lead manufacturing and quality operations. '.repeat(20)+'Bachelor degree required.'};
+ const reference=()=>({schema:B.SCHEMA,entries:[],searches:{},employers:[{company:r.COMPANY,searchUrls:[search]}]});
+ for(const paid of [false,true]){
+  const j={...job,...(paid?{baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:180000,maxValue:220000}}}:{})},page='<script type="application/ld+json">'+JSON.stringify(j)+'</script>';
+  for(const mode of ['find','findExact']){
+   const cache={},postingCache=Cache.create({cache,now:()=>at}),reads=[],factory=()=>B.create({reference:reference(),postingCache,now:()=>at,maxReads:6,read:async u=>{reads.push(u);return u===search?searchPage:page;}});
+   const found=await factory()[mode](r);a.equal(mode==='find'?found.length:!!found,mode==='find'?(paid?1:0):paid);a.deepEqual(reads,[search,url]);
+   const saved=postingCache.find(r,[url]);a.ok(saved);a.equal(saved.text,job.description);a.equal(saved.payStatus,paid?'PAY_FOUND':'NO_PAY_STATED');a.equal(saved.identifier,r.REQ_ID);
+   reads.length=0;await factory()[mode](r);a.deepEqual(reads,[search],'known source page is reused after bounded link discovery');a.equal(postingCache.find(r,[url]).at,new Date(at).toISOString());
+  }
+ }
+});
