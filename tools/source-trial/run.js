@@ -9,7 +9,7 @@
       last so the roles it alone contributes after cross-source dedupe are its measured incremental yield.
    Every matching US role is marked NEW or EXISTING against the master. Writes discovery reports and lightweight health sidecars under state/.
    Nothing is sent to the Writer.  node tools/source-trial/run.js */
-const fs = require('fs'), path = require('path'), vm = require('vm'), os = require('os');
+const fs = require('fs'), path = require('path'), os = require('os');
 const P = require('../enrich-ats-pay/lib.js'), T = require('./lib.js');
 const H = require('./board-health'), PostedPay=require('./posted-pay');
 const { discoveryHealth } = require('./discovery-health');
@@ -43,8 +43,7 @@ async function loadCanonical({W,key,transport=globalThis.fetch,clock,masterFile=
 
 async function main(){
   const T0 = Date.now(), at = new Date().toISOString();
-  const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
-  const key = conn.PipelineConnection.key;
+  const {key}=require('../source-intake/writer-connection').connection();
   await loadModule('PipelineEvidence.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
 
   const {rows,idx,archive,master}=await loadCanonical({W,key});

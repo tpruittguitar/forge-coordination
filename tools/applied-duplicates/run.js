@@ -4,14 +4,12 @@
    (unless APPLIED_DUP_DRY=1 or a local master file is used) applies it through the Writer: same-posting rows are closed as
    DUPLICATE of the row Tim already decided; every other match stays active with a PRIOR_APPLICATION label.
    Local, report only: APPLIED_DUP_MASTER_FILE=<master.txt> node tools/applied-duplicates/run.js */
-const fs = require('fs'), path = require('path'), vm = require('vm'), crypto = require('crypto');
+const fs = require('fs'), path = require('path'), crypto = require('crypto');
 const M = require('./match');
 const ROOT = path.resolve(__dirname, '../..');
 
 function connection() {
-  const fc = path.resolve(process.env.APPLIED_DUP_FC_DIR || '_fc'), cfg = {};
-  vm.runInNewContext(fs.readFileSync(path.join(fc, 'pipeline-connection.js'), 'utf8').replace(/^var /m, 'this.'), cfg);
-  return cfg.PipelineConnection;
+  return require('../source-intake/writer-connection').connection({requireUrl:true});
 }
 async function masterText() {
   if (process.env.APPLIED_DUP_MASTER_FILE) return { text: fs.readFileSync(process.env.APPLIED_DUP_MASTER_FILE, 'utf8'), source: { kind: 'LOCAL_FILE', file: path.basename(process.env.APPLIED_DUP_MASTER_FILE) } };
