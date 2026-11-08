@@ -36,12 +36,14 @@ def git(repo, *args):
     env = {k: v for k, v in os.environ.items() if k not in targeting}
     env['GIT_TERMINAL_PROMPT'] = '0'
     result = subprocess.run(['git', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false',
-                             '-c', 'core.autocrlf=false', '-c', 'core.hooksPath=' + os.devnull,
+                             '-c', 'core.autocrlf=false', '-c', 'core.longpaths=true',
+                             '-c', 'core.hooksPath=' + os.devnull,
                              '-C', str(repo), *args], env=env, capture_output=True)
     if result.returncode:
         # Git stderr can contain credential-bearing remote URLs. Do not echo it
         # into lease manifests or task logs.
-        raise Unsafe(f'git {args[0]} failed (exit {result.returncode}); checkout retained')
+        operation = ' '.join(args[:2]) if args[0] == 'sparse-checkout' else args[0]
+        raise Unsafe(f'git {operation} failed (exit {result.returncode}); checkout retained')
     return result.stdout.decode('utf-8', errors='surrogateescape').strip()
 
 
@@ -206,6 +208,10 @@ def acquire(root, task, expected_main_sha, projected_bytes):
                 git(repo, 'config', 'gc.auto', '0')
                 git(repo, 'config', 'maintenance.auto', 'false')
                 git(repo, 'remote', 'add', 'origin', data['origin'])
+            # A deep Windows pool plus immutable evidence filenames can exceed
+            # MAX_PATH. Scope this to the managed repo, including ordinary lane
+            # Git commands outside the helper; never alter global/OS settings.
+            git(repo, 'config', 'core.longpaths', 'true')
             # Caller resolved main immediately before fetching this helper from
             # that same SHA. Do not race a moving branch or silently change it.
             git(repo, 'fetch', '--depth=1', '--no-tags', 'origin',

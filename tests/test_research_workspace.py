@@ -47,10 +47,73 @@ class WorkspaceTests(unittest.TestCase):
             self.assertEqual(self.run_git(repo, 'rev-parse', '--is-shallow-repository'), 'true')
             self.assertEqual(self.run_git(repo, 'config', '--get', 'gc.auto'), '0')
             self.assertEqual(self.run_git(repo, 'config', '--get', 'maintenance.auto'), 'false')
+            self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
             self.release(lease)
             self.assertFalse((repo / 'evidence.txt').exists())
             self.assertIn('retained evidence', self.run_git(repo, 'show', f'{self.sha}:evidence.txt'))
         self.assertEqual(len(list(self.root.glob('slot-*'))), 1)
+
+    def test_deep_windows_paths_materialize_park_and_reuse(self):
+        # Windows CI must exercise the real failure boundary, not only a short
+        # temp directory. A 145-character production pool had paths up to 310.
+        relative = Path('evidence') / ('x' * 125 + '.txt')
+        source = self.origin / relative
+        source.parent.mkdir()
+        source.write_text('exact long-path evidence\n')
+        self.run_git(self.origin, '-c', 'core.longpaths=true', 'add', '.')
+        self.run_git(self.origin, 'commit', '-m', 'long evidence path')
+        self.sha = self.run_git(self.origin, 'rev-parse', 'HEAD')
+        parent = self.base / ('deep-' + 'd' * 80)
+        parent.mkdir()
+        self.root = parent / ('pool-' + 'p' * 55)
+        w.init(self.root, str(self.origin), min_free_bytes=0, max_pool_bytes=10**8)
+        self.assertGreater(len(str(self.root / 'slot-0' / relative)), 260)
+        # These repositories are synthetic and local-only. Preserve actionable
+        # diagnostics for CI without weakening production stderr sanitization.
+        native_run = subprocess.run
+        def diagnosed_run(*args, **kwargs):
+            result = native_run(*args, **kwargs)
+            if result.returncode:
+                self.fail('Synthetic long-path Git failure: ' + result.stderr.decode(errors='replace'))
+            return result
+        with patch.object(w.subprocess, 'run', side_effect=diagnosed_run):
+            for _ in range(2):
+                lease = self.acquire()
+                repo = Path(lease['checkout'])
+                self.assertEqual((repo / relative).read_text(), 'exact long-path evidence\n')
+                self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
+                self.release(lease)
+                self.assertFalse((repo / relative).exists())
+                self.assertEqual(self.run_git(repo, 'show', self.sha + ':' + relative.as_posix()), 'exact long-path evidence')
+        self.assertEqual(len(list(self.root.glob('slot-*'))), 1)
+
+    def test_existing_short_idle_pool_gains_persistent_long_path_setting(self):
+        lease = self.acquire()
+        repo = Path(lease['checkout'])
+        self.release(lease)
+        # Old pools did not set this. Keep the Git metadata itself accessible:
+        # deliberately disabling long paths inside an already overlong .git
+        # object directory must not bypass the helper's clean-before-reuse gate.
+        self.run_git(repo, 'config', 'core.longpaths', 'false')
+        new = self.acquire()
+        self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
+        self.release(new)
+
+    def test_failed_materialization_preserves_slot_and_does_not_retry(self):
+        original = w.git
+        def fail_disable(repo, *args):
+            if args[:2] == ('sparse-checkout', 'disable'):
+                raise w.Unsafe('git sparse-checkout disable failed (exit 128); checkout retained')
+            return original(repo, *args)
+        with patch.object(w, 'git', side_effect=fail_disable):
+            with self.assertRaisesRegex(w.Unsafe, 'sparse-checkout disable failed'):
+                self.acquire()
+        before = (self.root / 'manifest.json').read_bytes()
+        self.assertEqual(w.read(self.root)['leases']['0']['state'], 'failed')
+        with patch.object(w, 'git', side_effect=AssertionError('must not alter a failed slot')):
+            with self.assertRaisesRegex(w.Unsafe, 'all bounded slots'):
+                self.acquire()
+        self.assertEqual((self.root / 'manifest.json').read_bytes(), before)
 
     def test_active_collision_and_stale_token(self):
         lease = self.acquire()
