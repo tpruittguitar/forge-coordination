@@ -85,10 +85,19 @@ class WorkspaceTests(unittest.TestCase):
                 self.release(lease)
                 self.assertFalse((repo / relative).exists())
                 self.assertEqual(self.run_git(repo, 'show', self.sha + ':' + relative.as_posix()), 'exact long-path evidence')
-                # Simulate an older idle pool: acquisition reinstates its local
-                # setting without changing any global or system configuration.
-                self.run_git(repo, 'config', 'core.longpaths', 'false')
         self.assertEqual(len(list(self.root.glob('slot-*'))), 1)
+
+    def test_existing_short_idle_pool_gains_persistent_long_path_setting(self):
+        lease = self.acquire()
+        repo = Path(lease['checkout'])
+        self.release(lease)
+        # Old pools did not set this. Keep the Git metadata itself accessible:
+        # deliberately disabling long paths inside an already overlong .git
+        # object directory must not bypass the helper's clean-before-reuse gate.
+        self.run_git(repo, 'config', 'core.longpaths', 'false')
+        new = self.acquire()
+        self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
+        self.release(new)
 
     def test_failed_materialization_preserves_slot_and_does_not_retry(self):
         original = w.git
