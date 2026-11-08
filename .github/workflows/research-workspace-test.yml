@@ -1,0 +1,29 @@
+name: research-workspace-test
+on:
+  pull_request:
+    paths:
+      - 'scripts/research_workspace.py'
+      - 'tests/test_research_workspace.py'
+      - 'lanes/CHATGPT_INTAKE_DRAIN.txt'
+      - 'lanes/CHATGPT_ENRICHMENT_RESEARCH.txt'
+      - 'docs/RESEARCH_WORKSPACE_STORAGE.md'
+      - '.github/workflows/research-workspace-test.yml'
+  push:
+    paths:
+      - 'scripts/research_workspace.py'
+      - 'tests/test_research_workspace.py'
+      - '.github/workflows/research-workspace-test.yml'
+permissions:
+  contents: read
+jobs:
+  test:
+    strategy:
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    runs-on: ${{ matrix.os }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tests -p 'test_research_workspace.py' -v
