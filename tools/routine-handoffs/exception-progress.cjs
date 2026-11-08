@@ -6,7 +6,7 @@ function start(root,runId,size=20,now=Date.now()){
  if(!validRun(runId))throw Error('EXCEPTION_PROGRESS_RUN_ID_REQUIRED');
  const file=DIRECTORY+'/'+runId+'_START.json',prior=S.read(root,file,null);
  if(prior)return prior; // Resuming never changes the original selected bindings.
- const queue=require('./exceptions.cjs').queue(root,{size});
+ const queue=require('./exceptions.cjs').queue(root,{size,now});
  const manifest={schema:'forge.ai-exception-start.v1',runId,taskKey:W.OWNER,startedAt:new Date(now).toISOString(),dispatchCursor:queue.dispatchCursor||null,selected:queue.items.map(i=>({exceptionId:i.exceptionId,binding:i.binding,kind:i.kind,reason:i.reason,nextAction:i.nextAction,identity:i.identity||null,sourceFile:i.sourceFile||null,priorReviewSha256:i.priorReviewSha256||null,originalTaskKey:i.originalTaskKey||null})),sourceCaptureIsReview:false,artifactSizeOnly:true,noProcessingCap:true};
  S.immutable(root,file,manifest);return manifest;
 }
@@ -84,9 +84,10 @@ function checkpoint(root,input,now=Date.now()){
  // A real source-bound attempt advances fair service even while independently
  // checking its proposal. It does not close the case or reset source retries.
  advanceAttempts(work,attempts,input.runId,file);
- const resolved=manifest.selected.flatMap(original=>{const item=work.cases[original.exceptionId],proof=item&&resolution(root,item);return proof?[{exceptionId:item.exceptionId,...proof}]:[];}),waiting=manifest.selected.filter(i=>['WAITING_SOURCE_CHANGE','AWAITING_TIM'].includes(work.cases[i.exceptionId]?.status)),reviewed=attempts.filter(i=>i.reviewPath),ordered=Dispatch.order(Object.values(work.cases).filter(i=>i.status==='ACTION_REQUIRED'),work.dispatch),next=ordered[0];
+ const current=Object.fromEntries(require('./exceptions.cjs').currentCases(work,now).map(item=>[item.exceptionId,item]));
+ const resolved=manifest.selected.flatMap(original=>{const item=work.cases[original.exceptionId],proof=item&&resolution(root,item);return proof?[{exceptionId:item.exceptionId,...proof}]:[];}),waiting=manifest.selected.filter(i=>['WAITING_SOURCE_CHANGE','AWAITING_TIM'].includes(current[i.exceptionId]?.status)),reviewed=attempts.filter(i=>i.reviewPath),ordered=Dispatch.order(Object.values(current).filter(i=>i.status==='ACTION_REQUIRED'),work.dispatch),next=ordered[0];
  const progress=S.read(root,FILE,{schema:'forge.ai-exception-progress.v1',runs:{},consecutiveNoReviewProgress:0});
- const stillActionable=manifest.selected.filter(i=>work.cases[i.exceptionId]?.binding.sourceVersion===i.binding.sourceVersion&&work.cases[i.exceptionId].status==='ACTION_REQUIRED');
+ const stillActionable=manifest.selected.filter(i=>work.cases[i.exceptionId]?.binding.sourceVersion===i.binding.sourceVersion&&current[i.exceptionId].status==='ACTION_REQUIRED');
  const superseded=manifest.selected.filter(i=>!work.cases[i.exceptionId]||work.cases[i.exceptionId].binding.sourceVersion!==i.binding.sourceVersion||work.cases[i.exceptionId].status==='NO_LONGER_OPEN'&&!resolved.some(r=>r.exceptionId===i.exceptionId));
  const noReviewProgress=stillActionable.length>0&&reviewed.length===0;
  const consecutive=noReviewProgress?(progress.consecutiveNoReviewProgress||0)+1:0;
