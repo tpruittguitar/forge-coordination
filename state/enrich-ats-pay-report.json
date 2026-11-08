@@ -1,70 +1,87 @@
 {
- "at": "2026-11-08T00:48:25.451Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261108T004641925Z",
+ "at": "2026-11-08T02:07:26.473Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261108T020243049Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-08T00:46:47.110Z",
-  "sha256": "dc492dac6396eeebd1285313fdaf8ee01256165ff5ff51d7717dbc3fc71a339b",
+  "readAt": "2026-11-08T02:02:47.086Z",
+  "sha256": "18020f9c414747027075853e8f9e090ec80622a2db1a2b2c6dbfb23ecb38f334",
   "rows": 4987
  },
  "rows": 4987,
  "eligible": 703,
  "anchors": 1129,
  "archive_anchors": 5,
- "ats_rows": 0,
- "ats_read": 0,
- "ats_failed": 0,
+ "ats_rows": 3,
+ "ats_read": 1,
+ "ats_failed": 1,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 20,
- "skipped_recent": 553,
+ "estimate_waiting_for_posting": 91,
+ "skipped_recent": 454,
  "submitted": 0,
- "guard_dropped": 0,
+ "guard_dropped": 6,
  "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
- "agg_tried": {},
+ "agg_tried": {
+  "ziprecruiter": 2,
+  "linkedin": 3
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "ziprecruiter": 2,
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "ziprecruiter": [
+   "403",
+   "403"
+  ],
+  "linkedin": [
+   "404",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "est_same_employer": 0,
- "est_comparables": 2,
- "boards_read": 14,
+ "est_same_employer": 2,
+ "est_comparables": 17,
+ "boards_read": 6,
  "boards_failed": 0,
  "bls": {
-  "OK": 2,
-  "ABOVE": 0,
+  "OK": 17,
+  "ABOVE": 1,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 2,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 14,
  "employer_benchmarks": {
   "saved": 0,
-  "discoveryReads": 0,
+  "discoveryReads": 1,
   "postingReads": 0,
   "found": 0,
-  "blocked": 0
+  "blocked": 1
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 10,
-  "saved_reused": 10,
+  "targets": 18,
+  "candidates": 141,
+  "saved_reused": 136,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
-  "backoff": 0,
+  "backoff": 5,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 2,
+  "estimates_with_profile_sources": 12,
   "samples": [],
-  "profile_as_of": "2026-11-08T00:46:51.906Z",
+  "profile_as_of": "2026-11-08T02:02:50.785Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -76,10 +93,10 @@
   "ashby": 7
  },
  "skipped_closed": 49,
- "ats_unconfirmed": 0,
- "public_tried": 6,
- "public_read": 0,
- "public_failed": 6,
+ "ats_unconfirmed": 1,
+ "public_tried": 60,
+ "public_read": 3,
+ "public_failed": 57,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -140,34 +157,149 @@
  ],
  "salary_review": {
   "eligible": 527,
-  "due": 2,
-  "reviewed": 2,
-  "target_reads": 3,
+  "due": 20,
+  "reviewed": 20,
+  "target_reads": 5,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 2,
+  "no_improvement": 20,
   "guard_dropped": 0,
   "samples": [
    {
-    "id": "V2I-BFDC6523FF5D",
+    "id": "V2I-A9627FF8EA37",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    },
    {
-    "id": "V2I-9CC8844C5319",
+    "id": "V2I-808886DED731",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-7F694F0F6C74",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-527731447663",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-1F0295A876E3",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "MED",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-6011700CF6F5",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "MED",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-2B7C94FAB589",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-411324738939",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-68E495E3F1A4",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-A610E13ACFC0",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-B080DF4FC324",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-CF94AB30895F",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-E79A01173C43",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-ED09A8C302EB",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "THIRD_PARTY_ESTIMATE"
+   },
+   {
+    "id": "V2I-815E5A01DA42",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-8B181D4FDE7F",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-E72C03CB31A8",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-F3FB7112CD8D",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-3B6D221A9299",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-360906B50175",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    }
   ]
  },
- "decision_waiting": 738,
- "not_attempted": 19,
- "nothing_found": 25,
+ "decision_waiting": 737,
+ "est_bls": 1,
+ "ats_errors": {
+  "lever": [
+   "404"
+  ]
+ },
+ "nothing_found": 118,
+ "not_attempted": 71,
+ "ats_need_salary": 1,
  "products_planned": 0,
  "upgraded": 0,
- "planned": 0,
+ "planned": 6,
  "research_budget_exhausted": false,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
@@ -176,10 +308,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "SOURCE_RESEARCH_REQUIRED": 553,
+  "SOURCE_RESEARCH_REQUIRED": 554,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 76,
   "NOT_YET_ATTEMPTED": 18,
-  "EVIDENCE_FOUND": 7
+  "EVIDENCE_FOUND": 6
  },
  "pending": [
   {
@@ -189,9 +321,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:30:23.163Z",
-   "retryAt": "2026-11-08T01:30:23.163Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:44.064Z",
+   "retryAt": "2026-11-08T18:04:44.064Z",
    "attempts": [
     {
      "url": "https://jobs.lever.co/shieldai/b2de60ed-3c1e-4f94-883c-90917d3ca45e",
@@ -246,9 +378,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:03.679Z",
-   "retryAt": "2026-11-08T00:58:03.679Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:49.022Z",
+   "retryAt": "2026-11-08T18:04:49.022Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=108&ao=1136043&s=58&guid=000001a18d9da549981217d026506a0f&src=GD_JOB_AD&t=MJA&vt=e&ja=426010711&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_8a5b90fe&cb=1793381924390&jobListingId=1010310594601&jrtk=5-yul1-0-1k66u8v8iia5q805-6b262aa92fec6dec&tgt=GD_JOB_VIEW&utm_medium=email&utm_source=jobalert&utm_campaign=jobAlertAlert&utm_content=ja-jobpos8-age1",
@@ -264,9 +396,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:05.266Z",
-   "retryAt": "2026-11-08T00:58:05.266Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:50.614Z",
+   "retryAt": "2026-11-08T18:04:50.614Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/job-redirect?match_token=CpQBChZnVGJleEdQVlU0RzdxVEVVVVJDMU93EiQwMWExNzY5NS1kZjdjLTc2MDItYTQ1Yy03ZGE2ODMzZDQ0YzAaUEFBR0RKbXUwa1h3eHZhYzdRSFZZSEdBdTNkYXM2MkdsZXhEbllVMF9vTFAyUUZTUEpmdFVXd0JMaW52SUxudDJ4QTh6UzRYOGpDOTFCNUJsIMmtBRABGMmtBQ%3D%3D&tsid=100000501",
@@ -282,9 +414,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:08.459Z",
-   "retryAt": "2026-11-08T00:58:08.459Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:53.806Z",
+   "retryAt": "2026-11-08T18:04:53.806Z",
    "attempts": [
     {
      "url": "https://www.theladders.com/job/senior-vice-president-operations-harvardbioscienceinc-st-paul-mn_89534687",
@@ -304,9 +436,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:12.060Z",
-   "retryAt": "2026-11-08T00:58:12.060Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:57.219Z",
+   "retryAt": "2026-11-08T18:04:57.219Z",
    "attempts": [
     {
      "url": "https://www.careerbuilder.com/job-details/head-of-manufacturing-interceptor-production-el-segundo-ca--8838a155-405b-4869-9b84-56b193012235",
@@ -326,9 +458,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:13.605Z",
-   "retryAt": "2026-11-08T00:58:13.605Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:04:58.760Z",
+   "retryAt": "2026-11-08T18:04:58.760Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/job-redirect?match_token=Cp8BChZhNDIxdkRfS2ppeFU3WDBzWlYwd2FnEiQwMWExNzY5NS1lMDJlLTc2MTQtOTJkNi0yZGRjZjNjNzA0YWYaW0FBRXFmbkttb0Z6V19LNUltZmNlVDIzRDk4bkxrSzdRaVp0TnpNX0hBX1FYQnB4cklnU0gyVlJfYzgyVlk2TGRVbllwYW1CajBBMHUxbUI4eWNnd01idUIyZjQgya0FEAEYya0F&tsid=100000501",
@@ -344,9 +476,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:15.150Z",
-   "retryAt": "2026-11-08T00:58:15.150Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:00.301Z",
+   "retryAt": "2026-11-08T18:05:00.301Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/job-redirect?match_token=CpQBChZYSHdrWVpDWXNOWUR4TkRZcFJwWHpnEiQwMWExNzY5NS05Zjc0LTc5YzMtODdjZS01NTVjNDQ1OTU2NjkaUEFBSEg5VUhkV2xLTm1CS003enFRMm5zNmJZQ3FKd1J3TzNjcjhTQmxkSXgzZ0xGMlNadDJiX21qb3ZYcHAzYU5heDVOZ005a3NQYkUzcU5jIMmtBRABGMmtBQ%3D%3D&tsid=100000501",
@@ -362,9 +494,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:19.281Z",
-   "retryAt": "2026-11-08T00:58:19.281Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:04.829Z",
+   "retryAt": "2026-11-08T18:05:04.829Z",
    "attempts": [
     {
      "url": "https://hcas.fa.us1.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1001/job/5015",
@@ -384,9 +516,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:20.827Z",
-   "retryAt": "2026-11-08T00:58:20.827Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:06.372Z",
+   "retryAt": "2026-11-08T18:05:06.372Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAHk_4vA65lv-OT7F2TLeUXr4KyhdumCkCGlDcgTkHtY36mvYUmo1QLOgCSp_e_y0E9z4rrC_EzhSKpgdIZZf1LXLLYuaThF43tUFVpeXb0hxN9IswqELquQJ2P4F9ixarOzk1BVjNwDPF9vjGFv8GFpZkN06SV2xOz7aAzm-eUwoWbtKtCBZB-qNz23sXAbu4H5Ykn3swty7nHpiUBd5NGhioLtHGBsS1lJdJ2ZXifSBhXgo1X69QlvJ1T4VXMD6rzP1u4hAww2RHoMufM2sCK8paMgVB-qO3Tj2eENdBk0KXv9ibPblft_bfjr83VW2HFRaZ1-XSnRpUXPRXKkyv1LtF1zpsLJsiM_oeDtkPtjOkbz",
@@ -402,9 +534,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:24.061Z",
-   "retryAt": "2026-11-08T00:58:24.061Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:09.882Z",
+   "retryAt": "2026-11-08T18:05:09.882Z",
    "attempts": [
     {
      "url": "https://www.careerbuilder.com/job-details/vice-president-logistic-operations-chattanooga-tn--bcbc4aae-7030-4712-a5ba-68689c158bda",
@@ -424,9 +556,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:25.697Z",
-   "retryAt": "2026-11-08T00:58:25.697Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:11.514Z",
+   "retryAt": "2026-11-08T18:05:11.514Z",
    "attempts": [
     {
      "url": "https://www.jobleads.com/us/job/quality-director--atlanta--e4ccbeea458f479b49df5d299fa0252cc",
@@ -442,9 +574,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:27.575Z",
-   "retryAt": "2026-11-08T00:58:27.575Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:13.357Z",
+   "retryAt": "2026-11-08T18:05:13.357Z",
    "attempts": [
     {
      "url": "https://www.jobilize.com/job/us-ga-atlanta-vice-president-product-supplier-quality-medical-cardinal",
@@ -460,9 +592,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:29.460Z",
-   "retryAt": "2026-11-08T00:58:29.460Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:15.244Z",
+   "retryAt": "2026-11-08T18:05:15.244Z",
    "attempts": [
     {
      "url": "https://workforcenow.adp.com/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions/9201132281143_1?cid=305f9e9a-0c76-4d91-989a-64c05b6718a8&lang=en_US&ccId=19000101_000001&locale=en_US",
@@ -478,9 +610,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:31.154Z",
-   "retryAt": "2026-11-08T00:58:31.154Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:16.914Z",
+   "retryAt": "2026-11-08T18:05:16.914Z",
    "attempts": [
     {
      "url": "https://workforcenow.adp.com/mascsr/default/careercenter/public/events/staffing/v1/job-requisitions/9201133912666_1?cid=305f9e9a-0c76-4d91-989a-64c05b6718a8&lang=en_US&ccId=19000101_000001&locale=en_US",
@@ -496,9 +628,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:33.197Z",
-   "retryAt": "2026-11-08T00:58:33.197Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:18.886Z",
+   "retryAt": "2026-11-08T18:05:18.886Z",
    "attempts": [
     {
      "url": "https://apply.appone.com/job/692ebc5b3c745004048dddfa",
@@ -514,9 +646,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:37.157Z",
-   "retryAt": "2026-11-08T00:58:37.157Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:22.859Z",
+   "retryAt": "2026-11-08T18:05:22.859Z",
    "attempts": [
     {
      "url": "https://pcctalentacquisitionportal.tal.net/vx/mobile-1/appcentre-ext/brand-7/candidate/so/pm/1/pl/3/opp/8588-Plant-Manager/en-GB",
@@ -536,9 +668,9 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:39.255Z",
-   "retryAt": "2026-11-08T00:58:39.255Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:25.038Z",
+   "retryAt": "2026-11-08T18:05:25.038Z",
    "attempts": [
     {
      "url": "https://ats.rippling.com/pen-manufacturing/jobs/1fcaddee-e910-47a8-87d0-257a9364e912",
@@ -554,9 +686,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:41.572Z",
-   "retryAt": "2026-11-08T00:58:41.572Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:26.927Z",
+   "retryAt": "2026-11-08T18:05:26.927Z",
    "attempts": [
     {
      "url": "https://simplify.jobs/p/268365ee-8235-4c8d-8fe7-60487bff3f67/Manufacturing-Process-Excellence-Associate-Director",
@@ -572,9 +704,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:47.427Z",
-   "retryAt": "2026-11-08T00:58:47.427Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:32.508Z",
+   "retryAt": "2026-11-08T18:05:32.508Z",
    "attempts": [
     {
      "url": "https://remotejobs.org/remote-jobs/director-quality-operations-deckers-brands",
@@ -590,9 +722,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:50.920Z",
-   "retryAt": "2026-11-08T00:58:50.920Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:35.950Z",
+   "retryAt": "2026-11-08T18:05:35.950Z",
    "attempts": [
     {
      "url": "https://addisongroup.com/jobs/job/director-of-operations-engineering-knoxville-tn-a1qpl000006rkujyak/05db4228-eb33-11f0-9d8d-024201c20d84",
@@ -608,9 +740,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:55.614Z",
-   "retryAt": "2026-11-08T00:58:55.614Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:41.071Z",
+   "retryAt": "2026-11-08T18:05:41.071Z",
    "attempts": [
     {
      "url": "https://www.epmscientific.com/en-jp/job/senior-director-quality-pr604456_1788989608",
@@ -630,9 +762,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:58:57.157Z",
-   "retryAt": "2026-11-08T00:58:57.157Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:42.611Z",
+   "retryAt": "2026-11-08T18:05:42.611Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAGut93lt3YnC7facoD3ghU3-HJU2UHuap2cPWaE4TWdrmXImnZRLoVa0hMwi0ebApeD7Eb8rntO9K_8Io7gpKG0Ct3C-xDRa8xzx6-jYVa7YrUx4Bny79SuWS_zAUxZJROPCowwgFPid6d-VeSI85MdOST0ye9zBtjZ8SLN5f1EjBXXvov9EXhbPSsnHHdICXzBmoUbLbKCSjZr_rlI4pMJOpRnj5k4eNyECIVRBLh807X-m-Xfirgc3-jeqbtZ1oe2YW7Qt5LY4lmCp4eLwYqGLPTodOg_tLvuUVnqxMcXqbF86U9iwgCdV4yfUbCKsDeEgveCUN_esLD3DrcbSirhV5VjMwNRUrqGDuYFnHXz_o_e",
@@ -648,9 +780,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:01.832Z",
-   "retryAt": "2026-11-08T00:59:01.832Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:47.225Z",
+   "retryAt": "2026-11-08T18:05:47.225Z",
    "attempts": [
     {
      "url": "https://jobs.ashbyhq.com/cobot/39f874e4-66f7-48e9-99a1-53ea5a7f9585",
@@ -670,9 +802,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:07.959Z",
-   "retryAt": "2026-11-08T00:59:07.959Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:53.343Z",
+   "retryAt": "2026-11-08T18:05:53.343Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/job-redirect?match_token=CpMBChZFWUFVbzFDZGxlaTIwci12eHJ1RWN3EiQwMWExMzczNC0zNjc2LTc0NGItODQ2ZS05ZDliNDczZTI5ZmUaT0FBSHB6aU83YTNyT05vOS1INGR0YlJGcmJEdDhGYVFhbnJ3RUNOWkJOY0F5dWxOUGdua0xUcUllN2g3WkRjdHNOM1h4c19jZFBXM1dhaEUgya0FEAEYya0F&tsid=100000501",
@@ -692,9 +824,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:12.731Z",
-   "retryAt": "2026-11-08T00:59:12.731Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:58.122Z",
+   "retryAt": "2026-11-08T18:05:58.122Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs/view/4474604744",
@@ -710,9 +842,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:30:28.290Z",
-   "retryAt": "2026-11-08T01:30:28.290Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:05:59.817Z",
+   "retryAt": "2026-11-08T18:05:59.817Z",
    "attempts": [
     {
      "url": "https://secure5.entertimeonline.com/ta/CBIZ20333.careers?ShowJob=537260493&lang=en-US",
@@ -1031,104 +1163,21 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2A476B8C9241",
-   "company": "Bausch Health Companies Inc.",
-   "title": "Senior Manager, Quality Engineering (Aesthetics Med Device)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:17.644Z",
-   "retryAt": "2026-11-08T01:09:17.644Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4457667074",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-68B5244FB331",
-   "company": "Revlon",
-   "title": "Director, Filling & Assembly",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:22.432Z",
-   "retryAt": "2026-11-08T01:09:22.432Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs/view/4487342468",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DAD62270C2F9",
-   "company": "Freudenberg Sealing Technologies",
-   "title": "Head of Quality",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:22.433Z",
-   "retryAt": "2026-11-08T01:09:22.433Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-B7A365E937B2",
    "company": "Carton Service CSI, LLC",
    "title": "Director of Quality",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:25.671Z",
-   "retryAt": "2026-11-08T01:09:25.671Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-79830B23965B",
-   "company": "Champion Windows & Home Exteriors",
-   "title": "Director of Manufacturing",
-   "needs": [
-    "DEGREE"
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:10.959Z",
+   "retryAt": "2026-11-08T18:06:10.959Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs/view/4487328907",
+     "status": "HTTP_429"
+    }
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:28.838Z",
-   "retryAt": "2026-11-08T01:09:28.838Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF4495218805",
-   "company": "Anduril Industries",
-   "title": "Senior Manager, Product Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:30.443Z",
-   "retryAt": "2026-11-08T01:09:30.443Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-816864AD9AEF",
-   "company": "AmeriHealth Caritas",
-   "title": "Director Quality Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-08T00:09:30.445Z",
-   "retryAt": "2026-11-08T01:09:30.445Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -1820,82 +1869,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-38B17136FC7E",
-   "company": "PowerSecure International",
-   "title": "Director Manufacturing & Industrial Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:47:25.618Z",
-   "retryAt": "2026-11-08T16:47:25.618Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&ea=1&cs=1_7789ec83&cb=1793523214157&jobListingId=1010306702765&jrtk=5-yul1-1-1k6b50p9l2933000-cf33bd5659acc020&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos2-ag",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-38984E60BF5A",
-   "company": "Austin Powder",
-   "title": "Global Director of Manufacturing Operational Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:47:27.128Z",
-   "retryAt": "2026-11-08T16:47:27.128Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_0a6d80a4&cb=1793523214157&jobListingId=1010303725708&jrtk=5-yul1-1-1k6b50p9l2933000-6576c33f7dc5a8b3&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos1-age9d-1",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-54A41D195F13",
-   "company": "NAES Corporation",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:47:29.883Z",
-   "retryAt": "2026-11-08T16:47:29.883Z",
-   "attempts": [
-    {
-     "url": "https://recruiting2.ultipro.com/NAE1000NAES/JobBoard/f858dd65-f751-41a6-add7-7b877e9b6076/OpportunityDetail?opportunityId=6c2fbd15-9a36-4e79-8d8e-3a6c272899df&postingId=eedba24a-5839-47e8-8b49-833ac0876f0c",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8D56CEB13C18",
-   "company": "AlohaCare",
-   "title": "Director, Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:47:32.228Z",
-   "retryAt": "2026-11-08T16:47:32.228Z",
-   "attempts": [
-    {
-     "url": "https://alohacare.hrmdirect.com/employment/view.php?req=3846577&jbsrc=1014&location=bbc7254a-c437-c7a8-4db4-81b49482142b",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-2ACC94937B0D",
    "company": "Fresh And Ready Foods",
    "title": "Director of Operations- Longview, TX",
@@ -1903,9 +1876,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:34.119Z",
-   "retryAt": "2026-11-08T00:59:34.119Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:27.387Z",
+   "retryAt": "2026-11-08T18:06:27.387Z",
    "attempts": [
     {
      "url": "https://apply-v3.jobsync.io/indeed/r-app/571b69026a8b84c7dd3fdd2d9326abc723310eaff38cd22b89222f48/",
@@ -1922,9 +1895,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:36.000Z",
-   "retryAt": "2026-11-08T00:59:36.000Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:29.647Z",
+   "retryAt": "2026-11-08T18:06:29.647Z",
    "attempts": [
     {
      "url": "https://mavericktechus.com/job-details?id=4255bd2a-916b-4d5d-a44d-575d650257d2",
@@ -1941,9 +1914,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:38.241Z",
-   "retryAt": "2026-11-08T00:59:38.241Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:32.092Z",
+   "retryAt": "2026-11-08T18:06:32.092Z",
    "attempts": [
     {
      "url": "https://recruiting.ultipro.com/PIN1011PTCI/JobBoard/62d5acb3-ac57-4867-bb7d-c06ae19f8d37/OpportunityDetail?opportunityId=2d86e68e-2407-4c3a-8495-e86f204abd4d&postingId=cfc59dfe-5340-4f0a-9e82-ff2b55c31685",
@@ -1960,9 +1933,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:39.783Z",
-   "retryAt": "2026-11-08T00:59:39.783Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:33.634Z",
+   "retryAt": "2026-11-08T18:06:33.634Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAG5TKp8TLOwq0H8QhxleiytFmRe_jb06U8BTHahfrtf4oRbaRCJlg9oZgTd7xriox9E08295_6VoiJF4FU2QXvVjcrRZbLdlesWEoj_h5USwcEoDn5zzs4i8tzalnl8tJnBNYUkYVfmGFRD2IWgIBcF8ycmxpoESa848qrHHn07yjaGe6JBJ_p_UwpsIVjp0eHRtTCz0IpjpzlfXI9JX0Mi-2ENjHIgQk60HIspt_BzLfzrgRIe61ErstHPw-xI8RRxkyWkUA4zMcHdHBoeqktZQtlLeHmJb8aaWo0q90lunYH7u6ZsJzpe274hdugVG_1B6cBarLMhHo9G2wv49K--iKSv5Q8kkNRD37WKrWuO0eyt",
@@ -1979,9 +1952,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:41.318Z",
-   "retryAt": "2026-11-08T00:59:41.318Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:35.178Z",
+   "retryAt": "2026-11-08T18:06:35.178Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAFCHZ6zdIHea_KTVHQwuBHFHnvAdj7omwyp7IBc6zTDZPCB_GaXVanSCHDHa4qsH3fdo3hsqiIeu60Y4hu52S-nlfF2MaovdeWnu5hn5ytt-Wqq_eKzcAgZ5Q792l97KnpZEBTAhI_N0JQnppvom8i-zqTDrIe3IEpSwk_0w7MYzjJtAlSIWEEOgacN_rZWB1sU_XmrI3iKo-QepVFBip--LrrxehnLWbIOmuKlewto8KALhN9UhLP4D8RwxN7WeLZ9PGtOZDTjoBC9i33SIWvRMJRumRlM2dFJREfDAKwLkq-4uMYStw9zU5_ghmx9pRf_67FQL4Cvb035S9jtnMZbZH1Wa8V-_wh4RoC9FPDOu9DJ",
@@ -1998,9 +1971,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:42.854Z",
-   "retryAt": "2026-11-08T00:59:42.854Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:36.719Z",
+   "retryAt": "2026-11-08T18:06:36.719Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAEYWYT5cGBmPiDd2bChj_t45l1LumxbMTOMdV-9qWzV_Whce9D3uTyh1btXly34HSraNCaf2D6fa3-iU4psdHMcrbLQAQ_gEXdkP1KtJGydjwUxVapxFVjaCEQPrn5NHuOeSt5VAQXZtQPVYjmMk6OOfgs9gO9QAu5wL4TDLCWszV5lZsvAfF7JIfVUeSVG7sA-xvDRpE6IbVtMMPIh5T4LCOI6SnekjUH50HFxpi4F68axZu9fAD_GM8ebph3HUkx8nP1gbvP_1dGWmNUg6TzphfXiyJ5H2Hz2JdpTAVFzDH4TcOqvnEkhUjkPPK_--g2Dy4Nsj2GADlOqcT4Cvz9MyWhOl1mOUwIepMvYebgnwEkB",
@@ -2017,9 +1990,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:46.867Z",
-   "retryAt": "2026-11-08T00:59:46.867Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:40.734Z",
+   "retryAt": "2026-11-08T18:06:40.734Z",
    "attempts": [
     {
      "url": "https://frenchoil.com/about-us/career-opportunities/director-of-manufacturing/",
@@ -2040,9 +2013,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:48.463Z",
-   "retryAt": "2026-11-08T00:59:48.463Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:42.326Z",
+   "retryAt": "2026-11-08T18:06:42.326Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=104&ao=1136043&s=362&guid=000001a18bdbdc66a2afb99f1b016a84&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&ea=1&cs=1_02032ed0&cb=1793349191627&jobListingId=1010301371018&jrtk=5-yul1-1-1k65v21eugcum801-d121b43e148a53ed&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos4-ag",
@@ -2059,9 +2032,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:49.977Z",
-   "retryAt": "2026-11-08T00:59:49.977Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:43.845Z",
+   "retryAt": "2026-11-08T18:06:43.845Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=104&ao=1110586&s=58&guid=000001a1898a08c0b4be03854abb3e1e&src=GD_JOB_AD&t=MJA&vt=e&ja=436214661&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_966413ce&cb=1793319189710&jobListingId=1010307234878&cpc=25F7D4ABB6558D0F&jrtk=5-yul1-0-1k652eeuagmsp800-b96ad68fc2458f58---6NYlbfkN0BXV_fSjOYtEbFEj_zU-UL3vXWq5XX29Vzjpd4GHFlnGH0unEoWKyZMUxZy8VxSsspbe6sa_Aee6",
@@ -2078,9 +2051,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:51.490Z",
-   "retryAt": "2026-11-08T00:59:51.490Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:45.359Z",
+   "retryAt": "2026-11-08T18:06:45.359Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1110586&s=58&guid=000001a1898a08c0b4be03854abb3e1e&src=GD_JOB_AD&t=MJA&vt=e&ja=436214661&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_906fe738&cb=1793319189708&jobListingId=1010309497664&cpc=545C0D17DAD7ABB7&jrtk=5-yul1-0-1k652eeuagmsp800-445eb6e9c48d06de---6NYlbfkN0DA5X_mhUp2A7yt37P65C3B-bI7rWK_KmR2pozE29gZM2C8wn74TIKbjeZLfKJGpEnDrRZF_-8Jz",
@@ -2097,9 +2070,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:53.028Z",
-   "retryAt": "2026-11-08T00:59:53.028Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:46.901Z",
+   "retryAt": "2026-11-08T18:06:46.901Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAEgzdiiXhAXec6cSGn7gtAgnkyHLVeAAKk1iM0KpFxi48zcuY9nyoGYKEon219kj5oMoo7XW63EVpwZV4W5mu23tdSZnU0GLaj6kYNzWufRjkIiunuH1Ymfgl1QO0CHJmkSXZNtxkVAHe9XnxH61KeQ7FTKo1k01F6S3GWnmMcrX_AUrVGeFoolZ1dOxZDo9oyLppcq1k5rUAqG1VfIndySKjkC-WyoZvqGXf9avqK04wG0-5XQdJuhnQu7prB-g7ELQqj_ccYjRkmfBfChylSGcvvI9WlYNpx3iHThZ4a03NVoEzHZ6z-_vo7kkiHI4JkzkHvY1p07In5XpPh588rhme-7nL5yQzUJ1-_7a1uYi_iR",
@@ -2116,9 +2089,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:54.570Z",
-   "retryAt": "2026-11-08T00:59:54.570Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:48.439Z",
+   "retryAt": "2026-11-08T18:06:48.439Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAFxqNHvNOJ4Ht38pqN-UnhbjaW5vZ1VqrDaeKoFSv_JexS4lRTOrJVK8o9fIi4nJ9qGuLFBYo7njczt7gr-3Ql82L0_Ve4TkGeYsZFAg0_W031KAsn3-jQ_FIwrrDvS42MZl2LpddzmyKOlSERnrfVGFHATT3lqgS9uRsZhtAKx_JNGP-zo26kchrGvwCufYSX1_72J6IRosdV_e2yiuaX-0hE4BoW-cB-Wyn22ndTMkpLc0KAfQaCLTaXE-TttMZ8lHunoHWm3XWAiMYrS7s_64BvJeRC2OeD-A9pKFQDkwRl1ocGegL3hr3IY7oHrTTw2NcHyQF7bZpQe39Wp6ca8iTF5G0LBjpnbtomuEiOQ-8e-",
@@ -2135,9 +2108,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:56.111Z",
-   "retryAt": "2026-11-08T00:59:56.111Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:49.984Z",
+   "retryAt": "2026-11-08T18:06:49.984Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAFtYzsuFphF0NCeZeiNly8CmuMKh_2qAA5PKeB4AigyRkXaO5iypUxQ3BwiwDD2Broza386TACQKW0lSGOKhDr8konqmochf2KTvdDWdYRfCXW6xEikTvDIx8NKViIhr6TUvQ3yzYFNuyYC34Xkb4x4gjoNXlNRBomQMYAo4weYb__l2Y2kCjJjYRJFkQcNOENId0FAcIoTmD1cCLBbMzPB7JSklglMdZJjpCmjDFWKOntH03ACG37RsdbM28eMo4luUqLZx0vvmVBet1GesTchiaA9mkHMOE9N3RJChsd1Z2njeRQCyEJOKEDrwmoc6AI39tcBRSLDNAtmAf5nCTiwIIUoofdHlde0BquVcyw_2Vrz",
@@ -2154,9 +2127,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T08:59:59.266Z",
-   "retryAt": "2026-11-08T00:59:59.266Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:53.143Z",
+   "retryAt": "2026-11-08T18:06:53.143Z",
    "attempts": [
     {
      "url": "https://www.snagajob.com/jobs/1309960372",
@@ -2177,9 +2150,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:00.808Z",
-   "retryAt": "2026-11-08T01:00:00.808Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:54.686Z",
+   "retryAt": "2026-11-08T18:06:54.686Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAGjC3LUojVeZer3aT5cMSgjGu-KSdxQip3pXQQnyyjPw_YK0eymzYFwsLdeLux0ErlV3s8tNyNYOt6q6hmkIKyDdCld-coZVyPCDFQDQIgkQk76fkVZSeLp-JDZjKoCjzhox00VONi3iIqUGYrv8qOnCUmKEFyIq-HkJvbawabKT_Fvurx8-v316Fi_eCpSQ5woLw7biofWY14TUNGgm85SuFfFoQ-NICQxvB6H7XlD4Lauh2ERJT_1a7RifZGAzA5AFowzVGV7bLsNetvnsE12RBPh-mgANykHLUp8GgADQnXBg697jmjVJt52tc9AYS8O_AK64YRlE7jJ7D6jCdthrb9tkfA30gaVeX3BBOs4QT1Y",
@@ -2196,9 +2169,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:02.344Z",
-   "retryAt": "2026-11-08T01:00:02.344Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:56.223Z",
+   "retryAt": "2026-11-08T18:06:56.223Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAF85izD_HltqkkFgmA4flB7QeYoCb3kS9_4Ua-YASNf9AgUGnDLTsMrQMeTbuF1APIJr-dyzePWsaCNfWAGXXjvPUUOGpiNL8j0lOMeoQ99XwNSnLo1jVOxvfgPqnH58P-BOWknXZjIM4tu_cYzdtGmP3mkDnJouJMYaLXijUcQ7kj7H-RvuKMrlyrjNtKqnj8-i09yvzdzPtedfqptjmjo9r8TkUoJYBhtgCNkT3SkPeVK6L-Bs3XYwCpzPfL2cjjiByRXcS-2G8KVLOUwS3yxmr7ymWfycDz2WHc6gEKp0t2mjhjWeQQBA0K0DrewgA0zTWA456WygOuGpF6GyjA_88fyPhpUq42wWnSuX6B7KMxM",
@@ -2215,9 +2188,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:03.885Z",
-   "retryAt": "2026-11-08T01:00:03.885Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:57.765Z",
+   "retryAt": "2026-11-08T18:06:57.765Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAEYUWS1WbQdbIQBbaOBWsCXGo3EDgZy4qXS3I54ikpAUFJwn26AsQjipZfmAYS5NxknrPaLKAIvuOTJ2jjk3vtYmA_B1qF9Z2GtXQi9T2FZ5k-tAL3nbTR74nwFbaFHFs8QH9zUD55TtckrfRVC32tdNdCSFmS5MHG5hvn2Q3uob7vvzqq6YXb6D1SFPIa8P1e5NA8t8qSaBMbBhdLR_RvzdizxNJ6bewEcYU_U4W-et7KRxn6pRPCAjOJ5TcFqmTNOC_IiYygG98nf6noLHenCIZZrxtyHKG1qW54vQE2PNSgXfo8Ez_SjhxCSqyfp5XnhndsflfhWmYM6Z3phoX-D6dYcjKXfRu2jWvO6uGZ0F2NI",
@@ -2234,9 +2207,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:05.426Z",
-   "retryAt": "2026-11-08T01:00:05.426Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:06:59.301Z",
+   "retryAt": "2026-11-08T18:06:59.301Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAFlF0JNUcFakq6q5uD4vssdwXro7VlJFMPQC2Vc2wwkIccTP0pCSKtKHzst9Xq07HL6gaez8ix9TZ8-DSpTYYY03-82-HgWQpQzaf3iuHauMfJ9yNg_-1wFoTMdlDAKFQuy1kzlgZt2eqkf9U-9fadBtFTbnygdnnsYAJHTDQuYiVGQiswfbxMGS3v480-Jc8VdI73fpxkkfjQkde9Pf0rtxxe0gtILmRoY6P9Gt8I4UpxmZuqx7twq2QFoKwaGCz5mNAE-wIwu24YEia3ZpySkBt-C5WG-uUTzRSIpNn9w8qz7gMEQ7s4QGpknR2cDGomhVbtDUWOQ0SbVs-8GC6C0WxTll-qSVqA-r6GnHCJY0T4O",
@@ -2253,9 +2226,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:08.554Z",
-   "retryAt": "2026-11-08T01:00:08.554Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:07:02.450Z",
+   "retryAt": "2026-11-08T18:07:02.450Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/job-listing/jv?jl=1010295150409",
@@ -2276,7 +2249,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:00:15.030Z",
    "retryAt": "2026-11-08T01:00:15.030Z",
    "attempts": [
@@ -2299,7 +2272,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:00:21.279Z",
    "retryAt": "2026-11-08T01:00:21.279Z",
    "attempts": [
@@ -2322,7 +2295,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:00:27.538Z",
    "retryAt": "2026-11-08T01:00:27.538Z",
    "attempts": [
@@ -2345,7 +2318,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:42.797Z",
    "retryAt": "2026-11-08T01:30:42.797Z",
    "attempts": [
@@ -2364,7 +2337,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:44.483Z",
    "retryAt": "2026-11-08T01:30:44.483Z",
    "attempts": [
@@ -2383,7 +2356,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:46.660Z",
    "retryAt": "2026-11-08T01:30:46.660Z",
    "attempts": [
@@ -2402,7 +2375,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:50.400Z",
    "retryAt": "2026-11-08T01:30:50.400Z",
    "attempts": [
@@ -2421,7 +2394,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:52.712Z",
    "retryAt": "2026-11-08T01:30:52.712Z",
    "attempts": [
@@ -2440,7 +2413,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:54.685Z",
    "retryAt": "2026-11-08T01:30:54.685Z",
    "attempts": [
@@ -2459,7 +2432,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:56.510Z",
    "retryAt": "2026-11-08T01:30:56.510Z",
    "attempts": [
@@ -2478,7 +2451,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:58.315Z",
    "retryAt": "2026-11-08T01:30:58.315Z",
    "attempts": [
@@ -2497,7 +2470,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:30:59.890Z",
    "retryAt": "2026-11-08T01:30:59.890Z",
    "attempts": [
@@ -2516,7 +2489,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:01.632Z",
    "retryAt": "2026-11-08T01:31:01.632Z",
    "attempts": [
@@ -2535,7 +2508,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:03.717Z",
    "retryAt": "2026-11-08T01:31:03.717Z",
    "attempts": [
@@ -2554,7 +2527,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:05.248Z",
    "retryAt": "2026-11-08T01:31:05.248Z",
    "attempts": [
@@ -2573,7 +2546,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:06.790Z",
    "retryAt": "2026-11-08T01:31:06.790Z",
    "attempts": [
@@ -2592,7 +2565,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:08.317Z",
    "retryAt": "2026-11-08T01:31:08.317Z",
    "attempts": [
@@ -2611,7 +2584,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:09.848Z",
    "retryAt": "2026-11-08T01:31:09.848Z",
    "attempts": [
@@ -2630,7 +2603,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:11.379Z",
    "retryAt": "2026-11-08T01:31:11.379Z",
    "attempts": [
@@ -2649,7 +2622,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:12.918Z",
    "retryAt": "2026-11-08T01:31:12.918Z",
    "attempts": [
@@ -2668,7 +2641,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:14.443Z",
    "retryAt": "2026-11-08T01:31:14.443Z",
    "attempts": [
@@ -2687,7 +2660,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:15.998Z",
    "retryAt": "2026-11-08T01:31:15.998Z",
    "attempts": [
@@ -2706,7 +2679,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:17.843Z",
    "retryAt": "2026-11-08T01:31:17.843Z",
    "attempts": [
@@ -2725,7 +2698,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:19.383Z",
    "retryAt": "2026-11-08T01:31:19.383Z",
    "attempts": [
@@ -2744,7 +2717,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:20.895Z",
    "retryAt": "2026-11-08T01:31:20.895Z",
    "attempts": [
@@ -2763,7 +2736,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:22.428Z",
    "retryAt": "2026-11-08T01:31:22.428Z",
    "attempts": [
@@ -2782,7 +2755,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:24.174Z",
    "retryAt": "2026-11-08T01:31:24.174Z",
    "attempts": [
@@ -2801,7 +2774,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:26.256Z",
    "retryAt": "2026-11-08T01:31:26.256Z",
    "attempts": [
@@ -2820,7 +2793,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:27.838Z",
    "retryAt": "2026-11-08T01:31:27.838Z",
    "attempts": [
@@ -2839,7 +2812,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:29.567Z",
    "retryAt": "2026-11-08T01:31:29.567Z",
    "attempts": [
@@ -2858,7 +2831,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:31.128Z",
    "retryAt": "2026-11-08T01:31:31.128Z",
    "attempts": [
@@ -2877,7 +2850,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:32.639Z",
    "retryAt": "2026-11-08T01:31:32.639Z",
    "attempts": [
@@ -2896,7 +2869,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:34.744Z",
    "retryAt": "2026-11-08T01:31:34.744Z",
    "attempts": [
@@ -2915,7 +2888,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:36.950Z",
    "retryAt": "2026-11-08T01:31:36.950Z",
    "attempts": [
@@ -2934,7 +2907,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:38.589Z",
    "retryAt": "2026-11-08T01:31:38.589Z",
    "attempts": [
@@ -2953,7 +2926,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:40.993Z",
    "retryAt": "2026-11-08T01:31:40.993Z",
    "attempts": [
@@ -2972,7 +2945,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:43.106Z",
    "retryAt": "2026-11-08T01:31:43.106Z",
    "attempts": [
@@ -2991,7 +2964,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:45.046Z",
    "retryAt": "2026-11-08T01:31:45.046Z",
    "attempts": [
@@ -3010,7 +2983,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:46.937Z",
    "retryAt": "2026-11-08T01:31:46.937Z",
    "attempts": [
@@ -3029,7 +3002,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:48.466Z",
    "retryAt": "2026-11-08T01:31:48.466Z",
    "attempts": [
@@ -3048,7 +3021,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:49.996Z",
    "retryAt": "2026-11-08T01:31:49.996Z",
    "attempts": [
@@ -3067,7 +3040,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:52.383Z",
    "retryAt": "2026-11-08T01:31:52.383Z",
    "attempts": [
@@ -3086,7 +3059,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:54.455Z",
    "retryAt": "2026-11-08T01:31:54.455Z",
    "attempts": [
@@ -3105,7 +3078,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:31:56.024Z",
    "retryAt": "2026-11-08T01:31:56.024Z",
    "attempts": [
@@ -5409,6 +5382,82 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-38B17136FC7E",
+   "company": "PowerSecure International",
+   "title": "Director Manufacturing & Industrial Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:47:25.618Z",
+   "retryAt": "2026-11-08T16:47:25.618Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=102&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&ea=1&cs=1_7789ec83&cb=1793523214157&jobListingId=1010306702765&jrtk=5-yul1-1-1k6b50p9l2933000-cf33bd5659acc020&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos2-ag",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-38984E60BF5A",
+   "company": "Austin Powder",
+   "title": "Global Director of Manufacturing Operational Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:47:27.128Z",
+   "retryAt": "2026-11-08T16:47:27.128Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?pos=101&ao=1136043&s=362&guid=000001a1962890e38ad9918322945b24&src=GD_JOB_AD&t=REC_JOBS&vt=e&uido=25B689974B0D0BFE1C35058ABF7493D6&cs=1_0a6d80a4&cb=1793523214157&jobListingId=1010303725708&jrtk=5-yul1-1-1k6b50p9l2933000-6576c33f7dc5a8b3&utm_medium=email&utm_source=jobsForYou&utm_campaign=jobsForYou&utm_content=jobs-for-you-jobsForYou-jobpos1-age9d-1",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-54A41D195F13",
+   "company": "NAES Corporation",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:47:29.883Z",
+   "retryAt": "2026-11-08T16:47:29.883Z",
+   "attempts": [
+    {
+     "url": "https://recruiting2.ultipro.com/NAE1000NAES/JobBoard/f858dd65-f751-41a6-add7-7b877e9b6076/OpportunityDetail?opportunityId=6c2fbd15-9a36-4e79-8d8e-3a6c272899df&postingId=eedba24a-5839-47e8-8b49-833ac0876f0c",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8D56CEB13C18",
+   "company": "AlohaCare",
+   "title": "Director, Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:47:32.228Z",
+   "retryAt": "2026-11-08T16:47:32.228Z",
+   "attempts": [
+    {
+     "url": "https://alohacare.hrmdirect.com/employment/view.php?req=3846577&jbsrc=1014&location=bbc7254a-c437-c7a8-4db4-81b49482142b",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-3E300502C27E",
    "company": "Ladders",
    "title": "Senior Director, Service Manager",
@@ -5441,7 +5490,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:32:17.183Z",
    "retryAt": "2026-11-08T01:32:17.183Z",
    "attempts": [
@@ -5463,7 +5512,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:32:20.259Z",
    "retryAt": "2026-11-08T01:32:20.259Z",
    "attempts": [
@@ -5481,7 +5530,7 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:32:21.833Z",
    "retryAt": "2026-11-08T01:32:21.833Z",
    "attempts": [
@@ -6987,44 +7036,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-339B002123B3",
-   "company": "University of North Carolina at Chapel Hill",
-   "title": "Director of Continuous Improvement & Transformation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:48:04.356Z",
-   "retryAt": "2026-11-08T16:48:04.356Z",
-   "attempts": [
-    {
-     "url": "https://unc.peopleadmin.com/postings/328221",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1BE46DB40F2B",
-   "company": "Honeywell",
-   "title": "Director of Cyber Operational Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-08T00:48:07.577Z",
-   "retryAt": "2026-11-08T16:48:07.577Z",
-   "attempts": [
-    {
-     "url": "https://ibqbjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/156285",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-4983C6EE3358",
    "company": "Sara Lee Frozen Bakery, LLC",
    "title": "Director, Continuous Improvement",
@@ -7032,9 +7043,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-07T09:00:32.274Z",
-   "retryAt": "2026-11-08T01:00:32.274Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-08T02:07:05.529Z",
+   "retryAt": "2026-11-08T18:07:05.529Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -7050,7 +7061,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:33:13.281Z",
    "retryAt": "2026-11-08T01:33:13.281Z",
    "attempts": [
@@ -7069,7 +7080,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:33:19.579Z",
    "retryAt": "2026-11-08T01:33:19.579Z",
    "attempts": [
@@ -7092,7 +7103,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:33:24.263Z",
    "retryAt": "2026-11-08T01:33:24.263Z",
    "attempts": [
@@ -7111,7 +7122,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:33:28.654Z",
    "retryAt": "2026-11-08T01:33:28.654Z",
    "attempts": [
@@ -7134,7 +7145,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-07T09:33:30.656Z",
    "retryAt": "2026-11-08T01:33:30.656Z",
    "attempts": [
@@ -12022,6 +12033,44 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-339B002123B3",
+   "company": "University of North Carolina at Chapel Hill",
+   "title": "Director of Continuous Improvement & Transformation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:48:04.356Z",
+   "retryAt": "2026-11-08T16:48:04.356Z",
+   "attempts": [
+    {
+     "url": "https://unc.peopleadmin.com/postings/328221",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1BE46DB40F2B",
+   "company": "Honeywell",
+   "title": "Director of Cyber Operational Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-08T00:48:07.577Z",
+   "retryAt": "2026-11-08T16:48:07.577Z",
+   "attempts": [
+    {
+     "url": "https://ibqbjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/156285",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-82E7CC97C04E",
    "company": "DP World",
    "title": "Senior Plant Manager, Contract Logistics Site Operations",
@@ -12079,7 +12128,48 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-2A476B8C9241",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-08"
+   }
+  },
+  {
+   "id": "V2I-68B5244FB331",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-08"
+   }
+  },
+  {
+   "id": "V2I-DAD62270C2F9",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-08"
+   }
+  },
+  {
+   "id": "V2I-79830B23965B",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-08"
+   }
+  },
+  {
+   "id": "V2I-AF4495218805",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-08"
+   }
+  }
+ ],
  "estimate_samples": [],
- "ats_unconfirmed_rows": []
+ "ats_unconfirmed_rows": [
+  {
+   "id": "V2I-866FCD423820",
+   "company": "Shield AI",
+   "title": "Staff Engineer, Manufacturing Equipment",
+   "posting": "https://jobs.lever.co/shieldai/b2de60ed-3c1e-4f94-883c-90917d3ca45e",
+   "status": 404,
+   "checker": "not checked",
+   "checkerAsOf": ""
+  }
+ ]
 }
