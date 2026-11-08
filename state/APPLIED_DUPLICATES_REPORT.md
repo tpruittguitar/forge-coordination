@@ -1,22 +1,23 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-07T19:30:14.726Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-08T00:49:09.669Z from CANONICAL_WRITER_MASTER.
 
-Of 758 jobs waiting on Tim, 16 match a role he already applied to, was rejected from, or declined:
-- **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 16
+Of 738 jobs waiting on Tim, 16 match a role he already applied to, was rejected from, or declined:
+- **Closed as duplicates (same posting): 1**
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 15
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 1 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
-## Closed: same posting (0)
+## Closed: same posting (1)
 Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is wrong.
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
+| 59 | Hadrian | Manager, Build Engineering - Commodities | Applied 2026-10-20 · same posting | Same posting identity: url:api.ashbyhq.com/posting-api/job-board/hadrian-automation | V2I-579069794D7E → V2I-BC9ACFFD3C2B |
 
-## Kept, labeled (16)
+## Kept, labeled (15)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -28,7 +29,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 60 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
 | 59 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
 | 59 | L3Harris Technologies | Associate Manager, Manufacturing Engineering | You declined 2026-10-30 · different site | Different worksite: Malabar, FL vs earlier Huntsville, AL | V2I-FDB8B06FBD13 → V2I-B6E9763E305F |
-| 59 | Hadrian | Manager, Build Engineering - Commodities | Applied 2026-10-20 · this is a new posting | Different ashby posting: ashby:7fd37625-df20-4dba-9b91-c4aacf7feabb vs earlier ashby:9ae37da4-77bd-477f-a928-add6700d8635 | V2I-579069794D7E → V2I-BC9ACFFD3C2B |
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Hadrian | Director of Engineering, Forward Deployed Engineering | You declined 2026-10-31 · possible repeat | Posting first seen 2026-11-02, 2 days after 2026-10-31; no posting identity to compare | V2I-0471206B9480 → V2I-DD139754B419 |

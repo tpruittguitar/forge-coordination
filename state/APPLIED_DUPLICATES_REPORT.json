@@ -1,30 +1,56 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-07T19:30:14.726Z",
+ "at": "2026-11-08T00:49:09.669Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-07T19:30:14.334Z",
-  "rows": 4985,
-  "sha256": "b1b2b6e9cbec901ab8812c163af57c01e8d7d677033e93d7544e4a70909be254"
+  "readAt": "2026-11-08T00:49:09.320Z",
+  "rows": 4987,
+  "sha256": "dc492dac6396eeebd1285313fdaf8ee01256165ff5ff51d7717dbc3fc71a339b"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-07T19:23:38.872Z",
-  "decision": 758
+  "at": "2026-11-08T00:31:39.378Z",
+  "decision": 738
  },
  "counts": {
-  "waiting": 758,
+  "waiting": 738,
   "matched": 16,
-  "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 16
+  "CLOSE_CANDIDATE": 1,
+  "KEEP_LABEL": 15
  },
  "rules": {
+  "SAME_POSTING_ID": 1,
   "DIFFERENT_SITE": 6,
-  "NEW_REQUISITION": 4,
+  "NEW_REQUISITION": 3,
   "POSSIBLE_REPOST": 1,
   "UNCERTAIN": 5
  },
  "items": [
+  {
+   "id": "V2I-579069794D7E",
+   "company": "Hadrian",
+   "title": "Manager, Build Engineering - Commodities",
+   "location": "Los Angeles, CA",
+   "score": 59,
+   "outcome": "CLOSE_CANDIDATE",
+   "rule": "SAME_POSTING_ID",
+   "label": "Applied 2026-10-20 · same posting",
+   "evidence": "Same posting identity: url:api.ashbyhq.com/posting-api/job-board/hadrian-automation",
+   "matches": [
+    {
+     "id": "V2I-BC9ACFFD3C2B",
+     "status": "APPLIED",
+     "title": "Manager, Build Engineering",
+     "location": "Los Angeles, CA",
+     "decided": "2026-10-20",
+     "rejected": null,
+     "rule": "SAME_POSTING_ID",
+     "outcome": "CLOSE_CANDIDATE",
+     "similarity": 0.75,
+     "evidence": "Same posting identity: url:api.ashbyhq.com/posting-api/job-board/hadrian-automation"
+    }
+   ]
+  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -221,31 +247,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 0.75,
      "evidence": "Different worksite: Malabar, FL vs earlier Huntsville, AL"
-    }
-   ]
-  },
-  {
-   "id": "V2I-579069794D7E",
-   "company": "Hadrian",
-   "title": "Manager, Build Engineering - Commodities",
-   "location": "Los Angeles, CA",
-   "score": 59,
-   "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "Applied 2026-10-20 · this is a new posting",
-   "evidence": "Different ashby posting: ashby:7fd37625-df20-4dba-9b91-c4aacf7feabb vs earlier ashby:9ae37da4-77bd-477f-a928-add6700d8635",
-   "matches": [
-    {
-     "id": "V2I-BC9ACFFD3C2B",
-     "status": "APPLIED",
-     "title": "Manager, Build Engineering",
-     "location": "Los Angeles, CA",
-     "decided": "2026-10-20",
-     "rejected": null,
-     "rule": "NEW_REQUISITION",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different ashby posting: ashby:7fd37625-df20-4dba-9b91-c4aacf7feabb vs earlier ashby:9ae37da4-77bd-477f-a928-add6700d8635"
     }
    ]
   },
@@ -453,11 +454,11 @@
  "mode": "APPLY",
  "applied": {
   "planned": 16,
-  "closed": 0,
+  "closed": 1,
   "labeled": 0,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 16
+   "ALREADY_LABELED": 15
   },
   "failed": 0,
   "deferred": 0,
