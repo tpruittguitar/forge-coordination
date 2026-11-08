@@ -68,17 +68,26 @@ class WorkspaceTests(unittest.TestCase):
         self.root = parent / ('pool-' + 'p' * 55)
         w.init(self.root, str(self.origin), min_free_bytes=0, max_pool_bytes=10**8)
         self.assertGreater(len(str(self.root / 'slot-0' / relative)), 260)
-        for _ in range(2):
-            lease = self.acquire()
-            repo = Path(lease['checkout'])
-            self.assertEqual((repo / relative).read_text(), 'exact long-path evidence\n')
-            self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
-            self.release(lease)
-            self.assertFalse((repo / relative).exists())
-            self.assertEqual(self.run_git(repo, 'show', self.sha + ':' + relative.as_posix()), 'exact long-path evidence')
-            # Simulate an older idle pool: acquisition reinstates its local
-            # setting without changing any global or system configuration.
-            self.run_git(repo, 'config', 'core.longpaths', 'false')
+        # These repositories are synthetic and local-only. Preserve actionable
+        # diagnostics for CI without weakening production stderr sanitization.
+        native_run = subprocess.run
+        def diagnosed_run(*args, **kwargs):
+            result = native_run(*args, **kwargs)
+            if result.returncode:
+                self.fail('Synthetic long-path Git failure: ' + result.stderr.decode(errors='replace'))
+            return result
+        with patch.object(w.subprocess, 'run', side_effect=diagnosed_run):
+            for _ in range(2):
+                lease = self.acquire()
+                repo = Path(lease['checkout'])
+                self.assertEqual((repo / relative).read_text(), 'exact long-path evidence\n')
+                self.assertEqual(self.run_git(repo, 'config', '--local', '--get', 'core.longpaths'), 'true')
+                self.release(lease)
+                self.assertFalse((repo / relative).exists())
+                self.assertEqual(self.run_git(repo, 'show', self.sha + ':' + relative.as_posix()), 'exact long-path evidence')
+                # Simulate an older idle pool: acquisition reinstates its local
+                # setting without changing any global or system configuration.
+                self.run_git(repo, 'config', 'core.longpaths', 'false')
         self.assertEqual(len(list(self.root.glob('slot-*'))), 1)
 
     def test_failed_materialization_preserves_slot_and_does_not_retry(self):
