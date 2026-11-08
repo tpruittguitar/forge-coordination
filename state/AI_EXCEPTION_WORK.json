@@ -11289,7 +11289,16 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-05T02:12:41.220Z",
       "lastSeen": "2026-11-06T08:25:50.962Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261108T122652Z",
+        "sourceVersion": "faf2f29f7fb3a78f7ce9c7abb3f8366617a3895f223072a79d625c2601917b5e",
+        "observedAt": "2026-11-08T12:29:06.764Z",
+        "evidenceSha256": "90bbdfb6c80216b6ea5ba12aaa1081e0a2e418a8eb5a13041a2c047cb912d2ce",
+        "reason": "Full source is product marketing, not personal recruiting or an application outcome. Private correspondence review validated.",
+        "nextAction": "Coordinator consumes source-bound non-recruiting review; no canonical event.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261108T122652Z_CHECKPOINT.json"
+      }
     },
     "9441ab4944d8179c0f4867b90bbfbd266d1607e0988f4192862950339461cd6c": {
       "owner": "ChatGPT",
@@ -16873,15 +16882,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-06T00:07:01.827Z",
       "lastSeen": "2026-11-06T08:25:50.962Z",
-      "status": "ACTION_REQUIRED",
+      "status": "WAITING_SOURCE_CHANGE",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261107T102248Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261108T122652Z",
         "sourceVersion": "39f2962aa27199e3a9b82ad49dec415f0c67258b8450d8a4677231bdd109fa6c",
-        "observedAt": "2026-11-07T10:24:13.898Z",
-        "evidenceSha256": "7395847112936032945d905e9e4d9605f542556b7a777e943a64a25e0a87e121",
-        "reason": "Original saved intake evidence inspected and fresh independent receipt_index read; no replay or canonical completion claimed.",
-        "nextAction": "Retain original request fence; request_result only after independent COMPLETE and then exact row verification.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261107T102248Z_CHECKPOINT.json"
+        "observedAt": "2026-11-08T12:29:06.764Z",
+        "evidenceSha256": "04d81e0089265210e4390f9b60a74dfbccb862e4657768838698c996e6e42573",
+        "reason": "Original intake response is lock-timeout error; current parent and child receipt index absent. No independently COMPLETE proof.",
+        "nextAction": "Preserve original fence; revisit upon changed original Writer evidence. No replay.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261108T122652Z_CHECKPOINT.json"
+      },
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/d03b7ba24c3f21c99f35bd662a1d1deef417bb38840589a76f645df6fa57fbaa-44a2f2a65b96ec90f67c6718f2ddf3813a316af269c1397fcbd611d95352c22e.json",
+        "sha256": "44a2f2a65b96ec90f67c6718f2ddf3813a316af269c1397fcbd611d95352c22e",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-08T12:29:06.764Z",
+        "reason": "ORIGINAL_WRITER_EVIDENCE_INCOMPLETE",
+        "retryCondition": "ORIGINAL_WRITER_EVIDENCE_CHANGED"
       }
     },
     "80211e491cbfaf9e87764b5875bb3977eb40a599f259281bb6a01a98b66bd242": {
@@ -16916,15 +16933,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-06T00:07:01.827Z",
       "lastSeen": "2026-11-06T08:25:50.962Z",
-      "status": "ACTION_REQUIRED",
+      "status": "WAITING_SOURCE_CHANGE",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261107T102248Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261108T122652Z",
         "sourceVersion": "aee2a9d382ba458069477da317a6bbdf008d8507a9bc431eccbd3715b032fce8",
-        "observedAt": "2026-11-07T10:24:11.922Z",
-        "evidenceSha256": "bf6dff9e0d24d865ea32096dbc033dea12e6aa502761eb98ab2ea8e15c593a28",
-        "reason": "Original saved intake evidence inspected and fresh independent receipt_index read; no replay or canonical completion claimed.",
-        "nextAction": "Retain original request fence; request_result only after independent COMPLETE and then exact row verification.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261107T102248Z_CHECKPOINT.json"
+        "observedAt": "2026-11-08T12:29:06.764Z",
+        "evidenceSha256": "04d81e0089265210e4390f9b60a74dfbccb862e4657768838698c996e6e42573",
+        "reason": "Original intake response is lock-timeout error; current parent and child receipt index absent. No independently COMPLETE proof.",
+        "nextAction": "Preserve original fence; revisit upon changed original Writer evidence. No replay.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261108T122652Z_CHECKPOINT.json"
+      },
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/80211e491cbfaf9e87764b5875bb3977eb40a599f259281bb6a01a98b66bd242-9f9d0f3274767329dfd78e22f66286212998efac9264c91e8aa78c9a13b1805e.json",
+        "sha256": "9f9d0f3274767329dfd78e22f66286212998efac9264c91e8aa78c9a13b1805e",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-08T12:29:06.764Z",
+        "reason": "ORIGINAL_WRITER_EVIDENCE_INCOMPLETE",
+        "retryCondition": "ORIGINAL_WRITER_EVIDENCE_CHANGED"
       }
     },
     "03ed6f8654e0677021411b5aeacc68d6de5c0a7fc044584521c24774941b7982": {
@@ -43997,17 +44022,17 @@
   "runId": "FORGE-CODE-CHATGPT-20261106T081023336Z",
   "noProcessingCap": true,
   "counts": {
-    "ACTION_REQUIRED": 893,
+    "ACTION_REQUIRED": 891,
     "NO_LONGER_OPEN": 540,
-    "WAITING_SOURCE_CHANGE": 30
+    "WAITING_SOURCE_CHANGE": 32
   },
   "dispatch": {
     "lastServedKind": "MAIL",
-    "lastReviewedKind": "INTERVIEW",
-    "exceptionId": "51abce9148bf24df373469cc5606fc48d663364f6038afec99a3b5d8d6fa746c",
-    "sourceVersion": "36701b843df9220c8e5696fcc70ef14b65302f81d4b152a2cbd478dca395ced4",
-    "observedAt": "2026-11-08T11:28:05.265Z",
-    "reviewedAt": "2026-11-08T09:24:13.856Z",
+    "lastReviewedKind": "WRITER",
+    "exceptionId": "5dc8b2d7a9557c1a0c071eb506605073c3d2be83e242b19a707c70d1f4131e76",
+    "sourceVersion": "faf2f29f7fb3a78f7ce9c7abb3f8366617a3895f223072a79d625c2601917b5e",
+    "observedAt": "2026-11-08T12:29:06.764Z",
+    "reviewedAt": "2026-11-08T12:29:06.764Z",
     "basis": "SOURCE_BOUND_ATTEMPT",
     "artifactSizeOnly": true
   }
