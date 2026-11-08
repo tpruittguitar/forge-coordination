@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261108T1639Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261108T2149Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (108 read, 0 failed) | 149 | 41 | 82 |
+| Employer job boards (108 read, 0 failed) | 148 | 41 | 81 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 25 | 49 |
+| DIRECTOR_PLUS | 25 | 48 |
 | SR_MANAGER | 12 | 14 |
 | SR_STAFF | 4 | 19 |
 
@@ -52,14 +52,14 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, EW](https://boards.greenhouse.io/andurilindustries/jobs/5279603007?gh_jid=5279603007) | Irvine, California, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5284595007?gh_jid=5284595007) | Waltham, Massachusetts, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Ketryx | [Head of Operations ](https://job-boards.greenhouse.io/ketryx/jobs/5429745008) | Boston, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
