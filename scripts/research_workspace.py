@@ -5,11 +5,13 @@ Run this helper from OUTSIDE the managed checkout: release parks tracked files.
 The caller must bootstrap this helper from the exact resolved main SHA and supply
 that SHA to acquire. A lease token is a capability; keep the JSON response private.
 Failures retain the checkout and lease for inspection, never retry automatically.
-Failed acquisition has no automated recovery: an operator must inspect the pool;
-this helper never abandons a failed slot, steals its lease, or deletes its data.
+Failed acquisition has no automated recovery. An operator can explicitly park a
+verified, unchanged failed materialization using recover-failed; it never abandons
+a failed slot, steals its lease, retries research, or deletes its Git objects.
 """
 import argparse
 from contextlib import contextmanager
+from datetime import datetime, timezone
 import json
 import hashlib
 import os
@@ -29,12 +31,23 @@ class Unsafe(RuntimeError):
 
 
 def git(repo, *args):
+    return run_git(repo, args)
+
+
+def read_git(repo, *args):
+    return run_git(repo, args, read_only=True)
+
+
+def run_git(repo, args, read_only=False):
     targeting = {'GIT_DIR', 'GIT_WORK_TREE', 'GIT_COMMON_DIR', 'GIT_INDEX_FILE',
                  'GIT_OBJECT_DIRECTORY', 'GIT_ALTERNATE_OBJECT_DIRECTORIES',
                  'GIT_NAMESPACE', 'GIT_PREFIX', 'GIT_SHALLOW_FILE',
                  'GIT_CEILING_DIRECTORIES'}
     env = {k: v for k, v in os.environ.items() if k not in targeting}
     env['GIT_TERMINAL_PROMPT'] = '0'
+    if read_only:
+        env['GIT_OPTIONAL_LOCKS'] = '0'
+        env['GIT_NO_LAZY_FETCH'] = '1'
     result = subprocess.run(['git', '-c', 'gc.auto=0', '-c', 'maintenance.auto=false',
                              '-c', 'core.autocrlf=false', '-c', 'core.longpaths=true',
                              '-c', 'core.hooksPath=' + os.devnull,
@@ -139,21 +152,22 @@ def preflight(root, data, projected_bytes, projected_files=0):
                 available_inodes=inodes)
 
 
-def clean(repo, origin):
+def clean(repo, origin, run=None):
+    run = run or git
     if not (repo / '.git').is_dir() or (repo / '.git').is_symlink():
         raise Unsafe('linked or external git directory refused')
-    if Path(git(repo, 'rev-parse', '--show-toplevel')).resolve() != repo:
+    if Path(run(repo, 'rev-parse', '--show-toplevel')).resolve() != repo:
         raise Unsafe('repository root mismatch')
-    if git(repo, 'rev-parse', '--git-common-dir') != '.git':
+    if run(repo, 'rev-parse', '--git-common-dir') != '.git':
         raise Unsafe('external common directory refused')
-    if git(repo, 'config', '--get', 'remote.origin.url') != origin:
+    if run(repo, 'config', '--get', 'remote.origin.url') != origin:
         raise Unsafe('origin changed')
-    if git(repo, 'worktree', 'list', '--porcelain').count('worktree ') != 1:
+    if run(repo, 'worktree', 'list', '--porcelain').count('worktree ') != 1:
         raise Unsafe('linked worktrees present')
-    if git(repo, 'status', '--porcelain=v1', '--untracked-files=all', '--ignored'):
+    if run(repo, 'status', '--porcelain=v1', '--untracked-files=all', '--ignored'):
         raise Unsafe('dirty, untracked or ignored files present; preserved')
     # Compare every present tracked file, even if skip-worktree hides edits.
-    for entry in git(repo, 'ls-files', '--stage', '-z').split('\0'):
+    for entry in run(repo, 'ls-files', '--stage', '-z').split('\0'):
         if not entry:
             continue
         metadata, name = entry.split('\t', 1)
@@ -167,11 +181,11 @@ def clean(repo, origin):
                     digest.update(block)
             if digest.hexdigest() != blob:
                 raise Unsafe('tracked content differs, including hidden index edits')
-    refs = git(repo, 'for-each-ref', '--format=%(refname)').splitlines()
+    refs = run(repo, 'for-each-ref', '--format=%(refname)').splitlines()
     if any(ref != 'refs/remotes/origin/main' for ref in refs):
         raise Unsafe('local branches, tags, stashes or other refs present')
     # Assume-unchanged can hide edits from status; refuse those flags outright.
-    if any(line[:1].islower() for line in git(repo, 'ls-files', '-v').splitlines()):
+    if any(line[:1].islower() for line in run(repo, 'ls-files', '-v').splitlines()):
         raise Unsafe('assume-unchanged index flags present')
     for name in ('MERGE_HEAD', 'CHERRY_PICK_HEAD', 'REVERT_HEAD', 'rebase-merge',
                  'rebase-apply', 'objects/info/alternates', 'info/grafts'):
@@ -274,10 +288,138 @@ def release(root, slot, token, complete=False):
         return dict(slot=str(slot), state='idle', pool_bytes=size(root))
 
 
+def acquisition_snapshot(repo, origin, sha):
+    """Prove the failed acquisition contains no later work, even in its index."""
+    # A matching index is not proof that Git can reconstruct these bytes. Do
+    # not park the only surviving worktree copy of a missing/corrupt blob.
+    # Managed acquisitions are complete shallow fetches, never promisor clones.
+    config_keys = [line.partition('=')[0].lower() for line in read_git(repo, 'config', '--list').splitlines()]
+    if (list((repo / '.git' / 'objects' / 'pack').glob('*.promisor')) or
+            any(key.endswith('.promisor') or key == 'extensions.partialclone' for key in config_keys)):
+        raise Unsafe('partial/promisor object storage is not recoverable here')
+    clean(repo, origin, run=read_git)
+    if read_git(repo, 'rev-parse', '--symbolic-full-name', 'HEAD') != 'HEAD':
+        raise Unsafe('failed acquisition HEAD is not detached; preserved')
+    if read_git(repo, 'rev-parse', 'HEAD') != sha or read_git(repo, 'rev-parse', 'refs/remotes/origin/main') != sha:
+        raise Unsafe('failed acquisition HEAD/origin snapshot changed; preserved')
+    expected = {}
+    for entry in read_git(repo, 'ls-tree', '-r', '-z', sha).split('\0'):
+        if not entry:
+            continue
+        metadata, name = entry.split('\t', 1)
+        mode, kind, blob = metadata.split()
+        if mode not in ('100644', '100755') or kind != 'blob':
+            raise Unsafe('unsupported acquisition tree entry; preserved')
+        expected[name] = (mode, blob, '0')
+    actual = {}
+    for entry in read_git(repo, 'ls-files', '--stage', '-z').split('\0'):
+        if entry:
+            metadata, name = entry.split('\t', 1)
+            if name in actual:
+                raise Unsafe('ambiguous acquisition index; preserved')
+            actual[name] = tuple(metadata.split())
+    if actual != expected:
+        raise Unsafe('failed acquisition index differs from original snapshot; preserved')
+    read_git(repo, 'fsck', '--full', '--no-reflogs', '--no-dangling', sha)
+    return expected
+
+
+def durable_new(path, content):
+    # Audit files contain the original private lease capability. Never publish
+    # them or return their contents in a task receipt. Refuse existing paths.
+    descriptor = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o600)
+    with os.fdopen(descriptor, 'wb') as stream:
+        stream.write(content)
+        stream.flush()
+        os.fsync(stream.fileno())
+
+
+def sync_directory(path):
+    # Windows does not expose portable directory fsync; file handles above are
+    # flushed there. The authorized private parent supplies inherited Windows ACLs.
+    if os.name != 'nt':
+        descriptor = os.open(path, os.O_RDONLY | os.O_DIRECTORY)
+        try:
+            os.fsync(descriptor)
+        finally:
+            os.close(descriptor)
+
+
+def recover_failed(root, slot, token, task, expected_main_sha,
+                   expected_manifest_sha256, audit_dir,
+                   owner_terminal=False, no_consumers=False):
+    """Operator-only parking, not an acquisition retry or automatic reclamation."""
+    root, audit_dir = safe_path(root), safe_path(audit_dir)
+    if root == audit_dir or root in audit_dir.parents:
+        raise Unsafe('private recovery audit directory must be outside the pool')
+    if not owner_terminal or not no_consumers:
+        raise Unsafe('explicit terminal-owner and no-consumer attestations required')
+    if not re.fullmatch('[0-9a-f]{40}', expected_main_sha) or not re.fullmatch('[0-9a-f]{64}', expected_manifest_sha256):
+        raise Unsafe('exact acquisition SHA and inspected manifest SHA-256 required')
+    with locked(root) as data:
+        before = (root / 'manifest.json').read_bytes()
+        if hashlib.sha256(before).hexdigest() != expected_manifest_sha256:
+            raise Unsafe('inspected manifest changed; preserve and inspect again')
+        lease = data['leases'].get(str(slot))
+        if (not lease or lease['state'] != 'failed' or
+                not secrets.compare_digest(lease.get('token', ''), token) or
+                lease.get('task') != task or lease.get('main_sha') != expected_main_sha):
+            raise Unsafe('exact failed lease token, task and acquisition SHA required')
+        if lease.get('error') not in (
+                'git sparse-checkout failed (exit 128); checkout retained',
+                'git sparse-checkout disable failed (exit 128); checkout retained'):
+            raise Unsafe('unsupported failed acquisition; preserve for manual review')
+        repo = root / ('slot-' + str(slot))
+        acquisition_snapshot(repo, data['origin'], expected_main_sha)
+        # A new directory makes every attempt independently auditable. Preserve
+        # the original manifest byte-for-byte before any repository mutation.
+        audit_dir.mkdir(mode=0o700)
+        durable_new(audit_dir / 'manifest-before.json', before)
+        proof = dict(schema='forge.workspace-recovery.v1', slot=str(slot), task=task,
+                     main_sha=expected_main_sha, manifest_sha256=expected_manifest_sha256,
+                     owner_terminal=True, no_consumers=True,
+                     inspected_at=datetime.now(timezone.utc).isoformat())
+        durable_new(audit_dir / 'inspection.json', json.dumps(proof, indent=2).encode())
+        sync_directory(audit_dir)
+        sync_directory(audit_dir.parent)
+        if (root / 'manifest.json').read_bytes() != before:
+            raise Unsafe('manifest changed before parking; failed lease preserved')
+        git(repo, 'config', 'core.longpaths', 'true')
+        # Prechecks deliberately disabled optional index writes. Refresh only
+        # now, after audit and content proof, so Git can safely park partially
+        # materialized files whose cached stat data was never recorded.
+        git(repo, 'update-index', '--refresh')
+        git(repo, 'sparse-checkout', 'set', '--no-cone', '!/*')
+        names = acquisition_snapshot(repo, data['origin'], expected_main_sha)
+        if any((repo / name).exists() for name in names):
+            raise Unsafe('parking incomplete; failed lease retained')
+        if (root / 'manifest.json').read_bytes() != before:
+            raise Unsafe('manifest changed during parking; preserve for review')
+        # Persist parking proof before releasing the hold. If anything above
+        # fails, leave the original failed manifest/token intact for inspection.
+        durable_new(audit_dir / 'parked.json', json.dumps(dict(
+            schema='forge.workspace-recovery.v1', main_sha=expected_main_sha,
+            manifest_sha256=expected_manifest_sha256,
+            parked_at=datetime.now(timezone.utc).isoformat()), indent=2).encode())
+        sync_directory(audit_dir)
+        lease['state'] = 'idle'
+        lease['recovery'] = dict(audit_dir=str(audit_dir),
+                                 original_manifest_sha256=expected_manifest_sha256,
+                                 original_error=lease.pop('error'))
+        lease.pop('token')
+        # Do all fallible measurements before the single manifest commit point.
+        # A caller must never mistake a later measurement failure for a still-
+        # failed lease after save has already made this slot idle.
+        result = dict(slot=str(slot), state='idle', audit_dir=str(audit_dir),
+                      parked_pool_bytes=size(root), free_bytes=shutil.disk_usage(root).free)
+        save(root, data)
+        return result
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__)
     sub = parser.add_subparsers(dest='command', required=True)
-    for name in ('init', 'inspect', 'preflight', 'acquire', 'release'):
+    for name in ('init', 'inspect', 'preflight', 'acquire', 'release', 'recover-failed'):
         p = sub.add_parser(name)
         p.add_argument('--root', required=True, type=Path)
         if name == 'init':
@@ -290,10 +432,18 @@ def main():
         if name == 'acquire':
             p.add_argument('--task', required=True)
             p.add_argument('--expected-main-sha', required=True)
-        if name == 'release':
+        if name in ('release', 'recover-failed'):
             p.add_argument('--slot', required=True)
             p.add_argument('--token', required=True)
+        if name == 'release':
             p.add_argument('--complete', action='store_true')
+        if name == 'recover-failed':
+            p.add_argument('--task', required=True)
+            p.add_argument('--expected-main-sha', required=True)
+            p.add_argument('--expected-manifest-sha256', required=True)
+            p.add_argument('--audit-dir', required=True, type=Path)
+            p.add_argument('--owner-terminal', action='store_true')
+            p.add_argument('--no-consumers', action='store_true')
     args = vars(parser.parse_args())
     command = args.pop('command')
     try:
@@ -310,7 +460,7 @@ def main():
             result['slots'] = {n: {k: v for k, v in x.items() if k not in ('token', 'error')}
                                for n, x in data['leases'].items()}
         else:
-            result = globals()[command](**args)
+            result = globals()[command.replace('-', '_')](**args)
         print(json.dumps(result))
     except (Unsafe, OSError, ValueError, KeyError) as exc:
         print(json.dumps({'error': str(exc)}), file=sys.stderr)

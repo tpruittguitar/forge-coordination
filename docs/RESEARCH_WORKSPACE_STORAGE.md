@@ -110,6 +110,62 @@ general disk cleaner.
   an exhausted workspace recovered. A passing fixture test or merged instruction
   change alone does not prove adoption by an existing scheduled executor.
 
+## Operator recovery of a failed materialization
+
+`recover-failed` is a narrow, explicit maintenance operation, never a scheduled
+fallback. It supports only the recorded sparse-checkout exit-128 acquisition
+failure when the checkout, index and origin/main still equal the original
+acquisition commit. It parks reconstructible tracked files without fetching,
+retrying research, changing HEAD, deleting objects, or creating another slot.
+Other failures remain held for review. Do not manually change the manifest.
+
+Before using a merged helper bootstrapped from fresh main:
+
+1. Verify the owning run is terminal from its terminal evidence, and independently
+   confirm no run or other process is using this checkout. A clean worktree or an
+   old timestamp is not enough. The two CLI attestations record this operator
+   verification; the helper cannot prove external process ownership itself.
+2. Inspect the failed lease privately. Record the exact acquisition SHA, task,
+   slot, current token and SHA-256 of the raw manifest bytes. The acquisition SHA
+   is deliberately the failed run's snapshot, not today's main revision.
+3. Choose a new audit directory under an existing authorized private evidence
+   directory outside the pool. Its parent must have appropriate Windows ACLs.
+   Audit files preserve the original manifest byte-for-byte, including its lease
+   capability and possibly a credential-bearing origin URL. Never publish them.
+4. Invoke the operator command from outside the pool:
+
+```sh
+python /workspace/bootstrap/research_workspace.py recover-failed \
+  --root <existing-pool> --slot <failed-slot> --token <current-private-token> \
+  --task <owning-task> --expected-main-sha <original-acquisition-SHA> \
+  --expected-manifest-sha256 <inspected-manifest-SHA256> \
+  --audit-dir <new-private-directory-outside-pool> \
+  --owner-terminal --no-consumers
+```
+
+The helper holds the normal pool lock; verifies exact lease identity, detached
+HEAD, origin ref, complete index, intact reconstructible Git objects and all
+existing clean-worktree protections; rejects partial/promisor object stores;
+and saves private inspection evidence before parking. Only after this proof does
+it refresh index stat data and park the partially materialized tracked files.
+It rechecks the snapshot, absent tracked files and unchanged manifest before
+transitioning the lease to idle. The failed manifest remains in the private audit
+directory; the idle lease retains redacted provenance. Audit file contents are
+flushed before parking/release, and directory metadata is synced where the
+platform exposes it. No global Git or OS settings change.
+
+On any error or interruption, inspect the actual manifest, lock and audit files
+before deciding what happened. Do not assume an uncertain final save or lock
+cleanup left the old state, remove a lock, or automatically retry. A fresh attempt
+requires renewed inspection and a new audit directory. Unsupported data or work
+always stays held. Recovery does not itself establish that research is healthy.
+
+After an idle result, independently inspect state and free bytes, then validate
+one normal exact-main acquisition and release on the same slot using the merged
+helper. Preserve the private audit files and original Git objects. Finally check
+the next ordinary scheduled run before claiming scheduled adoption. No schedule
+change or additional pool is needed.
+
 ## Validation
 
 Run `python -m unittest discover -s tests -p 'test_research_workspace.py' -v`.
