@@ -74,3 +74,7 @@ An unreadable source creates no successful posting cache entry. An unchanged/no-
 read does not erase an earlier disclosure; contradictory or unresolved newer pay
 cannot turn into a confirmed salary. The report's `posting_cache` counters describe
 successful saves and reuse, separately from physical source reads.
+
+Degree extraction uses the [complete degree-evidence contract](../../docs/DEGREE_EXTRACTION.md).
+The same parser and regression corpus are mirrored in the cockpit ATS producer;
+adjacent experience alternatives must survive extraction and field serialization.
