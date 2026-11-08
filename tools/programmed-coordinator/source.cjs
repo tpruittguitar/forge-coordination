@@ -81,7 +81,7 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
   const candidate=structured||(!sal&&!job.forgePayRejected?Pay.employerText(description,L.payFromText):null);
   const safe=candidate&&!Pay.conflicts(description,candidate,L.payFromText)&&!Pay.estimatedPay(description,candidate,L.payFromText)?candidate:null;
   const payFacts=Pay.fact(safe,structured?'STRUCTURED_ANNUAL_BASE':'EXPLICIT_ANNUAL_BASE_TEXT'),pay=Pay.range(payFacts);
-  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
+  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,payAmbiguous:!pay&&(!!sal||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(description)),identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
 async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
   const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');

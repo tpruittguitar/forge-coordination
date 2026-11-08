@@ -57,7 +57,9 @@ function parseAts(kind, j, id) {
   else if(kind==='ashby'){const job=(j.jobs||[]).find(x=>x.id===id);if(!job)return null;text=job.descriptionPlain||strip(job.descriptionHtml);}
   else return null;
   const payFacts=Pay.ats(kind,j,{id,text,payFromText});
-  return {pay:Pay.range(payFacts),payFacts,text};
+  const selected=kind==='ashby'?(j.jobs||[]).find(x=>x.id===id):kind==='workday'?j.jobPostingInfo:j;
+  const declared=kind==='greenhouse'?selected.pay_input_ranges?.length:kind==='ashby'?selected.compensation?.summaryComponents?.length:kind==='workday'?(selected.baseSalary||selected.salaryRange||selected.compensation?.baseSalary||selected.compensation?.salaryRange):selected.salaryRange;
+  return {pay:Pay.range(payFacts),payFacts,text,payAmbiguous:!payFacts&&(!!declared||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(text))};
 }
 /* employer-posted comparables from the master; one per row */
 function postedAnchor(r, p) {
