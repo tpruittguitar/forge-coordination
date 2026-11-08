@@ -201,6 +201,10 @@ def acquire(root, task, expected_main_sha, projected_bytes):
                 repo.mkdir()
                 git(repo, 'init', '--quiet')
                 git(repo, 'config', 'core.autocrlf', 'false')
+                # Lane publication uses Git outside this helper too. Retain old
+                # objects through those ordinary fetch/commit operations.
+                git(repo, 'config', 'gc.auto', '0')
+                git(repo, 'config', 'maintenance.auto', 'false')
                 git(repo, 'remote', 'add', 'origin', data['origin'])
             # Caller resolved main immediately before fetching this helper from
             # that same SHA. Do not race a moving branch or silently change it.

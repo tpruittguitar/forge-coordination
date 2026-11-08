@@ -45,6 +45,8 @@ class WorkspaceTests(unittest.TestCase):
             repo = Path(lease['checkout'])
             self.assertTrue((repo / 'evidence.txt').is_file())
             self.assertEqual(self.run_git(repo, 'rev-parse', '--is-shallow-repository'), 'true')
+            self.assertEqual(self.run_git(repo, 'config', '--get', 'gc.auto'), '0')
+            self.assertEqual(self.run_git(repo, 'config', '--get', 'maintenance.auto'), 'false')
             self.release(lease)
             self.assertFalse((repo / 'evidence.txt').exists())
             self.assertIn('retained evidence', self.run_git(repo, 'show', f'{self.sha}:evidence.txt'))
