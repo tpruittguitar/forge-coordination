@@ -1123,7 +1123,22 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-03T22:51:12.172Z",
       "lastSeen": "2026-11-06T08:25:50.962Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/ead0e3dafb0cb3dc657a7ec6d921082a5e4ba29823606008a9829ede5077d21a-e09a2ac3f6fd28982082c37949703f782ece330a51a3360c75fb7f1b1f5ad7d9.json",
+        "sha256": "e09a2ac3f6fd28982082c37949703f782ece330a51a3360c75fb7f1b1f5ad7d9",
+        "disposition": "SOURCE_EVIDENCE",
+        "reviewedAt": "2026-11-08T20:22:19.125Z"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261108T202100Z",
+        "sourceVersion": "c1b7627e249683d0e20cf539c00766adf4c97dc57d5ed545ee5afd51b39f44d7",
+        "observedAt": "2026-11-08T20:22:19.125Z",
+        "evidenceSha256": "868d98d5958b97052f14be155e97224f5ef94a292fcb768b944075a4f48caaa8",
+        "reason": "EXACT_ORIGINAL_POSTING_RECOVERED",
+        "nextAction": "Coordinator independently validates exact identity and source before normal processing.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261108T202100Z_CHECKPOINT.json"
+      }
     },
     "5716c2ef09680d2c23bd352a1c220ed9753ab8a1daf694963d8108ec8484152f": {
       "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4479933337",
@@ -1530,7 +1545,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-03T22:51:12.172Z",
       "lastSeen": "2026-11-06T08:25:50.962Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/f9cf20cee9abd5edfb4fbd4f529538ed304e44e1b1ef4ce5be9a7173cd8be604-d116d00e3dabf991d0da91d47bbb31a07b0f2fd40b8348c56ffd91681c51da3f.json",
+        "sha256": "d116d00e3dabf991d0da91d47bbb31a07b0f2fd40b8348c56ffd91681c51da3f",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-08T20:23:02.340Z",
+        "reason": "SOURCE_ACCESS_BLOCKED",
+        "retryCondition": "SOURCE_ACCESS_RESTORED"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261108T202100Z",
+        "sourceVersion": "fe0a36dc210a3f7afc395ae29e7d0dfc1f1f73e43eaff667c19c196ec56ccc83",
+        "observedAt": "2026-11-08T20:23:02.340Z",
+        "evidenceSha256": "09dd31dd4285f2ffa09047b96e631926012ee89cede6e8a7e4299624eb782ecd",
+        "reason": "SOURCE_ACCESS_BLOCKED",
+        "nextAction": "SOURCE_ACCESS_RESTORED",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261108T202100Z_CHECKPOINT.json"
+      }
     },
     "9bd0f2033df691f9ca77234636e690ba672456b76465a634243a526888209e16": {
       "key": "FORGE_GROK_INTAKE_HELPER:indeed:10c6cccc00cfa048",
@@ -44125,17 +44157,17 @@
   "runId": "FORGE-CODE-CHATGPT-20261106T081023336Z",
   "noProcessingCap": true,
   "counts": {
-    "ACTION_REQUIRED": 886,
-    "WAITING_SOURCE_CHANGE": 37,
+    "ACTION_REQUIRED": 885,
+    "WAITING_SOURCE_CHANGE": 38,
     "NO_LONGER_OPEN": 540
   },
   "dispatch": {
-    "lastServedKind": "MAIL",
+    "lastServedKind": "SOURCE",
     "lastReviewedKind": "SOURCE",
-    "exceptionId": "67a377e7a3d7edf3961720d086a7d412548ba0760c95feaf507d8b4a51df3693",
-    "sourceVersion": "3bbbfcd585ff62e99b83d3f4fc5248d4475ffc1e3ccdd470b5a0802f77d3fedd",
-    "observedAt": "2026-11-08T19:20:27.635Z",
-    "reviewedAt": "2026-11-08T18:26:32.814Z",
+    "exceptionId": "f9cf20cee9abd5edfb4fbd4f529538ed304e44e1b1ef4ce5be9a7173cd8be604",
+    "sourceVersion": "fe0a36dc210a3f7afc395ae29e7d0dfc1f1f73e43eaff667c19c196ec56ccc83",
+    "observedAt": "2026-11-08T20:23:02.340Z",
+    "reviewedAt": "2026-11-08T20:23:02.340Z",
     "basis": "SOURCE_BOUND_ATTEMPT",
     "artifactSizeOnly": true
   }
