@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261108T0126Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261108T0628Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (112 read, 0 failed) | 153 | 42 | 84 |
+| Employer job boards (109 read, 0 failed) | 149 | 41 | 82 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 26 | 51 |
+| DIRECTOR_PLUS | 25 | 49 |
 | SR_MANAGER | 12 | 14 |
 | SR_STAFF | 4 | 19 |
 
@@ -66,6 +66,5 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Scout Motors Inc. | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
-| BOARD:lever | Tutor Intelligence | [Head of Quality](https://jobs.lever.co/tutorintelligence/891b15af-e99a-4f61-b250-0d90dcce96ba) | Watertown, MA | QUALITY | DIRECTOR_PLUS | $220K-$280K |
 | BOARD:workday | Elanco | [Director, Technical Services/Manufacturing Science](https://elanco.wd5.myworkdayjobs.com/External_Career/job/Fort-Dodge-IA/Director--Technical-Services-Manufacturing-Science_R0026376) | Fort Dodge, IA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
