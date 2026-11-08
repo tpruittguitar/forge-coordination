@@ -73,7 +73,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  old.at=at;old.upstreamAt=up.at;old.reviewErrors={};
  for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];if(!item||item.sourceVersion!==review.sourceVersion||item.status==='ACCOUNTED_UPSTREAM'||item.status==='INVENTORY_RECONCILIATION_REQUIRED'||item.currentRepresentation)continue;validate(review,item,now);if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
   if(item.review&&Date.parse(item.review.observedAt)>Date.parse(review.observedAt))continue;
-  item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome};
+  item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome,retryCondition:review.retryCondition,retryAfter:review.retryAfter};
   item.nextAction=review.nextAction||item.nextAction;
   item.status=['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)?'PENDING_INDEPENDENT_VALIDATION':review.retryAfter&&Date.parse(review.retryAfter)<=now?'ACTION_REQUIRED':'WAITING_EVIDENCE_CHANGE';
   if(item.validation?.reviewSha256===S.hash(review))item.status=['READY_FOR_CONTROLLED_INTAKE','READY_FOR_CONTROLLED_EXCLUSION'].includes(item.validation.status)&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
@@ -98,9 +98,10 @@ function validate(r,item,now=Date.now()){
 function publish(root,review,now=Date.now()){
  const work=sync(root,{now,apply:true}),item=work.items[review.key];if(!item||item.status==='ACCOUNTED_UPSTREAM')throw Error('CURRENT_OPEN_DRAIN_ITEM_REQUIRED');validate(review,item,now);S.immutable(root,reviewPath(review),review);return{path:reviewPath(review),canonicalWrites:0,pendingIndependentValidation:['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)};
 }
+function researchEligible(item,now=Date.now()){return item.status==='ACTION_REQUIRED'||item.status==='SOURCE_VALIDATION_REQUIRED'&&Date.parse(item.validation?.retryAfter)<=now;}
 function next(root,taskKey,{limit=10,now=Date.now()}={}){
  if(!Number.isInteger(limit)||limit<1||limit>20)throw Error('BOUNDED_ARTIFACT_SIZE_REQUIRED');const work=sync(root,{now});
- return{schema:'forge.intake-drain-work.v1',at:work.at,taskKey,items:Object.values(work.items).filter(i=>i.taskKey===taskKey&&(i.status==='ACTION_REQUIRED'||i.status==='SOURCE_VALIDATION_REQUIRED'&&Date.parse(i.validation.retryAfter)<=now)).sort((a,b)=>a.firstSeen.localeCompare(b.firstSeen)||a.key.localeCompare(b.key)).slice(0,limit),counts:work.counts,actions:work.actions,artifactSizeOnly:true,canonicalWrites:0};
+ return{schema:'forge.intake-drain-work.v1',at:work.at,taskKey,items:Object.values(work.items).filter(i=>i.taskKey===taskKey&&researchEligible(i,now)).sort((a,b)=>a.firstSeen.localeCompare(b.firstSeen)||a.key.localeCompare(b.key)).slice(0,limit),counts:work.counts,actions:work.actions,artifactSizeOnly:true,canonicalWrites:0};
 }
 async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify,verifyExclusion=require('./exclusions.cjs').verify,exclusionContext,apply=false}={}){
  if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir)===path.resolve(root)||path.resolve(privateDir).startsWith(path.resolve(root)+path.sep))throw Error('PRIVATE_SOURCE_DIRECTORY_REQUIRED');
@@ -145,4 +146,4 @@ if(require.main===module)(async()=>{
  else throw Error('Use sync, next <taskKey>, review <json>, or verify <privateDir>');
  console.log(JSON.stringify(command==='sync'?{counts:result.counts,actions:result.actions,reviewErrors:result.reviewErrors}:result));
 })().catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={writerFences,FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,next,verify,approved,seeds,fences,owned,ownedKeys,reviewPath};
+module.exports={writerFences,FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,researchEligible,next,verify,approved,seeds,fences,owned,ownedKeys,reviewPath};
