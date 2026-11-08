@@ -23,10 +23,16 @@ function due(row,needs,ledger,now=Date.now()){const p=ledger.progress?.[row.PRIM
 function order(rows,ledger){return rows.map((row,i)=>({row,i,last:Date.parse(ledger.progress?.[row.PRIMARY_ID]?.lastAttemptAt||'')||0})).sort((a,b)=>a.last-b.last||a.i-b.i).map(x=>x.row);}
 function remember(ledger,row,needs,status,attempts,now=Date.now()){ledger.progress=ledger.progress||{};const prior=ledger.progress[row.PRIMARY_ID]||{},at=new Date(now).toISOString(),fp=fingerprint(row,needs),failures=prior.fingerprint===fp?(prior.failures||0)+1:1;ledger.progress[row.PRIMARY_ID]={fingerprint:fp,lastAttemptAt:at,retryAt:new Date(now+Math.min(status==='EVIDENCE_FOUND'?1:24,Math.pow(2,Math.min(failures,4)))*3600000).toISOString(),status,failures,attempts:attempts.slice(-8)};return ledger.progress[row.PRIMARY_ID];}
 function cached(ledger,row,now=Date.now()){
- const e=ledger.postingEvidence?.[row.PRIMARY_ID],Pay=require('./pay-values');
+ let e=ledger.postingEvidence?.[row.PRIMARY_ID];const Pay=require('./pay-values'),Qualification=require('./qualification');
  if(!e||!Number.isFinite(Date.parse(e.at))||e.identity!==JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION])||e.fullPosting!==true||now<Date.parse(e.at)||now-Date.parse(e.at)>=7*86400000)return null;
  const bound=e.identityVerified===true&&e.sourceIdentity&&JSON.stringify([e.sourceIdentity.company,e.sourceIdentity.title,e.sourceIdentity.location])===e.identity;
  if(!bound)return null;
+ // Degree and pay evolve independently. Re-derive old degree facts from bound
+ // retained posting text without changing observation time or canonical records.
+ if(e.qualificationVersion!==Qualification.VERSION){
+  if(typeof e.text!=='string'||e.text.length<300)return null;
+  e={...e,qualificationVersion:Qualification.VERSION,degree:Qualification.parse(e.text)};
+ }
  if(e.factsVersion===Pay.VERSION)return e;
  // Old derived values are not evidence. Reuse retained raw text conservatively;
  // a cache without raw text must return to source recovery, not keep old claims.
@@ -64,7 +70,7 @@ function preferFreshPay(current,parsed){
  if(!current)return true;
  return parsed.identityVerified===true&&(!parsed.basis||parsed.basis==='EMPLOYER_POSTED')&&(p.low!==current.low||p.high!==current.high);
 }
-function saveEvidence(ledger,row,url,parsed,now=Date.now()){const degree=L.degreeFromText(parsed.text);ledger.postingEvidence=ledger.postingEvidence||{};return ledger.postingEvidence[row.PRIMARY_ID]={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now).toISOString(),url,fullPosting:true,text:parsed.text,identityVerified:parsed.identityVerified===true,sourceIdentity:parsed.sourceIdentity||null,factsVersion:require('./pay-values').VERSION,degree,basis:parsed.basis||'EMPLOYER_POSTED',pay:parsed.pay||null,payFacts:parsed.payFacts||null,payAmbiguous:parsed.payAmbiguous===true};}
+function saveEvidence(ledger,row,url,parsed,now=Date.now()){const degree=L.degreeFromText(parsed.text);ledger.postingEvidence=ledger.postingEvidence||{};return ledger.postingEvidence[row.PRIMARY_ID]={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:new Date(now).toISOString(),url,fullPosting:true,text:parsed.text,identityVerified:parsed.identityVerified===true,sourceIdentity:parsed.sourceIdentity||null,factsVersion:require('./pay-values').VERSION,qualificationVersion:require('./qualification').VERSION,degree,basis:parsed.basis||'EMPLOYER_POSTED',pay:parsed.pay||null,payFacts:parsed.payFacts||null,payAmbiguous:parsed.payAmbiguous===true};}
 function unresolved(row,needs,ledger,status){const p=ledger.progress?.[row.PRIMARY_ID];return {id:row.PRIMARY_ID,company:row.COMPANY,title:row.TITLE,needs,status:status||p?.status||'NOT_YET_ATTEMPTED',lastAttemptAt:p?.lastAttemptAt||null,retryAt:p?.retryAt||null,attempts:p?.attempts||[],next:!urls(row).length?'Find an exact employer posting; preserve identity and missing fields.':'Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page.'};}
 module.exports={urls,readableRoute,exactApi,boardMatch,fingerprint,due,order,remember,cached,combine,preferFreshPay,saveEvidence,unresolved};
 
