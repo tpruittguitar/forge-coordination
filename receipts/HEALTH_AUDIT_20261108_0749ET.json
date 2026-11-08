@@ -1,0 +1,214 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "at": "2026-11-08T12:50:36.270Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_KNOWN_COORDINATOR_AND_WORKSPACE_HOLDS",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "49dab9f87beed4b603c59f43b29969717df862d8",
+    "foremanCockpit": "641ff543a42e025f3f1b8baeea695e6a85b90dfd"
+  },
+  "sourceEvidenceSha256": "f6c6c6a7f5a2d14c7bcb14b13a598278b2678adf4f7c63a084ebcf8e7eb5d47e",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": false,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "ecd1c54",
+      "failedNotice": "One incomplete failed-record notice; no timestamp/request identity in status readback.",
+      "fileQueueThroughputOnly": true
+    },
+    "github": {
+      "foreman-cockpit": {
+        "head": "641ff543a42e025f3f1b8baeea695e6a85b90dfd",
+        "sample": 15,
+        "conclusions": {
+          "success": 14,
+          "cancelled": 1
+        },
+        "openPRs": 1,
+        "oldestPR": {
+          "number": 278,
+          "title": "Separate Writer private config and verify resume metadata",
+          "updatedAt": "2026-11-07T10:06:58Z"
+        },
+        "durationsSeconds": [
+          6,
+          14,
+          19,
+          1754,
+          20,
+          281,
+          12,
+          6,
+          18,
+          1734,
+          1717,
+          12,
+          17,
+          15,
+          6
+        ]
+      },
+      "forge-coordination": {
+        "head": "49dab9f87beed4b603c59f43b29969717df862d8",
+        "sample": 15,
+        "conclusions": {
+          "in_progress": 2,
+          "success": 13
+        },
+        "openPRs": 38,
+        "oldestPR": {
+          "number": 201,
+          "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+          "updatedAt": "2026-11-02T23:10:58Z"
+        },
+        "durationsSeconds": [
+          4,
+          182,
+          23,
+          54,
+          37,
+          219,
+          22,
+          488,
+          53,
+          36,
+          196,
+          24,
+          25,
+          315,
+          37
+        ]
+      }
+    },
+    "coordinator": {
+      "conflicts": [
+        "state/AI_EXCEPTION_WORK.json",
+        "state/RELEVANCE_SCREEN_GUARD.json"
+      ],
+      "lastReportAt": "2026-11-08T09:25:46.468Z",
+      "pendingPreserved": true
+    },
+    "activity": {
+      "publishedAt": "2026-11-08T12:43:24.690Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-07T00:43:24.690Z",
+        "to": "2026-11-08T12:43:24.690Z",
+        "verification": {
+          "count": 469,
+          "perHour": 13.027777777777779,
+          "partial": true,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 125,
+          "perHour": 3.4722222222222223,
+          "partial": true,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 74,
+          "perHour": 2.0555555555555554,
+          "partial": true,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 1,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 17,
+          "sources": [
+            "76aa3e1b01a5b6427227a21788ed76c8d697c073"
+          ],
+          "error": null
+        },
+        "discovery": {
+          "count": 125,
+          "windowHours": 36,
+          "perHour": 3.4722222222222223,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 125,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-08T12:36:48.717Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      },
+      "sources": {
+        "Automatic intake (GitHub)": {
+          "writes": 11,
+          "inserts": 11,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 11
+        },
+        "Pay enrichment (GitHub)": {
+          "writes": 10,
+          "inserts": 0,
+          "updates": 49,
+          "otherChanges": 0,
+          "jobs": 48
+        },
+        "Other work": {
+          "writes": 25,
+          "inserts": 77,
+          "updates": 228,
+          "otherChanges": 0,
+          "jobs": 302
+        },
+        "Automatic posting checks": {
+          "writes": 1,
+          "inserts": 0,
+          "updates": 11,
+          "otherChanges": 0,
+          "jobs": 11
+        }
+      },
+      "pendingReceipts": 0,
+      "problemWriteIncidents": 1,
+      "coverage": {
+        "metadataGaps": 0,
+        "missingWriteIds": 0,
+        "unplacedCompleteReceipts": 0,
+        "legacyReceiptsExcluded": 946,
+        "conflictedWrites": 0
+      },
+      "note": "Receipt-derived partial activity, not completed-job totals or proof of current coordinator health."
+    },
+    "enrichment": {
+      "at": "2026-11-08T11:37:07.164Z",
+      "eligible": 744,
+      "remainder": 0,
+      "recoveryStatuses": {
+        "SOURCE_RESEARCH_REQUIRED": 596,
+        "WRITER_REQUEST_PENDING_NO_REPLAY": 75,
+        "NOT_YET_ATTEMPTED": 18,
+        "EVIDENCE_FOUND": 6
+      }
+    },
+    "limitations": [
+      "Explorer live outbox and browser polling not inspected; no UI health claim.",
+      "No direct operations-run telemetry or latch health proof.",
+      "File queue emptiness does not mean zero direct API work.",
+      "Research workspace failed lease unchanged; retained."
+    ]
+  },
+  "nextActions": [
+    "Recover coordinator publication conflicts while preserving original transactions and staged evidence.",
+    "Review existing workspace recovery change and verify actual acquisition before resuming research.",
+    "Verify Explorer outbox and polling; keep all unknown receipt obligations fenced."
+  ],
+  "changesSincePrior": "Known local coordinator and research holds persist; independent receipt activity continues. No new canonical mutation by audit."
+}
