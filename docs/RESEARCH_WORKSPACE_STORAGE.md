@@ -49,6 +49,14 @@ SHA. A newer main during bootstrap does not change that snapshot or mix revision
 the next run resolves main again. The byte reserve is storage headroom, not a
 candidate, research or time quota.
 
+Git for Windows needs `core.longpaths=true` when a deep pool path plus a tracked
+filename exceeds 260 characters. The helper enables this per Git invocation and
+in the managed repository so normal lane publication uses the same behavior.
+It does not change global Git configuration, Windows settings or path protections.
+The Windows regression fixture covers long-path acquisition, parking and reuse.
+A previously failed slot remains failed: this fix does not retry it, remove its
+lease or declare the existing checkout recovered.
+
 ## End every completed run
 
 Keep private sources, draft inputs, command logs and other retained evidence in an
