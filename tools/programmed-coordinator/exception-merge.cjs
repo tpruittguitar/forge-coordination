@@ -1,0 +1,94 @@
+'use strict';
+// Deliberately not a general JSON merge. Only an observation of an unchanged
+// open case may cross an independently evidenced review/attempt update.
+const {isDeepStrictEqual:eq}=require('node:util'),path=require('node:path');
+const S=require('./store.cjs'),W=require('../routine-handoffs/exception-work.cjs');
+const fail=()=>{throw Error('Semantic exception accounting conflict; preserve checkout and lock');};
+const object=x=>x!==null&&typeof x==='object'&&!Array.isArray(x);
+const keys=(...xs)=>[...new Set(xs.flatMap(x=>Object.keys(x||{})))];
+const changed=(a,b)=>keys(a,b).filter(k=>!eq(a[k],b[k])||Object.hasOwn(a,k)!==Object.hasOwn(b,k));
+const time=x=>typeof x==='string'&&Number.isFinite(Date.parse(x));
+function choose(b,l,r){if(eq(l,r))return l;if(eq(l,b))return r;if(eq(r,b))return l;fail();}
+function counts(work){const out={};for(const c of Object.values(work.cases)){if(!object(c)||!['ACTION_REQUIRED','WAITING_SOURCE_CHANGE','AWAITING_TIM','NO_LONGER_OPEN'].includes(c.status))fail();out[c.status]=(out[c.status]||0)+1;}return out;}
+function validate(work){
+ if(!object(work)||work.schema!=='forge.ai-exception-work.v1'||!object(work.cases)||!eq(work.counts,counts(work)))fail();
+ for(const [id,c]of Object.entries(work.cases))if(c.exceptionId!==id||!object(c.binding)||S.hash(c.binding)!==id||c.canonicalCompletion!==false)fail();
+}
+function review(root,c,now){
+ const ref=c.review;if(!ref||typeof ref.proof!=='string'||!new RegExp('^'+W.REVIEWS+'/'+c.exceptionId+'-[a-f0-9]{64}\\.json$').test(ref.proof))fail();
+ const record=S.read(root,ref.proof,null);if(!record||ref.proof!==W.REVIEWS+'/'+c.exceptionId+'-'+S.hash(record)+'.json')fail();
+ W.validateReview(record,{cases:{[c.exceptionId]:c}},now,true);
+ const projected=JSON.parse(JSON.stringify({proof:ref.proof,sha256:S.hash(record),disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter}));
+ if(!eq(ref,projected)||record.disposition==='AWAITING_TIM')fail(); // question existence/authority is intentionally outside this resolver
+ // A concurrently published newer immutable review must not be hidden by a
+ // stale pointer, even if Git happened to merge that receipt without conflict.
+ for(const file of S.files(path.join(root,W.REVIEWS)).filter(f=>path.basename(f).startsWith(c.exceptionId+'-'))){
+  const other=S.read(root,path.relative(root,file));
+  if(path.basename(file)!==c.exceptionId+'-'+S.hash(other)+'.json')fail();
+  W.validateReview(other,{cases:{[c.exceptionId]:c}},now,true);
+  if(Date.parse(other.reviewedAt)>Date.parse(record.reviewedAt)||Date.parse(other.reviewedAt)===Date.parse(record.reviewedAt)&&S.hash(other)!==S.hash(record))fail();
+ }
+ return record;
+}
+function attempt(root,c,now){
+ const ref=c.lastAttempt;if(!ref||!/^FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}$/.test(ref.runId||'')||ref.proof!=='receipts/AI_EXCEPTION_RUNS/'+ref.runId+'_CHECKPOINT.json')fail();
+ const receipt=S.read(root,ref.proof,null),start=S.read(root,'receipts/AI_EXCEPTION_RUNS/'+ref.runId+'_START.json',null);
+ if(!receipt||!start||receipt.schema!=='forge.ai-exception-progress-receipt.v1'||start.schema!=='forge.ai-exception-start.v1'||receipt.runId!==ref.runId||start.runId!==ref.runId||receipt.taskKey!==W.OWNER||start.taskKey!==W.OWNER||receipt.selectionSha256!==S.hash(start)||receipt.startedAt!==start.startedAt||Date.parse(receipt.completedAt)<Date.parse(start.startedAt)||receipt.canonicalCompletionsClaimed!==0||!Array.isArray(receipt.attempts)||!Array.isArray(start.selected)||receipt.attempted!==receipt.attempts.length||!time(start.startedAt)||!time(receipt.completedAt)||Date.parse(receipt.completedAt)>now+60000)fail();
+ const selected=start.selected.filter(x=>x.exceptionId===c.exceptionId),matches=receipt.attempts.filter(x=>x.exceptionId===c.exceptionId);
+ if(selected.length!==1||matches.length!==1||!eq(selected[0].binding,c.binding))fail();
+ const a=matches[0];
+ if(a.sourceVersion!==c.binding.sourceVersion||!time(a.observedAt)||Date.parse(a.observedAt)<Date.parse(start.startedAt)-60000||Date.parse(a.observedAt)>Date.parse(receipt.completedAt)||!/^[a-f0-9]{64}$/.test(a.evidenceSha256||'')||typeof a.reason!=='string'||!a.reason.trim()||typeof a.nextAction!=='string'||!a.nextAction.trim())fail();
+ if(!eq(ref,{runId:ref.runId,sourceVersion:a.sourceVersion,observedAt:a.observedAt,evidenceSha256:a.evidenceSha256,reason:a.reason,nextAction:a.nextAction,proof:ref.proof}))fail();
+ if(a.reviewPath){if(!new RegExp('^'+W.REVIEWS+'/'+c.exceptionId+'-[a-f0-9]{64}\\.json$').test(a.reviewPath))fail();const r=S.read(root,a.reviewPath,null);if(!r||a.reviewPath!==W.REVIEWS+'/'+c.exceptionId+'-'+S.hash(r)+'.json'||r.runId!==ref.runId||r.sourceVersion!==c.binding.sourceVersion||Date.parse(r.reviewedAt)>Date.parse(receipt.completedAt)||Date.parse(r.reviewedAt)<Date.parse(start.startedAt)-60000)fail();W.validateReview(r,{cases:{[c.exceptionId]:c}},now,true);}
+}
+function mergeCase(root,b,l,r,now){
+ if(!b){if(l&&r&&!eq(l,r))fail();const added=l||r;if(added.review||added.lastAttempt)fail();return added;}
+ if(!l||!r||!eq(b.binding,l.binding)||!eq(b.binding,r.binding))fail();
+ // Never drop even an old proof or attempt, including on a one-sided change.
+ for(const side of [l,r])for(const k of ['review','lastAttempt'])if(b[k]&&!side[k])fail();
+ const lc=changed(b,l),rc=changed(b,r);let result;
+ if(!lc.length||!rc.length||eq(l,r))result=choose(b,l,r);
+ else {
+  const observation=side=>changed(b,side).every(k=>k==='lastSeen')&&time(side.lastSeen)&&time(b.lastSeen)&&Date.parse(side.lastSeen)>=Date.parse(b.lastSeen);
+  const service=side=>changed(b,side).every(k=>['review','lastAttempt','status'].includes(k));
+  let observed,served;if(observation(l)&&service(r)){observed=l;served=r;}else if(observation(r)&&service(l)){observed=r;served=l;}else fail();
+  if(b.status==='NO_LONGER_OPEN'||served.status==='NO_LONGER_OPEN')fail();
+  result={...served,lastSeen:observed.lastSeen};
+ }
+ if(!eq(result.review,b.review)){
+  const rec=review(root,result,now);
+  if(b.review&&Date.parse(rec.reviewedAt)<=Date.parse(b.review.reviewedAt))fail();
+  // Expiring waits need coordinator evaluation, not a publication-time decision.
+  if(rec.retryAfter||result.status!==(rec.disposition==='WAITING_SOURCE_CHANGE'?'WAITING_SOURCE_CHANGE':'ACTION_REQUIRED'))fail();
+ }else if(!eq(result.status,b.status)&&lc.length&&rc.length)fail();
+ if(!eq(result.lastAttempt,b.lastAttempt)){if(result.review)review(root,result,now);attempt(root,result,now);if(b.lastAttempt&&Date.parse(result.lastAttempt.observedAt)<=Date.parse(b.lastAttempt.observedAt))fail();}
+ return result;
+}
+function dispatchEvidence(root,work,cursor,now){
+ const c=work.cases[cursor?.exceptionId];
+ if(!c||keys(cursor).sort().join(',')!==['lastServedKind','lastReviewedKind','exceptionId','sourceVersion','observedAt','reviewedAt','basis','artifactSizeOnly'].sort().join(',')||cursor.artifactSizeOnly!==true||cursor.sourceVersion!==c.binding.sourceVersion||cursor.lastServedKind!==c.kind||cursor.lastReviewedKind!==c.kind||cursor.observedAt!==cursor.reviewedAt)fail();
+ const rec=review(root,c,now);if(rec.reviewedAt!==cursor.observedAt)fail();
+ if(cursor.basis==='SOURCE_BOUND_ATTEMPT'){attempt(root,c,now);if(c.lastAttempt.observedAt!==cursor.observedAt)fail();}
+ else if(cursor.basis!=='ACCEPTED_IMMUTABLE_REVIEW')fail();
+}
+function mergeDispatch(root,base,left,right,now){
+ const b=base.dispatch,l=left.dispatch,r=right.dispatch;
+ if(eq(l,r)||eq(b,l)||eq(b,r)){const chosen=choose(b,l,r);if(!eq(chosen,b)){dispatchEvidence(root,eq(chosen,l)?left:right,chosen,now);if(b&&(!time(b.observedAt)||Date.parse(chosen.observedAt)<=Date.parse(b.observedAt))&&!(b.basis==='SOURCE_BOUND_ATTEMPT'&&chosen.basis==='ACCEPTED_IMMUTABLE_REVIEW'&&eq({...b,basis:chosen.basis},chosen)))fail();}return chosen;}
+ // sync re-observes the same immutable review and can relabel the cursor's
+ // basis without advancing service. Recognize only that exact normalization,
+ // with both old and new cursor evidence validated, never an arbitrary clock win.
+ const normalization=c=>b?.basis==='SOURCE_BOUND_ATTEMPT'&&c?.basis==='ACCEPTED_IMMUTABLE_REVIEW'&&eq({...b,basis:c.basis},c);
+ let observed,advanced;if(normalization(l)){observed=left;advanced=right;}else if(normalization(r)){observed=right;advanced=left;}else fail();
+ dispatchEvidence(root,base,b,now);dispatchEvidence(root,observed,observed.dispatch,now);dispatchEvidence(root,advanced,advanced.dispatch,now);
+ if(Date.parse(advanced.dispatch.observedAt)<=Date.parse(b.observedAt))fail();
+ return advanced.dispatch;
+}
+function mergeExceptionWork(root,base,left,right,now=Date.now()){
+ for(const w of [base,left,right])validate(w);
+ const out={};
+ // Top-level values are atomic, including dispatch and unknown future fields.
+ for(const k of keys(base,left,right).filter(k=>!['cases','counts'].includes(k))){if(Object.hasOwn(base,k)&&(!Object.hasOwn(left,k)||!Object.hasOwn(right,k)))fail();const v=k==='dispatch'?mergeDispatch(root,base,left,right,now):choose(base[k],left[k],right[k]);if(v!==undefined)Object.defineProperty(out,k,{value:v,enumerable:true,writable:true,configurable:true});}
+ out.cases={};for(const id of keys(base.cases,left.cases,right.cases))out.cases[id]=mergeCase(root,base.cases[id],left.cases[id],right.cases[id],now);
+ out.counts=counts(out);validate(out);return out;
+}
+module.exports={mergeExceptionWork};
