@@ -4,6 +4,61 @@
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+function sourceRun(t,lines,responses,config={}){
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-fetch-')),master=path.join(dir,'master.txt'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads.txt');
+ const outputs=['state/enrich-ats-pay-report.json','state/enrich-ats-pay-products.json','state/enrich-ats-pay-recovery.json'].map(p=>path.join(ROOT,p)),before=outputs.map(p=>fs.existsSync(p)?fs.readFileSync(p):null);
+ t.after(()=>{outputs.forEach((p,i)=>{if(before[i])fs.writeFileSync(p,before[i]);else fs.rmSync(p,{force:true});});fs.rmSync(dir,{recursive:true,force:true});});
+ fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config)},stdio:'pipe'});
+ return {report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
+}
+const exactPosting=()=>'<script type="application/ld+json">'+JSON.stringify({'@type':'JobPosting',title:'Director of Quality',hiringOrganization:{name:'Acme'},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required.',baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:180000,maxValue:220000}}})+'</script>';
+test('failed ATS aliases fetch one endpoint and do not crowd out a genuinely different fallback',t=>{
+ const api='https://boards-api.greenhouse.io/v1/boards/acme/jobs/111?pay_transparency=true',other='https://careers.example.org/exact';
+ const line=row(1,'V2I-DEDUP','Director of Quality','Dayton, OH',`ATS_POSTING_URL=https://boards.greenhouse.io/acme/jobs/111; DIRECT_JOB_URL=https://job-boards.greenhouse.io/acme/jobs/111; LIVENESS_EVIDENCE_URL=${api}; SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111#pay; COMPANY_SOURCE_URL=${other}`);
+ const out=sourceRun(t,[line],{[api]:{status:404},[other]:{body:exactPosting()}});
+ assert.deepEqual(out.reads,[api,other]);assert.equal(out.report.source_reads,2);assert.equal(out.report.source_retries,0);assert.ok(out.report.source_duplicate_skips>=4);assert.equal(out.report.public_tried,1);
+ assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);assert.equal(out.report.sample[0].fields.DEGREE_REQ,'REQUIRED');
+});
+test('exhausted transient retry cannot restart from fallback; a different posting still works',t=>{
+ const api='https://boards-api.greenhouse.io/v1/boards/acme/jobs/111?pay_transparency=true',other='https://careers.example.org/exact';
+ const out=sourceRun(t,[row(1,'V2I-RETRY','Director of Quality','Dayton, OH',`ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/111; SOURCE_URL=${api}; DIRECT_JOB_URL=${other}`)],{[api]:{status:503},[other]:{body:exactPosting()}});
+ assert.deepEqual(out.reads,[api,api,other]);assert.equal(out.report.source_retries,1);assert.equal(out.report.public_tried,1);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
+});
+test('provider circuit breaker also gates distinct raw guest URLs in fallback, not other employers',t=>{
+ const lines=[],responses={},guests=[];for(let i=0;i<4;i++){
+  const id='501234567'+i,guest='https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/'+id,alternate=guest+'0',employer='https://careers.example.org/job/'+i;
+  guests.push(guest,alternate);responses[guest]={status:403};responses[alternate]={status:403};responses[employer]={body:i===3?exactPosting():'No complete posting'};
+  lines.push(row(i+1,'V2I-CIRCUIT'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=https://www.linkedin.com/jobs/view/${id}; LIVENESS_EVIDENCE_URL=${alternate}; COMPANY_SOURCE_URL=${employer}; DATE_ADDED=2026-11-0${7-i}`));
+ }
+ const out=sourceRun(t,lines,responses),providerReads=out.reads.filter(u=>u.includes('linkedin.com'));
+ assert.equal(providerReads.length,3);assert.equal(new Set(providerReads).size,3);assert.equal(out.report.agg_failed.linkedin,3);assert.equal(out.report.agg_tried.linkedin,3);
+ assert.ok(out.report.sample.some(x=>x.id==='V2I-CIRCUIT3'&&x.fields.SALARY_BASE_LOW===180000));
+});
+test('aggregator request cap counts the explicit retry and cannot be bypassed by fallback',t=>{
+ const page='https://www.linkedin.com/jobs/view/5012345678',guest='https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/5012345678',alternate=guest+'0';
+ const out=sourceRun(t,[row(1,'V2I-CAP','Director of Quality','Dayton, OH',`SOURCE_URL=${page}; LIVENESS_EVIDENCE_URL=${alternate}`)],{[guest]:{status:503},[alternate]:{status:200,body:exactPosting()}},{maxAggregatorFetches:1});
+ assert.deepEqual(out.reads,[guest]);assert.equal(out.report.source_retries,0);assert.equal(out.report.agg_tried.linkedin,1);assert.equal(out.report.public_tried,0);
+});
+test('raw provider guest walls cannot reset the primary provider circuit breaker',t=>{
+ const lines=[],responses={};for(let i=0;i<4;i++){
+  const id='501234567'+i,guest='https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/'+id,alternate=guest+'0';
+  responses[guest]={status:403};responses[alternate]={body:'<div>Sign in to view this job</div>'};
+  lines.push(row(i+1,'V2I-WALL'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=https://www.linkedin.com/jobs/view/${id}; LIVENESS_EVIDENCE_URL=${alternate}; DATE_ADDED=2026-11-0${7-i}`));
+ }
+ const out=sourceRun(t,lines,responses);
+ assert.equal(out.reads.length,3);assert.equal(out.report.agg_tried.linkedin,3);assert.equal(out.report.agg_failed.linkedin,2);assert.equal(out.report.agg_wall.linkedin,1);assert.equal(out.report.submitted,0);
+});
+test('public request budget bounds retries across genuinely different fallback URLs',t=>{
+ const first='https://careers.example.org/job/first',second='https://careers.example.org/job/second';
+ const out=sourceRun(t,[row(1,'V2I-PUBLIC-CAP','Director of Quality','Dayton, OH',`SOURCE_URL=${first}; COMPANY_SOURCE_URL=${second}`)],{[first]:{status:503},[second]:{body:exactPosting()}},{maxPublicFetches:1});
+ assert.deepEqual(out.reads,[first]);assert.equal(out.report.public_tried,1);assert.equal(out.report.source_retries,0);
+});
+test('structured aggregator fallback reuses the first response without a second guest fetch',t=>{
+ const page='https://www.linkedin.com/jobs/view/5012345678',guest='https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/5012345678';
+ const out=sourceRun(t,[row(1,'V2I-HTML','Director of Quality','Dayton, OH','SOURCE_URL='+page)],{[guest]:{body:'<div>Sign in to view this job</div>'+exactPosting()}});
+ assert.deepEqual(out.reads,[guest]);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);assert.equal(out.report.sample[0].fields.DEGREE_REQ,'REQUIRED');
+});
 test('deadline inside decision salary repair stops nested research and preserves the Writer/report reserve',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-deadline-')),master=path.join(dir,'master.txt'),context=path.join(dir,'context.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  fs.writeFileSync(context,JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]}));

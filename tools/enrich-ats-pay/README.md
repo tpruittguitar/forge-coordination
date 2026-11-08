@@ -29,6 +29,17 @@ maximum, with no cooldown after the final batch. Deferred work stays for a later
 uncertain submissions stay fenced until RESULT, GitHub index and readback agree.
 See [runtime repair](../../docs/PAY_RUNTIME_REPAIR_20261103.md).
 
+Missing-field reads track the resolved API, guest-page or public endpoint per row.
+Fallback skips endpoints already attempted, including aliases, without consuming
+the four-distinct-route fallback allowance. Other saved endpoints remain eligible.
+Transport failures get at most one explicit retry for HTTP 408/500/502/503/504 or
+recognized transient connection/time-out errors. Permanent failures, access walls,
+invalid posting content and 429s do not retry through fallback. Retry-After waits,
+provider circuit breakers, disabled providers, request caps and the shared runtime
+deadline still apply; retries count against the physical request caps.
+`source_reads`, `source_retries` and `source_duplicate_skips` report this missing-field
+path only. They do not count comparable-search, board-discovery or active-review reads.
+
 Tests: `ENRICH_FC_DIR=../foreman-cockpit node --test tools/enrich-ats-pay/lib.test.js tools/enrich-ats-pay/run.test.js`
 
 Salary anchor repair (2026-10-31): associate/assistant manager, manager and senior manager are distinct comparison levels.

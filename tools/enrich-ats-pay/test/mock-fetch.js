@@ -11,6 +11,16 @@ const fs = require('fs');
 if(process.env.ENRICH_TEST_NOW){const now=Number(process.env.ENRICH_TEST_NOW);Date.now=()=>now;}
 if(process.env.ENRICH_TEST_CLOCK_STEP){let clock=Date.now();Date.now=()=>clock;global.__advancePayClock=()=>{clock+=Number(process.env.ENRICH_TEST_CLOCK_STEP);};}
 globalThis.fetch = async (url, opts) => {
+  if(process.env.ENRICH_TEST_FETCHES)fs.appendFileSync(process.env.ENRICH_TEST_FETCHES,url+'\n');
+  if(process.env.ENRICH_TEST_SOURCE_RESPONSES){
+    const sources=JSON.parse(fs.readFileSync(process.env.ENRICH_TEST_SOURCE_RESPONSES,'utf8'));
+    if(Object.hasOwn(sources,url)){
+      const counts=global.__sourceCounts||(global.__sourceCounts={}),n=counts[url]||0;counts[url]=n+1;
+      const sequence=[].concat(sources[url]),r=sequence[Math.min(n,sequence.length-1)],status=r.status||200,body=typeof r.body==='string'?r.body:JSON.stringify(r.body||{});
+      if(r.error)throw Object.assign(Error(r.error),{code:r.error});
+      return {ok:status>=200&&status<300,status,headers:{get:name=>r.headers?.[name]||null},text:async()=>body,json:async()=>JSON.parse(body)};
+    }
+  }
   if(process.env.ENRICH_TEST_CLOCK_MATCH&&String(url).includes(process.env.ENRICH_TEST_CLOCK_MATCH))global.__advancePayClock?.();
   const sent=()=>fs.existsSync(process.env.ENRICH_TEST_POSTS||'')?fs.readFileSync(process.env.ENRICH_TEST_POSTS,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse):[];
   if(String(url).includes('forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json'))return {ok:true,status:200,json:async()=>({requests:Object.fromEntries(sent().flatMap(b=>b.requests.map(q=>[q.ruling.requestId,{s:'COMPLETE'}])))})};

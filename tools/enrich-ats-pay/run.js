@@ -11,6 +11,7 @@ const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),req
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
 const salarySource=e=>e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
+const SourceReads=require('./source-reads');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
 const HelperRouting=require('../helper-routing/reservations.cjs');
 const ActiveReview=require('./active-review'),Benchmarks=require('./employer-benchmarks');
@@ -40,7 +41,7 @@ async function get(url, opts={}) {
   runtime.check();
   const signal=AbortSignal.any([AbortSignal.timeout(Math.max(1,Math.min(30000,runtime.remaining()))),...(opts.signal?[opts.signal]:[])]);
   const r=await runtime.bounded(abort=>fetch(url,{...opts,signal:AbortSignal.any([signal,abort]),headers:{'Accept-Language':'en-US',...opts.headers}}),30000);
-  if(!r.ok){const e=new Error(url.replace(/key=[^&]+/,'key=…')+' HTTP '+r.status);e.status=r.status;throw e;}
+  if(!r.ok){const e=new Error(url.replace(/key=[^&]+/,'key=…')+' HTTP '+r.status),retry=r.headers?.get('retry-after');e.status=r.status;e.retryAfterMs=/^\d+$/.test(retry||'')?Number(retry)*1000:Math.max(0,Date.parse(retry||'')-Date.now());throw e;}
   // Fetch resolves at headers; a stalled body must obey the same budget too.
   return {ok:r.ok,status:r.status,json:()=>runtime.bounded(()=>r.json(),30000),text:()=>runtime.bounded(()=>r.text(),30000)};
 }
@@ -132,6 +133,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const requests = [], estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
+  Object.assign(stats,{source_reads:0,source_retries:0,source_duplicate_skips:0});
+  const providerAllowed=url=>{const p=SourceReads.provider(url);return !p||!(CONFIG.aggregatorsOff||[]).includes(p)&&aggFetches<CONFIG.maxAggregatorFetches&&(blocked[p]||0)<3;};
+  function aggregatorResult(kind,parsed){
+    if(!parsed||parsed.wall){stats.agg_wall[kind]=(stats.agg_wall[kind]||0)+1;blocked[kind]=(blocked[kind]||0)+1;}
+    else blocked[kind]=0;
+  }
+  function sourceReader(){return SourceReads.create({read:async(url,opts)=>(await get(url,opts)).text(),wait:sleep,
+    canRead:(url,reserve,category)=>runtime.canStart(reserve)&&providerAllowed(url)&&(category!=='fallback'||stats.public_tried<(CONFIG.maxPublicFetches||60)),
+    onAttempt:(url,retry,category)=>{stats.source_reads++;if(retry)stats.source_retries++;if(category==='fallback')stats.public_tried++;const p=SourceReads.provider(url);if(p){aggFetches++;stats.agg_tried[p]=(stats.agg_tried[p]||0)+1;}},
+    onFailure:(url,e)=>{const p=SourceReads.provider(url);if(p){blocked[p]=(blocked[p]||0)+1;stats.agg_failed[p]=(stats.agg_failed[p]||0)+1;(stats.agg_errors[p]=stats.agg_errors[p]||[]).length<3&&stats.agg_errors[p].push(String(e.status||e.message).slice(0,80));}}
+  });}
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
   const boards = {}; let boardFetches = 0;
@@ -320,7 +332,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
-    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[];
+    const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[],sourceReads=sourceReader();
     progress('missing_row',{id:r.PRIMARY_ID});
     const saved=Recovery.combine(Recovery.cached(ledger,r),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),helperResearch=helperResearchIds.has(r.PRIMARY_ID);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
@@ -331,8 +343,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (api && !helperResearch && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
       stats.ats_rows++; attempted = true;
       try {
-        await sleep(CONFIG.fetchGapMs);
-        const parsed = Recovery.exactApi(r,api,await (await get(api.api, { headers: { accept: 'application/json' } })).json());
+        const parsed = Recovery.exactApi(r,api,JSON.parse(await sourceReads.read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
+        readAttempts.push({url:api.api,status:parsed?'FULL_POSTING_READ':'NO_EXACT_COMPLETE_POSTING'});
         if (parsed) {
           stats.ats_read++; checked = true;
           if (parsed.pay) stats.ats_pay_seen = (stats.ats_pay_seen || 0) + 1; if (n.includes('SALARY')) stats.ats_need_salary = (stats.ats_need_salary || 0) + 1;   // REV-136 report: is pay missing from postings or not needed?
@@ -341,6 +353,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           if (d) { stats.degree++; Object.assign(f, { DEGREE_TEXT: d.text, DEGREE_REQ: d.req, DEGREE_EVIDENCE_URL: api.page, DEGREE_ASOF: today }); }
         }
       } catch (e) {
+        readAttempts.push({url:api.api,status:e.status?'HTTP_'+e.status:'READ_ERROR'});
         if ((e.status === 403 && api.kind === 'workday') || e.status === 404) {   // maybe taken down, maybe a bad address: not decided here
           stats.ats_unconfirmed++; atsUnconfirmed = true;
           unconfirmedRows.length < 50 && unconfirmedRows.push({ id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, posting: api.page, status: e.status, checker: val(r, 'ATS_CHECK_RESULT') || 'not checked', checkerAsOf: val(r, 'ATS_CHECK_ASOF').slice(0, 10) });   // no run timestamp: an unchanged dry run must not rewrite the report
@@ -350,13 +363,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     // Tim 2026-10-20 18:21 ET: an aggregator posting (LinkedIn, Indeed, ZipRecruiter) with pay counts as posting pay
     // Tim 2026-10-26: Indeed viewjob pages answer 401 to this runner on every read; Indeed roles come in through JobSpy and HiringCafe.
     const aggPage = L.aggregatorFor(r.p), agg = aggPage && !(CONFIG.aggregatorsOff || []).includes(aggPage.kind) ? aggPage : null;
-    if (!helperResearch && agg && (n.includes('SALARY') && !postedPay || n.includes('DEGREE') && !checked && !f.DEGREE_REQ) && aggFetches < CONFIG.maxAggregatorFetches && (blocked[agg.kind] || 0) < 3) {
-      attempted = true; aggFetches++; stats.agg_tried[agg.kind] = (stats.agg_tried[agg.kind] || 0) + 1;
+    if (!helperResearch && agg && (n.includes('SALARY') && !postedPay || n.includes('DEGREE') && !checked && !f.DEGREE_REQ) && providerAllowed(agg.fetch)) {
+      attempted = true;
       try {
-        await sleep(CONFIG.aggregatorGapMs);
-        const parsed = L.parseAggregator(agg.kind, await (await get(agg.fetch, { headers: { 'user-agent': CONFIG.userAgent, accept: 'text/html' } })).text(), r);
-        if (parsed && parsed.wall) { stats.agg_wall[agg.kind] = (stats.agg_wall[agg.kind] || 0) + 1; blocked[agg.kind] = (blocked[agg.kind] || 0) + 1; }   // sign-in / bot page: not read, no estimate
-        else blocked[agg.kind] = 0;
+        const html=await sourceReads.read(agg.fetch,{gapMs:CONFIG.aggregatorGapMs,headers:{'user-agent':CONFIG.userAgent,accept:'text/html'}});
+        let parsed=L.parseAggregator(agg.kind,html,r);
+        // Preserve the structured-HTML fallback parser without fetching its
+        // already-read guest endpoint again.
+        if(!parsed||parsed.wall){const structured=P.parse(html,r);if(structured)parsed={...structured,basis:'EMPLOYER_POSTED'};}
+        aggregatorResult(agg.kind,parsed);
+        readAttempts.push({url:agg.fetch,status:parsed&&!parsed.wall?'FULL_POSTING_READ':'NO_EXACT_COMPLETE_POSTING'});
         if (parsed && !parsed.wall) {
           if(salaryContext)Context.learn(salaryContext,r,parsed.text,agg.page,today);
           checked = true; stats.agg_read[agg.kind] = (stats.agg_read[agg.kind] || 0) + 1;
@@ -364,21 +380,24 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           const d = n.includes('DEGREE') && !f.DEGREE_REQ && L.degreeFromText(parsed.text);
           if (d) { stats.degree++; Object.assign(f, { DEGREE_TEXT: d.text, DEGREE_REQ: d.req, DEGREE_EVIDENCE_URL: agg.page, DEGREE_ASOF: today }); }
         }
-      } catch (e) { stats.agg_failed[agg.kind] = (stats.agg_failed[agg.kind] || 0) + 1; blocked[agg.kind] = (blocked[agg.kind] || 0) + 1; (stats.agg_errors[agg.kind] = stats.agg_errors[agg.kind] || []).length < 3 && stats.agg_errors[agg.kind].push(String(e.status || e.message).slice(0, 80)); }   // 3 failures in a row: skip that site for the rest of the run (run 1: Indeed failed 21 of 21)
+      } catch (e) { readAttempts.push({url:agg.fetch,status:e.status?'HTTP_'+e.status:'READ_ERROR'}); } // Transport failures are counted once per actual request by sourceReader.
     }
     // Employer/custom posting formats previously had no reader. Read only an exact
     // company/title JobPosting object; never infer NOT_STATED from page chrome.
     // Reuse alternate posting links already saved with this exact row; never research candidate identities.
     const recoveryUrls=Recovery.urls(r),knownBoard=boardByCo[L.normCo(r.COMPANY)];
     if(!helperResearch&&!checked&&(!postedPay||n.includes('DEGREE'))&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
-    if(!helperResearch&&!checked&&(!postedPay||n.includes('DEGREE')))for(const publicUrl of [...new Set(recoveryUrls)].slice(0,4)){
-      if(stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
+    let fallbackReads=0;
+    if(!helperResearch&&!checked&&(!postedPay||n.includes('DEGREE')))for(const publicUrl of new Set(recoveryUrls)){
+      if(fallbackReads>=4||stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
       if(!Recovery.readableRoute(publicUrl,CONFIG.aggregatorsOff||[]))continue;
-      const aggCandidate=L.aggregatorPage(publicUrl);if(aggCandidate&&(CONFIG.aggregatorsOff||[]).includes(aggCandidate.kind))continue;
-      attempted=true;stats.public_tried++;
-      try{await sleep(CONFIG.fetchGapMs);const alternateApi=L.atsApi(publicUrl);let parsed;
-        if(alternateApi){const j=await(await get(alternateApi.api,{headers:{accept:'application/json'},signal:AbortSignal.timeout(20000)})).json();parsed=Recovery.exactApi(r,alternateApi,j);}
-        else {const response=await get(aggCandidate?aggCandidate.fetch:publicUrl,{signal:AbortSignal.timeout(20000),headers:{'user-agent':CONFIG.userAgent}});const html=await response.text();parsed=P.parse(html,r);if(!parsed&&aggCandidate){const candidate=L.parseAggregator(aggCandidate.kind,html,r);if(candidate&&!candidate.wall)parsed=candidate;}}
+      const aggCandidate=L.aggregatorPage(publicUrl),alternateApi=L.atsApi(publicUrl),endpoint=alternateApi?.api||aggCandidate?.fetch||publicUrl;
+      if(sourceReads.has(endpoint)){stats.source_duplicate_skips++;continue;}
+      if(!providerAllowed(endpoint))continue;
+      attempted=true;fallbackReads++;
+      try{let parsed;
+        if(alternateApi){const j=JSON.parse(await sourceReads.read(endpoint,{category:'fallback',gapMs:CONFIG.fetchGapMs,timeoutMs:20000,headers:{accept:'application/json'}}));parsed=Recovery.exactApi(r,alternateApi,j);}
+        else {const provider=SourceReads.provider(endpoint),html=await sourceReads.read(endpoint,{category:'fallback',gapMs:provider?CONFIG.aggregatorGapMs:CONFIG.fetchGapMs,timeoutMs:20000,headers:{'user-agent':CONFIG.userAgent}});parsed=P.parse(html,r);if(!parsed&&provider)parsed=L.parseAggregator(provider,html,r);if(provider)aggregatorResult(provider,parsed);if(parsed?.wall)parsed=null;}
         if(parsed&&parsed.text&&parsed.text.length>=300){checked=true;stats.public_read++;const e=Recovery.saveEvidence(ledger,r,publicUrl,parsed);if(salaryContext)Context.learn(salaryContext,r,parsed.text,publicUrl,today);
           if(n.includes('SALARY')&&Recovery.preferFreshPay(postedPay,parsed)){postedPay=parsed.pay;stats.posted_pay++;Object.assign(f,{SALARY_BASE_LOW:parsed.pay.low,SALARY_BASE_HIGH:parsed.pay.high,SALARY_MIDPOINT:Math.round((parsed.pay.low+parsed.pay.high)/2),SALARY_BASIS:parsed.basis||'EMPLOYER_POSTED',SALARY_SOURCE:publicUrl,SALARY_ASOF:today,SALARY_CONF:'HIGH'});}
           if(n.includes('DEGREE')&&e.degree){stats.degree++;Object.assign(f,{DEGREE_TEXT:e.degree.text,DEGREE_REQ:e.degree.req,DEGREE_EVIDENCE_URL:publicUrl,DEGREE_ASOF:today});}readAttempts.push({url:publicUrl,status:'FULL_POSTING_READ'});break;
