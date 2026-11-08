@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261107T2147Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261108T0126Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (112 read, 0 failed) | 153 | 43 | 84 |
+| Employer job boards (112 read, 0 failed) | 153 | 42 | 84 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 27 | 51 |
+| DIRECTOR_PLUS | 26 | 51 |
 | SR_MANAGER | 12 | 14 |
 | SR_STAFF | 4 | 19 |
 
@@ -41,7 +41,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
 | BOARD:greenhouse | P2 JetZero | [Head of Manufacturing ](https://job-boards.greenhouse.io/jetzero/jobs/5176217008) | Greensboro, NC | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Ursa Major | [Director of Operations](https://ursamajor.com/careers/?gh_jid=4729125005) | Berthoud, Colorado | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Crusoe | [Director HSE, Data Center Operations](https://jobs.ashbyhq.com/Crusoe/ef7dfa42-4de8-48e3-87d6-88edcf459314) | Denver, CO - US | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Crusoe | [Director, Commercial Operations](https://jobs.ashbyhq.com/Crusoe/1877a89a-6948-43d4-b23b-5561a72fc2e3) | San Francisco, CA - US | MFG_PROD | DIRECTOR_PLUS |  |
