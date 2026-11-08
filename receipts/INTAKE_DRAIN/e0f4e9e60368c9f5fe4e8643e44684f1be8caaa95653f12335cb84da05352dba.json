@@ -1,0 +1,76 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:3c3d77116a26c0d769ce5092",
+  "sourceVersion": "9d96bb20c3d86941c139267e5324d14bd189313790bae466d82d845933c7eff6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261108-RUN65-STORAGE-BLOCKED",
+  "instructionCommit": "43349c653a43fb50c4701cbaf3cbf79564402b3e",
+  "observedAt": "2026-11-08T13:05:04.890Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalVerified": false,
+  "priorReview": "receipts/INTAKE_DRAIN/1834991acea30da2f0e60003636fb5dfdaa344aea17af74c2116af9698ec35c7.json",
+  "reusedResearch": true,
+  "reason": "Research remains blocked by mandatory managed-workspace storage preflight. No current role-function or identity verdict is made for this refreshed source version; prior scope reasoning is historical and has not been revalidated.",
+  "nextAction": "Resume current registered queue only after successful managed-workspace acquisition; preserve prior evidence and original Writer fences.",
+  "attempts": [
+    {
+      "source": "Fresh immutable registry/common/procedure/storage policy and verified bootstrap at instructionCommit",
+      "result": "Current routing and policy unchanged. Stable workspace pool inspection reports zero free bytes, no slots or leases. Below mandatory reserve: no acquisition, research preflight, source/resume research or controlled-intake dispatch."
+    },
+    {
+      "source": "receipts/INTAKE_DRAIN/1834991acea30da2f0e60003636fb5dfdaa344aea17af74c2116af9698ec35c7.json",
+      "result": "Previously reported storage blocker unchanged. No role-function, identity or canonical-presence finding; pending source version remains unreviewed."
+    }
+  ],
+  "retryCondition": "Reviewed storage maintenance permits mandated workspace acquisition and current research preflight, then the normal assigned queue resumes with fresh canonical/source/resume checks as required.",
+  "checkpoint": {
+    "status": "BLOCKED_WORKSPACE_STORAGE",
+    "poolRoot": "/workspace/forge-intake-scope-pool",
+    "bootstrapSourceCommit": "ca9662bc409de5379837550da173ff06ea32292c",
+    "bootstrapBlob": "b400bd2bc817bfd971a8775bc71b79cd7a721b2d",
+    "freeBytesAtInspect": 0,
+    "minFreeBytes": 536870912,
+    "projectedCheckoutBytes": 1610612736,
+    "requiredFreeBeforeAcquisitionBytes": 2147483648,
+    "acquireAttemptedThisRun": false,
+    "storageGate": "INSPECT_BELOW_FLOOR",
+    "priorAcquireError": "free disk floor would be violated",
+    "leaseAcquired": false,
+    "researchPreflightRun": false,
+    "researchEligibility": "UNVERIFIED_NO_ACQUIRED_WORKSPACE",
+    "researchStarted": false,
+    "privateResumeLoaded": false,
+    "sourceQueries": 0,
+    "postingFetches": 0,
+    "preparedReviews": 0,
+    "canonicalWrites": 0,
+    "newCanonicalWriteCompletionVerified": 0,
+    "controlledHandoffDispatches": 0,
+    "backlogComplete": false,
+    "existingEvidenceAndWriterFencesPreserved": true,
+    "accountingOnlyInPriorCompletedOwnedCheckout": true,
+    "nextCondition": "Reviewed storage maintenance makes enough space for the mandated managed-pool acquisition; rerun current-main workspace and research preflight. Do not delete unknown/unpublished evidence or old unmanaged checkouts automatically.",
+    "model": {
+      "requested": "GPT-5.4",
+      "reasoningEffort": "high",
+      "configurationVerified": false
+    },
+    "environment": {
+      "id": "ccarenv_b64_Y2NhcmVudl8xODQ5YTFjNGVjNjQ4MTkxYTMzNGViYzI2YjFlY2FhZA",
+      "name": "foreman-cockpit",
+      "cwd": "/workspace",
+      "observationsCurrent": true,
+      "networkPolicyEnforced": true
+    },
+    "notification": {
+      "meaningfulFailure": false,
+      "requiredUserAction": false,
+      "previouslyReportedBlockerUnchanged": true,
+      "disposition": "QUIET_UNCHANGED_STORAGE_BLOCKER"
+    },
+    "localPublicationUnavailable": true,
+    "publicationTransport": "AUTHENTICATED_GITHUB_GIT_DATA_API_IN_MEMORY"
+  }
+}
