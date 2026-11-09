@@ -83,6 +83,18 @@ class SharedInstructionTests(unittest.TestCase):
                        'No invented budgets or waiting for next schedule after one artifact'):
             self.assertIn(phrase, self.procedure)
 
+    def test_return_preparation_is_conditional_and_checks_actual_remote_content(self):
+        for phrase in ('At delivery use docs/SHARED_HELPER_RETURN.md',
+                       'Never publish placeholders', 'remote-content readback',
+                       'shared-return.cjs validate'):
+            self.assertIn(phrase, self.procedure)
+        guide = (ROOT / 'docs/SHARED_HELPER_RETURN.md').read_text()
+        for phrase in ('Nulls intentionally fail validation', 'PLACEHOLDER_AGAIN',
+                       'content argument must contain the complete actual serialized JSON',
+                       'read back the exact remote file', 'Without shell',
+                       'TRANSPORT_PENDING', 'later independent COMPLETE'):
+            self.assertIn(phrase, guide)
+
     def test_compact_work_pages_require_fresh_source_and_page_bindings(self):
         for phrase in ('control/shared-helper-pages/<TASK_KEY>/current.json',
                        'source.gitBlobSha', 'Git tree metadata', 'at that SHA',

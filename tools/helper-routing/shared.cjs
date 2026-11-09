@@ -43,11 +43,14 @@ function validateBatch(b,w=load()){
   return{valid:true,items:0,readinessOnly:true,productionAuthorized:false};
  }
  if(Buffer.byteLength(JSON.stringify(b),'utf8')>2000000)throw Error('SHARED_BATCH_TOO_LARGE');
+ // An explicit batch false may cover omitted item flags. Never infer false
+ // from silence, or hide a contradictory/null flag at either level.
+ if(Object.hasOwn(b,'writerSubmitted')&&b.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
  const assigned=new Map(w.items.map(i=>[key(i),i])),seen=new Set(),sourceCaptures=[];
  for(const item of b.items){
   const k=key(item),a=assigned.get(k);
   if(!a||seen.has(k)||a.taskKey!==b.taskKey||a.provider!==b.provider||a.kind!==item.kind||a.assignmentVersion!==item.assignmentVersion||a.sourceVersion!==item.sourceVersion)throw Error('STALE_OR_UNASSIGNED_SHARED_ITEM');
-  if(item.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
+  if(Object.hasOwn(item,'writerSubmitted')?item.writerSubmitted!==false:!Object.hasOwn(b,'writerSubmitted')||b.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
   if(!['ENRICHMENT_EVIDENCE_READY','INTAKE_READY','SOURCE_BLOCKED','RESEARCH_INCOMPLETE','PROTECTED_SKIP','EXISTING_CANONICAL'].includes(item.recommendation))throw Error('INVALID_SHARED_RECOMMENDATION');
   if(item.kind==='ENRICHMENT'&&item.recommendation==='INTAKE_READY'||item.kind!=='ENRICHMENT'&&item.recommendation==='ENRICHMENT_EVIDENCE_READY')throw Error('SHARED_RECOMMENDATION_KIND_MISMATCH');
   const e=item.sourceEvidence;
