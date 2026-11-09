@@ -37,6 +37,10 @@ The canonical assignment pool remains `control/SHARED_HELPER_WORK.json`. This PR
 
 The coordinator binds each page set to the **exact source bytes** with SHA-256 and Git blob SHA, writes immutable pages before switching current indexes, and regenerates after assignment updates and return settlement. Publication validates their source/content bindings rather than accepting arbitrary files under a broad directory permission. A retry boundary can change eligibility without changing source bytes; `validUntil` prevents an old priority view from surviving that boundary. No page is evidence that provider transport or Writer execution succeeded.
 
+## Preparing complete returns
+
+Use [the shared return guide](SHARED_HELPER_RETURN.md) only at delivery time for the generated assignment-bound draft, no-shell checklist and exact-byte preflight. Publish complete actual JSON, then read back the remote receipt content. A real commit SHA containing placeholder text is not evidence delivery. The template is intentionally invalid until real research fills it; no generated defaults assert source or Writer success.
+
 ## Sustained work in each invocation
 
 There is no fixed two-item sample, twenty-item run limit, target batch count, or assumed number of minutes. Each provider should make sustained progress on its assigned eligible backlog until an actual limit or justified stop applies. The shared work-page and artifact limit stays at **20 items** and **2 MB per artifact**. The Writer's separate 25-row transaction envelope is not a research cap.

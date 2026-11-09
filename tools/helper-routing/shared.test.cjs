@@ -9,6 +9,41 @@ function setup(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'shared-routin
 const state=()=>({items:{},batches:{},transactions:{},exceptions:{}});
 const row=(id,n=0)=>({PRIMARY_ID:id,COMPANY:'Factory '+n,TITLE:'Plant Manager',LOCATION:'Austin, TX',BUCKET:'MANUAL_RESEARCH',p:{}});
 function captured(b){const i=b.items[0],quote=i.sourceEvidence.quote;i.sourceEvidence.capture={kind:'TEXT_EXTRACT',text:'Exact employer posting: '+quote+'\n'+('Quality, production and people leadership. '.repeat(10))+'\nRésumé evidence is separate.'};delete i.sourceEvidence.sourceSha256;return b;}
+test('only explicit batch false covers omitted item flags for either provider without rewriting evidence',()=>{
+ for(const [taskKey,provider]of Object.entries(H.TASKS)){
+  const w=base();w.items=[{...assigned(),taskKey,provider}];
+  const b=captured(batch({...w,items:[assigned()]}));Object.assign(b,{taskKey,provider,runId:'FORGE-'+provider.toUpperCase()+'-INHERITED',writerSubmitted:false});delete b.items[0].writerSubmitted;
+  const original=JSON.stringify(b),result=H.validateBatch(b,w);
+  a.equal(result.valid,true);a.equal(result.productionAuthorized,false);a.equal(JSON.stringify(b),original);a.equal(Object.hasOwn(b.items[0],'writerSubmitted'),false);
+  a.equal(result.sourceCaptures[0].sha256,S.hash(b.items[0].sourceEvidence.capture.text));
+  b.items[0].writerSubmitted=false;a.equal(H.validateBatch(b,w).valid,true);
+  delete b.writerSubmitted;a.equal(H.validateBatch(b,w).valid,true);
+ }
+});
+test('batch false never masks item flags, contradictory batch flags, or missing declarations',()=>{
+ const w=base();w.items=[assigned()];
+ for(const flag of [true,null,undefined,'false',0]){
+  const b=batch(w);b.writerSubmitted=false;b.items[0].writerSubmitted=flag;a.throws(()=>H.validateBatch(b,w),/HELPER_WRITER_SUBMISSION_FORBIDDEN/);
+  b.writerSubmitted=flag;b.items[0].writerSubmitted=false;a.throws(()=>H.validateBatch(b,w),/HELPER_WRITER_SUBMISSION_FORBIDDEN/);
+  delete b.items[0].writerSubmitted;a.throws(()=>H.validateBatch(b,w),/HELPER_WRITER_SUBMISSION_FORBIDDEN/);
+ }
+ const missing=batch(w);delete missing.items[0].writerSubmitted;a.throws(()=>H.validateBatch(missing,w),/HELPER_WRITER_SUBMISSION_FORBIDDEN/);
+});
+test('inherited false does not loosen source, assignment or protected-field validation',()=>{
+ const w=base();w.items=[assigned()];const b=captured(batch(w));b.writerSubmitted=false;delete b.items[0].writerSubmitted;
+ for(const [edit,error]of [[i=>i.sourceEvidence.company='',/SHARED_SOURCE_IDENTITY_REQUIRED/],[i=>i.sourceEvidence.quote='Not in the original posting',/SHARED_CAPTURE_QUOTE_REQUIRED/],[i=>i.sourceEvidence.sourceSha256='0'.repeat(64),/SHARED_CAPTURE_HASH_MISMATCH/],[i=>i.assignmentVersion++,/STALE_OR_UNASSIGNED_SHARED_ITEM/],[i=>i.score=99,/HELPER_PROTECTED_FIELDS_FORBIDDEN/]]){
+  const bad=structuredClone(b);edit(bad.items[0]);a.throws(()=>H.validateBatch(bad,w),error);
+ }
+});
+test('collector keeps inherited flags and source bytes immutable and retains unresolved transaction fences',t=>{
+ const root=setup(t),w=base();w.items=[assigned()];S.save(root,H.FILE,w);S.save(root,'control/AI_AUTOMATION_TASKS.json',{tasks:{[task]:{owner:'Claude',workAssignments:H.FILE}}});
+ const b=captured(batch(w));b.writerSubmitted=false;delete b.items[0].writerSubmitted;
+ const file='receipts/CLAUDE_HELPERS/'+task+'/'+b.runId+'.json';S.save(root,file,b);const bytes=fs.readFileSync(path.join(root,file)),st=state(),key=task+':V2I-ONE';
+ st.transactions.pending={status:'POST_IN_FLIGHT_UNKNOWN'};st.items[key]={version:'old',status:'SUBMITTED',transactionId:'pending'};
+ C.collect({root,state:st,commit:'d'.repeat(40),routing:()=>({currentPolicyRecheckRequired:true})});
+ a.equal(st.batches[file].status,'VALIDATED');a.equal(st.items[key].transactionId,'pending');a.equal(st.items[key].status,'SUBMITTED');a.equal(st.items[key].deferredReturns.length,1);
+ a.deepEqual(fs.readFileSync(path.join(root,file)),bytes);a.equal(st.items[key].deferredReturns[0].version,S.hash(b.items[0]));
+});
 test('tool-only providers can return exact captured text; code records real bytes without modifying their receipt',()=>{
  const w=base();w.items=[assigned()];const b=captured(batch(w)),original=JSON.stringify(b),v=H.validateBatch(b,w),text=b.items[0].sourceEvidence.capture.text;
  a.equal(JSON.stringify(b),original);a.equal(Object.hasOwn(b.items[0].sourceEvidence,'sourceSha256'),false);
