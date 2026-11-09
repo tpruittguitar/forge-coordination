@@ -20,6 +20,18 @@ After merge, invoke the existing wrapper with `pwsh -NoProfile -File tools/progr
 
 `state/DIRECT_RETURN_TRANSPORT.json` records private-artifact import accounting. The normal coordinator ledger and receipts remain authoritative for canonical effects. Only current returned shared reservations are settled after processing; no new assignments are created, and incomplete enrichment is labeled partial rather than full completion.
 
+## Bounded helper throughput
+
+Returned enrichment drains successive envelopes of up to **25 distinct canonical rows** through the Writer's existing multi-row single-commit path. This replaces the caller's previous one-row envelope; it does not impose a 25-row per-run quota. For example, 61 ready rows use 25/25/11 envelopes. Helper return artifact sizes remain transport page boundaries, not run limits. Source gates, current assignments, row protection and supported-field evidence still determine actual useful output; larger envelopes do not make blocked sources into completed research.
+
+Each envelope uses one fresh canonical snapshot and validates every item independently before POST. An invalid identity, protected decision, old original-request fence, unsupported field or current evidence conflict excludes only that item. Duplicate canonical IDs never share an envelope. Uncertain sends remain attached to their immutable original transaction and are never split or replayed. Independent later envelopes continue; the live Writer gate stops submission.
+
+Successful children of a partially held batch can receive their own immutable verification proof only after the exact original result, independent COMPLETE receipt bound to the same write ID, and later exact row effects all agree. The parent transaction remains pending until every child is verified. Its original fence is retained, unresolved siblings remain explicit, and field updates do not claim a fully enriched job. The prior single-row proof contract is unchanged.
+
+Source HTTP 403/429 pauses now carry the actual host retry time into item scheduling rather than automatically expanding a 15-minute pause into six hours. A narrow retry-policy migration reevaluates existing source-backoff/403/429 items once, while still obeying the host pause. It does not reset identity ambiguities or original transactions. No request runs before the saved pause expires, and repeated calls during the pause do not fetch or spin.
+
+Validation includes 61-row batching, per-item preflight isolation, uncertain sends and restart, partial successful siblings, late COMPLETE receipts, exact proof failures, duplicate IDs, global gates, selection scope, and host-backoff migration. No schedule, credential, merge or deployment change is part of this implementation.
+
 ## Durable behavior
 
 - `state/PROGRAMMED_COORDINATOR.json` binds each immutable batch hash, item version, source inspection, exception, request ID, and transaction state. Historical Claude consumption stays in its existing ledger and is processed by the existing intake preparation; old preparation is not repeated.

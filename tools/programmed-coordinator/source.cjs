@@ -2,6 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
 const PARSER_VERSION='20261109-shared-helper-evidence-v4+'+require('../enrich-ats-pay/qualification').VERSION;
+const RETRY_VERSION='20261109-host-backoff-v1';
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -97,7 +98,17 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
     }
   }
   const sourceRoutes=S.read(privateDir,'source-routes.json',{}),errors=[];
-  async function get(target){publicUrl(target);const host=new URL(target).hostname;if(Date.parse(sourceRoutes[host]?.retryAfter)>now)throw Error('SOURCE_ROUTE_BACKOFF');try{return await fetchPage(target);}catch(e){if(/^SOURCE_HTTP_(?:403|429)$/.test(e.message)){sourceRoutes[host]={reason:e.message,retryAfter:new Date(Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+15*60000).toISOString()};S.save(privateDir,'source-routes.json',sourceRoutes);}throw e;}}
+  async function get(target) {
+    publicUrl(target);const host=new URL(target).hostname,until=Date.parse(sourceRoutes[host]?.retryAfter);
+    if(until>now)throw Object.assign(Error('SOURCE_ROUTE_BACKOFF'),{retryAfter:until});
+    try{return await fetchPage(target);}catch(e) {
+      if(/^SOURCE_HTTP_(?:403|429)$/.test(e.message)) {
+        e.retryAfter=Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+15*60000;
+        sourceRoutes[host]={reason:e.message,retryAfter:new Date(e.retryAfter).toISOString()};S.save(privateDir,'source-routes.json',sourceRoutes);
+      }
+      throw e;
+    }
+  }
   const LinkedIn=require('./linkedin-guest.cjs'),guestRoutes=LinkedIn.routes([url,...sourceUrls]),apiRoutes=F.routes([url,...sourceUrls]),candidates=[...apiRoutes.map(route=>({route,format:'ATS_API',url:route.api})),...guestRoutes.map(route=>({route,format:'LINKEDIN_GUEST',url:route.api})),...[url,...sourceUrls].map(url=>({url,format:'HTML'}))],seen=new Set();
   for(const candidate of candidates){if(seen.has(candidate.url))continue;seen.add(candidate.url);
     try{
@@ -110,7 +121,9 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
       S.save(privateDir,'sources/'+key+'.json',result);return helperEvidence(result,item);
     }catch(e){errors.push(e);}
   }
-  const conflict=errors.find(e=>/IDENTITY|QUOTE|CONFLICT/.test(e.message));throw conflict||errors[0]||Error('WORKING_SOURCE_ROUTE_REQUIRED');
+  const conflict=errors.find(e=>/IDENTITY|QUOTE|CONFLICT/.test(e.message));
+  const deferred=errors.filter(e=>Number.isFinite(e.retryAfter)&&e.retryAfter>now).sort((a,b)=>a.retryAfter-b.retryAfter)[0];
+  throw conflict||deferred||errors[0]||Error('WORKING_SOURCE_ROUTE_REQUIRED');
 }
 // ATS adapters historically accept embedded host strings. Do not reuse that
 // permissive routing as proof that a user-facing URL belongs to the ATS.
@@ -196,4 +209,4 @@ function enrichmentFields(source, row) {
   return fields;
 }
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, helperEvidence, enrichmentFields,known};
+module.exports = {RETRY_VERSION,PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, helperEvidence, enrichmentFields,known};
