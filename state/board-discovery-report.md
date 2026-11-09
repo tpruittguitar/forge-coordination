@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261109T1956Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261109T2042Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (108 read, 0 failed) | 151 | 42 | 81 |
+| Employer job boards (108 read, 0 failed) | 152 | 43 | 81 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -20,7 +20,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 26 | 47 |
-| SR_MANAGER | 12 | 15 |
+| SR_MANAGER | 13 | 15 |
 | SR_STAFF | 4 | 19 |
 
 ## New roles
@@ -36,6 +36,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Staff Manufacturing Engineer, Automation Equipment](https://jobs.lever.co/shieldai/e3f0520a-a155-438e-afc2-8215f67aa8d7) | Seattle, Washington | MFG_ENG | SR_STAFF | $150K-$230K |
 | BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:ashby | P2 Quindar | [Vice President of Operations](https://jobs.ashbyhq.com/quindar/e3fcb109-eec0-4a81-971e-88259af00294) | Denver, CO | MFG_PROD | DIRECTOR_PLUS | $210K-$250K |
+| BOARD:ashby | P2 Saronic | [Senior Manager, Growth – Special Operations (SOCOM)](https://jobs.ashbyhq.com/saronic/3f9c2d39-8502-43f2-b7df-04c8038e8ee9) | Tampa, FL | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
@@ -53,8 +54,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, EW](https://boards.greenhouse.io/andurilindustries/jobs/5279603007?gh_jid=5279603007) | Irvine, California, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5284595007?gh_jid=5284595007) | Waltham, Massachusetts, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
