@@ -42,12 +42,22 @@ function validateBatch(b,w=load()){
  }
  return{valid:true,items:seen.size,productionAuthorized:false};
 }
-function next(w,taskKey,after=null){
+const LANES=['RESEARCH','ENRICHMENT','INTAKE','DISCOVERY'];
+const lane=i=>i.lane||i.kind;
+function ordering(items,now=Date.now()){
+ const actionable=items.filter(i=>i.status==='ASSIGNED'&&(!i.retryAfter||Date.parse(i.retryAfter)<=now)),counts=Object.fromEntries(LANES.map(l=>[l,0])),seen=new Set();
+ for(const i of actionable){const keys=[key(i),...i.aliases||[]];if(keys.some(k=>seen.has(k)))continue;for(const k of keys)seen.add(k);counts[lane(i)]=(counts[lane(i)]||0)+1;}
+ const lanes=[...LANES].sort((a,b)=>counts[b]-counts[a]||LANES.indexOf(a)-LANES.indexOf(b)),rank=new Map(lanes.map((l,n)=>[l,n]));
+ // Counts are distinct eligible jobs, never missing-field counts or historical totals.
+ const sort=(a,b)=>(rank.get(lane(a))??99)-(rank.get(lane(b))??99)||String(a.assignedAt||'').localeCompare(String(b.assignedAt||''))||key(a).localeCompare(key(b));
+ return{counts,lanes,sort,actionable};
+}
+function next(w,taskKey,after=null,now=Date.now()){
  validateWork(w);if(!TASKS[taskKey])throw Error('UNKNOWN_SHARED_HELPER_TASK');
- const mine=w.items.filter(i=>i.taskKey===taskKey),index=after?mine.findIndex(i=>key(i)===after):-1;
+ const order=ordering(w.items.filter(i=>w.providers[i.taskKey]?.available),now),mine=w.items.filter(i=>i.taskKey===taskKey).sort(order.sort),index=after?mine.findIndex(i=>key(i)===after):-1;
  if(after&&index<0)throw Error('UNKNOWN_SHARED_CURSOR');
- const eligible=i=>active(i)&&i.status==='ASSIGNED',all=mine.filter(eligible),items=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(eligible).slice(0,20):[];
- return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',items,total:all.length,nextAfter:items.length?key(items.at(-1)):null,canonicalCompletion:false};
+ const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),items=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(i=>eligible.has(key(i))).slice(0,20):[];
+ return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,items,total:all.length,nextAfter:items.length?key(items.at(-1)):null,canonicalCompletion:false};
 }
 function validateRouting(batch,before,current){
  for(const item of batch.items){const k=key(item),a=before.items.find(i=>key(i)===k),b=current.items.find(i=>key(i)===k);
@@ -63,4 +73,4 @@ function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPen
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={FILE,TASKS,load,validateWork,validateBatch,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={FILE,TASKS,LANES,ordering,lane,load,validateWork,validateBatch,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};

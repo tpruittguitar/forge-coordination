@@ -40,28 +40,29 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
  const available=Object.keys(H.TASKS).filter(t=>work.providers[t].available),old=new Set(work.items.map(H.key)),candidates=[];
  for(const row of snapshot.rows){const id=row.PRIMARY_ID,missingFields=needs(row);
   if(!id||old.has(id)||occupied.has(id)||!missingFields.length||T.protectedRow(row)||T.fenced(root,state,id))continue;
-  candidates.push({primaryId:id,kind:'ENRICHMENT',...T.identity(row),missingFields,priority:row.BUCKET==='MANUAL_RESEARCH'?0:1,sourceUrls:require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)),sourceVersion:S.hash(row.line||row),canonicalObservedAt:snapshot.source.readAt});
+  candidates.push({primaryId:id,kind:'ENRICHMENT',lane:row.BUCKET==='MANUAL_RESEARCH'?'RESEARCH':'ENRICHMENT',...T.identity(row),missingFields,priority:row.BUCKET==='MANUAL_RESEARCH'?0:1,sourceUrls:require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)),sourceVersion:S.hash(row.line||row),canonicalObservedAt:snapshot.source.readAt});
  }
  const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}});
  const canonical=snapshot.rows.concat(snapshot.archiveRows||[]);
  for(const job of Object.values(queue.jobs||{})){
   const keys=[job.key,...job.aliases||[]];
+  if(job.retryAfter&&(!Number.isFinite(Date.parse(job.retryAfter))||Date.parse(job.retryAfter)>now))continue;
   if(!job.key||old.has(job.key)||keys.some(k=>occupied.has(k))||/VERIFIED|OUT_OF_SCOPE|EXCLUDED|POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||'')||(job.submissions||[]).length||!['company','title','location'].every(k=>job[k]))continue;
   // Existing or ambiguous canonical identity remains with current intake code.
   if(canonical.some(row=>T.same(row,job)))continue;
   // Complete cards are already code-owned; AI is for unresolved source research.
   if(require('../routine-handoffs/assignments.cjs').fullCard(job))continue;
   const kind=job.discoveryOnly===true?'DISCOVERY':'INTAKE';
-  candidates.push({key:job.key,aliases:job.aliases||[],kind,company:job.company,title:job.title,location:job.location,sourceUrls:[job.url].filter(Boolean),sourceEvidence:{company:job.company,title:job.title,location:job.location,url:job.url,observedAt:job.observedAt},missingFields:['SOURCE_IDENTITY','LINKS'],priority:kind==='INTAKE'?2:3,sourceVersion:S.hash(job),sourceRef:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
+  candidates.push({key:job.key,aliases:job.aliases||[],kind,lane:kind,company:job.company,title:job.title,location:job.location,sourceUrls:[job.url].filter(Boolean),sourceEvidence:{company:job.company,title:job.title,location:job.location,url:job.url,observedAt:job.observedAt},missingFields:['SOURCE_IDENTITY','LINKS'],priority:kind==='INTAKE'?2:3,sourceVersion:S.hash(job),sourceRef:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
  }
- const assigned=[];
- if(work.enabled&&work.routingActive&&available.length)for(const item of candidates.sort((a,b)=>a.priority-b.priority||H.key(a).localeCompare(H.key(b)))){
+ const order=H.ordering([...work.items.filter(i=>work.providers[i.taskKey]?.available),...candidates.map(i=>({...i,status:'ASSIGNED'}))],now),assigned=[];
+ if(work.enabled&&work.routingActive&&available.length)for(const item of candidates.sort(order.sort)){
   if([H.key(item),...item.aliases||[]].some(k=>occupied.has(k)))continue;
   const taskKey=available[parseInt(S.hash(H.key(item)).slice(0,8),16)%available.length];
-  const assignment={...item,taskKey,provider:H.TASKS[taskKey],assignmentVersion:1,status:'ASSIGNED',assignedBy:runId};
+  const assignment={...item,taskKey,provider:H.TASKS[taskKey],assignmentVersion:1,status:'ASSIGNED',assignedAt:new Date(now).toISOString(),assignedBy:runId};
   work.items.push(assignment);assigned.push(H.key(item));for(const k of [H.key(item),...item.aliases||[]])occupied.add(k);
  }
- work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;
+ work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;work.priority={basis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',counts:order.counts,laneOrder:order.lanes,observedAt:work.at};
  H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);};
  return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),canonicalWrites:0,noProcessingCap:true};
 }

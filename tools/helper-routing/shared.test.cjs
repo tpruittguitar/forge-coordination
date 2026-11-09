@@ -67,3 +67,12 @@ test('CLI passes its second argument as the resume cursor rather than restarting
  const result=require('node:child_process').spawnSync(process.execPath,[require.resolve('./shared.cjs'),task,'UNKNOWN-CURSOR'],{encoding:'utf8'});
  a.equal(result.status,1);a.match(result.stderr,/UNKNOWN_SHARED_CURSOR/);
 });
+test('largest current eligible backlog wins over fixed Research-first priority',()=>{
+ const w=base();w.items=[{...assigned('V2I-R'),lane:'RESEARCH'},...Array.from({length:3},(_,n)=>({...assigned('V2I-E'+n),lane:'ENRICHMENT'})),{...assigned('V2I-D'),kind:'DISCOVERY',lane:'DISCOVERY'}];
+ let next=H.next(w,task);a.equal(next.laneOrder[0],'ENRICHMENT');a.equal(next.items[0].lane,'ENRICHMENT');a.equal(next.backlogCounts.ENRICHMENT,3);a.equal(next.items.findIndex(i=>i.lane==='RESEARCH'),3);
+ w.items[1].status='RETURNED_PENDING_REVIEW';w.items[2].status='CONSUMED';w.items[3].retryAfter='9999-01-01T00:00:00Z';next=H.next(w,task);a.equal(next.backlogCounts.ENRICHMENT,0);a.equal(next.items[0].lane,'RESEARCH');a.ok(next.items.some(i=>i.lane==='DISCOVERY'));
+});
+test('backlog priority counts jobs once, excludes unavailable slots, and never reassigns their jobs',()=>{
+ const w=base();w.items=[{...assigned('V2I-R'),lane:'RESEARCH',missingFields:['SALARY','DEGREE','FIT','LINKS']},...Array.from({length:4},(_,n)=>({...assigned('V2I-G'+n),provider:'Grok',taskKey:other,lane:'INTAKE'}))];w.providers[other].available=false;
+ const next=H.next(w,task);a.equal(next.backlogCounts.RESEARCH,1);a.equal(next.backlogCounts.INTAKE,0);a.deepEqual(next.items.map(H.key),['V2I-R']);a.equal(w.items[1].taskKey,other);
+});
