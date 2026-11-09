@@ -76,3 +76,12 @@ test('backlog priority counts jobs once, excludes unavailable slots, and never r
  const w=base();w.items=[{...assigned('V2I-R'),lane:'RESEARCH',missingFields:['SALARY','DEGREE','FIT','LINKS']},...Array.from({length:4},(_,n)=>({...assigned('V2I-G'+n),provider:'Grok',taskKey:other,lane:'INTAKE'}))];w.providers[other].available=false;
  const next=H.next(w,task);a.equal(next.backlogCounts.RESEARCH,1);a.equal(next.backlogCounts.INTAKE,0);a.deepEqual(next.items.map(H.key),['V2I-R']);a.equal(w.items[1].taskKey,other);
 });
+test('priority changes between pages reset the cursor without dropping the newly largest lane',()=>{
+ const w=base();w.items=[...Array.from({length:21},(_,n)=>({...assigned('V2I-E'+String(n).padStart(2,'0')),lane:'ENRICHMENT'})),...Array.from({length:20},(_,n)=>({...assigned('V2I-R'+String(n).padStart(2,'0')),lane:'RESEARCH'}))];
+ const first=H.next(w,task);a.equal(first.items.length,20);a.ok(first.items.every(i=>i.lane==='ENRICHMENT'));
+ const second=H.next(w,task,first.nextAfter);a.equal(second.items.length,20);a.equal(second.cursorReset,false);
+ for(const i of first.items)i.status='RETURNED_PENDING_REVIEW';
+ const changed=H.next(w,task,first.nextAfter);a.equal(changed.cursorReset,true);a.equal(changed.items.length,20);a.ok(changed.items.every(i=>i.lane==='RESEARCH'));
+ for(const i of changed.items)i.status='RETURNED_PENDING_REVIEW';
+ const last=H.next(w,task,changed.nextAfter);a.equal(last.items.length,1);a.equal(last.items[0].lane,'ENRICHMENT');
+});

@@ -54,10 +54,17 @@ function ordering(items,now=Date.now()){
 }
 function next(w,taskKey,after=null,now=Date.now()){
  validateWork(w);if(!TASKS[taskKey])throw Error('UNKNOWN_SHARED_HELPER_TASK');
- const order=ordering(w.items.filter(i=>w.providers[i.taskKey]?.available),now),mine=w.items.filter(i=>i.taskKey===taskKey).sort(order.sort),index=after?mine.findIndex(i=>key(i)===after):-1;
- if(after&&index<0)throw Error('UNKNOWN_SHARED_CURSOR');
+ const order=ordering(w.items.filter(i=>w.providers[i.taskKey]?.available),now),mine=w.items.filter(i=>i.taskKey===taskKey).sort(order.sort);
+ const cursorVersion=S.hash({assignmentId:w.assignmentId,taskKey,lanes:order.lanes,counts:order.counts,eligible:order.actionable.map(key),items:mine.map(i=>[key(i),i.status,i.assignmentVersion,i.sourceVersion,i.retryAfter||null])});
+ let index=-1,cursorReset=false;
+ if(after){
+  let cursor;try{if(typeof after!=='string'||!after.startsWith('SHARED:')||after.length>2000)throw Error();cursor=JSON.parse(Buffer.from(after.slice(7),'base64url'));}catch{throw Error('UNKNOWN_SHARED_CURSOR');}
+  if(cursor.taskKey!==taskKey||!cursor.after||!cursor.version)throw Error('UNKNOWN_SHARED_CURSOR');
+  if(cursor.version!==cursorVersion)cursorReset=true; // Changed priority/ownership: resume at current eligible work, never skip it.
+  else{index=mine.findIndex(i=>key(i)===cursor.after);if(index<0)throw Error('UNKNOWN_SHARED_CURSOR');}
+ }
  const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),items=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(i=>eligible.has(key(i))).slice(0,20):[];
- return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,items,total:all.length,nextAfter:items.length?key(items.at(-1)):null,canonicalCompletion:false};
+ return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,items,total:all.length,nextAfter:items.length?'SHARED:'+Buffer.from(JSON.stringify({taskKey,after:key(items.at(-1)),version:cursorVersion})).toString('base64url'):null,cursorReset,canonicalCompletion:false};
 }
 function validateRouting(batch,before,current){
  for(const item of batch.items){const k=key(item),a=before.items.find(i=>key(i)===k),b=current.items.find(i=>key(i)===k);
