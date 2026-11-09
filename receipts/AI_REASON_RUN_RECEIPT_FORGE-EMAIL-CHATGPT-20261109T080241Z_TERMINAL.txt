@@ -1,0 +1,69 @@
+{
+  "runId": "FORGE-EMAIL-CHATGPT-20261109T080241Z",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_EMAIL_DISCOVERY",
+  "instructionCommit": "36006dd68e178aad8fac23503cd6f0a29bf81b8a",
+  "route": "utility",
+  "at": "2026-11-09T08:03:48.887Z",
+  "status": "INSPECTION_CHECKPOINTED_CODE_OWNS_PROCESSING",
+  "nativeReadbackAt": "2026-11-09T08:03:05.226992Z",
+  "nativeTask": {
+    "name": "FORGE_PROGRAMMED_COORDINATOR",
+    "state": "Running",
+    "lastRun": "2026-11-09T08:00:23Z",
+    "lastTaskResult": 2147946720,
+    "nextRun": "2026-11-09T08:05:22Z"
+  },
+  "productionLock": {
+    "owner": "FORGE-CODE-CHATGPT-20261109T075023588Z",
+    "at": "2026-11-09T07:50:23.630Z",
+    "preserved": true
+  },
+  "processObservation": {
+    "nodePid": 19552,
+    "startedAt": "2026-11-09T07:50:26.472092Z",
+    "commandLine": "node tools/programmed-coordinator/run.cjs apply",
+    "privateDiscoveryContextModifiedAt": "2026-11-09T07:57:58Z"
+  },
+  "coordinatorReport": {
+    "runId": "FORGE-CODE-CHATGPT-20261109T074232316Z",
+    "at": "2026-11-09T07:45:14.926Z",
+    "statuses": {
+      "EXCEPTION": 900,
+      "VERIFIED": 37,
+      "PROTECTED_SKIP": 7,
+      "NO_MISSING_SUPPORTED_FIELDS": 7,
+      "POST_IN_FLIGHT_UNKNOWN": 4
+    },
+    "codeExceptions": 821,
+    "aiExceptions": 1231,
+    "coverage": {
+      "schema": "forge.email-recovery-summary.v1",
+      "at": "2026-11-09T05:53:04.000Z",
+      "sources": 370,
+      "accessRecovered": 370,
+      "accessBlocked": 0,
+      "sourcePagesPending": 0,
+      "sourcesWithPendingResults": 0,
+      "remainingPageCount": null,
+      "historicalGaps": 2,
+      "capturedUniqueJobs": 7819,
+      "awaitingIntake": 4498,
+      "pendingJobs": 4959,
+      "verifiedInserted": 1957,
+      "existing": 660,
+      "outOfScope": 243,
+      "coverageComplete": false,
+      "supersedesReceipt": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1504ET.json",
+      "sourceLedger": "state/EMAIL_RECOVERY_QUEUE.json"
+    }
+  },
+  "manualLaunch": false,
+  "manualLaunchReason": "Coordinator apply process active with existing production lock; no overlapping recovery warranted.",
+  "newCaptures": 0,
+  "masterSubmitted": 0,
+  "masterVerified": 0,
+  "requestsReplayed": 0,
+  "retained": "All original request fences, source cursors, returned artifacts and historical coverage gaps retained. Outcome tracker remains sole Gmail/Drive bridge.",
+  "notification": "Active processing and unresolved assigned exceptions; no new user decision established."
+}
