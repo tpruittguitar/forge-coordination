@@ -34,7 +34,9 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/enrich-ats-pay/*.test.js
+        # Tests write synthetic reports. Keep every test output outside the
+        # runtime checkout, including when tests or enrichment fail.
+        run: bash tools/enrich-ats-pay/test-isolated.sh
       - name: Enrich
         env:
           GITHUB_TOKEN: ${{ github.token }}

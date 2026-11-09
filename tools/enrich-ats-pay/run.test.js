@@ -4,15 +4,33 @@
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
+const sourceRunOwners = new WeakSet();
 function sourceRun(t,lines,responses,config={},cache){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-fetch-')),master=path.join(dir,'master.txt'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads.txt');
- const outputs=['state/enrich-ats-pay-report.json','state/enrich-ats-pay-products.json','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay-calibration.json'].map(p=>path.join(ROOT,p)),before=outputs.map(p=>fs.existsSync(p)?fs.readFileSync(p):null);
- t.after(()=>{outputs.forEach((p,i)=>{if(before[i])fs.writeFileSync(p,before[i]);else fs.rmSync(p,{force:true});});fs.rmSync(dir,{recursive:true,force:true});});
+ const outputs=['state/enrich-ats-pay-report.json','state/enrich-ats-pay-products.json','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay-calibration.json'].map(p=>path.join(ROOT,p));
+ // One baseline per test, not per invocation. after hooks run in registration
+ // order, so multiple snapshots would restore an earlier synthetic report last.
+ if(!sourceRunOwners.has(t)){
+  const before=outputs.map(p=>fs.existsSync(p)?fs.readFileSync(p):null);sourceRunOwners.add(t);
+  t.after(()=>outputs.forEach((p,i)=>{if(before[i]!==null)fs.writeFileSync(p,before[i]);else fs.rmSync(p,{force:true});}));
+ }
+ t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));if(cache)fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config)},stdio:'pipe'});
  return {cache:require('./employer-cache-store').read(path.join(dir,'emp.json')),report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
 }
 const exactPosting=()=>'<script type="application/ld+json">'+JSON.stringify({'@type':'JobPosting',title:'Director of Quality',hiringOrganization:{name:'Acme'},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required.',baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:180000,maxValue:220000}}})+'</script>';
+test('multiple source runs restore the original report after the owning test completes',async t=>{
+ const outputs=['report','products','recovery','calibration'].map(name=>path.join(ROOT,'state/enrich-ats-pay-'+name+'.json')),before=outputs.map(p=>fs.existsSync(p)?fs.readFileSync(p):null);
+ await t.test('two fixture runs share one cleanup baseline',child=>{
+  for(const id of ['V2I-ISOLATION-FIRST','V2I-ISOLATION-SECOND']){
+   const url='https://careers.example.org/isolation';
+   const out=sourceRun(child,[row(1,id,'Director of Quality','Dayton, OH','SOURCE_URL='+url)],{[url]:{body:exactPosting()}});
+   assert.equal(out.report.sample[0].id,id);
+  }
+ });
+ outputs.forEach((p,i)=>assert.deepEqual(fs.existsSync(p)?fs.readFileSync(p):null,before[i],p));
+});
 test('failed ATS aliases fetch one endpoint and do not crowd out a genuinely different fallback',t=>{
  const api='https://boards-api.greenhouse.io/v1/boards/acme/jobs/111?pay_transparency=true',other='https://careers.example.org/exact';
  const line=row(1,'V2I-DEDUP','Director of Quality','Dayton, OH',`ATS_POSTING_URL=https://boards.greenhouse.io/acme/jobs/111; DIRECT_JOB_URL=https://job-boards.greenhouse.io/acme/jobs/111; LIVENESS_EVIDENCE_URL=${api}; SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111#pay; COMPANY_SOURCE_URL=${other}`);
