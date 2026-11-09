@@ -6,11 +6,26 @@ function read(root, file, fallback) {
   catch (e) { if (e.code === 'ENOENT' && fallback !== undefined) return structuredClone(fallback); throw e; }
 }
 function save(root, file, value) {
-  const dest = path.join(root, file), tmp = dest + '.tmp';
+  // Never overwrite an earlier failed save's evidence or share a staging file
+  // with another invocation. Keep it beside the destination for atomic rename.
+  const dest = path.join(root, file), tmp = dest + '.tmp-' + crypto.randomUUID();
   fs.mkdirSync(path.dirname(dest), {recursive: true});
-  const fd = fs.openSync(tmp, 'w', 0o600);
+  const fd = fs.openSync(tmp, 'wx', 0o600);
   try { fs.writeFileSync(fd, JSON.stringify(value, null, 2) + '\n'); fs.fsyncSync(fd); } finally { fs.closeSync(fd); }
-  fs.renameSync(tmp, dest);
+  // Windows readers/virus scanners can briefly deny delete sharing even after
+  // the writer is closed. Retry only the rename of these already-flushed bytes.
+  // Never unlink or truncate the old destination to make replacement succeed.
+  const delays = [25, 50, 100, 200, 400, 400, 400];
+  for (let attempt = 0; ; attempt++) {
+    try { fs.renameSync(tmp, dest); return; }
+    catch (e) {
+      if (!['EACCES', 'EBUSY', 'EPERM'].includes(e.code) || attempt === delays.length) {
+        e.pendingPath = tmp;
+        throw e; // Preserve both the old destination and the failed staging file.
+      }
+      Atomics.wait(new Int32Array(new SharedArrayBuffer(4)), 0, 0, delays[attempt]);
+    }
+  }
 }
 function immutable(root, file, value) {
   const dest = path.join(root, file), raw = JSON.stringify(value, null, 2) + '\n';

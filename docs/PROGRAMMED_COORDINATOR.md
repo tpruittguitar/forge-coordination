@@ -67,3 +67,22 @@ No AI schedules are changed by this PR. Review configuration is not a completed 
 Published repository returns are collected without AI. Providers exposing reports only through their native UI still need an authorized report exporter or publishing adapter; this code does not invent private APIs or claim those runs were collected. The new [routine transport and handoff modules](ROUTINE_HANDOFFS.md) implement archive/report collection, saved results pagination and non-overlapping assignment replenishment. Source-window body capture outside these saved results remains a coverage obligation. Native UI transport still requires its existing supported browser connection and observed WebMCP report tools; their current live access limitation is documented there. Their pending obligations stay visible in the existing coverage ledger. No schedule can safely be fully disabled today solely because this code exists; the immediate cut is the routine orchestration portion of the helper coordinator after rollout verification.
 
 Validation: `node --test tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs`. Tests cover stale routing, malformed URLs, immutable collisions, source identity/quotes, cache reuse, protected decisions, conflict rejection, pre-POST crash/restart, missing acceptance, receipt/row mismatches, zero-write accounting, independent continuation, standard email templates, and draining 2,301 items through 24 successive transactions.
+
+## Windows publication durability
+
+Mutable JSON saves stage unique, exclusively created sibling files, flush and close
+those bytes, then atomically replace the destination. Sharing/access-busy rename
+failures (`EPERM`, `EACCES`, `EBUSY`) retry the same staged bytes up to eight times
+with at most 1.575 seconds of backoff. The old destination is never deleted or
+truncated as a workaround. Other errors fail immediately. Persistent failures
+preserve both the prior destination and the uniquely named staging file for
+reconciliation, and remain explicit failures. They do not silently publish or
+replay a checkpoint. Earlier `.tmp` evidence is not overwritten or auto-recovered.
+
+The shared helper work source and all shared page/index files have explicit LF
+Git attributes because their bindings hash exact bytes. Publication also compares
+validated source/page bytes with Git's staged blobs before committing and after
+rebase, rejecting any clean-filter or newline transformation before push. These
+checks do not relax immutable hashes or regenerate historical pages. Already
+stranded checkouts still require evidence-preserving reconciliation; merging this
+code does not itself recover retained files or deploy it to a running coordinator.
