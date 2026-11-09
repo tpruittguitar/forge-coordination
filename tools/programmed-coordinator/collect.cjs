@@ -92,7 +92,7 @@ function collect({root, state, commit, routing = routingProof}) {
       const id = batch.taskKey + ':' + batch.runId;
       const collision = Object.values(state.batches).find(b => b.id === id && b.sha256 !== sha256);
       if (collision) throw Error('IMMUTABLE_RUN_ID_COLLISION');
-      state.batches[rel] = {id, sha256, checkedAgainst:commit, status:'VALIDATED', items:batch.items.length, ...(validation.readinessOnly?{readinessOnly:true,provider:batch.provider,taskKey:batch.taskKey,returnTransport:batch.returnTransport}:{}), ...proof};
+      state.batches[rel] = {id, sha256, checkedAgainst:commit, status:'VALIDATED', items:batch.items.length, ...(validation.sourceCaptures?{sourceCaptures:validation.sourceCaptures}:{}), ...(validation.readinessOnly?{readinessOnly:true,provider:batch.provider,taskKey:batch.taskKey,returnTransport:batch.returnTransport}:{}), ...proof};
       delete state.exceptions['batch:' + rel];
       if(prior?.status==='VALIDATED') continue;
       for (const item of batch.items) {

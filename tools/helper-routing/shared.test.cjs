@@ -8,6 +8,33 @@ const batch=(w)=>({schema:'forge.shared-helper-batch.v1',provider:'Claude',taskK
 function setup(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'shared-routing-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));S.save(root,H.FILE,base());return root;}
 const state=()=>({items:{},batches:{},transactions:{},exceptions:{}});
 const row=(id,n=0)=>({PRIMARY_ID:id,COMPANY:'Factory '+n,TITLE:'Plant Manager',LOCATION:'Austin, TX',BUCKET:'MANUAL_RESEARCH',p:{}});
+function captured(b){const i=b.items[0],quote=i.sourceEvidence.quote;i.sourceEvidence.capture={kind:'TEXT_EXTRACT',text:'Exact employer posting: '+quote+'\n'+('Quality, production and people leadership. '.repeat(10))+'\nRésumé evidence is separate.'};delete i.sourceEvidence.sourceSha256;return b;}
+test('tool-only providers can return exact captured text; code records real bytes without modifying their receipt',()=>{
+ const w=base();w.items=[assigned()];const b=captured(batch(w)),original=JSON.stringify(b),v=H.validateBatch(b,w),text=b.items[0].sourceEvidence.capture.text;
+ a.equal(JSON.stringify(b),original);a.equal(Object.hasOwn(b.items[0].sourceEvidence,'sourceSha256'),false);
+ a.deepEqual(v.sourceCaptures,[{key:'V2I-ONE',kind:'TEXT_EXTRACT',sha256:S.hash(text),bytes:Buffer.byteLength(text,'utf8'),basis:'SUBMITTED_TEXT_ONLY',independentlyVerified:false}]);
+ a.equal(v.productionAuthorized,false);a.notEqual(Buffer.byteLength(text,'utf8'),text.length);
+});
+test('captures never repair fabricated hashes, summary quotes or malformed/oversized text',()=>{
+ const w=base();w.items=[assigned()];const b=captured(batch(w));
+ for(const edit of [e=>e.sourceSha256='placeholder_hash_for_captured_bytes',e=>e.sourceSha256='0'.repeat(64),e=>e.quote='An invented requirement absent from captured bytes.',e=>e.capture.kind='INDEPENDENTLY_VERIFIED',e=>e.capture.text='short',e=>e.capture.text='x'.repeat(200001),e=>e.capture.trusted=true]){const bad=structuredClone(b);edit(bad.items[0].sourceEvidence);a.throws(()=>H.validateBatch(bad,w),/SHARED_CAPTURE/);}
+ const legacy=batch(w);legacy.items[0].sourceEvidence.sourceSha256='placeholder_hash_for_captured_bytes';a.throws(()=>H.validateBatch(legacy,w),/SHARED_SOURCE_PROOF_REQUIRED/);
+});
+test('blocked source reports need honest accounting, not invented hashes or NOT_STATED facts',()=>{
+ const w=base();w.items=[assigned()];const b=batch(w),i=b.items[0];i.recommendation='SOURCE_BLOCKED';i.reason='Assigned posting returned HTTP 403';i.researchOwner='Grok';i.retryCondition='Source access restored or new exact posting source';delete i.sourceEvidence.sourceSha256;delete i.sourceEvidence.quote;
+ a.equal(H.validateBatch(b,w).valid,true);delete i.retryCondition;a.throws(()=>H.validateBatch(b,w),/SHARED_EXCEPTION_ACCOUNTING_REQUIRED/);
+});
+test('collector preserves computed capture provenance but leaves source trust and original bytes unchanged',t=>{
+ const root=setup(t),w=base();w.items=[assigned()];S.save(root,H.FILE,w);S.save(root,'control/AI_AUTOMATION_TASKS.json',{tasks:{[task]:{owner:'Claude',workAssignments:H.FILE}}});
+ const b=captured(batch(w)),file='receipts/CLAUDE_HELPERS/'+task+'/'+b.runId+'.json';S.save(root,file,b);const before=fs.readFileSync(path.join(root,file),'utf8'),st=state();
+ C.collect({root,state:st,commit:'d'.repeat(40),routing:()=>({currentPolicyRecheckRequired:true})});
+ a.equal(st.batches[file].status,'VALIDATED');a.equal(st.batches[file].sourceCaptures[0].sha256,S.hash(b.items[0].sourceEvidence.capture.text));
+ a.equal(st.batches[file].sourceCaptures[0].independentlyVerified,false);a.equal(st.items[task+':V2I-ONE'].status,'RETURNED');a.equal(fs.readFileSync(path.join(root,file),'utf8'),before);
+});
+test('submitted capture never substitutes for independent live posting evidence',async t=>{
+ const root=setup(t),w=base();w.items=[assigned()];const b=captured(batch(w)),i=b.items[0];a.equal(H.validateBatch(b,w).valid,true);
+ await a.rejects(require('../programmed-coordinator/source.cjs').verify({item:i,expected:{company:'Factory',title:'Plant Manager',location:'Austin, TX'},privateDir:root,fetchPage:async url=>({url,raw:'<html>Generic careers homepage without a posting</html>'})}),/STRUCTURED_POSTING_UNAVAILABLE/);
+});
 test('one routine has disjoint provider slots and no direct Writer or protected fields',()=>{
  const w=base();w.items=[assigned(),{...assigned('V2I-TWO'),taskKey:other,provider:'Grok'}];
  a.deepEqual(H.next(w,task).items.map(H.key),['V2I-ONE']);a.deepEqual(H.next(w,other).items.map(H.key),['V2I-TWO']);

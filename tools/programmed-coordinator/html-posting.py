@@ -1,5 +1,7 @@
 """Extract declared JobPosting microdata; no browser, network or guessed identity."""
 import json
+import re
+from html import escape
 import sys
 from html.parser import HTMLParser
 
@@ -68,5 +70,44 @@ def postings(raw):
     return out
 
 
+def linkedin_guest(raw):
+    parser = Parser()
+    parser.feed(raw)
+    nodes = list(descendants(parser.root))
+
+    def one_class(name, scope=nodes, tag=None):
+        matches = [n for n in scope if name in n['attrs'].get('class', '').split()
+                   and (not tag or n['tag'] == tag)]
+        return matches[0] if len(matches) == 1 else None
+
+    def markup(node):
+        if isinstance(node, str):
+            return escape(node)
+        if node['tag'] in {'script', 'style'}:
+            return ''
+        content = ''.join(markup(c) for c in node['children'])
+        tag = node['tag']
+        return '<' + tag + '>' + content + '</' + tag + '>'
+
+    card = one_class('top-card-layout')
+    if not card:
+        return None
+    scope = list(descendants(card))
+    title = one_class('top-card-layout__title', scope)
+    org = one_class('topcard__org-name-link', scope)
+    location = one_class('topcard__flavor--bullet', scope, 'span')
+    link = one_class('topcard__link', scope, 'a')
+    description = one_class('description__text')
+    body = one_class('show-more-less-html__markup', list(descendants(description))) if description else None
+    if not all([title, org, location, link, body]):
+        return None
+    ids = sorted(set(re.findall(r'urn:li:jobPosting:(\d+)', raw)))
+    return {'title': text(title), 'company': text(org), 'location': text(location),
+            'url': link['attrs'].get('href'), 'jobIds': ids,
+            'description': markup(body),
+            'closed': bool(re.search(r'no longer accepting applications', text(card), re.I))}
+
+
 if __name__ == '__main__':
-    print(json.dumps(postings(sys.stdin.read())))
+    raw = sys.stdin.read()
+    print(json.dumps(linkedin_guest(raw) if '--linkedin-guest' in sys.argv else postings(raw)))

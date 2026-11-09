@@ -3,12 +3,19 @@ const fs=require('node:fs'),path=require('node:path'),S=require('../programmed-c
 const FILE='state/HELPER_TRANSPORT.json';
 function settings(privateDir){const file=process.env.FORGE_HANDOFF_CONFIG||path.join(privateDir,'handoffs.json');return fs.existsSync(file)?JSON.parse(fs.readFileSync(file,'utf8')):{inboxes:[{directory:path.join(privateDir,'helper-inbox'),pattern:'.*\\.(?:json|jsonl|md|txt|zip)$'},{directory:path.join(require('node:os').homedir(),'Downloads')}]};}
 const reason=e=>/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'BROWSER_TOOL_FAILURE';
+function deliveryExceptions(state,results){
+ for(const r of results){
+  const key='delivery:'+(r.sourceKey||r.pullRequest);
+  if(r.status==='PENDING')state.exceptions[key]={owner:'CODE',reason:r.reason,...(r.pullRequest!==undefined?{pullRequest:r.pullRequest}:{}),...(r.sourceKey?{sourceKey:r.sourceKey,branch:r.branch,sourceCommit:r.sourceCommit}:{}),artifacts:r.pendingArtifacts||[],...(r.errorSha256?{errorSha256:r.errorSha256}:{})};
+  else delete state.exceptions[key];
+ }
+}
 async function run({root,privateDir,commit,runId,apply,config=settings(privateDir),browserConnect=require('./browser.cjs').connect}){
  const state=S.read(root,FILE,Reports.empty()),ledger=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),before=S.hash(ledger),result={imported:0,reportFeeds:[],pagination:null};
  const save=async()=>{if(apply){S.save(root,FILE,state);L.save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),ledger);}};
  if(apply){
   S.save(root,'state/HELPER_ROUTING_CURRENT.json',require('./routing.cjs').snapshot(root,commit));
-  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});for(const r of result.delivery.results){if(r.status==='PENDING')state.exceptions['delivery:'+r.pullRequest]={owner:'CODE',reason:r.reason,pullRequest:r.pullRequest,artifacts:r.pendingArtifacts||[],...(r.errorSha256?{errorSha256:r.errorSha256}:{})};else delete state.exceptions['delivery:'+r.pullRequest];}delete state.exceptions.delivery;}
+  try{const D=require('./delivery.cjs'),token=require('node:child_process').execFileSync('gh',['auth','token'],{encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();result.delivery=await D.collect({root,privateDir,commit,api:D.github(token)});deliveryExceptions(state,result.delivery.results);delete state.exceptions.delivery;}
   catch(e){state.exceptions.delivery={owner:'CODE',reason:'HELPER_DELIVERY_ROUTE_UNAVAILABLE',errorSha256:S.hash(e.message)};}
  }
  if(apply){
@@ -48,4 +55,4 @@ async function run({root,privateDir,commit,runId,apply,config=settings(privateDi
  else S.save(privateDir,'routine-handoffs-preview.json',report);
  return{report,state};
 }
-module.exports={run,settings};
+module.exports={run,settings,deliveryExceptions};

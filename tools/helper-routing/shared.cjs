@@ -6,6 +6,17 @@ const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok'
 const CLOSED=new Set(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE']);
 const active=i=>!CLOSED.has(i.status), key=i=>i.primaryId||i.key;
 const proof=x=>typeof x==='string'&&x.trim().length>0;
+// Transport integrity only. Submitted text is untrusted evidence, never a
+// substitute for the independent source/identity/quote checks before Writer.
+function captureProof(e){
+ if(!Object.hasOwn(e,'capture'))return null;
+ const c=e.capture;
+ if(!c||c.kind!=='TEXT_EXTRACT'||typeof c.text!=='string'||c.text.trim().length<300||Buffer.byteLength(c.text,'utf8')>200000||Object.keys(c).some(k=>!['kind','text'].includes(k)))throw Error('SHARED_CAPTURE_REQUIRED');
+ const sha256=S.hash(c.text),literal=s=>String(s||'').normalize('NFKC').replace(/\s+/g,' ').trim();
+ if(!proof(e.quote)||!literal(c.text).includes(literal(e.quote)))throw Error('SHARED_CAPTURE_QUOTE_REQUIRED');
+ if(Object.hasOwn(e,'sourceSha256')&&e.sourceSha256!==sha256)throw Error('SHARED_CAPTURE_HASH_MISMATCH');
+ return{kind:c.kind,sha256,bytes:Buffer.byteLength(c.text,'utf8'),basis:'SUBMITTED_TEXT_ONLY',independentlyVerified:false};
+}
 function validateWork(w){
  if(w?.schema!=='forge.shared-helper-work.v1'||typeof w.enabled!=='boolean'||typeof w.routingActive!=='boolean'||!proof(w.assignmentId)||!Array.isArray(w.items)||!w.providers)throw Error('INVALID_SHARED_HELPER_WORK');
  const seen=new Set();
@@ -30,7 +41,8 @@ function validateBatch(b,w=load()){
   if(b.items.length||b.researchPerformed!==false||b.writerSubmitted!==false||!['GITHUB_PR','DRIVE'].includes(b.returnTransport)||Object.keys(b).some(k=>!fields.has(k)))throw Error('INVALID_SHARED_READINESS_PROBE');
   return{valid:true,items:0,readinessOnly:true,productionAuthorized:false};
  }
- const assigned=new Map(w.items.map(i=>[key(i),i])),seen=new Set();
+ if(Buffer.byteLength(JSON.stringify(b),'utf8')>2000000)throw Error('SHARED_BATCH_TOO_LARGE');
+ const assigned=new Map(w.items.map(i=>[key(i),i])),seen=new Set(),sourceCaptures=[];
  for(const item of b.items){
   const k=key(item),a=assigned.get(k);
   if(!a||seen.has(k)||a.taskKey!==b.taskKey||a.provider!==b.provider||a.kind!==item.kind||a.assignmentVersion!==item.assignmentVersion||a.sourceVersion!==item.sourceVersion)throw Error('STALE_OR_UNASSIGNED_SHARED_ITEM');
@@ -39,16 +51,17 @@ function validateBatch(b,w=load()){
   if(item.kind==='ENRICHMENT'&&item.recommendation==='INTAKE_READY'||item.kind!=='ENRICHMENT'&&item.recommendation==='ENRICHMENT_EVIDENCE_READY')throw Error('SHARED_RECOMMENDATION_KIND_MISMATCH');
   const e=item.sourceEvidence;
   if(!e||!['company','title','location'].every(f=>proof(e[f])))throw Error('SHARED_SOURCE_IDENTITY_REQUIRED');
+  const capture=captureProof(e);if(capture)sourceCaptures.push({key:k,...capture});
   if(/_READY$/.test(item.recommendation)){
    require('../programmed-coordinator/source.cjs').publicUrl(e.url);
-   if(!Number.isFinite(Date.parse(e.observedAt))||!/^[a-f0-9]{64}$/.test(e.sourceSha256||'')||!proof(e.quote))throw Error('SHARED_SOURCE_PROOF_REQUIRED');
+   if(!Number.isFinite(Date.parse(e.observedAt))||!capture&&!/^[a-f0-9]{64}$/.test(e.sourceSha256||'')||!proof(e.quote))throw Error('SHARED_SOURCE_PROOF_REQUIRED');
   }else if(!proof(item.reason)||!proof(item.retryCondition)||!proof(item.researchOwner))throw Error('SHARED_EXCEPTION_ACCOUNTING_REQUIRED');
   const raw=e.proposedRawFields||{};
   const allowed=new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_BASIS','SALARY_SOURCE','SOURCE_URL']);
   if(Object.keys(raw).some(f=>!allowed.has(f))||['bucket','disposition','needsTim','timDecision','score','fields'].some(f=>Object.hasOwn(item,f)))throw Error('HELPER_PROTECTED_FIELDS_FORBIDDEN');
   seen.add(k);
  }
- return{valid:true,items:seen.size,productionAuthorized:false};
+ return{valid:true,items:seen.size,productionAuthorized:false,...(sourceCaptures.length?{sourceCaptures}:{})};
 }
 const LANES=['RESEARCH','ENRICHMENT','INTAKE','DISCOVERY'];
 const lane=i=>i.lane||i.kind;
@@ -88,4 +101,4 @@ function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPen
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={FILE,TASKS,LANES,ordering,lane,load,validateWork,validateBatch,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={FILE,TASKS,LANES,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};

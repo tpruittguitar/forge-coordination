@@ -71,3 +71,17 @@ test('ordinary scheduled apply processes returned enrichment before unrelated ma
  const snapshot=await Run.processReturnedEvidence(f);events.push('downstream');a.equal(snapshot,refreshed);a.equal(f.state.items[f.key].status,'VERIFIED');a.ok(events.indexOf('source')<events.indexOf('post'));a.ok(events.indexOf('post')<events.indexOf('verify'));a.ok(events.lastIndexOf('snapshot')<events.indexOf('downstream'));
  const main=Run.main.toString();a.ok(main.indexOf('await processReturnedEvidence(')<main.indexOf("mail-pipeline.cjs"));a.ok(main.indexOf('await processReturnedEvidence(')<main.indexOf("['prepare','--apply']"));a.equal((main.match(/await processReturnedEvidence\(/g)||[]).length,1);
 });
+test('new source parser retries only corrected failure classes once while transaction and protected fences remain intact',async t=>{
+ const Source=require('./source.cjs');
+ for(const reason of ['SOURCE_ROUTE_BACKOFF','FIT_RESUME_MAPPING_REQUIRED','STRUCTURED_POSTING_UNAVAILABLE']){
+  const f=fixture(t),item=f.state.items[f.key];let reads=0;
+  item.status='EXCEPTION';item.sourceParserVersion='old';item.retryAfter='9999-01-01T00:00:00Z';f.state.exceptions[f.key]={reason};
+  f.sourceVerify=async()=>{reads++;throw Error(reason);};await Run.inspectReturns(f);a.equal(reads,1,reason);a.equal(item.sourceParserVersion,Source.PARSER_VERSION);
+  await Run.inspectReturns(f);a.equal(reads,1,reason+' must not loop on unchanged failure');
+ }
+ for(const mode of ['verified','transaction','protected','uncorrected']){
+  const f=fixture(t),item=f.state.items[f.key];let reads=0;item.status='EXCEPTION';item.sourceParserVersion='old';item.retryAfter='9999-01-01T00:00:00Z';f.state.exceptions[f.key]={reason:'SOURCE_ROUTE_BACKOFF'};
+  if(mode==='verified')item.status='VERIFIED';if(mode==='transaction')item.transactionId='ORIGINAL';if(mode==='protected')f.row.p.TIM_DECISION='DECLINE';if(mode==='uncorrected')f.state.exceptions[f.key].reason='FIT_QUOTE_NOT_IN_POSTING';
+  f.sourceVerify=async()=>{reads++;throw Error('should not run');};await Run.inspectReturns(f);a.equal(reads,0,mode);
+ }
+});

@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261109-shared-helper-evidence-v2+'+require('../enrich-ats-pay/qualification').VERSION;
+const PARSER_VERSION='20261109-shared-helper-evidence-v3+'+require('../enrich-ats-pay/qualification').VERSION;
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -92,17 +92,18 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
   if (fs.existsSync(cache)) {
     const c = JSON.parse(fs.readFileSync(cache, 'utf8'));
     if (now - Date.parse(c.observedAt) < 86400000 && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
-      const facts=c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);
+      const facts=c.format==='LINKEDIN_GUEST'?inspectLinkedIn(c.raw,c.route,c.finalUrl,expected,item.sourceEvidence.quote,now):c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);
       return helperEvidence({...c,...facts},item); // Recompute helper bindings even on cache hits.
     }
   }
   const sourceRoutes=S.read(privateDir,'source-routes.json',{}),errors=[];
   async function get(target){publicUrl(target);const host=new URL(target).hostname;if(Date.parse(sourceRoutes[host]?.retryAfter)>now)throw Error('SOURCE_ROUTE_BACKOFF');try{return await fetchPage(target);}catch(e){if(/^SOURCE_HTTP_(?:403|429)$/.test(e.message)){sourceRoutes[host]={reason:e.message,retryAfter:new Date(Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+15*60000).toISOString()};S.save(privateDir,'source-routes.json',sourceRoutes);}throw e;}}
-  const apiRoutes=F.routes([url,...sourceUrls]),candidates=[...apiRoutes.map(route=>({route,format:'ATS_API',url:route.api})),...[url,...sourceUrls].map(url=>({url,format:'HTML'}))],seen=new Set();
+  const LinkedIn=require('./linkedin-guest.cjs'),guestRoutes=LinkedIn.routes([url,...sourceUrls]),apiRoutes=F.routes([url,...sourceUrls]),candidates=[...apiRoutes.map(route=>({route,format:'ATS_API',url:route.api})),...guestRoutes.map(route=>({route,format:'LINKEDIN_GUEST',url:route.api})),...[url,...sourceUrls].map(url=>({url,format:'HTML'}))],seen=new Set();
   for(const candidate of candidates){if(seen.has(candidate.url))continue;seen.add(candidate.url);
     try{
       const got=await get(candidate.url);let facts,companyRaw,boardCompany;
-      if(candidate.route){const route=candidate.route,board=new URL(route.api).pathname.split('/');if(route.companyApi)companyRaw=(await get(route.companyApi)).raw;else if(board.some(token=>[expected.company,...expected.companyAliases].some(n=>norm(token)===norm(n))))boardCompany={name:expected.company};
+      if(candidate.format==='LINKEDIN_GUEST')facts=inspectLinkedIn(got.raw,candidate.route,got.url,expected,item.sourceEvidence.quote,now);
+      else if(candidate.route){const route=candidate.route,board=new URL(route.api).pathname.split('/');if(route.companyApi)companyRaw=(await get(route.companyApi)).raw;else if(board.some(token=>[expected.company,...expected.companyAliases].some(n=>norm(token)===norm(n))))boardCompany={name:expected.company};
         facts=inspectJobs([F.apiPosting(route,JSON.parse(got.raw),companyRaw?JSON.parse(companyRaw):boardCompany)],expected,item.sourceEvidence.quote,now);
       }else facts=inspect(got.raw,expected,item.sourceEvidence.quote,now);
       const result={...facts,format:candidate.format,route:candidate.route,companyRaw,boardCompany,raw:got.raw,sourceUrl:candidate.route?.page||candidate.url,finalUrl:got.url,expected,sourceSha256:S.hash(got.raw),observedAt:new Date(now).toISOString(),...(companyRaw?{companySourceSha256:S.hash(companyRaw)}:{})};
@@ -143,20 +144,27 @@ function exactAtsLink(source) {
   return link;
 }
 // Helpers identify evidence; they never supply trusted score outputs or resume facts.
+function inspectLinkedIn(raw,route,finalUrl,expected,quote,now){
+  const job=require('./linkedin-guest.cjs').posting(raw,route,finalUrl);
+  return inspectJobs([job],expected,quote,now);
+}
 function helperEvidence(source,item,profile) {
   const out={...source};delete out.fitEvidence;delete out.exactLink;
   const fit=item.sourceEvidence?.fit;
   if(fit){
     const Resume=require('../source-trial/resume-match');profile=profile||Resume.load();
-    if(!Resume.valid(profile)||fit.resumeTextSha256!==profile.source.textSha256)throw Error('CURRENT_RESUME_EVIDENCE_REQUIRED');
+    if(!Resume.valid(profile)||fit.resumeTextSha256!==undefined&&fit.resumeTextSha256!==profile.source.textSha256)throw Error('CURRENT_RESUME_EVIDENCE_REQUIRED');
     if(!Array.isArray(fit.requirements)||!fit.requirements.length||fit.requirements.length>20)throw Error('FIT_REQUIREMENTS_REQUIRED');
     const literal=s=>String(s||'').normalize('NFKC').replace(/\s+/g,' ').trim();
     const requirements=fit.requirements.map(r=>{
       if(typeof r.quote!=='string'||r.quote.length<30||r.quote.length>1500||!literal(source.description).includes(literal(r.quote)))throw Error('FIT_QUOTE_NOT_IN_POSTING');
-      if(!Array.isArray(r.competencyIds)||!r.competencyIds.length||new Set(r.competencyIds).size!==r.competencyIds.length)throw Error('FIT_RESUME_MAPPING_REQUIRED');
       const overlap=Resume.match({description:r.quote},profile);
-      if(r.competencyIds.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('FIT_RESUME_MAPPING_NOT_IN_REQUIREMENT');
-      return{quote:literal(r.quote),competencyIds:r.competencyIds.slice().sort()};
+      // Optional bindings are computed from the current resume, never helper prose.
+      // An explicit empty array preserves an observed requirement with no support claim.
+      const ids=r.competencyIds===undefined?overlap.matches.map(m=>m.competencyId):r.competencyIds;
+      if(!Array.isArray(ids)||new Set(ids).size!==ids.length)throw Error('FIT_RESUME_MAPPING_REQUIRED');
+      if(ids.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('FIT_RESUME_MAPPING_NOT_IN_REQUIREMENT');
+      return{quote:literal(r.quote),competencyIds:ids.slice().sort()};
     });
     out.fitEvidence={resumeTextSha256:profile.source.textSha256,requirements};
   }
@@ -164,9 +172,9 @@ function helperEvidence(source,item,profile) {
   // JSON-LD self-binds to the fetch. ATS URLs additionally bind exact host,
   // path and ID against independently fetched API posting fields.
   try {
-    const link=publicUrl(source.format==='ATS_API'?exactAtsLink(source):source.finalUrl),u=new URL(link);
+    const link=publicUrl(source.format==='LINKEDIN_GUEST'?require('./linkedin-guest.cjs').exactLink(source):source.format==='ATS_API'?exactAtsLink(source):source.finalUrl),u=new URL(link);
     const unsigned=![...u.searchParams.keys()].some(k=>/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k));
-    if(u.pathname!=='/'&&unsigned&&(source.format==='ATS_API'||publicUrl(source.postingFacts?.url)===link))out.exactLink=link;
+    if(u.pathname!=='/'&&unsigned&&(['ATS_API','LINKEDIN_GUEST'].includes(source.format)||publicUrl(source.postingFacts?.url)===link))out.exactLink=link;
   }catch{}
   return out;
 }
@@ -183,7 +191,7 @@ function enrichmentFields(source, row) {
   if(bound&&source.fitEvidence&&!known(p.FIT_EVIDENCE)&&!known(p.FIT_BASIS)){
     const fit=source.fitEvidence;
     Object.assign(fields,{FIT_EVIDENCE:fit.requirements.map(r=>r.quote).join(' / '),
-      FIT_BASIS:'Observed requirement overlap only, not final fit; resume '+fit.resumeTextSha256+'; '+fit.requirements.map(r=>r.competencyIds.join(',')).join(' / '),FIT_ASOF:date,FIT_CONF:'LOW'});
+      FIT_BASIS:'Observed requirement overlap only, not final fit; resume '+fit.resumeTextSha256+'; '+fit.requirements.map(r=>r.competencyIds.length?r.competencyIds.join(','):'NO_OBSERVED_RESUME_OVERLAP').join(' / '),FIT_ASOF:date,FIT_CONF:'LOW'});
   }
   return fields;
 }
