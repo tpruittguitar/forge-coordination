@@ -5,6 +5,7 @@ const Outcome = require('../writer-outcome.cjs');
 const clientRevision=S.hash([__filename,require.resolve('./run.cjs'),require.resolve('./source.cjs'),require.resolve('./posting-formats.cjs')].map(f=>require('node:fs').readFileSync(f,'utf8')).join('\n'));
 const rejectedUnchanged=(item,writerCommit)=>!!item?.notAcceptedTerminal&&item.notAcceptedTerminal.version===item.version&&item.notAcceptedTerminal.clientRevision===clientRevision&&item.notAcceptedTerminal.sourceParserVersion===Source.PARSER_VERSION&&
   (!/^[a-f0-9]{7,40}$/.test(writerCommit||'')||item.notAcceptedTerminal.writerCommit===writerCommit);
+const MAX_ENRICHMENT_BATCH = 25;
 const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',
   'SOURCE_URL','COMPANY_SOURCE_URL','FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF',
   'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']);
@@ -33,11 +34,13 @@ function fenced(root, state, id) {
   }
   return false;
 }
-async function submit({root, privateDir, state, jobs, runId, deps}) {
-  if (!jobs.length || jobs.length > 25 || new Set(jobs.map(j => j.primaryId)).size !== jobs.length) throw Error('Invalid transaction size or duplicate job');
+async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
+  if (!jobs.length || jobs.length > MAX_ENRICHMENT_BATCH || new Set(jobs.map(j => j.primaryId)).size !== jobs.length) throw Error('Invalid transaction size or duplicate job');
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
+  const accepted=[];
   for (const job of jobs) {
+   try {
     const inspection=state.items[job.itemKey];
     if(inspection?.taskKey&&require('../helper-routing/shared.cjs').TASKS[inspection.taskKey]){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
     if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
@@ -45,7 +48,16 @@ async function submit({root, privateDir, state, jobs, runId, deps}) {
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fenced(root,state,job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
     if (!Object.keys(job.fields).length || Object.keys(job.fields).some(k => !allowed.has(k))) throw Error('Unsupported enrichment fields');
     if (Object.entries(job.fields).some(([k,v]) => Source.known(rows[0].p?.[k]) && cell(rows[0].p[k]) !== cell(v))) throw Error('CONFLICTING_CURRENT_EVIDENCE');
+    accepted.push(job);
+   } catch(e) {
+    // Only pre-POST item validation may discard a row from this envelope.
+    // Network, checkpoint, POST and reconciliation failures never split/replay it.
+    if(!onInvalid)throw e;
+    onInvalid(job,e);
+   }
   }
+  jobs=accepted;
+  if(!jobs.length){S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);return null;}
   const n = Object.keys(state.transactions).length + 1, requestId = runId + '-E' + String(n).padStart(5,'0');
   if (await deps.exists(requestId)) throw Error('ORIGINAL_REQUEST_ALREADY_EXISTS');
   const requests = jobs.map((j,n) => ({action:'ruling', ruling:{requestId:requestId+'-R'+(n+1), primaryId:j.primaryId, kind:'ENRICH', actor:'CHATGPT', fields:j.fields}}));
@@ -67,6 +79,75 @@ async function submit({root, privateDir, state, jobs, runId, deps}) {
   } catch { tx.status = 'POST_IN_FLIGHT_UNKNOWN'; }
   S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
   return tx;
+}
+function updateHelperConsumption(root, requestId, requests, rows, proofFile) {
+  const work=S.read(root,'control/ENRICHMENT_HELPER_WORK.json',null);
+  if(!work)return;
+  let changed=false;
+  for(const r of requests) {
+    const item=work.items.find(i=>i.primaryId===r.primaryId),row=rows.find(i=>i.PRIMARY_ID===r.primaryId);
+    if(!item||!['FORGE_GROK_ENRICHMENT','FORGE_CHATGPT_ENRICHMENT_RESEARCH'].includes(item.taskKey))continue;
+    const complete=(item.missingFields||[]).length>0&&(item.missingFields||[]).every(f=>f==='DEGREE'?(Source.known(row.p.DEGREE_REQ)||Source.known(row.p.DEGREE_TEXT)):f==='SALARY'?Source.known(row.p.SALARY_BASE_LOW):false);
+    item.coordinatorConsumption={requestId,proof:proofFile,verifiedFields:Object.keys(r.fields),sourceSha256:r.sourceSha256};
+    item.status=complete?'CONSUMED':'RETURNED_PARTIALLY_CONSUMED';changed=true;
+  }
+  if(changed)S.save(root,'control/ENRICHMENT_HELPER_WORK.json',work);
+}
+async function reconcileBatch({root,state,tx,deps,response,bound}) {
+  const noWrite=response.mode==='BATCH_RULING_NO_WRITE'&&!response.writeId;
+  const index=response.writeId?await deps.index():null,proofs=[];
+  let held=false,accountingFailed=false;
+  async function consume(r,key,file,rows) {
+    try {
+      const work=S.read(root,'control/ENRICHMENT_HELPER_WORK.json',null),item=work?.items.find(i=>i.primaryId===r.primaryId);
+      if(!item||!['FORGE_GROK_ENRICHMENT','FORGE_CHATGPT_ENRICHMENT_RESEARCH'].includes(item.taskKey))return;
+      if(item.coordinatorConsumption?.requestId===tx.requestId&&item.coordinatorConsumption.proof===file){delete state.exceptions['consumption:'+key];return;}
+      rows=rows||(await deps.rows(tx.requestId,[r.primaryId])).rows;
+      const hits=rows.filter(x=>x.PRIMARY_ID===r.primaryId);
+      if(hits.length!==1||!same(hits[0],r.identity))throw Error('HELPER_CONSUMPTION_IDENTITY_REQUIRED');
+      updateHelperConsumption(root,tx.requestId,[r],rows,file);delete state.exceptions['consumption:'+key];
+    }catch(e){accountingFailed=true;state.exceptions['consumption:'+key]={owner:'CODE',requestId:tx.requestId,reason:e.message};}
+  }
+  for(let n=0;n<tx.requests.length;n++) {
+    const r=tx.requests[n],key=tx.itemKeys[n],item=state.items[key],file='receipts/'+r.requestId+'_VERIFIED.json';
+    const prior=S.read(root,file,null);
+    if(prior) {
+      if(prior.requestId!==tx.requestId||prior.acceptanceSha256!==S.hash(response)||prior.payloadSha256!==tx.payloadSha256||prior.proofs?.length!==1||
+        prior.proofs[0].requestId!==r.requestId||prior.proofs[0].primaryId!==r.primaryId||S.hash(prior.proofs[0].fields)!==S.hash(Object.keys(r.fields)))throw Error('IMMUTABLE_VERIFICATION_PROOF_CHANGED');
+      proofs.push(prior.proofs[0]);Object.assign(item,{status:'VERIFIED',proof:file});delete state.exceptions[key];await consume(r,key,file);continue;
+    }
+    let reason;
+    const matches=bound[n],entry=index?.index?.requests?.[r.requestId];
+    if(matches.length!==1||matches[0].ok!==true){reason='ORIGINAL_RESULT_REQUIRES_REVIEW';held=true;}
+    else if(!noWrite&&!response.writeId){reason='ACCEPTANCE_WRITE_ID_MISSING';held=true;}
+    else if(!noWrite&&(entry?.s!=='COMPLETE'||entry.w!==response.writeId||!entry.items?.some(i=>i.pid===r.primaryId)))reason='WRITER_RECONCILIATION_REQUIRED';
+    else {
+      try {
+        const completeObservedAt=new Date().toISOString(),readback=await deps.rows(tx.requestId,[r.primaryId]);
+        if(!Number.isFinite(Date.parse(readback.startedAt))||Date.parse(readback.startedAt)<Date.parse(completeObservedAt))throw Error('EARLY_CANONICAL_READBACK');
+        const hits=readback.rows.filter(x=>x.PRIMARY_ID===r.primaryId);
+        if(hits.length!==1||!same(hits[0],r.identity)||Object.entries(r.fields).some(([k,v])=>cell(hits[0].p?.[k])!==cell(v)))throw Error('EXACT_ROW_EFFECT_NOT_PROVEN');
+        const proof={primaryId:r.primaryId,requestId:r.requestId,rowSha256:S.hash(hits[0].line),fields:Object.keys(r.fields),...(hits[0].evidenceProof?{evidence:hits[0].evidenceProof}:{})};
+        S.immutable(root,file,{schema:'forge.programmed-coordinator-verification.v1',requestId:tx.requestId,payloadSha256:tx.payloadSha256,
+          acceptanceSha256:S.hash(response),independentIndexSha:index?.sha||null,completeObservedAt,proofs:[proof],noWrite,claimedCompletedJobs:0});
+        proofs.push(proof);Object.assign(item,{status:'VERIFIED',proof:file});delete state.exceptions[key];
+        await consume(r,key,file,readback.rows);
+      }catch(e){reason=e.message;held=true;}
+    }
+    if(reason){item.status=held&&reason!=='WRITER_RECONCILIATION_REQUIRED'?'HELD_WRITER_REVIEW':'POST_IN_FLIGHT_UNKNOWN';state.exceptions[key]={owner:'CODE',key,requestId:tx.requestId,reason};}
+  }
+  tx.verifiedIds=proofs.map(p=>p.primaryId);
+  if(proofs.length===tx.requests.length&&!accountingFailed) {
+    const file='receipts/'+tx.requestId+'_VERIFIED.json',prior=S.read(root,file,null);
+    if(prior) {
+      if(prior.requestId!==tx.requestId||prior.acceptanceSha256!==S.hash(response)||S.hash(prior.proofs)!==S.hash(proofs))throw Error('IMMUTABLE_VERIFICATION_PROOF_CHANGED');
+    }else S.immutable(root,file,{schema:'forge.programmed-coordinator-verification.v1',requestId:tx.requestId,acceptanceSha256:S.hash(response),
+      independentIndexSha:index?.sha||null,completeObservedAt:new Date().toISOString(),proofs,noWrite,claimedCompletedJobs:0});
+    tx.status='VERIFIED';tx.verifiedAt=new Date().toISOString();delete state.exceptions['tx:'+tx.requestId];
+  }else tx.status=accountingFailed?'VERIFICATION_ACCOUNTING_PENDING':proofs.length?'PARTIALLY_VERIFIED':held?'HELD':'AWAITING_VERIFICATION';
+  // A partially proven transaction keeps its original request fence. It is not
+  // split, replayed, or declared fully complete to release unresolved siblings.
+  S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);return tx.status;
 }
 async function reconcile({root, privateDir, state, tx, deps}) {
   if (!pending(tx,root)) return tx.status;
@@ -96,6 +177,7 @@ async function reconcile({root, privateDir, state, tx, deps}) {
   const results = response.results;
   if (!Array.isArray(results) || results.length !== tx.requests.length) throw Error('ORIGINAL_RESULT_BINDING_MISSING');
   const bound = tx.requests.map(r => results.filter(x => x.requestId === r.requestId && (!x.primaryId || x.primaryId === r.primaryId)));
+  if(tx.requests.length>1)return reconcileBatch({root,state,tx,deps,response,bound});
   if (bound.some(xs => xs.length !== 1 || xs[0].ok !== true)) {
     tx.status='HELD';tx.reason='ORIGINAL_RESULT_REQUIRES_REVIEW';
     for(const key of tx.itemKeys){state.items[key].status='HELD_WRITER_REVIEW';state.exceptions[key]={owner:'CODE',key,requestId:tx.requestId,reason:tx.reason};}
@@ -121,22 +203,11 @@ async function reconcile({root, privateDir, state, tx, deps}) {
       priorProof.proofs.length!==proofs.length||proofs.some(p=>!priorProof.proofs.some(q=>q.primaryId===p.primaryId&&q.requestId===p.requestId&&S.hash(q.fields)===S.hash(p.fields))))throw Error('IMMUTABLE_VERIFICATION_PROOF_CHANGED');
   } else S.immutable(root,proofFile,{schema:'forge.programmed-coordinator-verification.v1',requestId:tx.requestId,
     acceptanceSha256:S.hash(response), independentIndexSha:index?.sha || null, completeObservedAt, proofs, noWrite, claimedCompletedJobs:0});
-  const work=S.read(root,'control/ENRICHMENT_HELPER_WORK.json',null);
-  if(work) {
-    let changed=false;
-    for(const r of tx.requests) {
-      const item=work.items.find(i=>i.primaryId===r.primaryId),row=rows.rows.find(i=>i.PRIMARY_ID===r.primaryId);
-      if(!item||!['FORGE_GROK_ENRICHMENT','FORGE_CHATGPT_ENRICHMENT_RESEARCH'].includes(item.taskKey))continue;
-      const complete=(item.missingFields||[]).length>0&&(item.missingFields||[]).every(f=>f==='DEGREE'?(Source.known(row.p.DEGREE_REQ)||Source.known(row.p.DEGREE_TEXT)):f==='SALARY'?Source.known(row.p.SALARY_BASE_LOW):false);
-      item.coordinatorConsumption={requestId:tx.requestId,proof:proofFile,verifiedFields:Object.keys(r.fields),sourceSha256:r.sourceSha256};
-      item.status=complete?'CONSUMED':'RETURNED_PARTIALLY_CONSUMED';changed=true;
-    }
-    if(changed)S.save(root,'control/ENRICHMENT_HELPER_WORK.json',work);
-  }
+  updateHelperConsumption(root,tx.requestId,tx.requests,rows.rows,proofFile);
   tx.status='VERIFIED'; tx.verifiedAt=new Date().toISOString();
   for (const key of tx.itemKeys) {Object.assign(state.items[key], {status:'VERIFIED',proof:'receipts/'+tx.requestId+'_VERIFIED.json'});delete state.exceptions[key];}
   delete state.exceptions['tx:'+tx.requestId];
   S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
   return tx.status;
 }
-module.exports = {healthy, identity, same, protectedRow, fenced, pending, submit, reconcile,rejectedUnchanged};
+module.exports = {MAX_ENRICHMENT_BATCH, healthy, identity, same, protectedRow, fenced, pending, submit, reconcile,rejectedUnchanged};

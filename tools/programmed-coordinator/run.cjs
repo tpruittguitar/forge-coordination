@@ -22,7 +22,8 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
   for (const item of Object.values(state.items)) {
     if (!select(item)) continue;
     const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY|SOURCE_ROUTE_BACKOFF|FIT_RESUME_MAPPING_REQUIRED|LINKEDIN_SOURCE_EXTRACTION_FAILED|MICRODATA_SOURCE_EXTRACTION_FAILED)$/.test(state.exceptions[item.key]?.reason||'');
-    if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
+    const routeUpgrade=item.sourceRetryVersion!==Source.RETRY_VERSION&&/^(?:SOURCE_ROUTE_BACKOFF|SOURCE_HTTP_403|SOURCE_HTTP_429)$/.test(state.exceptions[item.key]?.reason||'');
+    if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&!routeUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
@@ -60,6 +61,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     try {
       item.attempts++;
       item.sourceParserVersion=Source.PARSER_VERSION;
+      item.sourceRetryVersion=Source.RETRY_VERSION;
       const source=await sourceVerify({item:evidence,expected,privateDir,now,sourceUrls:row?require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)):[]});
       if (enrichment) {
         const fields=Source.enrichmentFields(source,row);
@@ -76,7 +78,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       exception(state,item,e.message,ambiguous?'AI':'CODE');
       // Access retries happen in code. An unchanged ambiguity is only revisited
       // after a changed item version, not repeatedly sent to AI.
-      item.retryAfter=ambiguous?'9999-01-01T00:00:00.000Z':new Date(now+6*3600000).toISOString();
+      item.retryAfter=ambiguous?'9999-01-01T00:00:00.000Z':new Date(Number.isFinite(e.retryAfter)&&e.retryAfter>now?e.retryAfter:now+6*3600000).toISOString();
     }
     if (apply) S.save(root,STATE,state);
   }
@@ -102,15 +104,36 @@ function child(root,args,env) {
   });
 }
 async function submitEnrichment({root,privateDir,state,runId,deps,select=()=>true}) {
-  // One row per transaction preserves independent progress and original fences.
-  for(const item of Object.values(state.items).filter(i=>select(i)&&i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED')) {
+  const queue=Object.values(state.items).filter(i=>select(i)&&!i.transactionId&&i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED');
+  while(queue.length) {
+    // Bounded envelopes, not a run quota. Keep repeated canonical IDs in separate
+    // envelopes so the first transaction's durable fence governs the next one.
+    const items=[],ids=new Set();
+    for(let n=0;n<queue.length&&items.length<T.MAX_ENRICHMENT_BATCH;) {
+      const item=queue[n];
+      if(!item.prepared?.primaryId){exception(state,item,'PREPARED_ENRICHMENT_REQUIRED','CODE');queue.splice(n,1);continue;}
+      if(ids.has(item.prepared.primaryId)){n++;continue;}
+      ids.add(item.prepared.primaryId);items.push(item);queue.splice(n,1);
+    }
+    if(!items.length){S.save(root,STATE,state);continue;}
+    let tx;
     try {
-      const tx=await T.submit({root,privateDir,state,jobs:[item.prepared],runId,deps});
-      if(T.pending(tx,root)) {
+      tx=await T.submit({root,privateDir,state,jobs:items.map(i=>i.prepared),runId,deps,
+        onInvalid:(job,error)=>exception(state,state.items[job.itemKey],error.message,'CODE')});
+      if(tx&&T.pending(tx,root)) {
         await T.reconcile({root,privateDir,state,tx,deps});
-        if(T.pending(tx,root))state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
+        if(T.pending(tx,root))state.exceptions['tx:'+tx.requestId]={owner:'CODE',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
       }
-    } catch(e) {exception(state,item,e.message,'CODE');if(e.message==='LIVE_WRITER_GATE')break;}
+    } catch(e) {
+      for(const item of items) {
+        // A checkpoint may exist even if submit never returned. Preserve its
+        // original item status/fence and reconcile it, never resubmit its rows.
+        if(item.transactionId)state.exceptions['tx:'+item.transactionId]={owner:'CODE',requestId:item.transactionId,reason:e.message};
+        else exception(state,item,e.message,'CODE');
+      }
+      if(e.message==='LIVE_WRITER_GATE'){S.save(root,STATE,state);break;}
+    }
+    S.save(root,STATE,state);
   }
 }
 async function processReturnedEvidence({root,privateDir,state,snapshot,apply,runId,deps,select=()=>true,sourceVerify=Source.verify}) {
