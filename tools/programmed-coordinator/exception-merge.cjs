@@ -66,10 +66,18 @@ function mergeCase(root,b,l,r,now){
 }
 function dispatchEvidence(root,work,cursor,now){
  const c=work.cases[cursor?.exceptionId];
- if(!c||keys(cursor).sort().join(',')!==['lastServedKind','lastReviewedKind','exceptionId','sourceVersion','observedAt','reviewedAt','basis','artifactSizeOnly'].sort().join(',')||cursor.artifactSizeOnly!==true||cursor.sourceVersion!==c.binding.sourceVersion||cursor.lastServedKind!==c.kind||cursor.lastReviewedKind!==c.kind||cursor.observedAt!==cursor.reviewedAt)fail();
- const rec=review(root,c,now);if(rec.reviewedAt!==cursor.observedAt)fail();
- if(cursor.basis==='SOURCE_BOUND_ATTEMPT'){attempt(root,c,now);if(c.lastAttempt.observedAt!==cursor.observedAt)fail();}
- else if(cursor.basis!=='ACCEPTED_IMMUTABLE_REVIEW')fail();
+ if(!c||keys(cursor).sort().join(',')!==['lastServedKind','lastReviewedKind','exceptionId','sourceVersion','observedAt','reviewedAt','basis','artifactSizeOnly'].sort().join(',')||cursor.artifactSizeOnly!==true||cursor.sourceVersion!==c.binding.sourceVersion||cursor.lastServedKind!==c.kind)fail();
+ if(cursor.basis==='SOURCE_BOUND_ATTEMPT'){
+  attempt(root,c,now);if(c.lastAttempt.observedAt!==cursor.observedAt||!time(cursor.reviewedAt)||Date.parse(cursor.reviewedAt)>Date.parse(cursor.observedAt))fail();
+  // advanceAttempts changes service fields but retains the last accepted
+  // review's kind/time, which may belong to a different case. Prove both
+  // independently instead of requiring an attempt to also be a review.
+  const reviewed=Object.values(work.cases).filter(item=>item.kind===cursor.lastReviewedKind&&item.review?.reviewedAt===cursor.reviewedAt);
+  if(!reviewed.length)fail();for(const item of reviewed)review(root,item,now);
+ }else if(cursor.basis==='ACCEPTED_IMMUTABLE_REVIEW'){
+  if(cursor.lastReviewedKind!==c.kind||cursor.observedAt!==cursor.reviewedAt)fail();
+  const rec=review(root,c,now);if(rec.reviewedAt!==cursor.observedAt)fail();
+ }else fail();
 }
 function mergeDispatch(root,base,left,right,now){
  const b=base.dispatch,l=left.dispatch,r=right.dispatch;

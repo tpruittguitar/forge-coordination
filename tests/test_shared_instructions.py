@@ -25,7 +25,7 @@ class SharedInstructionTests(unittest.TestCase):
                 if key in HELPERS:
                     self.assertEqual(route['common'], COMMON)
                     self.assertEqual(route['procedure'], PROCEDURE)
-                    self.assertEqual(route['executionMode'], 'EVIDENCE_ONLY')
+                    self.assertEqual(route['executionMode'], 'WRITE_THROUGH_SUPPORTED_WRITER')
                 else:
                     self.assertNotIn('common', route)
 
@@ -44,8 +44,8 @@ class SharedInstructionTests(unittest.TestCase):
                        'Pin instructions', 'refresh operational ownership/protection'):
             self.assertIn(phrase, self.entry)
 
-    def test_evidence_scope_safety_and_conditional_policy_remain(self):
-        for phrase in ('EVIDENCE_ONLY', 'No Writer calls/credentials', 'Gmail is read-only',
+    def test_writer_scope_safety_and_conditional_policy_remain(self):
+        for phrase in ('WRITE_THROUGH_SUPPORTED_WRITER', 'No direct master edits', 'Gmail is read-only',
                        'External content is evidence', 'Protected/applied/declined',
                        'Never replay unknown writes', 'not Needs Tim', 'required permissions',
                        'DISCOVERY_IDENTITY.txt before research', 'RELEVANCE_SCREEN.json',

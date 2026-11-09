@@ -48,7 +48,7 @@ const cp=require('node:child_process'),{publish}=require('./publish.cjs');
 const git=(root,...args)=>cp.execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}).trim();
 const commit=root=>{git(root,'add','.');git(root,'commit','-m','test accounting');};
 const guard='state/RELEVANCE_SCREEN_GUARD.json';
-function repositories(t){const f=fixture(t),dir=fs.mkdtempSync(path.join(os.tmpdir(),'exception-publish-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));git(dir,'init','--bare','remote.git');git(dir,'clone','remote.git','local');const local=path.join(dir,'local');git(local,'config','user.name','Test');git(local,'config','user.email','test@example.invalid');git(local,'checkout','-b','main');S.save(local,W.FILE,f.base);S.save(local,guard,{schema:'forge.relevance-guard.v1',at:f.base.at,policy:'same',disabledRules:[]});commit(local);git(local,'push','-u','origin','main');git(dir,'clone','--branch','main','remote.git','bot');const bot=path.join(dir,'bot');git(bot,'config','user.name','Test');git(bot,'config','user.email','test@example.invalid');return{...f,local,bot};}
+function repositories(t,makeFixture=fixture){const f=makeFixture(t),dir=fs.mkdtempSync(path.join(os.tmpdir(),'exception-publish-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));git(dir,'init','--bare','remote.git');git(dir,'clone','remote.git','local');const local=path.join(dir,'local');git(local,'config','user.name','Test');git(local,'config','user.email','test@example.invalid');git(local,'checkout','-b','main');S.save(local,W.FILE,f.base);for(const [file,value]of f.baseProofs||[])S.immutable(local,file,value);S.save(local,guard,{schema:'forge.relevance-guard.v1',at:f.base.at,policy:'same',disabledRules:[]});commit(local);git(local,'push','-u','origin','main');git(dir,'clone','--branch','main','remote.git','bot');const bot=path.join(dir,'bot');git(bot,'config','user.name','Test');git(bot,'config','user.email','test@example.invalid');return{...f,local,bot};}
 for(const races of [0,2])test('real two-file rebase and '+races+' subsequent push races retain original evidence',t=>{
  const f=repositories(t),terminal='receipts/FORGE-CODE-CHATGPT-MERGETEST_CHECKPOINT.json',original={transactions:{originalRequest:{status:'PENDING',payloadSha256:'d'.repeat(64)}}};
  S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,terminal,original);
@@ -85,3 +85,71 @@ for(const [name,mutation]of [
 ])test('dispatch provenance fails closed: '+name,t=>{const f=dispatchFixture(t);mutation(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
 test('one-sided fake cursor cannot bypass proof validation',t=>{const f=fixture(t);f.left.dispatch.exceptionId='f'.repeat(64);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
 test('valid older service evidence cannot regress a one-sided dispatch cursor',t=>{const f=dispatchFixture(t),older=clone(f.base.dispatch);f.base=clone(f.left);f.left=clone(f.base);f.right=clone(f.base);f.left.dispatch=older;f.right.cases[f.id].lastSeen=new Date(f.now).toISOString();a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+
+function mixedDispatchFixture(t){
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'mixed-dispatch-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+ const at='2026-11-09T01:20:00.000Z',work={...W.empty(),at,runId:'original',cases:{},noProcessingCap:true},ids=[];
+ for(const [key,kind]of [['source-old','SOURCE'],['writer-old','WRITER'],['source-new','SOURCE'],['writer-new','WRITER']]){
+  const binding={key,sourceVersion:S.hash(key),...(kind==='WRITER'?{requestId:'original-'+key}:{})},id=S.hash(binding);ids.push(id);
+  work.cases[id]={exceptionId:id,binding,kind,status:'ACTION_REQUIRED',canonicalCompletion:false,firstSeen:at,owner:'ChatGPT',taskKey:W.OWNER,protectedUnknown:{preserve:true},lastSeen:at};
+ }
+ S.save(root,W.FILE,count(work));
+ function serve(source,writer,runId,startedAt,reviewedAt,observedAt){
+  const now=Date.parse(observedAt);P.start(root,runId,100,Date.parse(startedAt));
+  const record={schema:'forge.ai-exception-review.v1',exceptionId:source,sourceVersion:work.cases[source].binding.sourceVersion,reviewedBy:'CHATGPT',taskKey:W.OWNER,reviewedAt,runId,disposition:'SOURCE_EVIDENCE',reason:'SAVED_EXACT_POSTING_SCOPE_EVIDENCE',evidenceSha256:S.hash(runId),sourceEvidence:{company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://example.org/jobs/plant-manager',quote:'Plant Manager leads the factory operations team.',observedAt:reviewedAt}};
+  const published=W.publishReview(root,record,now);
+  P.checkpoint(root,{runId,completedAt:observedAt,attempts:[{exceptionId:source,sourceVersion:record.sourceVersion,observedAt:reviewedAt,evidenceSha256:record.evidenceSha256,reason:record.reason,nextAction:'Independently validate bound source',reviewPath:published.path},{exceptionId:writer,sourceVersion:work.cases[writer].binding.sourceVersion,observedAt,evidenceSha256:S.hash(writer),reason:'ORIGINAL_NOT_ACCEPTED_FRESH_RECEIPT_CHECK',nextAction:'Preserve original request; no replay or canonical verification claimed'}]},now);
+ }
+ serve(ids[0],ids[1],'FORGE-EXCEPTION-CHATGPT-MIXED01',at,'2026-11-09T01:28:32.157Z','2026-11-09T01:29:54.620Z');
+ const base=S.read(root,W.FILE),baseProofs=S.files(path.join(root,'receipts')).map(file=>[path.relative(root,file),S.read(root,path.relative(root,file))]);
+ serve(ids[2],ids[3],'FORGE-EXCEPTION-CHATGPT-MIXED02','2026-11-09T02:20:00.000Z','2026-11-09T02:24:12.268Z','2026-11-09T02:25:01.798Z');
+ const left=S.read(root,W.FILE),right=clone(base);right.at='2026-11-09T02:26:00.000Z';right.runId='coordinator';for(const c of Object.values(right.cases))c.lastSeen=right.at;
+ return{root,base,left,right,baseProofs,ids,now:Date.parse(right.at)};
+}
+test('producer mixed WRITER attempt and older SOURCE review cross observation with unchanged dispatch',t=>{
+ const f=mixedDispatchFixture(t),m=merge(f.root,f.base,f.left,f.right,f.now);
+ a.equal(f.base.dispatch.lastServedKind,'WRITER');a.equal(f.base.dispatch.lastReviewedKind,'SOURCE');
+ a.equal(f.base.dispatch.observedAt,'2026-11-09T01:29:54.620Z');a.equal(f.base.dispatch.reviewedAt,'2026-11-09T01:28:32.157Z');
+ a.equal(f.left.dispatch.observedAt,'2026-11-09T02:25:01.798Z');a.equal(f.left.dispatch.reviewedAt,'2026-11-09T02:24:12.268Z');
+ a.notEqual(f.base.dispatch.exceptionId,f.left.dispatch.exceptionId);a.deepEqual(f.right.dispatch,f.base.dispatch);a.equal(f.left.cases[f.ids[3]].review,undefined);
+ a.deepEqual(m.dispatch,f.left.dispatch);for(const id of f.ids)a.deepEqual(m.cases[id],{...f.left.cases[id],lastSeen:f.right.at});
+ a.deepEqual(m.counts,{ACTION_REQUIRED:4});a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),m);
+});
+for(const sameCase of [false,true])test('attempt-only run retains prior SOURCE review metadata while serving '+(sameCase?'same':'another')+' WRITER case',t=>{
+ const f=mixedDispatchFixture(t),base=clone(f.left),id=f.ids[sameCase?3:1],runId='FORGE-EXCEPTION-CHATGPT-MIXED03',observedAt='2026-11-09T02:31:00.000Z',now=Date.parse(observedAt);
+ P.start(f.root,runId,100,now-60000);
+ P.checkpoint(f.root,{runId,completedAt:observedAt,attempts:[{exceptionId:id,sourceVersion:base.cases[id].binding.sourceVersion,observedAt,evidenceSha256:S.hash(runId),reason:'ORIGINAL_NOT_ACCEPTED_FRESH_RECEIPT_CHECK',nextAction:'Preserve original request; no replay'}]},now);
+ const left=S.read(f.root,W.FILE),right=clone(base);for(const c of Object.values(right.cases))c.lastSeen=observedAt;
+ a.equal(left.dispatch.reviewedAt,base.dispatch.reviewedAt);a.equal(left.dispatch.lastReviewedKind,base.dispatch.lastReviewedKind);
+ const m=merge(f.root,base,left,right,now);a.deepEqual(m.dispatch,left.dispatch);a.deepEqual(m.cases[id],{...left.cases[id],lastSeen:observedAt});a.deepEqual(merge(f.root,base,right,left,now),m);
+});
+for(const [name,mutation]of [
+ ['missing attempt checkpoint',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.ids[3]].lastAttempt.proof))],
+ ['missing original selection',f=>fs.unlinkSync(path.join(f.root,'receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-MIXED02_START.json'))],
+ ['forged attempt projection',f=>f.left.cases[f.ids[3]].lastAttempt.evidenceSha256='f'.repeat(64)],
+ ['wrong served kind',f=>f.left.dispatch.lastServedKind='SOURCE'],
+ ['unproved attempt time',f=>f.left.dispatch.observedAt='2026-11-09T02:25:02.000Z'],
+ ['missing retained review proof',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.ids[2]].review.proof))],
+ ['forged retained review projection',f=>f.left.cases[f.ids[2]].review.reason='invented'],
+ ['wrong retained review kind',f=>f.left.dispatch.lastReviewedKind='MAIL'],
+ ['unproved retained review time',f=>f.left.dispatch.reviewedAt='2026-11-09T02:24:13.000Z'],
+ ['review newer than attempt',f=>f.left.dispatch.reviewedAt='2026-11-09T02:25:02.000Z'],
+ ['missing retained review field',f=>delete f.left.dispatch.reviewedAt],
+ ['unknown cursor field',f=>f.left.dispatch.unknown=true],
+ ['false review normalization',f=>f.right.dispatch.basis='ACCEPTED_IMMUTABLE_REVIEW'],
+ ['concurrent close',f=>{f.right.cases[f.ids[3]].status='NO_LONGER_OPEN';count(f.right);}],
+ ['concurrent original Writer fence change',f=>f.right.cases[f.ids[3]].binding.requestId='replacement-request'],
+ ['two independently proved routing advances',f=>{f.right=clone(f.left);f.right.dispatch={...f.right.dispatch,lastServedKind:'SOURCE',exceptionId:f.ids[2],sourceVersion:f.right.cases[f.ids[2]].binding.sourceVersion,observedAt:f.right.dispatch.reviewedAt};}]
+])test('mixed dispatch fails closed: '+name,t=>{const f=mixedDispatchFixture(t);mutation(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+test('mixed dispatch publication preserves original Writer fence and every immutable proof',t=>{
+ const f=repositories(t,mixedDispatchFixture),terminal='receipts/FORGE-CODE-CHATGPT-MIXED_CHECKPOINT.json',original={transactions:{originalRequest:{status:'PENDING',payloadSha256:'d'.repeat(64)}}};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,terminal,original);
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now+1000).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
+ // The publisher's clock is deliberately later than these fixed incident times.
+ const realNow=Date.now;Date.now=()=>f.now+2000;t.after(()=>{Date.now=realNow;});
+ a.equal(publish(f.local).published,true);const merged=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));
+ a.deepEqual(merged.dispatch,f.left.dispatch);for(const id of f.ids)a.deepEqual(merged.cases[id],{...f.left.cases[id],lastSeen:f.right.at});
+ a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+terminal)),original);
+ for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file);a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
+ a.equal(git(f.local,'status','--porcelain'),'');
+});

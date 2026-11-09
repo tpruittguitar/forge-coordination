@@ -80,7 +80,7 @@ async function collectFeed({feed,root,privateDir,state,commit,save=()=>{},ingest
   seen.add(page.nextCursor);cursor=page.nextCursor;state.cursors[cursorKey]=cursor;await save();
  }
 }
-function scanInboxes({root,privateDir,state,commit,inboxes=[],python=process.env.FORGE_PYTHON||'python',validate}){
+function scanInboxes({root,privateDir,state,commit,inboxes=[],python=process.env.FORGE_PYTHON||'python',validate,acceptBatch=()=>true}){
  let imported=0;
  for(const inbox of inboxes){
   if(!path.isAbsolute(inbox.directory))throw Error('ABSOLUTE_INBOX_REQUIRED');
@@ -94,10 +94,11 @@ function scanInboxes({root,privateDir,state,commit,inboxes=[],python=process.env
    if(state.artifacts[artifactId]?.sha256===sha&&state.artifacts[artifactId].status==='COLLECTED'&&state.artifacts[artifactId].checkedAgainst===commit)continue;
    try{
     const reports=/\.zip$/i.test(entry.name)?JSON.parse(cp.execFileSync(python,[path.join(__dirname,'artifact-reader.py'),filename],{encoding:'utf8',maxBuffer:70e6,windowsHide:true})): [{name:entry.name,text:fs.readFileSync(filename,'utf8')}];
-    let batchCount=0;
+    let batchCount=0,recognized=0;
     for(const report of reports){
      S.immutable(privateDir,'helper-reports/'+S.hash(report.text)+'.txt.json',{text:report.text});
-     const parsed=batches(report.text);
+     const all=batches(report.text);recognized+=all.length;
+     const parsed=all.filter(x=>acceptBatch(x.value));
      // Identity is derived only from a complete envelope and cross-checked
      // against the current registry. No prose-derived routing is accepted.
      const tasks=new Set(parsed.map(x=>x.value.taskKey));
@@ -107,7 +108,7 @@ function scanInboxes({root,privateDir,state,commit,inboxes=[],python=process.env
       const result=ingest({root,privateDir,state,text:subset.map(x=>x.raw).join('\n'),source:{id:sha+':'+report.name+':'+taskKey,provider,taskKey,complete:true},commit,validate});imported+=result.imported;
      }
     }
-    if(!batchCount)throw Error('NO_COMPLETE_BATCH_IN_ARTIFACT');
+    if(!batchCount){if(recognized)continue;throw Error('NO_COMPLETE_BATCH_IN_ARTIFACT');}
     state.artifacts[artifactId]={sha256:sha,status:'COLLECTED',checkedAgainst:commit};delete state.exceptions[artifactId];
    }catch(e){state.artifacts[artifactId]={sha256:sha,status:'PENDING_CORRECTION'};state.exceptions[artifactId]={owner:'CODE',reason:/^[A-Z][A-Z0-9_]{3,100}$/.test(e.message||'')?e.message:'REPORT_ARTIFACT_READ_FAILED',errorSha256:S.hash(e.message)};}
   }

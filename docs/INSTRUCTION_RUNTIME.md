@@ -52,7 +52,7 @@ Still required: actual scheduled-runtime acceptance, live throughput measurement
 
 A unique proven canonical match is `PRESENT`/`SKIP_EXISTING`, removed from the discovery worksheet/intake backlog before source research, relevance review, enrichment or Writer submission. Retain aliases/history and minimal row-hash proof; delete no canonical job or historical evidence. `EXISTING_SKIPPED` is separate from `IDENTITY_HELD` and new/submitted jobs. Real identity conflicts and independent unresolved original Writer attempts remain obligations. Presence never verifies or replays an original request, and only genuinely new roles reach Writer's live dedupe/protection gates. Snapshot/index benchmarks are local processing measurements, not network or native adoption proof.
 
-The registered email identity currently routes to `lanes/CHATGPT_INTAKE_INSPECTION.txt`; changing only the historical full email packet would miss active coordination. Intake-drain and evidence-only helper procedures stop repeat research and leave shared accounting/reservation changes to the authorized coordinator. Existing runtime release directories remain immutable, and regeneration alone changes no schedules, permissions, ownership or deployment.
+The registered email identity currently routes to `lanes/CHATGPT_INTAKE_INSPECTION.txt`; changing only the historical full email packet would miss active coordination. Intake-drain and helper procedures stop repeat research and send usable details directly through their supported locked Writer adapters, leaving shared accounting/reservation changes to those adapters. Existing runtime release directories remain immutable, and regeneration alone changes no schedules, permissions, ownership or deployment.
 
 ## Rollout and rollback
 
@@ -80,8 +80,8 @@ All six active Codex Forge automations now launch through control/FORGE_SHARED_A
 
 The two shared-helper routes now select `task.common = policy/current/SHARED_HELPER_COMMON.txt`.
 The shared entry reads that contract **instead of** the registry default, not in addition to it.
-All other routes retain `policy/current/AI_AUTOMATION_COMMON.txt`. Ownership, assigned work,
-Writer duties and native schedules are unchanged. The collector resolves historical and current
+All other routes retain `policy/current/AI_AUTOMATION_COMMON.txt`. Ownership, assigned work and
+native schedules are unchanged. The November 9 [direct-processing contract](DIRECT_WRITER_PROCESSING.md) now requires ready details to enter the supported locked Writer path without a routine manual relay or PR dependency. The collector resolves historical and current
 selected contracts separately, retaining pre-split evidence while requiring current-policy rechecks.
 A missing selected contract fails; it never silently loads a different one.
 

@@ -1,4 +1,5 @@
-param([Parameter(Mandatory=$true)][string]$ConfigFile)
+param([Parameter(Mandatory=$true)][string]$ConfigFile, [switch]$ReturnsOnly, [string]$Batch)
+if ($Batch -and -not $ReturnsOnly) { throw 'Batch requires -ReturnsOnly' }
 $ErrorActionPreference = 'Stop'
 $config = Get-Content -LiteralPath $ConfigFile -Raw | ConvertFrom-Json
 foreach ($name in @('repositoryDirectory','cockpitDirectory','connectionFile','privateDirectory','productionLock')) {
@@ -45,7 +46,10 @@ try {
         & node tools/programmed-coordinator/publish.cjs $repo --check-retained
         if ($LASTEXITCODE -ne 0) { throw 'Retained checkout requires code or merge reconciliation' }
     }
-    & node tools/programmed-coordinator/run.cjs apply
+    $runArguments = @('tools/programmed-coordinator/run.cjs', 'apply')
+    if ($ReturnsOnly) { $runArguments += '--returns-only' }
+    if ($Batch) { $runArguments += @('--batch', $Batch) }
+    & node @runArguments
     $runExit = $LASTEXITCODE
 } finally {
     # Publication, including failure recording, cannot prevent lock release.

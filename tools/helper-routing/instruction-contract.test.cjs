@@ -39,3 +39,19 @@ test('selected contract references cannot escape policy or be malformed',t=>{
   a.throws(f.run,/INVALID_COMMON_CONTRACT/);
  }
 });
+test('same-owner evidence-only returns survive the explicit supported write-through transition without prior write authority',t=>{
+ const f=fixture(t);f.batch.items[0].writerSubmitted=false;f.now.tasks[TASK].executionMode='WRITE_THROUGH_SUPPORTED_WRITER';S.save(f.root,'control/AI_AUTOMATION_TASKS.json',f.now);
+ const proof=f.run();a.equal(proof.writeThroughEvidenceMigration,true);a.equal(proof.contractChanged,true);a.equal(proof.currentPolicyRecheckRequired,true);
+ f.batch.items[0].writerSubmitted=true;a.throws(f.run,/STALE_TASK_ROUTING/);
+});
+test('write-through migration never excuses retired routes, changed ownership or the reverse transition',t=>{
+ for(const change of ['owner','procedure','assignment','retired','reverse']){
+  const f=fixture(t);f.batch.items[0].writerSubmitted=false;f.now.tasks[TASK].executionMode='WRITE_THROUGH_SUPPORTED_WRITER';
+  if(change==='owner')f.now.tasks[TASK].owner='Grok';
+  if(change==='procedure')f.now.tasks[TASK].procedure='lanes/OTHER.txt';
+  if(change==='assignment')f.now.tasks[TASK].workAssignments='control/OTHER.json';
+  if(change==='retired')S.save(f.root,'control/CHATGPT_OWNER_CUTOVER.json',{retired:[{taskKey:TASK,assignmentId:'OLD'}]});
+  if(change==='reverse'){const old=JSON.parse(f.files.get('control/AI_AUTOMATION_TASKS.json'));old.tasks[TASK].executionMode='WRITE_THROUGH_SUPPORTED_WRITER';f.files.set('control/AI_AUTOMATION_TASKS.json',JSON.stringify(old));f.now.tasks[TASK].executionMode='EVIDENCE_ONLY';}
+  S.save(f.root,'control/AI_AUTOMATION_TASKS.json',f.now);a.throws(f.run,/STALE_TASK_ROUTING/,change);
+ }
+});

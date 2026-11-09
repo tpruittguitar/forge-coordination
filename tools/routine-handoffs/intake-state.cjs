@@ -27,10 +27,10 @@ function original(root,item,work,cache=new Map()){
  if(!cache.has(item.batch)){const batch=S.read(root,item.batch);H.validateBatch(batch,work);cache.set(item.batch,batch);}
  const source=cache.get(item.batch).items.find(i=>i.key===item.key);if(!source)throw Error('Missing immutable helper item');return source;
 }
-function seedVerified(root,state,apply){
+function seedVerified(root,state,apply,select=()=>true){
  const intake=load(root),keys=new Set(intake.items.map(i=>i.key));let seeded=0;
  for(const i of Object.values(state.items)){
-  if(i.status!=='SOURCE_VERIFIED'||state.batches[i.batch]?.status!=='VALIDATED'||keys.has(i.itemKey)||/ENRICHMENT|OUTCOME/.test(i.taskKey))continue;
+  if(!select(i)||i.status!=='SOURCE_VERIFIED'||state.batches[i.batch]?.status!=='VALIDATED'||keys.has(i.itemKey)||/ENRICHMENT|OUTCOME/.test(i.taskKey))continue;
   intake.items.push({key:i.itemKey,provider:'CODE',provenance:'PROGRAMMED_SOURCE_VERIFIED',coordinatorKey:i.key,sourceVersion:i.version,batch:i.batch,helperRunId:S.read(root,i.batch).runId,sourceEvidence:i.sourceEvidence,status:'RETURNED_PENDING_SCREEN'});keys.add(i.itemKey);seeded++;
  }
  if(apply&&seeded)save(root,intake);return{seeded};

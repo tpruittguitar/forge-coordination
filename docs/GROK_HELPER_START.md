@@ -1,4 +1,6 @@
-# Grok helpers — Tim 2026-11-01
+# Grok helpers — historical November 1 setup
+
+CURRENT STATUS: The legacy intake, enrichment and outcome routes below are retired. Do not execute these historical launchers or reactivate their schedules. Use only the separately authorized [shared helper route](SHARED_HELPERS.md), whose current [direct Writer contract](DIRECT_WRITER_PROCESSING.md) preserves all current assignments and gates. The remaining text records historical setup, not current authorization.
 
 Two evidence-only utilities are registered in the common automation registry. ChatGPT retains local coordination, all canonical Writer updates/verification and calendar/outcome persistence. No native schedule or automatic handback was created. The existing usage-reader schedule is unchanged.
 
