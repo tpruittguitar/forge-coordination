@@ -1,0 +1,41 @@
+{
+  "runId": "FORGE-EMAIL-CHATGPT-20261109T100142Z",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_EMAIL_DISCOVERY",
+  "instructionCommit": "6dd52d18c9d31c7ec61c17577d71b78737ec6775",
+  "at": "2026-11-09T10:03:23.915Z",
+  "status": "BLOCKED_RETAINED_ACCOUNTING_PUBLICATION",
+  "nativeReadbackAt": "2026-11-09T10:02:13.201597Z",
+  "scheduledCoordinator": {
+    "state": "Ready",
+    "lastRunUTC": "2026-11-09T10:00:23.0000000Z",
+    "lastResult": 0,
+    "nextRunUTC": "2026-11-09T10:05:22.0000000Z",
+    "caveat": "Scheduler result does not prove successful processing; private before/after AUDIT_PENDING failures observed at 10:00 and prior 09:55 run."
+  },
+  "reportAt": "2026-11-09T08:25:28.909Z",
+  "reportStatuses": {
+    "EXCEPTION": 900,
+    "VERIFIED": 37,
+    "PROTECTED_SKIP": 7,
+    "NO_MISSING_SUPPORTED_FIELDS": 7,
+    "POST_IN_FLIGHT_UNKNOWN": 4
+  },
+  "manualRecovery": {
+    "invokedSupportedLauncher": true,
+    "exitCode": 1,
+    "errors": [
+      "Unexpected changed accounting path; preserve checkout and lock",
+      "Unexpected retained checkout changes",
+      "Retained checkout requires code or merge reconciliation"
+    ],
+    "lockAcquired": true,
+    "lockReleased": true,
+    "masterSubmitted": 0
+  },
+  "retained": "All live checkout changes, unpublished receipts, temporary report, private captures, original requests, coverage gaps and pending work preserved. No replay, source bridge duplication, code edits or schedule changes.",
+  "owner": "FORGE_APPLICATION_WRITER_GOFER_AND_CODE_COORDINATOR",
+  "nextAction": "Reconcile retained accounting paths using current supported publisher; verify publication before resuming production. Do not reset the dirty worker checkout or replay writes.",
+  "inspectionEvidence": "Private intake-inspection-20261109T100142Z.json",
+  "executionVerified": false
+}
