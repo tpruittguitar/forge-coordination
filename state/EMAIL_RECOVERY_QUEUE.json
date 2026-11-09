@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-09T04:55:53.209Z",
+  "at": "2026-11-09T05:53:04.000Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -39412,6 +39412,45 @@
         ],
         "unseenHistoricalCoverage": "UNPROVEN"
       }
+    },
+    "1a1bede093ef0516": {
+      "gmailId": "1a1bede093ef0516",
+      "url": "https://www.linkedin.com/jobs/view/4486673565/",
+      "advertisedUnseen": 0,
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "linkedin:4486673565",
+        "linkedin:4214364255",
+        "linkedin:4461194452",
+        "linkedin:4480692150",
+        "linkedin:4485577146",
+        "linkedin:4487623900"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "advertisedCountIsNotUniqueJobs": true,
+      "nextPageRequired": false,
+      "exhausted": false,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8",
+        "at": "2026-11-09T06:27:55.174Z",
+        "originalDate": "2026-11-09T05:53:04.000Z",
+        "visibleKeys": [
+          "linkedin:4486673565",
+          "linkedin:4214364255",
+          "linkedin:4461194452",
+          "linkedin:4480692150",
+          "linkedin:4485577146",
+          "linkedin:4487623900"
+        ],
+        "newKeys": [
+          "linkedin:4486673565",
+          "linkedin:4487623900"
+        ],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
     }
   },
   "jobs": {
@@ -58786,7 +58825,8 @@
         "1a19f8a08eb347d5",
         "1a1a8fb0bf0ecbd5",
         "1a1a8fb030dc5f1e",
-        "1a1a8faff2276b26"
+        "1a1a8faff2276b26",
+        "1a1bede093ef0516"
       ],
       "evidence": [
         {
@@ -58920,6 +58960,19 @@
           ],
           "source": "FULL_ORIGINAL_ALERT",
           "sourceSha256": "c9fbe7a9f7bc3ff21cb649bccb0bf5360f4a7fdc09b84351aefd7f29eaa4236f"
+        },
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "959da5e25c1f03b49701735765a455a8164c0bbaf1ecfbb86d661cd5df74cefa",
+          "paragraphs": [
+            "Plant Manager",
+            "KnowHireMatch",
+            "Defiance, OH"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
         }
       ],
       "disposition": {
@@ -58964,7 +59017,70 @@
           "observedAt": "2026-11-01T09:45:41.953Z",
           "classification": "EXACT_SOURCE_QUOTE_NOT_EMPLOYER_VERIFIED"
         }
-      ]
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "plant"
+              ],
+              "postingQuotes": [
+                "Plant Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4214364255/",
+          "sourceIdentity": {
+            "company": "KnowHireMatch",
+            "title": "Plant Manager",
+            "location": "Defiance, OH"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4214364255/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
     },
     "linkedin:4482885749": {
       "key": "linkedin:4482885749",
@@ -64251,7 +64367,8 @@
         "1a156953e692bbed",
         "1a157031fdea5d11",
         "1a1569547e22886a",
-        "1a1569541762d261"
+        "1a1569541762d261",
+        "1a1bede093ef0516"
       ],
       "evidence": [
         {
@@ -64318,6 +64435,19 @@
             "1 benefit",
             "Posted 1 week ago\n1 week ago"
           ]
+        },
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "bc10fc6a45a2032272f9fb1ccb1165ce14d131d93d18ec576e770d1a14cc1c66",
+          "paragraphs": [
+            "Operations Readiness Director",
+            "the LEGO Group",
+            "Richmond, VA"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
         }
       ],
       "disposition": {
@@ -64328,6 +64458,58 @@
         "receiptState": "COMPLETE",
         "exactRowVerified": true,
         "rowSha256": "ae4203c37676cad856f6fa67cb97d51e6e0046ee9c331bf76ddbe34a5d8771a1"
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4461194452/",
+          "sourceIdentity": {
+            "company": "the LEGO Group",
+            "title": "Operations Readiness Director",
+            "location": "Richmond, VA"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4461194452/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     },
     "linkedin:4467714841": {
@@ -293243,7 +293425,8 @@
         "1a193f3b4f2eb956",
         "1a1a3d4d607f1b19",
         "1a1a3d4a8045623f",
-        "1a1a3d4a463221f6"
+        "1a1a3d4a463221f6",
+        "1a1bede093ef0516"
       ],
       "evidence": [
         {
@@ -293433,6 +293616,19 @@
           ],
           "source": "FULL_ORIGINAL_ALERT",
           "sourceSha256": "1dff2207e26a8083dd4fa58ab7f8d71697d584f216f117deff5a61e65c1e756d"
+        },
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "2a6e4813953927cd955237729df196eb47b913b585b8cc8483e844f9627d60d6",
+          "paragraphs": [
+            "Plant General Manager",
+            "Philips Recruiting Services / Philips Automotive Recruiting",
+            "Lexington, KY"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
         }
       ],
       "workArrangement": "On-site",
@@ -293493,6 +293689,69 @@
           "V2F-F5110AF4C8A3"
         ],
         "noReplay": true
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "plant"
+              ],
+              "postingQuotes": [
+                "Plant General Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4480692150/",
+          "sourceIdentity": {
+            "company": "Philips Recruiting Services / Philips Automotive Recruiting",
+            "title": "Plant General Manager",
+            "location": "Lexington, KY"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4480692150/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     },
     "linkedin:4480993824": {
@@ -489982,7 +490241,8 @@
         "1a1b35ffe9f76232",
         "1a1b86e1bd5bab47",
         "1a1b86e19e8c9f41",
-        "1a1b86e172bd28dd"
+        "1a1b86e172bd28dd",
+        "1a1bede093ef0516"
       ],
       "evidence": [
         {
@@ -490062,11 +490322,24 @@
           ],
           "source": "FULL_ORIGINAL_ALERT",
           "sourceSha256": "85b5dd12287e3c894b88863ac07e21c968dcd9b568248cd6242c9adf5137434a"
+        },
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "ab1f4cae80c6c0fe900d4ea2710258f77ccc5c1449faadb273768716006a68da",
+          "paragraphs": [
+            "Manufacturing & Plant Operations Leader",
+            "L.V. Enterprises",
+            "Atlanta Metropolitan Area"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
         }
       ],
       "preliminaryScreen": {
         "schema": "forge.discovery-preliminary-screen.v1",
-        "checkedAt": "2026-11-08T08:27:14.866Z",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
         "ats": {
           "schema": "forge.resume-overlap.v1",
           "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
@@ -559247,6 +559520,166 @@
         "owner": "FORGE_INTAKE_SOURCE_RECOVERY",
         "sourceSha256": "e4d997209bf40f8ac40d68086e475554cf3473b1dcc580e4359cf65df449a082",
         "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:25447b6aff3aa6827fb788efe97181e59414c06a58c26fc5dd2c042364d6df93"
+      }
+    },
+    "linkedin:4486673565": {
+      "key": "linkedin:4486673565",
+      "jobId": "4486673565",
+      "title": "Director of Operations",
+      "company": "Ensign-Bickford Aerospace & Defense Company (EBAD)",
+      "location": "Graham, KY",
+      "url": "https://www.linkedin.com/jobs/view/4486673565/",
+      "observedAt": "2026-11-09T05:53:04.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1bede093ef0516"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "89a72c4c8dd3b401a0bcbbf08380b6bc887d39e2f9befc36cf3fdbdb4c668d53",
+          "paragraphs": [
+            "Director of Operations",
+            "Ensign-Bickford Aerospace & Defense Company (EBAD)",
+            "Graham, KY"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4486673565/",
+          "sourceIdentity": {
+            "company": "Ensign-Bickford Aerospace & Defense Company (EBAD)",
+            "title": "Director of Operations",
+            "location": "Graham, KY"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4486673565/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4487623900": {
+      "key": "linkedin:4487623900",
+      "jobId": "4487623900",
+      "title": "Sr Director, Operations Engineering",
+      "company": "Axiom",
+      "location": "San Jose, CA",
+      "url": "https://www.linkedin.com/jobs/view/4487623900/",
+      "observedAt": "2026-11-09T05:53:04.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1bede093ef0516"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1bede093ef0516",
+          "at": "2026-11-09T05:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4486673565/",
+          "cardHash": "a7f63e9518b49038baba8b88dcfbd5aa9807826da948fc9a7a68b6c45f2704a1",
+          "paragraphs": [
+            "Sr Director, Operations Engineering",
+            "Axiom",
+            "San Jose, CA"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "2d76f848783cb3383282350b2b1a99f9e94762b5132e94ef89d09ef08b7a6ff8"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-09T06:24:49.631Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487623900/",
+          "sourceIdentity": {
+            "company": "Axiom",
+            "title": "Sr Director, Operations Engineering",
+            "location": "San Jose, CA"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487623900/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     }
   },
