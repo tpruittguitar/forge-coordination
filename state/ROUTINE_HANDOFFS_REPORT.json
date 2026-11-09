@@ -1,8 +1,8 @@
 {
   "schema": "forge.routine-handoffs-report.v1",
-  "runId": "FORGE-CODE-CHATGPT-20261109T020524161Z",
-  "at": "2026-11-09T02:06:11.191Z",
-  "imported": 2,
+  "runId": "FORGE-CODE-CHATGPT-20261109T031524291Z",
+  "at": "2026-11-09T03:16:09.638Z",
+  "imported": 0,
   "reportFeeds": [
     {
       "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
@@ -40,12 +40,19 @@
     "schema": "forge.helper-delivery-repair.v1",
     "results": [
       {
-        "status": "RECORD_ADDED",
+        "status": "PENDING",
+        "captured": 0,
+        "sourceCommit": "affa91730e983dcf8cf48d275c7e02ea914ea90d",
+        "pendingArtifacts": [
+          {
+            "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261109T001526Z-B01.json",
+            "reason": "HELPER_PR_VALIDATION_REQUIRED",
+            "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+          }
+        ],
         "pullRequest": 317,
-        "record": "control/changes/chatgpt-20261109-helper-evidence-pr317.txt",
-        "captured": 1,
-        "sourceCommit": "c92e8b5c440ac36cb74d335b8bdf252c05acef0c",
-        "pendingArtifacts": []
+        "owner": "CODE",
+        "reason": "HELPER_ARTIFACTS_PENDING"
       },
       {
         "status": "RECORD_PRESENT",
@@ -574,11 +581,11 @@
     "noProcessingCap": true
   },
   "directHandoffs": {
-    "captured": 1,
+    "captured": 0,
     "pending": [],
     "noProcessingCap": true,
     "sourceCapture": {
-      "at": "2026-11-09T01:24:59.154Z",
+      "at": "2026-11-09T02:22:37.337Z",
       "pages": 1,
       "enumerationComplete": true,
       "failures": 0
@@ -589,7 +596,7 @@
     "failures": [
       {
         "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-        "at": "2026-11-09T02:06:08.989Z",
+        "at": "2026-11-09T03:16:07.280Z",
         "reason": "RUN_LIST_INACCESSIBLE"
       }
     ]
@@ -1032,8 +1039,20 @@
     },
     {
       "owner": "CODE",
+      "reason": "HELPER_ARTIFACTS_PENDING",
+      "pullRequest": 317,
+      "artifacts": [
+        {
+          "path": "receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-20261109T001526Z-B01.json",
+          "reason": "HELPER_PR_VALIDATION_REQUIRED",
+          "errorSha256": "a8693a3777c78b1215a27b4d7051d6fc51dda9d2b7c5942798cfbc61c8cb4a94"
+        }
+      ]
+    },
+    {
+      "owner": "CODE",
       "jobId": "40dc1e597edbeb905caf6d40b0b7a57ed3d742d2a420112e04537a01165a8f71",
-      "at": "2026-11-09T02:06:08.989Z",
+      "at": "2026-11-09T03:16:07.280Z",
       "reason": "RUN_LIST_INACCESSIBLE"
     }
   ],
