@@ -1,0 +1,71 @@
+{
+  "runId": "FORGE-EMAIL-CHATGPT-20261109T090712Z",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_EMAIL_DISCOVERY",
+  "instructionCommit": "532c5325f533dd9661d8edd00ed1e681810a5f0c",
+  "route": "utility",
+  "at": "2026-11-09T09:07:58.443Z",
+  "status": "INSPECTION_CHECKPOINTED_CODE_OWNS_PROCESSING",
+  "nativeReadbackAt": "2026-11-09T09:07:27.830169Z",
+  "nativeTask": {
+    "name": "FORGE_PROGRAMMED_COORDINATOR",
+    "state": "Running",
+    "lastRun": "2026-11-09T09:05:23Z",
+    "lastTaskResult": 2147946720,
+    "nextRun": "2026-11-09T09:10:22Z"
+  },
+  "productionLock": {
+    "owner": "FORGE-CODE-CHATGPT-20261109T083023628Z",
+    "at": "2026-11-09T08:30:23.668Z",
+    "preserved": true
+  },
+  "processObservation": {
+    "nodePid": 38092,
+    "startedAt": "2026-11-09T08:30:25.570920Z",
+    "commandLine": "node tools/programmed-coordinator/run.cjs apply",
+    "privateDiscoveryContextModifiedAt": "2026-11-09T08:40:24Z",
+    "latestOriginalAcceptanceObserved": "FORGE-CODE-CHATGPT-20261109T083023628Z-E00051",
+    "acceptanceFileModifiedAt": "2026-11-09T08:34:05Z"
+  },
+  "coordinatorReport": {
+    "runId": "FORGE-CODE-CHATGPT-20261109T075023588Z",
+    "at": "2026-11-09T08:25:28.909Z",
+    "statuses": {
+      "EXCEPTION": 900,
+      "VERIFIED": 37,
+      "PROTECTED_SKIP": 7,
+      "NO_MISSING_SUPPORTED_FIELDS": 7,
+      "POST_IN_FLIGHT_UNKNOWN": 4
+    },
+    "codeExceptions": 820,
+    "aiExceptions": 1233,
+    "coverage": {
+      "schema": "forge.email-recovery-summary.v1",
+      "at": "2026-11-09T08:25:04.162Z",
+      "sources": 370,
+      "accessRecovered": 370,
+      "accessBlocked": 0,
+      "sourcePagesPending": 0,
+      "sourcesWithPendingResults": 0,
+      "remainingPageCount": null,
+      "historicalGaps": 2,
+      "capturedUniqueJobs": 7819,
+      "awaitingIntake": 4497,
+      "pendingJobs": 4958,
+      "verifiedInserted": 1957,
+      "existing": 661,
+      "outOfScope": 243,
+      "coverageComplete": false,
+      "supersedesReceipt": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1504ET.json",
+      "sourceLedger": "state/EMAIL_RECOVERY_QUEUE.json"
+    }
+  },
+  "manualLaunch": false,
+  "manualLaunchReason": "Coordinator apply process active with existing production lock; no overlapping recovery warranted.",
+  "newCaptures": 0,
+  "masterSubmitted": 0,
+  "masterVerified": 0,
+  "requestsReplayed": 0,
+  "retained": "All original request fences, source cursors, returned artifacts and historical coverage gaps retained. Outcome tracker remains sole Gmail/Drive bridge.",
+  "notification": "Active processing and unresolved assigned exceptions; no new user decision established."
+}
