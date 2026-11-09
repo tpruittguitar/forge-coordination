@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-08T22:18:59.846Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-09T06:56:04.401Z from CANONICAL_WRITER_MASTER.
 
-Of 594 jobs waiting on Tim, 16 match a role he already applied to, was rejected from, or declined:
+Of 564 jobs waiting on Tim, 15 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 16
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 15
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (16)
+## Kept, labeled (15)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -27,14 +27,13 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 63 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
 | 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
 | 60 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
+| 60 | Shield AI | Staff Engineer, Manufacturing Equipment | You declined 2026-11-08 · this is a new posting | Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d | V2I-866FCD423820 → V2I-F555BB994A0E |
 | 59 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
 | 59 | L3Harris Technologies | Associate Manager, Manufacturing Engineering | You declined 2026-10-30 · different site | Different worksite: Malabar, FL vs earlier Huntsville, AL | V2I-FDB8B06FBD13 → V2I-B6E9763E305F |
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
-| 54 | CRH | Regional Quality Manager | You declined 2026-11-05 · different site | Different worksite: Atlanta, GA vs earlier Cullman, AL | V2I-CA7E3161DB1D → V2I-60CF84187F14 |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 48 | AMETEK | Senior Manager, Operations Excellence | You declined 2026-11-08 · different site | Different worksite: Mount Prospect, IL vs earlier Collegeville, PA | V2I-E4F08FE197F2 → V2I-45E0D9AFEC1D |
-| 45 | Jeeter - a DreamFields Brand | Associate Vice President, Manufacturing, Security & Facilities | You declined 2026-11-03 · different site | Different worksite: Desert Hot Springs, CA vs earlier Hazel Park, MI | V2I-D5C68DF0698E → V2I-18C8384D680F |
 
