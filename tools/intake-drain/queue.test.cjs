@@ -94,3 +94,11 @@ test('upstream source card and saved-card recovery preserve operating scope thro
  const {root,key}=fixture(t),up=S.read(root,'state/UPSTREAM_LEDGER.json');up.entries[key].p={REMOTE_HYBRID:'REMOTE',OPERATING_SCOPE:'MULTI_SITE',OPERATING_SCOPE_EVIDENCE:'Leads across facilities',ATS_POSTING_URL:'https://ats.example.com/1',REQ_ID:'REQ-1'};S.save(root,'state/UPSTREAM_LEDGER.json',up);
  const card=Q.sync(root,{now}).items[key].card;a.equal(card.REMOTE_HYBRID,'REMOTE');a.equal(card.OPERATING_SCOPE,'MULTI_SITE');a.equal(card.REQ_ID,'REQ-1');a.equal(card.ATS_POSTING_URL,'https://ats.example.com/1');
 });
+test('shared reservation blocks later drain assignment and stale approved research while original Writer fences survive',async t=>{
+ const {root,key}=fixture(t),item=Q.sync(root,{now,apply:true}).items[key],r=proposal(item);Q.publish(root,r,now);
+ await Q.verify(root,{now,privateDir:os.tmpdir(),apply:true,verifySource:async()=>({description:r.sourceEvidence.quote,sourceSha256:'a'.repeat(64),sourceUrl:r.sourceEvidence.url})});a.equal(Q.approved(root,now).roles.length,1);
+ const H=require('../helper-routing/shared.cjs'),taskKey='FORGE_CLAUDE_SHARED_HELPER',shared={schema:'forge.shared-helper-work.v1',assignmentId:'SHARED',enabled:true,routingActive:true,providers:{[taskKey]:{provider:'Claude',available:true},FORGE_GROK_SHARED_HELPER:{provider:'Grok',available:true}},items:[{key,kind:'INTAKE',provider:'Claude',taskKey,assignmentVersion:1,sourceVersion:'a'.repeat(64),status:'ASSIGNED'}]};S.save(root,H.FILE,shared);
+ a.equal(Q.approved(root,now).roles.length,0);a.equal(Q.next(root,item.taskKey,{now}).items.length,0);a.equal(Q.seeds(root).length,0);a.throws(()=>Q.publish(root,r,now),/SHARED_HELPER_OWNS/);
+ S.save(root,Q.FILE,Q.empty());a.equal(Object.keys(Q.sync(root,{now}).items).length,0);
+ S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[key]:{key,status:'POST_IN_FLIGHT_UNKNOWN',submissions:[{requestId:'ORIGINAL'}]}}});a.equal(Q.sync(root,{now}).items[key].action,'RECONCILE_WRITER');
+});

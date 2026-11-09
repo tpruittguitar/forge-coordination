@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'), path=require('node:path'), cp=require('node:child_process'), {isDeepStrictEqual}=require('node:util');
 const guard='state/RELEVANCE_SCREEN_GUARD.json';
-const paths=new Set(['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json','state/RELEVANCE_INTAKE_PLAN.json',guard,'state/CLAUDE_HELPER_CONSUMPTION.json','state/EMAIL_RECOVERY_QUEUE.json','state/EMAIL_RECOVERY_SUMMARY.json','control/CLAUDE_HELPER_WORK.json','control/ENRICHMENT_HELPER_WORK.json']);
+const paths=new Set(['control/SHARED_HELPER_WORK.json','state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json','state/RELEVANCE_INTAKE_PLAN.json',guard,'state/CLAUDE_HELPER_CONSUMPTION.json','state/EMAIL_RECOVERY_QUEUE.json','state/EMAIL_RECOVERY_SUMMARY.json','control/CLAUDE_HELPER_WORK.json','control/ENRICHMENT_HELPER_WORK.json']);
 for(const p of ['state/HELPER_TRANSPORT.json','state/ROUTINE_HANDOFFS_REPORT.json','state/HELPER_HANDOFFS.json','state/HELPER_ROUTING_CURRENT.json','state/CODE_INTAKE_CONSUMPTION.json','control/GROK_INTAKE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json'])paths.add(p);
 paths.add('state/AI_EXCEPTION_WORK.json');paths.add('state/AI_EXCEPTION_PROGRESS.json');paths.add('state/COORDINATOR_CATCH_UP.json');
 for(const p of ['state/MAIL_PROCESSING.json','state/MAIL_PROCESSING_REPORT.json','state/MAIL_SOURCE_HANDOFFS.json','state/APPLICATION_TRACKER_EVENTS.json','state/APPLICATION_OUTCOMES.json','state/APPLICATION_TRACKER_CURSOR.json','control/OUTCOME_HELPER_WORK.json'])paths.add(p);

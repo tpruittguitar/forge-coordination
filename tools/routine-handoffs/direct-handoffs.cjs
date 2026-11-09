@@ -48,7 +48,7 @@ function consume(privateDir){
  for(const filename of S.files(path.join(cfg.directory,'incoming'))){const packetKey=S.hash(fs.readFileSync(filename));if(state.packets[packetKey])continue;
   try{const p=JSON.parse(fs.readFileSync(filename,'utf8')),m=p.metadata;
    if(p.schema!=='forge.direct-handoff-packet.v1'||!m||!validName(m.title)||!m.parent_ids?.includes(folder)||m.mime_type!=='text/plain'||typeof p.text!=='string'||Buffer.byteLength(p.text)!==Number(m.size)||Buffer.byteLength(p.text)>2000000)throw Error('COMPLETE_DIRECT_HANDOFF_REQUIRED');
-   const batch=JSON.parse(p.text);if(!/^forge\.(?:intake|enrichment|relevance|claude|outcome)-helper-batch\.v1$/.test(batch.schema||'')||m.title!=='forge-helper-'+batch.runId+'.json')throw Error('DIRECT_HANDOFF_ENVELOPE_REQUIRED');
+   const batch=JSON.parse(p.text);if(!/^forge\.(?:intake|enrichment|relevance|claude|outcome|shared)-helper-batch\.v1$/.test(batch.schema||'')||m.title!=='forge-helper-'+batch.runId+'.json')throw Error('DIRECT_HANDOFF_ENVELOPE_REQUIRED');
    const sha=S.hash(p.text);if(state.files[m.id]&&state.files[m.id]!==sha)throw Error('IMMUTABLE_DRIVE_HANDOFF_CHANGED');
    S.immutable(privateDir,'helper-inbox/forge-helper-drive-'+sha+'.json',batch);
    state.files[m.id]=sha;state.packets[packetKey]=sha;result.captured++;

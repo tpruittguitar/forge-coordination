@@ -27,6 +27,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
  const canonical=[...snapshot.rows,...snapshot.archiveRows],rules=Screen.guarded(Screen.load(),canonical),knownCode=new Set([...legacy.items,...code.items].map(i=>i.key));
  const identity=x=>[Source.norm(x.company||x.COMPANY),Source.norm(x.title||x.TITLE),Source.location(x.location||x.LOCATION)].join('|'),byIdentity=new Map(),byUrl=new Map(),urlKey=require('../pipeline-observability/upstream-flow').key;
  for(const row of canonical){const k=identity(row),list=byIdentity.get(k)||[];list.push(row);byIdentity.set(k,list);for(const key of new Set((String(row.p?.SOURCE_URL||'').match(/https:\/\/[^ ;|]+/g)||[]).map(urlKey).filter(Boolean))){const rows=byUrl.get(key)||[];rows.push(row);byUrl.set(key,rows);}}
+ for(const k of require('../helper-routing/shared.cjs').reservedKeys(S.read(root,'control/SHARED_HELPER_WORK.json',null)))addOwner(k,'SHARED_HELPER');
  const newIntake=[],newRelevance=[],exceptions=[],canonicalMatches=[],discoveryExclusions=[],counts={seededCodeIntake:0,canonical:0,fenced:0,alreadyAssigned:0,discoveryExcluded:0};
  for(const j of Object.values(queue.jobs).sort((a,b)=>String(a.observedAt||'').localeCompare(String(b.observedAt||''))||a.key.localeCompare(b.key))){
   if(terminal(j.status))continue;
@@ -72,7 +73,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
  const recovery=S.read(root,'state/enrich-ats-pay-recovery.json',{rows:[]}),active=enrich.items.filter(i=>!/^CONSUMED|RELEASED|PROTECTED_SKIP|ALREADY_COMPLETE|RETURNED/.test(i.status||''));
  if(enrich.enabled&&enrich.routingActive&&active.length===0){
   const oldIds=new Set(enrich.items.map(i=>i.primaryId));
-  for(const r of recovery.rows){const row=snapshot.rows.find(x=>x.PRIMARY_ID===r.id);if(oldIds.has(r.id)||r.status!=='SOURCE_RESEARCH_REQUIRED'||!row||T.protectedRow(row)||T.fenced(root,state,r.id))continue;
+  for(const r of recovery.rows){const row=snapshot.rows.find(x=>x.PRIMARY_ID===r.id);if(owners.has(r.id)||oldIds.has(r.id)||r.status!=='SOURCE_RESEARCH_REQUIRED'||!row||T.protectedRow(row)||T.fenced(root,state,r.id))continue;
    const missing=(r.needs||[]).filter(f=>f==='DEGREE'?!Source.known(row.p?.DEGREE_REQ)&&!Source.known(row.p?.DEGREE_TEXT):f==='SALARY'?!Source.known(row.p?.SALARY_BASE_LOW):false);if(!missing.length)continue;
    enrich.items.push({primaryId:r.id,owner:enrich.provider||'Grok',taskKey:enrich.taskKey||'FORGE_GROK_ENRICHMENT',status:'ASSIGNED',...T.identity(row),missingFields:missing,sourceUrls:(r.attempts||[]).map(x=>x.url).filter(Boolean),priorAttempts:r.attempts||[],canonicalObservedAt:snapshot.source.readAt,rowSha256:S.hash(row.line||row),sourceReport:'state/enrich-ats-pay-recovery.json'});oldIds.add(r.id);
   }

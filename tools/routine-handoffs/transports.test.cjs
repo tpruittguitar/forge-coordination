@@ -144,3 +144,11 @@ test('ATS assignment screening preserves canonical and writer protections and ig
  const g=assignment(t);g.ledger.jobs['linkedin:1234'].description=unrelatedRole;g.ledger.jobs['linkedin:1234'].submissions=[{requestId:'original'}];S.save(g.root,'state/EMAIL_RECOVERY_QUEUE.json',g.ledger);const fenced=A.replenish({...g,screenContext:atsContext()});a.equal(fenced.counts.fenced,1);a.equal(fenced.counts.discoveryExcluded,0);
  const h=assignment(t);h.ledger.jobs['linkedin:1234'].description=unrelatedRole;S.save(h.root,'state/EMAIL_RECOVERY_QUEUE.json',h.ledger);h.snapshot.rows=[{PRIMARY_ID:'V2I-ONE',COMPANY:'Factory',TITLE:'Director of Manufacturing',LOCATION:'Austin, TX',p:{SOURCE_URL:h.ledger.jobs['linkedin:1234'].url}}];const canonical=A.replenish({...h,screenContext:atsContext()});a.equal(canonical.counts.canonical,1);a.equal(canonical.counts.discoveryExcluded,0);
 });
+test('later ChatGPT enrichment replenishment never takes a shared helper reservation',t=>{
+ const f=assignment(t),H=require('../helper-routing/shared.cjs'),id='V2I-SHARED',taskKey='FORGE_CLAUDE_SHARED_HELPER';
+ const shared={schema:'forge.shared-helper-work.v1',assignmentId:'SHARED',enabled:true,routingActive:true,providers:{[taskKey]:{provider:'Claude',available:true},FORGE_GROK_SHARED_HELPER:{provider:'Grok',available:true}},items:[{primaryId:id,kind:'ENRICHMENT',provider:'Claude',taskKey,assignmentVersion:1,sourceVersion:'a'.repeat(64),status:'ASSIGNED'}]};S.save(f.root,H.FILE,shared);
+ f.snapshot.rows=[{PRIMARY_ID:id,COMPANY:'Factory',TITLE:'Plant Manager',LOCATION:'Austin, TX',BUCKET:'MANUAL_RESEARCH',p:{}}];
+ const w=S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json');w.enabled=true;w.routingActive=true;w.items=[];S.save(f.root,'control/ENRICHMENT_HELPER_WORK.json',w);
+ S.save(f.root,'state/enrich-ats-pay-recovery.json',{rows:[{id,status:'SOURCE_RESEARCH_REQUIRED',needs:['SALARY','DEGREE'],attempts:[]}]});A.replenish(f);
+ a.equal(S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json').items.length,0);a.equal(H.load(f.root).items[0].taskKey,taskKey);
+});

@@ -2,6 +2,7 @@
 const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_process');
 const S=require('../programmed-coordinator/store.cjs'),C=require('../programmed-coordinator/collect.cjs');
 const schemas={
+ 'forge.shared-helper-batch.v1':b=>'receipts/'+String(b.provider).toUpperCase()+'_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
  'forge.claude-helper-batch.v1':b=>'receipts/CLAUDE_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
  'forge.intake-helper-batch.v1':b=>'receipts/GROK_HELPERS/'+b.taskKey+'/'+b.runId+'.json',
  'forge.enrichment-helper-batch.v1':b=>'receipts/'+(b.provider==='ChatGPT'?'CHATGPT_HELPERS':'GROK_HELPERS')+'/'+b.taskKey+'/'+b.runId+'.json',

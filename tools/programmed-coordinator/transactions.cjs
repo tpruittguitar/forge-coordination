@@ -6,14 +6,15 @@ const clientRevision=S.hash([__filename,require.resolve('./run.cjs'),require.res
 const rejectedUnchanged=(item,writerCommit)=>!!item?.notAcceptedTerminal&&item.notAcceptedTerminal.version===item.version&&item.notAcceptedTerminal.clientRevision===clientRevision&&item.notAcceptedTerminal.sourceParserVersion===Source.PARSER_VERSION&&
   (!/^[a-f0-9]{7,40}$/.test(writerCommit||'')||item.notAcceptedTerminal.writerCommit===writerCommit);
 const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',
+  'SOURCE_URL','COMPANY_SOURCE_URL','FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF',
   'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']);
 const pending = (tx,root) => tx.status!=='VERIFIED'&&!(tx.status==='NOT_ACCEPTED'&&typeof root==='string'&&Outcome.released(root,tx));
 function healthy(status) {
   if (!Object.hasOwn(status, 'freeze') || status.freeze !== null || String(status.level).toUpperCase() !== 'OK' ||
       !Array.isArray(status.errors) || status.errors.length || !status.unverified) throw Error('LIVE_WRITER_GATE');
 }
-function identity(row) { return {company:row.COMPANY, title:row.TITLE, location:row.LOCATION}; }
-function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location); }
+function identity(row) { const req=row.REQ_ID;return {company:row.COMPANY, title:row.TITLE, location:row.LOCATION,...(Source.known(req)&&/[a-z0-9]/i.test(String(req))?{reqId:req}:{})}; }
+function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location) && (!expected.reqId || Source.norm(row.REQ_ID) === Source.norm(expected.reqId)); }
 function protectedRow(row) { return !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(row.BUCKET) || /^YES/i.test(row.p?.ANTI_RESURRECTION || '') || !!row.p?.DO_NOT_REWORK || !!row.p?.TIM_DECISION; }
 function fenced(root, state, id) {
   if (Object.values(state.transactions).some(tx => tx.status !== 'VERIFIED' && !Outcome.released(root,tx) && tx.ids.includes(id))) return true;
@@ -37,6 +38,8 @@ async function submit({root, privateDir, state, jobs, runId, deps}) {
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
   for (const job of jobs) {
+    const inspection=state.items[job.itemKey];
+    if(inspection?.taskKey&&require('../helper-routing/shared.cjs').TASKS[inspection.taskKey]){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
     if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fenced(root,state,job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');

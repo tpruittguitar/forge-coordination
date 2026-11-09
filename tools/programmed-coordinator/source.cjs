@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261107-posted-pay-facts-v3+'+require('../enrich-ats-pay/qualification').VERSION;
+const PARSER_VERSION='20261109-shared-helper-evidence-v2+'+require('../enrich-ats-pay/qualification').VERSION;
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
@@ -71,6 +71,7 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
     })));
   if (matches.length !== 1) throw Error('SOURCE_IDENTITY_AMBIGUOUS');
   const job = matches[0], description = text(job.description);
+  if(expected.reqId&&norm(job.identifier?.value||job.identifier)!==norm(expected.reqId))throw Error('SOURCE_REQUISITION_ID_CONFLICT');
   if (description.length < 300 || /captcha|sign in to view|verify you are human/i.test(description)) throw Error('INCOMPLETE_POSTING');
   if (job.validThrough && (!Number.isFinite(Date.parse(job.validThrough)) || Date.parse(job.validThrough) < now)) throw Error('POSTING_EXPIRED');
   if (quote && !norm(description).includes(norm(quote))) throw Error('HELPER_QUOTE_NOT_IN_POSTING');
@@ -81,7 +82,7 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
   const candidate=structured||(!sal&&!job.forgePayRejected?Pay.employerText(description,L.payFromText):null);
   const safe=candidate&&!Pay.conflicts(description,candidate,L.payFromText)&&!Pay.estimatedPay(description,candidate,L.payFromText)?candidate:null;
   const payFacts=Pay.fact(safe,structured?'STRUCTURED_ANNUAL_BASE':'EXPLICIT_ANNUAL_BASE_TEXT'),pay=Pay.range(payFacts);
-  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,payAmbiguous:!pay&&(!!sal||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(description)),identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
+  return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,payAmbiguous:!pay&&(!!sal||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(description)),identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{url:job.url||null,title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
 async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
   const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');
@@ -92,7 +93,7 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
     const c = JSON.parse(fs.readFileSync(cache, 'utf8'));
     if (now - Date.parse(c.observedAt) < 86400000 && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
       const facts=c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);
-      return{...c,...facts}; // Reuse raw source, recompute facts under current parser.
+      return helperEvidence({...c,...facts},item); // Recompute helper bindings even on cache hits.
     }
   }
   const sourceRoutes=S.read(privateDir,'source-routes.json',{}),errors=[];
@@ -105,10 +106,69 @@ async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = pag
         facts=inspectJobs([F.apiPosting(route,JSON.parse(got.raw),companyRaw?JSON.parse(companyRaw):boardCompany)],expected,item.sourceEvidence.quote,now);
       }else facts=inspect(got.raw,expected,item.sourceEvidence.quote,now);
       const result={...facts,format:candidate.format,route:candidate.route,companyRaw,boardCompany,raw:got.raw,sourceUrl:candidate.route?.page||candidate.url,finalUrl:got.url,expected,sourceSha256:S.hash(got.raw),observedAt:new Date(now).toISOString(),...(companyRaw?{companySourceSha256:S.hash(companyRaw)}:{})};
-      S.save(privateDir,'sources/'+key+'.json',result);return result;
+      S.save(privateDir,'sources/'+key+'.json',result);return helperEvidence(result,item);
     }catch(e){errors.push(e);}
   }
   const conflict=errors.find(e=>/IDENTITY|QUOTE|CONFLICT/.test(e.message));throw conflict||errors[0]||Error('WORKING_SOURCE_ROUTE_REQUIRED');
+}
+// ATS adapters historically accept embedded host strings. Do not reuse that
+// permissive routing as proof that a user-facing URL belongs to the ATS.
+function exactAtsLink(source) {
+  const route=source.route,link=publicUrl(source.postingFacts?.url),u=new URL(link),page=new URL(publicUrl(route.page));
+  const id=String(source.postingFacts?.reqId||'');let match;
+  if(route.kind==='lever'){
+    if(page.hostname!=='jobs.lever.co'||u.hostname!=='jobs.lever.co')return null;
+    match=u.pathname.match(/^\/([^/]+)\/([0-9a-f-]{36})\/?$/i);
+    if(!match||match[2]!==id||new URL(route.api).origin!=='https://api.lever.co'||new URL(route.api).pathname!==`/v0/postings/${match[1]}/${id}`)return null;
+  }else if(route.kind==='greenhouse'){
+    const hosts=['boards.greenhouse.io','job-boards.greenhouse.io'];
+    if(!hosts.includes(page.hostname)||!hosts.includes(u.hostname))return null;
+    match=u.pathname.match(/^\/([^/]+)\/jobs\/(\d+)\/?$/);
+    if(!match||match[2]!==id||String(route.id)!==id||new URL(route.api).origin!=='https://boards-api.greenhouse.io'||new URL(route.api).pathname!==`/v1/boards/${match[1]}/jobs/${id}`)return null;
+  }else if(route.kind==='ashby'){
+    if(page.hostname!=='jobs.ashbyhq.com'||u.hostname!=='jobs.ashbyhq.com')return null;
+    match=u.pathname.match(/^\/([^/]+)\/([0-9a-f-]{36})\/?$/i);
+    if(!match||match[2]!==id||route.id!==id||new URL(route.api).origin!=='https://api.ashbyhq.com'||new URL(route.api).pathname!==`/posting-api/job-board/${match[1]}`)return null;
+  }else if(route.kind==='workday'){
+    if(!/^[a-z0-9-]+\.wd\d+\.myworkdayjobs\.com$/.test(u.hostname)||u.origin!==page.origin||u.pathname!==page.pathname)return null;
+    const slug=u.pathname.split('/').filter(Boolean).at(-1),m=slug.match(/_((?:R-?\d+|JR\d+))(-\d+)?$/i),req=v=>String(v).replace(/-/g,'').toUpperCase();
+    const raw=JSON.parse(source.raw).jobPostingInfo;
+    if(!m||!raw?.externalUrl||publicUrl(raw.externalUrl)!==link||req(raw.jobReqId)!==req(id)||
+      (req(id)!==req(m[1]+(m[2]||''))&&!(m[2]&&req(id)===req(m[1])&&raw.jobPostingId===slug)))return null;
+    const derived=L.atsApi(link);if(!derived||derived.api!==route.api)return null;
+  }else return null;
+  // Same exact board/path, not a different posting sharing title and location.
+  if(page.pathname.replace(/\/$/,'')!==u.pathname.replace(/\/$/,''))return null;
+  if(publicUrl(source.finalUrl)!==publicUrl(route.api))return null;
+  return link;
+}
+// Helpers identify evidence; they never supply trusted score outputs or resume facts.
+function helperEvidence(source,item,profile) {
+  const out={...source};delete out.fitEvidence;delete out.exactLink;
+  const fit=item.sourceEvidence?.fit;
+  if(fit){
+    const Resume=require('../source-trial/resume-match');profile=profile||Resume.load();
+    if(!Resume.valid(profile)||fit.resumeTextSha256!==profile.source.textSha256)throw Error('CURRENT_RESUME_EVIDENCE_REQUIRED');
+    if(!Array.isArray(fit.requirements)||!fit.requirements.length||fit.requirements.length>20)throw Error('FIT_REQUIREMENTS_REQUIRED');
+    const literal=s=>String(s||'').normalize('NFKC').replace(/\s+/g,' ').trim();
+    const requirements=fit.requirements.map(r=>{
+      if(typeof r.quote!=='string'||r.quote.length<30||r.quote.length>1500||!literal(source.description).includes(literal(r.quote)))throw Error('FIT_QUOTE_NOT_IN_POSTING');
+      if(!Array.isArray(r.competencyIds)||!r.competencyIds.length||new Set(r.competencyIds).size!==r.competencyIds.length)throw Error('FIT_RESUME_MAPPING_REQUIRED');
+      const overlap=Resume.match({description:r.quote},profile);
+      if(r.competencyIds.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('FIT_RESUME_MAPPING_NOT_IN_REQUIREMENT');
+      return{quote:literal(r.quote),competencyIds:r.competencyIds.slice().sort()};
+    });
+    out.fitEvidence={resumeTextSha256:profile.source.textSha256,requirements};
+  }
+  // A homepage/search URL with an embedded posting is not an exact job link.
+  // JSON-LD self-binds to the fetch. ATS URLs additionally bind exact host,
+  // path and ID against independently fetched API posting fields.
+  try {
+    const link=publicUrl(source.format==='ATS_API'?exactAtsLink(source):source.finalUrl),u=new URL(link);
+    const unsigned=![...u.searchParams.keys()].some(k=>/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k));
+    if(u.pathname!=='/'&&unsigned&&(source.format==='ATS_API'||publicUrl(source.postingFacts?.url)===link))out.exactLink=link;
+  }catch{}
+  return out;
 }
 function enrichmentFields(source, row) {
   const fields = {}, p = row.p || {}, date = source.observedAt.slice(0,10);
@@ -117,7 +177,15 @@ function enrichmentFields(source, row) {
     SALARY_BASE_LOW:source.pay.low, SALARY_BASE_HIGH:source.pay.high, SALARY_MIDPOINT:Math.round((source.pay.low+source.pay.high)/2),
     SALARY_BASIS:'EMPLOYER_POSTED', SALARY_SOURCE:source.sourceUrl, SALARY_ASOF:date, SALARY_CONF:'HIGH'
   });
+  const bound=source.identityVerified===true&&source.sourceIdentity&&['company','title','location'].every(k=>source.sourceIdentity[k]===row[{company:'COMPANY',title:'TITLE',location:'LOCATION'}[k]]);
+  if(bound&&source.exactLink&&!known(p.SOURCE_URL))fields.SOURCE_URL=source.exactLink;
+  if(bound&&source.exactLink&&source.format==='ATS_API'&&!known(p.COMPANY_SOURCE_URL))fields.COMPANY_SOURCE_URL=source.exactLink;
+  if(bound&&source.fitEvidence&&!known(p.FIT_EVIDENCE)&&!known(p.FIT_BASIS)){
+    const fit=source.fitEvidence;
+    Object.assign(fields,{FIT_EVIDENCE:fit.requirements.map(r=>r.quote).join(' / '),
+      FIT_BASIS:'Observed requirement overlap only, not final fit; resume '+fit.resumeTextSha256+'; '+fit.requirements.map(r=>r.competencyIds.join(',')).join(' / '),FIT_ASOF:date,FIT_CONF:'LOW'});
+  }
   return fields;
 }
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, enrichmentFields,known};
+module.exports = {PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, helperEvidence, enrichmentFields,known};
