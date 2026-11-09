@@ -2,6 +2,7 @@
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
 const S = require('./store.cjs');
 const validators = {
+  'forge.shared-helper-batch.v1': require('../helper-routing/shared.cjs').validateBatch,
   'forge.claude-helper-batch.v1': require('../helper-routing/reservations.cjs').validateBatch,
   'forge.intake-helper-batch.v1': require('../helper-routing/intake.cjs').validate,
   'forge.enrichment-helper-batch.v1': require('../helper-routing/enrichment.cjs').validateBatch,
@@ -27,7 +28,8 @@ function routingProof(root, batch, current, historical = show) {
   const work = S.read(root, task.workAssignments), before = JSON.parse(historical(root, batch.instructionCommit, task.workAssignments));
   const partition = w => ({assignmentId: w.assignmentId, enabled: w.enabled, routingActive: w.routingActive, routing: w.routing});
   if (S.hash(partition(work)) !== S.hash(partition(before))) throw Error('STALE_ASSIGNMENT_ROUTING');
-  const assignedAtRevision=Array.isArray(before.keys)?new Set(before.keys):Array.isArray(before.items)?new Set(before.items.map(i=>i.primaryId)):null;
+  if(batch.schema==='forge.shared-helper-batch.v1')require('../helper-routing/shared.cjs').validateRouting(batch,before,work);
+  const assignedAtRevision=Array.isArray(before.keys)?new Set(before.keys):Array.isArray(before.items)?new Set(before.items.map(i=>i.primaryId||i.key)):null;
   if(assignedAtRevision&&batch.items.some(i=>!assignedAtRevision.has(i.key||i.primaryId)))throw Error('ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION');
   if (batch.routing?.cutoverAt && batch.routing.cutoverAt !== work.routing?.cutoverAt) throw Error('STALE_REPORTED_ROUTING');
   return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, currentPolicyRecheckRequired:true};

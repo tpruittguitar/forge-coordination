@@ -9,6 +9,8 @@ const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRES
 const dismissed=e=>e?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'||require('../live-backlog/model.cjs').activeDeletion(e);
 const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
 const read=(root,file,fallback)=>S.read(root,file,fallback);
+const sharedKeys=root=>require('../helper-routing/shared.cjs').reservedKeys(read(root,'control/SHARED_HELPER_WORK.json',null));
+const sharedBlocked=(item,keys)=>!item.fence&&[item.key,...item.aliases||[]].some(k=>keys.has(k));
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
 function safeUrl(raw){try{const key=U.key(raw);if(key?.startsWith('indeed:'))return 'https://www.indeed.com/viewjob?jk='+key.slice(7);if(key?.startsWith('linkedin:'))return 'https://www.linkedin.com/jobs/view/'+key.slice(9)+'/';const u=new URL(raw);if(u.protocol!=='https:')return '';for(const k of [...u.searchParams.keys()])if(/^(utm_|trk|tracking|token|sig|auth|lipi|eid|ref|source|tk$|alid$|bb$|qd$|rd$)/i.test(k))u.searchParams.delete(k);u.hash='';return u.href;}catch{return '';}}
 function sourceCard(e){return{...require('./saved-card.cjs').identityMetadata(e,e.sourceUrl),...PostedPay.carry({...e,url:e.sourceUrl}),company:e.company||'',title:e.title||'',location:e.location||'',url:safeUrl(e.sourceUrl||(/^linkedin:\d+$/.test(e.key)?'https://www.linkedin.com/jobs/view/'+e.key.slice(9)+'/':''))};}
@@ -40,10 +42,11 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const reasons=new Map();for(const report of reports)for(const card of [...report.new_roles||[],...report.existing_roles||[],...report.identity_held_roles||[]])reasons.set(U.key(card.url),selection(card));
  const saved=require('./saved-card.cjs'),savedIndex=saved.index(root,up,mail,reports);
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
- const fences=writerFences(root);
+ const fences=writerFences(root),sharedReserved=require('../helper-routing/shared.cjs').reservedKeys(read(root,'control/SHARED_HELPER_WORK.json',null));
  for(const [key,g] of Object.entries(up.groups)){
   const currentFence=(g.aliases||[key]).some(k=>fences.has(k)),priorAlias=(g.aliases||[key]).some(k=>old.items[k]);
   if(!pending.has(g.status)&&!old.items[key]&&(!currentFence||priorAlias))continue;
+  if(!currentFence&&!old.items[key]&&!priorAlias&&[key,...g.aliases||[]].some(k=>sharedReserved.has(k)))continue; // Already assigned evidence-only research; original Writer reconciliation still wins.
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
   const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean);
@@ -96,19 +99,19 @@ function validate(r,item,now=Date.now()){
  return true;
 }
 function publish(root,review,now=Date.now()){
- const work=sync(root,{now,apply:true}),item=work.items[review.key];if(!item||item.status==='ACCOUNTED_UPSTREAM')throw Error('CURRENT_OPEN_DRAIN_ITEM_REQUIRED');validate(review,item,now);S.immutable(root,reviewPath(review),review);return{path:reviewPath(review),canonicalWrites:0,pendingIndependentValidation:['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)};
+ const work=sync(root,{now,apply:true}),item=work.items[review.key];if(item&&sharedBlocked(item,sharedKeys(root)))throw Error('SHARED_HELPER_OWNS_RESEARCH');if(!item||item.status==='ACCOUNTED_UPSTREAM')throw Error('CURRENT_OPEN_DRAIN_ITEM_REQUIRED');validate(review,item,now);S.immutable(root,reviewPath(review),review);return{path:reviewPath(review),canonicalWrites:0,pendingIndependentValidation:['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)};
 }
 function researchEligible(item,now=Date.now()){return item.status==='ACTION_REQUIRED'||item.status==='SOURCE_VALIDATION_REQUIRED'&&Date.parse(item.validation?.retryAfter)<=now;}
 function next(root,taskKey,{limit=10,now=Date.now()}={}){
- if(!Number.isInteger(limit)||limit<1||limit>20)throw Error('BOUNDED_ARTIFACT_SIZE_REQUIRED');const work=sync(root,{now});
- return{schema:'forge.intake-drain-work.v1',at:work.at,taskKey,items:Object.values(work.items).filter(i=>i.taskKey===taskKey&&researchEligible(i,now)).sort((a,b)=>a.firstSeen.localeCompare(b.firstSeen)||a.key.localeCompare(b.key)).slice(0,limit),counts:work.counts,actions:work.actions,artifactSizeOnly:true,canonicalWrites:0};
+ if(!Number.isInteger(limit)||limit<1||limit>20)throw Error('BOUNDED_ARTIFACT_SIZE_REQUIRED');const work=sync(root,{now}),shared=sharedKeys(root);
+ return{schema:'forge.intake-drain-work.v1',at:work.at,taskKey,items:Object.values(work.items).filter(i=>i.taskKey===taskKey&&!sharedBlocked(i,shared)&&researchEligible(i,now)).sort((a,b)=>a.firstSeen.localeCompare(b.firstSeen)||a.key.localeCompare(b.key)).slice(0,limit),counts:work.counts,actions:work.actions,artifactSizeOnly:true,canonicalWrites:0};
 }
 async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify,verifyExclusion=require('./exclusions.cjs').verify,exclusionContext,apply=false}={}){
  if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir)===path.resolve(root)||path.resolve(privateDir).startsWith(path.resolve(root)+path.sep))throw Error('PRIVATE_SOURCE_DIRECTORY_REQUIRED');
- const work=sync(root,{now}),result={verified:0,failed:0,exclusionsVerified:0},cache=new Map();
+ const work=sync(root,{now}),result={verified:0,failed:0,exclusionsVerified:0},cache=new Map(),shared=sharedKeys(root);
  let context=exclusionContext;
  for(const item of Object.values(work.items)){
-  if(item.status!=='PENDING_INDEPENDENT_VALIDATION')continue;const review=read(root,item.review.path);validate(review,item,now);
+  if(sharedBlocked(item,shared)||item.status!=='PENDING_INDEPENDENT_VALIDATION')continue;const review=read(root,item.review.path);validate(review,item,now);
   try{
    if(review.outcome==='EXCLUSION_CANDIDATE'){
     context=context||await require('../source-trial/preliminary-screen').context({key:process.env.FORGE_WRITER_KEY});
@@ -125,18 +128,18 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
  if(apply)S.save(root,FILE,work);return{...result,canonicalWrites:0};
 }
 function approved(root,now=Date.now()){
- const work=read(root,FILE,empty()),roles=[],proofs=new Map();
+ const work=read(root,FILE,empty()),roles=[],proofs=new Map(),shared=sharedKeys(root);
  for(const item of Object.values(work.items)){
-  const v=item.validation;if(item.status!=='READY_FOR_CONTROLLED_INTAKE'||item.fence||!v||now-Date.parse(v.observedAt)>=86400000||Date.parse(v.observedAt)>now)continue;
+  const v=item.validation;if(sharedBlocked(item,shared)||item.status!=='READY_FOR_CONTROLLED_INTAKE'||item.fence||!v||now-Date.parse(v.observedAt)>=86400000||Date.parse(v.observedAt)>now)continue;
   const r=read(root,item.review.path);validate(r,item,now);if(v.reviewSha256!==S.hash(r)||item.review.path!==reviewPath(r)||r.outcome!=='SOURCE_READY')throw Error('DRAIN_VALIDATION_BINDING_REQUIRED');
   const trustedPay=v.postedPay?PostedPay.carry({...r.sourceEvidence,...v,url:v.postedPay.sourceUrl}):PostedPay.carry(item.card);const role={...r.sourceEvidence,postedPay:undefined,payFacts:undefined,pay:undefined,...trustedPay,...(trustedPay.postedPay?{url:trustedPay.postedPay.sourceUrl}:{}),discoveryReview:item.discoveryReview,initiatingUrl:item.card.url,source:'INTAKE_DRAIN',selectionReason:item.selectionReason,scopeReason:r.scope.reason+'; resume='+r.scope.resumeTextSha256+'; competencies='+r.scope.resumeCompetencyIds.join(','),drainKey:item.key,drainReview:item.review.path};roles.push(role);proofs.set(U.key(role.url),{role,review:r,validation:v});
  }
  return{roles,proofs};
 }
-function ownedKeys(root){return new Set(Object.values(read(root,FILE,empty()).items).filter(i=>i.status!=='ACCOUNTED_UPSTREAM').flatMap(i=>[i.key,...i.aliases]));}
+function ownedKeys(root){const shared=sharedKeys(root);return new Set(Object.values(read(root,FILE,empty()).items).filter(i=>i.status!=='ACCOUNTED_UPSTREAM'&&!sharedBlocked(i,shared)).flatMap(i=>[i.key,...i.aliases||[]]));}
 function owned(root,key){return ownedKeys(root).has(key);}
 function fences(root){return Object.values(read(root,FILE,empty()).items).filter(i=>i.fence).map(i=>fenceRecord(i.fence.record||i.card));}
-function seeds(root){const work=read(root,FILE,empty());return Object.values(work.items).filter(i=>i.status==='ACTION_REQUIRED'&&i.action==='INTAKE'&&!i.fence&&i.screen.outcome==='ADMIT').map(i=>({...i.card,discoveryReview:i.discoveryReview,source:'SAVED_DISCOVERY',selectionReason:i.selectionReason,drainKey:i.key}));}
+function seeds(root){const work=read(root,FILE,empty()),shared=sharedKeys(root);return Object.values(work.items).filter(i=>!sharedBlocked(i,shared)&&i.status==='ACTION_REQUIRED'&&i.action==='INTAKE'&&!i.fence&&i.screen.outcome==='ADMIT').map(i=>({...i.card,discoveryReview:i.discoveryReview,source:'SAVED_DISCOVERY',selectionReason:i.selectionReason,drainKey:i.key}));}
 if(require.main===module)(async()=>{
  const [command,arg]=process.argv.slice(2),root=path.resolve(__dirname,'../..');let result;
  if(command==='sync')result=sync(root,{apply:true});

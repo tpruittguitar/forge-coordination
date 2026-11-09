@@ -32,7 +32,9 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       exception(state,item,evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'WORKING_SOURCE_ROUTE_REQUIRED' : 'AMBIGUOUS_SCOPE_OR_IDENTITY',
         evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'CODE' : 'AI'); continue;
     }
-    const enrichment = /ENRICHMENT/.test(item.taskKey);
+    const shared=batch.schema==='forge.shared-helper-batch.v1';
+    if(shared){try{require('../helper-routing/shared.cjs').assertCurrent(root,evidence,batch);}catch(e){exception(state,item,e.message,'CODE');continue;}}
+    const enrichment = shared?evidence.kind==='ENRICHMENT':/ENRICHMENT/.test(item.taskKey);
     let row, expected, initiatingUrl;
     if (enrichment) {
       const rows = snapshot.rows.filter(r => r.PRIMARY_ID === evidence.primaryId);
@@ -45,7 +47,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     } else {
       // Original assignment card is authoritative for identity, not helper prose.
       const registry = S.read(root,'control/AI_AUTOMATION_TASKS.json'), work=S.read(root,registry.tasks[item.taskKey].workAssignments);
-      let card;
+      let card=shared?work.items.find(i=>i.key===evidence.key)?.sourceEvidence:null;
       for (const page of work.pages || []) { const match=S.read(root,page.path).items.find(i => i.key === evidence.key); if (match) {card=match.sourceEvidence || match;break;} }
       if (!card) { exception(state,item,'ORIGINAL_ASSIGNMENT_CARD_REQUIRED','CODE'); continue; }
       try{card=require('../routine-handoffs/source-card.cjs').recover(root,evidence.key,card);}catch{exception(state,item,'CONFLICTING_ORIGINAL_SOURCE_CARDS','AI');continue;}
@@ -159,6 +161,7 @@ async function main(mode='inventory') {
       if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
       const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
       state.routineHandoffs={transport:routine,assignments,mail};
+      state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock});
       if(apply)state.routineHandoffs.sourceReviews=require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state});
       await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
       if(apply) {
