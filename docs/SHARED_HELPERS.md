@@ -1,6 +1,6 @@
 # Shared Claude/Grok research helpers
 
-Two utility slots use one central procedure, `lanes/FORGE_SHARED_HELPER.txt`. All behavior remains centrally versioned. Native prompts contain provider, task key and the shared-entry URL only.
+Two utility slots use one central procedure, `lanes/FORGE_SHARED_HELPER.txt`. All behavior remains centrally versioned. Each route selects `policy/current/SHARED_HELPER_COMMON.txt` instead of the general production/email contract. Read entry → registry → selected common + procedure once at one resolved main SHA, then fresh assigned work. Conditional references are read only when that kind of work is reached; command execution does not require reading its source code. Native prompts contain provider, task key and the shared-entry URL only.
 
 ## Launchers
 
@@ -8,14 +8,14 @@ Claude:
 
 ```text
 PROVIDER=Claude TASK_KEY=FORGE_CLAUDE_SHARED_HELPER.
-Read fresh https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt?cb=<epoch> and follow its current shared contract, registered procedure and assigned work at one resolved main commit.
+Read fresh https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt?cb=<epoch> and follow it.
 ```
 
 Grok:
 
 ```text
 PROVIDER=Grok TASK_KEY=FORGE_GROK_SHARED_HELPER.
-Read fresh https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt?cb=<epoch> and follow its current shared contract, registered procedure and assigned work at one resolved main commit.
+Read fresh https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt?cb=<epoch> and follow it.
 ```
 
 Desired hourly cadence: Claude :25, Grok :55, America/New_York. Registry `scheduleIntent` is not native configuration readback. No schedule has been installed by this implementation. Existing native schedules, retired routes and production ownership stay unchanged.
@@ -23,8 +23,8 @@ Desired hourly cadence: Claude :25, Grok :55, America/New_York. Registry `schedu
 ## Rollout gates
 
 1. Review and merge this implementation. Do not enable provider runs from an unmerged branch.
-2. Verify native setup and the supported return transport for each provider, then centrally mark that provider available. Both ship unavailable so a merge alone cannot reserve work for an unconfigured app. Let the existing local coordinator publish a fresh `SHARED_HELPER_WORK.json` from authenticated canonical rows while holding its existing production lock. Empty pre-activation work is intentional; no live job list is invented from repository snapshots.
-3. Verify each provider can read current instructions and return one complete source-bound batch through the established helper PR or private direct-handoff transport. Fixture tests prove behavior, not live source or Writer execution.
+2. Verify native setup. Before marking a provider available, have that provider return the zero-job [readiness probe](SHARED_HELPER_READINESS.md) through its existing PR or private Drive transport and verify both `artifactValidated` and `returnTransportVerified` on the coordinator with its private delivery evidence. Only then centrally mark that provider available. Both ship unavailable so a merge alone cannot reserve work for an unconfigured app. Let the existing local coordinator publish a fresh `SHARED_HELPER_WORK.json` from authenticated canonical rows while holding its existing production lock. Empty pre-activation work is intentional; no live job list is invented from repository snapshots.
+3. With fresh assignments, verify each provider can return one complete source-bound batch through the established helper PR or private direct-handoff transport. Fixture tests prove behavior, not live source or Writer execution.
 4. Verify coordinator acceptance and original RESULT / independent COMPLETE / exact row readback for a small permitted batch. Then configure/read back the intended native schedules. The user will paste launchers into Claude/Grok; do not duplicate full procedure text there.
 
 ## Coordination and scope

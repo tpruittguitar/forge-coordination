@@ -75,3 +75,31 @@ FORGE_APPLICATION_OUTCOME_TRACKER is an independent scheduler-hosted utility usi
 ## Shared native automation launcher — 2026-10-31
 
 All six active Codex Forge automations now launch through control/FORGE_SHARED_AUTOMATION_ENTRY.txt with only actual provider and task identity in their saved prompts. The entry reads control/AI_AUTOMATION_TASKS.json and policy/current/AI_AUTOMATION_COMMON.txt at one resolved repository revision. Production lanes continue through the existing immutable packet runtime; outcome tracker, usage reader and stack health use centrally routed procedure files. Schedules and notification settings remain in the native scheduler. Task behavior and shared rules are no longer maintained in isolated native prompt copies.
+
+## Scoped shared-helper loading — 2026-11-09
+
+The two shared-helper routes now select `task.common = policy/current/SHARED_HELPER_COMMON.txt`.
+The shared entry reads that contract **instead of** the registry default, not in addition to it.
+All other routes retain `policy/current/AI_AUTOMATION_COMMON.txt`. Ownership, assigned work,
+Writer duties and native schedules are unchanged. The collector resolves historical and current
+selected contracts separately, retaining pre-split evidence while requiring current-policy rechecks.
+A missing selected contract fails; it never silently loads a different one.
+
+Read entry, registry, selected common and procedure once at one resolved main SHA. Fetch current
+work/protection as needed. Intake identity, relevance, salary context, fit profile and transport
+references load only when applicable; do not traverse docs/history or read command implementations
+as routine preflight. No application-local copies are needed.
+
+`tests/test_shared_instructions.py` caps this fixed startup path at 19,500 UTF-8 bytes, including
+the full registry, with separate file budgets. It also checks route isolation, thin launchers and
+critical instruction gates. Helper/collector tests cover actual ownership, return validation and
+historical/current source selection. These tests do not prove AI compliance or native adoption.
+
+At baseline `4d3aec5`, the shared path was 49,411 bytes: entry 2,754; registry 7,878;
+general common 30,175; procedure 8,604. The compact path is 18,833 bytes (61.9% smaller): entry 2,146; registry 7,996;
+scoped common 3,224; procedure 5,467. The setup-only transport guide is conditional.
+Byte reduction is not measured billed-token or wall-time savings. Dynamic work, sources and
+conditional references are additional. The runtime builder fingerprints all current policy files,
+so the added contract also creates a new immutable packet release; unrelated packet rules are unchanged.
+A merge updates centrally routed reads only. Actual next-run source revisions must prove adoption;
+this PR neither edits native prompts/schedules nor claims live production completion.
