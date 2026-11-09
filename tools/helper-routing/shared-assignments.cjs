@@ -63,7 +63,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   work.items.push(assignment);assigned.push(H.key(item));for(const k of [H.key(item),...item.aliases||[]])occupied.add(k);
  }
  work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;work.priority={basis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',counts:order.counts,laneOrder:order.lanes,observedAt:work.at};
- H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);};
+ H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);require('./shared-pages.cjs').generate(root,{now,checkLock});};
  return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),canonicalWrites:0,noProcessingCap:true};
 }
 module.exports={needs,existingOwners,replenish};

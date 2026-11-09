@@ -31,7 +31,7 @@ class SharedInstructionTests(unittest.TestCase):
 
     def test_fixed_startup_budget_includes_registry(self):
         # UTF-8 bytes are deterministic, not tokenizer/runtime measurements.
-        limits = {ENTRY: 2200, REGISTRY: 8500, COMMON: 3400, PROCEDURE: 5500}
+        limits = {ENTRY: 2200, REGISTRY: 8500, COMMON: 3400, PROCEDURE: 5800}
         for file, ceiling in limits.items():
             with self.subTest(file=file):
                 self.assertLessEqual(len((ROOT / file).read_bytes()), ceiling)
@@ -68,6 +68,28 @@ class SharedInstructionTests(unittest.TestCase):
                        'TEXT_EXTRACT', 'omit sourceSha256', 'grok-shared-helper-batch-',
                        'without PR/merge',
                        'no force push', 'verify remote SHA'):
+            self.assertIn(phrase, self.procedure)
+
+    def test_sustained_run_and_honest_stop_contract_remain(self):
+        for phrase in ('Reuse pending artifacts before new research',
+                       'research, validate, publish each complete artifact',
+                       'continue in this invocation', 'not a run/day cap or target',
+                       'never truncate evidence', 'sample or full artifact is not a stop reason',
+                       'checkpointing every page item', 'retain unfinished page items',
+                       'continue independent research while evidence can be preserved',
+                       'Local files are not delivery', 'observed provider/tool limit',
+                       'actual deadline with checkpoint reserve', 'exact limit/error, elapsed time',
+                       'cumulative attempted/prepared/delivered/verified/blocked counts',
+                       'No invented budgets or waiting for next schedule after one artifact'):
+            self.assertIn(phrase, self.procedure)
+
+    def test_compact_work_pages_require_fresh_source_and_page_bindings(self):
+        for phrase in ('control/shared-helper-pages/<TASK_KEY>/current.json',
+                       'source.gitBlobSha', 'Git tree metadata', 'at that SHA',
+                       'Recheck validUntil and fresh-main source metadata',
+                       'gitBlobSha or sha256', 'unexpired validUntil',
+                       'never stale pages', 'fresh bound pages and version checks',
+                       'Projections are not claims/leases'):
             self.assertIn(phrase, self.procedure)
 
     def test_launcher_does_not_copy_task_behavior(self):

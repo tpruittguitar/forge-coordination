@@ -112,3 +112,34 @@ test('priority changes between pages reset the cursor without dropping the newly
  for(const i of changed.items)i.status='RETURNED_PENDING_REVIEW';
  const last=H.next(w,task,changed.nextAfter);a.equal(last.items.length,1);a.equal(last.items[0].lane,'ENRICHMENT');
 });
+
+test('both providers can continue through 298 jobs in one invocation without a 20-item run cap',()=>{
+ for(const [taskKey,provider] of Object.entries(H.TASKS)){
+  const w=base();w.items=Array.from({length:298},(_,n)=>({...assigned('V2I-'+String(n).padStart(3,'0')),taskKey,provider}));
+  const original=JSON.stringify(w),seen=new Set();let cursor=null,pages=0;
+  for(;;){
+   const page=H.next(w,taskKey,cursor);if(!page.items.length)break;pages++;
+   a.equal(page.continuation.maxArtifactItems,20);a.equal(page.continuation.runItemCap,null);
+   a.equal(page.continuation.remainingAfterPage,298-seen.size-page.items.length);
+   a.equal(page.continuation.nextAction,page.continuation.remainingAfterPage?'CONTINUE_THIS_INVOCATION':'RECHECK_FRESH_WORK');
+   a.equal(page.continuation.advanceCursorAfter,'CHECKPOINT_EVERY_PAGE_ITEM');a.equal(page.continuation.deliveryBlockScope,'TRANSPORT_ONLY');
+   // A small output/tool limit splits a page into artifacts, not a whole-run stop.
+   for(let offset=0;offset<page.items.length;offset+=2){
+    const b={...batch({...w,items:[]}),provider,taskKey,runId:'FORGE-'+provider.toUpperCase()+'-TEST-B'+pages+'-P'+offset,
+     items:page.items.slice(offset,offset+2).map(i=>({...i,writerSubmitted:false,recommendation:'SOURCE_BLOCKED',sourceEvidence:{company:'Factory',title:'Plant Manager',location:'Austin, TX'},reason:'Exact source returned 403',researchOwner:provider,retryCondition:'Source access restored or a new exact posting'}))};
+    a.equal(H.validateBatch(b,w).valid,true);
+    for(const i of b.items){a.equal(seen.has(H.key(i)),false);seen.add(H.key(i));}
+   }
+   cursor=page.nextAfter;
+  }
+  a.equal(pages,15);a.equal(seen.size,298);a.equal(JSON.stringify(w),original);
+ }
+});
+test('artifact envelope remains bounded and disabled work never instructs continued processing',()=>{
+ const w=base();w.items=Array.from({length:21},(_,n)=>assigned('V2I-'+n));
+ a.throws(()=>H.validateBatch(batch(w),w),/INVALID_SHARED_HELPER_ENVELOPE/);
+ for(const disable of [x=>x.enabled=false,x=>x.routingActive=false,x=>x.providers[task].available=false]){
+  const disabled=structuredClone(w);disable(disabled);const page=H.next(disabled,task);
+  a.equal(page.items.length,0);a.equal(page.continuation.remainingAfterPage,0);a.equal(page.continuation.nextAction,'RECHECK_FRESH_WORK');
+ }
+});

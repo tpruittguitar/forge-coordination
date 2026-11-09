@@ -3,6 +3,7 @@
 const path=require('node:path'),S=require('../programmed-coordinator/store.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
 const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok'};
+const MAX_ARTIFACT_ITEMS=20;
 const CLOSED=new Set(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE']);
 const active=i=>!CLOSED.has(i.status), key=i=>i.primaryId||i.key;
 const proof=x=>typeof x==='string'&&x.trim().length>0;
@@ -32,7 +33,7 @@ function load(root=ROOT){return validateWork(S.read(root,FILE));}
 function reservedKeys(w){return new Set(w?.enabled&&w.routingActive?w.items.filter(active).flatMap(i=>[key(i),...i.aliases||[]]):[]);}
 function validateBatch(b,w=load()){
  validateWork(w);
- if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||TASKS[b.taskKey]!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||(!b.items.length&&b.mode!=='READINESS_ONLY')||b.items.length>20)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
+ if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||TASKS[b.taskKey]!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||(!b.items.length&&b.mode!=='READINESS_ONLY')||b.items.length>MAX_ARTIFACT_ITEMS)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
  if(b.mode!==undefined&&b.mode!=='READINESS_ONLY')throw Error('INVALID_SHARED_HELPER_MODE');
  if(b.mode==='READINESS_ONLY'){
   // A provider tests its actual return transport before receiving job assignments.
@@ -84,8 +85,10 @@ function next(w,taskKey,after=null,now=Date.now()){
   if(cursor.version!==cursorVersion)cursorReset=true; // Changed priority/ownership: resume at current eligible work, never skip it.
   else{index=mine.findIndex(i=>key(i)===cursor.after);if(index<0)throw Error('UNKNOWN_SHARED_CURSOR');}
  }
- const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),items=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(i=>eligible.has(key(i))).slice(0,20):[];
- return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,items,total:all.length,nextAfter:items.length?'SHARED:'+Buffer.from(JSON.stringify({taskKey,after:key(items.at(-1)),version:cursorVersion})).toString('base64url'):null,cursorReset,canonicalCompletion:false};
+ const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),remaining=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(i=>eligible.has(key(i))):[],items=remaining.slice(0,MAX_ARTIFACT_ITEMS);
+ // Artifact bounds are transport constraints, never a provider's run budget.
+ const continuation={maxArtifactItems:MAX_ARTIFACT_ITEMS,runItemCap:null,remainingAfterPage:remaining.length-items.length,nextAction:remaining.length>items.length?'CONTINUE_THIS_INVOCATION':'RECHECK_FRESH_WORK',advanceCursorAfter:'CHECKPOINT_EVERY_PAGE_ITEM',deliveryBlockScope:'TRANSPORT_ONLY'};
+ return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,continuation,items,total:all.length,nextAfter:items.length?'SHARED:'+Buffer.from(JSON.stringify({taskKey,after:key(items.at(-1)),version:cursorVersion})).toString('base64url'):null,cursorReset,canonicalCompletion:false};
 }
 function validateRouting(batch,before,current){
  for(const item of batch.items){const k=key(item),a=before.items.find(i=>key(i)===k),b=current.items.find(i=>key(i)===k);
@@ -101,4 +104,4 @@ function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPen
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={FILE,TASKS,LANES,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};

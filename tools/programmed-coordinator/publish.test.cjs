@@ -47,3 +47,28 @@ test('retained safe revision allows independent work during audit outage, but re
  fs.unlinkSync(p.join(f.local,'unsafe-code.js'));fs.mkdirSync(p.resolve(f.local,g(f.local,'rev-parse','--git-path','rebase-merge')));
  a.throws(()=>retainedSafe(f.local),/Interrupted Git operation/);
 });
+function sharedFixture(root){const H=require('../helper-routing/shared.cjs');save(root,H.FILE,{schema:'forge.shared-helper-work.v1',assignmentId:'publish-test',enabled:true,routingActive:true,providers:Object.fromEntries(Object.entries(H.TASKS).map(([t,p])=>[t,{provider:p,available:true}])),items:[{key:'job',kind:'INTAKE',taskKey:'FORGE_CLAUDE_SHARED_HELPER',provider:'Claude',assignmentVersion:1,sourceVersion:'source',status:'ASSIGNED'}]});return H;}
+test('derived current indexes publish with immutable pages, reject retained and uncommitted page edits',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs');sharedFixture(f.local);P.generate(f.local,{checkLock(){}});a.equal(publish(f.local).published,true);
+ const index=JSON.parse(fs.readFileSync(p.join(f.local,P.indexPath('FORGE_CLAUDE_SHARED_HELPER')))),file=index.pages[0].file;
+ fs.appendFileSync(p.join(f.local,file),' ');a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/Immutable/);a.throws(()=>publish(f.local),/Immutable/);commit(f.local,'bad page edit');a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/immutable/);a.throws(()=>publish(f.local),/TAMPERED|INVALID_IMMUTABLE/);
+});
+test('fresh source binding checked after clean rebase; mismatched remote work never publishes stale pages',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs'),H=sharedFixture(f.local);publish(f.local);g(f.bot,'pull','--ff-only','origin','main');
+ P.generate(f.local,{checkLock(){}});const w=JSON.parse(fs.readFileSync(p.join(f.bot,H.FILE)));w.items[0].status='CONSUMED';save(f.bot,H.FILE,w);commit(f.bot,'new live source');g(f.bot,'push','origin','main');
+ a.throws(()=>publish(f.local),/STALE/);a.equal(g(f.bot,'rev-parse','HEAD'),g(f.local,'rev-parse','origin/main'));
+});
+test('independently stale main projections do not strand unrelated retained accounting or publication',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs'),H=sharedFixture(f.local),task='FORGE_CLAUDE_SHARED_HELPER';P.generate(f.local,{checkLock(){}});publish(f.local);g(f.bot,'pull','--ff-only','origin','main');
+ const w=JSON.parse(fs.readFileSync(p.join(f.bot,H.FILE)));w.items[0].status='CONSUMED';save(f.bot,H.FILE,w);commit(f.bot,'independent work update without projection');g(f.bot,'push','origin','main');
+ save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{unrelated:true});a.equal(require('./publish.cjs').retainedSafe(f.local).safe,true);a.equal(publish(f.local).published,true);
+ a.equal(require('./publish.cjs').retainedSafe(f.local).safe,true);a.throws(()=>P.validateStored(f.local),/STALE/);
+ const index=JSON.parse(fs.readFileSync(p.join(f.local,P.indexPath(task))));a.throws(()=>P.validateIndex(index,{taskKey:task,workBlobSha:P.blob(fs.readFileSync(p.join(f.local,H.FILE)))}),/STALE/);
+ // Once the stale baseline is already fetched, another unrelated receipt still publishes.
+ save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{unrelated:'again'});commit(f.local,'retained unrelated accounting');a.equal(require('./publish.cjs').retainedSafe(f.local).safe,true);a.equal(publish(f.local).published,true);
+});
+test('new unreferenced immutable pages must match their hash and provider page schema',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs');sharedFixture(f.local);P.generate(f.local,{checkLock(){}});publish(f.local);
+ const content=JSON.stringify({arbitrary:'not a provider page'})+'\n',file=P.BASE+'/FORGE_CLAUDE_SHARED_HELPER/'+require('./store.cjs').hash(content)+'.json';fs.writeFileSync(p.join(f.local,file),content);
+ a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/INVALID_IMMUTABLE/);a.throws(()=>publish(f.local),/INVALID_IMMUTABLE/);
+});
