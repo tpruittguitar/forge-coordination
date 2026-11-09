@@ -21,7 +21,7 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
   const cache = new Map();
   for (const item of Object.values(state.items)) {
     if (!select(item)) continue;
-    const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY)$/.test(state.exceptions[item.key]?.reason||'');
+    const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY|SOURCE_ROUTE_BACKOFF|FIT_RESUME_MAPPING_REQUIRED)$/.test(state.exceptions[item.key]?.reason||'');
     if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }

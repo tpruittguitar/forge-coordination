@@ -58,3 +58,23 @@ test('Workday links require independent external URL and recognized matching req
  const good=make('Plant-Manager_R123','R123');a.equal(Source.helperEvidence(good,{}).exactLink,good.postingFacts.url);
  for(const s of [make('Plant-Manager','R123'),make('Plant-Manager_R456','R123'),{...good,raw:JSON.stringify({jobPostingInfo:{jobReqId:'R123'}})}])a.equal(Source.helperEvidence(s,{}).exactLink,undefined);
 });
+test('unmapped requirements retain exact evidence without claiming resume support or blocking independent facts',()=>{
+ const unsupported='Requires a currently active specialized aerospace certification.';
+ const s={...source(),description:source().description+unsupported,degree:{text:"Bachelor's degree required",req:'REQUIRED'}};
+ const i=item();i.sourceEvidence.fit.requirements.push({quote:unsupported,competencyIds:[]});
+ const verified=Source.helperEvidence(s,i),fields=Source.enrichmentFields(verified,row);
+ a.deepEqual(verified.fitEvidence.requirements[1],{quote:unsupported,competencyIds:[]});
+ a.equal(fields.DEGREE_REQ,'REQUIRED');a.match(fields.FIT_EVIDENCE,/aerospace certification/);a.match(fields.FIT_BASIS,/manufacturing_leadership \/ NO_OBSERVED_RESUME_OVERLAP/);a.equal(fields.FIT_CONF,'LOW');
+ i.sourceEvidence.fit.requirements=[{quote:unsupported,competencyIds:[]}];a.match(Source.enrichmentFields(Source.helperEvidence(s,i),row).FIT_BASIS,/NO_OBSERVED_RESUME_OVERLAP/);
+ for(const ids of [null,'',{},['manufacturing_leadership','manufacturing_leadership'],['invented']]){i.sourceEvidence.fit.requirements=[{quote:unsupported,competencyIds:ids}];a.throws(()=>Source.helperEvidence(s,i),/MAPPING/);}
+ i.sourceEvidence.fit.requirements=[{quote:'Invented qualification that is not actually stated in the posting.',competencyIds:[]}];a.throws(()=>Source.helperEvidence(s,i),/QUOTE/);
+});
+test('omitted fit bindings derive from the current resume only after independent exact quote validation',()=>{
+ const i={sourceEvidence:{fit:{requirements:[{quote}]}}},verified=Source.helperEvidence(source(),i);
+ a.equal(verified.fitEvidence.resumeTextSha256,profile.source.textSha256);
+ a.deepEqual(verified.fitEvidence.requirements[0].competencyIds,Resume.match({description:quote},profile).matches.map(m=>m.competencyId).sort());
+ const noOverlap='Requires a currently active specialized aerospace certification.';i.sourceEvidence.fit.requirements=[{quote:noOverlap}];
+ a.deepEqual(Source.helperEvidence({...source(),description:source().description+noOverlap},i).fitEvidence.requirements[0].competencyIds,[]);
+ a.throws(()=>Source.helperEvidence(source(),i),/QUOTE/);
+ i.sourceEvidence.fit.resumeTextSha256=null;a.throws(()=>Source.helperEvidence(source(),i),/CURRENT_RESUME/);
+});

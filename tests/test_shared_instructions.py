@@ -64,7 +64,9 @@ class SharedInstructionTests(unittest.TestCase):
                        'resumeTextSha256', '30–1500', 'ID-bound ATS provenance',
                        'writerSubmitted=false', 'forge.shared-helper-batch.v1',
                        'TRANSPORT_PENDING', 'Never edit prior evidence',
-                       'SETUP ONLY', 'READINESS_ONLY zero-job probe', 'do not repeat accepted probes',
+                       'FRESH START', 'first real run', 'no prerequisite or repeated readiness probes',
+                       'TEXT_EXTRACT', 'omit sourceSha256', 'grok-shared-helper-batch-',
+                       'without PR/merge',
                        'no force push', 'verify remote SHA'):
             self.assertIn(phrase, self.procedure)
 
