@@ -41,8 +41,15 @@ def text(node):
     return ' '.join(text(c) if isinstance(c, dict) else c for c in node['children']).strip()
 
 
+def attribute_tokens(node, name):
+    # HTMLParser represents a present boolean attribute as None. It supplies no
+    # selector or microdata token; never turn it into a string or identity fact.
+    value = node['attrs'].get(name)
+    return value.split() if isinstance(value, str) else []
+
+
 def prop(node, name):
-    matches = [n for n in descendants(node) if name in n['attrs'].get('itemprop', '').split()]
+    matches = [n for n in descendants(node) if name in attribute_tokens(n, 'itemprop')]
     return matches[0] if len(matches) == 1 else None
 
 
@@ -55,7 +62,7 @@ def postings(raw):
     parser.feed(raw)
     out = []
     for node in descendants(parser.root):
-        if not any(t.rstrip('/').endswith('/JobPosting') for t in node['attrs'].get('itemtype', '').split()):
+        if not any(t.rstrip('/').endswith('/JobPosting') for t in attribute_tokens(node, 'itemtype')):
             continue
         org = prop(node, 'hiringOrganization')
         location = prop(node, 'jobLocation')
@@ -76,7 +83,7 @@ def linkedin_guest(raw):
     nodes = list(descendants(parser.root))
 
     def one_class(name, scope=nodes, tag=None):
-        matches = [n for n in scope if name in n['attrs'].get('class', '').split()
+        matches = [n for n in scope if name in attribute_tokens(n, 'class')
                    and (not tag or n['tag'] == tag)]
         return matches[0] if len(matches) == 1 else None
 
