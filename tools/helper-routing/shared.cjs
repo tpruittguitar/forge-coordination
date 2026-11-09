@@ -21,7 +21,15 @@ function load(root=ROOT){return validateWork(S.read(root,FILE));}
 function reservedKeys(w){return new Set(w?.enabled&&w.routingActive?w.items.filter(active).flatMap(i=>[key(i),...i.aliases||[]]):[]);}
 function validateBatch(b,w=load()){
  validateWork(w);
- if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||TASKS[b.taskKey]!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||!b.items.length||b.items.length>20)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
+ if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||TASKS[b.taskKey]!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||(!b.items.length&&b.mode!=='READINESS_ONLY')||b.items.length>20)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
+ if(b.mode!==undefined&&b.mode!=='READINESS_ONLY')throw Error('INVALID_SHARED_HELPER_MODE');
+ if(b.mode==='READINESS_ONLY'){
+  // A provider tests its actual return transport before receiving job assignments.
+  // It cannot smuggle job effects or claim research/Writer completion in a probe.
+  const fields=new Set(['schema','provider','taskKey','assignmentId','runId','instructionCommit','mode','returnTransport','researchPerformed','writerSubmitted','items']);
+  if(b.items.length||b.researchPerformed!==false||b.writerSubmitted!==false||!['GITHUB_PR','DRIVE'].includes(b.returnTransport)||Object.keys(b).some(k=>!fields.has(k)))throw Error('INVALID_SHARED_READINESS_PROBE');
+  return{valid:true,items:0,readinessOnly:true,productionAuthorized:false};
+ }
  const assigned=new Map(w.items.map(i=>[key(i),i])),seen=new Set();
  for(const item of b.items){
   const k=key(item),a=assigned.get(k);

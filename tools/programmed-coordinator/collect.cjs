@@ -19,12 +19,25 @@ function show(root, commit, file) {
 // Bot commits and wording updates do not discard saved source facts. Changed
 // ownership/assignment/cutover does block this return; current code rechecks facts.
 function routingProof(root, batch, current, historical = show) {
-  const registry = 'control/AI_AUTOMATION_TASKS.json', common = 'policy/current/AI_AUTOMATION_COMMON.txt';
+  const registry = 'control/AI_AUTOMATION_TASKS.json';
   const old = JSON.parse(historical(root, batch.instructionCommit, registry));
   const now = S.read(root, registry), task = now.tasks[batch.taskKey], prior = old.tasks?.[batch.taskKey];
   const route = t => t && ({owner:t.owner, route:t.route, procedure:t.procedure, executionMode:t.executionMode, workAssignments:t.workAssignments});
   if (!task || task.owner !== batch.provider || S.hash(route(task)) !== S.hash(route(prior))) throw Error('STALE_TASK_ROUTING');
-  const contractChanged = [common, task.procedure].some(file => historical(root, batch.instructionCommit, file) !== fs.readFileSync(path.join(root, file), 'utf8').replace(/\r\n/g, '\n'));
+  // Resolve both revisions separately: a wording-only contract split preserves
+  // saved facts, but still requires current-policy revalidation. Never silently
+  // fall back when a selected contract is missing or use an unchecked path.
+  const common = (registry, task) => {
+    const file = Object.hasOwn(task, 'common') ? task.common : registry.common ?? 'policy/current/AI_AUTOMATION_COMMON.txt';
+    if (typeof file !== 'string' || !/^policy\/[A-Za-z0-9_/-]+\.txt$/.test(file)) throw Error('INVALID_COMMON_CONTRACT');
+    return file;
+  };
+  const priorCommon = common(old, prior), currentCommon = common(now, task);
+  const priorContract = historical(root, batch.instructionCommit, priorCommon);
+  const currentContract = fs.readFileSync(path.join(root, currentCommon), 'utf8').replace(/\r\n/g, '\n');
+  const priorProcedure = historical(root, batch.instructionCommit, prior.procedure);
+  const currentProcedure = fs.readFileSync(path.join(root, task.procedure), 'utf8').replace(/\r\n/g, '\n');
+  const contractChanged = priorCommon !== currentCommon || priorContract !== currentContract || priorProcedure !== currentProcedure;
   const work = S.read(root, task.workAssignments), before = JSON.parse(historical(root, batch.instructionCommit, task.workAssignments));
   const partition = w => ({assignmentId: w.assignmentId, enabled: w.enabled, routingActive: w.routingActive, routing: w.routing});
   if (S.hash(partition(work)) !== S.hash(partition(before))) throw Error('STALE_ASSIGNMENT_ROUTING');
@@ -32,7 +45,7 @@ function routingProof(root, batch, current, historical = show) {
   const assignedAtRevision=Array.isArray(before.keys)?new Set(before.keys):Array.isArray(before.items)?new Set(before.items.map(i=>i.primaryId||i.key)):null;
   if(assignedAtRevision&&batch.items.some(i=>!assignedAtRevision.has(i.key||i.primaryId)))throw Error('ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION');
   if (batch.routing?.cutoverAt && batch.routing.cutoverAt !== work.routing?.cutoverAt) throw Error('STALE_REPORTED_ROUTING');
-  return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, currentPolicyRecheckRequired:true};
+  return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, commonAtInstruction:priorCommon, commonAtCurrent:currentCommon, currentPolicyRecheckRequired:true};
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
 function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!task||task.owner!==batch.provider||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}
@@ -57,7 +70,7 @@ function collect({root, state, commit, routing = routingProof}) {
       const validate = validators[batch.schema], task = registry.tasks[batch.taskKey];
       if (!validate || !task || task.owner !== batch.provider) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
       const work = S.read(root, task.workAssignments);
-      validate(batch, work);
+      const validation=validate(batch, work);
       if(legacy.has(rel)) {
         state.batches[rel]={id:batch.taskKey+':'+batch.runId,sha256,checkedAgainst:commit,status:'LEGACY_TRACKED',items:batch.items.length,
           dispositionLedger:'state/CLAUDE_HELPER_CONSUMPTION.json',productionAuthorized:false};
@@ -67,7 +80,7 @@ function collect({root, state, commit, routing = routingProof}) {
       const id = batch.taskKey + ':' + batch.runId;
       const collision = Object.values(state.batches).find(b => b.id === id && b.sha256 !== sha256);
       if (collision) throw Error('IMMUTABLE_RUN_ID_COLLISION');
-      state.batches[rel] = {id, sha256, checkedAgainst:commit, status:'VALIDATED', items:batch.items.length, ...proof};
+      state.batches[rel] = {id, sha256, checkedAgainst:commit, status:'VALIDATED', items:batch.items.length, ...(validation.readinessOnly?{readinessOnly:true,provider:batch.provider,taskKey:batch.taskKey,returnTransport:batch.returnTransport}:{}), ...proof};
       delete state.exceptions['batch:' + rel];
       if(prior?.status==='VALIDATED') continue;
       for (const item of batch.items) {
