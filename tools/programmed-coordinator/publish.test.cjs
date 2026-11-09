@@ -5,7 +5,7 @@ const g=(root,...args)=>cp.execFileSync('git',args,{cwd:root,encoding:'utf8',std
 const value=(at='2026-11-02T03:00:00Z',extra={})=>({schema:'forge.relevance-guard.v1',at,policyCommit:'same-policy',disabledRules:[],...extra});
 function save(root,f,j){fs.mkdirSync(p.dirname(p.join(root,f)),{recursive:true});fs.writeFileSync(p.join(root,f),JSON.stringify(j,null,2)+'\n');}
 function commit(root,msg){g(root,'add','.');g(root,'commit','-m',msg);}
-function fixture(t){const dir=fs.mkdtempSync(p.join(os.tmpdir(),'forge-publish-'));t.after(()=>{a.ok(p.resolve(dir).startsWith(p.resolve(os.tmpdir())+p.sep));fs.rmSync(dir,{recursive:true,force:true});});g(dir,'init','--bare','remote.git');g(dir,'clone','remote.git','local');const local=p.join(dir,'local'),remote=p.join(dir,'remote.git');g(local,'config','user.name','Test');g(local,'config','user.email','test@example.invalid');g(local,'checkout','-b','main');save(local,guard,value());commit(local,'baseline');g(local,'push','-u','origin','main');g(dir,'clone','--branch','main','remote.git','bot');const bot=p.join(dir,'bot');g(bot,'config','user.name','Bot');g(bot,'config','user.email','bot@example.invalid');return{local,bot,remote};}
+function fixture(t){const dir=fs.mkdtempSync(p.join(os.tmpdir(),'forge-publish-'));t.after(()=>{a.ok(p.resolve(dir).startsWith(p.resolve(os.tmpdir())+p.sep));fs.rmSync(dir,{recursive:true,force:true});});g(dir,'init','--bare','remote.git');g(dir,'clone','remote.git','local');const local=p.join(dir,'local'),remote=p.join(dir,'remote.git');g(local,'config','core.autocrlf','false');g(local,'config','user.name','Test');g(local,'config','user.email','test@example.invalid');g(local,'checkout','-b','main');save(local,guard,value());commit(local,'baseline');g(local,'push','-u','origin','main');g(dir,'clone','--branch','main','remote.git','bot');const bot=p.join(dir,'bot');g(bot,'config','core.autocrlf','false');g(bot,'config','user.name','Bot');g(bot,'config','user.email','bot@example.invalid');return{local,bot,remote};}
 function race(f,extra={}){save(f.local,guard,value('2026-11-02T03:25:54Z'));save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{runId:'test',transactions:[]});commit(f.local,'retained accounting');save(f.bot,guard,value('2026-11-02T03:26:58Z',extra));save(f.bot,'independent.json',{preserved:true});commit(f.bot,'independent bot observation');g(f.bot,'push','origin','main');}
 test('timestamp merge requires identical semantics, valid dates and unknown fields',()=>{a.equal(timestampMerge(value(),value('2026-11-02T04:00:00Z')).at,'2026-11-02T04:00:00Z');for(const b of [value('bad'),value(undefined,{policyCommit:'different'}),value(undefined,{disabledRules:['r']}),value(undefined,{newField:true}),value(undefined,{schema:'other'})])a.equal(timestampMerge(value(),b),null);});
 test('real concurrent timestamp conflict publishes both commits and newest observation',t=>{const f=fixture(t);race(f);const r=publish(f.local);a.equal(r.published,true);a.equal(JSON.parse(g(f.local,'show','origin/main:'+guard)).at,'2026-11-02T03:26:58Z');a.equal(JSON.parse(g(f.local,'show','origin/main:independent.json')).preserved,true);a.equal(JSON.parse(g(f.local,'show','origin/main:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'test');a.equal(g(f.local,'status','--porcelain'),'');});
@@ -71,4 +71,36 @@ test('new unreferenced immutable pages must match their hash and provider page s
  const f=fixture(t),P=require('../helper-routing/shared-pages.cjs');sharedFixture(f.local);P.generate(f.local,{checkLock(){}});publish(f.local);
  const content=JSON.stringify({arbitrary:'not a provider page'})+'\n',file=P.BASE+'/FORGE_CLAUDE_SHARED_HELPER/'+require('./store.cjs').hash(content)+'.json';fs.writeFileSync(p.join(f.local,file),content);
  a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/INVALID_IMMUTABLE/);a.throws(()=>publish(f.local),/INVALID_IMMUTABLE/);
+});
+
+test('LF attributes preserve byte-hashed shared projections through CRLF checkout and real publication rebase',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs');
+ // Use the repository's actual policy, not a test-only substitute.
+ fs.copyFileSync(p.resolve(__dirname,'../../.gitattributes'),p.join(f.local,'.gitattributes'));commit(f.local,'line ending policy');g(f.local,'push','origin','main');g(f.bot,'pull','--ff-only','origin','main');
+ g(f.local,'config','core.autocrlf','true');g(f.local,'config','core.eol','crlf');
+ const H=sharedFixture(f.local);P.generate(f.local,{checkLock(){}});commit(f.local,'retained pages');
+ const files=[H.FILE,...g(f.local,'ls-files','control/shared-helper-pages').split('\n')];
+ const original=new Map(files.map(file=>[file,fs.readFileSync(p.join(f.local,file))]));
+ for(const file of files)fs.unlinkSync(p.join(f.local,file));g(f.local,'checkout','--',...files);
+ for(const file of files)a.deepEqual(fs.readFileSync(p.join(f.local,file)),original.get(file),file);
+ save(f.bot,'independent.json',{race:true});commit(f.bot,'concurrent main');g(f.bot,'push','origin','main');
+ a.equal(publish(f.local).published,true);a.equal(P.validateStored(f.local,{allowExpired:true}).valid,true);
+ for(const file of files){a.deepEqual(fs.readFileSync(p.join(f.local,file)),original.get(file),file);a.equal(P.blob(original.get(file)),g(f.local,'rev-parse','origin/main:'+file));}
+ a.equal(g(f.local,'status','--porcelain'),'');
+});
+test('publication rejects Git normalization of otherwise valid source-bound bytes before committing',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs'),H=sharedFixture(f.local);
+ g(f.local,'config','core.autocrlf','true');const source=p.join(f.local,H.FILE);
+ fs.writeFileSync(source,fs.readFileSync(source,'utf8').replace(/\n/g,'\r\n'));P.generate(f.local,{checkLock(){}});
+ a.equal(P.validateStored(f.local).valid,true);const before=g(f.local,'rev-parse','HEAD');
+ a.throws(()=>publish(f.local),/Git bytes differ/);a.equal(g(f.local,'rev-parse','HEAD'),before);a.equal(g(f.local,'rev-parse','origin/main'),before);
+ a.equal(P.validateStored(f.local).valid,true);
+});
+test('retained committed projection is checked against Git bytes even when rebase makes no changes',t=>{
+ const f=fixture(t),P=require('../helper-routing/shared-pages.cjs'),H=sharedFixture(f.local);
+ g(f.local,'config','core.autocrlf','true');const source=p.join(f.local,H.FILE);
+ fs.writeFileSync(source,fs.readFileSync(source,'utf8').replace(/\n/g,'\r\n'));P.generate(f.local,{checkLock(){}});commit(f.local,'retained normalized source');
+ a.equal(P.validateStored(f.local).valid,true);const remote=g(f.local,'rev-parse','origin/main');
+ a.throws(()=>publish(f.local),/Git bytes differ/);a.equal(g(f.local,'rev-parse','origin/main'),remote);
+ a.equal(P.validateStored(f.local).valid,true);
 });

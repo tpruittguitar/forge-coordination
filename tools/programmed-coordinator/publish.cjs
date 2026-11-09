@@ -49,6 +49,27 @@ function validateProjectionDelta(root,files){
  const projection=files.some(f=>Pages.classify(f));
  if(projection||files.includes('control/SHARED_HELPER_WORK.json'))Pages.validateStored(root,{allowExpired:true,required:projection});
 }
+// A valid working copy is insufficient: Git clean filters/newline conversion
+// must not change the bytes that will actually be published. Check the staged
+// source, indexes and referenced pages, including newly added historical pages.
+function validateProjectionIndex(root,files){
+ const source='control/SHARED_HELPER_WORK.json';
+ if(!files.some(f=>Pages.classify(f)||f===source))return;
+ const bound=new Set([source,...files.filter(f=>Pages.classify(f))]);
+ for(const task of Object.keys(require('../helper-routing/shared.cjs').TASKS)){
+  const file=Pages.indexPath(task);if(!fs.existsSync(path.join(root,file)))continue;
+  bound.add(file);for(const page of JSON.parse(fs.readFileSync(path.join(root,file),'utf8')).pages)bound.add(page.file);
+ }
+ // Enumerate fixed prefixes rather than one argument per page: Windows has a
+ // short command-line limit, while projection history can contain many pages.
+ const staged=new Map(git(root,['ls-files','--stage','-z','--',source,Pages.BASE]).split('\0').filter(Boolean).map(line=>{
+  const match=/^\d+ ([a-f0-9]+) 0\t(.+)$/.exec(line);
+  if(!match)throw Error('Unmerged projection index; preserve checkout and lock');
+  return [match[2],match[1]];
+ }));
+ for(const file of bound)if(staged.get(file)!==Pages.blob(fs.readFileSync(path.join(root,file))))
+  throw Error('Shared projection Git bytes differ from validated bytes; preserve checkout and lock');
+}
 function retainedSafe(root){
  for(const name of ['rebase-merge','rebase-apply','MERGE_HEAD','CHERRY_PICK_HEAD'])if(fs.existsSync(path.resolve(root,git(root,['rev-parse','--git-path',name]).trim())))throw Error('Interrupted Git operation requires reconciliation');
  const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
@@ -70,7 +91,7 @@ function publish(root,{maxAttempts=4,beforePush}={}){
  const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
  for(const line of status){const f=line.slice(3);if(!allowed(f)||/[RCU]/.test(line.slice(0,2)))throw Error('Unexpected changed accounting path; preserve checkout and lock');if(!paths.has(f)&&!['??','A'].includes(line.slice(0,2).trim()))throw Error('Immutable accounting evidence changed; preserve checkout and lock');}
  validateProjectionDelta(root,[...status.map(s=>s.slice(3)),...git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean)]);
- if(status.length){git(root,['add','--',...status.map(s=>s.slice(3))]);if(git(root,['diff','--cached','--quiet'],true)===null)git(root,['-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com','commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects']);}
+ if(status.length){git(root,['add','--',...status.map(s=>s.slice(3))]);validateProjectionIndex(root,status.map(s=>s.slice(3)));if(git(root,['diff','--cached','--quiet'],true)===null)git(root,['-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com','commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects']);}
  // Always fetch, even with a clean checkout: a failed push can leave committed, unpublished receipts.
  for(let attempt=0;attempt<maxAttempts;attempt++){
   git(root,['fetch','origin','main']);
@@ -82,6 +103,7 @@ function publish(root,{maxAttempts=4,beforePush}={}){
   for(let n=0;n<changes.length;n+=2)if(!paths.has(changes[n+1])&&changes[n]!=='A')throw Error('Committed immutable evidence changed; preserve checkout and lock');
   if(git(root,['rebase','origin/main'],true)===null)finishRebase(root);
   validateProjectionDelta(root,git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean));
+  validateProjectionIndex(root,git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean));
   if(beforePush)beforePush(attempt);
   if(git(root,['push','origin','HEAD:main'],true)===null)continue;
   const sha=git(root,['rev-parse','HEAD']).trim();git(root,['fetch','origin','main']);
