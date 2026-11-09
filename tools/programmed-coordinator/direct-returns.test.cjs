@@ -73,7 +73,7 @@ test('ordinary scheduled apply processes returned enrichment before unrelated ma
 });
 test('new source parser retries only corrected failure classes once while transaction and protected fences remain intact',async t=>{
  const Source=require('./source.cjs');
- for(const reason of ['SOURCE_ROUTE_BACKOFF','FIT_RESUME_MAPPING_REQUIRED','STRUCTURED_POSTING_UNAVAILABLE']){
+ for(const reason of ['SOURCE_ROUTE_BACKOFF','FIT_RESUME_MAPPING_REQUIRED','STRUCTURED_POSTING_UNAVAILABLE','LINKEDIN_SOURCE_EXTRACTION_FAILED','MICRODATA_SOURCE_EXTRACTION_FAILED']){
   const f=fixture(t),item=f.state.items[f.key];let reads=0;
   item.status='EXCEPTION';item.sourceParserVersion='old';item.retryAfter='9999-01-01T00:00:00Z';f.state.exceptions[f.key]={reason};
   f.sourceVerify=async()=>{reads++;throw Error(reason);};await Run.inspectReturns(f);a.equal(reads,1,reason);a.equal(item.sourceParserVersion,Source.PARSER_VERSION);

@@ -34,3 +34,20 @@ test('source host backoff remains binding on public guest route',async t=>{
  const privateDir=dir(t),now=Date.parse('2026-11-09T12:00:00Z');S.save(privateDir,'source-routes.json',{'www.linkedin.com':{retryAfter:new Date(now+900000).toISOString()}});
  let calls=0;await a.rejects(Source.verify({privateDir,now,expected,item:item(),fetchPage:async()=>{calls++;return{raw:raw(),url:route.api};}}),/SOURCE_ROUTE_BACKOFF/);a.equal(calls,0);
 });
+test('boolean class attributes in real HTML parsing are absent tokens, not extraction failures or identity evidence',()=>{
+ const fixture=fs.readFileSync(path.join(__dirname,'fixtures/linkedin-guest-boolean-class.html'),'utf8');
+ const parsed=LinkedIn.posting(fixture,route,route.api),source=Source.inspectJobs([parsed],expected,quote);
+ a.equal(source.identityVerified,true);a.equal(source.degree.req,'REQUIRED');
+ for(const name of ['top-card-layout','topcard__link','top-card-layout__title','topcard__org-name-link','topcard__flavor--bullet','description__text','show-more-less-html__markup']){
+  const missing=fixture.replace(`class="${name}"`,'class');
+  a.throws(()=>LinkedIn.posting(missing,route,route.api),/STRUCTURED_POSTING_UNAVAILABLE/,name);
+ }
+ a.throws(()=>LinkedIn.posting(fixture.replace('urn:li:jobPosting:4481710055','urn:li:jobPosting:1234'),route,route.api),/IDENTITY/);
+ a.throws(()=>LinkedIn.posting(fixture,route,url),/IDENTITY/);
+});
+test('boolean microdata attributes do not crash source extraction or supply required property tokens',()=>{
+ const fixture='<div itemtype></div><section itemscope itemtype="https://schema.org/JobPosting"><span itemprop></span><h1 itemprop="title">Plant Manager</h1><span itemprop="hiringOrganization"><span itemprop="name">Factory</span></span><span itemprop="jobLocation"><span itemprop="addressLocality">Austin</span><span itemprop="addressRegion">TX</span></span><div itemprop="description">'+quote.repeat(10)+'</div></section>';
+ a.equal(Source.inspect(fixture,expected).identityVerified,true);
+ a.throws(()=>Source.inspect(fixture.replace('itemprop="title"','itemprop'),expected),/IDENTITY/);
+ a.throws(()=>Source.inspect(fixture.replace('itemtype="https://schema.org/JobPosting"','itemtype'),expected),/STRUCTURED_POSTING_UNAVAILABLE/);
+});

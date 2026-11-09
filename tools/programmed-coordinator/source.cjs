@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261109-shared-helper-evidence-v3+'+require('../enrich-ats-pay/qualification').VERSION;
+const PARSER_VERSION='20261109-shared-helper-evidence-v4+'+require('../enrich-ats-pay/qualification').VERSION;
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
 function location(s){
