@@ -25,7 +25,7 @@ const salaryContext=(!process.env.ENRICH_MASTER_FILE||process.env.ENRICH_CONTEXT
 if(salaryContext&&salaryContext.schema!=='forge.company-site-context.v1')throw Error('Invalid shared salary context schema');
 const contextKey=r=>crypto.createHash('sha256').update(JSON.stringify(Context.lookup(r,salaryContext||{}))).digest('hex');
 const modelFields=r=>salaryContext?{SALARY_MODEL_VERSION:Context.VERSION,SALARY_CONTEXT_KEY:contextKey(r)}:{};
-const Recovery=require('./recovery');
+const Recovery=require('./recovery'),EmployerCacheStore=require('./employer-cache-store');
 const ROOT = path.resolve(__dirname, '../..'), CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 if(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_CONFIG)Object.assign(CONFIG,JSON.parse(process.env.ENRICH_TEST_CONFIG));
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
@@ -241,7 +241,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(!opts.noNetwork)sourceSearch?.count(est);
     return est;
   }
-  const empCache = fs.existsSync(EMPLOYER_CACHE) ? JSON.parse(fs.readFileSync(EMPLOYER_CACHE, 'utf8')) : { employers: {} }; empCache.employers = empCache.employers || {};
+  const empCache = EmployerCacheStore.read(EMPLOYER_CACHE); empCache.employers = empCache.employers || {};
   empCache.sourceSearch=empCache.sourceSearch||{};
   const postingCache=PostingCache.create({cache:empCache});stats.posting_cache=postingCache.stats;
   function sourcePage(a){if(SourceSearch.firstParty(a.sourceUrl,a.co)||(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_PUBLIC_PAGES))return P.publicUrl(a.sourceUrl);const r=rows.concat(archiveRows).find(r=>r.PRIMARY_ID===a.id);if(!r||Context.norm(r.COMPANY)!==Context.norm(a.co)||Context.norm(r.TITLE)!==Context.norm(a.title)||Context.norm(r.LOCATION)!==Context.norm(a.location))return null;const url=L.atsFor(r.p)?.page;return url&&SourceSearch.firstParty(url,a.co)?P.publicUrl(url):null;}
@@ -560,7 +560,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   Object.keys(empCache.employers).forEach(co => { const e = empCache.employers[co].filter(x => Date.now() - Date.parse(x.seen) < 60 * 864e5).sort((a, b) => String(b.seen).localeCompare(String(a.seen))).slice(0, 50); if (e.length) empCache.employers[co] = e; else delete empCache.employers[co]; });   // Grok QA #23: prune > 60 d, newest 50 per employer
   for(const [k,v]of Object.entries(empCache.sourceSearch))if(Date.now()-Date.parse(v.at)>60*864e5)delete empCache.sourceSearch[k];
   postingCache.prune();
-  fs.mkdirSync(path.dirname(EMPLOYER_CACHE), { recursive: true }); fs.writeFileSync(EMPLOYER_CACHE, JSON.stringify(empCache, null, 1) + '\n');   // public posting data: kept in dry runs too
+  EmployerCacheStore.write(EMPLOYER_CACHE,empCache);   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   if(!DRY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(BENCHMARK_FILE,JSON.stringify(benchmarks,null,2)+'\n');
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');

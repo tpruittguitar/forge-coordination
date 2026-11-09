@@ -10,7 +10,7 @@ function sourceRun(t,lines,responses,config={},cache){
  t.after(()=>{outputs.forEach((p,i)=>{if(before[i])fs.writeFileSync(p,before[i]);else fs.rmSync(p,{force:true});});fs.rmSync(dir,{recursive:true,force:true});});
  fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));if(cache)fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config)},stdio:'pipe'});
- return {cache:JSON.parse(fs.readFileSync(path.join(dir,'emp.json'))),report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
+ return {cache:require('./employer-cache-store').read(path.join(dir,'emp.json')),report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
 }
 const exactPosting=()=>'<script type="application/ld+json">'+JSON.stringify({'@type':'JobPosting',title:'Director of Quality',hiringOrganization:{name:'Acme'},jobLocation:{address:{addressLocality:'Dayton',addressRegion:'OH'}},description:'Lead manufacturing quality and production operations. '.repeat(12)+'Bachelor degree required.',baseSalary:{currency:'USD',value:{unitText:'YEAR',minValue:180000,maxValue:220000}}})+'</script>';
 test('failed ATS aliases fetch one endpoint and do not crowd out a genuinely different fallback',t=>{
@@ -84,7 +84,7 @@ test('live estimation route connects the shared source selector after target che
  const run=()=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
  try{
   fs.writeFileSync(master,row(1,'V2I-TARGET','Director of Quality','Dayton, OH','ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/333; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));
-  let out=run();const full=Object.values(JSON.parse(fs.readFileSync(path.join(dir,'emp.json'))).postingEvidence);assert.equal(full.length,3,'target ATS and both comparable full postings retained');assert.ok(full.every(e=>e.identityVerified&&e.text.length>=300&&e.url&&e.at));assert.equal(out.pay_source_search.found,2);assert.equal(out.pay_source_search.estimates_with_profile_sources,1);assert.equal(out.sample[0].fields.SALARY_BASE_HIGH,260000);assert.equal(out.sample[0].fields.SALARY_BASIS,'FORGE-ESTIMATE','other company pay is a comparable, never target posted pay');
+  let out=run();const full=Object.values(require('./employer-cache-store').read(path.join(dir,'emp.json')).postingEvidence);assert.equal(full.length,3,'target ATS and both comparable full postings retained');assert.ok(full.every(e=>e.identityVerified&&e.text.length>=300&&e.url&&e.at));assert.equal(out.pay_source_search.found,2);assert.equal(out.pay_source_search.estimates_with_profile_sources,1);assert.equal(out.sample[0].fields.SALARY_BASE_HIGH,260000);assert.equal(out.sample[0].fields.SALARY_BASIS,'FORGE-ESTIMATE','other company pay is a comparable, never target posted pay');
   out=run();assert.equal(out.pay_source_search.cache_hits,2);assert.equal(out.pay_source_search.reads,1,'only the third uncached candidate is read on the second run');
   const beforeReads=fs.readFileSync(reads,'utf8');fs.writeFileSync(master,row(1,'V2I-TARGET','Director of Quality','Dayton, OH','ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/111; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));out=run();assert.equal(out.sample[0].fields.SALARY_BASIS,'EMPLOYER_POSTED');assert.equal(out.sample[0].fields.SALARY_BASE_HIGH,210000);assert.equal(out.pay_source_search.reads,0);assert.equal(fs.readFileSync(reads,'utf8'),beforeReads);
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
@@ -236,8 +236,8 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
     assert.strictEqual(out.archive_anchors, 1, 'archived posted pay is a comparable');
     assert.strictEqual(by['V2I-00000000Z001'].source, 'SAME_EMPLOYER'); assert.match(by['V2I-00000000Z001'].basis_detail, /Plant Manager \(WA\) \$190K-\$240K/);
     assert.strictEqual(out.salary_review.estimate_planned, 1); assert.strictEqual(by['V2I-00000000U001'].basis, 'ACTIVE_REVIEW'); assert.strictEqual(by['V2I-00000000U001'].source, 'COMPARABLES');
-    assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.zeta.length, 1, 'cache kept, not duplicated');
-    assert.strictEqual(JSON.parse(fs.readFileSync(emp, 'utf8')).employers.oldco, undefined, 'entries older than 60 days are pruned');
+    assert.strictEqual(require('./employer-cache-store').read(emp).employers.zeta.length, 1, 'cache kept, not duplicated');
+    assert.strictEqual(require('./employer-cache-store').read(emp).employers.oldco, undefined, 'entries older than 60 days are pruned');
     assert.strictEqual(out.est_same_employer, 2, 'one missing-pay estimate and one active estimate review');
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
