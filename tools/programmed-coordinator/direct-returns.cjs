@@ -60,7 +60,7 @@ function settleShared({root,state,snapshot,select,checkLock}){
   if(remaining)reservation.remainingFields=remaining;
   updated++;
  }
- if(updated){checkLock();S.save(root,H.FILE,work);}
+ if(updated){checkLock();S.save(root,H.FILE,work);require('../helper-routing/shared-pages.cjs').generate(root,{checkLock});}
  return{updated,newAssignments:0};
 }
 function capture({root,privateDir,commit,runId,apply,config=require('../routine-handoffs/run.cjs').settings(privateDir)}){
