@@ -1,0 +1,242 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-09T12:51:28.868Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_KNOWN_COORDINATOR_ACCOUNTING_HOLD",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "3fad13ff77e51fe864748fc6e278df4d4f70a353",
+    "foremanCockpit": "5e19cceef7345df4b51a1d9cc0b8708702fa1f7f",
+    "forgeCoordination": "3fad13ff77e51fe864748fc6e278df4d4f70a353"
+  },
+  "sourceEvidenceSha256": "0a3eea82dc2acf8043c0c585e74253b3d0485ade9fd9e40a4f741f3f7387fb10",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": false,
+    "explorerUI": false
+  },
+  "nativeReadbackAt": "2026-11-09T12:49:00.852001Z",
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "5e19cce",
+      "failedNotice": "Unchanged incomplete failure notice with no request identity or timestamp.",
+      "fileQueueThroughputOnly": true,
+      "productionLockPresent": false
+    },
+    "github": {
+      "foreman-cockpit": {
+        "head": "5e19cceef7345df4b51a1d9cc0b8708702fa1f7f",
+        "sample": 15,
+        "failures": 0,
+        "conclusions": {
+          "success": 15
+        },
+        "durationsSeconds": [
+          17,
+          6,
+          7,
+          13,
+          17,
+          1685,
+          15,
+          16,
+          1758,
+          15,
+          16,
+          7,
+          1718,
+          16,
+          16
+        ],
+        "openPRs": 1,
+        "oldestPR": {
+          "number": 278,
+          "title": "Separate Writer private config and verify resume metadata",
+          "updated_at": "2026-11-07T10:06:58Z"
+        }
+      },
+      "forge-coordination": {
+        "head": "3fad13ff77e51fe864748fc6e278df4d4f70a353",
+        "sample": 15,
+        "failures": 0,
+        "conclusions": {
+          "in_progress": 2,
+          "success": 12,
+          "pending": 1
+        },
+        "durationsSeconds": [
+          36,
+          26,
+          26,
+          41,
+          57,
+          30,
+          367,
+          39,
+          43,
+          174,
+          25,
+          28
+        ],
+        "openPRs": 39,
+        "oldestPR": {
+          "number": 201,
+          "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+          "updated_at": "2026-11-02T23:10:58Z"
+        }
+      }
+    },
+    "coordinator": {
+      "lastReportAt": "2026-11-09T08:25:28.909Z",
+      "latestAttemptAt": "2026-11-09T12:50:24.8024632Z",
+      "status": "AUDIT_PENDING",
+      "writerSubmissions": 0,
+      "retainedTemporaryReport": true,
+      "pendingPreserved": true,
+      "schedulerResult": 0,
+      "schedulerResultDoesNotProveProcessing": true
+    },
+    "intakeLatch": {
+      "blocking": 0,
+      "quarantined": 71,
+      "quarantineIsNotCompletion": true
+    },
+    "activity": {
+      "publishedAt": "2026-11-09T12:31:32.787Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-08T00:31:32.787Z",
+        "to": "2026-11-09T12:31:32.787Z",
+        "verification": {
+          "count": 353,
+          "perHour": 9.805555555555555,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 113,
+          "perHour": 3.138888888888889,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 52,
+          "perHour": 1.4444444444444444,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 0,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 0,
+          "sources": [],
+          "error": null
+        },
+        "discovery": {
+          "count": 262,
+          "windowHours": 36,
+          "perHour": 7.277777777777778,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 262,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-09T12:27:49.422Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      },
+      "sources": {
+        "Pay enrichment (GitHub)": {
+          "writes": 4,
+          "inserts": 0,
+          "updates": 18,
+          "otherChanges": 0,
+          "jobs": 17
+        },
+        "Automatic intake (GitHub)": {
+          "writes": 7,
+          "inserts": 7,
+          "updates": 0,
+          "otherChanges": 0,
+          "jobs": 7
+        },
+        "Automatic posting checks": {
+          "writes": 1,
+          "inserts": 0,
+          "updates": 10,
+          "otherChanges": 0,
+          "jobs": 10
+        },
+        "Other work": {
+          "writes": 20,
+          "inserts": 29,
+          "updates": 53,
+          "otherChanges": 0,
+          "jobs": 79
+        },
+        "Posting validation": {
+          "writes": 1,
+          "inserts": 0,
+          "updates": 4,
+          "otherChanges": 0,
+          "jobs": 4
+        }
+      }
+    },
+    "enrichment": {
+      "at": "2026-11-09T01:14:00.694Z",
+      "recoveryStatuses": {
+        "EVIDENCE_FOUND": 6,
+        "SOURCE_RESEARCH_REQUIRED": 588,
+        "WRITER_REQUEST_PENDING_NO_REPLAY": 75,
+        "NOT_YET_ATTEMPTED": 27
+      }
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-09T12:31:32.756Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-09T12:31:33.788Z",
+          "lastSuccessAt": "2026-11-09T12:31:33.788Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-09T12:32:29.768Z",
+          "lastSuccessAt": "2026-11-09T12:32:29.768Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-09T12:32:34.383Z",
+          "lastSuccessAt": "2026-11-09T12:32:34.383Z",
+          "attempts": 1
+        }
+      }
+    },
+    "limitations": [
+      "Explorer live browser outbox/polling not observed; no UI health claim.",
+      "Writer log rotation and server internal fences not independently exposed by status; no proof claimed.",
+      "Empty file queue does not measure direct API work; activity separates intake and enrichment.",
+      "Operations run telemetry not independently read in this audit; missing telemetry never means zero work."
+    ]
+  },
+  "nextActions": [
+    "Gofer/code recovery: reconcile retained temporary report and publish accounting without replaying originals.",
+    "Continue independent Writer lanes while accounting remains held.",
+    "Retain stale evidence PRs and all pending research/source obligations; no automatic merge or scope change."
+  ],
+  "notification": "DONT_NOTIFY",
+  "notificationReason": "Known blocker was already reported; no new failed workflows, Writer freeze, queue hold or required personal decision."
+}
