@@ -1,0 +1,517 @@
+{
+  "schema": "forge.shared-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_SHARED_HELPER",
+  "assignmentId": "SHARED-HELPERS-20261109-V1",
+  "runId": "FORGE-CLAUDE-SHARED-20261109T0802Z-B001",
+  "instructionCommit": "d033f8bb60d4842de32b6d433e55a4f3a6a21654",
+  "items": [
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-37DDC365CC78",
+      "assignmentVersion": 1,
+      "sourceVersion": "4fe0d980a1baca8f62530de9f5881ad47af6ab2d05d84ad3b378903abcb2fb3f",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Anduril Industries",
+        "title": "Senior Manager, Test Engineering",
+        "location": "McHenry, MS",
+        "url": "https://www.indeed.com/viewjob?jk=0ab66c2a4259c0c6",
+        "fetchUrl": "https://www.indeed.com/viewjob?jk=0ab66c2a4259c0c6",
+        "observedAt": "2026-11-09T07:57:58Z",
+        "sourceSha256": "8cdaba935aa3a9cd2b6a1e7512834f4f926aa921d885873135a29eae2f903e0a"
+      },
+      "reason": "Only assigned source is Indeed viewjob jk=0ab66c2a4259c0c6, which returned HTTP 401 (bot/auth wall); no posting text captured, so SALARY/DEGREE/FIT are not asserted (unreadable source never proves NOT_STATED).",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns a readable exact Anduril ATS (Greenhouse) or LinkedIn requisition for \"Senior Manager, Test Engineering\"."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-3819C935295E",
+      "assignmentVersion": 1,
+      "sourceVersion": "9ebb359ac7988433d6e3029aadae42a2d72ab0e137866ec0cc506b61151959fe",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Collins Aerospace (RTX)",
+        "title": "Director Chief Manufacturing Engineer (Onsite)",
+        "location": "Riverside, CA",
+        "url": "https://globalhr.wd5.myworkdayjobs.com/en-US/REC_RTX_Ext_Gateway/job/US-CA-RIVERSIDE-8200B1--8200-Arlington-Ave--BLDG-B1/Director-Chief-Manufacturing-Engineer--Onsite-_01864912",
+        "fetchUrl": "https://globalhr.wd5.myworkdayjobs.com/wday/cxs/globalhr/REC_RTX_Ext_Gateway/job/US-CA-RIVERSIDE-8200B1--8200-Arlington-Ave--BLDG-B1/Director-Chief-Manufacturing-Engineer--Onsite-_01864912",
+        "observedAt": "2026-11-09T07:57:59Z",
+        "sourceSha256": "d1fc827893a0d66bf64b75b0cc0776e895ce41f4b73afcb6cbeb4b76befcfc38"
+      },
+      "reason": "RTX Workday CXS endpoint for requisition 01864912 returned HTTP 403 (permission denied); no posting text captured, so SALARY/FIT are not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator supplies a readable exact mirror of RTX requisition 01864912 (e.g., LinkedIn guest posting) or a browser-capable collector captures the Workday page."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-3A8E668EF373",
+      "assignmentVersion": 1,
+      "sourceVersion": "0e582ccb66840a1e4038536a8b9a9f47910bcc42e5f1a6bf9e1b0515b88c0270",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Constellation Energy",
+        "title": "Senior Staff Engineer, Mechanical Analytical",
+        "location": "Warrenville, IL",
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010314895242",
+        "fetchUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010314895242",
+        "observedAt": "2026-11-09T07:57:59Z",
+        "sourceSha256": "d11a20d8637dfb532c95631b0ac9523699b94948fc839d9279aae33833777948"
+      },
+      "reason": "Only assigned source is a Glassdoor partner jobListing link, which returned HTTP 403 (bot block page); no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns an exact Constellation Energy ATS or LinkedIn requisition URL for this role."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-3FBF991C9C6D",
+      "assignmentVersion": 1,
+      "sourceVersion": "6b636f397fd64aec40633293dd966043f62b47fe98b4f2f56d881fd0a6331a5c",
+      "writerSubmitted": false,
+      "recommendation": "RESEARCH_INCOMPLETE",
+      "sourceEvidence": {
+        "company": "SpaceX",
+        "title": "Director, Starlink Production (Assembly)",
+        "location": "Bastrop, TX",
+        "url": "https://job-boards.greenhouse.io/spacex/jobs/8697970002",
+        "fetchUrl": "https://boards-api.greenhouse.io/v1/boards/spacex/jobs/8697970002?pay_transparency=true",
+        "observedAt": "2026-11-09T07:57:59Z",
+        "sourceSha256": "85983900c3c0fd4ce152854e41a85a6f07d8ffff158542d85af1e626c12ea1f7"
+      },
+      "reason": "Greenhouse SpaceX job 8697970002 now reads title \"Starlink Production Associate\" (Bastrop, TX) while canonical is \"Director, Starlink Production (Assembly)\"; identity not confirmed, so FIT is not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator/Writer confirms the correct requisition ID for the canonical Director role or supplies the exact canonical source."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-4004C4ED6BB6",
+      "assignmentVersion": 1,
+      "sourceVersion": "04feec58569df60f8268c4694f7fba5238b8d7be9e30ff36b3dd83d637468639",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Commonwealth Fusion Systems",
+        "title": "Vice President of Supply Chain",
+        "location": "Devens, MA",
+        "url": "https://api.lever.co/v0/postings/cfsenergy/bb2c83e7-8901-4652-911b-e2e8befed3a8",
+        "fetchUrl": "https://api.lever.co/v0/postings/cfsenergy/bb2c83e7-8901-4652-911b-e2e8befed3a8",
+        "observedAt": "2026-11-09T07:58:00Z",
+        "sourceSha256": "66f6c1fa69105316e3220df0561d630283dadaec8478dab1994692912daefb53"
+      },
+      "reason": "Lever posting cfsenergy/bb2c83e7-8901-4652-911b-e2e8befed3a8 returned HTTP 404 (posting no longer published); no posting text captured, so DEGREE is not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator confirms a live exact Commonwealth Fusion Systems requisition source or retires the job as closed."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-408711EF12A2",
+      "assignmentVersion": 1,
+      "sourceVersion": "1813c0e4c9360daa8759338df863bae81486dca1c78053b002ea4fd0c38ec6ec",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Clarience Technologies",
+        "title": "Production Manager",
+        "location": "McElhattan, PA",
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010265459816",
+        "fetchUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010265459816",
+        "observedAt": "2026-11-09T07:58:00Z",
+        "sourceSha256": "a398a17fe0afc45e08b9f3450d1a130018a858c1ad7574c09cb2964d6491e9c1"
+      },
+      "reason": "Only assigned source is a Glassdoor partner jobListing link, which returned HTTP 403 (bot block page); no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns an exact Clarience Technologies ATS or LinkedIn requisition URL for \"Production Manager\"."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-438160535555",
+      "assignmentVersion": 1,
+      "sourceVersion": "c789d5c7c90b6a52948a475e23e2c09eb2bc47df788c461df86b3d887bbeaafa",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "NORTHROP GRUMMAN",
+        "title": "Principal Engineer Mission Assurance",
+        "location": "Sunnyvale, CA, United States",
+        "url": "https://jobs.buildsubmarines.com/jobs/641379524-principal-engineer-mission-assurance-at-northrop-grumman",
+        "fetchUrl": "https://jobs.buildsubmarines.com/jobs/641379524-principal-engineer-mission-assurance-at-northrop-grumman",
+        "observedAt": "2026-11-09T07:58:00Z",
+        "sourceSha256": "bb93f7aa6296e9167edca1a62db4c994be9523d6ee315d8f2f641b5600c89269"
+      },
+      "reason": "Assigned jobs.buildsubmarines.com aggregator page returned HTTP 403; no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns the exact Northrop Grumman ATS requisition URL for \"Principal Engineer Mission Assurance\"."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-465DDC170E72",
+      "assignmentVersion": 1,
+      "sourceVersion": "d59da611eba73f9e21ccbe84f40786821bac2596852b2ae80c4f9aa31e3cdc45",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Timberlab",
+        "title": "Senior Director, Manufacturing",
+        "location": "Portland, Oregon, United States",
+        "url": "https://www.ihiremanufacturing.com/jobs/view/543417362",
+        "fetchUrl": "https://www.ihiremanufacturing.com/jobs/view/543417362",
+        "observedAt": "2026-11-09T07:58:00Z",
+        "sourceSha256": "360514d27e71a0902a42e5502ef22300525fda93f5ec65e1516514c3e8104a2d",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "10+ years of manufacturing leadership experience, with significant time spent in a senior role."
+            },
+            {
+              "quote": "Experience with Lean process implementation across multiple sites."
+            },
+            {
+              "quote": "Hands-on experience in operations and supply chain management within the wood manufacturing industry is preferred."
+            },
+            {
+              "quote": "Knowledge of engineered wood products manufacturing and US building codes."
+            },
+            {
+              "quote": "Strong business acumen, strategic thinking, and team leadership skills."
+            }
+          ]
+        },
+        "quote": "10+ years of manufacturing leadership experience, with significant time spent in a senior role.",
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.ihiremanufacturing.com/jobs/view/543417362"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes; competencyIds/resume hash omitted for code derivation from current profile."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-5AB31DC8CB67",
+      "assignmentVersion": 1,
+      "sourceVersion": "b564dde0c2e667c73bb965504c56af844e55d28895c5d53bf25b5314030d718c",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Shield AI",
+        "title": "Staff Engineer, Quality (R4840)",
+        "location": "Seattle, Washington",
+        "url": "https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5",
+        "fetchUrl": "https://api.lever.co/v0/postings/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5",
+        "observedAt": "2026-11-09T07:58:01Z",
+        "sourceSha256": "4a82da7a4ae915740a1a272242c5c5a91389945b38fb7311f9a2c188f9c101c3",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "5+ years of experience in Quality, Manufacturing, or Process Engineering roles"
+            },
+            {
+              "quote": "Demonstrated experience leading root cause analysis and implementing effective corrective and preventive actions (RCA/CAPA)"
+            },
+            {
+              "quote": "Strong knowledge of quality systems and standards (AS9100 or similar)"
+            },
+            {
+              "quote": "Experience supporting new product introduction (NPI) and scaling production in a manufacturing environment"
+            },
+            {
+              "quote": "Proficiency in statistical analysis and process control methods (SPC, capability analysis, etc.)"
+            }
+          ]
+        },
+        "quote": "5+ years of experience in Quality, Manufacturing, or Process Engineering roles",
+        "proposedRawFields": {
+          "SOURCE_URL": "https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes; competencyIds/resume hash omitted for code derivation from current profile."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-5EE72B71CC69",
+      "assignmentVersion": 1,
+      "sourceVersion": "772b255d70f64f3c02d89117f857412fe086a0033fafa5d0deb2b76708ea184b",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Resource Hub Consulting",
+        "title": "VP of Manufacturing",
+        "location": "Sterling, VA",
+        "url": "https://www.ihiremanufacturing.com/jobs/view/544833240",
+        "fetchUrl": "https://www.ihiremanufacturing.com/jobs/view/544833240",
+        "observedAt": "2026-11-09T07:58:01Z",
+        "sourceSha256": "2280cb8e3cf53cddbdf329230d1bd8337d30f8bfe76aec33132371b6991234be",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Minimum of 10 years of progressive leadership experience in manufacturing or plant operations, specializing in sous vide production."
+            },
+            {
+              "quote": "At least 5 years of production management experience."
+            },
+            {
+              "quote": "Experience managing production audits, Good Manufacturing Practices (GMPs), and food safety standards within the food manufacturing industry."
+            },
+            {
+              "quote": "Demonstrated ability to improve production performance in a manufacturing environment."
+            },
+            {
+              "quote": "Proven track record of successful plant leadership, team development, mentoring, and cross-functional collaboration."
+            }
+          ]
+        },
+        "quote": "Minimum of 10 years of progressive leadership experience in manufacturing or plant operations, specializing in sous vide production.",
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.ihiremanufacturing.com/jobs/view/544833240"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes; competencyIds/resume hash omitted for code derivation from current profile."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-5F22561E7E6F",
+      "assignmentVersion": 1,
+      "sourceVersion": "369eef4cc85c0ef1dabfeb5a7fd7772de8c2f8833b40d7cc8453520c60a1f81f",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Hadrian",
+        "title": "Director, Mechanical Engineering",
+        "location": "Los Angeles, CA",
+        "url": "https://www.linkedin.com/jobs/view/4482249577",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482249577",
+        "observedAt": "2026-11-09T07:58:02Z",
+        "sourceSha256": "2aa657e0f0fbc530fe6ade8b3438ad66649ea336ee5bae9406635a9c823149a5",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "12+ years designing automation equipment, test equipment or production machinery, including several years leading mechanical engineers."
+            },
+            {
+              "quote": "A proven record of delivering automation equipment from concept through commissioning on production lines that run around the clock."
+            },
+            {
+              "quote": "Deep, current mechanical design skills: mechanisms, fixtures, end-of-arm tooling, tolerance stacks, actuator sizing and machine safety."
+            },
+            {
+              "quote": "A record of growing engineers and earning the trust of the technicians and operators who build and run your designs."
+            },
+            {
+              "quote": "You use AI and other new tools in your own engineering workflow and push your team to try new ways of working."
+            }
+          ]
+        },
+        "quote": "12+ years designing automation equipment, test equipment or production machinery, including several years leading mechanical engineers.",
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4482249577",
+          "DEGREE_REQ": "NOT_STATED",
+          "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4482249577"
+        }
+      },
+      "basis": "DEGREE: full posting description captured; no degree, bachelor, master, diploma or education-requirement wording present. FIT: 5 exact requirement quotes; competencyIds/resume hash omitted for code derivation from current profile."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-62F72A348819",
+      "assignmentVersion": 1,
+      "sourceVersion": "96a1f9ae2d1e0563391af0db2fba2e29cec1e4afd78905b0be85feca41cc86c0",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "VirtualVocations",
+        "title": "Senior Director of Quality Assurance",
+        "location": "Remote",
+        "url": "https://www.virtualvocations.com/job/senior-director-of-quality-assurance-3295006-i.html",
+        "fetchUrl": "https://www.virtualvocations.com/job/senior-director-of-quality-assurance-3295006-i.html",
+        "observedAt": "2026-11-09T07:58:02Z",
+        "sourceSha256": "28dd35c9305a4df05466a062fa7ccd848a137ff1e45040767cc320c2390e7344"
+      },
+      "reason": "VirtualVocations aggregator page states \"This job has been removed\" and does not name the hiring employer; the Lensa link is an email tracking redirect. No live exact employer requisition captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns a live exact employer requisition for this Senior Director of Quality Assurance role or retires it as closed."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-6366CFE2F1A4",
+      "assignmentVersion": 1,
+      "sourceVersion": "e81cea723cae48bd0889e399f9ae3e0d7fe217f97b7b7279af740a0449199534",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Blue Origin",
+        "title": "Director - Supply Chain & Logistics",
+        "location": "Huntsville, Alabama / Space Coast, Florida / Greater Seattle Area",
+        "url": "https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Director---Supply-Chain---Logistics_R62671",
+        "fetchUrl": "https://blueorigin.wd5.myworkdayjobs.com/wday/cxs/blueorigin/BlueOrigin/job/Director---Supply-Chain---Logistics_R62671",
+        "observedAt": "2026-11-09T07:58:03Z",
+        "sourceSha256": "ddfb799517b10b4a7333b19dfe79857add74379804ecbe30145a55f5f310d91d"
+      },
+      "reason": "Blue Origin Workday CXS endpoint for R62671 returned HTTP 403 (permission denied) on both assigned URL variants; no posting text captured, so SALARY/DEGREE are not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator supplies a readable exact mirror of Blue Origin R62671 or a browser-capable collector captures the Workday page."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-638C1D5E2A37",
+      "assignmentVersion": 1,
+      "sourceVersion": "bae3c1137c52ef031e853e17f7c7cd47774219938ca71f652966ce7ab92d784a",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Confidential leading plastics manufacturer (via Lumicity)",
+        "title": "Director of Quality Assurance",
+        "location": "Columbus, OH",
+        "url": "https://lumicity.io/",
+        "fetchUrl": "https://lumicity.io/",
+        "observedAt": "2026-11-09T07:58:04Z",
+        "sourceSha256": "85a270b0d8d8fddd02d24ab6052c5e574d78d9d3bb622cafd3d6d7268099f8f5"
+      },
+      "reason": "Assigned sources are the lumicity.io recruiter homepage (generic page, no requisition) and a Gmail message link (not readable by this helper; Gmail is read-only and not available in this run). No exact posting captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns an exact posting URL for this Director of Quality Assurance requisition."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-667659548FE0",
+      "assignmentVersion": 1,
+      "sourceVersion": "c77dd7db7b6e8bf1b1f4da9b2823d22ece9df48a94344d573f1efdb02c8bce08",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Blue Origin",
+        "title": "Sr Director, Launch Vehicles",
+        "location": "Florida",
+        "url": "https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Sr-Director--Launch-Vehicles_R74660",
+        "fetchUrl": "https://blueorigin.wd5.myworkdayjobs.com/wday/cxs/blueorigin/BlueOrigin/job/Sr-Director--Launch-Vehicles_R74660",
+        "observedAt": "2026-11-09T07:58:05Z",
+        "sourceSha256": "0b3966a35542a41fc131607e50489a0d2d4b2a524ecc4f5476f7b4682a1a457d",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "A demonstrated track record of building and perpetuating a high-standard safety culture in environments with significant personnel, process, or material hazards"
+            },
+            {
+              "quote": "Senior leadership experience with budget and resource management responsibility for technical/operational organizations"
+            },
+            {
+              "quote": "Experience managing multidisciplinary teams at scale, including leadership through subordinate managers/directors"
+            },
+            {
+              "quote": "A specific, demonstrated track record of driving measurable rate or throughput improvements in a complex manufacturing, assembly, or operations environment"
+            },
+            {
+              "quote": "Demonstrated ability to make high-stakes technical and operational decisions under schedule pressure"
+            }
+          ]
+        },
+        "quote": "A demonstrated track record of building and perpetuating a high-standard safety culture in environments with significant personnel, process, or material hazards",
+        "proposedRawFields": {
+          "SOURCE_URL": "https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Sr-Director--Launch-Vehicles_R74660"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes; competencyIds/resume hash omitted for code derivation from current profile."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-686B60230854",
+      "assignmentVersion": 1,
+      "sourceVersion": "ea3e42b0ece7f2340fa08254522fb56ab0d4fba73fdeaff8aa298919418711b9",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Stellantis",
+        "title": "Vehicle Engineering Quality Manager",
+        "location": "Auburn Hills, MI",
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318365860",
+        "fetchUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318365860",
+        "observedAt": "2026-11-09T07:58:05Z",
+        "sourceSha256": "c584d75b237b4911289f72d46f381a106e616e7e7888c558d9f5d7064b67dbb3"
+      },
+      "reason": "Only assigned source is a Glassdoor partner jobListing link, which returned HTTP 403 (bot block page); no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns an exact Stellantis ATS or LinkedIn requisition URL for \"Vehicle Engineering Quality Manager\"."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-6BD4C78FBBE8",
+      "assignmentVersion": 1,
+      "sourceVersion": "6d8411f90c20d3f34f709c9c487b4c062d46f350c572e66abea367c3ae9ed1a1",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Henkel",
+        "title": "Director of Operations",
+        "location": "Mentor, OH",
+        "url": "https://www.indeed.com/rc/clk/dl?jk=c01e588af8168045&from=ja&qd=RnZhMybXSk4M3QtTVGXWoczxGwOOkLKxOSNfWRdmWJY6y5emdjOJWvWbkcz6udvWhfSEdberN653Y3KO0j8gPfkYEARqEq25s1nVUTJ-Wsh6QLlopoDr7zZ5q8-YR3qt2FIKnR5SjXDVNWUNcqI5K_Fc26RFhh9vIvsuVEZRaUSRfsfe-mN0JbWGOjgB_Xj08VzbpEWGH28i-y5URlFpRBPzLgWtdTHYonq4JyD08YjyLaeypWAwLPHokLwpgyR8YzYtYIfL4g8YutHuKW888jVcC5H-EXrApjEOOiaoPkeeIGNovwAtYr-MMooCYZhFu4TDoYG6t0TrfeI_",
+        "fetchUrl": "https://www.indeed.com/rc/clk/dl?jk=c01e588af8168045&from=ja&qd=RnZhMybXSk4M3QtTVGXWoczxGwOOkLKxOSNfWRdmWJY6y5emdjOJWvWbkcz6udvWhfSEdberN653Y3KO0j8gPfkYEARqEq25s1nVUTJ-Wsh6QLlopoDr7zZ5q8-YR3qt2FIKnR5SjXDVNWUNcqI5K_Fc26RFhh9vIvsuVEZRaUSRfsfe-mN0JbWGOjgB_Xj08VzbpEWGH28i-y5URlFpRBPzLgWtdTHYonq4JyD08YjyLaeypWAwLPHokLwpgyR8YzYtYIfL4g8YutHuKW888jVcC5H-EXrApjEOOiaoPkeeIGNovwAtYr-MMooCYZhFu4TDoYG6t0TrfeI_",
+        "observedAt": "2026-11-09T07:58:13Z",
+        "sourceSha256": "419504cf9a40207fe8429a474bfb7ebe32b72dc4a3a4ed801a4fd6722355c5d0"
+      },
+      "reason": "Henkel careers URL 2258980 returned HTTP 404 and the Indeed click-tracking link returned HTTP 403; no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator confirms a live exact Henkel requisition 2258980 source or retires the job as closed."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-6C6EDF73D9E3",
+      "assignmentVersion": 1,
+      "sourceVersion": "05fefcf8ff5143252230e93f975016588484c0eb1fd94260568069252b1abf50",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Pratt & Whitney",
+        "title": "Field Supplier Quality Manager (Remote)",
+        "location": "Remote",
+        "url": "https://work.amazingcolumbusga.com/companies/pratt-whitney/jobs/95622882-field-supplier-quality-manager-remote",
+        "fetchUrl": "https://work.amazingcolumbusga.com/companies/pratt-whitney/jobs/95622882-field-supplier-quality-manager-remote",
+        "observedAt": "2026-11-09T07:58:14Z",
+        "sourceSha256": "5c44be93cdc1513db60c67b8ddc71c60b945b20d5732d61193a6b39ac2dcef3b"
+      },
+      "reason": "Job-board mirror of the exact Pratt & Whitney requisition displays \"This job is no longer accepting applications\"; closed listing, so SALARY/FIT are not asserted from it.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator confirms a live exact Pratt & Whitney requisition source or retires the job as closed."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-6CF84B0C1E4D",
+      "assignmentVersion": 1,
+      "sourceVersion": "ab4fd827b06b3df1e711409d5f7d625feb94d098679721a59f18efdf8ca213e8",
+      "writerSubmitted": false,
+      "recommendation": "RESEARCH_INCOMPLETE",
+      "sourceEvidence": {
+        "company": "DPR Construction",
+        "title": "Plant Director",
+        "location": "Atlanta, GA",
+        "url": "https://mydpr.wd5.myworkdayjobs.com/en-US/11212017/job/Atlanta-GA/Plant-Director_JR-17252-1",
+        "fetchUrl": "https://mydpr.wd5.myworkdayjobs.com/wday/cxs/mydpr/11212017/job/Atlanta-GA/Plant-Director_JR-17252-1",
+        "observedAt": "2026-11-09T07:58:15Z",
+        "sourceSha256": "31306e0526b14046e444eaf600b51fd2400985b2c6bae6df20cd4d7e39808a94"
+      },
+      "reason": "DPR Workday requisition JR-17252-1 now reads title \"Prefabrication Facility Manager\" while canonical is \"Plant Director\"; identity not confirmed, so FIT is not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator/Writer confirms whether JR-17252-1 was retitled (same requisition) or supplies the exact canonical source."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-6D65907E77BE",
+      "assignmentVersion": 1,
+      "sourceVersion": "74e22ec0bb5aa964bdf1be7fe7644b304597ca9473230f8e69668dee4a735d6b",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Textron Systems",
+        "title": "Manager External Quality",
+        "location": "Williamsport, PA",
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317069294",
+        "fetchUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317069294",
+        "observedAt": "2026-11-09T07:58:15Z",
+        "sourceSha256": "ec368f67f60f146051c752a79a8ae53cac01db8b9ed21d850c4f73bdae91bc84"
+      },
+      "reason": "Only assigned source is a Glassdoor partner jobListing link, which returned HTTP 403 (bot block page); no posting text captured.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator assigns an exact Textron Systems ATS or LinkedIn requisition URL for \"Manager External Quality\"."
+    }
+  ]
+}
