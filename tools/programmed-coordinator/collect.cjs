@@ -16,6 +16,16 @@ function show(root, commit, file) {
   if(!historyCache.has(key)) historyCache.set(key,cp.execFileSync('git', ['show', commit + ':' + file], {cwd: root, encoding: 'utf8', maxBuffer: 8e6, stdio: ['ignore','pipe','pipe']}).replace(/\r\n/g,'\n'));
   return historyCache.get(key);
 }
+// Only the evidence contract changes here: the same trusted adapter owns writes.
+// This does not revive retired routes, transfer ownership, or accept prior writes.
+function writeThroughEvidenceMigration(root,batch,prior,task) {
+  const tasks=new Set(['FORGE_CHATGPT_ENRICHMENT_RESEARCH','FORGE_CLAUDE_SHARED_HELPER','FORGE_GROK_SHARED_HELPER',
+    'FORGE_CLAUDE_INTAKE_A','FORGE_CLAUDE_INTAKE_B','FORGE_CLAUDE_ENRICHMENT','FORGE_CLAUDE_RELEVANCE_REVIEW']);
+  const schemas=new Set(['forge.shared-helper-batch.v1','forge.claude-helper-batch.v1','forge.enrichment-helper-batch.v1','forge.relevance-helper-batch.v1']);
+  return prior?.executionMode==='EVIDENCE_ONLY'&&task?.executionMode==='WRITE_THROUGH_SUPPORTED_WRITER'&&tasks.has(batch.taskKey)&&schemas.has(batch.schema)&&
+    Array.isArray(batch.items)&&batch.items.every(i=>i.writerSubmitted===false)&&
+    !S.read(root,'control/CHATGPT_OWNER_CUTOVER.json',{retired:[]}).retired?.some(r=>r.taskKey===batch.taskKey);
+}
 // Bot commits and wording updates do not discard saved source facts. Changed
 // ownership/assignment/cutover does block this return; current code rechecks facts.
 function routingProof(root, batch, current, historical = show) {
@@ -23,7 +33,9 @@ function routingProof(root, batch, current, historical = show) {
   const old = JSON.parse(historical(root, batch.instructionCommit, registry));
   const now = S.read(root, registry), task = now.tasks[batch.taskKey], prior = old.tasks?.[batch.taskKey];
   const route = t => t && ({owner:t.owner, route:t.route, procedure:t.procedure, executionMode:t.executionMode, workAssignments:t.workAssignments});
-  if (!task || task.owner !== batch.provider || S.hash(route(task)) !== S.hash(route(prior))) throw Error('STALE_TASK_ROUTING');
+  const evidenceMigration=writeThroughEvidenceMigration(root,batch,prior,task),beforeRoute=route(prior);
+  if(evidenceMigration)beforeRoute.executionMode=task.executionMode;
+  if (!task || task.owner !== batch.provider || S.hash(route(task)) !== S.hash(beforeRoute)) throw Error('STALE_TASK_ROUTING');
   // Resolve both revisions separately: a wording-only contract split preserves
   // saved facts, but still requires current-policy revalidation. Never silently
   // fall back when a selected contract is missing or use an unchecked path.
@@ -37,7 +49,7 @@ function routingProof(root, batch, current, historical = show) {
   const currentContract = fs.readFileSync(path.join(root, currentCommon), 'utf8').replace(/\r\n/g, '\n');
   const priorProcedure = historical(root, batch.instructionCommit, prior.procedure);
   const currentProcedure = fs.readFileSync(path.join(root, task.procedure), 'utf8').replace(/\r\n/g, '\n');
-  const contractChanged = priorCommon !== currentCommon || priorContract !== currentContract || priorProcedure !== currentProcedure;
+  const contractChanged = evidenceMigration || priorCommon !== currentCommon || priorContract !== currentContract || priorProcedure !== currentProcedure;
   const work = S.read(root, task.workAssignments), before = JSON.parse(historical(root, batch.instructionCommit, task.workAssignments));
   const partition = w => ({assignmentId: w.assignmentId, enabled: w.enabled, routingActive: w.routingActive, routing: w.routing});
   if (S.hash(partition(work)) !== S.hash(partition(before))) throw Error('STALE_ASSIGNMENT_ROUTING');
@@ -45,7 +57,7 @@ function routingProof(root, batch, current, historical = show) {
   const assignedAtRevision=Array.isArray(before.keys)?new Set(before.keys):Array.isArray(before.items)?new Set(before.items.map(i=>i.primaryId||i.key)):null;
   if(assignedAtRevision&&batch.items.some(i=>!assignedAtRevision.has(i.key||i.primaryId)))throw Error('ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION');
   if (batch.routing?.cutoverAt && batch.routing.cutoverAt !== work.routing?.cutoverAt) throw Error('STALE_REPORTED_ROUTING');
-  return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, commonAtInstruction:priorCommon, commonAtCurrent:currentCommon, currentPolicyRecheckRequired:true};
+  return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, ...(evidenceMigration?{writeThroughEvidenceMigration:true}:{}), commonAtInstruction:priorCommon, commonAtCurrent:currentCommon, currentPolicyRecheckRequired:true};
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
 function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!task||task.owner!==batch.provider||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}

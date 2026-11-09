@@ -63,3 +63,34 @@ test('fresh exact verified posting replaces alert text only for screening with b
  program.items.one.sourceEvidence={...e,description:unrelatedRole+' robotics',descriptionSha256:sha(unrelatedRole+' robotics')};r=check();a.equal(r.counts.READY,1);a.equal(r.items[0].record.SOURCE_URL,card.url);a.equal(r.items[0].record.TITLE,card.title);
  program.items.one.sourceEvidence=e;card.submissions=[{requestId:'original'}];f.save('state/EMAIL_RECOVERY_QUEUE.json',q);a.equal(check().counts.ORIGINAL_WRITER_FENCE,1);
 });
+test('scoped preparation preserves unrelated plan records, pending originals and source state',()=>{
+ const f=fixture('Director, Manufacturing'),before=fs.readFileSync(p.join(f.root,'state/CLAUDE_HELPER_CONSUMPTION.json'),'utf8');
+ const old=[{key:'unrelated',status:'READY',record:{TITLE:'Leave unchanged'},screen:{rank:1}},{key:'pending',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'ORIGINAL',record:{TITLE:'Original'},screen:{rank:99}}];
+ f.save('state/RELEVANCE_INTAKE_PLAN.json',{items:old});
+ let out=P.prepare({...f,onlyKeys:new Set([f.key])});a.equal(out.counts.READY,2);a.equal(out.counts.POST_IN_FLIGHT_UNKNOWN,1);
+ for(const item of old)a.deepEqual(out.items.find(i=>i.key===item.key),item);
+ a.equal(fs.readFileSync(p.join(f.root,'state/CLAUDE_HELPER_CONSUMPTION.json'),'utf8'),before);
+ out=P.prepare({...f,onlyKeys:new Set()});a.equal(out.items.length,2);for(const item of old)a.deepEqual(out.items.find(i=>i.key===item.key),item);
+});
+test('scoped apply under the shared lock preserves unrelated persisted plans, source items and pending originals',t=>{
+ const f=fixture('Claims Director'),read=file=>JSON.parse(fs.readFileSync(p.join(f.root,file),'utf8'));
+ const unrelatedPlan={key:'unrelated',status:'READY',record:{TITLE:'Leave unchanged'},screen:{rank:1},sourceProof:'original-evidence'};
+ const pendingPlan={key:'pending',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'ORIGINAL',record:{TITLE:'Original'},screen:{rank:99},fence:{requestIds:['ORIGINAL'],proof:'receipts/ORIGINAL_CHECKPOINT.json'}};
+ const unrelatedSource={key:'unrelated',provider:'Claude',status:'TITLE_SCOPE_REVIEW',batch:'receipts/unchanged-source.json',sourceEvidence:{company:'Other factory',title:'Other director',location:'Boston, MA'},relevanceScreen:{outcome:'ADMIT',screenedAt:'2026-01-01T00:00:00Z'}};
+ const pendingSource={key:'pending',provider:'CODE',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'ORIGINAL',proof:'receipts/ORIGINAL_CHECKPOINT.json',submission:{payloadSha256:'a'.repeat(64)},sourceEvidence:{company:'Another factory',title:'Original director',location:'Dallas, TX'}};
+ const legacy=read('state/CLAUDE_HELPER_CONSUMPTION.json');legacy.items.push(unrelatedSource);f.save('state/CLAUDE_HELPER_CONSUMPTION.json',legacy);
+ f.save('state/CODE_INTAKE_CONSUMPTION.json',{schema:'forge.code-intake-consumption.v1',items:[pendingSource]});
+ f.save('state/RELEVANCE_INTAKE_PLAN.json',{items:[unrelatedPlan,pendingPlan]});
+ const queue=read('state/EMAIL_RECOVERY_QUEUE.json');queue.jobs.unrelated={key:'unrelated',status:'UNSCREENED',company:'Other factory',title:'Other director',location:'Boston, MA',evidence:[{paragraphs:['Other director','Other factory','Boston, MA']}],submissions:[]};queue.jobs.pending={key:'pending',status:'POST_IN_FLIGHT_UNKNOWN',company:'Another factory',title:'Original director',location:'Dallas, TX',submissions:[{requestId:'ORIGINAL',proof:pendingSource.proof,payloadSha256:'a'.repeat(64)}]};f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);
+ const lock=p.join(f.root,'shared-lock.json'),Lock=require('../automation-run-lock.cjs'),prior=process.env.FORGE_PRODUCTION_LOCK;
+ t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));a.equal(Lock.lock(lock,'acquire',f.runId).acquired,true);process.env.FORGE_PRODUCTION_LOCK=lock;
+ try{
+  P.prepare({...f,apply:true,onlyKeys:new Set([f.key])});Lock.lock(lock,'check',f.runId);
+  const savedPlan=read('state/RELEVANCE_INTAKE_PLAN.json'),savedLegacy=read('state/CLAUDE_HELPER_CONSUMPTION.json'),savedCode=read('state/CODE_INTAKE_CONSUMPTION.json'),savedQueue=read('state/EMAIL_RECOVERY_QUEUE.json');
+  a.equal(savedPlan.items.find(i=>i.key===f.key).status,'CLOSED_FUNCTION_MISMATCH');a.equal(savedLegacy.items.find(i=>i.key===f.key).status,'CLOSED_FUNCTION_MISMATCH');a.equal(savedQueue.jobs[f.key].status,'OUT_OF_SCOPE');
+  for(const item of [unrelatedPlan,pendingPlan])a.deepEqual(savedPlan.items.find(i=>i.key===item.key),item);
+  a.deepEqual(savedLegacy.items.find(i=>i.key==='unrelated'),unrelatedSource);a.deepEqual(savedCode.items.find(i=>i.key==='pending'),pendingSource);
+  for(const key of ['unrelated','pending'])a.deepEqual(savedQueue.jobs[key],queue.jobs[key]);
+  const proof=read('receipts/'+f.runId+'_SCREEN.json');a.equal(proof.writerSubmissions,0);a.deepEqual(proof.closures.map(i=>i.key),[f.key]);a.equal(savedPlan.counts.POST_IN_FLIGHT_UNKNOWN,1);
+ }finally{Lock.lock(lock,'release',f.runId);if(prior===undefined)delete process.env.FORGE_PRODUCTION_LOCK;else process.env.FORGE_PRODUCTION_LOCK=prior;}
+});

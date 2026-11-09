@@ -11,15 +11,16 @@ function exception(state, item, reason, owner) {
 }
 function publicReport(state, coverage, at) {
   const statuses = {}; for (const i of Object.values(state.items)) statuses[i.status]=(statuses[i.status] || 0)+1;
-  const exceptions=[...Object.values(state.exceptions),...(state.routineHandoffs?.transport?.exceptions||[]),...(state.routineHandoffs?.assignments?.exceptions||[]),...(state.routineHandoffs?.mail?.exceptions||[])];
+  const exceptions=[...Object.values(state.exceptions),...(state.routineHandoffs?.transport?.exceptions||[]),...(state.routineHandoffs?.assignments?.exceptions||[]),...(state.routineHandoffs?.mail?.exceptions||[]),...(state.directReturns?.transport?.exceptions||[])];
   return {schema:'forge.programmed-coordinator-report.v1', at, instructionCommit:state.instructionCommit,
     batches:Object.keys(state.batches).length, statuses, transactions:Object.values(state.transactions).map(t => ({requestId:t.requestId,status:t.status,items:t.ids.length})),
     codeExceptions:exceptions.filter(x => x.owner === 'CODE'), aiExceptions:exceptions.filter(x => x.owner === 'AI'),
     canonicalSource:state.canonicalSource||null, coverage, noProcessingCap:true, savingsMeasured:false};
 }
-async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now()}) {
+async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now(), select = () => true}) {
   const cache = new Map();
   for (const item of Object.values(state.items)) {
+    if (!select(item)) continue;
     const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY)$/.test(state.exceptions[item.key]?.reason||'');
     if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
@@ -100,9 +101,29 @@ function child(root,args,env) {
     });
   });
 }
-async function main(mode='inventory') {
+async function submitEnrichment({root,privateDir,state,runId,deps,select=()=>true}) {
+  // One row per transaction preserves independent progress and original fences.
+  for(const item of Object.values(state.items).filter(i=>select(i)&&i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED')) {
+    try {
+      const tx=await T.submit({root,privateDir,state,jobs:[item.prepared],runId,deps});
+      if(T.pending(tx,root)) {
+        await T.reconcile({root,privateDir,state,tx,deps});
+        if(T.pending(tx,root))state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
+      }
+    } catch(e) {exception(state,item,e.message,'CODE');if(e.message==='LIVE_WRITER_GATE')break;}
+  }
+}
+async function processReturnedEvidence({root,privateDir,state,snapshot,apply,runId,deps,select=()=>true,sourceVerify=Source.verify}) {
+  await inspectReturns({root,privateDir,state,snapshot,apply,select,sourceVerify});
+  if(!apply)return snapshot;
+  const before=Object.keys(state.transactions).length;
+  await submitEnrichment({root,privateDir,state,runId,deps,select});
+  return Object.keys(state.transactions).length===before?snapshot:await deps.snapshot();
+}
+async function main(mode='inventory', options={}) {
   if (!['inventory','preview','apply'].includes(mode)) throw Error('Use inventory, preview or apply');
-  const apply=mode==='apply', root=ROOT, state=C.empty();
+  const apply=mode==='apply', root=ROOT, state=C.empty(), direct=require('./direct-returns.cjs');
+  const {returnsOnly, batches}=direct.options(options), select=returnsOnly?direct.selector(root,batches):()=>true;
   Object.assign(state,S.read(root,STATE,state));
   if(state.schema!=='forge.programmed-coordinator.v1'||!state.batches||!state.items||!state.transactions||!state.exceptions)throw Error('INVALID_DURABLE_COORDINATOR_STATE');
   const commit=cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
@@ -125,10 +146,11 @@ async function main(mode='inventory') {
     let routine=null;
     if(mode!=='inventory'){
       if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir).toLowerCase()===root.toLowerCase()||path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep))throw Error('Private output must be outside the public checkout');
-      routine=(await require('../routine-handoffs/run.cjs').run({root,privateDir,commit,runId,apply})).report;
+      routine=returnsOnly?direct.capture({root,privateDir,commit,runId,apply}):(await require('../routine-handoffs/run.cjs').run({root,privateDir,commit,runId,apply})).report;
     }
-    if(apply)require('../routine-handoffs/return-repair.cjs').repair(root,commit,{apply:true});
+    if(apply&&!returnsOnly)require('../routine-handoffs/return-repair.cjs').repair(root,commit,{apply:true});
     const collected=C.collect({root,state,commit});
+    if(returnsOnly)direct.checkSelected(state,batches);
     if(mode!=='inventory') {
       if(!privateDir || !path.isAbsolute(privateDir) || path.resolve(privateDir).toLowerCase()===root.toLowerCase() || path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep)) throw Error('Private output must be outside the public checkout');
       const cfg={}, fc=process.env.ACTIVITY_FC_DIR;
@@ -150,60 +172,67 @@ async function main(mode='inventory') {
         original:async rid=>{await R.read('request_result',{key,requestId:rid});return null;},
         post:async payload=>{const r=await fetch(cfg.PipelineConnection.url,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify({...payload,key}),signal:AbortSignal.timeout(240000)});return r.json();},
         rows:(rid,ids)=>require('./readback.cjs').rows({requestId:rid,ids,key,W})};
-      if(apply) for(const tx of Object.values(state.transactions).filter(tx=>T.pending(tx,root))) {
+      if(apply) for(const tx of Object.values(state.transactions).filter(tx=>T.pending(tx,root)&&(!returnsOnly||tx.itemKeys?.some(k=>select(state.items[k]))))) {
         try {await T.reconcile({root,privateDir,state,tx,deps});} catch(e) {state.exceptions['tx:'+tx.requestId]={owner:'CODE',reason:e.message,requestId:tx.requestId};}
       }
       let canonical=await snapshot();
       state.canonicalSource=canonical.source;
-      if(apply)state.interviewReviews=require('../routine-handoffs/interview-reviews.cjs').consume({root,privateDir,snapshot:canonical,checkLock:deps.checkLock});
-      const discoveryScreenContext=await require('../source-trial/preliminary-screen').context({key});
-      const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply,screenContext:discoveryScreenContext});
-      if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
-      const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
-      state.routineHandoffs={transport:routine,assignments,mail};
-      state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock});
-      if(apply)state.routineHandoffs.sourceReviews=require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state});
-      await inspectReturns({root,privateDir,state,snapshot:canonical,apply});
+      const sourceReviews=apply&&!returnsOnly?require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state}):null;
+      // Existing scheduled runs automatically write validated enrichment before
+      // unrelated mail, assignment work and the large intake plan.
+      canonical=await processReturnedEvidence({root,privateDir,state,snapshot:canonical,apply,runId,deps,select});
+      state.canonicalSource=canonical.source;
+      let discoveryScreenContext;
+      if(!returnsOnly) {
+        if(apply)state.interviewReviews=require('../routine-handoffs/interview-reviews.cjs').consume({root,privateDir,snapshot:canonical,checkLock:deps.checkLock});
+        discoveryScreenContext=await require('../source-trial/preliminary-screen').context({key});
+        const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply,screenContext:discoveryScreenContext});
+        if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
+        const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
+        state.routineHandoffs={transport:routine,assignments,mail,sourceReviews};
+        state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock});
+      }
       if(apply) {
         S.save(root,STATE,state);
-        state.routineHandoffs.verifiedIntake=require('../routine-handoffs/intake-state.cjs').seedVerified(root,state,true);
-        const screenContextFile=path.join(privateDir,'discovery-screen-context.json');
-        fs.writeFileSync(screenContextFile,JSON.stringify({runId,context:discoveryScreenContext})+'\n',{mode:0o600});
-        const env={...process.env,FORGE_RUN_ID:runId,FORGE_DISCOVERY_SCREEN_CONTEXT:screenContextFile};
-        const pendingIds=[...new Set(S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items.filter(i=>i.status==='POST_IN_FLIGHT_UNKNOWN').map(i=>i.requestId))];
-        let intakePending=false;
-        for(const id of pendingIds) {
-          try{const result=await child(root,['verify',id],env);if(!result.verified&&result.phase!=='VERIFIED')intakePending=true;else delete state.exceptions['intake:'+id];}
-          catch(e){
-            try{await require('../relevance-screen/not-accepted.cjs').recover({root,privateDir,requestId:id,runId,deps:{checkLock:deps.checkLock,status:async()=>(await R.read('writer_status',{key})).data,result:async rid=>(await R.read('request_result',{key,requestId:rid})).data,index:async rid=>(await R.read('receipt_index',{key,requestId:rid})).data,source:async revision=>cp.execFileSync('git',['show',revision+':apps-script/Code.gs'],{cwd:fc,encoding:'utf8',maxBuffer:4e6,stdio:['ignore','pipe','pipe']})}});delete state.exceptions['intake:'+id];}
-            catch{intakePending=true;state.exceptions['intake:'+id]={owner:'CODE',requestId:id,reason:'ORIGINAL_INTAKE_RECONCILIATION_REQUIRED'};}
+        const intakeKeys=returnsOnly?direct.intakeKeys(root,state,select):null;
+        if(returnsOnly)state.directReturns={transport:routine,selectedBatches:batches};
+        const accounting=returnsOnly?state.directReturns:state.routineHandoffs;
+        accounting.verifiedIntake=require('../routine-handoffs/intake-state.cjs').seedVerified(root,state,true,select);
+        if(!returnsOnly||intakeKeys.size) {
+          discoveryScreenContext=discoveryScreenContext||await require('../source-trial/preliminary-screen').context({key});
+          const screenContextFile=path.join(privateDir,'discovery-screen-context.json');
+          fs.writeFileSync(screenContextFile,JSON.stringify({runId,context:discoveryScreenContext})+'\n',{mode:0o600});
+          const env={...process.env,FORGE_RUN_ID:runId,FORGE_DISCOVERY_SCREEN_CONTEXT:screenContextFile};
+          delete env.FORGE_INTAKE_SCOPE;
+          if(returnsOnly)env.FORGE_INTAKE_SCOPE=require('../relevance-screen/scope.cjs').save({privateDir,runId,keys:[...intakeKeys]});
+          const pendingIds=[...new Set(S.read(root,'state/RELEVANCE_INTAKE_PLAN.json',{items:[]}).items.filter(i=>i.status==='POST_IN_FLIGHT_UNKNOWN'&&(!intakeKeys||intakeKeys.has(i.key))).map(i=>i.requestId))];
+          let intakePending=false;
+          for(const id of pendingIds) {
+            try{const result=await child(root,['verify',id],env);if(!result.verified&&result.phase!=='VERIFIED')intakePending=true;else delete state.exceptions['intake:'+id];}
+            catch(e){
+              try{await require('../relevance-screen/not-accepted.cjs').recover({root,privateDir,requestId:id,runId,deps:{checkLock:deps.checkLock,status:async()=>(await R.read('writer_status',{key})).data,result:async rid=>(await R.read('request_result',{key,requestId:rid})).data,index:async rid=>(await R.read('receipt_index',{key,requestId:rid})).data,source:async revision=>cp.execFileSync('git',['show',revision+':apps-script/Code.gs'],{cwd:fc,encoding:'utf8',maxBuffer:4e6,stdio:['ignore','pipe','pipe']})}});delete state.exceptions['intake:'+id];}
+              catch{intakePending=true;state.exceptions['intake:'+id]={owner:'CODE',requestId:id,reason:'ORIGINAL_INTAKE_RECONCILIATION_REQUIRED'};}
+            }
+          }
+          // Existing preparation owns canonical dedup, relevance and source-ledger
+          // accounting. Its transaction count is never a coordinator run quota.
+          { // Pending requests fence their own items; independent READY jobs continue.
+            try{
+              await child(root,['prepare','--apply'],env);
+              await drain({ready:async()=>S.read(root,'state/RELEVANCE_INTAKE_PLAN.json').items.filter(i=>i.status==='READY'&&(!intakeKeys||intakeKeys.has(i.key))).length,
+                reconcile:async()=>{},step:()=>child(root,['step','100'],env)});
+              delete state.exceptions['intake-driver'];
+            }catch(e){state.exceptions['intake-driver']={owner:'CODE',reason:'INTAKE_DRIVER_GATE_OR_RECONCILIATION_REQUIRED'};}
           }
         }
-        // Existing preparation owns canonical dedup, relevance and source-ledger
-        // accounting. Its transaction count is never a coordinator run quota.
-        { // Pending requests fence their own items; independent READY jobs continue.
-          try{
-            await child(root,['prepare','--apply'],env);
-            await drain({ready:async()=>S.read(root,'state/RELEVANCE_INTAKE_PLAN.json').items.filter(i=>i.status==='READY').length,
-              reconcile:async()=>{},step:()=>child(root,['step','100'],env)});
-            delete state.exceptions['intake-driver'];
-          }catch(e){state.exceptions['intake-driver']={owner:'CODE',reason:'INTAKE_DRIVER_GATE_OR_RECONCILIATION_REQUIRED'};}
-        }
-        // One row per transaction keeps receipt waiting independent of batch
-        // quantity; each successful transaction immediately admits the next.
-        for(const item of Object.values(state.items).filter(i=>i.status==='READY_ENRICHMENT'&&state.batches[i.batch]?.status==='VALIDATED')) {
-          try {
-            const tx=await T.submit({root,privateDir,state,jobs:[item.prepared],runId,deps});
-            for(let n=0;n<1 && T.pending(tx,root);n++) {
-              await T.reconcile({root,privateDir,state,tx,deps});
-              if(T.pending(tx,root)) state.exceptions['tx:'+tx.requestId]={owner:'AI',requestId:tx.requestId,reason:'WRITER_RECONCILIATION_REQUIRED'};
-            }
-          } catch(e) {exception(state,item,e.message,'CODE');if(e.message==='LIVE_WRITER_GATE')break;}
+        if(returnsOnly) {
+          const latest=await snapshot();state.canonicalSource=latest.source;
+          state.directReturns.reservations=direct.settleShared({root,state,snapshot:latest,select,checkLock:deps.checkLock});
         }
       }
     }
     const coverage=S.read(root,'state/EMAIL_RECOVERY_SUMMARY.json',null), at=new Date().toISOString();
-    const report={...publicReport(state,coverage,at),runId,mode,collected,routineHandoffs:state.routineHandoffs||null};
+    const report={...publicReport(state,coverage,at),runId,mode,collected,scope:returnsOnly?'RETURNED_EVIDENCE_ONLY':'FULL_COORDINATOR',selectedBatches:batches,directReturns:returnsOnly?state.directReturns||{transport:routine}:null,routineHandoffs:state.routineHandoffs||null};
     if(apply) {
       const exceptionWork=require('../routine-handoffs/exception-work.cjs').sync({root,state,report,apply:true});report.exceptionWork={counts:exceptionWork.counts,owner:'FORGE_APPLICATION_OUTCOME_TRACKER',reviewErrors:exceptionWork.reviewErrors};
       S.save(root,STATE,state);S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);
@@ -214,5 +243,5 @@ async function main(mode='inventory') {
     return report;
   } finally {if(owned) Lock.lock(lock,'release',runId);}
 }
-if(require.main===module) main(process.argv[2]).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={inspectReturns,publicReport,drain,main};
+if(require.main===module) main(process.argv[2],require('./direct-returns.cjs').arguments(process.argv.slice(3))).catch(e=>{console.error(e.message);process.exitCode=1;});
+module.exports={inspectReturns,publicReport,drain,submitEnrichment,processReturnedEvidence,main};
