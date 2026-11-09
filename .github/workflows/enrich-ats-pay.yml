@@ -48,12 +48,14 @@ jobs:
           name: pay-runtime-${{ github.run_id }}
           path: |
             state/enrich-ats-pay*.json
+            state/enrich-ats-pay-employer.parts/**
             receipts/FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json
           retention-days: 14
       - name: Commit report and ledger
         if: always()
         run: |
           mkdir -p /tmp/out && cp state/enrich-ats-pay*.json /tmp/out/
+          if [ -d state/enrich-ats-pay-employer.parts ]; then cp -a state/enrich-ats-pay-employer.parts /tmp/out/; fi
           mkdir -p /tmp/pay-refusals
           find receipts -maxdepth 1 -type f -name 'FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json' -exec cp -- {} /tmp/pay-refusals/ \;
           cp reference/COMPANY_SITE_CONTEXT.json /tmp/salary-context.json
@@ -77,6 +79,7 @@ jobs:
             node tools/enrich-ats-pay/merge-context.cjs /tmp/salary-context.json
             node tools/enrich-ats-pay/merge-source-profile.cjs /tmp/pay-source-profile.json
             node tools/enrich-ats-pay/merge-benchmarks.cjs /tmp/pay-benchmarks.json
+            if [ -d state/enrich-ats-pay-employer.parts ]; then git add state/enrich-ats-pay-employer.parts; fi
             git add state/enrich-ats-pay*.json reference/COMPANY_SITE_CONTEXT.json reference/EMPLOYER_PAY_SOURCES.json reference/EMPLOYER_PAY_BENCHMARKS.json
             find receipts -maxdepth 1 -type f -name 'FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json' -print0 | xargs -0 -r git add --
             git diff --cached --quiet && { echo "No change"; exit 0; }
@@ -85,6 +88,6 @@ jobs:
             sleep $((i * 4 + RANDOM % 4))
             git rebase --abort 2>/dev/null || true
             git fetch -q origin main && git reset -q --hard origin/main
-            cp /tmp/out/* state/
+            cp -a /tmp/out/. state/
           done
           exit 1
