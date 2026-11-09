@@ -7,10 +7,10 @@
   "dispatch": {
     "lastServedKind": "MAIL",
     "lastReviewedKind": "SOURCE",
-    "exceptionId": "5a210b4665b8614b7a217a9ebc9826eba8e6723b15987e6e0a726d2315f4b7f4",
-    "sourceVersion": "255951cbc2f73c72225dc3fe05120ff0b315ce2ceb64e44cc81c336141cc7abf",
-    "observedAt": "2026-11-08T23:26:06.380Z",
-    "reviewedAt": "2026-11-08T22:23:58.897Z",
+    "exceptionId": "714977420ff65a70bf1bf8eb537a4330e41f414fd919728066a7fcf35e425cb3",
+    "sourceVersion": "a1ed649d91ad8a7c7a7daff1bfbb97b344b1f2ac00a88765093b8b5167e9a2b6",
+    "observedAt": "2026-11-09T00:20:19.662Z",
+    "reviewedAt": "2026-11-09T00:20:19.630Z",
     "basis": "SOURCE_BOUND_ATTEMPT",
     "artifactSizeOnly": true
   },
@@ -493,7 +493,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-03T22:51:12.172Z",
       "lastSeen": "2026-11-08T09:25:46.473Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/00d572f27a0e4a75346a666a0f2dcca308a9a65c1171ce531970ebe5ed3604f7-dd960bef399915a807c8ea83a33beef900036835f8980807f81d703db75e4edb.json",
+        "sha256": "dd960bef399915a807c8ea83a33beef900036835f8980807f81d703db75e4edb",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-09T00:20:19.630Z",
+        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
+        "retryCondition": "NEW_ORIGINAL_SOURCE_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261109T001803Z",
+        "sourceVersion": "7105225be761265aebe7b68addf588b4439a03182ca8478d857547cbe72e1442",
+        "observedAt": "2026-11-09T00:20:19.630Z",
+        "evidenceSha256": "d4761c9f750c669e52e24cf4b35058fe6d04b791ce36530398d407a9f06b2c2c",
+        "reason": "Saved exact source reviewed: only title/company/location; prior employer lookup 404, related requisition not matched, lookup already consumed. No supported scope finding.",
+        "nextAction": "Await new original posting scope evidence; preserve ranked candidate and independent code source retry.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261109T001803Z_CHECKPOINT.json"
+      }
     },
     "cd89f190ec5e5d8feb055ac129888c133212409756cfbff01286fb1968112cb6": {
       "key": "FORGE_CLAUDE_RELEVANCE_REVIEW:linkedin:4483255913",
@@ -10917,7 +10934,16 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-05T02:12:41.220Z",
       "lastSeen": "2026-11-08T09:25:46.473Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261109T001803Z",
+        "sourceVersion": "a1ed649d91ad8a7c7a7daff1bfbb97b344b1f2ac00a88765093b8b5167e9a2b6",
+        "observedAt": "2026-11-09T00:20:19.662Z",
+        "evidenceSha256": "c5283e416a0873eec63d7a5f456fdbb6908c53764facd946dd378a68b53cc4be",
+        "reason": "Full source is a Trane careers newsletter with six advertised roles, not personal recruiter correspondence. Must retain discovery handoff; NON_RECRUITING_SOURCE_REVIEW would discard advertised job obligations.",
+        "nextAction": "Source-bound alert card handoff required; tracking URLs require supported extraction. No application or recruiter event inferred.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261109T001803Z_CHECKPOINT.json"
+      }
     },
     "b05d77871118f5cc49ec36a8a07e8c377ba0568c42431d9a52f3cedd6a5e0c97": {
       "owner": "ChatGPT",
@@ -60820,8 +60846,8 @@
     }
   },
   "counts": {
-    "ACTION_REQUIRED": 1442,
-    "WAITING_SOURCE_CHANGE": 39,
+    "ACTION_REQUIRED": 1441,
+    "WAITING_SOURCE_CHANGE": 40,
     "NO_LONGER_OPEN": 546
   }
 }
