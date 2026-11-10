@@ -1,19 +1,19 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-10T03:40:20.023Z",
+ "at": "2026-11-10T15:05:32.916Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-10T03:40:19.560Z",
-  "rows": 5159,
-  "sha256": "f7bed494abb5dee46c5a5db0d4e7fe97db01cb5998acd9445a643a2b2769c1c3"
+  "readAt": "2026-11-10T15:05:32.571Z",
+  "rows": 5166,
+  "sha256": "0a9bc1838077b2162bde60937884270c815a42f671532f59e246bade1533b09e"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-10T03:37:04.191Z",
-  "decision": 598
+  "at": "2026-11-10T14:47:12.483Z",
+  "decision": 572
  },
  "counts": {
-  "waiting": 598,
+  "waiting": 572,
   "matched": 16,
   "CLOSE_CANDIDATE": 0,
   "KEEP_LABEL": 16
@@ -97,6 +97,31 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-10-18, after rejection 2026-10-16"
+    }
+   ]
+  },
+  {
+   "id": "V2I-866FCD423820",
+   "company": "Shield AI",
+   "title": "Staff Engineer, Manufacturing Equipment",
+   "location": "Dallas, Texas",
+   "score": 63,
+   "outcome": "KEEP_LABEL",
+   "rule": "NEW_REQUISITION",
+   "label": "You declined 2026-11-08 · this is a new posting",
+   "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d",
+   "matches": [
+    {
+     "id": "V2I-F555BB994A0E",
+     "status": "DECLINED_BY_TIM",
+     "title": "Staff Engineer, Manufacturing",
+     "location": "Dallas, Texas",
+     "decided": "2026-11-08",
+     "rejected": null,
+     "rule": "NEW_REQUISITION",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d"
     }
    ]
   },
@@ -196,31 +221,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Different gh posting: gh:8697970002 vs earlier gh:8870838002"
-    }
-   ]
-  },
-  {
-   "id": "V2I-866FCD423820",
-   "company": "Shield AI",
-   "title": "Staff Engineer, Manufacturing Equipment",
-   "location": "Dallas, Texas",
-   "score": 60,
-   "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "You declined 2026-11-08 · this is a new posting",
-   "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d",
-   "matches": [
-    {
-     "id": "V2I-F555BB994A0E",
-     "status": "DECLINED_BY_TIM",
-     "title": "Staff Engineer, Manufacturing",
-     "location": "Dallas, Texas",
-     "decided": "2026-11-08",
-     "rejected": null,
-     "rule": "NEW_REQUISITION",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d"
     }
    ]
   },
@@ -400,6 +400,31 @@
    ]
   },
   {
+   "id": "V2I-E32A3FAD4E67",
+   "company": "EPM Scientific",
+   "title": "Vice President, Quality",
+   "location": "Minneapolis, MN, USA",
+   "score": 51,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-02 · different site",
+   "evidence": "Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA",
+   "matches": [
+    {
+     "id": "V2I-331877FAD4F9",
+     "status": "DECLINED_BY_TIM",
+     "title": "VP, Quality Assurance",
+     "location": "Philadelphia, PA",
+     "decided": "2026-11-02",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA"
+    }
+   ]
+  },
+  {
    "id": "V2I-40226DB46F8D",
    "company": "CIRCOR International, Inc.",
    "title": "Director of Quality",
@@ -421,31 +446,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
-    }
-   ]
-  },
-  {
-   "id": "V2I-EA61B99010C6",
-   "company": "L3Harris Technologies",
-   "title": "Manufacturing Engineering Manager 1",
-   "location": "Northampton, MA",
-   "score": 42,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-30 · different site",
-   "evidence": "Different worksite: Northampton, MA vs earlier Huntsville, AL",
-   "matches": [
-    {
-     "id": "V2I-B6E9763E305F",
-     "status": "DECLINED_BY_TIM",
-     "title": "Manager, Manufacturing Engineering",
-     "location": "Huntsville, AL",
-     "decided": "2026-10-30",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Northampton, MA vs earlier Huntsville, AL"
     }
    ]
   }
