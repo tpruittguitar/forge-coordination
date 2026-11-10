@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261110T0145Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261110T0406Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (108 read, 0 failed) | 153 | 43 | 82 |
+| Employer job boards (110 read, 0 failed) | 153 | 42 | 83 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -21,7 +21,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 |---|---:|---:|
 | DIRECTOR_PLUS | 25 | 48 |
 | SR_MANAGER | 13 | 15 |
-| SR_STAFF | 5 | 19 |
+| SR_STAFF | 4 | 20 |
 
 ## New roles
 
@@ -33,7 +33,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
-| BOARD:lever | DREAM Shield AI | [Sr. Staff Solutions Architect – Manufacturing (R6252)](https://jobs.lever.co/shieldai/c89b3f88-57f7-4a9e-aa8e-b38b02af0b2e) | Dallas, Texas | MFG_PROD | SR_STAFF | $148K-$267K |
 | BOARD:lever | DREAM Shield AI | [Staff Manufacturing Engineer, Automation Equipment](https://jobs.lever.co/shieldai/e3f0520a-a155-438e-afc2-8215f67aa8d7) | Seattle, Washington | MFG_ENG | SR_STAFF | $150K-$230K |
 | BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:ashby | P2 Quindar | [Vice President of Operations](https://jobs.ashbyhq.com/quindar/e3fcb109-eec0-4a81-971e-88259af00294) | Denver, CO | MFG_PROD | DIRECTOR_PLUS | $210K-$250K |
