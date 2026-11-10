@@ -152,3 +152,9 @@ test('later ChatGPT enrichment replenishment never takes a shared helper reserva
  S.save(f.root,'state/enrich-ats-pay-recovery.json',{rows:[{id,status:'SOURCE_RESEARCH_REQUIRED',needs:['SALARY','DEGREE'],attempts:[]}]});A.replenish(f);
  a.equal(S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json').items.length,0);a.equal(H.load(f.root).items[0].taskKey,taskKey);
 });
+test('current enrichment replenishment uses fresh planner for unattempted gaps and retry fences',t=>{
+ const f=assignment(t),w=S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json');Object.assign(w,{provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH'});S.save(f.root,'control/ENRICHMENT_HELPER_WORK.json',w);
+ f.snapshot.source.kind='CANONICAL_WRITER_MASTER';f.snapshot.needsById={'V2I-NEW':['SALARY'],'V2I-WAIT':['SALARY']};f.snapshot.rows=['V2I-NEW','V2I-WAIT'].map(PRIMARY_ID=>({PRIMARY_ID,COMPANY:'Factory',TITLE:'Plant Manager',LOCATION:'Austin, TX',BUCKET:'MANUAL_RESEARCH',p:{},line:'1 | '+PRIMARY_ID+' | Factory | Plant Manager | MANUAL_RESEARCH | - | - | - | Austin, TX | '}));
+ S.save(f.root,'state/enrich-ats-pay-recovery.json',{schema:'forge.enrichment-recovery.v1',run:'TEST',rows:[{id:'V2I-NEW',status:'NOT_YET_ATTEMPTED',needs:['SALARY'],attempts:[]},{id:'V2I-WAIT',status:'SOURCE_RESEARCH_REQUIRED',needs:['SALARY'],attempts:[],retryAt:new Date(Date.now()+3600000).toISOString()}]});
+ const r=A.replenish(f);a.equal(r.enrichmentResearch.appended,1);a.equal(r.enrichmentResearch.counts.retryNotDue,1);const saved=S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json');a.equal(saved.items[0].primaryId,'V2I-NEW');a.match(saved.items[0].researchProvenance.sourceFingerprint,/^[a-f0-9]{64}$/);a.equal(A.replenish({...f,runId:f.runId+'-SECOND'}).enrichmentResearch.appended,0);
+});

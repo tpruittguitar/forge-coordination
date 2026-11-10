@@ -67,3 +67,11 @@ existing current-upstream validation too.
 Run `node --test tools/research-preflight/*.test.cjs` and the existing intake,
 helper-routing and routine-handoff suites. The programmed-coordinator CI includes
 the new regression tests.
+
+## Gofer's combined gate
+
+`FORGE_APPLICATION_WRITER_GOFER` now routes to the combined local gate documented
+in [GOFER_PREFLIGHT.md](GOFER_PREFLIGHT.md). It checks actionable exceptions and
+current salary planning independently. It can stop an unchanged investigation
+without claiming a stale salary queue is empty, and never waits for the production
+write lock to allow safe research. The outcome tracker remains outside this gate.
