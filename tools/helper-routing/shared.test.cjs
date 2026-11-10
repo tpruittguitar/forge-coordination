@@ -178,3 +178,34 @@ test('artifact envelope remains bounded and disabled work never instructs contin
   a.equal(page.items.length,0);a.equal(page.continuation.remainingAfterPage,0);a.equal(page.continuation.nextAction,'RECHECK_FRESH_WORK');
  }
 });
+test('published Grok pages omit rows with an earlier Grok receipt until the source changes',t=>{
+ const root=setup(t),now=Date.parse('2026-11-10T21:00:00.000Z'),readAt='2026-11-10T20:55:00.000Z';
+ const repeated='V2I-01E5EF8F5A31',otherId='V2I-0B4B8812A2C5',line='canonical-line-v1';
+ const item=(id,sourceVersion)=>({primaryId:id,kind:'ENRICHMENT',provider:'Grok',taskKey:other,assignmentVersion:1,sourceVersion,status:'ASSIGNED',company:'Path Robotics',title:'Engineering Manager',location:'Columbus, OH'});
+ const work=base();work.items=[item(repeated,'a'.repeat(64)),item(otherId,'b'.repeat(64))];S.save(root,H.FILE,work);
+ const snapshot=line=> ({rows:[row(repeated),row(otherId)].map(r=>({...r,line:r.PRIMARY_ID===repeated?line:'other-line',BUCKET:'SCOUT_INTAKE'})),archiveRows:[],source:{readAt}});
+ const receipts=(ids,pending=[])=>({index:{requests:Object.fromEntries(ids.map(id=>[id,{s:'COMPLETE',at:'2026-11-10T15:58:08.930Z',items:[{pid:repeated}]}])),pending}});
+ const run=(lineText,ids,pending)=>A.replenish({root,state:state(),snapshot:snapshot(lineText),runId:'FORGE-CODE-TEST',now,apply:true,checkLock(){},writerReceipts:receipts(ids,pending)});
+ const first=run(line,['FORGE-GROK-SHARED-20261110T155613Z-B001-R001']);
+ a.equal(first.grokSubmittedHidden,1);
+ const saved=H.load(root),hidden=saved.items.find(i=>i.primaryId===repeated);
+ a.equal(hidden.status,'DIRECT_REQUEST_SUBMITTED');a.equal(hidden.sourceVersion,'a'.repeat(64));
+ a.equal(H.next(saved,other).items[0].primaryId,otherId);a.equal(H.next(saved,other).items.some(i=>i.primaryId===repeated),false);
+ run(line,[]);
+ a.equal(H.load(root).items.find(i=>i.primaryId===repeated).status,'DIRECT_REQUEST_SUBMITTED');
+ const changed=run('canonical-line-v2',['FORGE-GROK-SHARED-20261110T155613Z-B001-R001']);
+ a.equal(changed.grokSubmittedHidden,0);
+ const reopened=H.load(root).items.find(i=>i.primaryId===repeated);
+ a.equal(reopened.status,'ASSIGNED');a.equal(reopened.sourceVersion,S.hash('canonical-line-v2'));
+ a.equal(H.next(H.load(root),other).items.some(i=>i.primaryId===repeated),true);
+ run('canonical-line-v2',['FORGE-GROK-SHARED-20261110T155613Z-B001-R001','FORGE-GROK-SHARED-20261110T205613Z-B001-R001']);
+ a.equal(H.load(root).items.find(i=>i.primaryId===repeated).status,'DIRECT_REQUEST_SUBMITTED');
+ const fresh=base();fresh.items=[item(repeated,'a'.repeat(64))];S.save(root,H.FILE,fresh);
+ run(line,['FORGE-CODE-CHATGPT-20261110T155613Z-B001-R001']);
+ a.equal(H.load(root).items.find(i=>i.primaryId===repeated).status,'ASSIGNED');
+ run(line,[],[{requestIds:['FORGE-GROK-DIRECT-20261110T215613Z-B001-R001'],writtenAt:'2026-11-10T21:56:13.603Z',items:[{pid:repeated}]}]);
+ a.equal(H.load(root).items.find(i=>i.primaryId===repeated).status,'DIRECT_REQUEST_SUBMITTED');
+ S.save(root,H.FILE,fresh);
+ a.throws(()=>A.replenish({root,state:state(),snapshot:snapshot(line),runId:'FORGE-CODE-TEST',now,apply:true,checkLock(){},writerReceipts:{index:{requests:{}}}}),/GROK_WRITER_RECEIPTS_REQUIRED/);
+ a.equal(H.load(root).items[0].status,'ASSIGNED');
+});

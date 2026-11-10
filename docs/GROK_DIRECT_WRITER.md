@@ -128,19 +128,25 @@ and report that exact blocker; never assume empty history.
 Create one immutable plain-text file in the verified WRITER_QUEUE containing
 only the existing Writer JSON body. Use 1–25 distinct canonical rows per
 homogeneous ENRICH batch, with unique stable Grok parent and child request IDs.
-Do not put a helper envelope, checkpoint, Markdown, credential or completion
-claim in the queue. Artifact size is a transaction boundary, not a run cap.
+Parent and child IDs use true UTC to the second, `YYYYMMDDTHHMMSSZ`, from
+`Date.toISOString()` after removing `-`, `:`, and the milliseconds. Never take
+an America/New_York clock and append `Z`: `20261110T1555Z` is not unique across
+10:55 and 15:55 Eastern. With a shell, `node tools/helper-routing/direct-request-id.cjs`
+prints one stamp; increment `B###` and `R###` for further batches and children
+in that same second, and never reuse an ID. Do not put a helper envelope,
+checkpoint, Markdown, credential or completion claim in the queue. Artifact
+size is a transaction boundary, not a run cap.
 
 Illustrative shape only; never upload this example or placeholder facts:
 
 ```json
 {
   "action": "batch",
-  "requestId": "FORGE-GROK-<unique-run>-B001",
+  "requestId": "FORGE-GROK-SHARED-20261110T205613Z-B001",
   "requests": [{
     "action": "ruling",
     "ruling": {
-      "requestId": "FORGE-GROK-<unique-run>-B001-R001",
+      "requestId": "FORGE-GROK-SHARED-20261110T205613Z-B001-R001",
       "primaryId": "<exact-current-primary-id>",
       "kind": "ENRICH",
       "actor": "GROK",
@@ -184,7 +190,7 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
    Drive queue, without a key:
 
    ```json
-   {"action":"row_readback","requestId":"FORGE-GROK-<unique-readback-id>","primaryIds":["<exact-primary-id>"]}
+   {"action":"row_readback","requestId":"FORGE-GROK-SHARED-20261110T205630Z-READ","primaryIds":["<exact-primary-id>"]}
    ```
 
    This read-only action does not mutate the master. Use at most 25 IDs and a
