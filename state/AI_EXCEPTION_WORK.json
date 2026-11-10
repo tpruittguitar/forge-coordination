@@ -5,13 +5,13 @@
   "runId": "FORGE-CODE-CHATGPT-20261110T213024256Z",
   "noProcessingCap": true,
   "dispatch": {
-    "lastServedKind": "SOURCE",
-    "lastReviewedKind": "SOURCE",
-    "exceptionId": "0cde2dec6f06f3a82e13006fc3200832f56100c5eddfd98c5f2133f35d6b0dc1",
-    "sourceVersion": "9ce24937af1b4e73d958aeff2372bdab61e08da23e87caecfe257e145fee01ae",
-    "observedAt": "2026-11-10T22:21:20.260Z",
-    "reviewedAt": "2026-11-10T22:21:20.260Z",
-    "basis": "SOURCE_BOUND_ATTEMPT",
+    "lastServedKind": "WRITER",
+    "lastReviewedKind": "WRITER",
+    "exceptionId": "e08b7493e5b6e26c3c99cf4d93a5e1095bfb1e8ca8ad8e844cf8ae3d1451fdb6",
+    "sourceVersion": "44240823adcea48c3eec5b510c95a9b2f0d0a222f02b8bda744fae7a714aa840",
+    "observedAt": "2026-11-10T22:42:53.314Z",
+    "reviewedAt": "2026-11-10T22:42:53.314Z",
+    "basis": "ACCEPTED_IMMUTABLE_REVIEW",
     "artifactSizeOnly": true
   },
   "cases": {
@@ -106773,7 +106773,7 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T21:50:39.857Z",
       "lastSeen": "2026-11-10T21:50:39.857Z",
-      "status": "ACTION_REQUIRED",
+      "status": "WAITING_SOURCE_CHANGE",
       "lastAttempt": {
         "runId": "FORGE-EXCEPTION-CHATGPT-20261110T221748Z",
         "sourceVersion": "44240823adcea48c3eec5b510c95a9b2f0d0a222f02b8bda744fae7a714aa840",
@@ -106782,6 +106782,14 @@
         "reason": "Original POST_IN_FLIGHT_UNKNOWN checkpoint inspected. Preserve exact original payload and request fence; coordinator owns reconciliation, no replay.",
         "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
         "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261110T221748Z_CHECKPOINT.json"
+      },
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/e08b7493e5b6e26c3c99cf4d93a5e1095bfb1e8ca8ad8e844cf8ae3d1451fdb6-cc18d223f61bfc7a2a0f6a694f194d03881d98971342ca46add9f88ef017098c.json",
+        "sha256": "cc18d223f61bfc7a2a0f6a694f194d03881d98971342ca46add9f88ef017098c",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-10T22:42:53.314Z",
+        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
+        "retryCondition": "NEW_ORIGINAL_SOURCE_EVIDENCE"
       }
     },
     "c27f948cc86b055e056510111e2deacfd7dadae40ad7083683e9852072ed6ffd": {
@@ -106844,8 +106852,8 @@
     }
   },
   "counts": {
-    "ACTION_REQUIRED": 1975,
-    "WAITING_SOURCE_CHANGE": 400,
+    "ACTION_REQUIRED": 1974,
+    "WAITING_SOURCE_CHANGE": 401,
     "NO_LONGER_OPEN": 909
   }
 }
