@@ -1,0 +1,46 @@
+{
+  "schema": "forge.shared-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_SHARED_HELPER",
+  "assignmentId": "SHARED-HELPERS-20261109-V1",
+  "runId": "FORGE-CLAUDE-SHARED-20261109T1830Z-B002",
+  "instructionCommit": "dc5cbd6a24e9f17b9cfdd071e5c9209521af93f0",
+  "items": [
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-F46DA8DB995F",
+      "assignmentVersion": 1,
+      "sourceVersion": "3b05b069c3959dd86c04af336f42a06df830606372b5b045327e931d3bc32bb1",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "SimiTree Healthcare Consulting",
+        "title": "Director of Compliance and Quality - Home Health and Hospice",
+        "location": "Ventura, CA",
+        "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317110261",
+        "observedAt": "2026-11-09T18:34:26Z"
+      },
+      "reason": "Glassdoor partner jobListing 1010317110261 returned HTTP 403 at observedAt; web search found no live employer/ATS posting for SimiTree 'Director of Compliance and Quality - Home Health and Hospice' (Ventura, CA). SALARY/DEGREE/FIT not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Retry from an executor that can read Glassdoor, or assign a live SimiTree requisition URL."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-E17D6BB3B42F",
+      "assignmentVersion": 1,
+      "sourceVersion": "27c78ff18b11d20e2b2086654606d78ec1b906d2aa44466e1c646d2cc8059304",
+      "writerSubmitted": false,
+      "recommendation": "RESEARCH_INCOMPLETE",
+      "sourceEvidence": {
+        "company": "Premier Technology, Inc.",
+        "title": "Quality Assurance Director",
+        "location": "Blackfoot, ID",
+        "url": "https://jobs.buildsubmarines.com/jobs/632669196-quality-assurance-director-at-premier-technology-inc",
+        "observedAt": "2026-11-09T18:34:25Z"
+      },
+      "reason": "Assigned source jobs.buildsubmarines.com/jobs/632669196 returned HTTP 403 at observedAt. A same-title Premier Technology posting exists on Wellfound (jobs/4739633, reposted from idahoworks.gov/jobs/2610537) but it is not ID-bound to the assigned requisition, so FIT quotes were not substituted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator confirms idahoworks.gov/jobs/2610537 (or Wellfound 4739633) as the same requisition, or retry the assigned BuildSubmarines URL from an executor it does not block."
+    }
+  ]
+}

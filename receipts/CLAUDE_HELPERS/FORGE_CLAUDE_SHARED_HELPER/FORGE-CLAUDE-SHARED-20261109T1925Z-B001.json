@@ -1,0 +1,117 @@
+{
+  "schema": "forge.shared-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_SHARED_HELPER",
+  "assignmentId": "SHARED-HELPERS-20261109-V1",
+  "runId": "FORGE-CLAUDE-SHARED-20261109T1925Z-B001",
+  "instructionCommit": "82bd1c5e69534f304f85008499590cdb6fd6a372",
+  "items": [
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-A8E8CFAF1DD8",
+      "assignmentVersion": 1,
+      "sourceVersion": "4caa684bb4c0ba09f4b5d986218296039bbb035d5d2c279e4144ba72c03ad293",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Pratt & Whitney",
+        "title": "Director, Supplier Quality & Development (Remote)",
+        "location": "Remote",
+        "url": "https://email.mg2.lensa.com/c/eJxMj82K3DAQhJ-mfQkMUrcsWQcfNjFzyjsI_bS9GvyHJW_I2wcvk9k9NVR9TVWl3ugRbWy4l8bKVgllVfPey84kHawW1jMx2xQsjZ4Yk5BI0ja5R4FaCmGFVSToxqS9iSyNNLJL5EGJZcLbzGvxt7gtzdy_17oXoDfAO-D95QDe4_QH8E4dRUnSsNVJcSuDHImV70aVCFurePF5fmwS6P7YSwYaHluY2afiDl62yoA6Rr-tQIME1GddXNnOIzLQ8BmH6ilHv-w-TxeJT2nhlM8FaEg8-nOu7rGFAqivU7cdaKjHyc3R1_04c6236czVH6DEdPX63Fj76if3jGpqP6Ny5QwPjtVhU_vfqByvk5s_Ziebs_",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "Only assigned source is a Lensa email tracking redirect (email.mg2.lensa.com/c/...) which returned HTTP 400 with no redirect target at observedAt. Web searches for Pratt & Whitney/RTX \"Director, Supplier Quality & Development (Remote)\" found only lower-level Supplier Quality & Development analyst/lead postings, no matching director requisition. SALARY/FIT not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Assign the underlying RTX/Pratt & Whitney requisition ID or careers URL for this director role, or a resolvable Lensa job URL."
+    },
+    {
+      "kind": "INTAKE",
+      "key": "ladders:88983133",
+      "assignmentVersion": 1,
+      "sourceVersion": "fa77db8e12d774c497766e71d7f2cf7c4b268581892037edc2c44eff83b07f78",
+      "writerSubmitted": false,
+      "recommendation": "RESEARCH_INCOMPLETE",
+      "sourceEvidence": {
+        "company": "Celestica",
+        "title": "Operations Support Director",
+        "location": "Virtual / Travel",
+        "url": "https://www.theladders.com/job/operations-support-director-celestica-virtual-travel_88983133",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "TheLadders listing 88983133 returned HTTP 403 at observedAt. Celestica ATS shows several \"Operations Support Director\" Remote-Employee-US requisitions (e.g. careers.celestica.com/job/.../1163817301 and /1119467801, both now \"Sorry, this position has been filled\"; /1088021101 HealthTech variant) plus a Toronto req 1393497733, and Ladders lists a separate older id 87301686. None is ID-bound to Ladders 88983133 and the worksite is remote/virtual, so no identity, link or existing-match claim is made. No fresh canonical master was available to this helper.",
+      "researchOwner": "AI",
+      "retryCondition": "Retry Ladders 88983133 from an executor it does not block to read the employer requisition, or coordinator canonical recheck against Celestica remote Operations Support Director rows."
+    },
+    {
+      "kind": "INTAKE",
+      "key": "ziprecruiter:65084914c8c549c5ee7b1a63",
+      "assignmentVersion": 1,
+      "sourceVersion": "4637a90d0e30c418a76823d50e87c478973175c5c646d6962016c6ed54df297f",
+      "writerSubmitted": false,
+      "recommendation": "RESEARCH_INCOMPLETE",
+      "sourceEvidence": {
+        "company": "Howmet Aerospace",
+        "title": "Plant Manager",
+        "location": "Cleveland, OH",
+        "url": "https://simplify.jobs/p/ab108547-26d4-4a42-8bca-c3c35cdcf8a5/Plant-Manager",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "Assigned card has no source URL (ZipRecruiter email id only). A live Howmet Aerospace \"Plant Manager\" Cleveland, OH posting exists on Simplify (datePosted 2026-10-23, validThrough 2026-11-22, Simplify identifier 34097d88-0621-407e-a2cb-02e3f9f6eded, lists Cleveland plus one other location), but it is an aggregator listing not ID-bound to ZipRecruiter 65084914c8c549c5ee7b1a63 and no Howmet requisition number was visible, so it is recorded as a candidate only. No fresh canonical master was available.",
+      "researchOwner": "AI",
+      "retryCondition": "Resolve the ZipRecruiter listing to its Howmet requisition (or Howmet ATS req for the Cleveland Plant Manager) and recheck canonical identity."
+    },
+    {
+      "kind": "INTAKE",
+      "key": "ziprecruiter:8b81aa28390e57482a177cc9",
+      "assignmentVersion": 1,
+      "sourceVersion": "4785d9e2e133496b5d5c527e7e811f7800be84b450eba66c87f045d59429aa04",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Davis Staffing, Inc.",
+        "title": "Plant Manager",
+        "location": "East Chicago, IN",
+        "url": "https://www.careerbuilder.com/job-details/plant-manager-east-chicago-in--f406fcb4-703a-468b-a959-0e82a664626b",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "Assigned card has no source URL. Search found a CareerBuilder \"Plant Manager - East Chicago, IN\" listing (HTTP 403 / JS wall at observedAt, employer not readable) and an unrelated Harvest Food Group East Chicago Plant Manager; no Davis Staffing posting for this title was readable. Staffing-agency client employer is unknown.",
+      "researchOwner": "AI",
+      "retryCondition": "Readable ZipRecruiter/Davis Staffing posting URL, or CareerBuilder f406fcb4 readable from another executor."
+    },
+    {
+      "kind": "INTAKE",
+      "key": "ziprecruiter:ab8f4519bb04725658508b57",
+      "assignmentVersion": 1,
+      "sourceVersion": "19110f311a076f7bd3f656e74c9b0bc4ea1831c0a7b074d316edac2329a14aa5",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Amcor",
+        "title": "Plant Director",
+        "location": "Henderson, NV",
+        "url": "https://talents.vaia.com/companies/amcor/plant-director-116819934/",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "Assigned card has no source URL. Only Amcor \"Plant Director\" search hit (Vaia 116819934) returned HTTP 410 \"no longer available\" at observedAt; Amcor Henderson NV results were other roles (Operations Manager, Production Supervisor). No live Amcor Henderson Plant Director requisition found.",
+      "researchOwner": "AI",
+      "retryCondition": "Amcor careers requisition (REQ_xxxxx) for Henderson NV Plant Director, or a readable ZipRecruiter URL."
+    },
+    {
+      "kind": "INTAKE",
+      "key": "ziprecruiter:f021a6893cd6cfb4b5798b3a",
+      "assignmentVersion": 1,
+      "sourceVersion": "b63ad423450131bdd72f12b85b864fef9d9864465066eca4e1b96f25c6beef59",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "LB Metals LLC",
+        "title": "Plant/Production Manager",
+        "location": "Harvey, IL",
+        "observedAt": "2026-11-09T19:32:59Z"
+      },
+      "reason": "Assigned card has no source URL. Web search found company profiles for LB Metals / LB Steel (Harvey, IL) but no live Plant/Production Manager posting from the employer or an ATS.",
+      "researchOwner": "AI",
+      "retryCondition": "Readable ZipRecruiter listing URL or LB Steel/LB Metals careers posting for this role."
+    }
+  ]
+}

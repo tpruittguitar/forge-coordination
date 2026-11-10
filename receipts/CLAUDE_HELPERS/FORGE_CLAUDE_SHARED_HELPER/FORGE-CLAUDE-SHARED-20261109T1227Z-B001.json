@@ -1,0 +1,797 @@
+{
+  "schema": "forge.shared-helper-batch.v1",
+  "provider": "Claude",
+  "taskKey": "FORGE_CLAUDE_SHARED_HELPER",
+  "assignmentId": "SHARED-HELPERS-20261109-V1",
+  "runId": "FORGE-CLAUDE-SHARED-20261109T1227Z-B001",
+  "instructionCommit": "d483fe8af89091a6c06560e7340c7cc7600104b3",
+  "items": [
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-AFBF794A2671",
+      "assignmentVersion": 1,
+      "sourceVersion": "268c84062c93c7e4d75bdac2838280c8c73ef602a9260f8a88be52766321e931",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "SpaceX",
+        "title": "Manager, Machine Maintenance (Starlink)",
+        "location": "Bastrop, TX",
+        "url": "https://boards.greenhouse.io/spacex/jobs/8461586002?gh_jid=8461586002",
+        "fetchUrl": "https://boards-api.greenhouse.io/v1/boards/spacex/jobs/8461586002?pay_transparency=true",
+        "observedAt": "2026-11-09T12:29:51Z",
+        "sourceSha256": "76fe0d64c21edde1aa258ae01c07a04323d95ab31b21822348d9e3f1f400dffe"
+      },
+      "reason": "Greenhouse board API for spacex job 8461586002 returned HTTP 404 and the public boards.greenhouse.io posting URL redirected to the generic spacex.com/careers page at observedAt; posting appears removed, so SALARY is not asserted.",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator supplies a live exact SpaceX requisition for this role, or Writer dispositions the removed listing."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-AFDD6EC62AA1",
+      "assignmentVersion": 1,
+      "sourceVersion": "8dec4b90d6e321af8d17c51d8daec1bdcea488d01948619a525eee64bf164966",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Evonik",
+        "title": "Manager, Process Engineering",
+        "location": "Lafayette, IN",
+        "url": "https://www.linkedin.com/jobs/view/4476825573",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4476825573",
+        "observedAt": "2026-11-09T12:29:52Z",
+        "sourceSha256": "4a292b068bcdcdec26cfc94bff4d72fff801ac721db775bdde44022c2595d224",
+        "postedTitle": "Manager, Process Engineering",
+        "postedCompany": "Evonik",
+        "postedLocation": "Lafayette, IN",
+        "quote": "Bachelor’s degree in Chemical Engineering preferred; equivalent degrees in a related engineering or chemistry discipline will also be considered.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor’s degree in Chemical Engineering preferred; equivalent degrees in a related engineering or chemistry discipline will also be considered."
+            },
+            {
+              "quote": "10 years prior chemical or pharmaceutical engineering manufacturing experience (preferred)."
+            },
+            {
+              "quote": "Experience in multiple production facilities with different scales and technology platforms."
+            },
+            {
+              "quote": "Possess both the technical knowledge and practical experience to solve process engineering issues."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4476825573"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-AFFCA8A8009B",
+      "assignmentVersion": 1,
+      "sourceVersion": "d335ba5e682a69f414e247d5bf5b3b7d22106d7eebf9a864ef2e30669443d04e",
+      "writerSubmitted": false,
+      "recommendation": "SOURCE_BLOCKED",
+      "sourceEvidence": {
+        "company": "Collins Aerospace (RTX)",
+        "title": "Associate Director, Product Quality (onsite)",
+        "location": "Cedar Rapids, IA (US-IA-CEDAR RAPIDS-108, 400 Collins Rd NE, Bldg 108, onsite)",
+        "url": "https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-IA-CEDAR-RAPIDS-108--400-Collins-Rd-NE--BLDG-108/Associate-Director--Product-Quality--onsite-_01878567",
+        "fetchUrl": "https://globalhr.wd5.myworkdayjobs.com/wday/cxs/globalhr/REC_RTX_Ext_Gateway/job/US-IA-CEDAR-RAPIDS-108--400-Collins-Rd-NE--BLDG-108/Associate-Director--Product-Quality--onsite-_01878567",
+        "observedAt": "2026-11-09T12:31:30Z",
+        "sourceSha256": "c5a3e51a26906fe84fe93fea8158632dfbdc72effad94583dbdcce8f5249115c"
+      },
+      "reason": "RTX Workday CXS endpoint for requisition 01878567 returned HTTP 403 (permission denied) at observedAt and the public Workday URL returns only the JavaScript shell; no posting text captured, so SALARY/FIT are not asserted (unreadable source never proves NOT_STATED).",
+      "researchOwner": "AI",
+      "retryCondition": "Coordinator supplies a readable exact mirror of RTX requisition 01878567 or a browser-capable collector captures the Workday page."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B01EA37632B3",
+      "assignmentVersion": 1,
+      "sourceVersion": "048182169d025e9edabb4d645508c03db041b40f44925c921c3fb148aeffd998",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Anduril Industries",
+        "title": "Program Director, Air Dominance & Strike (Production)",
+        "location": "Ashville, Ohio, United States, Costa Mesa, California, United States",
+        "url": "https://boards.greenhouse.io/andurilindustries/jobs/5284884007?gh_jid=5284884007",
+        "fetchUrl": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5284884007?pay_transparency=true",
+        "observedAt": "2026-11-09T12:29:53Z",
+        "sourceSha256": "3277c0573d26693263712b62c893a34a9ad798cc14b528b7d97214dcc1ac04bc",
+        "postedTitle": "Program Director, Fury (Production)",
+        "postedCompany": "Anduril Industries",
+        "postedLocation": "Ashville, Ohio, United States; Costa Mesa, California, United States",
+        "quote": "Bachelor’s degree in Engineering, Business Administration, or a related field (technical background preferred)",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor’s degree in Engineering, Business Administration, or a related field (technical background preferred)"
+            },
+            {
+              "quote": "Minimum of 8 years experience managing production of complex technical systems"
+            },
+            {
+              "quote": "Proven track record of successfully managing complex, multi-million-dollar production lines and driving their on-time, on-budget performance"
+            },
+            {
+              "quote": "Experience coordinating multiple internal and external teams within a complex engineering or technology-focused organization"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5284884007?gh_jid=5284884007"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. IDENTITY NOTE: same Greenhouse requisition 5284884007 now titled 'Program Director, Fury (Production)' vs recorded 'Program Director, Air Dominance & Strike (Production)'; Writer to recheck identity. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B09EE736194F",
+      "assignmentVersion": 1,
+      "sourceVersion": "e221ec7734969ba39e0564d150707b7d128d51da41dc4aa055ed8c18e99c4f1b",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "PIP Global Safety",
+        "title": "Director, Continuous Improvement",
+        "location": "Charlotte, NC",
+        "url": "https://www.linkedin.com/jobs/view/4480873894",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480873894",
+        "observedAt": "2026-11-09T12:29:53Z",
+        "sourceSha256": "f453331fb0d6786abd85694c5ebca214a56b8e2a037af8f52aa3389974d65083",
+        "postedTitle": "Director, Continuous Improvement",
+        "postedCompany": "PIP Global Safety",
+        "postedLocation": "Charlotte, NC",
+        "quote": "Bachelor’s degree in Engineering, Operations Management, or related field; advanced degree preferred.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor’s degree in Engineering, Operations Management, or related field; advanced degree preferred."
+            },
+            {
+              "quote": "10 years of experience in manufacturing or distribution environment, with at least 5 years in a leadership role focused on the deployment of continuous improvement or Lean Manufacturing."
+            },
+            {
+              "quote": "Proven track record of leading enterprise-level initiatives with significant impact."
+            },
+            {
+              "quote": "Extensive knowledge of Lean, Six Sigma, and other continuous improvement methodologies; Black Belt certification required, Master Black Belt strongly preferred"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4480873894"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B13EC89CD1D1",
+      "assignmentVersion": 1,
+      "sourceVersion": "26fd7fcb4ab1eda19f14be4bf4782ae17f102d225e4fe2e66cebb557f25dbb63",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "GXO Logistics, Inc.",
+        "title": "Senior Quality Manager - 1st Shift",
+        "location": "Lithia Springs, GA",
+        "url": "https://www.linkedin.com/jobs/view/4485206722",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485206722",
+        "observedAt": "2026-11-09T12:30:30Z",
+        "sourceSha256": "be4fea4e10e2e29b44fa063400bfee2aeedb26d7660879d6042acb16b54d2946",
+        "postedTitle": "Senior Quality Manager - 1st Shift",
+        "postedCompany": "GXO Logistics, Inc.",
+        "postedLocation": "Lithia Springs, GA",
+        "quote": "5 years of experience in quality and inventory in a distribution or warehousing environment",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "5 years of experience in quality and inventory in a distribution or warehousing environment"
+            },
+            {
+              "quote": "Execute the QMS according to documented policies and procedures, meeting the requirements of the ISO9001 quality standards"
+            },
+            {
+              "quote": "Collaborate with action owners to provide Root Cause Analysis (RCA) guidance and ensure development of effective Corrective Action Plans (CAP)"
+            },
+            {
+              "quote": "Bachelor's degree or equivalent related work or military experience"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4485206722"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B18CBE46AC18",
+      "assignmentVersion": 1,
+      "sourceVersion": "e8683de3c2fe1037563bbde56a0b88e8db8132df94489a5dd38847c1c9bc36b4",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "AT Process Technologies",
+        "title": "Site Director",
+        "location": "Berwick, ME",
+        "url": "https://jobs.ashbyhq.com/atp/70e47bc3-7cfa-4c38-b853-0bda4ddbd357",
+        "fetchUrl": "https://api.ashbyhq.com/posting-api/job-board/atp?includeCompensation=true",
+        "observedAt": "2026-11-09T12:29:53Z",
+        "sourceSha256": "d37f05fb086ce294135be94f8ccb825825bc7bdd0595d619ee7f72bbd2f8b629",
+        "postedTitle": "Site Director",
+        "postedCompany": "AT Process Technologies",
+        "postedLocation": "Berwick, ME",
+        "quote": "Bachelor’s degree in engineering, chemistry, a related technical field, or equivalent experience",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor’s degree in engineering, chemistry, a related technical field, or equivalent experience"
+            },
+            {
+              "quote": "7+ years in operations, production, or facility management in a regulated environment (energetics, chemical, defense, aerospace, or comparable), including 3+ years in a site leadership or management role"
+            },
+            {
+              "quote": "Demonstrated working knowledge of ATF explosives regulations (27 CFR 555) and/or DoD explosives safety standards, including storage, recordkeeping, and quantity-distance principles"
+            },
+            {
+              "quote": "Experience owning site safety and/or security programs, including SOP development and enforcement"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://jobs.ashbyhq.com/atp/70e47bc3-7cfa-4c38-b853-0bda4ddbd357"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. Source is the ATP Ashby posting-api job-board JSON; item located by job id 70e47bc3-7cfa-4c38-b853-0bda4ddbd357 (isListed=true). sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B378E11AFC8E",
+      "assignmentVersion": 1,
+      "sourceVersion": "55ad7afcf1abe03e0714c33af0e622f1597485be76afac4f90364f8dcdd70e46",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Ford Motor Company",
+        "title": "Lean Strategist",
+        "location": "Dearborn, MI",
+        "url": "https://www.linkedin.com/jobs/view/4474781482",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4474781482",
+        "observedAt": "2026-11-09T12:29:54Z",
+        "sourceSha256": "f9df0917bc6e1c638c5570544cbdcdbfb485f22801fe03ec7857c1b9c37e61cc",
+        "postedTitle": "Lean Strategist",
+        "postedCompany": "Ford Motor Company",
+        "postedLocation": "Dearborn, MI",
+        "quote": "Education: Associate’s degree or equivalent experience in an engineering or technical field",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Education: Associate’s degree or equivalent experience in an engineering or technical field"
+            },
+            {
+              "quote": "4+ years of progressive responsibilities and experience in operations leadership"
+            },
+            {
+              "quote": "Extensive experience in high-volume, complex, manufacturing environments"
+            },
+            {
+              "quote": "Experience successfully leading launch activities in complex manufacturing systems"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4474781482"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B38D04861CB6",
+      "assignmentVersion": 1,
+      "sourceVersion": "d436fe84559e4320d8ace9cf8f16f0a458a5c7bf3a9af49208029eb758be8b00",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "EVONA",
+        "title": "Head of AIT",
+        "location": "Denver, CO",
+        "url": "https://www.linkedin.com/jobs/view/4476497284",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4476497284",
+        "observedAt": "2026-11-09T12:29:54Z",
+        "sourceSha256": "10a2394047c4f6a68d4c617fcc80bcb5dd5effdd359119e1b4c41f0f6a7e681a",
+        "postedTitle": "Head of AIT",
+        "postedCompany": "EVONA",
+        "postedLocation": "Denver, CO",
+        "quote": "Significant people management experience in a technical or operational environment.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Significant people management experience in a technical or operational environment."
+            },
+            {
+              "quote": "Experience in assembly, integration, or test."
+            },
+            {
+              "quote": "Experience managing managers or developing leadership capability."
+            },
+            {
+              "quote": "A track record of implementing change and improving processes."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4476497284"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B4CBC131AF47",
+      "assignmentVersion": 1,
+      "sourceVersion": "fce46558b58814014b50e91778aea2ba69f468ae4dd1447561861e82114d7fb4",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "salaryQuote": "$150,000 - $195,000 base salary",
+      "sourceEvidence": {
+        "company": "Tive",
+        "title": "Head of Reverse Logistics",
+        "location": "Boston, MA",
+        "url": "https://ats.rippling.com/tive-careers/jobs/e463dd0b-d23c-4567-9ac2-ef220f8fc7fe",
+        "fetchUrl": "https://ats.rippling.com/tive-careers/jobs/e463dd0b-d23c-4567-9ac2-ef220f8fc7fe",
+        "observedAt": "2026-11-09T12:29:54Z",
+        "sourceSha256": "78caac47d4a8e08f8e6160fa9cd12d60c42d3c043054341791aaadcc39b6ce59",
+        "postedTitle": "Head of Reverse Logistics",
+        "postedCompany": "Tive",
+        "quote": "10+ years in reverse logistics, refurbishment, repair, or manufacturing operations.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "10+ years in reverse logistics, refurbishment, repair, or manufacturing operations."
+            },
+            {
+              "quote": "5+ years leading teams, including teams across multiple sites."
+            },
+            {
+              "quote": "Bachelor's degree in Engineering, Supply Chain, or related field required."
+            },
+            {
+              "quote": "Proven success scaling a high-volume returns or refurbishment operation."
+            },
+            {
+              "quote": "Experience standing up and managing external repair or refurbishment partners."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://ats.rippling.com/tive-careers/jobs/e463dd0b-d23c-4567-9ac2-ef220f8fc7fe",
+          "SALARY_BASE_LOW": 150000,
+          "SALARY_BASE_HIGH": 195000,
+          "SALARY_BASIS": "EMPLOYER_POSTED",
+          "SALARY_SOURCE": "https://ats.rippling.com/tive-careers/jobs/e463dd0b-d23c-4567-9ac2-ef220f8fc7fe"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. SALARY: employer-posted annual USD base range quoted verbatim. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B8B19290E224",
+      "assignmentVersion": 1,
+      "sourceVersion": "25b1c9c8d352c57b606da854a92f6e5f5f0fb7edec7307751b69fb664294f2f0",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Quinn Company",
+        "title": "Vice President of Quinn Site Solutions",
+        "location": "Riverside, CA",
+        "url": "https://www.linkedin.com/jobs/view/4405862738",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4405862738",
+        "observedAt": "2026-11-09T12:29:55Z",
+        "sourceSha256": "59bde721f092b9914e15c5ee73d9bc9d5b4de0b4cad3e69324f03c916c2b0bef",
+        "postedTitle": "Vice President of Quinn Site Solutions",
+        "postedCompany": "Quinn Company",
+        "postedLocation": "Riverside, CA",
+        "quote": "10+ years of progressive leadership experience in heavy equipment, construction technology, dealership operations, digital fleet solutions, or a related industry.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "10+ years of progressive leadership experience in heavy equipment, construction technology, dealership operations, digital fleet solutions, or a related industry."
+            },
+            {
+              "quote": "Demonstrated leader-of-leaders experience, including responsibility for multiple business units, functional leaders, and cross-functional teams, is required."
+            },
+            {
+              "quote": "Proven P&L ownership, financial acumen, and experience translating strategy into measurable business results."
+            },
+            {
+              "quote": "Demonstrated ability to lead organizational change and drive adoption of new technology, processes, and business models."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4405862738",
+          "DEGREE_REQ": "NOT_STATED",
+          "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4405862738"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. DEGREE: full description captured (4665 chars); no degree, bachelor, master, diploma or education wording present. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B95242BA0D97",
+      "assignmentVersion": 1,
+      "sourceVersion": "df33e5c7614a11f0e67476439a3bd7d24b5723aac4e24f359555d4cf80158e4f",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Hyve Solutions",
+        "title": "Director, Manufacturing Engineering",
+        "location": "Nevada, MO",
+        "url": "https://www.linkedin.com/jobs/view/4465085627",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465085627",
+        "observedAt": "2026-11-09T12:29:55Z",
+        "sourceSha256": "dc126b6dda22cbcadb2635f7ea0b3c6ce86bd71e67a80d2b90aed5ec26c4fd3f",
+        "postedTitle": "Director, Manufacturing Engineering",
+        "postedCompany": "Hyve Solutions",
+        "postedLocation": "Nevada, MO",
+        "quote": "Minimum of 5 years work experience in manufacturing engineering management role.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Minimum of 5 years work experience in manufacturing engineering management role."
+            },
+            {
+              "quote": "In-depth product manufacturing comprehension including rationales and limitations"
+            },
+            {
+              "quote": "Demonstrated knowledge of Lean & Six Sigma and experienced in continuous improvement"
+            },
+            {
+              "quote": "Effective in project management, time management, and delegation"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4465085627",
+          "DEGREE_REQ": "NOT_STATED",
+          "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4465085627"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. DEGREE: full description captured (2726 chars); no degree, bachelor, master, diploma or education wording present. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-B9AA4959DF72",
+      "assignmentVersion": 1,
+      "sourceVersion": "29b743ba7360ce682f1ba35f58648ccfbcf3d3d26b1a98876e7c0e6955a7993e",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Nextek, Inc.",
+        "title": "Sr. Director of Quality",
+        "location": "Madison, AL, USA",
+        "url": "https://www.nextekinc.com/careerslink?gnk=job&gni=8a78839ea150ae2901a15a4dc5404479&gns=Indeed+Free",
+        "fetchUrl": "https://recruitingbypaycor.com/career/JobIntroduction.action?clientId=8a7883d07dc02468017e212840061b29&id=8a78839ea150ae2901a15a4dc5404479&source=Indeed+Free",
+        "observedAt": "2026-11-09T12:31:44Z",
+        "sourceSha256": "61bf96d3ce778e3420b9898d9301c3dfdee68688deef02b03aeeb85d967fa342",
+        "postedTitle": "Sr. Director of Quality",
+        "postedCompany": "Nextek, Inc.",
+        "postedLocation": "Madison, AL",
+        "quote": "Bachelor's degree in Engineering, Quality, Manufacturing, Industrial Management, Business, or related technical discipline preferred.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor's degree in Engineering, Quality, Manufacturing, Industrial Management, Business, or related technical discipline preferred."
+            },
+            {
+              "quote": "10+ years of progressive Quality management/leadership, Engineering, Manufacturing, or Compliance experience preferred."
+            },
+            {
+              "quote": "Demonstrated experience managing multiple QMS certifications and customer/certification audits."
+            },
+            {
+              "quote": "Significant experience within EMS/electronics manufacturing and regulated industries."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.nextekinc.com/careerslink?gnk=job&gni=8a78839ea150ae2901a15a4dc5404479&gns=Indeed+Free"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. Source: Nextek employer careers link resolves to Paycor recruiting iframe (clientId 8a7883d07dc02468017e212840061b29); fetched the ID-bound Paycor JobIntroduction for the same posting id 8a78839ea150ae2901a15a4dc5404479 (Job Id 40-2026-13). Assigned jobleads.com mirror returned HTTP 403. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BA5A23AA0C95",
+      "assignmentVersion": 1,
+      "sourceVersion": "2954303c3b40ed27ad97b6e5acefcd9afa788128238e44b15fd640e38b229f48",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "The Lignum Group",
+        "title": "Director of Operations",
+        "location": "Maryland, United States",
+        "url": "https://www.linkedin.com/jobs/view/4485334513",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485334513",
+        "observedAt": "2026-11-09T12:29:55Z",
+        "sourceSha256": "837e96039e80e78d037798d6f60a70f60b023531bb442ae37ab5c056cbeb41ac",
+        "postedTitle": "Director of Operations",
+        "postedCompany": "The Lignum Group",
+        "postedLocation": "Maryland, United States",
+        "quote": "Proven experience as a Director of Operations or senior operations leader within a heavy manufacturing environment",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Proven experience as a Director of Operations or senior operations leader within a heavy manufacturing environment"
+            },
+            {
+              "quote": "Demonstrated experience managing multi-site operations and large-scale teams"
+            },
+            {
+              "quote": "Full P&L ownership with a track record of driving profitability and operational performance"
+            },
+            {
+              "quote": "Strong knowledge of Lean, Six Sigma, and continuous improvement frameworks"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4485334513",
+          "DEGREE_REQ": "NOT_STATED",
+          "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485334513"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. DEGREE: full description captured (2388 chars); no degree, bachelor, master, diploma or education wording present. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BB96ADAA9937",
+      "assignmentVersion": 1,
+      "sourceVersion": "78140ff50eeb6c7874196c08aee1966ca534057f4fb9313f7d79c9d1702e044b",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Google",
+        "title": "Global Commodity Manager, Board Mounted Power Modules, Infrastructure Supply Chain and Manufacturing Operations",
+        "location": "Austin, TX",
+        "url": "https://www.linkedin.com/jobs/view/4476591592",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4476591592",
+        "observedAt": "2026-11-09T12:29:56Z",
+        "sourceSha256": "ae3713e12de814b76de5308bed6d868aba9cd984ac00d98745787ebc2ff2575d",
+        "postedTitle": "Global Commodity Manager, Board Mounted Power Modules, Infrastructure Supply Chain and Manufacturing Operations",
+        "postedCompany": "Google",
+        "postedLocation": "Austin, TX",
+        "quote": "Bachelor's degree in a technical or engineering field or equivalent practical experience.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor's degree in a technical or engineering field or equivalent practical experience."
+            },
+            {
+              "quote": "7 years of experience in procurement and supply chain management."
+            },
+            {
+              "quote": "Experience in commodity management, global procurement, or sourcing for board-mounted power modules (e.g., POL converters, VRMs, IBCs, or PMICs), including contract negotiation and supplier development."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4476591592"
+        }
+      },
+      "basis": "FIT: 3 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BC344F068151",
+      "assignmentVersion": 1,
+      "sourceVersion": "52adda8639f1c9938364fd4bbb24bc6dec0c78b228527c7f6099a3c5259e2826",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "FCH",
+        "title": "Vice President of Quality",
+        "location": "West Chester, OH, USA",
+        "url": "https://www.linkedin.com/jobs/view/4481612411",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481612411",
+        "observedAt": "2026-11-09T12:29:56Z",
+        "sourceSha256": "51b1dbf6cf796c2df5e2de90cba8addaf105fcdbacffdc591c0a8cc240e1b5e0",
+        "postedTitle": "Vice President of Quality",
+        "postedCompany": "FCH",
+        "postedLocation": "West Chester, OH",
+        "quote": "You bring deep quality expertise, a record of developing quality organizations, and demonstrated success operating at the executive level.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "You bring deep quality expertise, a record of developing quality organizations, and demonstrated success operating at the executive level."
+            },
+            {
+              "quote": "Build and develop a strong quality organization, with capable leaders and clear accountability."
+            },
+            {
+              "quote": "Experience presenting to Boards or similarly demanding executive stakeholders will be particularly valuable."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4481612411",
+          "DEGREE_REQ": "NOT_STATED",
+          "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4481612411"
+        }
+      },
+      "basis": "FIT: 3 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. DEGREE: full description captured (2359 chars); no degree, bachelor, master, diploma or education wording present. Posting body refers to the employer as 'FHC' (recruiter-style post, $1.5 billion public company); Writer to recheck company identity. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BD011E430063",
+      "assignmentVersion": 1,
+      "sourceVersion": "486fdecb875a7e45d5b28a1fd21f5db12d7e6452aa8f58cd51a8aacc23b2ba4f",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "WK Kellogg Co",
+        "title": "Senior Manager, Plant Operations",
+        "location": "Memphis, TN, USA",
+        "url": "https://www.linkedin.com/jobs/view/4483913895",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483913895",
+        "observedAt": "2026-11-09T12:30:36Z",
+        "sourceSha256": "4199238dd68db7ffb08c17a0b58a5fe2b8d5b6fe2873e975fb422e480f3a8e8c",
+        "postedTitle": "Senior Manager, Plant Operations",
+        "postedCompany": "WK Kellogg Co",
+        "postedLocation": "Memphis, TN",
+        "quote": "Bachelor’s degree or equivalent experience required",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor’s degree or equivalent experience required"
+            },
+            {
+              "quote": "10+ years of progressive leadership experience in manufacturing"
+            },
+            {
+              "quote": "Proven success in leading large teams and managing multiple production lines"
+            },
+            {
+              "quote": "Strong understanding of lean manufacturing and continuous improvement systems"
+            },
+            {
+              "quote": "Experience with budget creation and performance management"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4483913895"
+        }
+      },
+      "basis": "FIT: 5 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BD415AF9644A",
+      "assignmentVersion": 1,
+      "sourceVersion": "406801dad79e7c80ae290e07cfaa2a4765838e06bd5babff5b75bb83cbadbf24",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Work at County",
+        "title": "Director of Quality & Technical Services",
+        "location": "Burlington, WI, USA",
+        "url": "https://www.linkedin.com/jobs/view/4482281485",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482281485",
+        "observedAt": "2026-11-09T12:29:57Z",
+        "sourceSha256": "8a54c5e76b6a4bb84b8f414ca47205554c839bb8484edcfb2975d20f75b8fa28",
+        "postedTitle": "Director of Quality & Technical Services",
+        "postedCompany": "Work at County",
+        "postedLocation": "Burlington, WI",
+        "quote": "Bachelor's degree in Civil Engineering, Construction Management, or a related field preferred.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor's degree in Civil Engineering, Construction Management, or a related field preferred."
+            },
+            {
+              "quote": "7+ years of senior quality control management experience with demonstrated success in continuous improvement initiatives"
+            },
+            {
+              "quote": "Strong critical thinking abilities to address production nonconformance and logistical challenges"
+            },
+            {
+              "quote": "Ability to lead diverse teams, foster a positive culture, and drive accountability and performance"
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4482281485"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BD7574D01A7B",
+      "assignmentVersion": 1,
+      "sourceVersion": "ce3a70739da4e0c2d982c3047be3bce1dfae1c2eaac2fdf406e9b3c32d8180e2",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Anduril Industries",
+        "title": "Head Of Production, Altius 700",
+        "location": "Costa Mesa, CA",
+        "url": "https://www.linkedin.com/jobs/view/4487515077",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487515077",
+        "observedAt": "2026-11-09T12:29:57Z",
+        "sourceSha256": "6a27821b6ba3a70fac9bb96d9dde4cdbb618f98941d7de51908b3a96139be474",
+        "postedTitle": "Head Of Production, Altius 700",
+        "postedCompany": "Anduril Industries",
+        "postedLocation": "Costa Mesa, CA",
+        "quote": "Supply Chain Acumen: Significant leadership responsibility and proven success across supply chain, procurement, and warehousing functions essential for scaled manufacturing operations.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Supply Chain Acumen: Significant leadership responsibility and proven success across supply chain, procurement, and warehousing functions essential for scaled manufacturing operations."
+            },
+            {
+              "quote": "Domain Expertise: Deep experience with discrete manufacturing operations in a highly technical industry such as aerospace, defense, consumer electronics, medical devices, or automotive. Experience with complex electromechanical systems is highly valued."
+            },
+            {
+              "quote": "Education: Bachelor's degree in Engineering or a related technical discipline strongly preferred; equivalent practical experience with a proven track record will be considered."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4487515077"
+        }
+      },
+      "basis": "FIT: 3 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    },
+    {
+      "kind": "ENRICHMENT",
+      "primaryId": "V2I-BD851209A907",
+      "assignmentVersion": 1,
+      "sourceVersion": "dc3201c173e6f321b325ee745c4e58dd0c4e0620878d56135299e135c974a321",
+      "writerSubmitted": false,
+      "recommendation": "ENRICHMENT_EVIDENCE_READY",
+      "sourceEvidence": {
+        "company": "Nextek, Incorporated",
+        "title": "Sr. Director of Quality",
+        "location": "Madison, AL",
+        "url": "https://www.linkedin.com/jobs/view/4481783311",
+        "fetchUrl": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481783311",
+        "observedAt": "2026-11-09T12:29:57Z",
+        "sourceSha256": "2df9479ed3a721a8aef5e3cc65b2bd3ec7685a25de0bf755f0b2d975f36eb57d",
+        "postedTitle": "Sr. Director of Quality",
+        "postedCompany": "Nextek, Incorporated",
+        "postedLocation": "Madison, AL",
+        "quote": "Bachelor's degree in Engineering, Quality, Manufacturing, Industrial Management, Business, or related technical discipline preferred.",
+        "fit": {
+          "requirements": [
+            {
+              "quote": "Bachelor's degree in Engineering, Quality, Manufacturing, Industrial Management, Business, or related technical discipline preferred."
+            },
+            {
+              "quote": "10+ years of progressive Quality management/leadership, Engineering, Manufacturing, or Compliance experience preferred."
+            },
+            {
+              "quote": "Demonstrated experience managing multiple QMS certifications and customer/certification audits."
+            },
+            {
+              "quote": "Aerospace/Defense experience strongly preferred; Medical Device manufacturing experience highly desirable."
+            }
+          ]
+        },
+        "proposedRawFields": {
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4481783311"
+        }
+      },
+      "basis": "FIT: 4 exact requirement quotes from the live posting; competencyIds and resume hash left for code derivation from control/RESUME_MATCH_PROFILE.json. sourceSha256 = SHA-256 of the raw response bytes fetched from fetchUrl at observedAt."
+    }
+  ]
+}
