@@ -537,7 +537,9 @@ test('prepare-only persists a full policy estimate, skips receipts, reuses it, t
  fs.writeFileSync(ledger,JSON.stringify({submitted:{},tried:{},pendingWrites:{original:{ids:['V2I-PREPARE'],requests:[],status:'POSTING_OR_UNCONFIRMED'}}}));
  const fenced=run([]);assert.equal(fenced.salary_submitted,0);assert.equal(fenced.prepared_sources_validated,0);assert.equal(fs.existsSync(posts),false);assert.ok(JSON.parse(fs.readFileSync(ledger)).pendingWrites.original);
  fs.writeFileSync(ledger,original);
- out=run([]);assert.equal(out.prepared_sources_validated,1);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,1);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
+ // Consume only the separately produced public-source artifact, not the salary preparation.
+ for(const file of fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-')))fs.unlinkSync(path.join(dir,file));
+ out=run([]);assert.equal(out.source_only_artifacts_validated,1);assert.equal(out.prepared_sources_validated,1);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,0);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
 });
 
 test('private preparation cache retains newly learned postings instead of restarting from its seed',t=>{

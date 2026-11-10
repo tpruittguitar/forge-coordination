@@ -92,8 +92,8 @@ observations** from `state/enrich-ats-pay-prepared-<sha256>.json` (or the existi
 `ENRICH_PREPARED_DIR` override). After review, place only the immutable prepared
 JSON there; do not transfer a private canonical snapshot, ledger, request payload,
 or preparation workspace. No workflow input, new worker, or replay is needed.
-This implementation does not stage real preparation data. Any separate transfer
-must be approved for its contents and destination before publication.
+The original full salary-preparation artifact is not included. One separately
+reviewed, explicitly minimized public-source artifact is staged below.
 
 The filename/content hash, embedded-source hash, exact canonical row fingerprint,
 source identity, observation age, posting expiry and current pay-parser version
@@ -106,3 +106,18 @@ by this narrow handoff; existing source recovery still handles them. Original
 observation times are preserved, and the final Writer guard rechecks the full
 canonical row binding for imported-source candidates. Backoff remains in force.
 The existing Writer receipt/readback path remains the only completion proof.
+
+A separate minimized handoff uses `forge.pay-posting-source.v1` files named
+`enrich-ats-pay-source-<sha256>.json` in that same directory. The prepare-only
+producer emits these alongside eligible no-pay salary preparations. Its explicit
+allowlist contains only the role ID, nonreversible exact-row hash, parser version,
+public posting URL/full text/employer-title-location identity, original observation
+time and optional public expiry. It contains no calculated salary or degree,
+canonical source identifiers, private row text, notes or comparison-input hashes.
+Unknown keys are rejected. This is an evidence-only schema, never a salary payload.
+The live owner applies identical role/fence checks and current recalculation; it
+never renews source age. `prepared-source.cjs.save` is also the supported local
+producer for an already validated retained full no-pay posting. Publication of an
+actual data file is a separate approved handoff. The staged source-only artifact
+contains one reviewed public posting and its row binding; no original private
+preparation envelope is published.

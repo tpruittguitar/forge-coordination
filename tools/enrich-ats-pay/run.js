@@ -41,7 +41,7 @@ const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pa
 // A seed initializes private preparation once; later runs must keep newly saved evidence.
 const employerCacheInput=()=>fs.existsSync(EMPLOYER_CACHE)?EMPLOYER_CACHE:(PREPARATION_CACHE||EMPLOYER_CACHE);
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
-const Prepared=require('./prepared.cjs');
+const Prepared=require('./prepared.cjs'),PreparedSource=require('./prepared-source.cjs');
 const PREPARED_DIR=PREPARATION_DIR||process.env.ENRICH_PREPARED_DIR||(process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):path.join(ROOT,'state'));
 const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
@@ -173,15 +173,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const durablePostingEvidence=structuredClone(ledger.postingEvidence||{});
   const roleInputs=(r,base)=>Prepared.sourceInputs(base,{ledger:Recovery.cached({postingEvidence:durablePostingEvidence},r),discovery:require('../source-trial/evidence-store').forRow(discoveryEvidence,r)});
   const externallyFenced=id=>!process.env.ENRICH_MASTER_FILE&&require('../programmed-coordinator/transactions.cjs').fenced(ROOT,Store.read(ROOT,'state/PROGRAMMED_COORDINATOR.json',{transactions:{}}),id);
-  const preparedCandidates=PRODUCTS_ONLY?[]:Prepared.load(PREPARED_DIR,{rows,hints:!DRY,policy:policyFingerprint,inputs:r=>roleInputs(r,inputFingerprint),blocked:researchUnavailableIds,needsSalary:r=>(!planIds||planIds.has(r.PRIMARY_ID))&&/SALARY/.test(needsOf(r))&&!externallyFenced(r.PRIMARY_ID)}).slice(0,CONFIG.maxBatches*25);
+  const preparedOptions={rows,hints:!DRY,policy:policyFingerprint,inputs:r=>roleInputs(r,inputFingerprint),blocked:researchUnavailableIds,needsSalary:r=>(!planIds||planIds.has(r.PRIMARY_ID))&&/SALARY/.test(needsOf(r))&&!externallyFenced(r.PRIMARY_ID)};
+  const preparedCandidates=PRODUCTS_ONLY?[]:Prepared.load(PREPARED_DIR,preparedOptions).slice(0,CONFIG.maxBatches*25);
   // Live runs independently regenerate fields using the existing source reader and
   // estimator. A self-hashed local artifact is not authority to write its values.
   const prepared=DRY?preparedCandidates:[];
   stats.prepared_revalidation_required=DRY?0:preparedCandidates.length;
-  const preparedSourceById=new Map();
-  if(!DRY)for(const e of preparedCandidates){const row=rows.find(r=>r.PRIMARY_ID===e.row.PRIMARY_ID),source=Prepared.noPaySource(row,e);if(source)preparedSourceById.set(row.PRIMARY_ID,source);}
+  const preparedSourceById=DRY||PRODUCTS_ONLY?new Map():PreparedSource.load(PREPARED_DIR,preparedOptions);
+  stats.source_only_artifacts_validated=preparedSourceById.size;
+  if(!DRY)for(const e of preparedCandidates){const row=rows.find(r=>r.PRIMARY_ID===e.row.PRIMARY_ID),source=Prepared.noPaySource(row,e);if(source)preparedSourceById.set(row.PRIMARY_ID,Recovery.combine(preparedSourceById.get(row.PRIMARY_ID),source));}
   stats.prepared_sources_validated=preparedSourceById.size;
-  const preparationHintIds=new Set(preparedCandidates.map(e=>e.row.PRIMARY_ID));
+  const preparationHintIds=new Set([...preparedCandidates.map(e=>e.row.PRIMARY_ID),...preparedSourceById.keys()]);
   const preparedIds=new Set(prepared.map(e=>e.row.PRIMARY_ID));
   const researchedIds=new Set();
   stats.salary_submitted=0;stats.salary_independently_verified=0;
@@ -634,7 +636,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   EmployerCacheStore.write(EMPLOYER_CACHE,empCache);   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   const preparationInputFingerprint=inputFingerprintOf();
-  if(PREPARE_ONLY)for(const q of requests){const row=rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId);if(!q.ruling.fields.SALARY_BASE_LOW||preparedIds.has(row.PRIMARY_ID)||Prepared.protectedRow(row)||externallyFenced(row.PRIMARY_ID))continue;Prepared.save(PREPARED_DIR,{row,fields:q.ruling.fields,policy:policyFingerprint,inputs:roleInputs(row,preparationInputFingerprint),evidence:{source:q.ruling.fields.SALARY_SOURCE,anchorInputsSha256:Store.hash(anchors),contextSha256:Store.hash(salaryContext),canonicalSource:masterSource,postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID))}});if(q.ruling.fields.SALARY_BASIS==='FORGE-ESTIMATE')stats.salary_estimates_prepared++;}
+  if(PREPARE_ONLY)for(const q of requests){const row=rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId);if(!q.ruling.fields.SALARY_BASE_LOW||preparedIds.has(row.PRIMARY_ID)||Prepared.protectedRow(row)||externallyFenced(row.PRIMARY_ID))continue;Prepared.save(PREPARED_DIR,{row,fields:q.ruling.fields,policy:policyFingerprint,inputs:roleInputs(row,preparationInputFingerprint),evidence:{source:q.ruling.fields.SALARY_SOURCE,anchorInputsSha256:Store.hash(anchors),contextSha256:Store.hash(salaryContext),canonicalSource:masterSource,postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID))}});if(q.ruling.fields.SALARY_BASIS==='FORGE-ESTIMATE'){if(Prepared.noPaySource(row,{evidence:{postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID))}}))PreparedSource.save(PREPARED_DIR,{row,postingEvidence:preparationSources.get(row.PRIMARY_ID)});stats.salary_estimates_prepared++;}}
   if(SAVED_ONLY)for(const id of researchedIds){const row=rows.find(r=>r.PRIMARY_ID===id);if(!requests.some(q=>q.ruling.primaryId===id&&q.ruling.fields.SALARY_BASE_LOW))Prepared.rememberAttempt(PREPARED_DIR,row,policyFingerprint,roleInputs(row,preparationInputFingerprint));}
   if(!DRY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(BENCHMARK_FILE,JSON.stringify(benchmarks,null,2)+'\n');
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
