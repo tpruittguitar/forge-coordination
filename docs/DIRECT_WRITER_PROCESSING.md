@@ -2,6 +2,17 @@
 
 Tim's November 9 direction is to put usable discovered details straight into the supported Writer path. Research is not finished merely because a batch was prepared or a review was published. This contract applies to the non-retired job-detail routes marked `WRITE_THROUGH_SUPPORTED_WRITER`; it does not activate dormant routes or alter ownership, schedules, credentials or source permissions.
 
+## Grok direct submission, November 10
+
+Grok uses the existing Drive `AI_Coordination/WRITER_QUEUE` route described in
+[Grok direct Writer](GROK_DIRECT_WRITER.md) before the helper-return adapter.
+That queue reaches the same Writer without the local helper coordinator, its
+production lock, a credential, or a new endpoint. The Writer's script lock and
+verification fences remain. Existing captured/uncertain returns must not be sent
+again; new direct work must not also be delivered as an evidence-only batch.
+Actual Grok queue access and verified effects require observed execution, not
+this instruction change. Independent coordinator duties remain intact.
+
 ## Existing supported execution paths
 
 - Shared Claude/Grok, ChatGPT enrichment, and independently active legacy Claude intake/enrichment/relevance tasks preserve their existing immutable helper envelopes. Validate and durably publish or deliver the exact source-bound batch first. Confirm that the adapter can read its supported receipt path, then use the existing production wrapper when this executor already has its authorized private configuration:
