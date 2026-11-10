@@ -7,24 +7,30 @@ function save(root,state){
  for(const s of [legacy,code]){s.counts={};for(const i of s.items)s.counts[i.status]=(s.counts[i.status]||0)+1;}
  S.save(root,'state/CLAUDE_HELPER_CONSUMPTION.json',legacy);S.save(root,'state/CODE_INTAKE_CONSUMPTION.json',code);
 }
-function original(root,item,work,cache=new Map()){
+// One preparation pass reads each source file once. Keep this reader local to
+// that pass: submission checks and later passes still read current source files.
+function originalReader(root){
+ const files=new Map(),read=file=>{if(!files.has(file))files.set(file,S.read(root,file));return files.get(file);};
+ return(item,work,cache)=>original(root,item,work,cache,read);
+}
+function original(root,item,work,cache=new Map(),read=file=>S.read(root,file)){
  if(item.provider==='CODE'){
   if(item.provenance==='PROGRAMMED_SOURCE_VERIFIED'){
-   const coordinator=S.read(root,'state/PROGRAMMED_COORDINATOR.json'),inspection=coordinator.items[item.coordinatorKey];
+   const coordinator=read('state/PROGRAMMED_COORDINATOR.json'),inspection=coordinator.items[item.coordinatorKey];
    if(!inspection||coordinator.batches[inspection.batch]?.status!=='VALIDATED'||inspection.version!==item.sourceVersion||inspection.status!=='SOURCE_VERIFIED'||inspection.sourceEvidence?.sourceSha256!==item.sourceEvidence?.sourceSha256)throw Error('CURRENT_SOURCE_INSPECTION_REQUIRED');
-   const batch=S.read(root,inspection.batch),source=batch.items.find(i=>i.key===item.key);
+   const batch=read(inspection.batch),source=batch.items.find(i=>i.key===item.key);
    if(!source||S.hash(source)!==inspection.version)throw Error('IMMUTABLE_SOURCE_RETURN_REQUIRED');
    if(batch.schema==='forge.shared-helper-batch.v1')require('../helper-routing/shared.cjs').assertCurrent(root,source,batch);
    return require('./exception-work.cjs').evidence(root,inspection,source);
   }
-  const job=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs[item.key],evidence=job?.evidence?.find(e=>e.cardHash===item.cardHash&&e.paragraphs?.length>=3);
+  const job=read('state/EMAIL_RECOVERY_QUEUE.json').jobs[item.key],evidence=job?.evidence?.find(e=>e.cardHash===item.cardHash&&e.paragraphs?.length>=3);
   if(!evidence||!item.sourceEvidence||item.provenance!=='CAPTURED_SOURCE_CARD')throw Error('CAPTURED_CARD_PROOF_REQUIRED');
   const observed={title:evidence.paragraphs[0].split('\n')[0].replace(/ \(Verified job\)$/,'').trim(),company:evidence.paragraphs[1].trim(),location:evidence.paragraphs[2].replace(/ \((On-site|Hybrid|Remote)\)$/,'').trim()};
   for(const field of ['company','title','location'])if(Source.norm(observed[field])!==Source.norm(item.sourceEvidence[field])||Source.norm(job[field])!==Source.norm(item.sourceEvidence[field]))throw Error('CAPTURED_CARD_IDENTITY_CONFLICT');
   if(job.url!==item.sourceEvidence.url)throw Error('CAPTURED_CARD_URL_CONFLICT');
   return{sourceEvidence:item.sourceEvidence};
  }
- if(!cache.has(item.batch)){const batch=S.read(root,item.batch);H.validateBatch(batch,work);cache.set(item.batch,batch);}
+ if(!cache.has(item.batch)){const batch=read(item.batch);H.validateBatch(batch,work);cache.set(item.batch,batch);}
  const source=cache.get(item.batch).items.find(i=>i.key===item.key);if(!source)throw Error('Missing immutable helper item');return source;
 }
 function seedVerified(root,state,apply,select=()=>true){
@@ -35,4 +41,4 @@ function seedVerified(root,state,apply,select=()=>true){
  }
  if(apply&&seeded)save(root,intake);return{seeded};
 }
-module.exports={load,find,save,original,seedVerified};
+module.exports={load,find,save,original,originalReader,seedVerified};

@@ -94,3 +94,58 @@ test('scoped apply under the shared lock preserves unrelated persisted plans, so
   const proof=read('receipts/'+f.runId+'_SCREEN.json');a.equal(proof.writerSubmissions,0);a.deepEqual(proof.closures.map(i=>i.key),[f.key]);a.equal(savedPlan.counts.POST_IN_FLIGHT_UNKNOWN,1);
  }finally{Lock.lock(lock,'release',f.runId);if(prior===undefined)delete process.env.FORGE_PRODUCTION_LOCK;else process.env.FORGE_PRODUCTION_LOCK=prior;}
 });
+
+test('preparation refreshes cached captured-card sources on every invocation',t=>{
+ const f=fixture('Director, Manufacturing');t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));
+ const read=file=>JSON.parse(fs.readFileSync(p.join(f.root,file),'utf8')),queue=read('state/EMAIL_RECOVERY_QUEUE.json'),job=queue.jobs[f.key];job.evidence[0].cardHash='card';f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);
+ f.save('state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]});
+ const source={key:f.key,provider:'CODE',provenance:'CAPTURED_SOURCE_CARD',cardHash:'card',sourceEvidence:{company:job.company,title:job.title,location:job.location,url:job.url},status:'RETURNED_PENDING_SCREEN'};
+ f.save('state/CODE_INTAKE_CONSUMPTION.json',{items:[source,{...source}]});
+ const file=p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'),original=fs.readFileSync;let reads=0;
+ t.mock.method(fs,'readFileSync',function(name,...args){if(String(name)===file)reads++;return original.call(this,name,...args);});
+ a.equal(P.prepare(f).counts.READY,2);a.equal(reads,3); // plan queue, fence queue, source snapshot, independent of item count.
+ for(const change of [j=>j.company='Changed',j=>j.url='https://other.test/role',j=>j.evidence[0].cardHash='changed']){
+  const altered=structuredClone(queue);change(altered.jobs[f.key]);f.save('state/EMAIL_RECOVERY_QUEUE.json',altered);
+  a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);
+ }
+ f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.READY,2);
+});
+
+test('preparation retains coordinator, immutable return and source hash guards with per-pass caching',t=>{
+ const f=fixture('Director, Manufacturing');t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));
+ const S=require('../programmed-coordinator/store.cjs'),job=JSON.parse(fs.readFileSync(p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'))).jobs[f.key],batch='receipts/program-source.json',source={key:f.key,sourceEvidence:{company:job.company,title:job.title,location:job.location,url:job.url,sourceSha256:'a'.repeat(64)},recommendation:'INTAKE_READY'},inspection={key:'coordinator-item',itemKey:f.key,batch,version:S.hash(source),status:'SOURCE_VERIFIED',sourceEvidence:source.sourceEvidence},program={items:{[inspection.key]:inspection},batches:{[batch]:{status:'VALIDATED'}}};
+ f.save('state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]});f.save(batch,{items:[source]});f.save('state/PROGRAMMED_COORDINATOR.json',program);
+ const si={key:f.key,provider:'CODE',provenance:'PROGRAMMED_SOURCE_VERIFIED',coordinatorKey:inspection.key,sourceVersion:inspection.version,sourceEvidence:source.sourceEvidence,status:'RETURNED_PENDING_SCREEN'};
+ f.save('state/CODE_INTAKE_CONSUMPTION.json',{items:[si,{...si}]});
+ const original=fs.readFileSync,reads=new Map();t.mock.method(fs,'readFileSync',function(name,...args){reads.set(String(name),(reads.get(String(name))||0)+1);return original.call(this,name,...args);});
+ a.equal(P.prepare(f).counts.READY,2);a.equal(reads.get(p.join(f.root,'state/PROGRAMMED_COORDINATOR.json')),2);a.equal(reads.get(p.join(f.root,batch)),1);
+ for(const change of [x=>x.batches[batch].status='QUARANTINED',x=>x.items[inspection.key].version='changed',x=>x.items[inspection.key].status='PENDING',x=>x.items[inspection.key].sourceEvidence.sourceSha256='b'.repeat(64),x=>delete x.items[inspection.key]]){
+  const altered=structuredClone(program);change(altered);f.save('state/PROGRAMMED_COORDINATOR.json',altered);a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);
+ }
+ f.save('state/PROGRAMMED_COORDINATOR.json',program);f.save(batch,{items:[{...source,recommendation:'CHANGED'}]});a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);
+ f.save(batch,{items:[]});a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);f.save(batch,{items:[source]});a.equal(P.prepare(f).counts.READY,2);
+});
+
+test('program source index preserves first matching inspection and latest valid posting tie order',t=>{
+ const f=fixture('Director, Manufacturing');t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));
+ const file=p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'),queue=JSON.parse(fs.readFileSync(file)),card=queue.jobs[f.key],sha=s=>require('node:crypto').createHash('sha256').update(s).digest('hex'),batch='receipts/verified-posting.json';
+ const e={company:card.company,title:card.title,location:card.location,url:'https://employer.test/jobs/1',initiatingUrl:card.url,observedAt:new Date().toISOString(),sourceSha256:'a'.repeat(64),description:unrelatedRole,descriptionSha256:sha(unrelatedRole),contentBasis:'CAPTURED_ROLE_CONTENT',independentlyVerified:true};
+ const item=sourceEvidence=>({itemKey:f.key,batch,status:'SOURCE_VERIFIED',sourceEvidence}),program={batches:{[batch]:{status:'VALIDATED'}},items:{unrelated:{...item(e),itemKey:'other'},first:item(e),second:item({...e,sourceSha256:'b'.repeat(64)})}};
+ f.save('state/PROGRAMMED_COORDINATOR.json',program);a.equal(P.prepare({...f,screenContext:atsContext()}).items[0].preliminaryScreen.sourceEvidence.sourceSha256,e.sourceSha256);
+ // An earlier inspected identity mismatch must not be replaced by a later one.
+ card.evidence=[];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);program.items.first.sourceEvidence={...e,company:'Other'};f.save('state/PROGRAMMED_COORDINATOR.json',program);
+ a.equal(P.prepare({...f,screenContext:atsContext()}).counts.SOURCE_REVALIDATION_REQUIRED,1);
+});
+
+test('a preparation source reader still rechecks live shared ownership on each item',t=>{
+ const f=fixture('Director, Manufacturing');t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));
+ const I=require('../routine-handoffs/intake-state.cjs'),S=require('../programmed-coordinator/store.cjs'),taskKey='FORGE_GROK_SHARED_HELPER',batch='receipts/shared-source.json',assignment={key:f.key,kind:'INTAKE',provider:'Grok',taskKey,assignmentVersion:1,sourceVersion:'source-v1',status:'ASSIGNED'},work={schema:'forge.shared-helper-work.v1',enabled:true,routingActive:true,assignmentId:'SHARED-TEST',providers:{FORGE_GROK_SHARED_HELPER:{provider:'Grok',available:true},FORGE_CLAUDE_SHARED_HELPER:{provider:'Claude',available:true}},items:[assignment]},source={key:f.key,kind:'INTAKE',assignmentVersion:1,sourceVersion:'source-v1',writerSubmitted:false,recommendation:'INTAKE_READY',sourceEvidence:{company:'Factory',title:'Director, Manufacturing',location:'Austin, TX',url:'https://careers.example.com/jobs/1',observedAt:new Date().toISOString(),sourceSha256:'a'.repeat(64),quote:'Synthetic role source.'}};
+ const envelope={schema:'forge.shared-helper-batch.v1',provider:'Grok',taskKey,assignmentId:work.assignmentId,runId:'FORGE-GROK-TEST',instructionCommit:'a'.repeat(40),items:[source]},inspection={key:'one',itemKey:f.key,batch,status:'SOURCE_VERIFIED',version:S.hash(source),sourceEvidence:source.sourceEvidence},si={key:f.key,provider:'CODE',provenance:'PROGRAMMED_SOURCE_VERIFIED',coordinatorKey:inspection.key,sourceVersion:inspection.version,sourceEvidence:source.sourceEvidence};
+ f.save(batch,envelope);f.save('state/PROGRAMMED_COORDINATOR.json',{items:{one:inspection},batches:{[batch]:{status:'VALIDATED'}}});f.save('control/SHARED_HELPER_WORK.json',work);
+ const read=I.originalReader(f.root);a.deepEqual(read(si,{}),source);
+ assignment.status='CONSUMED';f.save('control/SHARED_HELPER_WORK.json',work);a.throws(()=>read(si,{}),/SHARED_RESERVATION_CLOSED/);
+ assignment.status='ASSIGNED';assignment.assignmentVersion=2;f.save('control/SHARED_HELPER_WORK.json',work);a.throws(()=>read(si,{}),/STALE_OR_UNASSIGNED_SHARED_ITEM/);
+ assignment.assignmentVersion=1;f.save('control/SHARED_HELPER_WORK.json',work);a.deepEqual(read(si,{}),source);
+ // Non-preparation callers never share this source snapshot.
+ f.save(batch,{...envelope,items:[{...source,recommendation:'CHANGED'}]});a.throws(()=>I.original(f.root,si,{}),/IMMUTABLE_SOURCE_RETURN_REQUIRED/);
+});
