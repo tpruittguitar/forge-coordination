@@ -1,0 +1,224 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-10T12:48:23.449Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_KNOWN_COORDINATOR_CONFLICT",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "3065ca70e348aab2f581b061b05d2dd04348cd77",
+    "foremanCockpit": "f52dad6d6a35f0827777d72256b4e901b14bcb57",
+    "forgeCoordination": "3065ca70e348aab2f581b061b05d2dd04348cd77"
+  },
+  "sourceEvidenceSha256": "3b376c45a092af62d3d44c239d11f5920b0dd6b59bea0b1ea77be070b7cf6f15",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": false,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "5e19cce",
+      "productionLockPresent": false,
+      "fileQueueThroughputOnly": true,
+      "failedNotice": "Unchanged incomplete failure notice lacks request identity and time."
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "3065ca70e348aab2f581b061b05d2dd04348cd77",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "Publish compact Writer activity",
+            "status": "pending",
+            "seconds": 1
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "cancelled",
+            "seconds": 168
+          },
+          {
+            "name": "Publish pipeline execution evidence",
+            "status": "success",
+            "seconds": 36
+          },
+          {
+            "name": "Index receipt discovery hints",
+            "status": "success",
+            "seconds": 26
+          },
+          {
+            "name": "build-needs-tim",
+            "status": "success",
+            "seconds": 29
+          }
+        ],
+        "openPRs": 46,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "f52dad6d6a35f0827777d72256b4e901b14bcb57",
+        "sample": 15,
+        "failures": [
+          {
+            "id": 42747084212,
+            "name": "browser-tests-compare",
+            "url": "https://github.com/tpruittguitar/foreman-cockpit/actions/runs/42747084212",
+            "event": "pull_request"
+          }
+        ],
+        "latestRuns": [
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 18
+          },
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 8
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 1708
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 21
+          },
+          {
+            "name": "writer-impact",
+            "status": "success",
+            "seconds": 20
+          }
+        ],
+        "openPRs": 1,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "lastReportAt": "2026-11-10T05:33:14.339Z",
+      "status": "BLOCKED_RETAINED_ACCOUNTING_CONFLICT",
+      "conflicts": [
+        "state/AI_EXCEPTION_WORK.json",
+        "state/RELEVANCE_SCREEN_GUARD.json"
+      ],
+      "schedulerResult": 0,
+      "lastRun": "2026-11-10T12:45:23Z",
+      "schedulerResultDoesNotProveProcessing": true
+    },
+    "activity": {
+      "publishedAt": "2026-11-10T12:36:11.540Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-09T00:36:11.540Z",
+        "to": "2026-11-10T12:36:11.540Z",
+        "verification": {
+          "count": 209,
+          "perHour": 5.805555555555555,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 84,
+          "perHour": 2.3333333333333335,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 66,
+          "perHour": 1.8333333333333333,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 0,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 0,
+          "sources": [],
+          "error": null
+        },
+        "discovery": {
+          "count": 329,
+          "windowHours": 36,
+          "perHour": 9.13888888888889,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 329,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-10T12:30:25.419Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      }
+    },
+    "enrichment": {
+      "at": "2026-11-10T12:38:29.184Z",
+      "eligible": 771,
+      "recoveryStatuses": {
+        "NOT_YET_ATTEMPTED": 18,
+        "SOURCE_RESEARCH_REQUIRED": 614,
+        "EVIDENCE_FOUND": 14,
+        "WRITER_REQUEST_PENDING_NO_REPLAY": 76
+      },
+      "salarySubmitted": 0,
+      "salaryIndependentlyVerified": 0,
+      "pendingCount": 711
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-10T12:36:11.504Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-10T12:36:12.597Z",
+          "lastSuccessAt": "2026-11-10T12:36:12.597Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-10T12:37:24.479Z",
+          "lastSuccessAt": "2026-11-10T12:37:24.479Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-10T12:37:30.997Z",
+          "lastSuccessAt": "2026-11-10T12:37:30.997Z",
+          "attempts": 1
+        }
+      }
+    },
+    "limitations": [
+      "Explorer browser outbox/polling/payload state unavailable in this audit; no UI health claim.",
+      "Writer internal log rotation and complete lock/fence inventory not exposed by status.",
+      "Queue status concerns file transport, not total direct API throughput.",
+      "Historical pull-request browser test failure followed by newer successful browser comparison; no current production failure inferred.",
+      "Pending work and original requests preserved; no production mutations."
+    ]
+  }
+}
