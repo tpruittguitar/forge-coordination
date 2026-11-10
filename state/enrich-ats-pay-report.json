@@ -1,10 +1,10 @@
 {
- "at": "2026-11-10T12:01:20.689Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261110T115835516Z",
+ "at": "2026-11-10T12:38:29.184Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261110T123530536Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-10T11:58:41.011Z",
+  "readAt": "2026-11-10T12:35:40.504Z",
   "sha256": "f1a97fad6a77ed756249c6bd6de8a8b0d649c4f3e30f6815441ba76cb842e4bc",
   "rows": 5166
  },
@@ -19,9 +19,9 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 55,
- "skipped_recent": 585,
+ "skipped_recent": 580,
  "submitted": 0,
- "guard_dropped": 0,
+ "guard_dropped": 11,
  "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
@@ -32,14 +32,21 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
+  "linkedin": 2,
   "ziprecruiter": 3
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {
+  "linkedin": 1,
   "ziprecruiter": 3
  },
  "agg_errors": {
+  "linkedin": [
+   "429"
+  ],
   "ziprecruiter": [
    "403",
    "403",
@@ -47,12 +54,12 @@
   ]
  },
  "agg_wall": {},
- "source_reads": 32,
+ "source_reads": 29,
  "source_retries": 0,
- "source_duplicate_skips": 0,
+ "source_duplicate_skips": 1,
  "est_same_employer": 0,
  "est_comparables": 0,
- "boards_read": 18,
+ "boards_read": 16,
  "boards_failed": 0,
  "bls": {
   "OK": 0,
@@ -64,7 +71,7 @@
  "est_shared_low": 0,
  "posting_cache": {
   "saved": 214,
-  "hits": 1,
+  "hits": 10,
   "no_pay_hits": 1
  },
  "employer_benchmarks": {
@@ -89,7 +96,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-10T11:58:44.849Z",
+  "profile_as_of": "2026-11-10T12:35:44.432Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -102,9 +109,9 @@
  },
  "skipped_closed": 49,
  "ats_unconfirmed": 0,
- "public_tried": 32,
+ "public_tried": 27,
  "public_read": 0,
- "public_failed": 32,
+ "public_failed": 27,
  "salary_repairs": 0,
  "salary_invalid": [
   {
@@ -175,16 +182,16 @@
   "samples": []
  },
  "decision_waiting": 572,
- "not_attempted": 29,
- "nothing_found": 61,
+ "not_attempted": 27,
+ "nothing_found": 55,
  "products_planned": 0,
  "upgraded": 0,
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 454,
- "network_requests": 66,
- "planned": 0,
+ "roles_researched": 455,
+ "network_requests": 61,
+ "planned": 11,
  "research_budget_exhausted": false,
  "salary_model_version": "employer-upper-range-v5",
  "salary_context": {
@@ -194,8 +201,8 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 18,
-  "SOURCE_RESEARCH_REQUIRED": 613,
-  "EVIDENCE_FOUND": 15,
+  "SOURCE_RESEARCH_REQUIRED": 614,
+  "EVIDENCE_FOUND": 14,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 76
  },
  "pending": [
@@ -1038,97 +1045,6 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B123A1B54C6C",
-   "company": "Walgreens",
-   "title": "Director, Supply Chain, Strategic Partnerships & Governance",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.038Z",
-   "retryAt": "2026-11-10T12:02:15.038Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF4495218805",
-   "company": "Anduril Industries",
-   "title": "Senior Manager, Product Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.270Z",
-   "retryAt": "2026-11-10T12:02:15.270Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-816864AD9AEF",
-   "company": "AmeriHealth Caritas",
-   "title": "Director Quality Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.370Z",
-   "retryAt": "2026-11-10T12:02:15.370Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F95CE983B767",
-   "company": "Genesis AI",
-   "title": "Head of Supply Chain (Robot Production)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.566Z",
-   "retryAt": "2026-11-10T12:02:15.566Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7546F9B3E293",
-   "company": "Symbotic",
-   "title": "Senior Manager, Strategic Sourcing (Contract Manufacturing)",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.763Z",
-   "retryAt": "2026-11-10T12:02:15.763Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DCBEDCB272E4",
-   "company": "Genesis",
-   "title": "Head of Supply Chain (Robot Production)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.868Z",
-   "retryAt": "2026-11-10T12:02:15.868Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6C00C600146A",
-   "company": "AstraZeneca",
-   "title": "Director, Digital Twin & Intelligent Manufacturing Capabilities",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:15.967Z",
-   "retryAt": "2026-11-10T12:02:15.967Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -6554,78 +6470,21 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-066463994273",
-   "company": "Tesla",
-   "title": "Head of Project Controls, North America R&D, Factory & Refinery Infrastructure",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:52.521Z",
-   "retryAt": "2026-11-10T12:02:52.521Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488761068",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-7B6DB75A04A6",
    "company": "Fluor Corporation",
    "title": "Site Quality Manager",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:55.898Z",
-   "retryAt": "2026-11-10T12:02:55.898Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:36:17.954Z",
+   "retryAt": "2026-11-11T04:36:17.954Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483151112",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A9A1418340FD",
-   "company": "Teradyne",
-   "title": "Customer Production Support Manager (Global Customer Service) - Austin, TX",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:55.999Z",
-   "retryAt": "2026-11-10T12:02:55.999Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7DC37348F544",
-   "company": "Baxter",
-   "title": "Sr. Manager - Quality - Visual Inspection & Particulate Control",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:56.097Z",
-   "retryAt": "2026-11-10T12:02:56.097Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-697FF398F2AF",
-   "company": "Amgen",
-   "title": "Sr. Manager of Engineering (Device Assembly, Labeling & Packaging)",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T11:02:56.197Z",
-   "retryAt": "2026-11-10T12:02:56.197Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -7253,63 +7112,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-84C43A226324",
-   "company": "Akamai",
-   "title": "Manager Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:41.371Z",
-   "retryAt": "2026-11-11T03:59:41.371Z",
-   "attempts": [
-    {
-     "url": "https://www.ziprecruiter.com/ekm/AAHNb6rujwfEzucHd9u_SS6vouNhoqCy59GwmoNf_K-sGPZ4QGj4UuYpiixvdkize7P-VaJMZAunSzxDgdWjn0MkUrP_JScSl7a9LejN6Qfp4Ov3CVUgYES2iL6uom6X4o6DQjlrRALNjD4-CSw3n5gM2oAZcDogzTSxWkKuN1p_VU8xi_2JYOJOHE-zZIE0xLf_Awefp9w5IeszwktMnTzjVhOiU6w9rGS-S8hpOK1hdfPXe8Q623wRXRig9b55-yU-QccS04urarqT5zF5yMXC6Wcz032JLJSgl-tM--au75Ia4AAJQ-JsEkx1-FIXdJ4-pt-iwTcffkrIpvtkY9R7KxJCwlhSp5w4bmoGhO_W5_-",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E3980C6D8887",
-   "company": "JFE Franchising Inc",
-   "title": "Plant Supervisor - Cincinnati, OH",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:44.568Z",
-   "retryAt": "2026-11-11T03:59:44.568Z",
-   "attempts": [
-    {
-     "url": "https://www.ziprecruiter.com/km/AAH2ndbgSzVTm8uFhBzLyUcDeqEC8VRS4fikIv_IK-Y9INWJTVMn6KB8CWE1j9mUvALRqVrYkFLd6-mgb_Z9J9Jb32Ij8JSgylUQ4Pf4775fXB8KXZBr32wW0PTNUdvrv21cnZn9hLMrpubEMYbtCUI2fDLp1wrzbIX_y11PAp2rn_pL6vYzHpRWjd6jVghkJ3HhFKd7_sr1wqTJvemqSXrRVoWhwBrYEvxeMCg0lmXd-L-99rstaiASFIhbs3t2TGKi16-WZ80O6M2X3aarfzSioXkn1flUr_6eEM_dG9v8UjdWagssnWFI_tBIJGqiG8VZMhV2hRu0hKOX5UwUvaZTiN2MoieeFoC-aQDEi3jBrbvM",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2730281A58C6",
-   "company": "Ambaflex",
-   "title": "Injection Molding Supervisor (Canton, OH)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:47.770Z",
-   "retryAt": "2026-11-11T03:59:47.770Z",
-   "attempts": [
-    {
-     "url": "https://www.ziprecruiter.com/km/AAFvEy1XWw8GcnwTxmrzbK4ywCW4QwJGum6xW6QR39eH3-Ef1ZY7TJR0VQuJmnZ7lSv_Ys5qDpvlsqo6uuOlctOZWv-ZeBc_HDw5RvnvlrTMdyUzw-kEbdWcEKndf-4UD3uNzsjRhTfrzGFEvvkgyb2qWV1cCl182Rcvr2_xcd86_p212rsYYCTTkP63mmDKtHsUndwG4huLKpCMeWfYVbp4XsAosZmSS_aEbBJMMVLr4zpQdpSK3js6IIfpsyFrN_lPcEdbsRAOR_ksNYM4yU9_jyxnb5hhjZoBmz6MXUXwtB8yNpv71ZpXcmc6ETWtp4BUpW544Gvv6wri4QrO2MMmoqg0FmLps305VfB56uPahzVu",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-89042DF65FDA",
    "company": "AMERICAN BOA, INC.",
    "title": "Quality Manager",
@@ -7317,9 +7119,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-08T04:07:32.310Z",
-   "retryAt": "2026-11-08T20:07:32.310Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:36:54.534Z",
+   "retryAt": "2026-11-11T04:36:54.534Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/ekm/AAE93a70DwTMlpmXH08qo-oo4eLjgfms7vqxYL0z0oWx6CIEaTVWqqyyTUP8t2Kf4bK6Dqd2vPWxOBKDSjnOjnHZMJg4cSCSWpGuswUNqFZ9eQmP-pgiiuHEi4JjXtJhZdsy0lgl-blZ8t0KD5Ss2klKZXChkFpXiyTooEveWPkSMDgQF5sF1QsQ8YrO6dGEVZy_5AkgdZSnrjMwAyyHE1hoygZTtdw43u5jiXpdEWLwxPGToERcnIwHabREII8iNkErlTHs7-mz8UGAqpkFph7_ko9bpsx4tvyfL49WiYCK_l40sel5nsZ7wQo1KG-pQWU3qm3_ElMUgCec7QGHZPNbKj1gDe62eq0jCR3l9oVkCU8",
@@ -7336,9 +7138,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-08T04:07:37.984Z",
-   "retryAt": "2026-11-08T20:07:37.984Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:36:57.791Z",
+   "retryAt": "2026-11-11T04:36:57.791Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAFlxs7_jdyaBkIOrNq_7Knbc_fIQZEktaFMMKD8vg8JiZKa99xI3BUJQy2bzoKCq0RolqBqxV9jEe-THOSEcBF7O_sIbuYHCsS-kCW_8G8sAbeM0ICoh2SxFgg-SyzW1tR8mayC-wH1q6soXzzNTQr8wQYDpjB75phMV8mEiG-uzSbLwDaQUytOg4XNDipzYdJM422x5SGTGHIo7rcm6QexPyVUzFLf4W_GSSDxxJ5o_oxo5mjUkjIvJx_arAx8xMtxXSKjRoTDfsdLhlqJyqEen6SjeGVwII7Kh2h5zsGjl_H0DEfoJEIeKUU_JoRENcoSbCZ79x368kdVThKil-6LqkDP9Dvc0WfD8hupcvoKJPNJ",
@@ -7355,9 +7157,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-08T04:07:39.512Z",
-   "retryAt": "2026-11-08T20:07:39.512Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:01.042Z",
+   "retryAt": "2026-11-11T04:37:01.042Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/km/AAHRIGcM34xg2lCT5mMLxVtGUMHzzbhM6qkOUpQfrSqGPGH_Mv62qRLUJ5XxE9AICTnL1Pjy2sWK902HDPD-QCzzSfUBwZz7_MafHE5RvKeokGw7smq5w9z70koX0b0TgU87oRmjvGHEuBcNyg0NNtPVdJtJ8t93GKe2ZDUgHnuILS1jbUh5SrDiQPSaISN_DQG9fTsQ1C53nDdT0Ai8sfvWPzLzzm8eqsuMcZX7K9Wnu8OxhhJ7FnZYGCKI-StjEyxrlPT8E5ZZfyrETtM8MT0NDM3cJhbQOa1y6fiu860iA1lQFzcX3_NzCeM-iwUI9Dy5RxdDK_l7azCXjdYpbAsLZh6DB9I0H4-ej1h_vn_AFzKL",
@@ -11805,557 +11607,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-D1ED3B2A515C",
-   "company": "Micron Technology",
-   "title": "Senior Engineer/Staff/Principal Engineer, CPIE RAM Detection Strategy",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:50.286Z",
-   "retryAt": "2026-11-10T19:59:50.286Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315861234",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BCD714C9D026",
-   "company": "Twenty-Six Defense",
-   "title": "Senior Staff Systems Engineer",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:51.963Z",
-   "retryAt": "2026-11-10T19:59:51.963Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317255700",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-08CFDAB9DE59",
-   "company": "LVI Associates",
-   "title": "Mechanical, Associate Principal Engineer, Dulles VA",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:53.647Z",
-   "retryAt": "2026-11-10T19:59:53.647Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316872970",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D30D7FFAE551",
-   "company": "Samsung Electronics",
-   "title": "Senior Staff Engineer (Multiple Openings)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:55.335Z",
-   "retryAt": "2026-11-10T19:59:55.335Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316715895",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-196F8F98CCC1",
-   "company": "Riley Construction",
-   "title": "Construction Quality Control Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:57.013Z",
-   "retryAt": "2026-11-10T19:59:57.013Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316139577",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-326956BF3552",
-   "company": "Dass Holdings",
-   "title": "Quality & Compliance Manager (Bilingual)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T11:59:58.697Z",
-   "retryAt": "2026-11-10T19:59:58.697Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319338185",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F421380B2132",
-   "company": "Collins Aerospace",
-   "title": "Site Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:02.197Z",
-   "retryAt": "2026-11-10T20:00:02.197Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319926868",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0D2B396900D9",
-   "company": "Sturm, Ruger & Co",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:03.878Z",
-   "retryAt": "2026-11-10T20:00:03.878Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320206888",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2817F12DD2D5",
-   "company": "New Mather Metals",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:05.558Z",
-   "retryAt": "2026-11-10T20:00:05.558Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319370554",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-55A7B3BA4E43",
-   "company": "Tesla",
-   "title": "Quality Manager, Cell Electrode",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:07.238Z",
-   "retryAt": "2026-11-10T20:00:07.238Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318434532",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B8E875558C52",
-   "company": "Renk",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:09.024Z",
-   "retryAt": "2026-11-10T20:00:09.024Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640797694-quality-manager-at-renk",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-EB060D6E1466",
-   "company": "Coherent",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:10.721Z",
-   "retryAt": "2026-11-10T20:00:10.721Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640720099-quality-manager-at-coherent",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0BE513F61FB0",
-   "company": "NOV",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:12.422Z",
-   "retryAt": "2026-11-10T20:00:12.422Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640658573-quality-manager-at-nov",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B05C23E68DA6",
-   "company": "NATIONAL TECHNICAL SYSTEMS",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:14.121Z",
-   "retryAt": "2026-11-10T20:00:14.121Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640154393-quality-manager-at-national-technical-systems",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B48C16782686",
-   "company": "Zaden Technologies",
-   "title": "Quality Assurance Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:15.831Z",
-   "retryAt": "2026-11-10T20:00:15.831Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315549246",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-373A5026FB14",
-   "company": "RESRG Automotive",
-   "title": "Regional Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:17.517Z",
-   "retryAt": "2026-11-10T20:00:17.517Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315187322",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0683CE5200A3",
-   "company": "Opentrons",
-   "title": "Director of Hardware Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:19.205Z",
-   "retryAt": "2026-11-10T20:00:19.205Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317177023",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E6F0AD255E86",
-   "company": "NORTHROP GRUMMAN",
-   "title": "Manager Manufacturing Engineering 3",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:27.046Z",
-   "retryAt": "2026-11-10T20:00:27.046Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640720184-manager-manufacturing-engineering-3-at-northrop-grumman",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5C56CF16CA31",
-   "company": "Confidential",
-   "title": "Quality Manager - Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:28.755Z",
-   "retryAt": "2026-11-10T20:00:28.755Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010293957845",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-3131D25AD19B",
-   "company": "TSI Incorporated",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:30.439Z",
-   "retryAt": "2026-11-10T20:00:30.439Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010313349243",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-494F92733685",
-   "company": "Adkev",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:32.129Z",
-   "retryAt": "2026-11-10T20:00:32.129Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318079605",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-622E6B570269",
-   "company": "RTX",
-   "title": "Associate Director of Engineering, Command and Control (C2) Architect (Onsite)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:35.894Z",
-   "retryAt": "2026-11-10T20:00:35.894Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640333878-associate-director-of-engineering-command-and-control-c2-architect-onsite-at-rtx",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6B5995B540BB",
-   "company": "Smiths Group",
-   "title": "Senior Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:37.595Z",
-   "retryAt": "2026-11-10T20:00:37.595Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640155321-senior-quality-manager-at-smiths-group",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6A8F5807455C",
-   "company": "AprilAire",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:39.298Z",
-   "retryAt": "2026-11-10T20:00:39.298Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640333410-quality-manager-at-aprilaire",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C697B2C55713",
-   "company": "Infineon Technologies AG",
-   "title": "Customer Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:41.002Z",
-   "retryAt": "2026-11-10T20:00:41.002Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/640025689-customer-quality-manager-at-infineon-technologies-ag",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-398FE88EED18",
-   "company": "NORTHROP GRUMMAN",
-   "title": "Senior Principal Mechanical Systems Engineer",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:52.707Z",
-   "retryAt": "2026-11-10T20:00:52.707Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/638298717-senior-principal-mechanical-systems-engineer-at-northrop-grumman",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6A7A7FBA1A0B",
-   "company": "Yulista",
-   "title": "Senior Supply Chain Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:54.430Z",
-   "retryAt": "2026-11-10T20:00:54.430Z",
-   "attempts": [
-    {
-     "url": "https://jobs.buildsubmarines.com/jobs/638816958-senior-supply-chain-quality-manager-at-yulista",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9B17829E0C3F",
-   "company": "Evenlite",
-   "title": "Director of Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:56.148Z",
-   "retryAt": "2026-11-10T20:00:56.148Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010309572857",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2A85BDC3C544",
-   "company": "Ikano Group",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-10T12:00:57.835Z",
-   "retryAt": "2026-11-10T20:00:57.835Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316218495",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-8B83F40E0A48",
    "company": "Teledyne",
    "title": "Manufacturing Engineering Manager",
@@ -12363,9 +11614,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:29.862Z",
-   "retryAt": "2026-11-10T12:28:29.862Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:03.534Z",
+   "retryAt": "2026-11-10T20:37:03.534Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/640025687-manufacturing-engineering-manager-at-teledyne",
@@ -12382,9 +11633,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:31.585Z",
-   "retryAt": "2026-11-10T12:28:31.585Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:05.354Z",
+   "retryAt": "2026-11-10T20:37:05.354Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318473811",
@@ -12553,9 +11804,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:47.113Z",
-   "retryAt": "2026-11-10T12:28:47.113Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-10T12:37:05.465Z",
+   "retryAt": "2026-11-10T20:37:05.465Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -12571,9 +11822,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:48.826Z",
-   "retryAt": "2026-11-10T12:28:48.826Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:07.208Z",
+   "retryAt": "2026-11-10T20:37:07.208Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010309762062",
@@ -12590,9 +11841,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:50.494Z",
-   "retryAt": "2026-11-10T12:28:50.494Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:08.938Z",
+   "retryAt": "2026-11-10T20:37:08.938Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317979451",
@@ -12609,9 +11860,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:52.164Z",
-   "retryAt": "2026-11-10T12:28:52.164Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:10.669Z",
+   "retryAt": "2026-11-10T20:37:10.669Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010313878372",
@@ -12628,9 +11879,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:53.833Z",
-   "retryAt": "2026-11-10T12:28:53.833Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:12.400Z",
+   "retryAt": "2026-11-10T20:37:12.400Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010307179342",
@@ -12647,9 +11898,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:55.527Z",
-   "retryAt": "2026-11-10T12:28:55.527Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:14.156Z",
+   "retryAt": "2026-11-10T20:37:14.156Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/642142443-quality-manager-at-l3-harris",
@@ -12666,9 +11917,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:57.218Z",
-   "retryAt": "2026-11-10T12:28:57.218Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:15.915Z",
+   "retryAt": "2026-11-10T20:37:15.915Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/638024712-senior-principal-systems-engineer-at-bae-systems",
@@ -12685,9 +11936,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:28:58.908Z",
-   "retryAt": "2026-11-10T12:28:58.908Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:17.680Z",
+   "retryAt": "2026-11-10T20:37:17.680Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/642142462-maritime-division-chief-engineer-at-l3-harris",
@@ -12704,9 +11955,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:00.597Z",
-   "retryAt": "2026-11-10T12:29:00.597Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:19.444Z",
+   "retryAt": "2026-11-10T20:37:19.444Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/642142125-quality-manager-manufacturing-at-c-d-technologies-inc",
@@ -12723,9 +11974,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:02.286Z",
-   "retryAt": "2026-11-10T12:29:02.286Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:21.213Z",
+   "retryAt": "2026-11-10T20:37:21.213Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/642142117-manager-of-manufacturing-engineering-at-c-d-technologies-inc",
@@ -12742,9 +11993,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:03.975Z",
-   "retryAt": "2026-11-10T12:29:03.975Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:22.969Z",
+   "retryAt": "2026-11-10T20:37:22.969Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/642021044-continuous-improvement-quality-assurance-manager-michigan-city-indiana-in-us-46360-at-spx",
@@ -12761,9 +12012,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:05.689Z",
-   "retryAt": "2026-11-10T12:29:05.689Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:24.766Z",
+   "retryAt": "2026-11-10T20:37:24.766Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010300348338",
@@ -12780,9 +12031,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:07.359Z",
-   "retryAt": "2026-11-10T12:29:07.359Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:26.499Z",
+   "retryAt": "2026-11-10T20:37:26.499Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317919420",
@@ -12799,9 +12050,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:09.031Z",
-   "retryAt": "2026-11-10T12:29:09.031Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:28.236Z",
+   "retryAt": "2026-11-10T20:37:28.236Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318365860",
@@ -12818,9 +12069,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:10.700Z",
-   "retryAt": "2026-11-10T12:29:10.700Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:29.964Z",
+   "retryAt": "2026-11-10T20:37:29.964Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317069294",
@@ -12837,9 +12088,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:12.371Z",
-   "retryAt": "2026-11-10T12:29:12.371Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:31.692Z",
+   "retryAt": "2026-11-10T20:37:31.692Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010314895242",
@@ -12856,9 +12107,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:14.038Z",
-   "retryAt": "2026-11-10T12:29:14.038Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:33.425Z",
+   "retryAt": "2026-11-10T20:37:33.425Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320237293",
@@ -12875,9 +12126,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:22.412Z",
-   "retryAt": "2026-11-10T12:29:22.412Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:42.179Z",
+   "retryAt": "2026-11-10T20:37:42.179Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/641405757-quality-assurance-quality-control-manager-at-leidos",
@@ -12894,9 +12145,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:24.109Z",
-   "retryAt": "2026-11-10T12:29:24.109Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:43.937Z",
+   "retryAt": "2026-11-10T20:37:43.937Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/641471249-quality-manager-at-megger",
@@ -12913,9 +12164,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:25.800Z",
-   "retryAt": "2026-11-10T12:29:25.800Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:45.694Z",
+   "retryAt": "2026-11-10T20:37:45.694Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/641471762-qms-supplier-quality-manager-at-astrodyne-tdi",
@@ -12932,9 +12183,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:27.485Z",
-   "retryAt": "2026-11-10T12:29:27.485Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:47.446Z",
+   "retryAt": "2026-11-10T20:37:47.446Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/641358752-quality-control-manager-at-chugach-government-solutions",
@@ -12951,9 +12202,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:36.715Z",
-   "retryAt": "2026-11-10T12:29:36.715Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:57.215Z",
+   "retryAt": "2026-11-10T20:37:57.215Z",
    "attempts": [
     {
      "url": "https://jobs.buildsubmarines.com/jobs/641379524-principal-engineer-mission-assurance-at-northrop-grumman",
@@ -12970,9 +12221,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-10T08:29:38.443Z",
-   "retryAt": "2026-11-10T12:29:38.443Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-10T12:37:59.032Z",
+   "retryAt": "2026-11-10T20:37:59.032Z",
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010265459816",
@@ -13248,6 +12499,614 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-84C43A226324",
+   "company": "Akamai",
+   "title": "Manager Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:41.371Z",
+   "retryAt": "2026-11-11T03:59:41.371Z",
+   "attempts": [
+    {
+     "url": "https://www.ziprecruiter.com/ekm/AAHNb6rujwfEzucHd9u_SS6vouNhoqCy59GwmoNf_K-sGPZ4QGj4UuYpiixvdkize7P-VaJMZAunSzxDgdWjn0MkUrP_JScSl7a9LejN6Qfp4Ov3CVUgYES2iL6uom6X4o6DQjlrRALNjD4-CSw3n5gM2oAZcDogzTSxWkKuN1p_VU8xi_2JYOJOHE-zZIE0xLf_Awefp9w5IeszwktMnTzjVhOiU6w9rGS-S8hpOK1hdfPXe8Q623wRXRig9b55-yU-QccS04urarqT5zF5yMXC6Wcz032JLJSgl-tM--au75Ia4AAJQ-JsEkx1-FIXdJ4-pt-iwTcffkrIpvtkY9R7KxJCwlhSp5w4bmoGhO_W5_-",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E3980C6D8887",
+   "company": "JFE Franchising Inc",
+   "title": "Plant Supervisor - Cincinnati, OH",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:44.568Z",
+   "retryAt": "2026-11-11T03:59:44.568Z",
+   "attempts": [
+    {
+     "url": "https://www.ziprecruiter.com/km/AAH2ndbgSzVTm8uFhBzLyUcDeqEC8VRS4fikIv_IK-Y9INWJTVMn6KB8CWE1j9mUvALRqVrYkFLd6-mgb_Z9J9Jb32Ij8JSgylUQ4Pf4775fXB8KXZBr32wW0PTNUdvrv21cnZn9hLMrpubEMYbtCUI2fDLp1wrzbIX_y11PAp2rn_pL6vYzHpRWjd6jVghkJ3HhFKd7_sr1wqTJvemqSXrRVoWhwBrYEvxeMCg0lmXd-L-99rstaiASFIhbs3t2TGKi16-WZ80O6M2X3aarfzSioXkn1flUr_6eEM_dG9v8UjdWagssnWFI_tBIJGqiG8VZMhV2hRu0hKOX5UwUvaZTiN2MoieeFoC-aQDEi3jBrbvM",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2730281A58C6",
+   "company": "Ambaflex",
+   "title": "Injection Molding Supervisor (Canton, OH)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:47.770Z",
+   "retryAt": "2026-11-11T03:59:47.770Z",
+   "attempts": [
+    {
+     "url": "https://www.ziprecruiter.com/km/AAFvEy1XWw8GcnwTxmrzbK4ywCW4QwJGum6xW6QR39eH3-Ef1ZY7TJR0VQuJmnZ7lSv_Ys5qDpvlsqo6uuOlctOZWv-ZeBc_HDw5RvnvlrTMdyUzw-kEbdWcEKndf-4UD3uNzsjRhTfrzGFEvvkgyb2qWV1cCl182Rcvr2_xcd86_p212rsYYCTTkP63mmDKtHsUndwG4huLKpCMeWfYVbp4XsAosZmSS_aEbBJMMVLr4zpQdpSK3js6IIfpsyFrN_lPcEdbsRAOR_ksNYM4yU9_jyxnb5hhjZoBmz6MXUXwtB8yNpv71ZpXcmc6ETWtp4BUpW544Gvv6wri4QrO2MMmoqg0FmLps305VfB56uPahzVu",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D1ED3B2A515C",
+   "company": "Micron Technology",
+   "title": "Senior Engineer/Staff/Principal Engineer, CPIE RAM Detection Strategy",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:50.286Z",
+   "retryAt": "2026-11-10T19:59:50.286Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315861234",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BCD714C9D026",
+   "company": "Twenty-Six Defense",
+   "title": "Senior Staff Systems Engineer",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:51.963Z",
+   "retryAt": "2026-11-10T19:59:51.963Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317255700",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-08CFDAB9DE59",
+   "company": "LVI Associates",
+   "title": "Mechanical, Associate Principal Engineer, Dulles VA",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:53.647Z",
+   "retryAt": "2026-11-10T19:59:53.647Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316872970",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D30D7FFAE551",
+   "company": "Samsung Electronics",
+   "title": "Senior Staff Engineer (Multiple Openings)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:55.335Z",
+   "retryAt": "2026-11-10T19:59:55.335Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316715895",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-196F8F98CCC1",
+   "company": "Riley Construction",
+   "title": "Construction Quality Control Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:57.013Z",
+   "retryAt": "2026-11-10T19:59:57.013Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316139577",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-326956BF3552",
+   "company": "Dass Holdings",
+   "title": "Quality & Compliance Manager (Bilingual)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T11:59:58.697Z",
+   "retryAt": "2026-11-10T19:59:58.697Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319338185",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F421380B2132",
+   "company": "Collins Aerospace",
+   "title": "Site Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:02.197Z",
+   "retryAt": "2026-11-10T20:00:02.197Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319926868",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0D2B396900D9",
+   "company": "Sturm, Ruger & Co",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:03.878Z",
+   "retryAt": "2026-11-10T20:00:03.878Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320206888",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2817F12DD2D5",
+   "company": "New Mather Metals",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:05.558Z",
+   "retryAt": "2026-11-10T20:00:05.558Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010319370554",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-55A7B3BA4E43",
+   "company": "Tesla",
+   "title": "Quality Manager, Cell Electrode",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:07.238Z",
+   "retryAt": "2026-11-10T20:00:07.238Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318434532",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B8E875558C52",
+   "company": "Renk",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:09.024Z",
+   "retryAt": "2026-11-10T20:00:09.024Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640797694-quality-manager-at-renk",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EB060D6E1466",
+   "company": "Coherent",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:10.721Z",
+   "retryAt": "2026-11-10T20:00:10.721Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640720099-quality-manager-at-coherent",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0BE513F61FB0",
+   "company": "NOV",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:12.422Z",
+   "retryAt": "2026-11-10T20:00:12.422Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640658573-quality-manager-at-nov",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B05C23E68DA6",
+   "company": "NATIONAL TECHNICAL SYSTEMS",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:14.121Z",
+   "retryAt": "2026-11-10T20:00:14.121Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640154393-quality-manager-at-national-technical-systems",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B48C16782686",
+   "company": "Zaden Technologies",
+   "title": "Quality Assurance Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:15.831Z",
+   "retryAt": "2026-11-10T20:00:15.831Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315549246",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-373A5026FB14",
+   "company": "RESRG Automotive",
+   "title": "Regional Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:17.517Z",
+   "retryAt": "2026-11-10T20:00:17.517Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315187322",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0683CE5200A3",
+   "company": "Opentrons",
+   "title": "Director of Hardware Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:19.205Z",
+   "retryAt": "2026-11-10T20:00:19.205Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317177023",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E6F0AD255E86",
+   "company": "NORTHROP GRUMMAN",
+   "title": "Manager Manufacturing Engineering 3",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:27.046Z",
+   "retryAt": "2026-11-10T20:00:27.046Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640720184-manager-manufacturing-engineering-3-at-northrop-grumman",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C56CF16CA31",
+   "company": "Confidential",
+   "title": "Quality Manager - Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:28.755Z",
+   "retryAt": "2026-11-10T20:00:28.755Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010293957845",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3131D25AD19B",
+   "company": "TSI Incorporated",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:30.439Z",
+   "retryAt": "2026-11-10T20:00:30.439Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010313349243",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-494F92733685",
+   "company": "Adkev",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:32.129Z",
+   "retryAt": "2026-11-10T20:00:32.129Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318079605",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-622E6B570269",
+   "company": "RTX",
+   "title": "Associate Director of Engineering, Command and Control (C2) Architect (Onsite)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:35.894Z",
+   "retryAt": "2026-11-10T20:00:35.894Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640333878-associate-director-of-engineering-command-and-control-c2-architect-onsite-at-rtx",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6B5995B540BB",
+   "company": "Smiths Group",
+   "title": "Senior Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:37.595Z",
+   "retryAt": "2026-11-10T20:00:37.595Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640155321-senior-quality-manager-at-smiths-group",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6A8F5807455C",
+   "company": "AprilAire",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:39.298Z",
+   "retryAt": "2026-11-10T20:00:39.298Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640333410-quality-manager-at-aprilaire",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C697B2C55713",
+   "company": "Infineon Technologies AG",
+   "title": "Customer Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:41.002Z",
+   "retryAt": "2026-11-10T20:00:41.002Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/640025689-customer-quality-manager-at-infineon-technologies-ag",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-398FE88EED18",
+   "company": "NORTHROP GRUMMAN",
+   "title": "Senior Principal Mechanical Systems Engineer",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:52.707Z",
+   "retryAt": "2026-11-10T20:00:52.707Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/638298717-senior-principal-mechanical-systems-engineer-at-northrop-grumman",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6A7A7FBA1A0B",
+   "company": "Yulista",
+   "title": "Senior Supply Chain Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:54.430Z",
+   "retryAt": "2026-11-10T20:00:54.430Z",
+   "attempts": [
+    {
+     "url": "https://jobs.buildsubmarines.com/jobs/638816958-senior-supply-chain-quality-manager-at-yulista",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9B17829E0C3F",
+   "company": "Evenlite",
+   "title": "Director of Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:56.148Z",
+   "retryAt": "2026-11-10T20:00:56.148Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010309572857",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2A85BDC3C544",
+   "company": "Ikano Group",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-10T12:00:57.835Z",
+   "retryAt": "2026-11-10T20:00:57.835Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316218495",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-DCF55B4348E0",
    "company": "Jabil Circuit",
    "title": "Quality Manager",
@@ -13305,7 +13164,38 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-B123A1B54C6C",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-10"
+   }
+  },
+  {
+   "id": "V2I-AF4495218805",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-10"
+   }
+  },
+  {
+   "id": "V2I-816864AD9AEF",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-10"
+   }
+  },
+  {
+   "id": "V2I-F95CE983B767",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-10"
+   }
+  },
+  {
+   "id": "V2I-7546F9B3E293",
+   "fields": {
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-10"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
