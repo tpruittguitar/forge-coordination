@@ -51,6 +51,7 @@ class SharedInstructionTests(unittest.TestCase):
                        'DISCOVERY_IDENTITY.txt before research', 'RELEVANCE_SCREEN.json',
                        'COMPENSATION_CONTEXT.md', 'COMPANY_SITE_PRODUCTS.json',
                        'RESULT SUCCESS', 'independently later COMPLETE',
+                       'true UTC YYYYMMDDTHHMMSSZ', 'never an Eastern clock with Z',
                        'exact post-COMPLETE row effects', 'numeric overall rating'):
             self.assertIn(phrase, self.common)
 

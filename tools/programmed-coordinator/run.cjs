@@ -213,7 +213,9 @@ async function main(mode='inventory', options={}) {
         if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
         const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
         state.routineHandoffs={transport:routine,assignments,mail,sourceReviews};
-        state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock});
+        let writerReceipts=null;
+        try{writerReceipts=await deps.index();}catch{state.exceptions['grok-writer-receipts']={owner:'CODE',reason:'GROK_WRITER_RECEIPTS_UNAVAILABLE'};}
+        state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock,writerReceipts});
       }
       if(apply) {
         S.save(root,STATE,state);
