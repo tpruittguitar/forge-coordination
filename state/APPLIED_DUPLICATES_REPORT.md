@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-09T19:56:30.644Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-10T03:40:20.023Z from CANONICAL_WRITER_MASTER.
 
-Of 561 jobs waiting on Tim, 15 match a role he already applied to, was rejected from, or declined:
+Of 598 jobs waiting on Tim, 16 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 15
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 16
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (15)
+## Kept, labeled (16)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -33,7 +33,8 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
+| 54 | AMETEK | Senior Manager, Operations Excellence | You declined 2026-11-08 · different site | Different worksite: Mount Prospect, IL vs earlier Collegeville, PA | V2I-E4F08FE197F2 → V2I-45E0D9AFEC1D |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
-| 48 | AMETEK | Senior Manager, Operations Excellence | You declined 2026-11-08 · different site | Different worksite: Mount Prospect, IL vs earlier Collegeville, PA | V2I-E4F08FE197F2 → V2I-45E0D9AFEC1D |
+| 42 | L3Harris Technologies | Manufacturing Engineering Manager 1 | You declined 2026-10-30 · different site | Different worksite: Northampton, MA vs earlier Huntsville, AL | V2I-EA61B99010C6 → V2I-B6E9763E305F |
 
