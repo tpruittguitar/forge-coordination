@@ -70,15 +70,14 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
  // identity and all old pending Writer/reservation fences intact.
  const returnedIds=new Set(Object.values(state.items).filter(i=>[enrich.taskKey||'FORGE_GROK_ENRICHMENT','FORGE_GROK_ENRICHMENT'].includes(i.taskKey)&&state.batches[i.batch]?.status==='VALIDATED').map(i=>i.itemKey));
  for(const i of enrich.items)if(returnedIds.has(i.primaryId)&&i.status==='ASSIGNED')i.status='RETURNED_PENDING_REVIEW';
- const recovery=S.read(root,'state/enrich-ats-pay-recovery.json',{rows:[]}),active=enrich.items.filter(i=>!/^CONSUMED|RELEASED|PROTECTED_SKIP|ALREADY_COMPLETE|RETURNED/.test(i.status||''));
- if(enrich.enabled&&enrich.routingActive&&active.length===0){
-  const oldIds=new Set(enrich.items.map(i=>i.primaryId));
-  for(const r of recovery.rows){const row=snapshot.rows.find(x=>x.PRIMARY_ID===r.id);if(owners.has(r.id)||oldIds.has(r.id)||r.status!=='SOURCE_RESEARCH_REQUIRED'||!row||T.protectedRow(row)||T.fenced(root,state,r.id))continue;
-   const missing=(r.needs||[]).filter(f=>f==='DEGREE'?!Source.known(row.p?.DEGREE_REQ)&&!Source.known(row.p?.DEGREE_TEXT):f==='SALARY'?!Source.known(row.p?.SALARY_BASE_LOW):false);if(!missing.length)continue;
-   enrich.items.push({primaryId:r.id,owner:enrich.provider||'Grok',taskKey:enrich.taskKey||'FORGE_GROK_ENRICHMENT',status:'ASSIGNED',...T.identity(row),missingFields:missing,sourceUrls:(r.attempts||[]).map(x=>x.url).filter(Boolean),priorAttempts:r.attempts||[],canonicalObservedAt:snapshot.source.readAt,rowSha256:S.hash(row.line||row),sourceReport:'state/enrich-ats-pay-recovery.json'});oldIds.add(r.id);
-  }
+ const recovery=S.read(root,'state/enrich-ats-pay-recovery.json',{schema:'forge.enrichment-recovery.v1',rows:[]});
+ let enrichmentPlan=null;
+ if(recovery&&require('../helper-routing/enrichment.cjs').owner(enrich).provider==='ChatGPT'){
+  enrichmentPlan=require('../helper-routing/enrichment-plan.cjs').plan({root,state,snapshot,now,work:enrich,recovery});
+  // Append only. Returned/pending assignments above remain byte-for-byte facts.
+  enrich.items.push(...enrichmentPlan.appended);
  }
- const result={schema:'forge.assignment-replenishment.v1',runId,canonicalSource:snapshot.source,counts,appended,exceptions,canonicalMatches,discoveryExclusions,writerSubmissions:0,noProcessingCap:true};
+ const result={schema:'forge.assignment-replenishment.v1',runId,canonicalSource:snapshot.source,counts,appended,...(enrichmentPlan?{enrichmentResearch:{eligible:enrichmentPlan.items.length,appended:enrichmentPlan.appended.length,counts:enrichmentPlan.counts,fingerprint:enrichmentPlan.fingerprint}}:{}),exceptions,canonicalMatches,discoveryExclusions,writerSubmissions:0,noProcessingCap:true};
  if(apply){
   S.immutable(root,'receipts/'+runId+'_HANDOFFS.json',result);
   for(const match of canonicalMatches)require('../email-recovery/ledger.cjs').disposition(queue,match.key,'VERIFIED_EXISTING',{...match,at:snapshot.source.readAt,proof:'receipts/'+runId+'_HANDOFFS.json',exactRowVerified:true,reason:'Unique exact source URL and role identity in fresh canonical master/archive; no canonical mutation'});

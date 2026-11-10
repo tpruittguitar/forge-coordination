@@ -23,6 +23,8 @@ function validateBatch(b,w=load()){
  for(const i of b.items){
   if(seen.has(i.primaryId))throw Error('DUPLICATE_ENRICHMENT_ITEM');
   if(!assignment.has(i.primaryId))throw Error('ENRICHMENT_ITEM_OUTSIDE_ASSIGNMENT');
+  const provenance=w.items.find(a=>a.primaryId===i.primaryId)?.researchProvenance;
+  if(provenance&&i.sourceEvidence?.assignmentSourceFingerprint!==provenance.sourceFingerprint)throw Error('ENRICHMENT_SOURCE_PROVENANCE_REQUIRED');
   if(i.writerSubmitted!==false)throw Error('HELPER_WRITER_SUBMISSION_FORBIDDEN');
   if(!i.sourceEvidence||!i.recommendation)throw Error('ENRICHMENT_ITEM_EVIDENCE_REQUIRED');
   seen.add(i.primaryId);const f=i.sourceEvidence.proposedRawFields||{};
@@ -38,7 +40,7 @@ function reconcileResearch(w,snapshot){
  w=effectiveWork(w);if(owner(w).provider!=='ChatGPT'||!snapshot.needsById)return w;
  const rows=new Map([...snapshot.rows,...snapshot.archiveRows||[]].map(r=>[r.PRIMARY_ID,r]));
  for(const item of w.items){if(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE'].includes(item.status))continue;const row=rows.get(item.primaryId);if(!row)continue;
-  if(!['SCOUT_INTAKE','DISCOVERY_LEAD','MANUAL_RESEARCH','BLOCKED','READY_TO_PURSUE','TIM_DECISION_REQUIRED'].includes(row.BUCKET)||/^YES/i.test(row.p?.ANTI_RESURRECTION||'')||row.p?.DO_NOT_REWORK){item.status='PROTECTED_SKIP';continue;}
+  if(!['SCOUT_INTAKE','DISCOVERY_LEAD','MANUAL_RESEARCH','BLOCKED','READY_TO_PURSUE','TIM_DECISION_REQUIRED'].includes(row.BUCKET)||/^YES/i.test(row.p?.ANTI_RESURRECTION||'')||row.p?.DO_NOT_REWORK||row.p?.TIM_DECISION){item.status='PROTECTED_SKIP';continue;}
   const needs=snapshot.needsById[item.primaryId];if(!Array.isArray(needs))continue;
   if(!(item.missingFields||['SALARY','DEGREE']).some(f=>needs.includes(f))){item.status='ALREADY_COMPLETE';item.researchCompletion={source:snapshot.source,meaning:'Requested source fields already present; no new research or canonical-write completion claimed'};}
  }

@@ -511,3 +511,31 @@ test('Workday detail cache reuse preserves the salary observation date in employ
  const out=sourceRun(t,[row(1,'V2I-WD-DATE','Director of Quality','Dayton, OH','SOURCE_URL='+source)],{[detail]:{body:{jobPostingInfo:{title:'Director of Quality',location:'Dayton, OH',jobReqId:'R100',externalUrl:source,companyName:'Acme',jobDescription:description}}},[board]:{body:{jobPostings:[{title:'Director of Quality',locationsText:'Cleveland, OH',externalPath:'/job/Cleveland/Director-Quality_R200'}]}}},{},cache);
  assert.equal(out.cache.employers.acme[0].seen,at);assert.ok(!out.reads.some(u=>u.includes('Director-Quality_R200')));
 });
+
+test('prepare-only persists a full policy estimate, skips receipts, reuses it, then the existing Writer consumes it',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-prepare-integration-')),master=path.join(dir,'master.txt'),ledger=path.join(dir,'ledger.json'),reads=path.join(dir,'reads'),posts=path.join(dir,'posts'),writer=path.join(dir,'writer.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ t.after(()=>{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});});
+ const target=row(1,'V2I-PREPARE','Director of Quality','Toledo, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/333; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; FEASIBILITY_ATTEMPT_ASOF=2026-11-09');
+ const anchor=row(2,'V2I-ANCHOR','Director, Quality','Columbus, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=160000; SALARY_BASE_HIGH=200000; SALARY_MIDPOINT=180000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS');
+ fs.writeFileSync(master,target+'\n'+anchor);fs.writeFileSync(writer,JSON.stringify({'V2I-PREPARE':target,'V2I-ANCHOR':anchor}));
+ const original=JSON.stringify({submitted:{},tried:{},pendingWrites:{original:{ids:['V2I-OTHER'],requests:[],status:'POSTING_OR_UNCONFIRMED'}}});fs.writeFileSync(ledger,original);
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_FETCHES:reads,ENRICH_TEST_WRITER_ROWS:writer,ENRICH_TEST_POSTS:posts};
+ const run=args=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),...args],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ let out=run(['--prepare-only']);assert.equal(out.salary_estimates_prepared,1);assert.equal(out.submitted,0);assert.equal(out.roles_researched,1);assert.equal(fs.readFileSync(ledger,'utf8'),original);assert.equal(fs.existsSync(posts),false);assert.doesNotMatch(fs.readFileSync(reads,'utf8'),/action=(receipt_index|request_result|writer_status)/);
+ const artifacts=fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-'));assert.equal(artifacts.length,1);const record=JSON.parse(fs.readFileSync(path.join(dir,artifacts[0])));assert.equal(record.fields.SALARY_BASIS,'FORGE-ESTIMATE');assert.ok(record.fields.SALARY_NOTE);assert.ok(record.evidence.anchorInputsSha256);assert.equal(record.row.p,undefined);assert.equal(record.row.line,undefined);
+ out=run(['--prepare-only']);assert.equal(out.prepared_reused,1);assert.equal(out.roles_researched,0);assert.equal(out.salary_estimates_prepared,0);assert.equal(fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-')).length,1);
+ const forged=structuredClone(record);forged.fields.SALARY_BASE_LOW=1;const Store=require('../programmed-coordinator/store.cjs');fs.unlinkSync(path.join(dir,artifacts[0]));Store.immutable(dir,'enrich-ats-pay-prepared-'+Store.hash(forged)+'.json',forged);
+ out=run([]);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,1);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
+});
+
+test('private preparation cache retains newly learned postings instead of restarting from its seed',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-private-seed-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
+ const master=path.join(dir,'master.txt'),seed=path.join(dir,'seed.json'),out=path.join(dir,'output'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads');
+ const url='https://careers.example.org/private-cache';fs.writeFileSync(master,row(1,'V2I-PRIVATE-CACHE','Director of Quality','Dayton, OH','SOURCE_URL='+url));fs.writeFileSync(seed,JSON.stringify({employers:{},postingEvidence:{}}));const seedBytes=fs.readFileSync(seed);fs.writeFileSync(sources,JSON.stringify({[url]:{body:exactPosting()}}));
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_EMPLOYER_CACHE:seed,ENRICH_TEST_FAST:'1',ENRICH_TEST_FETCHES:reads,ENRICH_TEST_SOURCE_RESPONSES:sources};
+ const run=extra=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--prepare-only','--preparation-dir',out,...extra],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(path.join(out,'report.json')));};
+ assert.equal(run([]).posted_pay,1);const cache=require('./employer-cache-store'),saved=cache.read(path.join(out,'employer.json'));assert.equal(Object.keys(saved.postingEvidence).length,1);
+ // Force the second run to use saved posting evidence, not the prepared salary.
+ for(const file of fs.readdirSync(out).filter(f=>f.startsWith('enrich-ats-pay-prepared-')))fs.unlinkSync(path.join(out,file));fs.writeFileSync(reads,'');
+ const second=run(['--saved-evidence-only']);assert.equal(second.prepared_reused,0);assert.equal(second.network_requests,0);assert.equal(second.sample[0].fields.SALARY_BASE_LOW,180000);assert.deepEqual(cache.read(path.join(out,'employer.json')).postingEvidence,saved.postingEvidence);assert.deepEqual(fs.readFileSync(seed),seedBytes);assert.equal(fs.readFileSync(reads,'utf8'),'');
+});

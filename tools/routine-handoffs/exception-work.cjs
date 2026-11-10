@@ -40,8 +40,9 @@ function candidates(root,report,state,now=Date.now()){
 function validateReview(record,work,now=Date.now(),allowClosed=false){
  const item=work.cases[record.exceptionId];
  if(record.schema!=='forge.ai-exception-review.v1'||!item||!allowClosed&&item.status==='NO_LONGER_OPEN'||record.exceptionId!==S.hash(item.binding)||record.sourceVersion!==item.binding.sourceVersion||record.reviewedBy!=='CHATGPT'||![OWNER,'FORGE_APPLICATION_WRITER_GOFER'].includes(record.taskKey)||!Number.isFinite(Date.parse(record.reviewedAt))||Date.parse(record.reviewedAt)>now+60000||!/^FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}$/.test(record.runId||''))throw Error('CURRENT_SOURCE_BOUND_EXCEPTION_REVIEW_REQUIRED');
- const allowed=['schema','exceptionId','sourceVersion','reviewedBy','taskKey','reviewedAt','runId','disposition','reason','retryCondition','retryAfter','evidenceSha256','sourceEvidence','askPath'];
+ const allowed=['schema','exceptionId','sourceVersion','reviewedBy','taskKey','reviewedAt','runId','disposition','reason','retryCondition','retryAfter','evidenceSha256','retryEvidenceSha256','sourceEvidence','askPath'];
  if(Object.keys(record).some(k=>!allowed.includes(k))||!/^[a-f0-9]{64}$/.test(record.evidenceSha256||''))throw Error('EXCEPTION_REVIEW_EVIDENCE_REQUIRED');
+ if(record.retryEvidenceSha256!==undefined&&(item.kind!=='WRITER'||!/^[a-f0-9]{64}$/.test(record.retryEvidenceSha256)))throw Error('ORIGINAL_RETRY_EVIDENCE_HASH_REQUIRED');
  if(record.disposition==='WAITING_SOURCE_CHANGE'){
   const writerWait=item.kind==='WRITER'&&record.reason==='ORIGINAL_WRITER_EVIDENCE_INCOMPLETE'&&record.retryCondition==='ORIGINAL_WRITER_EVIDENCE_CHANGED';
   if(!writerWait&&(!['SOURCE_ACCESS_BLOCKED','ORIGINAL_IDENTITIES_UNAVAILABLE','IDENTITY_CONFLICT','SOURCE_EVIDENCE_UNAVAILABLE'].includes(record.reason)||!['NEW_ORIGINAL_SOURCE_EVIDENCE','SOURCE_ACCESS_RESTORED','NEW_IDENTITY_EVIDENCE'].includes(record.retryCondition))||record.sourceEvidence||record.askPath)throw Error('EXPLICIT_SOURCE_RETRY_CONDITION_REQUIRED');
