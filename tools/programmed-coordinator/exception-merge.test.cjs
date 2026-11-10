@@ -55,7 +55,7 @@ for(const races of [0,2])test('real two-file rebase and '+races+' subsequent pus
  fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
  const result=publish(f.local,{beforePush(n){if(n<races){S.save(f.bot,'independent-'+n+'.json',{retained:true});commit(f.bot);git(f.bot,'push','origin','main');}}});
  a.equal(result.attempts,races+1);const merged=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));a.deepEqual(merged.counts,{WAITING_SOURCE_CHANGE:1,ACTION_REQUIRED:1});a.deepEqual(merged.cases[f.id],{...f.left.cases[f.id],lastSeen:f.right.at});a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+terminal)),original);
- for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file);a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
+ for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
  a.equal(git(f.local,'status','--porcelain'),'');
 });
 for(const failure of ['guard policy','guard disabled','unrelated'])test('two-file recovery stages nothing when '+failure+' is ambiguous',t=>{
@@ -150,6 +150,41 @@ test('mixed dispatch publication preserves original Writer fence and every immut
  a.equal(publish(f.local).published,true);const merged=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));
  a.deepEqual(merged.dispatch,f.left.dispatch);for(const id of f.ids)a.deepEqual(merged.cases[id],{...f.left.cases[id],lastSeen:f.right.at});
  a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+terminal)),original);
- for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file);a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
+ for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
+ a.equal(git(f.local,'status','--porcelain'),'');
+});
+
+function closureFixture(t){
+ const f=mixedDispatchFixture(t),id=f.ids[3];
+ f.right.cases[id]= {...clone(f.base.cases[id]),status:'NO_LONGER_OPEN',closedAt:f.right.at};
+ count(f.right);return {...f,id};
+}
+test('earlier proved attempt crosses later coordinator closure without reopening or completing',t=>{
+ const f=closureFixture(t),m=merge(f.root,f.base,f.left,f.right,f.now);
+ a.deepEqual(m.cases[f.id],{...f.right.cases[f.id],lastAttempt:f.left.cases[f.id].lastAttempt});
+ a.equal(m.cases[f.id].canonicalCompletion,false);a.deepEqual(m.counts,{ACTION_REQUIRED:3,NO_LONGER_OPEN:1});
+ a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),m);
+});
+for(const [name,mutation]of [
+ ['missing closure time',f=>delete f.right.cases[f.id].closedAt],
+ ['closure not matching observation',f=>f.right.cases[f.id].closedAt='2026-11-09T02:25:50.000Z'],
+ ['closure before attempt',f=>{f.right.at='2026-11-09T02:24:50.000Z';f.right.cases[f.id].closedAt=f.right.at;}],
+ ['closure plus unknown change',f=>f.right.cases[f.id].unknown=true],
+ ['closure plus changed fence',f=>f.right.cases[f.id].binding.requestId='replacement'],
+ ['closure plus canonical claim',f=>f.right.cases[f.id].canonicalCompletion=true],
+ ['attempt plus changed review',f=>f.left.cases[f.id].review={unproved:true}],
+ ['attempt missing immutable proof',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].lastAttempt.proof))],
+ ['attempt with forged evidence',f=>f.left.cases[f.id].lastAttempt.evidenceSha256='f'.repeat(64)],
+ ['closure with previously closed base',f=>{f.base.cases[f.id].status='NO_LONGER_OPEN';count(f.base);}]
+])test('closure merge fails closed: '+name,t=>{const f=closureFixture(t);mutation(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+
+test('real publication rebase preserves closure, attempts and pending Writer fence',t=>{
+ const f=repositories(t,closureFixture),terminal='receipts/FORGE-CODE-CHATGPT-CLOSURE_CHECKPOINT.json',original={transactions:{originalRequest:{status:'PENDING',payloadSha256:'d'.repeat(64)}}};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,terminal,original);
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now+1000).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
+ a.equal(publish(f.local).published,true);const m=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));
+ a.deepEqual(m.cases[f.id],{...f.right.cases[f.id],lastAttempt:f.left.cases[f.id].lastAttempt});
+ a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+terminal)),original);
+ for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
  a.equal(git(f.local,'status','--porcelain'),'');
 });
