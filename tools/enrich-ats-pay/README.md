@@ -78,3 +78,11 @@ successful saves and reuse, separately from physical source reads.
 Degree extraction uses the [complete degree-evidence contract](../../docs/DEGREE_EXTRACTION.md).
 The same parser and regression corpus are mirrored in the cockpit ATS producer;
 adjacent experience alternatives must survive extraction and field serialization.
+
+Preparation requires a complete, exact-identity posting with its original source
+URL, observation time and full text. Version 2 prepared artifacts embed that
+validated evidence, rather than only hashing a transient ledger entry. Legacy
+aggregator text, historical lane timestamps and failed-read history alone cannot
+produce a prepared salary. Missing proof is reported as
+`COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED`; unresolved compensation cannot become
+no-pay proof. Existing live-run eligibility and Writer fences are unchanged.
