@@ -27,9 +27,13 @@ function validate(payload) {
     for (const [key, value] of Object.entries(r.fields)) {
       if(!KEYS.has(key)) throw Error('UNSUPPORTED_OR_PROTECTED_FIELD');
       if(!['string','number'].includes(typeof value) || typeof value === 'number' && !Number.isFinite(value) ||
-        typeof value === 'string' && (!value.trim() || value.length > (key === 'DEGREE_TEXT' ? 12000 : 20000))) throw Error('INVALID_FIELD_VALUE');
+        typeof value === 'string' && (value.includes('[object Object]') || !value.trim() || value.length > (key === 'DEGREE_TEXT' ? 12000 : 1500))) throw Error('INVALID_FIELD_VALUE');
+      if(!key.startsWith('SALARY_BASE_') && key!=='SALARY_MIDPOINT' && typeof value!=='string')throw Error('PLAIN_TEXT_FIELD_REQUIRED');
+      if(key.endsWith('_ASOF') && !/^\d{4}-\d{2}-\d{2}$/.test(value))throw Error('DATE_REQUIRED');
       if(key.endsWith('_URL') && !/^https:\/\/[^\s]+$/.test(value)) throw Error('EXACT_SOURCE_URL_REQUIRED');
     }
+    if(Object.keys(r.fields).some(k=>k.startsWith('FIT_')) &&
+      (!['FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF'].every(k=>typeof r.fields[k]==='string'&&r.fields[k].trim()) || r.fields.FIT_CONF!=='LOW'))throw Error('COMPLETE_OBSERVED_FIT_EVIDENCE_REQUIRED');
   }
   return {schema:'forge.grok-direct-writer-preflight.v1',status:'SYNTAX_VALID',requests:payload.requests.length,
     sourceVerified:false,ownershipVerified:false,originalRequestsReconciled:false,writerSubmitted:false,canonicalVerified:false};
@@ -42,4 +46,29 @@ if(require.main === module) {
     console.log(JSON.stringify(validate(JSON.parse(new TextDecoder('utf-8',{fatal:true,ignoreBOM:true}).decode(raw)))));
   } catch(e) { console.error(e.message); process.exitCode = 1; }
 }
-module.exports = {validate};
+// Fresh exact field observation required. Missing compact/externalized fields are
+// UNKNOWN, not blank. Metadata-only refreshes are not useful write progress.
+const META = new Set(['DEGREE_ASOF','SALARY_ASOF','FIT_ASOF','SALARY_CONF','FIT_CONF','REQUIREMENTS_REVIEWED']);
+const normalize=value=>String(value??'').replace(/\s+/g,' ').replace(/; /g,', ').replace(/ \| /g,' / ').trim();
+const missing=value=>value==null||['','UNKNOWN','NOT_STATED','NOT_AVAILABLE','N/A','NONE'].includes(normalize(value).toUpperCase());
+function novelFields(proposed, observed) {
+  if(!object(proposed)||!object(observed))throw Error('CURRENT_FIELD_OBSERVATION_REQUIRED');
+  const out={};
+  for(const [key,value] of Object.entries(proposed)) {
+    if(!KEYS.has(key))throw Error('UNSUPPORTED_OR_PROTECTED_FIELD');
+    if(!Object.hasOwn(observed,key))throw Error('CURRENT_FIELD_UNKNOWN');
+    const before=observed[key];
+    if(normalize(before)===normalize(value))continue;
+    if(!META.has(key)&&!missing(before))throw Error('CURRENT_VALUE_CONFLICT');
+    out[key]=value;
+  }
+  if(!Object.keys(out).some(k=>!META.has(k)))return {};
+  if(Object.keys(out).some(k=>k==='FIT_EVIDENCE'||k==='FIT_BASIS')) {
+    for(const key of ['FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF']) {
+      if(!Object.hasOwn(proposed,key))throw Error('COMPLETE_OBSERVED_FIT_EVIDENCE_REQUIRED');
+      out[key]=proposed[key];
+    }
+  }
+  return out;
+}
+module.exports = {validate,novelFields};
