@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-10T21:24:30.603Z",
+  "at": "2026-11-10T21:53:05.000Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -42303,6 +42303,39 @@
           "linkedin:4461451055",
           "linkedin:4470509353",
           "linkedin:4478597435"
+        ],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
+    },
+    "1a1c773503529a8e": {
+      "gmailId": "1a1c773503529a8e",
+      "url": "https://www.linkedin.com/jobs/view/4361253960/",
+      "advertisedUnseen": 0,
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "linkedin:4361253960",
+        "linkedin:4462887194",
+        "linkedin:4445255611"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "advertisedCountIsNotUniqueJobs": true,
+      "nextPageRequired": false,
+      "exhausted": false,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "3f411050c92e59b341742736114990abc5c50605cdebce491c17062e5ac71a1a",
+        "at": "2026-11-10T22:40:41.982Z",
+        "originalDate": "2026-11-10T21:53:05.000Z",
+        "visibleKeys": [
+          "linkedin:4361253960",
+          "linkedin:4462887194",
+          "linkedin:4445255611"
+        ],
+        "newKeys": [
+          "linkedin:4361253960",
+          "linkedin:4462887194"
         ],
         "unseenHistoricalCoverage": "UNPROVEN"
       }
@@ -143302,7 +143335,8 @@
       "observedAt": "2026-11-01T09:02:51.583Z",
       "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
-        "1a1569547e22886a"
+        "1a1569547e22886a",
+        "1a1c773503529a8e"
       ],
       "evidence": [
         {
@@ -143316,6 +143350,19 @@
             "Elyria, OH (On-site)",
             "Posted 2 weeks ago\n2 weeks ago"
           ]
+        },
+        {
+          "gmailId": "1a1c773503529a8e",
+          "at": "2026-11-10T21:53:05.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4361253960/",
+          "cardHash": "b066bfbe66841268711a7fe80417a1c5895e5ff0c6c56fe33d2f54e9c0ea6f67",
+          "paragraphs": [
+            "Manufacturing Engineer Manager",
+            "Stanley Black & Decker, Inc.",
+            "Elyria, OH"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "3f411050c92e59b341742736114990abc5c50605cdebce491c17062e5ac71a1a"
         }
       ],
       "workArrangement": "On-site",
@@ -143343,6 +143390,69 @@
           "V2F-D0C5EC7244FC"
         ],
         "noReplay": true
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-10T22:33:14.729Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "manufacturing"
+              ],
+              "postingQuotes": [
+                "Manufacturing Engineer Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4445255611/",
+          "sourceIdentity": {
+            "company": "Stanley Black & Decker, Inc.",
+            "title": "Manufacturing Engineer Manager",
+            "location": "Elyria, OH"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4445255611/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     },
     "linkedin:4383356973": {
@@ -600598,6 +600708,166 @@
           "ruleId": null,
           "quote": null,
           "sourceUrl": "https://www.linkedin.com/jobs/view/4478597435/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4361253960": {
+      "key": "linkedin:4361253960",
+      "jobId": "4361253960",
+      "title": "Principal Mechanical Engineer, Tooling",
+      "company": "Relativity Space",
+      "location": "Long Beach, CA",
+      "url": "https://www.linkedin.com/jobs/view/4361253960/",
+      "observedAt": "2026-11-10T21:53:05.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1c773503529a8e"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1c773503529a8e",
+          "at": "2026-11-10T21:53:05.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4361253960/",
+          "cardHash": "8cea1f98b02bac4c8f9b4e2d7fa50a73e8fa2d343698d5f89a3df9515f06ba6d",
+          "paragraphs": [
+            "Principal Mechanical Engineer, Tooling",
+            "Relativity Space",
+            "Long Beach, CA"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "3f411050c92e59b341742736114990abc5c50605cdebce491c17062e5ac71a1a"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-10T22:33:14.729Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4361253960/",
+          "sourceIdentity": {
+            "company": "Relativity Space",
+            "title": "Principal Mechanical Engineer, Tooling",
+            "location": "Long Beach, CA"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4361253960/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4462887194": {
+      "key": "linkedin:4462887194",
+      "jobId": "4462887194",
+      "title": "Senior Engineer - Fasteners",
+      "company": "Magna International",
+      "location": "Troy, MI",
+      "url": "https://www.linkedin.com/jobs/view/4462887194/",
+      "observedAt": "2026-11-10T21:53:05.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1c773503529a8e"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1c773503529a8e",
+          "at": "2026-11-10T21:53:05.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4361253960/",
+          "cardHash": "b3d35cc80bc33e6cdffbf736917978f06f48d3d4c2aeab03cdb908b1c8bd95f4",
+          "paragraphs": [
+            "Senior Engineer - Fasteners",
+            "Magna International",
+            "Troy, MI"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "3f411050c92e59b341742736114990abc5c50605cdebce491c17062e5ac71a1a"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-10T22:33:14.729Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4462887194/",
+          "sourceIdentity": {
+            "company": "Magna International",
+            "title": "Senior Engineer - Fasteners",
+            "location": "Troy, MI"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4462887194/",
           "sourceSha256": null,
           "canonicalEligibility": false
         },
