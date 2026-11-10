@@ -70,7 +70,7 @@ function sync({root,state,report,now=Date.now(),apply=false}){
  const work=S.read(root,FILE,empty()),current=new Set(),at=new Date(now).toISOString();
  for(const item of candidates(root,report,state,now)){current.add(item.exceptionId);const old=work.cases[item.exceptionId];work.cases[item.exceptionId]={...old,...item,firstSeen:old?.firstSeen||at,lastSeen:at,status:'ACTION_REQUIRED'};delete work.cases[item.exceptionId].closedAt;}
  for(const item of Object.values(work.cases))if(!current.has(item.exceptionId)){item.status='NO_LONGER_OPEN';item.closedAt=item.closedAt||at;item.canonicalCompletion=false;}
- for(const {record,proof,sha256} of reviews(root,work,now)){const item=work.cases[record.exceptionId];item.review={proof,sha256,disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter};Dispatch.reviewed(work,item,record);
+ for(const {record,proof,sha256} of reviews(root,work,now)){const item=work.cases[record.exceptionId];item.review={proof,sha256,disposition:record.disposition,reviewedAt:record.reviewedAt,reason:record.reason,retryCondition:record.retryCondition,retryAfter:record.retryAfter};Dispatch.reviewed(work,item,record,{replay:true});
   if(record.disposition==='WAITING_SOURCE_CHANGE'&&!(Date.parse(record.retryAfter)<=now))item.status='WAITING_SOURCE_CHANGE';
   else if(record.disposition==='AWAITING_TIM')item.status='AWAITING_TIM';
   // A proposed source is actionable until its independent verification changes the case.
