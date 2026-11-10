@@ -35,7 +35,10 @@ An immediate identical execution reused the durable source-gap marks: roles
 researched 0, source reads 0, network requests 0, unchanged source gaps retained 22.
 There were no programmatic AI or Writer calls in either execution. A new exact
 ledger/discovery source, policy or row change invalidates the corresponding wait.
-That reopening is covered by regression tests with real source-store parsers.
+A follow-up real-data pair after the private-cache precedence correction reproduced
+the same 22-to-zero behavior within the original snapshot freshness window.
+Newly learned posting data is retained in the private output instead of being
+replaced by the initial seed. That reopening is covered by regression tests with real source-store parsers.
 
 Earlier exploratory execution prepared one v5 LOW estimate from seven posted
 comparables. A fresh main-based replan subsequently excluded that role under

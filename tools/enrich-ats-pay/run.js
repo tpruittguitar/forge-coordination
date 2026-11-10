@@ -38,6 +38,8 @@ if(SNAPSHOT_FILE&&(!PREPARE_ONLY||!PREPARATION_DIR||!PLAN_FILE||!process.env.ENR
 if(PREPARATION_DIR&&(!PREPARE_ONLY||path.resolve(PREPARATION_DIR).startsWith(ROOT+path.sep)||path.resolve(PREPARATION_DIR)===ROOT))throw Error('Preparation output must be outside the checkout');
 if(PREPARATION_DIR){fs.mkdirSync(PREPARATION_DIR,{recursive:true});for(const [source,dest]of [['enrich-ats-pay-bls.json','bls.json']]){const from=path.join(ROOT,'state',source),to=path.join(PREPARATION_DIR,dest);if(fs.existsSync(from)&&!fs.existsSync(to))fs.copyFileSync(from,to);}process.env.ENRICH_BLS_CACHE=path.join(PREPARATION_DIR,'bls.json');process.env.ENRICH_EMPLOYER_CACHE=path.join(PREPARATION_DIR,'employer.json');}
 const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pay.json'), REPORT = PREPARATION_DIR?path.join(PREPARATION_DIR,'report.json'):path.join(ROOT, 'state/enrich-ats-pay-report.json'), BLS_CACHE = process.env.ENRICH_BLS_CACHE || path.join(ROOT, 'state/enrich-ats-pay-bls.json'), EMPLOYER_CACHE = process.env.ENRICH_EMPLOYER_CACHE || path.join(ROOT, 'state/enrich-ats-pay-employer.json');
+// A seed initializes private preparation once; later runs must keep newly saved evidence.
+const employerCacheInput=()=>fs.existsSync(EMPLOYER_CACHE)?EMPLOYER_CACHE:(PREPARATION_CACHE||EMPLOYER_CACHE);
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const Prepared=require('./prepared.cjs');
 const PREPARED_DIR=PREPARATION_DIR||process.env.ENRICH_PREPARED_DIR||(process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):path.join(ROOT,'state'));
@@ -164,7 +166,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const policyFingerprint=Store.hash(fs.readdirSync(__dirname).filter(f=>/\.(?:js|cjs)$/.test(f)&&!f.includes('.test.')).sort().map(f=>[f,fs.readFileSync(path.join(__dirname,f),'utf8')]).concat([['config',CONFIG],...['PipelineWorklists','PipelineEvidence','PipelinePostingFreshness','PipelineAts'].map(name=>[name,fs.readFileSync(path.join(require('os').tmpdir(),name+'.js'),'utf8')])]));
-  const inputFingerprintOf=()=>Store.hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(PREPARATION_CACHE||EMPLOYER_CACHE),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
+  const inputFingerprintOf=()=>Store.hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
   const inputFingerprint=inputFingerprintOf();
   // Bind per-role saved evidence as well as global comparison inputs. Preserve
   // the durable ledger view: preparation-only never persists its transient edits.
@@ -290,7 +292,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(!opts.noNetwork)sourceSearch?.count(est);
     return est;
   }
-  const empCache = EmployerCacheStore.read(PREPARATION_CACHE||EMPLOYER_CACHE); empCache.employers = empCache.employers || {};
+  const empCache = EmployerCacheStore.read(employerCacheInput()); empCache.employers = empCache.employers || {};
   empCache.sourceSearch=empCache.sourceSearch||{};
   const postingCache=PostingCache.create({cache:empCache});stats.posting_cache=postingCache.stats;
   function sourcePage(a){if(SourceSearch.firstParty(a.sourceUrl,a.co)||(process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_TEST_PUBLIC_PAGES))return P.publicUrl(a.sourceUrl);const r=rows.concat(archiveRows).find(r=>r.PRIMARY_ID===a.id);if(!r||Context.norm(r.COMPANY)!==Context.norm(a.co)||Context.norm(r.TITLE)!==Context.norm(a.title)||Context.norm(r.LOCATION)!==Context.norm(a.location))return null;const url=L.atsFor(r.p)?.page;return url&&SourceSearch.firstParty(url,a.co)?P.publicUrl(url):null;}

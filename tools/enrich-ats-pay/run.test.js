@@ -527,3 +527,15 @@ test('prepare-only persists a full policy estimate, skips receipts, reuses it, t
  const forged=structuredClone(record);forged.fields.SALARY_BASE_LOW=1;const Store=require('../programmed-coordinator/store.cjs');fs.unlinkSync(path.join(dir,artifacts[0]));Store.immutable(dir,'enrich-ats-pay-prepared-'+Store.hash(forged)+'.json',forged);
  out=run([]);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,1);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
 });
+
+test('private preparation cache retains newly learned postings instead of restarting from its seed',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-private-seed-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
+ const master=path.join(dir,'master.txt'),seed=path.join(dir,'seed.json'),out=path.join(dir,'output'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads');
+ const url='https://careers.example.org/private-cache';fs.writeFileSync(master,row(1,'V2I-PRIVATE-CACHE','Director of Quality','Dayton, OH','SOURCE_URL='+url));fs.writeFileSync(seed,JSON.stringify({employers:{},postingEvidence:{}}));const seedBytes=fs.readFileSync(seed);fs.writeFileSync(sources,JSON.stringify({[url]:{body:exactPosting()}}));
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_EMPLOYER_CACHE:seed,ENRICH_TEST_FAST:'1',ENRICH_TEST_FETCHES:reads,ENRICH_TEST_SOURCE_RESPONSES:sources};
+ const run=extra=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--prepare-only','--preparation-dir',out,...extra],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(path.join(out,'report.json')));};
+ assert.equal(run([]).posted_pay,1);const cache=require('./employer-cache-store'),saved=cache.read(path.join(out,'employer.json'));assert.equal(Object.keys(saved.postingEvidence).length,1);
+ // Force the second run to use saved posting evidence, not the prepared salary.
+ for(const file of fs.readdirSync(out).filter(f=>f.startsWith('enrich-ats-pay-prepared-')))fs.unlinkSync(path.join(out,file));fs.writeFileSync(reads,'');
+ const second=run(['--saved-evidence-only']);assert.equal(second.prepared_reused,0);assert.equal(second.network_requests,0);assert.equal(second.sample[0].fields.SALARY_BASE_LOW,180000);assert.deepEqual(cache.read(path.join(out,'employer.json')).postingEvidence,saved.postingEvidence);assert.deepEqual(fs.readFileSync(seed),seedBytes);assert.equal(fs.readFileSync(reads,'utf8'),'');
+});
