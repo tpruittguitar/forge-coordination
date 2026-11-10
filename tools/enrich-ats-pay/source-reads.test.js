@@ -42,3 +42,12 @@ test('successful malformed source bytes are read only once and later rows get a 
  const first=S.create(options);a.throws(()=>JSON.parse('not JSON'));a.equal(await first.read(url),'not JSON');await a.rejects(first.read(url),{code:'SOURCE_ALREADY_ATTEMPTED'});
  a.equal(await S.create(options).read(url),'not JSON');a.equal(calls,2);
 });
+test('public origin circuit bounds 403s per run without blocking other origins or retrying permanent errors',()=>{
+ const c=S.originCircuit(),u='https://blocked.example/job/1';
+ for(let i=0;i<2;i++){c.failure(u,{status:403});a.equal(c.allowed(u),true);}
+ c.failure(u,{status:403});a.equal(c.allowed('https://blocked.example/job/2'),false);
+ a.equal(c.allowed('https://employer.example/job/2'),true);
+ a.deepEqual(c.blocked(),{'https://blocked.example':3});
+ a.equal(S.originCircuit().allowed(u),true);c.success(u);a.equal(c.allowed(u),true);
+ for(let i=0;i<10;i++)c.failure(u,{status:404});a.equal(c.allowed(u),true);
+});

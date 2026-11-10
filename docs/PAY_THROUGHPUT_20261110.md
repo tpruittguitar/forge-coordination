@@ -46,3 +46,24 @@ To prove production completion, the published repair must first be integrated
 through the supported owner process, then a normal run must capture useful new
 posting evidence and show matching Writer result, receipt index and readback.
 Do not replay pending requests or treat the draft PR as deployment.
+
+## Follow-up: failed public-origin budget
+
+The 60 failed fallbacks break down as 36 Glassdoor HTTP 403s, 19 BuildSubmarines
+HTTP 403s, three ZipRecruiter HTTP 403s, and two readable responses without an
+exact complete posting (CRH and Frontgrade). Named-provider gating covered
+ZipRecruiter but not Glassdoor or BuildSubmarines. The per-run public-origin
+circuit now stops a host after three 403s, preserving the existing total request
+budget for other sources. A regression checks that an independent exact employer
+source still succeeds after one host is blocked. No cap or schedule is increased.
+
+A changed-source TTM observation was captured from the exact official Workday
+R18244 API, replacing the failed BuildSubmarines route as a research candidate.
+The exact employer/title/location and complete qualification text validate under
+the existing parser. Salary remains unresolved: the disclosed numerical range
+lacks explicit annual/USD facts required by the current salary contract. No
+numeric pay fields are proposed or inferred. The append-only existing-owner
+receipt is `receipts/CHATGPT_HELPERS/FORGE_CHATGPT_ENRICHMENT_RESEARCH/FORGE-CHATGPT-PAY-SOURCE-20261110-R18244.json`.
+Delivery is not a Writer result; canonical effects still require the normal
+locked owner and independent verification. Opentrons already had a returned
+alternate-source excerpt and remains source-blocked; it was not resubmitted.

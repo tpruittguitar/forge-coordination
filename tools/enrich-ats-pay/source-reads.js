@@ -12,6 +12,16 @@ function transient(error) {
   if(error.status!=null)return [408,500,502,503,504].includes(error.status);
   return ['ETIMEDOUT','ECONNRESET','EAI_AGAIN','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT','UND_ERR_BODY_TIMEOUT','UND_ERR_SOCKET'].includes(error.code||error.cause?.code)||error.name==='TimeoutError'||error instanceof TypeError&&error.message==='fetch failed';
 }
+// Per-run transport circuit for public origins outside the named aggregators.
+// A 403 is not useful posting evidence. Do not spend every fallback slot on the
+// same blocked site; another origin remains eligible. No persistent blacklist.
+function originCircuit(limit=3){
+ const failures=new Map(),key=url=>new URL(url).origin;
+ return {allowed:url=>(failures.get(key(url))||0)<limit,
+  failure(url,error){if(error.status===403)failures.set(key(url),(failures.get(key(url))||0)+1);},
+  success:url=>failures.delete(key(url)),
+  blocked:()=>Object.fromEntries([...failures].filter(([,n])=>n>=limit))};
+}
 function create({read,wait,canRead=()=>true,onAttempt=()=>{},onFailure=()=>{}}) {
   const attempted=new Set();
   return {
@@ -39,4 +49,4 @@ function create({read,wait,canRead=()=>true,onAttempt=()=>{},onFailure=()=>{}}) 
     }
   };
 }
-module.exports={endpoint,provider,transient,create};
+module.exports={endpoint,provider,transient,originCircuit,create};

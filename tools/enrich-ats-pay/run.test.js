@@ -575,3 +575,12 @@ test('new exact cached salary is planned during source backoff with no repeated 
  assert.deepEqual(out.reads,[]);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
  assert.equal(out.report.sample[0].fields.DEGREE_REQ,'REQUIRED');assert.equal(out.report.submitted,0);
 });
+test('blocked public hosts stop at three 403s and preserve fallback budget for exact employer sources',t=>{
+ const lines=[],responses={},host='https://jobs.blocked.example',good='https://careers.example.org/unblocked';
+ for(let i=0;i<5;i++){const url=host+'/jobs/'+i;responses[url]={status:403};lines.push(row(i+1,'V2I-PUBLIC-BLOCK'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; ${i===4?"COMPANY_SOURCE_URL="+good+"; ":""}DATE_ADDED=2026-11-0${8-i}`));}
+ responses[good]={body:exactPosting()};const out=sourceRun(t,lines,responses,{maxPublicFetches:20});
+ assert.equal(out.reads.filter(u=>u.startsWith(host)).length,3);
+ assert.ok(out.report.source_origin_skips>=2);assert.equal(out.report.source_origin_blocks[host],3);
+ assert.ok(out.report.sample.some(x=>x.fields.SALARY_BASE_LOW===180000));
+ assert.equal(out.report.source_retries,0);
+});
