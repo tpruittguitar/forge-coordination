@@ -93,3 +93,49 @@ test('replacement evidence cannot bypass a live protected row or contradictory p
 test('drain-owned intake exceptions are not assigned twice while unrelated historical work remains open',t=>{
  const f=fixture(t);S.save(f.root,'state/INTAKE_DRAIN.json',{schema:'forge.intake-drain.v1',items:{[f.original.key]:{key:f.original.key,aliases:[f.original.key],status:'ACTION_REQUIRED',taskKey:'FORGE_INTAKE_SOURCE_RECOVERY'}}});const work=f.sync();a.equal(Object.values(work.cases).some(c=>c.kind==='SOURCE'),false);a.equal(Object.values(work.cases).some(c=>c.kind==='HISTORICAL'),true);
 });
+
+test('sync replay preserves equal-time cross-case and same-case attempt cursors',t=>{
+ const f=fixture(t),work=f.sync(),items=Object.values(work.cases);
+ for(const item of items)W.publishReview(f.root,f.review(item),now);
+ for(const item of items){
+  const saved=S.read(f.root,W.FILE);
+  const cursor={lastServedKind:item.kind,lastReviewedKind:item.kind,exceptionId:item.exceptionId,sourceVersion:item.binding.sourceVersion,observedAt:at,reviewedAt:at,basis:'SOURCE_BOUND_ATTEMPT',artifactSizeOnly:true};
+  saved.dispatch=cursor;S.save(f.root,W.FILE,saved);
+  for(let i=1;i<=2;i++){
+   const replayed=f.sync(now+i*1000);
+   a.deepEqual(replayed.dispatch,cursor);
+   for(const candidate of items){a.equal(replayed.cases[candidate.exceptionId].status,'WAITING_SOURCE_CHANGE');a.equal(replayed.cases[candidate.exceptionId].canonicalCompletion,false);}
+  }
+ }
+});
+
+test('equal-time live reviews advance each case while subsequent sync preserves their order',t=>{
+ const f=fixture(t),items=Object.values(f.sync().cases);
+ // Exercise both orders so receipt filename order cannot accidentally pass.
+ for(const ordered of [items,[...items].reverse()]){
+  for(const item of ordered){
+   const result=W.publishReview(f.root,f.review(item),now);
+   a.equal(result.dispatch.exceptionId,item.exceptionId);
+   a.equal(result.dispatch.basis,'ACCEPTED_IMMUTABLE_REVIEW');
+  }
+  const cursor=S.read(f.root,W.FILE).dispatch;
+  a.deepEqual(f.sync(now+1000).dispatch,cursor);
+ }
+});
+
+test('sync recovers missing checkpoints and strictly newer reviews but ignores older service',t=>{
+ const f=fixture(t),items=Object.values(f.sync().cases),first=items[0],second=items[1];
+ W.publishReview(f.root,f.review(first),now);
+ let saved=S.read(f.root,W.FILE);delete saved.dispatch;S.save(f.root,W.FILE,saved);
+ a.equal(f.sync().dispatch.exceptionId,first.exceptionId);
+ const prior=S.read(f.root,W.FILE).dispatch;
+ const newer=f.review(second,{reviewedAt:new Date(now+2000).toISOString()});
+ // Simulate receipt durable but the dispatch checkpoint write interrupted.
+ S.immutable(f.root,W.REVIEWS+'/'+second.exceptionId+'-'+S.hash(newer)+'.json',newer);
+ saved=S.read(f.root,W.FILE);saved.dispatch=prior;S.save(f.root,W.FILE,saved);
+ const recovered=f.sync(now+3000).dispatch;
+ a.equal(recovered.exceptionId,second.exceptionId);a.equal(recovered.observedAt,newer.reviewedAt);
+ a.deepEqual(f.sync(now+4000).dispatch,recovered);
+ W.publishReview(f.root,f.review(first),now+4000);
+ a.deepEqual(S.read(f.root,W.FILE).dispatch,recovered);
+});
