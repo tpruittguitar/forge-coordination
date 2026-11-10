@@ -29,7 +29,9 @@ function select(work,progress,now=Date.now(),limit=20){
   const reconciled=history.filter(p=>p.phase==='VERIFIED'&&typeof p.requestId==='string'&&p.requestId.trim());
   let reason=null;
   if(history.some(p=>ATTEMPTED.has(p.phase)&&(!p.requestId||!reconciled.some(v=>v.requestId===p.requestId&&Date.parse(v.observedAt)>Date.parse(p.observedAt)))))reason='ORIGINAL_TRANSACTION_FENCED';
-  const same=history.filter(p=>p.assignmentVersion===item.assignmentVersion&&p.sourceVersion===item.sourceVersion);
+  const matching=history.filter(p=>p.assignmentVersion===item.assignmentVersion&&p.sourceVersion===item.sourceVersion);
+  const terminalAt=Math.max(-Infinity,...matching.filter(p=>p.phase==='VERIFIED').map(p=>Date.parse(p.observedAt)));
+  const same=matching.filter(p=>Date.parse(p.observedAt)>=terminalAt);
   if(!reason&&same.some(p=>['VERIFIED','NO_CHANGE'].includes(p.phase)&&!(Array.isArray(p.remainingFields)&&p.remainingFields.length)))reason='UNCHANGED_WORK_ALREADY_HANDLED';
   if(!reason&&same.some(p=>['RESEARCH_READY','SUBMISSION_NOT_ATTEMPTED'].includes(p.phase)))reason='RESUME_SAVED_ARTIFACT_NOT_RESEARCH';
   const blocked=same.filter(p=>p.phase==='RESEARCH_BLOCKED').sort((a,b)=>Date.parse(b.observedAt)-Date.parse(a.observedAt));

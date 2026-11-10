@@ -40,4 +40,4 @@ test('latest blocked retry wins and older verified proof cannot clear later unce
  a.equal(select(w,[record(id,'VERIFIED',{requestId:'q'}),record(id,'QUEUED',{requestId:'q'})],now).items.length,0);
 });
 
-test('verified partial fields do not suppress remaining gaps',()=>{const w=work(1);a.equal(select(w,[record('V2I-000','VERIFIED',{requestId:'q',remainingFields:['DEGREE_TEXT']})],now).items.length,1);});
+test('verified partial fields do not suppress remaining gaps',()=>{const w=work(1);a.equal(select(w,[record('V2I-000','SUBMISSION_NOT_ATTEMPTED',{requestId:'q'}),record('V2I-000','VERIFIED',{requestId:'q',remainingFields:['DEGREE_TEXT']})],now).items.length,1);});
