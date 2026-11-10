@@ -78,3 +78,31 @@ successful saves and reuse, separately from physical source reads.
 Degree extraction uses the [complete degree-evidence contract](../../docs/DEGREE_EXTRACTION.md).
 The same parser and regression corpus are mirrored in the cockpit ATS producer;
 adjacent experience alternatives must survive extraction and field serialization.
+
+Preparation requires a complete, exact-identity posting with its original source
+URL, observation time and full text. Version 2 prepared artifacts embed that
+validated evidence, rather than only hashing a transient ledger entry. Legacy
+aggregator text, historical lane timestamps and failed-read history alone cannot
+produce a prepared salary. Missing proof is reported as
+`COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED`; unresolved compensation cannot become
+no-pay proof. Existing live-run eligibility and Writer fences are unchanged.
+
+The existing serialized live owner can consume durable v2 **no-pay posting
+observations** from `state/enrich-ats-pay-prepared-<sha256>.json` (or the existing
+`ENRICH_PREPARED_DIR` override). After review, place only the immutable prepared
+JSON there; do not transfer a private canonical snapshot, ledger, request payload,
+or preparation workspace. No workflow input, new worker, or replay is needed.
+This implementation does not stage real preparation data. Any separate transfer
+must be approved for its contents and destination before publication.
+
+The filename/content hash, embedded-source hash, exact canonical row fingerprint,
+source identity, observation age, posting expiry and current pay-parser version
+must validate. Protected rows, pending/refused Writer requests, helper reservations
+and transaction fences remain excluded. A changed preparation policy/input hash
+can provide source evidence only: all salary fields are recomputed with current
+policy and comparison inputs, and degree is reparsed from full text. Sources with
+pay, unresolved compensation, structured salary or monetary text are not imported
+by this narrow handoff; existing source recovery still handles them. Original
+observation times are preserved, and the final Writer guard rechecks the full
+canonical row binding for imported-source candidates. Backoff remains in force.
+The existing Writer receipt/readback path remains the only completion proof.

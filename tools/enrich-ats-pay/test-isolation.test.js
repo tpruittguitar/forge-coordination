@@ -19,6 +19,7 @@ function fixture(t,fail){
   "require('node:test')('synthetic output stays isolated',()=>{",
   'for(const file of '+JSON.stringify(Object.keys(original))+")fs.writeFileSync(file,'synthetic test fixture');",
   "fs.writeFileSync('receipts/FORGE-ENRICH_ATS-ATSBOT-test_NOT_ACCEPTED.json','synthetic proof');",
+  "require('node:assert/strict').equal(os.tmpdir().startsWith(process.cwd()+path.sep),false);",
   "fs.writeFileSync(path.join(os.tmpdir(),'PipelineProducts.js'),'synthetic module');",
   fail?"throw Error('intentional fixture failure');":"",
   '});'

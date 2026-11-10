@@ -4,10 +4,10 @@
 set -euo pipefail
 root="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")/../.." && pwd)"
 test_root="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/forge-pay-tests.XXXXXXXX")"
-trap 'rm -rf -- "$test_root"' EXIT
+test_tmp="$(mktemp -d "${RUNNER_TEMP:-${TMPDIR:-/tmp}}/forge-pay-tmp.XXXXXXXX")"
+trap 'rm -rf -- "$test_root" "$test_tmp"' EXIT
 git -C "$root" archive --format=tar HEAD | tar -xf - -C "$test_root"
 cd -- "$test_root"
 # Also isolate modules run.js materializes in the OS temp directory.
-mkdir -- .test-tmp
-export TMPDIR="$test_root/.test-tmp"
+export TMPDIR="$test_tmp"
 node --test tools/enrich-ats-pay/*.test.js

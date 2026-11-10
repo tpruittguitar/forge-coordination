@@ -518,14 +518,26 @@ test('prepare-only persists a full policy estimate, skips receipts, reuses it, t
  const target=row(1,'V2I-PREPARE','Director of Quality','Toledo, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/333; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; FEASIBILITY_ATTEMPT_ASOF=2026-11-09');
  const anchor=row(2,'V2I-ANCHOR','Director, Quality','Columbus, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=160000; SALARY_BASE_HIGH=200000; SALARY_MIDPOINT=180000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS');
  fs.writeFileSync(master,target+'\n'+anchor);fs.writeFileSync(writer,JSON.stringify({'V2I-PREPARE':target,'V2I-ANCHOR':anchor}));
+ const postingRow={PRIMARY_ID:'V2I-PREPARE',COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Toledo, OH',p:{}};
+ const cache={employers:{}};require('./posting-cache').create({cache}).save(postingRow,'https://job-boards.greenhouse.io/acme/jobs/333',{identityVerified:true,sourceIdentity:{company:postingRow.COMPANY,title:postingRow.TITLE,location:postingRow.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'BS preferred.'});fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
  const original=JSON.stringify({submitted:{},tried:{},pendingWrites:{original:{ids:['V2I-OTHER'],requests:[],status:'POSTING_OR_UNCONFIRMED'}}});fs.writeFileSync(ledger,original);
  const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_FETCHES:reads,ENRICH_TEST_WRITER_ROWS:writer,ENRICH_TEST_POSTS:posts};
+ fs.writeFileSync(reads,'');
  const run=args=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),...args],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
  let out=run(['--prepare-only']);assert.equal(out.salary_estimates_prepared,1);assert.equal(out.submitted,0);assert.equal(out.roles_researched,1);assert.equal(fs.readFileSync(ledger,'utf8'),original);assert.equal(fs.existsSync(posts),false);assert.doesNotMatch(fs.readFileSync(reads,'utf8'),/action=(receipt_index|request_result|writer_status)/);
- const artifacts=fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-'));assert.equal(artifacts.length,1);const record=JSON.parse(fs.readFileSync(path.join(dir,artifacts[0])));assert.equal(record.fields.SALARY_BASIS,'FORGE-ESTIMATE');assert.ok(record.fields.SALARY_NOTE);assert.ok(record.evidence.anchorInputsSha256);assert.equal(record.row.p,undefined);assert.equal(record.row.line,undefined);
+ const artifacts=fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-'));assert.equal(artifacts.length,1);const record=JSON.parse(fs.readFileSync(path.join(dir,artifacts[0])));assert.equal(record.fields.SALARY_BASIS,'FORGE-ESTIMATE');assert.ok(record.fields.SALARY_NOTE);assert.ok(record.evidence.anchorInputsSha256);assert.ok(record.evidence.postingEvidence.text.length>=300);assert.equal(record.evidence.postingEvidence.identityVerified,true);assert.equal(record.row.p,undefined);assert.equal(record.row.line,undefined);
  out=run(['--prepare-only']);assert.equal(out.prepared_reused,1);assert.equal(out.roles_researched,0);assert.equal(out.salary_estimates_prepared,0);assert.equal(fs.readdirSync(dir).filter(f=>f.startsWith('enrich-ats-pay-prepared-')).length,1);
  const forged=structuredClone(record);forged.fields.SALARY_BASE_LOW=1;const Store=require('../programmed-coordinator/store.cjs');fs.unlinkSync(path.join(dir,artifacts[0]));Store.immutable(dir,'enrich-ats-pay-prepared-'+Store.hash(forged)+'.json',forged);
- out=run([]);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,1);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
+ fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify({employers:{}})); // source exists only in the durable artifact
+ for(const changed of [target.replace('Director of Quality','Director of Other'),target+'; DO_NOT_REWORK=YES']){
+  fs.writeFileSync(writer,JSON.stringify({'V2I-PREPARE':changed,'V2I-ANCHOR':anchor}));fs.writeFileSync(ledger,original);
+  const guarded=run([]);assert.equal(guarded.salary_submitted,0);assert.equal(guarded.guard_dropped,1);assert.equal(fs.existsSync(posts),false);
+ }
+ fs.writeFileSync(writer,JSON.stringify({'V2I-PREPARE':target,'V2I-ANCHOR':anchor}));
+ fs.writeFileSync(ledger,JSON.stringify({submitted:{},tried:{},pendingWrites:{original:{ids:['V2I-PREPARE'],requests:[],status:'POSTING_OR_UNCONFIRMED'}}}));
+ const fenced=run([]);assert.equal(fenced.salary_submitted,0);assert.equal(fenced.prepared_sources_validated,0);assert.equal(fs.existsSync(posts),false);assert.ok(JSON.parse(fs.readFileSync(ledger)).pendingWrites.original);
+ fs.writeFileSync(ledger,original);
+ out=run([]);assert.equal(out.prepared_sources_validated,1);assert.equal(out.prepared_reused,0);assert.equal(out.prepared_revalidation_required,1);assert.equal(out.estimates,1);assert.equal(out.salary_submitted,1);assert.equal(out.salary_independently_verified,0);const sent=JSON.parse(fs.readFileSync(posts,'utf8').trim());assert.equal(sent.requests[0].ruling.primaryId,'V2I-PREPARE');assert.deepEqual(sent.requests[0].ruling.fields,record.fields);
 });
 
 test('private preparation cache retains newly learned postings instead of restarting from its seed',t=>{
@@ -538,4 +550,15 @@ test('private preparation cache retains newly learned postings instead of restar
  // Force the second run to use saved posting evidence, not the prepared salary.
  for(const file of fs.readdirSync(out).filter(f=>f.startsWith('enrich-ats-pay-prepared-')))fs.unlinkSync(path.join(out,file));fs.writeFileSync(reads,'');
  const second=run(['--saved-evidence-only']);assert.equal(second.prepared_reused,0);assert.equal(second.network_requests,0);assert.equal(second.sample[0].fields.SALARY_BASE_LOW,180000);assert.deepEqual(cache.read(path.join(out,'employer.json')).postingEvidence,saved.postingEvidence);assert.deepEqual(fs.readFileSync(seed),seedBytes);assert.equal(fs.readFileSync(reads,'utf8'),'');
+});
+
+test('preparation fails closed for legacy LinkedIn text and historical lane checks without exact retained source',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-legacy-preparation-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
+ const master=path.join(dir,'master.txt'),sources=path.join(dir,'sources.json'),out=path.join(dir,'output');
+ const guest='https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/5012345678';
+ const text='Lead manufacturing quality and production operations. '.repeat(20)+'Bachelor degree required.';
+ fs.writeFileSync(master,row(1,'V2I-LEGACY-PREP','Director of Quality','Dayton, OH','SOURCE_URL=https://www.linkedin.com/jobs/view/5012345678; FEASIBILITY_ATTEMPT_ASOF=2026-11-09')+'\n'+row(2,'V2I-ANCHOR','Director, Quality','Columbus, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=160000; SALARY_BASE_HIGH=200000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'));
+ fs.writeFileSync(sources,JSON.stringify({[guest]:{body:'<div class="show-more-less-html__markup">'+text+'</div>'}}));
+ cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--prepare-only','--preparation-dir',out],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_SOURCE_RESPONSES:sources},stdio:'pipe'});
+ const report=JSON.parse(fs.readFileSync(path.join(out,'report.json')));assert.equal(report.salary_estimates_prepared,0);assert.equal(report.preparation_source_gaps,1);assert.ok(report.pending.some(p=>p.status==='COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED'));assert.equal(fs.readdirSync(out).filter(f=>f.startsWith('enrich-ats-pay-prepared-')).length,0);
 });
