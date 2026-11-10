@@ -121,3 +121,10 @@ producer for an already validated retained full no-pay posting. Publication of a
 actual data file is a separate approved handoff. The staged source-only artifact
 contains one reviewed public posting and its row binding; no original private
 preparation envelope is published.
+
+Source-retry backoff is evaluated after identity-validated retained evidence is
+loaded. A useful salary or degree observation newer than the last attempt wakes
+the row immediately; stale, future, ambiguous or unrelated facts do not. The
+`recovery_evidence_wakeups` report counter records these wakeups. Existing closed
+row checks, helper reservations and pending Writer fences still run first. A
+wake-up is research/planning, not a submitted or independently verified salary.

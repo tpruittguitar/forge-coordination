@@ -5,7 +5,7 @@ const test = require('node:test'), assert = require('node:assert'), fs = require
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
 const sourceRunOwners = new WeakSet();
-function sourceRun(t,lines,responses,config={},cache){
+function sourceRun(t,lines,responses,config={},cache,ledger){
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-fetch-')),master=path.join(dir,'master.txt'),sources=path.join(dir,'sources.json'),reads=path.join(dir,'reads.txt');
  const outputs=['state/enrich-ats-pay-report.json','state/enrich-ats-pay-products.json','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay-calibration.json'].map(p=>path.join(ROOT,p));
  // One baseline per test, not per invocation. after hooks run in registration
@@ -15,7 +15,7 @@ function sourceRun(t,lines,responses,config={},cache){
   t.after(()=>outputs.forEach((p,i)=>{if(before[i]!==null)fs.writeFileSync(p,before[i]);else fs.rmSync(p,{force:true});}));
  }
  t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
- fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));if(cache)fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
+ fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(sources,JSON.stringify(responses));if(ledger)fs.writeFileSync(path.join(dir,'ledger.json'),JSON.stringify(ledger));if(cache)fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SOURCE_RESPONSES:sources,ENRICH_TEST_FETCHES:reads,ENRICH_TEST_CONFIG:JSON.stringify(config)},stdio:'pipe'});
  return {cache:require('./employer-cache-store').read(path.join(dir,'emp.json')),report:JSON.parse(fs.readFileSync(outputs[0])),reads:fs.existsSync(reads)?fs.readFileSync(reads,'utf8').trim().split('\n'):[]};
 }
@@ -563,4 +563,15 @@ test('preparation fails closed for legacy LinkedIn text and historical lane chec
  fs.writeFileSync(sources,JSON.stringify({[guest]:{body:'<div class="show-more-less-html__markup">'+text+'</div>'}}));
  cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--prepare-only','--preparation-dir',out],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_SOURCE_RESPONSES:sources},stdio:'pipe'});
  const report=JSON.parse(fs.readFileSync(path.join(out,'report.json')));assert.equal(report.salary_estimates_prepared,0);assert.equal(report.preparation_source_gaps,1);assert.ok(report.pending.some(p=>p.status==='COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED'));assert.equal(fs.readdirSync(out).filter(f=>f.startsWith('enrich-ats-pay-prepared-')).length,0);
+});
+
+test('new exact cached salary is planned during source backoff with no repeated source reads',t=>{
+ const id='V2I-RETAINED-WAKE',url='https://careers.example.org/evidence-wake';
+ const r={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}},ledger={submitted:{},tried:{}};
+ const R=require('./recovery'),now=Date.now();R.remember(ledger,r,'SALARY,DEGREE','SOURCE_RESEARCH_REQUIRED',[{url,status:'HTTP_403'}],now-3600000);
+ const parsed=require('./public-posting').parse(exactPosting(),r);R.saveEvidence(ledger,r,url,parsed,now-1000);
+ const out=sourceRun(t,[row(1,id,r.TITLE,r.LOCATION,'SOURCE_URL='+url)],{[url]:{status:403}},{},null,ledger);
+ assert.equal(out.report.recovery_evidence_wakeups,1);assert.equal(out.report.skipped_recent,0);
+ assert.deepEqual(out.reads,[]);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
+ assert.equal(out.report.sample[0].fields.DEGREE_REQ,'REQUIRED');assert.equal(out.report.submitted,0);
 });

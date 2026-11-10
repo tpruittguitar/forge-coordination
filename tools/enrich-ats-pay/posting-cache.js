@@ -15,6 +15,11 @@ function route(raw){try{
 function complete(row,url,parsed,at){return !!([row.COMPANY,row.TITLE,row.LOCATION].every(v=>typeof v==='string'&&v.trim())&&route(url)&&Number.isFinite(Date.parse(at))&&parsed?.identityVerified===true&&parsed.sourceIdentity&&identity(row)===JSON.stringify([parsed.sourceIdentity.company,parsed.sourceIdentity.title,parsed.sourceIdentity.location])&&typeof parsed.text==='string'&&parsed.text.length>=300&&parsed.text.length<=500000&&parsed.fullPosting!==false&&!/captcha|sign in to view|verify you are human/i.test(parsed.text));}
 function create({cache,now=()=>Date.now()}){
  const entries=cache.postingEvidence||(cache.postingEvidence={}),stats={saved:0,hits:0,no_pay_hits:0};
+ // Backoff checks must not scan thousands of unrelated posting bodies per row.
+ // Keep keys (not copies) so pruning/replacement remains authoritative.
+ const byIdentity=new Map();
+ function index(key,e){if(!byIdentity.has(e.identity))byIdentity.set(e.identity,new Set());byIdentity.get(e.identity).add(key);}
+ for(const [key,e] of Object.entries(entries))index(key,e);
  function save(row,url,parsed,{at=new Date(now()).toISOString()}={}){
   if(!complete(row,url,parsed,at)||Date.parse(at)>now())return null;
   const key=crypto.createHash('sha256').update(JSON.stringify([identity(row),route(url),at])).digest('hex');
@@ -24,11 +29,12 @@ function create({cache,now=()=>Date.now()}){
   e.payAmbiguous=parsed.payAmbiguous===true||!e.pay&&!!(parsed.structuredBaseSalary||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(e.text));
   e.payStatus=e.pay?'PAY_FOUND':e.payAmbiguous?'PAY_UNRESOLVED':'NO_PAY_STATED';
   e.postingFacts=parsed.postingFacts||null;e.identifier=parsed.identifier||parsed.postingFacts?.reqId||null;e.structuredBaseSalary=parsed.structuredBaseSalary||null;e.quote=parsed.quote||null;e.evidenceKind=parsed.evidenceKind||null;
-  entries[key]=e;stats.saved++;return e;
+  entries[key]=e;index(key,e);stats.saved++;return e;
  }
  function find(row,urls=R.urls({...row,p:row.p||{}})){
   const routes=new Set(urls.map(route).filter(Boolean)),hits=[],eligible=[],current=new Map();
-  for(const e of Object.values(entries)){
+  for(const key of byIdentity.get(identity(row))||[]){
+   const e=entries[key];if(!e)continue;
    const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||age>=MAX_AGE_MS||e.postingFacts?.validThrough&&(!Number.isFinite(Date.parse(e.postingFacts.validThrough))||Date.parse(e.postingFacts.validThrough)<now())||!routes.has(route(e.url))||!complete(row,e.url,e,e.at))continue;
    eligible.push(e);if(e.factsVersion===Pay.VERSION)current.set(route(e.url),Math.max(current.get(route(e.url))||0,Date.parse(e.at)));
   }

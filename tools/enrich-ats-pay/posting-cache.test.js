@@ -59,3 +59,10 @@ test('a newer current-parser no-pay observation clears migration-only uncertaint
  const cache={},c=Cache.create({cache,now:()=>at}),old=c.save(row,url,parsed(),{at:new Date(at-1000).toISOString()});old.factsVersion='obsolete';a.equal(c.find(row).payNeedsRefresh,true);
  c.save(row,url,parsed());const got=c.find(row);a.equal(got.payNeedsRefresh,false);a.equal(got.payAmbiguous,false);a.equal(got.payStatus,'NO_PAY_STATED');a.equal(got.at,new Date(at).toISOString());
 });
+test('identity index avoids unrelated bodies and follows saves and pruning',()=>{
+ const cache={postingEvidence:{}};let inspected=0,now=at;
+ for(let i=0;i<1000;i++)cache.postingEvidence['other'+i]={identity:JSON.stringify(['Other'+i,row.TITLE,row.LOCATION]),get at(){inspected++;return new Date(at).toISOString();}};
+ const c=Cache.create({cache,now:()=>now});c.save(row,url,parsed({low:180000,high:220000}));
+ a.equal(c.find(row).pay.low,180000);a.equal(inspected,0);
+ now=at+7*86400000;c.prune();a.equal(c.find(row),null);
+});
