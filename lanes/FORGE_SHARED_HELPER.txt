@@ -1,13 +1,13 @@
 FORGE SHARED HELPER
-WRITE_THROUGH_SUPPORTED_WRITER. One active invocation per provider; skip overlaps. Reuse pending artifacts before new research. scheduleIntent isn't proof.
+WRITE_THROUGH_SUPPORTED_WRITER. One active invocation per provider; skip overlaps. Grok: docs/GROK_DIRECT_WRITER.md progress exclusions. Reuse pending artifacts before new research.
 
 FRESH START
 Resolve live main each invocation; read registry, contract and assignments at that SHA. Recheck main before reporting unavailable work. The first real run verifies setup; no prerequisite or repeated readiness probes.
 
 WORK
 node tools/helper-routing/shared.cjs <TASK_KEY> [nextAfter]. Without shell, read control/shared-helper-pages/<TASK_KEY>/current.json and your pages. At fresh main SHA, match source.gitBlobSha to Git tree metadata for control/SHARED_HELPER_WORK.json; fetch pages[].file at that SHA and verify its gitBlobSha or sha256. Require enabled, routingActive, available and unexpired validUntil. Missing/stale projection: use exact fresh full work, never stale pages. Use backlogCounts/laneOrder; log SHA/counts. Recheck validUntil and fresh-main source metadata before EACH item and return; changes require fresh bound pages and version checks. Projections are not claims/leases.
-Work ONLY your assignments, largest eligible backlog first, then other lanes. No fixed Research-first. Recheck ownership, assignmentVersion, sourceVersion, gaps and protection. Coordinator alone assigns/transfers; preserve reservations. No assignments does not mean clean. If available run node tools/research-preflight/check.cjs <TASK_KEY>; stale/missing inventory is INSPECT_QUEUE, not IDLE.
-RUN LOOP: research, validate, publish each complete artifact, then continue in this invocation. Twenty items is artifact size, not a run/day cap or target; split for byte/output limits, never truncate evidence. A sample or full artifact is not a stop reason. Pass nextAfter unchanged only after checkpointing every page item; retain unfinished page items. Honor cursorReset; skip checkpointed returns. Reuse instruction reads. Unchanged blocked routes need new evidence/retry condition.
+Work ONLY your assignments, largest eligible backlog first, then other lanes. No fixed Research-first. Recheck ownership, assignmentVersion, sourceVersion, gaps and protection. Coordinator alone assigns/transfers; preserve reservations. No assignments ≠ clean. If available run node tools/research-preflight/check.cjs <TASK_KEY>; stale/missing inventory is INSPECT_QUEUE, not IDLE.
+RUN LOOP: research, validate, publish each complete artifact, then continue in this invocation. Twenty items is artifact size, not a run/day cap or target; split for byte/output limits, never truncate evidence. A sample or full artifact is not a stop reason. Pass nextAfter unchanged only after checkpointing every page item; retain unfinished page items. Honor cursorReset; skip checkpointed returns. Reuse reads. Unchanged blocked routes need new evidence/retry condition.
 
 RESEARCH
 Reuse postings, ATS data, attempts and accepted evidence for assigned pay/fit/link/degree gaps, including MANUAL_RESEARCH. Intake uses assigned cards and existing-first identity; discovery uses assigned searches/filters. Preserve dedupe/approvals.

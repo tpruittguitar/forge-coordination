@@ -32,6 +32,47 @@ helper-return artifacts retain `writerSubmitted=false`; direct queue requests
 and their transaction checkpoints are a different format and must never claim
 that flag after a submission attempt.
 
+## Select distinct work before researching
+
+The assignment file can remain ASSIGNED after a direct write. It is not a fresh
+missing-field list or permission to start again at its first row. At each run,
+load your existing private direct checkpoints, phase records, original queue
+results and previously delivered helper-return IDs once. Merge that history by
+primary ID and original request ID before choosing work. Never count repeated
+operations on one role as new jobs.
+
+Persist an immutable `grok-direct-progress-<runId>-<page>.json` outside all
+executable queues after EVERY visited item, including blocked, ready, no-change
+and uncertain items. Each record retains unique recordId, observedAt (UTC), primaryId, assignmentVersion,
+sourceVersion, phase, original requestId if any, source/effect fingerprints,
+evidence/checkpoint references and retryAfter/retry condition. Resume saved work;
+do not reread all instructions or restart the same first two assignments after
+publishing a batch. Scan past excluded items into later assignment pages and
+continue this invocation while independent eligible work and tools remain.
+
+Apply these rules even without shell access:
+- Any attempted/queued/uncertain write or prior helper delivery fences that role
+  from NEW submission/research. Reconcile its original request separately. A
+  missing field, readback mismatch, new run ID or unchanged ASSIGNED status does
+  not release the fence. Never submit again to repair a mismatch.
+- VERIFIED or NO_CHANGE for the same assignment/source with no remainingFields: skip. Record explicit remainingFields for partial success; current-row comparison excludes completed fields while remaining gaps can advance. A partial update
+  is not completion of the whole job, but repeating its completed fields is not
+  progress. Reopen only a materially new assigned gap/source after current-row
+  checks and original-request reconciliation, not a changed timestamp alone.
+- RESEARCH_READY/SUBMISSION_NOT_ATTEMPTED: resume the saved artifact, not research.
+- RESEARCH_BLOCKED: skip until its explicit retry condition/date is met or its
+  source changes; continue other jobs. Preserve the gap rather than calling it
+  completed. A zero-change RESULT advances selection without claiming a write.
+
+With shell access, `node tools/helper-routing/direct-progress.cjs next <input>`
+reads `{work:<fresh SHARED_HELPER_WORK>,progress:[<records>]}` and scans beyond
+handled items. It is a read-only selector, not a claim/lease, evidence verifier,
+Writer caller or authorization to release another owner's work. VERIFIED records
+must already carry the three proofs below; this selector does not create them.
+If no shell, apply the same exclusion rules to the compact pages and retain the
+same durable progress. If history is unreadable, preserve known uncertain IDs
+and report that exact blocker; never assume empty history.
+
 ## Before creating a write request
 
 1. Reuse the source research and current assignment. Read current canonical rows
@@ -56,7 +97,15 @@ that flag after a submission attempt.
    here to derive omitted mappings. Use observed overlap only, never invented
    qualifications or numeric scores; if the profile/mapping cannot be checked,
    leave fit pending and submit independently supported other fields.
-   Unsupported, inaccessible or contradictory evidence remains an exception.
+   FIT_EVIDENCE and FIT_BASIS are readable plain strings (maximum 1500
+   characters each), not arrays/objects. FIT_REQUIREMENTS is NOT an allowed
+   direct field. Never send JSON objects coerced to "[object Object]" or truncate
+   a quote to fit. Retain complete evidence privately; submit a complete shorter
+   exact quote only if it is independently meaningful. DEGREE_TEXT limit is
+   12000; all other direct strings max 1500. Long FIT_EVIDENCE/FIT_BASIS may be
+   externalized by Writer: resolve the actual authoritative evidence reference
+   before comparing, not a frozen master download. Unsupported, inaccessible
+   or contradictory evidence remains an exception.
 4. Do not queue a second copy of evidence already delivered for processing.
    Previously captured helper returns, their original request IDs and uncertain
    outcomes remain in the existing reconciliation path. Redirecting one requires
@@ -147,7 +196,10 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
    long field is not proof. Keep unverifiable fields pending, not guessed.
 4. Record original payload/file ID, RESULT, COMPLETE revision and post-COMPLETE
    row proofs in the private direct checkpoint. Report prepared, queued,
-   independently verified and blocked separately. These actual transaction facts
+   independently verified and blocked separately. Count distinct roles and newly
+   filled fields separately from row operations, retries, no-ops and receipts.
+   Report eligible roles visited and the concrete stop reason, including counts
+   skipped by prior direct progress; one or two submitted rows is not a run cap. These actual transaction facts
    do not need a helper coordinator to approve them. They may be reported through
    the existing observability route, but never as a new evidence-only batch that
    would ask another consumer to write them again.

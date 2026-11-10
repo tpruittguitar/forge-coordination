@@ -28,3 +28,24 @@ test('reject missing fields, nonfinite data, objects and malformed source URLs',
   const p=fixture();p.requests[0].ruling.fields=fields;assert.throws(()=>validate(p));
  }
 });
+test('reject JavaScript object coercion even when already serialized',()=>{
+ const p=fixture();p.requests[0].ruling.fields={FIT_EVIDENCE:'[object Object],[object Object]'};assert.throws(()=>validate(p),/INVALID_FIELD_VALUE/);
+ const p2=fixture();p2.requests[0].ruling.fields={FIT_REQUIREMENTS:[{quote:'Exact quote'}]};assert.throws(()=>validate(p2),/UNSUPPORTED_OR_PROTECTED_FIELD/);
+});
+test('fresh missing-field selection rejects conflict and unknown compact fields, ignores metadata-only churn',()=>{
+ const {novelFields}=require('./direct-writer.cjs');
+ assert.deepEqual(novelFields({DEGREE_TEXT:'same',DEGREE_ASOF:'today'},{DEGREE_TEXT:'same',DEGREE_ASOF:'yesterday'}),{});
+ assert.deepEqual(novelFields({DEGREE_TEXT:'new',DEGREE_ASOF:'today'},{DEGREE_TEXT:null,DEGREE_ASOF:null}),{DEGREE_TEXT:'new',DEGREE_ASOF:'today'});
+ assert.throws(()=>novelFields({DEGREE_TEXT:'new'},{DEGREE_TEXT:'other'}),/CURRENT_VALUE_CONFLICT/);
+ assert.throws(()=>novelFields({FIT_EVIDENCE:'quote'},{}),/CURRENT_FIELD_UNKNOWN/);
+});
+test('respect actual Writer 1500 character scalar limit instead of silent truncation',()=>{
+ const p=fixture();p.requests[0].ruling.fields={FIT_EVIDENCE:'x'.repeat(1501)};assert.throws(()=>validate(p),/INVALID_FIELD_VALUE/);
+ p.requests[0].ruling.fields={FIT_EVIDENCE:'x'.repeat(1500),FIT_BASIS:'Observed overlap',FIT_ASOF:'2026-11-10',FIT_CONF:'LOW'};assert.equal(validate(p).status,'SYNTAX_VALID');
+});
+test('fit quartet is bounded readable text, no numeric evidence or confidence-only claims',()=>{
+ for(const fields of [{FIT_CONF:'HIGH'},{FIT_EVIDENCE:1},{FIT_EVIDENCE:'quote',FIT_BASIS:'basis',FIT_ASOF:'today',FIT_CONF:'LOW'}]){
+ const p=fixture();p.requests[0].ruling.fields=fields;assert.throws(()=>validate(p));}
+});
+
+test('Writer normalization and explicit missing sentinels do not cause false conflicts',()=>{const {novelFields}=require('./direct-writer.cjs');assert.deepEqual(novelFields({DEGREE_TEXT:'A; B | C\nD'},{DEGREE_TEXT:'A, B / C D'}),{});assert.deepEqual(novelFields({DEGREE_TEXT:'Degree'},{DEGREE_TEXT:'UNKNOWN'}),{DEGREE_TEXT:'Degree'});});
