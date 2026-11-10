@@ -195,10 +195,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(!parsed||parsed.wall){stats.agg_wall[kind]=(stats.agg_wall[kind]||0)+1;blocked[kind]=(blocked[kind]||0)+1;}
     else blocked[kind]=0;
   }
-  function sourceReader(){return SourceReads.create({read:async(url,opts)=>(await get(url,opts)).text(),wait:sleep,
-    canRead:(url,reserve,category)=>runtime.canStart(reserve)&&providerAllowed(url)&&(category!=='fallback'||stats.public_tried<(CONFIG.maxPublicFetches||60)),
+  const publicOrigins=SourceReads.originCircuit();
+  stats.source_origin_skips=0;
+  function sourceReader(){return SourceReads.create({read:async(url,opts)=>{const text=await(await get(url,opts)).text();publicOrigins.success(url);return text;},wait:sleep,
+    canRead:(url,reserve,category)=>runtime.canStart(reserve)&&providerAllowed(url)&&(category!=='fallback'||publicOrigins.allowed(url)&&stats.public_tried<(CONFIG.maxPublicFetches||60)),
     onAttempt:(url,retry,category)=>{stats.source_reads++;if(retry)stats.source_retries++;if(category==='fallback')stats.public_tried++;const p=SourceReads.provider(url);if(p){aggFetches++;stats.agg_tried[p]=(stats.agg_tried[p]||0)+1;}},
-    onFailure:(url,e)=>{const p=SourceReads.provider(url);if(p){blocked[p]=(blocked[p]||0)+1;stats.agg_failed[p]=(stats.agg_failed[p]||0)+1;(stats.agg_errors[p]=stats.agg_errors[p]||[]).length<3&&stats.agg_errors[p].push(String(e.status||e.message).slice(0,80));}}
+    onFailure:(url,e)=>{publicOrigins.failure(url,e);stats.source_origin_blocks=publicOrigins.blocked();const p=SourceReads.provider(url);if(p){blocked[p]=(blocked[p]||0)+1;stats.agg_failed[p]=(stats.agg_failed[p]||0)+1;(stats.agg_errors[p]=stats.agg_errors[p]||[]).length<3&&stats.agg_errors[p].push(String(e.status||e.message).slice(0,80));}}
   });}
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
@@ -399,11 +401,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(PREPARE_ONLY&&(Prepared.protectedRow(r)||externallyFenced(r.PRIMARY_ID)))continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
-    if(fresh(r)){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
+    const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID));
+    const newRetainedEvidence=Recovery.newEvidence(r,need(r),ledger,saved);
+    if(fresh(r)&&!newRetainedEvidence){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
+    if(fresh(r)&&newRetainedEvidence)stats.recovery_evidence_wakeups=(stats.recovery_evidence_wakeups||0)+1;
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[],sourceReads=sourceReader();
     researchedIds.add(r.PRIMARY_ID);
     progress('missing_row',{id:r.PRIMARY_ID});
-    const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID)),helperResearch=helperResearchIds.has(r.PRIMARY_ID);
+    const helperResearch=helperResearchIds.has(r.PRIMARY_ID);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let preparationSource=Prepared.posting(r,saved);
     let checked = saved?.fullPosting===true, attempted = false, postedPay = saved?.pay||null, atsUnconfirmed = false,payUnresolved=saved?.payAmbiguous===true;
@@ -469,6 +474,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const aggCandidate=L.aggregatorPage(publicUrl),alternateApi=L.atsApi(publicUrl),endpoint=alternateApi?.api||aggCandidate?.fetch||publicUrl;
       if(sourceReads.has(endpoint)){stats.source_duplicate_skips++;continue;}
       if(!providerAllowed(endpoint))continue;
+      if(!publicOrigins.allowed(endpoint)){stats.source_origin_skips++;continue;}
       const retained=postingCache.find(r,[publicUrl]),reuse=n.includes('SALARY')&&retained?.payNeedsRefresh?null:retained;if(!reuse){attempted=true;fallbackReads++;}
       try{let parsed=reuse;
         if(!parsed&&alternateApi){const j=JSON.parse(await sourceReads.read(endpoint,{category:'fallback',gapMs:CONFIG.fetchGapMs,timeoutMs:20000,headers:{accept:'application/json'}}));parsed=Recovery.exactApi(r,alternateApi,j);}

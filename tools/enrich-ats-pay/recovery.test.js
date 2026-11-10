@@ -29,3 +29,14 @@ test('fresh pay replaces retained pay only when changed, validated and posted',(
  a.equal(R.preferFreshPay(current,fresh),true);
  for(const parsed of [{...fresh,pay:current},{...fresh,pay:null},{...fresh,pay:{low:230000,high:190000}},{...fresh,basis:'THIRD_PARTY_ESTIMATE'},{...fresh,identityVerified:false}])a.equal(R.preferFreshPay(current,parsed),false);
 });
+test('new useful retained evidence wakes backoff without treating stale or ambiguous evidence as progress',()=>{
+ const now=Date.now(),l={};R.remember(l,row,'SALARY,DEGREE','SOURCE_RESEARCH_REQUIRED',[],now-3600000);
+ const e={at:new Date(now-1000).toISOString(),fullPosting:true,pay:{low:180000,high:220000},degree:{req:'REQUIRED'}};
+ a.equal(R.due(row,'SALARY,DEGREE',l,now),false);
+ a.equal(R.newEvidence(row,['SALARY'],l,e,now),true);
+ a.equal(R.newEvidence(row,['SALARY'],l,{...e,pay:null},now),true);
+ a.equal(R.newEvidence(row,['DEGREE'],l,e,now),true);
+ for(const bad of [null,{...e,at:new Date(now-7200000).toISOString()},{...e,at:new Date(now+1000).toISOString()},{...e,payAmbiguous:true},{...e,pay:null,fullPosting:false}])a.equal(R.newEvidence(row,['SALARY'],l,bad,now),false);
+ a.equal(R.newEvidence(row,['DEGREE'],l,{...e,degree:null},now),false);
+ a.equal(R.newEvidence(row,['DEGREE'],l,{...e,degreeAt:new Date(now-7200000).toISOString()},now),false);
+});
