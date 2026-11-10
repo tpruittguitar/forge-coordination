@@ -54,6 +54,32 @@ class DirectWriterInstructionTests(unittest.TestCase):
                          'dormant', 'stay retired'):
             self.assertIn(required, self.doc)
 
+    def test_grok_direct_queue_precedes_helper_adapter_without_new_access(self):
+        guide = (ROOT / 'docs/GROK_DIRECT_WRITER.md').read_text()
+        for phrase in ('AI_Coordination/WRITER_QUEUE', 'dispatchWrite_',
+                       'No local', 'helper coordinator', 'new endpoint',
+                       'not an edit of the master file', 'No local',
+                       'Existing access to the parent is not proof',
+                       'Do not change sharing', 'first real eligible submission',
+                       'never also deliver a write-through helper batch',
+                       'Previously captured helper returns',
+                       'durably excluding it from the previous',
+                       'SUBMISSION_ATTEMPTED_OUTCOME_UNKNOWN',
+                       'not `forge-helper-', 'Never rename, overwrite, move, delete',
+                       'original parent/child request IDs', 's=COMPLETE',
+                       'old Drive receipt index is a frozen', 'row_readback',
+                       'after the COMPLETE observation', 'Externalized evidence',
+                       'RESUME_MATCH_PROFILE.json', 'fallback adapter is not running',
+                       'RESULT__<request-basename-without-extension>.json',
+                       'ENRICH only', 'does not claim live Grok access'):
+            self.assertIn(phrase, guide)
+        for path in ('policy/current/SHARED_HELPER_COMMON.txt', 'lanes/FORGE_SHARED_HELPER.txt'):
+            text = (ROOT / path).read_text()
+            self.assertIn('docs/GROK_DIRECT_WRITER.md', text)
+            self.assertIn('WRITER_QUEUE', text)
+        self.assertLess(self.doc.index('## Grok direct submission'),
+                        self.doc.index('## Existing supported execution paths'))
+
     def test_dormant_procedures_do_not_reactivate_work(self):
         for path in ('lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt',
                      'lanes/CLAUDE_FORGE_SUPPLEMENTAL_ENRICHMENT.txt',
