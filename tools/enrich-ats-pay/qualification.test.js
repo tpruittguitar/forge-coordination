@@ -28,3 +28,12 @@ test('shared successful-posting cache from PR 312 migrates degree only, preservi
  const before=JSON.stringify(cache),got=c.find(row);
  assert.equal(got.degree.req,'PREFERRED');assert.match(got.degree.text,/Equivalent experience/);assert.equal(got.pay,null);assert.equal(got.payAmbiguous,true);assert.equal(got.payStatus,'PAY_UNRESOLVED');assert.equal(got.degreeAt,e.at);assert.equal(got.at,e.at);assert.equal(JSON.stringify(cache),before);
 });
+test('MS&T cache migration removes false credential and preserves salary and source age',()=>{
+ const row={PRIMARY_ID:'x',COMPANY:'Acme',TITLE:'Director',LOCATION:'Austin, TX',p:{}},at='2026-11-10T01:00:00Z';
+ const sentence=fixtures.find(f=>f.name==='MS&T department is not a masters credential').input;
+ const text=sentence+"\nEducation\nBachelor's degree in Engineering required.";
+ const old={identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at,fullPosting:true,identityVerified:true,sourceIdentity:{company:row.COMPANY,title:row.TITLE,location:row.LOCATION},text,degree:{text:sentence,req:'REQUIRED'},qualificationVersion:'20261108-degree-alternatives-v1',factsVersion:Pay.VERSION,pay:{low:167000,high:234000}};
+ const before=JSON.stringify(old),next=R.cached({postingEvidence:{x:old}},row,Date.parse(at)+1000);
+ assert.deepEqual(next.degree,{text:"Bachelor's degree in Engineering required.",req:'REQUIRED'});
+ assert.equal(next.qualificationVersion,Q.VERSION);assert.equal(next.at,at);assert.deepEqual(next.pay,old.pay);assert.equal(JSON.stringify(old),before);
+});

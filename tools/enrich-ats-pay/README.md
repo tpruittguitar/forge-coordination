@@ -78,3 +78,46 @@ successful saves and reuse, separately from physical source reads.
 Degree extraction uses the [complete degree-evidence contract](../../docs/DEGREE_EXTRACTION.md).
 The same parser and regression corpus are mirrored in the cockpit ATS producer;
 adjacent experience alternatives must survive extraction and field serialization.
+
+Preparation requires a complete, exact-identity posting with its original source
+URL, observation time and full text. Version 2 prepared artifacts embed that
+validated evidence, rather than only hashing a transient ledger entry. Legacy
+aggregator text, historical lane timestamps and failed-read history alone cannot
+produce a prepared salary. Missing proof is reported as
+`COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED`; unresolved compensation cannot become
+no-pay proof. Existing live-run eligibility and Writer fences are unchanged.
+
+The existing serialized live owner can consume durable v2 **no-pay posting
+observations** from `state/enrich-ats-pay-prepared-<sha256>.json` (or the existing
+`ENRICH_PREPARED_DIR` override). After review, place only the immutable prepared
+JSON there; do not transfer a private canonical snapshot, ledger, request payload,
+or preparation workspace. No workflow input, new worker, or replay is needed.
+The original full salary-preparation artifact is not included. One separately
+reviewed, explicitly minimized public-source artifact is staged below.
+
+The filename/content hash, embedded-source hash, exact canonical row fingerprint,
+source identity, observation age, posting expiry and current pay-parser version
+must validate. Protected rows, pending/refused Writer requests, helper reservations
+and transaction fences remain excluded. A changed preparation policy/input hash
+can provide source evidence only: all salary fields are recomputed with current
+policy and comparison inputs, and degree is reparsed from full text. Sources with
+pay, unresolved compensation, structured salary or monetary text are not imported
+by this narrow handoff; existing source recovery still handles them. Original
+observation times are preserved, and the final Writer guard rechecks the full
+canonical row binding for imported-source candidates. Backoff remains in force.
+The existing Writer receipt/readback path remains the only completion proof.
+
+A separate minimized handoff uses `forge.pay-posting-source.v1` files named
+`enrich-ats-pay-source-<sha256>.json` in that same directory. The prepare-only
+producer emits these alongside eligible no-pay salary preparations. Its explicit
+allowlist contains only the role ID, nonreversible exact-row hash, parser version,
+public posting URL/full text/employer-title-location identity, original observation
+time and optional public expiry. It contains no calculated salary or degree,
+canonical source identifiers, private row text, notes or comparison-input hashes.
+Unknown keys are rejected. This is an evidence-only schema, never a salary payload.
+The live owner applies identical role/fence checks and current recalculation; it
+never renews source age. `prepared-source.cjs.save` is also the supported local
+producer for an already validated retained full no-pay posting. Publication of an
+actual data file is a separate approved handoff. The staged source-only artifact
+contains one reviewed public posting and its row binding; no original private
+preparation envelope is published.
