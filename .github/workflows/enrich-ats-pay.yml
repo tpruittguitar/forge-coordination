@@ -84,6 +84,8 @@ jobs:
             if [ -d state/enrich-ats-pay-employer.parts ]; then git add state/enrich-ats-pay-employer.parts; fi
             git add state/enrich-ats-pay*.json reference/COMPANY_SITE_CONTEXT.json reference/EMPLOYER_PAY_SOURCES.json reference/EMPLOYER_PAY_BENCHMARKS.json
             find receipts -maxdepth 1 -type f -name 'FORGE-ENRICH_ATS-ATSBOT-*_NOT_ACCEPTED.json' -print0 | xargs -0 -r git add --
+            # Verify the staged Git bytes, not only the pre-normalization files.
+            node tools/enrich-ats-pay/verify-cache-index.cjs
             git diff --cached --quiet && { echo "No change"; exit 0; }
             git commit -q -m "ATS-PAY-BOT: enrichment report"
             git push -q origin HEAD:main && exit 0
