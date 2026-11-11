@@ -20,6 +20,7 @@ Source order (updated Tim 2026-11-11):
 
 Reads: Cloudflare structured copy and the Writer's own worklist code (same selection and order as the Grok lane).
 Writes: at most `maxBatches` x 25 rows per run, one Writer `batch` call at a time; a `remainder` waits for the next run.
+Attempt-only metadata does not consume these planning slots. `attempt_only_skipped` counts rows whose captured evidence is retained locally but which have no useful field update to submit; the existing pre-submit safety guard remains unchanged.
 `state/enrich-ats-pay.json` keeps submitted / tried rows for `resubmitHours`. `state/enrich-ats-pay-report.json` is the
 per-run report. `config.json` `"submit": false` = dry run: report only, Writer untouched, ledger unchanged.
 

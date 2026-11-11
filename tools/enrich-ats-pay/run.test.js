@@ -630,3 +630,22 @@ test('site salary estimate routes directly to the supported Forge model without 
   fs.writeFileSync(master,row(1,id,card.title,card.location,payload));out=run();assert.equal(out.planned,0);assert.equal(out.ats_read,0);assert.equal(out.public_tried,0);assert.equal(out.pending[0].status,'MODEL_INPUTS_REQUIRED');assert.match(out.pending[0].next,/Do not research employer pay/);
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('attempt-only evidence does not consume the useful Writer planning cap',t=>{
+ const lines=[],responses={};
+ for(let i=0;i<25;i++){
+  const url='https://careers.example.org/capacity/no-pay-'+i;
+  lines.push(row(i+1,'V2I-NOPAY'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-10`));
+  const posting=JSON.parse(exactPosting().replace(/^<script[^>]*>|<\/script>$/g,''));delete posting.baseSalary;
+  responses[url]={body:'<script type="application/ld+json">'+JSON.stringify(posting)+'</script>'};
+ }
+ const url='https://careers.example.org/capacity/usable';
+ lines.push(row(26,'V2I-USEFUL','Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01`));
+ responses[url]={body:exactPosting()};
+ const out=sourceRun(t,lines,responses,{maxBatches:1,blsMaxQueries:0});
+ assert.equal(out.report.attempt_only_skipped,25);
+ assert.equal(out.report.planned,1);
+ assert.equal(out.report.sample[0].id,'V2I-USEFUL');
+ assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
+ assert.equal(out.report.posting_cache.saved,26,'retain complete source evidence even without a useful write');
+});
