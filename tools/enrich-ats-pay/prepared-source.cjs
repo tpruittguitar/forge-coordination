@@ -14,7 +14,7 @@ function parse(row,record,now=Date.now()){
 function save(dir,{row,postingEvidence},now=Date.now()){
  if(Prepared.protectedRow(row))throw Error('Protected source row');
  const checked=Prepared.noPaySource(row,{evidence:{postingEvidence,postingEvidenceSha256:Store.hash(postingEvidence)}},now);
- if(!checked)throw Error('Complete current exact no-pay source required');
+ if(!checked)throw Error('Complete exact no-pay source required');
  // Explicit allowlist: never copy/spread the preparation envelope or cache entry.
  const record={schema:SCHEMA,primaryId:row.PRIMARY_ID,rowSha256:Store.hash(row),parserVersion:Pay.VERSION,source:{url:checked.url,text:checked.text,observedAt:checked.at,identity:{company:row.COMPANY,title:row.TITLE,location:row.LOCATION},validThrough:checked.postingFacts?.validThrough??null}};
  if(!parse(row,record,now))throw Error('Invalid source-only artifact');

@@ -71,6 +71,7 @@ function classifyWriterResponse(result,rid){
  if(r.result==='NEVER_CONSIDER_EXCLUDED'&&!result.writeId&&!ids.length)return {kind:'EXCLUDED'};
  return {kind:'UNKNOWN'};
 }
+const Captured=require('./captured-discovery');
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
@@ -84,7 +85,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(kind==='INSERT_ACCEPTED'||(kind==='NOOP_COMPLETE'&&candidate.expectedOutcome!=='NEW'))return null;
   return kind==='UNKNOWN'?String(r.results[0]?.result||'NO_WRITE'):kind;
  };
- if(!Array.isArray(records)||records.length<1||records.length>200||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false))throw Error('BLOCKED: 1 to 200 reviewed intake candidates required');
+ if(!Array.isArray(records)||records.length<1||records.length>200||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&((x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false)||(auto&&Captured.validate(x)))))throw Error('BLOCKED: 1 to 200 reviewed intake candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
  if(kinds.some(x=>!KINDS.has(x)))throw Error('BLOCKED: unknown expected outcome');
@@ -155,9 +156,12 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    const refreshed=await refreshReview(candidate,pre.rulesHash);
    if(refreshed)review={...candidate,...refreshed};
   }
-  if(!review.rulesHash||review.rulesHash!==pre.rulesHash||review.businessEvidenceApproved!==true)
-    halt('BLOCKED: independent employer-business review not bound to fresh canonical rules');
-  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'],EMPLOYER_PRIMARY_BUSINESS:review.primaryBusiness||''}]};
+  const captured=candidate.evidenceSource==='CAPTURED_DISCOVERY';
+  if(!review.rulesHash||review.rulesHash!==pre.rulesHash||(captured?!(auto&&Captured.validate({...review,record})):review.businessEvidenceApproved!==true))
+    halt('BLOCKED: independent employer-business review not bound to fresh canonical rules or invalid captured discovery evidence');
+  let unknownFields=record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'];
+  if(captured&&!review.primaryBusiness)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
+  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:review.primaryBusiness||'',...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
   // Persist intent before sending: a lost response must still fence this exact request after a crash.
   const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
   await recorder.record(rid,intent);

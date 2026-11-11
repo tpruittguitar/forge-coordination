@@ -69,7 +69,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if(!id||old.has(id)||occupied.has(id)||!missingFields.length||T.protectedRow(row)||T.fenced(root,state,id))continue;
   candidates.push({primaryId:id,kind:'ENRICHMENT',lane:row.BUCKET==='MANUAL_RESEARCH'?'RESEARCH':'ENRICHMENT',...T.identity(row),missingFields,priority:row.BUCKET==='MANUAL_RESEARCH'?0:1,sourceUrls:require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)),sourceVersion:S.hash(row.line||row),canonicalObservedAt:snapshot.source.readAt});
  }
- const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}});
+ const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),discovery=require('../source-intake/discovery-inputs').index(root);
  const canonical=snapshot.rows.concat(snapshot.archiveRows||[]);
  for(const job of Object.values(queue.jobs||{})){
   const keys=[job.key,...job.aliases||[]];
@@ -77,8 +77,10 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if(!job.key||old.has(job.key)||keys.some(k=>occupied.has(k))||/VERIFIED|OUT_OF_SCOPE|EXCLUDED|POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||'')||(job.submissions||[]).length||!['company','title','location'].every(k=>job[k]))continue;
   // Existing or ambiguous canonical identity remains with current intake code.
   if(canonical.some(row=>T.same(row,job)))continue;
+  // A recorded identity/expiry conflict is a targeted hold, not missing source text.
+  const capture=discovery.find(job,{now});if(capture&&!require('../source-intake/discovery-inputs').usable(capture,now))continue;
   // Complete cards are already code-owned; AI is for unresolved source research.
-  if(require('../routine-handoffs/assignments.cjs').fullCard(job))continue;
+  if(require('../routine-handoffs/assignments.cjs').fullCard(job,discovery))continue;
   const kind=job.discoveryOnly===true?'DISCOVERY':'INTAKE';
   candidates.push({key:job.key,aliases:job.aliases||[],kind,lane:kind,company:job.company,title:job.title,location:job.location,sourceUrls:[job.url].filter(Boolean),sourceEvidence:{company:job.company,title:job.title,location:job.location,url:job.url,observedAt:job.observedAt},missingFields:['SOURCE_IDENTITY','LINKS'],priority:kind==='INTAKE'?2:3,sourceVersion:S.hash(job),sourceRef:'state/EMAIL_RECOVERY_QUEUE.json#'+job.key});
  }

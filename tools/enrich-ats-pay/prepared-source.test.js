@@ -14,7 +14,8 @@ test('producer emits only explicit public-source keys and nonreversible canonica
 });
 test('source-only consumer fails closed on changed, protected, blocked and fenced roles',t=>{
  const{dir,opts}=fixture(t);
- for(const delta of [{rows:[]},{rows:[{...row,TITLE:'Other'}]},{rows:[{...row,p:{DO_NOT_REWORK:'YES'}}]},{rows:[{...row,p:{TIM_DECISION:'DECLINE'}}]},{blocked:new Set([row.PRIMARY_ID])},{needsSalary:()=>false},{now:now+7*86400000}])assert.equal(S.load(dir,{...opts,...delta}).size,0);
+ assert.equal(S.load(dir,{...opts,now:now+30*86400000}).size,1);
+ for(const delta of [{rows:[]},{rows:[{...row,TITLE:'Other'}]},{rows:[{...row,p:{DO_NOT_REWORK:'YES'}}]},{rows:[{...row,p:{TIM_DECISION:'DECLINE'}}]},{blocked:new Set([row.PRIMARY_ID])},{needsSalary:()=>false}])assert.equal(S.load(dir,{...opts,...delta}).size,0);
 });
 test('strict source schema rejects extra fields, changed identity, parser, age, pay and hash',t=>{
  const{dir,file,record,opts}=fixture(t);

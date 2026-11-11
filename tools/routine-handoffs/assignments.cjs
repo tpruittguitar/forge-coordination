@@ -3,7 +3,7 @@ const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-
 const fs=require('node:fs'),path=require('node:path'),Source=require('../programmed-coordinator/source.cjs');
 const terminal=s=>/^(VERIFIED_|OUT_OF_SCOPE|EXCLUDED_BY_WRITER)/.test(s||''),fenced=j=>(j.submissions||[]).length>0||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(j.status||'');
 function card(j){return{company:j.company,title:j.title,location:j.location,url:j.url,observedAt:j.observedAt};}
-function fullCard(j){return(j.evidence||[]).some(e=>Array.isArray(e.paragraphs)&&e.paragraphs.length>=3&&/^[a-f0-9]{64}$/.test(e.cardHash||''));}
+function fullCard(j,discovery){const capture=discovery?.find(j);if(capture)return require('../source-intake/discovery-inputs').usable(capture);return (j.evidence||[]).some(e=>Array.isArray(e.paragraphs)&&e.paragraphs.length>=3&&/^[a-f0-9]{64}$/.test(e.cardHash||''));}
 function progress({root,state}){
  const result={schema:'forge.helper-handoffs.v1',tasks:{},writerSubmissions:0,canonicalCompletions:0};
  for(const [taskKey,file] of [['FORGE_GROK_INTAKE_HELPER','control/GROK_INTAKE_HELPER_WORK.json'],['FORGE_CLAUDE_RELEVANCE_REVIEW','control/CLAUDE_RELEVANCE_WORK.json'],[require('../helper-routing/enrichment.cjs').owner(S.read(root,'control/ENRICHMENT_HELPER_WORK.json')).taskKey,'control/ENRICHMENT_HELPER_WORK.json']]){
@@ -17,6 +17,7 @@ function progress({root,state}){
  return result;
 }
 function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenContext}){
+ const discovery=require('../source-intake/discovery-inputs').index(root);
  if(!Number.isFinite(Date.parse(snapshot?.source?.readAt))||now-Date.parse(snapshot.source.readAt)>900000||Date.parse(snapshot.source.readAt)>now+120000)throw Error('FRESH_CANONICAL_ASSIGNMENT_SNAPSHOT_REQUIRED');
  const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),legacy=S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}),code=S.read(root,'state/CODE_INTAKE_CONSUMPTION.json',{schema:'forge.code-intake-consumption.v1',items:[]});
  const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot);
@@ -41,10 +42,12 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
   if(screenContext){const preliminaryScreen=require('../source-trial/preliminary-screen').screen(j,screenContext);
    if(require('../source-trial/preliminary-screen').excluded(preliminaryScreen)){counts.discoveryExcluded++;discoveryExclusions.push({key:j.key,sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key,preliminaryScreen});continue;}
   }
-  const screen=Screen.evaluate(j,rules),prepared=fullCard(j);
+  const capture=discovery.find(j,{now});if(capture&&!require('../source-intake/discovery-inputs').usable(capture,now)){exceptions.push({key:j.key,owner:'AI',reason:capture.reason||'POSTING_EXPIRED'});continue;}
+  const screen=Screen.evaluate(j,rules),prepared=fullCard(j,discovery);
   if(prepared&&!knownCode.has(j.key)){
-   const evidence=j.evidence.find(e=>e.cardHash&&e.paragraphs?.length>=3);
-   code.items.push({key:j.key,queueKey:j.key,provider:'CODE',helperRunId:runId,provenance:'CAPTURED_SOURCE_CARD',sourceEvidence:card(j),cardHash:evidence.cardHash,status:'RETURNED_PENDING_SCREEN',sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key});knownCode.add(j.key);counts.seededCodeIntake++;
+   const evidence=(j.evidence||[]).find(e=>e.cardHash&&e.paragraphs?.length>=3);
+   if(capture)code.items.push({key:j.key,queueKey:j.key,provider:'CODE',helperRunId:runId,provenance:'CAPTURED_DISCOVERY',sourceEvidence:card(j),discoveryEvidence:capture,status:'RETURNED_PENDING_SCREEN',sourceProof:capture.proof.path+'@'+capture.proof.sha256});
+   else code.items.push({key:j.key,queueKey:j.key,provider:'CODE',helperRunId:runId,provenance:'CAPTURED_SOURCE_CARD',sourceEvidence:card(j),cardHash:evidence.cardHash,status:'RETURNED_PENDING_SCREEN',sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key});knownCode.add(j.key);counts.seededCodeIntake++;
   }
   if(screen.outcome==='HOLD_SOURCE_IDENTITY'){exceptions.push({key:j.key,owner:'AI',reason:'CAPTURED_CARD_IDENTITY_INCOMPLETE'});continue;}
   if(screen.outcome==='ADMIT'&&prepared||screen.outcome==='FUNCTION_MISMATCH'&&prepared)continue; // Code/Writer owns these.

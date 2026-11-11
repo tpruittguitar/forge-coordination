@@ -18,21 +18,23 @@ function publicReport(state, coverage, at) {
     canonicalSource:state.canonicalSource||null, coverage, noProcessingCap:true, savingsMeasured:false};
 }
 async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now(), select = () => true}) {
-  const cache = new Map();
+  const cache = new Map(),discovery=require('../source-intake/discovery-inputs').index(root);
   for (const item of Object.values(state.items)) {
     if (!select(item)) continue;
-    const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:SOURCE_IDENTITY_AMBIGUOUS|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY|SOURCE_ROUTE_BACKOFF|FIT_RESUME_MAPPING_REQUIRED|LINKEDIN_SOURCE_EXTRACTION_FAILED|MICRODATA_SOURCE_EXTRACTION_FAILED)$/.test(state.exceptions[item.key]?.reason||'');
+    const parserUpgrade=item.sourceParserVersion!==Source.PARSER_VERSION&&/^(?:STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY|SOURCE_ROUTE_BACKOFF|FIT_RESUME_MAPPING_REQUIRED|LINKEDIN_SOURCE_EXTRACTION_FAILED|MICRODATA_SOURCE_EXTRACTION_FAILED)$/.test(state.exceptions[item.key]?.reason||'');
     const routeUpgrade=item.sourceRetryVersion!==Source.RETRY_VERSION&&/^(?:SOURCE_ROUTE_BACKOFF|SOURCE_HTTP_403|SOURCE_HTTP_429)$/.test(state.exceptions[item.key]?.reason||'');
-    if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || !parserUpgrade&&!routeUpgrade&&item.retryAfter && Date.parse(item.retryAfter) > now) continue;
+    const sourceOnly=/^(?:WORKING_SOURCE_ROUTE_REQUIRED|SOURCE_HTTP_\d+|SOURCE_ROUTE_BACKOFF|STRUCTURED_POSTING_UNAVAILABLE|INCOMPLETE_POSTING|INCOMPLETE_ATS_POSTING_IDENTITY|LINKEDIN_SOURCE_EXTRACTION_FAILED|MICRODATA_SOURCE_EXTRACTION_FAILED)$/.test(state.exceptions[item.key]?.reason||'');
+    const retryHeld=!parserUpgrade&&!routeUpgrade&&item.retryAfter&&Date.parse(item.retryAfter)>now;
+    if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || retryHeld&&!sourceOnly) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
     const batch = cache.get(item.batch);let evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
     if (!evidence) { exception(state,item,'SOURCE_BOUND_ITEM_MISSING','CODE'); continue; }
     try{evidence=require('../routine-handoffs/exception-work.cjs').evidence(root,item,evidence);}catch(e){exception(state,item,e.message,'AI');continue;}
-    if (!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY'].includes(evidence.recommendation)) {
-      exception(state,item,evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'WORKING_SOURCE_ROUTE_REQUIRED' : 'AMBIGUOUS_SCOPE_OR_IDENTITY',
-        evidence.recommendation === 'SOURCE_BLOCKED' || evidence.recommendation === 'NEEDS_SOURCE_EVIDENCE' ? 'CODE' : 'AI'); continue;
+    const sourceBlocked=['SOURCE_BLOCKED','NEEDS_SOURCE_EVIDENCE'].includes(evidence.recommendation);
+    if (!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY'].includes(evidence.recommendation)&&!sourceBlocked) {
+      exception(state,item,'AMBIGUOUS_SCOPE_OR_IDENTITY','AI'); continue;
     }
     const shared=batch.schema==='forge.shared-helper-batch.v1';
     if(shared){try{require('../helper-routing/shared.cjs').assertCurrent(root,evidence,batch);}catch(e){exception(state,item,e.message,'CODE');continue;}}
@@ -59,18 +61,20 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       if (hits.length > 1) { exception(state,item,'CONFLICTING_CANONICAL_IDENTITIES','AI'); continue; }
     }
     try {
-      item.attempts++;
-      item.sourceParserVersion=Source.PARSER_VERSION;
-      item.sourceRetryVersion=Source.RETRY_VERSION;
-      const source=await sourceVerify({item:evidence,expected,privateDir,now,sourceUrls:row?require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)):[]});
+      const options={item:evidence,expected,privateDir,root,discovery,now,requireRoleText:enrichment,validateClaims:enrichment,sourceUrls:row?require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)):[initiatingUrl].filter(Boolean)};
+      const captured=Source.capturedSource(options);
+      if(!captured&&retryHeld)continue;
+      if(!captured&&sourceBlocked){exception(state,item,'WORKING_SOURCE_ROUTE_REQUIRED','CODE');continue;}
+      item.attempts++;item.sourceParserVersion=Source.PARSER_VERSION;item.sourceRetryVersion=Source.RETRY_VERSION;
+      const source=captured||await sourceVerify(options);
       if (enrichment) {
         const fields=Source.enrichmentFields(source,row);
-        if (!Object.keys(fields).length) { item.status='NO_MISSING_SUPPORTED_FIELDS'; delete state.exceptions[item.key]; continue; }
+        if (!Object.keys(fields).length) { if(source.sourceCaptured){exception(state,item,'CAPTURED_EVIDENCE_MISSING_REQUESTED_FIELDS','CODE');continue;}item.status='NO_MISSING_SUPPORTED_FIELDS'; delete state.exceptions[item.key]; continue; }
         item.prepared={primaryId:row.PRIMARY_ID,itemKey:item.key,identity:expected,fields,sourceSha256:source.sourceSha256};
         item.status='READY_ENRICHMENT';
       } else {
-        item.sourceEvidence={...expected,url:source.sourceUrl,initiatingUrl,observedAt:source.observedAt,sourceSha256:source.sourceSha256,independentlyVerified:true,...(typeof source.description==='string'&&source.description?{description:source.description,descriptionSha256:S.hash(source.description),contentBasis:'CAPTURED_ROLE_CONTENT'}:{})};
-        item.status='SOURCE_VERIFIED';
+        item.sourceEvidence={...expected,url:source.sourceUrl,initiatingUrl,observedAt:source.observedAt,sourceSha256:source.sourceSha256,independentlyVerified:!source.sourceCaptured,postingStatus:source.postingStatus||'UNVERIFIED',...(source.sourceCaptured?{discoveryEvidence:source.discoveryEvidence,fullPosting:source.fullPosting,contentBasis:source.contentBasis}:{}),...(typeof source.description==='string'&&source.description?{description:source.description,descriptionSha256:S.hash(source.description),contentBasis:source.contentBasis||'CAPTURED_ROLE_CONTENT'}:{})};
+        item.status=source.sourceCaptured?'SOURCE_CAPTURED':'SOURCE_VERIFIED';
       }
       delete item.retryAfter; delete state.exceptions[item.key];
     } catch(e) {
