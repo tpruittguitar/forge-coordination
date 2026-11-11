@@ -1,0 +1,63 @@
+RELEASE_ID=f9f4f6295433f51bbad6
+TASK_KEY=FORGE_WEB_CAREER_DISCOVERY
+PROVIDER=ChatGPT
+POLICY_REVISION=2026-10-26.3
+
+FORGE CORE
+Run only the manifest task/provider. No auto takeover, apps, outreach or briefs.
+OPERATE AND REPORT; TIM INITIATES DEV: w/o Tim instr never create branches/PRs, change code, schedules, owners, scoring or policy. Defects -> control/SUGGESTIONS.txt. Tim instr authorizes only the named work.
+Writer alone mutates master. No side master. Receipts: receipts/AI_REASON_RUN_RECEIPT_<RUN_ID>_TERMINAL.txt. COMPLETE requires scoped obligs disposed. RESULT SUCCESS + receipt-index COMPLETE + row_readback AFTER COMPLETE = VERIFIED. RESULT alone = acceptance.
+SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/source-trial-report.json. Matching co+title w/ pay: stamp SALARY_POSTED_LOW/HIGH, SALARY_SOURCE=JOBSPY|HIRINGCAFE, skip salary fetch.
+UNANCHORED EST (Tim 2026-10-28): no posted pay + no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
+AGENCY: fetch policy/current/AGENCY_AND_TOOLS.txt only when processing an agency row. Otherwise skip.
+
+DISCOVERY IDENTITY: EXISTING MEANS SKIP, NOT HOLD
+Applies to discovery/intake preparation only; existing enrichment and application-outcome duties are unchanged.
+Before per-candidate source research, relevance review or Writer intake, obtain fresh complete authenticated canonical master AND terminal archive once per bounded run/batch, validate integrity/counts, parse locally and build one reusable identity index. Refresh snapshots/index if older than the 15-minute freshness contract before acting; never download full files per candidate. Reuse saved source cards/aliases and this index; do not reread full canonical files into model context or repeat source analysis for a proven match. Missing/stale/incomplete canonical evidence blocks affected admission and presence claims, not independent safe source capture. A report's NEW label is not fresh absence proof. A row_readback checks named IDs only.
+
+Use tools/source-trial/job-identity.js and tools/source-trial/IDENTITY.md. Strong identity is a job-identity URL, employer-scoped requisition, scoped ATS posting ID, or compatible claimed PRIMARY_ID. Otherwise require a unique normalized employer/title/precise city-and-state match. Common abbreviations, neutral trailing company suffixes and state/country formatting may normalize; meaningful seniority, employer divisions and shifts remain distinct. Known requisition, employer, title or worksite conflicts and multiple canonical IDs remain ambiguous. Preserve identity-bearing query parameters and ATS board scope. Different LinkedIn/Indeed listing IDs need shared employer requisition/ATS evidence, not names/site alone. Pay comparables/review URLs are not job identity.
+Missing, remote, regional, national/global, multi-site or otherwise imprecise worksite evidence cannot establish a weak match or independent job. Different clear sites are not duplicates solely because employer/title match. An unresolved request fences its own posting/requisition and compatible site; the shared matcher permits a generic-title fence exception only for precise different-state single sites with no shared strong identity or broad scope. Same-state/metro/unknown sites and legacy incomplete fences stay protected. Never invent a requisition from an aggregator listing ID.
+
+A proven unique master/archive match is PRESENT (SKIP_EXISTING): remove it from the discovery worksheet/intake backlog immediately, before source fetch, relevance/enrichment work or Writer submission. Count EXISTING_SKIPPED separately from IDENTITY_HELD and submitted/new jobs. Retain source aliases/history and minimal canonical ID/match-basis/row-hash proof; delete no canonical job, protected decision or historical evidence. No Writer call or new write-completion proof is needed for this read-only disposition. Only ambiguous identity remains identity-held; missing pay, degree or further source analysis never holds a proven existing role. Preserve APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM and archive/anti-resurrection protections.
+An independent unresolved original Writer request remains a separate reconciliation obligation. Job presence never proves that request COMPLETE and never clears its fence or authorizes replay. Keep its original request identity and independent RESULT/COMPLETE/exact-effect checks. Evidence-only helpers return EXISTING_MATCH_CANDIDATE with available proof for the existing coordinator to account; they do not mutate queues or reservations or claim canonical completion. If fresh canonical access is unavailable, reuse saved evidence and flag coordinator canonical recheck instead of requesting credentials.
+Only still-new plausible roles proceed through existing source, policy, Never Consider, freeze/lock, transport, Writer dedupe and verification gates. Writer remains decisive against races. This contract changes no schedule, owner, transport permission, research assignment or canonical state.
+
+CHATGPT ADAPTER: Use actor CHATGPT and ChatGPT provider labels. Verify each connector and permitted create-file transport in this scheduled run. Distinguish connector-policy refusal before a request from an actual service/API error. Create plain-text JSON queue files without Docs conversion. No automatic slot, ownership or schedule changes; missing optional search connectors do not block ordinary web discovery.
+
+LANE PROCEDURE -- FORGE_WEB_CAREER_DISCOVERY
+
+JOB
+Find new dir, Head, VP (and strategically strong mgr / Sr mgr at destination employers) roles in mfg, production, ops and qual at named priority cos, using each co's own careers URL. No Gmail. No aggregator sweep. No full board walk.
+FORGE_BOARD_DISCOVERY owns Greenhouse, Lever, Ashby and Workday board indexes. If a co's careers URL host is boards.greenhouse.io, job-boards.greenhouse.io, boards-api.greenhouse.io, jobs.lever.co, api.lever.co, jobs.ashbyhq.com, or myworkdayjobs.com, do not open it. Record LEFT_FOR_BOARD_LANE and take the next co. ZipRecruiter stays FORGE_ZIPRECRUITER_WEEKLY.
+One run finishes its co slice and writes the cursor. The next run starts at the cursor. Do not restart at the first co while the cursor is unfinished. Do not begin a board sweep when the co slice is done.
+Quick screen only: title level, function, obvious mismatch. No deep job-description analysis, no pay or degree research.
+
+SLICE
+The co order is the Target cos ranking in Pipeline Explorer: DREAM, then P1, then P2, then P3, then WATCH. Read the published copy of that list, https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/derived/TARGET_COMPANIES_PRIORITY.txt?cb=<epoch seconds>, at the start of every run and record its SOURCE line. Do not substitute another co list. Read the previous terminal receipt and continue at NEXT_COMPANY_CURSOR. Order: every unfinished DREAM co, then P1, then P2 due today, then the P3 weekly rotation, then WATCH when the higher tiers are finished. PAUSED never. Finish the cos you start, up to eight in one run. Write NEXT_COMPANY_CURSOR as the first co not finished. COMPANIES_COVERED lists the cos finished this run. The Grok bot Sniffer is not this lane.
+
+co SITE NAVIGATION
+Use the careers URL from the priority digest when it is not UNKNOWN and it is not a board host listed above. Open that URL. Use the site's own search for mfg, production, ops, qual, plant. Screen titles.
+ICIMS and other co career sites have no public JSON. Stay on the URL you opened. Never invent a deep link.
+TESLA and other co sites with no public board stay in this lane. Record NO_PUBLIC_BOARD when the digest careers URL is UNKNOWN and no co careers page opens. Do not probe Greenhouse, Lever or Ashby slugs; that probe is the board lane.
+ORACLE co sites: an empty search is not closure. CLOSED only when ExternalPostedEndDate is in the past.
+A 403, 429, 5xx, timeout, or unreadable page: record the co and the error, then take the next co in this slice. Do not end the slice on one blocked site.
+
+SKIP EXISTING BEFORE INTAKE
+Apply DISCOVERY IDENTITY above before source research or submission. A proven master/archive match is PRESENT/SKIP_EXISTING, removed from discovery work with no Writer call or repeated analysis. Submit only still-new plausible roles in this run through the existing Writer gates, including race-time dedupe and Never-Consider. Keep real identity ambiguity and independent unresolved original requests explicit. Unknown pay, degree or req stays unknown: list it in INITIAL_UNKNOWN_FIELDS.
+
+INTAKE FILE (one per 25 roles, name CHATGPT_<requestId>.json in WRITER_QUEUE)
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES; DISCOVERY_SOURCE="ChatGPT co disc". REQ_ID is the ATS number from the URL, else the posted requisition, else unknown.
+co, TITLE and SOURCE_URL are required. Never invent a deep link; use the URL you actually opened.
+
+LANE RECEIPT FIELDS
+COMPANIES_COVERED (list), LEFT_FOR_BOARD_LANE (list), NEXT_COMPANY_CURSOR, CANDIDATES_SCREENED, EXISTING_SKIPPED, IDENTITY_HELD, SUBMITTED_TO_WRITER, SKIPPED_BLOCKED (co | error), OUT_OF_SCOPE (title | co | reason).
+Prior-run verif: the intake RESULT lists per-record outcomes (SCOUT_INTAKE_WRITTEN, DISCOVERY_LEAD_WRITTEN, EXISTING_MATCH, NEVER_CONSIDER_EXCLUDED, WRITE_FAILED). Report those counts as PRIOR_RUN_OUTCOMES; run row_readback on NEW_PRIMARY_IDS.
+END BRIEF
+
+
+INTAKE IDENTITY: REQ_ID is the employer requisition/ATS ID only; LinkedIn, Indeed, Glassdoor and ZipRecruiter listing IDs are not requisitions (leave REQ_ID unknown). A historical WRITE_FAILED IDENTITY_CONFLICT: PROTECTED_IDENTITY_RELISTED does not by itself keep a proven existing role in discovery. Apply PRESENT/SKIP_EXISTING with fresh canonical proof and preserve Tim's protected decision. Count RELISTED_HELD only for real unresolved relist identity or an independent unresolved original request; never resubmit, merge or override the decision.
+
+SOURCE-TRIAL NEW INTAKE (short): First recheck report identities with the run's fresh canonical index; NEW is not absence proof. Skip PRESENT without source analysis or Writer submission. For a still-new role in the latest state/source-trial-report.json that passes screening, submit intake with the report's co, title, loc, url, and pay (if present). Set PAY_POSTED from the report string when present. SOURCE_URL is the report URL. Skip page research for sal/liveness when the report supplies them. Do not invent REQ_ID.
+
+PAYLOAD EXAMPLE (replace observed values and run identity):
+{"action":"intake","requestId":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET-B01","run":{"SCOUT_RUN_ID":"FORGE-EXAMPLE-CHATGPT-20261018-1500ET","RUN_STARTED_AT_ET":"2026-10-18 15:00 ET","GROSS_FOUND":1},"records":[{"COMPANY":"Example Manufacturing","TITLE":"Director of Manufacturing","LOCATION":"Huntsville, AL","SOURCE_URL":"https://example.com/careers/job-123","SOURCE_PROVIDER":"Company site","REQ_ID":"123","IDENTITY_CONFIDENCE":"HIGH","INITIAL_UNKNOWN_FIELDS":["PAY","DEGREE","FLEX"],"DISCOVERED_AT_ET":"2026-10-18 15:00 ET","DISCOVERY_SOURCE":"ChatGPT discovery"}]}

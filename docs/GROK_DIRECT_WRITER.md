@@ -127,7 +127,8 @@ and report that exact blocker; never assume empty history.
 
 Create one immutable plain-text file in the verified WRITER_QUEUE containing
 only the existing Writer JSON body. Use 1–25 distinct canonical rows per
-homogeneous ENRICH batch, with unique stable Grok parent and child request IDs.
+homogeneous batch, with unique stable Grok parent and child request IDs.
+A file is either ENRICH or Tim-authorized DECLINE. Never mix the two kinds.
 Do not put a helper envelope, checkpoint, Markdown, credential or completion
 claim in the queue. Artifact size is a transaction boundary, not a run cap.
 
@@ -153,10 +154,50 @@ Illustrative shape only; never upload this example or placeholder facts:
 }
 ```
 
+Tim-authorized DECLINE uses the same queue and the same Writer decline path that
+Pipeline Explorer Act Now uses. The result status is `DECLINED_BY_TIM`. It is
+not a new status. Submit it only with the exact current primary ID, a canonical
+decline reason code, the employer primary-business `https` URL, and Tim's
+authorization. Canonical codes are the `DECLINE_RULES` allowlist and exact
+`REASON=` lines in `tpruittguitar/forge-policy`
+`rules/TIM_PIPELINE_RULES_CANONICAL.txt`, including `NEVER_CONSIDER — PHARMA_MEDICAL`
+(em dash, as written around lines 98–104). The offline preflight knows the
+2026-11-10 snapshot of those codes. The Writer re-reads the live rules file and
+refuses anything that file does not name.
+
+```json
+{
+  "action": "batch",
+  "requestId": "FORGE-GROK-<unique-run>-B001",
+  "requests": [{
+    "action": "ruling",
+    "ruling": {
+      "requestId": "FORGE-GROK-<unique-run>-B001-R001",
+      "primaryId": "<exact-current-primary-id>",
+      "kind": "DECLINE",
+      "actor": "GROK",
+      "code": "NEVER_CONSIDER — PHARMA_MEDICAL",
+      "evidence": "<https employer primary-business URL>",
+      "authorizedBy": "TIM",
+      "authorizationRef": "<Tim's authorization text including YYYY-MM-DD>"
+    }
+  }]
+}
+```
+
+Do not send `fields` on a DECLINE. Refuse the row when it is already `APPLIED`,
+`REJECTED_BY_EMPLOYER`, `DECLINED_BY_TIM`, `DUPLICATE`, `CLOSED_DEAD`, or
+`ANTI_RESURRECTION=YES`, and when it already carries a Tim ruling. An existing
+Tim ruling on a row that is not in one of those protected states may be
+superseded only with `supersede: true` and a dated `supersedeRef`. `row_readback`
+stays the read-only check that the row is `DECLINED_BY_TIM` and that the
+evidence URL and authorization reference were stored.
+
 With shell access, `node tools/helper-routing/direct-writer.cjs validate <file>`
-checks the narrow ENRICH JSON syntax without network calls, changing files or
-invoking Writer. It does not validate live evidence, ownership, pending originals
-or completion. Without shell, use the same shape, allowlisted facts and exact
+checks the narrow ENRICH or Tim-authorized DECLINE JSON syntax without network
+calls, changing files or invoking Writer. It does not validate live evidence,
+ownership, pending originals or completion. Without shell, use the same shape,
+allowlisted facts and exact
 JSON parse/readback checks with the tools actually available. Lack of a shell
 is not a requirement to send a helper envelope instead of a queue request.
 
@@ -207,8 +248,8 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
 `PARTIAL_HOLD`, `HOLD_UNCERTAIN`, `HOLD_ABANDONED`, failed or missing results
 require original-request reconciliation, never automatic replay or a changed
 request ID. Continue unrelated eligible work. Existing intake and discovery
-admission retains its current identity/relevance contract; this initial direct
-producer validator supports ENRICH only. A missing application-outcome job still
+admission retains its current identity/relevance contract; this direct
+producer validator supports ENRICH and Tim-authorized DECLINE. A missing application-outcome job still
 requires Tim's approval. This change does not claim live Grok access, disable
 the coordinator's independent mail/intake duties, change provider availability,
 merge, deploy or verify a production write.
