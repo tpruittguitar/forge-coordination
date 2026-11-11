@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-11T04:57:12.340Z",
+    "at": "2026-11-11T05:04:40.920Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -15,14 +15,6 @@
     "percent": 0.1310615989515072,
     "lossDetectedToday": 0,
     "daily": [
-      {
-        "day": "2026-10-12",
-        "enriched": 0,
-        "closedBeforeDecision": 0,
-        "failedFreshnessBeforeDecision": 0,
-        "closedOrFailedBeforeDecision": 0,
-        "percent": null
-      },
       {
         "day": "2026-10-13",
         "enriched": 0,
@@ -254,6 +246,14 @@
         "failedFreshnessBeforeDecision": 0,
         "closedOrFailedBeforeDecision": 0,
         "percent": 0
+      },
+      {
+        "day": "2026-11-11",
+        "enriched": 0,
+        "closedBeforeDecision": 0,
+        "failedFreshnessBeforeDecision": 0,
+        "closedOrFailedBeforeDecision": 0,
+        "percent": null
       }
     ],
     "ageAtDecision": {
@@ -277,7 +277,7 @@
     "current": 372,
     "undated": 0
   },
-  "at": "2026-11-11T04:57:12.340Z",
+  "at": "2026-11-11T05:04:40.920Z",
   "queues": {
     "verification": 0,
     "enrichment": 748,
@@ -296,8 +296,8 @@
     "readyForReview": "2026-10-31T04:35:30.337Z"
   },
   "reconciliation": {
-    "from": "2026-11-11T04:50:49.413Z",
-    "to": "2026-11-11T04:57:12.340Z",
+    "from": "2026-11-11T04:57:12.340Z",
+    "to": "2026-11-11T05:04:40.920Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: measured fit, salary, posting-based degree evidence and Writer-calculated final score with model provenance; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-11T04:56:10.334Z",
-    "sha256": "585828d77c39fbf237ccb449114481f5c21bbee07e79ee767a1534eb44ff0711",
+    "readAt": "2026-11-11T05:03:24.199Z",
+    "sha256": "4aa3d201b6d419e9d772305daa7c6242efdbe0054365543aae1d836e89bacbc5",
     "rows": 5203
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-11T04:56:22.892Z",
+    "at": "2026-11-11T05:03:38.429Z",
     "total": 12381,
     "sourceIdentities": 13051,
     "aliasesMerged": 670,
@@ -519,8 +519,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-11T04:50:00.889Z",
-      "to": "2026-11-11T04:56:22.892Z",
+      "from": "2026-11-11T04:56:22.892Z",
+      "to": "2026-11-11T05:03:38.429Z",
       "opening": 778,
       "arrivals": 0,
       "admitted": 0,
@@ -558,9 +558,9 @@
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 7,
+          "count": 6,
           "windowHours": 6,
-          "perHour": 1.1666666666666667,
+          "perHour": 1,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
         }
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-11T04:56:22.892Z",
+      "at": "2026-11-11T05:03:38.429Z",
       "reviewedSourceIdentities": 13051,
       "pendingCandidates": 778,
       "storedEvidence": 1322,
