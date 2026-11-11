@@ -36,8 +36,14 @@ function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],con
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url)))continue;
-  const saved=discoveryEvidence?.find(r);
-  if(screenContext&&require('../source-trial/preliminary-screen').excluded(require('../source-trial/preliminary-screen').screen(saved?{...r,description:saved.doc.text,contentBasis:'CAPTURED_ROLE_CONTENT',discoveryReview:{...r.discoveryReview,fullPosting:true}}:r,screenContext)))continue;
+  const saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
+  if(screenContext){
+   const Screen=require('../source-trial/preliminary-screen');
+   // Reusing partial business evidence must neither invent a new zero-hit
+   // exclusion nor erase the current exclusion on the original direct card.
+   if(saved&&!saved.doc.fullPosting&&r.description&&Screen.excluded(Screen.screen(r,screenContext)))continue;
+   if(Screen.excluded(Screen.screen(saved?{...r,description:saved.doc.text,contentBasis:saved.doc.contentBasis||'CAPTURED_ROLE_CONTENT',discoveryReview:{...r.discoveryReview,fullPosting:saved.doc.fullPosting===true}}:r,screenContext)))continue;
+  }
   if(out.length>=max)break;
   const proof=reviewed.get(Upstream.key(r.url));
   const reviewedScope=proof&&['company','title','location'].every(k=>String(proof.role[k]||'')===String(r[k]||''));
@@ -86,6 +92,10 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   const at=d.toLowerCase().indexOf(company.toLowerCase().split(/[ ,]/)[0]);
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
  }catch{return null}
+}
+async function sourceEvidence(card,{store,fetchEvidence=evidence}={}){
+ const cached=store?.forIntake?store.forIntake(card):store?.find(card),business=cached?.doc.text||await fetchEvidence(card.url,card.company);
+ return {cached,business,provenance:cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null};
 }
 async function main(argv=process.argv.slice(2)){
  const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
@@ -154,12 +164,12 @@ async function main(argv=process.argv.slice(2)){
  const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
-  const cached=discoveryEvidence.find(r),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity}),business=cached?.doc.text||await evidence(r.url,r.company);
+  const {cached,business,provenance}=await sourceEvidence(r,{store:discoveryEvidence}),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
   if(!business){if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}continue;}
-  candidates.push({...require('../source-trial/posted-pay').carry(salaryCard),record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
+  candidates.push({...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
  }
@@ -194,4 +204,4 @@ async function main(argv=process.argv.slice(2)){
  if(!argv.includes('--one-transaction'))return main(argv);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,main,screenReason,discoveryNotes,partitionExisting};
+module.exports={pick,evidence,sourceEvidence,main,screenReason,discoveryNotes,partitionExisting};
