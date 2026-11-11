@@ -32,7 +32,7 @@ const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,heldKeys=new Set(),dismissedKeys=new Set()}){
+function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,originIndex,heldKeys=new Set(),dismissedKeys=new Set()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url))||heldKeys.has(Upstream.key(r.url)))continue;
@@ -59,6 +59,8 @@ function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],con
   const k=company.toLowerCase(); // No per-employer throughput cap.
   const identityFields=require('./writer-identity-fields').writerIdentityFields(r);
   const record={...identityFields,COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||identityFields.INITIATING_URL||r.url,SCOUT_NOTES:discoveryNotes(r)};
+  if(typeof r.DISCOVERY_SOURCE==='string'&&r.DISCOVERY_SOURCE.trim())record.DISCOVERY_SOURCE=r.DISCOVERY_SOURCE;
+  const origin=originIndex?.find(r);if(origin&&!record.DISCOVERY_SOURCE)record.DISCOVERY_SOURCE=origin.origin;
   Object.assign(record,require('../source-trial/posted-pay').fields(r));
   if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
   if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>require('../source-trial/job-identity').fenceApplies({...r,...record},original)))continue; // a changed URL cannot bypass an uncertain prior write
@@ -191,7 +193,8 @@ async function main(argv=process.argv.slice(2)){
  const config=Relevance.guarded(Relevance.load(),master.rows),represented=partitionExisting(report.new_roles,{master,archive,sent,blockedIdentities,blockedRecords,writerFences:[...[...Drain.writerFences('.')].map(([key,f])=>({key,...f})),...Drain.fences('.').map(record=>({record}))]});
  report.new_roles=represented.remaining;
  const discoveryEvidence=require('../source-trial/evidence-store').index('.');
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
+ const originIndex=require('./discovery-origin').index('.');
+ const picked=pick(report,{max:report.new_roles.length,originIndex,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
