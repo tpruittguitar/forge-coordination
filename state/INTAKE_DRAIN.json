@@ -54181,14 +54181,26 @@
       "aliases": [
         "linkedin:4455337428"
       ],
-      "sourceVersion": "7a2520e4c49b839acac6a7340b8ee6110a4c5a35cc09d59a97344434e5c34d46",
+      "sourceVersion": "102b8f2abb620186b6c21415c683f3a8b6989f48fa28a29a2152942b6c3e74d8",
       "card": {
         "company": "Hyve Solutions",
         "title": "Director, Quality",
-        "location": "",
+        "location": "Las Vegas, NV, USA",
         "url": "https://www.linkedin.com/jobs/view/4455337428/"
       },
-      "sourceRecovery": null,
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "c5e2ba79fb4b2519a475520db66604f1fed33635fcf0d376e93790dac033a7f2"
+          }
+        ],
+        "postingFetched": false
+      },
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
@@ -54201,11 +54213,12 @@
         "EMAIL_CANDIDATE_LEDGER_FORGE-EMAIL-CHATGPT-20261021-0801ET.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location NV. Role content unavailable; retain for intake review. Resume-supported hits: quality_systems.",
       "screen": {
-        "outcome": "HOLD_SOURCE_IDENTITY",
-        "rank": 8,
-        "reason": "Missing card company, title, location or exact source URL"
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
       },
       "fence": {
         "requestIds": [
@@ -54213,18 +54226,11 @@
         ],
         "proof": "state/RELEVANCE_INTAKE_PLAN.json"
       },
-      "nextAction": "Existing authenticated coordinator reads original request_result only under the independently COMPLETE gate, then reconciles original employer posting/requisition/site against the exact canonical target rows. Preserve site differences, applications/rejections/declines and original request; no replay.",
-      "canonicalCompletion": false,
-      "status": "WAITING_EVIDENCE_CHANGE",
-      "review": {
-        "path": "receipts/INTAKE_DRAIN/d457ec0e43089451066247bb23e3b39f5683807cd2b4218655e8adb8b25c552c.json",
-        "sha256": "d457ec0e43089451066247bb23e3b39f5683807cd2b4218655e8adb8b25c552c",
-        "observedAt": "2026-11-07T03:45:02.413Z",
-        "outcome": "RECONCILIATION_REQUIRED",
-        "retryCondition": "Grounded original employer-posting/site binding or candidate-specific controlled reconciliation resolves the held identity; original batch completion alone does not satisfy it."
-      },
       "scopeReviewHold": null,
-      "scopeReviewHistory": null
+      "scopeReviewHistory": null,
+      "nextAction": "Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.",
+      "canonicalCompletion": false,
+      "status": "ACTION_REQUIRED"
     },
     "linkedin:4480452893": {
       "key": "linkedin:4480452893",
@@ -55621,32 +55627,20 @@
       "aliases": [
         "linkedin:4426538077"
       ],
-      "sourceVersion": "79a3ff4fc4aea6f31978e8862d3748f2bd42cf1d8218b5bda340017992100ca0",
+      "sourceVersion": "a42db073cda4cff21f6b15cf3b3790b0f53d03e1749810d52dc2728c75663f41",
       "card": {
         "company": "Ecolab",
         "title": "VP Quality, Global Life Sciences",
-        "location": "King of Prussia, PA, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4426538077/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "e8134b829da0be0ed8e5efd16abe5b7958971d99cba4ee0f644c6444ab0ce861"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -55770,54 +55764,13 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location PA. Role content unavailable; retain for intake review. Resume-supported hits: quality_systems.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 1,
-        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
-        "scopeReviewRequired": false
-      },
-      "fence": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
-      "canonicalCompletion": false,
-      "status": "ACCOUNTED_UPSTREAM",
-      "outcome": {
-        "status": "EXCLUDED",
-        "proof": "state/UPSTREAM_LEDGER.json",
-        "observedAt": "2026-11-11T16:10:40.323Z"
-      },
-      "scopeReviewHold": null,
-      "scopeReviewHistory": null
-    },
-    "linkedin:4452526542": {
-      "key": "linkedin:4452526542",
-      "aliases": [
-        "linkedin:4452526542"
-      ],
-      "sourceVersion": "bc604def4f4461127d76d149a521eb88556bbaa30e312c3d644bb4e0b9c9042e",
-      "card": {
-        "company": "Medline",
-        "title": "Director of Manufacturing – Pharmaceutical Operations",
-        "location": "",
-        "url": "https://www.linkedin.com/jobs/view/4452526542/"
-      },
-      "sourceRecovery": null,
-      "sourceConflict": null,
-      "sourceFailure": null,
-      "upstreamStatus": "EXCLUDED",
-      "action": "RECOVER_SOURCE",
-      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-      "owner": "ChatGPT",
-      "firstSeen": "2026-10-21T22:25:40.055Z",
-      "sourceReferences": [
-        "state/source-trial-report.json"
-      ],
-      "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
-      "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
         "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
+      "scopeReviewHold": null,
+      "scopeReviewHistory": null,
       "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
@@ -55825,9 +55778,62 @@
         "status": "EXCLUDED",
         "proof": "state/UPSTREAM_LEDGER.json",
         "observedAt": "2026-11-11T16:10:40.323Z"
+      }
+    },
+    "linkedin:4452526542": {
+      "key": "linkedin:4452526542",
+      "aliases": [
+        "linkedin:4452526542"
+      ],
+      "sourceVersion": "109223c47dc275df8b74b7890ce4a156d1c6a8805ac005f2cc7e01855e53f455",
+      "card": {
+        "company": "Medline",
+        "title": "Director of Manufacturing – Pharmaceutical Operations",
+        "location": "Waukegan, IL, USA",
+        "url": "https://www.linkedin.com/jobs/view/4452526542/"
       },
+      "sourceRecovery": {
+        "kind": "EXACT_SAVED_SOURCE",
+        "fields": [
+          "location"
+        ],
+        "proofs": [
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "507a185cbe0e3e6c3a18aa2624ac9029403c94da8eb5c1dde061a376b8959622"
+          }
+        ],
+        "postingFetched": false
+      },
+      "sourceConflict": null,
+      "sourceFailure": null,
+      "upstreamStatus": "EXCLUDED",
+      "action": "INTAKE",
+      "taskKey": "CODE",
+      "owner": "CODE",
+      "firstSeen": "2026-10-21T22:25:40.055Z",
+      "sourceReferences": [
+        "state/source-trial-report.json"
+      ],
+      "discoveryReview": null,
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location IL. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership.",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "fence": null,
       "scopeReviewHold": null,
-      "scopeReviewHistory": null
+      "scopeReviewHistory": null,
+      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "canonicalCompletion": false,
+      "status": "ACCOUNTED_UPSTREAM",
+      "outcome": {
+        "status": "EXCLUDED",
+        "proof": "state/UPSTREAM_LEDGER.json",
+        "observedAt": "2026-11-11T16:10:40.323Z"
+      }
     },
     "linkedin:4471539717": {
       "key": "linkedin:4471539717",
@@ -56017,7 +56023,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "246f29754fe6dbe9eb1c721a0b5ebbd10c00606650a18e9baf3e6288f948a44a"
+            "sourceSha256": "775820c542219ff04cb33a20016a493a2b8325d64f504d12aceeec409cfdea54"
           }
         ],
         "postingFetched": false
@@ -56909,6 +56915,14 @@
           {
             "proof": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4481783492",
             "sourceSha256": "f8e0168665391965c4a2d6673034b92d951ec4170a89f3baa519f76dfa80b85d"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "f711caf199f047f9e55eae38ebbfa83f004d690b764f836dc884918ae234ebb9"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "f711caf199f047f9e55eae38ebbfa83f004d690b764f836dc884918ae234ebb9"
           }
         ],
         "postingFetched": false
@@ -56925,7 +56939,7 @@
         "EMAIL_RECOVERY"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 0,
@@ -56975,7 +56989,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "a15a205399cf397d7bc6d1191e3823b95d34694fa83b564cef57f5fec8386c85"
+            "sourceSha256": "1f94953f102d6d735997ed45d2bc582f572348d7e308c9064df55401e78c341e"
           },
           {
             "proof": "receipts/EMAIL_CANDIDATE_LEDGER_FORGE-EMAIL-CHATGPT-20261020-2203ET.json",
@@ -57237,7 +57251,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "2f8536f61be95a4b6c9fdf5f9c7ef3e9a1acad5aaf49b49b95771f3f26290c50"
+            "sourceSha256": "a45ef3e18f4017bcaccb8e4ecc254945c15620515e7984483e58832b28a99174"
           }
         ],
         "postingFetched": false
@@ -61423,7 +61437,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "47553d756462e6f2470235b31e3d8f40b149355b3809c35ca2b90577a6bd9996"
+            "sourceSha256": "2a97a2a5d19ffcc5a76661e5514f6eed336c86690737b7965b539876531ecc8e"
           }
         ],
         "postingFetched": false
@@ -61725,7 +61739,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "008f2de79b50f37f0c22e45515d5b2f70c281008633e54ade36689e6989074d5"
+            "sourceSha256": "5f3837e8bc8f9ab643059351e47d6d9bd379da517a2d2162b7e1d97b13605afb"
           }
         ],
         "postingFetched": false
@@ -62153,7 +62167,7 @@
           },
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "6d0253960e5c3c38adab393184d829d805526a0edf9e675a450cea931e95e9f0"
+            "sourceSha256": "3cf4e369f35e556b039747373af4a1823d470de021e2d8233f2e0b0ed629e3b2"
           }
         ],
         "postingFetched": false
@@ -64200,7 +64214,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "4d2452348d9adc7d6891c3b12eb97c119a5e0ddd68844d35820e355cb6c9f2eb"
+            "sourceSha256": "8b91363d8ca8f7c6740e4865ebed9a8f67d99870217418b59f7d75ee27303485"
           }
         ],
         "postingFetched": false
@@ -64476,32 +64490,20 @@
       "aliases": [
         "linkedin:4478633705"
       ],
-      "sourceVersion": "5def224b3248c68eb71a16301dd123bef0bb2bbf307de4a252a99f81fc53b6ce",
+      "sourceVersion": "78481ddc86fecb83ca01302724653c02472f4dbbca1235a0226d3f90ee82dfee",
       "card": {
         "company": "Grant Thornton (US)",
         "title": "Operations Transformation Director",
-        "location": "New York, NY, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4478633705/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "497c793fa1a3d779a4e44560e9db8b19401dfc5b59211c6e66644e6f3291c580"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-23T01:31:18.570Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -64601,10 +64603,9 @@
       },
       "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location NY. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 2,
-        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
-        "scopeReviewRequired": false
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
       "scopeReviewHold": null,
@@ -64613,7 +64614,7 @@
         "review": null,
         "validation": null
       },
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -66150,32 +66151,20 @@
       "aliases": [
         "linkedin:4469377310"
       ],
-      "sourceVersion": "7e33aa06d16b16e7a2c46e81209a030ebc362e995911897f0d134546b2736371",
+      "sourceVersion": "11f80d93bc60bfdb48b81294cfe2f4e4cf2a64013b112107f715de3c5d663412",
       "card": {
         "company": "Medline",
         "title": "SVP Operations Quality",
-        "location": "Northfield, IL, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4469377310/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "0e75281867a2987c0fe715ddc054964b34bbef8c7f2bd38503ccf9f06d92768b"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json",
@@ -66300,10 +66289,9 @@
       },
       "selectionReason": "Title selected as QUALITY / DIRECTOR_PLUS; location IL. Role content unavailable; retain for intake review. Resume-supported hits: quality_systems.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 1,
-        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
-        "scopeReviewRequired": false
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
       "scopeReviewHold": null,
@@ -66312,7 +66300,7 @@
         "review": null,
         "validation": null
       },
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
@@ -66500,7 +66488,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "1e37a84c99f364f5709fd60613ebf1de6bd3d2ebe4f6ce97895f6c0010ae33b3"
+            "sourceSha256": "be48ee75d189a8052d22fda1b918d32dd515047377bcc185ead1dd5f697653d3"
           }
         ],
         "postingFetched": false
@@ -66996,7 +66984,7 @@
         "proofs": [
           {
             "proof": "state/source-trial-report.json",
-            "sourceSha256": "107b518b34361225e6c7f3ec16f7e56914c4404e8e0f312173382ad71f3f1441"
+            "sourceSha256": "3af3b9aa4bd24913332d37fa91e0de506deb3115c1fc30e81d879e17c9232875"
           }
         ],
         "postingFetched": false
@@ -67666,36 +67654,20 @@
       "aliases": [
         "linkedin:4441005369"
       ],
-      "sourceVersion": "f8688191912616916cba5622ca505896f01f43c15e76ecd0d81f7ad64c2e27cc",
+      "sourceVersion": "ad85948f9d0810c65a2322f1218a5dba61789368651404bd7522ee1b3542a87c",
       "card": {
         "company": "E-Space",
         "title": "VP of Mission Assurance & Quality (MA&Q)",
-        "location": "Saratoga, CA, USA",
+        "location": "",
         "url": "https://www.linkedin.com/jobs/view/4441005369/"
       },
-      "sourceRecovery": {
-        "kind": "EXACT_SAVED_SOURCE",
-        "fields": [
-          "location"
-        ],
-        "proofs": [
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "2d96759cdb0d308a08670643e41b2229dce0e61e6c73c84a2bd0fa731c5ceabe"
-          },
-          {
-            "proof": "state/source-trial-report.json",
-            "sourceSha256": "2d96759cdb0d308a08670643e41b2229dce0e61e6c73c84a2bd0fa731c5ceabe"
-          }
-        ],
-        "postingFetched": false
-      },
+      "sourceRecovery": null,
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "EXCLUDED",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECOVER_SOURCE",
+      "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+      "owner": "ChatGPT",
       "firstSeen": "2026-10-21T22:25:40.055Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -67802,22 +67774,21 @@
       },
       "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
-        "outcome": "ADMIT",
-        "rank": 1,
-        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
-        "scopeReviewRequired": false
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
       },
       "fence": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "scopeReviewHold": null,
+      "scopeReviewHistory": null,
+      "nextAction": "Recover exact missing identity fields from original source, then targeted employer posting",
       "canonicalCompletion": false,
       "status": "ACCOUNTED_UPSTREAM",
       "outcome": {
         "status": "EXCLUDED",
         "proof": "state/UPSTREAM_LEDGER.json",
         "observedAt": "2026-11-11T16:10:40.323Z"
-      },
-      "scopeReviewHold": null,
-      "scopeReviewHistory": null
+      }
     },
     "linkedin:4480135904": {
       "key": "linkedin:4480135904",
@@ -143601,7 +143572,7 @@
         "control/claude-relevance/page-0021.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location US. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 2,
@@ -227262,7 +227233,7 @@
         "EMAIL_RECOVERY"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location CA. Role content unavailable; retain for intake review. Resume-supported hits: none observed; retain unknown.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 2,
@@ -457840,6 +457811,10 @@
           {
             "proof": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4471517121",
             "sourceSha256": "9ef0689586141fe84b0205177aaaccf6252da479046cc6b76127d98cecc24e29"
+          },
+          {
+            "proof": "state/source-trial-report.json",
+            "sourceSha256": "64c894378f4b15a9e19daef6ebb201bcf48b711b067ee790b1ecfd318223b6aa"
           }
         ],
         "postingFetched": false
@@ -457856,7 +457831,7 @@
         "EMAIL_RECOVERY"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Title selected as MFG_PROD / DIRECTOR_PLUS; location OH. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 0,
@@ -484351,7 +484326,7 @@
         "EMAIL_CANDIDATE_LEDGER_20261101_0510ET.json"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 1,
@@ -608183,7 +608158,7 @@
         "EMAIL_RECOVERY"
       ],
       "discoveryReview": null,
-      "selectionReason": "Original discovery rationale not recorded; do not invent it",
+      "selectionReason": "Already represented in canonical master/archive; no further analysis or Writer submission.",
       "screen": {
         "outcome": "ADMIT",
         "rank": 0,
@@ -838536,12 +838511,12 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-11T16:11:49.704Z",
+  "at": "2026-11-11T16:16:42.229Z",
   "upstreamAt": "2026-11-11T16:10:40.323Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 6602,
-    "ACTION_REQUIRED": 3412,
-    "WAITING_EVIDENCE_CHANGE": 115,
+    "ACTION_REQUIRED": 3413,
+    "WAITING_EVIDENCE_CHANGE": 114,
     "SOURCE_VALIDATION_REQUIRED": 17
   },
   "actions": {
