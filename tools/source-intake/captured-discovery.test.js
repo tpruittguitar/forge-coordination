@@ -64,3 +64,11 @@ test('separate expiry provenance is hashed and bound to exact identity URL requi
  }
  const wrongReq=structuredClone(c);wrongReq.record.REQ_ID='REQ-2';a.equal(C.validate(wrongReq),false);
 });
+
+test('email initiation remains distinct from posting provider and automatic processor on Writer payload',async()=>{
+ const c=candidate(),f=fixture();c.record.DISCOVERY_SOURCE='EMAIL';
+ await runIntake([c],{...f.options,sourceRunId:'FORGE-AUTO-ORIGIN-TEST'});
+ a.equal(f.writes[0].records[0].DISCOVERY_SOURCE,'EMAIL');
+ a.equal(f.writes[0].records[0].SOURCE_PROVIDER,'JOBSPY:indeed');
+ a.equal(f.writes[0].run.SCOUT_RUN_ID,'FORGE-AUTO-ORIGIN-TEST-C1');
+});
