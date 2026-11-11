@@ -71,7 +71,11 @@ class DirectWriterInstructionTests(unittest.TestCase):
                        'after the COMPLETE observation', 'Externalized evidence',
                        'RESUME_MATCH_PROFILE.json', 'fallback adapter is not running',
                        'RESULT__<request-basename-without-extension>.json',
-                       'ENRICH only', 'does not claim live Grok access'):
+                       'ENRICH only', 'does not claim live Grok access',
+                       'YYYYMMDDTHHMMSSZ', 'America/New_York clock and append `Z`',
+                       'direct-request-id.cjs', 'pending, submitted, or satisfied',
+                       'SUCCESS_NO_OP', 'READBACK_MISMATCH',
+                       'Captured source evidence is stored on the field'):
             self.assertIn(phrase, guide)
         for path in ('policy/current/SHARED_HELPER_COMMON.txt', 'lanes/FORGE_SHARED_HELPER.txt'):
             text = (ROOT / path).read_text()

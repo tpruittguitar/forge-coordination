@@ -128,19 +128,25 @@ and report that exact blocker; never assume empty history.
 Create one immutable plain-text file in the verified WRITER_QUEUE containing
 only the existing Writer JSON body. Use 1–25 distinct canonical rows per
 homogeneous ENRICH batch, with unique stable Grok parent and child request IDs.
-Do not put a helper envelope, checkpoint, Markdown, credential or completion
-claim in the queue. Artifact size is a transaction boundary, not a run cap.
+Parent and child IDs use true UTC to the second, `YYYYMMDDTHHMMSSZ`, from
+`Date.toISOString()` after removing `-`, `:`, and the milliseconds. Never take
+an America/New_York clock and append `Z`: `20261110T1555Z` is not unique across
+10:55 and 15:55 Eastern. With a shell, `node tools/helper-routing/direct-request-id.cjs`
+prints one stamp; increment `B###` and `R###` for further batches and children
+in that same second, and never reuse an ID. Do not put a helper envelope,
+checkpoint, Markdown, credential or completion claim in the queue. Artifact
+size is a transaction boundary, not a run cap.
 
 Illustrative shape only; never upload this example or placeholder facts:
 
 ```json
 {
   "action": "batch",
-  "requestId": "FORGE-GROK-<unique-run>-B001",
+  "requestId": "FORGE-GROK-SHARED-20261110T205613Z-B001",
   "requests": [{
     "action": "ruling",
     "ruling": {
-      "requestId": "FORGE-GROK-<unique-run>-B001-R001",
+      "requestId": "FORGE-GROK-SHARED-20261110T205613Z-B001-R001",
       "primaryId": "<exact-current-primary-id>",
       "kind": "ENRICH",
       "actor": "GROK",
@@ -184,7 +190,7 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
    Drive queue, without a key:
 
    ```json
-   {"action":"row_readback","requestId":"FORGE-GROK-<unique-readback-id>","primaryIds":["<exact-primary-id>"]}
+   {"action":"row_readback","requestId":"FORGE-GROK-SHARED-20261110T205630Z-READ","primaryIds":["<exact-primary-id>"]}
    ```
 
    This read-only action does not mutate the master. Use at most 25 IDs and a
@@ -203,6 +209,16 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
    do not need a helper coordinator to approve them. They may be reported through
    the existing observability route, but never as a new evidence-only batch that
    would ask another consumer to write them again.
+
+## Field state on the shared assignment
+
+The coordinator records each enrichment role, and each of salary, degree, fit, and links, as pending, submitted, or satisfied. That record is stored on the shared assignment item that assignment pages publish. A Writer SUCCESS records a submission when the submitted field map is available. The field becomes satisfied when a later coordinator pass reads the current canonical row and every submitted value matches. The read is the canonical snapshot the coordinator already loads on its own cycle, so the worker continues with the next batch while confirmation is outstanding.
+
+These results leave the field pending and set a flag. A SUCCESS result whose later row is still blank, an equal before/after receipt hash, `BATCH_RULING_NO_WRITE`, or `ALREADY_APPLIED` sets `SUCCESS_NO_OP`. A later row value that differs from the submitted value sets `READBACK_MISMATCH`. A role with any pending field stays on the assignment page, together with those remaining blanks. Submitted and satisfied fields remain on the role so the worker continues with the blanks.
+
+Captured source evidence is stored on the field. The next worker reads that url, quote, hash, and text from the assignment item.
+
+`PIPELINE_RECEIPT_INDEX` items contain `pid`, `op`, `b`, and `a`. A field is marked submitted when the receipt item, or an already captured submission record, includes the field map. A COMPLETE receipt without that map leaves blank fields pending and sets `SUCCESS_NO_OP`. Authorized workers continue through the direct Writer queue. Request ids remain true UTC, `YYYYMMDDTHHMMSSZ`.
 
 `PARTIAL_HOLD`, `HOLD_UNCERTAIN`, `HOLD_ABANDONED`, failed or missing results
 require original-request reconciliation, never automatic replay or a changed
