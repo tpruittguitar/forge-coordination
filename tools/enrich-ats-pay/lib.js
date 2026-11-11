@@ -3,7 +3,7 @@ const Context = require('./context');
 const Scope = require('./anchor-scope');
 const Pay=require('./pay-values'),Employer=require('./employer-identity');
 /* REV-116 (Tim 2026-10-20 18:09-18:17 ET): pay and degree from the posting first, estimates only after the posting was
-   checked, done off the Writer. Pure functions here; run.js does the network. */
+   checked, or a trusted site-estimate input is available (Tim 2026-11-11), done off the Writer. Pure functions here; run.js does the network. */
 
 const LEVELS = [
   [4, /\b(chief|svp|evp|senior vice president|executive vice president|vice president|vp)\b/i],
@@ -110,7 +110,7 @@ function estimate(row, anchors, context) {
   return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), modelVersion:context?Context.VERSION:null, basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}`+(context?'; '+Context.annotation(use):'') };
 }
 /* Tim 2026-10-20 18:21 ET: pay shown on an aggregator posting (LinkedIn, Indeed, ZipRecruiter) is posting pay and comes
-   before any estimate. Pay the site itself labels as its own estimate is THIRD_PARTY_ESTIMATE; it still beats FORGE-ESTIMATE. */
+   before any estimate. Pay the site labels as its own estimate stays THIRD_PARTY_ESTIMATE input to the Forge model, never a final range (Tim 2026-11-11). */
 function aggregatorPage(url) {
   const u = String(url || ''); let m;
   if ((m = u.match(/linkedin\.com\/.*?(?:jobs\/view\/(?:[^/?#]*-)?(\d{6,})|currentJobId=(\d{6,}))/i))) { const id = m[1] || m[2]; return { kind: 'linkedin', id, page: 'https://www.linkedin.com/jobs/view/' + id, fetch: 'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/' + id }; }
@@ -134,9 +134,14 @@ function parseAggregator(kind, html, row) {
   if (row && !looksLikePosting(text, row)) return { wall: true, pay: null, basis: null, text: '' };
   const at=text.search(RANGE_RE),near=at<0?'':text.slice(Math.max(0,at-120),at+220);
   const estimated=/\b(?:estimated|est\.|estimate)\b/i.test(near)&&!/provided by (the )?employer/i.test(near);
-  const pay=Pay.employerText(text,payFromText,{currency:row&&stateFrom(row.LOCATION)?'USD':undefined});
-  const basis=pay?(estimated?'THIRD_PARTY_ESTIMATE':'EMPLOYER_POSTED'):null;
-  return { pay, basis, text };
+  let pay=Pay.employerText(text,payFromText,{currency:row&&stateFrom(row.LOCATION)?'USD':undefined});
+  let postedPay=null;
+  if(estimated&&row){
+    const url=aggregatorFor(row.p||{})?.page;
+    if(url){postedPay=require('../source-trial/posted-pay').fromText({...row,url,is_estimated:true},text,{observedAt:new Date().toISOString(),source:kind+' site estimate'});if(postedPay?.status==='ESTIMATED')pay=postedPay.currency==='USD'&&Pay.annualUnit(postedPay.period)&&postedPay.basis==='BASE'?Pay.range(Pay.values(postedPay.low,postedPay.high)):null;}
+  }
+  const basis=pay||postedPay?.status==='ESTIMATED'?(estimated?'THIRD_PARTY_ESTIMATE':'EMPLOYER_POSTED'):null;
+  return { pay, basis, text,...(postedPay?{postedPay}:{}) };
 }
 /** REV-136: the first field on a row that names a readable ATS posting (rows keep the ATS link in ATS_POSTING_URL more often
  *  than in SOURCE_URL, which is usually the LinkedIn / Indeed alert). */

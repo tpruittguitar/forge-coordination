@@ -8,13 +8,13 @@ See [salary data sources](../../docs/SALARY_DATA_SOURCES.md) for posted-pay prio
 Serialized GitHub Action (`.github/workflows/enrich-ats-pay.yml`, every 15 minutes) that fills SALARY and DEGREE on FORGE_ENRICH_FEASIBILITY
 rows without loading the Writer.
 
-Order per row (Tim 2026-10-20 18:17 and 18:21 ET):
-1. Employer ATS posting (Lever, Greenhouse, Ashby public APIs): posted pay -> `SALARY_BASIS=EMPLOYER_POSTED`.
+Source order (updated Tim 2026-11-11):
+1. Reuse exact captured posting pay first: `SALARY_BASIS=EMPLOYER_POSTED`. Read an employer source only for independently unresolved facts.
 2. Aggregator posting (LinkedIn guest page, Indeed, ZipRecruiter): posted pay -> `EMPLOYER_POSTED`; pay the site labels as
    its own estimate -> `THIRD_PARTY_ESTIMATE`.
    `config.json` `aggregatorsOff` lists sites that are never fetched (Tim 2026-10-26: `indeed`, 401 on every read from the
    runner; Indeed roles still arrive through JobSpy and HiringCafe in source-trial).
-3. Only when a posting was read (this run, or `FEASIBILITY_ATTEMPT_ASOF` set by a lane) and showed no pay:
+3. When a trusted source-labeled estimate is available, skip employer salary lookup and feed the original input to the model. Otherwise retain the existing posting-read/no-pay route:
    `FORGE-ESTIMATE` from employer-posted comparables in the master (same level and function; same region first;
    1 comparable = LOW, 2+ close = MED), with comparables, basis, uncertainty and ASOF recorded.
 
@@ -51,7 +51,7 @@ Protected application/decline states, closed jobs and pending Writer requests ar
 records alone do not prove a bad estimate. Replacements retain estimate provenance; they do not claim employer-posted
 pay or include equity/bonus. This corrects comparison errors in either direction, without an invented salary floor.
 
-Complete, identity-matched public posting reads share a seven-day evidence cache in
+Complete, identity-matched captured posting reads share a retained evidence cache in
 `state/enrich-ats-pay-employer.json`. Primary ATS reads, structured aggregator
 postings, public fallback, active salary review, employer-board details, comparable
 source refresh and benchmark research all save through the same cache. Existing
@@ -64,7 +64,9 @@ posting text, observation time, parser version and available posting facts. Cach
 reuse preserves the original salary and degree evidence dates. ATS URL aliases are
 matched conservatively; distinct Ashby requisitions remain separate despite their
 shared board API. Changed identities, unrelated URLs, expired postings, invalid or
-future timestamps and observations seven days old cannot be reused. Old evidence
+future timestamps cannot be reused. Capture age and provider origin alone do not
+expire reusable facts or force a second fetch; original dates and unverified liveness
+remain visible. Explicit posting expiry remains a separate constraint. Invalid evidence
 is pruned when the existing public employer cache is saved, including dry runs;
 canonical Writer state and the submission ledger keep their existing dry-run rules.
 
@@ -79,8 +81,8 @@ Degree extraction uses the [complete degree-evidence contract](../../docs/DEGREE
 The same parser and regression corpus are mirrored in the cockpit ATS producer;
 adjacent experience alternatives must survive extraction and field serialization.
 
-Preparation requires a complete, exact-identity posting with its original source
-URL, observation time and full text. Version 2 prepared artifacts embed that
+Preparation uses complete exact-posting evidence or a validated site-estimate input.
+Site inputs do not establish degree absence or a completed employer pay check. Version 2 prepared artifacts embed that
 validated evidence, rather than only hashing a transient ledger entry. Legacy
 aggregator text, historical lane timestamps and failed-read history alone cannot
 produce a prepared salary. Missing proof is reported as
@@ -134,3 +136,37 @@ including hosts outside the named aggregator list. Other origins remain eligible
 a successful transport clears that origin's counter, and the next run starts
 fresh. This does not retry blocked endpoints or infer missing fields. Reports
 separate `source_origin_blocks` and `source_origin_skips` from physical reads.
+
+## Site-labeled salary estimates (2026-11-11)
+
+A captured estimate from the job sources used by Forge is enough to route salary
+work to the estimator without another employer salary lookup. This is Tim's
+operating assumption, not a verified statement that the employer omitted pay.
+Existing exact posted salary still wins. Independent degree and liveness work
+is unaffected. Employer wording such as the company's own “good faith estimate”
+is not a third-party estimate, even if an upstream card flags it incorrectly.
+
+`site-estimate.js` retains the exact job identity, source URL, observation date,
+original range and ESTIMATED classification. It reads identity-bound immutable
+captures, source-bound report cards (including metadata-only cards without a description)
+and canonical THIRD_PARTY_ESTIMATE rows.
+Original inputs survive recalculation in the salary ledger; a prior Forge result
+is never fed back as the site's original number.
+
+The site's range is **not** a finished Forge estimate or an employer-posted
+comparable. Numeric use requires explicit annual USD base pay. Missing currency,
+period, base/total distinction, or valid numbers remains unknown; unsupported
+amounts are not annualized or silently treated as base. The model must first have
+independent posted-comparable or BLS support. It then gives the site input a
+conservative 25% weight alongside the existing model's 75%, retaining the existing
+model's higher screening ceiling and LOW confidence. The weight is an uncalibrated
+implementation choice, not a measured accuracy claim or a change to PAY_WORTH.
+With no independent model support, keep MODEL_INPUTS_REQUIRED and the original
+input rather than copying the site's range or restarting employer salary search.
+
+Salary-only research assignments are excluded/released to this model path;
+missing degree research remains, and already-returned work is not discarded.
+A prepared artifact can retain the estimate input, but live execution obtains
+its inputs from current retained evidence and recomputes the salary. Prepared
+numbers or a self-hashed artifact alone cannot create a trusted site input.
+No employer-read/no-pay assertion or degree result is fabricated by this shortcut.

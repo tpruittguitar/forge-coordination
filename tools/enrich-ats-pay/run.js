@@ -7,9 +7,10 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
-const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
+const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./site-estimate.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
+const SiteEstimate=require('./site-estimate');
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
-const salarySource=e=>e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
+const salarySource=e=>e.siteEstimate?'site-estimate:'+e.siteEstimate.sourceUrl:e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
 const SourceReads=require('./source-reads'),PostingCache=require('./posting-cache');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
@@ -112,6 +113,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if(archiveComplete&&!process.env.ENRICH_MASTER_FILE)try{const effective=W.parseRows(require('../source-intake/writer-reader').parseArchive(archiveText).map(r=>r.RAW_ROW).join('\n'));payProfile=SourceProfile.build([...rows.map(r=>({...r,store:'MASTER'})),...effective.filter(r=>!liveIds.has(r.PRIMARY_ID)).map(r=>({...r,store:'ARCHIVE'}))],{context:salaryContext||{}});profileRebuilt=true;profileRefreshStatus='COMPLETE_CANONICAL_SNAPSHOT';}catch{profileRefreshStatus='PROFILE_REFRESH_UNCONFIRMED_PREVIOUS_RETAINED';}
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
+  const siteEstimates=SiteEstimate.create({root:process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT||ROOT,ledger});
   const writerRead=async(action,params={})=>{const u=new URL(conn.PipelineConnection.url);u.searchParams.set('key',key);u.searchParams.set('action',action);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return(await get(u.toString())).json();};
   const receiptIndex=async()=> (await get('https://raw.githubusercontent.com/tpruittguitar/forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json?pay='+Date.now())).json();
   const proofRoot=process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):ROOT;
@@ -171,7 +173,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // Bind per-role saved evidence as well as global comparison inputs. Preserve
   // the durable ledger view: preparation-only never persists its transient edits.
   const durablePostingEvidence=structuredClone(ledger.postingEvidence||{});
-  const roleInputs=(r,base)=>Prepared.sourceInputs(base,{ledger:Recovery.cached({postingEvidence:durablePostingEvidence},r),discovery:require('../source-trial/evidence-store').forRow(discoveryEvidence,r)});
+  const roleInputs=(r,base)=>Prepared.sourceInputs(Store.hash({base,siteEstimate:siteEstimates.forRow(r)}),{ledger:Recovery.cached({postingEvidence:durablePostingEvidence},r),discovery:require('../source-trial/evidence-store').forRow(discoveryEvidence,r)});
   const externallyFenced=id=>!process.env.ENRICH_MASTER_FILE&&require('../programmed-coordinator/transactions.cjs').fenced(ROOT,Store.read(ROOT,'state/PROGRAMMED_COORDINATOR.json',{transactions:{}}),id);
   const preparedOptions={rows,hints:!DRY,policy:policyFingerprint,inputs:r=>roleInputs(r,inputFingerprint),blocked:researchUnavailableIds,needsSalary:r=>(!planIds||planIds.has(r.PRIMARY_ID))&&/SALARY/.test(needsOf(r))&&!externallyFenced(r.PRIMARY_ID)};
   const preparedCandidates=PRODUCTS_ONLY?[]:Prepared.load(PREPARED_DIR,preparedOptions).slice(0,CONFIG.maxBatches*25);
@@ -259,8 +261,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   async function estimateFor(r, opts) {
     if(!runtime.canStart())return null;
     researchedIds.add(r.PRIMARY_ID);
+    const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);
     r=Employer.resolve(r);
-    opts = opts || {};
+    opts = {...opts,...(skipSalaryLookup?{noBoard:true}:{})};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
     let comps = L.sameEmployerAnchors(r, anchors.concat(Benchmarks.candidates(r,benchmarks)));
     if(!comps.length&&!opts.noNetwork&&!opts.noBoard){const external=await benchmarkSearch.find(r);comps=L.sameEmployerAnchors(r,external);}
@@ -285,7 +288,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     if (!est && opts.noNetwork) return null;   // the upgrade pass only replaces with a same-employer estimate
     let comparisonAnchors=anchors;
-    if(!est&&!opts.noNetwork&&(!opts.noBoard||opts.review)&&sourceSearch){const extra=await sourceSearch.find(r,anchors);if(extra.length){const ids=new Set(extra.map(a=>a.id));comparisonAnchors=extra.concat(anchors.filter(a=>!ids.has(a.id)));}}
+    if(!est&&!skipSalaryLookup&&!opts.noNetwork&&(!opts.noBoard||opts.review)&&sourceSearch){const extra=await sourceSearch.find(r,anchors);if(extra.length){const ids=new Set(extra.map(a=>a.id));comparisonAnchors=extra.concat(anchors.filter(a=>!ids.has(a.id)));}}
     if (!est) { est = L.estimate(r, comparisonAnchors, salaryContext); if (est) { est.source = 'COMPARABLES'; stats.est_comparables++; const k=shareKey(est),pool=opts.review?[...new Map(list.concat(rows.filter(ActiveReview.eligible)).map(t=>[t.PRIMARY_ID,t])).values()]:list,n=!opts.review&&comparisonAnchors===anchors?(shared[k]||0):pool.reduce((n,t)=>n+((opts.review||/SALARY/.test(needsOf(t)))&&shareKey(L.estimate(t,comparisonAnchors,salaryContext))===k?1:0),0); if (n >= 3) { est.conf = 'LOW'; est.basis += '; range shared by ' + n + ' eligible roles from the same comparables, so LOW'; stats.est_shared_low++; } } }
     if(!est){est=Leadership.estimate(r,comparisonAnchors,salaryContext,L,Context);if(est)stats.est_leadership=(stats.est_leadership||0)+1;}
     if (!est && rowState) {
@@ -294,6 +297,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       est = L.blsEstimate(r, w, []);   // mlPoints: JobPredictor / nginyc numbers when a lightweight call is available; empty = BLS range only
       if (est) { stats.est_bls = (stats.est_bls || 0) + 1; if (!opts.noNetwork) stats.bls.BLS_EST = (stats.bls.BLS_EST || 0) + 1; }
     }
+    est=SiteEstimate.combine(est,siteInput);
+    if(est&&skipSalaryLookup&&!siteInput){const source=String(r.p.SALARY_SOURCE||'').replace(/^site-estimate:/,'');if(P.publicUrl(source))est={...est,conf:'LOW',siteEstimate:{sourceUrl:source},basis:est.basis+'; previous site estimate label retained, original values unavailable and excluded; employer disclosure unverified, no employer salary lookup required'};}
     if (!est || !runtime.canStart()) return null;
     const chk = L.blsCheck(est, rowState ? await blsWages(rowState, soc) : null); if (!opts.noNetwork) stats.bls[chk.flag]++;
     est.conf = chk.conf; est.bls = chk;
@@ -342,6 +347,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // before new gaps, so a busy queue cannot starve old weak pay indefinitely.
   ledger.salaryReview=ledger.salaryReview||{};const reviewOriginal=new Map();
   const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
+  const retainedExactPay=r=>{const e=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));return e?.pay&&e.basis==='EMPLOYER_POSTED'?e:null;};
+  const exactPayFields=(e,note)=>({SALARY_BASE_LOW:e.pay.low,SALARY_BASE_HIGH:e.pay.high,SALARY_MIDPOINT:Math.round((e.pay.low+e.pay.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:e.url,SALARY_ASOF:e.at?e.at.slice(0,10):today,SALARY_NOTE:note+'; exact identity-bound posted USD annual base pay, excludes bonus/equity.'});
   async function repairSalaries(candidates) {
   for (const r of PRODUCTS_ONLY || PREPARE_ONLY ? [] : candidates) {
     if(!runtime.canStart())break;
@@ -351,12 +358,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 >= CONFIG.maxRunMs || researchUnavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
     progress('salary_repair',{id:r.PRIMARY_ID,decision:decisionIds.has(r.PRIMARY_ID)});
+    const exact=retainedExactPay(r);if(exact){record.status='EXACT_POSTED_PAY_PLANNED';stats.salary_repairs++;repairOriginal.set(r.PRIMARY_ID,salaryStamp(r));requests.push({action:'ruling',ruling:{requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`,primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:exactPayFields(exact,'Salary repair: reused retained source evidence')}});continue;}
     const est = await estimateFor(r, { noBoard: true }); if (!est || !runtime.canStart()) continue;
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
       ...modelFields(r),SALARY_BASE_LOW:est.low, SALARY_BASE_HIGH:est.high, SALARY_MIDPOINT:est.mid, SALARY_BASIS:'FORGE-ESTIMATE', SALARY_CONF:est.conf, SALARY_ASOF:today,
        SALARY_SOURCE:salarySource(est),
-      SALARY_NOTE:'Recalculated with '+(salaryContext?Context.VERSION:'level guard')+': incompatible or non-posted anchors removed [' + bad.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + '; base salary estimate, excludes bonus/equity; prior posting check retained'
+      SALARY_NOTE:'Recalculated with '+(salaryContext?Context.VERSION:'level guard')+': incompatible or non-posted anchors removed [' + bad.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + '; base salary estimate, excludes bonus/equity; '+(est.siteEstimate?'site estimate input, employer disclosure unverified':'prior posting check retained')
     } } });
   }
 
@@ -371,8 +379,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
     progress('salary_review',{id:r.PRIMARY_ID});
-    review.reviewed++;const reviewRow=Employer.resolve(r),reviewUrls=Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY)),savedReview=postingCache.find(reviewRow,reviewUrls);let exact=savedReview?.pay&&savedReview.basis==='EMPLOYER_POSTED'?savedReview:null,source=exact?.url||null,attempts=0;
-    for(const url of reviewUrls){
+    review.reviewed++;const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);const reviewRow=Employer.resolve(r),reviewUrls=Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY)),savedReview=retainedExactPay(r);let exact=savedReview,source=exact?.url||null,attempts=0;
+    for(const url of skipSalaryLookup?[]:reviewUrls){
       const retained=postingCache.find(reviewRow,[url]);if(exact||retained&&!retained.payNeedsRefresh)continue;
       if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
       attempts++;review.target_reads++;
@@ -381,7 +389,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(parsed){postingCache.save(Employer.resolve(r),api?.page||url,parsed);if(parsed.pay){exact=parsed;source=api?.page||url;break;}}
       }catch{} // Unsupported/failed sources retain the original estimate, never erase it.
     }
-    if(!exact&&Date.now()<reviewDeadline){const candidate=await benchmarkSearch.findExact(Employer.resolve(r));if(candidate){exact=candidate;source=candidate.sourceUrl;}}
+    if(!exact&&!skipSalaryLookup&&Date.now()<reviewDeadline){const candidate=await benchmarkSearch.findExact(Employer.resolve(r));if(candidate){exact=candidate;source=candidate.sourceUrl;}}
     let fields=null,status='NO_STRONGER_EVIDENCE';
     if(exact){const p=exact.pay;fields={SALARY_BASE_LOW:p.low,SALARY_BASE_HIGH:p.high,SALARY_MIDPOINT:Math.round((p.low+p.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:source,SALARY_ASOF:exact.at?exact.at.slice(0,10):today,SALARY_NOTE:'Active estimate review: exact employer posting, matched title and city/state; USD annual base pay, excludes bonus/equity.'};review.posted_planned++;status='EXACT_POSTED_PAY_PLANNED';}
     else if(Date.now()<reviewDeadline&&Date.now()-T0<CONFIG.maxRunMs){const e=await estimateFor(r,{noBoard:true,review:true});if(ActiveReview.improved(r,e)){fields={...modelFields(r),SALARY_BASE_LOW:e.low,SALARY_BASE_HIGH:e.high,SALARY_MIDPOINT:e.mid,SALARY_BASIS:'FORGE-ESTIMATE',SALARY_CONF:e.conf,SALARY_ASOF:today,SALARY_SOURCE:salarySource(e),SALARY_NOTE:'Active estimate review: refreshed evidence model; '+e.basis+'; '+e.bls.note+'; base estimate, not target employer-posted pay.'};review.estimate_planned++;status='STRONGER_ESTIMATE_PLANNED';}}
@@ -402,8 +410,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
     if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID));
-    const newRetainedEvidence=Recovery.newEvidence(r,need(r),ledger,saved);
-    if(fresh(r)&&!newRetainedEvidence){stats.skipped_recent++;pending.push(Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'));continue;}
+    let siteInput=siteEstimates.forRow(r)||siteEstimates.remember(r,SiteEstimate.fromParsed(r,saved,saved?.url,saved?.at));
+    const newRetainedEvidence=!!siteInput&&ledger.progress?.[r.PRIMARY_ID]?.siteEstimateSha256!==Store.hash(siteInput)||Recovery.newEvidence(r,need(r),ledger,saved);
+    if(fresh(r)&&!newRetainedEvidence){stats.skipped_recent++;pending.push({...Recovery.unresolved(r,need(r),ledger,'RETRY_BACKOFF'),...(SiteEstimate.routed(r,siteInput)?{next:'Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required.'}:{})});continue;}
     if(fresh(r)&&newRetainedEvidence)stats.recovery_evidence_wakeups=(stats.recovery_evidence_wakeups||0)+1;
     const n = need(r), url = val(r, 'SOURCE_URL') || val(r, 'SOURCE'), api = atsOf.get(r), f = {}, readAttempts=[],sourceReads=sourceReader();
     researchedIds.add(r.PRIMARY_ID);
@@ -411,12 +420,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const helperResearch=helperResearchIds.has(r.PRIMARY_ID);
     ledger.needs[r.PRIMARY_ID] = needsOf(r);
     let preparationSource=Prepared.posting(r,saved);
-    let checked = saved?.fullPosting===true, attempted = false, postedPay = saved?.pay||null, atsUnconfirmed = false,payUnresolved=saved?.payAmbiguous===true;
+    let checked = saved?.fullPosting===true, attempted = false, postedPay = saved?.basis==='THIRD_PARTY_ESTIMATE'?null:saved?.pay||null, atsUnconfirmed = false,payUnresolved=saved?.payAmbiguous===true;
     // Salary-only evidence is sufficient for pay, but does not prove a full degree review.
     if(n.includes('SALARY')&&postedPay)Object.assign(f,{SALARY_BASE_LOW:postedPay.low,SALARY_BASE_HIGH:postedPay.high,SALARY_MIDPOINT:Math.round((postedPay.low+postedPay.high)/2),SALARY_BASIS:saved.basis||'EMPLOYER_POSTED',SALARY_SOURCE:saved.url,SALARY_ASOF:saved.at.slice(0,10),SALARY_CONF:saved.basis==='THIRD_PARTY_ESTIMATE'?'MED':'HIGH'});
     if(checked&&n.includes('DEGREE')&&saved.degree)Object.assign(f,{DEGREE_TEXT:saved.degree.text,DEGREE_REQ:saved.degree.req,DEGREE_EVIDENCE_URL:saved.degreeUrl||saved.url,DEGREE_ASOF:(saved.degreeAt||saved.at).slice(0,10)});
     const apiEvidence=api&&postingCache.find(r,[api.page]);
-    if (api && !helperResearch && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
+    const needsSourceRead=()=>!SiteEstimate.routed(r,siteInput)||n.includes('DEGREE')&&!checked&&!f.DEGREE_REQ;
+    if (api && !helperResearch && needsSourceRead() && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
       stats.ats_rows++; attempted = true;
       try {
         const parsed = Recovery.exactApi(r,api,JSON.parse(await sourceReads.read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
@@ -440,7 +450,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     // Tim 2026-10-26: Indeed viewjob pages answer 401 to this runner on every read; Indeed roles come in through JobSpy and HiringCafe.
     const aggPage = L.aggregatorFor(r.p), agg = aggPage && !(CONFIG.aggregatorsOff || []).includes(aggPage.kind) ? aggPage : null;
     const aggEvidence=agg&&postingCache.find(r,[agg.page]);
-    if (!helperResearch && agg && (!aggEvidence||n.includes('SALARY')&&aggEvidence.payNeedsRefresh) && (n.includes('SALARY') && !postedPay || n.includes('DEGREE') && !checked && !f.DEGREE_REQ) && providerAllowed(agg.fetch)) {
+    if (!helperResearch && needsSourceRead() && agg && (!aggEvidence||n.includes('SALARY')&&aggEvidence.payNeedsRefresh) && (n.includes('SALARY') && !postedPay || n.includes('DEGREE') && !checked && !f.DEGREE_REQ) && providerAllowed(agg.fetch)) {
       attempted = true;
       try {
         const html=await sourceReads.read(agg.fetch,{gapMs:CONFIG.aggregatorGapMs,headers:{'user-agent':CONFIG.userAgent,accept:'text/html'}});
@@ -456,6 +466,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if (parsed && !parsed.wall) {
           if(salaryContext)Context.learn(salaryContext,r,parsed.text,agg.page,today);
           checked = true;payUnresolved=parsed.payAmbiguous===true; stats.agg_read[agg.kind] = (stats.agg_read[agg.kind] || 0) + 1;
+          if(parsed.basis==='THIRD_PARTY_ESTIMATE'){siteInput=siteEstimates.remember(r,SiteEstimate.fromParsed(r,parsed,agg.page,new Date().toISOString()))||siteInput;parsed={...parsed,pay:null};}
           if (n.includes('SALARY') && Recovery.preferFreshPay(postedPay,parsed)) { postedPay = parsed.pay; stats.agg_pay[agg.kind] = (stats.agg_pay[agg.kind] || 0) + 1; Object.assign(f, { SALARY_BASE_LOW: parsed.pay.low, SALARY_BASE_HIGH: parsed.pay.high, SALARY_MIDPOINT: Math.round((parsed.pay.low + parsed.pay.high) / 2), SALARY_BASIS: parsed.basis, SALARY_SOURCE: agg.page, SALARY_ASOF: today, SALARY_CONF: parsed.basis === 'EMPLOYER_POSTED' ? 'HIGH' : 'MED', SALARY_NOTE: 'pay shown on the ' + agg.kind + ' posting' }); }
           const d = n.includes('DEGREE') && !f.DEGREE_REQ && L.degreeFromText(parsed.text);
           if (d) { stats.degree++; Object.assign(f, { DEGREE_TEXT: d.text, DEGREE_REQ: d.req, DEGREE_EVIDENCE_URL: agg.page, DEGREE_ASOF: today }); }
@@ -466,9 +477,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     // company/title JobPosting object; never infer NOT_STATED from page chrome.
     // Reuse alternate posting links already saved with this exact row; never research candidate identities.
     const recoveryUrls=Recovery.urls(r),knownBoard=boardByCo[L.normCo(r.COMPANY)];
-    if(!helperResearch&&!checked&&(!postedPay||n.includes('DEGREE'))&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
+    if(!helperResearch&&needsSourceRead()&&!checked&&(!postedPay||n.includes('DEGREE'))&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
     let fallbackReads=0;
-    if(!helperResearch&&(!checked||n.includes('SALARY')&&saved?.payNeedsRefresh)&&(!postedPay||n.includes('DEGREE')))for(const publicUrl of new Set(recoveryUrls)){
+    if(!helperResearch&&needsSourceRead()&&(!checked||n.includes('SALARY')&&saved?.payNeedsRefresh)&&(!postedPay||n.includes('DEGREE')))for(const publicUrl of new Set(recoveryUrls)){
       if(fallbackReads>=4||stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
       if(!Recovery.readableRoute(publicUrl,CONFIG.aggregatorsOff||[]))continue;
       const aggCandidate=L.aggregatorPage(publicUrl),alternateApi=L.atsApi(publicUrl),endpoint=alternateApi?.api||aggCandidate?.fetch||publicUrl;
@@ -481,28 +492,30 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         else if(!parsed){const provider=SourceReads.provider(endpoint),html=await sourceReads.read(endpoint,{category:'fallback',gapMs:provider?CONFIG.aggregatorGapMs:CONFIG.fetchGapMs,timeoutMs:20000,headers:{'user-agent':CONFIG.userAgent}});parsed=P.parse(html,r);if(!parsed&&provider)parsed=L.parseAggregator(provider,html,r);if(provider)aggregatorResult(provider,parsed);if(parsed?.wall)parsed=null;}
         if(PREPARE_ONLY&&parsed&&!PostingCache.complete(r,publicUrl,parsed,parsed.at||new Date().toISOString()))parsed=null;
         if(parsed&&parsed.text&&parsed.text.length>=300){checked=true;payUnresolved=parsed.payAmbiguous===true;if(!reuse)stats.public_read++;const observedAt=reuse?.at||new Date().toISOString(),e=reuse||Recovery.saveEvidence(ledger,r,publicUrl,parsed);const retained=reuse||postingCache.save(r,publicUrl,parsed);if(retained)preparationSource=retained;if(salaryContext)Context.learn(salaryContext,r,parsed.text,publicUrl,observedAt.slice(0,10));
+          if(parsed.basis==='THIRD_PARTY_ESTIMATE'){siteInput=siteEstimates.remember(r,SiteEstimate.fromParsed(r,parsed,publicUrl,observedAt))||siteInput;parsed={...parsed,pay:null};}
           if(n.includes('SALARY')&&Recovery.preferFreshPay(postedPay,parsed)){postedPay=parsed.pay;stats.posted_pay++;Object.assign(f,{SALARY_BASE_LOW:parsed.pay.low,SALARY_BASE_HIGH:parsed.pay.high,SALARY_MIDPOINT:Math.round((parsed.pay.low+parsed.pay.high)/2),SALARY_BASIS:parsed.basis||'EMPLOYER_POSTED',SALARY_SOURCE:publicUrl,SALARY_ASOF:observedAt.slice(0,10),SALARY_CONF:'HIGH'});}
           if(n.includes('DEGREE')&&e.degree){stats.degree++;Object.assign(f,{DEGREE_TEXT:e.degree.text,DEGREE_REQ:e.degree.req,DEGREE_EVIDENCE_URL:reuse?.degreeUrl||publicUrl,DEGREE_ASOF:(reuse?.degreeAt||observedAt).slice(0,10)});}readAttempts.push({url:publicUrl,status:'FULL_POSTING_READ'});break;
         }stats.public_failed++;readAttempts.push({url:publicUrl,status:'NO_EXACT_COMPLETE_POSTING'});
       }catch(e){stats.public_failed++;readAttempts.push({url:publicUrl,status:e.status?'HTTP_'+e.status:'READ_ERROR'});}
     }
-    // Tim 2026-10-20 18:17 ET: salary from the posting first; estimate only once the posting was checked and shows none
+    // Tim 2026-11-11: a trusted site estimate bypasses salary-only posting checks.
+    // For rows without that signal, retain the existing checked/no-pay route.
     // Tim ruling 2026-10-21 02:15 ET: a row may be estimated without a posting read after 2 failed reads on different days
     // (ATS answer unconfirmed, or the Writer checker says NOT_IN_PUBLIC_BOARD / NOT_FOUND / ERROR / UNREADABLE) with no readable
     // aggregator posting. Dates live in the ledger (persisted on live runs only); CLOSED rows were skipped above.
     let noPostingRead = false;
-    if (!helperResearch && n.includes('SALARY') && !postedPay && !checked && (atsUnconfirmed || /^(NOT_IN_PUBLIC_BOARD|NOT_FOUND|ERROR|UNREADABLE)/.test(val(r, 'ATS_CHECK_RESULT')))) {
+    if (!helperResearch && !SiteEstimate.routed(r,siteInput) && n.includes('SALARY') && !postedPay && !checked && (atsUnconfirmed || /^(NOT_IN_PUBLIC_BOARD|NOT_FOUND|ERROR|UNREADABLE)/.test(val(r, 'ATS_CHECK_RESULT')))) {
       const fr = ledger.failedReads[r.PRIMARY_ID] = ledger.failedReads[r.PRIMARY_ID] || { dates: [] };
       if (fr.dates.indexOf(today) < 0) fr.dates.push(today);
       fr.dates = fr.dates.slice(-5); fr.n = fr.dates.length;
       noPostingRead = fr.n >= 2 && !val(r, 'FEASIBILITY_ATTEMPT_ASOF');
     }
-    const postingChecked = PREPARE_ONLY?!!Prepared.sourceValid(r,{SALARY_BASIS:'FORGE-ESTIMATE'},{postingEvidence:preparationSource}):payUnresolved&&!postedPay?false:checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
+    const postingChecked = SiteEstimate.routed(r,siteInput)?true:PREPARE_ONLY?!!Prepared.sourceValid(r,{SALARY_BASIS:'FORGE-ESTIMATE'},{postingEvidence:preparationSource}):payUnresolved&&!postedPay?false:checked || !!val(r, 'FEASIBILITY_ATTEMPT_ASOF') || noPostingRead;
     if (n.includes('SALARY') && !postedPay) {
       if (!postingChecked) stats.estimate_waiting_for_posting++;
-      else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: 'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
+      else { const est = await estimateFor(r); if (est) { stats.estimates++; Object.assign(f, { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: (est.siteEstimate?'FORGE-ESTIMATE with site-estimate input; ':'')+'FORGE-ESTIMATE from ' + est.n + (est.source === 'SAME_EMPLOYER' ? ' same-employer posted range(s)' : ' employer-posted comparable(s)') + ' [' + est.ids.join(', ') + ']; ' + est.basis + '; ' + est.bls.note + (SiteEstimate.routed(r,siteInput) ? '; site estimate accepted without employer salary lookup, employer disclosure unverified' : checked ? '; this posting read, no pay stated' : noPostingRead ? '; NO_POSTING_READ: posting unreadable on ' + ledger.failedReads[r.PRIMARY_ID].dates.join(', ') : '; posting checked by a lane, no pay') + '; uncertainty: ' + (est.source === 'SAME_EMPLOYER' ? (est.conf === 'HIGH' ? 'narrow, 2+ tight same-employer ranges' : est.conf === 'MED' ? 'moderate, same-employer range(s) for a similar role' : 'wide, same-employer range outside the state wage band') : est.conf === 'LOW' ? 'wide, few or distant comparables' : est.conf === 'MED' ? 'moderate, same-region comparables' : 'narrow, 3+ tight same-region comparables') }); if (noPostingRead) stats.estimates_no_posting_read = (stats.estimates_no_posting_read || 0) + 1; estSamples.length < 5 && estSamples.push({ basis: siteInput ? 'SITE_ESTIMATE_INPUT' : noPostingRead ? 'NO_POSTING_READ' : 'POSTING_READ', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, posting: url, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids }); } }
     }
-    if(PREPARE_ONLY&&n.includes('SALARY')&&!Prepared.sourceValid(r,f,{postingEvidence:preparationSource})){
+    if(PREPARE_ONLY&&n.includes('SALARY')&&!Prepared.sourceValid(r,f,{postingEvidence:preparationSource,siteEstimate:siteInput})){
       stats.preparation_source_gaps=(stats.preparation_source_gaps||0)+1;
       pending.push(Recovery.unresolved(r,n,ledger,'COMPLETE_EXACT_POSTING_EVIDENCE_REQUIRED'));
       continue;
@@ -510,8 +523,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(PREPARE_ONLY)preparationSources.set(r.PRIMARY_ID,preparationSource);
     if (checked) f.FEASIBILITY_ATTEMPT_ASOF = today;
     if (attempted && Object.keys(f).every(k => k === 'FEASIBILITY_ATTEMPT_ASOF')) ledger.tried[r.PRIMARY_ID] = new Date().toISOString();
-    if (!Object.keys(f).length) { if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(attempted||(!api&&!knownBoard&&!recoveryUrls.some(u=>Recovery.readableRoute(u,CONFIG.aggregatorsOff||[])))){Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts.length?readAttempts:[{status:'NO_SUPPORTED_READER_FOR_SAVED_SOURCE'}]);}pending.push(Recovery.unresolved(r,n,ledger,attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER')); continue; }
+    if (!Object.keys(f).length) { if(SiteEstimate.routed(r,siteInput)){Recovery.remember(ledger,r,needsOf(r),'MODEL_INPUTS_REQUIRED',readAttempts);if(siteInput)ledger.progress[r.PRIMARY_ID].siteEstimateSha256=Store.hash(siteInput);} if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(!SiteEstimate.routed(r,siteInput)&&(attempted||(!api&&!knownBoard&&!recoveryUrls.some(u=>Recovery.readableRoute(u,CONFIG.aggregatorsOff||[]))))){Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts.length?readAttempts:[{status:'NO_SUPPORTED_READER_FOR_SAVED_SOURCE'}]);}pending.push({...Recovery.unresolved(r,n,ledger,SiteEstimate.routed(r,siteInput)?'MODEL_INPUTS_REQUIRED':attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER'),...(SiteEstimate.routed(r,siteInput)?{next:'Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present.'}:{})}); continue; }
     Recovery.remember(ledger,r,needsOf(r),'EVIDENCE_FOUND',readAttempts);
+    if(siteInput)ledger.progress[r.PRIMARY_ID].siteEstimateSha256=Store.hash(siteInput);
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   // Shared location facts are looked up once per site, then copied through the Writer.
@@ -642,7 +656,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   EmployerCacheStore.write(EMPLOYER_CACHE,empCache);   // public posting data: kept in dry runs too
   fs.mkdirSync(path.dirname(BLS_CACHE), { recursive: true }); fs.writeFileSync(BLS_CACHE, JSON.stringify(blsCache, null, 1) + '\n');   // public BLS reference data: kept in dry runs too (BLS v1 allows 25 queries a day)
   const preparationInputFingerprint=inputFingerprintOf();
-  if(PREPARE_ONLY)for(const q of requests){const row=rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId);if(!q.ruling.fields.SALARY_BASE_LOW||preparedIds.has(row.PRIMARY_ID)||Prepared.protectedRow(row)||externallyFenced(row.PRIMARY_ID))continue;Prepared.save(PREPARED_DIR,{row,fields:q.ruling.fields,policy:policyFingerprint,inputs:roleInputs(row,preparationInputFingerprint),evidence:{source:q.ruling.fields.SALARY_SOURCE,anchorInputsSha256:Store.hash(anchors),contextSha256:Store.hash(salaryContext),canonicalSource:masterSource,postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID))}});if(q.ruling.fields.SALARY_BASIS==='FORGE-ESTIMATE'){if(Prepared.noPaySource(row,{evidence:{postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID))}}))PreparedSource.save(PREPARED_DIR,{row,postingEvidence:preparationSources.get(row.PRIMARY_ID)});stats.salary_estimates_prepared++;}}
+  if(PREPARE_ONLY)for(const q of requests){const row=rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId);if(!q.ruling.fields.SALARY_BASE_LOW||preparedIds.has(row.PRIMARY_ID)||Prepared.protectedRow(row)||externallyFenced(row.PRIMARY_ID))continue;Prepared.save(PREPARED_DIR,{row,fields:q.ruling.fields,policy:policyFingerprint,inputs:roleInputs(row,preparationInputFingerprint),evidence:{source:q.ruling.fields.SALARY_SOURCE,anchorInputsSha256:Store.hash(anchors),contextSha256:Store.hash(salaryContext),canonicalSource:masterSource,postingEvidence:preparationSources.get(row.PRIMARY_ID)||null,postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID)||null),siteEstimate:siteEstimates.forRow(row)}});if(q.ruling.fields.SALARY_BASIS==='FORGE-ESTIMATE'){if(Prepared.noPaySource(row,{evidence:{postingEvidence:preparationSources.get(row.PRIMARY_ID),postingEvidenceSha256:Store.hash(preparationSources.get(row.PRIMARY_ID)||null)}}))PreparedSource.save(PREPARED_DIR,{row,postingEvidence:preparationSources.get(row.PRIMARY_ID)});stats.salary_estimates_prepared++;}}
   if(SAVED_ONLY)for(const id of researchedIds){const row=rows.find(r=>r.PRIMARY_ID===id);if(!requests.some(q=>q.ruling.primaryId===id&&q.ruling.fields.SALARY_BASE_LOW))Prepared.rememberAttempt(PREPARED_DIR,row,policyFingerprint,roleInputs(row,preparationInputFingerprint));}
   if(!DRY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(BENCHMARK_FILE,JSON.stringify(benchmarks,null,2)+'\n');
   if(!DRY&&salaryContext)fs.writeFileSync(CONTEXT_FILE,JSON.stringify(salaryContext,null,2)+'\n');
