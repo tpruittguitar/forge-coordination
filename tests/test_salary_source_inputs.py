@@ -21,4 +21,5 @@ class SalarySourceInputs(unittest.TestCase):
         self.assertIn('not the final range', text)
         self.assertNotIn("Open the employer's own post first", text)
         self.assertNotIn('cross-check only', text)
+        self.assertIn('A PAY_POSTED field or board location alone does not prove employer disclosure', text)
         self.assertNotIn('FORGE-est is only an est from employer-posted ranges', text)

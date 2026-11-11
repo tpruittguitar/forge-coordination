@@ -14,3 +14,14 @@ test('aggregator estimate text produces labeled input rather than employer-poste
 test('employer good-faith estimate wording is not a third-party routing signal even if upstream flags ESTIMATED',()=>{const u='https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4741629005',r={...row,p:{SOURCE_URL:u}},p={...input,sourceUrl:u,source:'BOARD:greenhouse',text:'The base salary range for this position is $116,616 - $174,924.75 per year. This range represents the Company’s good faith estimate of the base compensation for this role at the time of posting.'};a.equal(S.valid(r,p,now),null);a.equal(S.valid(row,{...p,sourceUrl:url,source:'JOBSPY:linkedin'},now),null);a.equal(S.valid(row,{...input,source:'JOBSPY:indeed',text:'$120,000 - $160,000'},now)?.status,'ESTIMATED');});
 
 test('legacy source-labeled PAY_POSTED text supplies the same bound original input',()=>{const r={...row,p:{SOURCE_URL:url,PAY_POSTED:input.text,SALARY_ASOF:input.observedAt}};const p=S.canonical(r);a.equal(S.valid(r,p,now).status,'ESTIMATED');a.equal(S.numeric(p).low,120000);a.equal(S.canonical({...r,p:{...r.p,PAY_POSTED:'Employer provided base salary USD $120,000 - $160,000 annually'}}),null);});
+
+test('report-only metadata estimate routes without description completeness and retains exact source binding',()=>{const dir=fs.mkdtempSync(path.join(os.tmpdir(),'site-report-'));try{
+ const Pay=require('../source-trial/posted-pay'),Discovery=require('../source-trial/discovery-review'),card={company:row.COMPANY,title:row.TITLE,location:row.LOCATION,url,source:'JOBSPY:linkedin',salaryText:'Estimated annual base salary USD $120,000 - $160,000',is_estimated:true,min_amount:120000,max_amount:160000,currency:'USD',interval:'YEAR'};
+ card.postedPay=Pay.capture(card,{observedAt:input.observedAt});const reviewed=Discovery.review(card,{observedAt:input.observedAt});a.equal(reviewed.discoveryReview.detailStatus,'NOT_RETURNED_BY_SOURCE');
+ fs.mkdirSync(path.join(dir,'state'));const file=path.join(dir,'state/source-trial-report.json'),lookup=c=>{fs.writeFileSync(file,JSON.stringify({new_roles:[c]}));return S.create({root:dir,now:()=>now}).forRow(row);};
+ a.deepEqual(lookup(reviewed),card.postedPay);
+ for(const change of [{company:'Other'},{title:'Plant Manager'},{location:'Akron, OH'},{sourceUrl:url+'9'},{observedAt:'2027-01-01'},{status:'POSTED'}])a.equal(lookup({...reviewed,postedPay:{...card.postedPay,...change}}),null);
+ a.equal(lookup({...reviewed,discoveryReview:{...reviewed.discoveryReview,source:'OTHER'}}),null);a.equal(lookup({...reviewed,discoveryReview:{...reviewed.discoveryReview,sourceUrl:url+'9'}}),null);
+ a.equal(lookup({...reviewed,description:'Added unrelated content'}),null);
+ const textCard=Discovery.review(card,{description:'Manage manufacturing and quality teams.',observedAt:input.observedAt});a.deepEqual(lookup(textCard),card.postedPay);
+}finally{fs.rmSync(dir,{recursive:true,force:true});}});

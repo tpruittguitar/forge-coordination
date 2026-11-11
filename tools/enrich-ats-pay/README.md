@@ -51,7 +51,7 @@ Protected application/decline states, closed jobs and pending Writer requests ar
 records alone do not prove a bad estimate. Replacements retain estimate provenance; they do not claim employer-posted
 pay or include equity/bonus. This corrects comparison errors in either direction, without an invented salary floor.
 
-Complete, identity-matched public posting reads share a seven-day evidence cache in
+Complete, identity-matched captured posting reads share a retained evidence cache in
 `state/enrich-ats-pay-employer.json`. Primary ATS reads, structured aggregator
 postings, public fallback, active salary review, employer-board details, comparable
 source refresh and benchmark research all save through the same cache. Existing
@@ -64,7 +64,9 @@ posting text, observation time, parser version and available posting facts. Cach
 reuse preserves the original salary and degree evidence dates. ATS URL aliases are
 matched conservatively; distinct Ashby requisitions remain separate despite their
 shared board API. Changed identities, unrelated URLs, expired postings, invalid or
-future timestamps and observations seven days old cannot be reused. Old evidence
+future timestamps cannot be reused. Capture age and provider origin alone do not
+expire reusable facts or force a second fetch; original dates and unverified liveness
+remain visible. Explicit posting expiry remains a separate constraint. Invalid evidence
 is pruned when the existing public employer cache is saved, including dry runs;
 canonical Writer state and the submission ledger keep their existing dry-run rules.
 
@@ -146,7 +148,8 @@ is not a third-party estimate, even if an upstream card flags it incorrectly.
 
 `site-estimate.js` retains the exact job identity, source URL, observation date,
 original range and ESTIMATED classification. It reads identity-bound immutable
-captures, source-reviewed report cards and canonical THIRD_PARTY_ESTIMATE rows.
+captures, source-bound report cards (including metadata-only cards without a description)
+and canonical THIRD_PARTY_ESTIMATE rows.
 Original inputs survive recalculation in the salary ledger; a prior Forge result
 is never fed back as the site's original number.
 

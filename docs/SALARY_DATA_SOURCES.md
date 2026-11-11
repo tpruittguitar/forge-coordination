@@ -12,7 +12,7 @@ The programmed pay worker reuses saved pay and this selector. A trusted source-l
 
 1. Exact employer posting (including an identity-matched aggregator copy of that posting): use the stated base range.
    Salary-transparency jurisdictions are useful places to search for same-employer comparables when the target has no
-   posted pay. The current worker already checks posting pay first and prioritizes transparency-state board results.
+   posted pay. Retained exact posted pay always wins; a trusted site estimate skips salary-only source checks and uses the existing model inputs. Other research prioritizes transparency-state board results.
    Coverage depends on the employer, jurisdiction and role/location. The state list in code is a search hint, not a legal
    determination that every listing must contain pay. Never present a California comparable as the target's Texas pay.
    Official California guidance: https://www.dir.ca.gov/dlse/california_equal_pay_act.htm

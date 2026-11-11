@@ -38,9 +38,12 @@ function create({root,ledger={},now=()=>Date.now()}={}){
  const manifest=read('state/discovery-evidence/manifest.json'),entries=manifest?.schema==='forge.discovery-evidence-manifest.v1'?manifest.entries:read('state/UPSTREAM_LEDGER.json')?.entries;
  for(const e of Object.values(entries||{}))for(const ref of e.evidenceRefs||[]){if(seen.has(ref.sha256))continue;seen.add(ref.sha256);const d=Evidence.read(root,ref);if(d&&PostedPay.bound(d.postedPay,d))add(d.postedPay);}
  // The report can precede publication of the immutable evidence manifest. Only
- // source-reviewed, text-hash-bound cards carry the original estimate forward.
+ // source-bound salary disclosure is usable even when the provider returned no
+ // description. Validate any captured text hash without requiring complete text.
  for(const file of ['state/source-trial-report.json','state/board-discovery-report.json']){const report=read(file);for(const c of ['new_roles','existing_roles','protected_roles','identity_held_roles'].flatMap(k=>report?.[k]||[])){
-  const d=c?.discoveryReview;if(d?.schema==='forge.discovery-review.v1'&&d.detailStatus==='SOURCE_CONTENT_REVIEWED'&&d.sourceSha256===Evidence.hash(require('../programmed-coordinator/source.cjs').text(c.description||''))&&d.source===c.source&&key(d.sourceUrl)===key(c.url)&&PostedPay.bound(c.postedPay,c))add(c.postedPay);
+  const d=c?.discoveryReview,text=require('../programmed-coordinator/source.cjs').text(c?.description||'');
+  const contentBound=text?d?.sourceSha256===Evidence.hash(text):d?.sourceSha256==null;
+  if(d?.schema==='forge.discovery-review.v1'&&contentBound&&d.source===c.source&&key(d.sourceUrl)===key(c.url)&&PostedPay.bound(c.postedPay,c))add(c.postedPay);
  }}
  function remember(row,p){p=valid(row,p,now());if(!p)return null;ledger.siteEstimates[row.PRIMARY_ID]={identity:identity(row),input:structuredClone(p)};return p;}
  function forRow(row){

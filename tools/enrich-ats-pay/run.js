@@ -347,6 +347,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // before new gaps, so a busy queue cannot starve old weak pay indefinitely.
   ledger.salaryReview=ledger.salaryReview||{};const reviewOriginal=new Map();
   const review=stats.salary_review={eligible:rows.filter(ActiveReview.eligible).length,due:0,reviewed:0,target_reads:0,posted_planned:0,estimate_planned:0,no_improvement:0,guard_dropped:0,samples:[]};
+  const retainedExactPay=r=>{const e=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));return e?.pay&&e.basis==='EMPLOYER_POSTED'?e:null;};
+  const exactPayFields=(e,note)=>({SALARY_BASE_LOW:e.pay.low,SALARY_BASE_HIGH:e.pay.high,SALARY_MIDPOINT:Math.round((e.pay.low+e.pay.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:e.url,SALARY_ASOF:e.at?e.at.slice(0,10):today,SALARY_NOTE:note+'; exact identity-bound posted USD annual base pay, excludes bonus/equity.'});
   async function repairSalaries(candidates) {
   for (const r of PRODUCTS_ONLY || PREPARE_ONLY ? [] : candidates) {
     if(!runtime.canStart())break;
@@ -356,6 +358,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 >= CONFIG.maxRunMs || researchUnavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
     progress('salary_repair',{id:r.PRIMARY_ID,decision:decisionIds.has(r.PRIMARY_ID)});
+    const exact=retainedExactPay(r);if(exact){record.status='EXACT_POSTED_PAY_PLANNED';stats.salary_repairs++;repairOriginal.set(r.PRIMARY_ID,salaryStamp(r));requests.push({action:'ruling',ruling:{requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`,primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:exactPayFields(exact,'Salary repair: reused retained source evidence')}});continue;}
     const est = await estimateFor(r, { noBoard: true }); if (!est || !runtime.canStart()) continue;
     record.status = 'PLANNED'; stats.salary_repairs++; repairOriginal.set(r.PRIMARY_ID, salaryStamp(r));
     requests.push({ action:'ruling', ruling:{ requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`, primaryId:r.PRIMARY_ID, kind:'ENRICH', actor:'ATSBOT', fields:{
@@ -376,7 +379,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
     progress('salary_review',{id:r.PRIMARY_ID});
-    review.reviewed++;const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);const reviewRow=Employer.resolve(r),reviewUrls=Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY)),savedReview=Recovery.combine(postingCache.find(reviewRow,reviewUrls),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));let exact=savedReview?.pay&&savedReview.basis==='EMPLOYER_POSTED'?savedReview:null,source=exact?.url||null,attempts=0;
+    review.reviewed++;const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);const reviewRow=Employer.resolve(r),reviewUrls=Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY)),savedReview=retainedExactPay(r);let exact=savedReview,source=exact?.url||null,attempts=0;
     for(const url of skipSalaryLookup?[]:reviewUrls){
       const retained=postingCache.find(reviewRow,[url]);if(exact||retained&&!retained.payNeedsRefresh)continue;
       if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
