@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-11T13:53:06.000Z",
+  "at": "2026-11-11T15:53:03.000Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -43920,6 +43920,47 @@
         "pendingCards": [],
         "unseenHistoricalCoverage": "UNPROVEN"
       }
+    },
+    "1a1cb500f8f21733": {
+      "gmailId": "1a1cb500f8f21733",
+      "url": "https://www.linkedin.com/jobs/view/4489194581/",
+      "advertisedUnseen": 0,
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "linkedin:4489194581",
+        "linkedin:4480478330",
+        "linkedin:4487537220",
+        "linkedin:4487949641",
+        "linkedin:4487954067",
+        "linkedin:4489484390"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "advertisedCountIsNotUniqueJobs": true,
+      "nextPageRequired": false,
+      "exhausted": false,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71",
+        "at": "2026-11-11T16:42:15.245Z",
+        "originalDate": "2026-11-11T15:53:03.000Z",
+        "visibleKeys": [
+          "linkedin:4489194581",
+          "linkedin:4480478330",
+          "linkedin:4487537220",
+          "linkedin:4487949641",
+          "linkedin:4487954067",
+          "linkedin:4489484390"
+        ],
+        "newKeys": [
+          "linkedin:4489194581",
+          "linkedin:4487949641",
+          "linkedin:4487954067",
+          "linkedin:4489484390"
+        ],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
     }
   },
   "jobs": {
@@ -67057,7 +67098,8 @@
       "sourceEmails": [
         "1a15695409260704",
         "1a1569547e22886a",
-        "1a1569541762d261"
+        "1a1569541762d261",
+        "1a1cb500f8f21733"
       ],
       "evidence": [
         {
@@ -67107,6 +67149,19 @@
             "Palmetto, FL",
             "Posted 1 week ago\n1 week ago"
           ]
+        },
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "bf4da821eb741c3f3ff48cb93c02022ff466b66d15187e19436904df6d6f4d8d",
+          "paragraphs": [
+            "Plant Manager",
+            "LFG Manufacturing",
+            "Palmetto, FL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
         }
       ],
       "disposition": {
@@ -67117,6 +67172,69 @@
         "receiptState": "COMPLETE",
         "exactRowVerified": true,
         "rowSha256": "917fb4695c5c771520aae6fb99aba0b212373de524964ae47fda03abc280b949"
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "plant"
+              ],
+              "postingQuotes": [
+                "Plant Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4480478330/",
+          "sourceIdentity": {
+            "company": "LFG Manufacturing",
+            "title": "Plant Manager",
+            "location": "Palmetto, FL"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4480478330/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     },
     "linkedin:4481737704": {
@@ -522696,7 +522814,8 @@
         "1a1b347b882359cf",
         "1a1b0b48d6bc60fc",
         "1a1b86e179af6346",
-        "1a1c92ac0bfd2692"
+        "1a1c92ac0bfd2692",
+        "1a1cb500f8f21733"
       ],
       "evidence": [
         {
@@ -522750,11 +522869,24 @@
           ],
           "source": "FULL_ORIGINAL_ALERT",
           "sourceSha256": "98c432b26e52bca40233afee6a87475322e7e472c81883eb57764799c87dd9d8"
+        },
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "a83e931928fc698104b5348629a01a51d2e57d0ec6a0e8ab5a0597689a0af40b",
+          "paragraphs": [
+            "Site General Manager- Aerospace & Defense Manufacturing",
+            "Spartronics",
+            "Brooksville, FL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
         }
       ],
       "preliminaryScreen": {
         "schema": "forge.discovery-preliminary-screen.v1",
-        "checkedAt": "2026-11-11T06:22:06.296Z",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
         "ats": {
           "schema": "forge.resume-overlap.v1",
           "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
@@ -624492,6 +624624,348 @@
           "ruleId": null,
           "quote": null,
           "sourceUrl": "https://www.linkedin.com/jobs/view/4488875259/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4489194581": {
+      "key": "linkedin:4489194581",
+      "jobId": "4489194581",
+      "title": "Plant General Manager",
+      "company": "Crest Search Group",
+      "location": "Florida, United States",
+      "url": "https://www.linkedin.com/jobs/view/4489194581/",
+      "observedAt": "2026-11-11T15:53:03.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1cb500f8f21733"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "4969c3eaf63800543e90fc622053632daa31ec0b54773f6321d1aa3c729c0c69",
+          "paragraphs": [
+            "Plant General Manager",
+            "Crest Search Group",
+            "Florida, United States"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "plant"
+              ],
+              "postingQuotes": [
+                "Plant General Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489194581/",
+          "sourceIdentity": {
+            "company": "Crest Search Group",
+            "title": "Plant General Manager",
+            "location": "Florida, United States"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489194581/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4487949641": {
+      "key": "linkedin:4487949641",
+      "jobId": "4487949641",
+      "title": "Director, Business Process Excellence",
+      "company": "AMAG Technology",
+      "location": "West Palm Beach, FL",
+      "url": "https://www.linkedin.com/jobs/view/4487949641/",
+      "observedAt": "2026-11-11T15:53:03.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1cb500f8f21733"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "0d47666a0ccb7f242ab8f49364b179dfcca9469b2ae9fb1b0993b05ed1420c4f",
+          "paragraphs": [
+            "Director, Business Process Excellence",
+            "AMAG Technology",
+            "West Palm Beach, FL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487949641/",
+          "sourceIdentity": {
+            "company": "AMAG Technology",
+            "title": "Director, Business Process Excellence",
+            "location": "West Palm Beach, FL"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487949641/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4487954067": {
+      "key": "linkedin:4487954067",
+      "jobId": "4487954067",
+      "title": "Senior Director of Operations (Process Serving)",
+      "company": "Company Confidential",
+      "location": "Florida, United States",
+      "url": "https://www.linkedin.com/jobs/view/4487954067/",
+      "observedAt": "2026-11-11T15:53:03.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1cb500f8f21733"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "ee00fd92207c76b373798112f2f36bde442c2ce74733974e932e3a370567ae80",
+          "paragraphs": [
+            "Senior Director of Operations (Process Serving)",
+            "Company Confidential",
+            "Florida, United States"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487954067/",
+          "sourceIdentity": {
+            "company": "Company Confidential",
+            "title": "Senior Director of Operations (Process Serving)",
+            "location": "Florida, United States"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487954067/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4489484390": {
+      "key": "linkedin:4489484390",
+      "jobId": "4489484390",
+      "title": "Plant Operations Manager",
+      "company": "DBF Recruiting LLC",
+      "location": "Jacksonville, FL",
+      "url": "https://www.linkedin.com/jobs/view/4489484390/",
+      "observedAt": "2026-11-11T15:53:03.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1cb500f8f21733"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1cb500f8f21733",
+          "at": "2026-11-11T15:53:03.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4489194581/",
+          "cardHash": "ebb71082b14a756eba9e77f3add82dda86da722269cf9268f7e8b6179ba7d8c0",
+          "paragraphs": [
+            "Plant Operations Manager",
+            "DBF Recruiting LLC",
+            "Jacksonville, FL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "6e602b66f26727494ac80f6fe4c8212b7334623d2cd3d4fef46c623460544c71"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-11T16:33:04.474Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "plant"
+              ],
+              "postingQuotes": [
+                "Plant Operations Manager"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489484390/",
+          "sourceIdentity": {
+            "company": "DBF Recruiting LLC",
+            "title": "Plant Operations Manager",
+            "location": "Jacksonville, FL"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8527185723907f5f6298d56e866a1e70058e8597846320a5f408b5efbefc2bec",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489484390/",
           "sourceSha256": null,
           "canonicalEligibility": false
         },
