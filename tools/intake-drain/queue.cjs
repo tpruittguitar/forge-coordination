@@ -33,6 +33,15 @@ function writerFences(root){
  }
  return fences;
 }
+// Scope-task ownership does not prove that a historical wait was about fit.
+// Keep explicit identity/conflict obligations until a newer source review has
+// actually passed its independent identity check via approved(), not merely
+// been published. The historical hold never becomes an unreviewed seed.
+function scopeReviewHold(item){
+ if(!item)return null;
+ const reason=/IDENTITY|CONFLICT/.test(item.validation?.reason||'')?item.validation.reason:['RECONCILIATION_REQUIRED','EXCLUSION_CANDIDATE'].includes(item.review?.outcome)?item.review.outcome:null;
+ return item.scopeReviewHold||(item.action==='REVIEW_SCOPE'&&reason?{reason,reviewPath:item.review?.path||null}:null);
+}
 function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const up=read(root,'state/UPSTREAM_LEDGER.json'),old=read(root,FILE,empty()),mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),present=new Set(),at=new Date(now).toISOString();
  if(old.schema!=='forge.intake-drain.v1'||!old.items||Array.isArray(old.items))throw Error('VALID_DURABLE_DRAIN_INVENTORY_REQUIRED');
@@ -49,15 +58,15 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   if(!currentFence&&!old.items[key]&&!priorAlias&&[key,...g.aliases||[]].some(k=>sharedReserved.has(k)))continue; // Already assigned evidence-only research; original Writer reconciliation still wins.
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
-  const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean);
+  const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean),identityHold=scopeReviewHold(old.items[key]);
   // Exact saved alert facts with opaque tracking links need source recovery,
   // not a fabricated URL or a generic identity-reconciliation dead end.
   const alertSourceGap=!card.url&&es.some(x=>x.discoveryReview?.contentBasis==='EXACT_ORIGINAL_ALERT_CARD'&&
    x.discoveryReview?.pendingFacts?.includes('SOURCE_URL')&&/^state\/EMAIL_RECOVERY_QUEUE\.json#alert-card:[a-f0-9]{64}$/.test(x.discoveryReview.sourceProof||''));
-  const action=fence?'RECONCILE_WRITER':sourceFailure?'RECOVER_SOURCE':recovered.conflict?'RESOLVE_IDENTITY':alertSourceGap?'RECOVER_SOURCE':g.status==='IDENTITY_HOLD'||g.status==='MISSING_PREVIOUSLY_PRESENT'?'RESOLVE_IDENTITY':screen.outcome==='HOLD_SOURCE_IDENTITY'?'RECOVER_SOURCE':g.status==='HELD'?'RESOLVE_IDENTITY':screen.outcome==='RANKED_DISCOVERY'?'REVIEW_SCOPE':'INTAKE';
+  const action=fence?'RECONCILE_WRITER':sourceFailure?'RECOVER_SOURCE':recovered.conflict?'RESOLVE_IDENTITY':alertSourceGap?'RECOVER_SOURCE':g.status==='IDENTITY_HOLD'||g.status==='MISSING_PREVIOUSLY_PRESENT'?'RESOLVE_IDENTITY':screen.outcome==='HOLD_SOURCE_IDENTITY'?'RECOVER_SOURCE':g.status==='HELD'?'RESOLVE_IDENTITY':(identityHold||screen.outcome==='RANKED_DISCOVERY'||require('./title-exclusions.cjs').matches(root,card).length===1)?'REVIEW_SCOPE':'INTAKE';
   const sourceVersion=S.hash({aliases:[...aliases].sort(),card,status:g.status,evidence:es.map(e=>({evidenceStatus:e.evidenceStatus,proof:e.proof,screenRuleId:e.screenRuleId,sourceSha256:e.discoveryReview?.sourceSha256,sources:e.sources})),resumeVersion,sourceFailure:!!sourceFailure,fence:fence||null});
-  const previous=old.items[key],unchanged=previous?.sourceVersion===sourceVersion;
-  const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:'Read saved role content, then one targeted lookup for actual function and responsibility',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
+  const previous=old.items[key],scopeReleased=previous?.action==='REVIEW_SCOPE'&&action==='INTAKE',unchanged=previous?.sourceVersion===sourceVersion&&!scopeReleased;
+  const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,scopeReviewHold:identityHold,scopeReviewHistory:scopeReleased?{sourceVersion:previous.sourceVersion,review:previous.review||null,validation:previous.validation||null}:previous?.scopeReviewHistory||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:identityHold?'Resolve the recorded identity or exclusion obligation before intake; a fit-only verdict does not clear it':'Check the exact captured-title exclusion against current canonical policy; uncertain fit alone does not block intake',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
   // A Writer attempt discovered after dismissal still needs independent reconciliation.
   if(fence&&(es.some(dismissed)||g.status==='PRESENT')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
@@ -74,7 +83,22 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   }else{delete item.currentRepresentation;item.status='INVENTORY_RECONCILIATION_REQUIRED';item.nextAction='Recover missing upstream group before processing';}
  }
  old.at=at;old.upstreamAt=up.at;old.reviewErrors={};
- for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];if(!item||item.sourceVersion!==review.sourceVersion||item.status==='ACCOUNTED_UPSTREAM'||item.status==='INVENTORY_RECONCILIATION_REQUIRED'||item.currentRepresentation)continue;validate(review,item,now);if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
+ for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];
+  // A historical scope-only review must not put a now-admissible card back
+  // behind AI review or a second fetch. Keep the immutable review as history.
+  if(item?.action==='INTAKE'&&review.taskKey===TASKS.REVIEW_SCOPE){
+   if(!['RECONCILIATION_REQUIRED','EXCLUSION_CANDIDATE'].includes(review.outcome)||item.sourceVersion!==review.sourceVersion)continue;
+   const history=item.scopeReviewHistory;
+   if(history?.sourceVersion===item.sourceVersion&&history.validation?.status==='READY_FOR_CONTROLLED_INTAKE'&&history.validation.reviewSha256===history.review?.sha256&&Date.parse(history.review?.observedAt)>Date.parse(review.observedAt))continue;
+   // A newly published immutable conflict review may not yet be reflected in
+   // cached item.review. Bind and consume identity or exclusion obligations
+   // before releasing the old scope wait.
+   const held={...item,action:'REVIEW_SCOPE',taskKey:TASKS.REVIEW_SCOPE,owner:'ChatGPT'};
+   validate(review,held,now);
+   if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
+   Object.assign(item,{action:held.action,taskKey:held.taskKey,owner:held.owner,scopeReviewHold:{reason:review.outcome,reviewPath:reviewPath(review)}});
+  }
+  if(!item||item.sourceVersion!==review.sourceVersion||item.status==='ACCOUNTED_UPSTREAM'||item.status==='INVENTORY_RECONCILIATION_REQUIRED'||item.currentRepresentation)continue;validate(review,item,now);if(path.relative(root,file).split(path.sep).join('/')!==reviewPath(review))throw Error('IMMUTABLE_DRAIN_REVIEW_REQUIRED');
   if(item.review&&Date.parse(item.review.observedAt)>Date.parse(review.observedAt))continue;
   item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome,retryCondition:review.retryCondition,retryAfter:review.retryAfter};
   item.nextAction=review.nextAction||item.nextAction;

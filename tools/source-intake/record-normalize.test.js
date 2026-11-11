@@ -29,11 +29,11 @@ test('AUTO intake does not drop West Coast or Memphis roles; the geo map scores 
   {...base,company:'Gamma Works',location:'Memphis, TN, USA',place:'TN',url:'https://example.com/3'}];
  assert.strictEqual(pick({new_roles:roles},{max:5,sent:new Set()}).length,3);
 });
-test('Senior Staff and Principal engineer roles pass AUTO level checks; plain Staff does not',()=>{
+test('Senior Staff, Principal and Staff engineer roles do not face a second AUTO level check',()=>{
  const {level}=require('../source-trial/lib.js');
  const r=t=>({company:'Shield AI',title:t,location:'Des Moines, WA, USA',place:'WA',level:level(t),url:'https://example.com/'+encodeURIComponent(t)});
  const ok=t=>pick({new_roles:[r(t)]},{max:5,sent:new Set()}).length===1;
  assert.ok(ok('Senior Staff Production Engineer, X-BAT'));
  assert.ok(ok('Principal Manufacturing Engineer'));
- assert.ok(!ok('Staff Manufacturing Engineer'));
+ assert.ok(ok('Staff Manufacturing Engineer'));
 });

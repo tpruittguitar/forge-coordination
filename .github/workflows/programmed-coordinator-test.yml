@@ -31,6 +31,11 @@ jobs:
       - run: node --test tools/programmed-coordinator/store.test.cjs tools/programmed-coordinator/publish.test.cjs
   test:
     runs-on: ubuntu-latest
+    # Official matching browser image avoids runtime apt mirror dependencies.
+    container: mcr.microsoft.com/playwright:v1.62.1-resolute
+    defaults:
+      run:
+        shell: bash
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -40,6 +45,5 @@ jobs:
         with:
           python-version: '3.12'
       - run: npm ci --prefix tools/routine-handoffs --ignore-scripts
-      - run: npx --prefix tools/routine-handoffs playwright install --with-deps chromium
       - run: node --test tools/research-preflight/*.test.cjs tools/intake-drain/*.test.cjs tools/routine-handoffs/*.test.cjs tools/programmed-coordinator/*.test.cjs tools/relevance-screen/*.test.cjs tools/helper-routing/*.test.cjs tools/email-recovery/*.test.cjs tools/automation-health/*.test.js tools/writer-outcome.test.cjs tools/source-trial/evidence-store.test.js tools/source-trial/preliminary-screen.test.js tools/needs-tim/build.test.js tests/automation-run-lock.test.cjs
       - run: python -m unittest discover -s tools/automation-health -p '*test.py' -v

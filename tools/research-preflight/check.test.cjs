@@ -1,45 +1,48 @@
 'use strict';
 const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),path=require('node:path'),os=require('node:os');
 const P=require('./check.cjs'),S=require('../programmed-coordinator/store.cjs'),D=require('../intake-drain/queue.cjs'),X=require('../routine-handoffs/exceptions.cjs');
-const now=Date.parse('2026-11-08T08:00:00Z'),at=new Date(now).toISOString(),scope='FORGE_INTAKE_SCOPE_REVIEW',outcome='FORGE_APPLICATION_OUTCOME_TRACKER',enrich='FORGE_CHATGPT_ENRICHMENT_RESEARCH';
+const now=Date.parse('2026-11-08T08:00:00Z'),at=new Date(now).toISOString(),drainTask='FORGE_INTAKE_SOURCE_RECOVERY',outcome='FORGE_APPLICATION_OUTCOME_TRACKER',enrich='FORGE_CHATGPT_ENRICHMENT_RESEARCH';
 function fixture(t){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'forge-research-check-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
- S.save(root,'control/AI_AUTOMATION_TASKS.json',{schema:'forge.ai-automation-tasks.v1',tasks:{[scope]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_INTAKE_DRAIN.txt'},[outcome]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt'},[enrich]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_ENRICHMENT_RESEARCH.txt'}}});return root;
+ S.save(root,'control/AI_AUTOMATION_TASKS.json',{schema:'forge.ai-automation-tasks.v1',tasks:{[drainTask]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_INTAKE_DRAIN.txt'},[outcome]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt'},[enrich]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_ENRICHMENT_RESEARCH.txt'}}});return root;
 }
-function drain(root){
- const key='url:research-test';S.save(root,'state/UPSTREAM_LEDGER.json',{schema:'forge.upstream-ledger.v1',at,entries:{[key]:{company:'Factory',title:'General Manager',location:'Austin, TX',sourceUrl:'https://example.com/jobs/123',sources:['saved.json']}},groups:{[key]:{status:'WAITING',aliases:[key],firstSeen:at}}});
+function drain(root,location=''){
+ const key='url:research-test';S.save(root,'state/UPSTREAM_LEDGER.json',{schema:'forge.upstream-ledger.v1',at,entries:{[key]:{company:'Factory',title:'General Manager',location,sourceUrl:'https://example.com/jobs/123',sources:['saved.json']}},groups:{[key]:{status:'WAITING',aliases:[key],firstSeen:at}}});
  return D.sync(root,{now,apply:true}).items[key];
 }
 function wait(root,item,extra={}){
- D.publish(root,{schema:'forge.intake-drain-review.v1',key:item.key,sourceVersion:item.sourceVersion,provider:'ChatGPT',taskKey:scope,runId:'FORGE-DRAIN-PREFLIGHT-TEST',observedAt:at,outcome:'WAITING_SOURCE_CHANGE',reason:'Exact posting is unavailable',nextAction:'Retry when exact source changes',writerSubmitted:false,attempts:[{url:item.card.url,result:'UNAVAILABLE'}],retryCondition:'NEW_SOURCE_EVIDENCE',...extra},now);
+ D.publish(root,{schema:'forge.intake-drain-review.v1',key:item.key,sourceVersion:item.sourceVersion,provider:'ChatGPT',taskKey:drainTask,runId:'FORGE-DRAIN-PREFLIGHT-TEST',observedAt:at,outcome:'WAITING_SOURCE_CHANGE',reason:'Exact posting is unavailable',nextAction:'Retry when exact source changes',writerSubmitted:false,attempts:[{url:item.card.url,result:'UNAVAILABLE'}],retryCondition:'NEW_SOURCE_EVIDENCE',...extra},now);
 }
+test('complete captured cards need no research but remain controlled-intake seeds',t=>{
+ const root=fixture(t),item=drain(root,'Austin, TX');a.equal(item.action,'INTAKE');a.equal(P.check(root,drainTask,{now}).decision,'IDLE');a.equal(D.seeds(root,{now}).length,1);
+});
 test('unchanged actionable queues always retain productive research; fingerprint is diagnostic only',t=>{
- const root=fixture(t);drain(root);const first=P.check(root,scope,{now}),second=P.check(root,scope,{now:now+1000});
+ const root=fixture(t);drain(root);const first=P.check(root,drainTask,{now}),second=P.check(root,drainTask,{now:now+1000});
  a.equal(first.decision,'RESEARCH_REQUIRED');a.equal(first.eligible,1);a.equal(second.skipResearch,false);a.equal(first.researchFingerprint,second.researchFingerprint);
 });
 test('source-bound unchanged waits skip research, due retries reopen without any file change',t=>{
  const root=fixture(t),item=drain(root),retryAfter=new Date(now+3600000).toISOString();wait(root,item,{retryAfter});
- const before=P.check(root,scope,{now});a.equal(before.decision,'IDLE');a.equal(before.nextRetryAt,retryAfter);a.equal(before.canonicalCompletion,false);a.equal(before.canonicalWrites,0);
- a.equal(P.check(root,scope,{now:now+3600000}).decision,'RESEARCH_REQUIRED');
- a.equal(D.next(root,scope,{now:now+3600000}).items.length,1);
+ const before=P.check(root,drainTask,{now});a.equal(before.decision,'IDLE');a.equal(before.nextRetryAt,retryAfter);a.equal(before.canonicalCompletion,false);a.equal(before.canonicalWrites,0);
+ a.equal(P.check(root,drainTask,{now:now+3600000}).decision,'RESEARCH_REQUIRED');
+ a.equal(D.next(root,drainTask,{now:now+3600000}).items.length,1);
 });
 test('changed source reopens held research and no-timer waits are not treated as periodic retries',t=>{
- const root=fixture(t),item=drain(root);wait(root,item);a.equal(P.check(root,scope,{now:now+3600000}).decision,'IDLE');
- const up=S.read(root,'state/UPSTREAM_LEDGER.json');up.entries[item.key].location='Dallas, TX';S.save(root,'state/UPSTREAM_LEDGER.json',up);
- a.equal(P.check(root,scope,{now}).decision,'RESEARCH_REQUIRED');
+ const root=fixture(t),item=drain(root);wait(root,item);a.equal(P.check(root,drainTask,{now:now+3600000}).decision,'IDLE');
+ const up=S.read(root,'state/UPSTREAM_LEDGER.json');up.entries[item.key].title='Plant General Manager';S.save(root,'state/UPSTREAM_LEDGER.json',up);
+ a.equal(P.check(root,drainTask,{now}).decision,'RESEARCH_REQUIRED');
 });
 test('invalid reviews and missing or stale inputs never yield an idle decision',t=>{
  const root=fixture(t),item=drain(root);wait(root,item);S.save(root,D.REVIEWS+'/broken.json',{schema:'unknown',key:item.key,sourceVersion:item.sourceVersion});
- a.equal(P.check(root,scope,{now}).decision,'INSPECT_QUEUE');a.equal(P.check(root,'UNKNOWN',{now}).skipResearch,false);
- a.equal(P.check(root,scope,{now:now+25*3600000}).decision,'INSPECT_QUEUE');
- fs.unlinkSync(path.join(root,'state/UPSTREAM_LEDGER.json'));a.equal(P.check(root,scope,{now}).decision,'INSPECT_QUEUE');
+ a.equal(P.check(root,drainTask,{now}).decision,'INSPECT_QUEUE');a.equal(P.check(root,'UNKNOWN',{now}).skipResearch,false);
+ a.equal(P.check(root,drainTask,{now:now+25*3600000}).decision,'INSPECT_QUEUE');
+ fs.unlinkSync(path.join(root,'state/UPSTREAM_LEDGER.json'));a.equal(P.check(root,drainTask,{now}).decision,'INSPECT_QUEUE');
 });
 test('pending independent validation is idle only for research, not completion or Writer permission',()=>{
- const r=P.summary({taskKey:scope,items:[{key:'one',status:'PENDING_INDEPENDENT_VALIDATION'}],eligible:[],at,now});
+ const r=P.summary({taskKey:drainTask,items:[{key:'one',status:'PENDING_INDEPENDENT_VALIDATION'}],eligible:[],at,now});
  a.equal(r.decision,'IDLE');a.equal(r.researchOnly,true);a.equal(r.canonicalCompletion,false);a.equal(r.noProcessingCap,true);
 });
 test('future and stale empty state never prove idle',()=>{
- for(const stamp of [undefined,'bad',new Date(now+300000).toISOString(),new Date(now-25*3600000).toISOString()])a.equal(P.summary({taskKey:scope,items:[],eligible:[],at:stamp,now}).decision,'INSPECT_QUEUE');
+ for(const stamp of [undefined,'bad',new Date(now+300000).toISOString(),new Date(now-25*3600000).toISOString()])a.equal(P.summary({taskKey:drainTask,items:[],eligible:[],at:stamp,now}).decision,'INSPECT_QUEUE');
 });
 test('failed source validation retries stay eligible at their exact due boundary',()=>{
  const item={status:'SOURCE_VALIDATION_REQUIRED',validation:{retryAfter:new Date(now+1000).toISOString()}};
@@ -67,7 +70,7 @@ test('enrichment uses current ownership and preserves assigned jobs while return
  w.enabled=false;S.save(root,'control/ENRICHMENT_HELPER_WORK.json',w);a.equal(P.check(root,enrich,{now}).skipResearch,false);
 });
 test('read-only preflight neither writes queue state nor opens source transport',t=>{
- const root=fixture(t);drain(root);const before=S.files(root).map(f=>[f,fs.readFileSync(f,'utf8')]);P.check(root,scope,{now});a.deepEqual(S.files(root).map(f=>[f,fs.readFileSync(f,'utf8')]),before);
+ const root=fixture(t);drain(root);const before=S.files(root).map(f=>[f,fs.readFileSync(f,'utf8')]);P.check(root,drainTask,{now});a.deepEqual(S.files(root).map(f=>[f,fs.readFileSync(f,'utf8')]),before);
 });
 test('due retry progress stays actionable with no attempt or an attempt lacking a new disposition',t=>{
  const root=fixture(t),E=require('../routine-handoffs/exception-progress.cjs'),sourceVersion='a'.repeat(64),retryAfter=new Date(now).toISOString();
