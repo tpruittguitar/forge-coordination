@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-10T21:22:24.615Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-11T01:22:35.352Z from CANONICAL_WRITER_MASTER.
 
-Of 578 jobs waiting on Tim, 16 match a role he already applied to, was rejected from, or declined:
+Of 583 jobs waiting on Tim, 17 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 16
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 17
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (16)
+## Kept, labeled (17)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -37,4 +37,5 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 51 | EPM Scientific | Vice President, Quality | You declined 2026-11-02 · different site | Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA | V2I-E32A3FAD4E67 → V2I-331877FAD4F9 |
 | 50 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
+| 47 | Anduril Industries | Senior Manager, Manufacturing Engineering — Autonomous Airpower | You declined 2026-11-03 · possible repeat | Posting first seen 2026-10-26, -8 days after 2026-11-03; no posting identity to compare | V2I-15489A9AF6A9 → V2I-6435C93D65DE |
 
