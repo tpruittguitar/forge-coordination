@@ -526,6 +526,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!Object.keys(f).length) { if(SiteEstimate.routed(r,siteInput)){Recovery.remember(ledger,r,needsOf(r),'MODEL_INPUTS_REQUIRED',readAttempts);if(siteInput)ledger.progress[r.PRIMARY_ID].siteEstimateSha256=Store.hash(siteInput);} if(attempted) ledger.tried[r.PRIMARY_ID] = new Date().toISOString(); else stats.not_attempted = (stats.not_attempted || 0) + 1; stats.nothing_found = (stats.nothing_found || 0) + 1; if(!SiteEstimate.routed(r,siteInput)&&(attempted||(!api&&!knownBoard&&!recoveryUrls.some(u=>Recovery.readableRoute(u,CONFIG.aggregatorsOff||[]))))){Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',readAttempts.length?readAttempts:[{status:'NO_SUPPORTED_READER_FOR_SAVED_SOURCE'}]);}pending.push({...Recovery.unresolved(r,n,ledger,SiteEstimate.routed(r,siteInput)?'MODEL_INPUTS_REQUIRED':attempted?'SOURCE_RESEARCH_REQUIRED':'RUN_BUDGET_OR_NO_READER'),...(SiteEstimate.routed(r,siteInput)?{next:'Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present.'}:{})}); continue; }
     Recovery.remember(ledger,r,needsOf(r),'EVIDENCE_FOUND',readAttempts);
     if(siteInput)ledger.progress[r.PRIMARY_ID].siteEstimateSha256=Store.hash(siteInput);
+    // Attempt metadata alone is discarded by the pre-submit guard. Keep its
+    // source evidence locally, but do not let it crowd useful rows out of the cap.
+    if(!Object.keys(f).some(k=>k!=='FEASIBILITY_ATTEMPT_ASOF')){
+      stats.attempt_only_skipped=(stats.attempt_only_skipped||0)+1;
+      continue;
+    }
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   // Shared location facts are looked up once per site, then copied through the Writer.
