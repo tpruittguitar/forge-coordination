@@ -1,5 +1,5 @@
 'use strict';
-const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Source=require('../programmed-coordinator/source.cjs'),H=require('./shared.cjs');
+const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Source=require('../programmed-coordinator/source.cjs'),H=require('./shared.cjs'),F=require('./field-completion.cjs');
 function needs(row){const p=row.p||{},out=[];
  if(!Source.known(p.SALARY_BASE_LOW))out.push('SALARY');
  if(!Source.known(p.DEGREE_REQ)&&!Source.known(p.DEGREE_TEXT))out.push('DEGREE');
@@ -19,74 +19,50 @@ function existingOwners(root){
  return keys;
 }
 const GROK_TASK='FORGE_GROK_SHARED_HELPER';
-// Receipt-index rows already submitted by Grok. Worklist completion markers and
-// request-bound refusals do not identify those submissions.
-function grokReceipts(writerReceipts){
- if(writerReceipts==null)return null;
- const index=writerReceipts.index||writerReceipts;
- if(!index||typeof index.requests!=='object'||Array.isArray(index.requests)||!Array.isArray(index.pending))throw Error('GROK_WRITER_RECEIPTS_REQUIRED');
- const byPid=new Map();
- const add=(requestId,at,pid)=>{
-  if(!/^FORGE-GROK-[A-Za-z0-9_-]+$/.test(requestId||'')||!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(pid||''))return;
-  const row=byPid.get(pid)||{requestIds:[],at:null};
-  if(!row.requestIds.includes(requestId))row.requestIds.push(requestId);
-  if(Number.isFinite(Date.parse(at))&&(!row.at||Date.parse(at)<Date.parse(row.at)))row.at=at;
-  byPid.set(pid,row);
- };
- for(const [id,entry] of Object.entries(index.requests))for(const item of entry?.items||[])add(id,entry?.at,item?.pid);
- for(const pending of index.pending){
-  const ids=(pending?.requestIds||[]).filter(id=>/^FORGE-GROK-/.test(id||''));
-  if(!ids.length)continue;
-  for(const item of pending.items||[])for(const id of ids)add(id,pending.writtenAt,item?.pid);
+const TRACKED=new Set(['ASSIGNED','DIRECT_REQUEST_SUBMITTED','AWAITING_FIELD_READBACK','ALREADY_COMPLETE']);
+function capturedEvidence(root,state){
+ const out=[];
+ if(!root||!state?.items)return out;
+ for(const rec of Object.values(state.items)){
+  if(typeof rec?.batch!=='string'||rec.batch.includes('..')||state.batches?.[rec.batch]?.status!=='VALIDATED')continue;
+  let batch;try{batch=S.read(root,rec.batch);}catch{continue;}
+  const found=batch?.items?.find(i=>(i.primaryId||i.key)===rec.itemKey);
+  if(found?.sourceEvidence)out.push({primaryId:rec.itemKey,evidence:found.sourceEvidence,fields:found.sourceEvidence.proposedRawFields||{}});
  }
- return byPid;
+ return out;
 }
-function settleGrokSubmissions(work,byId,writerReceipts){
- const grok=grokReceipts(writerReceipts);if(!grok)return 0;
- let hidden=0;
+// Receipts record a submission. A field stays on the assignment page while it
+// is pending, including after a SUCCESS no-op or a mismatched later row.
+function settleGrokFields(work,byId,writerReceipts,captured,readAt,now){
+ const parsed=F.parseReceipts(writerReceipts);
  for(const item of work.items){
-  if(item.taskKey!==GROK_TASK||item.kind!=='ENRICHMENT'||!H.active(item)||!['ASSIGNED','DIRECT_REQUEST_SUBMITTED'].includes(item.status))continue;
+  if(item.taskKey!==GROK_TASK||item.kind!=='ENRICHMENT'||!TRACKED.has(item.status))continue;
   const row=byId.get(item.primaryId);if(!row)continue;
-  const current=S.hash(row.line||row),bound=item.directWriterRequest,seen=grok.get(item.primaryId);
-  if(bound&&item.status==='DIRECT_REQUEST_SUBMITTED'&&bound.sourceVersion===item.sourceVersion&&bound.canonicalHash===current){
-   const extra=(seen?.requestIds||[]).filter(id=>!(bound.requestIds||[]).includes(id)&&!(bound.excludedRequestIds||[]).includes(id));
-   if(extra.length)bound.requestIds=[...new Set([...bound.requestIds,...extra])].sort();
-   hidden++;continue;
-  }
-  if(bound&&(bound.sourceVersion!==item.sourceVersion||bound.canonicalHash!==current)){
-   const excluded=[...new Set([...(bound.excludedRequestIds||[]),...(bound.requestIds||[])])].sort();
-   item.sourceVersion=current;item.status='ASSIGNED';
-   item.directWriterRequest={sourceVersion:current,canonicalHash:current,requestIds:[],excludedRequestIds:excluded};
-  }
-  if(item.status!=='ASSIGNED'||!seen)continue;
-  const excluded=new Set(item.directWriterRequest?.excludedRequestIds||[]);
-  const fresh=seen.requestIds.filter(id=>!excluded.has(id)).sort();
-  if(!fresh.length)continue;
-  item.status='DIRECT_REQUEST_SUBMITTED';
-  item.directWriterRequest={sourceVersion:item.sourceVersion,canonicalHash:current,requestIds:fresh,excludedRequestIds:[...excluded].sort(),at:seen.at||null};
-  hidden++;
+  if(item.status==='ALREADY_COMPLETE'&&!item.fieldState&&!F.relevant(parsed,item.primaryId)&&!captured.some(c=>c.primaryId===item.primaryId))continue;
+  F.advance(item,{needs:needs(row),row,canonicalHash:S.hash(row.line||row),readAt,now,submissions:parsed?.submissions||[],unbound:parsed?.unbound||[],captured});
  }
- return hidden;
+ return F.tally(work);
 }
 function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLock,writerReceipts=null}){
  if(apply){if(typeof checkLock!=='function')throw Error('SHARED_COORDINATOR_LOCK_REQUIRED');checkLock();}
  const work=S.read(root,H.FILE,null);if(!work)return{enabled:false,assigned:0};H.validateWork(work);
  const readAt=Date.parse(snapshot?.source?.readAt);
  if(!Number.isFinite(readAt)||now-readAt>900000||readAt>now+120000)throw Error('FRESH_SHARED_ASSIGNMENT_SNAPSHOT_REQUIRED');
- const occupied=existingOwners(root),byId=new Map(snapshot.rows.concat(snapshot.archiveRows||[]).map(r=>[r.PRIMARY_ID,r]));
+ const occupied=existingOwners(root),byId=new Map(snapshot.rows.concat(snapshot.archiveRows||[]).map(r=>[r.PRIMARY_ID,r])),captured=capturedEvidence(root,state);
  // A returned batch is a durable handoff, never permission for repeated research.
  for(const item of work.items){if(!H.active(item))continue;
   const inspection=Object.values(state.items).find(i=>i.taskKey===item.taskKey&&i.itemKey===H.key(item)&&state.batches[i.batch]?.status==='VALIDATED');
   if(inspection){
    const row=item.kind==='ENRICHMENT'?byId.get(item.primaryId):null;
    const remaining=row?needs(row).filter(f=>(item.missingFields||[]).includes(f)):null;
+   if(item.taskKey===GROK_TASK&&item.kind==='ENRICHMENT'){if(!item.fieldState)F.seed(item,item.missingFields||(row?needs(row):[]));F.storeEvidence(item,captured);}
    item.status=inspection.status==='PROTECTED_SKIP'?'PROTECTED_SKIP':row&&remaining.length===0?'CONSUMED':/^EXISTING/.test(inspection.status)?'CONSUMED':/^VERIFIED|^NO_MISSING/.test(inspection.status)?'RETURNED_PARTIALLY_CONSUMED':'RETURNED_PENDING_REVIEW';
    if(remaining)item.remainingFields=remaining;
    item.returnProof=inspection.batch;continue;
   }
-  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length){item.status='ALREADY_COMPLETE';continue;}}
+  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length&&item.taskKey!==GROK_TASK){item.status='ALREADY_COMPLETE';continue;}}
  }
- const grokSubmittedHidden=settleGrokSubmissions(work,byId,writerReceipts);
+ settleGrokFields(work,byId,writerReceipts,captured,snapshot.source.readAt,new Date(now).toISOString());
  const reserved=H.reservedKeys(work);for(const k of reserved)occupied.add(k);
  const available=Object.keys(H.TASKS).filter(t=>work.providers[t].available),old=new Set(work.items.map(H.key)),candidates=[];
  for(const row of snapshot.rows){const id=row.PRIMARY_ID,missingFields=needs(row);
@@ -111,10 +87,11 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if([H.key(item),...item.aliases||[]].some(k=>occupied.has(k)))continue;
   const taskKey=available[parseInt(S.hash(H.key(item)).slice(0,8),16)%available.length];
   const assignment={...item,taskKey,provider:H.TASKS[taskKey],assignmentVersion:1,status:'ASSIGNED',assignedAt:new Date(now).toISOString(),assignedBy:runId};
+  if(taskKey===GROK_TASK&&assignment.kind==='ENRICHMENT')F.seed(assignment,assignment.missingFields||[]);
   work.items.push(assignment);assigned.push(H.key(item));for(const k of [H.key(item),...item.aliases||[]])occupied.add(k);
  }
  work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;work.priority={basis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',counts:order.counts,laneOrder:order.lanes,observedAt:work.at};
  H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);require('./shared-pages.cjs').generate(root,{now,checkLock});};
- return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),grokSubmittedHidden,canonicalWrites:0,noProcessingCap:true};
+ return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),fieldRoles:F.tally(work),canonicalWrites:0,noProcessingCap:true};
 }
-module.exports={needs,existingOwners,replenish,grokReceipts};
+module.exports={needs,existingOwners,replenish,parseReceipts:F.parseReceipts};

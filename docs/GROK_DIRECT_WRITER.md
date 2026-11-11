@@ -210,6 +210,16 @@ PROCESSING__, HOLD__, processed or failed artifacts. Writer owns their lifecycle
    the existing observability route, but never as a new evidence-only batch that
    would ask another consumer to write them again.
 
+## Field state on the shared assignment
+
+The coordinator records each enrichment role, and each of salary, degree, fit, and links, as pending, submitted, or satisfied. That record is stored on the shared assignment item that assignment pages publish. A Writer SUCCESS records a submission when the submitted field map is available. The field becomes satisfied when a later coordinator pass reads the current canonical row and every submitted value matches. The read is the canonical snapshot the coordinator already loads on its own cycle, so the worker continues with the next batch while confirmation is outstanding.
+
+These results leave the field pending and set a flag. A SUCCESS result whose later row is still blank, an equal before/after receipt hash, `BATCH_RULING_NO_WRITE`, or `ALREADY_APPLIED` sets `SUCCESS_NO_OP`. A later row value that differs from the submitted value sets `READBACK_MISMATCH`. A role with any pending field stays on the assignment page, together with those remaining blanks. Submitted and satisfied fields remain on the role so the worker continues with the blanks.
+
+Captured source evidence is stored on the field. The next worker reads that url, quote, hash, and text from the assignment item.
+
+`PIPELINE_RECEIPT_INDEX` items contain `pid`, `op`, `b`, and `a`. A field is marked submitted when the receipt item, or an already captured submission record, includes the field map. A COMPLETE receipt without that map leaves blank fields pending and sets `SUCCESS_NO_OP`. Authorized workers continue through the direct Writer queue. Request ids remain true UTC, `YYYYMMDDTHHMMSSZ`.
+
 `PARTIAL_HOLD`, `HOLD_UNCERTAIN`, `HOLD_ABANDONED`, failed or missing results
 require original-request reconciliation, never automatic replay or a changed
 request ID. Continue unrelated eligible work. Existing intake and discovery
