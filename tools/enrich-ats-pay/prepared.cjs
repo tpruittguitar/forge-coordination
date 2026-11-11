@@ -13,6 +13,7 @@ function posting(row,e,now=Date.now()){
  return require('./posting-cache').create({cache:{postingEvidence:{source:e}},now:()=>now}).find(row,[e.url]);
 }
 function sourceValid(row,fields,evidence,now=Date.now()){
+ if(fields.SALARY_BASIS==='FORGE-ESTIMATE'&&require('./site-estimate').valid(row,evidence?.siteEstimate,now))return true;
  const e=posting(row,evidence?.postingEvidence,now);
  if(!e)return false;
  return fields.SALARY_BASIS!=='FORGE-ESTIMATE'||(!e.pay&&!e.payAmbiguous&&!e.payNeedsRefresh);

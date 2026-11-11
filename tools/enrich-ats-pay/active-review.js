@@ -14,7 +14,7 @@ function order(rows,history={},inFlight=new Set(),now=Date.now(),decisionIds=new
  });
 }
 function remember(history,r,status,{fields,now=Date.now(),hours=24}={}){const projected=fields?{...r,p:{...r.p,...fields}}:r;return history[r.PRIMARY_ID]={fingerprint:fingerprint(projected),at:new Date(now).toISOString(),retryAt:new Date(now+hours*3600000).toISOString(),status};}
-function improved(r,est){if(!est||r.p.SALARY_BASIS!=='FORGE-ESTIMATE')return false;const prior=confidence(r.p.SALARY_CONF),next=confidence(est.conf);return next>prior||(next>=prior&&r.p.SALARY_MODEL_VERSION&&r.p.SALARY_MODEL_VERSION!==C.VERSION)||(next>=prior&&est.source==='SAME_EMPLOYER'&&!/^same-employer:/.test(r.p.SALARY_SOURCE||''));}
+function improved(r,est){if(!est)return false;if(est.siteEstimate)return r.p.SALARY_BASIS==='THIRD_PARTY_ESTIMATE'||r.p.SALARY_SOURCE!=='site-estimate:'+est.siteEstimate.sourceUrl||Number(r.p.SALARY_BASE_LOW)!==est.low||Number(r.p.SALARY_BASE_HIGH)!==est.high;if(r.p.SALARY_BASIS!=='FORGE-ESTIMATE')return false;const prior=confidence(r.p.SALARY_CONF),next=confidence(est.conf);return next>prior||(next>=prior&&r.p.SALARY_MODEL_VERSION&&r.p.SALARY_MODEL_VERSION!==C.VERSION)||(next>=prior&&est.source==='SAME_EMPLOYER'&&!/^same-employer:/.test(r.p.SALARY_SOURCE||''));}
 // The ATS URL must already belong to the canonical job. Require returned title and exact city/state,
 // plus explicit USD annual structured compensation; broad description regex is insufficient for replacement.
 function parseApi(r,api,j){

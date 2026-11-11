@@ -36,12 +36,19 @@ function next(w,after){w=effectiveWork(w);const all=w.items,active=assignedIds(w
 if(require.main===module){try{const w=load();if(process.argv[2]==='validate')console.log(JSON.stringify(validateBatch(JSON.parse(fs.readFileSync(process.argv[3])),w)));else{if(!w.enabled)throw Error('Helper assignment disabled');console.log(JSON.stringify(next(w,process.argv[2]==='--after'?process.argv[3]:null)));}}catch(e){console.error(e.message);process.exitCode=1;}}
 // ChatGPT and the programmed coordinator share the same evidence-first queue. Old external
 // research reservations must not prevent ordinary code from using readable sources.
-function reconcileResearch(w,snapshot){
+function reconcileResearch(w,snapshot,{root=path.resolve(__dirname,'../..'),now=Date.now()}={}){
  w=effectiveWork(w);if(owner(w).provider!=='ChatGPT'||!snapshot.needsById)return w;
  const rows=new Map([...snapshot.rows,...snapshot.archiveRows||[]].map(r=>[r.PRIMARY_ID,r]));
+ const SiteEstimate=require('../enrich-ats-pay/site-estimate'),Store=require('../programmed-coordinator/store.cjs'),siteEstimates=SiteEstimate.create({root,ledger:Store.read(root,'state/enrich-ats-pay.json',{}),now:()=>now});
  for(const item of w.items){if(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE'].includes(item.status))continue;const row=rows.get(item.primaryId);if(!row)continue;
   if(!['SCOUT_INTAKE','DISCOVERY_LEAD','MANUAL_RESEARCH','BLOCKED','READY_TO_PURSUE','TIM_DECISION_REQUIRED'].includes(row.BUCKET)||/^YES/i.test(row.p?.ANTI_RESURRECTION||'')||row.p?.DO_NOT_REWORK||row.p?.TIM_DECISION){item.status='PROTECTED_SKIP';continue;}
   const needs=snapshot.needsById[item.primaryId];if(!Array.isArray(needs))continue;
+  const requested=item.missingFields||['SALARY','DEGREE'];
+  if(!/^RETURNED/.test(item.status||'')&&requested.includes('SALARY')&&needs.includes('SALARY')&&SiteEstimate.routed(row,siteEstimates.forRow(row))){
+   const remaining=requested.filter(f=>f!=='SALARY'&&needs.includes(f));
+   if(!remaining.length){item.status='RELEASED';item.researchCompletion={source:snapshot.source,meaning:'Salary research released to the Forge model using the site estimate as input; independent model support still required, no employer disclosure check or canonical completion claimed'};continue;}
+   item.missingFields=remaining;
+  }
   if(!(item.missingFields||['SALARY','DEGREE']).some(f=>needs.includes(f))){item.status='ALREADY_COMPLETE';item.researchCompletion={source:snapshot.source,meaning:'Requested source fields already present; no new research or canonical-write completion claimed'};}
  }
  return w;

@@ -19,7 +19,7 @@ function progress({root,state}){
 function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenContext}){
  if(!Number.isFinite(Date.parse(snapshot?.source?.readAt))||now-Date.parse(snapshot.source.readAt)>900000||Date.parse(snapshot.source.readAt)>now+120000)throw Error('FRESH_CANONICAL_ASSIGNMENT_SNAPSHOT_REQUIRED');
  const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),legacy=S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}),code=S.read(root,'state/CODE_INTAKE_CONSUMPTION.json',{schema:'forge.code-intake-consumption.v1',items:[]});
- const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot);
+ const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot,{root,now});
  const owners=new Map(),addOwner=(k,t)=>{if(owners.has(k)&&owners.get(k)!==t)throw Error('OVERLAPPING_ACTIVE_HELPER_OWNERSHIP');owners.set(k,t);};
  if(intake.enabled&&intake.routingActive&&!require('../helper-routing/current-owner.cjs').retirement(intake.taskKey,intake.assignmentId))for(const k of intake.keys)addOwner(k,intake.taskKey);
  if(relevance.enabled)for(const k of relevance.keys)addOwner(k,relevance.taskKey);

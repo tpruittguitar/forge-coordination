@@ -45,21 +45,23 @@ function plan({root,snapshot,now=Date.now(),state=S.read(root,'state/PROGRAMMED_
  const seen=new Set(),returned=new Set(Object.values(state.items||{}).filter(i=>['FORGE_CHATGPT_ENRICHMENT_RESEARCH','FORGE_GROK_ENRICHMENT'].includes(i.taskKey)&&state.batches?.[i.batch]?.status==='VALIDATED').map(i=>i.itemKey));
  const pending=new Set(Object.values(recovery.pendingWrites||{}).flatMap(tx=>tx.ids||[]));
  const ledger=S.read(root,'state/enrich-ats-pay.json',{}),Recovery=require('../enrich-ats-pay/recovery');
+ const SiteEstimate=require('../enrich-ats-pay/site-estimate'),siteEstimates=SiteEstimate.create({root,ledger,now:()=>now});
  const recoveryIds=new Set(recovery.rows.map(r=>r.id));
  const candidates=recovery.rows.concat(snapshot.rows.filter(row=>!recoveryIds.has(row.PRIMARY_ID)&&snapshot.needsById[row.PRIMARY_ID].includes('SALARY')).map(row=>({id:row.PRIMARY_ID,company:row.COMPANY,title:row.TITLE,status:'NOT_YET_ATTEMPTED',needs:['SALARY'],attempts:[],canonicalOnly:true})));
  for(const r of candidates){
   if(seen.has(r.id))throw Error('DUPLICATE_RECOVERY_ID');seen.add(r.id);
   const previous=old.get(r.id),row=rows.get(r.id);
   if(previous&&terminal(previous.status)||returned.has(r.id)){skip('alreadyAssignedOrReturned');continue;}
-  if(!['SOURCE_RESEARCH_REQUIRED','NOT_YET_ATTEMPTED'].includes(r.status)){skip('notSourceResearch');continue;}
+  if(!['SOURCE_RESEARCH_REQUIRED','NOT_YET_ATTEMPTED','MODEL_INPUTS_REQUIRED'].includes(r.status)){skip('notSourceResearch');continue;}
   if(!row||T.protectedRow(row)){skip('missingOrProtected');continue;}
   if(previous&&!T.same(row,previous)){skip('assignmentIdentityChanged');continue;}
   if(r.company&&Source.employer(r.company)!==Source.employer(row.COMPANY)||r.title&&Source.norm(r.title)!==Source.norm(row.TITLE)){skip('recoveryIdentityChanged');continue;}
   if(reserved.has(r.id)){skip('reservedElsewhere');continue;}
   if(pending.has(r.id)||T.fenced(root,state,r.id)){skip('pendingOriginal');continue;}
   const needs=snapshot.needsById[r.id];
-  const missing=(r.needs||[]).filter(f=>needs.includes(f)&&(f==='SALARY'?!Source.known(row.p?.SALARY_BASE_LOW):f==='DEGREE'?!Source.known(row.p?.DEGREE_REQ)&&!Source.known(row.p?.DEGREE_TEXT):false));
-  if(!missing.length){skip('alreadyComplete');continue;}
+  const siteInput=siteEstimates.forRow(row),skipSalaryResearch=SiteEstimate.routed(row,siteInput);
+  const missing=(r.canonicalOnly&&skipSalaryResearch?needs:r.needs||[]).filter(f=>(r.status!=='MODEL_INPUTS_REQUIRED'||f==='DEGREE')&&!(f==='SALARY'&&skipSalaryResearch)&&needs.includes(f)&&(f==='SALARY'?!Source.known(row.p?.SALARY_BASE_LOW):f==='DEGREE'?!Source.known(row.p?.DEGREE_REQ)&&!Source.known(row.p?.DEGREE_TEXT):false));
+  if(!missing.length){skip(skipSalaryResearch&&needs.includes('SALARY')?'siteEstimateModelRoute':'alreadyComplete');continue;}
   if(!Recovery.due(row,needs,ledger,now)){skip('retryNotDue');continue;}
   // A malformed recorded retry is not permission to repeat source work.
   if(r.retryAt&&(!Number.isFinite(Date.parse(r.retryAt))||Date.parse(r.retryAt)>now)){skip('retryNotDue');continue;}
