@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261111T1426Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261111T1753Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (108 read, 0 failed) | 155 | 45 | 82 |
+| Employer job boards (109 read, 0 failed) | 156 | 44 | 84 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 28 | 46 |
+| DIRECTOR_PLUS | 27 | 48 |
 | SR_MANAGER | 13 | 16 |
 | SR_STAFF | 4 | 20 |
 
@@ -34,7 +34,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
 | BOARD:lever | DREAM Shield AI | [Staff Manufacturing Engineer, Automation Equipment](https://jobs.lever.co/shieldai/e3f0520a-a155-438e-afc2-8215f67aa8d7) | Seattle, Washington | MFG_ENG | SR_STAFF | $150K-$230K |
-| BOARD:workday | P1 Blue Origin | [Director, NG9X4 Vehicle Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Space-Coast-FL/Director--NG9X4-Vehicle-Operations_R75388) | Space Coast, FL | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:ashby | P2 Quindar | [Vice President of Operations](https://jobs.ashbyhq.com/quindar/e3fcb109-eec0-4a81-971e-88259af00294) | Denver, CO | MFG_PROD | DIRECTOR_PLUS | $210K-$250K |
 | BOARD:ashby | P2 Saronic | [Senior Manager, Growth – Special Operations (SOCOM)](https://jobs.ashbyhq.com/saronic/3f9c2d39-8502-43f2-b7df-04c8038e8ee9) | Tampa, FL | MFG_PROD | SR_MANAGER |  |
@@ -53,7 +52,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Deputy Head of Production, Connected Warfare](https://boards.greenhouse.io/andurilindustries/jobs/5246032007?gh_jid=5246032007) | Ashville, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, EW](https://boards.greenhouse.io/andurilindustries/jobs/5279603007?gh_jid=5279603007) | Irvine, California, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Director of Manufacturing Engineering, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5284595007?gh_jid=5284595007) | Waltham, Massachusetts, United States | MFG_ENG | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril Industries | [Head of Operations, Intelligence Systems](https://boards.greenhouse.io/andurilindustries/jobs/5291341007?gh_jid=5291341007) | Reston, Virginia, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Operations, Intelligence Systems](https://boards.greenhouse.io/andurilindustries/jobs/5291343007?gh_jid=5291343007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
@@ -69,6 +67,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Scout Motors Inc. | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Vera Therapeutics | [Senior Director, Pharmacovigilance Operations & Compliance](https://job-boards.greenhouse.io/veratherapeuticsinc/jobs/4438781009) | Remote | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
 | BOARD:workday | Elanco | [Director, Technical Services/Manufacturing Science](https://elanco.wd5.myworkdayjobs.com/External_Career/job/Fort-Dodge-IA/Director--Technical-Services-Manufacturing-Science_R0026376) | Fort Dodge, IA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
