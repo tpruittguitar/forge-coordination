@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261111T1116Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261111T1613Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -7,11 +7,11 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
-| JobSpy linkedin (610 returned) | 237 | 64 | 145 |
-| JobSpy indeed (720 returned) | 121 | 75 | 46 |
-| HiringCafe (340 returned; 39 already found by JOBSPY 39) | 99 (60 unique) | 53 | 7 |
+| JobSpy linkedin (610 returned) | 214 | 54 | 133 |
+| JobSpy indeed (720 returned) | 123 | 76 | 47 |
+| HiringCafe (341 returned; 36 already found by JOBSPY 36) | 99 (63 unique) | 53 | 10 |
 
-JobSpy errors: linkedin: response status code 429 (blocked: use a proxy) (1 of 18 searches)
+JobSpy errors: linkedin: response status code 429 (blocked: use a proxy) (2 of 18 searches)
 
 HiringCafe: no errors. Unique = matching US roles no board or JobSpy result already covered.
 
@@ -21,9 +21,9 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 159 | 158 |
-| SR_MANAGER | 30 | 39 |
-| SR_STAFF | 3 | 1 |
+| DIRECTOR_PLUS | 152 | 142 |
+| SR_MANAGER | 29 | 47 |
+| SR_STAFF | 2 | 1 |
 
 ## New roles
 
@@ -31,18 +31,14 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 |---|---|---|---|---|---|---|
 | HIRINGCAFE | DREAM Shield AI | [Staff Manufacturing Engineer, Automation Equipment](https://hiringcafe.com/job/staff-manufacturing-engineer-automation-equipment-shield-ai-seattle-fn98x20sxyty2pp9) | Seattle, Washington, United States | MFG_ENG | SR_STAFF |  |
 | HIRINGCAFE | P2 Rivian | [Staff Process Engineer, Drive Unit (3rd Shift)](https://hiringcafe.com/job/staff-process-engineer-drive-unit-3rd-shift-rivian-normal-illinois-96orw5w0h3ese70s) | Normal, Illinois, United States | MFG_ENG | SR_STAFF | $126K-$157K |
+| JOBSPY:linkedin | Hyve Solutions | [Director, Quality](https://www.linkedin.com/jobs/view/4455337428) | Las Vegas, NV, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Hyve Solutions | [Director of Quality](https://www.linkedin.com/jobs/view/4489653949) | Las Vegas, NV, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Nammo Defense Systems Inc. | [Quality Director](https://www.linkedin.com/jobs/view/4489698171) | Perry, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Select Specialty Hospital | [Director of Quality Management](https://www.linkedin.com/jobs/view/4469178058) | Madison, WI, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Pratt & Whitney | [Quality Director, Columbus Engine Center (Onsite)](https://www.linkedin.com/jobs/view/4488004033) | Columbus, GA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Biogen | [Executive Director, Corporate Quality](https://www.linkedin.com/jobs/view/4485784075) | Cambridge, MA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Valmont Industries, Inc. | [Vice President Utility Operations](https://www.linkedin.com/jobs/view/4489172155) | Omaha, NE, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Fresh | [VP, Operations](https://www.linkedin.com/jobs/view/4470189661) | Jersey City, NJ, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Medline | [SVP Operations Quality](https://www.linkedin.com/jobs/view/4469377310) | Northfield, IL, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Qcells EPC | [SVP, Environment, Safety, Health & Quality (ESHQ)](https://www.linkedin.com/jobs/view/4486965853) | Houston, TX, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Emmi Roth | [Vice President of Operations](https://www.linkedin.com/jobs/view/4488408384) | Stoughton, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Det-Tronics (Detector Electronics, LLC) | [Head of Quality](https://www.linkedin.com/jobs/view/4488043899) | Minneapolis, MN, USA | QUALITY | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | Medline | [Director of Manufacturing – Pharmaceutical Operations](https://www.linkedin.com/jobs/view/4452526542) | Waukegan, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Blue Origin | [Director of Manufacturing, Operations & Assembly](https://www.linkedin.com/jobs/view/4487861256) | Merritt Island, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | Georgia-Pacific LLC | [Director of Operations - Corrugated](https://www.linkedin.com/jobs/view/4478942695) | La Mirada, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | McKinstry | [Director, Power Products Operations](https://www.linkedin.com/jobs/view/4487438564) | Spokane, WA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | RealREPP | [Director of Fabrication](https://www.linkedin.com/jobs/view/4445209035) | La Mirada, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Seal Bond | [Director of Operations](https://www.linkedin.com/jobs/view/4488371789) | Norton Shores, MI, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -50,34 +46,32 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | ODL, Inc | [Director of Operations](https://www.linkedin.com/jobs/view/4485530871) | Zeeland, MI, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Fives | [Director of Operations](https://www.linkedin.com/jobs/view/4479646330) | Fond du Lac, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Hawaii Coffee Company | [Director of Manufacturing](https://www.linkedin.com/jobs/view/4486799746) | Honolulu County, HI, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | PCB Piezotronics, Inc. | [Director of Operations](https://www.linkedin.com/jobs/view/4480195529) | Cary, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Jobot | [Director of Operations](https://www.linkedin.com/jobs/view/4485813056) | Sealy, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | The Timken Company | [Director of Operations-CGI](https://www.linkedin.com/jobs/view/4479740060) | Carson City, NV, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | W3Global | [Director of Operations](https://www.linkedin.com/jobs/view/4488028338) | Bay Shore, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Sealed Air Corporation | [Plant Manager](https://www.linkedin.com/jobs/view/4488886594) | La Grange, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Nelson Global | [Plant Manager](https://www.linkedin.com/jobs/view/4487910677) | Indianapolis, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Atkore | [Plant Manager - PVC Pipe](https://www.linkedin.com/jobs/view/4462309463) | Pendleton, OR, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Mauser Packaging Solutions | [Plant Manager](https://www.linkedin.com/jobs/view/4488450673) | Dayton, NJ, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | ImageFIRST | [Plant Manager](https://www.linkedin.com/jobs/view/4436821167) | Columbia, PA, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | SIG Group | [Plant Manager](https://www.linkedin.com/jobs/view/4441003866) | Melrose Park, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | DSJ Global | [Plant Manager](https://www.linkedin.com/jobs/view/4487784161) | Philadelphia, PA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | ALKEGEN | [Plant Manager](https://www.linkedin.com/jobs/view/4479541745) | Columbiana, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Greif | [Plant Manager](https://www.linkedin.com/jobs/view/4479561406) | Cheektowaga, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | DSJ Global | [Plant Manager](https://www.linkedin.com/jobs/view/4487522982) | New Brunswick, NJ, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | UFP Industries | [Plant Manager](https://www.linkedin.com/jobs/view/4485550860) | Nampa, ID, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Blue Origin | [Director of Manufacturing, Operations & Assembly](https://www.linkedin.com/jobs/view/4487850720) | Huntsville, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Dessert Holdings | [Director of Engineering (Food Manufacturing Plants)](https://www.linkedin.com/jobs/view/4485870609) | Aurora, CO, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Dessert Holdings | [Director of Engineering (Food Manufacturing Plants)](https://www.linkedin.com/jobs/view/4485873584) | Humble, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | FormFactor Inc. | [Sr Manager, Production](https://www.linkedin.com/jobs/view/4489673154) | Livermore, CA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Caterpillar Inc. | [Senior Manager Production](https://www.linkedin.com/jobs/view/4489920921) | Griffin, GA, USA | MFG_PROD | SR_MANAGER |  |
+| JOBSPY:linkedin | Umoja Biopharma | [Senior Manager, Manufacturing](https://www.linkedin.com/jobs/view/4481753971) | Louisville, CO, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Vertex Pharmaceuticals | [Senior Manager, Manufacturing Operations (3rd Shift)](https://www.linkedin.com/jobs/view/4471578260) | Boston, MA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | The Campbell's Company | [Sr Manager Operations and OpEx](https://www.linkedin.com/jobs/view/4488626376) | Downers Grove, IL, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Thermo Fisher Scientific | [Sr Manager, Operations](https://www.linkedin.com/jobs/view/4487161147) | Tewksbury, MA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Divergent | [Senior Manager, Additive Manufacturing Operations](https://www.linkedin.com/jobs/view/4487166791) | Long Beach, CA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Twenty-Six Defense | [Senior Manager Manufacturing - Engineering](https://www.linkedin.com/jobs/view/4488814817) | Fort Worth, TX, USA | MFG_PROD | SR_MANAGER |  |
-| JOBSPY:linkedin | L3Harris Technologies | [Senior Manager, Operations Management](https://www.linkedin.com/jobs/view/4487269199) | Camden, NJ, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Thermo Fisher Scientific | [Senior Manager, Quality](https://www.linkedin.com/jobs/view/4485813687) | Logan, UT, USA | QUALITY | SR_MANAGER |  |
 | JOBSPY:linkedin | SkyWater Technology | [Senior Manager - Wafer Operations](https://www.linkedin.com/jobs/view/4481691691) | Austin, Texas Metropolitan Area | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | BeOne Medicines | [Senior Manager, Process Engineering Drug Substance and Drug Product](https://www.linkedin.com/jobs/view/4461924886) | Hopewell, NJ, USA | MFG_ENG | SR_MANAGER |  |
-| JOBSPY:linkedin | Impulse Space | [Principal Manufacturing Engineer (PCBA)](https://www.linkedin.com/jobs/view/4487852461) | Redondo Beach, CA, USA | MFG_ENG | SR_STAFF |  |
 | JOBSPY:linkedin | Jobgether | [Director, Innovation & Commercialization Operations](https://www.linkedin.com/jobs/view/4488695009) | USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Molex | [Director, New Product Development](https://www.linkedin.com/jobs/view/4434638815) | Austin, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Molex | [Director, New Product Development](https://www.linkedin.com/jobs/view/4434636903) | Lisle, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -87,13 +81,9 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | Soleil Collective | [Senior Manager, New Product Development Project Management](https://www.linkedin.com/jobs/view/4486963329) | Denver, CO, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Colgate-Palmolive | [Senior Manager : Supply Network Design & Operations , Manual Tooth Brush](https://www.linkedin.com/jobs/view/4487367303) | Piscataway, NJ, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Michael Kors | [Senior Manager, Calendar & Operations Integration](https://www.linkedin.com/jobs/view/4477189273) | New York, NY, USA | MFG_PROD | SR_MANAGER |  |
+| JOBSPY:linkedin | Calumet | [Operations Integrity & Performance Director](https://www.linkedin.com/jobs/view/4472770899) | USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | FIJI Water | [Director, Strategy and Continuous Improvement - FIJI Water](https://www.linkedin.com/jobs/view/4473059029) | Los Angeles, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Grant Thornton (US) | [Operations Transformation Director](https://www.linkedin.com/jobs/view/4478633705) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | LaSalle Intelligent Solutions | [Operations Director](https://www.linkedin.com/jobs/view/4489115535) | Glenview, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Thorndale Partners | [Director of Operations - 3PL](https://www.linkedin.com/jobs/view/4488806904) | Henderson, NV, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Materion Corporation | [Director of Operations](https://www.linkedin.com/jobs/view/4488080446) | Cleveland, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Walmart | [(USA) Director, Operations](https://www.linkedin.com/jobs/view/4486257456) | Bentonville, AR, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | KaramMD Skin | [Director of Operations](https://www.linkedin.com/jobs/view/4486779932) | San Diego, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Ramp | [Director, Brand Operations](https://www.linkedin.com/jobs/view/4454364107) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | WellBe Senior Medical | [Director of Quality](https://careers-wellbeseniormedical.icims.com/jobs/7770/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f) | Remote, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Crisis Preparation and Recovery | [Director of Quality and Informatics](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=389836b9-ad6e-4b8b-a6c9-1feef2575a4c&ccId=19000101_000001&jobId=955207&source=IN&lang=en_US) | Tempe, AZ, USA | QUALITY | DIRECTOR_PLUS | $80K-$105K |
@@ -105,33 +95,33 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | SATSUMA PHARMACEUTICALS | [Senior Director, Quality Assurance](https://app.jobvite.com/CompanyJobs/Job.aspx?j=oWD1AfwU&s=Indeed) | Remote, USA | QUALITY | DIRECTOR_PLUS | $230K-$270K |
 | JOBSPY:indeed | Salesforce | [Senior Director, Technical Product Management — AI Quality & Evaluation](https://salesforce.wd12.myworkdayjobs.com/en-US/External_Career_Site/job/California---San-Francisco-Metro---Remote/Senior-Director--Technical-Product-Management---AI-Quality---Evaluation_JR367328) | San Francisco, CA, USA | QUALITY | DIRECTOR_PLUS | $218K-$401K |
 | JOBSPY:indeed | Georgia Department of Behavioral Health and Developmental Disabilities | [Director, Office of Quality, Risk, Incidents, & Investigations- Atlanta](https://georgia.wd5.myworkdayjobs.com/en-US/TGC/job/Atlanta/Director--Office-of-Quality--Risk--Incidents----Investigations--Atlanta_JR0000007721) | Atlanta, GA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Pratt & Whitney | [Quality Director, Columbus Engine Center (Onsite)](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01887247&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01887247%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3D42433cb4-d95a-11f1-8ff4-efc5ece86feb%26rx_job%3D01887247%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261111T100424Z%26rx_vp%3Dcpc) | Midland, GA, USA | QUALITY | DIRECTOR_PLUS | $186K-$354K |
 | JOBSPY:indeed | Ilab Llc | [Director of Quality Engineering](https://www.paycomonline.net/v4/ats/web.php/portal/9B1B64445CCEFE55D99DF4452D21AE80/jobs/151909?source=Indeed) | Indianapolis, IN, USA | QUALITY | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Pratt & Whitney | [Quality Director, Columbus Engine Center (Onsite)](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01887247&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01887247%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3D42433cb4-d95a-11f1-8ff4-efc5ece86feb%26rx_job%3D01887247%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261111T140410Z%26rx_vp%3Dcpc) | Midland, GA, USA | QUALITY | DIRECTOR_PLUS | $186K-$354K |
 | JOBSPY:indeed | Humana | [Director, Quality Engineering](https://click.appcast.io/t/jAXS2DC-O_4IgfI_K1vkhB1_WD6vTUKghkkUKIR4BhQ=) | New York, NY, USA | QUALITY | DIRECTOR_PLUS | $157K-$215K |
 | JOBSPY:indeed | University Hospitals | [Director of Quality – Women’s and Children Services](https://d.hodes.com/r/tp2?e=se&tv=pixel_tracker&aid=universityhospitals&p=web&se_ca=indeed&se_ac=click&se_la=23954190&u=https%3A%2F%2Fcareers.uhhospitals.org%2Fjob%2F23954190%2Fdirector-of-quality-women-s-and-children-services-cleveland-oh%2F%3Futm_medium%3Dsymphonytalent-jobads%26utm_campaign%3DManagement%2520-%2520Clinical%26utm_content%3DDirector%2520of%2520Quality%2520%25E2%2580%2593%2520Women%25E2%2580%2599s%2520and%2520Children%2520Services%26utm_term%3D260009IJ%26utm_source%3DIndeed&se_pr=f9d8f643ab72ad13&se_va=1658&tr_af=organic&ti_id=2022_260009IJ&signature=CmoH2O1Gpb4B1P8fw8JpiGOlKKOTj0K4GKmAjK5lkFw) | Cleveland, OH, USA | QUALITY | DIRECTOR_PLUS | $126K-$197K |
 | JOBSPY:indeed | Crane Worldwide Logistics | [Director Customs Quality Program](https://recruiting2.ultipro.com/CRA1009CRWL/JobBoard/755fc3a5-077f-4395-ad9a-01ffdc6dea89/OpportunityDetail?opportunityId=6102ff7f-eb81-4bb5-b05c-78e8c3f9485d&postingId=e21c6c7b-6f00-4f35-952e-b75c8c462918) | Houston, TX, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Tenet Healthcare | [Market Director - Quality](https://jobs.tenethealth.com/job/-/-/1127/102882024336) | Indio, CA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Honeywell | [Plant Manager](https://ibqbjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/161922) | Tempe, AZ, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Emmi Roth USA | [Vice President of Operations](https://phh.tbe.taleo.net/phh01/ats/careers/v2/viewRequisition?org=ROTHKASE&cws=38&rid=1883) | Stoughton, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | ECI Technologies | [VP of Operations](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4643391/ECIJNW-Acquisition-Corp/VP-of-Operations?source=Indeed_Feed) | Watertown, CT, USA | MFG_PROD | DIRECTOR_PLUS | $120K-$150K |
 | JOBSPY:indeed | FXI | [Plant Manager](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001236352606&c=2204139&d=ExternalCareerSite&rb=INDEED&idUnique=5001236352606) | Orange, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | TD | [VP, Equity Research - Semiconductor Equipment, Manufacturing, Memory & IT Hardware](https://td.wd3.myworkdayjobs.com/en-US/TD_Bank_Careers/job/New-York-New-York/VP--Equity-Research---Semiconductor-Equipment--Manufacturing--Memory---IT-Hardware_R_1520716) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $225K-$225K |
-| JOBSPY:indeed | ADC Therapeutics America Inc | [Senior Director, Manufacturing Sciences & Technologies](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4656827/ADC-Therapeutics/Senior-Director-Manufacturing-Sciences-Technologies?source=Indeed_Feed) | New Providence, NJ, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | McCormick & Company | [Americas Procurement Director, External Manufacturing](https://careers.mccormick.com/job/HUNT-VALLEY-Americas-Procurement-Director%2C-External-Manufacturing-MD-21031/1449579900/) | Hunt Valley, MD, USA | MFG_PROD | DIRECTOR_PLUS | $141K-$239K |
 | JOBSPY:indeed | Blue Origin | [Sr. Director- Manufacturing, Operations, & Production](https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Space-Coast-FL/Sr-Director--Manufacturing--Operations----Production_R75651) | FL, USA | MFG_PROD | DIRECTOR_PLUS | $203K-$284K |
-| JOBSPY:indeed | ARDENS GARDEN THE JUICE MARKET INC | [Director of Operations](https://www.paycomonline.net/v4/ats/web.php/portal/8B046A16DF60E7A9350DA9E1F8FEC644/jobs/100466?source=Indeed) | East Point, GA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Micro-Tronics | [Director of Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=6362b6c7-9592-452e-9fa3-97848679358e&ccId=19000101_000001&jobId=957801&source=IN&lang=en_US) | Tempe, AZ, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Spire Energy | [Director, Field Ops](https://jobs.spireenergy.com/job/Kansas-City-Director%2C-Field-Ops-MO-64129/1449452400/) | Kansas City, MO, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Honeywell Aerospace | [Senior Plant Director](https://icfcjb.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/126256) | Phoenix, AZ, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Regeneron | [Executive Director, Manufacturing IT Planning & Strategy](https://careers.regeneron.com/en/jobs/r52968/executive-director-manufacturing-it-planning-strategy/) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $244K-$407K |
+| JOBSPY:indeed | Thermo Fisher Scientific | [Sr. Director, Operations](https://jsv3.recruitics.com/redirect?rx_cid=3436&rx_jobId=R-01373372&rx_url=https%3A%2F%2Fjobs.thermofisher.com%2Fglobal%2Fen%2Fjob%2FR-01373372%2FSr-Director-Operations%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D123525%26rx_id%3Db00446cc-d86c-11f1-bafd-733db8c49fce%26rx_job%3DR-01373372%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261111T160408Z%26rx_vp%3Dcpc%26utm_medium%3Dppc%26utm_source%3Drecruitics_indeedorganic) | Morrisville, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Table 87 Frozen | [Director of Operations - Frozen Food Manufacturing](https://www.indeed.com/viewjob?jk=860163fdd4b3ab44) | Brooklyn, NY, USA | MFG_PROD | DIRECTOR_PLUS | $150K-$200K |
-| JOBSPY:indeed | Thermo Fisher Scientific | [Sr. Director, Operations](https://jsv3.recruitics.com/redirect?rx_cid=3436&rx_jobId=R-01373372&rx_url=https%3A%2F%2Fjobs.thermofisher.com%2Fglobal%2Fen%2Fjob%2FR-01373372%2FSr-Director-Operations%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D123525%26rx_id%3Db00446cc-d86c-11f1-bafd-733db8c49fce%26rx_job%3DR-01373372%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261111T100438Z%26rx_vp%3Dcpc%26utm_medium%3Dppc%26utm_source%3Drecruitics_indeedorganic) | Morrisville, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | STERIS | [Plant Manager](https://careers.steris.com/us/en/job/57172) | South Plainfield, NJ, USA | MFG_PROD | DIRECTOR_PLUS | $120K-$150K |
 | JOBSPY:indeed | DARRAN Furniture | [Seating Plant Manager](https://www.paycomonline.net/v4/ats/web.php/portal/B5808546A4EB09DC861A8E470A490D31/jobs/146736?source=Indeed) | High Point, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Stimson Lumber Company | [Plant Manager](https://www.paycomonline.net/v4/ats/web.php/portal/3199D43383E789B8212F65B5618B5BBE/jobs/84176?source=Indeed) | Saint Maries, ID, USA | MFG_PROD | DIRECTOR_PLUS | $175K-$195K |
+| JOBSPY:indeed | Tyson Foods Incorporated | [Plant Manager III Monroe Plant (Monroe, NC)](https://tysonfoods.wd5.myworkdayjobs.com/en-US/TSN/job/Monroe-Plant---Monroe-North-Carolina/Plant-Manager-III-Monroe-Plant--Monroe--NC-_R0495227-1) | Monroe, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Wilsonart International | [Plant Manager](https://wilsonart.wd5.myworkdayjobs.com/Wilsonart_Careers/job/Temple-Texas/Plant-Manager_R-000396) | Temple, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Pasco County Schools | [Plant Manager*Anticipated Vacancy*](https://www.SchoolSpring.com/jobdetail?jobId=5986717) | Wesley Chapel, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Norco Inc | [Plant Manager I](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001236839406&c=2210039&d=ExternalCareerSite&rb=INDEED&idUnique=5001236839406) | Boise, ID, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Pacific Coast Producers | [Plant Manager](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0e5a43d4-25e0-4bfb-a597-0d81226a620b&ccId=19000101_000001&jobId=581077&source=IN&lang=en_US) | Lodi, CA, USA | MFG_PROD | DIRECTOR_PLUS | $160K-$200K |
 | JOBSPY:indeed | International Paper | [Plant General Manager, Kent, WA](https://iazbqy.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/2004868) | Kent, WA, USA | MFG_PROD | DIRECTOR_PLUS | $116K-$155K |
+| JOBSPY:indeed | Norco Inc | [Plant Manager I](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001236839406&c=2210039&d=ExternalCareerSite&rb=INDEED&idUnique=5001236839406) | Boise, ID, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Dana | [Plant Manager](https://jobs.dana.com/job/Ft_Wayne-Plant-Manager-IN-46808-1998/1449351200/) | Fort Wayne, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Mary Help of Christians School | [Plant Manager](https://img1.wsimg.com/blobby/go/17c5dd78-5b3d-42c8-a2a7-eb007ed8199c/Plant%20Manager-bb5d56d.pdf) | Laredo, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Pasco County Schools | [HIRING POOL: Plant Manager (2026-2027)](https://www.SchoolSpring.com/jobdetail?jobId=5982819) | Land O' Lakes, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -140,36 +130,37 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Arkema | [Plant Manager Job](https://jobs.arkema.com/job/Birdsboro-Plant-Manager-Job-PA/1453877633/?feedId=231301&utm_source=Indeed&utm_campaign=Arkema_Indeed) | Birdsboro, PA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | TreeHouse Foods | [Plant Manager](https://treehouse.wd1.myworkdayjobs.com/en-US/TreeHouseCareers/job/USA-MD-Cambridge/Plant-Manager_R31345) | Cambridge, MD, USA | MFG_PROD | DIRECTOR_PLUS | $155K-$232K |
 | JOBSPY:indeed | American Electric Power | [Plant Manager- Comanche Station](https://aep.wd1.myworkdayjobs.com/AEPCareerSite/job/Lawton-OK/Plant-Manager--Comanche-Station_R20743) | Lawton, OK, USA | MFG_PROD | DIRECTOR_PLUS | $160K-$209K |
-| JOBSPY:indeed | Amrize | [Plant Manager - Aggregate](https://careers.amrize.com/Amrize/job/Colgate-Plant-Manager-Aggregate-WI-53017/1447843100/) | Colgate, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Amrize | [Plant Manager - Aggregate](https://careers.amrize.com/amrize/job/Colgate-Plant-Manager-Aggregate-WI-53017/1447843100/) | Colgate, WI, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Airgas | [Plant Manager](https://airliquidehr.wd3.myworkdayjobs.com/en-US/AirgasExternalCareer/job/Carnegie-PA/Plant-Manager_R10104082) | Carnegie, PA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | tk accelis | [Plant Manager](https://thyssenkruppmaterialsna.wd12.myworkdayjobs.com/1/job/Wallingford-Connecticut-USA/Plant-Manager_JR106277) | Wallingford, CT, USA | MFG_PROD | DIRECTOR_PLUS | $119K-$147K |
-| JOBSPY:indeed | UFP Industries, Inc. | [Plant Manager](https://ufpi.wd503.myworkdayjobs.com/en-US/ufpi/job/Nampa-ID/Plant-Manager_R23406) | Nampa, ID, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Hitachi Energy | [Director of Operations](https://hitachi.wd1.myworkdayjobs.com/en-US/hitachi/job/Jefferson-City-Missouri-United-States-of-America/Director-of-Operations_R0150590) | Jefferson City, MO, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | ADM | [Sr. Director Data Engineering and Operations - Erlanger, KY](https://sjobs.brassring.com/TGnewUI/Search/home/HomeWithPreLoad?partnerid=25416&siteid=5998&PageType=JobDetails&jobid=3397640) | Erlanger, KY, USA | MFG_PROD | DIRECTOR_PLUS | $126K-$273K |
 | JOBSPY:indeed | Blue Origin | [Director, NG9X4 Vehicle Operations](https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Space-Coast-FL/Director--NG9X4-Vehicle-Operations_R75388) | FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Emergent Biosolutions | [Head of IT Infrastructure & Operations, Sr. Director (remote)](https://careers.emergentbiosolutions.com/job/Gaithersburg-Head-of-IT-Infrastructure-&-Operations%2C-Sr_-Director-%28remote%29-MD-20879/1449579200/) | Gaithersburg, MD, USA | MFG_PROD | DIRECTOR_PLUS | $207K-$250K |
 | JOBSPY:indeed | Assurant | [Director of Operations (Mobile Devices)](https://jobs.assurant.com/en/jobs/job/director-of-operations-mobile-devices-lewisville-r-116028/) | Lewisville, TX, USA | MFG_PROD | DIRECTOR_PLUS | $145K-$242K |
-| JOBSPY:indeed | Raytheon | [Sr. Manager, Production Control](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01888297&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01888297%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3Daaa0778c-dd23-11f1-8fb4-353b8c3e59af%26rx_job%3D01888297%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261111T100424Z%26rx_vp%3Dcpc) | Portsmouth, RI, USA | MFG_PROD | SR_MANAGER | $132K-$252K |
+| JOBSPY:indeed | HYUNDAI MOBIS | [PE Quality Senior Manager](https://mobis.isolvedhire.com/jobs/1903285-288010.html) | Richmond Hill, GA, USA | QUALITY | SR_MANAGER |  |
 | JOBSPY:indeed | Wipfli | [Audit Senior Manager, Manufacturing](https://careers.wipfli.com/jobs/audit-and-assurance/us-il-lincolnshire/audit-senior-manager-manufacturing/8677) | Lincolnshire, IL, USA | MFG_PROD | SR_MANAGER | $142K-$200K |
 | JOBSPY:indeed | Nestlé USA | [Senior Manager Factory Engineering](https://jobdetails.nestle.com/job/Franklin-Park-Senior-Manager-Factory-Engineering-IL-60131/1454491833/?feedId=392933&utm_source=Indeed) | Franklin Park, IL, USA | MFG_PROD | SR_MANAGER | $160K-$185K |
-| JOBSPY:indeed | Anduril | [Senior Manager of Digital Quality Systems](https://grnh.se/dmhhds877us) | Costa Mesa, CA, USA | QUALITY | SR_MANAGER | $191K-$254K |
 | JOBSPY:indeed | News Corp | [Senior Manager - Training & Quality Assurance](https://careers.newscorp.com/princeton-nj/senior-manager-training-quality-assurance/E5E3873332F844118EA02E190294D965/job/) | Princeton, NJ, USA | QUALITY | SR_MANAGER | $110K-$140K |
 | JOBSPY:indeed | Regeneron | [Senior Manager Quality Control, Lab Operations](https://careers.regeneron.com/en/jobs/r51414/senior-manager-quality-control-lab-operations/) | New York, NY, USA | QUALITY | SR_MANAGER | $129K-$210K |
 | JOBSPY:indeed | CVS Health | [Senior Manager, Performance and Quality](https://click.appcast.io/t/wgo-FGXMolnGh2OZkp5mMOfOnNXzJK2j_cwl90q0SCE=) | RI, USA | QUALITY | SR_MANAGER | $68K-$183K |
 | JOBSPY:indeed | The Coca-Cola Company | [Senior Manager, Ingredient Quality & Analytical Science](https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---GA---Atlanta/Senior-Scientist--Ingredient-Quality---Analytical-Science_R-148533) | Atlanta, GA, USA | QUALITY | SR_MANAGER | $131K-$153K |
 | JOBSPY:indeed | American Express | [Senior Manager - Technology Operations Engineering](https://egug.fa.us2.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/26015983) | Phoenix, AZ, USA | MFG_PROD | SR_MANAGER | $123K-$215K |
-| JOBSPY:indeed | Gooch and Housego | [Director of Operations](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4656911/Gooch-Housego-PLC/Director-of-Operations?source=Indeed_Feed) | Bellwood, IL, USA | MFG_PROD | DIRECTOR_PLUS | $160K-$180K |
 | JOBSPY:indeed | Rhyze Solutions, LLC | [Director, Commercial Operations and Asset Management](https://www.indeed.com/viewjob?jk=e96f9ea1a6e2de62) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $165K-$185K |
 | JOBSPY:indeed | Alvarez & Marsal | [Operations Director](https://careers.alvarezandmarsal.com/en/jobs/18466838-operations-director?tm_job=202605118&tm_event=view&tm_company=47710) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $150K-$170K |
+| JOBSPY:indeed | Cleveland Clinic | [Executive Director Operations – West Palm Beach](https://jobs.clevelandclinic.org/job/24136403/executive-director-operations-west-palm-beach-west-palm-beach-fl/) | West Palm Beach, FL, USA | MFG_PROD | DIRECTOR_PLUS | $151K-$299K |
 | JOBSPY:indeed | Play Spin Win Brands | [Director of Operations](https://phx.us-west.paycomonline.net/v4/ats/web.php/portal/4163E0178F00065D633069F0A6398D3D/jobs/27667?source=Indeed) | Des Plaines, IL, USA | MFG_PROD | DIRECTOR_PLUS | $110K-$120K |
 | JOBSPY:indeed | Memorial Hermann Health System | [Director, Support Operations](https://jobs.memorialhermann.org/us/en/job/100184535) | Houston, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | State of Arizona | [MVD Deputy Division Director of Operations](https://www.azstatejobs.gov/jobs/mvd-deputy-division-director-of-operations-phoenix-arizona-united-states) | Phoenix, AZ, USA | MFG_PROD | DIRECTOR_PLUS | $155K-$165K |
 | JOBSPY:indeed | Parachute Health | [Director, Merchandising Operations](https://grnh.se/z5ss7wdm7us) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $145K-$180K |
 | JOBSPY:indeed | Esco Technologies | [Director, Operational Excellence](https://escotech.rec.pro.ukg.net/ESC1001ESTI/JobBoard/0fdd089c-a32e-4918-89d9-76285f90e22e/OpportunityDetail?opportunityId=803ffc8a-6fa6-4974-ac4c-681764152410&postingId=c8586ea7-b1ed-4df1-9d73-eb30f7c885d6) | St. Louis, MO, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$220K |
 | JOBSPY:indeed | Bagel Brands | [Director of Operations Excellence](https://bagelbrands.wd504.myworkdayjobs.com/en-US/bagelbrands/job/US---Denver-CO-S-Bellaire-St-Skybox/Director-of-Operations-Excellence_R194776) | Denver, CO, USA | MFG_PROD | DIRECTOR_PLUS | $180K-$200K |
 | JOBSPY:indeed | Fidelity Investments | [Director of Protective Operations and Logistics](https://jobs.fidelity.com/en/jobs/2137971/director-of-protective-operations-and-logistics/) | Boston, MA, USA | MFG_PROD | DIRECTOR_PLUS | $95K-$186K |
-| JOBSPY:indeed | Southern Brew dba 7 Brew | [Director of Operations](https://7brewsouthern.applytojob.com/apply/dte9KNrTE8/Director-Of-Operations?source=INDE&~) | Rock, AR, USA | MFG_PROD | DIRECTOR_PLUS | $70K-$135K |
 | JOBSPY:indeed | JPMorganChase | [Compliance & Operations Risk Test Director - Consumer and Community Banking Testing Center of Excellence - Executive Director](https://JPMorganChase.contacthr.com/154174756) | Columbus, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Southern Brew dba 7 Brew | [Director of Operations](https://7brewsouthern.applytojob.com/apply/dte9KNrTE8/Director-Of-Operations?source=INDE&~) | Rock, AR, USA | MFG_PROD | DIRECTOR_PLUS | $70K-$135K |
 | JOBSPY:indeed | Sodexo | [Director 3 - Facilities Operations](https://click.appcast.io/t/xy4hnbxCk4vW7CfBjrkW5aeBzEo-s2cBxBtWQjyCajc=) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $116K-$180K |
 | JOBSPY:indeed | Citadel Credit Union | [Director, Operational Excellence and Innovation](https://recruiting.ultipro.com/CIT1012CITAD/JobBoard/69156559-163e-4102-92c8-43771e19e8e5/OpportunityDetail?opportunityId=2b3faefc-0b7d-4a5d-a2b3-3aa9736bf487&postingId=7472be67-4ce2-4551-ac0a-4263c20e4b9f) | Exton, PA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Sodexo | [Director Operations SodexoLive](https://click.appcast.io/t/NApbTaROffKvQT6SuEsmLOGBjK44biKmNeziXHKFZIM=) | Las Vegas, NV, USA | MFG_PROD | DIRECTOR_PLUS | $71K-$92K |
+| JOBSPY:indeed | Vera Therapeutics | [Vice President, Commercial Manufacturing Operations](https://job-boards.greenhouse.io/veratherapeuticsinc/jobs/4487486009) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $264K-$400K |
 | HIRINGCAFE | Therm-x of California | [Director of Quality](https://hiringcafe.com/job/director-of-quality-therm-x-of-california-hayward-california-kzsyrm5ktn93k3td) | Hayward, California, United States | QUALITY | DIRECTOR_PLUS | $170K-$190K |
 | HIRINGCAFE | Flex | [Director, Quality](https://hiringcafe.com/job/director-quality-flex-columbia-south-carolina-gbcxwbaqmunmi46b) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | WellBe Senior Medical | [Director of Quality](https://hiringcafe.com/job/director-of-quality-wellbe-senior-medical-united-states-kgm90pqebhmlouyv) | United States | QUALITY | DIRECTOR_PLUS |  |
