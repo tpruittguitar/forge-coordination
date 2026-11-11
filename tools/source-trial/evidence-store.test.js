@@ -33,7 +33,7 @@ test('explicit full posting fills unknown units only when captured metadata is c
  const root=dir(t),P=require('./posted-pay'),base={...card,source:'JOBSPY:indeed',min_amount:175000,max_amount:200000};
  for(const [patch,ok]of [[{},true],[{currency:'CAD'},false],[{interval:'hourly'},false],[{salary_source:'THIRD_PARTY_ESTIMATE'},false],[{min_amount:190000},false]]){const c={...base,...patch};c.postedPay=P.capture(c,{observedAt:at});const ref=E.capture(root,c,{observedAt:at,proof,fullPosting:true}),doc=E.read(root,ref);a.equal(!!doc.payFacts,ok);const row={COMPANY:c.company,TITLE:c.title,LOCATION:c.location,p:{SOURCE_URL:c.url}},r=E.forRow(E.index(root,{entries:{k:{sourceUrl:c.url,evidenceRefs:[ref]}}}),row,now);a.equal(!!r.pay,ok);}
 });
-test('salary remains a saved verified fact after posting freshness expires, without fresh degree or liveness claims',t=>{const root=dir(t),ref=E.capture(root,card,{observedAt:at,proof,fullPosting:true}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[ref]}}}),r=E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now+30*86400000);a.equal(r.pay.low,175000);a.equal(r.at,at);a.equal(r.fullPosting,false);a.equal(r.degree,null);});
+test('saved posting facts remain reusable without age-only refetch or new observation/liveness claims',t=>{const root=dir(t),ref=E.capture(root,card,{observedAt:at,proof,fullPosting:true}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[ref]}}}),r=E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now+30*86400000);a.equal(r.pay.low,175000);a.equal(r.at,at);a.equal(r.fullPosting,true);a.equal(r.degree.req,'PREFERRED');a.equal(r.degreeAt,at);a.equal(r.postingStatus,'UNVERIFIED');});
 test('legacy raw third-party estimate attribution survives full posting parsing',t=>{const root=dir(t),c={...card,pay:'estimated $175K-$200K',source:'JOBSPY:indeed'},ref=E.capture(root,c,{observedAt:at,proof,fullPosting:true}),doc=E.read(root,ref);a.equal(doc.postedPay.status,'ESTIMATED');a.equal(doc.payFacts,null);a.equal(doc.facts.pay,null);});
 test('newer complete posting with no salary does not hide verified pay or misdate degree evidence',t=>{const root=dir(t),old=E.capture(root,card,{observedAt:at,proof,fullPosting:true}),recent=new Date(now).toISOString(),newer=E.capture(root,{...card,description:'Lead plant operations. '.repeat(20)+'Bachelor degree required.'},{observedAt:recent,proof,fullPosting:true}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[old,newer]}}}),r=E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now);a.equal(r.pay.low,175000);a.equal(r.at,at);a.equal(r.degreeAt,recent);a.equal(r.degree.req,'REQUIRED');a.equal(r.fullPosting,true);});
 test('newer contradictory posted amounts or units block reuse of obsolete annual pay',t=>{const root=dir(t),P=require('./posted-pay'),old=E.capture(root,card,{observedAt:at,proof,fullPosting:true}),c={...card,description:'',min_amount:85,max_amount:100,interval:'hourly',salaryText:'$85-$100/hr'};c.postedPay=P.capture(c,{observedAt:new Date(now).toISOString()});const newer=E.capture(root,c,{observedAt:new Date(now).toISOString(),proof}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[old,newer]}}}),r=E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now);a.equal(r.pay,null);a.equal(r.postedPay.period,'hourly');});
@@ -46,10 +46,10 @@ function reportCard(patch={}){
 function report(root,cards,file='state/source-trial-report.json'){
  fs.mkdirSync(path.join(root,'state'),{recursive:true});const raw=JSON.stringify({new_roles:cards});fs.writeFileSync(path.join(root,file),raw);return E.hash(raw);
 }
-test('intake reuses captured Indeed text without promoting it to a complete posting',t=>{
+test('intake gives captured Indeed text the same content-based completeness as employer text',t=>{
  const root=dir(t),c=reportCard(),ref=E.capture(root,c,{observedAt:at,proof}),store=E.index(root,{entries:{k:{sourceUrl:c.url,evidenceRefs:[ref]}}});
- a.equal(store.find(c,{now}),null);const found=store.forIntake(c,{now});a.equal(found.doc.text,c.description);a.equal(found.doc.fullPosting,false);a.equal(found.doc.facts.degree,null);a.equal(found.ref.sha256,ref.sha256);
- a.equal(E.forRow(store,{COMPANY:c.company,TITLE:c.title,LOCATION:c.location,p:{SOURCE_URL:c.url}},now),null,'partial content does not prove absent qualifications or salary');
+ a.ok(store.find(c,{now}));const found=store.forIntake(c,{now});a.equal(found.doc.text,c.description);a.equal(found.doc.fullPosting,true);a.match(found.doc.facts.degree.text,/Bachelor/);a.equal(found.ref.sha256,ref.sha256);
+ a.equal(E.forRow(store,{COMPANY:c.company,TITLE:c.title,LOCATION:c.location,p:{SOURCE_URL:c.url}},now).degree.req,'PREFERRED');
 });
 test('fresh report supplies evidence before the manifest publisher without writing cache files',t=>{
  const root=dir(t),c=reportCard({source:'BOARD:workday'}),reportHash=report(root,[c],'state/board-discovery-report.json'),store=E.index(root,{entries:{}}),found=store.forIntake({...c,description:undefined,discoveryReview:undefined},{now});
@@ -59,16 +59,17 @@ test('direct report reuse binds exact identity, source URL, content hash, proven
  const root=dir(t),c=reportCard();report(root,[c]);const store=E.index(root,{entries:{}});
  a.ok(store.forIntake(c,{now}));
  for(const patch of [{company:'Other'},{title:'Other role'},{location:'Dallas, TX'},{url:'https://example.com/other'}])a.equal(store.forIntake({...c,...patch},{now}),null);
- a.equal(store.forIntake(c,{now:now+7*3600000}),null);a.equal(store.forIntake(c,{now:now-2*3600000}),null);
+ a.ok(store.forIntake(c,{now:now+30*86400000}));a.equal(store.forIntake(c,{now:now+7*3600000,maxAgeMs:6*3600000}),null);a.equal(store.forIntake(c,{now:now-2*3600000}),null);
  for(const patch of [{description:c.description+' changed'}, {discoveryReview:{...c.discoveryReview,sourceUrl:'https://example.com/other'}}, {discoveryReview:{...c.discoveryReview,source:'EMAIL'}}, {discoveryReview:{...c.discoveryReview,preliminaryScreen:{atsGate:{sourceIdentity:{...c,location:'Dallas, TX'}}}}}, {discoveryReview:{...c.discoveryReview,sourceSha256:null}}, {discoveryReview:{...c.discoveryReview,observedAt:'invalid'}}]){
   report(root,[{...c,...patch}]);a.equal(E.index(root,{entries:{}}).forIntake(c,{now}),null);
  }
 });
-test('alert cards, selected quotes, explicit incomplete content and challenge pages are not reusable business evidence',t=>{
+test('selected quotes and challenge pages are not full role content; partial text remains usable for intake',t=>{
  const root=dir(t);
- for(const patch of [{source:'SAVED_DISCOVERY'},{source:'EMAIL'},{description:'Short title-only card'}, {description:('Access denied. Enable JavaScript. ').repeat(20)}, {contentBasis:'EXACT_ORIGINAL_ALERT_CARD'}, {contentBasis:'PREVIOUSLY_CAPTURED_QUOTES'}, {discoveryReview:{fullPosting:false}}]){
+ for(const patch of [{source:'SAVED_DISCOVERY'}, {description:('Access denied. Enable JavaScript. ').repeat(20)}, {contentBasis:'EXACT_ORIGINAL_ALERT_CARD'}, {contentBasis:'PREVIOUSLY_CAPTURED_QUOTES'}]){
   const c=reportCard(patch);report(root,[c]);a.equal(E.index(root,{entries:{}}).forIntake(c,{now}),null);
  }
+ for(const patch of [{source:'EMAIL'},{description:'Short source detail'}, {discoveryReview:{fullPosting:false}}]){const c=reportCard(patch);report(root,[c]);const found=E.index(root,{entries:{}}).forIntake(c,{now});a.ok(found);if(patch.source!=='EMAIL')a.equal(found.fullPosting,false);}
  const c=reportCard({contentBasis:'PREVIOUSLY_CAPTURED_QUOTES'}),ref=E.capture(root,c,{observedAt:at,proof});report(root,[]);a.equal(E.index(root,{entries:{k:{sourceUrl:c.url,evidenceRefs:[ref]}}}).forIntake(c,{now}),null);
 });
 test('newer report content supersedes an older exact cached observation without changing old bytes',t=>{
@@ -81,4 +82,8 @@ test('missing or malformed discovery reports do not break the existing cache/fet
  for(const raw of ['{broken', 'null', JSON.stringify({new_roles:{not:'an array'}}), JSON.stringify({new_roles:[null,42]})]){
   fs.writeFileSync(path.join(root,'state/source-trial-report.json'),raw);a.equal(E.index(root,{entries:{}}).forIntake(c,{now}),null);
  }
+});
+
+test('known explicit expiry remains a condition distinct from retained text age',t=>{
+ const root=dir(t),c={...card,validThrough:new Date(now-1000).toISOString()},ref=E.capture(root,c,{observedAt:at,proof}),store=E.index(root,{entries:{k:{sourceUrl:c.url,evidenceRefs:[ref]}}});a.equal(store.forIntake(c,{now}).doc.validThrough,c.validThrough);a.equal(E.forRow(store,{COMPANY:c.company,TITLE:c.title,LOCATION:c.location,p:{SOURCE_URL:c.url}},now),null);
 });

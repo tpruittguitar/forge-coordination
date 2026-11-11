@@ -83,3 +83,8 @@ test('MCP tool errors are surfaced, not parsed as empty success', async () => {
   assert.match(out.errors[0].error, /tool error: invalid location/);
 });
 test('keeps exact compensation wording and explicit third-party estimate attribution',()=>{const c=H.normalize({company:'Acme',title:'Director',compensation:'$85/hr',job_url:'https://hiringcafe.com/job/one'});assert.equal(c.salaryText,'$85/hr');assert.equal(c.interval,'hourly');assert.equal(H.normalize({compensation:'Indeed estimate $180k-$220k/yr'}).salary_source,'THIRD_PARTY_ESTIMATE');});
+
+test('preserves optional returned job description without treating metadata cards as complete text',()=>{
+ const body='Lead lean manufacturing teams.\nBachelor degree required.\nTravel up to 20%.',raw='### [Plant Manager](https://hiringcafe.com/job/one)\n**Acme**\n- **Location:** Austin, TX\n- **Description:** '+body+'\n- **Job ID:** one\n';
+ const [job]=H.parseResults(raw).jobs;assert.equal(job.description,body);assert.equal(H.normalize(job).description,body);assert.equal(H.normalize({company:'Acme',title:'Director'}).description,'');
+});

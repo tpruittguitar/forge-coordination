@@ -2,7 +2,8 @@
 // Full public postings shared by enrichment research paths. A salary-only anchor,
 // failed transport, partial page or unverified identity is never a posting read.
 const crypto=require('node:crypto'),L=require('./lib'),P=require('./public-posting'),R=require('./recovery'),Pay=require('./pay-values');
-const MAX_AGE_MS=7*86400000;
+// Capture age is provenance, not a posting-access prerequisite.
+const MAX_AGE_MS=Infinity;
 const identity=r=>JSON.stringify([r.COMPANY,r.TITLE,r.LOCATION]);
 function route(raw){try{
  const url=P.publicUrl(raw);if(!url)return null;const u=new URL(url),host=u.hostname;
@@ -35,7 +36,7 @@ function create({cache,now=()=>Date.now()}){
   const routes=new Set(urls.map(route).filter(Boolean)),hits=[],eligible=[],current=new Map();
   for(const key of byIdentity.get(identity(row))||[]){
    const e=entries[key];if(!e)continue;
-   const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||age>=MAX_AGE_MS||e.postingFacts?.validThrough&&(!Number.isFinite(Date.parse(e.postingFacts.validThrough))||Date.parse(e.postingFacts.validThrough)<now())||!routes.has(route(e.url))||!complete(row,e.url,e,e.at))continue;
+   const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||e.postingFacts?.validThrough&&(!Number.isFinite(Date.parse(e.postingFacts.validThrough))||Date.parse(e.postingFacts.validThrough)<now())||!routes.has(route(e.url))||!complete(row,e.url,e,e.at))continue;
    eligible.push(e);if(e.factsVersion===Pay.VERSION)current.set(route(e.url),Math.max(current.get(route(e.url))||0,Date.parse(e.at)));
   }
   for(const e of eligible){
@@ -54,7 +55,7 @@ function create({cache,now=()=>Date.now()}){
   found.payStatus=found.pay?'PAY_FOUND':found.payAmbiguous?'PAY_UNRESOLVED':'NO_PAY_STATED';
   stats.hits++;if(found.payStatus==='NO_PAY_STATED')stats.no_pay_hits++;return found;
  }
- function prune(){for(const[k,e]of Object.entries(entries)){const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||age>=MAX_AGE_MS)delete entries[k];}}
+ function prune(){for(const[k,e]of Object.entries(entries)){const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0)delete entries[k];}}
  function forSource(company,title,url){
   const hits=Object.values(entries).filter(e=>route(e.url)===route(url)&&e.sourceIdentity?.company===company&&e.sourceIdentity?.title===title),locations=[...new Set(hits.map(e=>e.sourceIdentity.location))];
   return locations.length===1?find({COMPANY:company,TITLE:title,LOCATION:locations[0]},[url]):null;

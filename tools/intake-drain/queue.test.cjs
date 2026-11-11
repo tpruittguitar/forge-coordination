@@ -18,7 +18,7 @@ test('AI return is immutable and never itself a canonical completion',t=>{
 test('source-bound positive scope evidence reaches the existing intake path only after independent verification',async t=>{
  const {root,key}=fixture(t),work=Q.sync(root,{now,apply:true}),r=proposal(work.items[key]);Q.publish(root,r,now);
  await Q.verify(root,{now,privateDir:os.tmpdir(),apply:true,verifySource:async({expected})=>{a.equal(expected.company,'Acme');return{description:r.sourceEvidence.quote,sourceSha256:'a'.repeat(64),sourceUrl:r.sourceEvidence.url};}});
- const approved=Q.approved(root,now);a.equal(approved.roles.length,1);a.match(approved.roles[0].scopeReason,/Direct responsibility/);a.equal(Q.approved(root,now+86400000).roles.length,0);
+ const approved=Q.approved(root,now);a.equal(approved.roles.length,1);a.match(approved.roles[0].scopeReason,/Direct responsibility/);a.equal(Q.approved(root,now+30*86400000).roles.length,1);
  a.equal(Q.sync(root,{now,apply:true}).items[key].status,'READY_FOR_CONTROLLED_INTAKE');
 });
 test('missing fields can be recovered; conflicting known identity cannot be changed by an AI return',t=>{
@@ -36,15 +36,15 @@ test('changed source versions invalidate old research; disappearance is never co
 test('the same 5418 candidate population stays fully accounted, including unclear and held identities',t=>{
  const f=fixture(t,Array.from({length:5418},(_,n)=>({company:'Employer '+n,title:n%2?'Plant Manager':'General Manager',location:n%3?'Austin, TX':'',url:'https://example.com/jobs/'+n})));const w=Q.sync(f.root,{now});a.equal(w.counts.ACTION_REQUIRED,5418);a.equal(Object.values(w.actions).reduce((a,b)=>a+b,0),5418);
 });
-test('an expired independent validation returns to source verification rather than stranding a ready candidate',async t=>{
+test('an unchanged positive review remains usable without an age-only source revalidation',async t=>{
  const {root,key}=fixture(t),item=Q.sync(root,{now,apply:true}).items[key],r=proposal(item);Q.publish(root,r,now);await Q.verify(root,{now,privateDir:os.tmpdir(),apply:true,verifySource:async()=>({description:r.sourceEvidence.quote,sourceSha256:'a'.repeat(64),sourceUrl:r.sourceEvidence.url})});
- const up=S.read(root,'state/UPSTREAM_LEDGER.json');up.at=new Date(now+86400000).toISOString();S.save(root,'state/UPSTREAM_LEDGER.json',up);a.equal(Q.sync(root,{now:now+86400000}).items[key].status,'PENDING_INDEPENDENT_VALIDATION');
+ const up=S.read(root,'state/UPSTREAM_LEDGER.json');up.at=new Date(now+86400000).toISOString();S.save(root,'state/UPSTREAM_LEDGER.json',up);a.equal(Q.sync(root,{now:now+86400000}).items[key].status,'READY_FOR_CONTROLLED_INTAKE');
 });
 test('resume-backed scope and identity are necessary even with an AI positive verdict',t=>{
  const {root,key}=fixture(t),item=Q.sync(root,{now}).items[key],r=proposal(item);a.throws(()=>Q.validate({...r,scope:{...r.scope,resumeTextSha256:'0'.repeat(64)}},item,now),/CURRENT_RESUME/);a.throws(()=>Q.validate({...r,scope:{...r.scope,resumeCompetencyIds:['invented_clearance']}},item,now),/CURRENT_RESUME/);
 });
-test('repeated code source failures get an AI recovery owner rather than retrying forever in intake',t=>{
- const {root,key,cards}=fixture(t,[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:cards[0],status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});const item=Q.sync(root,{now}).items[key];a.equal(item.action,'RECOVER_SOURCE');a.equal(item.taskKey,'FORGE_INTAKE_SOURCE_RECOVERY');a.equal(item.sourceFailure.attempts,2);
+test('repeated source fetch failures no longer block an exact saved lead',t=>{
+ const {root,key,cards}=fixture(t,[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:cards[0],status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});const item=Q.sync(root,{now}).items[key];a.equal(item.action,'INTAKE');a.equal(item.taskKey,'CODE');a.equal(item.sourceFailureHistory.attempts,2);
 });
 
 test('a source key replaced by its canonical group is accounted without re-queuing a positive review',t=>{
@@ -159,4 +159,41 @@ test('older reconciliation receipts do not resurrect after a newer independently
  const {root,key}=fixture(t,[{company:'Acme',title:'General Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);const work=Q.sync(root,{now,apply:true}),item=work.items[key];Object.assign(item,{action:'REVIEW_SCOPE',taskKey:Q.TASKS.REVIEW_SCOPE,owner:'ChatGPT',status:'READY_FOR_CONTROLLED_INTAKE'});
  const old={...proposal(item),outcome:'RECONCILIATION_REQUIRED',retryCondition:'Resolve original worksite conflict'},current={...proposal(item),runId:'FORGE-DRAIN-NEWER-VERIFIED',observedAt:new Date(now+1000).toISOString()};S.immutable(root,Q.reviewPath(old),old);S.immutable(root,Q.reviewPath(current),current);item.review={path:Q.reviewPath(current),sha256:S.hash(current),observedAt:current.observedAt,outcome:'SOURCE_READY'};item.validation={status:'READY_FOR_CONTROLLED_INTAKE',reviewSha256:S.hash(current),observedAt:current.observedAt};S.save(root,Q.FILE,work);
  for(let n=0;n<2;n++){const out=Q.sync(root,{now:now+1000,apply:true});a.equal(out.items[key].action,'INTAKE');a.equal(Q.seeds(root).length,1);a.deepEqual(out.reviewErrors,{});}
+});
+
+test('available captured metadata removes only obsolete source recovery and keeps its audit history',t=>{
+ const card={company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123',source:'JOBSPY:indeed'}, {root,key}=fixture(t,[card]);
+ S.save(root,'state/source-trial-report.json',{new_roles:[card]});
+ S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:card,status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:3,lastAttempt:at,retryAfter:'2999-01-01T00:00:00Z'}}});
+ const w=Q.sync(root,{now,apply:true}),item=w.items[key];a.equal(item.action,'INTAKE');a.equal(item.sourceFailure,null);a.equal(item.sourceFailureHistory.attempts,3);a.equal(item.canonicalCompletion,false);a.equal(Q.seeds(root).length,1);
+});
+test('captured source does not erase other failure reasons or identity and Writer holds',t=>{
+ for(const kind of ['other-failure','identity','missing-present','held','conflict','writer']){
+  const card={company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123',source:'HIRINGCAFE'}, {root,key}=fixture(t,[card]),up=S.read(root,'state/UPSTREAM_LEDGER.json');
+  if(kind==='identity')up.groups[key].status='IDENTITY_HOLD';if(kind==='missing-present')up.groups[key].status='MISSING_PREVIOUSLY_PRESENT';if(kind==='held')up.groups[key].status='HELD';
+  if(kind==='conflict'){up.entries[key].REQ_ID='ONE';card.REQ_ID='TWO';}
+  S.save(root,'state/UPSTREAM_LEDGER.json',up);S.save(root,'state/source-trial-report.json',{new_roles:[card]});
+  S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:card,status:'WAITING_SOURCE_RETRY',reason:kind==='other-failure'?'ORIGINAL_SOURCE_IDENTITY_CONFLICT':'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});
+  if(kind==='writer')S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[key]:{key,status:'POST_IN_FLIGHT_UNKNOWN',submissions:[{requestId:'ORIGINAL'}]}}});
+  const item=Q.sync(root,{now,apply:true}).items[key];a.equal(item.action,kind==='writer'?'RECONCILE_WRITER':kind==='other-failure'?'RECOVER_SOURCE':'RESOLVE_IDENTITY',kind);a.equal(item.canonicalCompletion,false);a.equal(Q.seeds(root).length,0,kind);
+ }
+});
+test('a different-worksite provider card cannot replace exact saved lead facts',t=>{
+ const card={company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}, {root,key}=fixture(t,[card]);
+ S.save(root,'state/source-trial-report.json',{new_roles:[{...card,location:'Dallas, TX',source:'JOBSPY:linkedin'}]});
+ S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:card,status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}}});
+ const item=Q.sync(root,{now}).items[key];a.equal(item.action,'INTAKE');a.equal(item.card.location,'Austin, TX');a.equal(item.sourceFailureHistory.attempts,2);const e=require('../source-intake/discovery-inputs').index(root).find(item.card,{now});a.equal(e.card.source,'URL:example.com');a.equal(e.card.location,'Austin, TX');
+});
+test('captured-source availability does not bypass active shared helper reservations',t=>{
+ const card={company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123',source:'JOBSPY:indeed'}, {root,key}=fixture(t,[card]);
+ S.save(root,'state/source-trial-report.json',{new_roles:[card]});S.save(root,'receipts/auto-intake/catch-up/state.json',{roles:{one:{role:card,status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2}}});
+ const taskKey='FORGE_CLAUDE_SHARED_HELPER';S.save(root,'control/SHARED_HELPER_WORK.json',{schema:'forge.shared-helper-work.v1',enabled:true,routingActive:true,providers:{[taskKey]:{provider:'Claude',available:true}},items:[{key,kind:'INTAKE',provider:'Claude',taskKey,status:'ASSIGNED'}]});
+ a.equal(Q.sync(root,{now,apply:true}).items[key],undefined);a.equal(Q.seeds(root).length,0);
+});
+
+test('catch-up cannot bypass drain identity obligations, accounted cards or shared ownership',t=>{
+ const {root,key}=fixture(t,[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/123'}]);
+ for(const item of [{action:'REVIEW_SCOPE',scopeReviewHold:{reason:'RECONCILIATION_REQUIRED'}},{action:'RESOLVE_IDENTITY'},{action:'INTAKE',sourceConflict:'CONFLICTING_SAVED_IDENTITY'},{action:'INTAKE',status:'ACCOUNTED_UPSTREAM'},{action:'INTAKE',status:'INVENTORY_RECONCILIATION_REQUIRED'},{action:'INTAKE',fence:{requestId:'original'}}]){const work={items:{[key]:{key,aliases:[key,'alias'],status:'ACTION_REQUIRED',...item}}};const held=Q.admissionHolds(root,{work,now});a.equal(held.has(key),true);a.equal(held.has('alias'),true);}
+ a.equal(Q.admissionHolds(root,{work:{items:{[key]:{key,action:'INTAKE',status:'ACTION_REQUIRED'}}},now}).size,0);
+ S.save(root,'control/SHARED_HELPER_WORK.json',{schema:'forge.shared-helper-work.v1',enabled:true,routingActive:true,providers:{},items:[{key,kind:'INTAKE',provider:'Claude',taskKey:'FORGE_CLAUDE_SHARED_HELPER',status:'ASSIGNED'}]});a.equal(Q.admissionHolds(root,{work:{items:{}},now}).get(key),'SHARED_HELPER_RESERVED');
 });

@@ -158,3 +158,13 @@ test('current enrichment replenishment uses fresh planner for unattempted gaps a
  S.save(f.root,'state/enrich-ats-pay-recovery.json',{schema:'forge.enrichment-recovery.v1',run:'TEST',rows:[{id:'V2I-NEW',status:'NOT_YET_ATTEMPTED',needs:['SALARY'],attempts:[]},{id:'V2I-WAIT',status:'SOURCE_RESEARCH_REQUIRED',needs:['SALARY'],attempts:[],retryAt:new Date(Date.now()+3600000).toISOString()}]});
  const r=A.replenish(f);a.equal(r.enrichmentResearch.appended,1);a.equal(r.enrichmentResearch.counts.retryNotDue,1);const saved=S.read(f.root,'control/ENRICHMENT_HELPER_WORK.json');a.equal(saved.items[0].primaryId,'V2I-NEW');a.match(saved.items[0].researchProvenance.sourceFingerprint,/^[a-f0-9]{64}$/);a.equal(A.replenish({...f,runId:f.runId+'-SECOND'}).enrichmentResearch.appended,0);
 });
+test('saved discovery metadata and descriptions seed CODE instead of source identity research without paragraph wrappers',t=>{
+ for(const description of ['', 'Manufacturing production and robotics quality systems. '.repeat(10)]){
+  const f=assignment(t),job=f.ledger.jobs['linkedin:1234'];job.evidence=[];S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);
+  S.save(f.root,'state/source-trial-report.json',{summary:{at:'2020-01-01T00:00:00Z'},new_roles:[{...job,source:'HIRINGCAFE',description}]});
+  const result=A.replenish(f);a.equal(result.counts.seededCodeIntake,1);a.equal(result.appended.length,0);
+  const item=I.find(f.root,job.key);a.equal(item.provenance,'CAPTURED_DISCOVERY');a.equal(I.original(f.root,item,{}).sourceEvidence.description,description.trim());
+  const plan=require('../relevance-screen/prepare.cjs').prepare({root:f.root,rows:[],sourceAt:new Date().toISOString(),runId:f.runId});a.equal(plan.counts.READY,1);
+  job.company='Changed';S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);a.throws(()=>I.original(f.root,item,{}),/IDENTITY_CONFLICT/);
+ }
+});

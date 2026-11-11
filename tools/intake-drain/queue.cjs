@@ -50,6 +50,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const reports=['state/source-trial-report.json','state/board-discovery-report.json'].map(f=>read(root,f,{new_roles:[]}));
  const reasons=new Map();for(const report of reports)for(const card of [...report.new_roles||[],...report.existing_roles||[],...report.identity_held_roles||[]])reasons.set(U.key(card.url),selection(card));
  const saved=require('./saved-card.cjs'),savedIndex=saved.index(root,up,mail,reports);
+ const discoveryInputs=require('../source-intake/discovery-inputs').index(root);
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
  const fences=writerFences(root),sharedReserved=require('../helper-routing/shared.cjs').reservedKeys(read(root,'control/SHARED_HELPER_WORK.json',null));
  for(const [key,g] of Object.entries(up.groups)){
@@ -58,7 +59,9 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   if(!currentFence&&!old.items[key]&&!priorAlias&&[key,...g.aliases||[]].some(k=>sharedReserved.has(k)))continue; // Already assigned evidence-only research; original Writer reconciliation still wins.
   const aliases=g.aliases||[key];present.add(key);const es=aliases.map(k=>up.entries[k]).filter(Boolean);if(!es.length)throw Error('UPSTREAM_GROUP_WITHOUT_SOURCE');
   const e=es[0],recovered=saved.recover(sourceCard(e),aliases,savedIndex),card={...recovered.card,url:safeUrl(recovered.card.url)},screen=Screen.evaluate(card,config),fence=aliases.map(k=>fences.get(k)).find(Boolean);
-  const sourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean),identityHold=scopeReviewHold(old.items[key]);
+  const priorSourceFailure=aliases.map(k=>sourceFailures.get(k)).find(Boolean);
+  const capturedSourceAvailable=priorSourceFailure?.reason==='SOURCE_EVIDENCE_UNAVAILABLE'&&!!discoveryInputs.find(card,{now});
+  const sourceFailure=capturedSourceAvailable?null:priorSourceFailure,identityHold=scopeReviewHold(old.items[key]);
   // Exact saved alert facts with opaque tracking links need source recovery,
   // not a fabricated URL or a generic identity-reconciliation dead end.
   const alertSourceGap=!card.url&&es.some(x=>x.discoveryReview?.contentBasis==='EXACT_ORIGINAL_ALERT_CARD'&&
@@ -66,7 +69,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   const action=fence?'RECONCILE_WRITER':sourceFailure?'RECOVER_SOURCE':recovered.conflict?'RESOLVE_IDENTITY':alertSourceGap?'RECOVER_SOURCE':g.status==='IDENTITY_HOLD'||g.status==='MISSING_PREVIOUSLY_PRESENT'?'RESOLVE_IDENTITY':screen.outcome==='HOLD_SOURCE_IDENTITY'?'RECOVER_SOURCE':g.status==='HELD'?'RESOLVE_IDENTITY':(identityHold||screen.outcome==='RANKED_DISCOVERY'||require('./title-exclusions.cjs').matches(root,card).length===1)?'REVIEW_SCOPE':'INTAKE';
   const sourceVersion=S.hash({aliases:[...aliases].sort(),card,status:g.status,evidence:es.map(e=>({evidenceStatus:e.evidenceStatus,proof:e.proof,screenRuleId:e.screenRuleId,sourceSha256:e.discoveryReview?.sourceSha256,sources:e.sources})),resumeVersion,sourceFailure:!!sourceFailure,fence:fence||null});
   const previous=old.items[key],scopeReleased=previous?.action==='REVIEW_SCOPE'&&action==='INTAKE',unchanged=previous?.sourceVersion===sourceVersion&&!scopeReleased;
-  const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,scopeReviewHold:identityHold,scopeReviewHistory:scopeReleased?{sourceVersion:previous.sourceVersion,review:previous.review||null,validation:previous.validation||null}:previous?.scopeReviewHistory||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:identityHold?'Resolve the recorded identity or exclusion obligation before intake; a fit-only verdict does not clear it':'Check the exact captured-title exclusion against current canonical policy; uncertain fit alone does not block intake',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
+  const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,...(capturedSourceAvailable?{sourceFailureHistory:{reason:priorSourceFailure.reason,attempts:priorSourceFailure.attempts,lastAttempt:priorSourceFailure.lastAttempt,retryAfter:priorSourceFailure.retryAfter,releaseBasis:'CAPTURED_DISCOVERY_AVAILABLE'}}:{}),sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,scopeReviewHold:identityHold,scopeReviewHistory:scopeReleased?{sourceVersion:previous.sourceVersion,review:previous.review||null,validation:previous.validation||null}:previous?.scopeReviewHistory||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:identityHold?'Resolve the recorded identity or exclusion obligation before intake; a fit-only verdict does not clear it':'Check the exact captured-title exclusion against current canonical policy; uncertain fit alone does not block intake',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
   // A Writer attempt discovered after dismissal still needs independent reconciliation.
   if(fence&&(es.some(dismissed)||g.status==='PRESENT')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
@@ -103,7 +106,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   item.review={path:reviewPath(review),sha256:S.hash(review),observedAt:review.observedAt,outcome:review.outcome,retryCondition:review.retryCondition,retryAfter:review.retryAfter};
   item.nextAction=review.nextAction||item.nextAction;
   item.status=['SOURCE_READY','EXCLUSION_CANDIDATE'].includes(review.outcome)?'PENDING_INDEPENDENT_VALIDATION':review.retryAfter&&Date.parse(review.retryAfter)<=now?'ACTION_REQUIRED':'WAITING_EVIDENCE_CHANGE';
-  if(item.validation?.reviewSha256===S.hash(review))item.status=['READY_FOR_CONTROLLED_INTAKE','READY_FOR_CONTROLLED_EXCLUSION'].includes(item.validation.status)&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
+  if(item.validation?.reviewSha256===S.hash(review))item.status=item.validation.status==='READY_FOR_CONTROLLED_EXCLUSION'&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
  }catch(e){old.reviewErrors[path.relative(root,file).split(path.sep).join('/')]={reason:e.message};}}
  old.counts={};old.actions={};for(const item of Object.values(old.items)){old.counts[item.status]=(old.counts[item.status]||0)+1;if(item.status!=='ACCOUNTED_UPSTREAM')old.actions[item.action]=(old.actions[item.action]||0)+1;}
  old.noProcessingCap=true;if(apply)S.save(root,FILE,old);return old;
@@ -132,7 +135,7 @@ function next(root,taskKey,{limit=10,now=Date.now()}={}){
 }
 async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify,verifyExclusion=require('./exclusions.cjs').verify,exclusionContext,apply=false}={}){
  if(!privateDir||!path.isAbsolute(privateDir)||path.resolve(privateDir)===path.resolve(root)||path.resolve(privateDir).startsWith(path.resolve(root)+path.sep))throw Error('PRIVATE_SOURCE_DIRECTORY_REQUIRED');
- const work=sync(root,{now}),result={verified:0,failed:0,exclusionsVerified:0},cache=new Map(),shared=sharedKeys(root);
+ const work=sync(root,{now}),result={verified:0,failed:0,exclusionsVerified:0},cache=new Map(),shared=sharedKeys(root),discovery=require('../source-intake/discovery-inputs').index(root);
  let context=exclusionContext;
  for(const item of Object.values(work.items)){
   if(sharedBlocked(item,shared)||item.status!=='PENDING_INDEPENDENT_VALIDATION')continue;const review=read(root,item.review.path);validate(review,item,now);
@@ -141,8 +144,8 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
     context=context||await require('../source-trial/preliminary-screen').context({key:process.env.FORGE_WRITER_KEY});
     item.validation=await verifyExclusion(root,review,item,{...context,cache,now});item.status=item.validation.status;result.exclusionsVerified++;continue;
    }
-   // Re-fetch and parse the exact structured employer/ATS posting. Helper prose alone never admits a role.
-   const source=await verifySource({item:{sourceEvidence:review.sourceEvidence},expected:review.sourceEvidence,privateDir,now});
+   // Reuse bound captured facts before source retrieval. Helper claims alone do not resolve a recorded identity or quoted scope obligation.
+   const source=await verifySource({root,discovery,item:{sourceEvidence:review.sourceEvidence},expected:review.sourceEvidence,privateDir,now});
    const overlap=Resume.match({title:review.sourceEvidence.title,description:source.description});if(review.scope.resumeCompetencyIds.some(id=>!overlap.matches.some(m=>m.competencyId===id)))throw Error('RESUME_OVERLAP_NOT_IN_INDEPENDENT_POSTING');
    if(!Source.norm(source.description).includes(Source.norm(review.scope.quote)))throw Error('SCOPE_QUOTE_NOT_IN_INDEPENDENT_POSTING');
    const payCard={company:review.sourceEvidence.company,title:review.sourceEvidence.title,location:review.sourceEvidence.location,url:source.sourceUrl,payFacts:source.payFacts,source:'INTAKE_DRAIN',observedAt:source.observedAt||new Date(now).toISOString()};payCard.postedPay=PostedPay.capture(payCard);
@@ -154,11 +157,24 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
 function approved(root,now=Date.now()){
  const work=read(root,FILE,empty()),roles=[],proofs=new Map(),shared=sharedKeys(root);
  for(const item of Object.values(work.items)){
-  const v=item.validation;if(sharedBlocked(item,shared)||item.status!=='READY_FOR_CONTROLLED_INTAKE'||item.fence||!v||now-Date.parse(v.observedAt)>=86400000||Date.parse(v.observedAt)>now)continue;
+  const v=item.validation;if(sharedBlocked(item,shared)||item.status!=='READY_FOR_CONTROLLED_INTAKE'||item.fence||!v||!Number.isFinite(Date.parse(v.observedAt))||Date.parse(v.observedAt)>now)continue;
   const r=read(root,item.review.path);validate(r,item,now);if(v.reviewSha256!==S.hash(r)||item.review.path!==reviewPath(r)||r.outcome!=='SOURCE_READY')throw Error('DRAIN_VALIDATION_BINDING_REQUIRED');
   const trustedPay=v.postedPay?PostedPay.carry({...r.sourceEvidence,...v,url:v.postedPay.sourceUrl}):PostedPay.carry(item.card);const role={...r.sourceEvidence,postedPay:undefined,payFacts:undefined,pay:undefined,...trustedPay,...(trustedPay.postedPay?{url:trustedPay.postedPay.sourceUrl}:{}),discoveryReview:item.discoveryReview,initiatingUrl:item.card.url,source:'INTAKE_DRAIN',selectionReason:item.selectionReason,scopeReason:r.scope.reason+'; resume='+r.scope.resumeTextSha256+'; competencies='+r.scope.resumeCompetencyIds.join(','),drainKey:item.key,drainReview:item.review.path};roles.push(role);proofs.set(U.key(role.url),{role,review:r,validation:v});
  }
  return{roles,proofs};
+}
+// Catch-up may already contain cards omitted by seeds(). Keep the same explicit
+// holds/reservations on that route; saved details do not resolve an identity or
+// previous-transaction obligation. Currently validated positive reviews can pass.
+function admissionHolds(root,{work=read(root,FILE,empty()),now=Date.now()}={}){
+ const allowed=new Set(approved(root,now).roles.flatMap(r=>[U.key(r.url),U.key(r.initiatingUrl)].filter(Boolean))),held=new Map();
+ for(const item of Object.values(work.items)){
+  const keys=[...new Set([item.key,...item.aliases||[]])];
+  if(!item.fence&&!item.sourceConflict&&item.status==='READY_FOR_CONTROLLED_INTAKE'&&keys.some(k=>allowed.has(k)))continue;
+  if(item.fence||item.scopeReviewHold||item.sourceConflict||item.action!=='INTAKE'||['ACCOUNTED_UPSTREAM','INVENTORY_RECONCILIATION_REQUIRED'].includes(item.status))for(const k of keys)held.set(k,item.fence?'ORIGINAL_WRITER_FENCE':['ACCOUNTED_UPSTREAM','INVENTORY_RECONCILIATION_REQUIRED'].includes(item.status)?item.status:item.scopeReviewHold?.reason||item.sourceConflict||item.action||item.status);
+ }
+ for(const key of sharedKeys(root))held.set(key,'SHARED_HELPER_RESERVED');
+ return held;
 }
 function ownedKeys(root){const shared=sharedKeys(root);return new Set(Object.values(read(root,FILE,empty()).items).filter(i=>i.status!=='ACCOUNTED_UPSTREAM'&&!sharedBlocked(i,shared)).flatMap(i=>[i.key,...i.aliases||[]]));}
 function owned(root,key){return ownedKeys(root).has(key);}
@@ -173,4 +189,4 @@ if(require.main===module)(async()=>{
  else throw Error('Use sync, next <taskKey>, review <json>, or verify <privateDir>');
  console.log(JSON.stringify(command==='sync'?{counts:result.counts,actions:result.actions,reviewErrors:result.reviewErrors}:result));
 })().catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={writerFences,FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,researchEligible,next,verify,approved,seeds,fences,owned,ownedKeys,reviewPath};
+module.exports={writerFences,FILE,REVIEWS,TASKS,empty,selection,sync,validate,publish,researchEligible,next,verify,approved,seeds,fences,admissionHolds,owned,ownedKeys,reviewPath};

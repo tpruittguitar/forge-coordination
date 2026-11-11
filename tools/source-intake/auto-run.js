@@ -23,7 +23,7 @@ const {knownRequestIds}=require('./known-requests');
 const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
-const CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs');
+const CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs'),DiscoveryInputs=require('./discovery-inputs'),Captured=require('./captured-discovery');
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -32,17 +32,19 @@ const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,dismissedKeys=new Set()}){
+function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,heldKeys=new Set(),dismissedKeys=new Set()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
-  if(dismissedKeys.has(Upstream.key(r.url)))continue;
-  const saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
+  if(dismissedKeys.has(Upstream.key(r.url))||heldKeys.has(Upstream.key(r.url)))continue;
+  const captured=capturedInputs?.find(r),saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
+  if(captured?.card.validThrough&&Date.parse(captured.card.validThrough)<=Date.now())continue;
+  const sourceCard=captured?captured.card:saved?{...r,description:saved.doc.text,contentBasis:saved.doc.contentBasis||'CAPTURED_ROLE_CONTENT',fullPosting:saved.fullPosting??saved.doc.fullPosting}:null;
   if(screenContext){
    const Screen=require('../source-trial/preliminary-screen');
    // Reusing partial business evidence must neither invent a new zero-hit
    // exclusion nor erase the current exclusion on the original direct card.
-   if(saved&&!saved.doc.fullPosting&&r.description&&Screen.excluded(Screen.screen(r,screenContext)))continue;
-   if(Screen.excluded(Screen.screen(saved?{...r,description:saved.doc.text,contentBasis:saved.doc.contentBasis||'CAPTURED_ROLE_CONTENT',discoveryReview:{...r.discoveryReview,fullPosting:saved.doc.fullPosting===true}}:r,screenContext)))continue;
+   if(sourceCard&&!sourceCard.fullPosting&&r.description&&Screen.excluded(Screen.screen(r,screenContext)))continue;
+   if(Screen.excluded(Screen.screen(sourceCard?{...r,...sourceCard,discoveryReview:{...r.discoveryReview,fullPosting:sourceCard.fullPosting===true}}:r,screenContext)))continue;
   }
   if(out.length>=max)break;
   const proof=reviewed.get(Upstream.key(r.url));
@@ -93,9 +95,33 @@ async function evidence(url,company,fetcher=globalThis.fetch){
   return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
  }catch{return null}
 }
-async function sourceEvidence(card,{store,fetchEvidence=evidence}={}){
+async function sourceEvidence(card,{store,capturedInputs,fetchEvidence=evidence}={}){
+ const captured=capturedInputs?.find(card);
+ if(captured)return {captured,business:captured.card.description,provenance:captured,cached:null};
  const cached=store?.forIntake?store.forIntake(card):store?.find(card),business=cached?.doc.text||await fetchEvidence(card.url,card.company);
- return {cached,business,provenance:cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null};
+ return {cached,business,provenance:cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null};
+}
+// Current policy is re-evaluated against the same captured facts. An old capture
+// date is provenance, not a reason to fetch the employer site or invent liveness.
+async function refreshCapturedReview(candidate,expectedHash,{context}={}){
+ if(!Captured.validate(candidate))return null;
+ const Screen=require('../source-trial/preliminary-screen'),fresh=await context();
+ if(!fresh?.rules?.raw||sha(fresh.rules.raw)!==expectedHash)return null;
+ const card=candidate.discoveryEvidence.card;
+ if(Screen.excluded(Screen.screen({...card,discoveryReview:{fullPosting:card.fullPosting}},fresh)))return null;
+ return {rulesHash:expectedHash,discoveryEvidence:candidate.discoveryEvidence,primaryBusiness:card.description,businessEvidenceApproved:false,evidenceVerified:false};
+}
+
+async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun,fetchEvidence=evidence}={}){
+ const {captured,cached,business,provenance}=await sourceEvidence(r,{store:discoveryEvidence,capturedInputs,fetchEvidence}),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
+  const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
+  for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
+  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(business?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(!business&&!captured)return null;
+  return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
+   reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:!captured,source:captured?.card.source||r.source,family:r.family,level:r.level,
+   approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(reportRun||'')}};
 }
 async function main(argv=process.argv.slice(2)){
  const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
@@ -131,7 +157,8 @@ async function main(argv=process.argv.slice(2)){
  // Count only attempts actually recorded; unattempted tail candidates are safe to
  // consider again. Quarantined and all other attempted requests remain excluded.
  const sent=knownRequestIds(prior);
- Drain.sync('.',{apply:!dry});
+ const capturedInputs=DiscoveryInputs.index('.');
+ const drainWork=Drain.sync('.',{apply:!dry}),heldKeys=Drain.admissionHolds('.',{work:drainWork});
  const reviewed=Drain.approved('.');
  const drainSeeds=Drain.seeds('.');
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
@@ -140,7 +167,7 @@ async function main(argv=process.argv.slice(2)){
  if(argv.includes('--catch-up')){
   catchUp=CatchUp.load();const reports=[report,{new_roles:[...drainSeeds,...reviewed.roles]}];
   for(const file of ['state/source-trial-report.json','state/board-discovery-report.json'])if(fs.existsSync(file))reports.push(JSON.parse(fs.readFileSync(file)));
-  CatchUp.ingest(catchUp,[...reports,{new_roles:carried}]);catchUp.progress=CatchUp.report(catchUp,{sent,quarantined,blocking});
+  CatchUp.ingest(catchUp,[...reports,{new_roles:carried}]);CatchUp.releaseSourceHolds(catchUp,r=>capturedInputs.find(r));catchUp.progress=CatchUp.report(catchUp,{sent,quarantined,blocking});
   if(!dry)CatchUp.save('.',catchUp);
   report.new_roles=CatchUp.due(catchUp);
  }
@@ -161,17 +188,11 @@ async function main(argv=process.argv.slice(2)){
  const config=Relevance.guarded(Relevance.load(),master.rows),represented=partitionExisting(report.new_roles,{master,archive,sent,blockedIdentities,blockedRecords,writerFences:[...[...Drain.writerFences('.')].map(([key,f])=>({key,...f})),...Drain.fences('.').map(record=>({record}))]});
  report.new_roles=represented.remaining;
  const discoveryEvidence=require('../source-trial/evidence-store').index('.');
- const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
-  const {cached,business,provenance}=await sourceEvidence(r,{store:discoveryEvidence}),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
-  const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
-  for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
-  if(!business){if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}continue;}
-  candidates.push({...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
-   reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:true,source:r.source,family:r.family,level:r.level,
-   approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(report.summary?.run||'')}});
+  const candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
+  if(candidate)candidates.push(candidate);else if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}
  }
  const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
  console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,candidates:candidates.length}));
@@ -184,6 +205,7 @@ async function main(argv=process.argv.slice(2)){
  await snapshot('before',{statePath,candidates,sourceRunId:run,key,mode:'AUTO'});
  const initialState=JSON.parse(fs.readFileSync(statePath));initialState.existingNoWrite=represented.existing;initialState.identityHeld=represented.held;fs.writeFileSync(statePath,JSON.stringify(initialState,null,1));
  const refreshReview=async(candidate,expectedHash)=>{
+  if(candidate.evidenceSource==='CAPTURED_DISCOVERY')return refreshCapturedReview(candidate,expectedHash,{context:()=>require('../source-trial/preliminary-screen').context({key})});
   // Re-read the actual posting and rules; never merely stamp the old review
   // with a new hash. Writer remains the canonical Never Consider adjudicator.
   const business=await evidence(candidate.record.SOURCE_URL,candidate.record.COMPANY);
@@ -204,4 +226,4 @@ async function main(argv=process.argv.slice(2)){
  if(!argv.includes('--one-transaction'))return main(argv);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,sourceEvidence,main,screenReason,discoveryNotes,partitionExisting};
+module.exports={pick,evidence,sourceEvidence,refreshCapturedReview,prepareCandidate,main,screenReason,discoveryNotes,partitionExisting};

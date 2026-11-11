@@ -29,20 +29,21 @@ test('new exact ledger or discovery posting evidence reopens a saved source gap 
  for(const evidence of [{ledger:exact},{discovery:exact}]){const changed=P.sourceInputs('same-comparison-inputs',evidence);assert.notEqual(changed,baseline);assert.equal(P.attempted(dir,r,'policy',changed),false);P.rememberAttempt(dir,r,'policy',changed);assert.equal(P.attempted(dir,r,'policy',changed),true);}
 });
 
-test('preparation rejects missing, legacy, mismatched, expired and unresolved no-pay evidence',()=>{
+test('preparation rejects missing, legacy, mismatched, explicitly expired and unresolved no-pay evidence',()=>{
  const row={PRIMARY_ID:'X',COMPANY:'Acme',TITLE:'Director',LOCATION:'Dayton, OH',p:{}};
  const now=Date.parse('2026-11-10T01:00:00Z'),e=source(row),fields={SALARY_BASIS:'FORGE-ESTIMATE'};
- assert.equal(P.sourceValid(row,fields,{postingEvidence:e},now),true);
- for(const bad of [null,{...e,identityVerified:false},{...e,text:'snippet'},{...e,sourceIdentity:{...e.sourceIdentity,title:'Other'}},{...e,payAmbiguous:true},{...e,pay:{low:100000,high:200000}},{...e,at:'2026-11-01'},{...e,postingFacts:{validThrough:'2026-11-01'}}])assert.equal(P.sourceValid(row,fields,{postingEvidence:bad},now),false);
+ assert.equal(P.sourceValid(row,fields,{postingEvidence:e},now),true);assert.equal(P.sourceValid(row,fields,{postingEvidence:{...e,at:'2026-10-01'}},now),true);
+ for(const bad of [null,{...e,identityVerified:false},{...e,text:'snippet'},{...e,sourceIdentity:{...e.sourceIdentity,title:'Other'}},{...e,payAmbiguous:true},{...e,pay:{low:100000,high:200000}},{...e,postingFacts:{validThrough:'2026-11-01'}}])assert.equal(P.sourceValid(row,fields,{postingEvidence:bad},now),false);
 });
 
-test('live source handoff reparses full no-pay text and rejects stale, altered or monetary sources',()=>{
+test('live source handoff reparses full no-pay text and reuses older captures but rejects altered or monetary sources',()=>{
  const row={PRIMARY_ID:'X',COMPANY:'Acme',TITLE:'Director',LOCATION:'Dayton, OH',p:{}};
  const now=Date.parse('2026-11-10T01:00:00Z'),e=source(row);
  const record=raw=>({fields:{SALARY_BASE_LOW:1},evidence:{postingEvidence:raw,postingEvidenceSha256:P.fingerprint(raw)}});
  const forged={...e,degree:{req:'REQUIRED',text:'fabricated'},qualificationVersion:require('./qualification').VERSION};
  const result=P.noPaySource(row,record(forged),now);assert.ok(result);assert.equal(result.at,e.at);assert.equal(result.pay,null);assert.notDeepEqual(result.degree,forged.degree);
- for(const bad of [{...e,factsVersion:'old'},{...e,at:'2026-11-01'},{...e,at:'2026-11-11'},{...e,postingFacts:{validThrough:'2026-11-01'}},{...e,pay:{low:1,high:2}},{...e,payAmbiguous:true},{...e,structuredBaseSalary:{currency:'CAD'}},{...e,text:e.text+' Salary USD 180000 to 200000.'},{...e,sourceIdentity:{...e.sourceIdentity,title:'Different'}},{...e,basis:'THIRD_PARTY_ESTIMATE'}])assert.equal(P.noPaySource(row,record(bad),now),null);
+ for(const bad of [{...e,factsVersion:'old'},{...e,at:'2026-11-11'},{...e,postingFacts:{validThrough:'2026-11-01'}},{...e,pay:{low:1,high:2}},{...e,payAmbiguous:true},{...e,structuredBaseSalary:{currency:'CAD'}},{...e,text:e.text+' Salary USD 180000 to 200000.'},{...e,sourceIdentity:{...e.sourceIdentity,title:'Different'}},{...e,basis:'THIRD_PARTY_ESTIMATE'}])assert.equal(P.noPaySource(row,record(bad),now),null);
+ assert.equal(P.noPaySource(row,record({...e,at:'2026-10-01'}),now).at,'2026-10-01T00:00:00.000Z');
  const altered=record(e);altered.evidence.postingEvidenceSha256='bad';assert.equal(P.noPaySource(row,altered,now),null);
 });
 

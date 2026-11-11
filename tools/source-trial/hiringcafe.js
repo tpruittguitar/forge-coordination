@@ -31,13 +31,14 @@ function parseResults(text) {
     const company = ((block.slice(head.index + head[0].length).match(/^\s*\*\*([^*\n]+)\*\*\s*$/m)) || [])[1] || '';
     const id = field('Job ID'); if (!id || !company.trim()) return null;
     return { title: head[1].trim(), company: company.trim(), location: field('Location'), workplace: field('Workplace'), compensation: field('Compensation'),
+      description: ((block.match(/(?:^|\n)-\s+\*\*(?:Job description|Description):\*\*\s*([\s\S]*?)(?=\n-\s+\*\*[^*\n]+:\*\*|$)/i)||[])[1]||'').trim(),
       employment_type: field('Employment type'), seniority: field('Seniority'), date_posted: field('Posted'), hiringcafe_id: id, job_url: canonicalUrl(head[2]) };
   }).filter(Boolean);
   return { totalMatches: total ? +total.replace(/,/g, '') : null, jobs };
 }
 function normalize(j) {
   return Object.assign({ site: 'hiringcafe', provenance: 'HIRINGCAFE_MCP', company: j.company, title: j.title, location: j.location, job_url: j.job_url, job_url_direct: '',
-    salaryText:j.compensation||'', salary_source:/\b(?:indeed|glassdoor|payscale|salary\.com)\b.*\bestimat|third.party estimate/i.test(j.compensation||'')?'THIRD_PARTY_ESTIMATE':'HIRINGCAFE_MCP', hiringcafe_id: j.hiringcafe_id, date_posted: j.date_posted, workplace: j.workplace, seniority: j.seniority, employment_type: j.employment_type }, parsePay(j.compensation));
+    description:typeof j.description==='string'?j.description:'', salaryText:j.compensation||'', salary_source:/\b(?:indeed|glassdoor|payscale|salary\.com)\b.*\bestimat|third.party estimate/i.test(j.compensation||'')?'THIRD_PARTY_ESTIMATE':'HIRINGCAFE_MCP', hiringcafe_id: j.hiringcafe_id, date_posted: j.date_posted, workplace: j.workplace, seniority: j.seniority, employment_type: j.employment_type }, parsePay(j.compensation));
 }
 async function callTool(name, args, { fetcher = globalThis.fetch, id = 1 } = {}) {
   const r = await fetcher(ENDPOINT, { method: 'POST', signal: AbortSignal.timeout(45000),
