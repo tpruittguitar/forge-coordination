@@ -158,3 +158,10 @@ test('saved source-bound cards bypass scope and level review but preserve eviden
   queue.jobs[f.key].submissions=[{requestId:'ORIGINAL'}];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
  }
 });
+test('a bad captured expiry remains an item hold without aborting healthy preparation or bypassing original fences',()=>{
+ const f=fixture('Director, Manufacturing'),read=file=>JSON.parse(fs.readFileSync(p.join(f.root,file))),state=read('state/CLAUDE_HELPER_CONSUMPTION.json'),batch=read(state.items[0].batch),queue=read('state/EMAIL_RECOVERY_QUEUE.json'),work=read('control/CLAUDE_HELPER_WORK.json');
+ let goodId=4481234568;while(H.shard('linkedin:'+goodId)!==H.shard(f.key))goodId++;const goodKey='linkedin:'+goodId,good={...batch.items[0].sourceEvidence,company:'Other Factory',url:'https://www.linkedin.com/jobs/view/'+goodId+'/'};batch.items.push({...batch.items[0],key:goodKey,sourceEvidence:good});state.items.push({...state.items[0],key:goodKey});work.intake.push({...work.intake[0],key:goodKey});queue.jobs[goodKey]={...queue.jobs[f.key],...good,key:goodKey};
+ f.save(state.items[0].batch,batch);f.save('state/CLAUDE_HELPER_CONSUMPTION.json',state);f.save('control/CLAUDE_HELPER_WORK.json',work);f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);f.save('state/source-trial-report.json',{summary:{at:'2026-01-01T00:00:00Z'},new_roles:[{...batch.items[0].sourceEvidence,source:'LINKEDIN',description:'',validThrough:'bad'}, {...good,source:'LINKEDIN',description:''}]});
+ const result=P.prepare(f);a.equal(result.counts.POSTING_EXPIRY_INVALID,1);a.equal(result.counts.READY,1);a.equal(result.items.find(x=>x.key===f.key).record,undefined);
+ queue.jobs[f.key].submissions=[{requestId:'ORIGINAL'}];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
+});

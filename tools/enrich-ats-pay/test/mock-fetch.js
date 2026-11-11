@@ -8,6 +8,15 @@ const R = {
   'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4012345678': '<div>' + pad + 'Base pay range USD $150,000.00/yr - $190,000.00/yr</div>',
 };
 const fs = require('fs');
+// Canonical-snapshot tests exercise real reservation validators with isolated
+// assignment files, never the repository's changing production work inventory.
+if(process.env.ENRICH_TEST_CONTROL_DIR){
+  const path=require('node:path'),read=fs.readFileSync,root=path.resolve(__dirname,'../../..');
+  const names=['ENRICHMENT_HELPER_WORK.json','ENRICHMENT_RESEARCH_OWNER.json','CLAUDE_HELPER_WORK.json'];
+  const fixtures=new Map(names.map(name=>[path.join(root,'control',name),path.join(process.env.ENRICH_TEST_CONTROL_DIR,name)]));
+  fs.readFileSync=function(file,...options){return read.call(this,typeof file==='string'&&fixtures.get(path.resolve(file))||file,...options);};
+}
+
 if(process.env.ENRICH_TEST_NOW){const now=Number(process.env.ENRICH_TEST_NOW);Date.now=()=>now;}
 if(process.env.ENRICH_TEST_CLOCK_STEP){let clock=Date.now();Date.now=()=>clock;global.__advancePayClock=()=>{clock+=Number(process.env.ENRICH_TEST_CLOCK_STEP);};}
 globalThis.fetch = async (url, opts) => {

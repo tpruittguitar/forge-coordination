@@ -3,7 +3,7 @@ const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-
 const fs=require('node:fs'),path=require('node:path'),Source=require('../programmed-coordinator/source.cjs');
 const terminal=s=>/^(VERIFIED_|OUT_OF_SCOPE|EXCLUDED_BY_WRITER)/.test(s||''),fenced=j=>(j.submissions||[]).length>0||/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(j.status||'');
 function card(j){return{company:j.company,title:j.title,location:j.location,url:j.url,observedAt:j.observedAt};}
-function fullCard(j,discovery){return !!discovery?.find(j)||(j.evidence||[]).some(e=>Array.isArray(e.paragraphs)&&e.paragraphs.length>=3&&/^[a-f0-9]{64}$/.test(e.cardHash||''));}
+function fullCard(j,discovery){const capture=discovery?.find(j);if(capture)return require('../source-intake/discovery-inputs').usable(capture);return (j.evidence||[]).some(e=>Array.isArray(e.paragraphs)&&e.paragraphs.length>=3&&/^[a-f0-9]{64}$/.test(e.cardHash||''));}
 function progress({root,state}){
  const result={schema:'forge.helper-handoffs.v1',tasks:{},writerSubmissions:0,canonicalCompletions:0};
  for(const [taskKey,file] of [['FORGE_GROK_INTAKE_HELPER','control/GROK_INTAKE_HELPER_WORK.json'],['FORGE_CLAUDE_RELEVANCE_REVIEW','control/CLAUDE_RELEVANCE_WORK.json'],[require('../helper-routing/enrichment.cjs').owner(S.read(root,'control/ENRICHMENT_HELPER_WORK.json')).taskKey,'control/ENRICHMENT_HELPER_WORK.json']]){
@@ -42,7 +42,8 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
   if(screenContext){const preliminaryScreen=require('../source-trial/preliminary-screen').screen(j,screenContext);
    if(require('../source-trial/preliminary-screen').excluded(preliminaryScreen)){counts.discoveryExcluded++;discoveryExclusions.push({key:j.key,sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key,preliminaryScreen});continue;}
   }
-  const capture=discovery.find(j,{now}),screen=Screen.evaluate(j,rules),prepared=fullCard(j,discovery);
+  const capture=discovery.find(j,{now});if(capture&&!require('../source-intake/discovery-inputs').usable(capture,now)){exceptions.push({key:j.key,owner:'AI',reason:capture.reason||'POSTING_EXPIRED'});continue;}
+  const screen=Screen.evaluate(j,rules),prepared=fullCard(j,discovery);
   if(prepared&&!knownCode.has(j.key)){
    const evidence=(j.evidence||[]).find(e=>e.cardHash&&e.paragraphs?.length>=3);
    if(capture)code.items.push({key:j.key,queueKey:j.key,provider:'CODE',helperRunId:runId,provenance:'CAPTURED_DISCOVERY',sourceEvidence:card(j),discoveryEvidence:capture,status:'RETURNED_PENDING_SCREEN',sourceProof:capture.proof.path+'@'+capture.proof.sha256});

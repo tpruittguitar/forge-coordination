@@ -21,6 +21,7 @@ Tim's November 11 direction is to use JobSpy, HiringCafe, LinkedIn, recruiting a
 - Exact quotes and current resume support are required only for the specific fit/qualification claims being written. Unsupported helper-derived numbers and fields are not imported.
 - Site-estimated salary stays estimated. Unsupported currency, annual period or base/total basis does not become employer-posted annual USD base pay. Salary-model handling and common-instruction alignment are coordinated in the separate salary change.
 - Explicit expired postings, genuine official-business exclusion review and unresolved identity/scope obligations retain their own targeted evidence checks. Inaccessible pages alone do not invalidate already captured usable facts.
+- Richer old text cannot hide a later explicit expiry or extension for the same identity and posting. The text and expiry retain separate original dates and proofs. A malformed expiry or conflicting requisition holds only that card; healthy siblings continue without a legacy verified-evidence fallback. Compatible requisition aliases remain usable.
 - Active assignments, Writer release/freeze/lock controls, durable intent and receipt recording, original request IDs, uncertain-result fences and exact post-write verification remain. Captured evidence cannot bypass them through catch-up.
 - Retired manual helper and dry-run admission prototypes retain their old contracts; they have no active execution caller. This change does not reactivate them.
 

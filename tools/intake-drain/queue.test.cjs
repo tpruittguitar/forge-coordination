@@ -197,3 +197,9 @@ test('catch-up cannot bypass drain identity obligations, accounted cards or shar
  a.equal(Q.admissionHolds(root,{work:{items:{[key]:{key,action:'INTAKE',status:'ACTION_REQUIRED'}}},now}).size,0);
  S.save(root,'control/SHARED_HELPER_WORK.json',{schema:'forge.shared-helper-work.v1',enabled:true,routingActive:true,providers:{},items:[{key,kind:'INTAKE',provider:'Claude',taskKey:'FORGE_CLAUDE_SHARED_HELPER',status:'ASSIGNED'}]});a.equal(Q.admissionHolds(root,{work:{items:{}},now}).get(key),'SHARED_HELPER_RESERVED');
 });
+test('one malformed capture cannot abort source-hold release for an unrelated healthy queue item',t=>{
+ const cards=[{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/bad'},{company:'Good Factory',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/good'}],f=fixture(t,cards);
+ S.save(f.root,'state/source-trial-report.json',{summary:{at},new_roles:cards.map((c,n)=>({...c,source:'HIRINGCAFE',description:'',...(n===0?{validThrough:'malformed'}:{})}))});
+ S.save(f.root,'receipts/auto-intake/catch-up/state.json',{roles:Object.fromEntries(cards.map((role,n)=>[n,{role,status:'WAITING_SOURCE_RETRY',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2,lastAttempt:at}]))});
+ const work=Q.sync(f.root,{now}),bad=work.items[U.key(cards[0].url)],good=work.items[U.key(cards[1].url)];a.equal(bad.sourceCaptureHold.reason,'POSTING_EXPIRY_INVALID');a.equal(bad.sourceFailure.attempts,2);a.equal(bad.sourceFailureHistory,undefined);a.equal(good.action,'INTAKE');a.equal(good.sourceFailure,null);a.equal(good.sourceFailureHistory.attempts,2);
+});

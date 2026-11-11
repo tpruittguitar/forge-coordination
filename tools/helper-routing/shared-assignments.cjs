@@ -77,6 +77,8 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if(!job.key||old.has(job.key)||keys.some(k=>occupied.has(k))||/VERIFIED|OUT_OF_SCOPE|EXCLUDED|POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(job.status||'')||(job.submissions||[]).length||!['company','title','location'].every(k=>job[k]))continue;
   // Existing or ambiguous canonical identity remains with current intake code.
   if(canonical.some(row=>T.same(row,job)))continue;
+  // A recorded identity/expiry conflict is a targeted hold, not missing source text.
+  const capture=discovery.find(job,{now});if(capture&&!require('../source-intake/discovery-inputs').usable(capture,now))continue;
   // Complete cards are already code-owned; AI is for unresolved source research.
   if(require('../routine-handoffs/assignments.cjs').fullCard(job,discovery))continue;
   const kind=job.discoveryOnly===true?'DISCOVERY':'INTAKE';

@@ -87,3 +87,23 @@ test('missing or malformed discovery reports do not break the existing cache/fet
 test('known explicit expiry remains a condition distinct from retained text age',t=>{
  const root=dir(t),c={...card,validThrough:new Date(now-1000).toISOString()},ref=E.capture(root,c,{observedAt:at,proof}),store=E.index(root,{entries:{k:{sourceUrl:c.url,evidenceRefs:[ref]}}});a.equal(store.forIntake(c,{now}).doc.validThrough,c.validThrough);a.equal(E.forRow(store,{COMPANY:c.company,TITLE:c.title,LOCATION:c.location,p:{SOURCE_URL:c.url}},now),null);
 });
+
+test('latest exact-bound immutable expiry constrains old full text and salary without losing dates',t=>{
+ const root=dir(t),expired=new Date(now-1000).toISOString(),old=E.capture(root,card,{observedAt:at,proof}),closed=E.capture(root,{...card,description:'Saved partial detail.',validThrough:expired},{observedAt:new Date(now).toISOString(),proof}),ledger={entries:{k:{sourceUrl:card.url,evidenceRefs:[old,closed]}}},store=E.index(root,ledger),row={COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}};
+ const constraint=store.constraints(card,{now})[0];a.equal(constraint.validThrough,expired);a.equal(constraint.proof.path,closed.path);a.equal(E.forRow(store,row,now),null);
+ const unknown=E.capture(root,card,{observedAt:new Date(now+1000).toISOString(),proof});ledger.entries.k.evidenceRefs.push(unknown);a.equal(E.forRow(E.index(root,ledger),row,now+1000),null);
+ const extended=new Date(now+86400000).toISOString(),extension=E.capture(root,{...card,description:'Extended partial detail.',validThrough:extended},{observedAt:new Date(now+2000).toISOString(),proof});ledger.entries.k.evidenceRefs.push(extension);
+ const reused=E.forRow(E.index(root,ledger),row,now+2000);a.ok(reused);a.equal(reused.at,new Date(now+1000).toISOString());a.equal(reused.postingFacts.validThrough,extended);a.equal(reused.validThroughEvidence.proof.path,extension.path);
+});
+test('metadata report expiry constrains immutable enrichment while malformed unrelated cards are ignored',t=>{
+ const root=dir(t),ref=E.capture(root,card,{observedAt:at,proof}),expired=new Date(now-1000).toISOString();report(root,[{...card,description:'',validThrough:expired,observedAt:new Date(now).toISOString()},{company:'Other',validThrough:expired},{...card,url:'not a URL',validThrough:expired}]);
+ const store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[ref]}}});a.equal(store.constraints(card,{now})[0].validThrough,expired);a.equal(E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now),null);
+});
+test('immutable constraints retain exact requisition and reject corrupted or future evidence',t=>{
+ const root=dir(t),one={...card,reqId:'REQ-1'},two={...card,reqId:'REQ-2',validThrough:new Date(now-1000).toISOString()},good=E.capture(root,one,{observedAt:at,proof}),other=E.capture(root,two,{observedAt:at,proof}),future=E.capture(root,{...one,validThrough:'2030-01-01T00:00:00Z'},{observedAt:'2029-01-01T00:00:00Z',proof}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[good,other,future]}}});
+ a.equal(store.constraints(one,{now}).length,0);a.equal(store.constraints(two,{now}).length,1);fs.writeFileSync(path.join(root,other.path),'{}');a.equal(E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[other]}}}).constraints(two,{now}).length,0);
+});
+test('a new requisition extension cannot revive old text for another requisition on a reused URL',t=>{
+ const root=dir(t),old=E.capture(root,{...card,reqId:'REQ-1',validThrough:new Date(now-1000).toISOString()},{observedAt:at,proof}),extension=E.capture(root,{...card,reqId:'REQ-2',description:'New requisition partial detail.',validThrough:'2030-01-01T00:00:00Z'},{observedAt:new Date(now).toISOString(),proof}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[old,extension]}}});
+ a.equal(E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now),null);
+});

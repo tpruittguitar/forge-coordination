@@ -36,7 +36,8 @@ function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],con
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url))||heldKeys.has(Upstream.key(r.url)))continue;
-  const captured=capturedInputs?.find(r),saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
+  const captured=capturedInputs?.find(r);if(captured?.blocked)continue;
+  const saved=discoveryEvidence?.forIntake?discoveryEvidence.forIntake(r):discoveryEvidence?.find(r);
   if(captured?.card.validThrough&&Date.parse(captured.card.validThrough)<=Date.now())continue;
   const sourceCard=captured?captured.card:saved?{...r,description:saved.doc.text,contentBasis:saved.doc.contentBasis||'CAPTURED_ROLE_CONTENT',fullPosting:saved.fullPosting??saved.doc.fullPosting}:null;
   if(screenContext){
@@ -97,6 +98,7 @@ async function evidence(url,company,fetcher=globalThis.fetch){
 }
 async function sourceEvidence(card,{store,capturedInputs,fetchEvidence=evidence}={}){
  const captured=capturedInputs?.find(card);
+ if(captured?.blocked)return {blocked:captured,captured:null,cached:null,business:null,provenance:null};
  if(captured)return {captured,business:captured.card.description,provenance:captured,cached:null};
  const cached=store?.forIntake?store.forIntake(card):store?.find(card),business=cached?.doc.text||await fetchEvidence(card.url,card.company);
  return {cached,business,provenance:cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null};
@@ -113,7 +115,8 @@ async function refreshCapturedReview(candidate,expectedHash,{context}={}){
 }
 
 async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun,fetchEvidence=evidence}={}){
- const {captured,cached,business,provenance}=await sourceEvidence(r,{store:discoveryEvidence,capturedInputs,fetchEvidence}),savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
+ const {captured,cached,business,provenance,blocked}=await sourceEvidence(r,{store:discoveryEvidence,capturedInputs,fetchEvidence});if(blocked)return null;
+  const savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
   if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(business?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);

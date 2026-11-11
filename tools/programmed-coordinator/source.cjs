@@ -91,12 +91,14 @@ function capturedSource({root=path.resolve(__dirname,'../..'),discovery,item,exp
   discovery=discovery||require('../source-intake/discovery-inputs').index(root);
   const e=item.sourceEvidence||{},urls=[e.url,...sourceUrls].filter(Boolean);
   for(const field of ['company','title','location'])if(e[field]&&(field==='location'?location(e[field])!==location(expected[field]):field==='company'?employer(e[field])!==employer(expected[field]):norm(e[field])!==norm(expected[field])))throw Error('CONFLICTING_SOURCE_IDENTITY');
-  const matches=urls.map(url=>discovery.find({...expected,url},{now})).filter(Boolean).sort((a,b)=>Number(!!b.card.description)-Number(!!a.card.description));
+  const matches=urls.map(url=>discovery.find({...expected,url},{now})).filter(Boolean);
+  const blocked=matches.find(c=>c.blocked);if(blocked)throw Error(blocked.reason);
+  matches.sort((a,b)=>Number(!!b.card.description)-Number(!!a.card.description));
   for(const capture of matches){
     const card=capture.card,description=card.description;
-    if(requireRoleText&&!description)continue;
     const validThrough=card.validThrough||null;
-    if(validThrough&&(!Number.isFinite(Date.parse(validThrough))||Date.parse(validThrough)<now))throw Error('POSTING_EXPIRED');
+    if(validThrough&&(!Number.isFinite(Date.parse(validThrough))||Date.parse(validThrough)<=now))throw Error('POSTING_EXPIRED');
+    if(requireRoleText&&!description)continue;
     // A metadata-only lead makes no quotation, fit, degree or salary claim.
     if(validateClaims&&description&&e.quote&&!norm(description).includes(norm(e.quote)))throw Error('HELPER_QUOTE_NOT_IN_POSTING');
     const Pay=require('../enrich-ats-pay/pay-values'),PostedPay=require('../source-trial/posted-pay'),postedPay=card.postedPay;

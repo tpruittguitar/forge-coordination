@@ -2,9 +2,13 @@
 // Public job-posting facts only. Never store private mail bodies or resume text here.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const Source=require('../programmed-coordinator/source.cjs'),L=require('../enrich-ats-pay/lib');
-const PostedPay=require('./posted-pay'),Pay=require('../enrich-ats-pay/pay-values');
+const PostedPay=require('./posted-pay'),Pay=require('../enrich-ats-pay/pay-values'),Identity=require('./job-identity');
 const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const identity=r=>[Source.employer(r.company||r.COMPANY),Source.norm(r.title||r.TITLE),Source.location(r.location||r.LOCATION)||Source.norm(r.location||r.LOCATION)];
+// Requisition IDs are additional constraints, never a substitute for exact URL and identity.
+const requisitions=c=>[...new Set([...(Array.isArray(c?.requisitionIds)?c.requisitionIds:[]),...Identity.fields(c||{}).reqs])].map(x=>String(x).trim().toLowerCase()).filter(Boolean).sort();
+const constraintOrder=(a,b)=>(Date.parse(b.observedAt)||0)-(Date.parse(a.observedAt)||0)||Number(Number.isFinite(Date.parse(a.validThrough)))-Number(Number.isFinite(Date.parse(b.validThrough)))||Date.parse(a.validThrough)-Date.parse(b.validThrough);
+const sameRequisition=(a,b)=>{const left=requisitions(a),right=requisitions(b);return !left.length||!right.length||left.some(x=>right.includes(x));};
 function annualBase(text){
  const pay=require('../enrich-ats-pay/pay-values').employerText(text,L.payFromText);return pay?{...pay,quote:text.split(/\n+/).find(s=>/base (?:salary|pay)/i.test(s))||text}:null;
 }
@@ -23,7 +27,7 @@ function document(card,{observedAt,proof,fullPosting}={}){
  const payFacts=PostedPay.eligible({...card,postedPay:p})||(derived&&compatible?Pay.fact(derived,'EXPLICIT_ANNUAL_BASE_TEXT'):null);
  let postedPay=PostedPay.capture({...card,postedPay:p,...(!p&&payFacts?{payFacts,salaryText:derived?.quote||card.salaryText||card.pay||''}: {})},{observedAt});
  if(postedPay&&payFacts&&!PostedPay.eligible(card))postedPay={...postedPay,low:payFacts.low,high:payFacts.high,currency:payFacts.currency,period:payFacts.period,basis:payFacts.basis};
- const doc={postedPay,payFacts,schema:'forge.discovery-evidence.v1',...((card.postingFacts?.validThrough??card.validThrough)!=null?{validThrough:card.postingFacts?.validThrough??card.validThrough}:{}),source:card.source||null,company:card.company||card.COMPANY,title:card.title||card.TITLE,location:card.location||card.LOCATION||'',url,identity:ids,contentBasis:contentBasis==='CAPTURED_ROLE_CONTENT'&&(fullPosting===false||card.fullPosting===false||card.discoveryReview?.fullPosting===false)?'INCOMPLETE_ROLE_CONTENT':contentBasis,text,textSha256:hash(text),fullPosting:!!complete,facts:{degree:complete?L.degreeFromText(text):null,pay:payFacts||null,payAmbiguous:complete&&!annualBase(text)&&/\$\s*\d|USD\s*\d/i.test(text)},canonicalWrites:0};
+ const doc={postedPay,payFacts,schema:'forge.discovery-evidence.v1',...((card.postingFacts?.validThrough??card.validThrough)!=null?{validThrough:card.postingFacts?.validThrough??card.validThrough}:{}),source:card.source||null,...(requisitions(card).length?{requisitionIds:requisitions(card)}:{}),company:card.company||card.COMPANY,title:card.title||card.TITLE,location:card.location||card.LOCATION||'',url,identity:ids,contentBasis:contentBasis==='CAPTURED_ROLE_CONTENT'&&(fullPosting===false||card.fullPosting===false||card.discoveryReview?.fullPosting===false)?'INCOMPLETE_ROLE_CONTENT':contentBasis,text,textSha256:hash(text),fullPosting:!!complete,facts:{degree:complete?L.degreeFromText(text):null,pay:payFacts||null,payAmbiguous:complete&&!annualBase(text)&&/\$\s*\d|USD\s*\d/i.test(text)},canonicalWrites:0};
  return doc;
 }
 function capture(root,card,options={}){
@@ -74,33 +78,68 @@ function index(root,ledger){
   for(const ref of (byUrl.get(key(card.url||card.SOURCE_URL))||[]).slice().sort((a,b)=>Date.parse(b.observedAt)-Date.parse(a.observedAt))){
    const age=now-Date.parse(ref.observedAt);if(!Number.isFinite(age)||age<0||age>maxAgeMs)continue;
    if(!memo.has(ref.sha256))memo.set(ref.sha256,read(root,ref));const doc=memo.get(ref.sha256);
-   if(!doc||!identity(doc).every((x,n)=>x===ids[n])||key(doc.url)!==key(card.url||card.SOURCE_URL))continue;
+   if(!doc||!identity(doc).every((x,n)=>x===ids[n])||key(doc.url)!==key(card.url||card.SOURCE_URL)||!sameRequisition(doc,card))continue;
    if(!payOnly){const fullPosting=completeDocument(doc);if(fullPosting||allowRoleText&&roleText(doc,ref))return{doc,ref,fullPosting};continue;}
    const pay=PostedPay.eligible(doc)||(!doc.postedPay&&doc.fullPosting?annualBase(doc.text):null);
    if(pay){const conflict=newer.find(x=>{const p=x.doc.postedPay;return p.status==='POSTED'&&((p.low!=null&&p.low!==pay.low)||(p.high!=null&&p.high!==pay.high)||(p.currency!=null&&p.currency!=='USD')||(p.period!=null&&!Pay.annualUnit(p.period))||(p.basis!=null&&p.basis!=='BASE'));});return conflict||{doc,ref};}
    if(doc.postedPay&&PostedPay.bound(doc.postedPay,doc))newer.push({doc,ref});
   }return null;
  }
+ // Expiry is a separate recorded fact: an unknown newer card cannot erase it,
+ // and selecting richer older text must not assign that text's proof to expiry.
+ let reportConstraints;
+ function constraints(card,{now=Date.now()}={}){
+  const ids=identity(card),urlKey=key(card.url||card.SOURCE_URL),out=[];
+  if(ids.some(x=>!x)||!urlKey)return out;
+  const add=(doc,ref)=>{
+   if(doc.validThrough==null||!identity(doc).every((x,n)=>x===ids[n])||key(doc.url)!==urlKey||!sameRequisition(doc,card))return;
+   const at=ref.observedAt??null;if(at!==null&&(!Number.isFinite(Date.parse(at))||Date.parse(at)>now))return;
+   out.push({validThrough:doc.validThrough,company:doc.company,title:doc.title,location:doc.location,url:doc.url,source:typeof doc.source==='string'&&doc.source.trim()&&!/^(?:SAVED_DISCOVERY|INTAKE_DRAIN|UNKNOWN)$/i.test(doc.source.trim())?doc.source:'URL:'+new URL(doc.url).hostname,
+    ...(requisitions(doc).length?{requisitionIds:requisitions(doc)}:{}),observedAt:at,proof:{path:ref.path,sha256:ref.reportSha256||ref.sha256}});
+  };
+  for(const ref of byUrl.get(urlKey)||[]){
+   if(!/^state\/(?:source-trial-report|board-discovery-report)\.json(?:@[a-f0-9]{40})?$/.test(ref.proof||''))continue;
+   if(!memo.has(ref.sha256))memo.set(ref.sha256,read(root,ref));const doc=memo.get(ref.sha256);if(doc)add(doc,ref);
+  }
+  if(!reportConstraints){reportConstraints=[];
+   for(const file of ['state/source-trial-report.json','state/board-discovery-report.json']){
+    let raw,report;try{raw=fs.readFileSync(path.join(root,file),'utf8');report=JSON.parse(raw);}catch{continue;}
+    for(const c of ['new_roles','existing_roles','protected_roles','identity_held_roles'].flatMap(k=>Array.isArray(report?.[k])?report[k]:[])){
+     if(!c||typeof c!=='object'||(c.postingFacts?.validThrough??c.validThrough)==null)continue;
+     const url=c.url||c.sourceUrl||c.SOURCE_URL,review=c.discoveryReview,text=Source.text(c.description||''),bound=review?.preliminaryScreen?.atsGate?.sourceIdentity;
+     if(!/^https:\/\//.test(url||'')||!key(url)||review?.sourceUrl&&key(review.sourceUrl)!==key(url)||review?.sourceSha256&&hash(text)!==review.sourceSha256||bound&&JSON.stringify(identity(bound))!==JSON.stringify(identity(c)))continue;
+     reportConstraints.push({doc:{...c,company:c.company||c.COMPANY,title:c.title||c.TITLE,location:c.location||c.LOCATION,url,validThrough:c.postingFacts?.validThrough??c.validThrough},
+      ref:{path:file,reportSha256:hash(raw),observedAt:review?.observedAt||c.observedAt||report.summary?.at||null}});
+    }
+   }
+  }
+  for(const {doc,ref}of reportConstraints)add(doc,ref);
+  return out.sort(constraintOrder);
+ }
  // Read the saved report directly when intake starts before the asynchronous
  // evidence publisher. No source fetch, file mutation or Writer action occurs.
  let reports;
- return {find,forIntake(card,{now=Date.now(),maxAgeMs=Infinity}={}){
+ return {find,constraints,forIntake(card,{now=Date.now(),maxAgeMs=Infinity}={}){
   const ids=identity(card);if(ids.some(x=>!x))return null;
   const cached=find(card,{now,maxAgeMs,allowRoleText:true}),candidates=cached?[cached]:[];
   if(!reports){reports=new Map();for(const found of reportEvidence(root)){const k=key(found.doc.url);if(!reports.has(k))reports.set(k,[]);reports.get(k).push(found);}}
   for(const found of reports.get(key(card.url||card.SOURCE_URL))||[]){const age=now-Date.parse(found.ref.observedAt);
-   if(Number.isFinite(age)&&age>=0&&age<=maxAgeMs&&found.doc.identity.every((x,n)=>x===ids[n])&&key(found.doc.url)===key(card.url||card.SOURCE_URL))candidates.push(found);
+   if(Number.isFinite(age)&&age>=0&&age<=maxAgeMs&&found.doc.identity.every((x,n)=>x===ids[n])&&key(found.doc.url)===key(card.url||card.SOURCE_URL)&&sameRequisition(found.doc,card))candidates.push(found);
   }
   return candidates.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0]||null;
  }};
 }
 function forRow(store,row,now=Date.now()){
- const urls=require('../enrich-ats-pay/recovery').urls(row),salaries=[],postings=[];
+ const urls=require('../enrich-ats-pay/recovery').urls(row),salaries=[],postings=[],constraintsByUrl=new Map();
  const unexpired=found=>found&&(found.doc.validThrough==null||Number.isFinite(Date.parse(found.doc.validThrough))&&Date.parse(found.doc.validThrough)>now);
- for(const url of urls){const card={...row,SOURCE_URL:url},salary=store.find(card,{now,maxAgeMs:Infinity,payOnly:true}),full=store.find(card,{now,maxAgeMs:Infinity});if(unexpired(salary))salaries.push(salary);if(unexpired(full))postings.push(full);}
+ for(const url of urls){const card={...row,SOURCE_URL:url},constraint=store.constraints?.(card,{now})[0];
+  if(constraint){constraintsByUrl.set(Identity.urlKey(url),constraint);if(!Number.isFinite(Date.parse(constraint.validThrough))||Date.parse(constraint.validThrough)<=now)continue;}
+  const salary=store.find(card,{now,maxAgeMs:Infinity,payOnly:true}),full=store.find(card,{now,maxAgeMs:Infinity});
+  if(constraint?!!salary&&sameRequisition(constraint,salary.doc):unexpired(salary))salaries.push(salary);if(constraint?!!full&&sameRequisition(constraint,full.doc):unexpired(full))postings.push(full);
+ }
  const latest=xs=>xs.sort((a,b)=>Date.parse(b.doc.postedPay?.observedAt||b.ref.observedAt)-Date.parse(a.doc.postedPay?.observedAt||a.ref.observedAt))[0];
  const salary=latest(salaries),full=postings.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0],found=salary||full;if(!found)return null;
- const doc=found.doc,text=full?.doc.text||doc.text,pay=salary?(PostedPay.eligible(doc)||(!doc.postedPay?annualBase(doc.text):null)):null;
- return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:doc.postedPay?.observedAt||found.ref.observedAt,url:doc.url,fullPosting:!!full,text,postedPay:doc.postedPay||null,payFacts:salary?PostedPay.eligible(doc):null,degree:full?L.degreeFromText(full.doc.text):null,degreeAt:full?.ref.observedAt||null,degreeUrl:full?.doc.url||null,pay,payAmbiguous:!pay&&/\$\s*\d|USD\s*\d/i.test(text),basis:'EMPLOYER_POSTED',postingStatus:'UNVERIFIED',discoveryEvidence:found.ref.path,factsVersion:Pay.VERSION};
+ const doc=found.doc,text=full?.doc.text||doc.text,constraint=constraintsByUrl.get(Identity.urlKey(doc.url)),pay=salary?(PostedPay.eligible(doc)||(!doc.postedPay?annualBase(doc.text):null)):null;
+ return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:doc.postedPay?.observedAt||found.ref.observedAt,url:doc.url,fullPosting:!!full,text,postedPay:doc.postedPay||null,payFacts:salary?PostedPay.eligible(doc):null,degree:full?L.degreeFromText(full.doc.text):null,degreeAt:full?.ref.observedAt||null,degreeUrl:full?.doc.url||null,pay,payAmbiguous:!pay&&/\$\s*\d|USD\s*\d/i.test(text),basis:'EMPLOYER_POSTED',postingStatus:'UNVERIFIED',...(constraint?{postingFacts:{validThrough:constraint.validThrough},validThroughEvidence:constraint}:{}),discoveryEvidence:found.ref.path,factsVersion:Pay.VERSION};
 }
-module.exports={capture,read,index,forRow,annualBase,identity,hash,postingComplete};
+module.exports={capture,read,index,forRow,annualBase,identity,hash,postingComplete,requisitions,sameRequisition,constraintOrder};

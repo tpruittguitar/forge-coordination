@@ -66,3 +66,22 @@ test('identity index avoids unrelated bodies and follows saves and pruning',()=>
  a.equal(c.find(row).pay.low,180000);a.equal(inspected,0);
  now=at+7*86400000;c.prune();a.equal(c.find(row).pay.low,180000);
 });
+
+test('newer explicit expiry blocks older same-posting bodies and later unknown dates cannot erase it',()=>{
+ for(const validThrough of [new Date(at-1).toISOString(),'invalid','']){
+  const cache={},c=Cache.create({cache,now:()=>at});c.save(row,url,parsed({low:180000,high:220000}),{at:new Date(at-3000).toISOString()});
+  c.save(row,url,{...parsed(),postingFacts:{validThrough}},{at:new Date(at-2000).toISOString()});c.save(row,url,parsed(),{at:new Date(at-1000).toISOString()});
+  const before=JSON.stringify(cache);a.equal(c.find(row),null);a.equal(c.find(row,['https://boards-api.greenhouse.io/v1/boards/acme/jobs/123?pay_transparency=true']),null);a.equal(JSON.stringify(cache),before);
+ }
+});
+test('latest explicit extension supersedes prior expiry without re-dating old pay or stored bytes',()=>{
+ const cache={},c=Cache.create({cache,now:()=>at});const old=c.save(row,url,parsed({low:180000,high:220000}),{at:new Date(at-4000).toISOString()});
+ c.save(row,url,{...parsed(),postingFacts:{validThrough:new Date(at-1).toISOString()}},{at:new Date(at-3000).toISOString()});
+ const extension=c.save(row,url,{...parsed(),validThrough:new Date(at+86400000).toISOString()},{at:new Date(at-2000).toISOString()});c.save(row,url,parsed(),{at:new Date(at-1000).toISOString()});
+ const before=JSON.stringify(cache),got=c.find(row);a.equal(got.pay.low,180000);a.equal(got.at,old.at);a.equal(got.postingFacts.validThrough,extension.validThrough);a.equal(got.expiryEvidence.observedAt,extension.at);a.equal(JSON.stringify(cache),before);
+});
+test('explicit expiry is bound to the exact source route and exact identity',()=>{
+ const c=Cache.create({cache:{},now:()=>at}),other=url.replace('/123','/456');c.save(row,url,parsed());c.save(row,other,{...parsed(),postingFacts:{validThrough:new Date(at-1).toISOString()}});
+ a.ok(c.find(row,[url]));a.equal(c.find(row,[other]),null);a.ok(c.find(row,[url,other]));
+ const otherRow={...row,LOCATION:'Austin, TX'};c.save(otherRow,url,{...parsed(),sourceIdentity:{company:row.COMPANY,title:row.TITLE,location:otherRow.LOCATION},postingFacts:{validThrough:new Date(at-1).toISOString()}});a.ok(c.find(row,[url]));a.equal(c.find(otherRow,[url]),null);
+});

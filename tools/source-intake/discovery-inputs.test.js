@@ -54,5 +54,69 @@ test('canonical-rule refresh screens captured facts without another posting look
 
 test('explicit posting expiry is preserved in the hashed envelope, never inferred from capture age',t=>{
  const card={...base,postingFacts:{validThrough:'2026-11-01T00:00:00Z'}},f=fixture(t,[card]),e=f.index.find(card,{now});a.ok(e);a.equal(e.card.validThrough,card.postingFacts.validThrough);a.equal(e.cardSha256,C.hash(e.card));a.equal(A.pick({new_roles:[card]},{max:1,sent:new Set(),capturedInputs:f.index}).length,0);a.equal(C.validEnvelope({...e,card:{...e.card,validThrough:'2027-01-01T00:00:00Z'}},{now}),false);
- const bad=fixture(t,[{...base,validThrough:'not-a-date'}]);a.equal(bad.index.find(base,{now}),null);
+ const bad=fixture(t,[{...base,validThrough:'not-a-date'}]);a.equal(bad.index.find(base,{now}).reason,'POSTING_EXPIRY_INVALID');
+});
+
+function saveDocument(root,card,observedAt){
+ const ref=E.capture(root,card,{observedAt,proof:'state/source-trial-report.json'});
+ const file=path.join(root,'state/discovery-evidence/manifest.json');let entries={};try{entries=JSON.parse(fs.readFileSync(file)).entries;}catch{}
+ entries[ref.sha256]={sourceUrl:card.url,evidenceRefs:[ref]};fs.writeFileSync(file,JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries}));return ref;
+}
+const expiry='2026-11-10T01:00:00Z',recent='2026-11-10T12:00:00Z';
+test('newer metadata expiry constrains old text with separate proof/date and no source refetch',async t=>{
+ const f=fixture(t,[{...base,observedAt:at}]);
+ const file='state/board-discovery-report.json',closed={...base,description:'',validThrough:expiry,observedAt:recent};fs.writeFileSync(path.join(f.root,file),JSON.stringify({new_roles:[closed]}));
+ const index=D.index(f.root),e=index.find(base,{now});a.equal(e.card.description,base.description);a.equal(e.observedAt,at);a.equal(e.proof.path,'state/source-trial-report.json');a.equal(e.card.validThrough,expiry);a.equal(e.card.validThroughEvidence.observedAt,recent);a.equal(e.card.validThroughEvidence.proof.path,file);a.ok(C.validEnvelope(e,{now}));
+ a.equal(A.pick({new_roles:[base]},{max:1,sent:new Set(),capturedInputs:index}).length,0);
+ let fetches=0;const candidate=await A.prepareCandidate(base,{COMPANY:base.company,TITLE:base.title,LOCATION:base.location,SOURCE_URL:base.url},{discoveryEvidence:E.index(f.root),capturedInputs:index,fetchEvidence:()=>{fetches++;throw Error('no fetch');}});a.equal(candidate.evidenceSource,'CAPTURED_DISCOVERY');a.equal(C.validate(candidate,{now}),false);
+ await a.rejects(require('../programmed-coordinator/source.cjs').verify({root:f.root,discovery:index,item:{sourceEvidence:{url:base.url}},expected:base,now,requireRoleText:true,fetchPage:()=>{fetches++;throw Error('no fetch');}}),/POSTING_EXPIRED/);a.equal(fetches,0);
+});
+test('new unknown observation retains expiry and a newer explicit extension supersedes it without renewing text',t=>{
+ const closed={...base,description:'',validThrough:expiry,observedAt:recent},unknown={...base,description:'',observedAt:'2026-11-11T00:00:00Z'};
+ for(const extension of [null,'2026-12-01T00:00:00Z']){
+  const cards=[{...base,observedAt:at},closed,unknown,...(extension?[{...unknown,validThrough:extension,observedAt:'2026-11-11T01:00:00Z'}]:[])],f=fixture(t,cards),e=f.index.find(base,{now});
+  a.equal(e.card.validThrough,extension||expiry);a.equal(e.observedAt,at);a.equal(e.card.description,base.description);a.equal(e.card.validThroughEvidence.observedAt,extension?'2026-11-11T01:00:00Z':recent);
+ }
+});
+test('immutable text cannot mask later metadata expiry and immutable expiry cannot be erased by later unknown text',t=>{
+ for(const immutableExpiry of [false,true]){
+  const cards=immutableExpiry?[{...base,observedAt:recent}]:[{...base,description:'',observedAt:recent,validThrough:expiry}],f=fixture(t,cards);
+  const ref=saveDocument(f.root,{...base,...(immutableExpiry?{description:'Older partial posting.',validThrough:expiry}:{})},at),e=D.index(f.root).find(base,{now});
+  a.equal(e.card.validThrough,expiry);a.equal(e.card.validThroughEvidence.proof.path,immutableExpiry?ref.path:'state/source-trial-report.json');a.equal(e.proof.path,immutableExpiry?'state/source-trial-report.json':ref.path);
+ }
+});
+test('immutable-only source remains captured and original expiry provenance survives',async t=>{
+ const f=fixture(t,[]),ref=saveDocument(f.root,{...base,validThrough:'2026-12-01T00:00:00Z'},at),index=D.index(f.root),e=index.find(base,{now});a.ok(e);a.equal(e.proof.path,ref.path);a.equal(e.observedAt,at);a.equal(e.card.source,base.source);
+ const candidate=await A.prepareCandidate(base,{COMPANY:base.company,TITLE:base.title,LOCATION:base.location,SOURCE_URL:base.url},{discoveryEvidence:E.index(f.root),capturedInputs:index,fetchEvidence:()=>{throw Error('no fetch');}});a.equal(candidate.evidenceSource,'CAPTURED_DISCOVERY');a.equal(candidate.evidenceVerified,false);a.ok(C.validate(candidate,{now}));
+ const result=await require('../programmed-coordinator/source.cjs').verify({root:f.root,discovery:index,item:{sourceEvidence:{url:base.url}},expected:base,now,fetchPage:()=>{throw Error('no fetch');}});a.equal(result.sourceCaptured,true);a.equal(result.independentlyVerified,false);
+});
+test('expiry never crosses identity, source URL, or conflicting explicit requisitions',t=>{
+ for(const patch of [{company:'Other'},{title:'Other'},{location:'Dallas, TX'},{url:'https://jobs.example.com/other'},{reqId:'REQ-2'}]){
+  const card={...base,reqId:'REQ-1'},f=fixture(t,[card,{...card,...patch,description:'',observedAt:recent,validThrough:expiry}]),e=f.index.find(card,{now});a.ok(e);a.equal(e.card.validThrough,undefined);
+ }
+ const f=fixture(t,[{...base,reqId:'REQ-1'},{...base,reqId:'REQ-2',description:'',observedAt:recent,validThrough:expiry}]);a.equal(f.index.find(base,{now}).reason,'CONFLICTING_SOURCE_IDENTITY');
+});
+test('malformed explicit expiry cannot fall through to an older independently verified cache path',async t=>{
+ const f=fixture(t,[{...base,description:'',validThrough:'invalid',observedAt:recent}]);saveDocument(f.root,base,at);let fetched=0;
+ const result=await A.sourceEvidence(base,{store:E.index(f.root),capturedInputs:D.index(f.root),fetchEvidence:()=>{fetched++;return 'unreachable';}});a.equal(result.blocked.reason,'POSTING_EXPIRY_INVALID');a.equal(result.cached,null);a.equal(fetched,0);
+});
+test('expiry-only metadata still blocks enrichment before its missing-text fallback',async t=>{
+ const card={...base,description:'',validThrough:expiry},f=fixture(t,[card]);await a.rejects(require('../programmed-coordinator/source.cjs').verify({root:f.root,item:{sourceEvidence:{url:card.url}},expected:base,now,requireRoleText:true,fetchPage:()=>{throw Error('must not fetch');}}),/POSTING_EXPIRED/);
+});
+test('invalid expiry and conflicting requisition holds are isolated while healthy sibling AUTO and catch-up work continues',async t=>{
+ const good={...base,url:'https://jobs.example.com/good'},bad={...base,validThrough:'bad',observedAt:recent},conflict={...base,url:'https://jobs.example.com/conflict'},f=fixture(t,[bad,good,{...conflict,reqId:'one'},{...conflict,reqId:'two',validThrough:expiry}]),index=f.index;
+ const picked=A.pick({new_roles:[bad,conflict,good]},{max:3,sent:new Set(),capturedInputs:index});a.deepEqual(picked.map(x=>x.r.url),[good.url]);
+ let legacyReads=0,fetches=0;const store={find:()=>{legacyReads++;throw Error('legacy fallback');},forIntake:()=>{legacyReads++;throw Error('legacy fallback');}};
+ for(const card of [bad,conflict]){
+  const source=await A.sourceEvidence(card,{store,capturedInputs:index,fetchEvidence:()=>{fetches++;}});a.equal(source.blocked.blocked,true);a.equal(source.cached,null);
+  a.equal(await A.prepareCandidate(card,{},{discoveryEvidence:store,capturedInputs:index,fetchEvidence:()=>{fetches++;}}),null);
+  await a.rejects(require('../programmed-coordinator/source.cjs').verify({root:f.root,discovery:index,item:{sourceEvidence:{url:card.url}},expected:card,now,fetchPage:()=>{fetches++;}}),/POSTING_EXPIRY_INVALID|CONFLICTING_SOURCE_IDENTITY/);
+ }
+ a.equal(legacyReads,0);a.equal(fetches,0);
+ const Catch=require('./catch-up'),state=Catch.ingest({roles:{}},[{new_roles:[bad,conflict,good]}],now);for(const card of [bad,conflict,good])Catch.defer(state,card,now);
+ const before=JSON.stringify([state.roles[Catch.id(bad)],state.roles[Catch.id(conflict)]]);a.equal(Catch.releaseSourceHolds(state,r=>index.find(r,{now}),now),1);a.equal(JSON.stringify([state.roles[Catch.id(bad)],state.roles[Catch.id(conflict)]]),before);a.equal(state.roles[Catch.id(good)].status,'PENDING_INTAKE');
+});
+test('compatible requisition aliases on one capture do not introduce an identity gate',t=>{
+ const aliases={...base,reqId:'REQ-1',JOB_ID:'JOB-2'},constraint={...base,description:'',reqId:'JOB-2',validThrough:'2026-12-01T00:00:00Z',observedAt:recent},f=fixture(t,[aliases,constraint]),e=f.index.find(base,{now});
+ a.ok(C.validEnvelope(e,{now}));a.deepEqual(e.card.requisitionIds,['job-2','req-1']);a.equal(e.card.validThrough,constraint.validThrough);
 });

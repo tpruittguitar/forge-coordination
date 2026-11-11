@@ -21,7 +21,8 @@ function defer(state,role,now=Date.now()){const x=state.roles[id(role)];if(!x)re
 function releaseSourceHolds(state,canUseCaptured,now=Date.now()){
  let released=0;
  for(const x of Object.values(state.roles||{})){
-  if(x.status!=='WAITING_SOURCE_RETRY'||x.reason!=='SOURCE_EVIDENCE_UNAVAILABLE'||!canUseCaptured(x.role))continue;
+  if(x.status!=='WAITING_SOURCE_RETRY'||x.reason!=='SOURCE_EVIDENCE_UNAVAILABLE')continue;
+  if(!require('./discovery-inputs').usable(canUseCaptured(x.role),now))continue;
   x.sourceHoldHistory=[...(x.sourceHoldHistory||[]),{status:x.status,reason:x.reason,attempts:x.attempts||0,lastAttempt:x.lastAttempt||null,retryAfter:x.retryAfter||null,releasedAt:new Date(now).toISOString(),releaseBasis:'CAPTURED_DISCOVERY_AVAILABLE'}];
   delete x.retryAfter;delete x.reason;x.status='PENDING_INTAKE';released++;
  }

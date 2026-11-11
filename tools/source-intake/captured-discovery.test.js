@@ -56,3 +56,11 @@ test('pending original request and uncertain prior response still fence captured
 test('captured discovery never relaxes protected archive identity requirements',async()=>{
  const c=candidate(),f=fixture();c.expectedOutcome='PROTECTED_NOOP';c.protectedPrimaryId='V2A-9';await a.rejects(()=>runIntake([c],f.options),/protected archive identity unproven/);a.equal(f.writes.length,0);
 });
+
+test('separate expiry provenance is hashed and bound to exact identity URL requisition and observation date',()=>{
+ const c=candidate({description:'Saved job text.',requisitionIds:['req-1'],validThrough:'2030-01-01T00:00:00Z',validThroughEvidence:{company:'Acme',title:'Plant Manager',location:'Austin, TX',url:'https://example.com/jobs/1',source:'HIRINGCAFE',requisitionIds:['req-1'],validThrough:'2030-01-01T00:00:00Z',observedAt:'2026-01-01T00:00:00Z',proof:{path:'state/board-discovery-report.json',sha256:C.hash('expiry report')}}});a.ok(C.validate(c));
+ for(const patch of [{company:'Other'},{url:'https://example.com/jobs/2'},{requisitionIds:['req-2']},{validThrough:'2031-01-01T00:00:00Z'},{observedAt:'2099-01-01T00:00:00Z'},{proof:{path:'../other',sha256:C.hash('wrong')}}]){
+  const changed=structuredClone(c);Object.assign(changed.discoveryEvidence.card.validThroughEvidence,patch);changed.discoveryEvidence.cardSha256=C.hash(changed.discoveryEvidence.card);a.equal(C.validate(changed),false);
+ }
+ const wrongReq=structuredClone(c);wrongReq.record.REQ_ID='REQ-2';a.equal(C.validate(wrongReq),false);
+});
