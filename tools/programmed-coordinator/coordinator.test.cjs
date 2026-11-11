@@ -137,6 +137,23 @@ test('current assignment membership cannot authorize a return absent from its in
  const batch={...f.batch,items:[{...f.batch.items[0],key:'b'}]};
  a.throws(()=>C.routingProof(f.root,batch,f.commit,(_r,_c,file)=>file==='control/work.json'?JSON.stringify(before):f.historical(_r,_c,file)),/ITEM_NOT_ASSIGNED_AT_INSTRUCTION_REVISION/);
 });
+test('saved relevance evidence follows the owner at its instruction revision and gives that provider no current authority',t=>{
+ const root=dir(t),taskKey='FORGE_CLAUDE_RELEVANCE_REVIEW',commit='a'.repeat(40),priorOwner='EarlierAI';
+ const prior={owner:priorOwner,route:'utility',procedure:'lanes/CLAUDE_RELEVANCE_REVIEW.txt',executionMode:'EVIDENCE_ONLY',workAssignments:'control/CLAUDE_RELEVANCE_WORK.json'};
+ const current={...prior,owner:'ChatGPT',executionMode:'WRITE_THROUGH_SUPPORTED_WRITER'};
+ const work={schema:'forge.relevance-helper-work.v1',enabled:true,owner:'ChatGPT',taskKey,assignmentId:'REL',keys:['k']};
+ const item={key:'k',writerSubmitted:false,targetedLookups:1,sourceEvidence:{url:'https://employer.example/job'},recommendation:'INTAKE_READY'};
+ const batch={schema:'forge.relevance-helper-batch.v1',provider:priorOwner,taskKey,assignmentId:'REL',runId:'CLAUDE-RELEVANCE-HIST',instructionCommit:commit,items:[item]};
+ S.save(root,'control/AI_AUTOMATION_TASKS.json',{tasks:{[taskKey]:current}});S.save(root,prior.workAssignments,work);
+ fs.mkdirSync(path.join(root,'lanes'),{recursive:true});fs.mkdirSync(path.join(root,'policy/current'),{recursive:true});
+ fs.writeFileSync(path.join(root,prior.procedure),'procedure\n');fs.writeFileSync(path.join(root,'policy/current/AI_AUTOMATION_COMMON.txt'),'common\n');
+ const historical=(_r,_c,file)=>file==='control/AI_AUTOMATION_TASKS.json'?JSON.stringify({tasks:{[taskKey]:prior}}):file===prior.workAssignments?JSON.stringify({...work,owner:priorOwner}):fs.readFileSync(path.join(root,file),'utf8');
+ const routing=(r,b,c)=>C.routingProof(r,b,c,historical);
+ a.equal(routing(root,batch,'b'.repeat(40)).writeThroughEvidenceMigration,true);
+ a.throws(()=>routing(root,{...batch,provider:'Claude'},'b'.repeat(40)),/STALE_TASK_ROUTING/);
+ const changed={...current,procedure:'lanes/OTHER.txt'};S.save(root,'control/AI_AUTOMATION_TASKS.json',{tasks:{[taskKey]:changed}});
+ a.throws(()=>routing(root,batch,'b'.repeat(40)),/STALE_TASK_ROUTING/);
+});
 test('collector is idempotent, lists invalid URLs and preserves immutable collisions',t=>{
   const f=collection(t),routing=()=>({});C.collect({...f,routing});a.equal(Object.keys(f.state.items).length,1);
   a.equal(C.collect({...f,routing}).newItems,0);

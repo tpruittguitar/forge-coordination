@@ -1,13 +1,14 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
 const S = require('./store.cjs');
+const relevance = require('../helper-routing/relevance.cjs');
 const validators = {
   'forge.shared-helper-batch.v1': require('../helper-routing/shared.cjs').validateBatch,
   'forge.claude-helper-batch.v1': require('../helper-routing/reservations.cjs').validateBatch,
   'forge.intake-helper-batch.v1': require('../helper-routing/intake.cjs').validate,
   'forge.enrichment-helper-batch.v1': require('../helper-routing/enrichment.cjs').validateBatch,
   'forge.outcome-helper-batch.v1': require('../helper-routing/outcome.cjs').validateBatch,
-  'forge.relevance-helper-batch.v1': require('../helper-routing/relevance.cjs').validate
+  'forge.relevance-helper-batch.v1': relevance.validate
 };
 const historyCache = new Map();
 function show(root, commit, file) {
@@ -26,16 +27,26 @@ function writeThroughEvidenceMigration(root,batch,prior,task) {
     Array.isArray(batch.items)&&batch.items.every(i=>i.writerSubmitted===false)&&
     !S.read(root,'control/CHATGPT_OWNER_CUTOVER.json',{retired:[]}).retired?.some(r=>r.taskKey===batch.taskKey);
 }
-// Bot commits and wording updates do not discard saved source facts. Changed
-// ownership/assignment/cutover does block this return; current code rechecks facts.
+// A relevance receipt remains evidence when its provider was the owner at that
+// instruction revision. The old provider gets no current authority. Every other
+// ownership, assignment, or cutover change still blocks the return.
+function savedRelevanceEvidence(batch, prior) {
+  return batch?.schema === 'forge.relevance-helper-batch.v1' && typeof prior?.owner === 'string' && prior.owner === batch.provider;
+}
+function envelopeProviderOk(root, task, batch) {
+  if (!task || typeof batch?.provider !== 'string') return false;
+  if (task.owner === batch.provider) return true;
+  return batch.schema === 'forge.relevance-helper-batch.v1' && relevance.providerAccepted(batch, task.owner, relevance.ownerAtInstruction(root, batch.instructionCommit, batch.taskKey));
+}
 function routingProof(root, batch, current, historical = show) {
   const registry = 'control/AI_AUTOMATION_TASKS.json';
   const old = JSON.parse(historical(root, batch.instructionCommit, registry));
   const now = S.read(root, registry), task = now.tasks[batch.taskKey], prior = old.tasks?.[batch.taskKey];
   const route = t => t && ({owner:t.owner, route:t.route, procedure:t.procedure, executionMode:t.executionMode, workAssignments:t.workAssignments});
-  const evidenceMigration=writeThroughEvidenceMigration(root,batch,prior,task),beforeRoute=route(prior);
-  if(evidenceMigration)beforeRoute.executionMode=task.executionMode;
-  if (!task || task.owner !== batch.provider || S.hash(route(task)) !== S.hash(beforeRoute)) throw Error('STALE_TASK_ROUTING');
+  const evidenceMigration=writeThroughEvidenceMigration(root,batch,prior,task),beforeRoute=route(prior),saved=savedRelevanceEvidence(batch,prior);
+  if(evidenceMigration&&beforeRoute)beforeRoute.executionMode=task.executionMode;
+  if(saved&&task&&beforeRoute&&task.owner!==batch.provider)beforeRoute.owner=task.owner;
+  if (!task || !beforeRoute || (task.owner !== batch.provider && !saved) || S.hash(route(task)) !== S.hash(beforeRoute)) throw Error('STALE_TASK_ROUTING');
   // Resolve both revisions separately: a wording-only contract split preserves
   // saved facts, but still requires current-policy revalidation. Never silently
   // fall back when a selected contract is missing or use an unchecked path.
@@ -60,7 +71,7 @@ function routingProof(root, batch, current, historical = show) {
   return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, ...(evidenceMigration?{writeThroughEvidenceMigration:true}:{}), commonAtInstruction:priorCommon, commonAtCurrent:currentCommon, currentPolicyRecheckRequired:true};
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
-function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!task||task.owner!==batch.provider||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}
+function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!envelopeProviderOk(root,task,batch)||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}
 function collect({root, state, commit, routing = routingProof}) {
   const registry = S.read(root, 'control/AI_AUTOMATION_TASKS.json');
   const legacy = new Set(S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}).items.map(i=>i.batch));
@@ -80,7 +91,7 @@ function collect({root, state, commit, routing = routingProof}) {
     try {
       batch = JSON.parse(raw);
       const validate = validators[batch.schema], task = registry.tasks[batch.taskKey];
-      if (!validate || !task || task.owner !== batch.provider) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
+      if (!validate || !envelopeProviderOk(root, task, batch)) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
       const work = S.read(root, task.workAssignments);
       const validation=validate(batch, work);
       if(legacy.has(rel)) {
