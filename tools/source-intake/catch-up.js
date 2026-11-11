@@ -16,10 +16,22 @@ function ingest(state,reports,now=Date.now()) {
 }
 function due(state,now=Date.now()){return Object.values(state.roles).filter(x=>!x.retryAfter||Date.parse(x.retryAfter)<=now).map(x=>x.role);}
 function defer(state,role,now=Date.now()){const x=state.roles[id(role)];if(!x)return;x.attempts=(x.attempts||0)+1;x.status='WAITING_SOURCE_RETRY';x.reason='SOURCE_EVIDENCE_UNAVAILABLE';x.lastAttempt=new Date(now).toISOString();x.retryAfter=new Date(now+3600000).toISOString();x.owner='CODE';}
+// Release only obsolete source-access waits. Original attempts remain audit history;
+// eligibility, protected state and Writer request reconciliation are still separate gates.
+function releaseSourceHolds(state,canUseCaptured,now=Date.now()){
+ let released=0;
+ for(const x of Object.values(state.roles||{})){
+  if(x.status!=='WAITING_SOURCE_RETRY'||x.reason!=='SOURCE_EVIDENCE_UNAVAILABLE')continue;
+  if(!require('./discovery-inputs').usable(canUseCaptured(x.role),now))continue;
+  x.sourceHoldHistory=[...(x.sourceHoldHistory||[]),{status:x.status,reason:x.reason,attempts:x.attempts||0,lastAttempt:x.lastAttempt||null,retryAfter:x.retryAfter||null,releasedAt:new Date(now).toISOString(),releaseBasis:'CAPTURED_DISCOVERY_AVAILABLE'}];
+  delete x.retryAfter;delete x.reason;x.status='PENDING_INTAKE';released++;
+ }
+ return released;
+}
 function report(state,{sent=new Set(),quarantined=[],blocking=[]}={},now=Date.now()){
  const pending=new Set(quarantined.map(x=>x.requestId));let unattempted=0,waitingRetry=0,attempted=0;
  for(const [key,x]of Object.entries(state.roles)){if(sent.has(key)||sent.has(requestId({COMPANY:x.role.company,TITLE:x.role.title,LOCATION:x.role.location,SOURCE_URL:x.role.url}))){attempted++;continue;}if(x.retryAfter&&Date.parse(x.retryAfter)>now)waitingRetry++;else unattempted++;}
  return{scope:'Saved discovery candidates; admission still requires current screening and live evidence',at:new Date(now).toISOString(),unattempted,waitingSourceRetry:waitingRetry,attempted,unresolvedRequests:pending.size,blockingRuns:blocking.length,canonicalCompletionsClaimed:0};
 }
 function save(root,state){const file=path.join(root,FILE);fs.mkdirSync(path.dirname(file),{recursive:true});const tmp=file+'.tmp',fd=fs.openSync(tmp,'w');try{fs.writeFileSync(fd,JSON.stringify(state,null,1)+'\n');fs.fsyncSync(fd);}finally{fs.closeSync(fd);}fs.renameSync(tmp,file);}
-module.exports={FILE,id,load,ingest,due,defer,report,save};
+module.exports={FILE,id,load,ingest,due,defer,releaseSourceHolds,report,save};

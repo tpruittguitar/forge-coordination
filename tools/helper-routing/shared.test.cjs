@@ -216,3 +216,8 @@ test('a Grok receipt keeps a row with any pending field on the assignment page',
  a.throws(()=>A.replenish({root,state:state(),snapshot:snapshot(line),runId:'FORGE-CODE-TEST',now,apply:true,checkLock(){},writerReceipts:{index:{requests:{}}}}),/GROK_WRITER_RECEIPTS_REQUIRED/);
  a.equal(H.load(root).items[0].status,'ASSIGNED');
 });
+test('saved discovery details avoid a new shared source-research assignment while missing facts stay unknown',t=>{
+ const root=setup(t),job={key:'linkedin:1234',company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://www.linkedin.com/jobs/view/1234/',status:'UNSCREENED',evidence:[],submissions:[]};
+ S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[job.key]:job}});S.save(root,'state/source-trial-report.json',{summary:{at:'2020-01-01T00:00:00Z'},new_roles:[{...job,source:'Recruiting agency',description:''}]});
+ const result=A.replenish({root,state:state(),snapshot:{rows:[],archiveRows:[],source:{readAt:new Date().toISOString()}},runId:'FORGE-CODE-TEST',apply:false});a.equal(result.assigned,0);
+});

@@ -2,7 +2,8 @@
 // Full public postings shared by enrichment research paths. A salary-only anchor,
 // failed transport, partial page or unverified identity is never a posting read.
 const crypto=require('node:crypto'),L=require('./lib'),P=require('./public-posting'),R=require('./recovery'),Pay=require('./pay-values');
-const MAX_AGE_MS=7*86400000;
+// Capture age is provenance, not a posting-access prerequisite.
+const MAX_AGE_MS=Infinity;
 const identity=r=>JSON.stringify([r.COMPANY,r.TITLE,r.LOCATION]);
 function route(raw){try{
  const url=P.publicUrl(raw);if(!url)return null;const u=new URL(url),host=u.hostname;
@@ -32,17 +33,24 @@ function create({cache,now=()=>Date.now()}){
   entries[key]=e;index(key,e);stats.saved++;return e;
  }
  function find(row,urls=R.urls({...row,p:row.p||{}})){
-  const routes=new Set(urls.map(route).filter(Boolean)),hits=[],eligible=[],current=new Map();
+  const routes=new Set(urls.map(route).filter(Boolean)),hits=[],eligible=[],current=new Map(),expiryByRoute=new Map();
   for(const key of byIdentity.get(identity(row))||[]){
    const e=entries[key];if(!e)continue;
-   const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||age>=MAX_AGE_MS||e.postingFacts?.validThrough&&(!Number.isFinite(Date.parse(e.postingFacts.validThrough))||Date.parse(e.postingFacts.validThrough)<now())||!routes.has(route(e.url))||!complete(row,e.url,e,e.at))continue;
-   eligible.push(e);if(e.factsVersion===Pay.VERSION)current.set(route(e.url),Math.max(current.get(route(e.url))||0,Date.parse(e.at)));
+   const age=now()-Date.parse(e.at),sourceRoute=route(e.url);if(!Number.isFinite(age)||age<0||!routes.has(sourceRoute)||!complete(row,e.url,e,e.at))continue;
+   const validThrough=e.postingFacts?.validThrough??e.validThrough,previous=expiryByRoute.get(sourceRoute);
+   // Select explicit expiry before filtering reusable bodies. A newer unknown
+   // date cannot revive an expired source; a newer explicit extension can.
+   // Conflicting observations at the same instant keep the stricter boundary.
+   if(validThrough!=null&&(!previous||Date.parse(e.at)>Date.parse(previous.observedAt)||Date.parse(e.at)===Date.parse(previous.observedAt)&&(!Number.isFinite(Date.parse(validThrough))||Date.parse(validThrough)<Date.parse(previous.validThrough))))expiryByRoute.set(sourceRoute,{url:e.url,observedAt:e.at,validThrough});
+   eligible.push(e);if(e.factsVersion===Pay.VERSION)current.set(sourceRoute,Math.max(current.get(sourceRoute)||0,Date.parse(e.at)));
   }
   for(const e of eligible){
    // A successfully refreshed version supersedes migration-only uncertainty
    // for that source, including a confirmed full no-pay read.
    if(e.factsVersion!==Pay.VERSION&&(current.get(route(e.url))||0)>=Date.parse(e.at))continue;
-   let checked=R.cached({postingEvidence:{[row.PRIMARY_ID]:e}},row,now());
+   const expiry=expiryByRoute.get(route(e.url));
+   const constrained=expiry?{...e,postingFacts:{...e.postingFacts,validThrough:expiry.validThrough},expiryEvidence:expiry}:e;
+   let checked=R.cached({postingEvidence:{[row.PRIMARY_ID]:constrained}},row,now());
    // Text-only migration must not revive pay that structured facts rejected.
    // Keep full text/degree reusable, but refresh salary under the new parser.
    if(checked&&e.factsVersion!==Pay.VERSION)checked={...checked,pay:null,payFacts:null,payAmbiguous:true,payNeedsRefresh:true};
@@ -54,7 +62,7 @@ function create({cache,now=()=>Date.now()}){
   found.payStatus=found.pay?'PAY_FOUND':found.payAmbiguous?'PAY_UNRESOLVED':'NO_PAY_STATED';
   stats.hits++;if(found.payStatus==='NO_PAY_STATED')stats.no_pay_hits++;return found;
  }
- function prune(){for(const[k,e]of Object.entries(entries)){const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0||age>=MAX_AGE_MS)delete entries[k];}}
+ function prune(){for(const[k,e]of Object.entries(entries)){const age=now()-Date.parse(e.at);if(!Number.isFinite(age)||age<0)delete entries[k];}}
  function forSource(company,title,url){
   const hits=Object.values(entries).filter(e=>route(e.url)===route(url)&&e.sourceIdentity?.company===company&&e.sourceIdentity?.title===title),locations=[...new Set(hits.map(e=>e.sourceIdentity.location))];
   return locations.length===1?find({COMPANY:company,TITLE:title,LOCATION:locations[0]},[url]):null;

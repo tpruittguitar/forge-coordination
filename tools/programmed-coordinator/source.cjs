@@ -1,7 +1,7 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), dns = require('node:dns/promises'), net = require('node:net');
 const S = require('./store.cjs'), L = require('../enrich-ats-pay/lib.js');
-const PARSER_VERSION='20261109-shared-helper-evidence-v4+'+require('../enrich-ats-pay/qualification').VERSION;
+const PARSER_VERSION='20261111-captured-source-evidence-v5+'+require('../enrich-ats-pay/qualification').VERSION;
 const RETRY_VERSION='20261109-host-backoff-v1';
 const norm = s => String(s || '').normalize('NFKC').toLowerCase().replace(/[^a-z0-9]/g, '');
 const employer=s=>norm(String(s||'').replace(/(?:,?\s+)(?:incorporated|inc\.?|llc|ltd\.?|corp\.?|corporation|plc)\s*$/i,''));
@@ -85,16 +85,46 @@ function inspectJobs(jobs,expected,quote='',now=Date.now()){
   const payFacts=Pay.fact(safe,structured?'STRUCTURED_ANNUAL_BASE':'EXPLICIT_ANNUAL_BASE_TEXT'),pay=Pay.range(payFacts);
   return {description, degree:degree?.text !== 'NOT_STATED' ? degree : null, pay,payFacts,payAmbiguous:!pay&&(!!sal||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(description)),identityVerified:true,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},postingFacts:{url:job.url||null,title:job.title,company:job.hiringOrganization?.name,reqId:job.identifier?.value||null,datePosted:job.datePosted||null,validThrough:job.validThrough||null,employmentType:job.employmentType||null,workArrangement:job.jobLocationType||null}};
 }
-async function verify({item, expected, privateDir,sourceUrls=[], fetchPage = page, now = Date.now()}) {
+// Recorded discovery artifacts are source facts, not a new live-page check. Their
+// exact identity, URL, content hash and original observation date remain bound.
+function capturedSource({root=path.resolve(__dirname,'../..'),discovery,item,expected,sourceUrls=[],now=Date.now(),requireRoleText=false,validateClaims=true}) {
+  discovery=discovery||require('../source-intake/discovery-inputs').index(root);
+  const e=item.sourceEvidence||{},urls=[e.url,...sourceUrls].filter(Boolean);
+  for(const field of ['company','title','location'])if(e[field]&&(field==='location'?location(e[field])!==location(expected[field]):field==='company'?employer(e[field])!==employer(expected[field]):norm(e[field])!==norm(expected[field])))throw Error('CONFLICTING_SOURCE_IDENTITY');
+  const matches=urls.map(url=>discovery.find({...expected,url},{now})).filter(Boolean);
+  const blocked=matches.find(c=>c.blocked);if(blocked)throw Error(blocked.reason);
+  matches.sort((a,b)=>Number(!!b.card.description)-Number(!!a.card.description));
+  for(const capture of matches){
+    const card=capture.card,description=card.description;
+    const validThrough=card.validThrough||null;
+    if(validThrough&&(!Number.isFinite(Date.parse(validThrough))||Date.parse(validThrough)<=now))throw Error('POSTING_EXPIRED');
+    if(requireRoleText&&!description)continue;
+    // A metadata-only lead makes no quotation, fit, degree or salary claim.
+    if(validateClaims&&description&&e.quote&&!norm(description).includes(norm(e.quote)))throw Error('HELPER_QUOTE_NOT_IN_POSTING');
+    const Pay=require('../enrich-ats-pay/pay-values'),PostedPay=require('../source-trial/posted-pay'),postedPay=card.postedPay;
+    const candidate=PostedPay.eligible(card)||(description?Pay.employerText(description,L.payFromText):null);
+    const compatible=!postedPay||PostedPay.bound(postedPay,card)&&postedPay.status==='POSTED'&&(postedPay.currency==null||postedPay.currency==='USD')&&(postedPay.period==null||Pay.annualUnit(postedPay.period))&&(postedPay.basis==null||postedPay.basis==='BASE')&&(postedPay.low==null||postedPay.low===candidate?.low)&&(postedPay.high==null||postedPay.high===candidate?.high);
+    const pay=candidate&&compatible&&!Pay.conflicts(description,candidate,L.payFromText)&&!Pay.estimatedPay(description,candidate,L.payFromText)?candidate:null;
+    const degree=description?require('./posting-formats.cjs').degree(description,text):null;
+    const result={format:'CAPTURED_DISCOVERY',sourceCaptured:true,discoveryEvidence:capture,description,fullPosting:card.fullPosting,
+      contentBasis:card.contentBasis,sourceUrl:card.url,sourceSha256:S.hash(description||card),observedAt:capture.observedAt,
+      identityVerified:true,independentlyVerified:false,sourceIdentity:{company:expected.company,title:expected.title,location:expected.location},
+      postingStatus:'UNVERIFIED',postingFacts:{validThrough},degree:degree?.text!=='NOT_STATED'?degree:null,pay,payFacts:Pay.fact(pay,'EXPLICIT_ANNUAL_BASE_TEXT'),payAmbiguous:!pay&&(!!postedPay||/\$\s*\d|\b(?:USD|CAD|AUD|NZD|EUR|GBP)\s*\d/i.test(description))};
+    return helperEvidence(result,description&&validateClaims?item:{sourceEvidence:{}});
+  }
+  return null;
+}
+async function verify({item, expected, privateDir,root=path.resolve(__dirname,'../..'),discovery,sourceUrls=[],requireRoleText=false,validateClaims=true,fetchPage = page, now = Date.now()}) {
+  const captured=capturedSource({root,discovery,item,expected,sourceUrls,now,requireRoleText,validateClaims});if(captured)return captured;
   const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');
   const context=S.read(path.resolve(__dirname,'../..'),'reference/COMPANY_SITE_CONTEXT.json',{companies:[]}),company=context.companies.find(c=>[c.company,...c.aliases||[]].some(n=>employer(n)===employer(expected.company)));
   expected={...expected,companyAliases:[...expected.companyAliases||[],...company?[company.company,...company.aliases||[]]:[]]};
   const cache = path.join(privateDir, 'sources', key + '.json');
   if (fs.existsSync(cache)) {
     const c = JSON.parse(fs.readFileSync(cache, 'utf8'));
-    if (now - Date.parse(c.observedAt) < 86400000 && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
+    if (Number.isFinite(Date.parse(c.observedAt)) && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
       const facts=c.format==='LINKEDIN_GUEST'?inspectLinkedIn(c.raw,c.route,c.finalUrl,expected,item.sourceEvidence.quote,now):c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);
-      return helperEvidence({...c,...facts},item); // Recompute helper bindings even on cache hits.
+      return helperEvidence({...c,...facts,postingStatus:'UNVERIFIED'},item); // Recompute helper bindings even on cache hits.
     }
   }
   const sourceRoutes=S.read(privateDir,'source-routes.json',{}),errors=[];
@@ -192,8 +222,8 @@ function helperEvidence(source,item,profile) {
   return out;
 }
 function enrichmentFields(source, row) {
-  const fields = {}, p = row.p || {}, date = source.observedAt.slice(0,10);
-  if (source.degree && !known(p.DEGREE_TEXT) && !known(p.DEGREE_REQ)) Object.assign(fields, {DEGREE_TEXT:source.degree.text, DEGREE_REQ:source.degree.req, DEGREE_EVIDENCE_URL:source.sourceUrl, DEGREE_ASOF:date, REQUIREMENTS_REVIEWED:'YES'});
+  const fields = {}, p = row.p || {};if(!Number.isFinite(Date.parse(source.observedAt)))return fields;const date = source.observedAt.slice(0,10);
+  if (source.degree && !known(p.DEGREE_TEXT) && !known(p.DEGREE_REQ)) Object.assign(fields, {DEGREE_TEXT:source.degree.text, DEGREE_REQ:source.degree.req, DEGREE_EVIDENCE_URL:source.sourceUrl, DEGREE_ASOF:date,...(source.sourceCaptured&&source.fullPosting!==true?{}:{REQUIREMENTS_REVIEWED:'YES'})});
   if (source.pay && source.identityVerified===true && source.sourceIdentity && ['company','title','location'].every(k=>source.sourceIdentity[k]===row[{company:'COMPANY',title:'TITLE',location:'LOCATION'}[k]]) && !known(p.SALARY_BASE_LOW)) Object.assign(fields, {
     SALARY_BASE_LOW:source.pay.low, SALARY_BASE_HIGH:source.pay.high, SALARY_MIDPOINT:Math.round((source.pay.low+source.pay.high)/2),
     SALARY_BASIS:'EMPLOYER_POSTED', SALARY_SOURCE:source.sourceUrl, SALARY_ASOF:date, SALARY_CONF:'HIGH'
@@ -209,4 +239,4 @@ function enrichmentFields(source, row) {
   return fields;
 }
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {RETRY_VERSION,PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, verify, helperEvidence, enrichmentFields,known};
+module.exports = {RETRY_VERSION,PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, capturedSource,verify, helperEvidence, enrichmentFields,known};
