@@ -1,0 +1,243 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-11T12:44:07.659Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_NEW_FAILED_HELPER_PAYLOAD",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "29caaf89763a643d645fdad008f2084d9764c1bf",
+    "foremanCockpit": "f52dad6d6a35f0827777d72256b4e901b14bcb57",
+    "forgeCoordination": "29caaf89763a643d645fdad008f2084d9764c1bf"
+  },
+  "sourceEvidenceSha256": "ca08ddb542cc774bf73c5d3369395ed043724671275df405d60ee25ec15a199c",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": true,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "5e19cce",
+      "productionLockPresent": true,
+      "newFailure": [
+        {
+          "file": "FORGE-GROK-SHARED-20261110T2255Z-batch.json",
+          "at": "2026-11-10T22:56:37.655Z",
+          "error": "unsupported action undefined (expected one of intake, ruling, data_discovery, upsert_application, interview_note, approve_resume, save_rules, save_scoring_model, undo_ruling, install_automation, batch, rotate_receipts, correct_receipts, rec"
+        }
+      ],
+      "fileQueueThroughputOnly": true
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "29caaf89763a643d645fdad008f2084d9764c1bf",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "Publish compact Writer activity",
+            "status": "pending",
+            "seconds": 1
+          },
+          {
+            "name": "receipt-recovery",
+            "status": "success",
+            "seconds": 49
+          },
+          {
+            "name": "build-needs-tim",
+            "status": "success",
+            "seconds": 31
+          },
+          {
+            "name": "Publish pipeline execution evidence",
+            "status": "success",
+            "seconds": 35
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "in_progress",
+            "seconds": 4
+          }
+        ],
+        "openPRs": 46,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "f52dad6d6a35f0827777d72256b4e901b14bcb57",
+        "sample": 15,
+        "failures": [
+          {
+            "id": 42747084212,
+            "name": "browser-tests-compare",
+            "event": "pull_request",
+            "url": "https://github.com/tpruittguitar/foreman-cockpit/actions/runs/42747084212"
+          }
+        ],
+        "latestRuns": [
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 18
+          },
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 8
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 1708
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 21
+          },
+          {
+            "name": "writer-impact",
+            "status": "success",
+            "seconds": 20
+          }
+        ],
+        "openPRs": 1,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "lastReportAt": "2026-11-10T21:50:39.851Z",
+      "state": "Running",
+      "schedulerResult": 2147946720,
+      "lastRun": "2026-11-11T12:40:23Z",
+      "mergeConflicts": [],
+      "reportNotCurrentCompletion": true
+    },
+    "activity": {
+      "at": "2026-11-11T12:33:16.236Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-10T00:33:16.236Z",
+        "to": "2026-11-11T12:33:16.236Z",
+        "verification": {
+          "count": 226,
+          "perHour": 6.277777777777778,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 81,
+          "perHour": 2.25,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 69,
+          "perHour": 1.9166666666666667,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 0,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 0,
+          "sources": [],
+          "error": null
+        },
+        "discovery": {
+          "count": 480,
+          "windowHours": 36,
+          "perHour": 13.333333333333334,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 480,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-11T12:28:09.511Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      }
+    },
+    "enrichment": {
+      "at": "2026-11-11T12:34:19.104Z",
+      "queues": {
+        "verification": 0,
+        "enrichment": 764,
+        "readyForReview": 583,
+        "blockedClosed": 111
+      },
+      "needsEnrichment": 764,
+      "freshness": {
+        "due": 959,
+        "current": 388,
+        "undated": 0
+      }
+    },
+    "intake": {
+      "at": "2026-11-11T12:34:20.399Z",
+      "counts": {
+        "ACCOUNTED_UPSTREAM": 6601,
+        "ACTION_REQUIRED": 3360,
+        "WAITING_EVIDENCE_CHANGE": 126,
+        "SOURCE_VALIDATION_REQUIRED": 53
+      }
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-11T12:33:16.203Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-11T12:33:17.237Z",
+          "lastSuccessAt": "2026-11-11T12:33:17.237Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-11T12:34:20.276Z",
+          "lastSuccessAt": "2026-11-11T12:34:20.276Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-11T12:34:25.855Z",
+          "lastSuccessAt": "2026-11-11T12:34:25.855Z",
+          "attempts": 1
+        }
+      }
+    },
+    "limitations": [
+      "Explorer browser outbox/polling/payload state not inspected; no UI health claim.",
+      "Writer status does not expose complete lock/fence inventory or log rotation.",
+      "Queue status is file transport, not total direct API throughput.",
+      "Prior browser-test failure unchanged and followed by successful comparison.",
+      "Running scheduler is not end-to-end completion; old report retained as historical.",
+      "Original failed request preserved; no replay or production mutation."
+    ]
+  },
+  "nextActions": [
+    "Code owner should inspect malformed helper payload and bind any correction to its original outcome before submission.",
+    "Restore fresh coordinator end-to-end reporting and resolve the already recorded enrichment assignment overlap."
+  ]
+}
