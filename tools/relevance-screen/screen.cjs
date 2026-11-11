@@ -11,8 +11,10 @@ function evaluate(card,c=load()){
  // estimated-pay, missing-pay, agency or unknown-client exclusion is permitted.
  for(const r of c.rules){if((c.disabledRules||[]).includes(r.id))continue;if(manufacturing)break;if(r.id==='FM_SOFTWARE_ONLY'&&new RegExp(c.softwareContextGuard,'i').test(title))continue;const hit=title.match(new RegExp(r.pattern,'i'));if(hit)return{outcome:'FUNCTION_MISMATCH',ruleId:r.id,matchedTerm:hit[0],sourceTitle:title,policyCommit:c.policyCommit,reason:'Explicit off-function title without manufacturing context',rank:9};}
  const core=/manufactur|production|plant|factory|assembl|industrializ|\bnpi\b|operational excellence|continuous improvement/i.test(title),related=/quality|engineer|\btest\b|commissioning|supply chain/i.test(title),ops=/operations|general manager|\bgm\b/i.test(title);
- const targetLevel=/\b(?:director|head|vice president|vp|chief|manager|president|plant leader|site leader|principal|senior staff|sr\.? staff|technical fellow)\b/i.test(title);
- return{outcome:(core||related)&&targetLevel?'ADMIT':'RANKED_DISCOVERY',rank:core?0:related?1:ops?2:3,reason:(core||related)&&targetLevel?'Plausible target function; Writer decides canonical admission and Never Consider':'Card scope unclear; retain visibly for one fact-changing targeted lookup',maxTargetedLookups:1};
+ // Tim 2026-11-11: uncertain fit is not an admission prerequisite. Keep the
+ // ranking signal, but let the existing Writer admit complete source-bound cards.
+ // Missing identity and explicit approved function exclusions still stop here.
+ return{outcome:'ADMIT',rank:core?0:related?1:ops?2:3,reason:'Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider',scopeReviewRequired:false};
 }
 function rank(items,c=load()){return items.map(x=>({...x,screen:evaluate(x,c)})).sort((a,b)=>a.screen.rank-b.screen.rank||String(a.sourceDate||a.firstSeen||'9999').localeCompare(String(b.sourceDate||b.firstSeen||'9999'))||String(a.key||a.url).localeCompare(String(b.key||b.url)));}
 function updateGuard(rows){const c=guarded(load(),rows),g={schema:'forge.relevance-guard.v1',at:new Date().toISOString(),policyCommit:c.policyCommit,disabledRules:c.disabledRules};fs.writeFileSync(path.join(root,'state/RELEVANCE_SCREEN_GUARD.json'),JSON.stringify(g,null,2)+'\n');return c;}

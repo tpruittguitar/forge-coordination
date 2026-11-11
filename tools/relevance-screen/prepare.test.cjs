@@ -149,3 +149,12 @@ test('a preparation source reader still rechecks live shared ownership on each i
  // Non-preparation callers never share this source snapshot.
  f.save(batch,{...envelope,items:[{...source,recommendation:'CHANGED'}]});a.throws(()=>I.original(f.root,si,{}),/IMMUTABLE_SOURCE_RETURN_REQUIRED/);
 });
+
+
+test('saved source-bound cards bypass scope and level review but preserve evidence and original-write guards',()=>{
+ for(const title of ['General Manager','Director, Data Center Operations','Production Engineer']){
+  const f=fixture(title);let out=P.prepare(f);a.equal(out.counts.READY,1,title);a.equal(out.items[0].record.TITLE,title);
+  const queue=JSON.parse(fs.readFileSync(p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json')));queue.jobs[f.key].evidence=[];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,1);
+  queue.jobs[f.key].submissions=[{requestId:'ORIGINAL'}];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
+ }
+});
