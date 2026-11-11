@@ -6,6 +6,8 @@ Tim's November 9 direction is to put usable discovered details straight into the
 
 Grok uses the existing Drive `AI_Coordination/WRITER_QUEUE` route described in
 [Grok direct Writer](GROK_DIRECT_WRITER.md) before the helper-return adapter.
+That route accepts ENRICH and a Tim-authorized DECLINE. The decline is recorded
+as `DECLINED_BY_TIM` on the existing Act Now path.
 That queue reaches the same Writer without the local helper coordinator, its
 production lock, a credential, or a new endpoint. The Writer's script lock and
 verification fences remain. Existing captured/uncertain returns must not be sent

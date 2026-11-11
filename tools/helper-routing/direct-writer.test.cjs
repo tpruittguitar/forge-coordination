@@ -14,10 +14,10 @@ test('reject protected identity, decisions, applications, calculated scores and 
  for(const key of ['COMPANY','TITLE','LOCATION','REQ_ID','BUCKET','DISPOSITION','PRIMARY_ID','TIM_DECISION','SCOPE_FIT_RAW','SALARY_SCORE','OVERALL_RATING','APPLICATION_STATE','anything']){
   const p=fixture();p.requests[0].ruling.fields[key]='forbidden';assert.throws(()=>validate(p),/UNSUPPORTED_OR_PROTECTED/);
  }
- for(const mutation of [p=>p.action='intake',p=>p.requests[0].action='upsert_application',p=>p.requests[0].ruling.kind='DECLINE',p=>p.requests[0].ruling.actor='CLAUDE']){const p=fixture();mutation(p);assert.throws(()=>validate(p),/GROK_ENRICH/);}
+ for(const mutation of [p=>p.action='intake',p=>p.requests[0].action='upsert_application',p=>p.requests[0].ruling.kind='DECLINE',p=>p.requests[0].ruling.actor='CLAUDE']){const p=fixture();mutation(p);assert.throws(()=>validate(p),/GROK_DIRECT|EXACT_DECLINE/);}
 });
 test('each file has one to 25 distinct rows and request identities',()=>{
- for(const n of [0,26]){const p=fixture();p.requests=Array.from({length:n},(_,i)=>({...p.requests[0],ruling:{...p.requests[0].ruling,requestId:`FORGE-GROK-REQ-${i}`,primaryId:`V2I-ROW-${i}`}}));assert.throws(()=>validate(p),/GROK_ENRICH_BATCH/);}
+ for(const n of [0,26]){const p=fixture();p.requests=Array.from({length:n},(_,i)=>({...p.requests[0],ruling:{...p.requests[0].ruling,requestId:`FORGE-GROK-REQ-${i}`,primaryId:`V2I-ROW-${i}`}}));assert.throws(()=>validate(p),/GROK_DIRECT_BATCH/);}
  const p=fixture();p.requests.push(structuredClone(p.requests[0]));assert.throws(()=>validate(p),/DUPLICATE/);
  p.requests[1].ruling.requestId+='-OTHER';assert.throws(()=>validate(p),/DUPLICATE/);
  p.requests[1].ruling.primaryId='V2I-OTHER';assert.equal(validate(p).requests,2);
@@ -49,3 +49,14 @@ test('fit quartet is bounded readable text, no numeric evidence or confidence-on
 });
 
 test('Writer normalization and explicit missing sentinels do not cause false conflicts',()=>{const {novelFields}=require('./direct-writer.cjs');assert.deepEqual(novelFields({DEGREE_TEXT:'A; B | C\nD'},{DEGREE_TEXT:'A, B / C D'}),{});assert.deepEqual(novelFields({DEGREE_TEXT:'Degree'},{DEGREE_TEXT:'UNKNOWN'}),{DEGREE_TEXT:'Degree'});});
+const decline=()=>({action:'batch',requestId:'FORGE-GROK-DECLINE-20261110-B001',requests:[{action:'ruling',ruling:{requestId:'FORGE-GROK-DECLINE-20261110-B001-R001',primaryId:'V2I-EXAMPLE',kind:'DECLINE',actor:'GROK',code:'NEVER_CONSIDER — PHARMA_MEDICAL',evidence:'https://employer.example/about',authorizedBy:'TIM',authorizationRef:'Tim authorized the pharma exclusion 2026-11-10'}}]});
+test('Tim-authorized DECLINE is syntax-valid only with a canonical code, employer URL and Tim authorization',()=>{
+ const p=decline(),before=JSON.stringify(p),r=validate(p);assert.equal(JSON.stringify(p),before);assert.equal(r.status,'SYNTAX_VALID');assert.equal(r.kind,'DECLINE');assert.equal(r.canonicalVerified,false);
+ p.requests[0].ruling.code='PAY_BELOW_FLOOR';assert.equal(validate(p).status,'SYNTAX_VALID');
+ for(const mutation of [q=>q.requests[0].ruling.code='NEVER_CONSIDER - PHARMA_MEDICAL',q=>q.requests[0].ruling.code='NOT_A_RULE',q=>q.requests[0].ruling.evidence='http://employer.example/about',q=>q.requests[0].ruling.authorizedBy='GROK',q=>q.requests[0].ruling.authorizationRef='2026-11-10',q=>q.requests[0].ruling.fields={DEGREE_TEXT:'x'},q=>q.requests[0].ruling.supersede=true]){
+  const bad=decline();mutation(bad);assert.throws(()=>validate(bad));
+ }
+ const mixed=decline();mixed.requests.push(fixture().requests[0]);assert.throws(()=>validate(mixed),/MIXED_ENRICH_AND_DECLINE/);
+ const two=decline();two.requests.push(structuredClone(two.requests[0]));two.requests[1].ruling.requestId='FORGE-GROK-DECLINE-20261110-B001-R002';two.requests[1].ruling.primaryId='V2I-OTHER';assert.equal(validate(two).requests,2);
+ two.requests[1].ruling.requestId=two.requests[0].ruling.requestId;assert.throws(()=>validate(two),/DUPLICATE/);
+});

@@ -71,7 +71,9 @@ class DirectWriterInstructionTests(unittest.TestCase):
                        'after the COMPLETE observation', 'Externalized evidence',
                        'RESUME_MATCH_PROFILE.json', 'fallback adapter is not running',
                        'RESULT__<request-basename-without-extension>.json',
-                       'ENRICH only', 'does not claim live Grok access'):
+                       'Tim-authorized DECLINE', 'DECLINED_BY_TIM', 'authorizedBy',
+                       'NEVER_CONSIDER — PHARMA_MEDICAL', 'Never mix the two kinds',
+                       'does not claim live Grok access'):
             self.assertIn(phrase, guide)
         for path in ('policy/current/SHARED_HELPER_COMMON.txt', 'lanes/FORGE_SHARED_HELPER.txt'):
             text = (ROOT / path).read_text()

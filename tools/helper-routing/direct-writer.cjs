@@ -5,38 +5,68 @@ const fs = require('node:fs');
 const KEYS = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',
   'SOURCE_URL','COMPANY_SOURCE_URL','FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF',
   'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']);
+// Snapshot of tpruittguitar/forge-policy rules/TIM_PIPELINE_RULES_CANONICAL.txt on 2026-11-10:
+// SECTION=DECLINE_RULES allowlist, plus the exact REASON= line (em dash, not a hyphen).
+// The Writer re-reads the live file and is the admission authority.
+const DECLINE_CODES = new Set(['PAY_BELOW_FLOOR','GEOGRAPHY_GATE_FAIL','FLEX_STRICT_NO','SCOPE_BELOW_TARGET',
+  'FIT_TOO_WEAK','DOMAIN_MISMATCH','LOCATION_NOT_ACCEPTABLE','TIM_EXPLICIT_DECLINE','MULTIPLE_RULE_FAILURES',
+  'NEVER_CONSIDER — PHARMA_MEDICAL']);
+const DECLINE_KEYS = ['requestId','primaryId','kind','actor','code','evidence','authorizedBy','authorizationRef','note','supersede','supersedeRef'];
 const id = value => typeof value === 'string' && /^FORGE-GROK-[A-Za-z0-9_-]{3,130}$/.test(value);
 const object = value => !!value && typeof value === 'object' && !Array.isArray(value);
 function exact(value, keys, reason) {
   if (!object(value) || Object.keys(value).some(k => !keys.includes(k))) throw Error(reason);
 }
+function datedText(value) {
+  return typeof value === 'string' && value.trim().length >= 8 && value.trim().length <= 300 &&
+    /\d{4}-\d{2}-\d{2}/.test(value) && /[A-Za-z]/.test(value);
+}
 function validate(payload) {
   exact(payload, ['action','requestId','requests'], 'EXACT_WRITER_BATCH_REQUIRED');
   if(payload.action !== 'batch' || !id(payload.requestId) || !Array.isArray(payload.requests) ||
-    payload.requests.length < 1 || payload.requests.length > 25) throw Error('GROK_ENRICH_BATCH_REQUIRED');
-  const ids = new Set([payload.requestId]), rows = new Set();
+    payload.requests.length < 1 || payload.requests.length > 25) throw Error('GROK_DIRECT_BATCH_REQUIRED');
+  const ids = new Set([payload.requestId]), rows = new Set(), kinds = new Set();
+  for (const request of payload.requests) if (request && request.ruling && request.ruling.kind) kinds.add(request.ruling.kind);
+  if (kinds.has('ENRICH') && kinds.has('DECLINE')) throw Error('MIXED_ENRICH_AND_DECLINE');
   for (const request of payload.requests) {
     exact(request, ['action','ruling'], 'EXACT_RULING_REQUIRED');
-    exact(request.ruling, ['requestId','primaryId','kind','actor','fields'], 'EXACT_ENRICH_RULING_REQUIRED');
     const r = request.ruling;
-    if(request.action !== 'ruling' || r.kind !== 'ENRICH' || r.actor !== 'GROK' || !id(r.requestId) ||
-      !/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(r.primaryId || '')) throw Error('GROK_ENRICH_RULING_REQUIRED');
+    if (request.action !== 'ruling' || !r || r.actor !== 'GROK' || !id(r.requestId) ||
+      !/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(r.primaryId || '')) throw Error('GROK_DIRECT_RULING_REQUIRED');
+    if (r.kind === 'ENRICH') validateEnrich(r);
+    else if (r.kind === 'DECLINE') validateDecline(r);
+    else throw Error('GROK_DIRECT_RULING_REQUIRED');
     if(ids.has(r.requestId) || rows.has(r.primaryId)) throw Error('DUPLICATE_REQUEST_OR_ROW');
     ids.add(r.requestId); rows.add(r.primaryId);
-    if(!object(r.fields) || !Object.keys(r.fields).length) throw Error('NONEMPTY_RAW_FIELDS_REQUIRED');
-    for (const [key, value] of Object.entries(r.fields)) {
-      if(!KEYS.has(key)) throw Error('UNSUPPORTED_OR_PROTECTED_FIELD');
-      if(!['string','number'].includes(typeof value) || typeof value === 'number' && !Number.isFinite(value) ||
-        typeof value === 'string' && (value.includes('[object Object]') || !value.trim() || value.length > (key === 'DEGREE_TEXT' ? 12000 : 1500))) throw Error('INVALID_FIELD_VALUE');
-      if(!key.startsWith('SALARY_BASE_') && key!=='SALARY_MIDPOINT' && typeof value!=='string')throw Error('PLAIN_TEXT_FIELD_REQUIRED');
-      if(key.endsWith('_ASOF') && !/^\d{4}-\d{2}-\d{2}$/.test(value))throw Error('DATE_REQUIRED');
-      if(key.endsWith('_URL') && !/^https:\/\/[^\s]+$/.test(value)) throw Error('EXACT_SOURCE_URL_REQUIRED');
-    }
-    if(Object.keys(r.fields).some(k=>k.startsWith('FIT_')) &&
-      (!['FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF'].every(k=>typeof r.fields[k]==='string'&&r.fields[k].trim()) || r.fields.FIT_CONF!=='LOW'))throw Error('COMPLETE_OBSERVED_FIT_EVIDENCE_REQUIRED');
   }
   return {schema:'forge.grok-direct-writer-preflight.v1',status:'SYNTAX_VALID',requests:payload.requests.length,
-    sourceVerified:false,ownershipVerified:false,originalRequestsReconciled:false,writerSubmitted:false,canonicalVerified:false};
+    kind:[...kinds][0] || '',sourceVerified:false,ownershipVerified:false,originalRequestsReconciled:false,writerSubmitted:false,canonicalVerified:false};
+}
+function validateEnrich(r) {
+  exact(r, ['requestId','primaryId','kind','actor','fields'], 'EXACT_ENRICH_RULING_REQUIRED');
+  if(!object(r.fields) || !Object.keys(r.fields).length) throw Error('NONEMPTY_RAW_FIELDS_REQUIRED');
+  for (const [key, value] of Object.entries(r.fields)) {
+    if(!KEYS.has(key)) throw Error('UNSUPPORTED_OR_PROTECTED_FIELD');
+    if(!['string','number'].includes(typeof value) || typeof value === 'number' && !Number.isFinite(value) ||
+      typeof value === 'string' && (value.includes('[object Object]') || !value.trim() || value.length > (key === 'DEGREE_TEXT' ? 12000 : 1500))) throw Error('INVALID_FIELD_VALUE');
+    if(!key.startsWith('SALARY_BASE_') && key!=='SALARY_MIDPOINT' && typeof value!=='string')throw Error('PLAIN_TEXT_FIELD_REQUIRED');
+    if(key.endsWith('_ASOF') && !/^\d{4}-\d{2}-\d{2}$/.test(value))throw Error('DATE_REQUIRED');
+    if(key.endsWith('_URL') && !/^https:\/\/[^\s]+$/.test(value)) throw Error('EXACT_SOURCE_URL_REQUIRED');
+  }
+  if(Object.keys(r.fields).some(k=>k.startsWith('FIT_')) &&
+    (!['FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF'].every(k=>typeof r.fields[k]==='string'&&r.fields[k].trim()) || r.fields.FIT_CONF!=='LOW'))throw Error('COMPLETE_OBSERVED_FIT_EVIDENCE_REQUIRED');
+}
+function validateDecline(r) {
+  exact(r, DECLINE_KEYS, 'EXACT_DECLINE_RULING_REQUIRED');
+  for (const key of ['requestId','primaryId','kind','actor','code','evidence','authorizedBy','authorizationRef']) {
+    if (!Object.hasOwn(r, key)) throw Error('GROK_DECLINE_RULING_REQUIRED');
+  }
+  if (!DECLINE_CODES.has(r.code)) throw Error('CANONICAL_DECLINE_CODE_REQUIRED');
+  if (typeof r.evidence !== 'string' || !/^https:\/\/[^\s]+$/.test(r.evidence) || r.evidence.length > 1500) throw Error('EMPLOYER_PRIMARY_BUSINESS_URL_REQUIRED');
+  if (r.authorizedBy !== 'TIM' || !datedText(r.authorizationRef)) throw Error('TIM_AUTHORIZATION_REQUIRED');
+  if (Object.hasOwn(r, 'note') && (typeof r.note !== 'string' || !r.note.trim() || r.note.length > 1500 || r.note.includes('[object Object]'))) throw Error('INVALID_FIELD_VALUE');
+  const supersede = Object.hasOwn(r, 'supersede') || Object.hasOwn(r, 'supersedeRef');
+  if (supersede && (r.supersede !== true || !datedText(r.supersedeRef))) throw Error('EXPLICIT_SUPERSEDE_REQUIRED');
 }
 if(require.main === module) {
   try {
