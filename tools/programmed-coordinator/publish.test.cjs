@@ -104,3 +104,31 @@ test('retained committed projection is checked against Git bytes even when rebas
  a.throws(()=>publish(f.local),/Git bytes differ/);a.equal(g(f.local,'rev-parse','origin/main'),remote);
  a.equal(P.validateStored(f.local).valid,true);
 });
+
+const enrichFile='control/ENRICHMENT_HELPER_WORK.json';
+function enrichmentWork(ids=['BASE1','BASE2','BASE3']){return{schema:'forge.enrichment-helper-work.v1',assignmentId:'publish-enrichment-test',enabled:true,provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',items:ids.map(id=>({primaryId:'V2I-'+id,owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status:'ASSIGNED',company:'Example '+id,sourceProof:{preserve:'unchanged'},canonicalObservedAt:'2026-11-10T21:00:00Z'}))};}
+function enrichmentBaseline(f){save(f.local,enrichFile,enrichmentWork());commit(f.local,'enrichment baseline');g(f.local,'push','origin','main');g(f.bot,'pull','--ff-only','origin','main');}
+test('duplicate enrichment changes fail before staging; unrelated original transaction evidence remains',t=>{
+ const f=fixture(t);enrichmentBaseline(f);const before=g(f.local,'rev-parse','HEAD'),w=enrichmentWork();w.items.push({...w.items[0]});save(f.local,enrichFile,w);
+ save(f.local,'receipts/FORGE-CODE-CHATGPT-PENDING_CHECKPOINT.json',{requestId:'ORIGINAL',status:'POST_IN_FLIGHT'});
+ a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/Invalid enrichment membership/);a.throws(()=>publish(f.local),/Invalid enrichment membership/);
+ a.equal(g(f.local,'rev-parse','HEAD'),before);a.equal(g(f.local,'diff','--cached','--name-only'),'');a.equal(JSON.parse(fs.readFileSync(p.join(f.local,'receipts/FORGE-CODE-CHATGPT-PENDING_CHECKPOINT.json'))).requestId,'ORIGINAL');
+});
+for(const duringPush of [false,true])test('clean rebase cannot restore duplicate enrichment after '+(duringPush?'a failed push':'concurrent publication'),t=>{
+ const f=fixture(t);enrichmentBaseline(f);const local=enrichmentWork(['NEW','BASE1','BASE2','BASE3']),remote=enrichmentWork(['BASE1','BASE2','BASE3','NEW']);remote.items.at(-1).canonicalObservedAt='2026-11-10T21:02:00Z';
+ save(f.local,enrichFile,local);commit(f.local,'retained first observation');save(f.local,'receipts/FORGE-CODE-CHATGPT-RETAINED_CHECKPOINT.json',{pending:'original'});
+ const advance=()=>{save(f.bot,enrichFile,remote);commit(f.bot,'concurrent second observation');g(f.bot,'push','origin','main');};if(!duringPush)advance();
+ a.throws(()=>publish(f.local,{beforePush(n){if(duringPush&&n===0)advance();}}),/Invalid enrichment membership/);
+ a.equal(g(f.local,'diff','--name-only','--diff-filter=U'),'');const kept=JSON.parse(g(f.local,'show','HEAD:'+enrichFile));a.equal(kept.items.filter(i=>i.primaryId==='V2I-NEW').length,2);
+ a.equal(g(f.local,'rev-parse','origin/main'),g(f.bot,'rev-parse','HEAD'));a.equal(JSON.parse(g(f.local,'show','HEAD:receipts/FORGE-CODE-CHATGPT-RETAINED_CHECKPOINT.json')).pending,'original');
+});
+test('invalid inherited enrichment does not strand unrelated accounting; changing it is still guarded',t=>{
+ const f=fixture(t),w=enrichmentWork(['BASE1','BASE1']);save(f.local,enrichFile,w);commit(f.local,'broken external baseline');g(f.local,'push','origin','main');
+ save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{unrelated:true});a.equal(require('./publish.cjs').retainedSafe(f.local).safe,true);a.equal(publish(f.local).published,true);
+ w.items[0].canonicalObservedAt='2026-11-11T00:00:00Z';save(f.local,enrichFile,w);a.throws(()=>publish(f.local),/Invalid enrichment membership/);
+});
+test('membership repair and new immutable audit publish together, without allowing later audit edits',t=>{
+ const f=fixture(t);enrichmentBaseline(f);save(f.local,enrichFile,enrichmentWork(['BASE1','BASE2']));const file='receipts/ENRICHMENT_MEMBERSHIP_REPAIRS/FORGE-MEMBERSHIP-CHATGPT-TEST.json';save(f.local,file,{observations:[{preserved:true}],canonicalWrites:0});
+ a.equal(publish(f.local).published,true);a.equal(JSON.parse(g(f.local,'show','origin/main:'+file)).canonicalWrites,0);
+ save(f.local,file,{overwritten:true});a.throws(()=>publish(f.local),/Immutable accounting evidence/);a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/Immutable accounting evidence/);
+});

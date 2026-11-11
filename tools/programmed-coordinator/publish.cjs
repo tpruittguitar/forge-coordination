@@ -1,13 +1,14 @@
 'use strict';
 const fs=require('node:fs'), path=require('node:path'), cp=require('node:child_process'), {isDeepStrictEqual}=require('node:util');
 const Pages=require('../helper-routing/shared-pages.cjs');
-const guard='state/RELEVANCE_SCREEN_GUARD.json';
+const guard='state/RELEVANCE_SCREEN_GUARD.json',enrichment='control/ENRICHMENT_HELPER_WORK.json';
 const paths=new Set(['control/SHARED_HELPER_WORK.json','state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json','state/RELEVANCE_INTAKE_PLAN.json',guard,'state/CLAUDE_HELPER_CONSUMPTION.json','state/EMAIL_RECOVERY_QUEUE.json','state/EMAIL_RECOVERY_SUMMARY.json','control/CLAUDE_HELPER_WORK.json','control/ENRICHMENT_HELPER_WORK.json']);
 for(const p of ['state/HELPER_TRANSPORT.json','state/ROUTINE_HANDOFFS_REPORT.json','state/HELPER_HANDOFFS.json','state/HELPER_ROUTING_CURRENT.json','state/CODE_INTAKE_CONSUMPTION.json','control/GROK_INTAKE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json'])paths.add(p);
 paths.add('state/DIRECT_RETURN_TRANSPORT.json');paths.add('state/AI_EXCEPTION_WORK.json');paths.add('state/AI_EXCEPTION_PROGRESS.json');paths.add('state/COORDINATOR_CATCH_UP.json');
 for(const p of ['state/MAIL_PROCESSING.json','state/MAIL_PROCESSING_REPORT.json','state/MAIL_SOURCE_HANDOFFS.json','state/APPLICATION_TRACKER_EVENTS.json','state/APPLICATION_OUTCOMES.json','state/APPLICATION_TRACKER_CURSOR.json','control/OUTCOME_HELPER_WORK.json'])paths.add(p);
 for(const task of Object.keys(require('../helper-routing/shared.cjs').TASKS))paths.add(Pages.indexPath(task));
-function allowed(p){return paths.has(p)||Pages.classify(p)==='IMMUTABLE'||/^receipts\/AI_EXCEPTION_RUNS\/FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}_(START|CHECKPOINT)\.json$/.test(p)||/^receipts\/FORGE-ENRICH_ATS-ATSBOT-[A-Za-z0-9_-]+_NOT_ACCEPTED\.json$/.test(p)||/^receipts\/AI_EXCEPTION_REVIEWS\/[a-f0-9]{64}-[a-f0-9]{64}\.json$/.test(p)||/^receipts\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+_(CHECKPOINT|ACCEPTANCE|VERIFIED|NOT_ACCEPTED|SCREEN|TERMINAL|TRANSPORT|HANDOFFS|MAIL|DEFERRED)\.json$/.test(p)||/^receipts\/FORGE-MAIL-CHATGPT-[a-f0-9]{32}(?:-A[1-9][0-9]{0,5})?_(CHECKPOINT|VERIFIED|NOT_ACCEPTED)\.json$/.test(p)||/^control\/(grok-intake|claude-relevance)\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+-\d{4}\.json$/.test(p)||/^receipts\/(CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+\.json$/.test(p)||/^receipts\/CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+\.json$/.test(p);}
+const membershipAudit=p=>/^receipts\/ENRICHMENT_MEMBERSHIP_REPAIRS\/FORGE-MEMBERSHIP-CHATGPT-[A-Za-z0-9_-]{3,100}\.json$/.test(p);
+function allowed(p){return paths.has(p)||membershipAudit(p)||Pages.classify(p)==='IMMUTABLE'||/^receipts\/AI_EXCEPTION_RUNS\/FORGE-EXCEPTION-CHATGPT-[A-Za-z0-9_-]{3,100}_(START|CHECKPOINT)\.json$/.test(p)||/^receipts\/FORGE-ENRICH_ATS-ATSBOT-[A-Za-z0-9_-]+_NOT_ACCEPTED\.json$/.test(p)||/^receipts\/AI_EXCEPTION_REVIEWS\/[a-f0-9]{64}-[a-f0-9]{64}\.json$/.test(p)||/^receipts\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+_(CHECKPOINT|ACCEPTANCE|VERIFIED|NOT_ACCEPTED|SCREEN|TERMINAL|TRANSPORT|HANDOFFS|MAIL|DEFERRED)\.json$/.test(p)||/^receipts\/FORGE-MAIL-CHATGPT-[a-f0-9]{32}(?:-A[1-9][0-9]{0,5})?_(CHECKPOINT|VERIFIED|NOT_ACCEPTED)\.json$/.test(p)||/^control\/(grok-intake|claude-relevance)\/FORGE-CODE-CHATGPT-[A-Za-z0-9_-]+-\d{4}\.json$/.test(p)||/^receipts\/(CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+\.json$/.test(p)||/^receipts\/CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+\.json$/.test(p);}
 function git(root,args,optional=false){
  const r=cp.spawnSync('git',args,{cwd:root,encoding:'utf8',maxBuffer:64*1024*1024,env:{...process.env,GIT_TERMINAL_PROMPT:'0',GIT_EDITOR:'true'}});
  if(r.error||r.status!==0){if(optional)return null;throw Error('Accounting Git operation failed: '+args[0]+'; preserve checkout and lock');}return r.stdout;
@@ -70,16 +71,26 @@ function validateProjectionIndex(root,files){
  for(const file of bound)if(staged.get(file)!==Pages.blob(fs.readFileSync(path.join(root,file))))
   throw Error('Shared projection Git bytes differ from validated bytes; preserve checkout and lock');
 }
+// A clean Git rebase can combine two valid appends into duplicate obligations.
+// Validate the actual staged/committed membership, not just a pre-rebase worktree.
+// Unrelated receipts can still publish when main independently has bad membership.
+function validateEnrichmentDelta(root,files,ref=null){
+ if(!files.includes(enrichment))return;
+ const raw=ref?git(root,['show',(ref===':'?'':ref)+':'+enrichment]):fs.readFileSync(path.join(root,enrichment),'utf8');
+ try{require('../helper-routing/enrichment.cjs').validateWork(JSON.parse(raw));}
+ catch(e){throw Error('Invalid enrichment membership; preserve checkout and lock: '+e.message);}
+}
 function retainedSafe(root){
  for(const name of ['rebase-merge','rebase-apply','MERGE_HEAD','CHERRY_PICK_HEAD'])if(fs.existsSync(path.resolve(root,git(root,['rev-parse','--git-path',name]).trim())))throw Error('Interrupted Git operation requires reconciliation');
  const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
  if(status.some(line=>!allowed(line.slice(3))||/[RCU]/.test(line.slice(0,2))))throw Error('Unexpected retained checkout changes');
- for(const line of status)if(Pages.classify(line.slice(3))==='IMMUTABLE'&&!['??','A'].includes(line.slice(0,2).trim()))throw Error('Immutable accounting evidence changed; preserve checkout and lock');
+ for(const line of status)if((Pages.classify(line.slice(3))==='IMMUTABLE'||membershipAudit(line.slice(3)))&&!['??','A'].includes(line.slice(0,2).trim()))throw Error('Immutable accounting evidence changed; preserve checkout and lock');
  const changes=git(root,['diff','--name-status','--no-renames','-z','origin/main...HEAD']).split('\0').filter(Boolean);
- for(let n=0;n<changes.length;n+=2)if(Pages.classify(changes[n+1])==='IMMUTABLE'&&changes[n]!=='A')throw Error('Committed immutable evidence changed; preserve checkout and lock');
+ for(let n=0;n<changes.length;n+=2)if((Pages.classify(changes[n+1])==='IMMUTABLE'||membershipAudit(changes[n+1]))&&changes[n]!=='A')throw Error('Committed immutable evidence changed; preserve checkout and lock');
  const retained=git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean);
  if(retained.some(f=>!allowed(f)))throw Error('Unpublished code requires reconciliation');
  validateProjectionDelta(root,[...status.map(s=>s.slice(3)),...retained]);
+ validateEnrichmentDelta(root,[...status.map(s=>s.slice(3)),...retained]);
  return {safe:true};
 }
 function publish(root,{maxAttempts=4,beforePush}={}){
@@ -91,7 +102,8 @@ function publish(root,{maxAttempts=4,beforePush}={}){
  const status=git(root,['status','--porcelain=v1','-z','--untracked-files=all']).split('\0').filter(Boolean);
  for(const line of status){const f=line.slice(3);if(!allowed(f)||/[RCU]/.test(line.slice(0,2)))throw Error('Unexpected changed accounting path; preserve checkout and lock');if(!paths.has(f)&&!['??','A'].includes(line.slice(0,2).trim()))throw Error('Immutable accounting evidence changed; preserve checkout and lock');}
  validateProjectionDelta(root,[...status.map(s=>s.slice(3)),...git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean)]);
- if(status.length){git(root,['add','--',...status.map(s=>s.slice(3))]);validateProjectionIndex(root,status.map(s=>s.slice(3)));if(git(root,['diff','--cached','--quiet'],true)===null)git(root,['-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com','commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects']);}
+ validateEnrichmentDelta(root,[...status.map(s=>s.slice(3)),...git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean)]);
+ if(status.length){git(root,['add','--',...status.map(s=>s.slice(3))]);validateProjectionIndex(root,status.map(s=>s.slice(3)));validateEnrichmentDelta(root,status.map(s=>s.slice(3)),':');if(git(root,['diff','--cached','--quiet'],true)===null)git(root,['-c','user.name=forge-code-coordinator','-c','user.email=forge-code-coordinator@users.noreply.github.com','commit','-m','CHATGPT FORGE-CODE-COORDINATOR: checkpoint helper processing and verified effects']);}
  // Always fetch, even with a clean checkout: a failed push can leave committed, unpublished receipts.
  for(let attempt=0;attempt<maxAttempts;attempt++){
   git(root,['fetch','origin','main']);
@@ -104,6 +116,7 @@ function publish(root,{maxAttempts=4,beforePush}={}){
   if(git(root,['rebase','origin/main'],true)===null)finishRebase(root);
   validateProjectionDelta(root,git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean));
   validateProjectionIndex(root,git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean));
+  validateEnrichmentDelta(root,git(root,['diff','--name-only','-z','origin/main...HEAD']).split('\0').filter(Boolean),'HEAD');
   if(beforePush)beforePush(attempt);
   if(git(root,['push','origin','HEAD:main'],true)===null)continue;
   const sha=git(root,['rev-parse','HEAD']).trim();git(root,['fetch','origin','main']);
