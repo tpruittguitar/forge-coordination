@@ -1,16 +1,712 @@
 {
  "schema": "forge.receipt-recovery.v1",
- "at": "2026-11-11T21:26:39.369Z",
+ "at": "2026-11-11T21:47:21.922Z",
  "source": {
   "repo": "tpruittguitar/forge-writer-state",
   "path": "PIPELINE_RECEIPT_INDEX.json",
-  "sha": "bdbff821c96b02e4fb2d6c6cc042b3c2fafe5d73",
-  "indexUpdatedAt": "2026-11-11T21:18:29.422Z"
+  "sha": "d8a20296b5aebca58b108a7c08f66d85576ca0a6",
+  "indexUpdatedAt": "2026-11-11T21:46:59.922Z"
  },
  "writerSubmissions": 0,
  "masterMutations": 0,
  "canonicalReceiptMutations": 0,
  "cases": [
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R1",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.929Z",
+   "evidenceFile": "verify/recovery/escalations/4b670c74f6e2a73b0b3b576213429b56b0b53eb0cd4c9ccf102ef1807bfdbd05.json"
+  },
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R2",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.930Z",
+   "evidenceFile": "verify/recovery/escalations/44f51f5f30191d0341ddddbfd2eebc8f830ad53639bd1faceec4d3caead999a8.json"
+  },
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R3",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.930Z",
+   "evidenceFile": "verify/recovery/escalations/cce582c0ae7b6c62b3a932297833f245446525738e4c794f52900a28c70dc3a8.json"
+  },
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R4",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.931Z",
+   "evidenceFile": "verify/recovery/escalations/d8e544df250359341a5123a4cf967c97b36f438ef02e351ae6d6e8c27e461fee.json"
+  },
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R5",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.932Z",
+   "evidenceFile": "verify/recovery/escalations/8f1e787021deb0535e13104f94463c2332f57312dd96d39873bf7bd46e0df186.json"
+  },
+  {
+   "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R6",
+   "sourceEntry": {
+    "s": "NOT_PERSISTED",
+    "at": "2026-11-11T21:33:57.349Z",
+    "w": "W-20261111213147920-1d9025",
+    "items": [
+     {
+      "pid": "V2I-1A48A142F0B4",
+      "op": "REPLACE",
+      "b": "11111a7c02fb39:1815",
+      "a": "7f6accf5fb845:2304"
+     },
+     {
+      "pid": "V2I-A0B49EA7DEF2",
+      "op": "REPLACE",
+      "b": "8f6b338e1a25d:1873",
+      "a": "e7a74925c4f53:2404"
+     },
+     {
+      "pid": "V2I-5EC5570379DE",
+      "op": "REPLACE",
+      "b": "1a6c28d8b7b75e:1581",
+      "a": "fe93b6e26d179:1839"
+     },
+     {
+      "pid": "V2I-84DE364CB95C",
+      "op": "REPLACE",
+      "b": "1ec3a5b839b2f8:1665",
+      "a": "a82c16589d72c:2182"
+     },
+     {
+      "pid": "V2I-53E6DDEB01F0",
+      "op": "REPLACE",
+      "b": "1112efb44258ca:1778",
+      "a": "19379747f1615e:2308"
+     },
+     {
+      "pid": "V2I-6103EEF1DB46",
+      "op": "REPLACE",
+      "b": "16085c94e632c1:1558",
+      "a": "152fc9c2a66e97:2152"
+     }
+    ],
+    "snapshotHash": "c0a4533eda3f4:14216254"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "rows": [
+    {
+     "primaryId": "V2I-1A48A142F0B4",
+     "expectedAfter": "7f6accf5fb845:2304",
+     "observedHash": "11111a7c02fb39:1815",
+     "sha256": "038b0895e4f927c33e93f7d03e5a5fd2bb37388dc35cac9e70623791cc5dca44",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-A0B49EA7DEF2",
+     "expectedAfter": "e7a74925c4f53:2404",
+     "observedHash": "8f6b338e1a25d:1873",
+     "sha256": "e442ac5b9e24595dd0565d7769054926cb10e943c38eb6ef538b6887ef28e7f2",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-5EC5570379DE",
+     "expectedAfter": "fe93b6e26d179:1839",
+     "observedHash": "1a6c28d8b7b75e:1581",
+     "sha256": "ae7323a56dfd87500685269fb76b6ed7c9827e7bcd634a6185cd47f70831ea64",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-84DE364CB95C",
+     "expectedAfter": "a82c16589d72c:2182",
+     "observedHash": "1ec3a5b839b2f8:1665",
+     "sha256": "5236e3b8784ff16f442c9064395ba0aeb26be7f34782b120a2ba1ff34fd818a3",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-53E6DDEB01F0",
+     "expectedAfter": "19379747f1615e:2308",
+     "observedHash": "1112efb44258ca:1778",
+     "sha256": "aedeaeeff89d616862d29f625bf9f9985d372ba34c45e705bfba58fb2533f408",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    },
+    {
+     "primaryId": "V2I-6103EEF1DB46",
+     "expectedAfter": "152fc9c2a66e97:2152",
+     "observedHash": "16085c94e632c1:1558",
+     "sha256": "506d0023a0f54733b2ec83d2e7e14b15b36ef47462a2af9ad07ebd56a87de723",
+     "readAt": "2026-11-11T21:47:11.472Z",
+     "location": "MASTER",
+     "status": "ORIGINAL_BEFORE_IMAGE_STILL_PRESENT"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:11.932Z",
+   "evidenceFile": "verify/recovery/escalations/80c3a7073dc32d86b97acd88f580f6fcb8ca4ae06f6dbf36e451aef9afc45d95.json"
+  },
+  {
+   "requestId": "FORGE-SOURCE-35D0E9BA1839DD4EE51C01E3",
+   "sourceEntry": {
+    "s": "PENDING_DELIVERY",
+    "at": "2026-11-11T21:46:46.220Z",
+    "w": "W-20261111214436551-5dc2d3"
+   },
+   "sourceBindings": [],
+   "status": "ESCALATED",
+   "owner": "ChatGPT Gofer",
+   "pendingBinding": {
+    "writeId": "W-20261111214436551-5dc2d3",
+    "requestIds": [
+     "FORGE-SOURCE-35D0E9BA1839DD4EE51C01E3"
+    ],
+    "items": [
+     {
+      "pid": "V2I-1574E35A0D9B",
+      "op": "INSERT",
+      "b": "",
+      "a": "aa8707eae73dd:1498"
+     }
+    ],
+    "writtenAt": "2026-11-11T21:44:36.551Z"
+   },
+   "rows": [
+    {
+     "primaryId": "V2I-1574E35A0D9B",
+     "status": "ROW_MISSING"
+    }
+   ],
+   "reason": "INSUFFICIENT_ROW_EVIDENCE",
+   "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
+   "checkedAt": "2026-11-11T21:47:16.743Z",
+   "evidenceFile": "verify/recovery/escalations/f439de95a81e2de81ccf63166c2156bf5cd5a5fe7829310d5602a226ff351643.json"
+  },
   {
    "requestId": "FITRELAY-1005-22529EC30AD7",
    "sourceEntry": {
@@ -41,7 +737,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:27.551Z",
+   "checkedAt": "2026-11-11T21:47:16.744Z",
    "evidenceFile": "verify/recovery/resolutions/596226b969fe6a5e73b3a0928a3c2f804d5da965b0b4e1ce9a463037362b02fd.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -84,7 +780,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:27.551Z",
+   "checkedAt": "2026-11-11T21:47:16.744Z",
    "evidenceFile": "verify/recovery/resolutions/e40aac51769e7d695b06923302c8799f212208eecd207c12358912c7c156fb6c.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -127,7 +823,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:27.556Z",
+   "checkedAt": "2026-11-11T21:47:16.745Z",
    "evidenceFile": "verify/recovery/resolutions/2e643f800464e0025921810968451377b49149033f3996821ea5b4ebe19e2575.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -170,7 +866,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:27.557Z",
+   "checkedAt": "2026-11-11T21:47:16.746Z",
    "evidenceFile": "verify/recovery/resolutions/73cce96d8c41d7c11c6154620537bc646da2f21131c41ba8b1405f035c4e1830.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -213,7 +909,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:27.558Z",
+   "checkedAt": "2026-11-11T21:47:16.746Z",
    "evidenceFile": "verify/recovery/resolutions/06cd73cc3ccf40d9a18a51384d454951d2fd49cd3e9a49ffd584e695ba01533b.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -253,7 +949,7 @@
    ],
    "reason": "INSUFFICIENT_ROW_EVIDENCE",
    "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
-   "checkedAt": "2026-11-11T21:26:35.407Z",
+   "checkedAt": "2026-11-11T21:47:19.659Z",
    "evidenceFile": "verify/recovery/escalations/e0f9590dc117ba4aac772fd51b9c4b95fb24bbb617ed6766c1e219ca6a462830.json"
   },
   {
@@ -283,7 +979,7 @@
    ],
    "reason": "INSUFFICIENT_ROW_EVIDENCE",
    "nextAction": "Gofer: inspect the original event/acceptance and row history. Do not resubmit or assume a later different row proves this write.",
-   "checkedAt": "2026-11-11T21:26:39.306Z",
+   "checkedAt": "2026-11-11T21:47:21.861Z",
    "evidenceFile": "verify/recovery/escalations/30628bead2fe3e9b1a9babc569583bf522d895f5df15b1005d430decc5f4c688.json"
   },
   {
@@ -735,7 +1431,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.309Z",
+   "checkedAt": "2026-11-11T21:47:21.864Z",
    "evidenceFile": "verify/recovery/resolutions/c1e0fc036af05fe237b38fd90a0efd1f0be046d2c4ea62ba872caca2ca463f36.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -1197,7 +1893,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.311Z",
+   "checkedAt": "2026-11-11T21:47:21.865Z",
    "evidenceFile": "verify/recovery/resolutions/700a75456038b95f91b599770e3ad8e6d79bdc57d3606b762a7d5fe1c28d3026.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -1659,7 +2355,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.313Z",
+   "checkedAt": "2026-11-11T21:47:21.867Z",
    "evidenceFile": "verify/recovery/resolutions/e2da88c874b6bb9f2e6b55433e5e2b48fb2cccb7720a1048d8350c450d61a2ad.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -2121,7 +2817,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.315Z",
+   "checkedAt": "2026-11-11T21:47:21.869Z",
    "evidenceFile": "verify/recovery/resolutions/aa344c64a16922792d557c064271c97f3b133c938a5c1f8df0a0844b2f490129.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -2583,7 +3279,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.317Z",
+   "checkedAt": "2026-11-11T21:47:21.870Z",
    "evidenceFile": "verify/recovery/resolutions/610279483b6435dc51c8db300b13b634baf224533324bf150a0f7be5adc66f77.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -3045,7 +3741,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.319Z",
+   "checkedAt": "2026-11-11T21:47:21.872Z",
    "evidenceFile": "verify/recovery/resolutions/97bb020ed405b19c615c73ccea7c50d6712f4f23e2dd935ddcfb18832c983e66.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -3507,7 +4203,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.321Z",
+   "checkedAt": "2026-11-11T21:47:21.875Z",
    "evidenceFile": "verify/recovery/resolutions/ed17b170ba015f1b008a3c4f3467cf65fea1b4bc007d56421af8214031cdc749.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -3969,7 +4665,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.324Z",
+   "checkedAt": "2026-11-11T21:47:21.876Z",
    "evidenceFile": "verify/recovery/resolutions/9379ec19faa41dfe0297ee287d3c40b1840a69d6ee77b00de017fc634485915f.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -4431,7 +5127,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.326Z",
+   "checkedAt": "2026-11-11T21:47:21.879Z",
    "evidenceFile": "verify/recovery/resolutions/e566251785f0223b4df8351715500b8367831c78d11ca04ee2634c2236b4747e.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -4893,7 +5589,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.328Z",
+   "checkedAt": "2026-11-11T21:47:21.882Z",
    "evidenceFile": "verify/recovery/resolutions/b8d48138ff8b977f6efb1aa7c3b17df6c658057525695feea88a954de4ad2abf.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -5355,7 +6051,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.330Z",
+   "checkedAt": "2026-11-11T21:47:21.884Z",
    "evidenceFile": "verify/recovery/resolutions/083600fbf670b810c2df4fdc68eed43e7677602eef51cd3d663e9063ca10a81d.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -5817,7 +6513,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.333Z",
+   "checkedAt": "2026-11-11T21:47:21.886Z",
    "evidenceFile": "verify/recovery/resolutions/f9d5249f15d464a04b6e4e0440112b820d26136504b765b6e578b970eaadee3f.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -6279,7 +6975,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.335Z",
+   "checkedAt": "2026-11-11T21:47:21.889Z",
    "evidenceFile": "verify/recovery/resolutions/cdf1a2d00a2d114dfb073a98575570c6e250c8a8cd0005d12539b05ee482b0ea.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -6741,7 +7437,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.338Z",
+   "checkedAt": "2026-11-11T21:47:21.891Z",
    "evidenceFile": "verify/recovery/resolutions/b388f6a7025729d58aa0876958138964e6b7268fe7e72ee94d04f2daf700fc79.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -7203,7 +7899,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.340Z",
+   "checkedAt": "2026-11-11T21:47:21.893Z",
    "evidenceFile": "verify/recovery/resolutions/f2764554b840ed0b03fd1ab5ae748ea4b0d0a4212a50cccce4d3fc31df9db3d9.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -7665,7 +8361,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.343Z",
+   "checkedAt": "2026-11-11T21:47:21.896Z",
    "evidenceFile": "verify/recovery/resolutions/35fada351634c13dad430126c661f2c7d1eee5073cb7bddf874a5caee3281ffb.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -8127,7 +8823,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.345Z",
+   "checkedAt": "2026-11-11T21:47:21.898Z",
    "evidenceFile": "verify/recovery/resolutions/8ceecb9efb4d6472e29a0f72d1dcba0dce87af0d0885c7e29345592b851d0888.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -8176,7 +8872,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.347Z",
+   "checkedAt": "2026-11-11T21:47:21.901Z",
    "evidenceFile": "verify/recovery/escalations/0d47c6c4d1ff3fd2083baf86e9cb08be85b3b87518ee91ab617cc17081972a81.json"
   },
   {
@@ -8197,7 +8893,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.349Z",
+   "checkedAt": "2026-11-11T21:47:21.903Z",
    "evidenceFile": "verify/recovery/escalations/bb29305a03f3737746959e1da7a82d19d28d107ce5bc4005c4d9403a4535d7f1.json"
   },
   {
@@ -8215,7 +8911,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.351Z",
+   "checkedAt": "2026-11-11T21:47:21.905Z",
    "evidenceFile": "verify/recovery/escalations/4122763772942b75ead0a273139bf1d95c718fa179ba37df70a00d99698d5fa4.json"
   },
   {
@@ -8233,7 +8929,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.353Z",
+   "checkedAt": "2026-11-11T21:47:21.906Z",
    "evidenceFile": "verify/recovery/escalations/72493e8aee6f15cdcbdd0d3ff71958af232417b36d7f749dff1ba9dab703900b.json"
   },
   {
@@ -8252,7 +8948,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.355Z",
+   "checkedAt": "2026-11-11T21:47:21.908Z",
    "evidenceFile": "verify/recovery/escalations/ccaa48d4c9f582d07e17e3d1d0555192855e4647f05671fb7b95628b9bc95cbd.json"
   },
   {
@@ -8271,7 +8967,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.356Z",
+   "checkedAt": "2026-11-11T21:47:21.910Z",
    "evidenceFile": "verify/recovery/escalations/f590c7f660355cdad7ed158e5f87cf56751960607fc5c414308b5d72e82edc28.json"
   },
   {
@@ -8295,7 +8991,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "COMPLETE_RECEIPT_WITHOUT_EXACT_IDS",
    "nextAction": "Recover exact accepted row IDs before claiming row verification.",
-   "checkedAt": "2026-11-11T21:26:39.358Z",
+   "checkedAt": "2026-11-11T21:47:21.911Z",
    "evidenceFile": "verify/recovery/escalations/50c33fff8bdbfa0cc9a2104a5a48ea2a34a2c4b77c3821ad676e081e184beaf2.json"
   },
   {
@@ -8322,7 +9018,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.360Z",
+   "checkedAt": "2026-11-11T21:47:21.913Z",
    "evidenceFile": "verify/recovery/escalations/45536b4dc35538834bb68ffc2a7ecad2255de5e44688cc13af7ba29318762fa9.json"
   },
   {
@@ -8347,7 +9043,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.362Z",
+   "checkedAt": "2026-11-11T21:47:21.915Z",
    "evidenceFile": "verify/recovery/escalations/6f62139e1dd307f1764fd78743706729501aa1b3320ab1335a6dbb3c9a986d9c.json"
   },
   {
@@ -8382,7 +9078,7 @@
    },
    "rows": [],
    "nextAction": "Original non-write was already reconciled. Retain history and replay fence; do not resubmit.",
-   "checkedAt": "2026-11-11T21:26:39.364Z",
+   "checkedAt": "2026-11-11T21:47:21.917Z",
    "evidenceFile": "verify/recovery/resolutions/dd42cba074ba7ccb94487d3752eb8034f99b00632e52e071d0c8caed13adf914.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -8408,7 +9104,7 @@
    "owner": "ChatGPT Gofer",
    "reason": "NO_CANONICAL_REQUEST_BINDING",
    "nextAction": "Find original acceptance and child request IDs; never infer an envelope or resend it.",
-   "checkedAt": "2026-11-11T21:26:39.366Z",
+   "checkedAt": "2026-11-11T21:47:21.918Z",
    "evidenceFile": "verify/recovery/escalations/0b991d54406b886d19bc7f3b7fd3b07fe268800dafb88d2834272463411448a7.json"
   },
   {
@@ -8450,7 +9146,7 @@
     }
    ],
    "nextAction": "No further work: exact jobs are protected/terminal or intended fields are already present under verified evidence. Original failure remains historical; no receipt success or throughput is invented.",
-   "checkedAt": "2026-11-11T21:26:39.368Z",
+   "checkedAt": "2026-11-11T21:47:21.921Z",
    "evidenceFile": "verify/recovery/resolutions/15ee764f94162e60e017e28f6329e496c88070654e25ebbb8868efdf9134f21a.json",
    "source": {
     "repo": "tpruittguitar/forge-writer-state",
@@ -8466,48 +9162,55 @@
  ],
  "deferred": 0,
  "lastChecked": {
-  "FITRELAY-1005-22529EC30AD7": 1794432387491,
-  "FITRELAY-1005-6BDFD3B81E28": 1794432387491,
-  "FITRELAY-1005-827F99247F9C": 1794432387491,
-  "FITRELAY-1005-AC9FF5BF740E": 1794432387491,
-  "FITRELAY-1005-CONFIDENTIAL": 1794432387491,
-  "FORGE-SOURCE-FA2B2C564675F3743285A537": 1794432387491,
-  "FORGE-SOURCE-183AA9A6E671DAE0643CBF2E": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R001": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R002": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R003": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R004": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R005": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R006": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R007": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R008": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R009": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R010": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R011": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R012": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R013": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R014": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R015": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R017": 1794432387491,
-  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R018": 1794432387491,
-  "FORGE-ENRICH-FEASIBILITY-GROK-20261027-1846ET-B01": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-0055ET-B01": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-0055ET-B02": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-0451ET-B01": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-0451ET-B02": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-1451ET-B01": 1794432387491,
-  "FORGE-GOFER-CLAUDE-20261026-1451ET-B01-E02": 1794432387491,
-  "FORGE-POSTVAL-CLAUDE-20261026-2229ET-B01": 1794432387491,
-  "FORGE-POSTVAL-CLAUDE-20261026-2229ET-B02": 1794432387491,
-  "FORGE-SOURCE-313238ED3950C8CB6CA60AEB": 1794432387491,
-  "FORGE-SOURCE-8102B92A18A8DB6F0F31FF17": 1794432387491,
-  "PX-20261020015438-53D18C": 1794432387491
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R1": 1794433629657,
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R2": 1794433629657,
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R3": 1794433629657,
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R4": 1794433629657,
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R5": 1794433629657,
+  "FORGE-CODE-CHATGPT-20261111T212023541Z-E00067-R6": 1794433629657,
+  "FORGE-SOURCE-35D0E9BA1839DD4EE51C01E3": 1794433629657,
+  "FITRELAY-1005-22529EC30AD7": 1794433629657,
+  "FITRELAY-1005-6BDFD3B81E28": 1794433629657,
+  "FITRELAY-1005-827F99247F9C": 1794433629657,
+  "FITRELAY-1005-AC9FF5BF740E": 1794433629657,
+  "FITRELAY-1005-CONFIDENTIAL": 1794433629657,
+  "FORGE-SOURCE-FA2B2C564675F3743285A537": 1794433629657,
+  "FORGE-SOURCE-183AA9A6E671DAE0643CBF2E": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R001": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R002": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R003": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R004": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R005": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R006": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R007": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R008": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R009": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R010": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R011": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R012": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R013": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R014": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R015": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R017": 1794433629657,
+  "FORGE-ENRICH_ATS-ATSBOT-20261023T0728Z-R018": 1794433629657,
+  "FORGE-ENRICH-FEASIBILITY-GROK-20261027-1846ET-B01": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-0055ET-B01": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-0055ET-B02": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-0451ET-B01": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-0451ET-B02": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-1451ET-B01": 1794433629657,
+  "FORGE-GOFER-CLAUDE-20261026-1451ET-B01-E02": 1794433629657,
+  "FORGE-POSTVAL-CLAUDE-20261026-2229ET-B01": 1794433629657,
+  "FORGE-POSTVAL-CLAUDE-20261026-2229ET-B02": 1794433629657,
+  "FORGE-SOURCE-313238ED3950C8CB6CA60AEB": 1794433629657,
+  "FORGE-SOURCE-8102B92A18A8DB6F0F31FF17": 1794433629657,
+  "PX-20261020015438-53D18C": 1794433629657
  },
  "summary": {
-  "checked": 36,
+  "checked": 43,
   "resolved": 24,
   "closedWithoutClaimingOriginalWriteSuccess": 24,
-  "escalated": 12,
+  "escalated": 19,
   "checkFailed": 0,
   "deferred": 0
  }
