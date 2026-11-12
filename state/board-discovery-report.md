@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261112T0948Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261112T1453Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (112 read, 0 failed) | 170 | 48 | 92 |
+| Employer job boards (120 read, 0 failed) | 186 | 59 | 97 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,8 +19,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 32 | 53 |
-| SR_MANAGER | 13 | 18 |
+| DIRECTOR_PLUS | 42 | 58 |
+| SR_MANAGER | 14 | 18 |
 | SR_STAFF | 3 | 21 |
 
 ## New roles
@@ -75,3 +75,14 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056141-3) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Small Molecule](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Santa-Monica/Director--Product-Quality_R0056245-2) | United States - California - Santa Monica | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
+| BOARD:workday | Hitachi Energy | [Director of Manufacturing](https://hitachi.wd1.myworkdayjobs.com/hitachi/job/Michigan-City-Indiana-United-States/Director-of-Manufacturing_R0134271) | Michigan City, Indiana, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | Rentschler Biopharma SE | [Sr Director, Quality Control - Analytics & Product Testing](https://rentschler.wd3.myworkdayjobs.com/rentschler_career/job/Milford-MA-United-States/Director--Quality-Control---Analytics_JR2850-1) | Milford, MA, United States | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Director, GCP Quality](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director--GCP-Quality_REQ-30119) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Director CMC Quality Compliance (Hybrid)](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Director-CMC-Quality-Compliance--Hybrid-_REQ-29706) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Director, Commercial Quality-Packaging and Labeling](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Director--Commercial-Quality-Packaging-and-Labeling_REQ-30328) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Executive Director Quality, Cell & Gene Therapy (Hybrid)](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Executive-Director-Quality--Cell---Gene-Therapy_REQ-29691) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Director - GLP, Biomarkers and Research Quality](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director---GLP--Biomarkers-and-Research-Quality_REQ-30120) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Director - Quality Data, Digital Systems & Compliance](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director---Quality-Data--Digital-Systems---Compliance_REQ-30096) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Director, Quality AI, Data & Technology Engineering](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director--Quality-AI--Data---Technology-Engineering_REQ-30531) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Director Cell & Genetic Therapies Quality - Personalized Medicine](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Snr-Director--Quality-CGT-Personalized-Medicine_REQ-29826) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Vertex Pharmaceuticals | [Senior Manager, Manufacturing Operations (3rd Shift)](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Manager--Manufacturing-Operations--3rd-Shift-_REQ-30285-1) | Boston, MA | MFG_PROD | SR_MANAGER |  |
