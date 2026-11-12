@@ -1,30 +1,56 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-11T19:45:59.336Z",
+ "at": "2026-11-12T02:20:52.384Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-11T19:45:58.864Z",
-  "rows": 5261,
-  "sha256": "9cd1fa894227221aa0871fce9105062e29c2ef562c43bde57ea044e969176552"
+  "readAt": "2026-11-12T02:20:51.873Z",
+  "rows": 6754,
+  "sha256": "66c91f96c61ef7a2d13a38a316ea0f2f7f2b86e8b9f9d45370022598a51676fc"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-11T19:43:48.349Z",
-  "decision": 583
+  "at": "2026-11-12T02:15:09.917Z",
+  "decision": 655
  },
  "counts": {
-  "waiting": 583,
-  "matched": 17,
-  "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 17
+  "waiting": 655,
+  "matched": 20,
+  "CLOSE_CANDIDATE": 1,
+  "KEEP_LABEL": 19
  },
  "rules": {
+  "SAME_BY_TIMELINE": 1,
   "DIFFERENT_SITE": 8,
-  "NEW_REQUISITION": 4,
-  "POSSIBLE_REPOST": 1,
-  "UNCERTAIN": 4
+  "NEW_REQUISITION": 3,
+  "POSSIBLE_REPOST": 2,
+  "UNCERTAIN": 6
  },
  "items": [
+  {
+   "id": "V2I-372B6750F6F8",
+   "company": "Anduril",
+   "title": "VP Manufacturing Engineering",
+   "location": "Costa Mesa, CA, USA",
+   "score": 50,
+   "outcome": "CLOSE_CANDIDATE",
+   "rule": "SAME_BY_TIMELINE",
+   "label": "You declined 2026-11-07 · likely the same posting",
+   "evidence": "Posting first seen 2026-11-06, on or before decline 2026-11-07; same title",
+   "matches": [
+    {
+     "id": "V2I-70D31A7EEDC4",
+     "status": "DECLINED_BY_TIM",
+     "title": "VP Manufacturing Engineering",
+     "location": "Costa Mesa, California, United States",
+     "decided": "2026-11-07",
+     "rejected": null,
+     "rule": "SAME_BY_TIMELINE",
+     "outcome": "CLOSE_CANDIDATE",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-06, on or before decline 2026-11-07; same title"
+    }
+   ]
+  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -97,31 +123,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-10-18, after rejection 2026-10-16"
-    }
-   ]
-  },
-  {
-   "id": "V2I-866FCD423820",
-   "company": "Shield AI",
-   "title": "Staff Engineer, Manufacturing Equipment",
-   "location": "Dallas, Texas",
-   "score": 63,
-   "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "You declined 2026-11-08 · this is a new posting",
-   "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d",
-   "matches": [
-    {
-     "id": "V2I-F555BB994A0E",
-     "status": "DECLINED_BY_TIM",
-     "title": "Staff Engineer, Manufacturing",
-     "location": "Dallas, Texas",
-     "decided": "2026-11-08",
-     "rejected": null,
-     "rule": "NEW_REQUISITION",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d"
     }
    ]
   },
@@ -275,6 +276,55 @@
    ]
   },
   {
+   "id": "V2I-E352F5D223F9",
+   "company": "Anduril",
+   "title": "Director of Manufacturing Engineering, Imaging",
+   "location": "Waltham, MA, USA",
+   "score": 58,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-20 · possible repeat",
+   "evidence": "Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-01560560F88F",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director of Manufacturing Engineering, Imaging",
+     "location": "Waltham, MA",
+     "decided": "2026-10-20",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare"
+    },
+    {
+     "id": "V2I-B63A6E3384F6",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director, Manufacturing Engineering",
+     "location": "Costa Mesa, CA",
+     "decided": "2026-10-27",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Waltham, MA, USA vs earlier Costa Mesa, CA"
+    },
+    {
+     "id": "V2I-FF06D1E8F521",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director, Manufacturing Engineering",
+     "location": "Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)",
+     "decided": "2026-10-27",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Waltham, MA, USA vs earlier Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)"
+    }
+   ]
+  },
+  {
    "id": "V2I-72D22DE97CAA",
    "company": "Peak Industrial Inc",
    "title": "Director of Regional Operations",
@@ -346,6 +396,31 @@
      "outcome": "KEEP_LABEL",
      "similarity": 0.8,
      "evidence": "Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare"
+    }
+   ]
+  },
+  {
+   "id": "V2I-1BE46DB40F2B",
+   "company": "Honeywell",
+   "title": "Director of Cyber Operational Excellence",
+   "location": "Atlanta, GA, USA",
+   "score": 56,
+   "outcome": "KEEP_LABEL",
+   "rule": "POSSIBLE_REPOST",
+   "label": "Applied 2026-09-09 · Rejected 2026-10-30 · possible repost",
+   "evidence": "Posting first seen 2026-11-05, after rejection 2026-10-30",
+   "matches": [
+    {
+     "id": "V2E-6920E7E88F4B",
+     "status": "REJECTED_BY_EMPLOYER",
+     "title": "Director of Operational Excellence",
+     "location": "NOT_STATED",
+     "decided": "2026-09-09",
+     "rejected": "2026-10-30",
+     "rule": "POSSIBLE_REPOST",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Posting first seen 2026-11-05, after rejection 2026-10-30"
     }
    ]
   },
@@ -473,16 +548,41 @@
      "evidence": "Posting first seen 2026-10-26, -8 days after 2026-11-03; no posting identity to compare"
     }
    ]
+  },
+  {
+   "id": "V2I-CE66DF18A1D5",
+   "company": "Gotion Illinois",
+   "title": "Director of Operations",
+   "location": "Manteno, IL",
+   "score": 40,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-31 · possible repeat",
+   "evidence": "Posting first seen 2026-11-11, 11 days after 2026-10-31; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-9B8AC1066697",
+     "status": "DECLINED_BY_TIM",
+     "title": "Operations Director",
+     "location": "Manteno, Illinois",
+     "decided": "2026-10-31",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-11, 11 days after 2026-10-31; no posting identity to compare"
+    }
+   ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 17,
-  "closed": 0,
-  "labeled": 0,
+  "planned": 20,
+  "closed": 1,
+  "labeled": 3,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 17
+   "ALREADY_LABELED": 16
   },
   "failed": 0,
   "deferred": 0,
