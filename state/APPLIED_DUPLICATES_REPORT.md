@@ -1,10 +1,10 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-12T11:34:16.822Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-12T20:11:57.614Z from CANONICAL_WRITER_MASTER.
 
-Of 697 jobs waiting on Tim, 17 match a role he already applied to, was rejected from, or declined:
+Of 712 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 17
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
 Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (17)
+## Kept, labeled (18)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -32,6 +32,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 58 | Anduril | Director of Manufacturing Engineering, Imaging | You declined 2026-10-20 · possible repeat | Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare | V2I-E352F5D223F9 → V2I-01560560F88F |
 | 57 | Peak Industrial Inc | Director of Regional Operations | You declined 2026-10-26 · this is a new posting | Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619 | V2I-72D22DE97CAA → V2I-9851810534C1 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
+| 57 | GKN Aerospace | Director of Quality, Site | Applied 2026-10-15 · possible repeat | Posting first seen 2026-11-12, 28 days after 2026-10-15; no posting identity to compare | V2I-E649AD5628D3 → V2S-GKN-SITE-QUALITY-DIR-1442097333 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
 | 56 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 54 | AMETEK | Senior Manager, Operations Excellence | You declined 2026-11-08 · different site | Different worksite: Mount Prospect, IL vs earlier Collegeville, PA | V2I-E4F08FE197F2 → V2I-45E0D9AFEC1D |
