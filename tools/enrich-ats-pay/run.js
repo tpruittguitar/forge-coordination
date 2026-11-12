@@ -43,6 +43,7 @@ const LEDGER = process.env.ENRICH_LEDGER || path.join(ROOT, 'state/enrich-ats-pa
 const employerCacheInput=()=>fs.existsSync(EMPLOYER_CACHE)?EMPLOYER_CACHE:(PREPARATION_CACHE||EMPLOYER_CACHE);
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/foreman-cockpit/main/';
 const Prepared=require('./prepared.cjs'),PreparedSource=require('./prepared-source.cjs');
+const RetainedFields=require('./retained-fields');
 const PREPARED_DIR=PREPARATION_DIR||process.env.ENRICH_PREPARED_DIR||(process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):path.join(ROOT,'state'));
 const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
@@ -373,6 +374,29 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('decision_salary_repairs');
   stats.decision_waiting=decisionIds.size;
   await repairSalaries(rows.filter(r=>decisionIds.has(r.PRIMARY_ID)));
+  // Finish exact retained pay/degree facts before optional research of already
+  // filled estimates. Partial evidence remains in the ordinary research path.
+  const retainedIds=new Set();
+  stats.retained_completion={planned:0,salary:0,degree:0};
+  progress('retained_completion',{planned:requests.length});
+  for(const r of PREPARE_ONLY?[]:ordered){
+    if(requests.length>=CONFIG.maxBatches*25||!runtime.canStart())break;
+    if(unavailableIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r)||requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
+    if(planIds&&!planIds.has(r.PRIMARY_ID))continue;
+    const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID));
+    if(fresh(r)&&!Recovery.newEvidence(r,need(r),ledger,saved))continue;
+    const f=RetainedFields.fields(need(r),saved);
+    if(!RetainedFields.complete(need(r),f))continue;
+    if(fresh(r))stats.recovery_evidence_wakeups=(stats.recovery_evidence_wakeups||0)+1;
+    if(saved.fullPosting===true)f.FEASIBILITY_ATTEMPT_ASOF=today;
+    ledger.needs[r.PRIMARY_ID]=needsOf(r);
+    Recovery.remember(ledger,r,needsOf(r),'EVIDENCE_FOUND',[]);
+    researchedIds.add(r.PRIMARY_ID);retainedIds.add(r.PRIMARY_ID);
+    stats.retained_completion.planned++;
+    if(f.SALARY_BASE_LOW)stats.retained_completion.salary++;
+    if(f.DEGREE_REQ)stats.retained_completion.degree++;
+    requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-E'+String(stats.retained_completion.planned).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}});
+  }
   progress('active_salary_review',{planned:requests.length});
   const reviewDue=PRODUCTS_ONLY||PREPARE_ONLY?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds,Date.now(),decisionIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
@@ -403,7 +427,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('missing_fields',{planned:requests.length});
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
-    if (preparedIds.has(r.PRIMARY_ID)||repairOriginal.has(r.PRIMARY_ID)||reviewOriginal.has(r.PRIMARY_ID)) continue;
+    if (retainedIds.has(r.PRIMARY_ID)||preparedIds.has(r.PRIMARY_ID)||repairOriginal.has(r.PRIMARY_ID)||reviewOriginal.has(r.PRIMARY_ID)) continue;
     if(planIds&&!planIds.has(r.PRIMARY_ID))continue;
     if(SAVED_ONLY&&Prepared.attempted(PREPARED_DIR,r,policyFingerprint,roleInputs(r,inputFingerprint))){stats.unchanged_source_gaps=(stats.unchanged_source_gaps||0)+1;continue;}
     if(PREPARE_ONLY&&(Prepared.protectedRow(r)||externallyFenced(r.PRIMARY_ID)))continue;
@@ -422,8 +446,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     let preparationSource=Prepared.posting(r,saved);
     let checked = saved?.fullPosting===true, attempted = false, postedPay = saved?.basis==='THIRD_PARTY_ESTIMATE'?null:saved?.pay||null, atsUnconfirmed = false,payUnresolved=saved?.payAmbiguous===true;
     // Salary-only evidence is sufficient for pay, but does not prove a full degree review.
-    if(n.includes('SALARY')&&postedPay)Object.assign(f,{SALARY_BASE_LOW:postedPay.low,SALARY_BASE_HIGH:postedPay.high,SALARY_MIDPOINT:Math.round((postedPay.low+postedPay.high)/2),SALARY_BASIS:saved.basis||'EMPLOYER_POSTED',SALARY_SOURCE:saved.url,SALARY_ASOF:saved.at.slice(0,10),SALARY_CONF:saved.basis==='THIRD_PARTY_ESTIMATE'?'MED':'HIGH'});
-    if(checked&&n.includes('DEGREE')&&saved.degree)Object.assign(f,{DEGREE_TEXT:saved.degree.text,DEGREE_REQ:saved.degree.req,DEGREE_EVIDENCE_URL:saved.degreeUrl||saved.url,DEGREE_ASOF:(saved.degreeAt||saved.at).slice(0,10)});
+    Object.assign(f,RetainedFields.fields(n,saved));
     const apiEvidence=api&&postingCache.find(r,[api.page]);
     const needsSourceRead=()=>!SiteEstimate.routed(r,siteInput)||n.includes('DEGREE')&&!checked&&!f.DEGREE_REQ;
     if (api && !helperResearch && needsSourceRead() && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
@@ -579,7 +602,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (!rb.ok) throw new Error('row_readback: ' + (rb.error || 'not ok'));
       const now = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) now[x.primaryId] = W.parseRows(x.line)[0]; });
       batch = batch.filter(q => {
-        const cur = now[q.ruling.primaryId]; if ((preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
+        const cur = now[q.ruling.primaryId]; if ((retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         const repairing = repairOriginal.has(q.ruling.primaryId);

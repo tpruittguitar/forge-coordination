@@ -649,3 +649,36 @@ test('attempt-only evidence does not consume the useful Writer planning cap',t=>
  assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
  assert.equal(out.report.posting_cache.saved,26,'retain complete source evidence even without a useful write');
 });
+
+test('retained pay and degree fill capacity before optional estimate review without source reads',t=>{
+ const Cache=require('./posting-cache'),cache={},url='https://careers.example.org/retained',id='V2I-RETAINED-FIRST';
+ const target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+ Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+ const old='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; SOURCE_URL=https://careers.example.org/review';
+ const out=sourceRun(t,[row(1,'V2I-REVIEW-SECOND','Director of Quality','Dayton, OH',old),row(2,id,target.TITLE,target.LOCATION,'SOURCE_URL='+url)],{}, {maxBatches:0.04},cache);
+ assert.deepEqual(out.reads,[]);assert.equal(out.report.retained_completion.planned,1);assert.equal(out.report.retained_completion.salary,1);assert.equal(out.report.retained_completion.degree,1);assert.equal(out.report.salary_review.reviewed,0);assert.equal(out.report.sample[0].id,id);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
+});
+
+test('retained-first pass preserves pending fences and protected rows',t=>{
+ const Cache=require('./posting-cache'),cache={},lines=[],ids=['V2I-PENDING-FIRST','V2I-PROTECTED-FIRST','V2I-CLOSED-FIRST'];
+ for(let i=0;i<ids.length;i++){
+  const url='https://careers.example.org/retained/'+i,target={PRIMARY_ID:ids[i],COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  lines.push(row(i+1,ids[i],target.TITLE,target.LOCATION,'SOURCE_URL='+url+(i===1?'; DO_NOT_REWORK=YES':i===2?'; LIVENESS=CLOSED':'')));
+ }
+ const out=sourceRun(t,lines,{}, {},cache,{submitted:{},tried:{},pendingWrites:{original:{ids:[ids[0]],at:new Date().toISOString()}}});
+ assert.equal(out.report.retained_completion.planned,0);assert.equal(out.report.planned,0);assert.deepEqual(out.reads,[]);
+});
+
+test('decision correctness repair retains priority over complete retained gaps',t=>{
+ const Cache=require('./posting-cache'),cache={},lines=[];
+ for(const [i,id] of ['V2I-REPAIR-FIRST','V2I-RETAINED-SECOND'].entries()){
+  const url='https://careers.example.org/priority/'+i,target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED':'');
+  lines.push(row(i+1,id,target.TITLE,target.LOCATION,payload).replace('READY_TO_PURSUE',i===0?'TIM_DECISION_REQUIRED':'READY_TO_PURSUE'));
+ }
+ lines.push(row(3,'V2I-INVALIDANCHOR','Quality Associate Manager','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));
+ const out=sourceRun(t,lines,{}, {maxBatches:0.04},cache);
+ assert.equal(out.report.salary_repairs,1);assert.equal(out.report.retained_completion.planned,0);assert.equal(out.report.sample[0].id,'V2I-REPAIR-FIRST');assert.deepEqual(out.reads,[]);
+});

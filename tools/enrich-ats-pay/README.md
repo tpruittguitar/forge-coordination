@@ -171,3 +171,13 @@ A prepared artifact can retain the estimate input, but live execution obtains
 its inputs from current retained evidence and recomputes the salary. Prepared
 numbers or a self-hashed artifact alone cannot create a trusted site input.
 No employer-read/no-pay assertion or degree result is fabricated by this shortcut.
+
+Retained-evidence scheduling: decision-needed correctness repairs still run first.
+Before optional review of already-filled estimates, an offline pass plans rows whose
+currently missing SALARY/DEGREE fields are all supported by the existing validated
+posting cache, discovery evidence, or retained source artifacts. It performs no source
+fetches or estimates. Partial evidence continues through the ordinary missing-field
+path; site estimates are not promoted to employer-posted pay. Pending requests,
+helper reservations, protected decisions, expiry/identity checks, fresh-attempt
+backoff and the live pre-submit guard remain enforced. `retained_completion` reports
+planned rows and salary/degree field counts, not Writer completion.
