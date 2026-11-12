@@ -59,11 +59,11 @@ test('first email card capture receives preliminary ATS and rule evidence withou
 });
 
 const unrelated=('Oversee customer support across all regions. Coordinate client appointments, resolve account inquiries, and report monthly service results. Set budgets and direct branch administrators, including daily scheduling and customer correspondence. ' ).repeat(2);
-const gateCard={...card,title:'Director of Operational Excellence',description:unrelated};
+const gateCard={...card,title:'Director of Customer Support',description:unrelated};
 test('early ATS gate excludes only a grounded zero, retains distinct positive hits and Never Consider precedence',()=>{
  const zero=P.screen(gateCard,ctx);a.equal(zero.decision,'EXCLUDE_ATS_ZERO');a.equal(P.excluded(zero),true);a.equal(zero.atsGate.hits,0);a.equal(zero.atsGate.sourceSha256,P.hash(unrelated.trim()));a.equal(zero.atsGate.resumeTextSha256,profile.source.textSha256);a.deepEqual(zero.atsGate.sourceIdentity,{company:card.company,title:gateCard.title,location:card.location});a.equal(zero.canonicalWrites,0);
  const positive=P.screen({...gateCard,description:unrelated+' PPAP, PPAP and ISO 9001.'},ctx);a.equal(positive.decision,'PROGRESS_TO_INTAKE');a.equal(positive.atsGate.hits,1);a.equal(positive.atsGate.status,'PASS');
- const nc=P.screen({...gateCard,description:'We are a food manufacturer. '+unrelated},ctx);a.equal(nc.decision,'EXCLUDE_NEVER_CONSIDER');a.equal(nc.atsGate.hits,0);
+ const nc=P.screen({...gateCard,description:'We are a food producer. '+unrelated},ctx);a.equal(nc.decision,'EXCLUDE_NEVER_CONSIDER');a.equal(nc.atsGate.hits,0);
 });
 test('missing, short, selected, alert, title echo and access-page content is unknown, never a negative gate',()=>{
  for(const c of [{...gateCard,description:''},{...gateCard,description:'Customer support'},{...gateCard,description:'<p>  </p>'},{...gateCard,description:unrelated+' verify you are human'},{...gateCard,contentBasis:'PREVIOUSLY_CAPTURED_QUOTES'},{...gateCard,discoveryReview:{contentBasis:'EXACT_ORIGINAL_ALERT_CARD',fullPosting:false}},{...gateCard,title:unrelated},{...gateCard,url:''}]){
