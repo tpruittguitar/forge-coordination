@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-12T13:26:51.741Z",
- "sourceCommit": "66a0941004c299605620d422b7e0f6360900c645",
+ "builtAt": "2026-11-12T13:47:32.796Z",
+ "sourceCommit": "6cdce75f9cabd86aef5dcb8ac41c22770423c800",
  "counts": {
-  "total": 220,
-  "BLOCKING": 0,
-  "ACTION": 179,
+  "total": 225,
+  "BLOCKING": 1,
+  "ACTION": 183,
   "WATCH": 41,
   "DECIDE": 5,
   "JOBS": 5,
-  "FAILED": 158,
+  "FAILED": 163,
   "UPKEEP": 52
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261112T130229Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261112T130229Z is unfinished",
+   "detail": "BLOCKED: Writer freeze/health. Open request: FORGE-SOURCE-988F7B88B9498619E6AB7632. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261112T130229Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261112T130229Z.json",
+   "at": "2026-11-12T13:43:50.294Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-1001075C35BCBEA09F1830D1",
    "section": "FAILED",
@@ -1838,6 +1850,54 @@
    "raisedBy": "AUTO-INTAKE"
   },
   {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-7FB4A80D68D83AF0188735EE",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: Rich Products · Plant Manager",
+   "detail": "Niles, IL, USA. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-7FB4A80D68D83AF0188735EE",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261112T090453Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261112T090453Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-A30D4253ED43EAEF327E512E",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: DYNAMIC FLOWFORM CORP. · Quality Specialist (Quality Assurance)",
+   "detail": "Natrona Heights, PA 15065, United States. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-A30D4253ED43EAEF327E512E",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261112T090453Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261112T090453Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-56F8EBEBFFFCE4721E6C61B8",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: Clayco · Commissioning Director",
+   "detail": "Birmingham, AL, USA. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-56F8EBEBFFFCE4721E6C61B8",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261112T102249Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261112T102249Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
+   "id": "auto-intake-identity-hold:FORGE-SOURCE-9BDC992723F8CF7A03DF24C0",
+   "section": "FAILED",
+   "level": "ACTION",
+   "title": "Unconfirmed intake: SeAH Superalloy Technologies · Process Engineer Sr.",
+   "detail": "Temple, TX. ORIGINAL_REQUEST_RECONCILIATION_REQUIRED. Other jobs continue normally. Request: FORGE-SOURCE-9BDC992723F8CF7A03DF24C0",
+   "action": "ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261112T113748Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261112T113748Z.json",
+   "at": null,
+   "raisedBy": "AUTO-INTAKE"
+  },
+  {
    "id": "ask:ASK-20261019-CLAUDE-1855",
    "section": "JOBS",
    "level": "ACTION",
@@ -2978,7 +3038,7 @@
    "lastAt": "2026-11-12T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
    "lastFile": "receipts/FORGE-GOFER-CHATGPT-20261112T024129Z-LIVE_PREFLIGHT.json",
-   "runs7d": 187,
+   "runs7d": 188,
    "usualGapHours": 0,
    "overdue": false
   },
