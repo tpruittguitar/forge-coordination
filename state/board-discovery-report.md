@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261112T0039Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261112T0547Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (111 read, 0 failed) | 157 | 39 | 90 |
+| Employer job boards (110 read, 0 failed) | 156 | 37 | 91 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 25 | 51 |
+| DIRECTOR_PLUS | 23 | 52 |
 | SR_MANAGER | 11 | 18 |
 | SR_STAFF | 3 | 21 |
 
@@ -53,16 +53,14 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Ketryx | [Head of Operations ](https://job-boards.greenhouse.io/ketryx/jobs/5429745008) | Boston, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Scout Motors Inc. | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Vera Therapeutics | [Senior Director, Pharmacovigilance Operations & Compliance](https://job-boards.greenhouse.io/veratherapeuticsinc/jobs/4438781009) | Remote | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:lever | Commonwealth Fusion Systems | [Senior Manager, Accounting Operations](https://jobs.lever.co/cfsenergy/dfdc9c55-8017-4f90-97fe-f102ba6ad6f4) | Devens, MA | MFG_PROD | SR_MANAGER | $169K-$250K |
 | BOARD:workday | Elanco | [Director, Technical Services/Manufacturing Science](https://elanco.wd5.myworkdayjobs.com/External_Career/job/Fort-Dodge-IA/Director--Technical-Services-Manufacturing-Science_R0026376) | Fort Dodge, IA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:workday | Generac Power Systems | [Director IT-  Manufacturing and Supply Chain Technology](https://generac.wd5.myworkdayjobs.com/External/job/Waukesha-WI---USA/Director-Manufacturing-and-Supply-Chain-Technology_JR13445) | Waukesha, WI - USA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
