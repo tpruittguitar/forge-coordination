@@ -1,0 +1,248 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-12T12:46:15.093Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_COORDINATOR_BLOCKED_BACKLOG_GROWTH",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "e1a3f41169f10771bd6b9b1c989894023b0efb3d",
+    "foremanCockpit": "a32c8dfec46fd1e91e8fc6bb3e6ec4835beb9bc9",
+    "forgeCoordination": "e1a3f41169f10771bd6b9b1c989894023b0efb3d"
+  },
+  "sourceEvidenceSha256": "51c771b59ba3d06baa55f9b79bee7e9e15b0bb0d3c297dfdd196cc6c7da3c29e",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": true,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "a32c8df",
+      "productionLockPresent": true,
+      "recentFailureDetailsAvailable": false,
+      "fileQueueThroughputOnly": true
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "e1a3f41169f10771bd6b9b1c989894023b0efb3d",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "build-needs-tim",
+            "status": "success",
+            "seconds": 43
+          },
+          {
+            "name": "enrich-ats-pay",
+            "status": "success",
+            "seconds": 660
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "cancelled",
+            "seconds": 649
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "success",
+            "seconds": 243
+          },
+          {
+            "name": "build-needs-tim",
+            "status": "success",
+            "seconds": 59
+          }
+        ],
+        "openPRs": 49,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "a32c8dfec46fd1e91e8fc6bb3e6ec4835beb9bc9",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 22
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 1701
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 15
+          },
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 6
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 16
+          }
+        ],
+        "openPRs": 2,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "lastReportAt": "2026-11-11T22:45:30.454Z",
+      "state": "Ready",
+      "schedulerResult": 0,
+      "lastRun": "2026-11-12T12:40:23Z",
+      "mergeConflicts": [
+        "state/AI_EXCEPTION_WORK.json"
+      ],
+      "exceptionWorkValid": false,
+      "reportNotCurrentCompletion": true
+    },
+    "activity": {
+      "at": "2026-11-12T12:23:41.209Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-11T00:23:41.209Z",
+        "to": "2026-11-12T12:23:41.209Z",
+        "verification": {
+          "count": 1828,
+          "perHour": 50.77777777777778,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 1674,
+          "perHour": 46.5,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 280,
+          "perHour": 7.777777777777778,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 0,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 0,
+          "sources": [],
+          "error": null
+        },
+        "discovery": {
+          "count": 335,
+          "windowHours": 36,
+          "perHour": 9.305555555555555,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 335,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-12T12:16:26.799Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      }
+    },
+    "enrichment": {
+      "at": "2026-11-12T12:24:51.411Z",
+      "queues": {
+        "verification": 0,
+        "enrichment": 2191,
+        "readyForReview": 698,
+        "blockedClosed": 115
+      },
+      "needsEnrichment": 2191,
+      "freshness": {
+        "due": 2066,
+        "current": 823,
+        "undated": 0
+      }
+    },
+    "intake": {
+      "at": "2026-11-12T12:24:52.861Z",
+      "counts": {
+        "ACCOUNTED_UPSTREAM": 7072,
+        "ACTION_REQUIRED": 3145,
+        "WAITING_EVIDENCE_CHANGE": 62,
+        "SOURCE_VALIDATION_REQUIRED": 3
+      }
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-12T12:23:41.181Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-12T12:23:42.138Z",
+          "lastSuccessAt": "2026-11-12T12:23:42.138Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-12T12:24:52.713Z",
+          "lastSuccessAt": "2026-11-12T12:24:52.713Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-12T12:24:59.901Z",
+          "lastSuccessAt": "2026-11-12T12:24:59.901Z",
+          "attempts": 1
+        }
+      }
+    },
+    "explorer": {
+      "shortcutPageRendered": true,
+      "outboxVerified": false,
+      "pollingVerified": false,
+      "payloadVerified": false
+    },
+    "comparison": {
+      "previousAudit": "HEALTH_AUDIT_20261111_0744ET.json",
+      "previousNeedsEnrichment": 764,
+      "currentNeedsEnrichment": 2191,
+      "deltaNeedsEnrichment": 1427,
+      "previousOpenCoordinationPRs": 46,
+      "currentOpenCoordinationPRs": 49
+    },
+    "limitations": [
+      "Explorer shortcut rendered; actual browser outbox/polling/payload state not verified.",
+      "Writer status does not expose complete lock/fence inventory or log rotation.",
+      "Zero file queue is not zero direct API throughput and does not resolve missing original receipts.",
+      "Prior malformed helper payload is absent from detail sample; disappearance is not resolution.",
+      "Scheduler result 0 does not prove end-to-end work; report is stale and exception file remains conflicted.",
+      "No locks removed, code changed or original request replayed."
+    ]
+  },
+  "nextActions": [
+    "Repair the coordinator exception-file merge conflict through the code owner, preserve pending work, then verify a fresh successful coordinator report.",
+    "Reconcile missing original posting-validation receipts and prior malformed helper outcome; do not replay them based on the empty queue.",
+    "After recovery, verify enrichment backlog movement and Explorer outbox/polling telemetry."
+  ]
+}
