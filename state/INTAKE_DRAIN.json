@@ -254253,7 +254253,7 @@
       "aliases": [
         "url:4e7fd55d4bc94da5f3a03783"
       ],
-      "sourceVersion": "0f011e4b59822717e98a9573456f20266faf18a057e1ca4a6497a762dacb8e8c",
+      "sourceVersion": "beedc87a9388aa46d4161805695236a70a01f51e18ee818fc7ddaa2fdb7ffe77",
       "card": {
         "postedPay": {
           "schema": "forge.posted-pay.v1",
@@ -254279,18 +254279,11 @@
       },
       "sourceRecovery": null,
       "sourceConflict": null,
-      "sourceFailureHistory": {
-        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
-        "attempts": 3,
-        "lastAttempt": "2026-11-11T21:26:27.663Z",
-        "retryAfter": "2026-11-11T22:26:27.663Z",
-        "releaseBasis": "CAPTURED_DISCOVERY_AVAILABLE"
-      },
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "owner": "ChatGPT",
       "firstSeen": "2026-11-01T20:32:14.268Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -254536,7 +254529,25 @@
         "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
         "scopeReviewRequired": false
       },
-      "fence": null,
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-42ADF32054D4FBE1FFF0F367"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261112T130229Z.json",
+        "record": {
+          "COMPANY": "Redwire Defense Tech",
+          "TITLE": "Director of Operations",
+          "LOCATION": "Huntsville, AL, USA",
+          "SOURCE_URL": "https://careers.edgeautonomy.io/jobs/18388245-director-of-operations?tm_job=1596&tm_event=view&tm_company=92302",
+          "INITIATING_URL": "https://careers.edgeautonomy.io/jobs/18388245-director-of-operations?tm_job=1596&tm_event=view&tm_company=92302",
+          "SCOUT_NOTES": "Captured URL:careers.edgeautonomy.io; observed 2026-11-05T22:05:19.284Z; posting status UNVERIFIED; job text; proof state/discovery-evidence/bbc30061a2c0d7df5775f8ca56ac4be631fa915a87c795c9bcff2286bc2683ed.json | discoverySHA=ebc3df7c495989b23ab270c6bd31bf19facdaa6955d4bb31b75ac742fec6a120 | resumeSHA=3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640 | Title selected as MFG_PROD / D",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX"
+          ]
+        }
+      },
       "scopeReviewHold": null,
       "scopeReviewHistory": {
         "sourceVersion": "0f011e4b59822717e98a9573456f20266faf18a057e1ca4a6497a762dacb8e8c",
@@ -254554,7 +254565,7 @@
           "retryAfter": "2026-11-08T14:02:38.722Z"
         }
       },
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -864593,7 +864604,7 @@
       "aliases": [
         "url:5bc57b31a025ea3bf5e38b79"
       ],
-      "sourceVersion": "995c4d3d6dd15d6d706078ccea46b8c08ee489c17909d8a8dcc1a9ca347e09c3",
+      "sourceVersion": "80878dfa37273bf0334f47df387972a512fe09bb29653923c397449521dfca81",
       "card": {
         "postedPay": {
           "schema": "forge.posted-pay.v1",
@@ -864621,9 +864632,9 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "owner": "ChatGPT",
       "firstSeen": "2026-11-11T22:46:52.180Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -864804,10 +864815,28 @@
         "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
         "scopeReviewRequired": false
       },
-      "fence": null,
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-F082A4D3BD7B89CC045E6A9A"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261112T130229Z.json",
+        "record": {
+          "COMPANY": "Prime Data Centers",
+          "TITLE": "Sr. Director, Operations Excellence",
+          "LOCATION": "Remote, USA",
+          "SOURCE_URL": "https://ats.rippling.com/prime-data-centers/jobs/c6a82562-5925-40e7-8f02-43f9fe620379?jobSite=Indeed",
+          "INITIATING_URL": "https://ats.rippling.com/prime-data-centers/jobs/c6a82562-5925-40e7-8f02-43f9fe620379?jobSite=Indeed",
+          "SCOUT_NOTES": "Captured JOBSPY:indeed; observed 2026-11-12T07:10:20.406Z; posting status UNVERIFIED; job text; proof state/source-trial-report.json | discoverySHA=454385a62ad4199cd07639159351697098acb8a4e78773cb391e45f86379b2b5 | resumeSHA=3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640 | Title selected as MFG_PROD / DIRECTOR_PLUS; location REMOTE_US. Source content hits: continuous improvement;",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX"
+          ]
+        }
+      },
       "scopeReviewHold": null,
       "scopeReviewHistory": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -877325,7 +877354,7 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-12T13:45:38.677Z",
+  "at": "2026-11-12T13:48:53.021Z",
   "upstreamAt": "2026-11-12T13:28:58.605Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 7029,
@@ -877334,10 +877363,10 @@
     "SOURCE_VALIDATION_REQUIRED": 3
   },
   "actions": {
-    "RECONCILE_WRITER": 3010,
+    "RECONCILE_WRITER": 3012,
     "RECOVER_SOURCE": 49,
     "RESOLVE_IDENTITY": 98,
-    "INTAKE": 90,
+    "INTAKE": 88,
     "REVIEW_SCOPE": 16
   },
   "noProcessingCap": true
