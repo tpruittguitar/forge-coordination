@@ -1,7 +1,7 @@
 {
   "schema": "forge.employer-business-classifications.v1",
-  "policyRevision": "1c373c478a4ed2e97c54a1dcc9e7102b17e2dabc",
-  "basis": "Draft reviewed primary-business facts from official employer pages. Exact employer names only; not site-output inferences. No process-industry rule activated. Source digest binds the captured excerpt, not an unobserved full page. Runtime remains disabled until approved deployment.",
+  "policyRevision": "8ff69e120eb423268e8bd3b7603d277707d7d8ac",
+  "basis": "Reviewed primary-business facts from official employer pages. Exact employer names only; not site-output inferences. Policy bindings include the process-industry scope, but no process-industry employer facts have been added or inferred. Source digest binds the captured excerpt, not an unobserved full page. Runtime activation and existing-row dispositions remain separate.",
   "ruleBindings": [
     {
       "id": "ASK-20261023-CLAUDE-1312",
@@ -16,6 +16,27 @@
       "category": "MEDICAL_DEVICES",
       "definition": "- Exclude employers whose PRIMARY business is pharmaceuticals, medical-device development or manufacturing, medical/healthcare services, hospitals, healthcare delivery, diagnostics or therapeutic healthcare products and services. This rule applies consistently in discovery, manual and automated intake, enrichment, scoring, ranking, recommendations, resurfacing, and every other active pipeline lane.",
       "definitionSha256": "c748585ebcf8fd629c74e9f2eeceb77db31a1485d1120a00cce5ab4f2c44a38b"
+    },
+    {
+      "id": "TIM-20261112-PROCESS-INDUSTRY",
+      "section": "GLOBAL_PROCESS_INDUSTRY_EXCLUSION",
+      "category": "BULK_CHEMICALS",
+      "definition": "- Exclude employers whose PRIMARY business is process-industry bulk chemical production, refining, or raw-material production. Apply this employer-business rule consistently in discovery, manual and automated intake, enrichment, scoring, ranking, recommendations and resurfacing.",
+      "definitionSha256": "5202d3918a1d758ac2a4de9f8b236e3f72e5bb18f8ac9fa49c817b59dd5cc550"
+    },
+    {
+      "id": "TIM-20261112-PROCESS-INDUSTRY",
+      "section": "GLOBAL_PROCESS_INDUSTRY_EXCLUSION",
+      "category": "REFINING",
+      "definition": "- Exclude employers whose PRIMARY business is process-industry bulk chemical production, refining, or raw-material production. Apply this employer-business rule consistently in discovery, manual and automated intake, enrichment, scoring, ranking, recommendations and resurfacing.",
+      "definitionSha256": "5202d3918a1d758ac2a4de9f8b236e3f72e5bb18f8ac9fa49c817b59dd5cc550"
+    },
+    {
+      "id": "TIM-20261112-PROCESS-INDUSTRY",
+      "section": "GLOBAL_PROCESS_INDUSTRY_EXCLUSION",
+      "category": "RAW_MATERIAL_PRODUCTION",
+      "definition": "- Exclude employers whose PRIMARY business is process-industry bulk chemical production, refining, or raw-material production. Apply this employer-business rule consistently in discovery, manual and automated intake, enrichment, scoring, ranking, recommendations and resurfacing.",
+      "definitionSha256": "5202d3918a1d758ac2a4de9f8b236e3f72e5bb18f8ac9fa49c817b59dd5cc550"
     }
   ],
   "entries": [
@@ -27,7 +48,7 @@
       "confidence": "HIGH",
       "reviewedBy": "CHATGPT FORGE-BUSINESS-20261112",
       "verifiedAt": "2026-11-12T01:30:00Z",
-      "policyRevision": "1c373c478a4ed2e97c54a1dcc9e7102b17e2dabc",
+      "policyRevision": "8ff69e120eb423268e8bd3b7603d277707d7d8ac",
       "ruleId": "ASK-20261023-CLAUDE-1312",
       "definitionSha256": "c748585ebcf8fd629c74e9f2eeceb77db31a1485d1120a00cce5ab4f2c44a38b",
       "sources": [
@@ -48,7 +69,7 @@
       "confidence": "HIGH",
       "reviewedBy": "CHATGPT FORGE-BUSINESS-20261112",
       "verifiedAt": "2026-11-12T01:30:00Z",
-      "policyRevision": "1c373c478a4ed2e97c54a1dcc9e7102b17e2dabc",
+      "policyRevision": "8ff69e120eb423268e8bd3b7603d277707d7d8ac",
       "ruleId": "ASK-20261023-CLAUDE-1312",
       "definitionSha256": "c748585ebcf8fd629c74e9f2eeceb77db31a1485d1120a00cce5ab4f2c44a38b",
       "sources": [
@@ -69,7 +90,7 @@
       "confidence": "HIGH",
       "reviewedBy": "CHATGPT FORGE-BUSINESS-20261112",
       "verifiedAt": "2026-11-12T01:30:00Z",
-      "policyRevision": "1c373c478a4ed2e97c54a1dcc9e7102b17e2dabc",
+      "policyRevision": "8ff69e120eb423268e8bd3b7603d277707d7d8ac",
       "ruleId": "ASK-20261023-CLAUDE-1312",
       "definitionSha256": "c748585ebcf8fd629c74e9f2eeceb77db31a1485d1120a00cce5ab4f2c44a38b",
       "sources": [
@@ -90,7 +111,7 @@
       "confidence": "HIGH",
       "reviewedBy": "CHATGPT FORGE-BUSINESS-20261112",
       "verifiedAt": "2026-11-12T01:30:00Z",
-      "policyRevision": "1c373c478a4ed2e97c54a1dcc9e7102b17e2dabc",
+      "policyRevision": "8ff69e120eb423268e8bd3b7603d277707d7d8ac",
       "ruleId": "ASK-20261023-CLAUDE-1312",
       "definitionSha256": "c748585ebcf8fd629c74e9f2eeceb77db31a1485d1120a00cce5ab4f2c44a38b",
       "sources": [
