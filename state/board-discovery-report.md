@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261111T2258Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261112T0039Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (111 read, 0 failed) | 157 | 40 | 89 |
+| Employer job boards (111 read, 0 failed) | 157 | 39 | 90 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -21,7 +21,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 |---|---:|---:|
 | DIRECTOR_PLUS | 25 | 51 |
 | SR_MANAGER | 11 | 18 |
-| SR_STAFF | 4 | 20 |
+| SR_STAFF | 3 | 21 |
 
 ## New roles
 
@@ -33,7 +33,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
-| BOARD:lever | DREAM Shield AI | [Staff Manufacturing Engineer, Automation Equipment](https://jobs.lever.co/shieldai/e3f0520a-a155-438e-afc2-8215f67aa8d7) | Seattle, Washington | MFG_ENG | SR_STAFF | $150K-$230K |
 | BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
@@ -54,8 +53,8 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Ketryx | [Head of Operations ](https://job-boards.greenhouse.io/ketryx/jobs/5429745008) | Boston, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
