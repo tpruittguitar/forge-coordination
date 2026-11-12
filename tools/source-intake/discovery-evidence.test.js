@@ -35,7 +35,7 @@ test('saved text never overrides function exclusions, dismissed identities, or p
 
 test('real ATS screen never rejects partial business text for missing competency hits, but still excludes a complete zero',()=>{
  const profile=require('../source-trial/resume-match').load(),screenContext={profile,documents:{resumes:[{id:profile.source.fileId,modifiedTime:profile.source.modifiedAt}]}},text=('Oversee customer support across all regions. Coordinate client appointments, resolve account inquiries, and report monthly service results. Set budgets and direct branch administrators, including daily scheduling and customer correspondence. ').repeat(2);
- const card={company:'Acme',title:'Director of Operational Excellence',location:'Austin, TX',url:'https://careers.example.com/role'},options={max:10,sent:new Set(),screenContext};
+ const card={company:'Acme',title:'Director of Customer Support',location:'Austin, TX',url:'https://careers.example.com/role'},options={max:10,sent:new Set(),screenContext};
  a.equal(Preliminary.screen({...card,description:text},screenContext).decision,'EXCLUDE_ATS_ZERO','fixture has a true zero when complete');
  for(const contentBasis of ['CAPTURED_ROLE_CONTENT','PREVIOUSLY_CAPTURED_QUOTES']){
   const store={forIntake:()=>({doc:{text,fullPosting:false,contentBasis}})};
@@ -45,7 +45,7 @@ test('real ATS screen never rejects partial business text for missing competency
 });
 
 test('reusing the exact direct JobSpy card cannot erase its current grounded ATS exclusion',t=>{
- const description=('Oversee customer support across all regions. Coordinate client appointments, resolve account inquiries, and report monthly service results. Set budgets and direct branch administrators, including daily scheduling and customer correspondence. ').repeat(2).trim(),{root,card}=fixture(t,{description});card.title='Director of Operational Excellence';
+ const description=('Oversee customer support across all regions. Coordinate client appointments, resolve account inquiries, and report monthly service results. Set budgets and direct branch administrators, including daily scheduling and customer correspondence. ').repeat(2).trim(),{root,card}=fixture(t,{description});card.title='Director of Customer Support';
  const profile=require('../source-trial/resume-match').load(),screenContext={profile,documents:{resumes:[{id:profile.source.fileId,modifiedTime:profile.source.modifiedAt}]}};
  card.discoveryReview.preliminaryScreen=Preliminary.screen(card,screenContext);a.equal(card.discoveryReview.preliminaryScreen.decision,'EXCLUDE_ATS_ZERO');
  fs.writeFileSync(path.join(root,'state/source-trial-report.json'),JSON.stringify({new_roles:[card]}));const store=E.index(root,{entries:{}}),options={max:10,sent:new Set(),screenContext};
