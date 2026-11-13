@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-13T06:33:08.268Z",
+  "at": "2026-11-13T06:46:21.435Z",
   "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -90,7 +90,7 @@
     "coverageComplete": false,
     "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
     "writerProofsVerified": true,
-    "pendingCapturedJobs": 5603,
+    "pendingCapturedJobs": 5615,
     "pendingResultSources": 0,
     "pendingResultPageCount": null,
     "pendingResultPages": 0
@@ -171,12 +171,44 @@
   ],
   "intakeAssignmentHealth": {
     "schema": "forge.intake-assignment-health.v1",
-    "at": "2026-11-13T06:33:08.268Z",
-    "status": "HEALTHY",
+    "at": "2026-11-13T06:46:21.435Z",
+    "status": "ACTION_REQUIRED",
     "checkedItems": 625,
-    "issueCount": 0,
-    "counts": {},
-    "findings": [],
+    "issueCount": 7,
+    "counts": {
+      "TERMINAL_OR_PENDING_REQUEST": 5,
+      "QUEUED_SUBMISSION": 2
+    },
+    "findings": [
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:694491f5fe5d3fde"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:8048e6d77029047b"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:cfc902a954d63ac5"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "linkedin:4473099505"
+      },
+      {
+        "code": "QUEUED_SUBMISSION",
+        "key": "linkedin:4473099505"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "linkedin:4473207013"
+      },
+      {
+        "code": "QUEUED_SUBMISSION",
+        "key": "linkedin:4473207013"
+      }
+    ],
     "evidenceFiles": [
       "control/GROK_INTAKE_HELPER_WORK.json",
       "control/CLAUDE_RELEVANCE_WORK.json",
@@ -215,7 +247,7 @@
       "control/grok-intake/page-031.json",
       "control/grok-intake/page-032.json"
     ],
-    "inputSha256": "fa89305cdfb0c40479eb9ceed8ee474f054a985892f1b6a862d2a2401d28c1b1"
+    "inputSha256": "870a8c04756a8ce808ac63a92c3cd0607f9a700359648799c01650f5d5625c5d"
   },
   "helperCoordination": {
     "at": "2026-11-02T02:07:20.898Z",
@@ -227,7 +259,7 @@
     "at": "2026-11-13T05:03:04.597Z",
     "run": "FORGE-CODE-CHATGPT-20261113T044023671Z",
     "messagesRead": 1275,
-    "pendingMessages": 713,
+    "pendingMessages": 715,
     "fullyReadThrough": "2026-11-02T14:23:41.000Z",
     "coverageComplete": false,
     "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261113T044023671Z_MAIL.json",
