@@ -169,7 +169,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
   const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const policyFingerprint=Store.hash(fs.readdirSync(__dirname).filter(f=>/\.(?:js|cjs)$/.test(f)&&!f.includes('.test.')).sort().map(f=>[f,fs.readFileSync(path.join(__dirname,f),'utf8')]).concat([['config',CONFIG],...['PipelineWorklists','PipelineEvidence','PipelinePostingFreshness','PipelineAts'].map(name=>[name,fs.readFileSync(path.join(require('os').tmpdir(),name+'.js'),'utf8')])]));
-  const inputFingerprintOf=()=>Store.hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
+  const inputFingerprintOf=()=>require('./input-fingerprint').hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
   const inputFingerprint=inputFingerprintOf();
   // Bind per-role saved evidence as well as global comparison inputs. Preserve
   // the durable ledger view: preparation-only never persists its transient edits.
