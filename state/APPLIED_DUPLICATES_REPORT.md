@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-12T20:11:57.614Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-13T01:59:32.172Z from CANONICAL_WRITER_MASTER.
 
-Of 712 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 711 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -21,10 +21,10 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
+| 85 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
 | 64 | Cummins Inc. | Site Manufacturing/Quality Leader | You declined 2026-10-26 · different site | Different worksite: Manning, SC vs earlier York, SC | V2I-DAE0286DF646 → V2I-AC46B508E878 |
 | 64 | Blue Origin | Lunar Manufacturing & Assembly Manager | Applied 2026-10-25 · this is a new posting | Different wd posting: wd:R69279 vs earlier wd:R68774 | V2I-A5230F14AEB6 → V2I-9D90D416AC88 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
-| 63 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
 | 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
 | 60 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
 | 59 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
