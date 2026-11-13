@@ -1,16 +1,16 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-13T06:31:04.403Z",
- "sourceCommit": "3fe61e7ca90814a21c0e68b652335753a42e2419",
+ "builtAt": "2026-11-13T06:46:37.610Z",
+ "sourceCommit": "7e4f39a5f19b7b72a97bf1dce59cd2009ace9715",
  "counts": {
-  "total": 222,
+  "total": 224,
   "BLOCKING": 1,
-  "ACTION": 184,
-  "WATCH": 37,
+  "ACTION": 185,
+  "WATCH": 38,
   "DECIDE": 5,
   "JOBS": 5,
   "FAILED": 161,
-  "UPKEEP": 51
+  "UPKEEP": 53
  },
  "items": [
   {
@@ -2334,6 +2334,18 @@
    "raisedBy": ""
   },
   {
+   "id": "intake-assignment-health",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "Intake assignment ledger needs reconciliation",
+   "detail": "7 assignment issues: TERMINAL_OR_PENDING_REQUEST=5, QUEUED_SUBMISSION=2",
+   "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
+   "source": "control/GROK_INTAKE_HELPER_WORK.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
+   "at": "2026-11-13T06:46:37.610Z",
+   "raisedBy": "CODE"
+  },
+  {
    "id": "ask:ASK-20261018-02",
    "section": "DECIDE",
    "level": "WATCH",
@@ -2803,6 +2815,18 @@
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-INSPECTION-CHATGPT-20261112T020028Z.json",
    "at": "2026-11-12T00:00:00-05:00",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#372",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "forge-coordination PR #372 (draft): PR #372: retain combined Writer review and attempt across closure",
+   "detail": "Open since 2026-11-13. Draft — merge, keep, or close.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #372",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/372",
+   "at": "2026-11-13T06:37:53Z",
+   "raisedBy": ""
   }
  ],
  "lanes": [
@@ -2831,8 +2855,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-13T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261113T044023671Z_TRANSPORT.json",
-   "runs7d": 591,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261113T053023753Z_TRANSPORT.json",
+   "runs7d": 651,
    "usualGapHours": 0,
    "overdue": false
   },
