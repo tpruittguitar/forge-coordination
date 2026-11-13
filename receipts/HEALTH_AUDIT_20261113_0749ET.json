@@ -1,0 +1,252 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-13T12:48:00.825Z",
+  "readOnly": true,
+  "status": "ATTENTION_REQUIRED_ENRICHMENT_FAILURE_BACKLOG_GROWTH",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "808676ccbc08df9f553a68b90b63875edf9e30c9",
+    "forgeCoordination": "0911e3773f14e0e5d958ee952802d7ae3859f59d",
+    "foremanCockpit": "5c5007fc23b296680ceae30af2e4baea92e2b6fe"
+  },
+  "sourceEvidenceSha256": "7e45274ef54a5a822bcf3266bc0b601cffb8911f0a4a2bff3e04d4b5f8e27947",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": true,
+    "explorerUI": false
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "82eda83",
+      "fileQueueThroughputOnly": true
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "0911e3773f14e0e5d958ee952802d7ae3859f59d",
+        "sample": 15,
+        "failures": [
+          {
+            "id": 43426909241,
+            "name": "enrich-ats-pay",
+            "event": "schedule",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/43426909241"
+          }
+        ],
+        "latestRuns": [
+          {
+            "name": "build-needs-tim",
+            "status": "queued",
+            "seconds": 0
+          },
+          {
+            "name": "Publish pipeline execution evidence",
+            "status": "queued",
+            "seconds": 0
+          },
+          {
+            "name": "receipt-recovery",
+            "status": "queued",
+            "seconds": 0
+          },
+          {
+            "name": "Index receipt discovery hints",
+            "status": "queued",
+            "seconds": 0
+          },
+          {
+            "name": "Validate instruction release",
+            "status": "queued",
+            "seconds": 0
+          }
+        ],
+        "openPRs": 50,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "5c5007fc23b296680ceae30af2e4baea92e2b6fe",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 1730
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 14
+          },
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 7
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 17
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 18
+          }
+        ],
+        "openPRs": 2,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "missed": 0,
+      "lastReportAt": "2026-11-13T12:33:56.819Z",
+      "mergeConflicts": [],
+      "schedulerResult": 2147946720,
+      "exceptionWorkValid": true,
+      "state": "Running",
+      "reportRunId": "FORGE-CODE-CHATGPT-20261113T114523335Z",
+      "lastRun": "2026-11-13T12:45:23.0000000Z"
+    },
+    "enrichment": {
+      "at": "2026-11-13T12:42:02.401Z",
+      "queues": {
+        "verification": 0,
+        "enrichment": 4085,
+        "readyForReview": 652,
+        "blockedClosed": 116
+      },
+      "needsEnrichment": 4085,
+      "freshness": {
+        "due": 3705,
+        "current": 1032,
+        "undated": 0
+      }
+    },
+    "activity": {
+      "at": "2026-11-13T12:40:43.284Z",
+      "rates36": {
+        "hours": 36,
+        "from": "2026-11-12T00:40:43.284Z",
+        "to": "2026-11-13T12:40:43.284Z",
+        "verification": {
+          "count": 2358,
+          "perHour": 65.5,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "intake": {
+          "count": 2098,
+          "perHour": 58.27777777777778,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "enrichment": {
+          "count": 182,
+          "perHour": 5.055555555555555,
+          "partial": false,
+          "basis": "Distinct jobs in independently COMPLETE Writer receipts within 36 elapsed hours; receipt history is not canonical stage-completion history."
+        },
+        "metadataGaps": 0,
+        "basis": "Distinct job IDs in COMPLETE writes within 36 elapsed hours; repeated writes and receipt aliases count once per stage. Enrichment covers identified enrichment lanes.",
+        "history": {
+          "remaining": 0,
+          "sources": [],
+          "error": null
+        },
+        "discovery": {
+          "count": 419,
+          "windowHours": 36,
+          "perHour": 11.63888888888889,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 419,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates.",
+          "hours": 36,
+          "available": true,
+          "sourceAt": "2026-11-13T12:34:41.978Z",
+          "source": "state/UPSTREAM_FLOW.json"
+        }
+      }
+    },
+    "intake": {
+      "at": "2026-11-13T12:42:04.256Z",
+      "counts": {
+        "ACCOUNTED_UPSTREAM": 3462,
+        "ACTION_REQUIRED": 7212,
+        "WAITING_EVIDENCE_CHANGE": 139
+      }
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-13T12:40:43.250Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-13T12:40:44.404Z",
+          "lastSuccessAt": "2026-11-13T12:40:44.404Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-13T12:42:04.123Z",
+          "lastSuccessAt": "2026-11-13T12:42:04.123Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-13T12:42:13.762Z",
+          "lastSuccessAt": "2026-11-13T12:42:13.762Z",
+          "attempts": 1
+        }
+      }
+    },
+    "enrichmentFailure": {
+      "id": 43426909241,
+      "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/43426909241",
+      "at": "2026-11-13T12:41:25.3649842Z",
+      "error": "Invalid string length",
+      "precedingPhase": "pending_receipts",
+      "batches": 18,
+      "exitCode": 1
+    },
+    "comparison": {
+      "previousAudit": "HEALTH_AUDIT_20261112_0747ET.json",
+      "previousNeedsEnrichment": 2191,
+      "currentNeedsEnrichment": 4085,
+      "delta": 1894,
+      "priorCoordinatorMergeConflictCleared": true
+    },
+    "limitations": [
+      "Explorer browser outbox, polling and payload state not independently verified in this audit.",
+      "Writer status lacks complete lock/fence/log-rotation inventory; zero file queue is not zero direct API work.",
+      "Scheduler overlap result while coordinator runs is not an end-to-end failure. Original request completion still requires exact proofs.",
+      "GitHub Actions sampled latest 15 runs per repository; not complete workflow history.",
+      "No changes to code, settings, schedules, master or original requests."
+    ]
+  },
+  "nextActions": [
+    "Code owner should investigate enrich-ats-pay Invalid string length after pending_receipts, preserving all 18 original batches without replay.",
+    "Restore supported canonical Drive access for salary preparation; verify enrichment backlog movement after recovery.",
+    "Verify Explorer outbox/polling/payload telemetry and retain unresolved original transaction fences."
+  ]
+}
