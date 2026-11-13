@@ -1,0 +1,32 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:685d9eaacf1bd77912b73359",
+  "sourceVersion": "0e6001bbaeb8983d6f59227455555a1f6f2f64e1e5c9369ae4df6a4794e4c6e7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261113T1230Z-NAMMO",
+  "observedAt": "2026-11-13T12:30:06.062483Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Recovered exact saved Hirebridge HTTP URL and full company/title/site-bound JobSpy description, but supported review validator rejected it as INVALID_PUBLIC_SOURCE_URL. No observed HTTPS equivalent is available; do not rewrite source identity. Manufacturing function is explicit and resume overlap verified; no Writer submission.",
+  "nextAction": "Coordinator/source recovery resolves exact supported public URL or adapter validation of the original captured HTTP identity",
+  "attempts": [
+    {
+      "source": "state/source-trial-report.json",
+      "result": "Reused exact saved company/title/site-bound description and Hirebridge jid=737385 cid=8284"
+    },
+    {
+      "source": "Fresh authenticated canonical master/archive",
+      "result": "Shared matcher ABSENT using exact recovered URL"
+    },
+    {
+      "source": "Current private Drive resume",
+      "result": "Modification unchanged and normalized text SHA256 verified against current profile"
+    },
+    {
+      "source": "http://recruit.hirebridge.com/v3/careercenter/v2/details.aspx?jid=737385&cid=8284&locvalue=1016",
+      "result": "queue review returned INVALID_PUBLIC_SOURCE_URL; exact URL retained without rewriting"
+    }
+  ],
+  "retryCondition": "Observed supported public posting URL becomes available or existing adapter accepts the exact saved captured HTTP identity"
+}
