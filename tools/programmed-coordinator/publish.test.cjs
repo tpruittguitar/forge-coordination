@@ -132,3 +132,14 @@ test('membership repair and new immutable audit publish together, without allowi
  a.equal(publish(f.local).published,true);a.equal(JSON.parse(g(f.local,'show','origin/main:'+file)).canonicalWrites,0);
  save(f.local,file,{overwritten:true});a.throws(()=>publish(f.local),/Immutable accounting evidence/);a.throws(()=>require('./publish.cjs').retainedSafe(f.local),/Immutable accounting evidence/);
 });
+test('concurrent identical enrichment additions with snapshot-only metadata resolve alongside guard',t=>{
+ const f=fixture(t);enrichmentBaseline(f);
+ const make=(at,h)=>{const w=enrichmentWork();w.items.push({...w.items[0],primaryId:'V2I-NEW',canonicalObservedAt:at,rowSha256:'a'.repeat(64),researchProvenance:{schema:'forge.enrichment-research-provenance.v1',sourceFingerprint:'b'.repeat(64),canonicalSourceSha256:h.repeat(64)}});return w;};
+ const local=make('2026-11-13T02:00:00Z','c'),remote=make('2026-11-13T01:00:00Z','d');local.items[0].status='PROTECTED_SKIP';
+ save(f.local,enrichFile,local);save(f.local,guard,value('2026-11-13T02:00:00Z'));save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{preserve:true});commit(f.local,'coordinator observations');
+ save(f.bot,enrichFile,remote);save(f.bot,guard,value('2026-11-13T01:00:00Z'));commit(f.bot,'concurrent research assignments');g(f.bot,'push','origin','main');
+ a.equal(publish(f.local).published,true);const published=JSON.parse(g(f.local,'show','origin/main:'+enrichFile));a.deepEqual(published,local);a.equal(g(f.local,'status','--porcelain'),'');
+});
+test('unsafe enrichment conflict leaves every conflict unstaged and immutable receipt retained',t=>{
+ const f=fixture(t);enrichmentBaseline(f);const l=enrichmentWork(),r=enrichmentWork();l.items[0].status='CONSUMED';r.items[0].status='RELEASED';save(f.local,enrichFile,l);save(f.local,guard,value('2026-11-13T02:00:00Z'));save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{preserve:true});commit(f.local,'local changes');save(f.bot,enrichFile,r);save(f.bot,guard,value('2026-11-13T01:00:00Z'));commit(f.bot,'remote changes');g(f.bot,'push','origin','main');a.throws(()=>publish(f.local),/Semantic enrichment/);a.match(fs.readFileSync(p.join(f.local,guard),'utf8'),/<<<<<<< HEAD/);a.match(g(f.local,'ls-files','-u','--',enrichFile),/ 3\t/);a.equal(JSON.parse(g(f.local,'show','REBASE_HEAD:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).preserve,true);
+});
