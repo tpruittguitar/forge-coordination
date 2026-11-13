@@ -103,7 +103,7 @@ test('preparation refreshes cached captured-card sources on every invocation',t=
  f.save('state/CODE_INTAKE_CONSUMPTION.json',{items:[source,{...source}]});
  const file=p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'),original=fs.readFileSync;let reads=0;
  t.mock.method(fs,'readFileSync',function(name,...args){if(String(name)===file)reads++;return original.call(this,name,...args);});
- a.equal(P.prepare(f).counts.READY,2);a.equal(reads,3); // plan queue, fence queue, source snapshot, independent of item count.
+ a.equal(P.prepare(f).counts.READY,2);a.equal(reads,4); // plan queue, fence queue, source snapshot, origin snapshot; once each, independent of item count.
  for(const change of [j=>j.company='Changed',j=>j.url='https://other.test/role',j=>j.evidence[0].cardHash='changed']){
   const altered=structuredClone(queue);change(altered.jobs[f.key]);f.save('state/EMAIL_RECOVERY_QUEUE.json',altered);
   a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);
