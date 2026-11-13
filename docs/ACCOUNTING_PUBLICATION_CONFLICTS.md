@@ -19,3 +19,25 @@ Conservative unsupported cases require reconciliation: expiring waits; awaiting-
 Run `node --test tools/programmed-coordinator/{publish,exception-merge}.test.cjs`. Tests use genuine local review/START/CHECKPOINT producers and isolated bare Git repositories, including two-file rebases, repeated push races, immutable transaction preservation, malformed proofs, lost cases/attempts, newer reviews, dispatch provenance, guard policy/disabled-rule changes, and unrelated conflicts. No production credentials or canonical calls are used.
 
 Run the complete Node command in `.github/workflows/programmed-coordinator-test.yml`, Python unit tests, and `python scripts/build_runtime.py --check` before requesting review. A draft PR and passing local fixtures do not establish production adoption. Deployment/merge and any retained production recovery remain separate operations.
+
+### Independent exception event dimensions
+
+The exception accounting resolver additionally preserves these narrow overlaps:
+
+- A source case's coordinator-only `attempts` and `lastSeen` advance alongside
+  an independently validated `SOURCE_EVIDENCE` review/attempt. The counter must
+  be a strictly increasing safe integer, equal the current coordinator item's
+  count with the exact same source version. The case must still be a candidate.
+- A later source-bound attempt can remain inert history on a case independently
+  marked `NO_LONGER_OPEN`. The coordinator report must match the closure's run
+  and observation time, and its candidate computation must still exclude that
+  exact case. No status, review decision, binding, or canonical completion is
+  inferred from that attempt.
+
+Both require the existing local coordinator report/state schemas and a report
+within one second of the coordinator accounting timestamp. Candidate membership
+is computed lazily once per publication merge. Missing/stale evidence, changed
+bindings, concurrent decisions, unknown fields, regressed counters, or a current
+candidate contradicting closure remain conflicts. Immutable review and attempt
+proof validators are unchanged. The resolver never posts, retries, or releases
+Writer requests. This does not repair a previously interrupted checkout.
