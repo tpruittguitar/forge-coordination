@@ -68,3 +68,33 @@ test('changed candidate bytes or extra results cannot release a batch',async()=>
  await assert.rejects(recover(f.file,{root:f.root,key:'fixture',transport:f.transport}),/binding changed/);
  assert.equal(f.log.length,0);
 });
+function prewriteFixture(){
+ const f=fixture();f.state.results={};f.state.outcomes=[];
+ f.state.recorderProbe={probe:'durable-probe',at:'2026-11-12T18:38:44.327Z'};
+ f.state.halts=[{at:'2026-11-12T18:38:55.481Z',message:'BLOCKED: Writer read not authorized',outcomes:[]}];f.save();return f;
+}
+test('proven first-preflight failure releases only untouched work without any network reads or POSTs',async()=>{
+ const f=prewriteFixture(),r=await recover(f.file,{root:f.root,transport:()=>{throw Error('No network needed')}});
+ assert.equal(r.status,'RECOVERED');assert.equal(r.writerSubmissions,0);assert.equal(r.carriedForward,3);
+ const s=f.read();assert.deepEqual(s.results,{});assert.deepEqual(s.halts,f.state.halts);
+ assert.equal(latch([{file:f.file,state:s}]).blocking.length,0);
+ assert.equal(carryForwardRoles([{file:f.file,state:s}],{root:f.root}).length,3);
+ assert.equal((await recover(f.file,{root:f.root})).status,'NOT_NEEDED');
+});
+for(const [label,mutate] of [
+ ['missing recorder proof',s=>delete s.recorderProbe],
+ ['missing halt',s=>s.halts=[]],
+ ['unknown failure',s=>s.halts[0].message='UNKNOWN: Writer POST outcome unconfirmed'],
+ ['halt before recorder',s=>s.halts[0].at='2026-11-11T00:00:00Z'],
+ ['prior outcome',s=>s.outcomes=[{status:'PENDING_VERIFICATION'}]],
+ ['halt outcome',s=>s.halts[0].outcomes=[{status:'PENDING_VERIFICATION'}]],
+ ['legacy version',s=>delete s.version]
+])test('empty results do not release '+label,async()=>{
+ const f=prewriteFixture();mutate(f.state);f.save();
+ assert.equal((await recover(f.file,{root:f.root})).status,'NO_CAPTURED_RESULTS');
+ assert.equal(f.read().reconciliation,undefined);
+});
+test('durable POST intent prevents preflight release',async()=>{
+ const f=prewriteFixture();f.state.results[f.ids[0]]={status:'POST_IN_FLIGHT_UNKNOWN'};f.save();
+ assert.equal((await recover(f.file,{root:f.root})).status,'UNKNOWN_REMAINS');assert.equal(f.read().reconciliation,undefined);
+});
