@@ -1,0 +1,29 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "unresolved:83918e9ba8c2ff0a000e4d86",
+  "sourceVersion": "9a03ed9e34be6cacce45753bf683200195414698fad3d7dd880f9bb493e9b598",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261113T0925Z-SOURCE",
+  "observedAt": "2026-11-13T09:26:01.567805Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact saved identity-bound alert retains the advertised fields but no exact posting URL. Original-mail tool is unavailable and managed network policy excludes employer/job-board hosts. No URL, employer requisition or hidden client was inferred. This is an access/missing-identity wait, not exclusion or closure.",
+  "nextAction": "Recover exact posting URL from saved original source or authorized source access",
+  "retryCondition": "Original saved evidence gains exact posting identity, or authorized original-mail/source-host access becomes available",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:f53d53822770087af63b818e60c12e849e334c4f8719ee95ef19d623b3d50efe",
+      "result": "Reused saved alert; URL absent",
+      "sourceSha256": "2fe8c6222f63a6365411b52a2bf547445680c22ea99029f7f62d6f3caf776ea6"
+    },
+    {
+      "source": "Fresh authenticated master/archive shared identity matcher",
+      "result": "ABSENT; no existing-match disposition claimed"
+    },
+    {
+      "source": "Current managed network policy and callable tools",
+      "result": "Employer/source access restricted; original-mail tool unavailable; no bypass attempted"
+    }
+  ]
+}
