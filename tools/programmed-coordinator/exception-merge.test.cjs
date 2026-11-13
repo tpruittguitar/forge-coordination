@@ -238,13 +238,16 @@ for(const closed of [false,true])test('real rebase preserves '+(closed?'post-clo
  a.equal(git(f.local,'status','--porcelain'),'');
 });
 
-function closureReviewFixture(t){
+function closureReviewFixture(t,withAttempt=false){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'closure-review-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
  const now=Date.now()-10000,at=new Date(now).toISOString(),state={schema:'forge.programmed-coordinator.v1',items:{},transactions:{}},entry={key:'writer-key',requestId:'ORIGINAL-WRITER',owner:'AI',reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:'a'.repeat(64)};
  const report={schema:'forge.programmed-coordinator-report.v1',runId:'FORGE-CODE-CLOSURE-REVIEW',at,aiExceptions:[entry]};
  W.sync({root,state,report,now,apply:true});const base=S.read(root,W.FILE),id=Object.keys(base.cases)[0];
  const rec={schema:'forge.ai-exception-review.v1',exceptionId:id,sourceVersion:base.cases[id].binding.sourceVersion,reviewedBy:'CHATGPT',taskKey:W.OWNER,reviewedAt:new Date(now+1000).toISOString(),runId:'FORGE-EXCEPTION-CHATGPT-CLOSURE01',disposition:'WAITING_SOURCE_CHANGE',reason:'ORIGINAL_WRITER_EVIDENCE_INCOMPLETE',retryCondition:'ORIGINAL_WRITER_EVIDENCE_CHANGED',evidenceSha256:'b'.repeat(64)};
- W.publishReview(root,rec,now+2000);const left=S.read(root,W.FILE),right=clone(base);right.at=new Date(now+3000).toISOString();right.runId=report.runId;right.cases[id].status='NO_LONGER_OPEN';right.cases[id].closedAt=right.at;count(right);
+ if(withAttempt)P.start(root,rec.runId,1,now+100);
+ const published=W.publishReview(root,rec,now+2000);
+ if(withAttempt)P.checkpoint(root,{runId:rec.runId,completedAt:new Date(now+2000).toISOString(),attempts:[{exceptionId:id,sourceVersion:rec.sourceVersion,observedAt:rec.reviewedAt,evidenceSha256:rec.evidenceSha256,reason:rec.reason,nextAction:'Wait for original Writer evidence',reviewPath:published.path}]},now+2000);
+ const left=S.read(root,W.FILE),right=clone(base);right.at=new Date(now+3000).toISOString();right.runId=report.runId;right.cases[id].status='NO_LONGER_OPEN';right.cases[id].closedAt=right.at;count(right);
  report.at=right.at;report.aiExceptions=[];S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
  return{root,base,left,right,id,rec,report,state,entry,now:now+4000};
 }
@@ -281,4 +284,32 @@ test('real publication rebase preserves earlier review, later closure and origin
 test('timed Writer wait remains a conflict even with valid earlier proof and absence',t=>{
  const f=closureReviewFixture(t),rec={...f.rec,reviewedAt:new Date(Date.parse(f.rec.reviewedAt)+100).toISOString(),retryAfter:new Date(f.now+60000).toISOString()};
  W.publishReview(f.root,rec,f.now);f.left=S.read(f.root,W.FILE);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));
+});
+
+test('combined earlier Writer review and attempt retain both proofs across evidenced closure',t=>{
+ const f=closureReviewFixture(t,true),out=merge(f.root,f.base,f.left,f.right,f.now);
+ a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review,lastAttempt:f.left.cases[f.id].lastAttempt});a.equal(out.cases[f.id].canonicalCompletion,false);a.deepEqual(out.counts,{NO_LONGER_OPEN:1});a.deepEqual(out.dispatch,f.left.dispatch);a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),out);
+});
+for(const [name,mutate]of [
+ ['missing attempt checkpoint',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].lastAttempt.proof))],
+ ['missing attempt start',f=>fs.unlinkSync(path.join(f.root,'receipts/AI_EXCEPTION_RUNS/'+f.rec.runId+'_START.json'))],
+ ['wrong attempt source binding',f=>f.left.cases[f.id].lastAttempt.sourceVersion='wrong'],
+ ['forged attempt projection',f=>f.left.cases[f.id].lastAttempt.evidenceSha256='f'.repeat(64)],
+ ['missing immutable review',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].review.proof))],
+ ['still observed',f=>{f.report.aiExceptions=[f.entry];S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['unknown served change',f=>f.left.cases[f.id].unknown=true],
+ ['unknown closure change',f=>f.right.cases[f.id].unknown=true],
+ ['later review and attempt',f=>{f.right.at=new Date(Date.parse(f.rec.reviewedAt)-1).toISOString();f.right.cases[f.id].closedAt=f.right.at;f.report.at=f.right.at;S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['attempt after closure despite earlier review',f=>{
+  const c=f.left.cases[f.id],ref=c.lastAttempt,receipt=S.read(f.root,ref.proof),observedAt=new Date(f.now-500).toISOString();receipt.attempts[0].observedAt=observedAt;receipt.completedAt=observedAt;c.lastAttempt.observedAt=observedAt;S.save(f.root,ref.proof,receipt);delete f.left.dispatch;
+ }],
+ ['prior attempt history regression',f=>{f.base.cases[f.id].lastAttempt=clone(f.left.cases[f.id].lastAttempt);f.base.cases[f.id].lastAttempt.observedAt=new Date(f.now).toISOString();f.right.cases[f.id].lastAttempt=clone(f.base.cases[f.id].lastAttempt);}],
+ ['old attempt deletion',f=>{f.base.cases[f.id].lastAttempt=clone(f.left.cases[f.id].lastAttempt);delete f.right.cases[f.id].lastAttempt;}]
+])test('combined closure history rejects '+name,t=>{const f=closureReviewFixture(t,true);mutate(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+test('real rebase publishes combined review and attempt without altering pending Writer evidence',t=>{
+ const f=repositories(t,t=>closureReviewFixture(t,true)),pending='receipts/FORGE-CODE-CHATGPT-COMBINED_CHECKPOINT.json',original={requestId:'UNRELATED',status:'POST_IN_FLIGHT_UNKNOWN',payloadSha256:'f'.repeat(64)};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,pending,original);
+ for(const file of ['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json'])S.save(f.local,file,S.read(f.root,file));
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');publish(f.local);
+ const out=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review,lastAttempt:f.left.cases[f.id].lastAttempt});a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+pending)),original);a.equal(git(f.local,'status','--porcelain'),'');
 });
