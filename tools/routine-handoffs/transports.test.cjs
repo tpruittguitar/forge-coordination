@@ -168,3 +168,16 @@ test('saved discovery metadata and descriptions seed CODE instead of source iden
   job.company='Changed';S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);a.throws(()=>I.original(f.root,item,{}),/IDENTITY_CONFLICT/);
  }
 });
+
+for(const sources of [['EMAIL_RECOVERY'],['EMAIL_RECOVERY','state/source-trial-report.json']])test('saved-source intake preserves proven origin without guessing mixed histories: '+sources.join(','),t=>{
+ const f=assignment(t),key='linkedin:1234',job=f.ledger.jobs[key];
+ job.sourceEmails=['1a1cc4119ad913fb'];job.provider='LINKEDIN';
+ S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);
+ S.save(f.root,'state/UPSTREAM_LEDGER.json',{entries:{[key]:{company:job.company,title:job.title,location:job.location,sources}}});
+ A.replenish(f);
+ const run=()=>require('../relevance-screen/prepare.cjs').prepare({root:f.root,rows:[],sourceAt:new Date().toISOString(),runId:f.runId});
+ const plan=run();a.equal(plan.counts.READY,1);const r=plan.items[0].record;
+ a.equal(r.DISCOVERY_SOURCE,sources.length===1?'EMAIL':'SAVED_SOURCE_EVIDENCE');a.equal(r.SOURCE_PROVIDER,'LINKEDIN');a.equal(r.SCOUT_RUN_ID,undefined);
+ job.DISCOVERY_SOURCE='EMPLOYER_CAREER_SITE';S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',f.ledger);
+ a.equal(run().items[0].record.DISCOVERY_SOURCE,'EMPLOYER_CAREER_SITE');
+});
