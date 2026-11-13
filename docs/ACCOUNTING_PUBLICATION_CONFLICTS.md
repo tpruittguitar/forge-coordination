@@ -41,3 +41,7 @@ bindings, concurrent decisions, unknown fields, regressed counters, or a current
 candidate contradicting closure remain conflicts. Immutable review and attempt
 proof validators are unchanged. The resolver never posts, retries, or releases
 Writer requests. This does not repair a previously interrupted checkout.
+
+## Concurrent enrichment assignment observations
+
+The publisher can reconcile `ENRICHMENT_HELPER_WORK.json` by unique primary ID when all top-level metadata is unchanged. Existing assignments preserve exact one-sided updates; removals and divergent concurrent edits stop. Duplicate new additions may differ only in `canonicalObservedAt` and `researchProvenance.canonicalSourceSha256`, with valid distinct observation times and hashes. Their row hash, source fingerprint, status, ownership and every other known or unknown field must match exactly. The later complete observation is retained; equal-time divergent observations stop. This does not infer completion or relax original Writer fences. All resolutions validate together before staging. Clean Git merges still undergo duplicate-membership validation. A previously interrupted checkout still requires separate operator reconciliation; this code does not clear it automatically.
