@@ -41,7 +41,23 @@ function attempt(root,c,now){
  if(!eq(ref,{runId:ref.runId,sourceVersion:a.sourceVersion,observedAt:a.observedAt,evidenceSha256:a.evidenceSha256,reason:a.reason,nextAction:a.nextAction,proof:ref.proof}))fail();
  if(a.reviewPath){if(!new RegExp('^'+W.REVIEWS+'/'+c.exceptionId+'-[a-f0-9]{64}\\.json$').test(a.reviewPath))fail();const r=S.read(root,a.reviewPath,null);if(!r||a.reviewPath!==W.REVIEWS+'/'+c.exceptionId+'-'+S.hash(r)+'.json'||r.runId!==ref.runId||r.sourceVersion!==c.binding.sourceVersion||Date.parse(r.reviewedAt)>Date.parse(receipt.completedAt)||Date.parse(r.reviewedAt)<Date.parse(start.startedAt)-60000)fail();W.validateReview(r,{cases:{[c.exceptionId]:c}},now,true);}
 }
-function mergeCase(root,b,l,r,now,leftAt,rightAt){
+// Lazily evaluate the same coordinator snapshot once, only for the two extra
+// event dimensions below. Missing/stale snapshots remain operator conflicts.
+function coordinatorEvidence(root,now){
+ let cached;
+ return work=>{
+  if(!cached){
+   const report=S.read(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',null),state=S.read(root,'state/PROGRAMMED_COORDINATOR.json',null);
+   if(report?.schema!=='forge.programmed-coordinator-report.v1'||state?.schema!=='forge.programmed-coordinator.v1'||!object(state.items)||!time(report.at)||Date.parse(report.at)>now+60000)fail();
+   cached={report,state,current:null};
+  }
+  if(!time(work.at)||!work.runId||cached.report.runId!==work.runId||Math.abs(Date.parse(cached.report.at)-Date.parse(work.at))>1000)fail();
+  if(!cached.current)cached.current=new Set(W.candidates(root,cached.report,cached.state,Date.parse(work.at)).map(c=>c.exceptionId));
+  return cached;
+ };
+}
+function mergeCase(root,b,l,r,now,leftWork,rightWork,evidence){
+ const leftAt=leftWork.at,rightAt=rightWork.at;
  if(!b){if(l&&r&&!eq(l,r))fail();const added=l||r;if(added.review||added.lastAttempt)fail();return added;}
  if(!l||!r||!eq(b.binding,l.binding)||!eq(b.binding,r.binding))fail();
  // Never drop even an old proof or attempt, including on a one-sided change.
@@ -50,25 +66,35 @@ function mergeCase(root,b,l,r,now,leftAt,rightAt){
  // A coordinator may stop observing a case while an independently proved,
  // earlier attempt is published. Preserve both facts without reopening the
  // case or treating NO_LONGER_OPEN as canonical completion. Reviews/status
- // changes, unknown fields and attempts after closure remain conflicts.
+ // changes and unknown fields remain conflicts. Later attempts require a fresh
+ // coordinator snapshot proving absence; they remain inert history.
  const closure=(side,at)=>b.status!=='NO_LONGER_OPEN'&&!Object.hasOwn(b,'closedAt')&&side.status==='NO_LONGER_OPEN'&&changed(b,side).length===2&&changed(b,side).every(k=>['status','closedAt'].includes(k))&&time(side.closedAt)&&side.closedAt===at&&Date.parse(at)<=now+60000&&time(b.lastSeen)&&Date.parse(at)>=Date.parse(b.lastSeen);
  const attempted=side=>changed(b,side).length===1&&changed(b,side)[0]==='lastAttempt';
- let closed,served;
- if(closure(l,leftAt)&&attempted(r)){closed=l;served=r;}
- else if(closure(r,rightAt)&&attempted(l)){closed=r;served=l;}
+ let closed,served,closedWork;
+ if(closure(l,leftAt)&&attempted(r)){closed=l;served=r;closedWork=leftWork;}
+ else if(closure(r,rightAt)&&attempted(l)){closed=r;served=l;closedWork=rightWork;}
  if(closed){
   attempt(root,served,now);
   if(served.review)review(root,served,now);
-  if(Date.parse(served.lastAttempt.observedAt)>Date.parse(closed.closedAt)||b.lastAttempt&&Date.parse(served.lastAttempt.observedAt)<=Date.parse(b.lastAttempt.observedAt))fail();
+  if(Date.parse(served.lastAttempt.observedAt)>Date.parse(closed.closedAt)&&evidence(closedWork).current.has(b.exceptionId))fail();
+  if(b.lastAttempt&&Date.parse(served.lastAttempt.observedAt)<=Date.parse(b.lastAttempt.observedAt))fail();
   return {...closed,lastAttempt:served.lastAttempt};
  }
  if(!lc.length||!rc.length||eq(l,r))result=choose(b,l,r);
  else {
   const observation=side=>changed(b,side).every(k=>k==='lastSeen')&&time(side.lastSeen)&&time(b.lastSeen)&&Date.parse(side.lastSeen)>=Date.parse(b.lastSeen);
+  const counter=(side,work)=>{
+   const fields=changed(b,side);
+   if(fields.length!==2||!fields.includes('attempts')||!fields.includes('lastSeen')||side.kind!=='SOURCE'||side.lastSeen!==work.at||!time(b.lastSeen)||!time(side.lastSeen)||Date.parse(side.lastSeen)<Date.parse(b.lastSeen)||!Number.isSafeInteger(b.attempts)||!Number.isSafeInteger(side.attempts)||b.attempts<0||side.attempts<=b.attempts)return false;
+   const e=evidence(work),item=e.state.items[b.binding.key];
+   if(!item||item.version!==b.binding.sourceVersion||item.attempts!==side.attempts||!e.current.has(b.exceptionId))fail();
+   return true;
+  };
   const service=side=>changed(b,side).every(k=>['review','lastAttempt','status'].includes(k));
-  let observed,served;if(observation(l)&&service(r)){observed=l;served=r;}else if(observation(r)&&service(l)){observed=r;served=l;}else fail();
+  let observed,served;if(observation(l)&&service(r)){observed=l;served=r;}else if(observation(r)&&service(l)){observed=r;served=l;}else if(counter(l,leftWork)&&service(r)){observed=l;served=r;}else if(counter(r,rightWork)&&service(l)){observed=r;served=l;}else fail();
+  if(Object.hasOwn(observed,'attempts')&&!eq(observed.attempts,b.attempts)&&(!served.review||review(root,served,now).disposition!=='SOURCE_EVIDENCE'))fail();
   if(b.status==='NO_LONGER_OPEN'||served.status==='NO_LONGER_OPEN')fail();
-  result={...served,lastSeen:observed.lastSeen};
+  result={...served,lastSeen:observed.lastSeen,...(!eq(observed.attempts,b.attempts)?{attempts:observed.attempts}:{})};
  }
  if(!eq(result.review,b.review)){
   const rec=review(root,result,now);
@@ -111,7 +137,8 @@ function mergeExceptionWork(root,base,left,right,now=Date.now()){
  const out={};
  // Top-level values are atomic, including dispatch and unknown future fields.
  for(const k of keys(base,left,right).filter(k=>!['cases','counts'].includes(k))){if(Object.hasOwn(base,k)&&(!Object.hasOwn(left,k)||!Object.hasOwn(right,k)))fail();const v=k==='dispatch'?mergeDispatch(root,base,left,right,now):choose(base[k],left[k],right[k]);if(v!==undefined)Object.defineProperty(out,k,{value:v,enumerable:true,writable:true,configurable:true});}
- out.cases={};for(const id of keys(base.cases,left.cases,right.cases))out.cases[id]=mergeCase(root,base.cases[id],left.cases[id],right.cases[id],now,left.at,right.at);
+ const evidence=coordinatorEvidence(root,now);
+ out.cases={};for(const id of keys(base.cases,left.cases,right.cases))out.cases[id]=mergeCase(root,base.cases[id],left.cases[id],right.cases[id],now,left,right,evidence);
  out.counts=counts(out);validate(out);return out;
 }
 module.exports={mergeExceptionWork};
