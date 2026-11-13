@@ -1,18 +1,30 @@
 {
  "schema": "forge.needs-tim.v1",
- "builtAt": "2026-11-13T15:28:59.436Z",
- "sourceCommit": "9eb429cc6eaf7f17a06e2a1b0dd3a4388c2d009f",
+ "builtAt": "2026-11-13T16:04:41.999Z",
+ "sourceCommit": "b32b17a0496c26716b3c57dbfa2a8aba40db580b",
  "counts": {
-  "total": 237,
-  "BLOCKING": 0,
+  "total": 238,
+  "BLOCKING": 1,
   "ACTION": 195,
   "WATCH": 42,
   "DECIDE": 5,
   "JOBS": 5,
-  "FAILED": 173,
+  "FAILED": 174,
   "UPKEEP": 54
  },
  "items": [
+  {
+   "id": "auto-intake-latched:receipts/auto-intake/FORGE-AUTO-20261113T152339Z.json",
+   "section": "FAILED",
+   "level": "BLOCKING",
+   "title": "AUTO source intake stopped: earlier run FORGE-AUTO-20261113T152339Z is unfinished",
+   "detail": "BLOCKED: Writer writer_status transport TimeoutError. Open request: FORGE-SOURCE-5FD671B80FB55EB86F47A2F8. Every later source-intake-auto run stops before any Writer call until this is reconciled.",
+   "action": "Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.",
+   "source": "receipts/auto-intake/FORGE-AUTO-20261113T152339Z.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/auto-intake/FORGE-AUTO-20261113T152339Z.json",
+   "at": "2026-11-13T15:52:36.051Z",
+   "raisedBy": "AUTO-INTAKE"
+  },
   {
    "id": "auto-intake-identity-hold:FORGE-SOURCE-1001075C35BCBEA09F1830D1",
    "section": "FAILED",
@@ -2450,7 +2462,7 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-13T15:28:59.436Z",
+   "at": "2026-11-13T16:04:41.999Z",
    "raisedBy": "CODE"
   },
   {
@@ -2931,8 +2943,8 @@
    "title": "CODE · CHATGPT — run never wrote a terminal receipt",
    "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
    "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261113T142523618Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261113T142523618Z_TRANSPORT.json",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261113T151523700Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261113T151523700Z_TRANSPORT.json",
    "at": "2026-11-13T00:00:00-05:00",
    "raisedBy": "CHATGPT"
   },
@@ -3011,8 +3023,8 @@
    "provider": "CHATGPT",
    "lastAt": "2026-11-13T00:00:00-05:00",
    "lastStatus": "UNFINISHED",
-   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261113T142523618Z_TRANSPORT.json",
-   "runs7d": 762,
+   "lastFile": "receipts/FORGE-CODE-CHATGPT-20261113T151523700Z_TRANSPORT.json",
+   "runs7d": 767,
    "usualGapHours": 0,
    "overdue": false
   },
