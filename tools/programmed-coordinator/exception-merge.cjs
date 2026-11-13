@@ -65,11 +65,24 @@ function mergeCase(root,b,l,r,now,leftWork,rightWork,evidence){
  const lc=changed(b,l),rc=changed(b,r);let result;
  // A coordinator may stop observing a case while an independently proved,
  // earlier attempt is published. Preserve both facts without reopening the
- // case or treating NO_LONGER_OPEN as canonical completion. Reviews/status
- // changes and unknown fields remain conflicts. Later attempts require a fresh
+ // case or treating NO_LONGER_OPEN as canonical completion. Except for the
+ // narrow Writer wait-review branch below, reviews/status changes and unknown
+ // fields remain conflicts. Later attempts require a fresh
  // coordinator snapshot proving absence; they remain inert history.
  const closure=(side,at)=>b.status!=='NO_LONGER_OPEN'&&!Object.hasOwn(b,'closedAt')&&side.status==='NO_LONGER_OPEN'&&changed(b,side).length===2&&changed(b,side).every(k=>['status','closedAt'].includes(k))&&time(side.closedAt)&&side.closedAt===at&&Date.parse(at)<=now+60000&&time(b.lastSeen)&&Date.parse(at)>=Date.parse(b.lastSeen);
  const attempted=side=>changed(b,side).length===1&&changed(b,side)[0]==='lastAttempt';
+ // A prior immutable Writer wait review remains history after the coordinator
+ // independently stops observing the case. Never infer closure from clocks:
+ // require the exact current coordinator snapshot and absence from candidates.
+ let reviewedClosure,reviewedSide,reviewedClosureWork;
+ const reviewOnly=side=>changed(b,side).length===2&&changed(b,side).every(k=>['status','review'].includes(k))&&side.status==='WAITING_SOURCE_CHANGE'&&side.kind==='WRITER';
+ if(closure(l,leftAt)&&reviewOnly(r)){reviewedClosure=l;reviewedSide=r;reviewedClosureWork=leftWork;}
+ else if(closure(r,rightAt)&&reviewOnly(l)){reviewedClosure=r;reviewedSide=l;reviewedClosureWork=rightWork;}
+ if(reviewedClosure){
+  const rec=review(root,reviewedSide,now);
+  if(rec.disposition!=='WAITING_SOURCE_CHANGE'||rec.retryAfter||b.review&&Date.parse(rec.reviewedAt)<=Date.parse(b.review.reviewedAt)||Date.parse(rec.reviewedAt)>Date.parse(reviewedClosure.closedAt)||evidence(reviewedClosureWork).current.has(b.exceptionId))fail();
+  return {...reviewedClosure,review:reviewedSide.review};
+ }
  let closed,served,closedWork;
  if(closure(l,leftAt)&&attempted(r)){closed=l;served=r;closedWork=leftWork;}
  else if(closure(r,rightAt)&&attempted(l)){closed=r;served=l;closedWork=rightWork;}
