@@ -1,0 +1,128 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4472081256",
+  "sourceVersion": "62e2e382abb77df973fcc78716ef9aa8c8190c9c4576973f946da3d8e11014ee",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261113T104415Z-29e4ea",
+  "observedAt": "2026-11-13T10:44:15.870683Z",
+  "instructionCommit": "f1282146ab4c9a036da795c3d5a6a6757fd5dbf1",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared identity matcher returns AMBIGUOUS; do not force a match or override protected identities. Saved candidate reports SCOUT_INTAKE_WRITTEN. Independent batch COMPLETE with matching acceptance writeId is separate from candidate-specific original request-result and exact-effect verification. No new job completion claimed. Saved historical candidate effect does not resolve the current shared matcher ambiguity. Preserve exact source binding and conflicting rows; do not promote weaker historical matching to current exact identity proof.",
+  "nextAction": "Existing coordinator reconciles exact posting/requisition/worksite binding against saved candidate effect and current shared-matcher ambiguity; preserve protected decisions and original request.",
+  "retryCondition": "Candidate-specific controlled original request-result/exact-effect proof or grounded source/requisition/worksite evidence resolves the held identity; unchanged batch completion alone does not satisfy this condition.",
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0,
+  "canonicalMatch": {
+    "key": "linkedin:4472081256",
+    "status": "AMBIGUOUS",
+    "primaryId": null,
+    "basis": [
+      "CONFLICTING_OR_MULTIPLE_IDENTITIES"
+    ],
+    "rows": [
+      {
+        "primaryId": "V2F-ED8DCE247C93",
+        "bucket": "APPLIED",
+        "company": "BIG TEX TRAILER MANUFACTURING LLC",
+        "title": "Senior Director of Operations",
+        "location": "Batavia, OH",
+        "hash": "e497bfa0b67aad983f8647078f194068055712abfbf05bb89ebc2d6643147be2"
+      },
+      {
+        "primaryId": "V2I-A735A80E9C42",
+        "bucket": "DECLINED_BY_TIM",
+        "company": "ATW",
+        "title": "Senior Director of Operations",
+        "location": "Batavia, OH",
+        "hash": "bb0cfcb78d0a2b1ef2de418e7be3137ff1feb429b6f480a87be28d97a7587bfa"
+      },
+      {
+        "primaryId": "V2F-E9799EF24A51",
+        "bucket": "DUPLICATE",
+        "company": "Big Tex Trailers",
+        "title": "Senior Director of Operations",
+        "location": "Batavia, OH",
+        "hash": "785e4f91eaba7f3d7aa3d9bca3133a024634b7d779be781c45906bfe057dfd5f"
+      }
+    ]
+  },
+  "originalRequest": {
+    "requestId": "FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002",
+    "position": 42,
+    "writeId": "W-20261101210739345-133ced",
+    "candidateResult": {
+      "index": 42,
+      "result": "SCOUT_INTAKE_WRITTEN",
+      "primaryId": "V2I-A735A80E9C42",
+      "detail": "",
+      "candidateIds": [],
+      "sourceSha256": "125c90a3bece9923e93dbf1eac23a858b7c35041e5efdf76d9b101f14ad284cb"
+    },
+    "independentState": "COMPLETE",
+    "independentWriteId": "W-20261101210739345-133ced"
+  },
+  "attempts": [
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_CHECKPOINT.json",
+      "sha256": "9ef3aabf83b14c6270cdb9679ee392cb2d96eba718fd5ab031f947b4435e3fab",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 42. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_ACCEPTANCE.json",
+      "sha256": "8874458330976f0036bac2f8a7261ba2aa933ebbc0cb4f57924dde8aa6dd2449",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 42. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "receipts/FORGE-HELPER-DRAIN-CHATGPT-20261101-V2-B002_VERIFIED.json",
+      "sha256": "2e633624b0e23664a4c801833b59bcfca5a8e69d6e6066aaf483d9290025f4c7",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 42. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "sha256": "44dda8bc4653e6382bc150fa9f18cabf68bd9a91bebe8c029abb496d2461c93b",
+      "result": "Fresh authenticated exact batch is COMPLETE; acceptance writeId matches. Presence alone never clears the original fence."
+    },
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterSha256": "0cf42ff64e26b1fd6a5ac595362cd800d7aa14ebfe3da2aff4e0ae2d34d8d75c",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 8783,
+      "archiveRows": 785,
+      "result": "Complete snapshots parsed once and shared job-identity matcher applied. Minimal parsed-row hashes attached; no private row prose."
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4472081256",
+      "result": "Legacy batch fence has no authorized FORGE-AUTO run binding. No fabricated read-only probe or Writer submission dispatched."
+    }
+  ],
+  "savedControlledVerification": {
+    "effects": [
+      {
+        "key": "linkedin:4472081256",
+        "queueKey": "linkedin:4472081256",
+        "status": "VERIFIED_INSERTED",
+        "primaryId": "V2I-A735A80E9C42"
+      }
+    ],
+    "proofs": [
+      {
+        "key": "linkedin:4472081256",
+        "primaryId": "V2I-A735A80E9C42",
+        "result": "SCOUT_INTAKE_WRITTEN",
+        "rowSha256": "9e7cc093dffe5fa1b662c9cfd6553fa74ce00cd017012ae0ea7aa7bbe0f6ce8e",
+        "matches": {
+          "company": true,
+          "title": true,
+          "location": true,
+          "source": true
+        },
+        "independentReceipt": "COMPLETE"
+      }
+    ],
+    "independentCompleteObservedAt": "2026-11-01T21:08:57.638Z"
+  }
+}
