@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261113T0739Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261113T1247Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (112 read, 0 failed) | 184 | 60 | 94 |
+| Employer job boards (112 read, 0 failed) | 183 | 54 | 99 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,9 +19,9 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 41 | 55 |
-| SR_MANAGER | 14 | 18 |
-| SR_STAFF | 5 | 21 |
+| DIRECTOR_PLUS | 39 | 56 |
+| SR_MANAGER | 12 | 20 |
+| SR_STAFF | 3 | 23 |
 
 ## New roles
 
@@ -33,8 +33,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, Advanced Manufacturing](https://jobs.lever.co/shieldai/fb943ed0-366b-4330-bde4-4a1e0989e7d1) | Seattle, Washington | MFG_PROD | SR_STAFF | $188K-$282K |
 | BOARD:lever | DREAM Shield AI | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.lever.co/shieldai/ddbab7c4-cb54-49f9-b9ab-fff244fdbdbe) | San Mateo, California | MFG_PROD | SR_STAFF | $280K-$420K |
 | BOARD:lever | DREAM Shield AI | [Senior V-BAT Air Vehicle Operator, Deployed Operations Site Lead](https://jobs.lever.co/shieldai/52bfd55b-d539-4af1-b8bf-dbd2ccf12161) | Dallas, Texas | MFG_PROD | DIRECTOR_PLUS | $98K-$155K |
-| BOARD:lever | DREAM Shield AI | [Staff Engineer, Electromechanical Systems Advance Manufacturing - Ranger (R6547)](https://jobs.lever.co/shieldai/507ccf39-a459-4f57-94ec-c11bb25188bd) | Seattle, Washington | MFG_PROD | SR_STAFF | $171K-$257K |
-| BOARD:lever | DREAM Shield AI | [Staff Engineer, Integration Advance Manufacturing - Ranger (R6505)](https://jobs.lever.co/shieldai/6298023d-ede6-4bce-b657-c19a034273cb) | Seattle, Washington | MFG_PROD | SR_STAFF | $171K-$257K |
 | BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
@@ -55,9 +53,9 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Formlabs | [Head of Technical Operations (TechOps) ](https://careers.formlabs.com/job/8301504/apply/?gh_jid=8301504) | Somerville, MA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Prime Medicine | [Senior Manager, Regulatory Operations](https://job-boards.greenhouse.io/primemedicine/jobs/6219243004) | Cambridge, MA | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
@@ -69,15 +67,12 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Gilead Sciences | [Sr Director, Quality Control](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---La-Verne/Sr-Director--Quality-Control_R0056065-2) | United States - California - La Verne | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0055613-3) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Quality_R0056209-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Gilead Sciences | [Head of Validation - Manufacturing](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Head-of-Validation---Manufacturing_R0055991-2) | United States - California - Foster City | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Sr Manager, Outsourced Manufacturing](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Sr-Manager--Outsourced-Manufacturing_R0056258) | United States - California - Foster City | MFG_PROD | SR_MANAGER |  |
-| BOARD:workday | Gilead Sciences | [Senior Manager, SAP – Planning and Manufacturing](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Senior-Manager--SAP---Planning-and-Manufacturing_R0054003-1) | United States - California - Foster City | MFG_PROD | SR_MANAGER |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056138-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056208-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056141-3) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Gilead Sciences | [Director, Product Quality Small Molecule](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Santa-Monica/Director--Product-Quality_R0056245-2) | United States - California - Santa Monica | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
-| BOARD:workday | Rentschler Biopharma SE | [Sr Director, Quality Control - Analytics & Product Testing](https://rentschler.wd3.myworkdayjobs.com/rentschler_career/job/Milford-MA-United-States/Director--Quality-Control---Analytics_JR2850-1) | Milford, MA, United States | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Vertex Pharmaceuticals | [Senior Director, GCP Quality](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director--GCP-Quality_REQ-30119) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Vertex Pharmaceuticals | [Director CMC Quality Compliance (Hybrid)](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Director-CMC-Quality-Compliance--Hybrid-_REQ-29706) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Vertex Pharmaceuticals | [Director, Commercial Quality-Packaging and Labeling](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Director--Commercial-Quality-Packaging-and-Labeling_REQ-30328) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
@@ -86,4 +81,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:workday | Vertex Pharmaceuticals | [Senior Director - Quality Data, Digital Systems & Compliance](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director---Quality-Data--Digital-Systems---Compliance_REQ-30096) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Vertex Pharmaceuticals | [Senior Director, Quality AI, Data & Technology Engineering](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Director--Quality-AI--Data---Technology-Engineering_REQ-30531) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:workday | Vertex Pharmaceuticals | [Senior Director Cell & Genetic Therapies Quality - Personalized Medicine](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Snr-Director--Quality-CGT-Personalized-Medicine_REQ-29826) | Boston, MA | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Vertex Pharmaceuticals | [Senior Manager, Manufacturing Operations (3rd Shift)](https://vrtx.wd501.myworkdayjobs.com/vertex_careers/job/Boston-MA/Senior-Manager--Manufacturing-Operations--3rd-Shift-_REQ-30285-1) | Boston, MA | MFG_PROD | SR_MANAGER |  |
