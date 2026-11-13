@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-13T08:25:29.856Z",
+  "at": "2026-11-13T09:13:26.495Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -48411,6 +48411,89 @@
         ],
         "unseenHistoricalCoverage": "UNPROVEN"
       }
+    },
+    "1a1d3f5c97d6f5e6": {
+      "gmailId": "1a1d3f5c97d6f5e6",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308326893",
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "url:1b52865f5e4521309fce9dbf",
+        "url:2bf4b8eb664560c4a236dc33",
+        "url:473cdb76e615279b2c9dd2b8",
+        "url:d8372d34cbe887af30f0fd1d",
+        "url:3342d22350be71235d545edb"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "nextPageRequired": false,
+      "exhausted": false,
+      "advertisedUnseen": 0,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "at": "2026-11-13T08:53:16.566Z",
+        "originalDate": "2026-11-13T08:11:02.000Z",
+        "visibleKeys": [
+          "url:1b52865f5e4521309fce9dbf",
+          "url:2bf4b8eb664560c4a236dc33",
+          "url:473cdb76e615279b2c9dd2b8",
+          "url:d8372d34cbe887af30f0fd1d",
+          "url:3342d22350be71235d545edb"
+        ],
+        "newKeys": [
+          "url:1b52865f5e4521309fce9dbf",
+          "url:2bf4b8eb664560c4a236dc33",
+          "url:473cdb76e615279b2c9dd2b8",
+          "url:d8372d34cbe887af30f0fd1d",
+          "url:3342d22350be71235d545edb"
+        ],
+        "template": "GLASSDOOR_SAVED_ALERT_V1",
+        "unresolvedKeys": [],
+        "pendingCards": [],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
+    },
+    "1a1d3e5542437aee": {
+      "gmailId": "1a1d3e5542437aee",
+      "url": "https://www.linkedin.com/jobs/view/4487850720/",
+      "advertisedUnseen": 0,
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "linkedin:4487850720",
+        "linkedin:4482080627",
+        "linkedin:4487856577",
+        "linkedin:4489492458",
+        "linkedin:4488365972",
+        "linkedin:4471538669"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "advertisedCountIsNotUniqueJobs": true,
+      "nextPageRequired": false,
+      "exhausted": false,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1",
+        "at": "2026-11-13T08:53:17.588Z",
+        "originalDate": "2026-11-13T07:53:04.000Z",
+        "visibleKeys": [
+          "linkedin:4487850720",
+          "linkedin:4482080627",
+          "linkedin:4487856577",
+          "linkedin:4489492458",
+          "linkedin:4488365972",
+          "linkedin:4471538669"
+        ],
+        "newKeys": [
+          "linkedin:4487856577",
+          "linkedin:4489492458",
+          "linkedin:4488365972"
+        ],
+        "pendingCards": [],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
     }
   },
   "jobs": {
@@ -59284,7 +59367,8 @@
       "observedAt": "2026-10-31T04:02:02.505Z",
       "status": "OUT_OF_SCOPE",
       "sourceEmails": [
-        "1a15770f8a7433cc"
+        "1a15770f8a7433cc",
+        "1a1d3e5542437aee"
       ],
       "evidence": [
         {
@@ -59300,6 +59384,19 @@
             " · ",
             "Be an early applicant"
           ]
+        },
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "ceba1e85fc55eeb1fbc5188ac97453a76c7892cf80a617291705f5869e0c7e0a",
+          "paragraphs": [
+            "Senior Engineering Manager, Equipment Engineering",
+            "Alcon",
+            "Johns Creek, GA"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
         }
       ],
       "disposition": {
@@ -59314,7 +59411,60 @@
           "page": "https://www.linkedin.com/jobs/search-results/?currentJobId=4482080627&keywords=%28manufacturing%20OR%20quality%20OR%20operations%20OR%20production%29%20%28director%20OR%20%22head%20of%22%20OR%20%22senior%20manager%22%29&geoId=100380745&distance=100.0&f_TPR=a1792282590-",
           "identityReusedFromPriorCapture": true
         }
-      ]
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4482080627/",
+          "sourceIdentity": {
+            "company": "Alcon",
+            "title": "Senior Engineering Manager, Equipment Engineering",
+            "location": "Johns Creek, GA"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4482080627/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
     },
     "linkedin:4482147460": {
       "key": "linkedin:4482147460",
@@ -60106,7 +60256,8 @@
       "observedAt": "2026-10-31T04:02:02.505Z",
       "status": "VERIFIED_EXISTING",
       "sourceEmails": [
-        "1a15770f8a7433cc"
+        "1a15770f8a7433cc",
+        "1a1d3e5542437aee"
       ],
       "evidence": [
         {
@@ -60121,6 +60272,19 @@
             "8 benefits",
             "Posted 1 week ago\n1 week ago"
           ]
+        },
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "3dd66a705173c855e2c9856d99cbf52d294156edcf06afd024753d20004a4a2f",
+          "paragraphs": [
+            "Vice President, Transformation",
+            "GardenCore",
+            "Peachtree Corners, GA"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
         }
       ],
       "disposition": {
@@ -60129,6 +60293,59 @@
         "primaryId": "V2I-BFBBE78A9B44",
         "exactRowVerified": true,
         "bucket": "DECLINED_BY_TIM"
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4471538669/",
+          "sourceIdentity": {
+            "company": "GardenCore",
+            "title": "Vice President, Transformation",
+            "location": "Peachtree Corners, GA"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4471538669/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     },
     "linkedin:4472597926": {
@@ -112179,7 +112396,7 @@
       "location": "Newark, DE",
       "url": "https://www.linkedin.com/jobs/view/4480553647/",
       "observedAt": "2026-11-01T08:53:05.271Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -112205,7 +112422,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -112240,6 +112457,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-A85B0AA73E09",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482761794": {
@@ -113365,7 +113591,7 @@
       "location": "Olathe, KS",
       "url": "https://www.linkedin.com/jobs/view/4481798576/",
       "observedAt": "2026-11-01T08:53:05.271Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -113393,7 +113619,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -113428,6 +113654,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-8E2150EE98A1"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4480490108": {
@@ -113962,9 +114200,9 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
       "submissionHistory": [
@@ -113985,13 +114223,19 @@
           "at": "2026-11-13T07:38:34.786Z",
           "proof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
           "status": "NOT_ACCEPTED"
+        },
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
         }
       ],
-      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4420601326": {
@@ -114211,7 +114455,7 @@
       "location": "South Bend, IN",
       "url": "https://www.linkedin.com/jobs/view/4482189431/",
       "observedAt": "2026-11-01T08:53:17.694Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -114239,7 +114483,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0073",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0073.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -114274,6 +114518,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-8E2150EE98A1"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4482896770": {
@@ -117921,7 +118177,7 @@
       "location": "Dayton, OH",
       "url": "https://www.linkedin.com/jobs/view/4482151370/",
       "observedAt": "2026-11-01T08:53:21.847Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -117947,7 +118203,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0069.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -117982,6 +118238,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-F80FDD0D0956",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484704699": {
@@ -122300,7 +122565,7 @@
       "location": "Orlando, FL",
       "url": "https://www.linkedin.com/jobs/view/4478698097/",
       "observedAt": "2026-11-01T08:53:26.409Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -122326,7 +122591,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0066",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0066.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -122361,6 +122626,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-F29AC1DDB3FB",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4398405697": {
@@ -123626,7 +123900,7 @@
       "location": "Tucson, AZ",
       "url": "https://www.linkedin.com/jobs/view/4481787428/",
       "observedAt": "2026-11-01T08:53:29.465Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -123654,7 +123928,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -123689,6 +123963,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-8029EF4AA8C8",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4453034611": {
@@ -125071,7 +125354,7 @@
       "location": "Minneapolis, MN",
       "url": "https://www.linkedin.com/jobs/view/4482012338/",
       "observedAt": "2026-11-01T08:53:31.551Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -125099,7 +125382,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0069.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -125134,6 +125417,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-76AC46D13525",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4424249609": {
@@ -125475,7 +125767,7 @@
       "location": "United States",
       "url": "https://www.linkedin.com/jobs/view/4477478074/",
       "observedAt": "2026-11-01T08:53:31.551Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11",
         "1a194cf75d865cc7"
@@ -125512,7 +125804,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -125547,6 +125839,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3CAAAF6A12C1",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481395565": {
@@ -125557,7 +125858,7 @@
       "location": "Greater Boston",
       "url": "https://www.linkedin.com/jobs/view/4481395565/",
       "observedAt": "2026-11-01T08:53:31.551Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a157031fdea5d11"
       ],
@@ -125581,7 +125882,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -125616,6 +125917,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-6DF013F1FE3F",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483113012": {
@@ -145061,7 +145371,7 @@
       "location": "Detroit, MI",
       "url": "https://www.linkedin.com/jobs/view/4481532379/",
       "observedAt": "2026-11-01T08:55:25.199Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -145087,7 +145397,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -145122,6 +145432,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-EE544C20FB5E",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484436146": {
@@ -147646,7 +147965,7 @@
       "location": "Franklin, TN",
       "url": "https://www.linkedin.com/jobs/view/4482063636/",
       "observedAt": "2026-11-01T08:55:32.626Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -147669,7 +147988,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -147704,6 +148023,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-A0FA65884F31"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4472287766": {
@@ -147930,7 +148261,7 @@
       "location": "Detroit, MI",
       "url": "https://www.linkedin.com/jobs/view/4481774762/",
       "observedAt": "2026-11-01T08:55:32.626Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -147955,7 +148286,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -147990,6 +148321,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-A8082852820E",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483344045": {
@@ -148500,7 +148840,7 @@
       "location": "Warren, MI",
       "url": "https://www.linkedin.com/jobs/view/4481777652/",
       "observedAt": "2026-11-01T08:55:32.626Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -148525,7 +148865,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -148560,6 +148900,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-A8082852820E"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4484992605": {
@@ -148711,7 +149063,7 @@
       "location": "Somerset, NJ",
       "url": "https://www.linkedin.com/jobs/view/4482076026/",
       "observedAt": "2026-11-01T08:55:32.626Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -148734,7 +149086,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -148769,6 +149121,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-A0FA65884F31"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4483391817": {
@@ -150234,7 +150598,7 @@
       "location": "Boston, MA",
       "url": "https://www.linkedin.com/jobs/view/4482057825/",
       "observedAt": "2026-11-01T08:55:36.213Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a156ad108f5533f"
       ],
@@ -150257,7 +150621,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -150292,6 +150656,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-A0FA65884F31",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484433139": {
@@ -213641,7 +214014,7 @@
       "location": "Fort Lauderdale, FL",
       "url": "https://www.linkedin.com/jobs/view/4484584173/",
       "observedAt": "2026-11-01T09:23:00.558Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -213665,7 +214038,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0053",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0053.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -213700,6 +214073,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-1FCE09E786D1"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4454308678": {
@@ -213918,7 +214303,7 @@
       "location": "Jacksonville, FL",
       "url": "https://www.linkedin.com/jobs/view/4484579285/",
       "observedAt": "2026-11-01T09:23:00.558Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -213940,7 +214325,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -213975,6 +214360,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-EA28E5B2A364",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484891866": {
@@ -215180,7 +215574,7 @@
       "location": "Palm Beach Gardens, FL",
       "url": "https://www.linkedin.com/jobs/view/4484561997/",
       "observedAt": "2026-11-01T09:23:04.250Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -215204,7 +215598,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -215239,6 +215633,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-1FCE09E786D1",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483565573": {
@@ -216434,7 +216837,7 @@
       "location": "Palm Beach Gardens, FL",
       "url": "https://www.linkedin.com/jobs/view/4484573444/",
       "observedAt": "2026-11-01T09:23:06.607Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -216458,7 +216861,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -216493,6 +216896,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-DCBB3D4FF8B4"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4482777149": {
@@ -216550,7 +216965,7 @@
       "location": "Fort Lauderdale, FL",
       "url": "https://www.linkedin.com/jobs/view/4484583148/",
       "observedAt": "2026-11-01T09:23:06.607Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -216574,7 +216989,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -216609,6 +217024,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-DCBB3D4FF8B4"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4476219336": {
@@ -216830,7 +217257,7 @@
       "location": "Kissimmee, FL",
       "url": "https://www.linkedin.com/jobs/view/4484569684/",
       "observedAt": "2026-11-01T09:23:06.607Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -216857,7 +217284,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -216892,6 +217319,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E3D3A16A01EB",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4458280625": {
@@ -217813,7 +218249,7 @@
       "location": "Windermere, FL",
       "url": "https://www.linkedin.com/jobs/view/4484557622/",
       "observedAt": "2026-11-01T09:23:06.607Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -217846,7 +218282,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -217881,6 +218317,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E1E4E16376FA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4417004967": {
@@ -220954,7 +221399,7 @@
       "location": "West Palm Beach, FL",
       "url": "https://www.linkedin.com/jobs/view/4484573439/",
       "observedAt": "2026-11-01T09:23:37.790Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -220978,7 +221423,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -221013,6 +221458,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-1FCE09E786D1"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4484573442": {
@@ -221023,7 +221480,7 @@
       "location": "West Palm Beach, FL",
       "url": "https://www.linkedin.com/jobs/view/4484573442/",
       "observedAt": "2026-11-01T09:23:37.790Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -221047,7 +221504,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -221082,6 +221539,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-DCBB3D4FF8B4",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485663852": {
@@ -221377,7 +221843,7 @@
       "location": "Naples, FL",
       "url": "https://www.linkedin.com/jobs/view/4484250685/",
       "observedAt": "2026-11-01T09:23:37.790Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -221402,7 +221868,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -221437,6 +221903,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-5CD97AB20356",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484516799": {
@@ -221447,7 +221922,7 @@
       "location": "Alachua, FL",
       "url": "https://www.linkedin.com/jobs/view/4484516799/",
       "observedAt": "2026-11-01T09:23:37.790Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -221482,7 +221957,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0049",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0049.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -221517,6 +221992,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-51B2056DE5F9",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481481576": {
@@ -221593,7 +222077,7 @@
       "location": "Sanford, FL",
       "url": "https://www.linkedin.com/jobs/view/4484565656/",
       "observedAt": "2026-11-01T09:23:37.790Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -221635,7 +222119,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -221670,6 +222154,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-1D8E10D63018",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4449079027": {
@@ -223841,7 +224334,7 @@
       "location": "Miami, FL",
       "url": "https://www.linkedin.com/jobs/view/4484568352/",
       "observedAt": "2026-11-01T09:23:41.761Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -223867,7 +224360,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -223902,6 +224395,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-2444FE468EC2",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4423238311": {
@@ -227181,7 +227683,7 @@
       "location": "Orlando, FL",
       "url": "https://www.linkedin.com/jobs/view/4484543034/",
       "observedAt": "2026-11-01T09:23:52.460Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -227210,7 +227712,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -227245,6 +227747,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-6517723BAAC1",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4399796241": {
@@ -228070,7 +228581,7 @@
       "location": "Jupiter, FL",
       "url": "https://www.linkedin.com/jobs/view/4484568298/",
       "observedAt": "2026-11-01T09:23:52.460Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -228099,7 +228610,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -228134,6 +228645,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-8665E099A5E8",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484100167": {
@@ -233577,7 +234097,7 @@
       "location": "Spring Hill, FL",
       "url": "https://www.linkedin.com/jobs/view/4484506767/",
       "observedAt": "2026-11-01T09:27:06.535Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -233603,7 +234123,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -233638,6 +234158,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-D79D8A39DD72",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4480681504": {
@@ -235949,7 +236478,7 @@
       "location": "Tampa, FL",
       "url": "https://www.linkedin.com/jobs/view/4484497293/",
       "observedAt": "2026-11-01T09:27:18.981Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -235974,7 +236503,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -236009,6 +236538,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-AB16A6E5B1C9",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4480085763": {
@@ -243598,7 +244136,7 @@
       "location": "Miami-Fort Lauderdale Area",
       "url": "https://www.linkedin.com/jobs/view/4484466835/",
       "observedAt": "2026-11-01T09:28:06.057Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -243628,7 +244166,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -243663,6 +244201,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-9493BF7D6D4A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484222854": {
@@ -244671,7 +245218,7 @@
       "location": "Fort Myers, FL",
       "url": "https://www.linkedin.com/jobs/view/4484523194/",
       "observedAt": "2026-11-01T09:28:10.801Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -244709,7 +245256,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -244744,6 +245291,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E6C96FBAE7BD",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482584743": {
@@ -247175,7 +247731,7 @@
       "location": "Lake Mary, FL",
       "url": "https://www.linkedin.com/jobs/view/4484239131/",
       "observedAt": "2026-11-01T09:28:14.581Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -247202,7 +247758,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -247237,6 +247793,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3BE56B972759",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4477019360": {
@@ -251020,7 +251585,7 @@
       "location": "Broward County, FL",
       "url": "https://www.linkedin.com/jobs/view/4484507845/",
       "observedAt": "2026-11-01T09:28:28.873Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695409260704"
       ],
@@ -251062,7 +251627,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0049",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0049.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -251097,6 +251662,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-7541EF6113B1",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482792244": {
@@ -253812,7 +254386,7 @@
       "location": "Marietta, GA",
       "url": "https://www.linkedin.com/jobs/view/4478041084/",
       "observedAt": "2026-11-01T09:31:19.204Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408",
         "1a15770f8a7433cc",
@@ -253866,7 +254440,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -253901,6 +254475,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-17D5FE92613D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485383526": {
@@ -265977,7 +266560,7 @@
       "location": "Gainesville, GA",
       "url": "https://www.linkedin.com/jobs/view/4480989983/",
       "observedAt": "2026-11-01T09:31:45.471Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a18e5f83d7ff408",
         "1a15770f8a7433cc",
@@ -266034,7 +266617,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0067",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0067.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -266069,6 +266652,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-D73050CF45FD",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4476890299": {
@@ -307084,7 +307676,7 @@
       "location": "Huntsville, AL",
       "url": "https://www.linkedin.com/jobs/view/4477715550/",
       "observedAt": "2026-11-01T09:36:39.104Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -307112,7 +307704,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -307147,6 +307739,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-534BC33D48F0"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4417232664": {
@@ -308174,7 +308778,7 @@
       "location": "Clinton, TN",
       "url": "https://www.linkedin.com/jobs/view/4478816384/",
       "observedAt": "2026-11-01T09:36:46.233Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -308196,7 +308800,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -308231,6 +308835,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-34964EFC6042",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482141412": {
@@ -310177,7 +310790,7 @@
       "location": "Decatur, AL",
       "url": "https://www.linkedin.com/jobs/view/4481383888/",
       "observedAt": "2026-11-01T09:36:52.823Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -310205,7 +310818,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -310240,6 +310853,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-32DA5EE65984",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4476908044": {
@@ -312515,7 +313137,7 @@
       "location": "Alpharetta, GA",
       "url": "https://www.linkedin.com/jobs/view/4479454384/",
       "observedAt": "2026-11-01T09:36:59.781Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -312539,7 +313161,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0066",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0066.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -312574,6 +313196,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-5168E26387CD",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484109953": {
@@ -313376,7 +314007,7 @@
       "location": "Gainesville, GA",
       "url": "https://www.linkedin.com/jobs/view/4482226053/",
       "observedAt": "2026-11-01T09:37:03.251Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -313403,7 +314034,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -313438,6 +314069,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3A186177A597",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4480439475": {
@@ -313448,7 +314088,7 @@
       "location": "Dalton, GA",
       "url": "https://www.linkedin.com/jobs/view/4480439475/",
       "observedAt": "2026-11-01T09:37:03.251Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -313474,7 +314114,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -313509,6 +314149,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-367B10E27FDA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4473529254": {
@@ -314149,7 +314798,7 @@
       "location": "Kennesaw, GA",
       "url": "https://www.linkedin.com/jobs/view/4478621757/",
       "observedAt": "2026-11-01T09:37:03.251Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -314172,7 +314821,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -314207,6 +314856,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-F09DD0A1A7AC",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4475845985": {
@@ -315424,7 +316082,7 @@
       "location": "Chattanooga, TN",
       "url": "https://www.linkedin.com/jobs/view/4481368427/",
       "observedAt": "2026-11-01T09:37:30.458Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -315448,7 +316106,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -315483,6 +316141,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-75E977E06E40",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481757446": {
@@ -315726,7 +316393,7 @@
       "location": "Tennessee, United States",
       "url": "https://www.linkedin.com/jobs/view/4478614432/",
       "observedAt": "2026-11-01T09:37:30.458Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -315768,7 +316435,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0065",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0065.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -315803,6 +316470,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-41D4984899BD",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482852846": {
@@ -316604,7 +317280,7 @@
       "location": "Duluth, GA",
       "url": "https://www.linkedin.com/jobs/view/4481035194/",
       "observedAt": "2026-11-01T09:37:33.957Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -316628,7 +317304,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -316663,6 +317339,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-01B9CBC37728",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4478620935": {
@@ -317230,7 +317915,7 @@
       "location": "La Vergne, TN",
       "url": "https://www.linkedin.com/jobs/view/4482226089/",
       "observedAt": "2026-11-01T09:37:38.001Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -317255,7 +317940,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -317290,6 +317975,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-58235D96689F",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4476950991": {
@@ -317576,7 +318270,7 @@
       "location": "Peachtree Corners, GA",
       "url": "https://www.linkedin.com/jobs/view/4480671637/",
       "observedAt": "2026-11-01T09:37:38.001Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -317600,7 +318294,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0067",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0067.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -317635,6 +318329,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-0C72B3723FD7",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482752474": {
@@ -317693,7 +318396,7 @@
       "location": "Decatur, TN",
       "url": "https://www.linkedin.com/jobs/view/4480703035/",
       "observedAt": "2026-11-01T09:37:38.001Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -317721,7 +318424,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -317756,6 +318459,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-64180D732706",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485672781": {
@@ -319339,7 +320051,7 @@
       "location": "Lebanon, TN",
       "url": "https://www.linkedin.com/jobs/view/4480682464/",
       "observedAt": "2026-11-01T09:37:41.394Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -319366,7 +320078,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0067",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0067.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -319401,6 +320113,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-722242A5F67B",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4476329708": {
@@ -320441,7 +321162,7 @@
       "location": "Lewisburg, TN",
       "url": "https://www.linkedin.com/jobs/view/4481131544/",
       "observedAt": "2026-11-01T09:37:44.630Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -320467,7 +321188,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -320502,6 +321223,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-DFF97220C9E4",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4472768884": {
@@ -321507,7 +322237,7 @@
       "location": "Cookeville, TN",
       "url": "https://www.linkedin.com/jobs/view/4477657925/",
       "observedAt": "2026-11-01T09:37:48.041Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -321532,7 +322262,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0065",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0065.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -321567,6 +322297,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-4D559C6D8C55",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4477669375": {
@@ -321577,7 +322316,7 @@
       "location": "Cookeville, TN",
       "url": "https://www.linkedin.com/jobs/view/4477669375/",
       "observedAt": "2026-11-01T09:37:48.041Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -321601,7 +322340,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0065",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0065.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -321636,6 +322375,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-6447F5AC5C03",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485358220": {
@@ -321809,7 +322557,7 @@
       "location": "Lithia Springs, GA",
       "url": "https://www.linkedin.com/jobs/view/4482214109/",
       "observedAt": "2026-11-01T09:37:48.041Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -321834,7 +322582,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -321869,6 +322617,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-839E40E237F5",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481380597": {
@@ -322243,7 +323000,7 @@
       "location": "Chattanooga, TN",
       "url": "https://www.linkedin.com/jobs/view/4480487203/",
       "observedAt": "2026-11-01T09:37:51.759Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -322268,7 +323025,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -322303,6 +323060,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-B9CC1810F1FF",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4465945567": {
@@ -322620,7 +323386,7 @@
       "location": "Norcross, GA",
       "url": "https://www.linkedin.com/jobs/view/4478912736/",
       "observedAt": "2026-11-01T09:37:51.759Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -322648,7 +323414,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0066",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0066.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -322683,6 +323449,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-4E9F074F0584",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4464718195": {
@@ -323440,7 +324215,7 @@
       "location": "Austell, GA",
       "url": "https://www.linkedin.com/jobs/view/4482195062/",
       "observedAt": "2026-11-01T09:37:51.759Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -323464,7 +324239,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0073",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0073.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -323499,6 +324274,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-311BA85FD156",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4404353971": {
@@ -323564,7 +324348,7 @@
       "location": "Shelbyville, TN",
       "url": "https://www.linkedin.com/jobs/view/4478965891/",
       "observedAt": "2026-11-01T09:37:57.443Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -323601,7 +324385,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -323636,6 +324420,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-99A0EB4B5B8B",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4472448820": {
@@ -324488,7 +325281,7 @@
       "location": "Marietta, GA",
       "url": "https://www.linkedin.com/jobs/view/4482059714/",
       "observedAt": "2026-11-01T09:37:57.443Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -324514,7 +325307,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -324549,6 +325342,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-EE9CA1BF3B23",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482814558": {
@@ -324666,7 +325468,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4480961181/",
       "observedAt": "2026-11-01T09:37:57.443Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -324704,7 +325506,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -324739,6 +325541,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-5CCD7EDEF70D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4476676729": {
@@ -325221,7 +326032,7 @@
       "location": "Austell, GA",
       "url": "https://www.linkedin.com/jobs/view/4481293655/",
       "observedAt": "2026-11-01T09:38:08.773Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -325246,7 +326057,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -325281,6 +326092,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-4CEFAD248239",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4466442640": {
@@ -325571,7 +326391,7 @@
       "location": "Ball Ground, GA",
       "url": "https://www.linkedin.com/jobs/view/4480612166/",
       "observedAt": "2026-11-01T09:38:08.773Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -325598,7 +326418,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0070",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0070.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -325633,6 +326453,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E67056D8763F",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482765540": {
@@ -326503,7 +327332,7 @@
       "location": "Marietta, GA",
       "url": "https://www.linkedin.com/jobs/view/4480260440/",
       "observedAt": "2026-11-01T09:38:23.862Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -326540,7 +327369,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0066",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0066.json",
-        "coordinatorStatus": "TITLE_SCOPE_REVIEW",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -326575,6 +327404,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-957CBCEB031A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482895041": {
@@ -326914,7 +327752,7 @@
       "location": "Marietta, GA",
       "url": "https://www.linkedin.com/jobs/view/4481197576/",
       "observedAt": "2026-11-01T09:38:23.862Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -326941,7 +327779,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -326976,6 +327814,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4483380800": {
@@ -327035,7 +327885,7 @@
       "location": "Woodstock, GA",
       "url": "https://www.linkedin.com/jobs/view/4481189925/",
       "observedAt": "2026-11-01T09:38:23.862Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -327062,7 +327912,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0071",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0071.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -327097,6 +327947,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E5FD5A7B74AA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4466906632": {
@@ -327863,7 +328722,7 @@
       "location": "Suwanee, GA",
       "url": "https://www.linkedin.com/jobs/view/4481002754/",
       "observedAt": "2026-11-01T09:38:27.639Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -327888,7 +328747,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0067",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0067.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -327923,6 +328782,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-634DAC073DAA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4434582887": {
@@ -328131,9 +328999,9 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
       "submissionHistory": [
@@ -328154,13 +329022,19 @@
           "at": "2026-11-13T07:38:34.786Z",
           "proof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
           "status": "NOT_ACCEPTED"
+        },
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
         }
       ],
-      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4473139783": {
@@ -328222,7 +329096,7 @@
       "location": "Wartburg, TN",
       "url": "https://www.linkedin.com/jobs/view/4481387260/",
       "observedAt": "2026-11-01T09:38:27.639Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -328247,7 +329121,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -328282,6 +329156,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3A9C6E21FB30",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4419472997": {
@@ -328573,7 +329456,7 @@
       "location": "Kennesaw, GA",
       "url": "https://www.linkedin.com/jobs/view/4481196559/",
       "observedAt": "2026-11-01T09:38:27.639Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -328600,7 +329483,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -328635,6 +329518,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4481309099": {
@@ -328645,7 +329540,7 @@
       "location": "Johns Creek, GA",
       "url": "https://www.linkedin.com/jobs/view/4481309099/",
       "observedAt": "2026-11-01T09:38:27.639Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -328672,7 +329567,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -328707,6 +329602,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4419989088": {
@@ -329258,7 +330165,7 @@
       "location": "Lithia Springs, GA",
       "url": "https://www.linkedin.com/jobs/view/4481775872/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329280,7 +330187,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329315,6 +330222,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-D284905ADA47",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4482202423": {
@@ -329325,7 +330241,7 @@
       "location": "Duluth, GA",
       "url": "https://www.linkedin.com/jobs/view/4482202423/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329350,7 +330266,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329385,6 +330301,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-016C03E25C71",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483276635": {
@@ -329461,7 +330386,7 @@
       "location": "Shelbyville, TN",
       "url": "https://www.linkedin.com/jobs/view/4481778386/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329485,7 +330410,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0072",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0072.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329520,6 +330445,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-2348CFA9D442",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481300430": {
@@ -329530,7 +330464,7 @@
       "location": "Marietta, GA",
       "url": "https://www.linkedin.com/jobs/view/4481300430/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329557,7 +330491,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329592,6 +330526,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4481300431": {
@@ -329602,7 +330548,7 @@
       "location": "Alpharetta, GA",
       "url": "https://www.linkedin.com/jobs/view/4481300431/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329629,7 +330575,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329664,6 +330610,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4481792465": {
@@ -329722,7 +330680,7 @@
       "location": "Lithia Springs, GA",
       "url": "https://www.linkedin.com/jobs/view/4480428242/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329757,7 +330715,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0067",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0067.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329792,6 +330750,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-23857F37CA6A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4478946337": {
@@ -329802,7 +330769,7 @@
       "location": "Lebanon, TN",
       "url": "https://www.linkedin.com/jobs/view/4478946337/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329839,7 +330806,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0069",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0069.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329874,6 +330841,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-2E52DF94F348",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4479480765": {
@@ -329884,7 +330860,7 @@
       "location": "Lithia Springs, GA",
       "url": "https://www.linkedin.com/jobs/view/4479480765/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329921,7 +330897,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0066",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0066.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -329956,6 +330932,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-FDBAEFED4B26",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4481301449": {
@@ -329966,7 +330951,7 @@
       "location": "Alpharetta, GA",
       "url": "https://www.linkedin.com/jobs/view/4481301449/",
       "observedAt": "2026-11-01T09:38:31.695Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a15770f8a7433cc"
       ],
@@ -329993,7 +330978,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0068",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0068.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "HELD_WRITER_IDENTITY",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -330028,6 +331013,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-E5FD5A7B74AA"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4481388825": {
@@ -341999,7 +342996,7 @@
       "location": "Carrollton, TX",
       "url": "https://www.linkedin.com/jobs/view/4484477489/",
       "observedAt": "2026-11-01T09:41:49.743Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a156953e692bbed",
         "1a15695448e1d00f"
@@ -342046,7 +343043,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -342081,6 +343078,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E1BD4819CE55",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483755529": {
@@ -350732,7 +351738,7 @@
       "location": "Lewisville, TX",
       "url": "https://www.linkedin.com/jobs/view/4484535366/",
       "observedAt": "2026-11-01T09:45:41.953Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -350761,7 +351767,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0052",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0052.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -350796,6 +351802,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-1C96D394358A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483170009": {
@@ -351249,7 +352264,7 @@
       "location": "Georgetown, TX",
       "url": "https://www.linkedin.com/jobs/view/4484557573/",
       "observedAt": "2026-11-01T09:45:45.896Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -351290,7 +352305,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -351325,6 +352340,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-2D3DAA3272BA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483820110": {
@@ -351898,7 +352922,7 @@
       "location": "Northeast, NY",
       "url": "https://www.linkedin.com/jobs/view/4484487326/",
       "observedAt": "2026-11-01T09:45:49.027Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -351924,7 +352948,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -351959,6 +352983,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3C0CE2CD9C85",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4483135863": {
@@ -361882,7 +362915,7 @@
       "location": "St Paul, MN",
       "url": "https://www.linkedin.com/jobs/view/4484575166/",
       "observedAt": "2026-11-01T09:46:42.243Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -361910,7 +362943,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0050",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0050.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -361945,6 +362978,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-E0A237255817",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4463887732": {
@@ -365074,7 +366116,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4484243218/",
       "observedAt": "2026-11-01T09:46:59.344Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -365101,7 +366143,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -365136,6 +366178,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-A165A4D5F40F",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4478679991": {
@@ -369855,7 +370906,7 @@
       "location": "Philadelphia, PA",
       "url": "https://www.linkedin.com/jobs/view/4484267012/",
       "observedAt": "2026-11-01T09:47:11.682Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -369881,7 +370932,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_B-20261101-B0049",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_B/CLAUDE-INTAKE_B-20261101-B0049.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -369916,6 +370967,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-0CECD2EA0F05",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4478943859": {
@@ -371546,7 +372606,7 @@
       "location": "Southfield, MI",
       "url": "https://www.linkedin.com/jobs/view/4484475751/",
       "observedAt": "2026-11-01T09:47:15.948Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a15695448e1d00f"
       ],
@@ -371573,7 +372633,7 @@
         "assignmentId": "CLAUDE-CATCHUP-20261101-V1",
         "runId": "CLAUDE-INTAKE_A-20261101-B0051",
         "batch": "receipts/CLAUDE_HELPERS/FORGE_CLAUDE_INTAKE_A/CLAUDE-INTAKE_A-20261101-B0051.json",
-        "coordinatorStatus": "EXCLUSION_REVIEW_REQUIRED",
+        "coordinatorStatus": "VERIFIED_INSERTED",
         "doNotRepeatPreparation": true
       },
       "submissions": [
@@ -371608,6 +372668,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-DBF07A96603E",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484978202": {
@@ -721501,7 +722570,8 @@
       "observedAt": "2026-11-13T00:19:04.000Z",
       "status": "UNSCREENED",
       "sourceEmails": [
-        "1a1d245af62cc172"
+        "1a1d245af62cc172",
+        "1a1d3e5542437aee"
       ],
       "evidence": [
         {
@@ -721516,11 +722586,24 @@
           ],
           "source": "FULL_ORIGINAL_ALERT",
           "sourceSha256": "1e71708168661d98b2bf0515a5e14eb645a0772b4e3c33be70435df5e739d00e"
+        },
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "2c3ba55f71d0537817428be8de83a4b0091ac9a2d76e795f25edcea011eddbb4",
+          "paragraphs": [
+            "Director of Manufacturing, Operations & Assembly",
+            "Blue Origin",
+            "Huntsville, AL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
         }
       ],
       "preliminaryScreen": {
         "schema": "forge.discovery-preliminary-screen.v1",
-        "checkedAt": "2026-11-13T01:52:31.584Z",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
         "ats": {
           "schema": "forge.resume-overlap.v1",
           "matcherVersion": "explicit-variants-v2",
@@ -764262,9 +765345,9 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
       "submissionHistory": [
@@ -764273,13 +765356,19 @@
           "at": "2026-11-13T07:38:34.786Z",
           "proof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
           "status": "NOT_ACCEPTED"
+        },
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
         }
       ],
-      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T065023872Z-B005_NOT_ACCEPTED.json",
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4485830515": {
@@ -764591,15 +765680,24 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
+      "submissionHistory": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
+        }
+      ],
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4433286202": {
@@ -764610,7 +765708,7 @@
       "location": "Lancaster, South Carolina, United States",
       "url": "https://www.linkedin.com/jobs/view/4433286202/",
       "observedAt": "2026-11-03T18:34:29.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1a2b0faffed66d"
       ],
@@ -764704,6 +765802,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-F96DF5DB11BA",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485987136": {
@@ -764808,7 +765915,7 @@
       "location": "Georgia, United States",
       "url": "https://www.linkedin.com/jobs/view/4488857874/",
       "observedAt": "2026-11-11T23:53:03.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1cd0781dd8b33f"
       ],
@@ -764902,6 +766009,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-44A966165218",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4488433427": {
@@ -764912,7 +766028,7 @@
       "location": "Anniston, AL",
       "url": "https://www.linkedin.com/jobs/view/4488433427/",
       "observedAt": "2026-11-09T23:53:05.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1c2bad1388e281"
       ],
@@ -765006,6 +766122,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-3C29FAE6616A",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4480572064": {
@@ -765016,7 +766141,7 @@
       "location": "Greater Birmingham, Alabama Area",
       "url": "https://www.linkedin.com/jobs/view/4480572064/",
       "observedAt": "2026-11-09T23:53:05.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1c2bad1388e281"
       ],
@@ -765099,6 +766224,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-7B1BFBB1D91C",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4477388834": {
@@ -765109,7 +766243,7 @@
       "location": "Fort Worth, Texas, United States",
       "url": "https://www.linkedin.com/jobs/view/4477388834/",
       "observedAt": "2026-11-04T18:14:52.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a1a7c55e78992eb"
       ],
@@ -765203,6 +766337,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2E-80C020272F22"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4485276478": {
@@ -765684,7 +766830,7 @@
       "location": "United States",
       "url": "https://www.linkedin.com/jobs/view/4483996474/",
       "observedAt": "2026-11-02T00:30:57.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a199aa9c7e2b6e9"
       ],
@@ -765767,6 +766913,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-AEF1A267A407",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4484466094": {
@@ -765777,7 +766932,7 @@
       "location": "United States",
       "url": "https://www.linkedin.com/jobs/view/4484466094/",
       "observedAt": "2026-11-02T00:30:57.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a199aa9c7e2b6e9"
       ],
@@ -765860,6 +767015,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-1F35FE405763",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4475217959": {
@@ -765951,7 +767115,7 @@
       "location": "St. Petersburg",
       "url": "https://www.linkedin.com/jobs/view/4479565108/",
       "observedAt": "2026-11-02T00:30:57.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a199aa9c7e2b6e9"
       ],
@@ -766034,6 +767198,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-055EAC1B0CF4",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485807238": {
@@ -766044,7 +767217,7 @@
       "location": "Wellsboro, PA",
       "url": "https://www.linkedin.com/jobs/view/4485807238/",
       "observedAt": "2026-11-07T01:53:06.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1b3b59d5dd1a61"
       ],
@@ -766140,6 +767313,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-623AF6DF03BC",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4485827169": {
@@ -766224,15 +767406,24 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
+      "submissionHistory": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
+        }
+      ],
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4471135985": {
@@ -766328,15 +767519,24 @@
       },
       "submissions": [
         {
-          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-          "at": "2026-11-13T08:25:29.856Z",
-          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
         }
       ],
+      "submissionHistory": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
+          "at": "2026-11-13T08:25:29.856Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
+          "status": "NOT_ACCEPTED"
+        }
+      ],
+      "notAcceptedProof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_NOT_ACCEPTED.json",
       "submission": {
-        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B002",
-        "at": "2026-11-13T08:25:29.856Z",
-        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B002_CHECKPOINT.json"
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
       }
     },
     "linkedin:4489660171": {
@@ -766442,7 +767642,7 @@
       "location": "Woodburn, IN",
       "url": "https://www.linkedin.com/jobs/view/4489661168/",
       "observedAt": "2026-11-12T19:53:05.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "HELD_WRITER_REVIEW",
       "sourceEmails": [
         "1a1d1522d65b6f80"
       ],
@@ -766525,6 +767725,18 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "AMBIGUOUS_MATCH: EMPLOYER_TITLE_NEEDS_LOCATION",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "batchStatus": "COMPLETE",
+        "originalCandidateOutcome": "WRITE_FAILED",
+        "candidateIds": [
+          "V2I-2136CEDB5B9A"
+        ],
+        "noReplay": true
       }
     },
     "linkedin:4489138455": {
@@ -766535,7 +767747,7 @@
       "location": "Peachtree City, GA",
       "url": "https://www.linkedin.com/jobs/view/4489138455/",
       "observedAt": "2026-11-12T13:53:05.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1d0089777a7247"
       ],
@@ -766618,6 +767830,15 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-DCA28FCE31FE",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
       }
     },
     "linkedin:4489494047": {
@@ -766628,7 +767849,7 @@
       "location": "Atlanta, GA",
       "url": "https://www.linkedin.com/jobs/view/4489494047/",
       "observedAt": "2026-11-12T13:53:05.000Z",
-      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "status": "VERIFIED_INSERTED",
       "sourceEmails": [
         "1a1d0089777a7247"
       ],
@@ -766711,6 +767932,830 @@
         "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
         "at": "2026-11-13T08:24:21.328Z",
         "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_CHECKPOINT.json"
+      },
+      "disposition": {
+        "at": "2026-11-13T09:08:59.792Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T074523970Z-B001_VERIFIED.json",
+        "reason": "Original accepted result, independent COMPLETE and exact canonical identity verified",
+        "requestId": "FORGE-CODE-CHATGPT-20261113T074523970Z-B001",
+        "primaryId": "V2I-0A85A5AD553D",
+        "receiptState": "COMPLETE",
+        "exactRowVerified": true
+      }
+    },
+    "url:1b52865f5e4521309fce9dbf": {
+      "key": "url:1b52865f5e4521309fce9dbf",
+      "jobId": "1010308326893",
+      "provider": "GLASSDOOR",
+      "title": "Senior Manager, Operations",
+      "company": "Critical Process Systems",
+      "location": "Tolleson, AZ",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308326893",
+      "observedAt": "2026-11-13T08:11:02.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3f5c97d6f5e6"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3f5c97d6f5e6",
+          "at": "2026-11-13T08:11:02.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308326893",
+          "paragraphs": [
+            "Senior Manager, Operations",
+            "Critical Process Systems",
+            "Tolleson, AZ",
+            "$110K - $164K (Glassdoor est.) Easy Apply"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "4552ef3d925e3bc99d72ab46d2fd08b68bec6ddca56bb24aa1b78e4b05dacd79",
+          "cardHash": "c51c2e2c70bbd3c1bf069dab0822c7e1398b47be51410a48252375495ce7a8b6"
+        }
+      ],
+      "description": "$110K - $164K (Glassdoor est.) Easy Apply",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:1b52865f5e4521309fce9dbf",
+      "discoveryReview": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:1b52865f5e4521309fce9dbf",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308326893",
+          "sourceIdentity": {
+            "company": "Critical Process Systems",
+            "title": "Senior Manager, Operations",
+            "location": "Tolleson, AZ"
+          },
+          "sourceSha256": "25ec3adbb993628e770a95fd10e155a3bbce10143c4215cbc9440ed319449267",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308326893",
+          "sourceSha256": "25ec3adbb993628e770a95fd10e155a3bbce10143c4215cbc9440ed319449267",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "url:2bf4b8eb664560c4a236dc33": {
+      "key": "url:2bf4b8eb664560c4a236dc33",
+      "jobId": "1010308516920",
+      "provider": "GLASSDOOR",
+      "title": "Senior Continuous Improvement Leader",
+      "company": "Schneider Electric",
+      "location": "Nashville, TN",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308516920",
+      "observedAt": "2026-11-13T08:11:02.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3f5c97d6f5e6"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3f5c97d6f5e6",
+          "at": "2026-11-13T08:11:02.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308516920",
+          "paragraphs": [
+            "Senior Continuous Improvement Leader",
+            "Schneider Electric",
+            "Nashville, TN",
+            "Best Place to Work"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "afec09c01533ff70a3995a4627dca7f76f598c8ac3ba73327ac9f3da5f7aa3c1",
+          "cardHash": "7d8315281d4ed099790f4d5f0475bf4851b022bef33f00720b367a9fe28cfd29"
+        }
+      ],
+      "description": "Best Place to Work",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:2bf4b8eb664560c4a236dc33",
+      "discoveryReview": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:2bf4b8eb664560c4a236dc33",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Continuous Improvement"
+              ],
+              "postingQuotes": [
+                "Senior Continuous Improvement Leader\nBest Place to Work"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308516920",
+          "sourceIdentity": {
+            "company": "Schneider Electric",
+            "title": "Senior Continuous Improvement Leader",
+            "location": "Nashville, TN"
+          },
+          "sourceSha256": "83149f6614935f9dec82d30fabe23c3f4a604bdcabf58f416ea1dcc26727670e",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010308516920",
+          "sourceSha256": "83149f6614935f9dec82d30fabe23c3f4a604bdcabf58f416ea1dcc26727670e",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "url:473cdb76e615279b2c9dd2b8": {
+      "key": "url:473cdb76e615279b2c9dd2b8",
+      "jobId": "1010316094577",
+      "provider": "GLASSDOOR",
+      "title": "Senior Engineering Manager, Autonomy Evaluation Applications",
+      "company": "General Motors (GM)",
+      "location": "Sunnyvale, CA",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316094577",
+      "observedAt": "2026-11-13T08:11:02.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3f5c97d6f5e6"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3f5c97d6f5e6",
+          "at": "2026-11-13T08:11:02.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316094577",
+          "paragraphs": [
+            "Senior Engineering Manager, Autonomy Evaluation Applications",
+            "General Motors (GM)",
+            "Sunnyvale, CA",
+            "$296K - $454K (Employer est.)"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "988fb149ecf8713ab1f57b39339953c413ce43b1054d588e062b5fc6b659f5d5",
+          "cardHash": "d798e286b92611b87736aadc42c168de0191a777c27324bb9c3657c1ff044cfa"
+        }
+      ],
+      "description": "$296K - $454K (Employer est.)",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:473cdb76e615279b2c9dd2b8",
+      "discoveryReview": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:473cdb76e615279b2c9dd2b8",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316094577",
+          "sourceIdentity": {
+            "company": "General Motors (GM)",
+            "title": "Senior Engineering Manager, Autonomy Evaluation Applications",
+            "location": "Sunnyvale, CA"
+          },
+          "sourceSha256": "236ae23b4f99439abc51ff21ce60731e09b0131faa9962f421e3c7c9ac5b166d",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010316094577",
+          "sourceSha256": "236ae23b4f99439abc51ff21ce60731e09b0131faa9962f421e3c7c9ac5b166d",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "url:d8372d34cbe887af30f0fd1d": {
+      "key": "url:d8372d34cbe887af30f0fd1d",
+      "jobId": "1010320090080",
+      "provider": "GLASSDOOR",
+      "title": "Chief Growth Officer",
+      "company": "Construction Check",
+      "location": "Decatur, GA",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320090080",
+      "observedAt": "2026-11-13T08:11:02.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3f5c97d6f5e6"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3f5c97d6f5e6",
+          "at": "2026-11-13T08:11:02.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320090080",
+          "paragraphs": [
+            "Chief Growth Officer",
+            "Construction Check",
+            "Decatur, GA",
+            "$301K - $354K (Employer est.) Easy Apply"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "e5c744b15b308773af45135474249c42f2c8d7092f206d09843e10a53ca7b757",
+          "cardHash": "ed029aa3d775257465baae922d68879fc9c84e30fc1975fb34f71d58fefd7af5"
+        }
+      ],
+      "description": "$301K - $354K (Employer est.) Easy Apply",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:d8372d34cbe887af30f0fd1d",
+      "discoveryReview": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:d8372d34cbe887af30f0fd1d",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320090080",
+          "sourceIdentity": {
+            "company": "Construction Check",
+            "title": "Chief Growth Officer",
+            "location": "Decatur, GA"
+          },
+          "sourceSha256": "208fa1d53031f93e666b37893f138c51106fac8baeaa47c9f5050fafd98c39db",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010320090080",
+          "sourceSha256": "208fa1d53031f93e666b37893f138c51106fac8baeaa47c9f5050fafd98c39db",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "url:3342d22350be71235d545edb": {
+      "key": "url:3342d22350be71235d545edb",
+      "jobId": "1010318251835",
+      "provider": "GLASSDOOR",
+      "title": "Director of Maintenance & Reliability",
+      "company": "La-Z-Boy",
+      "location": "Dayton, TN",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318251835",
+      "observedAt": "2026-11-13T08:11:02.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3f5c97d6f5e6"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3f5c97d6f5e6",
+          "at": "2026-11-13T08:11:02.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318251835",
+          "paragraphs": [
+            "Director of Maintenance & Reliability",
+            "La-Z-Boy",
+            "Dayton, TN",
+            "$80K - $125K (Glassdoor est.) Easy Apply"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "1667804cdc18989336b023de03767400f4cad34edabeaf92e054c4268c794bb1",
+          "cardHash": "13dc2c13cdd3fc09107a9e3090cde55d39f7fcf33f224dcbfc98fdacb18ea673"
+        }
+      ],
+      "description": "$80K - $125K (Glassdoor est.) Easy Apply",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:3342d22350be71235d545edb",
+      "discoveryReview": {
+        "sourceSha256": "f348eada61b9931def8bd6b67a4584aa33e1dc39b402f849d3f2461c5c8fa3d5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:3342d22350be71235d545edb",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318251835",
+          "sourceIdentity": {
+            "company": "La-Z-Boy",
+            "title": "Director of Maintenance & Reliability",
+            "location": "Dayton, TN"
+          },
+          "sourceSha256": "5747f9b8158187ce518337d534e89bcbddbc33b1b7cd7ea8e2d5a3b7e158155e",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010318251835",
+          "sourceSha256": "5747f9b8158187ce518337d534e89bcbddbc33b1b7cd7ea8e2d5a3b7e158155e",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "linkedin:4487856577": {
+      "key": "linkedin:4487856577",
+      "jobId": "4487856577",
+      "title": "Sr. Director- Manufacturing, Operations, & Production",
+      "company": "Blue Origin",
+      "location": "Huntsville, AL",
+      "url": "https://www.linkedin.com/jobs/view/4487856577/",
+      "observedAt": "2026-11-13T07:53:04.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1d3e5542437aee"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "8a76a38b0e410948ba1522024609a192535ff77adae30302f05d9eda5d2ee3aa",
+          "paragraphs": [
+            "Sr. Director- Manufacturing, Operations, & Production",
+            "Blue Origin",
+            "Huntsville, AL"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "manufacturing_leadership",
+              "postingTerms": [
+                "Manufacturing",
+                "Production"
+              ],
+              "postingQuotes": [
+                "Sr. Director- Manufacturing, Operations, & Production",
+                "Sr. Director- Manufacturing, Operations, & Production"
+              ],
+              "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487856577/",
+          "sourceIdentity": {
+            "company": "Blue Origin",
+            "title": "Sr. Director- Manufacturing, Operations, & Production",
+            "location": "Huntsville, AL"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4487856577/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      }
+    },
+    "linkedin:4489492458": {
+      "key": "linkedin:4489492458",
+      "jobId": "4489492458",
+      "title": "Operational Excellence Manager",
+      "company": "Newell Brands",
+      "location": "Maryville, TN",
+      "url": "https://www.linkedin.com/jobs/view/4489492458/",
+      "observedAt": "2026-11-13T07:53:04.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a1d3e5542437aee"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "7a769a66327cf289e04fa465a2843133d03cc10d5ca71f7eb37b1bc400e15c25",
+          "paragraphs": [
+            "Operational Excellence Manager",
+            "Newell Brands",
+            "Maryville, TN"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [
+            {
+              "competencyId": "lean_operations",
+              "postingTerms": [
+                "Operational Excellence"
+              ],
+              "postingQuotes": [
+                "Operational Excellence Manager"
+              ],
+              "resumeEvidenceSha256": "805f6fc557ea31b1827d3bc401b23fe244dea407527ddf629fe8f99800ecdf0a"
+            }
+          ],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489492458/",
+          "sourceIdentity": {
+            "company": "Newell Brands",
+            "title": "Operational Excellence Manager",
+            "location": "Maryville, TN"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4489492458/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+          "at": "2026-11-13T09:13:26.495Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261113T083524016Z-B001",
+        "at": "2026-11-13T09:13:26.495Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261113T083524016Z-B001_CHECKPOINT.json"
+      }
+    },
+    "linkedin:4488365972": {
+      "key": "linkedin:4488365972",
+      "jobId": "4488365972",
+      "title": "Insight Global",
+      "company": "Dayton, TN",
+      "location": "Top applicant",
+      "url": "https://www.linkedin.com/jobs/view/4488365972/",
+      "observedAt": "2026-11-13T07:53:04.000Z",
+      "status": "UNSCREENED",
+      "sourceEmails": [
+        "1a1d3e5542437aee"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a1d3e5542437aee",
+          "at": "2026-11-13T07:53:04.000Z",
+          "page": "https://www.linkedin.com/jobs/view/4487850720/",
+          "cardHash": "3923ff225748ab30f9376577d2e35ab87f245943ebe7dcc38e439aa807ddc397",
+          "paragraphs": [
+            "Insight Global",
+            "Dayton, TN",
+            "Top applicant"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "d5e30f6dad16dc64bec8d4e955f838ee20f9c07843ded442e21bfcb4449f59b1"
+        }
+      ],
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-13T08:42:13.594Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_ONLY",
+          "matches": [],
+          "unresolved": [
+            "ROLE_CONTENT_NOT_REVIEWED"
+          ],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "ROLE_CONTENT_PENDING",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "CAPTURED_CARD_EXCERPT",
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4488365972/",
+          "sourceIdentity": {
+            "company": "Dayton, TN",
+            "title": "Insight Global",
+            "location": "Top applicant"
+          },
+          "sourceSha256": null,
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "690a216349b37b5816d6f4ae6c8670380e57b417c3cda6cd4c98aca7933e3d67",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.linkedin.com/jobs/view/4488365972/",
+          "sourceSha256": null,
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
       }
     }
   },
