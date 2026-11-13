@@ -75,13 +75,18 @@ function mergeCase(root,b,l,r,now,leftWork,rightWork,evidence){
  // independently stops observing the case. Never infer closure from clocks:
  // require the exact current coordinator snapshot and absence from candidates.
  let reviewedClosure,reviewedSide,reviewedClosureWork;
- const reviewOnly=side=>changed(b,side).length===2&&changed(b,side).every(k=>['status','review'].includes(k))&&side.status==='WAITING_SOURCE_CHANGE'&&side.kind==='WRITER';
- if(closure(l,leftAt)&&reviewOnly(r)){reviewedClosure=l;reviewedSide=r;reviewedClosureWork=leftWork;}
- else if(closure(r,rightAt)&&reviewOnly(l)){reviewedClosure=r;reviewedSide=l;reviewedClosureWork=rightWork;}
+ const reviewedWait=side=>{const fields=changed(b,side);return fields.includes('status')&&fields.includes('review')&&fields.every(k=>['status','review','lastAttempt'].includes(k))&&side.status==='WAITING_SOURCE_CHANGE'&&side.kind==='WRITER';};
+ if(closure(l,leftAt)&&reviewedWait(r)){reviewedClosure=l;reviewedSide=r;reviewedClosureWork=leftWork;}
+ else if(closure(r,rightAt)&&reviewedWait(l)){reviewedClosure=r;reviewedSide=l;reviewedClosureWork=rightWork;}
  if(reviewedClosure){
   const rec=review(root,reviewedSide,now);
   if(rec.disposition!=='WAITING_SOURCE_CHANGE'||rec.retryAfter||b.review&&Date.parse(rec.reviewedAt)<=Date.parse(b.review.reviewedAt)||Date.parse(rec.reviewedAt)>Date.parse(reviewedClosure.closedAt)||evidence(reviewedClosureWork).current.has(b.exceptionId))fail();
-  return {...reviewedClosure,review:reviewedSide.review};
+  const newAttempt=!eq(reviewedSide.lastAttempt,b.lastAttempt);
+  if(newAttempt){
+   attempt(root,reviewedSide,now);
+   if(Date.parse(reviewedSide.lastAttempt.observedAt)>Date.parse(reviewedClosure.closedAt)||b.lastAttempt&&Date.parse(reviewedSide.lastAttempt.observedAt)<=Date.parse(b.lastAttempt.observedAt))fail();
+  }
+  return {...reviewedClosure,review:reviewedSide.review,...(newAttempt?{lastAttempt:reviewedSide.lastAttempt}:{})};
  }
  let closed,served,closedWork;
  if(closure(l,leftAt)&&attempted(r)){closed=l;served=r;closedWork=leftWork;}
