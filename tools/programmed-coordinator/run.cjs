@@ -157,7 +157,7 @@ async function main(mode='inventory', options={}) {
   const commit=cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
   const runId=process.env.FORGE_COORDINATOR_HELD_RUN_ID || 'FORGE-CODE-CHATGPT-'+new Date().toISOString().replace(/[^0-9TZ]/g,'');
   const privateDir=process.env.FORGE_PRIVATE_WORK_DIR, lock=process.env.FORGE_PRODUCTION_LOCK;
-  let owned=false, deps;
+  let owned=false, deps, stage='initialization';
   if(apply) {
     if (!lock || !privateDir) throw Error('Shared production lock and private work directory required');
     const contract=fs.readFileSync(path.join(root,'policy/current/AI_AUTOMATION_COMMON.txt'),'utf8'), shared=contract.match(/automation-run-lock\.cjs acquire (\S+) <unique-RUN_ID>/)?.[1];
@@ -170,6 +170,7 @@ async function main(mode='inventory', options={}) {
     else {owned=Lock.lock(lock,'acquire',runId).acquired;if(!owned)throw Error('PRODUCTION_LOCK_HELD');}
   }
   try {
+    stage='collect-returns';
     state.instructionCommit=commit;
     let routine=null;
     if(mode!=='inventory'){
@@ -203,27 +204,36 @@ async function main(mode='inventory', options={}) {
       if(apply) for(const tx of Object.values(state.transactions).filter(tx=>T.pending(tx,root)&&(!returnsOnly||tx.itemKeys?.some(k=>select(state.items[k]))))) {
         try {await T.reconcile({root,privateDir,state,tx,deps});} catch(e) {state.exceptions['tx:'+tx.requestId]={owner:'CODE',reason:e.message,requestId:tx.requestId};}
       }
+      stage='canonical-snapshot';
       let canonical=await snapshot();
       state.canonicalSource=canonical.source;
       const sourceReviews=apply&&!returnsOnly?require('../routine-handoffs/exception-work.cjs').applySourceReviews({root,state}):null;
       // Existing scheduled runs automatically write validated enrichment before
       // unrelated mail, assignment work and the large intake plan.
+      stage='returned-evidence';
       canonical=await processReturnedEvidence({root,privateDir,state,snapshot:canonical,apply,runId,deps,select});
       state.canonicalSource=canonical.source;
       let discoveryScreenContext;
       if(!returnsOnly) {
         if(apply)state.interviewReviews=require('../routine-handoffs/interview-reviews.cjs').consume({root,privateDir,snapshot:canonical,checkLock:deps.checkLock});
         discoveryScreenContext=await require('../source-trial/preliminary-screen').context({key});
+        stage='mail';
         const mail=await require('../routine-handoffs/mail-pipeline.cjs').run({root,privateDir,runId,deps,apply,screenContext:discoveryScreenContext});
-        if(mail.masterVerifiedThisRun){canonical=await snapshot();state.canonicalSource=canonical.source;}
+        stage='routine-assignments';
+        canonical=await require('./run-health.cjs').freshSnapshot({current:canonical,read:snapshot,force:!!mail.masterVerifiedThisRun});
+        state.canonicalSource=canonical.source;
         const assignments=require('../routine-handoffs/assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,screenContext:discoveryScreenContext});
         state.routineHandoffs={transport:routine,assignments,mail,sourceReviews};
         let writerReceipts=null;
         try{writerReceipts=await deps.index();}catch{state.exceptions['grok-writer-receipts']={owner:'CODE',reason:'GROK_WRITER_RECEIPTS_UNAVAILABLE'};}
+        stage='shared-assignments';
+        canonical=await require('./run-health.cjs').freshSnapshot({current:canonical,read:snapshot});
+        state.canonicalSource=canonical.source;
         state.routineHandoffs.sharedHelpers=require('../helper-routing/shared-assignments.cjs').replenish({root,state,snapshot:canonical,runId,apply,checkLock:deps.checkLock,writerReceipts});
       }
       if(apply) {
         S.save(root,STATE,state);
+        stage='intake';
         const intakeKeys=returnsOnly?direct.intakeKeys(root,state,select):null;
         if(returnsOnly)state.directReturns={transport:routine,selectedBatches:batches};
         const accounting=returnsOnly?state.directReturns:state.routineHandoffs;
@@ -261,6 +271,7 @@ async function main(mode='inventory', options={}) {
         }
       }
     }
+    stage='terminal-accounting';
     const coverage=S.read(root,'state/EMAIL_RECOVERY_SUMMARY.json',null), at=new Date().toISOString();
     const report={...publicReport(state,coverage,at),runId,mode,collected,scope:returnsOnly?'RETURNED_EVIDENCE_ONLY':'FULL_COORDINATOR',selectedBatches:batches,directReturns:returnsOnly?state.directReturns||{transport:routine}:null,routineHandoffs:state.routineHandoffs||null};
     if(apply) {
@@ -271,6 +282,12 @@ async function main(mode='inventory', options={}) {
     } else if(privateDir) {S.save(privateDir,'coordinator-'+mode+'.json',report);}
     console.log(JSON.stringify({mode,collected,statuses:report.statuses,aiExceptions:report.aiExceptions.length,codeExceptions:report.codeExceptions.length,noProcessingCap:true}));
     return report;
+  } catch(error) {
+    if(apply&&privateDir) {
+      try {require('./run-health.cjs').recordFailure({privateDir,runId,commit,stage,error});}
+      catch {console.error('COORDINATOR_FAILURE_DIAGNOSTIC_SAVE_FAILED');}
+    }
+    throw error;
   } finally {if(owned) Lock.lock(lock,'release',runId);}
 }
 if(require.main===module) main(process.argv[2],require('./direct-returns.cjs').arguments(process.argv.slice(3))).catch(e=>{console.error(e.message);process.exitCode=1;});
