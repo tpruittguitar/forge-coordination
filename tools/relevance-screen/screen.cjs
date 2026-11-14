@@ -1,11 +1,14 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 const root=path.resolve(__dirname,'../..');
+// Copied from IDENTITY_PLACEHOLDER_RE in foreman-cockpit apps-script/Code.gs (Writer pull request #301).
+const IDENTITY_PLACEHOLDER_RE=/^(UNKNOWN|UNCAPTURED|NOT_STATED|N\/A|NONE|TBD|-|CONFIDENTIAL)$/i;
 function load(){const c=JSON.parse(fs.readFileSync(path.join(root,'control/RELEVANCE_SCREEN.json')));if(c.schema!=='forge.relevance-screen.v1'||!c.enabled||!Array.isArray(c.rules)||!/^[a-f0-9]{40}$/.test(c.policyCommit))throw Error('Relevance screen release is not active');const b=JSON.parse(fs.readFileSync(path.join(root,c.backtest)));for(const r of c.rules){const t=b.rules.find(x=>x.ruleId===r.id&&x.pattern===r.pattern);if(!t||t.falseClosures!==0||t.positiveCohort<1)throw Error('Unproven closure rule '+r.id);}const f=path.join(root,'state/RELEVANCE_SCREEN_GUARD.json');if(fs.existsSync(f)){const g=JSON.parse(fs.readFileSync(f));if(g.policyCommit===c.policyCommit)c.disabledRules=g.disabledRules||[];}return c;}
 function guarded(c,rows){const disabled=new Set(c.disabledRules||[]);for(const r of rows){const p=r.p||{};if(!['APPLIED','REJECTED_BY_EMPLOYER','READY_TO_PURSUE'].includes(r.BUCKET)&&!p.APP_DATE&&p.PRIOR_APPLICATION!=='YES')continue;const hit=evaluate({company:r.COMPANY,title:r.TITLE,location:r.LOCATION,url:'https://canonical.invalid/'+r.PRIMARY_ID},c);if(hit.outcome==='FUNCTION_MISMATCH')disabled.add(hit.ruleId);}return{...c,disabledRules:[...disabled]};}
 function evaluate(card,c=load()){
  const title=String(card.title||card.TITLE||'').trim(),company=String(card.company||card.COMPANY||'').trim(),location=String(card.location||card.LOCATION||'').trim(),url=card.url||card.SOURCE_URL;
- if(!title||!company||!location||!/^https:\/\//i.test(url||''))return{outcome:'HOLD_SOURCE_IDENTITY',rank:8,reason:'Missing card company, title, location or exact source URL'};
+ if(!title||!/^https:\/\//i.test(url||''))return{outcome:'HOLD_SOURCE_IDENTITY',rank:8,reason:'Missing card company, title, location or exact source URL'};
+ if(!company||!location||IDENTITY_PLACEHOLDER_RE.test(company)||IDENTITY_PLACEHOLDER_RE.test(location))return{outcome:'EXCLUDED',rank:9,reason:'Missing or placeholder company or location'};
  const manufacturing=new RegExp(c.manufacturingContext,'i').test(title);
  // Scope is card-level function only. No title-level, employer-name, geography,
  // estimated-pay, missing-pay, agency or unknown-client exclusion is permitted.
@@ -18,4 +21,4 @@ function evaluate(card,c=load()){
 }
 function rank(items,c=load()){return items.map(x=>({...x,screen:evaluate(x,c)})).sort((a,b)=>a.screen.rank-b.screen.rank||String(a.sourceDate||a.firstSeen||'9999').localeCompare(String(b.sourceDate||b.firstSeen||'9999'))||String(a.key||a.url).localeCompare(String(b.key||b.url)));}
 function updateGuard(rows){const c=guarded(load(),rows),g={schema:'forge.relevance-guard.v1',at:new Date().toISOString(),policyCommit:c.policyCommit,disabledRules:c.disabledRules};fs.writeFileSync(path.join(root,'state/RELEVANCE_SCREEN_GUARD.json'),JSON.stringify(g,null,2)+'\n');return c;}
-module.exports={load,evaluate,rank,guarded,updateGuard};
+module.exports={load,evaluate,rank,guarded,updateGuard,IDENTITY_PLACEHOLDER_RE};
