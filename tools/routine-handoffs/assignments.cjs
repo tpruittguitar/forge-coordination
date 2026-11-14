@@ -50,6 +50,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
    else code.items.push({key:j.key,queueKey:j.key,provider:'CODE',helperRunId:runId,provenance:'CAPTURED_SOURCE_CARD',sourceEvidence:card(j),cardHash:evidence.cardHash,status:'RETURNED_PENDING_SCREEN',sourceProof:'state/EMAIL_RECOVERY_QUEUE.json#'+j.key});knownCode.add(j.key);counts.seededCodeIntake++;
   }
   if(screen.outcome==='HOLD_SOURCE_IDENTITY'){exceptions.push({key:j.key,owner:'AI',reason:'CAPTURED_CARD_IDENTITY_INCOMPLETE'});continue;}
+  if(screen.outcome==='EXCLUDED')continue;
   if(screen.outcome==='ADMIT'&&prepared||screen.outcome==='FUNCTION_MISMATCH'&&prepared)continue; // Code/Writer owns these.
   const target=prepared?newRelevance:newIntake;
   target.push({key:j.key,aliases:j.aliases||[],sourceEvidence:{...card(j),references:['state/EMAIL_RECOVERY_QUEUE.json#'+j.key]},sourceDate:j.sourceDate||null,priorScreen:screen,writerSubmitted:false});
