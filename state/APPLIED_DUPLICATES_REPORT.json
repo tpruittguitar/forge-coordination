@@ -1,55 +1,30 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-14T01:31:34.299Z",
+ "at": "2026-11-14T10:43:46.865Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-14T01:31:33.681Z",
-  "rows": 8922,
-  "sha256": "4960e06c93b90dcc2f3e36741afd45e34c4fae441e503c1b4f992ec6bfb39260"
+  "readAt": "2026-11-14T10:43:46.024Z",
+  "rows": 8958,
+  "sha256": "10e9550a34587701dabc9322627acdc1362f8f890d25c4f1e3c6cbd201fa8ce1"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-14T01:26:12.958Z",
+  "at": "2026-11-14T10:39:34.218Z",
   "decision": 666
  },
  "counts": {
   "waiting": 666,
-  "matched": 18,
+  "matched": 20,
   "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 18
+  "KEEP_LABEL": 20
  },
  "rules": {
-  "UNCERTAIN": 5,
-  "DIFFERENT_SITE": 8,
-  "NEW_REQUISITION": 3,
-  "POSSIBLE_REPOST": 2
+  "DIFFERENT_SITE": 9,
+  "POSSIBLE_REPOST": 2,
+  "UNCERTAIN": 7,
+  "NEW_REQUISITION": 2
  },
  "items": [
-  {
-   "id": "V2I-037645C8D76B",
-   "company": "Tesla",
-   "title": "Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging",
-   "location": "Austin, TX",
-   "score": 85,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-21 · possible repeat",
-   "evidence": "Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-C52F42BB9C96",
-     "status": "DECLINED_BY_TIM",
-     "title": "Technical Program Manager, Manufacturing Engineering, Energy & Charging",
-     "location": "Austin, TX",
-     "decided": "2026-10-21",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.88,
-     "evidence": "Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare"
-    }
-   ]
-  },
   {
    "id": "V2I-DAE0286DF646",
    "company": "Cummins Inc.",
@@ -76,27 +51,27 @@
    ]
   },
   {
-   "id": "V2I-A5230F14AEB6",
-   "company": "Blue Origin",
-   "title": "Lunar Manufacturing & Assembly Manager",
-   "location": "Space Coast, FL",
+   "id": "V2I-25AAA3AF1625",
+   "company": "BAE Systems, Inc.",
+   "title": "Director of Supplier Quality",
+   "location": "Fort Wayne, IN",
    "score": 64,
    "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "Applied 2026-10-25 · this is a new posting",
-   "evidence": "Different wd posting: wd:R69279 vs earlier wd:R68774",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA",
    "matches": [
     {
-     "id": "V2I-9D90D416AC88",
-     "status": "APPLIED",
-     "title": "Manager Lunar - Manufacturing, Ops & Assembly",
-     "location": "Space Coast, FL",
-     "decided": "2026-10-25",
+     "id": "V2I-291757EAD78B",
+     "status": "DECLINED_BY_TIM",
+     "title": "Senior Director of Supplier Quality",
+     "location": "Nashua, NH, USA",
+     "decided": "2026-11-14",
      "rejected": null,
-     "rule": "NEW_REQUISITION",
+     "rule": "DIFFERENT_SITE",
      "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Different wd posting: wd:R69279 vs earlier wd:R68774"
+     "similarity": 0.75,
+     "evidence": "Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA"
     }
    ]
   },
@@ -122,6 +97,31 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-10-18, after rejection 2026-10-16"
+    }
+   ]
+  },
+  {
+   "id": "V2I-037645C8D76B",
+   "company": "Tesla",
+   "title": "Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging",
+   "location": "Austin, TX",
+   "score": 63,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-21 · possible repeat",
+   "evidence": "Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-C52F42BB9C96",
+     "status": "DECLINED_BY_TIM",
+     "title": "Technical Program Manager, Manufacturing Engineering, Energy & Charging",
+     "location": "Austin, TX",
+     "decided": "2026-10-21",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.88,
+     "evidence": "Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare"
     }
    ]
   },
@@ -163,6 +163,56 @@
    ]
   },
   {
+   "id": "V2I-CF667B16D785",
+   "company": "Amazon Web Services (AWS)",
+   "title": "Sr. Mfg Eng, Process Quality, Hardware Engineering Services - Manufacturing",
+   "location": "Austin, TX",
+   "score": 60,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-11-14 · possible repeat",
+   "evidence": "Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-AD5D63DD4099",
+     "status": "DECLINED_BY_TIM",
+     "title": "Sr. Manufacturing Engineer - Process Quality, Hardware Engineering - Manufacturing",
+     "location": "Austin, TX",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare"
+    }
+   ]
+  },
+  {
+   "id": "V2I-165704D594BE",
+   "company": "Valstad Shipworks",
+   "title": "Head of Manufacturing & Industrialization",
+   "location": "Austin, TX",
+   "score": 60,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "Applied 2026-10-25 · possible repeat",
+   "evidence": "Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-01D3C4D0646F",
+     "status": "APPLIED",
+     "title": "Head of Manufacturing & Industrialization",
+     "location": "Austin, TX",
+     "decided": "2026-10-25",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare"
+    }
+   ]
+  },
+  {
    "id": "V2I-3FBF991C9C6D",
    "company": "SpaceX",
    "title": "Director, Starlink Production (Assembly)",
@@ -200,105 +250,6 @@
    ]
   },
   {
-   "id": "V2I-5BC161496562",
-   "company": "Aurora",
-   "title": "Director, Operations Readiness",
-   "location": "Washington, DC",
-   "score": 59,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-26 · different site",
-   "evidence": "Different worksite: Washington, DC vs earlier Dallas, TX",
-   "matches": [
-    {
-     "id": "V2I-2DF5992FBB16",
-     "status": "DECLINED_BY_TIM",
-     "title": "Director, Operations Readiness",
-     "location": "Dallas, TX",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Different worksite: Washington, DC vs earlier Dallas, TX"
-    }
-   ]
-  },
-  {
-   "id": "V2I-FDB8B06FBD13",
-   "company": "L3Harris Technologies",
-   "title": "Associate Manager, Manufacturing Engineering",
-   "location": "Malabar, FL",
-   "score": 59,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-30 · different site",
-   "evidence": "Different worksite: Malabar, FL vs earlier Huntsville, AL",
-   "matches": [
-    {
-     "id": "V2I-B6E9763E305F",
-     "status": "DECLINED_BY_TIM",
-     "title": "Manager, Manufacturing Engineering",
-     "location": "Huntsville, AL",
-     "decided": "2026-10-30",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Malabar, FL vs earlier Huntsville, AL"
-    }
-   ]
-  },
-  {
-   "id": "V2I-E352F5D223F9",
-   "company": "Anduril",
-   "title": "Director of Manufacturing Engineering, Imaging",
-   "location": "Waltham, MA, USA",
-   "score": 58,
-   "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-20 · possible repeat",
-   "evidence": "Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare",
-   "matches": [
-    {
-     "id": "V2I-01560560F88F",
-     "status": "DECLINED_BY_TIM",
-     "title": "Director of Manufacturing Engineering, Imaging",
-     "location": "Waltham, MA",
-     "decided": "2026-10-20",
-     "rejected": null,
-     "rule": "UNCERTAIN",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare"
-    },
-    {
-     "id": "V2I-B63A6E3384F6",
-     "status": "DECLINED_BY_TIM",
-     "title": "Director, Manufacturing Engineering",
-     "location": "Costa Mesa, CA",
-     "decided": "2026-10-27",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Waltham, MA, USA vs earlier Costa Mesa, CA"
-    },
-    {
-     "id": "V2I-FF06D1E8F521",
-     "status": "DECLINED_BY_TIM",
-     "title": "Director, Manufacturing Engineering",
-     "location": "Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)",
-     "decided": "2026-10-27",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different worksite: Waltham, MA, USA vs earlier Ashville, Ohio (posting body: Arsenal-1, Columbus, OH)"
-    }
-   ]
-  },
-  {
    "id": "V2I-72D22DE97CAA",
    "company": "Peak Industrial Inc",
    "title": "Director of Regional Operations",
@@ -320,6 +271,31 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Different requisition: req:728137B4A6B1BC8B vs earlier req:8FA493471FAF3619"
+    }
+   ]
+  },
+  {
+   "id": "V2I-847E6F45EF7F",
+   "company": "Tesla",
+   "title": "Regional Manager, Service Distribution",
+   "location": "The Colony, TX",
+   "score": 57,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: The Colony, TX vs earlier Silver Spring, MD",
+   "matches": [
+    {
+     "id": "V2I-0EEF32C5FA54",
+     "status": "DECLINED_BY_TIM",
+     "title": "Regional Service Manager",
+     "location": "Silver Spring, MD",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: The Colony, TX vs earlier Silver Spring, MD"
     }
    ]
   },
@@ -424,6 +400,31 @@
    ]
   },
   {
+   "id": "V2I-AA589391D1DB",
+   "company": "The Lignum Group",
+   "title": "Director of Operations",
+   "location": "California, United States",
+   "score": 55,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: California, United States vs earlier Maryland, United States",
+   "matches": [
+    {
+     "id": "V2I-BA5A23AA0C95",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director of Operations",
+     "location": "Maryland, United States",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: California, United States vs earlier Maryland, United States"
+    }
+   ]
+  },
+  {
    "id": "V2I-E4F08FE197F2",
    "company": "AMETEK",
    "title": "Senior Manager, Operations Excellence",
@@ -474,6 +475,31 @@
    ]
   },
   {
+   "id": "V2I-40226DB46F8D",
+   "company": "CIRCOR International, Inc.",
+   "title": "Director of Quality",
+   "location": "Corona, CA",
+   "score": 51,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-23 · possible repeat",
+   "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-C951E3E43140",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director of Quality",
+     "location": "Corona, CA",
+     "decided": "2026-10-23",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
+    }
+   ]
+  },
+  {
    "id": "V2I-E32A3FAD4E67",
    "company": "EPM Scientific",
    "title": "Vice President, Quality",
@@ -499,39 +525,39 @@
    ]
   },
   {
-   "id": "V2I-40226DB46F8D",
-   "company": "CIRCOR International, Inc.",
-   "title": "Director of Quality",
-   "location": "Corona, CA",
-   "score": 50,
+   "id": "V2I-32BCD7BA051A",
+   "company": "Fives",
+   "title": "Director of Operations",
+   "location": "Fond du Lac, WI, USA",
+   "score": 41,
    "outcome": "KEEP_LABEL",
    "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-23 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare",
+   "label": "You declined 2026-10-26 · possible repeat",
+   "evidence": "Posting first seen 2026-11-13, 18 days after 2026-10-26; no posting identity to compare",
    "matches": [
     {
-     "id": "V2I-C951E3E43140",
+     "id": "V2I-3BBD5FE87B94",
      "status": "DECLINED_BY_TIM",
-     "title": "Director of Quality",
-     "location": "Corona, CA",
-     "decided": "2026-10-23",
+     "title": "Director of Operations",
+     "location": "Fond du Lac, WI",
+     "decided": "2026-10-26",
      "rejected": null,
      "rule": "UNCERTAIN",
      "outcome": "KEEP_LABEL",
      "similarity": 1,
-     "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
+     "evidence": "Posting first seen 2026-11-13, 18 days after 2026-10-26; no posting identity to compare"
     }
    ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 18,
+  "planned": 20,
   "closed": 0,
-  "labeled": 0,
+  "labeled": 6,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 18
+   "ALREADY_LABELED": 14
   },
   "failed": 0,
   "deferred": 0,
