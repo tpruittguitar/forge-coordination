@@ -1,0 +1,118 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4482188120",
+  "sourceVersion": "1df1d42c6f57034c1ca29077ba00d31984f2f396f4a9c1e1b622a4f226b7534f",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261114T064331Z-a8abb3",
+  "observedAt": "2026-11-14T06:43:31.035742Z",
+  "instructionCommit": "a6080b4560402f38af09a6b45b9cd1325eb147bc",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Saved candidate-specific controlled verification records VERIFIED_INSERTED with exact company/title/location/source proof after independent COMPLETE. Fresh authenticated complete snapshots and shared matcher confirm the same primary ID PRESENT. This recovers proof of a historical write, not a new submission or new job created in this run; controlled queue accounting remains separate.",
+  "nextAction": "Existing coordinator reuses the exact saved VERIFIED receipt and current posting-match proof to account the original fence without replay, new source research or duplicate Writer submission.",
+  "retryCondition": "Controlled coordinator accounts the original fence, or exact candidate receipt/canonical identity evidence changes.",
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0,
+  "canonicalMatch": {
+    "key": "linkedin:4482188120",
+    "status": "PRESENT",
+    "primaryId": "V2I-890CA1BB461E",
+    "basis": [
+      "POSTING_URL"
+    ],
+    "rows": [
+      {
+        "primaryId": "V2I-890CA1BB461E",
+        "bucket": "SCOUT_INTAKE",
+        "company": "RPM Living",
+        "title": "Regional Manager",
+        "location": "Fort Myers, FL",
+        "hash": "4bfdf2ed05ffe8ed50a6380f3464c2aafe605f7e82abc7a99d8595733cbac58b"
+      }
+    ]
+  },
+  "originalRequest": {
+    "requestId": "FORGE-CODE-CHATGPT-20261113T053023753Z-B012",
+    "position": 13,
+    "writeId": "W-20261113061153898-65d703",
+    "candidateResult": {
+      "index": 13,
+      "result": "SCOUT_INTAKE_WRITTEN",
+      "primaryId": "V2I-890CA1BB461E",
+      "detail": "",
+      "candidateIds": [],
+      "sourceSha256": "b8f498f9c402eb5f6af77861aae88441fefceb3761cd9285c7c0e2156793cf50"
+    },
+    "independentState": "COMPLETE",
+    "independentWriteId": "W-20261113061153898-65d703"
+  },
+  "attempts": [
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261113T053023753Z-B012_CHECKPOINT.json",
+      "sha256": "5f5b1268ba7783c2e7673bd10ba3fd6406018a2e7b8e9e5d701570ed66ea8b77",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 13. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261113T053023753Z-B012_ACCEPTANCE.json",
+      "sha256": "cfc037583bfb9beaba576af1420cce2dde3268926bfcb24f8130b4c9e38fd627",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 13. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261113T053023753Z-B012_VERIFIED.json",
+      "sha256": "e0989932331ee46ff3432a5b9efca022f147150b3a867531a6a229e6e738af39",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 13. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261113T053023753Z-B012_DEFERRED.json",
+      "sha256": "18ec4d3ff339f7d06805001c31992a7f1f15fd895cf9de7938b8af16210bb9bb",
+      "result": "Saved original evidence inspected; exact key is checkpoint position 13. Other batch candidates are not this candidate outcome."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "sha256": "17c01c281de9ae7d4f64e58efb54facfda786ea6789bf54c80afd66bca010022",
+      "result": "Fresh authenticated exact batch is COMPLETE; acceptance writeId matches. Presence alone never clears the original fence."
+    },
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "masterSha256": "66d1cc75309046aefe3230049474c96e1b185511c79d8764e5d39e7acd601dbc",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8",
+      "masterRows": 8944,
+      "archiveRows": 785,
+      "result": "Complete snapshots parsed once and shared job-identity matcher applied. Minimal parsed-row hashes attached; no private row prose."
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4482188120",
+      "result": "Legacy batch fence has no authorized FORGE-AUTO run binding. No fabricated read-only probe or Writer submission dispatched."
+    }
+  ],
+  "savedControlledVerification": {
+    "effects": [
+      {
+        "key": "linkedin:4482188120",
+        "queueKey": "linkedin:4482188120",
+        "status": "VERIFIED_INSERTED",
+        "primaryId": "V2I-890CA1BB461E"
+      }
+    ],
+    "proofs": [
+      {
+        "key": "linkedin:4482188120",
+        "primaryId": "V2I-890CA1BB461E",
+        "result": "SCOUT_INTAKE_WRITTEN",
+        "rowSha256": "f823a25a68dd48a339b94c222a9696a2a754a59fbf5c50fd3fa76f23eac0e38c",
+        "matches": {
+          "company": true,
+          "title": true,
+          "location": true,
+          "source": true
+        },
+        "independentReceipt": "COMPLETE"
+      }
+    ],
+    "independentCompleteObservedAt": "2026-11-13T07:26:34.674Z"
+  },
+  "historicalVerifiedInsertionRecovered": true
+}
