@@ -175,7 +175,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // the durable ledger view: preparation-only never persists its transient edits.
   const durablePostingEvidence=structuredClone(ledger.postingEvidence||{});
   const roleInputs=(r,base)=>Prepared.sourceInputs(Store.hash({base,siteEstimate:siteEstimates.forRow(r)}),{ledger:Recovery.cached({postingEvidence:durablePostingEvidence},r),discovery:require('../source-trial/evidence-store').forRow(discoveryEvidence,r)});
-  const externallyFenced=id=>!process.env.ENRICH_MASTER_FILE&&require('../programmed-coordinator/transactions.cjs').fenced(ROOT,Store.read(ROOT,'state/PROGRAMMED_COORDINATOR.json',{transactions:{}}),id);
+  const externallyFenced=require('../programmed-coordinator/transactions.cjs').fenceIndex(ROOT,Store.read(ROOT,'state/PROGRAMMED_COORDINATOR.json',{transactions:{}})).has;
   const preparedOptions={rows,hints:!DRY,policy:policyFingerprint,inputs:r=>roleInputs(r,inputFingerprint),blocked:researchUnavailableIds,needsSalary:r=>(!planIds||planIds.has(r.PRIMARY_ID))&&/SALARY/.test(needsOf(r))&&!externallyFenced(r.PRIMARY_ID)};
   const preparedCandidates=PRODUCTS_ONLY?[]:Prepared.load(PREPARED_DIR,preparedOptions).slice(0,CONFIG.maxBatches*25);
   // Live runs independently regenerate fields using the existing source reader and

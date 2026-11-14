@@ -698,3 +698,37 @@ test('missing salary fields start before the filled-salary review',()=>{
   assert.ok(at('active_salary_review')<at('other_salary_repairs'));
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('coordinator and receipt fences stay closed and the coordinator is read once',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-fence-index-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const Cache=require('./posting-cache'),cache={},coord='V2I-FENCE-COORD',receipt='V2I-FENCE-RECEIPT',open='V2I-FENCE-OPEN',reads=path.join(dir,'reads.txt'),counts=path.join(dir,'coordinator-reads.txt');
+ const lines=['Dayton','Akron','Cleveland'].map((city,i)=>{
+  const id=[coord,receipt,open][i],url='https://careers.example.org/fence/'+i,target={PRIMARY_ID:id,COMPANY:'Fenceco',TITLE:'Director of Quality',LOCATION:city+', OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Fenceco',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  return `${i+1} | ${id} | Fenceco | Director of Quality | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${city}, OH | SOURCE_URL=${url}`;
+ });
+ fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
+ const hook=path.join(dir,'count-coordinator-reads.js');
+ fs.writeFileSync(hook,[
+  "'use strict';const fs=require('fs'),path=require('path'),read=fs.readFileSync,readdir=fs.readdirSync;",
+  "const coordId=process.env.ENRICH_TEST_FENCE_COORD,receiptId=process.env.ENRICH_TEST_FENCE_RECEIPT,countFile=process.env.ENRICH_TEST_COORDINATOR_READS,receiptName='PAY_FENCE_TEST_CHECKPOINT.json';",
+  "let coordinatorReads=0;",
+  "fs.readFileSync=function(file,...args){const name=String(file);",
+  " if(name.endsWith(path.join('state','PROGRAMMED_COORDINATOR.json'))){coordinatorReads++;const state=JSON.parse(read.call(this,file,'utf8'));state.transactions=state.transactions||{};state.transactions['PAY-FENCE-TEST']={requestId:'PAY-FENCE-TEST',status:'AWAITING_VERIFICATION',ids:[coordId]};return JSON.stringify(state);}",
+  " if(name.endsWith(path.join('receipts',receiptName)))return JSON.stringify({requestId:'PAY-FENCE-RECEIPT',ids:[receiptId],requests:[],evidence:[]});",
+  " return read.call(this,file,...args);};",
+  "fs.readdirSync=function(dir,...args){const names=readdir.call(this,dir,...args);if(String(dir).endsWith(path.sep+'receipts')&&Array.isArray(names)&&names.every(n=>typeof n==='string')&&!names.includes(receiptName))names.push(receiptName);return names;};",
+  "process.on('exit',()=>{if(countFile)fs.writeFileSync(countFile,String(coordinatorReads));});"
+ ].join(''));
+ try{
+  cp.execFileSync(process.execPath,['--require',hook,'--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FETCHES:reads,ENRICH_TEST_FENCE_COORD:coord,ENRICH_TEST_FENCE_RECEIPT:receipt,ENRICH_TEST_COORDINATOR_READS:counts},stdio:'pipe',timeout:60000});
+  const out=JSON.parse(fs.readFileSync(report));
+  assert.equal(out.retained_completion.planned,1);
+  assert.equal(out.retained_completion.salary,1);
+  assert.equal(out.retained_completion.degree,1);
+  assert.equal(out.sample[0].id,open);
+  assert.equal(out.sample[0].fields.SALARY_BASE_LOW,180000);
+  assert.equal(fs.existsSync(reads)?fs.readFileSync(reads,'utf8'):'','');
+  assert.equal(fs.readFileSync(counts,'utf8'),'1');
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
