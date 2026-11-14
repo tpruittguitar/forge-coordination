@@ -5,12 +5,12 @@
   "runId": "FORGE-CODE-CHATGPT-20261113T193524143Z",
   "noProcessingCap": true,
   "dispatch": {
-    "lastServedKind": "MAIL",
+    "lastServedKind": "IDENTITY",
     "lastReviewedKind": "SOURCE",
-    "exceptionId": "cd8f3c79d1f1e216a470cce04021f2db2855857e9a938c4412aa60e734f74a50",
-    "sourceVersion": "bb1127cd1a16342a256eee2a2d1859e55bc218c894f8044532d08efc04f0cb20",
-    "observedAt": "2026-11-14T09:25:24.464Z",
-    "reviewedAt": "2026-11-14T09:25:24.464Z",
+    "exceptionId": "36c1c2a9e5ce31029f7cf8e209e18b8206582b798ed8a0d9bd2b37239287a4bb",
+    "sourceVersion": "10a6bed9119a201e93ac2c514eb8a876dc8e8f0d2b575e82ca7b927d0b68d130",
+    "observedAt": "2026-11-14T10:30:08.588Z",
+    "reviewedAt": "2026-11-14T10:30:08.588Z",
     "basis": "SOURCE_BOUND_ATTEMPT",
     "artifactSizeOnly": true
   },
@@ -6747,15 +6747,22 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-03T23:10:48.441Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED",
+      "status": "AWAITING_TIM",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T132002Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "af5462060f705551f8fe05560ff1eba99b343d6a80fe8655a5934a9649013481",
-        "observedAt": "2026-11-11T13:23:42.899Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "23458d9e1b00c9ac64da386dfde40c5e9391d3fff15704c5f0367e48a6ce3de5",
-        "reason": "MOBIS executive general-interest Ellabell application November 3 confirmed. No matching canonical role; existing ASK-20261110-MOBIS-4484737011 remains pending. Do not duplicate ask or create job.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T132002Z_CHECKPOINT.json"
+        "reason": "Historical MOBIS executive general-interest application confirmation dated November 3. No corresponding canonical role; existing ASK-20261110-MOBIS-4484737011 already awaits Tim. Preserve that single decision and original source; no new job or duplicate question.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      },
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/40705fe6cbb56187b62cd5f96bb570ee7d607ca7a6d153bc3551edc1513e3cca-83c10b88e62b22436abb10722ee38f1575dccd88e7d5150f8607dec43659afdd.json",
+        "sha256": "83c10b88e62b22436abb10722ee38f1575dccd88e7d5150f8607dec43659afdd",
+        "disposition": "AWAITING_TIM",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "Existing deduplicated approval required for absent canonical application job."
       }
     },
     "b81d3652d4613c079c6dd50f11623450b92e07527f7973a438f9edd2b2fd4845": {
@@ -59429,7 +59436,16 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "10a6bed9119a201e93ac2c514eb8a876dc8e8f0d2b575e82ca7b927d0b68d130",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "38caafc2dfdb322454ff6a6ecf1b959367625c382b13d0df8e3e2ee6c3dd88b0",
+        "reason": "Fresh exact company/title/location canonical match establishes existing job; duplicate discovery unnecessary. Coordinator must consume identity evidence without inserting a new role.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "29e83de0d36dfe06cb7358ed2ca19d8d61fbb8d6125d23c856d2dee76b158d71": {
       "key": "indeed:79423a4ce66e3aed",
@@ -61607,7 +61623,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/30e18ccb6585db7e164c6dc99f68b6c39febd7267a554254b0f6870b65834d43-5b6141535a0da27c2fc7812a0c7179718c880d981eb63531c0ea02149b06040c.json",
+        "sha256": "5b6141535a0da27c2fc7812a0c7179718c880d981eb63531c0ea02149b06040c",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "IDENTITY_CONFLICT",
+        "retryCondition": "NEW_IDENTITY_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "a6b3000783459ae242716dc7b3b3bb84f16e4c1fdc70082dad5f66b82cee0df7",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "81271214bc6194d7da7e563fff0679acd77d46e5f6dbef823099c0187f3a2c6d",
+        "reason": "Fresh canonical matching does not establish exact unique identity; preserve original context.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "361609bcd11e0ab22d99bd0105df744b21d2cc534ae862530562cb9ff6b2cd79": {
       "key": "alert-card:ddd68393b18978eb277c23c1e1ab5a6d1937c454522d40c50e2a2987f618c0f3",
@@ -61636,7 +61669,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/361609bcd11e0ab22d99bd0105df744b21d2cc534ae862530562cb9ff6b2cd79-1da4655a5a04e92fa66377ace5e5c90a5388bab5f6dc5a55208c1d6acbdb7e64.json",
+        "sha256": "1da4655a5a04e92fa66377ace5e5c90a5388bab5f6dc5a55208c1d6acbdb7e64",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "IDENTITY_CONFLICT",
+        "retryCondition": "NEW_IDENTITY_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "770e9ac20bc5320ec9faff7f31e685266ea5bddfd8de32dd1ca016735fc15ca0",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "ea7fb930036517d5234e10559e9beb1e474d62c3bc4b86cf374e0cf8d8bf542e",
+        "reason": "Fresh canonical matching does not establish exact unique identity; preserve original context.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "e9e8bd30b82cd33e68ca6d5bad76a365478de59001af58169521d1570aa7c0de": {
       "key": "alert-card:f2ce5b20b9fa27a256a82fa58626390f411e7e40c28da7340a50b1ca93cb40b7",
@@ -62002,7 +62052,16 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "4093e0e1fbdc8a6464029c7d92b0bb974178f7934db9252b6c2d38942e410f2b",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "0bcf595b8f63cd8d057466e07dde3d70b3677d9b85575887263d94810da62c1c",
+        "reason": "Fresh exact company/title/location canonical match establishes existing job; duplicate discovery unnecessary. Coordinator must consume identity evidence without inserting a new role.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "a6670a4c522df98fe8aa3624817526803b43f4ef9fedb63724d711e8359947a4": {
       "key": "indeed:047a3cfa51ebf1ae",
@@ -62410,7 +62469,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/32123357ef3c8e48ac74bd4ae52ac7456ff0f2a1850e466f2b0be4eb183ace0b-30b4cbf5c8d6c47966e3758e31110c6ea014a883b1b5b929b6acc0d0635ad331.json",
+        "sha256": "30b4cbf5c8d6c47966e3758e31110c6ea014a883b1b5b929b6acc0d0635ad331",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "IDENTITY_CONFLICT",
+        "retryCondition": "NEW_IDENTITY_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "2d4fa05ee4524b22f6c9435f8d4d35b239f97eb49808254a4f4d42ab861ebbfa",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "bf1b8f950233a4010879e738c327b6fc36d111bf25db0612b995f80f6a0b1c74",
+        "reason": "Fresh canonical matching does not establish exact unique identity; preserve original context.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "f1401fe4ad6da17488c8199c26ee66220181ba84b81b694e8ca4cb7182ebe7a0": {
       "key": "alert-card:fba07086243338f027f386a82ad7bed61ea19c62a360e3ae5c3768bdbd7b7572",
@@ -65244,7 +65320,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/3341aa51bc21fec13dfba136ed40cf0278a4c1d5582db229c279707a0ecd78f3-efc0cb18557b9b724d43532bb760955fe55f2553041d9500f6d9a0d72854c56c.json",
+        "sha256": "efc0cb18557b9b724d43532bb760955fe55f2553041d9500f6d9a0d72854c56c",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "IDENTITY_CONFLICT",
+        "retryCondition": "NEW_IDENTITY_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "39ea960c480e4631699a8ce14822057c6f251b13fb1af1c1b663782b833bfd5e",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "acfed6f0224b0eca0460187b97cd2f7373b9606fd1f32a0a6f5914981e3345e7",
+        "reason": "Fresh canonical matching does not establish exact unique identity; preserve original context.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "170dd396eea0148c4ef262b1fcce912d1fcd8dfa6e6809f73cd0acc039867fcc": {
       "key": "alert-card:7076114654872f86cd2a402a5d5fb8f7dafaf3a08b8215a57e61033ff7d132e7",
@@ -65672,7 +65765,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-08T09:25:46.473Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/33d2b3ab6e3ebcb9648020a025a67dff0094fba817e2c1c3fc5ffd99ce93ad9c-8e51736f09925c20dcba769f2eadd5f9fd1d8289306540711bb35e085305f099.json",
+        "sha256": "8e51736f09925c20dcba769f2eadd5f9fd1d8289306540711bb35e085305f099",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "IDENTITY_CONFLICT",
+        "retryCondition": "NEW_IDENTITY_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "a85278a5772f68361fdcec9545fa605a1d7b350f26467f1794c02233cdebefc2",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "7158897cc4a434f7091f29d50031bfdac338596bbc494bbbb83d3c4ea31fcb1f",
+        "reason": "Fresh canonical matching does not establish exact unique identity; preserve original context.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "ebda0f4ebfac4aa3be89275b9a3f7db6ec495b53c1ed2dc4de083c29d4774e9f": {
       "key": "indeed:ae8e6c45b507c3be",
@@ -89313,13 +89423,13 @@
       "lastSeen": "2026-11-13T20:22:00.050Z",
       "status": "ACTION_REQUIRED",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T122501Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "070dd74dbbf01c409f4591c95e4049b05aaff469ab2c7c43cdddcc4bf5a5400f",
-        "observedAt": "2026-11-11T12:27:33.542Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "5ab396a886fe77ccce050bff0387ee36f4d09b08dd00ede475ecc9e39fa7eb27",
-        "reason": "Edge Autonomy weekly Alabama subscription notification has no individual role title in body. No application event; retain discovery source gap.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T122501Z_CHECKPOINT.json"
+        "reason": "Full saved job alert reviewed; retain exact cards and outstanding discovery obligations. No personal recruiter contact inferred.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
       }
     },
     "73fe6a25c90a3a06d6b723517a56af1cead61bcc859a6570af229e38cf930fc9": {
@@ -92533,13 +92643,13 @@
       "lastSeen": "2026-11-13T20:22:00.050Z",
       "status": "ACTION_REQUIRED",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T122501Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "9fb4284284d8fb188b86026350908eba6673c0909969941023d516ee6360fad5",
-        "observedAt": "2026-11-11T12:27:33.542Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "60d3d65172495bcd0cc675b38b73f19e710c2ac0cb090a79874b05c6a083cc25",
-        "reason": "BWXT talent-community search alert; Director Engineering Enrichment Operations is search label, not confirmed vacancy. Listed Logistics Manager and engineering roles Oak Ridge remain distinct.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T122501Z_CHECKPOINT.json"
+        "reason": "Full saved job alert reviewed; retain exact cards and outstanding discovery obligations. No personal recruiter contact inferred.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
       }
     },
     "d62851469986c4b2448bd453cf2bd20006333c786d9b1e086be72ebb2c010ebc": {
@@ -92567,13 +92677,13 @@
       "lastSeen": "2026-11-13T20:22:00.050Z",
       "status": "ACTION_REQUIRED",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T122501Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "baee838af23d139b71b40319d7ccaa8fa4b4ad164d5fcee2b5967236a4530f74",
-        "observedAt": "2026-11-11T12:27:33.542Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "9ad61757138312e4c6f5dfe37a207e5e947cf2ebd34af9a8cd072caca3342a89",
-        "reason": "BAE automated profile alert with Operations Excellence Director Austin 127540BR and Director Strategic Operations Jacksonville 130850BR. Alabama search label does not override actual card locations; not personal outreach.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T122501Z_CHECKPOINT.json"
+        "reason": "Full saved job alert reviewed; retain exact cards and outstanding discovery obligations. No personal recruiter contact inferred.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
       }
     },
     "1c7ffd9e7a6f9859be8b2b9dfc598c308cbfe16c2880ed67f91ec650c039a3cb": {
@@ -96186,13 +96296,13 @@
       "lastSeen": "2026-11-13T20:22:00.050Z",
       "status": "ACTION_REQUIRED",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T122501Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "c85e0b6a265e169bd5255754a0a151e2b7b4cae311b6afe3fce713a0f9eec9b2",
-        "observedAt": "2026-11-11T12:27:33.542Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "86e625bf7967edf7c53548c37e20eb837a08dd9f563e7ef05441fe1c45e8b897",
-        "reason": "ZipRecruiter recommendations including Consigli Washington remote, MURZAN Norcross and L3Harris Salt Lake/Lake Point variants. Estimated pay labels retained; no personal employer contact.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T122501Z_CHECKPOINT.json"
+        "reason": "Full saved job alert reviewed; retain exact cards and outstanding discovery obligations. No personal recruiter contact inferred.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
       }
     },
     "2472230a8abc140a0c2e8a495a25323e260b8f43874377559c167c008239a429": {
@@ -96220,13 +96330,13 @@
       "lastSeen": "2026-11-13T20:22:00.050Z",
       "status": "ACTION_REQUIRED",
       "lastAttempt": {
-        "runId": "FORGE-EXCEPTION-CHATGPT-20261111T122501Z",
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
         "sourceVersion": "27c73bc23fde98ec8719187513e2e731844cbb1e5a2f7e0151cdb203eb04725a",
-        "observedAt": "2026-11-11T12:27:33.542Z",
+        "observedAt": "2026-11-14T10:30:08.588Z",
         "evidenceSha256": "81fc41291eb819ae8d4899d7364c3bb7589f7316de5829d00235864abf81ca21",
-        "reason": "PostJobFree HTML supplies SL Tennessee Clinton production supervisor and separate System One QA/QC, Techmer planning, Centrus and other cards. Jobot client unnamed; title discrepancy Metallurgical Engineer versus Engineering Superintendent remains unresolved.",
-        "nextAction": "Coordinator retains processing and original-request reconciliation; held research waits for source change.",
-        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261111T122501Z_CHECKPOINT.json"
+        "reason": "Full saved job alert reviewed; retain exact cards and outstanding discovery obligations. No personal recruiter contact inferred.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
       }
     },
     "2b030dad02f34df3ccc6dc56f0235872bcb8a093398de4bd482bedab2c9ffbc0": {
@@ -97467,7 +97577,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0b8d00573e14df549e9bd3513c3fcb3e0e68969df32e31fa03d262faec0c6057-8a845a30782a2882d5d48130e3043557bd345825ae00464dee7d3bcfa0b14602.json",
+        "sha256": "8a845a30782a2882d5d48130e3043557bd345825ae00464dee7d3bcfa0b14602",
+        "disposition": "SOURCE_EVIDENCE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion."
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "8991bad5d2f13fa6de6f198eb5e016def344ae04a90127d66fabbfd41d0afc58",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "8991bad5d2f13fa6de6f198eb5e016def344ae04a90127d66fabbfd41d0afc58",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "af9d78ead3b4479c41429e9e7ca560fe0f9358bc0e88983802cea3c505f0d7a4": {
       "key": "FORGE_CHATGPT_ENRICHMENT_RESEARCH:V2I-A6EAAC98132A",
@@ -98834,7 +98960,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0a3d4d8fa697ef9c369230bd28324be690db7cf2f2b9bf28455e70f11c79826a-7daa660b8434654f868323f96ba0579d182f83ea0213491d9a8924c57a11bba2.json",
+        "sha256": "7daa660b8434654f868323f96ba0579d182f83ea0213491d9a8924c57a11bba2",
+        "disposition": "SOURCE_EVIDENCE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion."
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "c747bb5dbdda9bf7bb05186bce827d7302cc0133ee00525541caaf2909d69b1e",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "c747bb5dbdda9bf7bb05186bce827d7302cc0133ee00525541caaf2909d69b1e",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "ab8ca3283554215d920d54607c87bdc2879cc0d89654c6e59c1964ea558b6abb": {
       "key": "FORGE_CHATGPT_ENRICHMENT_RESEARCH:V2I-A57568B689F7",
@@ -99211,7 +99353,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0c6156d5ba90b9a842ffb1d021486a145ee41b7ac3eaca3d655467a91e6619d4-b3612a44fed721a54a085f205573ab7efdc2c84c50d256c5cf6124a837e0e52f.json",
+        "sha256": "b3612a44fed721a54a085f205573ab7efdc2c84c50d256c5cf6124a837e0e52f",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
+        "retryCondition": "NEW_ORIGINAL_SOURCE_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "c633c99e8d430ddb532067451976e62fe66431ae04fbccd7e660115ea1c80325",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "c633c99e8d430ddb532067451976e62fe66431ae04fbccd7e660115ea1c80325",
+        "reason": "Saved source lacks substantive exact requirements evidence; secondary closure text does not establish employer closure. Preserve original assignment for new source evidence.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "802104af460409ed416bf9bb9be8fed734ed821317125225eb7ebb0842ba1210": {
       "key": "FORGE_CLAUDE_SHARED_HELPER:V2I-57D275244968",
@@ -99507,7 +99666,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0c8b3720cff8cad2173ff4762ca7a44901f21102a4413b11e8fa21e4dd3908f3-3c2ae81e16a022ee9e0851aca739ad59d20b86c2d774026e5aa1ad7c5026a28b.json",
+        "sha256": "3c2ae81e16a022ee9e0851aca739ad59d20b86c2d774026e5aa1ad7c5026a28b",
+        "disposition": "SOURCE_EVIDENCE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion."
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "61bf9ca8abe1aa8bbd276baa938b4b1e47f9a568d7d25f3120fc5a8c0276197e",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "61bf9ca8abe1aa8bbd276baa938b4b1e47f9a568d7d25f3120fc5a8c0276197e",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "bf35c59ea60ce2479215f4c8bf9af6c853a9bcde7766afec80b8add71549961d": {
       "key": "FORGE_CLAUDE_SHARED_HELPER:V2I-6E0FCCB99DB7",
@@ -99594,7 +99769,23 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "ACTION_REQUIRED",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0c1be4f935bb51e32faa1efbdf290252806d5d7f62f6456924b84e5ad3959e8e-9d594c9803ffb2885ee2b7c79fd48b93e37eb6d9869ce41ca26e39fb0f52246d.json",
+        "sha256": "9d594c9803ffb2885ee2b7c79fd48b93e37eb6d9869ce41ca26e39fb0f52246d",
+        "disposition": "SOURCE_EVIDENCE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion."
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "21c38894a4ce7af975e62edb8fd48372acc5589d45b1e55667645320e0937411",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "21c38894a4ce7af975e62edb8fd48372acc5589d45b1e55667645320e0937411",
+        "reason": "Saved source-bound requirements inspected; unrelated similar-job pay excluded. Exact raw requirement paragraph submitted for independent coordinator validation, not canonical completion.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "701f78befe7d24da2d80f1387a921ee5774a7e1321e148a70341cba3d8ff4a82": {
       "key": "FORGE_CLAUDE_SHARED_HELPER:V2I-6FBE6DE444C0",
@@ -100016,7 +100207,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0ba47b7385edcf4d86c6cb0bd564f82f300728e71dd025be45d82191b4532d8c-8f683fc5dda5d0a080e8f5f4edbf158701ec6de2a9273c86a90a4767894603d2.json",
+        "sha256": "8f683fc5dda5d0a080e8f5f4edbf158701ec6de2a9273c86a90a4767894603d2",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
+        "retryCondition": "NEW_ORIGINAL_SOURCE_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "ed6743f586da6d13ca53733b92b0e54b95b09ee8699e3e088d44ea40f934fbf4",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "ed6743f586da6d13ca53733b92b0e54b95b09ee8699e3e088d44ea40f934fbf4",
+        "reason": "Saved source lacks substantive exact requirements evidence; secondary closure text does not establish employer closure. Preserve original assignment for new source evidence.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "c14aa51d8ce85a4707723a140a5ab5d12a9317c27adb222bbc2439721f2a874c": {
       "key": "FORGE_CLAUDE_SHARED_HELPER:V2I-847E6F45EF7F",
@@ -101090,7 +101298,24 @@
       "canonicalCompletion": false,
       "firstSeen": "2026-11-10T00:13:27.015Z",
       "lastSeen": "2026-11-13T20:22:00.050Z",
-      "status": "ACTION_REQUIRED"
+      "status": "WAITING_SOURCE_CHANGE",
+      "review": {
+        "proof": "receipts/AI_EXCEPTION_REVIEWS/0b7cf6dc4a386efa51c029cd417ce083748b41053c2ab9e283228efebabcd747-4e25f640a5ccd91f39b2df163114675847be0a15f2df14f7e525d7ff541704c2.json",
+        "sha256": "4e25f640a5ccd91f39b2df163114675847be0a15f2df14f7e525d7ff541704c2",
+        "disposition": "WAITING_SOURCE_CHANGE",
+        "reviewedAt": "2026-11-14T10:30:08.588Z",
+        "reason": "SOURCE_EVIDENCE_UNAVAILABLE",
+        "retryCondition": "NEW_ORIGINAL_SOURCE_EVIDENCE"
+      },
+      "lastAttempt": {
+        "runId": "FORGE-EXCEPTION-CHATGPT-20261114T102712Z",
+        "sourceVersion": "2de64f03d1c98948c08ec5a91d7aa11cc57f4d30d47edca4edba4d4b394fa090",
+        "observedAt": "2026-11-14T10:30:08.588Z",
+        "evidenceSha256": "2de64f03d1c98948c08ec5a91d7aa11cc57f4d30d47edca4edba4d4b394fa090",
+        "reason": "Saved source lacks substantive exact requirements evidence; secondary closure text does not establish employer closure. Preserve original assignment for new source evidence.",
+        "nextAction": "Coordinator independently consumes review; preserve pending original sources.",
+        "proof": "receipts/AI_EXCEPTION_RUNS/FORGE-EXCEPTION-CHATGPT-20261114T102712Z_CHECKPOINT.json"
+      }
     },
     "7e9cfe348904cc6be957a6f30c30687611c315d3cde31e80f86e5bf13f571e7c": {
       "key": "FORGE_CLAUDE_SHARED_HELPER:V2I-C4661DECEBC3",
@@ -377202,8 +377427,9 @@
     }
   },
   "counts": {
-    "ACTION_REQUIRED": 2884,
-    "WAITING_SOURCE_CHANGE": 863,
-    "NO_LONGER_OPEN": 7316
+    "ACTION_REQUIRED": 2875,
+    "WAITING_SOURCE_CHANGE": 871,
+    "NO_LONGER_OPEN": 7316,
+    "AWAITING_TIM": 1
   }
 }
