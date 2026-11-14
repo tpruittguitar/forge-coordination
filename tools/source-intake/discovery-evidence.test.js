@@ -11,7 +11,21 @@ function fixture(t,{source='JOBSPY:indeed',description='Acme manufactures indust
 test('captured evidence eliminates the duplicate source fetch and preserves the complete text and provenance in candidate preparation',async t=>{
  const {card,store}=fixture(t),stripped={...card,description:undefined,discoveryReview:undefined,source:'SAVED_DISCOVERY'};let fetches=0;
  const result=await A.sourceEvidence(stripped,{store,fetchEvidence:async()=>{fetches++;throw Error('must not fetch');}});
- a.equal(fetches,0);a.equal(result.business,card.description);a.equal(result.provenance.textSha256,E.hash(card.description));a.match(result.provenance.reportSha256,/^[a-f0-9]{64}$/);a.equal(result.provenance.fullPosting,true);a.deepEqual(result.provenance.identity,E.identity(card));a.equal(result.provenance.origin,'DISCOVERY_REPORT');
+ a.equal(fetches,0);a.equal(result.business,'');a.equal(result.provenance.textSha256,E.hash(card.description));a.match(result.provenance.reportSha256,/^[a-f0-9]{64}$/);a.equal(result.provenance.fullPosting,true);a.deepEqual(result.provenance.identity,E.identity(card));a.equal(result.provenance.origin,'DISCOVERY_REPORT');
+});
+test('a loaded employer page is not returned as posting text',async()=>{
+ const posting='Acme manufactures industrial automation equipment for the posted role. '.repeat(8).trim();
+ const html='<html><meta property="og:description" content="'+posting+'"><body>Acme</body></html>';
+ const fetch=async()=>({ok:true,text:async()=>html});
+ a.equal(await A.evidence('https://careers.example.com/plant','Acme',fetch),true);
+ a.equal(await A.evidence('https://careers.example.com/plant','Other',fetch),null);
+});
+test('saved posting text stays out of primaryBusiness and leaves the prepared record otherwise intact',async t=>{
+ const {card,store}=fixture(t),record={COMPANY:card.company,TITLE:card.title,LOCATION:card.location,SOURCE_URL:card.url,SCOUT_NOTES:'prior'};
+ const candidate=await A.prepareCandidate({...card,description:undefined,discoveryReview:undefined,source:'SAVED_DISCOVERY'},record,{discoveryEvidence:store,rulesHash:'abc',fetchEvidence:async()=>{throw Error('no fetch');}});
+ a.equal(candidate.primaryBusiness,'');
+ a.equal(candidate.record.COMPANY,card.company);a.equal(candidate.record.TITLE,card.title);a.equal(candidate.record.LOCATION,card.location);a.equal(candidate.record.SOURCE_URL,card.url);
+ a.equal(candidate.record.SCOUT_NOTES.includes(card.description),false);a.match(candidate.record.SCOUT_NOTES,/^discoveryEvidence=/);
 });
 test('unusable or mismatched saved evidence falls back exactly once without manufacturing evidence',async t=>{
  const {card,store}=fixture(t);let fetches=0;

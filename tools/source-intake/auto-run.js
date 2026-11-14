@@ -28,7 +28,6 @@ const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
-const meta=(h,n)=>(h.match(new RegExp('<meta[^>]+(?:name|property)=["\']'+n+'["\'][^>]+content=["\']([^"\']{20,})','i'))||[])[1];
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
@@ -85,25 +84,25 @@ function partitionExisting(roles,{master,archive,sent=new Set(),blockedIdentitie
  }
  return {remaining,existing,held};
 }
-// The posting must load and name the employer; its description is the employer-business evidence the Writer screens.
+// The posting must load and name the employer. Posting text is not EMPLOYER_PRIMARY_BUSINESS.
 async function evidence(url,company,fetcher=globalThis.fetch){
  try{
   const res=await fetcher(url,{redirect:'follow',signal:AbortSignal.timeout(20000),headers:{'User-Agent':'Mozilla/5.0 (forge-source-intake)'}});
   if(!res.ok)return null;
-  const html=await res.text(),text=strip(html);
+  const text=strip(await res.text());
   if(!text.toLowerCase().includes(company.toLowerCase().split(/[ ,]/)[0]))return null;
-  // Never-Consider is adjudicated by Writer from sourced employer facts.
-  const d=meta(html,'og:description')||meta(html,'description')||text;
-  const at=d.toLowerCase().indexOf(company.toLowerCase().split(/[ ,]/)[0]);
-  return strip(d.slice(Math.max(0,at>=0?at:0),(at>=0?at:0)+300))||null;
+  return true;
  }catch{return null}
 }
 async function sourceEvidence(card,{store,capturedInputs,fetchEvidence=evidence}={}){
  const captured=capturedInputs?.find(card);
  if(captured?.blocked)return {blocked:captured,captured:null,cached:null,business:null,provenance:null};
- if(captured)return {captured,business:captured.card.description,provenance:captured,cached:null};
- const cached=store?.forIntake?store.forIntake(card):store?.find(card),business=cached?.doc.text||await fetchEvidence(card.url,card.company);
- return {cached,business,provenance:cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null};
+ if(captured)return {captured,business:'',provenance:captured,cached:null};
+ const cached=store?.forIntake?store.forIntake(card):store?.find(card);
+ const provenance=cached?{...cached.ref,textSha256:cached.doc.textSha256,identity:cached.doc.identity,fullPosting:cached.fullPosting??cached.doc.fullPosting,contentBasis:cached.doc.contentBasis||'CAPTURED_ROLE_CONTENT'}:null;
+ if(cached)return {cached,business:'',provenance};
+ const loaded=await fetchEvidence(card.url,card.company);
+ return {cached:null,business:loaded?'' : null,provenance:null};
 }
 // Current policy is re-evaluated against the same captured facts. An old capture
 // date is provenance, not a reason to fetch the employer site or invent liveness.
@@ -113,7 +112,7 @@ async function refreshCapturedReview(candidate,expectedHash,{context}={}){
  if(!fresh?.rules?.raw||sha(fresh.rules.raw)!==expectedHash)return null;
  const card=candidate.discoveryEvidence.card;
  if(Screen.excluded(Screen.screen({...card,discoveryReview:{fullPosting:card.fullPosting}},fresh)))return null;
- return {rulesHash:expectedHash,discoveryEvidence:candidate.discoveryEvidence,primaryBusiness:card.description,businessEvidenceApproved:false,evidenceVerified:false};
+ return {rulesHash:expectedHash,discoveryEvidence:candidate.discoveryEvidence,primaryBusiness:'',businessEvidenceApproved:false,evidenceVerified:false};
 }
 
 async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun,fetchEvidence=evidence}={}){
@@ -121,10 +120,10 @@ async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rules
   const savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(business?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
-  if(!business&&!captured)return null;
-  return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:business,
+  if(business==null&&!captured)return null;
+  return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:'',
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:!captured,source:captured?.card.source||r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(reportRun||'')}};
 }
@@ -214,11 +213,11 @@ async function main(argv=process.argv.slice(2)){
   if(candidate.evidenceSource==='CAPTURED_DISCOVERY')return refreshCapturedReview(candidate,expectedHash,{context:()=>require('../source-trial/preliminary-screen').context({key})});
   // Re-read the actual posting and rules; never merely stamp the old review
   // with a new hash. Writer remains the canonical Never Consider adjudicator.
-  const business=await evidence(candidate.record.SOURCE_URL,candidate.record.COMPANY);
-  if(!business)return null;
+  const loaded=await evidence(candidate.record.SOURCE_URL,candidate.record.COMPANY);
+  if(!loaded)return null;
   const fresh=sha((await read('rules',{key})).data.rules.raw);
   if(fresh!==expectedHash)return null;
-  return {rulesHash:fresh,businessEvidenceApproved:true,primaryBusiness:business,evidenceUrl:candidate.record.SOURCE_URL};
+  return {rulesHash:fresh,businessEvidenceApproved:true,primaryBusiness:'',evidenceUrl:candidate.record.SOURCE_URL};
  };
  const r=await auto({statePath,candidates,key,refreshReview});
  console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
