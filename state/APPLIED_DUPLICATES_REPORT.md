@@ -1,8 +1,8 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-13T19:54:53.605Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-14T01:31:34.299Z from CANONICAL_WRITER_MASTER.
 
-Of 652 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
+Of 666 jobs waiting on Tim, 18 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 18
 
@@ -26,7 +26,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 64 | Blue Origin | Lunar Manufacturing & Assembly Manager | Applied 2026-10-25 · this is a new posting | Different wd posting: wd:R69279 vs earlier wd:R68774 | V2I-A5230F14AEB6 → V2I-9D90D416AC88 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
 | 62 | Anduril Industries | Director of Manufacturing Engineering, EW | You declined 2026-10-27 · different site | Different worksite: Irvine, CA vs earlier Costa Mesa, CA | V2I-55BCE9514C9E → V2I-B63A6E3384F6 |
-| 60 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
+| 59 | SpaceX | Director, Starlink Production (Assembly) | Applied 2026-10-07 · this is a new posting | Different gh posting: gh:8697970002 vs earlier gh:8468502002 | V2I-3FBF991C9C6D → V2I-9B92185BFB67 |
 | 59 | Aurora | Director, Operations Readiness | You declined 2026-10-26 · different site | Different worksite: Washington, DC vs earlier Dallas, TX | V2I-5BC161496562 → V2I-2DF5992FBB16 |
 | 59 | L3Harris Technologies | Associate Manager, Manufacturing Engineering | You declined 2026-10-30 · different site | Different worksite: Malabar, FL vs earlier Huntsville, AL | V2I-FDB8B06FBD13 → V2I-B6E9763E305F |
 | 58 | Anduril | Director of Manufacturing Engineering, Imaging | You declined 2026-10-20 · possible repeat | Posting first seen 2026-11-04, 15 days after 2026-10-20; no posting identity to compare | V2I-E352F5D223F9 → V2I-01560560F88F |
