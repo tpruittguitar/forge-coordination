@@ -47,6 +47,6 @@ function validate(candidate,options){
  const c=candidate.discoveryEvidence.card,r=candidate.record;
  if(c.validThrough!=null&&Date.parse(c.validThrough)<=(options?.now??Date.now()))return false;
  if(!r||!require('../source-trial/evidence-store').sameRequisition(r,c)||identity(r).some((x,n)=>!x||x!==identity(c)[n])||!publicUrl(r.SOURCE_URL)||!publicUrl(candidate.evidenceUrl)||key(c.url)!==key(r.SOURCE_URL)||key(c.url)!==key(candidate.evidenceUrl))return false;
- return candidate.primaryBusiness===c.description;
+ return candidate.primaryBusiness===''||candidate.primaryBusiness===c.description;
 }
 module.exports={capture,validate,validEnvelope,hash,supported};
