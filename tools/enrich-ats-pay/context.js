@@ -1,6 +1,6 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='employer-upper-range-v5',DAY=86400000;
+const VERSION='pay-sample-match-v6',DAY=86400000;
 const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
@@ -13,7 +13,9 @@ function lookup(row,ref={},now=Date.now()){
  const sites=(company?.sites||[]).filter(s=>[s.location,...s.aliases||[]].some(n=>norm(n)===norm(row.LOCATION)));
  const roles=(ref.roles||[]).filter(r=>r.primaryId===row.PRIMARY_ID&&norm(r.company)===norm(row.COMPANY)&&norm(r.title)===norm(row.TITLE)&&norm(r.location)===norm(row.LOCATION));const role=roles.length===1?roles[0]:null;
  const out={};
- for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['industry',company?.facts?.industry],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch','clearance'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
+ for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch','clearance'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
+ const industry=industryFrom([company?.builds,listedBuilds(row,ref),businessOf(row),companyOverview(postingOf(row))||rememberedOverview(row)]);
+ if(industry)out.industry=industry;
  return out;
 }
 function postingKey(a){
@@ -25,13 +27,61 @@ function postingKey(a){
 }
 function identityKey(a){return norm(a.co)+'|'+norm(a.title).replace(/\bsr\b/g,'senior')+'|'+norm(a.location||a.state)+'|'+a.low+'|'+a.high;}
 const number=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
+const BANDS={employees:[[100,'UNDER_100'],[1000,'100_999'],[10000,'1000_9999'],[Infinity,'10000_PLUS']],teamSize:[[10,'UNDER_10'],[50,'10_49'],[200,'50_199'],[Infinity,'200_PLUS']]};
+function band(key,n){for(const [max,label] of BANDS[key])if(n<max)return label;return null;}
+const INDUSTRY=[
+ ['AEROSPACE_DEFENSE',/\b(aerospace|aircraft|aviation|spacecraft|satellite|orbital|rocket|launch vehicle|defense|defence|military|drone|uav|unmanned aerial|unmanned aircraft)\b/i],
+ ['AUTOMOTIVE',/\b(automotive|automobile)\b/i],
+ ['SEMICONDUCTOR',/\b(semiconductor|semiconductors)\b/i],
+ ['PHARMA',/\b(pharmaceutical|pharmaceuticals|pharma|biopharmaceutical)\b/i],
+ ['MEDICAL_DEVICE',/\b(medical device|medical devices)\b/i],
+ ['ENERGY',/\b(oil and gas|refiner(?:y|ies)|solar power|battery energy)\b/i]
+];
+const overviews=new Map();
+function unclearIndustryText(text){
+ const t=String(text||'').trim();
+ if(!t||/^RECRUITING_AGENCY$/i.test(t))return true;
+ if(/^\s*job description\b/i.test(t))return true;
+ if(t.length>400&&/\b(responsibilities|qualifications|we are seeking|requirements|you(?:'|’)ll)\b/i.test(t))return true;
+ return false;
+}
+function industryLabel(text){
+ if(unclearIndustryText(text))return null;
+ const hits=[];for(const [label,re] of INDUSTRY)if(re.test(text)&&!hits.includes(label))hits.push(label);
+ return hits.length===1?hits[0]:null;
+}
+function industryFrom(parts){for(const text of parts){const label=industryLabel(text);if(label)return label;}return null;}
+function companyOverview(text){
+ const t=String(text||'').replace(/\r/g,'');
+ const m=t.match(/(?:^|\n)\s*(?:about (?:the )?(?:company|us)|who we are|company overview)\s*:?\s*\n+([\s\S]{0,700})/i);
+ return m?m[1].split(/\n\s*(?:responsibilities|qualifications|requirements|what you(?:'|’)ll|benefits|the role)\b/i)[0].trim():'';
+}
+function businessOf(row){const p=row&&(row.p||row.payload)||{};return String(row&&(row.EMPLOYER_PRIMARY_BUSINESS||p.EMPLOYER_PRIMARY_BUSINESS||row.business)||'');}
+function postingOf(row){return String(row&&(row.postingText||row.text||row.description)||'');}
+function roleKey(row){return norm(row.COMPANY)+'|'+norm(row.TITLE)+'|'+norm(row.LOCATION);}
+function rememberOverview(row,text){const overview=companyOverview(text);if(!overview)return;if(row.PRIMARY_ID)overviews.set(row.PRIMARY_ID,overview);overviews.set(roleKey(row),overview);}
+function rememberedOverview(row){return overviews.get(row.PRIMARY_ID)||overviews.get(roleKey(row))||'';}
+function listedBuilds(row,ref){
+ for(const list of [ref&&ref.registry,ref&&ref.targetCompanies]){
+  if(!Array.isArray(list))continue;
+  const hits=list.filter(c=>[c.company,...(c.aliases||[])].some(n=>norm(n)===norm(row.COMPANY)));
+  if(hits.length===1&&hits[0].builds)return String(hits[0].builds);
+ }
+ return '';
+}
 function similarity(target,other){
  let weight=1,known=0;const missing=[];
- for(const key of ['employees','revenueUsd','siteEmployees','teamSize','minExperienceYears','minLeadershipYears']){
+ // Company size and team size (scope, including a stated direct-report count) exclude on a known band mismatch.
+ // The same band keeps the existing closeness weight. A missing fact stays at 0.75.
+ for(const key of ['employees','teamSize']){
+  if(number(target[key])&&number(other[key])){known++;if(band(key,target[key])!==band(key,other[key]))return{weight:0,known,missing,conflict:key};weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}
+  else{missing.push(key);if(number(target[key]))weight*=0.75;}
+ }
+ for(const key of ['revenueUsd','siteEmployees','minExperienceYears','minLeadershipYears']){
   if(number(target[key])&&number(other[key])){known++;weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}else{missing.push(key);if(number(target[key]))weight*=0.75;}
  }
  for(const key of ['industry','management','reach','launch','clearance']){
-  if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else{missing.push(key);if(target[key])weight*=0.75;}
+  if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='industry'||key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else{missing.push(key);if(target[key])weight*=0.75;}
  }
  return{weight,known,missing};
 }
@@ -39,7 +89,7 @@ function rank(row,anchors,ref,now=Date.now()){
  const target=lookup(row,ref,now),seen=new Set(),out=[];
  for(const a of anchors.slice().sort((a,b)=>(Date.parse(b.asOf||b.seen)||0)-(Date.parse(a.asOf||a.seen)||0))){
   const key=postingKey(a),identity=identityKey(a);if(seen.has(key)||seen.has(identity))continue;
-  const other=lookup({PRIMARY_ID:a.id,COMPANY:a.co||'',TITLE:a.title,LOCATION:a.location||''},ref,now),s=similarity(target,other);
+  const other=lookup({PRIMARY_ID:a.id,COMPANY:a.co||'',TITLE:a.title,LOCATION:a.location||'',business:a.business,postingText:a.postingText||a.text||a.description||'',p:a.p},ref,now),s=similarity(target,other);
   if(!s.weight)continue;
   const age=now-Date.parse(a.asOf||a.seen||'');if(Number.isFinite(age)&&(age>730*DAY||age< -DAY))continue;
   seen.add(key);seen.add(identity);
@@ -85,10 +135,11 @@ function salaryValue(items,key){
  const share=own.length/(own.length+1);return share*weightedMedian(own,key)+(1-share)*weightedMedian(peers,key);
 }
 function confidence(est,used){return used.length<2||used.some(a=>!a.ageKnown)||used.filter(a=>a.contextKnown>=3).length<2?'LOW':est.conf;}
-function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':used.some(a=>a.sameEmployer)?'blended employer/peer evidence':'peer tier')+'; upper endpoint = weighted upper quartile, same-employer ceiling retained; company/site size and responsibility weighted, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
+function annotation(used){return 'context model '+VERSION+'; '+used.length+' distinct postings; '+(used.every(a=>a.sameEmployer)?'same-employer tier':used.some(a=>a.sameEmployer)?'blended employer/peer evidence':'peer tier')+'; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; '+used.filter(a=>a.contextKnown>=3).length+' with 3+ comparable context facts';}
 function learn(ref,row,text,sourceUrl,asOf){
  // Only explicit responsibility wording; never infer headcount from a title or production volume.
  if(!text||!sourceUrl)return false;
+ rememberOverview(row,text);
  const facts={},conflicts=new Set(),put=(key,value,quote)=>{if(conflicts.has(key))return;if(facts[key]&&facts[key].value!==value){delete facts[key];conflicts.add(key);return;}facts[key]={value,quote:quote.slice(0,240),sourceUrl,asOf,status:'CONFIRMED'};};
  let m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(\d[\d,]*)\s+(?:people|employees|engineers|direct reports)\b/i);
  if(m)put('teamSize',Number(m[1].replace(/,/g,'')),m[0]);
@@ -126,5 +177,5 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge};
+module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge,industryLabel,industryFrom};
 
