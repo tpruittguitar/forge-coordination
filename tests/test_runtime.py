@@ -71,6 +71,14 @@ class ReleaseTests(unittest.TestCase):
                 self.assertFalse(r.select_task(self.manifest, former_provider, task, 0)[1])
         self.assertEqual(self.manifest['addons'], {})
 
+    def test_intake_packets_state_the_short_business_rule_once(self):
+        normal = 'Aerospace engine components manufacturer'
+        for task in ('FORGE_WEB_CAREER_DISCOVERY', 'FORGE_EMAIL_DISCOVERY', 'FORGE_ZIPRECRUITER_WEEKLY'):
+            text = self.outputs['runtime/releases/' + self.manifest['release_id'] + '/' + task + '.txt'].decode()
+            self.assertEqual(text.count('at most 80 characters'), 1)
+            self.assertIn(normal, text)
+            self.assertIn('EMPLOYER_PRIMARY_BUSINESS per FORGE CORE', text)
+
     def test_chatgpt_rotation_preserves_slots_and_legacy_launcher_map(self):
         expected = {
             1: 'FORGE_APPLICATION_WRITER_GOFER',
@@ -266,6 +274,19 @@ class PayloadTests(unittest.TestCase):
         payload=self.example('application.json')
         payload['events']*=26
         with self.assertRaisesRegex(ValueError,'1..25'): r.validate_payload(payload)
+
+    def test_employer_primary_business_example_is_one_short_description(self):
+        core = (ROOT / 'policy/current/COMMON_CORE.txt').read_text()
+        self.assertEqual(core.count('at most 80 characters'), 1)
+        normal = 'Aerospace engine components manufacturer'
+        self.assertLessEqual(len(normal), 80)
+        self.assertLessEqual(len('RECRUITING_AGENCY'), 80)
+        payload = self.example('intake.json')
+        self.assertEqual(payload['records'][0]['EMPLOYER_PRIMARY_BUSINESS'], normal)
+        r.validate_payload(payload)
+        empty = copy.deepcopy(payload)
+        del empty['records'][0]['EMPLOYER_PRIMARY_BUSINESS']
+        r.validate_payload(empty)
 
     def test_gross_excess_needs_reconciled_disposition_ledger(self):
         payload=self.example('intake.json')
