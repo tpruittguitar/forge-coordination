@@ -1,0 +1,214 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-14T12:48:26.051Z",
+  "readOnly": true,
+  "status": "PARTIAL_RECOVERY_WITH_KNOWN_COORDINATOR_BLOCK_AND_EXPLORER_WARNINGS",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "22b054a00b984dfaa586e01bb127560909560b13",
+    "forgeCoordination": "39f470dd9edede2cc79212d5bbca798466d0927c",
+    "foremanCockpit": "d625a05ac1f32ca824a8771d359e2e870606a99d"
+  },
+  "sourceEvidenceSha256": "52952259df761dfb816b7571e2e861b177c302a77fb5174652dd6cf05d3898d9",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": true,
+    "explorerUI": true
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "d625a05",
+      "fileQueueThroughputOnly": true
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "39f470dd9edede2cc79212d5bbca798466d0927c",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "Publish compact Writer activity",
+            "status": "pending",
+            "seconds": 1
+          },
+          {
+            "name": "Index receipt discovery hints",
+            "status": "success",
+            "seconds": 50
+          },
+          {
+            "name": "receipt-recovery",
+            "status": "success",
+            "seconds": 128
+          },
+          {
+            "name": "Publish pipeline execution evidence",
+            "status": "success",
+            "seconds": 53
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "in_progress",
+            "seconds": 4
+          }
+        ],
+        "openPRs": 50,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "d625a05ac1f32ca824a8771d359e2e870606a99d",
+        "sample": 15,
+        "failures": [],
+        "latestRuns": [
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 6
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 18
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 1783
+          },
+          {
+            "name": "writer-impact",
+            "status": "success",
+            "seconds": 20
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 19
+          }
+        ],
+        "openPRs": 2,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "reportAt": "2026-11-13T20:22:00.041Z",
+      "runId": "FORGE-CODE-CHATGPT-20261113T193524143Z",
+      "reportSha256": "29073dd4dc12e2c1dc9e140d054faa6cbfc6dac097fa0139c73a7f4cbff3be07",
+      "lock": {
+        "token": "FORGE-CODE-CHATGPT-20261113T203024233Z",
+        "at": "2026-11-13T20:30:24.273Z"
+      },
+      "lastSchedulerRun": "2026-11-14T12:45:23Z",
+      "schedulerResult": 0,
+      "mergeConflicts": [],
+      "schedulerSuccessIsCompletion": false
+    },
+    "explorer": {
+      "observed": true,
+      "at": "2026-11-14T12:47:27Z",
+      "companyBusinessReviewUnavailable": true,
+      "unfinishedBulkDecision": {
+        "operations": 1,
+        "jobs": 7,
+        "replayed": false
+      },
+      "refreshInProgressObserved": true,
+      "pollingCadenceDisplayed": "every minute while open",
+      "pollingCompletionVerified": false,
+      "payloadVerified": false,
+      "detailReadFailure": "Health tab inspection timed out waiting for browser element geometry"
+    },
+    "enrichment": {
+      "at": "2026-11-14T12:40:25.349Z",
+      "queues": {
+        "verification": 0,
+        "enrichment": 2384,
+        "readyForReview": 756,
+        "blockedClosed": 99
+      },
+      "needsEnrichment": 2384,
+      "freshness": {
+        "due": 2534,
+        "current": 606,
+        "undated": 0
+      }
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-14T12:38:16.935Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-14T12:38:25.610Z",
+          "lastSuccessAt": "2026-11-14T12:38:25.610Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-14T12:40:27.017Z",
+          "lastSuccessAt": "2026-11-14T12:40:27.017Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-14T12:40:43.044Z",
+          "lastSuccessAt": "2026-11-14T12:40:43.044Z",
+          "attempts": 1
+        }
+      }
+    },
+    "enrichRuns": [
+      {
+        "id": 43593050869,
+        "conclusion": "success"
+      },
+      {
+        "id": 43590195803,
+        "conclusion": "success"
+      },
+      {
+        "id": 43586194691,
+        "conclusion": "success"
+      }
+    ],
+    "comparison": {
+      "priorAudit": "HEALTH_AUDIT_20261113_0748ET.json",
+      "priorNeedsEnrichment": 4085,
+      "currentNeedsEnrichment": 2384,
+      "delta": -1701,
+      "backlogReductionIsNotCompletionCount": true,
+      "priorEnrichFailureNowThreeSuccessfulRuns": true
+    },
+    "limitations": [
+      "Writer status lacks complete fence and log-rotation inventory.",
+      "Explorer dashboard inspected; deeper Health tab timed out. Polling completion and saved bulk operation results are not verified.",
+      "No code, schedules, master, Drive or saved operations changed; no uncertain writes replayed.",
+      "15 Actions sampled per repository plus latest three enrichment runs; not exhaustive history."
+    ]
+  },
+  "nextActions": [
+    "Reconcile the original coordinator run before recovering its retained production lock.",
+    "Inspect Explorer saved bulk decision results for seven jobs without replay; restore company-business review evidence.",
+    "Restore complete canonical capture for Gofer and verify sustained enrichment completion separately from queue reductions."
+  ]
+}
