@@ -100,3 +100,35 @@ test('equally timed conflicting source evidence holds instead of choosing iterat
  const a=U.candidate({...base,OPERATING_SCOPE:'LOCATION_OPEN'},at,'one'),b=U.candidate({...base,OPERATING_SCOPE:'SINGLE_FACILITY'},at,'two');
  for(const records of [[a,b],[b,a]]){const out=U.build({records,rows:[{...row,LOCATION:'Austin, TX'}],now});assert.equal(out.summary.counts.IDENTITY_HOLD,1);assert.equal(out.ledger.entries[a.key].IDENTITY_EVIDENCE_CONFLICT,'scope');}
 });
+test('same company, normalized title and explicit location is excluded and the existing row stays occurrence #1',()=>{
+ const kept={PRIMARY_ID:'V2I-HOWMET00001',COMPANY:'Howmet',TITLE:'VP of Operations',LOCATION:'Morristown, TN',p:{SOURCE_URL:'https://example.test/howmet/tn'}};
+ const later={PRIMARY_ID:'V2I-HOWMET00002',COMPANY:'Howmet',TITLE:'Vice President of Operations',LOCATION:'Morristown, Tennessee',p:{SOURCE_URL:'https://example.test/howmet/tn-2'}};
+ const source=U.candidate({company:'Howmet',title:'Vice President of Operations (m/f/d)',location:'Morristown, TN (m/f/d)',url:'https://example.test/howmet/again'},at,'fixture');
+ const before=JSON.stringify([kept,later]),out=U.build({records:[source],rows:[later,kept],now}),entry=out.ledger.entries[source.key];
+ assert.equal(entry.status,'EXCLUDED');assert.equal(entry.primaryId,undefined);assert.equal(out.summary.counts.IDENTITY_HOLD,0);assert.equal(out.summary.counts.PRESENT,0);assert.equal(out.summary.counts.EXCLUDED,1);assert.equal(JSON.stringify([kept,later]),before);
+});
+test('VP and Vice President are the same title, and a trailing parenthetical is stripped',()=>{
+ const master={PRIMARY_ID:'V2I-TITLE',COMPANY:'Howmet',TITLE:'Plant Manager',LOCATION:'Knoxville, TN',p:{SOURCE_URL:'https://example.test/howmet/title'}};
+ const source=U.candidate({company:'Howmet',title:'VP of Operations (m/f/d)',location:'Knoxville, Tennessee (m/f/d)',url:'https://example.test/howmet/vp'},at,'fixture');
+ assert.equal(U.build({records:[source],rows:[{...master,TITLE:'Vice President of Operations'}],now}).summary.counts.EXCLUDED,1);
+ const paren=U.candidate({company:'Howmet',title:'Plant Manager (m/f/d)',location:'Knoxville, TN',url:'https://example.test/howmet/paren'},at,'fixture');
+ assert.equal(U.build({records:[paren],rows:[master],now}).ledger.entries[paren.key].status,'EXCLUDED');
+});
+test('two explicit different locations stay distinct, and unresolved or conflicting posting identities stay held',()=>{
+ const tennessee={PRIMARY_ID:'V2I-HOWMET-TN',COMPANY:'Howmet',TITLE:'VP of Operations',LOCATION:'Morristown, TN',p:{SOURCE_URL:'https://www.linkedin.com/jobs/view/1111111111/'}};
+ const indiana=U.candidate({company:'Howmet',title:'Vice President of Operations',location:'La Porte, IN',url:'https://example.test/howmet/in'},at,'fixture');
+ const distinct=U.build({records:[indiana],rows:[tennessee],now});assert.equal(distinct.summary.counts.WAITING,1);assert.equal(distinct.summary.counts.EXCLUDED,0);assert.equal(distinct.summary.counts.IDENTITY_HOLD,0);
+ const unresolved=U.candidate({company:'Howmet',title:'VP of Operations',location:'Tennessee',url:'https://example.test/howmet/state'},at,'fixture');
+ assert.equal(U.build({records:[unresolved],rows:[tennessee],now}).summary.counts.IDENTITY_HOLD,1);
+ const conflict=U.candidate({company:'Howmet',title:'VP of Operations',location:'Morristown, TN',url:'https://www.linkedin.com/jobs/view/2222222222/',REQ_ID:'GH-2222222222'},at,'fixture');
+ const held=U.build({records:[conflict],rows:[{...tennessee,REQ_ID:'GH-1111111111',p:{SOURCE_URL:'https://job-boards.greenhouse.io/howmet/jobs/1111111111'}}],now});
+ assert.equal(held.summary.counts.IDENTITY_HOLD,1);assert.equal(held.summary.counts.EXCLUDED,0);
+});
+test('missing or placeholder company or location leaves the backlog; a missing title or non-https URL does not',()=>{
+ const missing=U.candidate({company:'Howmet',title:'VP of Operations',location:'',url:'https://example.test/howmet/noloc'},at,'fixture');
+ assert.equal(U.build({records:[missing],rows:[],now}).ledger.entries[missing.key].status,'EXCLUDED');
+ const placeholder=U.candidate({company:'CONFIDENTIAL',title:'VP of Operations',location:'Nashville, TN',url:'https://example.test/howmet/noco'},at,'fixture');
+ assert.equal(U.build({records:[placeholder],rows:[],now}).summary.counts.EXCLUDED,1);
+ const http=U.candidate({company:'Howmet',title:'VP of Operations',location:'',url:'http://example.test/howmet/http'},at,'fixture');
+ const httpOut=U.build({records:[http],rows:[],now});assert.equal(httpOut.ledger.entries[http.key].relevanceScreen.outcome,'HOLD_SOURCE_IDENTITY');assert.equal(httpOut.summary.counts.WAITING,1);
+});
