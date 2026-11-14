@@ -682,3 +682,19 @@ test('decision correctness repair retains priority over complete retained gaps',
  const out=sourceRun(t,lines,{}, {maxBatches:0.04},cache);
  assert.equal(out.report.salary_repairs,1);assert.equal(out.report.retained_completion.planned,0);assert.equal(out.report.sample[0].id,'V2I-REPAIR-FIRST');assert.deepEqual(out.reads,[]);
 });
+
+test('missing salary fields start before the filled-salary review',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-phase-order-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const missing='SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01';
+ const filled='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS';
+ fs.writeFileSync(master,[row(1,'V2I-MISSING','Director of Quality','Dayton, OH',missing),row(2,'V2I-FILLED','Director of Quality','Akron, OH',filled)].join('\n'));
+ try{
+  const stdout=cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json')},encoding:'utf8',timeout:20000});
+  const phases=stdout.split('\n').map(line=>{try{return JSON.parse(line);}catch{return null;}}).filter(event=>event&&event.event==='PAY_PROGRESS').map(event=>event.phase);
+  const at=name=>{const i=phases.indexOf(name);assert.ok(i>=0,name+' logged');return i;};
+  assert.ok(at('decision_salary_repairs')<at('retained_completion'));
+  assert.ok(at('retained_completion')<at('missing_fields'));
+  assert.ok(at('missing_fields')<at('active_salary_review'));
+  assert.ok(at('active_salary_review')<at('other_salary_repairs'));
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});

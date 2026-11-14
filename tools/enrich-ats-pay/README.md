@@ -46,7 +46,8 @@ Tests: `ENRICH_FC_DIR=../foreman-cockpit node --test tools/enrich-ats-pay/lib.te
 Salary anchor repair (2026-10-31): associate/assistant manager, manager and senior manager are distinct comparison levels.
 Every anchor path recomputes level from the source title, including remembered postings. Site-labelled estimates cannot
 be employer-posted anchors. Each run audits existing named-anchor estimates, including rows outside the missing-salary
-worklist, and plans up to 10 recalculations before new missing-field work. Unrepaired IDs and invalid anchor IDs remain
+worklist. Decision-row repairs run before missing-field work. The remaining bounded repair pass follows the optional
+review of already-filled estimates. Unrepaired IDs and invalid anchor IDs remain
 in `salary_invalid` in the report. The pre-submit readback requires the original salary fields to be unchanged.
 Protected application/decline states, closed jobs and pending Writer requests are excluded. Missing historical anchor
 records alone do not prove a bad estimate. Replacements retain estimate provenance; they do not claim employer-posted
@@ -173,11 +174,12 @@ numbers or a self-hashed artifact alone cannot create a trusted site input.
 No employer-read/no-pay assertion or degree result is fabricated by this shortcut.
 
 Retained-evidence scheduling: decision-needed correctness repairs still run first.
-Before optional review of already-filled estimates, an offline pass plans rows whose
-currently missing SALARY/DEGREE fields are all supported by the existing validated
-posting cache, discovery evidence, or retained source artifacts. It performs no source
-fetches or estimates. Partial evidence continues through the ordinary missing-field
-path; site estimates are not promoted to employer-posted pay. Pending requests,
+An offline pass then plans rows whose currently missing SALARY/DEGREE fields are all
+supported by the existing validated posting cache, discovery evidence, or retained
+source artifacts. It performs no source fetches or estimates. The ordinary missing-field
+path runs next, before the optional review of already-filled estimates, so salary gaps
+start inside the run budget. Partial evidence stays on that path; site estimates are not
+promoted to employer-posted pay. Pending requests,
 helper reservations, protected decisions, expiry/identity checks, fresh-attempt
 backoff and the live pre-submit guard remain enforced. `retained_completion` reports
 planned rows and salary/degree field counts, not Writer completion.
