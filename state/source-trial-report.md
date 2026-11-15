@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261115T0626Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261115T1141Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -7,9 +7,9 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
-| JobSpy linkedin (720 returned) | 257 | 57 | 159 |
-| JobSpy indeed (720 returned) | 85 | 27 | 57 |
-| HiringCafe (345 returned; 30 already found by JOBSPY 30) | 100 (70 unique) | 22 | 47 |
+| JobSpy linkedin (720 returned) | 257 | 56 | 158 |
+| JobSpy indeed (720 returned) | 83 | 26 | 56 |
+| HiringCafe (344 returned; 30 already found by JOBSPY 30) | 100 (70 unique) | 22 | 47 |
 
 JobSpy errors: none
 
@@ -21,16 +21,16 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 88 | 207 |
-| SR_MANAGER | 18 | 54 |
+| DIRECTOR_PLUS | 86 | 207 |
+| SR_MANAGER | 18 | 52 |
 | SR_STAFF | 0 | 3 |
 
 ## New roles
 
 | Source | Company | Title | Location | Family | Level | Pay |
 |---|---|---|---|---|---|---|
+| JOBSPY:linkedin | HEICO | [Director, Quality - Aero-Glen International](https://www.linkedin.com/jobs/view/4491235482) | Fort Worth, TX, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | AAR | [Director, Quality](https://www.linkedin.com/jobs/view/4472855663) | Greensboro, NC, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Teva Pharmaceuticals | [Director Quality Function](https://www.linkedin.com/jobs/view/4473520065) | Davie, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Karman Space & Defense | [Director of Quality Assurance](https://www.linkedin.com/jobs/view/4489286887) | Seattle, WA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Parker Jewish Institute for Health Care and Rehabilitation | [Director of Quality Management](https://www.linkedin.com/jobs/view/4490513185) | New Hyde Park, NY, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Hyve Solutions | [Director, Quality](https://www.linkedin.com/jobs/view/4455337428) | Las Vegas, NV, USA | QUALITY | DIRECTOR_PLUS |  |
@@ -60,8 +60,6 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | Jobot | [Plant Manager](https://www.linkedin.com/jobs/view/4488255268) | Spokane, WA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Sealed Air Corporation | [Plant Manager](https://www.linkedin.com/jobs/view/4488886594) | La Grange, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Nelson Global | [Plant Manager](https://www.linkedin.com/jobs/view/4487910677) | Indianapolis, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | The RealReal | [Director, Industrial Engineering & Automation](https://www.linkedin.com/jobs/view/4489516925) | Syracuse, NY, USA | MFG_ENG | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Lockheed Martin | [Assembly, Integration, & Test Director](https://www.linkedin.com/jobs/view/4488984137) | North Courtland, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Northrop Grumman | [Manufacturing Engineering Director](https://www.linkedin.com/jobs/view/4490088797) | Baltimore, MD, USA | MFG_ENG | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Crane Currency | [Director, Manufacturing Engineering](https://www.linkedin.com/jobs/view/4482488969) | Nashua, NH, USA | MFG_ENG | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Blue Origin | [Director of Manufacturing, Operations & Assembly](https://www.linkedin.com/jobs/view/4487850720) | Huntsville, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -82,17 +80,17 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | Twenty-Six Defense | [Senior Manager Manufacturing - Engineering](https://www.linkedin.com/jobs/view/4488814817) | Fort Worth, TX, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | AG1 | [Director, Innovation & Commercialization Operations](https://www.linkedin.com/jobs/view/4488961068) | USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Jobgether | [Director, Innovation & Commercialization Operations](https://www.linkedin.com/jobs/view/4488695009) | USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:linkedin | Valley Cities Behavioral Health Care | [Director of Continuous Quality Improvement](https://www.linkedin.com/jobs/view/4489382187) | Washington, DC, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Smith+Nephew | [Director, Continuous Improvement Business Partner](https://www.linkedin.com/jobs/view/4489073042) | Andover, MA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Alpha Executive Search | [Director of Continuous Improvement](https://www.linkedin.com/jobs/view/4477098352) | Iowa, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | FIJI Water | [Director, Strategy and Continuous Improvement - FIJI Water](https://www.linkedin.com/jobs/view/4473059029) | Los Angeles, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Grant Thornton (US) | [Operations Transformation Director](https://www.linkedin.com/jobs/view/4478633705) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | balda c brewer | [Director of Quality](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=59e4e437-027b-46ed-a43e-de02493601a0&ccId=19000101_000001&jobId=579638&source=IN&lang=en_US) | Ontario, CA, USA | QUALITY | DIRECTOR_PLUS | $140K-$190K |
-| JOBSPY:indeed | Abraxas Youth & Family Services | [DIRECTOR OF QUALITY COMPLIANCE](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=cbfbdc9a-a7f6-4833-9211-9b7695508c8f&ccId=9200648049722_3&jobId=667834&jwId=9200648049722_1&source=IN&lang=en_US) | Cañon City, CO, USA | QUALITY | DIRECTOR_PLUS | $75K-$90K |
+| JOBSPY:indeed | Abraxas Youth & Family Services | [DIRECTOR OF QUALITY & COMPLIANCE](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=cbfbdc9a-a7f6-4833-9211-9b7695508c8f&ccId=9200648049722_3&jobId=667794&jwId=9200648049722_1&source=IN&lang=en_US) | Cañon City, CO, USA | QUALITY | DIRECTOR_PLUS | $90K-$120K |
 | JOBSPY:indeed | Westchester Jewish Community Services | [Director - Quality Assurance](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0ef29aa7-84c0-4aa5-a172-aedc7db5c878&ccId=19000101_000001&jobId=968442&source=IN&lang=en_US) | White Plains, NY, USA | QUALITY | DIRECTOR_PLUS | $110K-$110K |
-| JOBSPY:indeed | Deringer-Ney Inc. | [Director of Quality, Regulatory & Improvement](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=75a227fc-db57-4f3f-8db9-f0da1611a4d7&ccId=19000101_000001&jobId=576432&source=IN&lang=en_US) | Bloomfield, CT, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | HHAeXchange | [Director, Quality Engineering](https://jobs.lever.co/hhaexchange/24ce23ff-33cd-45c8-bac8-e80483f907d2?lever-source=Indeed) | Remote, USA | QUALITY | DIRECTOR_PLUS | $175K-$195K |
-| JOBSPY:indeed | Episciences, Inc. (Epionce) | [Director of Quality & Compliance](https://secure7.saashr.com/ta/6215509.careers?ShowJob=654788685) | Boise, ID, USA | QUALITY | DIRECTOR_PLUS | $75K-$80K |
 | JOBSPY:indeed | Karman Space & Defense | [Director of Quality Assurance](https://grnh.se/83ikxpz59us) | Mukilteo, WA, USA | QUALITY | DIRECTOR_PLUS | $140K-$180K |
+| JOBSPY:indeed | Episciences, Inc. (Epionce) | [Director of Quality & Compliance](https://secure7.saashr.com/ta/6215509.careers?ShowJob=654788685) | Boise, ID, USA | QUALITY | DIRECTOR_PLUS | $75K-$80K |
 | JOBSPY:indeed | Nammo | [Quality Director](http://recruit.hirebridge.com/v3/careercenter/v2/details.aspx?jid=737393&cid=8284&locvalue=1016) | Perry, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Universal Ingredients | [Food Safety & Quality Director](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ae2c5346-2747-44d6-b968-58babd10cbb2&ccId=9201377195499_2&jobId=578103&source=IN&lang=en_US) | Lancaster, PA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Restaurant Brands International | [Director, Quality Assurance, Burger King, US&C](https://rbi.wd3.myworkdayjobs.com/RBI_External_Career_Site/job/Corp---Miami-Corporate-Office/Director--Quality-Assurance--Burger-King--US-C_R4079-1) | Miami, FL, USA | QUALITY | DIRECTOR_PLUS |  |
@@ -102,17 +100,17 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Oshkosh Corporation | [VP, Global Operations](https://oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh/job/Orlando-Florida-United-States/VP--Global-Operations_R50173) | Orlando, FL, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$370K |
 | JOBSPY:indeed | CLERA | [Head of Operations / COO](https://jobs.ashbyhq.com/Clera/6084fae4-762c-4d27-80f5-2fe1f294838e?utm_source=6qJKzkB7bV) | San Francisco, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Weaver Popcorn Bulk, LLC | [Director of Manufacturing](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=9eaca19e-b901-4c6a-bc17-a85f574ccb63&ccId=19000101_000001&jobId=646425&source=IN&lang=en_US) | Malden, MO, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Deringer-Ney Inc. | [Director of Quality, Regulatory & Improvement](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=75a227fc-db57-4f3f-8db9-f0da1611a4d7&ccId=19000101_000001&jobId=576432&source=IN&lang=en_US) | Bloomfield, CT, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Taconic Biosciences | [Director of S&OP and Production Continuous Improvement](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=842ef768-5509-4732-9f2c-322a608a0b87&ccId=19000101_000001&jobId=601875&source=IN&lang=en_US) | Germantown, NY, USA | MFG_PROD | DIRECTOR_PLUS | $120K-$170K |
 | JOBSPY:indeed | Nammo | [Operations Director](http://recruit.hirebridge.com/v3/careercenter/v2/details.aspx?jid=737385&cid=8284&locvalue=1016) | Perry, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Bil-Jax/Haulotte | [Supply Chain & Production Director](https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a7883aca184742f01a1c63c78f629ab&source=Indeed+Free) | Archbold, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Hubbell | [Director of Operations - Aiken, SC](https://careers.hubbell.com/job-invite/106870/?utm_source=Indeed&locale=en_US) | Aiken, SC, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Linde | [Plant Manager](https://linde.csod.com/ux/ats/careersite/23/home/requisition/34514?c=linde&lang=en-US&source=IndeedATSSync&jbid=-19) | Ellisville, MS, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Stored Energy Systems | [Senior Manager, Warehouse Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=4b01b1ef-1960-4219-8f3f-6c0652a81377&ccId=19000101_000001&jobId=569889&source=IN&lang=en_US) | Longmont, CO, USA | MFG_PROD | SR_MANAGER | $135K-$165K |
 | JOBSPY:indeed | The Coca-Cola Company | [SR. Manager Human Resources, Manufacturing (People & Culture)](https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---CA---Ontario/SR-Manager-Human-Resources--Manufacturing--People---Culture-_R-148964) | Ontario, CA, USA | MFG_PROD | SR_MANAGER | $130K-$147K |
-| JOBSPY:indeed | Aligned Data Centers | [Director, Operations](https://aligneddc.wd12.myworkdayjobs.com/aligneddc/job/Conesville-OH/Director--Operations_JR101377) | Conesville, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Circle of Life Home Care Anishinaabe | [Regional Director of Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=66336638-e837-4d3f-85b0-a8e5556a7f3d&ccId=19000101_000001&jobId=948786&source=IN&lang=en_US) | Gallup, NM, USA | MFG_PROD | DIRECTOR_PLUS | $80K-$110K |
 | JOBSPY:indeed | Royal Faith Homecare Agency LLC | [Director of Operations homecare](https://www.indeed.com/viewjob?jk=3480198035c85b6a) | Oxford, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | St Francis Retreat | [Director of Facilities and Operations](https://www.indeed.com/viewjob?jk=cc3b701f0e54bd12) | San Juan Bautista, CA, USA | MFG_PROD | DIRECTOR_PLUS | $90K-$110K |
+| JOBSPY:indeed | Reyes Beverage Group | [Director of Operations](https://careers-reyesbeveragegroup.icims.com/jobs/38930/job) | Schertz, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Pratt & Whitney | [17/24K Industrial Manager, Production Chief (Onsite)](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01888106&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01888106%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3D9517f8b8-e07a-11f1-939b-d197c011fea5%26rx_job%3D01888106%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261115T100404Z%26rx_vp%3Dcpc) | East Hartford, CT, USA | MFG_PROD | DIRECTOR_PLUS | $108K-$205K |
 | HIRINGCAFE | Electro Rent | [Director of Quality](https://hiringcafe.com/job/director-of-quality-electro-rent-van-nuys-california-48gqfh7a4s1aymxr) | Van Nuys, California, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Columbia Manufacturing | [Director of Quality](https://hiringcafe.com/job/director-of-quality-columbia-manufacturing-columbia-connecticut-b606j3kgqcxhmut6) | Columbia, Connecticut, United States | QUALITY | DIRECTOR_PLUS | $130K-$165K |
 | HIRINGCAFE | The Pictsweet Company | [Director of Quality Systems](https://hiringcafe.com/job/director-of-quality-systems-the-pictsweet-company-bells-tennessee-tql90j1x76tp0wdg) | Bells, Tennessee, United States | QUALITY | DIRECTOR_PLUS |  |
