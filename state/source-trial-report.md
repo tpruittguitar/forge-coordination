@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261114T2318Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261114T2359Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -8,8 +8,8 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
 | JobSpy linkedin (720 returned) | 256 | 55 | 160 |
-| JobSpy indeed (720 returned) | 85 | 29 | 55 |
-| HiringCafe (347 returned; 30 already found by JOBSPY 30) | 104 (74 unique) | 24 | 49 |
+| JobSpy indeed (720 returned) | 89 | 29 | 59 |
+| HiringCafe (347 returned; 31 already found by JOBSPY 31) | 104 (73 unique) | 24 | 48 |
 
 JobSpy errors: none
 
@@ -21,7 +21,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 89 | 210 |
+| DIRECTOR_PLUS | 89 | 213 |
 | SR_MANAGER | 19 | 52 |
 | SR_STAFF | 0 | 3 |
 
@@ -96,7 +96,6 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Universal Ingredients | [Food Safety & Quality Director](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ae2c5346-2747-44d6-b968-58babd10cbb2&ccId=9201377195499_2&jobId=578103&source=IN&lang=en_US) | Lancaster, PA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Restaurant Brands International | [Director, Quality Assurance, Burger King, US&C](https://rbi.wd3.myworkdayjobs.com/RBI_External_Career_Site/job/Corp---Miami-Corporate-Office/Director--Quality-Assurance--Burger-King--US-C_R4079-1) | Miami, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Rite Stuff Foods | [Head of Quality](https://www.indeed.com/viewjob?jk=d3d780554282402d) | Jerome, ID, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Brunswick Hospital Center | [Quality Director](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=9f5abdf2-b414-4270-89d3-020d426bbf7f&ccId=19000101_000001&jobId=592984&source=IN&lang=en_US) | Amityville, NY, USA | QUALITY | DIRECTOR_PLUS | $125K-$150K |
 | JOBSPY:indeed | Club Car | [Sr Manager Revenue Ops & Billing Governance](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0b279ef4-70b5-43b5-9b1c-ebf799fd2e4c&ccId=19000101_000001&jobId=955244&source=IN&lang=en_US) | Evans, GA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:indeed | Oshkosh Corporation | [VP, Global Operations](https://oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh/job/Orlando-Florida-United-States/VP--Global-Operations_R50173) | Orlando, FL, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$370K |
 | JOBSPY:indeed | CLERA | [Head of Operations / COO](https://jobs.ashbyhq.com/Clera/6084fae4-762c-4d27-80f5-2fe1f294838e?utm_source=6qJKzkB7bV) | San Francisco, CA, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -108,6 +107,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Hubbell | [Director of Operations - Aiken, SC](https://careers.hubbell.com/job-invite/106870/?utm_source=Indeed&locale=en_US) | Aiken, SC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Stored Energy Systems | [Senior Manager, Warehouse Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=4b01b1ef-1960-4219-8f3f-6c0652a81377&ccId=19000101_000001&jobId=569889&source=IN&lang=en_US) | Longmont, CO, USA | MFG_PROD | SR_MANAGER | $135K-$165K |
 | JOBSPY:indeed | The Coca-Cola Company | [SR. Manager Human Resources, Manufacturing (People & Culture)](https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---CA---Ontario/SR-Manager-Human-Resources--Manufacturing--People---Culture-_R-148964) | Ontario, CA, USA | MFG_PROD | SR_MANAGER | $130K-$147K |
+| JOBSPY:indeed | University of Missouri | [Senior Director - Reactor Operations](https://erecruit.umsystem.edu/psc/tamext/COLUM/HRMS/c/HRS_HRAM_FL.HRS_CG_SEARCH_FL.GBL?Page=HRS_APP_JBPST_FL&Action=U&FOCUS=Applicant&SiteId=1&JobOpeningId=59754&PostingSeq=1) | Columbia, MO, USA | MFG_PROD | DIRECTOR_PLUS | $169K-$303K |
 | JOBSPY:indeed | Circle of Life Home Care Anishinaabe | [Regional Director of Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=66336638-e837-4d3f-85b0-a8e5556a7f3d&ccId=19000101_000001&jobId=948786&source=IN&lang=en_US) | Gallup, NM, USA | MFG_PROD | DIRECTOR_PLUS | $80K-$110K |
 | JOBSPY:indeed | Royal Faith Homecare Agency LLC | [Director of Operations homecare](https://www.indeed.com/viewjob?jk=3480198035c85b6a) | Oxford, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Esco Technologies | [Director, Operational Excellence](https://escotech.rec.pro.ukg.net/ESC1001ESTI/JobBoard/0fdd089c-a32e-4918-89d9-76285f90e22e/OpportunityDetail?opportunityId=803ffc8a-6fa6-4974-ac4c-681764152410&postingId=c8586ea7-b1ed-4df1-9d73-eb30f7c885d6) | St. Louis, MO, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$220K |
