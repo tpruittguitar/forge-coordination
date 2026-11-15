@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261115T2054Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261115T2108Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -8,7 +8,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
 | JobSpy linkedin (720 returned) | 256 | 60 | 156 |
-| JobSpy indeed (720 returned) | 78 | 22 | 55 |
+| JobSpy indeed (720 returned) | 81 | 22 | 58 |
 | HiringCafe (345 returned; 29 already found by JOBSPY 29) | 100 (71 unique) | 22 | 48 |
 
 JobSpy errors: none
@@ -21,7 +21,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 85 | 205 |
+| DIRECTOR_PLUS | 85 | 208 |
 | SR_MANAGER | 19 | 52 |
 | SR_STAFF | 0 | 3 |
 
