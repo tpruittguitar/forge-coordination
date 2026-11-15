@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261115T0521Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261115T0626Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -8,8 +8,8 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
 | JobSpy linkedin (720 returned) | 257 | 57 | 159 |
-| JobSpy indeed (720 returned) | 87 | 27 | 59 |
-| HiringCafe (345 returned; 31 already found by JOBSPY 31) | 100 (69 unique) | 22 | 46 |
+| JobSpy indeed (720 returned) | 85 | 27 | 57 |
+| HiringCafe (345 returned; 30 already found by JOBSPY 30) | 100 (70 unique) | 22 | 47 |
 
 JobSpy errors: none
 
@@ -22,7 +22,7 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 88 | 207 |
-| SR_MANAGER | 18 | 55 |
+| SR_MANAGER | 18 | 54 |
 | SR_STAFF | 0 | 3 |
 
 ## New roles
@@ -89,13 +89,14 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | balda c brewer | [Director of Quality](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=59e4e437-027b-46ed-a43e-de02493601a0&ccId=19000101_000001&jobId=579638&source=IN&lang=en_US) | Ontario, CA, USA | QUALITY | DIRECTOR_PLUS | $140K-$190K |
 | JOBSPY:indeed | Abraxas Youth & Family Services | [DIRECTOR OF QUALITY COMPLIANCE](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=cbfbdc9a-a7f6-4833-9211-9b7695508c8f&ccId=9200648049722_3&jobId=667834&jwId=9200648049722_1&source=IN&lang=en_US) | Cañon City, CO, USA | QUALITY | DIRECTOR_PLUS | $75K-$90K |
 | JOBSPY:indeed | Westchester Jewish Community Services | [Director - Quality Assurance](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0ef29aa7-84c0-4aa5-a172-aedc7db5c878&ccId=19000101_000001&jobId=968442&source=IN&lang=en_US) | White Plains, NY, USA | QUALITY | DIRECTOR_PLUS | $110K-$110K |
-| JOBSPY:indeed | HHAeXchange | [Director, Quality Engineering](https://jobs.lever.co/hhaexchange/24ce23ff-33cd-45c8-bac8-e80483f907d2?lever-source=Indeed) | Remote, USA | QUALITY | DIRECTOR_PLUS | $175K-$195K |
 | JOBSPY:indeed | Deringer-Ney Inc. | [Director of Quality, Regulatory & Improvement](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=75a227fc-db57-4f3f-8db9-f0da1611a4d7&ccId=19000101_000001&jobId=576432&source=IN&lang=en_US) | Bloomfield, CT, USA | QUALITY | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | HHAeXchange | [Director, Quality Engineering](https://jobs.lever.co/hhaexchange/24ce23ff-33cd-45c8-bac8-e80483f907d2?lever-source=Indeed) | Remote, USA | QUALITY | DIRECTOR_PLUS | $175K-$195K |
 | JOBSPY:indeed | Episciences, Inc. (Epionce) | [Director of Quality & Compliance](https://secure7.saashr.com/ta/6215509.careers?ShowJob=654788685) | Boise, ID, USA | QUALITY | DIRECTOR_PLUS | $75K-$80K |
+| JOBSPY:indeed | Karman Space & Defense | [Director of Quality Assurance](https://grnh.se/83ikxpz59us) | Mukilteo, WA, USA | QUALITY | DIRECTOR_PLUS | $140K-$180K |
 | JOBSPY:indeed | Nammo | [Quality Director](http://recruit.hirebridge.com/v3/careercenter/v2/details.aspx?jid=737393&cid=8284&locvalue=1016) | Perry, FL, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Encompass Health | [Quality/Risk Director](https://click.appcast.io/t/PaXAR_z0vdMoMrETvAWBcKrmBUQ58zwBMld_9kFuG8I=) | Apollo Beach, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Universal Ingredients | [Food Safety & Quality Director](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ae2c5346-2747-44d6-b968-58babd10cbb2&ccId=9201377195499_2&jobId=578103&source=IN&lang=en_US) | Lancaster, PA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Restaurant Brands International | [Director, Quality Assurance, Burger King, US&C](https://rbi.wd3.myworkdayjobs.com/RBI_External_Career_Site/job/Corp---Miami-Corporate-Office/Director--Quality-Assurance--Burger-King--US-C_R4079-1) | Miami, FL, USA | QUALITY | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Encompass Health | [Quality/Risk Director](https://click.appcast.io/t/PaXAR_z0vdMoMrETvAWBcKrmBUQ58zwBMld_9kFuG8I=) | Apollo Beach, FL, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Rite Stuff Foods | [Head of Quality](https://www.indeed.com/viewjob?jk=d3d780554282402d) | Jerome, ID, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Club Car | [Sr Manager Revenue Ops & Billing Governance](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=0b279ef4-70b5-43b5-9b1c-ebf799fd2e4c&ccId=19000101_000001&jobId=955244&source=IN&lang=en_US) | Evans, GA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:indeed | Oshkosh Corporation | [VP, Global Operations](https://oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh/job/Orlando-Florida-United-States/VP--Global-Operations_R50173) | Orlando, FL, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$370K |
@@ -103,15 +104,14 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Weaver Popcorn Bulk, LLC | [Director of Manufacturing](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=9eaca19e-b901-4c6a-bc17-a85f574ccb63&ccId=19000101_000001&jobId=646425&source=IN&lang=en_US) | Malden, MO, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Taconic Biosciences | [Director of S&OP and Production Continuous Improvement](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=842ef768-5509-4732-9f2c-322a608a0b87&ccId=19000101_000001&jobId=601875&source=IN&lang=en_US) | Germantown, NY, USA | MFG_PROD | DIRECTOR_PLUS | $120K-$170K |
 | JOBSPY:indeed | Nammo | [Operations Director](http://recruit.hirebridge.com/v3/careercenter/v2/details.aspx?jid=737385&cid=8284&locvalue=1016) | Perry, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Bil-Jax/Haulotte | [Supply Chain & Production Director](https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a7883aca184742f01a1c63c78f629ab&source=Indeed+Free) | Archbold, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Hubbell | [Director of Operations - Aiken, SC](https://careers.hubbell.com/job-invite/106870/?utm_source=Indeed&locale=en_US) | Aiken, SC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Linde | [Plant Manager](https://linde.csod.com/ux/ats/careersite/23/home/requisition/34514?c=linde&lang=en-US&source=IndeedATSSync&jbid=-19) | Ellisville, MS, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Stored Energy Systems | [Senior Manager, Warehouse Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=4b01b1ef-1960-4219-8f3f-6c0652a81377&ccId=19000101_000001&jobId=569889&source=IN&lang=en_US) | Longmont, CO, USA | MFG_PROD | SR_MANAGER | $135K-$165K |
 | JOBSPY:indeed | The Coca-Cola Company | [SR. Manager Human Resources, Manufacturing (People & Culture)](https://coke.wd1.myworkdayjobs.com/en-US/coca-cola-careers/job/US---CA---Ontario/SR-Manager-Human-Resources--Manufacturing--People---Culture-_R-148964) | Ontario, CA, USA | MFG_PROD | SR_MANAGER | $130K-$147K |
-| JOBSPY:indeed | Bil-Jax/Haulotte | [Supply Chain & Production Director](https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a7883aca184742f01a1c63c78f629ab&source=Indeed+Free) | Archbold, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
+| JOBSPY:indeed | Aligned Data Centers | [Director, Operations](https://aligneddc.wd12.myworkdayjobs.com/aligneddc/job/Conesville-OH/Director--Operations_JR101377) | Conesville, OH, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Circle of Life Home Care Anishinaabe | [Regional Director of Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=66336638-e837-4d3f-85b0-a8e5556a7f3d&ccId=19000101_000001&jobId=948786&source=IN&lang=en_US) | Gallup, NM, USA | MFG_PROD | DIRECTOR_PLUS | $80K-$110K |
-| JOBSPY:indeed | Washington Athletic Club | [Building Operations Director](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4657399/Washington-Athletic-Club/Building-Operations-Director?source=Indeed_Feed) | Seattle, WA, USA | MFG_PROD | DIRECTOR_PLUS | $120K-$130K |
 | JOBSPY:indeed | Royal Faith Homecare Agency LLC | [Director of Operations homecare](https://www.indeed.com/viewjob?jk=3480198035c85b6a) | Oxford, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Reyes Beverage Group | [Director of Operations](https://careers-reyesbeveragegroup.icims.com/jobs/38930/job) | Schertz, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | St Francis Retreat | [Director of Facilities and Operations](https://www.indeed.com/viewjob?jk=cc3b701f0e54bd12) | San Juan Bautista, CA, USA | MFG_PROD | DIRECTOR_PLUS | $90K-$110K |
 | HIRINGCAFE | Electro Rent | [Director of Quality](https://hiringcafe.com/job/director-of-quality-electro-rent-van-nuys-california-48gqfh7a4s1aymxr) | Van Nuys, California, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Columbia Manufacturing | [Director of Quality](https://hiringcafe.com/job/director-of-quality-columbia-manufacturing-columbia-connecticut-b606j3kgqcxhmut6) | Columbia, Connecticut, United States | QUALITY | DIRECTOR_PLUS | $130K-$165K |
