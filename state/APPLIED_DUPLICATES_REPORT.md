@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-14T22:39:40.790Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-15T06:53:08.896Z from CANONICAL_WRITER_MASTER.
 
-Of 977 jobs waiting on Tim, 30 match a role he already applied to, was rejected from, or declined:
+Of 1064 jobs waiting on Tim, 28 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 30
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 28
 
-Writer: 0 closed, 5 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (30)
+## Kept, labeled (28)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -38,17 +38,15 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
 | 56 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 55 | The Lignum Group | Director of Operations | You declined 2026-11-14 · different site | Different worksite: California, United States vs earlier Maryland, United States | V2I-AA589391D1DB → V2I-BA5A23AA0C95 |
-| 54 | AMETEK | Senior Manager, Operations Excellence | You declined 2026-11-08 · different site | Different worksite: Mount Prospect, IL vs earlier Collegeville, PA | V2I-E4F08FE197F2 → V2I-45E0D9AFEC1D |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 51 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 51 | EPM Scientific | Vice President, Quality | You declined 2026-11-02 · different site | Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA | V2I-E32A3FAD4E67 → V2I-331877FAD4F9 |
+| 51 | Generac | Senior Manager Value Stream | You declined 2026-11-14 · different site | Different worksite: Holdrege, NE vs earlier Whitewater, WI | V2I-620A2C661996 → V2I-B598F8FCC62F |
 | 50 | Sanmina | VP, Operations | You declined 2026-10-26 · different site | Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2) | V2I-34A6A4DD91D8 → V2I-981E839AC295 |
 | 46 | Magna International | Operations Manager | You declined 2026-11-14 · different site | Different worksite: Duncan, SC vs earlier Holly, MI | V2I-C66ADD3B6F79 → V2I-C996CB68A404 |
 | 45 | Sanmina | VP Operations, USA | You declined 2026-10-26 · different site | Different worksite: Fremont, CA vs earlier Huntsville, AL (SCI Plant 2) | V2I-EF96178B6B97 → V2I-981E839AC295 |
-| 41 | Fives | Director of Operations | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-13, 18 days after 2026-10-26; no posting identity to compare | V2I-32BCD7BA051A → V2I-3BBD5FE87B94 |
 | 40 | Ladders | Ames Plant Director | You declined 2026-10-26 · different site | Different worksite: Aberdeen, SD vs earlier Overland Park, KS | V2I-491788B840DC → V2I-AE6B9498C206 |
 | 39 | Lockheed Martin | Multifunctional Manufacturing Mgr - L5 | You declined 2026-11-05 · different site | Different worksite: Ocala, FL vs earlier Greenville, SC | V2I-F439C723F6A9 → V2I-B6546F0C3FB7 |
 | 38 | GE Appliances, a Haier company | Senior Materials Manager | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-13, 5 days after 2026-11-08; no posting identity to compare | V2I-32DA5EE65984 → V2I-5567E190E6F4 |
-| 37 | EY | Consulting_Supply Chain_Systems Implementation and Engineering_Manager | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-13, 11 days after 2026-11-02; no posting identity to compare | V2I-2ECD2C7FDA04 → V2I-2D3C34DE939D |
 | 37 | Southwire Company | Process Optimization Manager | You declined 2026-11-07 · different site | Different worksite: Carrollton, GA vs earlier Starkville, MS | V2I-B50C45DDC874 → V2I-D0E01741BF7C |
 
