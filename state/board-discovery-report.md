@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261114T2221Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261115T0326Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (98 read, 0 failed) | 119 | 27 | 68 |
+| Employer job boards (96 read, 0 failed) | 119 | 26 | 69 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 17 | 45 |
+| DIRECTOR_PLUS | 16 | 46 |
 | SR_MANAGER | 9 | 18 |
 | SR_STAFF | 1 | 5 |
 
@@ -52,5 +52,4 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Scout Motors Inc. | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Collins Aerospace (RTX) | [17/24K Industrial Manager, Production Chief (Onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-CT-EAST-HARTFORD-OBG--400-Main-St--BLDG-OBG/XMLNAME-17-24K-Industrial-Manager--Production-Chief--Onsite-_01888106) | US-CT-EAST HARTFORD-OBG ~ 400 Main St ~ BLDG OBG | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:workday | GE Appliances (Haier) | [Senior Manager, Manufacturing Quality (Floor Leader)](https://haier.wd3.myworkdayjobs.com/GE_Appliances/job/USA-Decatur-AL/Senior-Manager--Manufacturing-Quality--Floor-Leader-_REQ-27180) | USA, Decatur, AL | QUALITY | SR_MANAGER |  |
