@@ -65,6 +65,16 @@ async function get(url, opts={}) {
 }
 const FC_DIR = process.env.ENRICH_FC_DIR || '';   // tests: a local foreman-cockpit checkout instead of raw GitHub
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + rel)).text(); }
+async function neverConsiderRules() {
+  if (process.env.ENRICH_MASTER_FILE && !process.env.ENRICH_RULES_FILE) return null;   // tests only
+  if (!FC_DIR) throw Error('NEVER_CONSIDER_GATE_REQUIRES_ENRICH_FC_DIR');
+  const Writer = require(path.join(FC_DIR, 'apps-script/Code.gs'));
+  Object.assign(globalThis, { classifyNeverConsider: Writer.classifyNeverConsider, declineNeverConsiderRow_: Writer.declineNeverConsiderRow_ });
+  const text = process.env.ENRICH_MASTER_FILE ? fs.readFileSync(process.env.ENRICH_RULES_FILE, 'utf8') : await (await get('https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt?nc=' + Date.now())).text();
+  const rules = Writer.parseCanonicalNeverConsiderRules(text);
+  if (rules.status !== 'ACTIVE') throw Error('NEVER_CONSIDER_RULES_UNAVAILABLE: ' + (rules.error || rules.status));
+  return rules;
+}
 async function loadModule(name) { const src = await fcFile('apps-script/' + name); const file = path.join(require('os').tmpdir(), name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./$1.js')")); return file; }
 
 (async () => {
@@ -87,7 +97,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('snapshot',{rows:jobs.length});
   const lines = jobs.map(x => x.SOURCE_LINE || x.source_line).filter(Boolean);
   const text = 'V2_CURRENT_POPULATION_MASTER\nCOUNTS: TOTAL=' + lines.length + '\n' + '='.repeat(64) + '\n' + lines.join('\n') + '\nEND V2_CURRENT_POPULATION_MASTER\n';
-  const built = W.build(text), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
+  // Never Consider runs first (Tim 2026-11-15), before any pay lookup, enrichment or Writer call. Reuses the Writer's
+  // parser, classifier and decline ruling through its worklist code (Apps Script shares one global scope). A match leaves
+  // every work set here; the Writer's worklist refresh queues its DECLINE. No rules, no pay work.
+  const rules=await neverConsiderRules();
+  const built = W.build(text,{rules}), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
+  const neverConsiderIds=new Set((built.declines||[]).map(d=>d.primaryId));
   let planIds=null;
   if(PLAN_FILE){
     if(!SNAPSHOT_FILE||!PREPARE_ONLY)throw Error('Plan requires snapshot preparation');
@@ -161,13 +176,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(!Outcome.released(proofRoot,{requestId,...entry})||Date.parse(entry.retryAfter)>Date.now()||entry.retryable===false&&entry.clientRevision===PAY_CLIENT_REVISION&&!serverChanged)for(const id of entry.ids){inFlightIds.add(id);refusalStatuses.set(id,!Outcome.released(proofRoot,{requestId,...entry})?'WRITER_REFUSAL_PROOF_REQUIRED':entry.retryable===false?'WRITER_REQUEST_REJECTED':'WRITER_RETRY_WAIT');}
   }
   const helperResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
-  const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds]);
+  const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds,...neverConsiderIds]);
   const researchUnavailableIds=new Set([...unavailableIds,...helperResearchIds]);
   const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, never_consider_excluded: neverConsiderIds.size, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const policyFingerprint=Store.hash(fs.readdirSync(__dirname).filter(f=>/\.(?:js|cjs)$/.test(f)&&!f.includes('.test.')).sort().map(f=>[f,fs.readFileSync(path.join(__dirname,f),'utf8')]).concat([['config',CONFIG],...['PipelineWorklists','PipelineEvidence','PipelinePostingFreshness','PipelineAts'].map(name=>[name,fs.readFileSync(path.join(require('os').tmpdir(),name+'.js'),'utf8')])]));
   const inputFingerprintOf=()=>require('./input-fingerprint').hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
   const inputFingerprint=inputFingerprintOf();
@@ -355,7 +370,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   async function repairSalaries(candidates) {
   for (const r of PRODUCTS_ONLY || PREPARE_ONLY ? [] : candidates) {
     if(!runtime.canStart())break;
-    if(requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
+    if(neverConsiderIds.has(r.PRIMARY_ID)||requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
     if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
