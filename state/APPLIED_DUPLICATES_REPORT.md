@@ -1,10 +1,10 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-15T06:53:08.896Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-15T16:29:25.136Z from CANONICAL_WRITER_MASTER.
 
-Of 1064 jobs waiting on Tim, 28 match a role he already applied to, was rejected from, or declined:
+Of 1314 jobs waiting on Tim, 29 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 28
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 29
 
 Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (28)
+## Kept, labeled (29)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -38,6 +38,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
 | 56 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 55 | The Lignum Group | Director of Operations | You declined 2026-11-14 · different site | Different worksite: California, United States vs earlier Maryland, United States | V2I-AA589391D1DB → V2I-BA5A23AA0C95 |
+| 53 | GXO Logistics, Inc. | Lead - 2nd Shift | You declined 2026-11-15 · different site | Different worksite: Lithia Springs, GA vs earlier Fairburn, GA | V2I-973F448AA17B → V2I-58E852543F82 |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 51 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 51 | EPM Scientific | Vice President, Quality | You declined 2026-11-02 · different site | Different worksite: Minneapolis, MN, USA vs earlier Philadelphia, PA | V2I-E32A3FAD4E67 → V2I-331877FAD4F9 |

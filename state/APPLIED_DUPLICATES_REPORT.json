@@ -1,25 +1,25 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-15T06:53:08.896Z",
+ "at": "2026-11-15T16:29:25.136Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-15T06:53:08.077Z",
+  "readAt": "2026-11-15T16:29:24.056Z",
   "rows": 9033,
-  "sha256": "9435d7ca3ef86997e0409321c80fcb2a7919be61ea77a7012362a5e070565031"
+  "sha256": "918e959eee4801b5d09e3fa8ed69da02e88c46773d1cd10aaf602fedb1da7234"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-15T06:49:19.269Z",
-  "decision": 1064
+  "at": "2026-11-15T16:07:45.764Z",
+  "decision": 1314
  },
  "counts": {
-  "waiting": 1064,
-  "matched": 28,
+  "waiting": 1314,
+  "matched": 29,
   "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 28
+  "KEEP_LABEL": 29
  },
  "rules": {
-  "DIFFERENT_SITE": 17,
+  "DIFFERENT_SITE": 18,
   "POSSIBLE_REPOST": 2,
   "UNCERTAIN": 7,
   "NEW_REQUISITION": 2
@@ -487,6 +487,31 @@
    ]
   },
   {
+   "id": "V2I-973F448AA17B",
+   "company": "GXO Logistics, Inc.",
+   "title": "Lead - 2nd Shift",
+   "location": "Lithia Springs, GA",
+   "score": 53,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-15 · different site",
+   "evidence": "Different worksite: Lithia Springs, GA vs earlier Fairburn, GA",
+   "matches": [
+    {
+     "id": "V2I-58E852543F82",
+     "status": "DECLINED_BY_TIM",
+     "title": "Warehouse Lead - 2nd Shift",
+     "location": "Fairburn, GA",
+     "decided": "2026-11-15",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Lithia Springs, GA vs earlier Fairburn, GA"
+    }
+   ]
+  },
+  {
    "id": "V2I-730DB190A82C",
    "company": "Amphenol",
    "title": "Director of Operations",
@@ -764,12 +789,12 @@
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 28,
+  "planned": 29,
   "closed": 0,
   "labeled": 1,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 27
+   "ALREADY_LABELED": 28
   },
   "failed": 0,
   "deferred": 0,
