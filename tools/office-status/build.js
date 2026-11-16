@@ -146,12 +146,32 @@ function mergeBot(row, sig, now) {
   }
   return r;
 }
+/* Usage Budget row screen, from the computed usage block. Plain formatting only; missing fields are said to be unknown, never invented. */
+const USAGE_ROW_ID = 'f1a70b7a-6051-45d7-8031-e46a4cba066f';
+const resetDay = v => { const t = time(v); return t == null ? null : new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', month: 'short', day: 'numeric' }).format(new Date(t)); };
+function usageLine(s) {
+  const name = (s && s.name) || 'unknown service';
+  const left = s && Number.isFinite(s.pct_left) ? s.pct_left : null;
+  if (left == null) return name + ': unknown';
+  const day = resetDay(s.resets_at);
+  return name + ': ' + left + '% left, ' + (day ? 'resets ' + day : 'reset unknown');
+}
+function usageScreen(row, usage) {
+  const screen = Object.assign({}, row.screen, { title: 'AI usage', lines: usage.services.map(usageLine) });
+  if (usage.as_of) screen.updated_at = usage.as_of;
+  return Object.assign({}, row, { screen });
+}
 /* Returns { doc, changed }. `office` is the parsed OFFICE_STATUS.json; it is not mutated. */
 function build(office, signals, now, readings) {
   if (!office || !Array.isArray(office.bots)) return { doc: office, changed: false };
   const best = newestByBot(signals, now);
-  const bots = office.bots.map(b => (b && typeof b === 'object' ? mergeBot(b, best[b.bot], now) : b));
   const usage = readings === undefined ? office.usage : usageFromReadings(readings, now);
+  const hasUsage = !!usage && Array.isArray(usage.services);
+  const bots = office.bots.map(b => {
+    if (!b || typeof b !== 'object') return b;
+    const m = mergeBot(b, best[b.bot], now);
+    return hasUsage && b.bot_id === USAGE_ROW_ID ? usageScreen(m, usage) : m;
+  });
   const changed = JSON.stringify(bots) !== JSON.stringify(office.bots) || JSON.stringify(usage) !== JSON.stringify(office.usage);
   const doc = Object.assign({}, office, { bots, usage });
   if (changed) { if ('generated_at' in doc && !('updated_at' in doc)) doc.generated_at = iso(now); else doc.updated_at = iso(now); }

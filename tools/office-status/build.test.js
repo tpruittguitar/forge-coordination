@@ -131,3 +131,33 @@ test('next check is strictly after build time, across midnight and both DST tran
     ['2026-11-01T05:59:00Z', '2026-11-01T07:05:00Z'], // 02:05 is after fall back
   ]) assert.equal(B.nextCheckAt(Date.parse(now)), expected, now);
 });
+
+const USAGE_ID = 'f1a70b7a-6051-45d7-8031-e46a4cba066f';
+const withUsageRow = () => {
+  const o = office();
+  o.bots.push({ bot: 'Usage Budget', bot_id: USAGE_ID, task: 'Usage watch', status: 'idle', last_action: 'x', last_action_at: '2026-11-16T06:47:00Z', screen: { title: 'old', lines: ['old'], updated_at: '2026-11-16T06:47:00Z' } });
+  return o;
+};
+test('Usage Budget screen: one line per service, updated_at = usage.as_of, other rows unchanged', () => {
+  const o = withUsageRow();
+  o.usage = { as_of: '2026-11-16T13:12:00Z', services: [
+    { name: 'Grok Bot', as_of: '2026-11-16T13:12:00Z', pct_used: 46, pct_left: 54, resets_at: '2026-11-22T16:00:00Z' },
+    { name: 'Claude', as_of: '2026-11-16T13:00:00Z', pct_used: 36, pct_left: 64 },
+    { name: 'ChatGPT', as_of: null, status: 'NO_OK_READING' } ] };
+  const { doc } = B.build(o, [], NOW);
+  assert.deepEqual(row(doc, 'Usage Budget').screen, { title: 'AI usage', lines: ['Grok Bot: 54% left, resets Nov 22', 'Claude: 64% left, reset unknown', 'ChatGPT: unknown'], updated_at: '2026-11-16T13:12:00Z' });
+  assert.deepEqual(doc.bots.filter(b => b.bot_id !== USAGE_ID), o.bots.filter(b => b.bot_id !== USAGE_ID));
+  assert.equal(row(doc, 'Usage Budget').task, 'Usage watch');
+});
+test('Usage Budget screen is built from fresh readings and flags a change', () => {
+  const { doc, changed } = B.build(withUsageRow(), [], NOW, jsonl([reading('GROK', '2026-11-16T13:12:00Z', 46)]));
+  assert.equal(changed, true);
+  assert.equal(row(doc, 'Usage Budget').screen.lines[0], 'Grok Bot: 54% left, resets Nov 22');
+  assert.equal(row(doc, 'Usage Budget').screen.updated_at, '2026-11-16T13:12:00Z');
+});
+test('missing usage block leaves the Usage Budget row untouched', () => {
+  const o = withUsageRow(); delete o.usage;
+  assert.deepEqual(row(B.build(o, [], NOW).doc, 'Usage Budget'), o.bots[3]);
+  const o2 = withUsageRow(); o2.usage = { as_of: '2026-11-16T13:00:00Z' };
+  assert.deepEqual(row(B.build(o2, [], NOW).doc, 'Usage Budget'), o2.bots[3]);
+});
