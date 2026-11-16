@@ -31,6 +31,7 @@ Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_
 4. **Instruction sources and generated releases** change only on Tim's instruction through a reviewed PR. Run `python scripts/build_runtime.py`, tests, then `python scripts/build_runtime.py --check`; commit source and generated outputs together. Tim merges. Never rewrite a published release.
 5. **Record every change; the REV comes at merge.** A PR adds one file `control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt` (`WHAT=...`; format in `control/changes/README.txt`) and never edits `control/CHANGE_REGISTER.txt` or picks a REV. When it merges, the `change-register` Action appends the register line with the next REV in merge order. The `change-record-check` PR check enforces this. Direct commits to main may add a record the same way.
 6. **Report only real SHAs.** Claude spot-checks reported SHAs against `git log`.
+7. **Link every PR.** Write every PR a bot mentions as a clickable Markdown link to the PR's full GitHub URL, for example [#305](https://github.com/tpruittguitar/foreman-cockpit/pull/305), never a bare #number. (Tim, Nov 15, 2026, 10:35 PM ET)
 
 ## Related repos
 - `tpruittguitar/forge-policy`: rules, geo floors, scoring, FLEX, salary estimation, Never-Consider. Grok and ChatGPT work there on `backup/<provider>-<time>` branches with a pull request; Tim merges.

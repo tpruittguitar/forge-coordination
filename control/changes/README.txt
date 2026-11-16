@@ -10,6 +10,7 @@ CHANGE RECORDS — how a change gets its REV (from 2026-10-22; replaces appendin
      DATE=2026-10-22                optional; defaults to the merge date (ET)
      REV=REV-187                    only for a number reserved in control/CHANGE_RECORDS_CONSUMED.txt
    Do NOT put a REV number in the file, the PR title or control/CHANGE_REGISTER.txt.
+   Write every PR a bot mentions as a clickable Markdown link to the PR's full GitHub URL, for example [#305](https://github.com/tpruittguitar/foreman-cockpit/pull/305), never a bare #number. (Tim, Nov 15, 2026, 10:35 PM ET)
    Only these six keys are allowed; any other key fails the record. PROVIDER and RUN_ID go in the commit message, not here.
    A lane receipt committed directly to main needs only: WHAT=<one line>
 3. When the PR merges, .github/workflows/change-register.yml appends the register line with the next REV (merge order),
