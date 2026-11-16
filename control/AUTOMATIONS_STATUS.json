@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-16T19:23:58.571Z",
+ "generated_at": "2026-11-16T19:39:45.517Z",
  "schema": "forge.automations-status.v1",
  "automations": [
   {
@@ -30,7 +30,7 @@
    "ai": "ChatGPT",
    "name": "FORGE_APPLICATION_WRITER_GOFER",
    "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0",
-   "last_run_at": "2026-11-16T18:40:12.915Z",
+   "last_run_at": "2026-11-16T19:38:10.357Z",
    "result": "SKIP",
    "next_run_at": "2026-11-16T19:42:00.000Z",
    "running": false,
@@ -176,7 +176,7 @@
    "schedule": "{\"timezone\":\"America/New_York\",\"frequency\":\"HOURLY\",\"minute\":25,\"status\":\"REQUIRES_NATIVE_READBACK\"}",
    "last_run_at": null,
    "result": "STALE",
-   "next_run_at": "2026-11-16T19:25:00.000Z",
+   "next_run_at": "2026-11-16T20:25:00.000Z",
    "running": false,
    "started_at": null,
    "stale": true,
@@ -1263,18 +1263,18 @@
    "name": "FORGE_APPLICATION_WRITER_GOFER",
    "start": "2026-11-16T18:42:00.000Z",
    "end": "2026-11-16T18:52:00.000Z",
-   "result": "SKIP",
+   "result": "NO_RECEIPT",
    "writer": true,
-   "expected": false
+   "expected": true
   },
   {
    "ai": "ChatGPT",
    "name": "FORGE_APPLICATION_WRITER_GOFER",
    "start": "2026-11-16T19:42:00.000Z",
    "end": "2026-11-16T19:52:00.000Z",
-   "result": "UPCOMING",
+   "result": "SKIP",
    "writer": true,
-   "expected": true
+   "expected": false
   },
   {
    "ai": "ChatGPT",
@@ -3351,7 +3351,7 @@
    "name": "FORGE_CLAUDE_SHARED_HELPER",
    "start": "2026-11-16T19:25:00.000Z",
    "end": "2026-11-16T19:35:00.000Z",
-   "result": "UPCOMING",
+   "result": "NO_RECEIPT",
    "writer": false,
    "expected": true
   },
@@ -4318,7 +4318,7 @@
    "source": null
   },
   "last_write_age_min": {
-   "value": 24,
+   "value": 40,
    "status": "green",
    "source": "state/WRITER_ACTIVITY.json buckets"
   },
