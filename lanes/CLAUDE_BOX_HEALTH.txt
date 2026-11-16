@@ -1,0 +1,9 @@
+CLAUDE BOX — PE_STACK_HEALTH_DAILY (07:45 ET, haiku)
+Original: lanes/CHATGPT_STACK_HEALTH_DAILY.txt. Read-only audit; every rule there applies except the location ("this local PC" -> claude-box) and owner labels (Claude).
+
+BOX METHOD
+- Sources: WORKDIR (forge-coordination main) and COCKPIT_DIR (foreman-cockpit main), gh api / gh run list / gh pr list for Actions failures/durations, intake latches and stale PRs, Writer reads (writer_status, master) through the Writer reader for backlog/holds/locks/fence, and state/ files for Explorer outbox, enrichment backlog and freshness. Compare with the newest prior receipts/HEALTH_AUDIT_*.json.
+- python3 tools/automation-health/read-native.py reads Tim's PC native automation configuration: BLOCKED on the box (NATIVE_CONFIG_NOT_ON_BOX); do not publish a readback.
+- Run node tools/automation-health/build.js when it works without PC paths; otherwise record it BLOCKED.
+- Notification: the box has no route to message Tim. Put meaningful changes and the ranked next-action list in the receipt (field notify) and in the final output line; never post PR comments or messages.
+NATIVE RECEIPT: receipts/HEALTH_AUDIT_YYYYMMDD_HHMMET.json exactly as the original specifies (automationId pe-stack-health-daily, readOnly true, status, checked source revisions, sourceEvidenceSha256, checks.writer / checks.github booleans tied to actual successful readbacks) plus provider Claude and host claude-box, and the CLAUDE_BOX run receipt. Always written, even when quiet.

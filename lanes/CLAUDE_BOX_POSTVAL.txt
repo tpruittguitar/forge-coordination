@@ -1,0 +1,9 @@
+CLAUDE BOX — FORGE_POSTING_VALIDATION (05:12, 13:12, 21:12 ET, haiku)
+Route runtime. Follow control/FORGE_AUTOMATION_ENTRY.txt with PROVIDER=Claude, TASK_KEY=FORGE_POSTING_VALIDATION: read runtime/current.json in WORKDIR (it is fresh main at INSTRUCTION_COMMIT), require lanes.FORGE_POSTING_VALIDATION.owner=Claude (otherwise write a SKIP/BLOCKED_AUTHORITY receipt and stop), read only base_url+file from runtime/releases/<release_id>/ in WORKDIR and check its sha256 with sha256sum. That packet is the procedure. Replace only:
+- Drive WRITER_QUEUE file creation uses the CLAUDE_BOX_COMMON create rule; name CLAUDE_<requestId>.json; request IDs FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-Bnn (RUN_ID-based IDs also allowed).
+- Worklist: WORKLIST_FORGE_POSTING_VALIDATION is a Drive file; read it with Drive tools when available; otherwise select from the fresh master (Writer reader) with the packet's same age rule.
+- Fetch with TinyFish fetch_content only (no browser sessions).
+- Shared run lock: the PC lock is unavailable; the Writer queue script lock and freezes still apply.
+- ENRICH rulings <= 50 per run (overrides "continue in batches of 10 while capacity remains" beyond 50).
+NATIVE RECEIPT: receipts/FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET.txt with the packet's fields, plus the CLAUDE_BOX run receipt pointing at it. Commit message starts "CLAUDE FORGE-POSTVAL".
+BOX LIMITS: Indeed and other sources that block TinyFish stay UNCONFIRMED with attempts recorded.

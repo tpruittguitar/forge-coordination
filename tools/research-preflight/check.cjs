@@ -25,7 +25,7 @@ function check(root,taskKey,{now=Date.now()}={}){
  try{
   if(taskKey==='FORGE_APPLICATION_WRITER_GOFER')return require('./gofer.cjs').check(root,{now});
   const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),route=registry.tasks?.[taskKey];
-  if(registry.schema!=='forge.ai-automation-tasks.v1'||!route||(!require('../helper-routing/shared.cjs').TASKS[taskKey]&&route.owner!=='ChatGPT')||route.retired)throw Error('CURRENT_CHATGPT_RESEARCH_ROUTE_REQUIRED');
+  if(registry.schema!=='forge.ai-automation-tasks.v1'||!route||(!require('../helper-routing/shared.cjs').TASKS[taskKey]&&!['ChatGPT','Claude'].includes(route.owner))||route.retired)throw Error('CURRENT_CHATGPT_RESEARCH_ROUTE_REQUIRED');
   if(require('../helper-routing/shared.cjs').TASKS[taskKey]){
    const H=require('../helper-routing/shared.cjs'),work=H.load(root);
    if(route.owner!==H.TASKS[taskKey]||route.procedure!=='lanes/FORGE_SHARED_HELPER.txt')throw Error('SHARED_RESEARCH_ROUTE_CHANGED');

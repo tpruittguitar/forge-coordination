@@ -1,0 +1,17 @@
+CLAUDE BOX — FORGE_CHATGPT_ENRICHMENT_RESEARCH (hourly :12 ET, sonnet)
+Original: lanes/CHATGPT_ENRICHMENT_RESEARCH.txt. Read it at INSTRUCTION_COMMIT and follow its research rules, replacing:
+- PROVIDER=ChatGPT, runId FORGE-CHATGPT-, CHATGPT_HELPERS -> PROVIDER=Claude, RUN_ID from the runner, actor CLAUDE.
+- research_workspace.py checkout/lease -> the runner's WORKDIR (no pool, nothing to release).
+- Locked returns-only adapter / helper-batch delivery -> direct ENRICH rulings through WRITER_QUEUE (CLAUDE_BOX_COMMON). Do not also publish an evidence-only helper batch for the same facts.
+
+STEPS
+1. node tools/research-preflight/check.cjs FORGE_CHATGPT_ENRICHMENT_RESEARCH. IDLE -> IDLE receipt (still verify earlier box request IDs).
+2. Fresh canonical master via the Writer reader; node tools/helper-routing/enrichment-plan.cjs and node tools/helper-routing/enrichment.cjs as the original describes (read-only; if a step needs to publish assignment membership, record it BLOCKED, do not hand-edit control files). Oldest eligible first. Skip protected/declined/closed, original-request fences and jobs already complete (numeric OVERALL_RATING with SCORING_MODEL_REF and a SCOPE_FIT_RAW).
+3. Per job, research only missing facts (salary/degree/posting link per the original) and, in the same ruling, the measured fit:
+   a. Use the full employer posting text already saved (discovery evidenceRefs, saved job descriptions, enrich-ats-pay postingEvidence) or one fetch of the exact posting. Save the text to PRIVATE_DIR/postings/<primaryId>.txt.
+   b. Read COCKPIT_DIR/SCORING_MODEL.md "Experience fit anchors (SCOPE_FIT_RAW)". Choose one anchor (EXACT_JOB, SAME_FUNCTION_LEVEL, STRONG_OVERLAP, PARTIAL_OVERLAP, ADJACENT, DIFFERENT_FUNCTION), an integer inside its band, FIT_CONF and a one-line basis, with exact quotes from the posting. Hidden recruiter client: hiddenClient=true.
+   c. Write PRIVATE_DIR/fit/<primaryId>.json {primaryId,title,postingText,fullPosting,sourceUrl,observedAt,anchor,score,confidence,basis,quotes,hiddenClient,runId,existingScopeFitRaw} and run node tools/helper-routing/scope-fit.cjs <that file>. Only on ok:true add its fields (SCOPE_FIT_RAW, FIT_CONF, FIT_ASOF, FIT_BASIS, FIT_EVIDENCE, ANALYSIS_BY) to the ENRICH ruling. On ok:false leave SCOPE_FIT_RAW unset and record {primaryId, reason} in the receipt step "scope_fit". Never type a score the builder did not return; never send OVERALL_RATING, EXPERIENCE_FIT or other score outputs (the Writer derives them).
+   d. A job whose posting cannot be read gets no fit and no NOT_STATED; record attempts and retry condition.
+4. Submit ENRICH batches (<=25 per file, <=50 rulings per run in total) through WRITER_QUEUE; stop researching new jobs once 50 rulings are prepared.
+RECEIPT: counts rolesResearched, salaryPrepared, degreePrepared, scopeFitWritten, scopeFitUnset (with reasons), submitted, verified; list primaryIds per outcome.
+BOX LIMITS: browser-only sources and Tim's PC private evidence are unavailable (PARTIAL for those jobs). Completion in process-flow happens only after the Writer applies and rescored the job; this run reports SUBMITTED, never completion.
