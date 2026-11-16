@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-16T18:06:04.955Z",
+ "generated_at": "2026-11-16T18:11:57.954Z",
  "schema": "forge.automations-status.v1",
  "automations": [
   {
@@ -18,8 +18,8 @@
    "ai": "ChatGPT",
    "name": "FORGE_POSTING_VALIDATION",
    "schedule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0",
-   "last_run_at": "2026-11-16T02:15:36.149Z",
-   "result": "SKIP",
+   "last_run_at": "2026-11-16T10:10:31.912Z",
+   "result": "FAIL",
    "next_run_at": "2026-11-16T18:12:00.000Z",
    "running": false,
    "started_at": null,
@@ -30,12 +30,12 @@
    "ai": "ChatGPT",
    "name": "FORGE_APPLICATION_WRITER_GOFER",
    "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0",
-   "last_run_at": "2026-11-05T07:44:36.337Z",
-   "result": "STALE",
+   "last_run_at": "2026-11-16T17:42:09.269Z",
+   "result": "SKIP",
    "next_run_at": "2026-11-16T18:42:00.000Z",
    "running": false,
    "started_at": null,
-   "stale": true,
+   "stale": false,
    "writer": true
   },
   {
@@ -867,18 +867,18 @@
    "name": "FORGE_POSTING_VALIDATION",
    "start": "2026-11-16T02:12:00.000Z",
    "end": "2026-11-16T02:22:00.000Z",
-   "result": "SKIP",
+   "result": "NO_RECEIPT",
    "writer": false,
-   "expected": false
+   "expected": true
   },
   {
    "ai": "ChatGPT",
    "name": "FORGE_POSTING_VALIDATION",
    "start": "2026-11-16T10:12:00.000Z",
    "end": "2026-11-16T10:22:00.000Z",
-   "result": "NO_RECEIPT",
+   "result": "FAIL",
    "writer": false,
-   "expected": true
+   "expected": false
   },
   {
    "ai": "ChatGPT",
@@ -1254,9 +1254,9 @@
    "name": "FORGE_APPLICATION_WRITER_GOFER",
    "start": "2026-11-16T17:42:00.000Z",
    "end": "2026-11-16T17:52:00.000Z",
-   "result": "NO_RECEIPT",
+   "result": "SKIP",
    "writer": true,
-   "expected": true
+   "expected": false
   },
   {
    "ai": "ChatGPT",
@@ -4318,7 +4318,7 @@
    "source": null
   },
   "last_write_age_min": {
-   "value": 66,
+   "value": 72,
    "status": "green",
    "source": "state/WRITER_ACTIVITY.json buckets"
   },
@@ -4333,8 +4333,8 @@
    "source": "state/WRITER_ACTIVITY.json problemReceipts / recent.jobs"
   },
   "lock_waits": {
-   "value": 2,
-   "status": "amber",
+   "value": 4,
+   "status": "red",
    "source": "state/AUTOMATION_EXECUTION_EVIDENCE.json (lock statuses, last 24 h)"
   }
  }
