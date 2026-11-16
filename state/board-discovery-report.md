@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261115T2246Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261116T0353Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (96 read, 0 failed) | 119 | 26 | 69 |
+| Employer job boards (96 read, 2 failed) | 119 | 26 | 69 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
