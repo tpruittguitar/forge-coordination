@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-16T18:05:37.645Z",
+  "at": "2026-11-16T18:11:36.318Z",
   "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -97,6 +97,24 @@
   },
   "executions": [
     {
+      "id": "forge-posting-validation",
+      "at": "2026-11-16T10:10:31.912Z",
+      "status": "SOURCE_CHECKS_SAVED_LIVE_COORDINATOR_INTEGRITY_BLOCKED",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T100757Z_TERMINAL.txt"
+      ],
+      "executionVerified": true
+    },
+    {
+      "id": "forge-application-writer-gofer",
+      "at": "2026-11-16T17:42:09.269Z",
+      "status": "WAITING_RELEVANT_CHANGE_STOP_RULE",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261116T174134Z_TERMINAL.txt"
+      ],
+      "executionVerified": true
+    },
+    {
       "id": "forge-email-discovery",
       "at": "2026-11-02T02:07:20.898Z",
       "status": "RETURNS_COLLECTED_WITH_PENDING_SOURCE_CORRECTION",
@@ -134,27 +152,6 @@
         "receipts/HEALTH_AUDIT_20261116_0748ET.json"
       ],
       "executionVerified": true
-    },
-    {
-      "id": "forge-application-writer-gofer",
-      "at": "2026-11-05T07:44:36.337Z",
-      "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
-      "evidenceFiles": [
-        "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T074326Z_TERMINAL.txt",
-        "receipts/AI_EXCEPTION_REVIEWS/440adc19ea451871fbacd50e81c9cb962bf88f3a5a36743508263ad256269e31-61c9c0ad7699f09d99e6d789a5db24c271c238ff5c47058ca6719f0f8193dd11.json",
-        "receipts/AI_EXCEPTION_REVIEWS/33c1cb3274fe988ee0e5b9f1caeac25593a5134a482b9ca557c4a3f7b21bcfd7-a457d2c78e042128f2ad8e78334a0d95bc7f64a4da4e7f0bdd644298bee584da.json",
-        "receipts/AI_EXCEPTION_REVIEWS/3a8c467674211bbb1e26db84263300de0bdde18ca0bf05d3f7985efcfa38682e-c4a0a13dd6336788ed2566021e0f1e7d375c3cd4bace9c63c5e5e2258cca855e.json"
-      ],
-      "executionVerified": true
-    },
-    {
-      "id": "forge-posting-validation",
-      "at": "2026-11-16T02:15:36.149Z",
-      "status": "SOURCE_CHECKS_SAVED_CANONICAL_CONSUMPTION_PENDING",
-      "evidenceFiles": [
-        "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T021250Z_TERMINAL.txt"
-      ],
-      "executionVerified": true
     }
   ],
   "services": [
@@ -171,7 +168,7 @@
   ],
   "intakeAssignmentHealth": {
     "schema": "forge.intake-assignment-health.v1",
-    "at": "2026-11-16T18:05:37.645Z",
+    "at": "2026-11-16T18:11:36.318Z",
     "status": "ACTION_REQUIRED",
     "checkedItems": 625,
     "issueCount": 7,
@@ -313,17 +310,14 @@
       {
         "id": "forge-application-writer-gofer",
         "lastDueAt": "2026-11-16T15:42:00.000Z",
-        "lastRunAt": "2026-11-05T07:44:36.337Z",
-        "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
-        "executionVerified": false,
-        "taskExecutionVerified": false,
+        "lastRunAt": "2026-11-16T17:42:09.269Z",
+        "status": "WAITING_RELEVANT_CHANGE_STOP_RULE",
+        "executionVerified": true,
+        "taskExecutionVerified": true,
         "nativeInvocationVerified": false,
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105T074326Z_TERMINAL.txt",
-          "receipts/AI_EXCEPTION_REVIEWS/440adc19ea451871fbacd50e81c9cb962bf88f3a5a36743508263ad256269e31-61c9c0ad7699f09d99e6d789a5db24c271c238ff5c47058ca6719f0f8193dd11.json",
-          "receipts/AI_EXCEPTION_REVIEWS/33c1cb3274fe988ee0e5b9f1caeac25593a5134a482b9ca557c4a3f7b21bcfd7-a457d2c78e042128f2ad8e78334a0d95bc7f64a4da4e7f0bdd644298bee584da.json",
-          "receipts/AI_EXCEPTION_REVIEWS/3a8c467674211bbb1e26db84263300de0bdde18ca0bf05d3f7985efcfa38682e-c4a0a13dd6336788ed2566021e0f1e7d375c3cd4bace9c63c5e5e2258cca855e.json"
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261116T174134Z_TERMINAL.txt"
         ]
       },
       {
@@ -344,14 +338,14 @@
       {
         "id": "forge-posting-validation",
         "lastDueAt": "2026-11-16T10:12:00.000Z",
-        "lastRunAt": "2026-11-16T02:15:36.149Z",
-        "status": "SOURCE_CHECKS_SAVED_CANONICAL_CONSUMPTION_PENDING",
-        "executionVerified": false,
-        "taskExecutionVerified": false,
+        "lastRunAt": "2026-11-16T10:10:31.912Z",
+        "status": "SOURCE_CHECKS_SAVED_LIVE_COORDINATOR_INTEGRITY_BLOCKED",
+        "executionVerified": true,
+        "taskExecutionVerified": true,
         "nativeInvocationVerified": false,
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T021250Z_TERMINAL.txt"
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T100757Z_TERMINAL.txt"
         ]
       },
       {
