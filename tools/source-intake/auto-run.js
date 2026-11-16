@@ -30,6 +30,7 @@ const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/style>/gi,' ').replace(/<[^>]+>/g,' ').replace(/&amp;/g,'&').replace(/&#39;|&rsquo;/g,"'").replace(/&quot;/g,'"').replace(/&nbsp;/g,' ').replace(/\s+/g,' ').trim();
 
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
+const roleText=t=>String(t).slice(0,4000); // the Writer caps ROLE_TEXT at 4000 characters
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
 function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,originIndex,heldKeys=new Set(),dismissedKeys=new Set()}){
  const per={},out=[];
@@ -60,6 +61,7 @@ function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],con
   const record={...identityFields,COMPANY:company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url,INITIATING_URL:r.initiatingUrl||identityFields.INITIATING_URL||r.url,SCOUT_NOTES:discoveryNotes(r)};
   if(typeof r.DISCOVERY_SOURCE==='string'&&r.DISCOVERY_SOURCE.trim())record.DISCOVERY_SOURCE=r.DISCOVERY_SOURCE;
   const origin=originIndex?.find(r);if(origin&&!record.DISCOVERY_SOURCE)record.DISCOVERY_SOURCE=origin.origin;
+  if(sourceCard?.description)record.ROLE_TEXT=roleText(sourceCard.description);
   Object.assign(record,require('../source-trial/posted-pay').fields(r));
   if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
   if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>require('../source-trial/job-identity').fenceApplies({...r,...record},original)))continue; // a changed URL cannot bypass an uncertain prior write
@@ -120,7 +122,8 @@ async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rules
   const savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  if(captured?.card.description)record.ROLE_TEXT=roleText(captured.card.description);
+  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'ROLE_TEXT carried':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
   if(business==null&&!captured)return null;
   return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:'',
