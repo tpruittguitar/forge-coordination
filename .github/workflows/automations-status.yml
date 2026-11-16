@@ -1,0 +1,38 @@
+# Builds control/AUTOMATIONS_STATUS.json for the 3D office Automations + Writer health boards (foreman-cockpit office.html).
+# Inputs are files already in this repo (tasks, schedule readback, execution evidence, Writer activity). No LLM, no
+# secrets: only the default GITHUB_TOKEN to commit this one output file. Commits only when the content changed.
+name: automations-status
+on:
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  push:
+    branches: [main]
+    paths: ['control/**', 'state/AUTOMATION_*', 'state/WRITER_ACTIVITY.json', 'tools/automations-status/**']
+  workflow_dispatch: {}
+permissions:
+  contents: write
+concurrency:
+  group: automations-status
+  cancel-in-progress: false
+jobs:
+  build:
+    if: github.event_name != 'push' || !startsWith(github.event.head_commit.message, 'AUTOMATIONS-STATUS:')
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test generator
+        run: node --test tools/automations-status/build.test.js
+      - name: Build AUTOMATIONS_STATUS.json
+        run: node tools/automations-status/build.js
+      - name: Commit only control/AUTOMATIONS_STATUS.json
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add control/AUTOMATIONS_STATUS.json
+          if git diff --cached --quiet; then echo "no change"; exit 0; fi
+          git commit -m "AUTOMATIONS-STATUS: rebuild control/AUTOMATIONS_STATUS.json"
+          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          exit 1
