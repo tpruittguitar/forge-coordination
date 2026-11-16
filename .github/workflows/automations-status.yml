@@ -1,13 +1,15 @@
-# Builds control/AUTOMATIONS_STATUS.json for the 3D office Automations + Writer health boards (foreman-cockpit office.html).
-# Inputs are files already in this repo (tasks, schedule readback, execution evidence, Writer activity). No LLM, no
-# secrets: only the default GITHUB_TOKEN to commit this one output file. Commits only when the content changed.
+# Builds control/AUTOMATIONS_STATUS.json for the 3D office Automations + Writer health boards (foreman-cockpit office.html),
+# then refreshes the bot rows of control/OFFICE_STATUS.json from real signals (tools/office-status: last_action_at only moves
+# forward, stale "working" rows go idle; hand-written fields are kept). Inputs are files already in this repo plus its git
+# log. No LLM, no secrets: only the default GITHUB_TOKEN to commit these two output files. Commits only on a real change.
+# Loop guard: our own commits start with "AUTOMATIONS-STATUS:" and are skipped by the job-level `if` below.
 name: automations-status
 on:
   schedule:
     - cron: '7,22,37,52 * * * *'
   push:
     branches: [main]
-    paths: ['control/**', 'state/AUTOMATION_*', 'state/WRITER_ACTIVITY.json', 'tools/automations-status/**']
+    paths: ['control/**', 'state/**', 'tools/automations-status/**', 'tools/office-status/**']
   workflow_dispatch: {}
 permissions:
   contents: write
@@ -20,19 +22,26 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 200   # office-status reads recent commit authors / PROVIDER= lines
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
-      - name: Test generator
-        run: node --test tools/automations-status/build.test.js
-      - name: Build AUTOMATIONS_STATUS.json
-        run: node tools/automations-status/build.js
-      - name: Commit only control/AUTOMATIONS_STATUS.json
+      - name: Test generators
+        run: node --test tools/automations-status/build.test.js tools/office-status/build.test.js
+      - name: Build and commit AUTOMATIONS_STATUS.json + OFFICE_STATUS.json bot rows
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add control/AUTOMATIONS_STATUS.json
-          if git diff --cached --quiet; then echo "no change"; exit 0; fi
-          git commit -m "AUTOMATIONS-STATUS: rebuild control/AUTOMATIONS_STATUS.json"
-          for i in 1 2 3; do git pull --rebase -q origin main && git push -q origin HEAD:main && exit 0; sleep 5; done
+          # Rebuild on top of the latest main each attempt, so a concurrent hand edit of OFFICE_STATUS.json is the base we merge into.
+          for i in 1 2 3; do
+            git fetch -q origin main && git reset -q --hard origin/main
+            node tools/automations-status/build.js
+            node tools/office-status/build.js
+            git add control/AUTOMATIONS_STATUS.json control/OFFICE_STATUS.json
+            if git diff --cached --quiet; then echo "no change"; exit 0; fi
+            git commit -q -m "AUTOMATIONS-STATUS: rebuild $(git diff --cached --name-only | xargs)"
+            git push -q origin HEAD:main && exit 0
+            sleep 5
+          done
           exit 1
