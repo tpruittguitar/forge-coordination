@@ -17,6 +17,7 @@ Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_
 | `lanes/` | Generated legacy pointers; standalone Claude usage reader | Build script / authorized maintainer |
 | `state/` | Generated discovery hints; never live Writer state | Receipt-index Action |
 | `edit-requests/` | Requests to change an existing file (see below) | Any lane |
+| `control/OFFICE_STATUS.json` | Read-only feed for the foreman-cockpit 3D office (`office.html`): `bots[]` (status `idle`/`working`/`blocked`/`waiting_tim`, task, last action, question, link), `needs_tim[]`, `items[]` (board cards: priority, status, owner, optional `project`), `conversations[]` (`from`/`to`/`text`/`at`) and `usage` (Usage Ctrl's AI usage readings). Times are ISO with offset | President |
 
 ## Rules for every lane
 1. **Label every AI commit.** Start with PROVIDER and RUN_ID, e.g. `GROK FORGE-ENRICH-FEASIBILITY-GROK-20261012-1435ET: ...`. Existing APPLY-BOT and new INDEX-BOT labels identify mechanical workflow commits.
