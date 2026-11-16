@@ -66,3 +66,8 @@ test('reusing the exact direct JobSpy card cannot erase its current grounded ATS
  a.equal(store.forIntake(card).doc.fullPosting,true);a.equal(A.pick({new_roles:[card]},options).length,0);a.equal(A.pick({new_roles:[card]},{...options,discoveryEvidence:store}).length,0);
  a.equal(A.pick({new_roles:[{...card,description:undefined}]},{...options,discoveryEvidence:store}).length,0,'same bound complete text supports the same current exclusion after the handoff');
 });
+test('saved discovery text reaches the prepared record as ROLE_TEXT without a fetch',async t=>{
+ const {card,store}=fixture(t),record={COMPANY:card.company,TITLE:card.title,LOCATION:card.location,SOURCE_URL:card.url};
+ const candidate=await A.prepareCandidate({...card,description:undefined,discoveryReview:undefined,source:'SAVED_DISCOVERY'},record,{discoveryEvidence:store,rulesHash:'abc',fetchEvidence:async()=>{throw Error('no fetch');}});
+ a.equal(candidate.record.ROLE_TEXT,card.description);a.equal(candidate.primaryBusiness,'');
+});

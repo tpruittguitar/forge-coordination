@@ -120,7 +120,8 @@ async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rules
   const savedPay=discoveryEvidence.find(r,{payOnly:true,maxAgeMs:Infinity});
   const posted=require('../source-trial/posted-pay'),salaryCard=savedPay&&!(Date.parse(r.postedPay?.observedAt)>Date.parse(savedPay.doc.postedPay?.observedAt||savedPay.ref.observedAt))?savedPay.doc:r;
   for(const k of Object.keys(posted.fields(r)))delete record[k];Object.assign(record,posted.fields(salaryCard));record.INITIAL_UNKNOWN_FIELDS=record.SALARY_BASE_LOW?['DEGREE','FLEX']:['PAY','DEGREE','FLEX'];
-  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'job text':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
+  const roleText=captured?captured.card.description:cached?.doc.text;if(roleText)record.ROLE_TEXT=String(roleText).slice(0,4000); // posting text already loaded; the Writer clips at 4000
+  if(captured)record.SCOUT_NOTES=('Captured '+captured.card.source+'; observed '+(captured.observedAt||'UNKNOWN')+'; posting status UNVERIFIED; '+(captured.card.description?'job text in ROLE_TEXT':'employer business UNKNOWN')+'; proof '+captured.proof.path+' | '+record.SCOUT_NOTES).slice(0,400);
   if(cached)record.SCOUT_NOTES=('discoveryEvidence='+cached.ref.path+(cached.ref.reportSha256?'#sha256='+cached.ref.reportSha256:'')+' | '+record.SCOUT_NOTES).slice(0,400);
   if(business==null&&!captured)return null;
   return {...require('../source-trial/posted-pay').carry(salaryCard),...(provenance?{discoveryEvidence:provenance}:{}),record,expectedOutcome:'NEW',evidenceVerified:!captured,evidenceSource:captured?'CAPTURED_DISCOVERY':'INDEPENDENT_VERIFIED',evidenceUrl:r.url,primaryBusiness:'',

@@ -87,7 +87,7 @@ test('immutable text cannot mask later metadata expiry and immutable expiry cann
 });
 test('immutable-only source remains captured and original expiry provenance survives',async t=>{
  const f=fixture(t,[]),ref=saveDocument(f.root,{...base,validThrough:'2026-12-01T00:00:00Z'},at),index=D.index(f.root),e=index.find(base,{now});a.ok(e);a.equal(e.proof.path,ref.path);a.equal(e.observedAt,at);a.equal(e.card.source,base.source);
- const candidate=await A.prepareCandidate(base,{COMPANY:base.company,TITLE:base.title,LOCATION:base.location,SOURCE_URL:base.url},{discoveryEvidence:E.index(f.root),capturedInputs:index,fetchEvidence:()=>{throw Error('no fetch');}});a.equal(candidate.evidenceSource,'CAPTURED_DISCOVERY');a.equal(candidate.evidenceVerified,false);a.equal(candidate.primaryBusiness,'');a.equal(candidate.record.COMPANY,base.company);a.equal(candidate.record.TITLE,base.title);a.equal(candidate.record.SOURCE_URL,base.url);a.ok(!JSON.stringify(candidate.record).includes(base.description));a.ok(C.validate(candidate,{now}));
+ const candidate=await A.prepareCandidate(base,{COMPANY:base.company,TITLE:base.title,LOCATION:base.location,SOURCE_URL:base.url},{discoveryEvidence:E.index(f.root),capturedInputs:index,fetchEvidence:()=>{throw Error('no fetch');}});a.equal(candidate.evidenceSource,'CAPTURED_DISCOVERY');a.equal(candidate.evidenceVerified,false);a.equal(candidate.primaryBusiness,'');a.equal(candidate.record.COMPANY,base.company);a.equal(candidate.record.TITLE,base.title);a.equal(candidate.record.SOURCE_URL,base.url);a.equal(candidate.record.ROLE_TEXT,base.description);a.ok(!JSON.stringify({...candidate.record,ROLE_TEXT:undefined}).includes(base.description));a.ok(C.validate(candidate,{now}));
  const result=await require('../programmed-coordinator/source.cjs').verify({root:f.root,discovery:index,item:{sourceEvidence:{url:base.url}},expected:base,now,fetchPage:()=>{throw Error('no fetch');}});a.equal(result.sourceCaptured,true);a.equal(result.independentlyVerified,false);
 });
 test('expiry never crosses identity, source URL, or conflicting explicit requisitions',t=>{
@@ -119,4 +119,15 @@ test('invalid expiry and conflicting requisition holds are isolated while health
 test('compatible requisition aliases on one capture do not introduce an identity gate',t=>{
  const aliases={...base,reqId:'REQ-1',JOB_ID:'JOB-2'},constraint={...base,description:'',reqId:'JOB-2',validThrough:'2026-12-01T00:00:00Z',observedAt:recent},f=fixture(t,[aliases,constraint]),e=f.index.find(base,{now});
  a.ok(C.validEnvelope(e,{now}));a.deepEqual(e.card.requisitionIds,['job-2','req-1']);a.equal(e.card.validThrough,constraint.validThrough);
+});
+test('AUTO candidate carries captured posting text as ROLE_TEXT without a fetch; title-only cards carry none',async t=>{
+ const f=fixture(t),noFetch=()=>{throw Error('no fetch');},record={COMPANY:base.company,TITLE:base.title,LOCATION:base.location,SOURCE_URL:base.url};
+ const candidate=await A.prepareCandidate(base,record,{discoveryEvidence:f.store,capturedInputs:f.index,rulesHash:'b'.repeat(64),fetchEvidence:noFetch});
+ a.equal(candidate.record.ROLE_TEXT,base.description);a.match(candidate.record.SCOUT_NOTES,/job text in ROLE_TEXT/);
+ const long={...base,url:'https://jobs.example.com/long',description:'Lead lean manufacturing operations. '.repeat(200).trim()},g=fixture(t,[long]);
+ const capped=await A.prepareCandidate(long,{COMPANY:long.company,TITLE:long.title,LOCATION:long.location,SOURCE_URL:long.url},{discoveryEvidence:g.store,capturedInputs:g.index,rulesHash:'b'.repeat(64),fetchEvidence:noFetch});
+ a.equal(capped.record.ROLE_TEXT.length,4000);
+ const bare={...base,url:'https://jobs.example.com/bare',description:'',source:'HIRINGCAFE'},h=fixture(t,[bare]);
+ const titleOnly=await A.prepareCandidate(bare,{COMPANY:bare.company,TITLE:bare.title,LOCATION:bare.location,SOURCE_URL:bare.url},{discoveryEvidence:h.store,capturedInputs:h.index,rulesHash:'b'.repeat(64),fetchEvidence:noFetch});
+ a.equal(titleOnly.record.ROLE_TEXT,undefined);
 });

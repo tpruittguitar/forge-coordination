@@ -207,3 +207,13 @@ test('recover then prepare ignores bound refused drain/prior caches but preserve
  a.deepEqual(cached.filter(fence,'unrelated-key'),fence);
  const active=I.load(f.root);Object.assign(active.items[0],{status:'POST_IN_FLIGHT_UNKNOWN',requestId:'NEW-UNCERTAIN'});I.save(f.root,active);a.equal(P.prepare(f).items[0].requestId,'NEW-UNCERTAIN');
 });
+test('READY record carries the captured card description as ROLE_TEXT, capped at 4000, without changing request identity',()=>{
+ const f=fixture('Director, Manufacturing'),job=JSON.parse(fs.readFileSync(p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'))).jobs[f.key],e={company:job.company,title:job.title,location:job.location,url:job.url,source:'LINKEDIN'};
+ a.equal(P.prepare(f).items[0].record.ROLE_TEXT,undefined);
+ const text='Lead lean manufacturing, quality systems and production engineering across the plant. ';
+ f.save('state/source-trial-report.json',{summary:{at:'2026-01-01T00:00:00Z'},new_roles:[{...e,description:text.repeat(60).trim()}]});
+ const record=P.prepare(f).items[0].record;a.equal(record.ROLE_TEXT,text.repeat(60).trim().slice(0,4000));a.equal(record.ROLE_TEXT.length,4000);
+ const requestId=require('../source-intake/production-executor').requestId;a.equal(requestId(record),requestId({COMPANY:job.company,TITLE:job.title,LOCATION:job.location,SOURCE_URL:job.url}));
+ f.save('state/source-trial-report.json',{summary:{at:'2026-01-01T00:00:00Z'},new_roles:[{...e,description:''}]});
+ a.equal(P.prepare(f).items[0].record.ROLE_TEXT,undefined);
+});
