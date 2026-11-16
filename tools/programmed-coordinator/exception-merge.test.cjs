@@ -58,11 +58,24 @@ for(const races of [0,2])test('real two-file rebase and '+races+' subsequent pus
  for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
  a.equal(git(f.local,'status','--porcelain'),'');
 });
-for(const failure of ['guard policy','guard disabled','unrelated'])test('two-file recovery stages nothing when '+failure+' is ambiguous',t=>{
+for(const failure of ['guard policy','guard disabled','unrelated','exception'])test('two-file recovery aborts the rebase and keeps the local commit when '+failure+' is ambiguous',t=>{
  const f=repositories(t);S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});
- fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:failure==='guard policy'?'changed':'same',disabledRules:failure==='guard disabled'?['new']:[]});
+ // 'exception': main's review proof is absent, so only the exception merge itself fails.
+ if(failure!=='exception')fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:failure==='guard policy'?'changed':'same',disabledRules:failure==='guard disabled'?['new']:[]});
  if(failure==='unrelated'){S.save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{value:'local'});S.save(f.bot,'state/PROGRAMMED_COORDINATOR_REPORT.json',{value:'remote'});}
- commit(f.bot);git(f.bot,'push','origin','main');a.throws(()=>publish(f.local));a.ok(git(f.local,'diff','--name-only','--diff-filter=U').includes(W.FILE));a.ok(git(f.local,'diff','--name-only','--diff-filter=U').includes(guard));
+ commit(f.bot);git(f.bot,'push','origin','main');a.throws(()=>publish(f.local),failure==='exception'?/Semantic exception accounting conflict/:/conflict/);
+ for(const name of ['rebase-merge','rebase-apply'])a.equal(fs.existsSync(path.resolve(f.local,git(f.local,'rev-parse','--git-path',name))),false,name);
+ a.equal(git(f.local,'diff','--name-only','--diff-filter=U'),'');a.equal(git(f.local,'status','--porcelain'),'');a.deepEqual(JSON.parse(git(f.local,'show','HEAD:'+W.FILE)),f.right);
+});
+test('ChatGPT-owned case only on main merges cleanly and keeps main, in a real publication rebase',t=>{
+ const f=repositories(t),binding3={key:'chatgpt-only',sourceVersion:'e'.repeat(64)},id3=S.hash(binding3);
+ // Before this rule an added case carrying review/lastAttempt was a conflict.
+ const {review:_,...attempted}=clone(f.left.cases[f.id]),mainOnly={...attempted,exceptionId:id3,binding:binding3,owner:'ChatGPT'};a.ok(mainOnly.lastAttempt);
+ a.throws(()=>merge(f.root,f.base,count({...clone(f.left),cases:{...f.left.cases,[id3]:{...mainOnly,owner:'Other'}}}),f.right,f.now));
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,count({...clone(f.left),cases:{...f.left.cases,[id3]:mainOnly}}));S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
+ a.equal(publish(f.local).published,true);const merged=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));
+ a.deepEqual(merged.cases[id3],mainOnly);a.deepEqual(merged.cases[f.id],{...f.left.cases[f.id],lastSeen:f.right.at});a.deepEqual(merged.cases[f.id2],f.right.cases[f.id2]);a.equal(git(f.local,'status','--porcelain'),'');
 });
 function dispatchFixture(t){
  const f=fixture(t),base=clone(f.left);base.cases[f.id2]=clone(f.right.cases[f.id2]);count(base);S.save(f.root,W.FILE,base);

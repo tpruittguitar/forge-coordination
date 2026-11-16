@@ -58,7 +58,8 @@ function coordinatorEvidence(root,now){
 }
 function mergeCase(root,b,l,r,now,leftWork,rightWork,evidence){
  const leftAt=leftWork.at,rightAt=rightWork.at;
- if(!b){if(l&&r&&!eq(l,r))fail();const added=l||r;if(added.review||added.lastAttempt)fail();return added;}
+ if(!b){if(l&&!r&&l.owner==='ChatGPT')return l; // ChatGPT-owned case only on main's side: keep main
+  if(l&&r&&!eq(l,r))fail();const added=l||r;if(added.review||added.lastAttempt)fail();return added;}
  if(!l||!r||!eq(b.binding,l.binding)||!eq(b.binding,r.binding))fail();
  // Never drop even an old proof or attempt, including on a one-sided change.
  for(const side of [l,r])for(const k of ['review','lastAttempt'])if(b[k]&&!side[k])fail();
