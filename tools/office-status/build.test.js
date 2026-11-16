@@ -84,3 +84,50 @@ test('signal extractors: receipts, change records, git log, automations', () => 
     { executions: [{ id: 'ex-c', at: '2026-11-16T13:00:00Z' }] }, { tasks: { EX_C: { owner: 'Claude' } } });
   assert.deepEqual(a.map(s => s.bot), ['ChatGPT', 'Claude']);
 });
+
+const reading = (provider, at, usedPct, status = 'OK', meter = 'weekly') => ({ provider, at, usedPct, status, meter, resetsAt: '2026-11-22T16:00:00Z' });
+const jsonl = rows => rows.map(r => JSON.stringify(r)).join('\n') + '\n';
+test('usage picks newest weekly OK per provider by timestamp, not file order', () => {
+  const text = jsonl([
+    reading('CLAUDE', '2026-11-16T13:10:17.990Z', 36),
+    reading('GROK', '2026-11-16T13:11:00Z', 36),
+    reading('CHATGPT', '2026-11-16T13:12:00Z', 83),
+    reading('CLAUDE', '2026-11-16T07:00:00Z', 27),
+    reading('CLAUDE', '2026-11-16T14:00:00Z', 99, 'OK', 'session'),
+  ]);
+  const o = office(), { doc, changed } = B.build(o, [], NOW, text);
+  assert.equal(changed, true);
+  assert.equal(doc.updated_at, '2026-11-16T15:00:00Z');
+  assert.deepEqual(doc.usage.services.map(s => [s.name, s.pct_used, s.pct_left]), [['Grok Bot', 36, 64], ['Claude', 36, 64], ['ChatGPT', 83, 17]]);
+  assert.equal(doc.usage.services[1].as_of, '2026-11-16T13:10:17.990Z');
+  assert.equal(doc.usage.services[1].resets_at, '2026-11-22T16:00:00Z');
+  assert.equal(doc.usage.as_of, '2026-11-16T13:12:00Z');
+  assert.equal(doc.usage.next_check_at, '2026-11-16T19:05:00Z');
+  assert.deepEqual(o.usage, office().usage);
+  assert.equal(B.build(doc, [], NOW + 60000, text).changed, false);
+});
+test('newest non-OK keeps last OK values and flags failure; recovery clears flag', () => {
+  const rows = [reading('CLAUDE', '2026-11-16T14:00:00Z', null, 'UNREADABLE'), reading('CLAUDE', '2026-11-16T13:00:00Z', 36)];
+  const usage = B.usageFromReadings(jsonl(rows), NOW);
+  assert.deepEqual(usage.services[1], { name: 'Claude', as_of: '2026-11-16T13:00:00Z', pct_used: 36, pct_left: 64, resets_at: '2026-11-22T16:00:00Z', stale: true, last_reading_status: 'UNREADABLE', last_reading_at: '2026-11-16T14:00:00Z' });
+  rows.push(reading('CLAUDE', '2026-11-16T14:30:00Z', 40));
+  assert.equal(B.usageFromReadings(jsonl(rows), NOW).services[1].stale, undefined);
+});
+test('no OK reading reports absence without inventing numbers', () => {
+  const usage = B.usageFromReadings(jsonl([reading('GROK', '2026-11-16T14:00:00Z', null, 'CHROME_UNAVAILABLE')]), NOW);
+  assert.equal(usage.as_of, null);
+  assert.deepEqual(usage.services[0], { name: 'Grok Bot', as_of: null, status: 'NO_OK_READING', stale: true, last_reading_status: 'CHROME_UNAVAILABLE', last_reading_at: '2026-11-16T14:00:00Z' });
+  assert.deepEqual(usage.services[1], { name: 'Claude', as_of: null, status: 'NO_OK_READING' });
+});
+test('next check is strictly after build time, across midnight and both DST transitions', () => {
+  for (const [now, expected] of [
+    ['2026-11-16T07:04:59Z', '2026-11-16T07:05:00Z'],
+    ['2026-11-16T07:05:00Z', '2026-11-16T13:05:00Z'],
+    ['2026-11-16T13:05:00Z', '2026-11-16T19:05:00Z'],
+    ['2026-11-16T19:05:00Z', '2026-11-17T01:05:00Z'],
+    ['2026-11-17T01:05:00Z', '2026-11-17T07:05:00Z'],
+    ['2026-07-16T12:05:00Z', '2026-07-16T18:05:00Z'],
+    ['2026-03-08T06:59:00Z', '2026-03-08T12:05:00Z'], // 02:05 does not exist
+    ['2026-11-01T05:59:00Z', '2026-11-01T07:05:00Z'], // 02:05 is after fall back
+  ]) assert.equal(B.nextCheckAt(Date.parse(now)), expected, now);
+});

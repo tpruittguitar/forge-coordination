@@ -7,13 +7,14 @@
      receipts/*                                file names carrying <PROVIDER>-<yyyymmdd>T<hhmmss>Z or -<yyyymmdd>-<hhmm>ET
      control/changes/*.txt                     pending change records <provider>-<yyyymmdd-hhmm>-<slug>.txt (ET)
      control/CHANGE_RECORDS_CONSUMED.txt       registered change records (same name pattern)
+     usage/AI_USAGE_READINGS.jsonl             weekly usage readings per provider
      git log (last 200 commits)                commit author identity, or a PROVIDER=<x> line in the message
    Merge rule (everything hand-written is kept: task text, needs_tim, bot list/order, avatars, ids, screens ...):
      - last_action_at moves only FORWARD, to the newest real signal; signals more than 1 min in the future are ignored.
      - each bot with a signal gets "last_signal": {"at","source"} (also never moves backwards).
      - status "working" whose newest activity (last_action_at or last_signal) is more than 2 h old becomes "idle".
        needs_tim / waiting_tim / blocked / anything else is never touched.
-     - top-level updated_at changes only when some bot row changed. Output: 2-space JSON, existing key order, newline.
+     - top-level updated_at changes only when bot rows or usage changed. Output: 2-space JSON, existing key order, newline.
    Not readable from this repo (gaps): office-mailbox start/finish lines (private repo), Grok Bot chat/terminal
    screens (only President's hand-written "screen" blocks exist here), and any repo signal for Root, Software, GUI,
    QA bot, Sniffer, Comp, Archive, Usage Budget, HR - Bot Trainer, Gauge, Edgar. */
@@ -39,6 +40,33 @@ function etOffsetMin(ms) {
 }
 function etToUtc(y, mo, d, h, mi) { const local = Date.UTC(y, mo, d, h, mi); return local + etOffsetMin(local + etOffsetMin(local) * MIN) * MIN; }
 const ymd = s => [Number(s.slice(0, 4)), Number(s.slice(4, 6)) - 1, Number(s.slice(6, 8))];
+
+/* Search actual UTC minutes so skipped/repeated ET hours follow the reader's wall-clock schedule. */
+function nextCheckAt(now) {
+  const fmt = new Intl.DateTimeFormat('en-US', { timeZone: 'America/New_York', hourCycle: 'h23', hour: 'numeric', minute: 'numeric' });
+  for (let at = Math.floor(now / MIN) * MIN + MIN; at <= now + 30 * HOUR; at += MIN) {
+    const parts = fmt.formatToParts(new Date(at)), get = k => Number(parts.find(p => p.type === k).value);
+    if ([2, 8, 14, 20].includes(get('hour')) && get('minute') === 5) return iso(at);
+  }
+}
+function usageFromReadings(text, now) {
+  const latest = {}, ok = {};
+  for (const line of String(text || '').split('\n').filter(l => l.trim())) {
+    const r = JSON.parse(line);
+    if (r.meter !== 'weekly' || time(r.at) == null) continue;
+    if (!latest[r.provider] || time(r.at) >= time(latest[r.provider].at)) latest[r.provider] = r;
+    if (r.status === 'OK' && (!ok[r.provider] || time(r.at) >= time(ok[r.provider].at))) ok[r.provider] = r;
+  }
+  const services = [['GROK', 'Grok Bot'], ['CLAUDE', 'Claude'], ['CHATGPT', 'ChatGPT']].map(([provider, name]) => {
+    const r = ok[provider], bad = latest[provider];
+    const service = r ? { name, as_of: r.at, pct_used: r.usedPct, pct_left: Number((100 - r.usedPct).toFixed(2)), resets_at: r.resetsAt }
+      : { name, as_of: null, status: 'NO_OK_READING' };
+    if (bad && bad.status !== 'OK') Object.assign(service, { stale: true, last_reading_status: bad.status, last_reading_at: bad.at });
+    return service;
+  });
+  const newest = services.filter(s => s.as_of).sort((a, b) => time(b.as_of) - time(a.as_of))[0];
+  return { as_of: newest ? newest.as_of : null, services, next_check_at: nextCheckAt(now) };
+}
 
 /* ---------- signal extractors (pure; each returns [{bot, at(ms), source}]) ---------- */
 function receiptSignals(names) {
@@ -119,12 +147,13 @@ function mergeBot(row, sig, now) {
   return r;
 }
 /* Returns { doc, changed }. `office` is the parsed OFFICE_STATUS.json; it is not mutated. */
-function build(office, signals, now) {
+function build(office, signals, now, readings) {
   if (!office || !Array.isArray(office.bots)) return { doc: office, changed: false };
   const best = newestByBot(signals, now);
   const bots = office.bots.map(b => (b && typeof b === 'object' ? mergeBot(b, best[b.bot], now) : b));
-  const changed = JSON.stringify(bots) !== JSON.stringify(office.bots);
-  const doc = Object.assign({}, office, { bots });
+  const usage = readings === undefined ? office.usage : usageFromReadings(readings, now);
+  const changed = JSON.stringify(bots) !== JSON.stringify(office.bots) || JSON.stringify(usage) !== JSON.stringify(office.usage);
+  const doc = Object.assign({}, office, { bots, usage });
   if (changed) { if ('generated_at' in doc && !('updated_at' in doc)) doc.generated_at = iso(now); else doc.updated_at = iso(now); }
   return { doc, changed };
 }
@@ -146,8 +175,8 @@ function collect(root) {
 if (require.main === module) {
   const root = path.resolve(__dirname, '../..'), file = path.join(root, OUT);
   let office; try { office = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { console.log('OFFICE_STATUS.json missing or invalid; nothing to do'); process.exit(0); }
-  const { doc, changed } = build(office, collect(root), Date.now());
+  const { doc, changed } = build(office, collect(root), Date.now(), fs.readFileSync(path.join(root, 'usage/AI_USAGE_READINGS.jsonl'), 'utf8'));
   if (changed) fs.writeFileSync(file, serialize(doc));
-  console.log(changed ? 'wrote OFFICE_STATUS.json (bot rows refreshed from signals)' : 'OFFICE_STATUS.json unchanged');
+  console.log(changed ? 'wrote OFFICE_STATUS.json (bot rows and usage refreshed)' : 'OFFICE_STATUS.json unchanged');
 }
-module.exports = { build, serialize, mergeBot, newestByBot, receiptSignals, changeSignals, changeRecordName, gitSignals, automationSignals, etToUtc, IDLE_AFTER };
+module.exports = { nextCheckAt, usageFromReadings, build, serialize, mergeBot, newestByBot, receiptSignals, changeSignals, changeRecordName, gitSignals, automationSignals, etToUtc, IDLE_AFTER };
