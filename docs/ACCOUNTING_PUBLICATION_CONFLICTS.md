@@ -16,7 +16,7 @@ Conservative unsupported cases require reconciliation: expiring waits; awaiting-
 
 ## Verification
 
-Run `node --test tools/programmed-coordinator/{publish,exception-merge}.test.cjs`. Tests use genuine local review/START/CHECKPOINT producers and isolated bare Git repositories, including two-file rebases, repeated push races, immutable transaction preservation, malformed proofs, lost cases/attempts, newer reviews, dispatch provenance, guard policy/disabled-rule changes, and unrelated conflicts. No production credentials or canonical calls are used.
+Run `node --test tools/programmed-coordinator/publish.test.cjs`. Tests use genuine local review/START/CHECKPOINT producers and isolated bare Git repositories, including two-file rebases, repeated push races, immutable transaction preservation, malformed proofs, lost cases/attempts, newer reviews, dispatch provenance, guard policy/disabled-rule changes, and unrelated conflicts. No production credentials or canonical calls are used.
 
 Run the complete Node command in `.github/workflows/programmed-coordinator-test.yml`, Python unit tests, and `python scripts/build_runtime.py --check` before requesting review. A draft PR and passing local fixtures do not establish production adoption. Deployment/merge and any retained production recovery remain separate operations.
 
