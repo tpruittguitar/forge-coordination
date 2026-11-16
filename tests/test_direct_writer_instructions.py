@@ -30,7 +30,7 @@ class DirectWriterInstructionTests(unittest.TestCase):
         for key in RETIRED:
             self.assertIs(self.tasks[key]['retired'], True)
             self.assertEqual(self.tasks[key]['executionMode'], 'EVIDENCE_ONLY')
-        self.assertEqual(self.tasks['FORGE_CLAUDE_RELEVANCE_REVIEW']['owner'], 'ChatGPT')
+        self.assertEqual(self.tasks['FORGE_CLAUDE_RELEVANCE_REVIEW']['owner'], 'Claude')
 
     def test_each_procedure_routes_ready_facts_without_manual_relay(self):
         for path in {self.tasks[key]['procedure'] for key in DIRECT}:
