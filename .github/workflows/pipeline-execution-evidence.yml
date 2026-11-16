@@ -2,7 +2,7 @@ name: Publish pipeline execution evidence
 on:
   push:
     branches: [main]
-    paths: ['receipts/**', 'usage/AI_USAGE_READINGS.jsonl', 'state/AUTOMATION_SCHEDULE_READBACK.json', 'tools/automation-health/**', '.github/workflows/pipeline-execution-evidence.yml']
+    paths: ['receipts/**', 'usage/AI_USAGE_READINGS.jsonl', 'state/AUTOMATION_SCHEDULE_READBACK.json', 'tools/automation-health/**', 'control/GROK_INTAKE_HELPER_WORK.json', 'control/grok-intake/**', 'control/CLAUDE_RELEVANCE_WORK.json', 'state/CLAUDE_HELPER_CONSUMPTION.json', 'state/EMAIL_RECOVERY_QUEUE.json', '.github/workflows/pipeline-execution-evidence.yml']
   schedule:
     - cron: '11,41 * * * *'
   workflow_dispatch: {}

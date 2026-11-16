@@ -17,35 +17,44 @@ function healthy(status) {
 function identity(row) { const req=row.REQ_ID;return {company:row.COMPANY, title:row.TITLE, location:row.LOCATION,...(Source.known(req)&&/[a-z0-9]/i.test(String(req))?{reqId:req}:{})}; }
 function same(row, expected) { return Source.employer(row.COMPANY) === Source.employer(expected.company) && Source.norm(row.TITLE) === Source.norm(expected.title) && Source.location(row.LOCATION) === Source.location(expected.location) && (!expected.reqId || Source.norm(row.REQ_ID) === Source.norm(expected.reqId)); }
 function protectedRow(row) { return !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(row.BUCKET) || /^YES/i.test(row.p?.ANTI_RESURRECTION || '') || !!row.p?.DO_NOT_REWORK || !!row.p?.TIM_DECISION; }
-function fenced(root, state, id) {
-  if (Object.values(state.transactions).some(tx => tx.status !== 'VERIFIED' && !Outcome.released(root,tx) && tx.ids.includes(id))) return true;
-  const ledger = S.read(root, 'state/enrich-ats-pay.json', {});
-  if (Object.values(ledger.pendingWrites || {}).some(tx => tx.ids?.includes(id))) return true;
-  const consumption = S.read(root, 'state/CLAUDE_HELPER_CONSUMPTION.json', {items:[]});
-  if(consumption.items.some(i => (i.primaryId === id || i.key === id) && /POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status)))return true;
-  // Earlier local coordinators used immutable checkpoints without this new
-  // ledger. Their unresolved originals remain fences across the cutover.
-  const dir=require('node:path').join(root,'receipts'),fs=require('node:fs');
-  if(fs.existsSync(dir)) for(const name of fs.readdirSync(dir).filter(n=>n.endsWith('_CHECKPOINT.json'))) {
-    if(fs.existsSync(require('node:path').join(dir,name.replace('_CHECKPOINT.json','_VERIFIED.json'))))continue;
-    const cp=S.read(root,'receipts/'+name),ids=[...(cp.ids||[]),...(cp.primaryIds||[]),...(cp.requests||[]).map(r=>r.primaryId),...(cp.evidence||[]).map(e=>e.primaryId)];
-    if(Outcome.released(root,cp))continue;
-    if(ids.includes(id))return true;
-  }
-  return false;
+// A short-lived read snapshot, never a process-global cache. Inspection can reuse
+// one index; every submission builds a fresh one after its fresh canonical read.
+// Preserve legacy fail-closed ordering: IDs found before a malformed input remain
+// fenced; queries which would reach that input still throw the original error.
+function fenceIndex(root, state) {
+  const ids=new Set();let error=null;
+  try {
+    for(const tx of Object.values(state.transactions))
+      if(tx.status!=='VERIFIED'&&!Outcome.released(root,tx)){if(!Array.isArray(tx.ids))throw Error('INVALID_TRANSACTION_FENCE_IDS');for(const id of tx.ids)ids.add(id);}
+    const ledger=S.read(root,'state/enrich-ats-pay.json',{});
+    for(const tx of Object.values(ledger.pendingWrites||{})){if(tx.ids!=null&&!Array.isArray(tx.ids))throw Error('INVALID_PENDING_FENCE_IDS');for(const id of tx.ids||[])ids.add(id);}
+    const consumption=S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]});
+    for(const i of consumption.items)if(/POST_IN_FLIGHT|SUBMITTED|HELD_WRITER/.test(i.status)){
+      ids.add(i.primaryId);ids.add(i.key);
+    }
+    const dir=require('node:path').join(root,'receipts'),fs=require('node:fs');
+    if(fs.existsSync(dir))for(const name of fs.readdirSync(dir).filter(n=>n.endsWith('_CHECKPOINT.json'))){
+      if(fs.existsSync(require('node:path').join(dir,name.replace('_CHECKPOINT.json','_VERIFIED.json'))))continue;
+      const cp=S.read(root,'receipts/'+name),bound=[...(cp.ids||[]),...(cp.primaryIds||[]),...(cp.requests||[]).map(r=>r.primaryId),...(cp.evidence||[]).map(e=>e.primaryId)];
+      if(!Outcome.released(root,cp))for(const id of bound)ids.add(id);
+    }
+  }catch(e){error=e;}
+  return {has(id){if(ids.has(id))return true;if(error)throw error;return false;}};
 }
+function fenced(root,state,id){return fenceIndex(root,state).has(id);}
+
 async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
   if (!jobs.length || jobs.length > MAX_ENRICHMENT_BATCH || new Set(jobs.map(j => j.primaryId)).size !== jobs.length) throw Error('Invalid transaction size or duplicate job');
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
-  const accepted=[];
+  const accepted=[],fences=fenceIndex(root,state);
   for (const job of jobs) {
    try {
     const inspection=state.items[job.itemKey];
     if(inspection?.taskKey&&require('../helper-routing/shared.cjs').TASKS[inspection.taskKey]){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
     if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
-    if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fenced(root,state,job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
+    if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fences.has(job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
     if (!Object.keys(job.fields).length || Object.keys(job.fields).some(k => !allowed.has(k))) throw Error('Unsupported enrichment fields');
     if (Object.entries(job.fields).some(([k,v]) => Source.known(rows[0].p?.[k]) && cell(rows[0].p[k]) !== cell(v))) throw Error('CONFLICTING_CURRENT_EVIDENCE');
     accepted.push(job);
@@ -210,4 +219,4 @@ async function reconcile({root, privateDir, state, tx, deps}) {
   S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
   return tx.status;
 }
-module.exports = {MAX_ENRICHMENT_BATCH, healthy, identity, same, protectedRow, fenced, pending, submit, reconcile,rejectedUnchanged};
+module.exports = {MAX_ENRICHMENT_BATCH, healthy, identity, same, protectedRow, fenced, fenceIndex, pending, submit, reconcile,rejectedUnchanged};

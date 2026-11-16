@@ -1,0 +1,283 @@
+{
+  "automationId": "pe-stack-health-daily",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "provider": "ChatGPT",
+  "at": "2026-11-16T12:48:59.215Z",
+  "readOnly": true,
+  "status": "ENRICHMENT_MEMORY_FAILURE_WITH_KNOWN_COORDINATOR_BLOCK",
+  "checkedSourceRevisions": {
+    "sharedInstructions": "5cb0c1b7f8c54d7bad450f1e5f847a917e4ba4ad",
+    "forgeCoordination": "65b0be2e4994b4e03d81c40f48b1b5ba2cc5238e",
+    "foremanCockpit": "7777b491d05abeecc56f72761e1e438a1f6516d7"
+  },
+  "sourceEvidenceSha256": "cd9a809dcef1eda2e2d32ccef255ae377bfdeb0baec9d2eafd811aa818175e3c",
+  "checks": {
+    "writer": true,
+    "github": true,
+    "coordinator": true,
+    "explorerUI": true
+  },
+  "findings": {
+    "writer": {
+      "freeze": null,
+      "pending": 0,
+      "holds": 0,
+      "triggerInstalled": true,
+      "unverified": 0,
+      "errors": [],
+      "build": "36fe697",
+      "recentFailures": [
+        {
+          "at": "",
+          "error": ""
+        }
+      ],
+      "fileQueueIsNotDirectApiThroughput": true
+    },
+    "github": {
+      "forge-coordination": {
+        "head": "65b0be2e4994b4e03d81c40f48b1b5ba2cc5238e",
+        "sample": 15,
+        "failures": [
+          {
+            "id": 43867857985,
+            "name": "change-record-check",
+            "event": "pull_request",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/43867857985"
+          },
+          {
+            "id": 43867303941,
+            "name": "enrich-ats-pay",
+            "event": "workflow_dispatch",
+            "url": "https://github.com/tpruittguitar/forge-coordination/actions/runs/43867303941"
+          }
+        ],
+        "latestRuns": [
+          {
+            "name": "Publish compact Writer activity",
+            "status": "pending",
+            "seconds": 1
+          },
+          {
+            "name": "Publish compact Writer activity",
+            "status": "in_progress",
+            "seconds": 30
+          },
+          {
+            "name": "receipt-recovery",
+            "status": "success",
+            "seconds": 124
+          },
+          {
+            "name": "Index receipt discovery hints",
+            "status": "success",
+            "seconds": 45
+          },
+          {
+            "name": "Publish pipeline execution evidence",
+            "status": "success",
+            "seconds": 47
+          }
+        ],
+        "openPRs": 50,
+        "oldestPR": [
+          {
+            "number": 201,
+            "title": "Evidence reconciliation: 10 page-11 jobs — identity and exclusion review required",
+            "updatedAt": "2026-11-02T23:10:58Z"
+          }
+        ]
+      },
+      "foreman-cockpit": {
+        "head": "7777b491d05abeecc56f72761e1e438a1f6516d7",
+        "sample": 15,
+        "failures": [
+          {
+            "id": 43823452091,
+            "name": "browser-tests-compare",
+            "event": "pull_request",
+            "url": "https://github.com/tpruittguitar/foreman-cockpit/actions/runs/43823452091"
+          }
+        ],
+        "latestRuns": [
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 30
+          },
+          {
+            "name": "unreviewed-push-alarm",
+            "status": "success",
+            "seconds": 6
+          },
+          {
+            "name": "unit-tests",
+            "status": "success",
+            "seconds": 28
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "success",
+            "seconds": 2257
+          },
+          {
+            "name": "browser-tests-compare",
+            "status": "cancelled",
+            "seconds": 17
+          }
+        ],
+        "openPRs": 3,
+        "oldestPR": [
+          {
+            "number": 278,
+            "title": "Separate Writer private config and verify resume metadata",
+            "updatedAt": "2026-11-07T10:06:58Z"
+          }
+        ]
+      }
+    },
+    "coordinator": {
+      "reportAt": "2026-11-16T07:05:11.327Z",
+      "runId": "FORGE-CODE-CHATGPT-20261116T061023876Z",
+      "reportSha256": "7f4e8b02387c7957db779a39d2b2f09694a5a5120e468c862a502233d42d8266",
+      "mergeConflicts": [
+        "state/AI_EXCEPTION_WORK.json",
+        "state/RELEVANCE_SCREEN_GUARD.json"
+      ],
+      "lockPresent": false,
+      "reportAdvancedSincePriorAudit": true,
+      "mergeConflictRepairNotVerified": true
+    },
+    "explorer": {
+      "observedAt": "2026-11-16T12:48:11Z",
+      "writerIdle": true,
+      "queued": 0,
+      "triggerInstalled": true,
+      "outboxWaiting": 0,
+      "unfinishedOperations": 195,
+      "priorFailures": 196,
+      "masterDisplayedAt": "Nov 16 12:38 AM ET",
+      "staleMasterWarning": true,
+      "pollingCadence": "every minute while visible",
+      "storedFlexNeedsRecalculation": 152,
+      "payloadVerified": false,
+      "dashboard": {
+        "waitingEnrichment": 2939,
+        "readyForDecision": 15,
+        "discoveryBacklog": 517,
+        "rates": "Unknown: no measurements",
+        "canonicalJobs": 9897
+      }
+    },
+    "enrichmentFailure": {
+      "runId": 43867303941,
+      "failedAt": "2026-11-16T12:35:40Z",
+      "cause": "FATAL ERROR: Reached heap limit Allocation failed - JavaScript heap out of memory",
+      "exitCode": 134,
+      "pendingReceiptBatches": 25,
+      "snapshotRows": 9115
+    },
+    "additionalFailures": [
+      {
+        "runId": 43867857985,
+        "cause": "PR change record missing",
+        "scope": "pull_request"
+      },
+      {
+        "runId": 43823452091,
+        "cause": "office browser test regression; multiple other tests fail on base too",
+        "scope": "pull_request",
+        "laterBrowserComparisonSucceeded": true
+      }
+    ],
+    "enrichment": {
+      "at": "2026-11-16T12:05:13.228Z",
+      "queues": {
+        "verification": 0,
+        "enrichment": 2939,
+        "readyForReview": 15,
+        "blockedClosed": 91
+      },
+      "needsEnrichment": 2939,
+      "freshness": {
+        "due": 2365,
+        "current": 589,
+        "undated": 0
+      },
+      "masterSource": {
+        "kind": "CANONICAL_WRITER_MASTER",
+        "readAt": "2026-11-16T12:03:33.437Z",
+        "sha256": "c2ab665ba0d3c97d9b15bd069ed3266bc2145c869748c2ea398086cbd13dc7f6",
+        "rows": 9115
+      },
+      "upstreamRates": {
+        "discovery": {
+          "count": 18,
+          "windowHours": 36,
+          "perHour": 0.5,
+          "partial": true,
+          "unit": "candidate identities",
+          "candidateCount": 18,
+          "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
+        },
+        "intake": {
+          "count": 86,
+          "windowHours": 36,
+          "perHour": 2.388888888888889,
+          "partial": true,
+          "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 36 hours."
+        }
+      }
+    },
+    "intake": {
+      "at": "2026-11-16T11:55:33.674Z",
+      "activeFences": 7158
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-16T12:03:15.132Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-16T12:03:23.507Z",
+          "lastSuccessAt": "2026-11-16T12:03:23.507Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-16T12:05:15.227Z",
+          "lastSuccessAt": "2026-11-16T12:05:15.227Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-16T12:05:29.849Z",
+          "lastSuccessAt": "2026-11-16T12:05:29.849Z",
+          "attempts": 1
+        }
+      }
+    },
+    "comparison": {
+      "priorAudit": "HEALTH_AUDIT_20261115_0750ET.json",
+      "priorNeedsEnrichment": 1606,
+      "currentNeedsEnrichment": 2939,
+      "delta": 1333,
+      "backlogReductionIsNotCompletionCount": true
+    }
+  },
+  "limitations": [
+    "Writer endpoint does not expose complete fence and log rotation inventory.",
+    "15 recent Actions per repository sampled; not exhaustive.",
+    "Backlog model four-stage-v2 differs from prior audit; numerical delta is not a like-for-like completion measure.",
+    "Explorer stale master warning is separate from fresh canonical reporting snapshot; full payload integrity not verified.",
+    "No uncertain writes replayed; no code, settings, schedules, master or Drive changed.",
+    "Writer recentFailed returned one empty failed placeholder with unknown build and storage; it cannot identify a new failure.",
+    "Coordinator report advanced to Nov 16 07:05 UTC while two merge conflicts remain; no coordinator processing was launched by this audit.",
+    "UI rates show unknown while source flow has partial upstream measurements; do not treat missing dashboard rates as zero throughput."
+  ],
+  "nextActions": [
+    "Diagnose enrichment memory failure and reconcile preserved pending-write evidence before retry.",
+    "Repair known coordinator merge conflicts in an authorized code repair task, retaining original requests.",
+    "Reconcile 195 Explorer unfinished operations using saved results without replay."
+  ]
+}

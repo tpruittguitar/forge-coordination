@@ -6,3 +6,4 @@ SOURCE-TRIAL REUSE: before employer-page fetch for salary/liveness, check state/
 UNANCHORED EST (Tim 2026-10-28): no posted pay + no anchors -> ESTIMATED/LOW range = 30-110% of BLS P25-P90 span (low=P25+0.30*(P90-P25), high=P25+1.10*(P90-P25)). Fetch missing BLS series before n/a. PAY_WORTH uses 75% of range. Prefer posted/anchored when present.
 AGENCY: fetch policy/current/AGENCY_AND_TOOLS.txt only when processing an agency row. Otherwise skip.
 SOURCE TEXT: Identity-bound JobSpy/HiringCafe/LinkedIn/recruiter/aggregator text equals employer text. Reuse before fetch; age/provider alone is no recheck gate. Unknown requirements do not block intake; preserve labels/date/liveness.
+EMPLOYER_PRIMARY_BUSINESS: one short plain description, for example 'Aerospace engine components manufacturer', at most 80 characters. No sentences, lists, marketing copy, URLs or sourcing notes. Leave it empty when unknown. An unknown agency client stays RECRUITING_AGENCY.

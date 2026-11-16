@@ -29,8 +29,14 @@ test('binary override preserves exact staged bytes under autocrlf and permits fu
  assert.deepEqual(Store.read(path.join(checkout,'state/enrich-ats-pay-employer.json')),f.cache);
 });
 test('un-staged disk repair cannot hide corrupt Git index; renormalized repair succeeds',t=>{
- const f=fixture(t);f.stage();fs.writeFileSync(path.join(f.dir,'.gitattributes'),'state/** text eol=lf\nstate/enrich-ats-pay-employer.parts/*.json.gz binary\n');
- assert.throws(()=>Index.verify(f.dir),/checksum mismatch/);f.stage();assert.deepEqual(Index.verify(f.dir),{parts:1,observations:1});
+ // Avoid Git's racy-stat fallback: make the original part older than the index.
+ // A plain add can otherwise appear to repair bytes only because Git rereads it.
+ const f=fixture(t),old=new Date(Date.now()-10000);fs.utimesSync(f.part,old,old);f.stage();fs.writeFileSync(path.join(f.dir,'.gitattributes'),'state/** text eol=lf\nstate/enrich-ats-pay-employer.parts/*.json.gz binary\n');
+ assert.throws(()=>Index.verify(f.dir),/checksum mismatch/);f.stage();
+ assert.throws(()=>Index.verify(f.dir),/checksum mismatch/);
+ f.git('add','--renormalize','state');
+ assert.deepEqual(Index.verify(f.dir),{parts:1,observations:1});
+ assert.deepEqual(f.git('show',':state/enrich-ats-pay-employer.parts/'+f.manifest.parts[0].file),f.exact);
 });
 test('missing staged parts and traversal references fail before publication',t=>{
  const f=fixture(t);fs.appendFileSync(path.join(f.dir,'.gitattributes'),'state/enrich-ats-pay-employer.parts/*.json.gz binary\n');f.stage();

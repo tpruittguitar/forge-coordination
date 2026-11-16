@@ -47,7 +47,7 @@ function cards(message){
   const lines=section.split(/\r?\n/).map(s=>s.trim()).filter(Boolean),view=lines.findIndex(s=>/^View job: https:\/\//.test(s));if(view<0)continue;
   const link=lines[view].slice('View job: '.length);let u;try{u=new URL(link);}catch{continue;}
   const id=u.hostname==='www.linkedin.com'&&u.pathname.match(/^\/(?:comm\/)?jobs\/view\/(\d+)\/?$/)?.[1];if(!id||seen.has(id))throw Error('AMBIGUOUS_ALERT_CARD');
-  const paragraphs=lines.slice(0,view).filter(s=>!/^Your job alert|^Jobs similar|^Your saved job|^Job alert:|^Jobs for Tim|^Recommendations based|^\d+\+? new jobs? match|^https:\/\/|^Fast growing$|^This company is actively hiring$|^Apply with resume|^\d+ (company alumni|connections?)/.test(s));if(paragraphs.length<3)throw Error('INCOMPLETE_ALERT_CARD');
+  const paragraphs=lines.slice(0,view).filter(s=>!/^Your job alert|^Jobs similar|^Your saved job|^Job alert:|^Jobs for Tim|^Recommendations based|^\d+\+? new jobs? match|^https:\/\/|^Fast growing$|^This company is actively hiring$|^Apply with resume|^\d+ (company alum(?:ni|nus)?|connections?)/.test(s));if(paragraphs.length<3)throw Error('INCOMPLETE_ALERT_CARD');
   seen.add(id);result.push({jobId:id,paragraphs:paragraphs.slice(-3)});
  }
  return result;
@@ -64,12 +64,12 @@ function recover(root,message,{privateDir,screenContext}={}){
  }
  // Reuse card validation/dedup while restoring all live cursor/coverage fields.
  const original=structuredClone(source),before=new Set(Object.keys(ledger.jobs));
- for(const card of found){const old=ledger.jobs['linkedin:'+card.jobId],identity=card.paragraphs;if(old&&[old.title,old.company,old.location].some((v,n)=>String(v).toLowerCase().replace(/[^a-z0-9]/g,'')!==identity[n].toLowerCase().replace(/[^a-z0-9]/g,'')))throw Error('CONFLICTING_ORIGINAL_ALERT_IDENTITY');}
- L.capture(ledger,{gmailId:message.id,url:source.url,at:message.at,jobs:found,next:true},{screenContext});
- const keys=found.map(j=>'linkedin:'+j.jobId),recovered=keys.filter(k=>!before.has(k));
- ledger.sources[message.id]={...original,jobKeys:[...new Set([...original.jobKeys,...keys])],originalAlertRecovery:{sourceSha256:message.sourceSha256,at:new Date().toISOString(),originalDate:message.at,visibleKeys:keys,newKeys:recovered,unseenHistoricalCoverage:'UNPROVEN'}};
+ const pendingCards=[],accepted=found.filter(card=>{const old=ledger.jobs['linkedin:'+card.jobId],identity=card.paragraphs;if(old&&[old.title,old.company,old.location].some((v,n)=>String(v).toLowerCase().replace(/[^a-z0-9]/g,'')!==identity[n].toLowerCase().replace(/[^a-z0-9]/g,''))){pendingCards.push({key:'linkedin:'+card.jobId,reason:'CONFLICTING_ORIGINAL_ALERT_IDENTITY',sourceCardSha256:S.hash(card)});return false;}return true;});
+ L.capture(ledger,{gmailId:message.id,url:source.url,at:message.at,jobs:accepted,next:true},{screenContext});
+ const keys=accepted.map(j=>'linkedin:'+j.jobId),recovered=keys.filter(k=>!before.has(k));
+ ledger.sources[message.id]={...original,jobKeys:[...new Set([...original.jobKeys,...keys])],originalAlertRecovery:{sourceSha256:message.sourceSha256,at:new Date().toISOString(),originalDate:message.at,visibleKeys:keys,newKeys:recovered,pendingCards,unseenHistoricalCoverage:'UNPROVEN'}};
  for(const key of keys){const e=ledger.jobs[key].evidence.find(e=>e.gmailId===message.id&&e.at===message.at);if(e){e.source='FULL_ORIGINAL_ALERT';e.sourceSha256=message.sourceSha256;}}
- L.save(require('node:path').join(root,file),ledger);return{recovered:recovered.length,visible:keys.length,historicalCoverage:'UNPROVEN'};
+ L.save(require('node:path').join(root,file),ledger);return{recovered:recovered.length,visible:keys.length,unresolvedCards:pendingCards.length,historicalCoverage:'UNPROVEN'};
 }
 function handoff(root,message){
  const file='state/MAIL_SOURCE_HANDOFFS.json',h=S.read(root,file,{messages:{}}),entry=h.messages[message.id];

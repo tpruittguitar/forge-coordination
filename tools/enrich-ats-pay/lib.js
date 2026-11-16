@@ -68,7 +68,7 @@ function postedAnchor(r, p) {
   // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
   if (Pay.estimated(p.PAY_POSTED) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
   const lo = num(p.SALARY_BASE_LOW), hi = num(p.SALARY_BASE_HIGH);
-  if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION) };
+  if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION), ...(String(p.EMPLOYER_PRIMARY_BUSINESS||'').trim()?{business:String(p.EMPLOYER_PRIMARY_BUSINESS).trim()}:{}) };
   return null;
 }
 function median(a) { const s = a.slice().sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; }
@@ -238,7 +238,7 @@ function sameEmployerEstimate(row, comps, ratio, context) {
 function sameEmployerAnchors(row, anchors) {
   row=Employer.resolve(row);const co = normCo(row.COMPANY), L = level(row.TITLE), F = func(row.TITLE);
   return co ? anchors.filter(a => a.id !== row.PRIMARY_ID && normCo(a.co) === co && comparable(row, a))
-    .map(a => ({ id: a.id, co:a.co, title: a.title, location:a.location, asOf:a.asOf,sourceUrl:a.sourceUrl,state: a.state || '', pay: { low: a.low, high: a.high }, page: '' })) : [];
+    .map(a => ({ id: a.id, co:a.co, title: a.title, location:a.location, asOf:a.asOf,sourceUrl:a.sourceUrl,state: a.state || '', ...(a.business?{business:a.business}:{}), ...(a.postingText?{postingText:a.postingText}:{}), pay: { low: a.low, high: a.high }, page: '' })) : [];
 }
 /* BLS OEWS (step 3). SOC by function; series OEU S <state FIPS>00000 000000 <SOC> <datatype>; 12 = P25, 13 = median, 15 = P90. */
 const SOC = { QUALITY: '113051', MFG: '113051', OPS: '111021', ENG: '119041', PROGRAM: '111021', OTHER: '111021' };

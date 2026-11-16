@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-11T23:06:32.847Z",
+  "at": "2026-11-16T14:00:36.245Z",
   "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -90,21 +90,12 @@
     "coverageComplete": false,
     "sourceFile": "receipts/EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261101-1910ET.json",
     "writerProofsVerified": true,
-    "pendingCapturedJobs": 5467,
+    "pendingCapturedJobs": 3967,
     "pendingResultSources": 0,
     "pendingResultPageCount": null,
     "pendingResultPages": 0
   },
   "executions": [
-    {
-      "id": "forge-posting-validation",
-      "at": "2026-11-05T02:12:10.458Z",
-      "status": "DEFERRED_SHARED_LOCK",
-      "evidenceFiles": [
-        "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261104-2111ET_TERMINAL.txt"
-      ],
-      "executionVerified": false
-    },
     {
       "id": "forge-email-discovery",
       "at": "2026-11-02T02:07:20.898Z",
@@ -118,17 +109,17 @@
     },
     {
       "id": "forge-application-outcome-tracker",
-      "at": "2026-11-11T22:28:06.484Z",
+      "at": "2026-11-16T13:22:44.279Z",
       "status": "PARTIAL_WITH_PENDING_COORDINATOR_CONSUMPTION",
       "evidenceFiles": [
-        "receipts/FORGE-OUTCOME-CHATGPT-20261111T222440Z_SUMMARY.json",
-        "receipts/FORGE-OUTCOME-CHATGPT-20261111T222440Z_VERIFICATION.json"
+        "receipts/FORGE-OUTCOME-CHATGPT-20261116T131930Z_SUMMARY.json",
+        "receipts/FORGE-OUTCOME-CHATGPT-20261116T131930Z_VERIFICATION.json"
       ],
       "executionVerified": true
     },
     {
       "id": "forge-ai-usage-reader",
-      "at": "2026-11-11T19:08:53.217Z",
+      "at": "2026-11-16T13:10:17.990Z",
       "status": "OK",
       "evidenceFiles": [
         "usage/AI_USAGE_READINGS.jsonl"
@@ -137,10 +128,10 @@
     },
     {
       "id": "pe-stack-health-daily",
-      "at": "2026-11-11T12:44:07.659Z",
-      "status": "ATTENTION_REQUIRED_NEW_FAILED_HELPER_PAYLOAD",
+      "at": "2026-11-16T12:48:59.215Z",
+      "status": "ENRICHMENT_MEMORY_FAILURE_WITH_KNOWN_COORDINATOR_BLOCK",
       "evidenceFiles": [
-        "receipts/HEALTH_AUDIT_20261111_0744ET.json"
+        "receipts/HEALTH_AUDIT_20261116_0748ET.json"
       ],
       "executionVerified": true
     },
@@ -155,20 +146,109 @@
         "receipts/AI_EXCEPTION_REVIEWS/3a8c467674211bbb1e26db84263300de0bdde18ca0bf05d3f7985efcfa38682e-c4a0a13dd6336788ed2566021e0f1e7d375c3cd4bace9c63c5e5e2258cca855e.json"
       ],
       "executionVerified": true
+    },
+    {
+      "id": "forge-posting-validation",
+      "at": "2026-11-16T02:15:36.149Z",
+      "status": "SOURCE_CHECKS_SAVED_CANONICAL_CONSUMPTION_PENDING",
+      "evidenceFiles": [
+        "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T021250Z_TERMINAL.txt"
+      ],
+      "executionVerified": true
     }
   ],
   "services": [
     {
       "id": "programmed-coordinator",
-      "at": "2026-11-10T21:50:39.851Z",
+      "at": "2026-11-13T20:22:00.041Z",
       "status": "COORDINATED_WITH_PENDING_WORK",
       "workEvidenceVerified": true,
       "nativeInvocationVerified": false,
       "evidenceFiles": [
-        "receipts/FORGE-CODE-CHATGPT-20261110T213024256Z_TERMINAL.json"
+        "receipts/FORGE-CODE-CHATGPT-20261113T193524143Z_TERMINAL.json"
       ]
     }
   ],
+  "intakeAssignmentHealth": {
+    "schema": "forge.intake-assignment-health.v1",
+    "at": "2026-11-16T14:00:36.245Z",
+    "status": "ACTION_REQUIRED",
+    "checkedItems": 625,
+    "issueCount": 7,
+    "counts": {
+      "TERMINAL_OR_PENDING_REQUEST": 5,
+      "QUEUED_SUBMISSION": 2
+    },
+    "findings": [
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:694491f5fe5d3fde"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:8048e6d77029047b"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "indeed:cfc902a954d63ac5"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "linkedin:4473099505"
+      },
+      {
+        "code": "QUEUED_SUBMISSION",
+        "key": "linkedin:4473099505"
+      },
+      {
+        "code": "TERMINAL_OR_PENDING_REQUEST",
+        "key": "linkedin:4473207013"
+      },
+      {
+        "code": "QUEUED_SUBMISSION",
+        "key": "linkedin:4473207013"
+      }
+    ],
+    "evidenceFiles": [
+      "control/GROK_INTAKE_HELPER_WORK.json",
+      "control/CLAUDE_RELEVANCE_WORK.json",
+      "state/CLAUDE_HELPER_CONSUMPTION.json",
+      "state/EMAIL_RECOVERY_QUEUE.json",
+      "control/grok-intake/page-001.json",
+      "control/grok-intake/page-002.json",
+      "control/grok-intake/page-003.json",
+      "control/grok-intake/page-004.json",
+      "control/grok-intake/page-005.json",
+      "control/grok-intake/page-006.json",
+      "control/grok-intake/page-007.json",
+      "control/grok-intake/page-008.json",
+      "control/grok-intake/page-009.json",
+      "control/grok-intake/page-010.json",
+      "control/grok-intake/page-011.json",
+      "control/grok-intake/page-012.json",
+      "control/grok-intake/page-013.json",
+      "control/grok-intake/page-014.json",
+      "control/grok-intake/page-015.json",
+      "control/grok-intake/page-016.json",
+      "control/grok-intake/page-017.json",
+      "control/grok-intake/page-018.json",
+      "control/grok-intake/page-019.json",
+      "control/grok-intake/page-020.json",
+      "control/grok-intake/page-021.json",
+      "control/grok-intake/page-022.json",
+      "control/grok-intake/page-023.json",
+      "control/grok-intake/page-024.json",
+      "control/grok-intake/page-025.json",
+      "control/grok-intake/page-026.json",
+      "control/grok-intake/page-027.json",
+      "control/grok-intake/page-028.json",
+      "control/grok-intake/page-029.json",
+      "control/grok-intake/page-030.json",
+      "control/grok-intake/page-031.json",
+      "control/grok-intake/page-032.json"
+    ],
+    "inputSha256": "224c554f578b1d61a6cb31402ab2adfa083637a5ef6f3b93bb69c5edc0f1ba17"
+  },
   "helperCoordination": {
     "at": "2026-11-02T02:07:20.898Z",
     "runId": "FORGE-COORDINATOR-CHATGPT-20261101-2057ET",
@@ -176,22 +256,22 @@
     "sourceFile": "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_TERMINAL.json"
   },
   "emailCapture": {
-    "at": "2026-11-10T21:50:39.851Z",
-    "run": "FORGE-CODE-CHATGPT-20261110T213024256Z",
-    "messagesRead": 1054,
-    "pendingMessages": 613,
+    "at": "2026-11-13T20:22:00.041Z",
+    "run": "FORGE-CODE-CHATGPT-20261113T193524143Z",
+    "messagesRead": 1297,
+    "pendingMessages": 712,
     "fullyReadThrough": "2026-11-02T14:23:41.000Z",
     "coverageComplete": false,
-    "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261110T213024256Z_MAIL.json",
+    "sourceFile": "receipts/FORGE-CODE-CHATGPT-20261113T193524143Z_MAIL.json",
     "corroborated": true
   },
   "schedules": {
-    "configurationObservedAt": "2026-11-11T22:41:36.859378Z",
+    "configurationObservedAt": "2026-11-16T13:58:45.547922Z",
     "configurationReadbackScope": "LOCAL_CODEX_ONLY",
     "observationScopes": {
       "LOCAL_CODEX": {
         "status": "READ",
-        "at": "2026-11-11T22:41:36.859378Z"
+        "at": "2026-11-16T13:58:45.547922Z"
       },
       "CLOUD_AUTOMATIONS": {
         "status": "NOT_READ",
@@ -205,8 +285,8 @@
     "active": [
       {
         "id": "forge-ai-usage-reader",
-        "lastDueAt": "2026-11-11T19:05:00.000Z",
-        "lastRunAt": "2026-11-11T19:08:53.217Z",
+        "lastDueAt": "2026-11-16T07:05:00.000Z",
+        "lastRunAt": "2026-11-16T13:10:17.990Z",
         "status": "OK",
         "executionVerified": true,
         "taskExecutionVerified": true,
@@ -218,21 +298,21 @@
       },
       {
         "id": "forge-application-outcome-tracker",
-        "lastDueAt": "2026-11-11T21:22:00.000Z",
-        "lastRunAt": "2026-11-11T22:28:06.484Z",
+        "lastDueAt": "2026-11-16T12:22:00.000Z",
+        "lastRunAt": "2026-11-16T13:22:44.279Z",
         "status": "PARTIAL_WITH_PENDING_COORDINATOR_CONSUMPTION",
         "executionVerified": true,
         "taskExecutionVerified": true,
         "nativeInvocationVerified": false,
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/FORGE-OUTCOME-CHATGPT-20261111T222440Z_SUMMARY.json",
-          "receipts/FORGE-OUTCOME-CHATGPT-20261111T222440Z_VERIFICATION.json"
+          "receipts/FORGE-OUTCOME-CHATGPT-20261116T131930Z_SUMMARY.json",
+          "receipts/FORGE-OUTCOME-CHATGPT-20261116T131930Z_VERIFICATION.json"
         ]
       },
       {
         "id": "forge-application-writer-gofer",
-        "lastDueAt": "2026-11-11T20:42:00.000Z",
+        "lastDueAt": "2026-11-16T11:42:00.000Z",
         "lastRunAt": "2026-11-05T07:44:36.337Z",
         "status": "RESEARCH_EXECUTED_WITH_PENDING_WORK",
         "executionVerified": false,
@@ -248,7 +328,7 @@
       },
       {
         "id": "forge-email-discovery",
-        "lastDueAt": "2026-11-11T21:02:00.000Z",
+        "lastDueAt": "2026-11-16T12:02:00.000Z",
         "lastRunAt": "2026-11-02T02:07:20.898Z",
         "status": "RETURNS_COLLECTED_WITH_PENDING_SOURCE_CORRECTION",
         "executionVerified": false,
@@ -263,28 +343,28 @@
       },
       {
         "id": "forge-posting-validation",
-        "lastDueAt": "2026-11-11T18:12:00.000Z",
-        "lastRunAt": "2026-11-05T02:12:10.458Z",
-        "status": "DEFERRED_SHARED_LOCK",
+        "lastDueAt": "2026-11-16T10:12:00.000Z",
+        "lastRunAt": "2026-11-16T02:15:36.149Z",
+        "status": "SOURCE_CHECKS_SAVED_CANONICAL_CONSUMPTION_PENDING",
         "executionVerified": false,
         "taskExecutionVerified": false,
         "nativeInvocationVerified": false,
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261104-2111ET_TERMINAL.txt"
+          "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T021250Z_TERMINAL.txt"
         ]
       },
       {
         "id": "pe-stack-health-daily",
-        "lastDueAt": "2026-11-11T12:45:00.000Z",
-        "lastRunAt": "2026-11-11T12:44:07.659Z",
-        "status": "ATTENTION_REQUIRED_NEW_FAILED_HELPER_PAYLOAD",
+        "lastDueAt": "2026-11-15T12:45:00.000Z",
+        "lastRunAt": "2026-11-16T12:48:59.215Z",
+        "status": "ENRICHMENT_MEMORY_FAILURE_WITH_KNOWN_COORDINATOR_BLOCK",
         "executionVerified": true,
         "taskExecutionVerified": true,
         "nativeInvocationVerified": false,
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
-          "receipts/HEALTH_AUDIT_20261111_0744ET.json"
+          "receipts/HEALTH_AUDIT_20261116_0748ET.json"
         ]
       }
     ],

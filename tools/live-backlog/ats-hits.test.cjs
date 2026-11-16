@@ -4,12 +4,12 @@ const match=()=>Resume.match({title:'Director of Manufacturing',description:'Lea
 const card=ats=>({preliminaryScreen:{checkedAt:'2026-11-07T03:00:00Z',ats}});
 test('display counts saved distinct supported competencies without running a new score',()=>{
  const ats=match(),item=card(ats),before=JSON.stringify(item),out=display(item);
- assert.equal(out.atsHits,ats.matches.length);assert.equal(out.atsBasis,'Captured content');assert.match(out.atsEvidence,/quality systems: PPAP/i);assert.equal(out.atsCheckedAt,item.preliminaryScreen.checkedAt);assert.equal(out.atsResumeVersion,ats.resumeVersion);assert.equal(JSON.stringify(item),before);assert.equal('score' in out,false);assert.equal('resumeFileId' in out,false);assert.equal('resumeTextSha256' in out,false);
+ assert.equal(out.atsHits,ats.matches.length);assert.equal(out.atsBasis,'Captured content (extent unverified)');assert.match(out.atsEvidence,/quality systems: PPAP/i);assert.equal(out.atsCheckedAt,item.preliminaryScreen.checkedAt);assert.equal(out.atsResumeVersion,ats.resumeVersion);assert.equal(JSON.stringify(item),before);assert.equal('score' in out,false);assert.equal('resumeFileId' in out,false);assert.equal('resumeTextSha256' in out,false);
  ats.matches.push(structuredClone(ats.matches[0]));assert.equal(display(item).atsHits,out.atsHits);
 });
 test('zero observed hits differs from unavailable and title-only remains visibly incomplete',()=>{
  const zero=Resume.match({description:'Revenue analytics'}),title=Resume.match({title:'Manufacturing Director'});
- assert.equal(display(card(zero)).atsHits,0);assert.equal(display(card(zero)).atsBasis,'Captured content');assert.equal(display(card(title)).atsHits,1);assert.equal(display(card(title)).atsBasis,'Title only');assert.equal(display(card(Resume.match({title:'General Manager'}))).atsHits,0);
+ assert.equal(display(card(zero)).atsHits,0);assert.equal(display(card(zero)).atsBasis,'Captured content (extent unverified)');assert.equal(display(card(title)).atsHits,1);assert.equal(display(card(title)).atsBasis,'Title only');assert.equal(display(card(Resume.match({title:'General Manager'}))).atsHits,0);
  assert.equal(display({}).atsHits,null);assert.equal(display({}).atsBasis,'Not recorded');
 });
 test('supports existing discovery record locations and never replaces a current failure with older success',()=>{
@@ -49,4 +49,12 @@ test('zero, missing, and failed evidence preserve distinct term states',()=>{
  assert.equal(display(card({...match(),status:'RESUME_UPDATE_REQUIRED'})).atsTerms,null);
  const ats=match();ats.matches[0].postingQuotes=[];
  assert.equal(display(card(ats)).atsTerms,null);
+});
+
+test('zero on snippets is distinct from a saved complete role-content screen',()=>{
+ const ats=Resume.match({title:'General Manager',description:'Revenue analytics'}),item=card(ats);
+ item.preliminaryScreen.atsGate={schema:'forge.discovery-ats-gate.v1',status:'UNKNOWN',contentBasis:'EXACT_ORIGINAL_ALERT_CARD'};
+ assert.equal(display(item).atsHits,0);assert.equal(display(item).atsBasis,'Source snippet');assert.match(display(item).atsEvidence,/not a screened-out job/);
+ item.preliminaryScreen.atsGate={schema:'forge.discovery-ats-gate.v1',status:'EXCLUDE',contentBasis:'CAPTURED_ROLE_CONTENT'};
+ assert.equal(display(item).atsHits,0);assert.equal(display(item).atsBasis,'Role content screened');assert.match(display(item).atsEvidence,/screened role content/);
 });

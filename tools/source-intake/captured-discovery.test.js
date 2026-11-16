@@ -38,8 +38,18 @@ test('tampered content, identity, URLs, origin, dates and proof formats fail clo
 test('AUTO sends blank business for metadata with source audit and unknown field; no refresh fetch required',async()=>{
  const c=candidate(),f=fixture();await runIntake([c],f.options);a.equal(f.writes.length,1);const r=f.writes[0].records[0];a.equal(r.EMPLOYER_PRIMARY_BUSINESS,'');a.equal(r.SOURCE_PROVIDER,'JOBSPY:indeed');a.ok(r.INITIAL_UNKNOWN_FIELDS.includes('EMPLOYER_PRIMARY_BUSINESS'));a.equal(f.writes[0].requestId,requestId(c.record));
 });
-test('source text goes to Writer verbatim rather than metadata serialization',async()=>{
- const c=candidate({source:'HIRINGCAFE',description:'We manufacture industrial machinery.'}),f=fixture();await runIntake([c],f.options);a.equal(f.writes[0].records[0].EMPLOYER_PRIMARY_BUSINESS,c.primaryBusiness);
+test('posting text is not written as EMPLOYER_PRIMARY_BUSINESS and the rest of the intake record stays',async()=>{
+ const posting='We manufacture industrial machinery. '.repeat(12).trim();
+ const c=candidate({source:'HIRINGCAFE',description:posting}),f=fixture();
+ await runIntake([c],f.options);
+ const wrote=f.writes[0].records[0];
+ a.equal(wrote.EMPLOYER_PRIMARY_BUSINESS,'');
+ a.ok(!JSON.stringify(wrote).includes(posting));
+ const empty=candidate({source:'HIRINGCAFE',description:''}),g=fixture();
+ await runIntake([empty],g.options);
+ const rest=row=>{const {EMPLOYER_PRIMARY_BUSINESS,...other}=row;return other;};
+ a.deepEqual(rest(wrote),rest(g.writes[0].records[0]));
+ a.deepEqual(wrote.INITIAL_UNKNOWN_FIELDS,g.writes[0].records[0].INITIAL_UNKNOWN_FIELDS);
 });
 test('captured branch is AUTO-only and rejects tampering before network',async()=>{
  for(const patch of [{expectedMode:'STAGE'},{}]){const c=candidate(),f=fixture();if(!patch.expectedMode)c.primaryBusiness='fake';await a.rejects(()=>runIntake([c],{...f.options,...patch}),/reviewed intake candidates/);a.equal(f.writes.length,0);}

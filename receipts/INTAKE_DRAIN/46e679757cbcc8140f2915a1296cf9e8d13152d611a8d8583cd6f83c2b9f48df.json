@@ -1,0 +1,71 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:f4cc48ebff262432e92225f6",
+  "sourceVersion": "6cdf3a26af79a11e0017519e75ca531b24f09effaf53c9438348c0ae19f3518a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261113T065004Z-c13d2a",
+  "observedAt": "2026-11-13T06:50:04.543058Z",
+  "instructionCommit": "faf3da5705a1b0e19ceb0fdd16368d20fa786fd0",
+  "writerSubmitted": false,
+  "originalRequestReplayed": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh complete authenticated canonical snapshots and shared identity matcher establish existing Hershey Robinson posting V2I-4E841C4845B1. The newer original batch independently reads COMPLETE and saved candidate 43 reports SCOUT_INTAKE_WRITTEN to the same ID. No saved VERIFIED receipt is present for this batch; exact original request-result/effect verification remains separate. Existing presence is not original-request completion.",
+  "nextAction": "Existing authenticated coordinator recovers original request_result under the independently COMPLETE gate, verifies exact candidate effect and accounts its original fence. Skip discovery/source research for this proven existing posting; never replay.",
+  "retryCondition": "Candidate-specific controlled request-result and exact-effect evidence becomes available for the original batch, or independent receipt state changes.",
+  "canonicalWrites": 0,
+  "canonicalCompletion": false,
+  "newlyVerifiedJobs": 0,
+  "existingMatchCandidate": {
+    "primaryId": "V2I-4E841C4845B1",
+    "basis": [
+      "POSTING_URL"
+    ]
+  },
+  "originalRequest": {
+    "requestId": "FORGE-CODE-CHATGPT-20261111T212023541Z-B009",
+    "position": 43,
+    "savedAcceptance": {
+      "index": 43,
+      "result": "SCOUT_INTAKE_WRITTEN",
+      "primaryId": "V2I-4E841C4845B1",
+      "detail": "",
+      "candidateIds": [],
+      "sourceSha256": "6054e6c2c82cab6b400ef232beb24ad738085bb800197b9e0e625119cecff290"
+    },
+    "independentState": "COMPLETE",
+    "writeId": "W-20261111215921773-587c17"
+  },
+  "attempts": [
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261111T212023541Z-B009_CHECKPOINT.json",
+      "sha256": "f081bdc0592020e1a5402ca3c40eca5d800b20e0f2e3bec45634cf80b97e5253",
+      "result": "Original saved evidence inspected; exact key bound to candidate position 43."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261111T212023541Z-B009_ACCEPTANCE.json",
+      "sha256": "ced27d490847e35d843d13ba855d2cfec9846bbe035dc1dda60a4a14bb7560c6",
+      "result": "Original saved evidence inspected; exact key bound to candidate position 43."
+    },
+    {
+      "source": "receipts/FORGE-CODE-CHATGPT-20261111T212023541Z-B009_DEFERRED.json",
+      "sha256": "91e7ee2c60a8c5efdbda64a19dd85198e1f197bce89ffa17198f28eddefc2c06",
+      "result": "Original saved evidence inspected; exact key bound to candidate position 43."
+    },
+    {
+      "source": "tpruittguitar/forge-writer-state/PIPELINE_RECEIPT_INDEX.json",
+      "sha256": "430cb6f40bb5fe70cec0f0c70248e821ef31e07f1d0695ca55818864bb2c5780",
+      "result": "Fresh authenticated exact batch COMPLETE with writeId matching saved acceptance; not a candidate effect proof."
+    },
+    {
+      "source": "Authenticated complete Drive master and terminal archive",
+      "result": "Complete snapshots parsed: 8316 master rows and 785 archive rows; shared matcher PRESENT by POSTING_URL to saved acceptance ID. No private row prose published.",
+      "masterSha256": "d75c3efed99baef738b95f926fd714efdb4ec2baa4a82c977478e22c76f50484",
+      "archiveSha256": "16902038dc004d0398ec50f2828963036b287af00186b70e14e07d940b6f32b8"
+    },
+    {
+      "source": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "Legacy batch fence has no authorized FORGE-AUTO binding; no fabricated probe run or write dispatched."
+    }
+  ]
+}

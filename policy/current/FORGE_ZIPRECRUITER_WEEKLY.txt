@@ -4,7 +4,7 @@ WHEN
 One scheduled ChatGPT task, Monday 01:00 America/New_York, TASK_KEY=FORGE_ZIPRECRUITER_WEEKLY. Run once per ISO week. Read this week's FORGE-ZIPR-CHATGPT-<ISO week>*.txt receipt via state/latest.json hint or scoped listing. A completed terminal receipt means stop with a one-line SKIP receipt; START alone never proves completion. Resume durable partial search/request cursors; never repeat completed pages or submissions. Missing search_jobs: SKIPPED_NO_CONNECTOR receipt and stop.
 
 INTAKE FILE (one per 25 roles, name {{ACTOR}}_<requestId>.json in WRITER_QUEUE)
-Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, optional PAY_POSTED and SCOUT_NOTES. co, TITLE and SOURCE_URL are required. Never invent a deep link.
+Use the validated intake example below. Include run.SCOUT_RUN_ID, RUN_STARTED_AT_ET and GROSS_FOUND=records in this file; exact observed co, TITLE, loc, REQ_ID, SOURCE_URL, SOURCE_PROVIDER, DISCOVERED_AT_ET, IDENTITY_CONFIDENCE, INITIAL_UNKNOWN_FIELDS, EMPLOYER_DOMAIN_HINT, EMPLOYER_PRIMARY_BUSINESS per FORGE CORE, optional PAY_POSTED and SCOUT_NOTES. co, TITLE and SOURCE_URL are required. Never invent a deep link.
 Apply DISCOVERY IDENTITY above before further research or intake: proven master/archive matches are PRESENT/SKIP_EXISTING with no Writer submission or repeated analysis. Submit only still-new kept roles in this run; Writer retains race-time dedupe and Never-Consider gates.
 
 SEARCHES (ZipRecruiter search_jobs; each call returns 5; page with offset 0, 5, 10, 15 = 20 results per search)

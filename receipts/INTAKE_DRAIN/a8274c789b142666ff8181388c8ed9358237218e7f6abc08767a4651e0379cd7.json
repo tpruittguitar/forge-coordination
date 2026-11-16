@@ -1,0 +1,86 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:cd0dc552ecf514be4896b47f",
+  "sourceVersion": "b914c276b7bd9d3cdc5b3799735e1bba536354e6a848ceacf7a6471f90585c70",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
+  "runId": "FORGE-DRAIN-20261113-RUN179-ROUTING-BLOCKED",
+  "instructionCommit": "ce2b6331f7ab8377fa54445fc7a2113a9bce0b40",
+  "observedAt": "2026-11-13T11:01:51.343Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "canonicalVerified": false,
+  "priorReview": "receipts/INTAKE_DRAIN/d5b2b4491fd10faf009dbfc99dbe193a4686b5879f15be4676d1cc32e52bb964.json",
+  "reusedResearch": false,
+  "reason": "Current helper routing still lacks this task entry. Managed workspace remains healthy; scope research and Writer work await verified active routing.",
+  "nextAction": "Resume current registered queue only after successful managed-workspace acquisition; preserve prior evidence and original Writer fences.",
+  "attempts": [
+    {
+      "source": "Fresh shared entry, registry/common/procedure and routing at instructionCommit",
+      "result": "Registry owner ChatGPT retained; own task absent from routing readback. No source/resume research, preflight or Writer replay."
+    },
+    {
+      "source": "Managed workspace helper",
+      "result": "Inspected 31218065408 free bytes; reused slot 0 and acquired exact instruction main successfully."
+    }
+  ],
+  "retryCondition": "Current routing readback verifies own task/provider/active assignment; then run research preflight before private resume or source research.",
+  "checkpoint": {
+    "status": "BLOCKED_ROUTING_READBACK_UNVERIFIED",
+    "poolRoot": "/workspace/forge-intake-scope-pool",
+    "bootstrapSourceCommit": "ce2b6331f7ab8377fa54445fc7a2113a9bce0b40",
+    "bootstrapBlob": "0412f23a56a75048056552dfa1a23063dd8d995c",
+    "freeBytesAtInspect": 31218065408,
+    "minFreeBytes": 536870912,
+    "projectedCheckoutBytes": 1610612736,
+    "requiredFreeBeforeAcquisitionBytes": 2147483648,
+    "acquireAttemptedThisRun": true,
+    "storageGate": "ACQUIRED_EXACT_MAIN",
+    "leaseAcquired": true,
+    "researchPreflightRun": false,
+    "researchEligibility": "UNVERIFIED_ROUTING_BLOCKER",
+    "researchStarted": false,
+    "privateResumeLoaded": false,
+    "sourceQueries": 0,
+    "postingFetches": 0,
+    "preparedReviews": 0,
+    "canonicalWrites": 0,
+    "newCanonicalWriteCompletionVerified": 0,
+    "controlledHandoffDispatches": 0,
+    "backlogComplete": false,
+    "existingEvidenceAndWriterFencesPreserved": true,
+    "accountingOnlyInPriorCompletedOwnedCheckout": false,
+    "nextCondition": "Reviewed storage maintenance makes enough space for the mandated managed-pool acquisition; rerun current-main workspace and research preflight. Do not delete unknown/unpublished evidence or old unmanaged checkouts automatically.",
+    "model": {
+      "requested": "GPT-5.4",
+      "reasoningEffort": "high",
+      "configurationVerified": false
+    },
+    "environment": {
+      "id": "ccarenv_b64_Y2NhcmVudl8xODQ5YTFjNGVjNjQ4MTkxYTMzNGViYzI2YjFlY2FhZA",
+      "name": "foreman-cockpit",
+      "cwd": "/workspace",
+      "observationsCurrent": true,
+      "networkPolicyEnforced": true
+    },
+    "notification": {
+      "meaningfulProgress": false,
+      "requiredUserAction": false,
+      "previouslyReportedBlockerUnchanged": true,
+      "disposition": "QUIET_UNCHANGED_ROUTING_BLOCKER"
+    },
+    "localPublicationUnavailable": false,
+    "publicationTransport": "AUTHENTICATED_GIT_APPEND_ONLY",
+    "bootstrapExecution": "VERIFIED_CURRENT_SOURCE_EXTERNAL_TO_POOL",
+    "recordValidationMode": "Local change-register preflight CLI",
+    "operatorRecoveryRun": false,
+    "operatorRecoveryApplicability": "NO_FAILED_POOL_SLOT; OPERATOR_ONLY_NOT_SCHEDULED_FALLBACK",
+    "sharedEntryVersion": 2,
+    "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
+    "submitted": 0,
+    "verified": 0,
+    "routingReadbackTaskPresent": false,
+    "routingReadbackAt": "2026-11-13T10:05:26.514Z",
+    "routingActiveVerified": false
+  }
+}

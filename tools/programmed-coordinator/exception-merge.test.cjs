@@ -188,3 +188,128 @@ test('real publication rebase preserves closure, attempts and pending Writer fen
  for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
  a.equal(git(f.local,'status','--porcelain'),'');
 });
+
+function dimensionFixture(t,closed=false){
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'exception-dimensions-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+ const now=Date.now()-10000,at=new Date(now).toISOString(),state={schema:'forge.programmed-coordinator.v1',items:{test:{version:'a'.repeat(64),attempts:2}},transactions:{}};
+ const report={schema:'forge.programmed-coordinator-report.v1',runId:'FORGE-CODE-TEST',at,aiExceptions:[{key:'test',owner:'AI',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2}]};
+ W.sync({root,state,report,now,apply:true});const base=S.read(root,W.FILE),id=Object.keys(base.cases)[0],runId='FORGE-EXCEPTION-CHATGPT-DIMENSION01';
+ P.start(root,runId,1,now+100);
+ const rec={schema:'forge.ai-exception-review.v1',exceptionId:id,sourceVersion:state.items.test.version,reviewedBy:'CHATGPT',taskKey:W.OWNER,reviewedAt:new Date(now+2000).toISOString(),runId,disposition:'SOURCE_EVIDENCE',reason:'Exact saved source',evidenceSha256:'b'.repeat(64),sourceEvidence:{company:'Example',title:'Manager',location:'Remote',url:'https://example.com/jobs/1',quote:'This is an exact saved source quote for testing.',observedAt:at}};
+ let published;if(!closed)published=W.publishReview(root,rec,now+2100);
+ P.checkpoint(root,{runId,completedAt:new Date(now+3000).toISOString(),attempts:[{exceptionId:id,sourceVersion:state.items.test.version,observedAt:rec.reviewedAt,evidenceSha256:rec.evidenceSha256,reason:rec.reason,nextAction:'Independent code verification',...(published?{reviewPath:published.path}:{})}]},now+3000);
+ const left=S.read(root,W.FILE),right=clone(base);delete left.dispatch;right.at=new Date(now+1000).toISOString();right.runId=report.runId;
+ if(closed){right.cases[id].status='NO_LONGER_OPEN';right.cases[id].closedAt=right.at;report.aiExceptions=[];}
+ else{right.cases[id].attempts=3;right.cases[id].lastSeen=right.at;state.items.test.attempts=3;report.aiExceptions[0].attempts=3;}
+ report.at=right.at;S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);count(right);
+ return{root,base,left,right,id,now:now+4000,report,state,rec};
+}
+for(const closed of [false,true])test('source-bound '+(closed?'later inert attempt retains closure':'counter and source review retain independent dimensions'),t=>{
+ const f=dimensionFixture(t,closed); const out=merge(f.root,f.base,f.left,f.right,f.now);
+ a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],...(closed?{}:{review:f.left.cases[f.id].review}),lastAttempt:f.left.cases[f.id].lastAttempt});
+ a.equal(out.cases[f.id].canonicalCompletion,false);a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),out);
+});
+for(const [name,mutate]of [
+ ['missing report',f=>fs.unlinkSync(path.join(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json'))],
+ ['different run',f=>f.report.runId='OTHER'],['stale snapshot',f=>f.report.at=new Date(Date.parse(f.right.at)-2000).toISOString()],
+ ['unbound state source',f=>f.state.items.test.version='c'.repeat(64)],['counter not in snapshot',f=>f.state.items.test.attempts=4],
+ ['counter regression',f=>f.right.cases[f.id].attempts=1],['fractional counter',f=>f.right.cases[f.id].attempts=3.5],
+ ['missing original counter',f=>delete f.base.cases[f.id].attempts],['non source case',f=>{for(const w of [f.base,f.left,f.right])w.cases[f.id].kind='IDENTITY';}],
+ ['unknown dimension',f=>f.right.cases[f.id].newField='unexpected'],['source no longer active',f=>f.report.aiExceptions=[]],
+ ['missing source proof',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].review.proof))],
+ ['counter with different review',f=>f.right.cases[f.id].review={wrong:true}],
+ ['counter with status decision',f=>{f.right.cases[f.id].status='WAITING_SOURCE_CHANGE';count(f.right);}],
+])test('counter/research rejects '+name,t=>{const f=dimensionFixture(t);mutate(f);if(name!=='missing report')S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);S.save(f.root,'state/PROGRAMMED_COORDINATOR.json',f.state);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+for(const [name,mutate]of [
+ ['missing snapshot',f=>fs.unlinkSync(path.join(f.root,'state/PROGRAMMED_COORDINATOR.json'))],
+ ['active candidate',f=>{f.report.aiExceptions=[{key:'test',owner:'AI',reason:'SOURCE_EVIDENCE_UNAVAILABLE',attempts:2}];S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['new review changes decision',f=>f.left.cases[f.id].review={wrong:true}],
+ ['missing attempt proof',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].lastAttempt.proof))]
+])test('later inert attempt rejects '+name,t=>{const f=dimensionFixture(t,true);mutate(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+for(const closed of [false,true])test('real rebase preserves '+(closed?'post-closure attempt':'counter plus source research')+' and untouched Writer evidence',t=>{
+ const f=repositories(t,t=>dimensionFixture(t,closed)),terminal='receipts/FORGE-CODE-CHATGPT-DIMENSION_CHECKPOINT.json',original={transactions:{originalRequest:{status:'PENDING',payloadSha256:'d'.repeat(64)}}};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,terminal,original);
+ for(const file of ['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json'])S.save(f.local,file,S.read(f.root,file));
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
+ a.equal(publish(f.local).published,true);const m=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));
+ a.deepEqual(m.cases[f.id],{...f.right.cases[f.id],...(closed?{}:{review:f.left.cases[f.id].review}),lastAttempt:f.left.cases[f.id].lastAttempt});
+ a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+terminal)),original);
+ for(const file of S.files(path.join(f.root,'receipts'))){const rel=path.relative(f.root,file).replace(/\\/g,'/');a.equal(git(f.local,'show','origin/main:'+rel),fs.readFileSync(file,'utf8').trim());}
+ a.equal(git(f.local,'status','--porcelain'),'');
+});
+
+function closureReviewFixture(t,withAttempt=false){
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'closure-review-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+ const now=Date.now()-10000,at=new Date(now).toISOString(),state={schema:'forge.programmed-coordinator.v1',items:{},transactions:{}},entry={key:'writer-key',requestId:'ORIGINAL-WRITER',owner:'AI',reason:'WRITER_RECONCILIATION_REQUIRED',sourceSha256:'a'.repeat(64)};
+ const report={schema:'forge.programmed-coordinator-report.v1',runId:'FORGE-CODE-CLOSURE-REVIEW',at,aiExceptions:[entry]};
+ W.sync({root,state,report,now,apply:true});const base=S.read(root,W.FILE),id=Object.keys(base.cases)[0];
+ const rec={schema:'forge.ai-exception-review.v1',exceptionId:id,sourceVersion:base.cases[id].binding.sourceVersion,reviewedBy:'CHATGPT',taskKey:W.OWNER,reviewedAt:new Date(now+1000).toISOString(),runId:'FORGE-EXCEPTION-CHATGPT-CLOSURE01',disposition:'WAITING_SOURCE_CHANGE',reason:'ORIGINAL_WRITER_EVIDENCE_INCOMPLETE',retryCondition:'ORIGINAL_WRITER_EVIDENCE_CHANGED',evidenceSha256:'b'.repeat(64)};
+ if(withAttempt)P.start(root,rec.runId,1,now+100);
+ const published=W.publishReview(root,rec,now+2000);
+ if(withAttempt)P.checkpoint(root,{runId:rec.runId,completedAt:new Date(now+2000).toISOString(),attempts:[{exceptionId:id,sourceVersion:rec.sourceVersion,observedAt:rec.reviewedAt,evidenceSha256:rec.evidenceSha256,reason:rec.reason,nextAction:'Wait for original Writer evidence',reviewPath:published.path}]},now+2000);
+ const left=S.read(root,W.FILE),right=clone(base);right.at=new Date(now+3000).toISOString();right.runId=report.runId;right.cases[id].status='NO_LONGER_OPEN';right.cases[id].closedAt=right.at;count(right);
+ report.at=right.at;report.aiExceptions=[];S.save(root,'state/PROGRAMMED_COORDINATOR_REPORT.json',report);S.save(root,'state/PROGRAMMED_COORDINATOR.json',state);
+ return{root,base,left,right,id,rec,report,state,entry,now:now+4000};
+}
+test('earlier immutable Writer wait review crosses evidenced closure without losing history or reopening',t=>{
+ const f=closureReviewFixture(t),out=merge(f.root,f.base,f.left,f.right,f.now);
+ a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review});a.equal(out.cases[f.id].canonicalCompletion,false);a.deepEqual(out.counts,{NO_LONGER_OPEN:1});a.deepEqual(out.dispatch,f.left.dispatch);
+ a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),out);
+ // The unchanged historical attempt is retained exactly on all three sides.
+ for(const w of [f.base,f.left,f.right])w.cases[f.id].lastAttempt={historical:'unchanged'};
+ a.deepEqual(merge(f.root,f.base,f.left,f.right,f.now).cases[f.id].lastAttempt,{historical:'unchanged'});
+});
+for(const [name,mutate]of [
+ ['missing coordinator report',f=>fs.unlinkSync(path.join(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json'))],
+ ['wrong coordinator run',f=>{f.report.runId='OTHER';S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['wrong coordinator time',f=>{f.report.at=new Date(f.now-8000).toISOString();S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['still observed candidate',f=>{f.report.aiExceptions=[f.entry];S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['missing immutable review',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].review.proof))],
+ ['forged review projection',f=>f.left.cases[f.id].review.reason='FORGED'],
+ ['review later than closure',f=>{f.right.at=new Date(Date.parse(f.rec.reviewedAt)-1).toISOString();f.right.cases[f.id].closedAt=f.right.at;f.report.at=f.right.at;S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['review side unknown change',f=>f.left.cases[f.id].unknown='changed'],
+ ['closure side unknown change',f=>f.right.cases[f.id].unknown='changed'],
+ ['overlapping attempts',f=>f.left.cases[f.id].lastAttempt={unknown:true}],
+ ['changed binding',f=>f.right.cases[f.id].binding.requestId='DIFFERENT'],
+ ['canonical completion claim',f=>f.right.cases[f.id].canonicalCompletion=true],
+ ['newer immutable review exists',f=>{const rec={...f.rec,reviewedAt:new Date(f.now).toISOString()};S.immutable(f.root,W.REVIEWS+'/'+f.id+'-'+S.hash(rec)+'.json',rec);}]
+])test('closure/review fails closed: '+name,t=>{const f=closureReviewFixture(t);mutate(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+test('real publication rebase preserves earlier review, later closure and original pending fences',t=>{
+ const f=repositories(t,closureReviewFixture),pending='receipts/FORGE-CODE-CHATGPT-REVIEWCLOSE_CHECKPOINT.json',original={requestId:'UNRELATED',status:'POST_IN_FLIGHT_UNKNOWN',payloadSha256:'e'.repeat(64)};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,pending,original);
+ for(const file of ['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json'])S.save(f.local,file,S.read(f.root,file));
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');
+ publish(f.local);const out=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review});a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+pending)),original);a.equal(git(f.local,'status','--porcelain'),'');
+});
+test('timed Writer wait remains a conflict even with valid earlier proof and absence',t=>{
+ const f=closureReviewFixture(t),rec={...f.rec,reviewedAt:new Date(Date.parse(f.rec.reviewedAt)+100).toISOString(),retryAfter:new Date(f.now+60000).toISOString()};
+ W.publishReview(f.root,rec,f.now);f.left=S.read(f.root,W.FILE);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));
+});
+
+test('combined earlier Writer review and attempt retain both proofs across evidenced closure',t=>{
+ const f=closureReviewFixture(t,true),out=merge(f.root,f.base,f.left,f.right,f.now);
+ a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review,lastAttempt:f.left.cases[f.id].lastAttempt});a.equal(out.cases[f.id].canonicalCompletion,false);a.deepEqual(out.counts,{NO_LONGER_OPEN:1});a.deepEqual(out.dispatch,f.left.dispatch);a.deepEqual(merge(f.root,f.base,f.right,f.left,f.now),out);
+});
+for(const [name,mutate]of [
+ ['missing attempt checkpoint',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].lastAttempt.proof))],
+ ['missing attempt start',f=>fs.unlinkSync(path.join(f.root,'receipts/AI_EXCEPTION_RUNS/'+f.rec.runId+'_START.json'))],
+ ['wrong attempt source binding',f=>f.left.cases[f.id].lastAttempt.sourceVersion='wrong'],
+ ['forged attempt projection',f=>f.left.cases[f.id].lastAttempt.evidenceSha256='f'.repeat(64)],
+ ['missing immutable review',f=>fs.unlinkSync(path.join(f.root,f.left.cases[f.id].review.proof))],
+ ['still observed',f=>{f.report.aiExceptions=[f.entry];S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['unknown served change',f=>f.left.cases[f.id].unknown=true],
+ ['unknown closure change',f=>f.right.cases[f.id].unknown=true],
+ ['later review and attempt',f=>{f.right.at=new Date(Date.parse(f.rec.reviewedAt)-1).toISOString();f.right.cases[f.id].closedAt=f.right.at;f.report.at=f.right.at;S.save(f.root,'state/PROGRAMMED_COORDINATOR_REPORT.json',f.report);}],
+ ['attempt after closure despite earlier review',f=>{
+  const c=f.left.cases[f.id],ref=c.lastAttempt,receipt=S.read(f.root,ref.proof),observedAt=new Date(f.now-500).toISOString();receipt.attempts[0].observedAt=observedAt;receipt.completedAt=observedAt;c.lastAttempt.observedAt=observedAt;S.save(f.root,ref.proof,receipt);delete f.left.dispatch;
+ }],
+ ['prior attempt history regression',f=>{f.base.cases[f.id].lastAttempt=clone(f.left.cases[f.id].lastAttempt);f.base.cases[f.id].lastAttempt.observedAt=new Date(f.now).toISOString();f.right.cases[f.id].lastAttempt=clone(f.base.cases[f.id].lastAttempt);}],
+ ['old attempt deletion',f=>{f.base.cases[f.id].lastAttempt=clone(f.left.cases[f.id].lastAttempt);delete f.right.cases[f.id].lastAttempt;}]
+])test('combined closure history rejects '+name,t=>{const f=closureReviewFixture(t,true);mutate(f);a.throws(()=>merge(f.root,f.base,f.left,f.right,f.now));});
+test('real rebase publishes combined review and attempt without altering pending Writer evidence',t=>{
+ const f=repositories(t,t=>closureReviewFixture(t,true)),pending='receipts/FORGE-CODE-CHATGPT-COMBINED_CHECKPOINT.json',original={requestId:'UNRELATED',status:'POST_IN_FLIGHT_UNKNOWN',payloadSha256:'f'.repeat(64)};
+ S.save(f.local,W.FILE,f.right);S.save(f.local,guard,{schema:'forge.relevance-guard.v1',at:f.right.at,policy:'same',disabledRules:[]});S.save(f.local,pending,original);
+ for(const file of ['state/PROGRAMMED_COORDINATOR.json','state/PROGRAMMED_COORDINATOR_REPORT.json'])S.save(f.local,file,S.read(f.root,file));
+ fs.cpSync(path.join(f.root,'receipts'),path.join(f.bot,'receipts'),{recursive:true});S.save(f.bot,W.FILE,f.left);S.save(f.bot,guard,{schema:'forge.relevance-guard.v1',at:new Date(f.now).toISOString(),policy:'same',disabledRules:[]});commit(f.bot);git(f.bot,'push','origin','main');publish(f.local);
+ const out=JSON.parse(git(f.local,'show','origin/main:'+W.FILE));a.deepEqual(out.cases[f.id],{...f.right.cases[f.id],review:f.left.cases[f.id].review,lastAttempt:f.left.cases[f.id].lastAttempt});a.deepEqual(JSON.parse(git(f.local,'show','origin/main:'+pending)),original);a.equal(git(f.local,'status','--porcelain'),'');
+});

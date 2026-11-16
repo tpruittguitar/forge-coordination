@@ -1,28 +1,28 @@
 {
  "schema": "forge.applied-duplicates.v2",
- "at": "2026-11-11T19:45:59.336Z",
+ "at": "2026-11-16T06:55:17.985Z",
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-11T19:45:58.864Z",
-  "rows": 5261,
-  "sha256": "9cd1fa894227221aa0871fce9105062e29c2ef562c43bde57ea044e969176552"
+  "readAt": "2026-11-16T06:55:17.185Z",
+  "rows": 9034,
+  "sha256": "5fa0336ae1a900853386dec68c45d6ca7fed294f439b45b50aa7b658d93addc9"
  },
  "waitingSource": {
   "file": "state/PIPELINE_WAITING_QUEUES.json",
-  "at": "2026-11-11T19:43:48.349Z",
-  "decision": 583
+  "at": "2026-11-16T06:47:08.980Z",
+  "decision": 1319
  },
  "counts": {
-  "waiting": 583,
-  "matched": 17,
+  "waiting": 1319,
+  "matched": 29,
   "CLOSE_CANDIDATE": 0,
-  "KEEP_LABEL": 17
+  "KEEP_LABEL": 29
  },
  "rules": {
-  "DIFFERENT_SITE": 8,
-  "NEW_REQUISITION": 4,
-  "POSSIBLE_REPOST": 1,
-  "UNCERTAIN": 4
+  "DIFFERENT_SITE": 18,
+  "POSSIBLE_REPOST": 2,
+  "UNCERTAIN": 7,
+  "NEW_REQUISITION": 2
  },
  "items": [
   {
@@ -51,31 +51,6 @@
    ]
   },
   {
-   "id": "V2I-A5230F14AEB6",
-   "company": "Blue Origin",
-   "title": "Lunar Manufacturing & Assembly Manager",
-   "location": "Space Coast, FL",
-   "score": 64,
-   "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "Applied 2026-10-25 · this is a new posting",
-   "evidence": "Different wd posting: wd:R69279 vs earlier wd:R68774",
-   "matches": [
-    {
-     "id": "V2I-9D90D416AC88",
-     "status": "APPLIED",
-     "title": "Manager Lunar - Manufacturing, Ops & Assembly",
-     "location": "Space Coast, FL",
-     "decided": "2026-10-25",
-     "rejected": null,
-     "rule": "NEW_REQUISITION",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.8,
-     "evidence": "Different wd posting: wd:R69279 vs earlier wd:R68774"
-    }
-   ]
-  },
-  {
    "id": "V2I-54CC9711AE6D",
    "company": "Anduril Industries",
    "title": "Deputy Head of Production, Connected Warfare",
@@ -97,31 +72,6 @@
      "outcome": "KEEP_LABEL",
      "similarity": 1,
      "evidence": "Posting first seen 2026-10-18, after rejection 2026-10-16"
-    }
-   ]
-  },
-  {
-   "id": "V2I-866FCD423820",
-   "company": "Shield AI",
-   "title": "Staff Engineer, Manufacturing Equipment",
-   "location": "Dallas, Texas",
-   "score": 63,
-   "outcome": "KEEP_LABEL",
-   "rule": "NEW_REQUISITION",
-   "label": "You declined 2026-11-08 · this is a new posting",
-   "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d",
-   "matches": [
-    {
-     "id": "V2I-F555BB994A0E",
-     "status": "DECLINED_BY_TIM",
-     "title": "Staff Engineer, Manufacturing",
-     "location": "Dallas, Texas",
-     "decided": "2026-11-08",
-     "rejected": null,
-     "rule": "NEW_REQUISITION",
-     "outcome": "KEEP_LABEL",
-     "similarity": 0.75,
-     "evidence": "Different lever posting: lever:b2de60ed-3c1e-4f94-883c-90917d3ca45e vs earlier lever:60960e9b-f39e-48bf-b2ea-f61a58db8a5d"
     }
    ]
   },
@@ -188,11 +138,86 @@
    ]
   },
   {
+   "id": "V2I-E9AF54FCE221",
+   "company": "Lockheed Martin",
+   "title": "Multifunctional Manufacturing Mgr - L5",
+   "location": "Courtland, AL",
+   "score": 61,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-05 · different site",
+   "evidence": "Different worksite: Courtland, AL vs earlier Greenville, SC",
+   "matches": [
+    {
+     "id": "V2I-B6546F0C3FB7",
+     "status": "DECLINED_BY_TIM",
+     "title": "Multifunctional Manufacturing Mgr - L5",
+     "location": "Greenville, SC",
+     "decided": "2026-11-05",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Courtland, AL vs earlier Greenville, SC"
+    }
+   ]
+  },
+  {
+   "id": "V2I-CF667B16D785",
+   "company": "Amazon Web Services (AWS)",
+   "title": "Sr. Mfg Eng, Process Quality, Hardware Engineering Services - Manufacturing",
+   "location": "Austin, TX",
+   "score": 60,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-11-14 · possible repeat",
+   "evidence": "Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-AD5D63DD4099",
+     "status": "DECLINED_BY_TIM",
+     "title": "Sr. Manufacturing Engineer - Process Quality, Hardware Engineering - Manufacturing",
+     "location": "Austin, TX",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare"
+    }
+   ]
+  },
+  {
+   "id": "V2I-165704D594BE",
+   "company": "Valstad Shipworks",
+   "title": "Head of Manufacturing & Industrialization",
+   "location": "Austin, TX",
+   "score": 60,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "Applied 2026-10-25 · possible repeat",
+   "evidence": "Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-01D3C4D0646F",
+     "status": "APPLIED",
+     "title": "Head of Manufacturing & Industrialization",
+     "location": "Austin, TX",
+     "decided": "2026-10-25",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare"
+    }
+   ]
+  },
+  {
    "id": "V2I-3FBF991C9C6D",
    "company": "SpaceX",
    "title": "Director, Starlink Production (Assembly)",
    "location": "Bastrop, TX",
-   "score": 60,
+   "score": 59,
    "outcome": "KEEP_LABEL",
    "rule": "NEW_REQUISITION",
    "label": "Applied 2026-10-07 · this is a new posting",
@@ -225,52 +250,64 @@
    ]
   },
   {
-   "id": "V2I-5BC161496562",
-   "company": "Aurora",
-   "title": "Director, Operations Readiness",
-   "location": "Washington, DC",
+   "id": "V2I-22F36AC5761C",
+   "company": "EnerSys",
+   "title": "Senior Quality Manager",
+   "location": "Greenville, SC",
    "score": 59,
    "outcome": "KEEP_LABEL",
    "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-26 · different site",
-   "evidence": "Different worksite: Washington, DC vs earlier Dallas, TX",
+   "label": "You declined 2026-10-23 · different site",
+   "evidence": "Different worksite: Greenville, SC vs earlier Suwanee, GA",
    "matches": [
     {
-     "id": "V2I-2DF5992FBB16",
+     "id": "V2I-61AB6BF8F95B",
      "status": "DECLINED_BY_TIM",
-     "title": "Director, Operations Readiness",
-     "location": "Dallas, TX",
-     "decided": "2026-10-26",
-     "rejected": null,
-     "rule": "DIFFERENT_SITE",
-     "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Different worksite: Washington, DC vs earlier Dallas, TX"
-    }
-   ]
-  },
-  {
-   "id": "V2I-FDB8B06FBD13",
-   "company": "L3Harris Technologies",
-   "title": "Associate Manager, Manufacturing Engineering",
-   "location": "Malabar, FL",
-   "score": 59,
-   "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-10-30 · different site",
-   "evidence": "Different worksite: Malabar, FL vs earlier Huntsville, AL",
-   "matches": [
-    {
-     "id": "V2I-B6E9763E305F",
-     "status": "DECLINED_BY_TIM",
-     "title": "Manager, Manufacturing Engineering",
-     "location": "Huntsville, AL",
-     "decided": "2026-10-30",
+     "title": "Senior Manager Customer Quality",
+     "location": "Suwanee, GA",
+     "decided": "2026-10-23",
      "rejected": null,
      "rule": "DIFFERENT_SITE",
      "outcome": "KEEP_LABEL",
      "similarity": 0.75,
-     "evidence": "Different worksite: Malabar, FL vs earlier Huntsville, AL"
+     "evidence": "Different worksite: Greenville, SC vs earlier Suwanee, GA"
+    },
+    {
+     "id": "V2I-7AEEB1760DCA",
+     "status": "DECLINED_BY_TIM",
+     "title": "Senior Manager Customer Quality",
+     "location": "Suwanee, GA",
+     "decided": "2026-10-26",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Greenville, SC vs earlier Suwanee, GA"
+    }
+   ]
+  },
+  {
+   "id": "V2I-25AAA3AF1625",
+   "company": "BAE Systems, Inc.",
+   "title": "Director of Supplier Quality",
+   "location": "Fort Wayne, IN",
+   "score": 58,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA",
+   "matches": [
+    {
+     "id": "V2I-291757EAD78B",
+     "status": "DECLINED_BY_TIM",
+     "title": "Senior Director of Supplier Quality",
+     "location": "Nashua, NH, USA",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA"
     }
    ]
   },
@@ -300,6 +337,31 @@
    ]
   },
   {
+   "id": "V2I-847E6F45EF7F",
+   "company": "Tesla",
+   "title": "Regional Manager, Service Distribution",
+   "location": "The Colony, TX",
+   "score": 57,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: The Colony, TX vs earlier Silver Spring, MD",
+   "matches": [
+    {
+     "id": "V2I-0EEF32C5FA54",
+     "status": "DECLINED_BY_TIM",
+     "title": "Regional Service Manager",
+     "location": "Silver Spring, MD",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: The Colony, TX vs earlier Silver Spring, MD"
+    }
+   ]
+  },
+  {
    "id": "V2I-A168D592C34D",
    "company": "EY",
    "title": "SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN",
@@ -321,6 +383,31 @@
      "outcome": "KEEP_LABEL",
      "similarity": 0.83,
      "evidence": "Different worksite: Huntsville, AL vs earlier Chattanooga, TN"
+    }
+   ]
+  },
+  {
+   "id": "V2I-E649AD5628D3",
+   "company": "GKN Aerospace",
+   "title": "Director of Quality, Site",
+   "location": "Tallassee, AL, USA",
+   "score": 57,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "Applied 2026-10-15 · possible repeat",
+   "evidence": "Posting first seen 2026-11-12, 28 days after 2026-10-15; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2S-GKN-SITE-QUALITY-DIR-1442097333",
+     "status": "APPLIED",
+     "title": "Site Quality Director",
+     "location": "Tallassee, AL",
+     "decided": "2026-10-15",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-12, 28 days after 2026-10-15; no posting identity to compare"
     }
    ]
   },
@@ -350,27 +437,77 @@
    ]
   },
   {
-   "id": "V2I-E4F08FE197F2",
-   "company": "AMETEK",
-   "title": "Senior Manager, Operations Excellence",
-   "location": "Mount Prospect, IL",
-   "score": 54,
+   "id": "V2I-1BE46DB40F2B",
+   "company": "Honeywell",
+   "title": "Director of Cyber Operational Excellence",
+   "location": "Atlanta, GA, USA",
+   "score": 56,
    "outcome": "KEEP_LABEL",
-   "rule": "DIFFERENT_SITE",
-   "label": "You declined 2026-11-08 · different site",
-   "evidence": "Different worksite: Mount Prospect, IL vs earlier Collegeville, PA",
+   "rule": "POSSIBLE_REPOST",
+   "label": "Applied 2026-09-09 · Rejected 2026-10-30 · possible repost",
+   "evidence": "Posting first seen 2026-11-05, after rejection 2026-10-30",
    "matches": [
     {
-     "id": "V2I-45E0D9AFEC1D",
+     "id": "V2E-6920E7E88F4B",
+     "status": "REJECTED_BY_EMPLOYER",
+     "title": "Director of Operational Excellence",
+     "location": "NOT_STATED",
+     "decided": "2026-09-09",
+     "rejected": "2026-10-30",
+     "rule": "POSSIBLE_REPOST",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Posting first seen 2026-11-05, after rejection 2026-10-30"
+    }
+   ]
+  },
+  {
+   "id": "V2I-AA589391D1DB",
+   "company": "The Lignum Group",
+   "title": "Director of Operations",
+   "location": "California, United States",
+   "score": 55,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: California, United States vs earlier Maryland, United States",
+   "matches": [
+    {
+     "id": "V2I-BA5A23AA0C95",
      "status": "DECLINED_BY_TIM",
-     "title": "Senior Operations Manager",
-     "location": "Collegeville, PA",
-     "decided": "2026-11-08",
+     "title": "Director of Operations",
+     "location": "Maryland, United States",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: California, United States vs earlier Maryland, United States"
+    }
+   ]
+  },
+  {
+   "id": "V2I-973F448AA17B",
+   "company": "GXO Logistics, Inc.",
+   "title": "Lead - 2nd Shift",
+   "location": "Lithia Springs, GA",
+   "score": 53,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-15 · different site",
+   "evidence": "Different worksite: Lithia Springs, GA vs earlier Fairburn, GA",
+   "matches": [
+    {
+     "id": "V2I-58E852543F82",
+     "status": "DECLINED_BY_TIM",
+     "title": "Warehouse Lead - 2nd Shift",
+     "location": "Fairburn, GA",
+     "decided": "2026-11-15",
      "rejected": null,
      "rule": "DIFFERENT_SITE",
      "outcome": "KEEP_LABEL",
      "similarity": 0.75,
-     "evidence": "Different worksite: Mount Prospect, IL vs earlier Collegeville, PA"
+     "evidence": "Different worksite: Lithia Springs, GA vs earlier Fairburn, GA"
     }
    ]
   },
@@ -400,6 +537,31 @@
    ]
   },
   {
+   "id": "V2I-40226DB46F8D",
+   "company": "CIRCOR International, Inc.",
+   "title": "Director of Quality",
+   "location": "Corona, CA",
+   "score": 51,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-10-23 · possible repeat",
+   "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-C951E3E43140",
+     "status": "DECLINED_BY_TIM",
+     "title": "Director of Quality",
+     "location": "Corona, CA",
+     "decided": "2026-10-23",
+     "rejected": null,
+     "rule": "UNCERTAIN",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
+    }
+   ]
+  },
+  {
    "id": "V2I-E32A3FAD4E67",
    "company": "EPM Scientific",
    "title": "Vice President, Quality",
@@ -425,64 +587,214 @@
    ]
   },
   {
-   "id": "V2I-40226DB46F8D",
-   "company": "CIRCOR International, Inc.",
-   "title": "Director of Quality",
-   "location": "Corona, CA",
-   "score": 50,
+   "id": "V2I-620A2C661996",
+   "company": "Generac",
+   "title": "Senior Manager Value Stream",
+   "location": "Holdrege, NE",
+   "score": 51,
    "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-10-23 · possible repeat",
-   "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: Holdrege, NE vs earlier Whitewater, WI",
    "matches": [
     {
-     "id": "V2I-C951E3E43140",
+     "id": "V2I-B598F8FCC62F",
      "status": "DECLINED_BY_TIM",
-     "title": "Director of Quality",
-     "location": "Corona, CA",
-     "decided": "2026-10-23",
+     "title": "Value Stream Manager",
+     "location": "Whitewater, WI",
+     "decided": "2026-11-14",
      "rejected": null,
-     "rule": "UNCERTAIN",
+     "rule": "DIFFERENT_SITE",
      "outcome": "KEEP_LABEL",
-     "similarity": 1,
-     "evidence": "Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare"
+     "similarity": 0.75,
+     "evidence": "Different worksite: Holdrege, NE vs earlier Whitewater, WI"
     }
    ]
   },
   {
-   "id": "V2I-15489A9AF6A9",
-   "company": "Anduril Industries",
-   "title": "Senior Manager, Manufacturing Engineering — Autonomous Airpower",
-   "location": "Costa Mesa, CA",
-   "score": 47,
+   "id": "V2I-34A6A4DD91D8",
+   "company": "Sanmina",
+   "title": "VP, Operations",
+   "location": "Carrollton, TX",
+   "score": 50,
    "outcome": "KEEP_LABEL",
-   "rule": "UNCERTAIN",
-   "label": "You declined 2026-11-03 · possible repeat",
-   "evidence": "Posting first seen 2026-10-26, -8 days after 2026-11-03; no posting identity to compare",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-10-26 · different site",
+   "evidence": "Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2)",
    "matches": [
     {
-     "id": "V2I-6435C93D65DE",
+     "id": "V2I-981E839AC295",
      "status": "DECLINED_BY_TIM",
-     "title": "Manager, Manufacturing Engineering - Autonomous Airpower",
-     "location": "Costa Mesa, CA",
-     "decided": "2026-11-03",
+     "title": "Vice President of Operations",
+     "location": "Huntsville, AL (SCI Plant 2)",
+     "decided": "2026-10-26",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2)"
+    }
+   ]
+  },
+  {
+   "id": "V2I-C66ADD3B6F79",
+   "company": "Magna International",
+   "title": "Operations Manager",
+   "location": "Duncan, SC",
+   "score": 46,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-14 · different site",
+   "evidence": "Different worksite: Duncan, SC vs earlier Holly, MI",
+   "matches": [
+    {
+     "id": "V2I-C996CB68A404",
+     "status": "DECLINED_BY_TIM",
+     "title": "Mgr, Operations",
+     "location": "Holly, MI",
+     "decided": "2026-11-14",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Duncan, SC vs earlier Holly, MI"
+    }
+   ]
+  },
+  {
+   "id": "V2I-EF96178B6B97",
+   "company": "Sanmina",
+   "title": "VP Operations, USA",
+   "location": "Fremont, CA",
+   "score": 45,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-10-26 · different site",
+   "evidence": "Different worksite: Fremont, CA vs earlier Huntsville, AL (SCI Plant 2)",
+   "matches": [
+    {
+     "id": "V2I-981E839AC295",
+     "status": "DECLINED_BY_TIM",
+     "title": "Vice President of Operations",
+     "location": "Huntsville, AL (SCI Plant 2)",
+     "decided": "2026-10-26",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 0.75,
+     "evidence": "Different worksite: Fremont, CA vs earlier Huntsville, AL (SCI Plant 2)"
+    }
+   ]
+  },
+  {
+   "id": "V2I-491788B840DC",
+   "company": "Ladders",
+   "title": "Ames Plant Director",
+   "location": "Aberdeen, SD",
+   "score": 40,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-10-26 · different site",
+   "evidence": "Different worksite: Aberdeen, SD vs earlier Overland Park, KS",
+   "matches": [
+    {
+     "id": "V2I-AE6B9498C206",
+     "status": "DECLINED_BY_TIM",
+     "title": "Ames Plant Director",
+     "location": "Overland Park, KS",
+     "decided": "2026-10-26",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Aberdeen, SD vs earlier Overland Park, KS"
+    }
+   ]
+  },
+  {
+   "id": "V2I-F439C723F6A9",
+   "company": "Lockheed Martin",
+   "title": "Multifunctional Manufacturing Mgr - L5",
+   "location": "Ocala, FL",
+   "score": 39,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-05 · different site",
+   "evidence": "Different worksite: Ocala, FL vs earlier Greenville, SC",
+   "matches": [
+    {
+     "id": "V2I-B6546F0C3FB7",
+     "status": "DECLINED_BY_TIM",
+     "title": "Multifunctional Manufacturing Mgr - L5",
+     "location": "Greenville, SC",
+     "decided": "2026-11-05",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Ocala, FL vs earlier Greenville, SC"
+    }
+   ]
+  },
+  {
+   "id": "V2I-32DA5EE65984",
+   "company": "GE Appliances, a Haier company",
+   "title": "Senior Materials Manager",
+   "location": "Decatur, AL",
+   "score": 38,
+   "outcome": "KEEP_LABEL",
+   "rule": "UNCERTAIN",
+   "label": "You declined 2026-11-08 · possible repeat",
+   "evidence": "Posting first seen 2026-11-13, 5 days after 2026-11-08; no posting identity to compare",
+   "matches": [
+    {
+     "id": "V2I-5567E190E6F4",
+     "status": "DECLINED_BY_TIM",
+     "title": "Senior Manager , Materials",
+     "location": "Decatur, AL",
+     "decided": "2026-11-08",
      "rejected": null,
      "rule": "UNCERTAIN",
      "outcome": "KEEP_LABEL",
-     "similarity": 0.83,
-     "evidence": "Posting first seen 2026-10-26, -8 days after 2026-11-03; no posting identity to compare"
+     "similarity": 1,
+     "evidence": "Posting first seen 2026-11-13, 5 days after 2026-11-08; no posting identity to compare"
+    }
+   ]
+  },
+  {
+   "id": "V2I-B50C45DDC874",
+   "company": "Southwire Company",
+   "title": "Process Optimization Manager",
+   "location": "Carrollton, GA",
+   "score": 37,
+   "outcome": "KEEP_LABEL",
+   "rule": "DIFFERENT_SITE",
+   "label": "You declined 2026-11-07 · different site",
+   "evidence": "Different worksite: Carrollton, GA vs earlier Starkville, MS",
+   "matches": [
+    {
+     "id": "V2I-D0E01741BF7C",
+     "status": "DECLINED_BY_TIM",
+     "title": "Process Optimization Manager",
+     "location": "Starkville, MS",
+     "decided": "2026-11-07",
+     "rejected": null,
+     "rule": "DIFFERENT_SITE",
+     "outcome": "KEEP_LABEL",
+     "similarity": 1,
+     "evidence": "Different worksite: Carrollton, GA vs earlier Starkville, MS"
     }
    ]
   }
  ],
  "mode": "APPLY",
  "applied": {
-  "planned": 17,
+  "planned": 29,
   "closed": 0,
   "labeled": 0,
   "already": 0,
   "skipped": {
-   "ALREADY_LABELED": 17
+   "ALREADY_LABELED": 29
   },
   "failed": 0,
   "deferred": 0,

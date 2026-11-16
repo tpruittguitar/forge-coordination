@@ -112,7 +112,7 @@ test('production context route migrates filled estimates, keeps missing size non
  const ref=JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]});fs.writeFileSync(context,ref);
  fs.writeFileSync(master,[row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX','SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(2,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
  try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')},stdio:'pipe'});
- const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'employer-upper-range-v5');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
+ const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'pay-sample-match-v6');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
  }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
 });
 test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
@@ -204,6 +204,30 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
     assert.strictEqual(out.ats_candidates, 4); assert.strictEqual(out.ats_unconfirmed, 1);
     assert.deepStrictEqual(out.ats_unconfirmed_rows.map(x => [x.id, x.status, x.checker]), [['V2I-00000000000G', 404, 'not checked']]);
     assert.strictEqual(out.skipped_closed, 1, 'a row the checker closed is skipped');
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
+test('Tim 2026-11-15: Never Consider runs first; a match gets no pay lookup, Staff/Senior Staff/Principal Engineer are never declined', { skip: !fs.existsSync(path.join(FC, 'tests/fixtures/TIM_PIPELINE_RULES_CANONICAL.sample.txt')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nc-first-')), master = path.join(dir, 'master.txt'), rules = path.join(dir, 'rules.txt'), fetches = path.join(dir, 'fetches.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  const NC_020 = '- NC-020 IC_ENGINEER: titles containing Engineer, Technician, Inspector, Analyst, Scientist or Specialist with no manager or leadership level. Titles containing Staff Engineer, Senior Staff Engineer or Principal Engineer stay exempt and must never be declined by this rule. ruling=TIM-20261114 (Root declined-jobs review). title_any=engineer|technician|inspector|analyst|scientist|specialist; title_exempt=staff engineer|senior staff engineer|principal engineer; level_exempt=manager|senior manager|director|sr director|senior director|vp|vice president|head|chief|executive|general manager|plant manager|leader';
+  fs.writeFileSync(rules, fs.readFileSync(path.join(FC, 'tests/fixtures/TIM_PIPELINE_RULES_CANONICAL.sample.txt'), 'utf8').replace('SECTION=COMPENSATION_GEOGRAPHY', NC_020 + '\nSECTION=COMPENSATION_GEOGRAPHY'));
+  fs.writeFileSync(master, [
+    row(1, 'V2I-NC-QE', 'Quality Engineer', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19'),
+    row(2, 'V2I-NC-SSE', 'Senior Staff Engineer', 'Akron, OH', 'SOURCE_URL=https://www.linkedin.com/jobs/view/senior-staff-4012345678; DATE_ADDED=2026-10-18'),
+    row(3, 'V2I-NC-SE', 'Staff Engineer', 'Toledo, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/333; DATE_ADDED=2026-10-17'),
+    row(4, 'V2I-NC-PE', 'Principal Engineer', 'Canton, OH', 'SOURCE_URL=https://example.com/careers/9; DATE_ADDED=2026-10-16'),
+  ].join('\n') + '\n');
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  try {
+    cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_RULES_FILE: rules, ENRICH_TEST_FETCHES: fetches, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(dir, 'bls.json'), ENRICH_EMPLOYER_CACHE: path.join(dir, 'emp.json') }), stdio: 'pipe', timeout: 60000 });
+    const out = JSON.parse(fs.readFileSync(report, 'utf8')), urls = fs.existsSync(fetches) ? fs.readFileSync(fetches, 'utf8') : '';
+    assert.strictEqual(out.never_consider_excluded, 1);
+    assert.strictEqual(out.eligible, 3, 'Staff, Senior Staff and Principal Engineer stay in the pay lane');
+    assert.doesNotMatch(urls, /acme\/jobs\/111/, 'no pay lookup for the never-consider match');
+    assert.match(urls, /acme\/jobs\/333/);
+    assert.ok(!(out.sample || []).some(s => s.id === 'V2I-NC-QE'));
+    assert.strictEqual(out.writer_ok, 0);
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
@@ -648,4 +672,87 @@ test('attempt-only evidence does not consume the useful Writer planning cap',t=>
  assert.equal(out.report.sample[0].id,'V2I-USEFUL');
  assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
  assert.equal(out.report.posting_cache.saved,26,'retain complete source evidence even without a useful write');
+});
+
+test('retained pay and degree fill capacity before optional estimate review without source reads',t=>{
+ const Cache=require('./posting-cache'),cache={},url='https://careers.example.org/retained',id='V2I-RETAINED-FIRST';
+ const target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+ Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+ const old='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; SOURCE_URL=https://careers.example.org/review';
+ const out=sourceRun(t,[row(1,'V2I-REVIEW-SECOND','Director of Quality','Dayton, OH',old),row(2,id,target.TITLE,target.LOCATION,'SOURCE_URL='+url)],{}, {maxBatches:0.04},cache);
+ assert.deepEqual(out.reads,[]);assert.equal(out.report.retained_completion.planned,1);assert.equal(out.report.retained_completion.salary,1);assert.equal(out.report.retained_completion.degree,1);assert.equal(out.report.salary_review.reviewed,0);assert.equal(out.report.sample[0].id,id);assert.equal(out.report.sample[0].fields.SALARY_BASE_LOW,180000);
+});
+
+test('retained-first pass preserves pending fences and protected rows',t=>{
+ const Cache=require('./posting-cache'),cache={},lines=[],ids=['V2I-PENDING-FIRST','V2I-PROTECTED-FIRST','V2I-CLOSED-FIRST'];
+ for(let i=0;i<ids.length;i++){
+  const url='https://careers.example.org/retained/'+i,target={PRIMARY_ID:ids[i],COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  lines.push(row(i+1,ids[i],target.TITLE,target.LOCATION,'SOURCE_URL='+url+(i===1?'; DO_NOT_REWORK=YES':i===2?'; LIVENESS=CLOSED':'')));
+ }
+ const out=sourceRun(t,lines,{}, {},cache,{submitted:{},tried:{},pendingWrites:{original:{ids:[ids[0]],at:new Date().toISOString()}}});
+ assert.equal(out.report.retained_completion.planned,0);assert.equal(out.report.planned,0);assert.deepEqual(out.reads,[]);
+});
+
+test('decision correctness repair retains priority over complete retained gaps',t=>{
+ const Cache=require('./posting-cache'),cache={},lines=[];
+ for(const [i,id] of ['V2I-REPAIR-FIRST','V2I-RETAINED-SECOND'].entries()){
+  const url='https://careers.example.org/priority/'+i,target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED':'');
+  lines.push(row(i+1,id,target.TITLE,target.LOCATION,payload).replace('READY_TO_PURSUE',i===0?'TIM_DECISION_REQUIRED':'READY_TO_PURSUE'));
+ }
+ lines.push(row(3,'V2I-INVALIDANCHOR','Quality Associate Manager','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));
+ const out=sourceRun(t,lines,{}, {maxBatches:0.04},cache);
+ assert.equal(out.report.salary_repairs,1);assert.equal(out.report.retained_completion.planned,0);assert.equal(out.report.sample[0].id,'V2I-REPAIR-FIRST');assert.deepEqual(out.reads,[]);
+});
+
+test('missing salary fields start before the filled-salary review',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-phase-order-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const missing='SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01';
+ const filled='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS';
+ fs.writeFileSync(master,[row(1,'V2I-MISSING','Director of Quality','Dayton, OH',missing),row(2,'V2I-FILLED','Director of Quality','Akron, OH',filled)].join('\n'));
+ try{
+  const stdout=cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json')},encoding:'utf8',timeout:20000});
+  const phases=stdout.split('\n').map(line=>{try{return JSON.parse(line);}catch{return null;}}).filter(event=>event&&event.event==='PAY_PROGRESS').map(event=>event.phase);
+  const at=name=>{const i=phases.indexOf(name);assert.ok(i>=0,name+' logged');return i;};
+  assert.ok(at('decision_salary_repairs')<at('retained_completion'));
+  assert.ok(at('retained_completion')<at('missing_fields'));
+  assert.ok(at('missing_fields')<at('active_salary_review'));
+  assert.ok(at('active_salary_review')<at('other_salary_repairs'));
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('coordinator and receipt fences stay closed and the coordinator is read once',t=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-fence-index-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const Cache=require('./posting-cache'),cache={},coord='V2I-FENCE-COORD',receipt='V2I-FENCE-RECEIPT',open='V2I-FENCE-OPEN',reads=path.join(dir,'reads.txt'),counts=path.join(dir,'coordinator-reads.txt');
+ const lines=['Dayton','Akron','Cleveland'].map((city,i)=>{
+  const id=[coord,receipt,open][i],url='https://careers.example.org/fence/'+i,target={PRIMARY_ID:id,COMPANY:'Fenceco',TITLE:'Director of Quality',LOCATION:city+', OH',p:{SOURCE_URL:url}};
+  Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Fenceco',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
+  return `${i+1} | ${id} | Fenceco | Director of Quality | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${city}, OH | SOURCE_URL=${url}`;
+ });
+ fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(path.join(dir,'emp.json'),JSON.stringify(cache));
+ const hook=path.join(dir,'count-coordinator-reads.js');
+ fs.writeFileSync(hook,[
+  "'use strict';const fs=require('fs'),path=require('path'),read=fs.readFileSync,readdir=fs.readdirSync;",
+  "const coordId=process.env.ENRICH_TEST_FENCE_COORD,receiptId=process.env.ENRICH_TEST_FENCE_RECEIPT,countFile=process.env.ENRICH_TEST_COORDINATOR_READS,receiptName='PAY_FENCE_TEST_CHECKPOINT.json';",
+  "let coordinatorReads=0;",
+  "fs.readFileSync=function(file,...args){const name=String(file);",
+  " if(name.endsWith(path.join('state','PROGRAMMED_COORDINATOR.json'))){coordinatorReads++;const state=JSON.parse(read.call(this,file,'utf8'));state.transactions=state.transactions||{};state.transactions['PAY-FENCE-TEST']={requestId:'PAY-FENCE-TEST',status:'AWAITING_VERIFICATION',ids:[coordId]};return JSON.stringify(state);}",
+  " if(name.endsWith(path.join('receipts',receiptName)))return JSON.stringify({requestId:'PAY-FENCE-RECEIPT',ids:[receiptId],requests:[],evidence:[]});",
+  " return read.call(this,file,...args);};",
+  "fs.readdirSync=function(dir,...args){const names=readdir.call(this,dir,...args);if(String(dir).endsWith(path.sep+'receipts')&&Array.isArray(names)&&names.every(n=>typeof n==='string')&&!names.includes(receiptName))names.push(receiptName);return names;};",
+  "process.on('exit',()=>{if(countFile)fs.writeFileSync(countFile,String(coordinatorReads));});"
+ ].join(''));
+ try{
+  cp.execFileSync(process.execPath,['--require',hook,'--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FETCHES:reads,ENRICH_TEST_FENCE_COORD:coord,ENRICH_TEST_FENCE_RECEIPT:receipt,ENRICH_TEST_COORDINATOR_READS:counts},stdio:'pipe',timeout:60000});
+  const out=JSON.parse(fs.readFileSync(report));
+  assert.equal(out.retained_completion.planned,1);
+  assert.equal(out.retained_completion.salary,1);
+  assert.equal(out.retained_completion.degree,1);
+  assert.equal(out.sample[0].id,open);
+  assert.equal(out.sample[0].fields.SALARY_BASE_LOW,180000);
+  assert.equal(fs.existsSync(reads)?fs.readFileSync(reads,'utf8'):'','');
+  assert.equal(fs.readFileSync(counts,'utf8'),'1');
+ }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });

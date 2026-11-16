@@ -160,8 +160,10 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(!review.rulesHash||review.rulesHash!==pre.rulesHash||(captured?!(auto&&Captured.validate({...review,record})):review.businessEvidenceApproved!==true))
     halt('BLOCKED: independent employer-business review not bound to fresh canonical rules or invalid captured discovery evidence');
   let unknownFields=record.INITIAL_UNKNOWN_FIELDS||['PAY','DEGREE','FLEX'];
-  if(captured&&!review.primaryBusiness)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
-  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:review.primaryBusiness||'',...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
+  let business=review.primaryBusiness||'';
+  if(captured&&business===review.discoveryEvidence.card.description)business='';
+  if(captured&&!business)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
+  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:business,...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
   // Persist intent before sending: a lost response must still fence this exact request after a crash.
   const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
   await recorder.record(rid,intent);

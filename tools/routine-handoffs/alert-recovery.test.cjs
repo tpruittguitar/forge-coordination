@@ -6,7 +6,7 @@ test('full original cards recover without changing live pagination, protected di
  const l=L.empty();L.seed(l,[{gmailId:'abc',advertisedUnseen:24,url:'https://www.linkedin.com/jobs/search-results/?keywords=quality'}]);Object.assign(l.sources.abc,{status:'HISTORICAL_RESULTS_UNAVAILABLE',nextPageRequired:false,exhausted:false,resumeUrl:l.sources.abc.url+'&start=525'});S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',l);
  a.equal(R.recover(root,message).recovered,2);const after=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json');a.equal(after.sources.abc.pages.length,0);a.equal(after.sources.abc.resumeUrl,l.sources.abc.resumeUrl);a.equal(after.sources.abc.nextPageRequired,false);a.equal(after.sources.abc.historicalCoverage,'UNPROVEN');a.equal(after.jobs['linkedin:123'].observedAt,message.at);a.equal(after.jobs['linkedin:123'].url,'https://www.linkedin.com/jobs/view/123/');a.equal(R.recover(root,message).duplicate,true);
  after.jobs['linkedin:123'].status='VERIFIED_EXISTING';after.jobs['linkedin:123'].disposition={proof:'original'};delete after.sources.abc.originalAlertRecovery;S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',after);R.recover(root,message);a.equal(S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:123'].status,'VERIFIED_EXISTING');
- const conflict={...message,sourceSha256:'b'.repeat(64),body:message.body.replace('Factory','Different')};a.throws(()=>R.recover(root,conflict),/CONFLICTING_ORIGINAL/);a.equal(S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:123'].company,'Factory');
+ const conflict={...message,sourceSha256:'b'.repeat(64),body:message.body.replace('Factory','Different')};a.equal(R.recover(root,conflict).unresolvedCards,1);a.equal(S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['linkedin:123'].company,'Factory');
 });
 test('snippets, foreign URLs and incomplete original identities cannot become recovered cards',()=>{a.deepEqual(R.cards({...message,fullBody:false}),[]);a.deepEqual(R.cards({...message,sender:'recruiter@example.com'}),[]);a.throws(()=>R.cards({...message,body:message.body.replace('www.linkedin.com/comm','example.com/comm')}),/AMBIGUOUS/);a.throws(()=>R.cards({...message,body:message.body.replace('Director of Quality\nFactory\nAustin, TX','Director of Quality')}),/INCOMPLETE/);});
 test('a newly captured alert reaches the existing candidate queue before handoff acknowledgment',()=>{
@@ -26,3 +26,22 @@ test('unsupported alerts remain actionable AI work instead of becoming processed
  a.throws(()=>R.handoff(root,message),/ALERT_FORMAT_RESEARCH_REQUIRED/);
 });
 test('original Indeed alert range reaches ledger and upstream independent of resume matching',t=>{const root=fs.mkdtempSync(path.join(os.tmpdir(),'posted-alert-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));const card={slot:0,provider:'indeed',jobId:'0331b9c22bc86d04',company:'Daher',title:'Liaison Engineer (Manufacturing Engineer)',location:'Stuart, FL',url:'https://www.indeed.com/viewjob?jk=0331b9c22bc86d04',description:'$71,300 - $95,000 a year Provide hands-on support.',sourceCardSha256:'b'.repeat(64)},m={...message,at:'2026-11-01T01:52:38.000Z'},format={cards:[card],pending:[],template:'indeed-fixture'};R.recoverFormat(root,m,format);const job=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json').jobs['indeed:0331b9c22bc86d04'];a.equal(job.postedPay.low,71300);a.equal(job.postedPay.high,95000);a.equal(job.postedPay.period,'YEAR');a.equal(job.postedPay.currency,null);a.equal(job.postedPay.basis,null);a.equal(job.postedPay.observedAt,m.at);const candidate=require('../pipeline-observability/upstream-flow').candidate(job,m.at,'state/EMAIL_RECOVERY_QUEUE.json');a.equal(candidate.postedPay.text,'$71,300 - $95,000 a year');a.equal(candidate.payFacts,undefined);});
+
+test('one changed LinkedIn identity does not block unrelated cards or overwrite pending writes',t=>{
+ const root=fs.mkdtempSync(path.join(os.tmpdir(),'isolated-alert-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
+ S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',L.empty());R.recover(root,message);const q=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json');
+ q.jobs['linkedin:123'].status='POST_IN_FLIGHT_UNKNOWN';q.jobs['linkedin:123'].submissions=[{requestId:'uncertain-original'}];
+ delete q.jobs['linkedin:456'];S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',q);
+ const changed={...message,sourceSha256:'c'.repeat(64),body:message.body.replace('Factory','New Factory')};
+ const result=R.recover(root,changed);a.equal(result.recovered,1);a.equal(result.visible,1);a.equal(result.unresolvedCards,1);
+ const after=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json');a.deepEqual(after.jobs['linkedin:123'],q.jobs['linkedin:123']);
+ a.equal(after.jobs['linkedin:456'].company,'Company');a.equal(after.sources.abc.originalAlertRecovery.pendingCards[0].key,'linkedin:123');
+ S.save(root,'state/MAIL_SOURCE_HANDOFFS.json',{messages:{abc:{classification:'JOB_ALERT'}}});
+ a.throws(()=>R.handoff(root,changed),/ALERT_CARD_SOURCE_RESEARCH_REQUIRED/);
+ a.equal(S.read(root,'state/MAIL_SOURCE_HANDOFFS.json').messages.abc.status,'PENDING_SOURCE_ACCOUNTING');
+ a.equal(R.recover(root,changed).duplicate,true);
+});
+test('LinkedIn singular company alum badge is not a location or identity field',()=>{
+ const marked={...message,body:message.body.replace('Austin, TX\nView job','Austin, TX\n1 company alum\nView job')};
+ a.deepEqual(R.cards(marked)[0].paragraphs,['Director of Quality','Factory','Austin, TX']);
+});

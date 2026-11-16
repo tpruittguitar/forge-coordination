@@ -37,7 +37,7 @@ test('ambiguous matches still receive source review while known existing roles d
 
 test('all discovery sources apply the shared zero gate without new reads and retain captured identities',async()=>{
  const profile=require('./resume-match').load(),screenContext={profile,documents:{resumes:[{id:profile.source.fileId,modifiedTime:profile.source.modifiedAt}]}},description=('Oversee client appointments and customer support. Direct account administrators and oversee branch budgets. Coordinate customer correspondence and resolve service inquiries. ').repeat(3);
- const cards=['BOARD:greenhouse','BOARD:lever','BOARD:ashby','BOARD:workday','JOBSPY:linkedin','HIRINGCAFE'].map((source,n)=>({...card,source,url:card.url+'/'+n,title:'Director of Operational Excellence',description,status:n===0?'EXISTING_PROTECTED':'NEW'}));let calls=0;
+ const cards=['BOARD:greenhouse','BOARD:lever','BOARD:ashby','BOARD:workday','JOBSPY:linkedin','HIRINGCAFE'].map((source,n)=>({...card,source,url:card.url+'/'+n,title:'Director of Customer Support',description,status:n===0?'EXISTING_PROTECTED':'NEW'}));let calls=0;
  await R.reviewAll(cards,{screenContext,detail:async()=>{calls++;throw Error('No new lookup');}});a.equal(calls,0);a.equal(cards.length,6);a.equal(cards[0].status,'EXISTING_PROTECTED');
  a.equal(cards[0].discoveryReview,undefined);
  for(const c of cards.slice(1)){a.equal(c.discoveryReview.decision,'EXCLUDE_ATS_ZERO');a.equal(c.discoveryReview.preliminaryScreen.atsGate.hits,0);a.equal(c.description,description.trim());a.match(c.selectionReason,/0; exclude from active discovery/);a.equal(c.discoveryReview.canonicalEligibility,false);}

@@ -25,7 +25,7 @@ function finishRebase(root){
  while(true){
   const unresolved=conflicts(root);
   const exception='state/AI_EXCEPTION_WORK.json';
-  if(!unresolved.length||unresolved.some(f=>![guard,exception].includes(f)))throw Error('Semantic or unrelated accounting conflict; preserve checkout and lock');
+  if(!unresolved.length||unresolved.some(f=>![guard,exception,enrichment].includes(f)))throw Error('Semantic or unrelated accounting conflict; preserve checkout and lock');
   // Validate every resolution before modifying or staging any conflicted file.
   const resolutions=[];
   for(const file of unresolved){
@@ -33,6 +33,8 @@ function finishRebase(root){
    if(file===guard){
     try{merged=timestampMerge(JSON.parse(git(root,['show',':2:'+guard])),JSON.parse(git(root,['show',':3:'+guard])));}catch{throw Error('Unreadable guard conflict; preserve checkout and lock');}
     if(!merged)throw Error('Semantic guard conflict; preserve checkout and lock');
+   }else if(file===enrichment){
+    try{merged=require('./enrichment-merge.cjs').mergeEnrichmentWork(...[1,2,3].map(stage=>JSON.parse(git(root,['show',':'+stage+':'+file]))));}catch{throw Error('Semantic enrichment accounting conflict; preserve checkout and lock');}
    }else{
     try{merged=require('./exception-merge.cjs').mergeExceptionWork(root,...[1,2,3].map(stage=>JSON.parse(git(root,['show',':'+stage+':'+file]))));}catch{throw Error('Semantic exception accounting conflict; preserve checkout and lock');}
    }
