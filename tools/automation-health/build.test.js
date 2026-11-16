@@ -24,3 +24,25 @@ test('empty row-match evidence cannot verify an email batch',()=>{const root=fix
 test('hourly tracker execution binds exact verified rows and independent receipts',()=>{const root=fixture(),put=(n,v)=>fs.writeFileSync(path.join(root,'receipts',n),JSON.stringify(v));fs.writeFileSync(path.join(root,'state/AUTOMATION_SCHEDULE_READBACK.json'),JSON.stringify({local:[{id:'forge-application-outcome-tracker',status:'ACTIVE',rrule:'RRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0'}]}));put('FORGE-OUTCOME-CHATGPT-20261031T0740Z_SUMMARY.json',{runId:'RUN',provider:'ChatGPT',task:'FORGE_APPLICATION_OUTCOME_TRACKER',sharedInstructionRevision:'a'.repeat(40),at:'2026-10-31T07:40:00Z',masterSubmitted:1,masterVerified:1});const proof={runId:'RUN',rows:[{found:true,matches:1,exactReadback:true}],receiptChecks:[{source:'GITHUB',status:'COMPLETE',durableResult:'COMPLETE'}]};put('FORGE-OUTCOME-CHATGPT-20261031T0740Z_VERIFICATION.json',proof);assert.equal(build(root,Date.parse('2026-10-31T08:00:00Z')).schedules.active[0].executionVerified,true);proof.rows[0].exactReadback=false;put('FORGE-OUTCOME-CHATGPT-20261031T0740Z_VERIFICATION.json',proof);assert.equal(build(root,Date.parse('2026-10-31T08:00:00Z')).schedules.active[0].executionVerified,false);});
 
 test('email proofs accept bare and repository-relative references without double prefix or traversal',()=>{const root=fixture(),put=(n,v)=>fs.writeFileSync(path.join(root,'receipts',n),JSON.stringify(v)),name='EMAIL_FINAL_FORGE-EMAIL-CHATGPT-20261030-1902ET.json',e={at:'2026-10-30T23:15:00Z',batches:[{requestId:'R',verified:1,proof:'receipts/proof.json'}],verifiedInserted:1,pendingMasterWrites:0};put(name,e);put('proof.json',{requestId:'R',insertedVerified:1,proofs:[{accepted:true,receiptState:'COMPLETE',matches:{exactRow:true}}]});const out=build(root,Date.parse('2026-10-31T00:20:00Z'));assert.equal(out.emailCoverage.writerProofsVerified,true);assert.deepEqual(out.executions[0].evidenceFiles,['receipts/'+name,'receipts/proof.json']);for(const proof of ['../proof.json','receipts/../proof.json','https://other.example/proof.json']){e.batches[0].proof=proof;put(name,e);assert.equal(build(root).emailCoverage.writerProofsVerified,false);}});
+test('JSON TERMINAL receipts are ordered by their JSON at, and a valid zero-write receipt counts as a run',()=>{
+ const root=fixture(),now=Date.parse('2026-11-16T16:00:00Z'),put=(n,v)=>fs.writeFileSync(path.join(root,'receipts',n),typeof v==='string'?v:JSON.stringify(v,null,2));
+ fs.writeFileSync(path.join(root,'state/AUTOMATION_SCHEDULE_READBACK.json'),JSON.stringify({local:[{id:'forge-application-writer-gofer',status:'ACTIVE',rrule:'RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0'},{id:'forge-posting-validation',status:'ACTIVE',rrule:'RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0'}]}));
+ // An older key=value receipt with write proof must not outrank a newer JSON receipt.
+ put('AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261105-0242ET_TERMINAL.txt','RUN_ID=FORGE-GOFER-CHATGPT-20261105-0242ET\nAT=2026-11-05T07:44:36.337Z\nRUN_TERMINAL_STATUS=OLD\n');
+ put('FORGE-GOFER-CHATGPT-20261105-0242ET-B01_VERIFIED.json',{proofs:[{receiptState:'COMPLETE'}]});
+ const gofer={runId:'FORGE-GOFER-CHATGPT-20261116T154502Z',taskKey:'FORGE_APPLICATION_WRITER_GOFER',provider:'ChatGPT',at:'2026-11-16T15:48:35.217Z',instructionCommit:'a'.repeat(40),status:'INPUT_REFRESH_REQUIRED',submitted:0,noReplay:true};
+ put('AI_REASON_RUN_RECEIPT_'+gofer.runId+'_TERMINAL.txt',gofer);
+ const postval={runId:'FORGE-POSTVAL-CHATGPT-20261116T100757Z',taskKey:'FORGE_POSTING_VALIDATION',provider:'ChatGPT',at:'2026-11-16T10:10:31.912Z',instructionSha:'b'.repeat(40),status:'SOURCE_CHECKS_SAVED',SUBMITTED:0,WRITTEN:0,VERIFIED:0,writerSubmitted:false,noReplay:true};
+ put('AI_REASON_RUN_RECEIPT_'+postval.runId+'_TERMINAL.txt',postval);
+ put('AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T021250Z_TERMINAL.txt',{...postval,runId:'FORGE-POSTVAL-CHATGPT-20261116T021250Z',at:'2026-11-16T02:15:36.149Z'});
+ let out=build(root,now),g=out.executions.find(x=>x.id==='forge-application-writer-gofer'),p=out.executions.find(x=>x.id==='forge-posting-validation');
+ assert.equal(g.at,gofer.at);assert.equal(g.status,'INPUT_REFRESH_REQUIRED');assert.equal(g.executionVerified,true);
+ assert.equal(p.at,postval.at);assert.equal(p.executionVerified,true);
+ assert.equal(out.schedules.active.every(x=>x.taskExecutionVerified),true);
+ // A JSON receipt that submitted writes still needs write proof.
+ put('AI_REASON_RUN_RECEIPT_'+gofer.runId+'_TERMINAL.txt',{...gofer,submitted:2});
+ g=build(root,now).executions.find(x=>x.id==='forge-application-writer-gofer');assert.equal(g.at,gofer.at);assert.equal(g.executionVerified,false);
+ // A receipt whose runId does not match its filename is not valid.
+ put('AI_REASON_RUN_RECEIPT_'+gofer.runId+'_TERMINAL.txt',{...gofer,runId:'FORGE-GOFER-CHATGPT-20261116T000000Z'});
+ assert.equal(build(root,now).executions.find(x=>x.id==='forge-application-writer-gofer').executionVerified,false);
+});
