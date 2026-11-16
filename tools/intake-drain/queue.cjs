@@ -8,7 +8,7 @@ const FILE='state/INTAKE_DRAIN.json',REVIEWS='receipts/INTAKE_DRAIN',TASKS={REVI
 const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRESENT']);
 const dismissed=e=>e?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'||require('../live-backlog/model.cjs').activeDeletion(e);
 const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
-const read=(root,file,fallback)=>S.read(root,file,fallback);
+const read=(root,file,fallback)=>require('../source-intake/queue-state.cjs').read(root,file,fallback);
 const sharedKeys=root=>require('../helper-routing/shared.cjs').reservedKeys(read(root,'control/SHARED_HELPER_WORK.json',null));
 const sharedBlocked=(item,keys)=>!item.fence&&[item.key,...item.aliases||[]].some(k=>keys.has(k));
 function selection(card){return card.selectionReason||[card.family&&'title family='+card.family,card.level&&'title level='+card.level,card.place&&'location='+card.place,card.source&&'source='+card.source].filter(Boolean).join('; ')||'Original discovery rationale not recorded; do not invent it';}
@@ -54,6 +54,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  const sourceFailures=new Map();for(const x of Object.values(read(root,'receipts/auto-intake/catch-up/state.json',{roles:{}}).roles))if(x.status==='WAITING_SOURCE_RETRY'&&(x.attempts||0)>=2)sourceFailures.set(U.key(x.role.url),x);
  const fences=writerFences(root),sharedReserved=require('../helper-routing/shared.cjs').reservedKeys(read(root,'control/SHARED_HELPER_WORK.json',null));
  for(const [key,g] of Object.entries(up.groups)){
+  if(old.items[key]?.sourceConflict==='QUEUE_MERGE_CONFLICT'){present.add(key);continue;}
   const currentFence=(g.aliases||[key]).some(k=>fences.has(k)),priorAlias=(g.aliases||[key]).some(k=>old.items[k]);
   if(!pending.has(g.status)&&!old.items[key]&&(!currentFence||priorAlias))continue;
   if(!currentFence&&!old.items[key]&&!priorAlias&&[key,...g.aliases||[]].some(k=>sharedReserved.has(k)))continue; // Already assigned evidence-only research; original Writer reconciliation still wins.
@@ -71,6 +72,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   const previous=old.items[key],scopeReleased=previous?.action==='REVIEW_SCOPE'&&action==='INTAKE',unchanged=previous?.sourceVersion===sourceVersion&&!scopeReleased;
   const item={...(unchanged?previous:{}),key,aliases,sourceVersion,card,sourceRecovery:recovered.recovery||null,sourceConflict:recovered.conflict||null,...(captured?.blocked?{sourceCaptureHold:{reason:captured.reason}}:{}),...(capturedSourceAvailable?{sourceFailureHistory:{reason:priorSourceFailure.reason,attempts:priorSourceFailure.attempts,lastAttempt:priorSourceFailure.lastAttempt,retryAfter:priorSourceFailure.retryAfter,releaseBasis:'CAPTURED_DISCOVERY_AVAILABLE'}}:{}),sourceFailure:sourceFailure?{reason:sourceFailure.reason,attempts:sourceFailure.attempts,lastAttempt:sourceFailure.lastAttempt,retryAfter:sourceFailure.retryAfter}:null,upstreamStatus:g.status,action,taskKey:TASKS[action],owner:action==='INTAKE'?'CODE':'ChatGPT',firstSeen:previous?.firstSeen||g.firstSeen||at,sourceReferences:[...new Set(es.flatMap(e=>e.sources||[]))],discoveryReview:e.discoveryReview||null,selectionReason:e.selectionReason||reasons.get(e.key)||previous?.selectionReason||selection(e),screen,fence:fence||null,scopeReviewHold:identityHold,scopeReviewHistory:scopeReleased?{sourceVersion:previous.sourceVersion,review:previous.review||null,validation:previous.validation||null}:previous?.scopeReviewHistory||null,nextAction:{INTAKE:'Feed existing controlled intake; verify canonical outcome',REVIEW_SCOPE:identityHold?'Resolve the recorded identity or exclusion obligation before intake; a fit-only verdict does not clear it':'Check the exact captured-title exclusion against current canonical policy; uncertain fit alone does not block intake',RECOVER_SOURCE:'Recover exact missing identity fields from original source, then targeted employer posting',RESOLVE_IDENTITY:'Investigate original hold and exact role identity; retain all protected decisions',RECONCILE_WRITER:'Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay'}[action],canonicalCompletion:false,status:pending.has(g.status)?(unchanged&&previous.status||'ACTION_REQUIRED'):'ACCOUNTED_UPSTREAM'};
   if(!pending.has(g.status)){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:g.status,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};}
+  if(screen.outcome==='EXCLUDED'&&!fence&&g.status==='WAITING'){item.status='ACCOUNTED_UPSTREAM';item.outcome={status:'EXCLUDED',reason:screen.reason,proof:'state/UPSTREAM_LEDGER.json',observedAt:up.at};item.nextAction='Missing or placeholder company or location is excluded from the backlog.';}
   // A Writer attempt discovered after dismissal still needs independent reconciliation.
   if(fence&&(es.some(dismissed)||g.status==='PRESENT')){item.status='ACTION_REQUIRED';item.action='RECONCILE_WRITER';item.taskKey=TASKS.RECONCILE_WRITER;item.nextAction='Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.';delete item.outcome;}
   old.items[key]=item;
@@ -87,6 +89,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
  }
  old.at=at;old.upstreamAt=up.at;old.reviewErrors={};
  for(const file of S.files(path.join(root,REVIEWS))){try{const review=JSON.parse(fs.readFileSync(file,'utf8')),item=old.items[review.key];
+  if(item?.sourceConflict==='QUEUE_MERGE_CONFLICT')continue;
   // A historical scope-only review must not put a now-admissible card back
   // behind AI review or a second fetch. Keep the immutable review as history.
   if(item?.action==='INTAKE'&&review.taskKey===TASKS.REVIEW_SCOPE){

@@ -6,8 +6,11 @@ function fixture(t){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'forge-research-check-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
  S.save(root,'control/AI_AUTOMATION_TASKS.json',{schema:'forge.ai-automation-tasks.v1',tasks:{[drainTask]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_INTAKE_DRAIN.txt'},[outcome]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt'},[enrich]:{owner:'ChatGPT',procedure:'lanes/CHATGPT_ENRICHMENT_RESEARCH.txt'}}});return root;
 }
-function drain(root,location=''){
- const key='url:research-test';S.save(root,'state/UPSTREAM_LEDGER.json',{schema:'forge.upstream-ledger.v1',at,entries:{[key]:{company:'Factory',title:'General Manager',location,sourceUrl:'https://example.com/jobs/123',sources:['saved.json']}},groups:{[key]:{status:'WAITING',aliases:[key],firstSeen:at}}});
+function drain(root,location){
+ const key='url:research-test',located=arguments.length>1;
+ // A blank location is excluded. Source recovery stays the non-https URL hold.
+ const sourceUrl=located?'https://example.com/jobs/123':'http://example.com/jobs/123';
+ S.save(root,'state/UPSTREAM_LEDGER.json',{schema:'forge.upstream-ledger.v1',at,entries:{[key]:{company:'Factory',title:'General Manager',location:located?location:'Austin, TX',sourceUrl,sources:['saved.json']}},groups:{[key]:{status:'WAITING',aliases:[key],firstSeen:at}}});
  return D.sync(root,{now,apply:true}).items[key];
 }
 function wait(root,item,extra={}){

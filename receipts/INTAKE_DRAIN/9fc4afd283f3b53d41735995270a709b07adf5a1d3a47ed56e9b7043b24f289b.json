@@ -1,0 +1,30 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "unresolved:594db2724aacc29cda7e0b03",
+  "sourceVersion": "13e844d04f368748b4439637782fdf565ce83149fef5d270f5b2f8f90fd86c4a",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261113T0828Z-SOURCE",
+  "observedAt": "2026-11-13T08:30:22.550680Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact saved alert lacks the posting URL. Employer/job-board hosts are excluded by the managed network policy and no authorized Gmail tool is available. No source URL or hidden-client identity was guessed.",
+  "nextAction": "Recover exact original posting URL through saved source or authorized source access",
+  "retryCondition": "Saved source gains exact posting identity or authorized original-mail/source access becomes available",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:e4eeee8e192a6da6efa105d29551d23d961bd103e65524f4ef40cb8a60821bc3",
+      "result": "Reused original saved alert; exact posting URL absent",
+      "sourceSha256": "f66a9f60d3b18cf30ef8e2c8502d85d90b271e30425aae66909ca933f74a1808"
+    },
+    {
+      "source": "Fresh authenticated master/archive shared identity matcher",
+      "result": "ABSENT",
+      "basis": []
+    },
+    {
+      "source": "Current callable tools and managed network policy",
+      "result": "Original-mail tool absent; employer/source-host access restricted"
+    }
+  ]
+}

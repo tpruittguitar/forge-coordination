@@ -1,0 +1,32 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "unresolved:06124c625a63e6f4cb37142a",
+  "sourceVersion": "bf68ae85edc59b04fb9251f7f62a173c895ea3870fbe31db82d396118299a4b6",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261113T0828Z-SOURCE",
+  "observedAt": "2026-11-13T08:29:55.338062Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Fresh shared matcher returns UNRESOLVED with INCOMPLETE_LOCATION for remote card. Possible canonical V2I-CECEDFBC0E1A is not a proven match; recover exact source identity before coordinator accounting, with no replay or duplicate submission.",
+  "nextAction": "Recover exact original posting URL through saved source or authorized source access",
+  "retryCondition": "Saved source gains exact posting identity or authorized original-mail/source access becomes available",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:0431ffebf1067700dc9a7cd0a0902d56565b8e29076d057816be7be5e7c971ac",
+      "result": "Reused original saved alert; exact posting URL absent",
+      "sourceSha256": "3942e40d64dcc024c50be38139868c6949a74b671519fa940e567c7121bf5175"
+    },
+    {
+      "source": "Fresh authenticated master/archive shared identity matcher",
+      "result": "UNRESOLVED",
+      "basis": [
+        "INCOMPLETE_LOCATION"
+      ]
+    },
+    {
+      "source": "Current callable tools and managed network policy",
+      "result": "Original-mail tool absent; employer/source-host access restricted"
+    }
+  ]
+}

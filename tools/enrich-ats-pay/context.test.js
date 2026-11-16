@@ -31,6 +31,47 @@ test('explicit posting facts are learned with provenance; role facts never becom
  const unclear={schema:ref.schema,companies:[],roles:[]};C.learn(unclear,row,'Manage a team of managers. This position is an individual contributor. Lead a team of 12 engineers.','https://employer.com/jobs/123','2026-10-31');a.equal(C.lookup(row,unclear,now).management,undefined,'contradictory responsibilities need research, not an arbitrary choice');
  const newer=JSON.parse(JSON.stringify(r));newer.roles[0].facts.teamSize=fact(20,'2026-10-31');r.roles[0].facts.teamSize=fact(10,'2026-10-01');a.equal(C.merge(newer,r).roles[0].facts.teamSize.value,20);
 });
+test('known industry mismatch is excluded and an unknown industry stays at 0.75',()=>{
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AUTOMOTIVE'}).weight,0);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AEROSPACE_DEFENSE'}).weight,1);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{}).weight,0.75);
+});
+test('industry source order is builds, then EMPLOYER_PRIMARY_BUSINESS, then the posting overview',()=>{
+ const base={PRIMARY_ID:'T',COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Austin, TX'};
+ const posting='About the company\nWe manufacture semiconductor equipment.\nResponsibilities\nLead the plant.';
+ const business='automotive components';
+ const builds='Builds orbital spacecraft and satellites.';
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:business},postingText:posting},{companies:[{company:'Acme',builds}]},now).industry,'AEROSPACE_DEFENSE');
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:business},postingText:posting},{companies:[{company:'Acme'}],registry:[{company:'Acme',builds}]},now).industry,'AEROSPACE_DEFENSE');
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:business},postingText:posting},{companies:[{company:'Acme'}]},now).industry,'AUTOMOTIVE');
+ a.equal(C.lookup({...base,p:{},postingText:posting},{companies:[{company:'Acme'}]},now).industry,'SEMICONDUCTOR');
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:'RECRUITING_AGENCY'}},{companies:[]},now).industry,undefined);
+ const raw='Job Description: '+('Lead the team and own the process. '.repeat(30));
+ const long=('Coordinate the daily plant handoff and the shift meeting. ').repeat(20);
+ a.equal(C.industryLabel(raw),null);
+ a.equal(C.industryLabel(long),null);
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:raw}},{companies:[]},now).industry,undefined);
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:long},postingText:posting},{companies:[]},now).industry,'SEMICONDUCTOR');
+ a.equal(C.industryLabel('Builds aerospace parts and automotive components.'),null);
+ a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:'semiconductor equipment'}},{companies:[{company:'Acme',builds:'Builds aerospace parts and automotive components.'}]},now).industry,'SEMICONDUCTOR');
+});
+test('a known company-size band or scope mismatch excludes the sample',()=>{
+ a.equal(C.similarity({employees:100000},{employees:50}).weight,0);
+ a.ok(C.similarity({employees:100000},{employees:90000}).weight>0);
+ a.equal(C.similarity({employees:80},{}).weight,0.75);
+ a.equal(C.similarity({teamSize:12},{teamSize:400}).weight,0);
+ a.equal(C.similarity({teamSize:12},{}).weight,0.75);
+ a.equal(C.similarity({reach:'MULTI_SITE'},{reach:'SINGLE_SITE'}).weight,0);
+ a.equal(C.similarity({management:'MANAGES_MANAGERS'},{management:'INDIVIDUAL_CONTRIBUTOR'}).weight,0);
+});
+test('a role with no qualifying comparable keeps the BLS-only LOW range',()=>{
+ const target={PRIMARY_ID:'T',COMPANY:'Aero Co',TITLE:'Director of Quality',LOCATION:'Austin, TX',p:{EMPLOYER_PRIMARY_BUSINESS:'aerospace manufacturing'}};
+ const sample=L.postedAnchor({PRIMARY_ID:'S',COMPANY:'Auto Co',TITLE:'Director of Quality',LOCATION:'Austin, TX'},{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:180000,SALARY_BASE_HIGH:220000,SALARY_ASOF:'2026-09-01',EMPLOYER_PRIMARY_BUSINESS:'automotive manufacturing'});
+ a.equal(sample.business,'automotive manufacturing');
+ a.equal(L.estimate(target,[sample],{companies:[]}),null);
+ const bls=L.blsEstimate(target,{state:'TX',soc:'113051',p25:100000,p90:200000},[]);
+ a.equal(bls.conf,'LOW');a.equal(bls.source,'BLS_OEWS');a.equal(bls.low,130000);a.equal(bls.high,210000);
+});
 test('calibration excludes target salary aliases and reports non-estimable cases',()=>{
  const rows=[{...row,PRIMARY_ID:'A',p:{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:150000,SALARY_BASE_HIGH:200000,SALARY_SOURCE:'https://employer.com/jobs/a',SALARY_ASOF:'2026-09-01'}}];
  const anchors=rows.map(r=>L.postedAnchor(r,r.p));const result=Cal.evaluate(rows,[...anchors,{...anchors[0],id:'COPY'}],ref,now);

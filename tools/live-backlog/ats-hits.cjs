@@ -23,7 +23,11 @@ function display(item){
  for(const m of ats.matches)for(const term of m.postingTerms){const key=term.trim().normalize('NFC').toLowerCase();if(!terms.has(key))terms.set(key,term.trim());}
  const checked=screen?screen.checkedAt:item.discoveryReview?.observedAt;
  const titleOnly=ats.contentBasis==='TITLE_ONLY'||ats.status==='ROLE_CONTENT_PENDING';
+ const gate=screen?.atsGate,sourceBasis=gate?.contentBasis||item.discoveryReview?.contentBasis;
+ const screened=gate?.schema==='forge.discovery-ats-gate.v1'&&['PASS','EXCLUDE'].includes(gate.status)&&sourceBasis==='CAPTURED_ROLE_CONTENT';
+ const snippet=sourceBasis&&sourceBasis!=='CAPTURED_ROLE_CONTENT'&&sourceBasis!=='TITLE_ONLY';
+ const basis=titleOnly?'Title only':screened?'Role content screened':snippet?'Source snippet':'Captured content (extent unverified)';
  const evidence=ats.matches.map(m=>m.competencyId.replaceAll('_',' ')+': '+m.postingTerms.join(', ')+'\n'+m.postingQuotes.join('\n')).join('\n\n');
- return {atsHits:ids.size,atsTerms:[...terms.values()],atsBasis:titleOnly?'Title only':'Captured content',atsEvidence:evidence||'No resume-supported competency matches observed in this saved text.',atsCheckedAt:date(checked)?checked:null,atsResumeVersion:ats.resumeVersion};
+ return {atsHits:ids.size,atsTerms:[...terms.values()],atsBasis:basis,atsEvidence:evidence||(screened?'No resume-supported competency matches observed in screened role content.':'No resume-supported competency matches observed. Insufficient evidence of a complete job-description check; this is not a screened-out job.'),atsCheckedAt:date(checked)?checked:null,atsResumeVersion:ats.resumeVersion};
 }
 module.exports={display};

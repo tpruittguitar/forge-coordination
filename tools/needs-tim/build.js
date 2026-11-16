@@ -220,6 +220,14 @@ function build(opts) {
     action:'Code: regenerate reporting health on the next publication and retain the last successful metrics.',
     source:'state/REPORTING_HEALTH.json', sourceUrl:ghUrl('forge-coordination','state/REPORTING_HEALTH.json'), at:null, raisedBy:'CODE'});
 
+  // Current mutable assignment defects stay visible here, independently of PR tests.
+  const intakeHealth=require('../automation-health/intake-assignments').inspect(root,now);
+  if(['ACTION_REQUIRED','UNKNOWN'].includes(intakeHealth.status))add({id:'intake-assignment-health',section:'UPKEEP',level:'ACTION',
+    title:'Intake assignment ledger needs reconciliation',
+    detail:intakeHealth.status==='UNKNOWN'?'Current assignment evidence is unreadable or invalid; health is unknown.':intakeHealth.issueCount+' assignment issues: '+Object.entries(intakeHealth.counts).map(([k,n])=>k+'='+n).join(', '),
+    action:'Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.',
+    source:'control/GROK_INTAKE_HELPER_WORK.json',sourceUrl:ghUrl('forge-coordination','control/GROK_INTAKE_HELPER_WORK.json'),at:intakeHealth.at,raisedBy:'CODE'});
+
   /* 5. open pull requests (fetched by the workflow; optional) */
   (opts.prs || []).forEach(pr => {
     const dnm = /DO NOT MERGE/i.test(pr.title || '');

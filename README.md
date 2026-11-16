@@ -17,6 +17,7 @@ Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_
 | `lanes/` | Generated legacy pointers; standalone Claude usage reader | Build script / authorized maintainer |
 | `state/` | Generated discovery hints; never live Writer state | Receipt-index Action |
 | `edit-requests/` | Requests to change an existing file (see below) | Any lane |
+| `control/OFFICE_STATUS.json` | Read-only feed for the foreman-cockpit 3D office (`office.html`): `bots[]` (status `idle`/`working`/`blocked`/`waiting_tim`, task, last action, question, link), `needs_tim[]`, `items[]` (board cards: priority, status, owner, optional `project`), `conversations[]` (`from`/`to`/`text`/`at`) and `usage` (Usage Budget's AI usage readings). Times are ISO with offset | President |
 
 ## Rules for every lane
 1. **Label every AI commit.** Start with PROVIDER and RUN_ID, e.g. `GROK FORGE-ENRICH-FEASIBILITY-GROK-20261012-1435ET: ...`. Existing APPLY-BOT and new INDEX-BOT labels identify mechanical workflow commits.
@@ -31,6 +32,7 @@ Maintainers: [build, validation, rollout, limits and rollback](docs/INSTRUCTION_
 4. **Instruction sources and generated releases** change only on Tim's instruction through a reviewed PR. Run `python scripts/build_runtime.py`, tests, then `python scripts/build_runtime.py --check`; commit source and generated outputs together. Tim merges. Never rewrite a published release.
 5. **Record every change; the REV comes at merge.** A PR adds one file `control/changes/<provider>-<yyyymmdd-hhmm>-<slug>.txt` (`WHAT=...`; format in `control/changes/README.txt`) and never edits `control/CHANGE_REGISTER.txt` or picks a REV. When it merges, the `change-register` Action appends the register line with the next REV in merge order. The `change-record-check` PR check enforces this. Direct commits to main may add a record the same way.
 6. **Report only real SHAs.** Claude spot-checks reported SHAs against `git log`.
+7. **Link every PR.** Write every PR a bot mentions as a clickable Markdown link to the PR's full GitHub URL, for example [#305](https://github.com/tpruittguitar/foreman-cockpit/pull/305), never a bare #number. (Tim, Nov 15, 2026, 10:35 PM ET)
 
 ## Related repos
 - `tpruittguitar/forge-policy`: rules, geo floors, scoring, FLEX, salary estimation, Never-Consider. Grok and ChatGPT work there on `backup/<provider>-<time>` branches with a pull request; Tim merges.

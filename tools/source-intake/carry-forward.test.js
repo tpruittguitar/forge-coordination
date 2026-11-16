@@ -35,3 +35,9 @@ test('untouched carry-forward preserves exact bound posted salary and original o
  const roles=carryForwardRoles(f.prior,{root:f.root}),record=pick({new_roles:roles},{max:25,sent:new Set()})[0].record;assert.deepEqual(roles[0].postedPay,c.postedPay);assert.equal(record.SALARY_BASE_LOW,180125);assert.equal(record.SALARY_SOURCE,c.record.SOURCE_URL);assert.equal(record.SALARY_ASOF,'2026-11-06');
  }finally{fs.rmSync(f.root,{recursive:true,force:true});}
 });
+
+test('untouched carry-forward retains the original initiating channel',()=>{
+ const f=fixture();try{f.candidates[1].record.DISCOVERY_SOURCE='EMAIL';const bytes=JSON.stringify(f.candidates);fs.writeFileSync(path.join(f.root,f.prior[0].file.replace('.json','.candidates.json')),bytes);f.prior[0].state.candidatesHash=crypto.createHash('sha256').update(bytes).digest('hex');
+ const roles=carryForwardRoles(f.prior,{root:f.root});assert.equal(pick({new_roles:roles},{max:25,sent:new Set()})[0].record.DISCOVERY_SOURCE,'EMAIL');
+ }finally{fs.rmSync(f.root,{recursive:true,force:true});}
+});

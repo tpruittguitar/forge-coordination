@@ -1,0 +1,25 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "unresolved:c8b49ac5610da11b7a231399",
+  "sourceVersion": "a4045805143f18c21d7c70a7421606758b7cb29586b5918f9b535bd0c9705750",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
+  "runId": "FORGE-DRAIN-20261113T0725Z-SOURCE",
+  "observedAt": "2026-11-13T07:28:32.639266Z",
+  "writerSubmitted": false,
+  "outcome": "WAITING_SOURCE_CHANGE",
+  "reason": "Exact saved alert retains company/title/site but no posting URL. Authorized environment excludes employer and job-board hosts; no invented URL or identity.",
+  "nextAction": "Recover exact URL from original source or newly authorized employer/source access",
+  "retryCondition": "Exact posting URL becomes available in saved source, or authorized source-host access changes",
+  "attempts": [
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:cc38dc265c156c1132638e4a0eda59f95346057c04e88e8440f15ad605e23cb9",
+      "result": "Reused exact saved alert; posting URL absent",
+      "sourceSha256": "255951cbc2f73c72225dc3fe05120ff0b315ce2ceb64e44cc81c336141cc7abf"
+    },
+    {
+      "source": "managed environment network policy",
+      "result": "Restricted employer/job-board access; no bypass or request attempted"
+    }
+  ]
+}

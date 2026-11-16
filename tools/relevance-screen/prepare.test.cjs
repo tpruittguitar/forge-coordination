@@ -103,7 +103,7 @@ test('preparation refreshes cached captured-card sources on every invocation',t=
  f.save('state/CODE_INTAKE_CONSUMPTION.json',{items:[source,{...source}]});
  const file=p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'),original=fs.readFileSync;let reads=0;
  t.mock.method(fs,'readFileSync',function(name,...args){if(String(name)===file)reads++;return original.call(this,name,...args);});
- a.equal(P.prepare(f).counts.READY,2);a.equal(reads,3); // plan queue, fence queue, source snapshot, independent of item count.
+ a.equal(P.prepare(f).counts.READY,2);a.equal(reads,4); // plan queue, fence queue, source snapshot, origin snapshot; once each, independent of item count.
  for(const change of [j=>j.company='Changed',j=>j.url='https://other.test/role',j=>j.evidence[0].cardHash='changed']){
   const altered=structuredClone(queue);change(altered.jobs[f.key]);f.save('state/EMAIL_RECOVERY_QUEUE.json',altered);
   a.equal(P.prepare(f).counts.SOURCE_REVALIDATION_REQUIRED,2);
@@ -164,4 +164,46 @@ test('a bad captured expiry remains an item hold without aborting healthy prepar
  f.save(state.items[0].batch,batch);f.save('state/CLAUDE_HELPER_CONSUMPTION.json',state);f.save('control/CLAUDE_HELPER_WORK.json',work);f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);f.save('state/source-trial-report.json',{summary:{at:'2026-01-01T00:00:00Z'},new_roles:[{...batch.items[0].sourceEvidence,source:'LINKEDIN',description:'',validThrough:'bad'}, {...good,source:'LINKEDIN',description:''}]});
  const result=P.prepare(f);a.equal(result.counts.POSTING_EXPIRY_INVALID,1);a.equal(result.counts.READY,1);a.equal(result.items.find(x=>x.key===f.key).record,undefined);
  queue.jobs[f.key].submissions=[{requestId:'ORIGINAL'}];f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);a.equal(P.prepare(f).counts.ORIGINAL_WRITER_FENCE,1);
+});
+
+test('recover then prepare ignores bound refused drain/prior caches but preserves independent requests',async t=>{
+ const N=require('./not-accepted.cjs'),Store=require('../programmed-coordinator/store.cjs'),I=require('../routine-handoffs/intake-state.cjs');
+ const f=fixture('Director, Manufacturing'),privateDir=p.join(f.root,'private'),id='FORGE-CODE-CHATGPT-REFUSAL-B002';t.after(()=>fs.rmSync(f.root,{recursive:true,force:true}));
+ const initial=P.prepare(f),record=initial.items[0].record,payload={action:'intake',requestId:id,records:[record]},response={ok:false,mode:'WRITER_NOT_ACCEPTED',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITE_FENCE',masterMutations:0,requestIds:[id],retryAfterMs:60000}};
+ Store.save(privateDir,id+'-payload-private.json',payload);Store.save(privateDir,id+'-result-private.json',response);
+ f.save('receipts/'+id+'_CHECKPOINT.json',{requestId:id,records:1,keys:[f.key],queueKeys:[f.key],payloadSha256:Store.hash(payload)});
+ f.save('receipts/'+id+'_ACCEPTANCE.json',{requestId:id,responseSha256:Store.hash(response)});
+ initial.items[0]={...initial.items[0],status:'POST_IN_FLIGHT_UNKNOWN',requestId:id};f.save('state/RELEVANCE_INTAKE_PLAN.json',initial);
+ const state=I.load(f.root);Object.assign(state.items[0],{status:'POST_IN_FLIGHT_UNKNOWN',requestId:id});I.save(f.root,state);
+ const queue=Store.read(f.root,'state/EMAIL_RECOVERY_QUEUE.json');Object.assign(queue.jobs[f.key],{status:'POST_IN_FLIGHT_UNKNOWN',requestId:id,submission:{requestId:id},submissions:[{requestId:id}]});f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);
+ const fence={requestIds:[id],proof:'state/RELEVANCE_INTAKE_PLAN.json',record};
+ f.save('state/INTAKE_DRAIN.json',{items:{[f.key]:{key:f.key,aliases:[f.key,'historical-alias'],fence,card:record}}});
+ await N.recover({root:f.root,privateDir,requestId:id,runId:'RECOVERY-TEST',deps:{checkLock:()=>{},status:async()=>({freeze:null,level:'ok',errors:[],unverified:{count:0},build:{commit:'a'.repeat(40)}}),result:async()=>({ok:true,found:false,requestId:id}),index:async()=>({ok:true,exists:true,request:null,sha:'b'.repeat(40)})}});
+ const proof=Store.read(f.root,'receipts/'+id+'_NOT_ACCEPTED.json');a.equal(proof.canonicalWrites,0);
+ a.equal(P.prepare(f).items[0].status,'READY'); // full recovery -> stale drain -> prepare
+ const released=Store.read(f.root,'state/RELEVANCE_INTAKE_PLAN.json');
+ const refenced={...released,items:[{...released.items[0],status:'ORIGINAL_WRITER_FENCE',requestId:id,fence}]};
+ f.save('state/RELEVANCE_INTAKE_PLAN.json',refenced);a.equal(P.prepare(f).items[0].status,'READY'); // historical self-perpetuating cache
+ for(const source of ['drain','prior']){
+  f.save('state/INTAKE_DRAIN.json',{items:source==='drain'?{[f.key]:{key:f.key,fence:{...fence,requestIds:[id,'UNKNOWN']},card:record}}:{}});
+  f.save('state/RELEVANCE_INTAKE_PLAN.json',source==='prior'?{...refenced,items:[{...refenced.items[0],fence:{...fence,requestIds:[id,'UNKNOWN']}}]}:released);
+  const out=P.prepare(f).items[0];a.equal(out.status,'ORIGINAL_WRITER_FENCE');a.deepEqual(out.fence.requestIds,['UNKNOWN']);a.equal(out.requestId,'UNKNOWN');
+ }
+ f.save('state/INTAKE_DRAIN.json',{items:{[f.key]:{key:f.key,fence,card:record}}});f.save('state/RELEVANCE_INTAKE_PLAN.json',released);
+ for(const change of [p=>({...p,payloadSha256:'f'.repeat(64)}),p=>({...p,responseSha256:'f'.repeat(64)}),p=>({...p,requestId:'WRONG'}),p=>({...p,canonicalWrites:1}),p=>({...p,records:2}),p=>({...p,responseProjectionSha256:'f'.repeat(64)}),p=>({...p,reason:'UNKNOWN'})]){
+  f.save('receipts/'+id+'_NOT_ACCEPTED.json',change(proof));a.equal(P.prepare(f).items[0].status,'ORIGINAL_WRITER_FENCE');
+ }
+ fs.writeFileSync(p.join(f.root,'receipts/'+id+'_NOT_ACCEPTED.json'),'{broken');a.equal(P.prepare(f).items[0].status,'ORIGINAL_WRITER_FENCE');
+ f.save('receipts/'+id+'_NOT_ACCEPTED.json',proof);
+ const checkpoint=Store.read(f.root,'receipts/'+id+'_CHECKPOINT.json');f.save('receipts/'+id+'_CHECKPOINT.json',{...checkpoint,keys:['unrelated'],queueKeys:['unrelated']});a.equal(P.prepare(f).items[0].status,'ORIGINAL_WRITER_FENCE');
+ f.save('receipts/'+id+'_CHECKPOINT.json',checkpoint);
+ const acceptance=Store.read(f.root,'receipts/'+id+'_ACCEPTANCE.json');
+ f.save('receipts/'+id+'_ACCEPTANCE.json',{...acceptance,requestId:'WRONG'});a.equal(P.prepare(f).items[0].status,'ORIGINAL_WRITER_FENCE');
+ f.save('receipts/'+id+'_ACCEPTANCE.json',acceptance);
+ fs.unlinkSync(p.join(f.root,'receipts/'+id+'_NOT_ACCEPTED.json'));a.equal(P.prepare(f).items[0].status,'ORIGINAL_WRITER_FENCE');
+ f.save('receipts/'+id+'_NOT_ACCEPTED.json',proof);
+ const cached=require('./refused-fences.cjs').reader(f.root);
+ for(const odd of [{...fence,requestIds:[]},{...fence,requestIds:[id,'']},{...fence,requestIds:[id,null]},{...fence,unknownObligation:true}])a.deepEqual(cached.filter(odd,f.key),odd);
+ a.deepEqual(cached.filter(fence,'unrelated-key'),fence);
+ const active=I.load(f.root);Object.assign(active.items[0],{status:'POST_IN_FLIGHT_UNKNOWN',requestId:'NEW-UNCERTAIN'});I.save(f.root,active);a.equal(P.prepare(f).items[0].requestId,'NEW-UNCERTAIN');
 });

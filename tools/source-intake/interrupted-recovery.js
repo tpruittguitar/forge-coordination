@@ -26,7 +26,24 @@ async function recover(file,{root='.',key=process.env.FORGE_WRITER_KEY,transport
   throw Error('BLOCKED: interrupted recovery candidate binding changed');
  const results=state.results||{},attempted=ids.filter(id=>Object.hasOwn(results,id));
  if(Object.keys(results).some(id=>!ids.includes(id)))throw Error('BLOCKED: unknown recovered request identity');
- if(!attempted.length)return {status:'NO_CAPTURED_RESULTS'};
+ if(!attempted.length){
+  // A recorded preflight read failure is before the durable POST intent. Nothing was submitted.
+  // Do not infer this from an empty result map alone (legacy/interrupted states may lack evidence).
+  const halts=state.halts,probe=state.recorderProbe;
+  if(state.version!==1||!ids.length||!probe?.probe||!Number.isFinite(Date.parse(probe.at))||
+     !Array.isArray(state.outcomes)||state.outcomes.length||!Array.isArray(halts)||!halts.length||
+     halts.some(h=>h.message!=='BLOCKED: Writer read not authorized'||!Array.isArray(h.outcomes)||h.outcomes.length||
+       !Number.isFinite(Date.parse(h.at))||Date.parse(h.at)<Date.parse(probe.at)))return {status:'NO_CAPTURED_RESULTS'};
+  const at=new Date().toISOString(),relative='receipts/auto-intake/recovery/'+state.sourceRunId+'-prewrite-'+crypto.randomBytes(4).toString('hex')+'.json';
+  const proof={schema:'forge.interrupted-intake-recovery.v1',at,run:state.sourceRunId,candidatesHash:state.candidatesHash,
+   writerSubmissions:0,status:'PREFLIGHT_FAILED_BEFORE_POST',recorderProbe:probe,halts,carryForwardRequestIds:ids};
+  if(fs.readFileSync(full,'utf8')!==original)throw Error('BLOCKED: interrupted run changed during recovery');
+  save(path.resolve(root,relative),proof);
+  state.reconciliation={status:'RECONCILED_UNSUBMITTED_RUN_WITH_CARRY_FORWARD',at,writerSubmissions:0,
+   proofs:[relative],verifiedRequestIds:[],noWriteRequestIds:[],carryForwardRequestIds:ids};
+  save(full,state);
+  return {status:'RECOVERED',run:state.sourceRunId,verified:0,noWrite:0,carriedForward:ids.length,proof:relative,writerSubmissions:0};
+ }
  // An uncertain response stays fenced. Do not turn a timeout into a no-write.
  if(attempted.some(id=>E.classifyWriterResponse(results[id],id).kind!=='INSERT_ACCEPTED'&&!noWrite(results[id],id)))
   return {status:'UNKNOWN_REMAINS'};
