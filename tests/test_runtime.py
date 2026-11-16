@@ -53,7 +53,7 @@ class ReleaseTests(unittest.TestCase):
         m=copy.deepcopy(self.manifest)
         m['lanes'][task].update(sha256=r.digest(data),blob_sha=r.blob_sha(data))
         with self.assertRaisesRegex(ValueError,'mixed release'):
-            r.verify_packet(m,task,'ChatGPT',data)
+            r.verify_packet(m,task,'Claude',data)
 
     def test_traversal_missing_lane_unknown_schema_rejected(self):
         for alter in (lambda m:m['lanes']['FORGE_POSTING_VALIDATION'].update(file='../CONTROL.txt'),
@@ -64,11 +64,14 @@ class ReleaseTests(unittest.TestCase):
             with self.assertRaises(ValueError): r.validate_manifest(m)
 
     def test_temporary_chatgpt_ownership_and_legacy_provider_rejection(self):
+        # Tim 2026-11-16 12:40 ET: Gofer and posting validation moved to Claude.
+        claude = {'FORGE_APPLICATION_WRITER_GOFER', 'FORGE_POSTING_VALIDATION'}
         for task, lane in self.manifest['lanes'].items():
-            self.assertEqual(lane['owner'], 'ChatGPT')
-            self.assertTrue(r.select_task(self.manifest, 'ChatGPT', task, 0)[1])
-            for former_provider in ('Claude', 'Grok'):
-                self.assertFalse(r.select_task(self.manifest, former_provider, task, 0)[1])
+            owner = 'Claude' if task in claude else 'ChatGPT'
+            self.assertEqual(lane['owner'], owner)
+            self.assertTrue(r.select_task(self.manifest, owner, task, 0)[1])
+            for other in {'ChatGPT', 'Claude', 'Grok'} - {owner}:
+                self.assertFalse(r.select_task(self.manifest, other, task, 0)[1])
         self.assertEqual(self.manifest['addons'], {})
 
     def test_intake_packets_state_the_short_business_rule_once(self):
@@ -93,7 +96,10 @@ class ReleaseTests(unittest.TestCase):
                 if h in expected:
                     task, owned = r.select_task(self.manifest, provider, 'ROTATION', h)
                     self.assertEqual(task, expected[h])
-                    self.assertEqual(owned, provider == 'ChatGPT')
+                    # Slots are kept; since Tim's 2026-11-16 move to Claude the old
+                    # ChatGPT/Grok rotation launchers resolve them but do not own them.
+                    self.assertFalse(owned)
+                    self.assertTrue(r.select_task(self.manifest, 'Claude', task, h)[1])
                 else:
                     with self.assertRaises(ValueError):
                         r.select_task(self.manifest, provider, 'ROTATION', h)
@@ -101,7 +107,8 @@ class ReleaseTests(unittest.TestCase):
         for h, task in expected.items():
             legacy_task = self.manifest['rotations']['Grok'][str(h)]
             self.assertEqual(legacy_task, task)
-            self.assertTrue(r.select_task(self.manifest, 'ChatGPT', legacy_task, h)[1])
+            self.assertTrue(r.select_task(self.manifest, 'Claude', legacy_task, h)[1])
+            self.assertFalse(r.select_task(self.manifest, 'ChatGPT', legacy_task, h)[1])
         for h in range(0, 24, 3):
             self.assertFalse(r.select_task(self.manifest, 'Claude', 'ROTATION', h)[1])
 

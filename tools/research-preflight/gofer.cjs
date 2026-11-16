@@ -59,7 +59,7 @@ function check(root,{now=Date.now(),snapshot,privateDir,previous={}}={}){
  let exceptions={items:[],observations:{},counts:{},errors:[]},research={items:[],counts:{}},sourceAt=null;
  try{
   const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),route=registry.tasks?.[TASK];
-  if(registry.schema!=='forge.ai-automation-tasks.v1'||route?.owner!=='ChatGPT'||route?.retired||route.route!=='runtime')throw Error('CURRENT_GOFER_ROUTE_REQUIRED');
+  if(registry.schema!=='forge.ai-automation-tasks.v1'||!['ChatGPT','Claude'].includes(route?.owner)||route?.retired||route.route!=='runtime')throw Error('CURRENT_GOFER_ROUTE_REQUIRED');
   const work=S.read(root,W.FILE),state=S.read(root,'state/PROGRAMMED_COORDINATOR.json');
   if(work.schema!=='forge.ai-exception-work.v1'||!work.cases||!state.transactions)throw Error('CURRENT_EXCEPTION_QUEUE_REQUIRED');
   if(!privateEvidenceChecked&&!errors.some(e=>e.reason==='PRIVATE_ORIGINAL_EVIDENCE_UNAVAILABLE')&&Object.values(work.cases).some(i=>assigned(i)&&i.kind==='WRITER'&&i.status!=='NO_LONGER_OPEN'))errors.push({reason:'PRIVATE_ORIGINAL_EVIDENCE_UNAVAILABLE'});
