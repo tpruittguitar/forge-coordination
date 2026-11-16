@@ -207,3 +207,9 @@ test('recover then prepare ignores bound refused drain/prior caches but preserve
  a.deepEqual(cached.filter(fence,'unrelated-key'),fence);
  const active=I.load(f.root);Object.assign(active.items[0],{status:'POST_IN_FLIGHT_UNKNOWN',requestId:'NEW-UNCERTAIN'});I.save(f.root,active);a.equal(P.prepare(f).items[0].requestId,'NEW-UNCERTAIN');
 });
+test('READY Writer record carries the captured card description as ROLE_TEXT, capped at 4000 characters, and omits it when none exists',()=>{
+ const f=fixture('Director, Manufacturing'),file=p.join(f.root,'state/EMAIL_RECOVERY_QUEUE.json'),queue=JSON.parse(fs.readFileSync(file)),job=queue.jobs[f.key];
+ a.equal(P.prepare(f).items[0].record.ROLE_TEXT,undefined);
+ job.description='Lead plant launch and process engineering for a greenfield site. '.repeat(100);f.save('state/EMAIL_RECOVERY_QUEUE.json',queue);
+ const record=P.prepare(f).items[0].record;a.equal(record.ROLE_TEXT,job.description.slice(0,4000));a.equal(record.ROLE_TEXT.length,4000);
+});
