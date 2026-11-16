@@ -21,7 +21,12 @@ function timestampMerge(left,right){
  if(a.schema!=='forge.relevance-guard.v1'||!isDeepStrictEqual(a,b)||!Number.isFinite(Date.parse(left.at))||!Number.isFinite(Date.parse(right.at)))return null;
  return Date.parse(left.at)>=Date.parse(right.at)?left:right;
 }
+// On any failure abort the rebase so the checkout is never left mid-rebase:
+// the local commits survive the abort and the next locked run retries them.
 function finishRebase(root){
+ try{finishRebaseSteps(root);}catch(e){git(root,['rebase','--abort'],true);throw e;}
+}
+function finishRebaseSteps(root){
  while(true){
   const unresolved=conflicts(root);
   const exception='state/AI_EXCEPTION_WORK.json';
