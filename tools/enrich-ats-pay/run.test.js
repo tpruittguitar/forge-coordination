@@ -207,6 +207,30 @@ test('dry run: ATS pay, then aggregator pay, estimate only after the posting was
   } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
 });
 
+test('Tim 2026-11-15: Never Consider runs first; a match gets no pay lookup, Staff/Senior Staff/Principal Engineer are never declined', { skip: !fs.existsSync(path.join(FC, 'tests/fixtures/TIM_PIPELINE_RULES_CANONICAL.sample.txt')) && 'no foreman-cockpit checkout' }, () => {
+  const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'nc-first-')), master = path.join(dir, 'master.txt'), rules = path.join(dir, 'rules.txt'), fetches = path.join(dir, 'fetches.txt'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
+  const NC_020 = '- NC-020 IC_ENGINEER: titles containing Engineer, Technician, Inspector, Analyst, Scientist or Specialist with no manager or leadership level. Titles containing Staff Engineer, Senior Staff Engineer or Principal Engineer stay exempt and must never be declined by this rule. ruling=TIM-20261114 (Root declined-jobs review). title_any=engineer|technician|inspector|analyst|scientist|specialist; title_exempt=staff engineer|senior staff engineer|principal engineer; level_exempt=manager|senior manager|director|sr director|senior director|vp|vice president|head|chief|executive|general manager|plant manager|leader';
+  fs.writeFileSync(rules, fs.readFileSync(path.join(FC, 'tests/fixtures/TIM_PIPELINE_RULES_CANONICAL.sample.txt'), 'utf8').replace('SECTION=COMPENSATION_GEOGRAPHY', NC_020 + '\nSECTION=COMPENSATION_GEOGRAPHY'));
+  fs.writeFileSync(master, [
+    row(1, 'V2I-NC-QE', 'Quality Engineer', 'Dayton, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19'),
+    row(2, 'V2I-NC-SSE', 'Senior Staff Engineer', 'Akron, OH', 'SOURCE_URL=https://www.linkedin.com/jobs/view/senior-staff-4012345678; DATE_ADDED=2026-10-18'),
+    row(3, 'V2I-NC-SE', 'Staff Engineer', 'Toledo, OH', 'SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/333; DATE_ADDED=2026-10-17'),
+    row(4, 'V2I-NC-PE', 'Principal Engineer', 'Canton, OH', 'SOURCE_URL=https://example.com/careers/9; DATE_ADDED=2026-10-16'),
+  ].join('\n') + '\n');
+  const before = fs.existsSync(report) ? fs.readFileSync(report) : null;
+  try {
+    cp.execFileSync(process.execPath, ['--require', path.join(__dirname, 'test/mock-fetch.js'), path.join(__dirname, 'run.js'), '--dry'],
+      { env: Object.assign({}, process.env, { ENRICH_FC_DIR: FC, ENRICH_MASTER_FILE: master, ENRICH_RULES_FILE: rules, ENRICH_TEST_FETCHES: fetches, ENRICH_TEST_FAST: '1', ENRICH_BLS_CACHE: path.join(dir, 'bls.json'), ENRICH_EMPLOYER_CACHE: path.join(dir, 'emp.json') }), stdio: 'pipe', timeout: 60000 });
+    const out = JSON.parse(fs.readFileSync(report, 'utf8')), urls = fs.existsSync(fetches) ? fs.readFileSync(fetches, 'utf8') : '';
+    assert.strictEqual(out.never_consider_excluded, 1);
+    assert.strictEqual(out.eligible, 3, 'Staff, Senior Staff and Principal Engineer stay in the pay lane');
+    assert.doesNotMatch(urls, /acme\/jobs\/111/, 'no pay lookup for the never-consider match');
+    assert.match(urls, /acme\/jobs\/333/);
+    assert.ok(!(out.sample || []).some(s => s.id === 'V2I-NC-QE'));
+    assert.strictEqual(out.writer_ok, 0);
+  } finally { if (before) fs.writeFileSync(report, before); else fs.rmSync(report, { force: true }); fs.rmSync(dir, { recursive: true, force: true }); }
+});
+
 test('Tim 2026-10-21 02:15 ET: 2 failed posting reads on different days allow an estimate marked NO_POSTING_READ; 1 does not', { skip: !fs.existsSync(path.join(FC, 'apps-script/PipelineWorklists.gs')) && 'no foreman-cockpit checkout' }, () => {
   const dir = fs.mkdtempSync(path.join(os.tmpdir(), 'rev136-')), master = path.join(dir, 'master.txt'), ledger = path.join(dir, 'ledger.json'), report = path.join(ROOT, 'state/enrich-ats-pay-report.json');
   fs.writeFileSync(master, MASTER);

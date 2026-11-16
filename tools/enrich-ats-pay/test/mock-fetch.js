@@ -32,6 +32,7 @@ globalThis.fetch = async (url, opts) => {
   }
   if(process.env.ENRICH_TEST_CLOCK_MATCH&&String(url).includes(process.env.ENRICH_TEST_CLOCK_MATCH))global.__advancePayClock?.();
   const sent=()=>fs.existsSync(process.env.ENRICH_TEST_POSTS||'')?fs.readFileSync(process.env.ENRICH_TEST_POSTS,'utf8').trim().split('\n').filter(Boolean).map(JSON.parse):[];
+  if(String(url).includes('forge-policy/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt')){const t=fs.readFileSync(require('node:path').join(process.env.ENRICH_FC_DIR,'tests/fixtures/TIM_PIPELINE_RULES_CANONICAL.sample.txt'),'utf8');return {ok:true,status:200,text:async()=>t};}
   if(String(url).includes('forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json'))return {ok:true,status:200,json:async()=>({requests:Object.fromEntries(sent().flatMap(b=>b.requests.map(q=>[q.ruling.requestId,{s:'COMPLETE'}])))})};
   if (/^https:\/\/script\.google\.com\//.test(url)) {   // Writer: row_readback answers from ENRICH_TEST_WRITER_ROWS; batch POSTs are logged
     const W = JSON.parse(fs.readFileSync(process.env.ENRICH_TEST_WRITER_ROWS, 'utf8'));

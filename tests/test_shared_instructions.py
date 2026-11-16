@@ -54,6 +54,20 @@ class SharedInstructionTests(unittest.TestCase):
                        'exact post-COMPLETE row effects', 'numeric overall rating'):
             self.assertIn(phrase, self.common)
 
+    def test_never_consider_runs_first_in_every_shared_contract(self):
+        general = (ROOT / self.registry['common']).read_text()
+        for name, text in (('general', general), ('helper', self.common)):
+            with self.subTest(contract=name):
+                self.assertIn('NEVER CONSIDER FIRST', text)
+                self.assertIn('Tim 2026-11-15', text)
+                self.assertIn('NEVER_CONSIDER', text)
+                self.assertIn("Writer's DECLINE path" if name == 'helper' else "Writer's existing DECLINE path", text)
+                for exempt in ('Staff', 'Senior Staff', 'Principal Engineer'):
+                    self.assertIn(exempt, text)
+                self.assertIn('never declined by', text)
+                # The gate is stated before any lane work instruction in the contract.
+                self.assertLess(text.index('NEVER CONSIDER FIRST'), text.index('WRITE_THROUGH_SUPPORTED_WRITER'))
+
     def test_assignment_backlog_source_and_return_guards_remain(self):
         for phrase in ('enabled, routingActive', 'One active invocation',
                        'largest eligible backlog first', 'No fixed Research-first',
