@@ -34,18 +34,19 @@ function finishRebaseSteps(root){
   // Validate every resolution before modifying or staging any conflicted file.
   const resolutions=[];
   for(const file of unresolved){
+   if(file===exception)continue; // resolved below by taking main's version
    let merged;
    if(file===guard){
-    try{merged=timestampMerge(JSON.parse(git(root,['show',':2:'+guard])),JSON.parse(git(root,['show',':3:'+guard])));}catch{throw Error('Unreadable guard conflict; preserve checkout and lock');}
+    try{merged=timestampMerge(JSON.parse(git(root,['show',':2:'+guard])),JSON.parse(git(root,['show',':3:'+guard])));}catch(e){console.error('publish: unreadable guard conflict in '+guard+': '+e.message);throw Error('Unreadable guard conflict; preserve checkout and lock');}
     if(!merged)throw Error('Semantic guard conflict; preserve checkout and lock');
-   }else if(file===enrichment){
-    try{merged=require('./enrichment-merge.cjs').mergeEnrichmentWork(...[1,2,3].map(stage=>JSON.parse(git(root,['show',':'+stage+':'+file]))));}catch{throw Error('Semantic enrichment accounting conflict; preserve checkout and lock');}
    }else{
-    try{merged=require('./exception-merge.cjs').mergeExceptionWork(root,...[1,2,3].map(stage=>JSON.parse(git(root,['show',':'+stage+':'+file]))));}catch{throw Error('Semantic exception accounting conflict; preserve checkout and lock');}
+    try{merged=require('./enrichment-merge.cjs').mergeEnrichmentWork(...[1,2,3].map(stage=>JSON.parse(git(root,['show',':'+stage+':'+file]))));}catch(e){console.error('publish: enrichment merge failed for '+file+': '+e.message);throw Error('Semantic enrichment accounting conflict; preserve checkout and lock');}
    }
    resolutions.push([file,merged]);
   }
   for(const [file,merged]of resolutions){fs.writeFileSync(path.join(root,file),JSON.stringify(merged,null,2)+'\n');git(root,['add','--',file]);}
+  // During a rebase "ours" is the upstream (main): take main's exception work as-is.
+  if(unresolved.includes(exception)){git(root,['checkout','--ours','--',exception]);git(root,['add','--',exception]);}
   if(git(root,['-c','core.editor=true','rebase','--continue'],true)!==null)return;
  }
 }

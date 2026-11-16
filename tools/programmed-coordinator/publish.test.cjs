@@ -145,3 +145,16 @@ test('concurrent identical enrichment additions with snapshot-only metadata reso
 test('unsafe enrichment conflict aborts the rebase and retains the local commit and immutable receipt',t=>{
  const f=fixture(t);enrichmentBaseline(f);const l=enrichmentWork(),r=enrichmentWork();l.items[0].status='CONSUMED';r.items[0].status='RELEASED';save(f.local,enrichFile,l);save(f.local,guard,value('2026-11-13T02:00:00Z'));save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{preserve:true});commit(f.local,'local changes');save(f.bot,enrichFile,r);save(f.bot,guard,value('2026-11-13T01:00:00Z'));commit(f.bot,'remote changes');g(f.bot,'push','origin','main');a.throws(()=>publish(f.local),/Semantic enrichment/);aborted(f.local);a.deepEqual(JSON.parse(g(f.local,'show','HEAD:'+enrichFile)),l);a.equal(JSON.parse(g(f.local,'show','HEAD:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).preserve,true);
 });
+test('rebase conflict on AI_EXCEPTION_WORK.json takes main\'s version and finishes the rebase',t=>{
+ const f=fixture(t),file='state/AI_EXCEPTION_WORK.json';
+ const base={cases:[{id:'c1',status:'OPEN',review:null,lastAttempt:null,lastSeen:'2026-11-01T00:00:00Z'}]};
+ save(f.local,file,base);commit(f.local,'exception baseline');g(f.local,'push','origin','main');g(f.bot,'pull','--ff-only','origin','main');
+ const mainVer={cases:[{id:'c1',status:'OPEN',review:'reviewed-on-main',lastAttempt:'2026-11-02T01:00:00Z',lastSeen:'2026-11-01T00:00:00Z'}]};
+ save(f.bot,file,mainVer);commit(f.bot,'main changes review/lastAttempt');g(f.bot,'push','origin','main');
+ save(f.local,file,{cases:[{id:'c1',status:'RETRY',review:null,lastAttempt:null,lastSeen:'2026-11-03T00:00:00Z'}]});save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{runId:'test'});commit(f.local,'coordinator changes lastSeen/status');
+ a.equal(publish(f.local).published,true);
+ aborted(f.local);
+ a.deepEqual(JSON.parse(g(f.local,'show','origin/main:'+file)),mainVer);
+ a.deepEqual(JSON.parse(fs.readFileSync(p.join(f.local,file),'utf8')),mainVer);
+ a.equal(JSON.parse(g(f.local,'show','origin/main:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'test');
+});
