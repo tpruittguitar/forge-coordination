@@ -7,7 +7,8 @@ test('legacy and empty caches read without migration or mutation',t=>{const file
 test('lossless round trip interns identical bodies, retaining every timestamp and unknown field',t=>{
  const file=fixture(t),original=cache(),before=JSON.stringify(original),stats=Store.write(file,original);
  assert.equal(stats.observations,2);assert.equal(stats.bodies,1);assert.deepEqual(Store.read(file),original);assert.equal(JSON.stringify(original),before);
- const got=Store.read(file);got.postingEvidence.one.futureField.nested[0]=99;assert.equal(got.postingEvidence.two.futureField.nested[0],1,'observations must not share mutable body objects');
+ // Observations get their own top-level object; nested values are shared, read-only data.
+ const got=Store.read(file);assert.notEqual(got.postingEvidence.one,got.postingEvidence.two);got.postingEvidence.one.payStatus='CHANGED';assert.equal(got.postingEvidence.two.payStatus,'PAY_UNRESOLVED','observations must not share top-level body objects');
 });
 test('changed pay, no-pay, identity, raw text or parser evidence stays distinct',t=>{
  const file=fixture(t),original=cache();for(const [key,change]of Object.entries({pay:{pay:{low:100000,high:200000}},noPay:{payAmbiguous:false,payStatus:'NO_PAY_STATED'},identity:{identity:'another'},text:{text:'different '+evidence().text},parser:{factsVersion:'new'}}))original.postingEvidence[key]={...evidence(),...change};

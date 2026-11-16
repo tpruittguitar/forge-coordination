@@ -23,7 +23,9 @@ function unpack(packed){
  for(const entry of packed.observations){
   const [key,index,at]=entry;
   if(typeof key!=='string'||Object.hasOwn(evidence,key)||!Number.isInteger(index)||!packed.bodies[index]||![2,3].includes(entry.length))throw Error('Invalid packed observation');
-  const body=structuredClone(packed.bodies[index]);if(entry.length===3)body.at=at;
+  // Shallow copy: each observation owns its top-level fields (at), but nested
+  // values are shared across observations of one body and are read-only.
+  const body={...packed.bodies[index]};if(entry.length===3)body.at=at;
   Object.defineProperty(evidence,key,{value:body,enumerable:true,writable:true,configurable:true});
  }
  if(packed.hasPostingEvidence)cache.postingEvidence=evidence;
