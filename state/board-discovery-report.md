@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261116T0937Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261116T1444Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (95 read, 9 failed) | 112 | 24 | 64 |
+| Employer job boards (96 read, 20 failed) | 106 | 24 | 60 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,15 +19,15 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 15 | 41 |
-| SR_MANAGER | 8 | 18 |
+| DIRECTOR_PLUS | 16 | 38 |
+| SR_MANAGER | 7 | 17 |
 | SR_STAFF | 1 | 5 |
 
 ## New roles
 
 | Source | Company | Title | Location | Family | Level | Pay |
 |---|---|---|---|---|---|---|
-| BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
+| BOARD:workday | P3 Oshkosh Corporation | [VP, Global Operations](https://oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh/job/Orlando-Florida-United-States/VP--Global-Operations_R50173) | Orlando, Florida, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
