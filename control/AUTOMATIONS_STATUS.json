@@ -1,5 +1,5 @@
 {
- "generated_at": "2026-11-16T19:02:02.973Z",
+ "generated_at": "2026-11-16T19:23:58.571Z",
  "schema": "forge.automations-status.v1",
  "automations": [
   {
@@ -42,9 +42,9 @@
    "ai": "ChatGPT",
    "name": "FORGE_APPLICATION_OUTCOME_TRACKER",
    "schedule": "RRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0",
-   "last_run_at": "2026-11-16T18:23:32.106Z",
+   "last_run_at": "2026-11-16T19:22:23.660Z",
    "result": "OK",
-   "next_run_at": "2026-11-16T19:22:00.000Z",
+   "next_run_at": "2026-11-16T20:22:00.000Z",
    "running": false,
    "started_at": null,
    "stale": false,
@@ -54,9 +54,9 @@
    "ai": "ChatGPT",
    "name": "FORGE_AI_USAGE_READER",
    "schedule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0",
-   "last_run_at": "2026-11-16T13:10:17.990Z",
+   "last_run_at": "2026-11-16T19:12:04.000Z",
    "result": "OK",
-   "next_run_at": "2026-11-16T19:05:00.000Z",
+   "next_run_at": "2026-11-17T01:05:00.000Z",
    "running": false,
    "started_at": null,
    "stale": false,
@@ -164,7 +164,7 @@
    "schedule": "\"Hourly at minute 12, America/New_York\"",
    "last_run_at": null,
    "result": "STALE",
-   "next_run_at": "2026-11-16T19:12:00.000Z",
+   "next_run_at": "2026-11-16T20:12:00.000Z",
    "running": false,
    "started_at": null,
    "stale": true,
@@ -1911,18 +1911,18 @@
    "name": "FORGE_APPLICATION_OUTCOME_TRACKER",
    "start": "2026-11-16T18:22:00.000Z",
    "end": "2026-11-16T18:32:00.000Z",
-   "result": "OK",
+   "result": "NO_RECEIPT",
    "writer": false,
-   "expected": false
+   "expected": true
   },
   {
    "ai": "ChatGPT",
    "name": "FORGE_APPLICATION_OUTCOME_TRACKER",
    "start": "2026-11-16T19:22:00.000Z",
    "end": "2026-11-16T19:32:00.000Z",
-   "result": "UPCOMING",
+   "result": "OK",
    "writer": false,
-   "expected": true
+   "expected": false
   },
   {
    "ai": "ChatGPT",
@@ -2271,18 +2271,18 @@
    "name": "FORGE_AI_USAGE_READER",
    "start": "2026-11-16T13:05:00.000Z",
    "end": "2026-11-16T13:15:00.000Z",
-   "result": "OK",
+   "result": "NO_RECEIPT",
    "writer": false,
-   "expected": false
+   "expected": true
   },
   {
    "ai": "ChatGPT",
    "name": "FORGE_AI_USAGE_READER",
    "start": "2026-11-16T19:05:00.000Z",
    "end": "2026-11-16T19:15:00.000Z",
-   "result": "UPCOMING",
+   "result": "OK",
    "writer": false,
-   "expected": true
+   "expected": false
   },
   {
    "ai": "ChatGPT",
@@ -2703,7 +2703,7 @@
    "name": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
    "start": "2026-11-16T19:12:00.000Z",
    "end": "2026-11-16T19:22:00.000Z",
-   "result": "UPCOMING",
+   "result": "NO_RECEIPT",
    "writer": false,
    "expected": true
   },
@@ -4318,13 +4318,13 @@
    "source": null
   },
   "last_write_age_min": {
-   "value": 62,
+   "value": 24,
    "status": "green",
    "source": "state/WRITER_ACTIVITY.json buckets"
   },
   "writes_per_hour": {
-   "value": 0.67,
-   "status": "amber",
+   "value": 1.17,
+   "status": "green",
    "source": "state/WRITER_ACTIVITY.json buckets (last 6 h)"
   },
   "error_rate": {
