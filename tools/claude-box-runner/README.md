@@ -1,7 +1,9 @@
 # Claude box runner
 
 Runs the six Forge lanes moved from ChatGPT/Codex on TIMMAY to headless Claude Code
-(`claude -p`) on the shared Linux box (Tim, 2026-11-16 12:40 PM ET).
+(`claude -p`) on the shared Linux box (Tim, 2026-11-16 12:40 PM ET), plus
+FORGE_CLAUDE_SHARED_HELPER (hourly :25), which also covers the retired Grok shared helper
+(#398; scheduled by President decision, Nov 17, 2026, 9:05 AM ET).
 
 - `crontab.txt` — 5-field cron lines in America/New_York + TASK_KEY.
 - `scheduler.js` — zero-dependency daemon: checks once a minute, starts due lanes

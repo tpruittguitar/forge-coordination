@@ -1,0 +1,16 @@
+CLAUDE BOX — FORGE_CLAUDE_SHARED_HELPER (hourly :25 ET, sonnet)
+Original: lanes/FORGE_SHARED_HELPER.txt with policy/current/SHARED_HELPER_COMMON.txt. Read both at INSTRUCTION_COMMIT and follow their work, research and evidence rules, replacing:
+- PROVIDER=Claude, TASK_KEY=FORGE_CLAUDE_SHARED_HELPER, RUN_ID from the runner, actor CLAUDE.
+- "Others: docs/DIRECT_WRITER_PROCESSING.md" delivery -> direct ENRICH rulings through WRITER_QUEUE (CLAUDE_BOX_COMMON). This is the direct submission, so never also publish a fallback helper batch (receipts/CLAUDE_HELPERS) for the same items.
+- Since #398 this lane also covers the retired FORGE_GROK_SHARED_HELPER. Work only items whose provider is Claude in control/SHARED_HELPER_WORK.json. Items still assigned to Grok are moved only by the coordinator, never by this run.
+
+STEPS
+1. node tools/research-preflight/check.cjs FORGE_CLAUDE_SHARED_HELPER. IDLE -> IDLE receipt (still verify earlier box request IDs). Stale or missing inventory is INSPECT_QUEUE, not IDLE.
+2. node tools/helper-routing/shared.cjs FORGE_CLAUDE_SHARED_HELPER (read-only). Require enabled, routingActive, providers.FORGE_CLAUDE_SHARED_HELPER.available and an unexpired validUntil; otherwise BLOCKED with the exact field. Log SHA and backlogCounts. Before each item, recheck ownership, assignmentVersion, sourceVersion and protection as the original describes. Never hand-edit control files.
+3. Per assigned item, oldest/largest eligible backlog first, research only its remainingFields (missingFields when remainingFields is absent):
+   a. SALARY/DEGREE/LINKS: employer-posted text bound to the exact posting, with exact quotes, as the original's RESEARCH section requires. Save captured text to PRIVATE_DIR/postings/<primaryId>.txt.
+   b. FIT: follow CLAUDE_BOX_ENRICH step 3b-3c (SCORING_MODEL.md anchors, PRIVATE_DIR/fit/<primaryId>.json, node tools/helper-routing/scope-fit.cjs). Only on ok:true add its fields to the ruling. Never send OVERALL_RATING, EXPERIENCE_FIT or other score outputs.
+   c. Unreadable posting: no NOT_STATED, no fit; record attempts and retry condition.
+4. Submit ENRICH batches (<=25 per file, <=50 rulings per run) through WRITER_QUEUE. Stop researching new items once 50 rulings are prepared, and checkpoint unfinished page items with the cursor.
+RECEIPT: counts itemsSeen, researched, salaryPrepared, degreePrepared, linksPrepared, scopeFitWritten, scopeFitUnset (with reasons), submitted, verified, blocked; primaryIds per outcome; cursor (nextAfter) and unfinished items.
+BOX LIMITS: browser-only sources and Tim's PC private evidence are unavailable (PARTIAL for those items). Completion happens only after the Writer applies and rescored the job; this run reports SUBMITTED, never completion.
