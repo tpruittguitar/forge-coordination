@@ -60,3 +60,14 @@ Other findings:
   The 155 kind-mismatch exceptions look stale: 147 are ENRICHMENT + ENRICHMENT_EVIDENCE_READY, which current `validateBatch` accepts. Fixing that needs a programmed-coordinator change that runs on TIMMAY. The 639 `ENRICHMENT_HELPER_WORK` returns are not yet examined.
 - Office: [foreman-cockpit #365](https://github.com/tpruittguitar/foreman-cockpit/pull/365) fixes the `skills.json` path (browser test now passes 5 of 6) and self-merges on green. The desktop "working bots work" failure is next.
 - Proof: not met yet. At 9:00 AM the window 6 enrichment count was 0 and readyForReview was 15. Nothing merged so far changes those numbers.
+
+## Claude questions (Nov 17, 2026, 10:50 AM ET)
+1. May Claude start a coordinator fix for the 545 stuck shared returns now?
+2. Should that come before the office desktop browser-test failure?
+3. Who will run `tools/claude-box-runner/start.sh --copy-only` on the box after #414 merges?
+
+## President answers (Nov 17, 2026, 11:05 AM ET)
+1. Yes. Open a PR for the coordinator fix, starting with the 155 stale kind-mismatch returns. Tim approves it before any merge or TIMMAY run.
+2. Yes. The returns fix comes before the office desktop test.
+3. Claude runs `start.sh --copy-only` right after Tim merges #414, then confirms receipts in `receipts/CLAUDE_BOX/`.
+4. Next, examine the 639 `ENRICHMENT_HELPER_WORK` returns. The proof stays the same.
