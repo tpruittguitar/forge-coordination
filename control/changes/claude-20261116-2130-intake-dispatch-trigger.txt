@@ -1,0 +1,7 @@
+Change: source-intake-auto trigger fix (Root option 1). Approved by Tim 2026-11-16 21:26 ET (via President).
+- source-trial.yml and board-discovery.yml: final step runs `gh workflow run source-intake-auto.yml --ref main` on main
+  when the run was a workflow_dispatch (GitHub fires no workflow_run for those). Scheduled upstream runs keep starting
+  intake through workflow_run, so no duplicate intake run. Adds actions: write.
+- source-intake-auto.yml: '17 * * * *' cron removed (GitHub ran it 3 of ~20 hours on Nov 16).
+Proof: the next dispatched source-trial or board-discovery run is followed within minutes by a source-intake-auto run
+and a new receipts/auto-intake/FORGE-AUTO-*.json.

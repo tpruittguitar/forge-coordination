@@ -10,6 +10,7 @@ on:
     paths: ['tools/source-trial/**', '.github/workflows/board-discovery.yml']
 permissions:
   contents: write
+  actions: write   # start source-intake-auto after a dispatched run
 concurrency:
   group: board-discovery-${{ github.event.pull_request.number || github.ref }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
@@ -63,3 +64,8 @@ jobs:
             cp /tmp/out/* state/
           done
           exit 1
+      - name: Start source intake (a dispatched run fires no workflow_run; Tim 2026-11-16 21:26 ET)
+        if: github.ref == 'refs/heads/main' && github.event_name == 'workflow_dispatch'
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: gh workflow run source-intake-auto.yml --ref main --repo "${{ github.repository }}"
