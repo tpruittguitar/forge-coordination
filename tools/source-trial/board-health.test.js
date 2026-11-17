@@ -60,3 +60,24 @@ test('persistent employer outages back off without hiding failure or losing last
 
 test('Workday requires an explicit locale even when the endpoint and JSON body are correct',async()=>{let calls=0;const r=await H.readBoard(board,['Quality','Manufacturing','Production'],{wait:async()=>{},fetcher:async(u,o)=>{calls++;assert.equal(o.headers['accept-language'],'en-US');return ok({jobPostings:[{title:'Director Quality',externalPath:'/job/1',locationsText:'Austin, TX'}]});}});assert.equal(r.status,'OK');assert.equal(calls,3);assert.equal(r.jobs.length,1);});
 test('HTTP200 HTML or truncated JSON is retried; persistent malformed content remains a fault',async()=>{let calls=0;const r=await H.jsonRequest({url:'https://example.com/jobs'},{wait:async()=>{},fetcher:async()=>++calls===1?{ok:true,status:200,json:async()=>{throw SyntaxError('HTML maintenance page')}}:ok({jobPostings:[]})});assert.equal(calls,2);assert.equal(r.attempts,2);calls=0;await assert.rejects(H.jsonRequest({url:'https://example.com/jobs'},{wait:async()=>{},fetcher:async()=>{calls++;return {ok:true,status:200,json:async()=>{throw SyntaxError('truncated')}}}}),/after 3 attempts/);assert.equal(calls,3);});
+test('a 429 is never retried inside the run, even with a short Retry-After, and ends that board attempt',async()=>{
+ let calls=0;
+ await assert.rejects(H.jsonRequest({url:'https://example.com/jobs'},{fetcher:async()=>{calls++;return {ok:false,status:429,headers:{get:()=> '1'}}},wait:async()=>assert.fail('must not wait to retry')}),e=>e.status===429&&e.retryAfterMs===1000);
+ assert.equal(calls,1);
+ calls=0;const r=await H.readBoard(board,['Quality','Manufacturing'],{wait:async()=>{},fetcher:async()=>{calls++;return {ok:false,status:429,headers:{get:()=> null}}}});
+ assert.equal(calls,1);assert.equal(r.status,'TEMPORARY_FAILURE');assert.equal(r.httpStatus,429);assert.equal(r.failed,1);
+});
+test('Workday requests are spaced by the named gap before every request, retries and the tenant lookup included; other boards are not slowed',async()=>{
+ assert.equal(H.WORKDAY_GAP_MS,3000);
+ const waits=[],b={...board,tenant:'vhr-otsuka'};
+ await H.readBoard(b,['Quality'],{wait:async n=>waits.push(n),gapMs:300,fetcher:async(url,opts)=>{
+  if(opts.method==='POST')return url.includes('/vhr_otsuka/')?ok({jobPostings:[]}):{ok:false,status:422};
+  return {ok:true,text:async()=>`tenant: "vhr_otsuka", siteId: "Careers"`};
+ }});
+ assert.deepEqual(waits,[3000,3000,3000]);
+ let calls=0;const retryWaits=[];
+ await H.readBoard(board,['Quality'],{wait:async n=>retryWaits.push(n),fetcher:async()=>++calls<2?{ok:false,status:503}:ok({jobPostings:[]})});
+ assert.deepEqual(retryWaits,[3000,3000]);
+ const other=[];await H.readBoard({...board,kind:'ashby',board:'acme'},[],{wait:async n=>other.push(n),gapMs:300,fetcher:async()=>ok({jobs:[]})});
+ assert.deepEqual(other,[300]);
+});

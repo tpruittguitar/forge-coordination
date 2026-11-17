@@ -9,6 +9,7 @@ const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
 const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./site-estimate.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const SiteEstimate=require('./site-estimate');
+const WorkdayWindow=require('./workday-window');
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
 const salarySource=e=>e.siteEstimate?'site-estimate:'+e.siteEstimate.sourceUrl:e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
@@ -208,7 +209,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const preparationSources=new Map();
   const requests = prepared.map((e,i)=>({action:'ruling',ruling:{requestId:RUN_ID+'-PREP'+i,primaryId:e.row.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:structuredClone(e.fields)}})), estSamples = []; let aggFetches = 0; const blocked = {}; Object.assign(stats, { agg_tried: {}, agg_read: {}, agg_pay: {}, agg_failed: {}, agg_errors: {}, agg_wall: {} });
   Object.assign(stats,{source_reads:0,source_retries:0,source_duplicate_skips:0});
-  const providerAllowed=url=>{const p=SourceReads.provider(url);return !p||!(CONFIG.aggregatorsOff||[]).includes(p)&&aggFetches<CONFIG.maxAggregatorFetches&&(blocked[p]||0)<3;};
+  const providerAllowed=url=>{if(WorkdayWindow.paused(url)){stats.workday_board_window_skips=(stats.workday_board_window_skips||0)+1;return false;}const p=SourceReads.provider(url);return !p||!(CONFIG.aggregatorsOff||[]).includes(p)&&aggFetches<CONFIG.maxAggregatorFetches&&(blocked[p]||0)<3;};
   function aggregatorResult(kind,parsed){
     if(!parsed||parsed.wall){stats.agg_wall[kind]=(stats.agg_wall[kind]||0)+1;blocked[kind]=(blocked[kind]||0)+1;}
     else blocked[kind]=0;
@@ -226,6 +227,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   Object.assign(stats, { est_same_employer: 0, est_comparables: 0, boards_read: 0, boards_failed: 0, bls: { OK: 0, ABOVE: 0, BELOW: 0, NO_BLS: 0 }, bls_queries: 0 });
   async function employerPostings(b, row) {
     if(!runtime.canStart())return [];
+    if(b.kind==='workday'&&WorkdayWindow.active()){stats.workday_board_window_skips=(stats.workday_board_window_skips||0)+1;return [];}
     const key = b.kind === 'workday' ? b.key + '|' + row.TITLE : b.key;
     if (boards[key]) return boards[key];
     if (boardFetches >= (CONFIG.maxBoardFetches || 20)) return [];
@@ -439,7 +441,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     Object.assign(f,RetainedFields.fields(n,saved));
     const apiEvidence=api&&postingCache.find(r,[api.page]);
     const needsSourceRead=()=>!SiteEstimate.routed(r,siteInput)||n.includes('DEGREE')&&!checked&&!f.DEGREE_REQ;
-    if (api && !helperResearch && needsSourceRead() && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
+    if (api && !WorkdayWindow.paused(api.api) && !helperResearch && needsSourceRead() && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
       stats.ats_rows++; attempted = true;
       try {
         const parsed = Recovery.exactApi(r,api,JSON.parse(await sourceReads.read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
@@ -557,6 +559,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     for(const url of skipSalaryLookup?[]:reviewUrls){
       const retained=postingCache.find(reviewRow,[url]);if(exact||retained&&!retained.payNeedsRefresh)continue;
       if(attempts>=2||review.target_reads>=(CONFIG.maxSalaryReviewReads??6)||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
+      if(WorkdayWindow.paused(L.atsApi(url)?.api||url))continue;
       attempts++;review.target_reads++;
       try{await sleep(CONFIG.fetchGapMs);const api=L.atsApi(url),response=await get(api?api.api:url,{headers:{'user-agent':CONFIG.userAgent},signal:AbortSignal.timeout(15000)});
         const parsed=api?Recovery.exactApi(r,api,await response.json()):SourceSearch.parsePosting(await response.text(),{co:Employer.resolve(r).COMPANY,title:r.TITLE,location:r.LOCATION,sourceUrl:url});

@@ -2,16 +2,20 @@
 const P=require('../enrich-ats-pay/lib');
 const ADDRESSES=require('./board-addresses.json');
 const TRANSIENT=new Set([408,429,500,502,503,504]);
+/* A 429 is never retried inside a run: it ends this board's attempt, and retryAt backs the board off for later runs. */
+const NO_RETRY_IN_RUN=new Set([429]);
+/* Minimum spacing between consecutive Workday requests, including retries and the tenant-recovery lookup. */
+const WORKDAY_GAP_MS=3000;
 function repair(b){return b&&ADDRESSES[b.key]?{...b,...ADDRESSES[b.key],repairedFrom:b.key}:b;}
 function failure(status){return status===401||status===403?'ACCESS_RESTRICTED':status===404||status===410||status===422?'ADDRESS_OR_REQUEST_ERROR':TRANSIENT.has(status)||!status?'TEMPORARY_FAILURE':'INVALID_RESPONSE';}
-async function jsonRequest(req,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),attempts=3}={}){
+async function jsonRequest(req,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),attempts=3,gapMs=0}={}){
  let count=0;
  while(++count<=attempts){
   let r;
   try{r=await fetcher(req.url,{method:req.method||'GET',headers:{accept:'application/json','accept-language':'en-US',...(req.body?{'content-type':'application/json'}:{})},...(req.body?{body:req.body}:{}),signal:AbortSignal.timeout(20000)});}
-  catch(e){if(count<attempts){await wait(500*2**(count-1));continue;}const err=Error('Connection timeout or network failure');err.attempts=count;throw err;}
+  catch(e){if(count<attempts){await wait(Math.max(500*2**(count-1),gapMs));continue;}const err=Error('Connection timeout or network failure');err.attempts=count;throw err;}
   if(!r.ok){const header=r.headers?.get?.('retry-after'),seconds=Number(header),retryMs=header?Math.max(0,Number.isFinite(seconds)?seconds*1000:Date.parse(header)-Date.now()):0;
-   if(TRANSIENT.has(r.status)&&count<attempts&&!(retryMs>20000)){await wait(Math.max(500*2**(count-1),Number.isFinite(retryMs)?retryMs:0));continue;}
+   if(TRANSIENT.has(r.status)&&!NO_RETRY_IN_RUN.has(r.status)&&count<attempts&&!(retryMs>20000)){await wait(Math.max(500*2**(count-1),gapMs,Number.isFinite(retryMs)?retryMs:0));continue;}
    const err=Error('HTTP '+r.status);err.status=r.status;err.attempts=count;err.retryAfterMs=Number.isFinite(retryMs)?retryMs:0;throw err;
   }
   try{return {data:await r.json(),attempts:count};}catch{if(count<attempts){await wait(500*2**(count-1));continue;}const err=Error('Invalid job-board response after '+count+' attempts');err.status=r.status;err.attempts=count;throw err;}
@@ -27,15 +31,16 @@ async function workdayConfig(b,fetcher=fetch){
  return tenant&&site&&site.toLowerCase()===b.site.toLowerCase()?{...b,tenant,site}:null;
 }
 async function readBoard(board,searches,{fetcher=fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),gapMs=0}={}){
+ const workday=board.kind==='workday',gap=workday?Math.max(gapMs,WORKDAY_GAP_MS):gapMs,spacing={fetcher,wait,gapMs:workday?WORKDAY_GAP_MS:0};
  let b=board;const jobs=[],seen=new Set();let succeeded=0,failed=0,attempts=0,lastError=null,tenantRecovered=false;
  for(const search of b.kind==='workday'&&searches.length?searches:['']){
-  await wait(gapMs);let answer;
+  await wait(gap);let answer;
   try{
-   try{answer=await jsonRequest(P.boardListRequest(b,search),{fetcher,wait});}
+   try{answer=await jsonRequest(P.boardListRequest(b,search),spacing);}
    catch(e){if(b.kind!=='workday'||e.status!==422)throw e;
-    let config=null;try{config=await workdayConfig(b,fetcher);}catch{}
+    await wait(gap);let config=null;try{config=await workdayConfig(b,fetcher);}catch{}
     if(!config||config.tenant===b.tenant&&config.site===b.site)throw e;
-    attempts+=e.attempts||1;b=config;tenantRecovered=true;answer=await jsonRequest(P.boardListRequest(b,search),{fetcher,wait});
+    attempts+=e.attempts||1;b=config;tenantRecovered=true;await wait(gap);answer=await jsonRequest(P.boardListRequest(b,search),spacing);
    }
    attempts+=answer.attempts;if(!validAnswer(b,answer.data)){const e=Error('Unsupported job-board schema');e.status=200;throw e;}
    succeeded++;for(const job of P.parseBoard(b,answer.data)){const key=job.page||job.title;if(!seen.has(key)){seen.add(key);jobs.push(job);}}
@@ -55,4 +60,4 @@ function recoveryBoards(state,paused,now=Date.now()){
  return Object.values(state.boards).filter(h=>!h.paused&&h.status!=='OK'&&h.descriptor&&Date.parse(h.retryAt||0)<=now&&!h.companies.every(c=>paused.has(P.normCo(c)))).sort((a,b)=>Date.parse(a.lastAttemptAt)-Date.parse(b.lastAttemptAt)).map(h=>({...repair(h.descriptor),companies:new Set(h.companies),tier:h.descriptor.tier||''}));
 }
 function summary(state,paused){const rows=Object.values(state.boards).filter(h=>!h.paused&&!h.companies.every(c=>paused.has(P.normCo(c))));return {tracked:rows.length,pending:rows.filter(h=>h.status!=='OK').length,unavailable:rows.filter(h=>h.status==='ACCESS_RESTRICTED'||h.status==='TEMPORARY_FAILURE').length};}
-module.exports={repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};
+module.exports={WORKDAY_GAP_MS,repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};
