@@ -2,6 +2,7 @@
 
 // Keep this projection aligned with foreman-cockpit's pipeline-health fallback.
 // Counts include every candidate; URLs alone are de-duplicated for the union.
+// failedBoards is null, not 0, when the pass read no boards (TRIAL_SKIP_BOARDS): nothing was checked.
 function discoveryHealth(report) {
   if (!report?.summary?.at || !Array.isArray(report.new_roles)) {
     throw new Error('Unsupported discovery report');
@@ -15,7 +16,7 @@ function discoveryHealth(report) {
   return {
     schema: 'forge.discovery-health.v1',
     at: report.summary.at,
-    failedBoards: report.summary.boards?.failed || 0,
+    failedBoards: report.summary.boards?.read === 0 ? null : report.summary.boards?.failed || 0,
     candidates: report.new_roles.length,
     urls: [...urls],
   };
