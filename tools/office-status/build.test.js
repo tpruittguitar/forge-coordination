@@ -44,6 +44,22 @@ test('working + newest activity 3 h old -> idle', () => {
   const fresh = B.build(o, [{ bot: 'ChatGPT', at: NOW - 30 * 60000, source: 'new receipt' }], NOW).doc;
   assert.equal(row(fresh, 'ChatGPT').status, 'working');
 });
+test('idle + fresh signal -> working (ACTIVE_WINDOW promote)', () => {
+  const o = office(); o.bots[2].status = 'idle'; o.bots[2].last_action_at = new Date(NOW - 3 * H).toISOString();
+  const { doc } = B.build(o, [{ bot: 'ChatGPT', at: NOW - 5 * 60000, source: 'fresh commit' }], NOW);
+  assert.equal(row(doc, 'ChatGPT').status, 'working');
+});
+test('working + signal 31 min old -> idle (ACTIVE_WINDOW demote)', () => {
+  const o = office(); o.bots[2].last_action_at = new Date(NOW - 31 * 60000).toISOString();
+  const { doc } = B.build(o, [], NOW);
+  assert.equal(row(doc, 'ChatGPT').status, 'idle');
+  assert.equal(B.ACTIVE_WINDOW, 30 * 60000);
+});
+test('needs_tim with a fresh signal is never promoted', () => {
+  const o = office();
+  const { doc } = B.build(o, [{ bot: 'Claude', at: NOW - 60000, source: 'fresh' }], NOW);
+  assert.equal(row(doc, 'Claude').status, 'needs_tim');
+});
 test('needs_tim status and top-level needs_tim are never touched', () => {
   const o = office(); o.bots[1].last_action_at = new Date(NOW - 10 * H).toISOString();
   const { doc } = B.build(o, [{ bot: 'Claude', at: NOW - 6 * H, source: 'receipt' }], NOW);
@@ -104,7 +120,8 @@ test('usage picks newest weekly OK per provider by timestamp, not file order', (
   assert.equal(doc.usage.as_of, '2026-11-16T13:12:00Z');
   assert.equal(doc.usage.next_check_at, '2026-11-16T19:05:00Z');
   assert.deepEqual(o.usage, office().usage);
-  assert.equal(B.build(doc, [], NOW + 60000, text).changed, false);
+  // same instant: the President fixture row sits exactly at the 30-min ACTIVE_WINDOW edge, so +1 min would rightly flip it idle
+  assert.equal(B.build(doc, [], NOW, text).changed, false);
 });
 test('newest non-OK keeps last OK values and flags failure; recovery clears flag', () => {
   const rows = [reading('CLAUDE', '2026-11-16T14:00:00Z', null, 'UNREADABLE'), reading('CLAUDE', '2026-11-16T13:00:00Z', 36)];

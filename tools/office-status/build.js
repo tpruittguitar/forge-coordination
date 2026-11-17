@@ -12,7 +12,8 @@
    Merge rule (everything hand-written is kept: task text, needs_tim, bot list/order, avatars, ids, screens ...):
      - last_action_at moves only FORWARD, to the newest real signal; signals more than 1 min in the future are ignored.
      - each bot with a signal gets "last_signal": {"at","source"} (also never moves backwards).
-     - status "working" whose newest activity (last_action_at or last_signal) is more than 2 h old becomes "idle".
+     - status "working" or "idle" is set from the newest activity (last_action_at or last_signal): within 30 min (ACTIVE_WINDOW)
+       it is "working", older it is "idle".
        needs_tim / waiting_tim / blocked / anything else is never touched.
      - top-level updated_at changes only when bot rows or usage changed. Output: 2-space JSON, existing key order, newline.
    Not readable from this repo (gaps): office-mailbox start/finish lines (private repo), Grok Bot chat/terminal
@@ -20,13 +21,13 @@
    QA bot, Sniffer, Comp, Archive, Usage Budget, HR - Bot Trainer, Gauge, Edgar. */
 'use strict';
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
-const MIN = 60000, HOUR = 60 * MIN, IDLE_AFTER = 2 * HOUR, FUTURE_SLACK = MIN;
+const MIN = 60000, HOUR = 60 * MIN, ACTIVE_WINDOW = 30 * MIN, FUTURE_SLACK = MIN;
 const OUT = 'control/OFFICE_STATUS.json';
 const ask = require('./ask.js');   // asks/open is the single source for needs_tim
 
 /* Which office row each signal belongs to. Provider tokens come from receipt names, change-record names and PROVIDER=. */
 const PROVIDER_BOT = { CHATGPT: 'ChatGPT', CLAUDE: 'Claude', PRESIDENT: 'President' };
-const AUTHOR_BOT = { 'President (Grok Bot)': 'President', ForgeChatGPT: 'ChatGPT' };
+const AUTHOR_BOT = { 'President (Grok Bot)': 'President', ForgeChatGPT: 'ChatGPT', 'forge-code-coordinator': 'ChatGPT' };
 const AI_BOT = { ChatGPT: 'ChatGPT', Claude: 'Claude' };   // AUTOMATIONS_STATUS / AI_AUTOMATION_TASKS owner -> office row
 
 const time = v => { if (v == null || v === '') return null; const t = Date.parse(v); return Number.isFinite(t) ? t : null; };
@@ -141,9 +142,9 @@ function mergeBot(row, sig, now) {
     const cur = time(r.last_action_at);
     if (cur == null || sig.at > cur) r.last_action_at = iso(sig.at);
   }
-  if (r.status === 'working') {
+  if (r.status === 'working' || r.status === 'idle') {
     const ts = [time(r.last_action_at), r.last_signal && time(r.last_signal.at)].filter(t => t != null && t <= now + FUTURE_SLACK);
-    if (ts.length && now - Math.max(...ts) > IDLE_AFTER) r.status = 'idle';
+    if (ts.length) r.status = now - Math.max(...ts) > ACTIVE_WINDOW ? 'idle' : 'working';
   }
   return r;
 }
@@ -204,4 +205,4 @@ if (require.main === module) {
   if (changed) fs.writeFileSync(file, serialize(doc));
   console.log(changed ? 'wrote OFFICE_STATUS.json (bot rows and usage refreshed)' : 'OFFICE_STATUS.json unchanged');
 }
-module.exports = { nextCheckAt, usageFromReadings, build, serialize, mergeBot, newestByBot, receiptSignals, changeSignals, changeRecordName, gitSignals, automationSignals, etToUtc, IDLE_AFTER };
+module.exports = { nextCheckAt, usageFromReadings, build, serialize, mergeBot, newestByBot, receiptSignals, changeSignals, changeRecordName, gitSignals, automationSignals, etToUtc, ACTIVE_WINDOW };
