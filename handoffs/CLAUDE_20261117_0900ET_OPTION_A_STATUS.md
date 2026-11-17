@@ -40,3 +40,23 @@ Other findings:
 - Item 3: GO with live counts at PR time (725 Grok ASSIGNED / 550 RETURNED_PENDING_REVIEW as of 9:00). Set providers.FORGE_GROK_SHARED_HELPER.available = false in the same PR. Also process the 639 ENRICHMENT_HELPER_WORK returns. Tim merges.
 - Office: fix office/office.js:831 skills.json path (fetch office/skills.json); separate small PR, self-merge on green. Look into the 1920x1080 60 s timeout separately.
 - Proof: ENRICHMENT_FLOW completionByWindow["6"].enrichment.count > 0 and readyForReview > 15. Send President each PR link.
+
+## Claude follow-through on the President decision (Nov 17, 2026, 9:35 AM ET)
+- Item 1: dropped. The local `fix/evidence-experience-fit` branch is deleted and was never pushed. #309 is unchanged.
+- Item 2: [#414](https://github.com/tpruittguitar/forge-coordination/pull/414) schedules `FORGE_CLAUDE_SHARED_HELPER` hourly at :25 ET on the Claude box. Tim merges. After the merge, someone must run `tools/claude-box-runner/start.sh --copy-only` on the box for the new line to load. There are no `receipts/CLAUDE_BOX/` receipts on `main`, so the box scheduler may not be running yet.
+- Item 3: [#415](https://github.com/tpruittguitar/forge-coordination/pull/415) moves the 725 Grok ASSIGNED items to Claude and sets Grok `available: false`. Tim merges. It will conflict as the coordinator rewrites the file; Claude will rebuild it with `node tools/helper-routing/retire-grok-shared.cjs --apply`.
+- Returns: not processed yet. 545 of the 550 shared returns are coordinator exceptions in `state/PROGRAMMED_COORDINATOR.json`, not reviews waiting:
+
+  | Reason | Count | Owner |
+  |---|---|---|
+  | `SHARED_RECOMMENDATION_KIND_MISMATCH` | 155 | CODE |
+  | `WORKING_SOURCE_ROUTE_REQUIRED` | 150 | CODE |
+  | `SOURCE_ROUTE_BACKOFF` | 128 | CODE |
+  | `ORIGINAL_TRANSACTION_FENCE` | 41 | CODE |
+  | Identity or scope ambiguous, or conflicting | 68 | AI |
+  | Quote not in posting | 12 | AI |
+  | Other | 9 | CODE |
+
+  The 155 kind-mismatch exceptions look stale: 147 are ENRICHMENT + ENRICHMENT_EVIDENCE_READY, which current `validateBatch` accepts. Fixing that needs a programmed-coordinator change that runs on TIMMAY. The 639 `ENRICHMENT_HELPER_WORK` returns are not yet examined.
+- Office: [foreman-cockpit #365](https://github.com/tpruittguitar/foreman-cockpit/pull/365) fixes the `skills.json` path (browser test now passes 5 of 6) and self-merges on green. The desktop "working bots work" failure is next.
+- Proof: not met yet. At 9:00 AM the window 6 enrichment count was 0 and readyForReview was 15. Nothing merged so far changes those numbers.
