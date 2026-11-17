@@ -3,6 +3,8 @@
 // Needs a foreman-cockpit checkout: ENRICH_FC_DIR (default ../foreman-cockpit next to this repo).
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
+// Every scoring/decision input, so a TIM_DECISION_REQUIRED fixture row passes the decision gate (decision-complete.js).
+const DECISION_COMPLETE='DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required; SCOPE_FIT_RAW=80; FLEX_CLASS=NO_FLEX; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
 const sourceRunOwners = new WeakSet();
 function sourceRun(t,lines,responses,config={},cache,ledger){
@@ -81,7 +83,7 @@ test('deadline inside decision salary repair stops nested research and preserves
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-deadline-')),master=path.join(dir,'master.txt'),context=path.join(dir,'context.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  fs.writeFileSync(context,JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]}));
  const stale='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
- fs.writeFileSync(master,[row(1,'V2I-TIM','Director of Quality','Dayton, OH',stale).replace('READY_TO_PURSUE','TIM_DECISION_REQUIRED'),row(2,'V2I-OTHER','Director of Quality','Dayton, OH',stale)].join('\n'));
+ fs.writeFileSync(master,[row(1,'V2I-TIM','Director of Quality','Dayton, OH',stale.replace('DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED',DECISION_COMPLETE)).replace('READY_TO_PURSUE','TIM_DECISION_REQUIRED'),row(2,'V2I-OTHER','Director of Quality','Dayton, OH',stale)].join('\n'));
  try{const stdout=cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_CONFIG:JSON.stringify({maxRunMs:100,totalRunMs:1000}),ENRICH_TEST_CLOCK_STEP:'100',ENRICH_TEST_CLOCK_MATCH:'api.bls.gov'},encoding:'utf8',timeout:5000});
  const out=JSON.parse(fs.readFileSync(report));assert.equal(out.research_budget_exhausted,true);assert.equal(out.salary_repairs,0);assert.equal(out.submitted,0);assert.match(stdout,/"phase":"salary_repair".*"id":"V2I-TIM"/);assert.doesNotMatch(stdout,/"phase":"salary_repair".*"id":"V2I-OTHER"/);assert.match(stdout,/"phase":"complete"/);
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
@@ -699,7 +701,7 @@ test('decision correctness repair retains priority over complete retained gaps',
  for(const [i,id] of ['V2I-REPAIR-FIRST','V2I-RETAINED-SECOND'].entries()){
   const url='https://careers.example.org/priority/'+i,target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
   Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
-  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED':'');
+  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; '+DECISION_COMPLETE:'');
   lines.push(row(i+1,id,target.TITLE,target.LOCATION,payload).replace('READY_TO_PURSUE',i===0?'TIM_DECISION_REQUIRED':'READY_TO_PURSUE'));
  }
  lines.push(row(3,'V2I-INVALIDANCHOR','Quality Associate Manager','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));
