@@ -13,8 +13,9 @@ except Exception as e:
     sys.exit(0)
 
 KEEP = ("site", "title", "company", "location", "job_url", "job_url_direct", "description", "date_posted")
-# Tim 2026-11-17: a full posting description found on any site is verification, so search every JobSpy site.
-SITES = ("linkedin", "indeed", "glassdoor", "zip_recruiter", "google")
+# Tim 2026-11-17: a full posting description found on any site is verification. From GitHub runners, Glassdoor and
+# ZipRecruiter answer 403 and Google returns no jobs (PR #420 live run, 40 of 40 searches), so only these two are used.
+SITES = ("linkedin", "indeed")
 for i, t in enumerate(targets):
     for site in SITES:
         kw = dict(site_name=[site], search_term=f"{t['title']} {t['company']}", location=t.get("location") or "United States",

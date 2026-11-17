@@ -93,8 +93,8 @@ if (require.main === module) {
   const [cmd, a, b, c] = process.argv.slice(2), cfg = { ...DEFAULTS, ...(readJson(path.join(__dirname, 'config.json'), {}).targetedLookup || {}) };
   (async () => {
     if (cmd === 'targets') { const t = targets(ROOT, { opts: cfg }); fs.writeFileSync(a, JSON.stringify(t)); console.log(JSON.stringify({ targets: t.length })); }
-    else if (cmd === 'hiringcafe') { const r = await hiringcafe(readJson(a, []), { opts: cfg }); fs.writeFileSync(b, JSON.stringify(r)); console.log(JSON.stringify({ jobs: r.jobs.length, errors: r.errors.length })); }
-    else if (cmd === 'ats') { const r = await ats(readJson(a, {}).jobs || []); fs.writeFileSync(b, JSON.stringify(r)); console.log(JSON.stringify({ jobs: r.jobs.length, errors: r.errors.length })); }
+    else if (cmd === 'hiringcafe') { const r = await hiringcafe(readJson(a, []), { opts: cfg }); fs.writeFileSync(b, JSON.stringify(r)); console.log(JSON.stringify({ jobs: r.jobs.length, errors: r.errors.length, sample: r.errors.slice(0, 3) })); }
+    else if (cmd === 'ats') { const r = await ats(readJson(a, {}).jobs || []); fs.writeFileSync(b, JSON.stringify(r)); console.log(JSON.stringify({ jobs: r.jobs.length, errors: r.errors.length, sample: r.errors.slice(0, 3) })); }
     else if (cmd === 'merge') { const jobs = [...(readJson(b, {}).jobs || []), ...(readJson(c, {}).jobs || []), ...(readJson(process.argv[6], {}).jobs || [])]; console.log(JSON.stringify(merge(ROOT, readJson(a, []), jobs, { opts: cfg }).summary)); }
     else { console.error('usage: targets|hiringcafe|ats|merge'); process.exitCode = 2; }
   })().catch(e => { console.error(e.message); process.exitCode = 1; });
