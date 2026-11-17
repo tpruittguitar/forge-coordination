@@ -10,9 +10,7 @@ on:
     workflows: [source-trial, board-discovery]
     types: [completed]
     branches: [main]
-  workflow_dispatch: {}
-  schedule:
-    - cron: '17 * * * *'
+  workflow_dispatch: {}   # Tim 2026-11-16 21:26 ET: hourly cron removed (GitHub kept dropping it); a dispatched upstream run starts this via gh workflow run
 permissions:
   contents: write
 concurrency:
@@ -20,7 +18,7 @@ concurrency:
   cancel-in-progress: false
 jobs:
   intake:
-    if: github.event_name == 'schedule' || github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
+    if: github.event_name == 'workflow_dispatch' || github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     timeout-minutes: 330   # 25 inserts at ~6 min each waiting for durable receipts
     steps:
