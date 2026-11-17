@@ -1,0 +1,65 @@
+# Tim 2026-11-17: JobSpy and HiringCafe posting text is acceptable verification. For helper returns stuck because the
+# coordinator cannot fetch their posting page, search JobSpy (description fetch on) and HiringCafe per job and save
+# exact-identity matches to state/targeted-posting-lookup.json, which the discovery index reads. Nothing is sent to the
+# Writer. A PR run does a real bounded lookup and keeps the file as an artifact; only main pushes.
+name: targeted-posting-lookup
+on:
+  workflow_dispatch: {}
+  schedule:
+    - cron: '41 1-23/4 * * *'   # six/day, two hours after source-trial
+  pull_request:
+    paths: ['tools/source-trial/targeted-lookup.js', 'tools/source-trial/jobspy_targeted.py', '.github/workflows/targeted-posting-lookup.yml']
+permissions:
+  contents: write
+concurrency:
+  group: targeted-posting-lookup-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+jobs:
+  lookup:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Test
+        run: node --test tools/source-trial/targeted-lookup.test.js
+      - name: Targets
+        run: node tools/source-trial/targeted-lookup.js targets /tmp/targets.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: JobSpy (description fetch on)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          pip install -q python-jobspy || echo "pip install failed"
+          python tools/source-trial/jobspy_targeted.py /tmp/targets.json /tmp/jobspy-targeted.json
+      - name: HiringCafe (official read-only MCP connector)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: node tools/source-trial/targeted-lookup.js hiringcafe /tmp/targets.json /tmp/hc-targeted.json
+      - name: Merge exact-identity matches
+        run: node tools/source-trial/targeted-lookup.js merge /tmp/targets.json /tmp/jobspy-targeted.json /tmp/hc-targeted.json
+      - name: Keep the result as a run artifact (any branch)
+        uses: actions/upload-artifact@v4
+        with:
+          name: targeted-posting-lookup
+          path: state/targeted-posting-lookup.json
+      - name: Commit (main only; a PR run never pushes)
+        if: github.ref == 'refs/heads/main'
+        run: |
+          cp state/targeted-posting-lookup.json /tmp/out.json
+          git config user.name forge-targeted-lookup-bot
+          git config user.email forge-targeted-lookup-bot@users.noreply.github.com
+          for i in 1 2 3 4 5 6; do
+            git add state/targeted-posting-lookup.json
+            git diff --cached --quiet && { echo "No change"; exit 0; }
+            git commit -q -m "TARGETED-LOOKUP-BOT: targeted posting lookup"
+            git push -q origin HEAD:main && exit 0
+            sleep $((i * 4 + RANDOM % 4))
+            git fetch -q origin main && git reset -q --hard origin/main
+            cp /tmp/out.json state/targeted-posting-lookup.json
+          done
+          exit 1
