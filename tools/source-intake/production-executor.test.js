@@ -475,6 +475,23 @@ test('AUTO documents one busy Writer response and still submits the next indepen
  assert.equal(posted.length,2);assert.equal(result.outcomes[0].status,'DEFERRED');assert.equal(result.outcomes[1].status,'PENDING_VERIFICATION');assert.equal(rec.store[posted[0]].error,'Lock timeout');
 });
 
+const busyResponse=rid=>({ok:false,mode:'WRITER_NOT_ACCEPTED',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[rid],retryAfterMs:60000}});
+test('a request-bound WRITER_BUSY refusal is retried after 30 s and 60 s backoff instead of held',async()=>{
+ const rows=newOnly(1),base=mockWriter(),posted=[],waits=[];
+ const transport=async(u,o)=>{if(o.method==='POST'){const rid=JSON.parse(o.body).requestId;posted.push(rid);return{ok:true,json:async()=>posted.length<3?busyResponse(rid):insertResponse(rid,'V2I-BUSY')};}return base(u,o);};
+ const result=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async ms=>{waits.push(ms)}})).catch(e=>e);
+ assert.equal(posted.length,3);assert.equal(new Set(posted).size,1);assert.deepEqual(waits,[30000,60000]);
+ assert.equal(result.outcomes[0].status,'PENDING_VERIFICATION');
+});
+test('WRITER_BUSY retries stop after 3 and the case is deferred; an unproven lock error is never retried',async()=>{
+ const rows=newOnly(1),base=mockWriter();let posts=0;const waits=[];
+ const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>busyResponse(rid)};}return base(u,o);};
+ const result=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async ms=>{waits.push(ms)}}));
+ assert.equal(posts,4);assert.deepEqual(waits,[30000,60000,120000]);assert.equal(result[0].status,'DEFERRED');
+ let lockPosts=0;const lock=async(u,o)=>{if(o.method==='POST'){lockPosts++;return{ok:true,json:async()=>({ok:false,error:'Lock timeout'})};}return base(u,o);};
+ await runIntake(rows,opts(lock,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async()=>{throw Error('must not wait')}}));assert.equal(lockPosts,1);
+});
+
 test('Writer delimiter escaping does not create false identity holds; actual differences still hold',()=>{
  const {checkCanaryOutcome}=require('./intake-accounting');
  const record={COMPANY:'POLYWOOD®',TITLE:'Director | Operational Excellence - Quality & Continuous Improvement',LOCATION:'Syracuse, IN, USA'};

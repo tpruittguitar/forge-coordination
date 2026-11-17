@@ -52,6 +52,7 @@ const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-
 const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
   pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
 const sleep = ms => runtime.wait(process.env.ENRICH_TEST_FAST||SAVED_ONLY?0:ms);
+const WRITER_BUSY_BACKOFF_MS = [30000, 60000, 120000];
 let networkRequests=0;
 const progress = (phase, detail={}) => console.log(JSON.stringify({event:'PAY_PROGRESS',phase,elapsed_ms:runtime.elapsed(),...detail}));
 async function get(url, opts={}) {
@@ -611,7 +612,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
     if(!runtime.canStart(60000)){stats.writer_budget_deferred=requests.length-b*25;break;}
-    let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
+    let batch = requests.slice(b * 25, b * 25 + 25); let requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
     progress('writer_readback',{batch:b+1,rows:batch.length});
     try {
       // Grok Bot QA: the structured copy can lag; re-read these rows from the Writer (read-only, no lock) and drop what a lane
@@ -637,7 +638,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          verified, which it does no sooner than 120 s after the save. Batches now sit 130 s apart (batchGapMs); a fenced batch
          waits the Writer's retryAfterMs and goes again, up to fenceRetries times. A batch still fenced wrote nothing: it is
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
-      let res, fenced = 0;
+      let res, fenced = 0, busy = 0;
       for (;;) {
         if(!runtime.canStart(30000)){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break batches;}
         progress('writer_post',{batch:b+1,attempt:fenced+1,rows:batch.length});
@@ -660,7 +661,15 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }
         await postHold.release();
         if(res?.ok===false){retainResponse(requestId,ledger.pendingWrites[requestId],res);fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
-          if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
+          if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){
+            /* A proven WRITER_BUSY refusal wrote nothing: wait 30 s, 60 s, then 120 s and send the same rows again under new
+               request identities (the refused ones stay recorded as not accepted), at most 3 times, before deferring to the next run. */
+            if(res.outcome?.code==='WRITER_BUSY'&&busy<WRITER_BUSY_BACKOFF_MS.length&&runtime.canStart(WRITER_BUSY_BACKOFF_MS[busy]+30000)){
+              await sleep(WRITER_BUSY_BACKOFF_MS[busy]);busy++;stats.writer_busy_retries=(stats.writer_busy_retries||0)+1;
+              requestId=requestId.replace(/-W\d+$/,'')+'-W'+busy;batch=batch.map(q=>({...q,ruling:{...q.ruling,requestId:q.ruling.requestId.replace(/-W\d+$/,'')+'-W'+busy}}));
+              continue;
+            }
+            stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
         // A legacy mode/error string is not evidence of nonacceptance. Keep its
         // original checkpoint for read-only recovery; never retry it here.
         if(res.mode==='WRITE_FENCE'||res.mode==='BATCH_RULING_RETRY'){
