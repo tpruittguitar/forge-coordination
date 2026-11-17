@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261117T0128Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261117T0429Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (99 read, 16 failed) | 114 | 25 | 65 |
+| Employer job boards (101 read, 7 failed) | 133 | 33 | 74 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,20 +19,29 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 15 | 42 |
-| SR_MANAGER | 9 | 18 |
+| DIRECTOR_PLUS | 23 | 49 |
+| SR_MANAGER | 9 | 20 |
 | SR_STAFF | 1 | 5 |
 
 ## New roles
 
 | Source | Company | Title | Location | Family | Level | Pay |
 |---|---|---|---|---|---|---|
-| BOARD:workday | P1 Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/BlueOrigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
+| BOARD:workday | P3 Oshkosh Corporation | [VP, Global Operations](https://oshkoshcorporation.wd5.myworkdayjobs.com/Oshkosh/job/Orlando-Florida-United-States/VP--Global-Operations_R50173) | Orlando, Florida, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
 | BOARD:greenhouse | P2 Ursa Major | [Director of Operations](https://ursamajor.com/careers/?gh_jid=4729125005) | Berthoud, Colorado | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Sr Director, Quality Control](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---La-Verne/Sr-Director--Quality-Control_R0056065-2) | United States - California - La Verne | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0055613-3) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Quality_R0056209-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056138-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Sr Manager, Outsourced Manufacturing](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Sr-Manager--Outsourced-Manufacturing_R0056258) | United States - California - Foster City | MFG_PROD | SR_MANAGER |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056208-2) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Leader, Biologics](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Foster-City/Director--Product-Quality-Leader--Biologics_R0056141-3) | United States - California - Foster City | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Gilead Sciences | [Director, Product Quality Small Molecule](https://gilead.wd1.myworkdayjobs.com/gileadcareers/job/United-States---California---Santa-Monica/Director--Product-Quality_R0056245-2) | United States - California - Santa Monica | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:workday | Blue Origin | [Senior Manager, Test Operations](https://blueorigin.wd5.myworkdayjobs.com/blueorigin/job/Van-Horn-TX/Senior-Manager--Test-Operations_R75186) | Van Horn, TX | MFG_PROD | SR_MANAGER |  |
 | BOARD:ashby | Crusoe | [Director, Accounting – Manufacturing](https://jobs.ashbyhq.com/Crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f) | Tulsa, OK - US (1) | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Deputy Head of Production, Connected Warfare](https://boards.greenhouse.io/andurilindustries/jobs/5246032007?gh_jid=5246032007) | Ashville, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
@@ -51,4 +60,3 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Re:Build Manufacturing | [Director of Production Operations](https://job-boards.greenhouse.io/rebuildmanufacturing/jobs/4738258005) | Avon, OH | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Scout Motors Inc. | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:workday | Collins Aerospace (RTX) | [Senior Manager, Program Quality Leader (onsite)](https://globalhr.wd5.myworkdayjobs.com/REC_RTX_Ext_Gateway/job/US-CA-EL-SEGUNDO-E01--2000-E-El-Segundo-Blvd--BLDG-E01/Senior-Manager--Program-Quality-Leader--onsite-_01888746) | US-CA-EL SEGUNDO-E01 ~ 2000 E El Segundo Blvd ~ BLDG E01 | QUALITY | SR_MANAGER |  |
