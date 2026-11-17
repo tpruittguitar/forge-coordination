@@ -45,7 +45,7 @@ async function hiringcafe(list, { fetcher = globalThis.fetch, now = () => Date.n
     if (now() - T0 > opts.budgetMs) { out.errors.push({ key: list[i].key, error: 'time budget reached' }); break; }
     try {
       if (i) await wait(opts.gapMs);
-      const text = await H.callTool('search_jobs', { search: list[i].title + ' ' + list[i].company, location: list[i].location || 'United States', limit: 5 }, { fetcher, id: i + 1 });
+      const text = await H.callTool('search_jobs', { search: list[i].title + ' ' + list[i].company, location: 'United States', limit: 5 } /* HiringCafe rejects many city strings ("Dulles, VA"); title + company is specific enough */, { fetcher, id: i + 1 });
       for (const j of H.parseResults(text).jobs) out.jobs.push({ ...H.normalize(j), targetKey: list[i].key });
     } catch (e) { out.errors.push({ key: list[i].key, error: String(e.message || e).slice(0, 80) }); if (e.status === 429) break; }
   }
@@ -53,12 +53,16 @@ async function hiringcafe(list, { fetcher = globalThis.fetch, now = () => Date.n
 }
 
 /* Employer ATS pages: a JobSpy result's direct link (Greenhouse, Lever, Ashby, Workday) read through the ATS API. */
-async function ats(jobs, { fetcher = globalThis.fetch } = {}) {
-  const L = require('../enrich-ats-pay/lib.js'), out = { jobs: [], errors: [] }, seen = new Set();
+async function ats(jobs, { fetcher = globalThis.fetch, gapMs = 2000, sleep } = {}) {
+  const L = require('../enrich-ats-pay/lib.js'), wait = sleep || (ms => new Promise(r => setTimeout(r, ms))), out = { jobs: [], errors: [] }, seen = new Set();
+  let calls = 0;
   for (const j of jobs) {
     const a = L.atsApi(String(j.job_url_direct || '')); if (!a || seen.has(a.api + j.targetKey)) continue; seen.add(a.api + j.targetKey);
     try {
-      const r = await fetcher(a.api, { signal: AbortSignal.timeout(30000), headers: { accept: 'application/json', 'user-agent': 'forge-targeted-lookup/1 (read-only)' } });
+      // Workday answers 429 to fast reads: space calls out and retry once after a 429.
+      const get = async () => { if (calls++) await wait(gapMs); return fetcher(a.api, { signal: AbortSignal.timeout(30000), headers: { accept: 'application/json', 'user-agent': 'forge-targeted-lookup/1 (read-only)' } }); };
+      let r = await get();
+      if (r.status === 429) { await wait(Math.min(60, +(r.headers?.get?.('retry-after') || 0) || 10) * 1000); r = await get(); }
       if (!r.ok) throw Error('HTTP ' + r.status);
       const parsed = L.parseAts(a.kind, await r.json(), a.id);
       if (parsed?.text) out.jobs.push({ site: 'ats:' + a.kind, company: j.company, title: j.title, location: j.location, job_url: a.page, description: parsed.text, targetKey: j.targetKey });

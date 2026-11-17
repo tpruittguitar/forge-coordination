@@ -41,7 +41,7 @@ test('an employer ATS page from a direct link is read and preferred; sign-in wal
   const js = { site: 'linkedin', company: 'Quikrete', title: 'Plant Manager', location: 'Peachland, NC', job_url: 'https://www.linkedin.com/jobs/view/999/',
     job_url_direct: 'https://boards.greenhouse.io/quikrete/jobs/12345', description: 'Sign in to view the full job. '.repeat(20), targetKey: 'K:V2I-A' };
   const fetcher = async url => ({ ok: true, json: async () => ({ content: '&lt;p&gt;' + text + '&lt;/p&gt;' }), url });
-  const got = await T.ats([js], { fetcher });
+  const got = await T.ats([js], { fetcher, sleep: async () => {} });
   assert.equal(got.jobs.length, 1); assert.equal(got.jobs[0].site, 'ats:greenhouse');
   const doc = T.merge(root, list, [js, ...got.jobs], { now });
   assert.equal(doc.roles[0].source, 'ATS:greenhouse'); assert.equal(doc.roles[0].url, 'https://boards.greenhouse.io/quikrete/jobs/12345');
