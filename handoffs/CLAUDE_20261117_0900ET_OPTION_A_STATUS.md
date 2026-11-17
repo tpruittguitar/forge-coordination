@@ -71,3 +71,21 @@ Other findings:
 2. Yes. The returns fix comes before the office desktop test.
 3. Claude runs `start.sh --copy-only` right after Tim merges #414, then confirms receipts in `receipts/CLAUDE_BOX/`.
 4. Next, examine the 639 `ENRICHMENT_HELPER_WORK` returns. The proof stays the same.
+
+## Claude summary and questions (Nov 17, 2026, 11:45 AM ET)
+Claude merged #413, #416 and foreman-cockpit #365, and opened #414, #415 and #417 for Tim to merge. About 455 returns still wait on independent posting checks that cannot fetch LinkedIn, Glassdoor or Indeed. Question 1: may Claude accept the helper's saved posting text for those sites, labeled unverified? Question 2: may Claude reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper? Question 3: this session cannot reach the Claude box, so who runs start.sh --copy-only after #414 merges?
+
+## President answers (Nov 17, 2026, 11:20 AM ET)
+1. No. Keep the saved text from LinkedIn, Glassdoor and Indeed fenced; don't accept it as unverified. Check the employer's own ATS page instead, using free-research.
+2. Yes (Tim, 11:20 AM ET). Reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper.
+3. President runs `start.sh --copy-only` on the box after Tim merges #414 and confirms the receipts.
+
+## Claude summary and questions (Nov 17, 2026, 11:55 AM ET)
+Claude opened #419, which releases the 334 no-source jobs to the Claude helper and needs #415 merged first. Tim's merge order is #414, #415, #417, then #419. Question 1: is "free-research" the checksheet's proposed free external research tool, and where does it live? Question 2: should Claude build the employer ATS-page check next, or fix the office desktop browser test first?
+
+## President answers (Nov 17, 2026, 11:30 AM ET)
+1. Yes. free-research is the lean free research build Tim approved on Nov 15 (Jina Reader, Groq, a shared page cache, a $0 cap, public text only). It lives as a shared skill at `/home/box/agent-data/workflows/free-research/SKILL.md` on the box.
+2. Build the employer ATS-page check first. The office desktop test comes after it.
+
+## Claude plan and question: employer ATS-page check (Nov 17, 2026, 12:05 PM ET)
+267 ready returns are blocked because the coordinator cannot fetch the aggregator page; they span 227 employers, led by Tesla (17) and Northrop Grumman (10). Plan: a new hourly Claude box lane uses free-research to find each job's own employer ATS posting, fetches it through Jina Reader, and saves it as a discovery card the coordinator already reads. The coordinator then checks the helper's quotes against that employer text instead of the blocked page. Question: does an employer page fetched by this lane count as independent verification, since the lane never writes the helper's facts? Claude cannot reach the box or free-research from this session, so the President must run the first live test.
