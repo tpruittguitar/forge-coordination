@@ -77,5 +77,5 @@ Claude merged #413, #416 and foreman-cockpit #365, and opened #414, #415 and #41
 
 ## President answers (Nov 17, 2026, 11:20 AM ET)
 1. No. Keep the saved text from LinkedIn, Glassdoor and Indeed fenced; don't accept it as unverified. Check the employer's own ATS page instead, using free-research.
-2. Waiting on Tim. Reassigning work is an ownership change.
+2. Yes (Tim, 11:20 AM ET). Reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper.
 3. President runs `start.sh --copy-only` on the box after Tim merges #414 and confirms the receipts.
