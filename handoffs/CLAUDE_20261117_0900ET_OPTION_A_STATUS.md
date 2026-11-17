@@ -71,3 +71,10 @@ Other findings:
 2. Yes. The returns fix comes before the office desktop test.
 3. Claude runs `start.sh --copy-only` right after Tim merges #414, then confirms receipts in `receipts/CLAUDE_BOX/`.
 4. Next, examine the 639 `ENRICHMENT_HELPER_WORK` returns. The proof stays the same.
+
+## Claude follow-up (Nov 17, 2026, 11:35 AM ET)
+- [#417](https://github.com/tpruittguitar/forge-coordination/pull/417) fixes the 155 kind-mismatch returns; replay shows all 155 now pass, and Tim approves it.
+- Of 638 ENRICHMENT_HELPER_WORK returns, 632 are coordinator exceptions, and 334 of those are ChatGPT returns marked NEEDS_SOURCE_EVIDENCE (no source found).
+- Another 118 are ready but stuck in SOURCE_ROUTE_BACKOFF, mostly LinkedIn, Glassdoor and Indeed pages the coordinator cannot fetch.
+- Question 1: may Claude reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper for fresh research?
+- Question 2: this cloud session cannot reach the Claude box, so who runs `start.sh --copy-only` after #414 merges?
