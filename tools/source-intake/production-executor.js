@@ -73,7 +73,7 @@ function classifyWriterResponse(result,rid){
 }
 const Captured=require('./captured-discovery');
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
-async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
+async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
  const skipped=(rid,kind,result)=>({requestId:rid,status:'SKIPPED',reason:kind,accounting:{status:'SKIPPED',reason:kind},writerResult:result});
@@ -99,7 +99,10 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  const outcomes=[];
  const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
  const defer=(rid,reason,result)=>outcomes.push({requestId:rid,status:'DEFERRED',reason,owner:'FORGE_APPLICATION_WRITER_GOFER',nextAction:'Reconcile original request, receipt and exact identity; do not replay an uncertain write',...(result?{writerResult:result}:{})});
+ let lockFailure=null;
  for(const [i,candidate] of records.entries()){
+  let held=null;
+  try{
   const rules=releaseRules(await fetchRelease(switchTransport)); // fresh kill switch before each write
   if(rules.mode!==expectedMode)halt('BLOCKED: release switch is '+rules.mode+' but this run is '+expectedMode);
   if(records.length>rules.maxBatch)halt('BLOCKED: '+records.length+' candidates exceed the switch maxBatch '+rules.maxBatch);
@@ -164,6 +167,13 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(captured&&business===review.discoveryEvidence.card.description)business='';
   if(captured&&!business)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:business,...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
+  // Shared Writer POST lock: never overlap another Writer poster (enrich-ats-pay). Acquired before the intent is recorded,
+  // so a busy lock sends nothing and fences nothing; the case is simply deferred to the next run.
+  if(postLock){
+   if(lockFailure){defer(rid,lockFailure);continue}
+   held=await postLock.acquire();
+   if(!held.ok){lockFailure='WRITER_POST_LOCK_'+held.reason;defer(rid,lockFailure);continue}
+  }
   // Persist intent before sending: a lost response must still fence this exact request after a crash.
   const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
   await recorder.record(rid,intent);
@@ -176,6 +186,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
   let recorded=false;
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
+  if(held)await held.release();
   if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; reconcile, never replay');}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
@@ -201,6 +212,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   try{accounting=await verifyNoopCase(candidate,rid,result,{key,transport})}
   catch(e){if(auto){defer(rid,e.message,result);continue;}outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:result});halt(e.message)}
   outcomes.push({requestId:rid,status:'NOOP_ACCOUNTED',accounting,writerResult:result});
+  }finally{if(held)await held.release()}
  }
  return outcomes;
 }

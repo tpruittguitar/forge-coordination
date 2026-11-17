@@ -58,7 +58,7 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
-  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
+  const outcomes=await runIntake(candidates,{key,postLock:require('../writer-post-lock.cjs').fromEnv(),transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
   if(outcomes.length===candidates.length&&state.mode==='AUTO'&&outcomes.some(x=>x.status==='DEFERRED')&&outcomes.every(x=>ACCOUNTED.has(x.status)||x.status==='DEFERRED')){
    state.outcomes=outcomes;
    state.continuation={schema:'forge.intake-continuation.v1',at:new Date().toISOString(),candidatesHash:state.candidatesHash,

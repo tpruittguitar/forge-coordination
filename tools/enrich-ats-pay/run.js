@@ -7,6 +7,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
+const writerPostLock=require('../writer-post-lock.cjs').fromEnv();
 const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./site-estimate.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const SiteEstimate=require('./site-estimate');
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
@@ -640,8 +641,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       for (;;) {
         if(!runtime.canStart(30000)){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break batches;}
         progress('writer_post',{batch:b+1,attempt:fenced+1,rows:batch.length});
+        /* Shared Writer POST lock: never overlap the source-intake Writer posts. Taken before anything is marked pending, so a
+           busy lock sends nothing; the rows go again next run. Released as soon as the reply (or its loss) is known. */
+        const postHold=writerPostLock?await writerPostLock.acquire():{ok:true,release:async()=>true};
+        if(!postHold.ok){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;stats.writer_post_lock=postHold.reason;break batches;}
         try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');stats.salary_submitted+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
+          await postHold.release();
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
@@ -652,6 +658,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
+        await postHold.release();
         if(res?.ok===false){retainResponse(requestId,ledger.pendingWrites[requestId],res);fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
           if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
         // A legacy mode/error string is not evidence of nonacceptance. Keep its
