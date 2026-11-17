@@ -130,7 +130,11 @@ async function prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rules
    reviewedNeverConsider:false,rulesHash,businessEvidenceApproved:!captured,source:captured?.card.source||r.source,family:r.family,level:r.level,
    approval:{by:'AUTO',basis:'SOURCE_INTAKE_AUTO_V1 armed by Tim; report '+(reportRun||'')}};
 }
-async function main(argv=process.argv.slice(2)){
+// Catch-up time budget: stop starting new transactions once it is spent, so the run exits normally,
+// the run record publishes, and the catch-up state carries the rest to the next run.
+function catchUpBudgetMs(env=process.env){const m=Number(env.FORGE_CATCHUP_BUDGET_MINUTES);return (Number.isFinite(m)&&m>0?m:45)*60000;}
+function budgetSpent(argv,started,now=Date.now(),env=process.env){return argv.includes('--catch-up')&&now-started>=catchUpBudgetMs(env);}
+async function main(argv=process.argv.slice(2),started=Date.now()){
  const opt=k=>{const i=argv.indexOf(k);return i>=0?argv[i+1]:null},dry=argv.includes('--dry-run');
  const rules=releaseRules(JSON.parse(fs.readFileSync(SWITCH,'utf8')));
  if(!dry&&(!rules||rules.mode!=='AUTO'))return console.log('AUTO intake off: release switch is not armed as AUTO');
@@ -224,14 +228,15 @@ async function main(argv=process.argv.slice(2)){
  };
  const r=await auto({statePath,candidates,key,refreshReview});
  console.log(JSON.stringify({status:r.status,message:r.message||'',outcomes:(r.outcomes||[]).map(o=>o.status)}));
- if(r.status==='PROGRESS_WITH_PENDING'){console.log('GOFER_RECONCILIATION_REQUIRED: '+JSON.stringify(r.pending));if(!argv.includes('--one-transaction'))return main(argv);return r;}
+ if(r.status==='PROGRESS_WITH_PENDING'){console.log('GOFER_RECONCILIATION_REQUIRED: '+JSON.stringify(r.pending));if(budgetSpent(argv,started)){console.log('CATCH_UP_BUDGET_SPENT: stopping after this transaction; pending work carries to the next run');return r;}if(!argv.includes('--one-transaction'))return main(argv,started);return r;}
  if(r.status!=='ALL_CASES_ACCOUNTED'&&r.status!=='ALREADY_COMPLETE')throw Error('NEEDS TIM: AUTO run halted: '+r.message);
  await snapshot('after',{statePath,candidates,key});
  const rec=finalize({statePath,candidates});
  console.log(JSON.stringify(rec));
  if(rec.status==='HOLD')throw Error('NEEDS TIM: AUTO reconcile HOLD '+rec.reason);
  // maxBatch is a transaction size, not a pass/day quota. Continue eligible work.
- if(!argv.includes('--one-transaction'))return main(argv);
+ if(budgetSpent(argv,started)){console.log('CATCH_UP_BUDGET_SPENT: stopping after this transaction; remaining catch-up work carries to the next run');return;}
+ if(!argv.includes('--one-transaction'))return main(argv,started);
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={pick,evidence,sourceEvidence,refreshCapturedReview,prepareCandidate,main,screenReason,discoveryNotes,partitionExisting};
+module.exports={catchUpBudgetMs,budgetSpent,pick,evidence,sourceEvidence,refreshCapturedReview,prepareCandidate,main,screenReason,discoveryNotes,partitionExisting};
