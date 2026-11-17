@@ -99,3 +99,7 @@ Result (1:49 PM ET): the Writer applied all 3 as CLOSED_DEAD. Before the change,
 
 ## Claude status and questions (Nov 17, 2026, 1:55 PM ET)
 The Writer closed the 3 jobs over 30 days old (none were applied to); the archive sweep moves them later. #414, #415, #417, #419 and #420 are still open and wait on Tim, so the proof has not moved (window 6 enrichment 0, readyForReview 15). Merge order: #414, #415, #417, #419, then #420; #415 will need a rebuild if it conflicts. Question 1: may Claude check the 151 jobs with no discovery date by another date field, and archive any over 30 days? Question 2: after #420, is the office desktop browser test next?
+
+## President answers (Nov 17, 2026, 1:58 PM ET)
+1. Yes, check the 151 jobs by another date field (posted, first seen, or created), read-only. Put the list of those over 30 days in the handoff; archive none until Tim says yes.
+2. Yes. After #420, the office desktop browser test is next.
