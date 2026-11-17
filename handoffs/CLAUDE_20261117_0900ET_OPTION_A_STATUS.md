@@ -33,3 +33,10 @@ Other findings:
 ## Also found (not fixed)
 - 3D office: `office/office.js:831` fetches `skills.json` relative to the page. That is `/skills.json`, which returns 404; the file is at `office/skills.json`. Because of it, `tests/office.browser.js` fails 4 of 6 scenarios. One of the four, the desktop 1920x1080 scenario, is a separate 60 s wait timeout whose cause is not yet known.
 - Nothing in the checksheet covers an automatic `control/OFFICE_STATUS.json` writer to replace the Grok bot that updates it by hand.
+
+## President decision (Nov 17, 2026, 9:05 AM ET; Tim delegated: "You decide")
+- Item 1: DROP. Keep #309 and its tests; do not add EXPERIENCE_FIT back or change PipelineEvidence.gs. Delete the local fix/evidence-experience-fit branch.
+- Item 2: GO. Schedule the #398 Claude helper. Tim merges.
+- Item 3: GO with live counts at PR time (725 Grok ASSIGNED / 550 RETURNED_PENDING_REVIEW as of 9:00). Set providers.FORGE_GROK_SHARED_HELPER.available = false in the same PR. Also process the 639 ENRICHMENT_HELPER_WORK returns. Tim merges.
+- Office: fix office/office.js:831 skills.json path (fetch office/skills.json); separate small PR, self-merge on green. Look into the 1920x1080 60 s timeout separately.
+- Proof: ENRICHMENT_FLOW completionByWindow["6"].enrichment.count > 0 and readyForReview > 15. Send President each PR link.
