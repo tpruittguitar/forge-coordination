@@ -1,0 +1,27 @@
+{
+  "id": "ASK-20261117-CLAUDE-0906",
+  "raisedBy": "CLAUDE",
+  "raisedAt": "2026-11-17T09:06:00-05:00",
+  "section": "DECIDE",
+  "level": "BLOCKING",
+  "title": "Option A PR 3: use today's live counts (725 and 550), and also switch the Grok helper off?",
+  "detail": "The brief said 704 items assigned to the retired Grok helper and 508 returns waiting for review. control/SHARED_HELPER_WORK.json on main now has 725 Grok ASSIGNED items, and the count is still rising. It also has 550 RETURNED_PENDING_REVIEW (Claude 332, Grok 218). control/ENRICHMENT_HELPER_WORK.json holds 639 more returns. The Grok provider is still marked available: true, so new work keeps going to it.",
+  "blocks": "PR 3 (reassignment and processing the returns). PR 2, the Claude helper schedule, is waiting on the same go-ahead.",
+  "options": [
+    "Use the live counts at PR time and set Grok available: false",
+    "Use the live counts but leave Grok available",
+    "Hold until the counts are rechecked"
+  ],
+  "recommended": "Use the live counts and set Grok available: false. Otherwise new items keep going to the retired helper after the reassignment.",
+  "action": "Answer in chat; Claude records it in asks/resolved/.",
+  "links": [
+    {
+      "label": "#398",
+      "url": "https://github.com/tpruittguitar/forge-coordination/pull/398"
+    },
+    {
+      "label": "Claude status report",
+      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/handoffs/CLAUDE_20261117_0900ET_OPTION_A_STATUS.md"
+    }
+  ]
+}

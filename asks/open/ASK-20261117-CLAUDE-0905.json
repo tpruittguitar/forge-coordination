@@ -1,0 +1,27 @@
+{
+  "id": "ASK-20261117-CLAUDE-0905",
+  "raisedBy": "CLAUDE",
+  "raisedAt": "2026-11-17T09:05:00-05:00",
+  "section": "DECIDE",
+  "level": "BLOCKING",
+  "title": "Option A PR 1: drop it, or reverse #309 and put EXPERIENCE_FIT back as fit evidence?",
+  "detail": "PR 1 was to add EXPERIENCE_FIT back to FIT_KEYS in foreman-cockpit pipeline-evidence.js. #309 removed it on purpose: the viewer stopped treating a stored EXPERIENCE_FIT (a keyword proxy like 35/40) as role-fit evidence. Tests lock that in, so with the one-line change 4 of 1145 tests fail and the PR cannot self-merge on green. The Writer copy (apps-script/PipelineEvidence.gs:19) still has it, and the tests allow that gap on purpose.",
+  "blocks": "PR 1 only. PRs 2 and 3 do not depend on it.",
+  "options": [
+    "Drop PR 1 and keep #309 as is",
+    "Make the Writer match #309: remove EXPERIENCE_FIT from PipelineEvidence.gs",
+    "Reverse #309: add it back in the viewer and change #309's tests"
+  ],
+  "recommended": "Make the Writer match #309. Keyword-proxy numbers then stop counting as measured fit in both places, which fits the open P1 'Fit and flex values look filled-in, not assessed'.",
+  "action": "Answer in chat; Claude records it in asks/resolved/.",
+  "links": [
+    {
+      "label": "#309",
+      "url": "https://github.com/tpruittguitar/foreman-cockpit/pull/309"
+    },
+    {
+      "label": "Claude status report",
+      "url": "https://github.com/tpruittguitar/forge-coordination/blob/main/handoffs/CLAUDE_20261117_0900ET_OPTION_A_STATUS.md"
+    }
+  ]
+}
