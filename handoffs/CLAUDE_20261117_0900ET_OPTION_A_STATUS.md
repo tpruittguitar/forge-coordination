@@ -82,3 +82,7 @@ Claude merged #413, #416 and foreman-cockpit #365, and opened #414, #415 and #41
 
 ## Claude summary and questions (Nov 17, 2026, 11:55 AM ET)
 Claude opened #419, which releases the 334 no-source jobs to the Claude helper and needs #415 merged first. Tim's merge order is #414, #415, #417, then #419. Question 1: is "free-research" the checksheet's proposed free external research tool, and where does it live? Question 2: should Claude build the employer ATS-page check next, or fix the office desktop browser test first?
+
+## President answers (Nov 17, 2026, 11:30 AM ET)
+1. Yes. free-research is the lean free research build Tim approved on Nov 15 (Jina Reader, Groq, a shared page cache, a $0 cap, public text only). It lives as a shared skill at `/home/box/agent-data/workflows/free-research/SKILL.md` on the box.
+2. Build the employer ATS-page check first. The office desktop test comes after it.
