@@ -46,7 +46,8 @@ test('day-of-month / day-of-week use standard cron OR semantics', () => {
 
 test('due() fires once per window and never catches up missed windows', () => {
   const specs = S.parseCrontab(fs.readFileSync(path.join(__dirname, 'crontab.txt'), 'utf8'));
-  assert.equal(specs.length, 6);
+  assert.equal(specs.length, 5);
+  assert.ok(!specs.some(s => s.task === 'FORGE_APPLICATION_OUTCOME_TRACKER'), 'outcome tracker is paused');
   let r = S.due(specs, et('2026-11-16T13:12:05-05:00'), null);
   assert.deepEqual(r.tasks.sort(), ['FORGE_CHATGPT_ENRICHMENT_RESEARCH', 'FORGE_POSTING_VALIDATION']);
   assert.deepEqual(S.due(specs, et('2026-11-16T13:12:50-05:00'), r.key).tasks, []); // same minute again

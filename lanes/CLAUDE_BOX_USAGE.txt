@@ -1,9 +1,10 @@
-CLAUDE BOX — FORGE_AI_USAGE_READER (02:05, 08:05, 14:05, 20:05 ET, haiku)
-Original: lanes/CLAUDE_AI_USAGE_READER.txt. Its 3-reading format, labels, windowHours 168, statuses and newest-600 retention stay binding. Usage-only write scope: no production lock, no native config files.
+LANE BRIEF — FORGE_AI_USAGE_READER (02:05, 08:05, 14:05, 20:05 ET, haiku). Merged from the box file and lanes/CLAUDE_AI_USAGE_READER.txt; neither is read at run time.
+JOB: append this run's weekly usage readings to usage/AI_USAGE_READINGS.jsonl; the Pipeline Explorer draws bars and run-out from that file. Usage-only write scope. No Writer, no other pages, no analysis. The box has no signed-in Chrome, so Grok and ChatGPT cannot be read.
 
-BOX METHOD (no signed-in Chrome exists on the box; headless claude has no browser tools)
-1. CLAUDE: run bash tools/claude-box-runner/claude-usage.sh. From the "Current week (all models)" block take the "<n>% used" number as usedPct and convert "Resets <date/time> (America/New_York)" to UTC ISO for resetsAt. status OK, source "claude /usage via tmux on claude-box". If the script prints USAGE_CAPTURE_FAILED or the numbers are missing: usedPct null, resetsAt "", status UNREADABLE.
-2. GROK and CHATGPT: usedPct null, resetsAt "", status CHROME_UNAVAILABLE, source "claude-box has no signed-in Chrome". Never guess.
-3. Append exactly 3 lines (CLAUDE, GROK, CHATGPT; meter weekly; labels "weekly (all models)", "weekly SuperGrok", "weekly (Codex/Work/agents)"; windowHours 168) to usage/AI_USAGE_READINGS.jsonl in WORKDIR, keep the newest 600 lines, verify exactly one weekly reading per provider.
-4. Commit "CLAUDE USAGE-READER <YYYYMMDD-HHMMET>: 3 readings" and publish per CLAUDE_BOX_COMMON. The commit is the lane record; the CLAUDE_BOX run receipt goes in the same commit with status PARTIAL (GROK/CHATGPT blocked: CHROME_UNAVAILABLE_ON_BOX).
-Keep the run short: no other pages, no analysis.
+1 CLAUDE: run bash tools/claude-box-runner/claude-usage.sh. From the "Current week (all models)" block take "<n>% used" as usedPct and convert "Resets <date/time> (America/New_York)" to a UTC ISO resetsAt using the run's current ET time. status OK, source "claude /usage via tmux on claude-box". USAGE_CAPTURE_FAILED or missing numbers: usedPct null, resetsAt "", status UNREADABLE.
+2 GROK and CHATGPT: usedPct null, resetsAt "", status CHROME_UNAVAILABLE, source "claude-box has no signed-in Chrome". Never guess.
+3 Append exactly 3 lines, one per provider, in this order, compact JSON:
+{"at":"<UTC ISO now>","provider":"CLAUDE","meter":"weekly","label":"weekly (all models)","usedPct":<number|null>,"resetsAt":"<UTC ISO or empty>","windowHours":168,"status":"OK|UNREADABLE","source":"..."}
+GROK label "weekly SuperGrok"; CHATGPT label "weekly (Codex/Work/agents)". Never omit a provider or swap in another meter (no session, 5-hour or Grok Bot rows).
+4 Keep only the newest 600 lines; never rewrite or selectively delete older history. Before committing verify exactly one weekly reading per provider from this run, all windowHours 168.
+5 Commit "CLAUDE USAGE-READER <YYYYMMDD-HHMMET>: 3 readings" with the box run receipt in the same commit (status PARTIAL; GROK and CHATGPT blocked: CHROME_UNAVAILABLE_ON_BOX), then publish per the header. The commit is the lane record; laneReceipt is the commit message. A run that ends without a commit is a defect.

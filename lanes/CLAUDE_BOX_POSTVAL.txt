@@ -1,9 +1,22 @@
-CLAUDE BOX — FORGE_POSTING_VALIDATION (05:12, 13:12, 21:12 ET, haiku)
-Route runtime. Follow control/FORGE_AUTOMATION_ENTRY.txt with PROVIDER=Claude, TASK_KEY=FORGE_POSTING_VALIDATION: read runtime/current.json in WORKDIR (it is fresh main at INSTRUCTION_COMMIT), require lanes.FORGE_POSTING_VALIDATION.owner=Claude (otherwise write a SKIP/BLOCKED_AUTHORITY receipt and stop), read only base_url+file from runtime/releases/<release_id>/ in WORKDIR and check its sha256 with sha256sum. That packet is the procedure. Replace only:
-- Drive WRITER_QUEUE file creation uses the CLAUDE_BOX_COMMON create rule; name CLAUDE_<requestId>.json; request IDs FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-Bnn (RUN_ID-based IDs also allowed).
-- Worklist: WORKLIST_FORGE_POSTING_VALIDATION is a Drive file; read it with Drive tools when available; otherwise select from the fresh master (Writer reader) with the packet's same age rule.
-- Fetch with TinyFish fetch_content only (no browser sessions).
-- Shared run lock: the PC lock is unavailable; the Writer queue script lock and freezes still apply.
-- ENRICH rulings <= 50 per run (overrides "continue in batches of 10 while capacity remains" beyond 50).
-NATIVE RECEIPT: receipts/FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET.txt with the packet's fields, plus the CLAUDE_BOX run receipt pointing at it. Commit message starts "CLAUDE FORGE-POSTVAL".
-BOX LIMITS: Indeed and other sources that block TinyFish stay UNCONFIRMED with attempts recorded.
+LANE BRIEF — FORGE_POSTING_VALIDATION (05:12, 13:12, 21:12 ET, haiku). Merged from the box file and runtime packet FORGE_POSTING_VALIDATION (release 78cc4cc37bd90445d970); neither is read at run time.
+OWNER: the runtime manifest entry below must also say owner Claude, else SKIP/BLOCKED_AUTHORITY receipt and stop.
+JOB: background check of aging active postings; record what the page shows. No scoring, no deep job-description analysis, no applications, no contact. Outside the main pipeline: never gates enrichment or review.
+
+SELECT
+- Worklist: Drive file WORKLIST_FORGE_POSTING_VALIDATION when under 6 hours old (Drive tools); otherwise select from fresh master (Writer reader) with the same rule. Never use the old missing-LIVENESS-only gate.
+- Rule: ACTIVE, unprotected rows in all active buckets, 7+ days after a reliable POSTING_DATE/POSTED_DATE, else 7+ days after first discovery (DISCOVERED_AT_ET, DATE_ADDED, MASTER_LOADED_AT). No reliable date: flag UNDATED once, never invent an age. Reuse a successful check for 7 days; retry unclear or blocked ones after 24 hours. Never check a young posting just because LIVENESS is empty.
+- Skip rows in the Writer queue or with a recent RESULT, and rows whose fresh discovery evidence already shows liveness.
+
+CHECK A ROW
+- TinyFish fetch_content only: up to 10 URLs per call, ttl 0, per_url_timeout_ms 60000. No browser sessions, automation, sign-in, forms or CAPTCHAs.
+- Employer ATS or careers page open = LIVE_EMPLOYER_ATS. Workday: title plus "job requisition id" = open; "The page you are looking for doesn't exist" on a URL ending in the requisition token (_R12345, _REQ-12345, _JR12345) = CLOSED; a URL without the token: search https://<host>/<site>?q=<title words> with links=true and fetch the match.
+- LinkedIn /jobs/view/<id> with a posted age and no closed notice = LIVE_SECONDARY, LIVENESS_NOTE "LinkedIn page, posted <age>, read <date>". "No longer accepting applications" = CLOSED only when that post is the row's sole source.
+- Indeed and other sites that block TinyFish: find the employer post by exact company, title, location and requisition ID. No qualifying evidence: UNCONFIRMED with attempts recorded.
+- Identity-bound aggregator/recruiter text counts as employer text. Record REQ_ID, pay, location, work arrangement and post date only when shown, verbatim. Read policy/current/AGENCY_AND_TOOLS.txt only for an agency row.
+
+PRODUCTION: at least 10 rows, then batches of 10 while time remains, max 50 ENRICH rulings per run. An unreadable row is skipped and noted, never a stop. PARTIAL_WITH_WORK only with a named hard limit in STOP_REASON. The PC run lock is unavailable; Writer freezes and the queue script lock still apply.
+
+WRITES (WRITER_QUEUE): Drive create_file, parentId 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7, title CLAUDE_<requestId>.json, textContent the exact JSON, contentMimeType text/plain, disableConversionToGoogleType true; returned mimeType must be text/plain. <=25 rows per file. Save each payload to PRIVATE_DIR/checkpoints/<requestId>.json first; never re-send one whose create result is unknown. Drive missing or converted: no retry, TRANSPORT_PENDING + path. Request IDs FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-Bnn (RUN_ID-based also allowed):
+{"action":"batch","requestId":"FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-B01","requests":[{"action":"ruling","ruling":{"requestId":"FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET-B01-R01","primaryId":"V2I-XXXXXXXXXXXX","kind":"ENRICH","actor":"CLAUDE","fields":{"LIVENESS":"LIVE_EMPLOYER_ATS","LIVENESS_ASOF":"YYYY-MM-DD","LIVENESS_EVIDENCE_URL":"https://...","LIVENESS_METHOD":"TINYFISH_FETCH:WORKDAY"}}}]}
+LIVENESS_METHOD: TINYFISH_FETCH:<SITE>, EMPLOYER_PAGE or SECONDARY_PAGE. Never send COMPANY/TITLE/LOCATION/REQ/BUCKET/DISPOSITION/PRIMARY_ID.
+NATIVE RECEIPT: receipts/FORGE-POSTVAL-CLAUDE-<YYYYMMDD>-<HHMM>ET.txt with ROWS_EVALUATED, LIVE, CLOSED, UNCONFIRMED, WRITTEN, VERIFIED, HELD, FAILED, TINYFISH_FETCHES (or TINYFISH_UNAVAILABLE), BACKLOG_REMAINING, STOP_REASON, BATCHES_COMPLETED_THIS_RUN, REQUEST_IDS. Set laneReceipt to it; commit message starts "CLAUDE FORGE-POSTVAL".
