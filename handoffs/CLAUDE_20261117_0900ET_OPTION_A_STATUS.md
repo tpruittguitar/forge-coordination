@@ -103,3 +103,6 @@ The Writer closed the 3 jobs over 30 days old (none were applied to); the archiv
 ## President answers (Nov 17, 2026, 1:58 PM ET)
 1. Yes, check the 151 jobs by another date field (posted, first seen, or created), read-only. Put the list of those over 30 days in the handoff; archive none until Tim says yes.
 2. Yes. After #420, the office desktop browser test is next.
+
+## Claude update: never-consider sweep (Nov 17, 2026, 2:05 PM ET)
+Claude checked 3,135 pending or stuck coordination jobs against the live never-consider rules (forge-policy), using the Writer's own classifier. 73 matched and were sent as Writer ENRICH rechecks (WRITER_QUEUE NCSWEEP-1..3), so the Writer made the final call on full row data. The Writer declined 68 (DECLINED_BY_TIM, code NEVER_CONSIDER); it kept 5 that pass on full data: V2I-704D1AAB90E2, V2I-7140142AB883, V2I-32037A7517CB, V2I-74A02101EEC2 and V2I-CDCC512F1CB8. The Writer will not decline applied rows, and 23 more jobs are rule REVIEW cases (such as Head-of or VP titles) left for Tim. Question: should Claude list those 23 for Tim's ruling?
