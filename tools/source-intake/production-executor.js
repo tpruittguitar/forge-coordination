@@ -18,6 +18,7 @@ const crypto=require('node:crypto');
 const {read,fetchAuthenticatedArchive}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
 const {checkCanaryOutcome}=require('./intake-accounting');
+const WriterOutcome=require('../writer-outcome.cjs');
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
 // Contents API, not raw.githubusercontent.com: the raw CDN can serve a stale switch for minutes after it is turned off.
 const SWITCH='https://api.github.com/repos/tpruittguitar/forge-coordination/contents/control/SOURCE_INTAKE_RELEASE.json?ref=main';
@@ -71,6 +72,9 @@ function classifyWriterResponse(result,rid){
  if(r.result==='NEVER_CONSIDER_EXCLUDED'&&!result.writeId&&!ids.length)return {kind:'EXCLUDED'};
  return {kind:'UNKNOWN'};
 }
+// Proven never accepted: request-bound NOT_ACCEPTED, BEFORE_MUTATION, masterMutations 0, retryable code (reference/WRITER_OUTCOME_CONTRACT.json).
+// Anything else, including terminal rejections and unbound or malformed outcomes, returns null and stays fenced as UNKNOWN.
+const provenNotAccepted=(result,rid)=>{const c=WriterOutcome.classify(result,{requestId:rid});return c.kind==='NOT_ACCEPTED'&&c.retryable===true?c:null};
 const Captured=require('./captured-discovery');
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
@@ -112,7 +116,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
   const prior=Object.hasOwn(priorResults,rid)?priorResults[rid]:undefined;
-  if(auto&&prior!==undefined&&classifyWriterResponse(prior,rid).kind==='UNKNOWN'&&!autoSkip(prior,rid,'UNKNOWN',candidate)){
+  const retryPrior=prior!==undefined&&provenNotAccepted(prior,rid)!==null;
+  if(auto&&prior!==undefined&&!retryPrior&&classifyWriterResponse(prior,rid).kind==='UNKNOWN'&&!autoSkip(prior,rid,'UNKNOWN',candidate)){
    defer(rid,'ORIGINAL_REQUEST_RECONCILIATION_REQUIRED',prior);continue;
   }
   if(pre.mode==='EXISTING_REQUEST_HOLD'){
@@ -138,7 +143,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
    continue;
   }
   if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
-  if(prior!==undefined){
+  if(prior!==undefined&&!retryPrior){
    // A captured response with no receipt_index entry can only be a no-op. Re-verify it; never re-POST.
    const pk=classifyWriterResponse(prior,rid).kind;
    const priorSkip=autoSkip(prior,rid,pk,candidate);
@@ -178,6 +183,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
   if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; reconcile, never replay');}
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
+  const refused=provenNotAccepted(result,rid);
+  if(refused){outcomes.push({requestId:rid,status:'RETRY_NEXT_RUN',reason:'WRITER_NOT_ACCEPTED_'+refused.code,retryAfterMs:refused.retryAfterMs,writerResult:result});continue}
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}

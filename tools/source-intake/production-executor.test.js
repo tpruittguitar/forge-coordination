@@ -484,3 +484,32 @@ test('Writer delimiter escaping does not create false identity holds; actual dif
  assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt,readbacks}).status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
  for(const patch of [{COMPANY:'Different'},{TITLE:'Director Operational Excellence - Quality & Continuous Improvement'},{LOCATION:'Syracuse, NY, USA'}])assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,...patch},result,receipt,readbacks}).reason,'INSERT_IDENTITY_MISMATCH');
 });
+const notAccepted=(rid,over={})=>({ok:false,mode:'WRITE_FENCE',error:'Writer busy; this request was not accepted',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[rid],retryAfterMs:60000,...over}});
+test('proven never-accepted Writer refusal is retryable next run, not UNKNOWN, and the same request is re-posted',async()=>{
+ const rows=newOnly(1),rec=memRecorder(),base=mockWriter();let posts=0,refuse=true;
+ const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>refuse?notAccepted(rid):insertResponse(rid,'V2I-RETRY')}}return base(u,o)};
+ const run=extra=>runIntake(rows,opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO',...extra})).catch(e=>e);
+ const first=await run();
+ assert.equal(first[0].status,'RETRY_NEXT_RUN');assert.equal(first[0].reason,'WRITER_NOT_ACCEPTED_WRITER_BUSY');assert.equal(posts,1);
+ refuse=false;
+ const second=await run({priorResults:rec.store});
+ assert.equal(posts,2);assert.equal(second.outcomes[0].status,'PENDING_VERIFICATION');
+});
+test('a refusal that is not proven never-accepted stays fenced as UNKNOWN',async()=>{
+ const cases={
+  wrongRequest:rid=>notAccepted('OTHER-'+rid),
+  afterMutation:rid=>notAccepted(rid,{phase:'AFTER_MUTATION'}),
+  unknownMutations:rid=>notAccepted(rid,{masterMutations:null}),
+  terminalRejection:rid=>notAccepted(rid,{code:'REJECTED_SCHEMA'}),
+  acceptanceMarker:rid=>({...notAccepted(rid),writeId:'W-EXISTS'})
+ };
+ for(const [name,make] of Object.entries(cases)){
+  const rows=newOnly(1),rec=memRecorder(),base=mockWriter();let posts=0;
+  const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>make(rid)}}return base(u,o)};
+  const o=opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO'});
+  const first=await runIntake(rows,o);
+  assert.equal(first[0].status,'DEFERRED',name);
+  await runIntake(rows,{...o,priorResults:rec.store});
+  assert.equal(posts,1,name+' must not be re-posted');
+ }
+});
