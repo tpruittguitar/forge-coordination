@@ -22,6 +22,7 @@
 const fs = require('fs'), path = require('path'), { execFileSync } = require('child_process');
 const MIN = 60000, HOUR = 60 * MIN, IDLE_AFTER = 2 * HOUR, FUTURE_SLACK = MIN;
 const OUT = 'control/OFFICE_STATUS.json';
+const ask = require('./ask.js');   // asks/open is the single source for needs_tim
 
 /* Which office row each signal belongs to. Provider tokens come from receipt names, change-record names and PROVIDER=. */
 const PROVIDER_BOT = { CHATGPT: 'ChatGPT', CLAUDE: 'Claude', PRESIDENT: 'President' };
@@ -162,7 +163,7 @@ function usageScreen(row, usage) {
   return Object.assign({}, row, { screen });
 }
 /* Returns { doc, changed }. `office` is the parsed OFFICE_STATUS.json; it is not mutated. */
-function build(office, signals, now, readings) {
+function build(office, signals, now, readings, asks) {
   if (!office || !Array.isArray(office.bots)) return { doc: office, changed: false };
   const best = newestByBot(signals, now);
   const usage = readings === undefined ? office.usage : usageFromReadings(readings, now);
@@ -172,8 +173,11 @@ function build(office, signals, now, readings) {
     const m = mergeBot(b, best[b.bot], now);
     return hasUsage && b.bot_id === USAGE_ROW_ID ? usageScreen(m, usage) : m;
   });
-  const changed = JSON.stringify(bots) !== JSON.stringify(office.bots) || JSON.stringify(usage) !== JSON.stringify(office.usage);
+  const needs_tim = asks ? ask.build(office, asks.open, asks.resolved).needs_tim : office.needs_tim;
+  const changed = JSON.stringify(bots) !== JSON.stringify(office.bots) || JSON.stringify(usage) !== JSON.stringify(office.usage) ||
+    JSON.stringify(needs_tim) !== JSON.stringify(office.needs_tim);
   const doc = Object.assign({}, office, { bots, usage });
+  if (asks) doc.needs_tim = needs_tim;
   if (changed) { if ('generated_at' in doc && !('updated_at' in doc)) doc.generated_at = iso(now); else doc.updated_at = iso(now); }
   return { doc, changed };
 }
@@ -195,7 +199,8 @@ function collect(root) {
 if (require.main === module) {
   const root = path.resolve(__dirname, '../..'), file = path.join(root, OUT);
   let office; try { office = JSON.parse(fs.readFileSync(file, 'utf8')); } catch (e) { console.log('OFFICE_STATUS.json missing or invalid; nothing to do'); process.exit(0); }
-  const { doc, changed } = build(office, collect(root), Date.now(), fs.readFileSync(path.join(root, 'usage/AI_USAGE_READINGS.jsonl'), 'utf8'));
+  let asks; try { asks = { open: ask.collect(root, 'open'), resolved: ask.collect(root, 'resolved') }; } catch (e) { console.error('asks unreadable, needs_tim left as is: ' + e.message); }
+  const { doc, changed } = build(office, collect(root), Date.now(), fs.readFileSync(path.join(root, 'usage/AI_USAGE_READINGS.jsonl'), 'utf8'), asks);
   if (changed) fs.writeFileSync(file, serialize(doc));
   console.log(changed ? 'wrote OFFICE_STATUS.json (bot rows and usage refreshed)' : 'OFFICE_STATUS.json unchanged');
 }

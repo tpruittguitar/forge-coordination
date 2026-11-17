@@ -44,3 +44,10 @@ same source file raises it; a newer receipt that raises it again brings it back.
  "dismiss": [{"itemId": "run-next-owner:INDEX|CHATGPT", "source": "receipts/<file>"}]}
 ```
 Item IDs are shown on the Needs you page under each item.
+
+## Where "Needs Tim" is shown
+`asks/open` is the single source. `tools/office-status/build.js` rebuilds `needs_tim` in `control/OFFICE_STATUS.json` from it on every run.
+The President checksheet section is rendered by `node tools/office-status/needs-tim-section.js [--out FILE]`; to refresh a pasted copy use
+`--merge <existing-section-file>`. Only the text between `<!-- NEEDS_TIM:BEGIN generated from asks/open -->` and `<!-- NEEDS_TIM:END -->` is replaced
+(markers are added at the end if missing); anything outside them is hand-written and left byte-identical.
+**Hand edits inside the markers are overwritten on the next render.** To remove a card, move its file to `asks/resolved/`.

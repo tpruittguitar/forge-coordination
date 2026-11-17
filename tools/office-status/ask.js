@@ -21,11 +21,15 @@ function waitingOnTim(ask) {
 
 // Pure: open/resolved entries are {file, ask}; neither inputs nor office are mutated.
 // Sort by source filename (code-point order), independent of filesystem enumeration.
-function build(office, open, resolved) {
+function waitingEntries(open, resolved) {
   const closedIds = new Set(resolved.map(({ ask }) => ask.id).filter(Boolean));
   const closedFiles = new Set(resolved.map(({ file }) => file));
-  const needs_tim = open.slice().sort((a, b) => a.file < b.file ? -1 : a.file > b.file ? 1 : 0)
-    .filter(({ file, ask }) => ask.id && !closedIds.has(ask.id) && !closedFiles.has(file) && waitingOnTim(ask))
+  return open.slice().sort((a, b) => a.file < b.file ? -1 : a.file > b.file ? 1 : 0)
+    .filter(({ file, ask }) => ask.id && !closedIds.has(ask.id) && !closedFiles.has(file) && waitingOnTim(ask));
+}
+
+function build(office, open, resolved) {
+  const needs_tim = waitingEntries(open, resolved)
     .map(({ file, ask }) => ({
       text: ask.title || ask.id,
       link: 'https://github.com/tpruittguitar/forge-coordination/blob/main/asks/open/' + encodeURIComponent(file),
@@ -57,4 +61,4 @@ if (require.main === module) {
     process.exitCode = 1;
   }
 }
-module.exports = { build };
+module.exports = { build, collect, waitingEntries, BOT, token };
