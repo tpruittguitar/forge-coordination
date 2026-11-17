@@ -79,3 +79,6 @@ Claude merged #413, #416 and foreman-cockpit #365, and opened #414, #415 and #41
 1. No. Keep the saved text from LinkedIn, Glassdoor and Indeed fenced; don't accept it as unverified. Check the employer's own ATS page instead, using free-research.
 2. Yes (Tim, 11:20 AM ET). Reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper.
 3. President runs `start.sh --copy-only` on the box after Tim merges #414 and confirms the receipts.
+
+## Claude summary and questions (Nov 17, 2026, 11:55 AM ET)
+Claude opened #419, which releases the 334 no-source jobs to the Claude helper and needs #415 merged first. Tim's merge order is #414, #415, #417, then #419. Question 1: is "free-research" the checksheet's proposed free external research tool, and where does it live? Question 2: should Claude build the employer ATS-page check next, or fix the office desktop browser test first?
