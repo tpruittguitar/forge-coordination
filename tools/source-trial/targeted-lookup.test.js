@@ -35,3 +35,15 @@ test('only an exact-identity match with posting text is kept, and the coordinato
   assert.ok(env, 'found by the helper URL'); assert.ok(env.card.description.includes('Own safety, quality and delivery'));
   assert.equal(D.index(root).find({ company: 'Other Co', title: 'Plant Manager', location: 'Peachland, NC', url: helperUrl }, { now }), null, 'identity still required');
 });
+
+test('an employer ATS page from a direct link is read and preferred; sign-in walls never count as a full posting', async t => {
+  const root = fixture(t), now = Date.parse('2026-11-17T17:00:00Z'), list = T.targets(root, { now });
+  const js = { site: 'linkedin', company: 'Quikrete', title: 'Plant Manager', location: 'Peachland, NC', job_url: 'https://www.linkedin.com/jobs/view/999/',
+    job_url_direct: 'https://boards.greenhouse.io/quikrete/jobs/12345', description: 'Sign in to view the full job. '.repeat(20), targetKey: 'K:V2I-A' };
+  const fetcher = async url => ({ ok: true, json: async () => ({ content: '&lt;p&gt;' + text + '&lt;/p&gt;' }), url });
+  const got = await T.ats([js], { fetcher });
+  assert.equal(got.jobs.length, 1); assert.equal(got.jobs[0].site, 'ats:greenhouse');
+  const doc = T.merge(root, list, [js, ...got.jobs], { now });
+  assert.equal(doc.roles[0].source, 'ATS:greenhouse'); assert.equal(doc.roles[0].url, 'https://boards.greenhouse.io/quikrete/jobs/12345');
+  assert.equal(T.merge(root, list, [js], { now }).summary.matched, 0, 'a sign-in wall is not a full posting');
+});
