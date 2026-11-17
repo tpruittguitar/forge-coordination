@@ -95,3 +95,4 @@ Tim ruled that a full posting description found on any site is verification. #42
 
 ## Claude update: jobs over 30 days (Nov 17, 2026, 1:50 PM ET)
 Of the 334 no-source jobs, 3 were first seen over 30 days ago (Sep 18): V2I-35BBD6EFA02A, V2I-879936EA4400 and V2I-4E841C4845B1. Per Tim, Claude queued CLOSED_DEAD rulings for them in WRITER_QUEUE (CLAUDE_CLAUDE-20261117-RETIRE30D.json). The Writer's archive sweep moves them to the archive after its minimum age (default 7 days). None of the 267 lookup jobs are over 30 days, and 151 jobs have no discovery date, so they were not checked.
+Result (1:49 PM ET): the Writer applied all 3 as CLOSED_DEAD. Before the change, all 3 were SCOUT_INTAKE awaiting analysis, with no application on record. Tim's rule: never retire a job he has applied to; the Writer also refuses to close APPLIED rows.
