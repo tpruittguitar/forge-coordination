@@ -80,7 +80,7 @@ function index(root,ledger){
    if(!memo.has(ref.sha256))memo.set(ref.sha256,read(root,ref));const doc=memo.get(ref.sha256);
    if(!doc||!identity(doc).every((x,n)=>x===ids[n])||key(doc.url)!==key(card.url||card.SOURCE_URL)||!sameRequisition(doc,card))continue;
    if(!payOnly){const fullPosting=completeDocument(doc);if(fullPosting||allowRoleText&&roleText(doc,ref))return{doc,ref,fullPosting};continue;}
-   const pay=PostedPay.eligible(doc)||(!doc.postedPay&&doc.fullPosting?annualBase(doc.text):null);
+   const pay=PostedPay.eligible(doc)||(!doc.postedPay&&doc.fullPosting?annualBase(doc.text):null)||PostedPay.sourceAnnual(doc);
    if(pay){const conflict=newer.find(x=>{const p=x.doc.postedPay;return p.status==='POSTED'&&((p.low!=null&&p.low!==pay.low)||(p.high!=null&&p.high!==pay.high)||(p.currency!=null&&p.currency!=='USD')||(p.period!=null&&!Pay.annualUnit(p.period))||(p.basis!=null&&p.basis!=='BASE'));});return conflict||{doc,ref};}
    if(doc.postedPay&&PostedPay.bound(doc.postedPay,doc))newer.push({doc,ref});
   }return null;
@@ -139,7 +139,7 @@ function forRow(store,row,now=Date.now()){
  }
  const latest=xs=>xs.sort((a,b)=>Date.parse(b.doc.postedPay?.observedAt||b.ref.observedAt)-Date.parse(a.doc.postedPay?.observedAt||a.ref.observedAt))[0];
  const salary=latest(salaries),full=postings.sort((a,b)=>Date.parse(b.ref.observedAt)-Date.parse(a.ref.observedAt))[0],found=salary||full;if(!found)return null;
- const doc=found.doc,text=full?.doc.text||doc.text,constraint=constraintsByUrl.get(Identity.urlKey(doc.url)),pay=salary?(PostedPay.eligible(doc)||(!doc.postedPay?annualBase(doc.text):null)):null;
+ const doc=found.doc,text=full?.doc.text||doc.text,constraint=constraintsByUrl.get(Identity.urlKey(doc.url)),pay=salary?(PostedPay.eligible(doc)||(!doc.postedPay?annualBase(doc.text):null)||PostedPay.sourceAnnual(doc)):null;
  return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:doc.postedPay?.observedAt||found.ref.observedAt,url:doc.url,fullPosting:!!full,text,postedPay:doc.postedPay||null,payFacts:salary?PostedPay.eligible(doc):null,degree:full?L.degreeFromText(full.doc.text):null,degreeAt:full?.ref.observedAt||null,degreeUrl:full?.doc.url||null,pay,payAmbiguous:!pay&&/\$\s*\d|USD\s*\d/i.test(text),basis:'EMPLOYER_POSTED',postingStatus:'UNVERIFIED',...(constraint?{postingFacts:{validThrough:constraint.validThrough},validThroughEvidence:constraint}:{}),discoveryEvidence:found.ref.path,factsVersion:Pay.VERSION};
 }
 module.exports={capture,read,index,forRow,annualBase,identity,hash,postingComplete,requisitions,sameRequisition,constraintOrder};

@@ -129,6 +129,15 @@ function looksLikePosting(text, row) {
   const content = coHit || (ti.length && tiHits >= Math.ceil(ti.length * 0.6));
   return !!content && !(WALL_RE.test(t) && t.length < 3000);
 }
+// LinkedIn renders 'Base pay range' as a heading and the range in its own compensation__salary element,
+// so the stripped text puts them on separate lines. Read that element directly; /yr USD ranges only.
+function linkedinBasePay(html){
+  const raw=String(html||'');if(!/Base pay range/i.test(strip(raw)))return null;
+  const m=raw.match(/<([a-z0-9]+)\b[^>]*\bclass\s*=\s*["'](?:[^"']*\s)?compensation__salary(?:\s[^"']*)?["'][^>]*>([\s\S]*?)<\/\1>/i);if(!m)return null;
+  const text=strip(m[2]).replace(/\s+/g,' ');
+  if(/\b(?:CAD|AUD|NZD|EUR|GBP)\b|[€£]/i.test(text)||(text.match(/\/\s*yr\b/gi)||[]).length<1||/\/\s*(?:hr|mo|wk)\b/i.test(text))return null;
+  const p=payFromText(text);return p?Pay.range(Pay.values(p.low,p.high)):null;
+}
 function parseAggregator(kind, html, row) {
   const text = strip(html || ''); if (text.length < 200) return null;
   if (row && !looksLikePosting(text, row)) return { wall: true, pay: null, basis: null, text: '' };
@@ -140,6 +149,7 @@ function parseAggregator(kind, html, row) {
     const url=aggregatorFor(row.p||{})?.page;
     if(url){postedPay=require('../source-trial/posted-pay').fromText({...row,url,is_estimated:true},text,{observedAt:new Date().toISOString(),source:kind+' site estimate'});if(postedPay?.status==='ESTIMATED')pay=postedPay.currency==='USD'&&Pay.annualUnit(postedPay.period)&&postedPay.basis==='BASE'?Pay.range(Pay.values(postedPay.low,postedPay.high)):null;}
   }
+  if(!pay&&!estimated&&kind==='linkedin'){const li=linkedinBasePay(html);if(li)pay=li;}
   const basis=pay||postedPay?.status==='ESTIMATED'?(estimated?'THIRD_PARTY_ESTIMATE':'EMPLOYER_POSTED'):null;
   return { pay, basis, text,...(postedPay?{postedPay}:{}) };
 }

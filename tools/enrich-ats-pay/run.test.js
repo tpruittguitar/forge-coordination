@@ -756,3 +756,43 @@ test('coordinator and receipt fences stay closed and the coordinator is read onc
   assert.equal(fs.readFileSync(counts,'utf8'),'1');
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
 });
+
+test('saved JobSpy/HiringCafe yearly USD pay with no basis completes salary before the retry-backoff skip',t=>{
+ const E=require('../source-trial/evidence-store'),R=require('./recovery'),ev=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-annual-'));t.after(()=>fs.rmSync(ev,{recursive:true,force:true}));
+ const now=Date.now(),old=new Date(now-3*3600000).toISOString(),refs=[],rows=[];
+ for(const [i,site,extra] of [[1,'JOBSPY:linkedin',{salary_source:'direct_data'}],[2,'HIRINGCAFE',{salary_source:'HIRINGCAFE_MCP'}],[3,'JOBSPY:indeed',{salary_source:'direct_data',is_estimated:true}]]){
+  const id='V2I-SRC-ANNUAL-'+i,url='https://www.example-jobs.com/view/'+i,r={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  const card={source:site,company:'Acme',title:'Director of Quality',location:'Dayton, OH',url,description:'Director of Quality, Dayton plant.',min_amount:170000,max_amount:210000,interval:'yearly',currency:'USD',...extra};
+  const ref=E.capture(ev,card,{observedAt:old,proof:'state/source-trial-report.json',fullPosting:false});assert.ok(ref);refs.push([url,ref]);
+  const doc=E.read(ev,ref);assert.equal(doc.payFacts,null);assert.equal(doc.postedPay.basis,null);assert.equal(doc.postedPay.status,i===3?'ESTIMATED':'POSTED');
+  rows.push([r,url]);
+ }
+ fs.writeFileSync(path.join(ev,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:Object.fromEntries(refs.map(([url,ref],i)=>['e'+i,{sourceUrl:url,evidenceRefs:[ref]}]))}));
+ // Every row is in retry backoff, and its last attempt is newer than the saved evidence.
+ const ledger={submitted:{},tried:{}};for(const [r,url] of rows)R.remember(ledger,r,'SALARY','SOURCE_RESEARCH_REQUIRED',[{url,status:'HTTP_403'}],now-3600000);
+ const prior=process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT;process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT=ev;
+ let out;try{out=sourceRun(t,rows.map(([r,url],i)=>row(i+1,r.PRIMARY_ID,r.TITLE,r.LOCATION,'SOURCE_URL='+url+'; DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required')),{},{},null,ledger);}
+ finally{if(prior===undefined)delete process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT;else process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT=prior;}
+ const fields=id=>out.report.sample.find(x=>x.id===id)?.fields||{};
+ for(const id of ['V2I-SRC-ANNUAL-1','V2I-SRC-ANNUAL-2'])assert.deepEqual([fields(id).SALARY_BASE_LOW,fields(id).SALARY_BASE_HIGH,fields(id).SALARY_BASIS],[170000,210000,'EMPLOYER_POSTED'],id);
+ assert.notEqual(fields('V2I-SRC-ANNUAL-3').SALARY_BASIS,'EMPLOYER_POSTED','a site estimate stays on the estimate path');
+ assert.deepEqual(out.reads,[]);
+});
+
+test('pay config: 60 s salary review, no public fallback reads, LinkedIn on, cooling Workday boards skipped',t=>{
+ const C=JSON.parse(fs.readFileSync(path.join(__dirname,'config.json'),'utf8'));
+ assert.equal(C.salaryReviewMaxMs,60000);assert.equal(C.maxPublicFetches,0);assert.ok(!(C.aggregatorsOff||[]).includes('linkedin'));
+ const wd='https://acme.wd5.myworkdayjobs.com/en-US/External/job/Dayton-OH/Director-of-Quality_R1',pub='https://careers.example.org/public-zero';
+ const health=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'pay-board-health-')),'board-health.json');t.after(()=>fs.rmSync(path.dirname(health),{recursive:true,force:true}));
+ fs.writeFileSync(health,JSON.stringify({schema:'forge.board-health.v1',at:null,boards:{'workday:acme.wd5.myworkdayjobs.com/External':{key:'workday:acme.wd5.myworkdayjobs.com/External',status:'ACCESS_RESTRICTED',retryAt:new Date(Date.now()+3600000).toISOString(),companies:['Acme']}}}));
+ const prior=process.env.ENRICH_BOARD_HEALTH_FILE;process.env.ENRICH_BOARD_HEALTH_FILE=health;
+ let out;try{out=sourceRun(t,[row(1,'V2I-WD-COOL','Director of Quality','Dayton, OH','SOURCE_URL='+wd),row(2,'V2I-PUBLIC-ZERO','Director of Quality','Dayton, OH','SOURCE_URL='+pub)],{[pub]:{body:exactPosting()}},{maxPublicFetches:C.maxPublicFetches});}
+ finally{if(prior===undefined)delete process.env.ENRICH_BOARD_HEALTH_FILE;else process.env.ENRICH_BOARD_HEALTH_FILE=prior;}
+ assert.deepEqual(out.reads.filter(u=>/myworkdayjobs\.com/.test(u)),[],'no Workday read before retryAt');
+ assert.ok(out.report.workday_cooling_skips>=1);
+ assert.equal(out.report.public_tried,0);assert.ok(!out.reads.includes(pub),'maxPublicFetches 0 means no public fallback reads');
+ process.env.ENRICH_BOARD_HEALTH_FILE=health;
+ try{out=sourceRun(t,[row(1,'V2I-WD-COOL','Director of Quality','Dayton, OH','SOURCE_URL='+wd)],{},{maxPublicFetches:20});}
+ finally{if(prior===undefined)delete process.env.ENRICH_BOARD_HEALTH_FILE;else process.env.ENRICH_BOARD_HEALTH_FILE=prior;}
+ assert.deepEqual(out.reads.filter(u=>/myworkdayjobs\.com/.test(u)),[],'public fallback does not read a cooling Workday board either');
+});
