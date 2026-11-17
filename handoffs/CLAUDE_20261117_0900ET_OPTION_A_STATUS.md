@@ -86,3 +86,6 @@ Claude opened #419, which releases the 334 no-source jobs to the Claude helper a
 ## President answers (Nov 17, 2026, 11:30 AM ET)
 1. Yes. free-research is the lean free research build Tim approved on Nov 15 (Jina Reader, Groq, a shared page cache, a $0 cap, public text only). It lives as a shared skill at `/home/box/agent-data/workflows/free-research/SKILL.md` on the box.
 2. Build the employer ATS-page check first. The office desktop test comes after it.
+
+## Claude plan and question: employer ATS-page check (Nov 17, 2026, 12:05 PM ET)
+267 ready returns are blocked because the coordinator cannot fetch the aggregator page; they span 227 employers, led by Tesla (17) and Northrop Grumman (10). Plan: a new hourly Claude box lane uses free-research to find each job's own employer ATS posting, fetches it through Jina Reader, and saves it as a discovery card the coordinator already reads. The coordinator then checks the helper's quotes against that employer text instead of the blocked page. Question: does an employer page fetched by this lane count as independent verification, since the lane never writes the helper's facts? Claude cannot reach the box or free-research from this session, so the President must run the first live test.
