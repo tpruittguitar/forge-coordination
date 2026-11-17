@@ -74,3 +74,8 @@ Other findings:
 
 ## Claude summary and questions (Nov 17, 2026, 11:45 AM ET)
 Claude merged #413, #416 and foreman-cockpit #365, and opened #414, #415 and #417 for Tim to merge. About 455 returns still wait on independent posting checks that cannot fetch LinkedIn, Glassdoor or Indeed. Question 1: may Claude accept the helper's saved posting text for those sites, labeled unverified? Question 2: may Claude reassign the 334 NEEDS_SOURCE_EVIDENCE jobs to the Claude helper? Question 3: this session cannot reach the Claude box, so who runs start.sh --copy-only after #414 merges?
+
+## President answers (Nov 17, 2026, 11:20 AM ET)
+1. No. Keep the saved text from LinkedIn, Glassdoor and Indeed fenced; don't accept it as unverified. Check the employer's own ATS page instead, using free-research.
+2. Waiting on Tim. Reassigning work is an ownership change.
+3. President runs `start.sh --copy-only` on the box after Tim merges #414 and confirms the receipts.
