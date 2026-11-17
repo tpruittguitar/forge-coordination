@@ -484,3 +484,18 @@ test('Writer delimiter escaping does not create false identity holds; actual dif
  assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt,readbacks}).status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
  for(const patch of [{COMPANY:'Different'},{TITLE:'Director Operational Excellence - Quality & Continuous Improvement'},{LOCATION:'Syracuse, NY, USA'}])assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,...patch},result,receipt,readbacks}).reason,'INSERT_IDENTITY_MISMATCH');
 });
+test('a busy shared Writer POST lock sends nothing, records no intent, and defers the whole remaining batch without waiting again',async()=>{
+ const rows=newOnly(2),rec=memRecorder(),base=mockWriter();let posts=0,tries=0;
+ const transport=async(u,o)=>{if(o.method==='POST')posts++;return base(u,o)};
+ const postLock={acquire:async()=>{tries++;return{ok:false,reason:'LOCK_BUSY',release:async()=>false}}};
+ const result=await runIntake(rows,opts(transport,{recorder:rec,postLock,switchTransport:autoSwitch(),expectedMode:'AUTO'}));
+ assert.equal(posts,0);assert.equal(tries,1);assert.deepEqual(Object.keys(rec.store),[]);
+ assert.ok(result.every(x=>x.status==='DEFERRED'&&x.reason==='WRITER_POST_LOCK_LOCK_BUSY'));
+});
+test('the shared Writer POST lock is held during the POST and released afterwards',async()=>{
+ const rows=newOnly(1),base=mockWriter();let held=false,releases=0,postedWhileHeld=false;
+ const transport=async(u,o)=>{if(o.method==='POST'){postedWhileHeld=held;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>insertResponse(rid,'V2I-LOCK')}}return base(u,o)};
+ const postLock={acquire:async()=>{held=true;return{ok:true,release:async()=>{if(held)releases++;held=false;return true}}}};
+ await runIntake(rows,opts(transport,{postLock,switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.equal(postedWhileHeld,true);assert.equal(held,false);assert.equal(releases,1);
+});
