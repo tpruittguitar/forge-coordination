@@ -92,3 +92,6 @@ Claude opened #419, which releases the 334 no-source jobs to the Claude helper a
 
 ## Claude update: targeted posting lookup (Nov 17, 2026, 12:20 PM ET)
 Tim ruled that a full posting description found on any site is verification. #420 searches JobSpy (LinkedIn, Indeed) and HiringCafe for the 267 stuck ready returns and saves exact-identity full postings where the coordinator already looks. Its first live run matched 14 of 40 jobs, and 7 of those contain the helper's quote. Glassdoor and ZipRecruiter blocked GitHub runners, Google returned nothing, and HiringCafe and employer ATS reads failed, so a second run now logs why. Tim merges #420 after reviewing the results.
+
+## Claude update: jobs over 30 days (Nov 17, 2026, 1:50 PM ET)
+Of the 334 no-source jobs, 3 were first seen over 30 days ago (Sep 18): V2I-35BBD6EFA02A, V2I-879936EA4400 and V2I-4E841C4845B1. Per Tim, Claude queued CLOSED_DEAD rulings for them in WRITER_QUEUE (CLAUDE_CLAUDE-20261117-RETIRE30D.json). The Writer's archive sweep moves them to the archive after its minimum age (default 7 days). None of the 267 lookup jobs are over 30 days, and 151 jobs have no discovery date, so they were not checked.
