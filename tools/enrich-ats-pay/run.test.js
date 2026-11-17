@@ -417,7 +417,7 @@ test('active estimate review is bounded, promotes exact pay, skips protected job
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-active-')),master=path.join(dir,'master.txt'),pages=path.join(dir,'pages.json'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const lines=[],responses={},original={};for(let i=1;i<=7;i++){
   const id='V2I-REVIEW'+i,url='https://job-boards.greenhouse.io/acme/jobs/'+(900+i);
-  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
+  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SCOPE_FIT_RAW=80; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
   responses['https://boards-api.greenhouse.io/v1/boards/acme/jobs/'+(900+i)+'?pay_transparency=true']=JSON.stringify({id:900+i,title:'Director of Quality',location:{name:'Dayton, OH'},content:'A complete employer job description. '.repeat(25),pay_input_ranges:[{min_cents:18000000,max_cents:24000000,currency_type:'USD',interval:'year',title:'Base salary'}]});
  }
  lines.push(lines[0].replace('V2I-REVIEW1','V2I-DECLINED').replace('READY_TO_PURSUE','DECLINED_BY_TIM'),lines[0].replace('V2I-REVIEW1','V2I-APPLIED').replace('READY_TO_PURSUE','APPLIED'));
@@ -661,12 +661,12 @@ test('attempt-only evidence does not consume the useful Writer planning cap',t=>
  const lines=[],responses={};
  for(let i=0;i<25;i++){
   const url='https://careers.example.org/capacity/no-pay-'+i;
-  lines.push(row(i+1,'V2I-NOPAY'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-10`));
+  lines.push(row(i+1,'V2I-NOPAY'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; SCOPE_FIT_RAW=80; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-10`));
   const posting=JSON.parse(exactPosting().replace(/^<script[^>]*>|<\/script>$/g,''));delete posting.baseSalary;
   responses[url]={body:'<script type="application/ld+json">'+JSON.stringify(posting)+'</script>'};
  }
  const url='https://careers.example.org/capacity/usable';
- lines.push(row(26,'V2I-USEFUL','Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01`));
+ lines.push(row(26,'V2I-USEFUL','Director of Quality','Dayton, OH',`SOURCE_URL=${url}; SCOPE_FIT_RAW=80; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01`));
  responses[url]={body:exactPosting()};
  const out=sourceRun(t,lines,responses,{maxBatches:1,blsMaxQueries:0});
  assert.equal(out.report.attempt_only_skipped,25);
