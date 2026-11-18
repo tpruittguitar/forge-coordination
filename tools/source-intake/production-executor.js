@@ -81,6 +81,8 @@ const provenNotAccepted=(result,rid)=>{const c=Outcome.classify(result,{requestI
 const WRITER_BUSY_BACKOFF_MS=[30000,60000,120000];
 const writerBusy=(response,result,rid)=>response.ok&&Outcome.classify(result,{requestId:rid}).code==='WRITER_BUSY';
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
+// Per-candidate executor entry contract. auto-run applies the same check before batching (run #303).
+const reviewedCandidate=(x,auto)=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&((x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false)||(auto&&Captured.validate(x)));
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE',sleep=ms=>new Promise(r=>setTimeout(r,ms))}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
@@ -93,7 +95,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
   if(kind==='INSERT_ACCEPTED'||(kind==='NOOP_COMPLETE'&&candidate.expectedOutcome!=='NEW'))return null;
   return kind==='UNKNOWN'?String(r.results[0]?.result||'NO_WRITE'):kind;
  };
- if(!Array.isArray(records)||records.length<1||records.length>200||!records.every(x=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&((x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false)||(auto&&Captured.validate(x)))))throw Error('BLOCKED: 1 to 200 reviewed intake candidates required');
+ if(!Array.isArray(records)||records.length<1||records.length>200||!records.every(x=>reviewedCandidate(x,auto)))throw Error('BLOCKED: 1 to 200 reviewed intake candidates required');
  if(!/^[A-Z0-9_-]{8,120}$/.test(sourceRunId||''))throw Error('BLOCKED: source run identity');
  const kinds=records.map(x=>x.expectedOutcome);
  if(kinds.some(x=>!KINDS.has(x)))throw Error('BLOCKED: unknown expected outcome');
@@ -308,4 +310,4 @@ async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport
  const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:a})).data;
  return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:a,readback:back,verified:false};
 }
-module.exports={requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
+module.exports={reviewedCandidate,requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};

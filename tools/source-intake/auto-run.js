@@ -15,7 +15,7 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const {snapshot,auto,finalize}=require('./intake-cli');
 const {read,fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
-const {requestId,releaseRules}=require('./production-executor');
+const {requestId,releaseRules,reviewedCandidate}=require('./production-executor');
 const {DIR,previous,latch,identityKey}=require('./auto-latch');
 const {normalizeCompany}=require('./record-normalize');
 const {carryForwardRoles}=require('./carry-forward');
@@ -209,7 +209,9 @@ async function pass(argv,started){
  const picked=pick(report,{max:report.new_roles.length,originIndex,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
-  const candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
+  let candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
+  // One candidate the executor would refuse blocks the whole batch; defer it here instead (run #303).
+  if(candidate&&!reviewedCandidate(candidate,true)){console.log(JSON.stringify({entryContractDeferred:requestId(candidate.record),evidenceSource:candidate.evidenceSource}));candidate=null;}
   if(candidate&&box.keys.has(CatchUp.id(r)))box.stat.candidates=(box.stat.candidates||0)+1;
   if(candidate)candidates.push(candidate);else if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}
  }
