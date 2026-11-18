@@ -374,7 +374,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // repairs still run before new gaps. The remaining bounded repair pass follows the
   // optional review of already-filled estimates.
   const evidenceRows = rows.concat(archiveRows.filter(r => !liveIds.has(r.PRIMARY_ID)));
-  const repairOriginal = new Map(); stats.salary_repairs = 0; stats.salary_invalid = [];
+  const repairOriginal = new Map(); stats.salary_repairs = 0; stats.salary_invalid = []; stats.salary_repair={skipped_blocked:0,review_skipped_blocked:0,by_missing:{}}; const RepairGate=require('./repair-gate');
   const salaryStamp = r => JSON.stringify(Object.fromEntries(Object.entries(r.p).filter(([k]) => /^SALARY_/.test(k)).sort()));
   // Filled estimates stay out of the missing-data queue. The missing-field pass runs
   // before the optional review of already-filled estimates, so salary gaps start inside
@@ -390,6 +390,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (!['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(r.BUCKET) || closedByChecker(r) || /^YES/i.test(r.p.ANTI_RESURRECTION || '') || r.p.DO_NOT_REWORK) continue;
     const bad = L.invalidSavedAnchors(r, evidenceRows); const staleModel=salaryContext&&r.p.SALARY_BASIS==='FORGE-ESTIMATE'&&(r.p.SALARY_MODEL_VERSION!==Context.VERSION||r.p.SALARY_CONTEXT_KEY!==contextKey(r)); if (!bad.length&&!staleModel) continue;
     const record = { id: r.PRIMARY_ID, invalidAnchors: bad, contextRefresh:!!staleModel, status: 'PENDING_RECALCULATION' }; stats.salary_invalid.push(record);
+    if(RepairGate.skip(stats.salary_repair,'skipped_blocked',r,Evidence)){record.status='SKIPPED_BLOCKED_OTHER_FIELDS';continue;}
     if (requests.length >= CONFIG.maxBatches * 25 || Date.now() - T0 >= CONFIG.maxRunMs || researchUnavailableIds.has(r.PRIMARY_ID) || stats.salary_repairs >= (CONFIG.maxSalaryRepairsPerRun || 10)) continue;
     progress('salary_repair',{id:r.PRIMARY_ID,decision:decisionIds.has(r.PRIMARY_ID)});
     const exact=retainedExactPay(r);if(exact){record.status='EXACT_POSTED_PAY_PLANNED';stats.salary_repairs++;repairOriginal.set(r.PRIMARY_ID,salaryStamp(r));requests.push({action:'ruling',ruling:{requestId:`${RUN_ID}-S${String(stats.salary_repairs).padStart(3,'0')}`,primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:exactPayFields(exact,'Salary repair: reused retained source evidence')}});continue;}
@@ -569,6 +570,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
+    if(RepairGate.skip(stats.salary_repair,'review_skipped_blocked',r,Evidence))continue;
     progress('salary_review',{id:r.PRIMARY_ID});
     review.reviewed++;const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);const reviewRow=Employer.resolve(r),reviewUrls=Recovery.urls(r).filter(u=>SourceSearch.firstParty(u,r.COMPANY)),savedReview=retainedExactPay(r);let exact=savedReview,source=exact?.url||null,attempts=0;
     for(const url of skipSalaryLookup?[]:reviewUrls){
