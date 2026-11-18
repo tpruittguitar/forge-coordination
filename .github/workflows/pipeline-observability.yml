@@ -39,7 +39,8 @@ jobs:
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          node tools/pipeline-observability/discovery-watchdog.js
+          out=$(node tools/pipeline-observability/discovery-watchdog.js); echo "$out"
+          case "$out" in *board-discovery.yml*) export BOARD_DISCOVERY_DISPATCHED=1;; esac
           node tools/pipeline-observability/enrichment-watchdog.js
       - name: Publish cheap Writer activity
         env:
