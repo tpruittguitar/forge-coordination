@@ -61,5 +61,8 @@ function record(state,b,result,at){
 function recoveryBoards(state,paused,now=Date.now()){
  return Object.values(state.boards).filter(h=>!h.paused&&h.status!=='OK'&&h.descriptor&&Date.parse(h.retryAt||0)<=now&&!h.companies.every(c=>paused.has(P.normCo(c)))).sort((a,b)=>Date.parse(a.lastAttemptAt)-Date.parse(b.lastAttemptAt)).map(h=>({...repair(h.descriptor),companies:new Set(h.companies),tier:h.descriptor.tier||''}));
 }
+/* One Workday 429 throttles this client on every tenant and host (FORGE run 20261118T0732Z: 14 different tenants on 7 hosts
+ * answered 429 in a row at the 3 s gap). After the first one, later Workday boards in the run are deferred, not read, not recorded. */
+function workdayThrottle(){let hit=false;return {defer:b=>hit&&b.kind==='workday',seen:(b,result)=>{if(b.kind==='workday'&&result.httpStatus===429)hit=true;}};}
 function summary(state,paused){const rows=Object.values(state.boards).filter(h=>!h.paused&&!h.companies.every(c=>paused.has(P.normCo(c))));return {tracked:rows.length,pending:rows.filter(h=>h.status!=='OK').length,unavailable:rows.filter(h=>h.status==='ACCESS_RESTRICTED'||h.status==='TEMPORARY_FAILURE').length};}
-module.exports={cooling,WORKDAY_GAP_MS,repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};
+module.exports={cooling,WORKDAY_GAP_MS,repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary,workdayThrottle};

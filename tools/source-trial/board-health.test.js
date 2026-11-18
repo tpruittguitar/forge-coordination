@@ -81,3 +81,14 @@ test('Workday requests are spaced by the named gap before every request, retries
  const other=[];await H.readBoard({...board,kind:'ashby',board:'acme'},[],{wait:async n=>other.push(n),gapMs:300,fetcher:async()=>ok({jobs:[]})});
  assert.deepEqual(other,[300]);
 });
+test('after one Workday 429 the rest of the run defers Workday boards (no request, no failure); other boards still read',async()=>{
+ const urls=[],fetcher=async u=>{urls.push(String(u));return String(u).includes('first')?{ok:false,status:429,headers:{get:()=>null}}:ok(String(u).includes('greenhouse')?{jobs:[]}:{jobPostings:[]});};
+ const wd=t=>({...board,key:`workday:${t}.wd5.myworkdayjobs.com/Careers`,host:`${t}.wd5.myworkdayjobs.com`,tenant:t});
+ const order=[wd('first'),wd('second'),{kind:'greenhouse',key:'greenhouse:acme',board:'acme',companies:new Set(['Acme'])},wd('third')];
+ const gate=H.workdayThrottle(),read=[],deferred=[];
+ for(const b of order){if(gate.defer(b)){deferred.push(b.key);continue;}const r=await H.readBoard(b,['Quality'],{wait:async()=>{},fetcher});gate.seen(b,r);read.push([b.key,r.status]);}
+ assert.deepEqual(read,[['workday:first.wd5.myworkdayjobs.com/Careers','TEMPORARY_FAILURE'],['greenhouse:acme','OK']]);
+ assert.deepEqual(deferred,['workday:second.wd5.myworkdayjobs.com/Careers','workday:third.wd5.myworkdayjobs.com/Careers']);
+ assert.ok(!urls.some(u=>/second|third/.test(u)));
+ const fresh=H.workdayThrottle();fresh.seen(order[2],{httpStatus:429});assert.equal(fresh.defer(order[1]),false,'a non-Workday 429 does not stop Workday');
+});
