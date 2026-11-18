@@ -71,9 +71,19 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
  }catch(e){
   for(const o of e.outcomes||[])if(o.writerResult&&!state.results[o.requestId])state.results[o.requestId]=o.writerResult;
   state.halts.push({at:new Date().toISOString(),message:e.message,outcomes:(e.outcomes||[]).map(({writerResult,...rest})=>rest)});
+  if(shouldClosePreWriterHalt(state,e)){state.noCandidates=true;state.completedAt=new Date().toISOString();}
   saveState(statePath,state);
   return {status:'HALTED',message:e.message,outcomes:e.outcomes||[]};
  }
+}
+// Close a pre-Writer validation halt so later AUTO runs are not latched. A halt with any outcome,
+// recorded Writer result, or POST_IN_FLIGHT stays open for a person to reconcile.
+function shouldClosePreWriterHalt(state,e){
+ if((e.outcomes||[]).length)return false;
+ const results=state.results||{};
+ if(Object.keys(results).length)return false;
+ if(Object.values(results).some(r=>r&&(r.status==='POST_IN_FLIGHT_UNKNOWN'||r.WRITE_ACCEPTED===true||r.writeId||r.receipt)))return false;
+ return true;
 }
 function finalize({statePath,candidates}){
  const state=bound(loadState(statePath),candidates);
@@ -120,4 +130,4 @@ async function main(argv=process.argv.slice(2)){
  console.log(JSON.stringify(out,(k,v)=>k==='writerResult'?undefined:v,1));
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={snapshot,run,auto,finalize,waitReceiptComplete,hashOf,fileRecorder};
+module.exports={snapshot,run,auto,finalize,waitReceiptComplete,hashOf,fileRecorder,shouldClosePreWriterHalt};
