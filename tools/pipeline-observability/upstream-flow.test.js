@@ -144,3 +144,39 @@ test('missing or placeholder company or location leaves the backlog; a missing t
  const http=U.candidate({company:'Howmet',title:'VP of Operations',location:'',url:'http://example.test/howmet/http'},at,'fixture');
  const httpOut=U.build({records:[http],rows:[],now});assert.equal(httpOut.ledger.entries[http.key].relevanceScreen.outcome,'HOLD_SOURCE_IDENTITY');assert.equal(httpOut.summary.counts.WAITING,1);
 });
+test('collect saves an incremental cursor after each report version, logs progress, and resumes after an interrupt',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-cursor-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');
+  const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
+  write(3);write(2);write(1);
+  const lines=[],commits=[];let n=0;const orig=console.log;console.log=(...a)=>lines.push(a.join(' '));
+  const commitProgress=file=>{n++;git('add',file);git('commit','-m','cursor '+n);commits.push(JSON.parse(fs.readFileSync(file,'utf8')));if(n===1)throw Error('interrupted');};
+  try{try{U.collect(root,null,{persistCursor:true,logProgress:true,commitProgress});assert.fail('should interrupt');}catch(e){assert.equal(e.message,'interrupted');}}finally{console.log=orig;}
+  assert.equal(n,1);assert.equal(commits[0].records.length,1);assert.equal(commits[0].reportHistory.commits.length,1);assert.match(lines.join('\n'),/upstream-flow progress commit=/);
+  assert.match(git('log','--oneline').toString(),/cursor 1/);
+  const resumed=U.collect(root,null,{persistCursor:true,commitProgress});
+  const fresh=U.collect(root,null,{ignoreCursor:true});
+  assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
+  assert.equal(n,3);assert.equal(resumed.coverage.reportRevisions,3);assert.equal(resumed.coverage.newReportCommits,3);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+test('collect stops at a deadline after at least one new version and the next run resumes the cursor',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-budget-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');
+  const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
+  write(3);write(2);write(1);
+  let t=1000;const first=U.collect(root,null,{persistCursor:true,deadline:1500,now:()=>t,onProgress:()=>{t=2000;}});
+  assert.equal(first.incomplete,true);assert.equal(first.records.length,1);assert.equal(first.reportHistory.commits.length,1);
+  assert.ok(fs.existsSync(p.join(root,U.CURSOR_FILE)));
+  const resumed=U.collect(root,null,{persistCursor:true}),fresh=U.collect(root,null,{ignoreCursor:true});
+  assert.equal(resumed.incomplete,false);assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
