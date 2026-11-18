@@ -233,5 +233,5 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,MISSING_FACT_WEIGHT,NON_MAKER,norm,dedupe,registryFromRules,locationKey,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge,industryLabel,industryFrom};
+module.exports={VERSION,MISSING_FACT_WEIGHT,NON_MAKER,companyOverview,norm,dedupe,registryFromRules,locationKey,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge,industryLabel,industryFrom};
 
