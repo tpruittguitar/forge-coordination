@@ -41,6 +41,8 @@ jobs:
         run: |
           node tools/pipeline-observability/discovery-watchdog.js
           node tools/pipeline-observability/enrichment-watchdog.js
+      - name: Fetch 36 hours of main history for discovery report revisions
+        run: git fetch --no-tags --shallow-since="36 hours ago" origin main
       - name: Publish bounded receipt summary
         env:
           GITHUB_TOKEN: ${{ github.token }}
