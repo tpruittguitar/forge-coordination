@@ -32,9 +32,12 @@ test('explicit posting facts are learned with provenance; role facts never becom
  const newer=JSON.parse(JSON.stringify(r));newer.roles[0].facts.teamSize=fact(20,'2026-10-31');r.roles[0].facts.teamSize=fact(10,'2026-10-01');a.equal(C.merge(newer,r).roles[0].facts.teamSize.value,20);
 });
 test('known industry mismatch is excluded and an unknown industry stays at 0.75',()=>{
+ // Size and scope unknown on both rows: each dimension carries the missing-fact weight once.
+ const known={employees:5000,teamSize:20},same={...known};
  a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AUTOMOTIVE'}).weight,0);
- a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AEROSPACE_DEFENSE'}).weight,1);
- a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{}).weight,0.75);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE',...known},{industry:'AEROSPACE_DEFENSE',...same}).weight,1);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE',...known},{...same}).weight,0.75);
+ a.equal(C.similarity({...known},{industry:'AEROSPACE_DEFENSE',...same}).weight,0.75,'unknown on the target also counts as missing');
 });
 test('industry source order is builds, then EMPLOYER_PRIMARY_BUSINESS, then the posting overview',()=>{
  const base={PRIMARY_ID:'T',COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Austin, TX'};
@@ -56,11 +59,12 @@ test('industry source order is builds, then EMPLOYER_PRIMARY_BUSINESS, then the 
  a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:'semiconductor equipment'}},{companies:[{company:'Acme',builds:'Builds aerospace parts and automotive components.'}]},now).industry,'SEMICONDUCTOR');
 });
 test('a known company-size band or scope mismatch excludes the sample',()=>{
+ const ind={industry:'AEROSPACE_DEFENSE'};
  a.equal(C.similarity({employees:100000},{employees:50}).weight,0);
  a.ok(C.similarity({employees:100000},{employees:90000}).weight>0);
- a.equal(C.similarity({employees:80},{}).weight,0.75);
+ a.equal(C.similarity({...ind,employees:80,teamSize:12},{...ind,teamSize:12}).weight,0.75);
  a.equal(C.similarity({teamSize:12},{teamSize:400}).weight,0);
- a.equal(C.similarity({teamSize:12},{}).weight,0.75);
+ a.equal(C.similarity({...ind,employees:80,teamSize:12},{...ind,employees:80}).weight,0.75);
  a.equal(C.similarity({reach:'MULTI_SITE'},{reach:'SINGLE_SITE'}).weight,0);
  a.equal(C.similarity({management:'MANAGES_MANAGERS'},{management:'INDIVIDUAL_CONTRIBUTOR'}).weight,0);
 });
