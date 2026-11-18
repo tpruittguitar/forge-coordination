@@ -10,9 +10,25 @@ on:
     workflows: [source-trial, board-discovery]
     types: [completed]
     branches: [main]
-  workflow_dispatch: {}   # Tim 2026-11-16 21:26 ET: hourly cron removed (GitHub kept dropping it); a dispatched upstream run starts this via gh workflow run
+  workflow_dispatch:
+    inputs:
+      reason:
+        description: 'Why this run was dispatched: self, next, or safety-clock'
+        required: false
+        type: string
+      parent_run_id:
+        description: GitHub run id that dispatched this run
+        required: false
+        type: string
+      depth:
+        description: 'Dispatch chain depth; stop at 6'
+        required: false
+        type: string
+        default: '0'
+  # Tim 2026-11-16 21:26 ET: hourly cron removed (GitHub kept dropping it); a dispatched upstream run starts this via gh workflow run
 permissions:
   contents: write
+  actions: write   # queue-driven self/next dispatch
 concurrency:
   group: source-intake-auto
   cancel-in-progress: false
@@ -28,6 +44,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Note queue-dispatch start
+        run: date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/queue-dispatch-start"
       - name: Validate returned role research independently
         env:
           FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
@@ -62,3 +80,12 @@ jobs:
       - name: Commit run record (also after a halt)
         if: always()
         run: bash tools/source-intake/publish-run-records.sh
+      - name: Queue next intake or enrich run
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUEUE_LANE: source-intake-auto
+          QUEUE_DEPTH: ${{ github.event.inputs.depth || 0 }}
+          QUEUE_RUN_ID: ${{ github.run_id }}
+          QUEUE_START_FILE: ${{ runner.temp }}/queue-dispatch-start
+        run: node tools/queue-dispatch/run.js

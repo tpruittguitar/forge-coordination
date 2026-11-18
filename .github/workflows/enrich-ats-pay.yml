@@ -13,8 +13,22 @@ on:
         type: boolean
         required: false
         default: false
+      reason:
+        description: 'Why this run was dispatched: self, next, or safety-clock'
+        required: false
+        type: string
+      parent_run_id:
+        description: GitHub run id that dispatched this run
+        required: false
+        type: string
+      depth:
+        description: 'Dispatch chain depth; stop at 6'
+        required: false
+        type: string
+        default: '0'
 permissions:
   contents: write
+  actions: write   # queue-driven self/next dispatch
 concurrency:
   group: enrich-ats-pay
   cancel-in-progress: false
@@ -31,6 +45,8 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version: '22'
+      - name: Note queue-dispatch start
+        run: date -u +%Y-%m-%dT%H:%M:%SZ > "$RUNNER_TEMP/queue-dispatch-start"
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
@@ -95,3 +111,12 @@ jobs:
             cp -a /tmp/out/. state/
           done
           exit 1
+      - name: Queue next enrich run
+        if: always() && github.ref == 'refs/heads/main'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          QUEUE_LANE: enrich-ats-pay
+          QUEUE_DEPTH: ${{ github.event.inputs.depth || 0 }}
+          QUEUE_RUN_ID: ${{ github.run_id }}
+          QUEUE_START_FILE: ${{ runner.temp }}/queue-dispatch-start
+        run: node tools/queue-dispatch/run.js
