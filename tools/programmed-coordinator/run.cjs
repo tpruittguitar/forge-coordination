@@ -32,13 +32,14 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
     const batch = cache.get(item.batch);let evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
     if (!evidence) { exception(state,item,'SOURCE_BOUND_ITEM_MISSING','CODE'); continue; }
+    const returned=evidence; // the helper's item as delivered; a reviewed source replaces only the evidence below
     try{evidence=require('../routine-handoffs/exception-work.cjs').evidence(root,item,evidence);}catch(e){exception(state,item,e.message,'AI');continue;}
     const sourceBlocked=['SOURCE_BLOCKED','NEEDS_SOURCE_EVIDENCE'].includes(evidence.recommendation);
     if (!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY'].includes(evidence.recommendation)&&!sourceBlocked) {
       exception(state,item,'AMBIGUOUS_SCOPE_OR_IDENTITY','AI'); continue;
     }
     const shared=batch.schema==='forge.shared-helper-batch.v1';
-    if(shared){try{require('../helper-routing/shared.cjs').assertCurrent(root,evidence,batch);}catch(e){exception(state,item,e.message,'CODE');continue;}}
+    if(shared){try{require('../helper-routing/shared.cjs').assertCurrent(root,returned,batch);}catch(e){exception(state,item,e.message,'CODE');continue;}}
     const enrichment = shared?evidence.kind==='ENRICHMENT':/ENRICHMENT/.test(item.taskKey);
     let row, expected, initiatingUrl;
     if (enrichment) {

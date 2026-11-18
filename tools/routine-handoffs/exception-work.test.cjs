@@ -2,13 +2,13 @@
 const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const W=require('./exception-work.cjs'),S=require('../programmed-coordinator/store.cjs'),Run=require('../programmed-coordinator/run.cjs'),Source=require('../programmed-coordinator/source.cjs'),I=require('./intake-state.cjs');
 const now=Date.parse('2026-11-02T12:00:00Z'),at=new Date(now).toISOString();
-function fixture(t){
+function fixture(t,{taskKey='FORGE_GROK_INTAKE_HELPER',extra={}}={}){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'forge-exception-'));
  t.after(()=>{a.ok(path.resolve(root).startsWith(path.resolve(os.tmpdir())+path.sep));fs.rmSync(root,{recursive:true,force:true});});
- const original={key:'linkedin:123',recommendation:'SOURCE_BLOCKED',sourceEvidence:{company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://careers.factory.com/old',quote:'Old source evidence is inaccessible.'}};
- const key='FORGE_GROK_INTAKE_HELPER:'+original.key,batch='receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/TEST.json';
+ const original={key:'linkedin:123',recommendation:'SOURCE_BLOCKED',sourceEvidence:{company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://careers.factory.com/old',quote:'Old source evidence is inaccessible.'},...extra};
+ const key=taskKey+':'+original.key,batch='receipts/GROK_HELPERS/FORGE_GROK_INTAKE_HELPER/TEST.json';
  S.save(root,batch,{runId:'GROK-TEST',items:[original]});
- const item={key,itemKey:original.key,taskKey:'FORGE_GROK_INTAKE_HELPER',batch,version:S.hash(original),status:'EXCEPTION',attempts:0};
+ const item={key,itemKey:original.key,taskKey,batch,version:S.hash(original),status:'EXCEPTION',attempts:0};
  const state={items:{[key]:item},batches:{[batch]:{status:'VALIDATED'}},exceptions:{[key]:{key,reason:'WORKING_SOURCE_ROUTE_REQUIRED',owner:'CODE',itemVersion:item.version}},transactions:{}};
  S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[original.key]:{...original.sourceEvidence}},sources:{history:{status:'HISTORICAL_RESULTS_UNAVAILABLE',advertisedUnseen:24,historicalCoverage:'INCOMPLETE_ORIGINAL_IDENTITIES'}}});
  const report=()=>({runId:'FORGE-CODE-TEST',aiExceptions:Object.values(state.exceptions).filter(e=>e.owner==='AI'),codeExceptions:Object.values(state.exceptions).filter(e=>e.owner==='CODE')});
@@ -138,4 +138,15 @@ test('sync recovers missing checkpoints and strictly newer reviews but ignores o
  a.deepEqual(f.sync(now+4000).dispatch,recovered);
  W.publishReview(f.root,f.review(first),now+4000);
  a.deepEqual(S.read(f.root,W.FILE).dispatch,recovered);
+});
+
+test('shared-helper ENRICHMENT items keep their kind after source recovery (155 stuck as SHARED_RECOMMENDATION_KIND_MISMATCH)',t=>{
+ const f=fixture(t,{taskKey:'FORGE_CLAUDE_SHARED_HELPER',extra:{kind:'ENRICHMENT'}}),record=sourceReview(f);W.publishReview(f.root,record,now);W.applySourceReviews({root:f.root,state:f.state,now});
+ a.equal(W.evidence(f.root,f.item,f.original).recommendation,'ENRICHMENT_EVIDENCE_READY');
+ const intake=fixture(t,{taskKey:'FORGE_CLAUDE_SHARED_HELPER',extra:{kind:'INTAKE'}}),r2=sourceReview(intake);W.publishReview(intake.root,r2,now);W.applySourceReviews({root:intake.root,state:intake.state,now});
+ a.equal(W.evidence(intake.root,intake.item,intake.original).recommendation,'INTAKE_READY');
+});
+test('Sniffer shared-helper ENRICHMENT items keep their kind after source recovery',t=>{
+ const f=fixture(t,{taskKey:'FORGE_SNIFFER_SHARED_HELPER',extra:{kind:'ENRICHMENT'}}),record=sourceReview(f);W.publishReview(f.root,record,now);W.applySourceReviews({root:f.root,state:f.state,now});
+ a.equal(W.evidence(f.root,f.item,f.original).recommendation,'ENRICHMENT_EVIDENCE_READY');
 });

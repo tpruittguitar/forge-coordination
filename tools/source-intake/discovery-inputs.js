@@ -30,12 +30,18 @@ function index(root){
   card.fullPosting=E.postingComplete({...card,fullPosting:raw.fullPosting,discoveryReview:review});
   const at=review?.observedAt||raw.observedAt||observedAt||null;
   const pay=PostedPay.capture({...raw,url},{observedAt:at});if(pay)card.postedPay=pay;
-  if(!byUrl.has(key))byUrl.set(key,[]);byUrl.get(key).push({card,proof,observedAt:at,identity:identity(card)});
+  const entry={card,proof,observedAt:at,identity:identity(card)};
+  if(!byUrl.has(key))byUrl.set(key,[]);byUrl.get(key).push(entry);
+  // Targeted lookups file an identity-matched aggregator card under the stuck item's own posting URL too
+  // (Tim 2026-11-17: JobSpy/HiringCafe text is acceptable verification). Identity is still rechecked in find().
+  for(const alias of Array.isArray(raw.aliasUrls)?raw.aliasUrls:[]){const k=U.key(alias);if(!k||k===key||!/^https:\/\//.test(alias))continue;if(!byUrl.has(k))byUrl.set(k,[]);byUrl.get(k).push(entry);}
  }
  for(const file of ['state/source-trial-report.json','state/board-discovery-report.json']){
   const got=read(file);if(!got)continue;
   for(const list of ['new_roles','existing_roles','protected_roles','identity_held_roles'])for(const raw of Array.isArray(got.value?.[list])?got.value[list]:[])add(raw,got.proof,got.value.summary?.at);
  }
+ const targeted=read('state/targeted-posting-lookup.json');
+ for(const raw of Array.isArray(targeted?.value?.roles)?targeted.value.roles:[])add(raw,targeted.proof,raw.observedAt||targeted.value.at);
  const catchup=read('receipts/auto-intake/catch-up/state.json');
  for(const item of Object.values(catchup?.value?.roles||{}))add(item.role,catchup.proof,item.firstSeen||item.observedAt);
  const upstream=read('state/UPSTREAM_LEDGER.json');

@@ -100,7 +100,9 @@ function evidence(root,item,original){
  // Identity, relevance, protection, source quotes and Writer gates are still checked by the normal pipeline.
  if(record.disposition!=='SOURCE_EVIDENCE'||!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY','SOURCE_BLOCKED','NEEDS_SOURCE_EVIDENCE'].includes(original.recommendation))throw Error('SOURCE_RECOVERY_SCOPE_REQUIRED');
  if(reviewed.binding.key!==item.key)throw Error('SOURCE_RECOVERY_CASE_REQUIRED');
- return{...original,sourceEvidence:record.sourceEvidence,recommendation:/ENRICHMENT/.test(item.taskKey)?'ENRICHMENT_EVIDENCE_READY':'INTAKE_READY'};
+ // Shared-helper batches carry kind per item; their task keys never contain ENRICHMENT.
+ const enrichment=original.kind?original.kind==='ENRICHMENT':/ENRICHMENT/.test(item.taskKey);
+ return{...original,sourceEvidence:record.sourceEvidence,recommendation:enrichment?'ENRICHMENT_EVIDENCE_READY':'INTAKE_READY'};
 }
 function publishReview(root,record,now=Date.now()){
  const work=S.read(root,FILE),item=validateReview(record,work,now);if(record.disposition==='AWAITING_TIM'&&!fs.existsSync(path.join(root,record.askPath)))throw Error('EXISTING_TIM_QUESTION_REQUIRED');const sha256=S.hash(record),file=REVIEWS+'/'+record.exceptionId+'-'+sha256+'.json';S.immutable(root,file,record);
