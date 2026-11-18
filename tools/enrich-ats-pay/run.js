@@ -74,7 +74,7 @@ async function neverConsiderRules() {
   if (process.env.ENRICH_MASTER_FILE && !process.env.ENRICH_RULES_FILE) return null;   // tests only
   if (!FC_DIR) throw Error('NEVER_CONSIDER_GATE_REQUIRES_ENRICH_FC_DIR');
   const Writer = require(path.join(FC_DIR, 'apps-script/Code.gs'));
-  Object.assign(globalThis, { classifyNeverConsider: Writer.classifyNeverConsider, declineNeverConsiderRow_: Writer.declineNeverConsiderRow_ });
+  Object.assign(globalThis, { classifyNeverConsider: Writer.classifyNeverConsider, declineNeverConsiderRow_: (r,nc)=>Object.assign(Writer.declineNeverConsiderRow_(r,nc),{ruleId:(nc&&nc.ruleId)||''}) });   // ruleId: per-rule proof counts (ba1b4f1)
   const text = process.env.ENRICH_MASTER_FILE ? fs.readFileSync(process.env.ENRICH_RULES_FILE, 'utf8') : await (await get('https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt?nc=' + Date.now())).text();
   rulesText = text;
   const rules = Writer.parseCanonicalNeverConsiderRules(text);
@@ -191,7 +191,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, never_consider_excluded: neverConsiderIds.size, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, never_consider_excluded: neverConsiderIds.size, never_consider_rules: (rules&&rules.activeIds)||[], never_consider_by_rule: (built.declines||[]).reduce((m,d)=>(m[d.ruleId||'UNKNOWN']=(m[d.ruleId||'UNKNOWN']||0)+1,m),{}), anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const policyFingerprint=Store.hash(fs.readdirSync(__dirname).filter(f=>/\.(?:js|cjs)$/.test(f)&&!f.includes('.test.')).sort().map(f=>[f,fs.readFileSync(path.join(__dirname,f),'utf8')]).concat([['config',CONFIG],...['PipelineWorklists','PipelineEvidence','PipelinePostingFreshness','PipelineAts'].map(name=>[name,fs.readFileSync(path.join(require('os').tmpdir(),name+'.js'),'utf8')])]));
   const inputFingerprintOf=()=>require('./input-fingerprint').hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
   const inputFingerprint=inputFingerprintOf();
@@ -236,6 +236,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const BoardHealth=require('../source-trial/board-health'),boardHealthFile=process.env.ENRICH_BOARD_HEALTH_FILE||(process.env.ENRICH_MASTER_FILE?'':path.join(ROOT,'state/board-health.json'));
   let boardHealth=null;try{boardHealth=boardHealthFile&&fs.existsSync(boardHealthFile)?BoardHealth.loadState(fs.readFileSync(boardHealthFile,'utf8')):null;}catch{boardHealth=null;}
   stats.workday_cooling_skips=0;
+  stats.workday_board_window_skips=0;stats.workday_window_active=WorkdayWindow.active();   // explicit zero for proof (ba1b4f1)
   const workdayCooling=b=>{const hit=b?.kind==='workday'&&BoardHealth.cooling(boardHealth,b.key);if(hit)stats.workday_cooling_skips++;return hit;};
   Object.assign(stats, { est_same_employer: 0, est_comparables: 0, boards_read: 0, boards_failed: 0, bls: { OK: 0, ABOVE: 0, BELOW: 0, NO_BLS: 0 }, bls_queries: 0 });
   async function employerPostings(b, row) {
