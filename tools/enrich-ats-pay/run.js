@@ -179,8 +179,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   let pendingIndex;for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){
     if(PREPARE_ONLY){for(const id of entry.ids||[])inFlightIds.add(id);continue;}
     try{const response=retainedResponse(requestId,entry);if((response||entry.responseProjection)&&entry.requests&&await releaseRefusal(requestId,entry,response))continue;}catch(e){fenceError('refusal',requestId,e);}
-    try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();const proof={index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]};
-      if(await WriterProof.verify(entry.requests,{...proof,onDrift:()=>fence.drift_rows++})){delete ledger.pendingWrites[requestId];fence.released_applied.push(requestId);continue;}
+    try{if(entry.requests||entry.requestIds?.length){pendingIndex=pendingIndex||await receiptIndex();const proof={index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]};
+      if(entry.requests&&await WriterProof.verify(entry.requests,{...proof,onDrift:()=>fence.drift_rows++})){delete ledger.pendingWrites[requestId];fence.released_applied.push(requestId);continue;}
       const never=runtime.canStart(60000)?await WriterProof.notApplied(entry,proof):null;
       if(never){(ledger.releasedNotApplied||(ledger.releasedNotApplied={}))[requestId]={ids:entry.ids,requestIds:entry.requestIds,at:entry.at,releasedAt:new Date().toISOString(),reason:never.reason};
         for(const id of entry.ids||[])delete ledger.progress?.[id];delete ledger.pendingWrites[requestId];fence.released_not_applied.push({requestId,reason:never.reason,ids:entry.ids});continue;}}}catch(e){fenceError('proof',requestId,e);}

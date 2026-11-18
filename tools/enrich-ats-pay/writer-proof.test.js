@@ -38,5 +38,9 @@ test('C: only an old batch with no receipt (or NOT_PERSISTED) and absent values 
   assert.equal(await notApplied(entry(old),{index:{requests:{}},read:reads({found:true,status:'COMPLETE',durable:true}),parse:absentRow,now}),null,'a Writer RESULT keeps it fenced');
   assert.equal(await notApplied(entry(old),{index:{requests:{}},read:reads({found:false}),parse:()=>({PRIMARY_ID:'V2I-ONE',p:{SALARY_BASE_HIGH:'240000'}}),now}),null,'values already on master keep it fenced');
   assert.equal(await notApplied(entry(old,{EXPERIENCE_FIT_BASIS:'x'}),{index:{requests:{}},read:reads({found:false}),parse:absentRow,now}),null,'nothing comparable keeps it fenced');
+  const bare={at:old,ids:['V2I-ONE'],requestIds:['RUN-S001']};calls=0;
+  assert.deepEqual(await notApplied(bare,{index:{requests:{}},read:reads({found:false}),parse:absentRow,now}),{reason:'NO_RECEIPT',open:1,complete:0,payload:'NONE'},'no stored rulings: receipt evidence alone');
+  assert.equal(await notApplied(bare,{index:{requests:{}},read:reads({found:true,status:'COMPLETE',durable:true}),parse:absentRow,now}),null,'no stored rulings with a Writer RESULT stays fenced');
+  assert.equal(await notApplied({...bare,at:new Date(now-DAY/2).toISOString()},{index:{requests:{}},read:count,parse:absentRow,now}),null,'no stored rulings under 24 h stays fenced');assert.equal(calls,0);
   assert.equal(await notApplied({at:old,requests:[]},{index:{requests:{}},read:count,parse:absentRow,now}),null,'no stored rulings stays fenced');
 });

@@ -819,17 +819,17 @@ test('pay config: 60 s salary review, no public fallback reads, LinkedIn on, coo
 
 test('stale fences: an old never-applied batch is dropped unsent; young and receipted batches stay; proof errors are logged',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'enrich-stale-fence-')),master=path.join(dir,'master.txt'),rows=path.join(dir,'rows.json'),posts=path.join(dir,'posts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
- const ids=['V2I-0000000000F1','V2I-0000000000F2','V2I-0000000000F3'],lines=ids.map((id,i)=>row(i+1,id,'Director of Quality','Dayton, OH','DATE_ADDED=2026-10-19'));
+ const ids=['V2I-0000000000F1','V2I-0000000000F2','V2I-0000000000F3','V2I-0000000000F4'],lines=ids.map((id,i)=>row(i+1,id,'Director of Quality','Dayton, OH','DATE_ADDED=2026-10-19'));
  fs.writeFileSync(master,lines.join('\n'));fs.writeFileSync(rows,JSON.stringify(Object.fromEntries(ids.map((id,i)=>[id,lines[i]]))));
  const old=new Date(Date.now()-3*86400000).toISOString(),entry=(id,alias,at)=>({ids:[id],requestIds:[alias],requests:[{action:'ruling',ruling:{requestId:alias,primaryId:id,kind:'ENRICH',actor:'ATSBOT',fields:{SALARY_BASE_LOW:'STALE-SENTINEL'}}}],at,status:'POSTING_OR_UNCONFIRMED'});
- fs.writeFileSync(ledger,JSON.stringify({submitted:{},tried:{},pendingWrites:{OLD:entry(ids[0],'OLD-R001',old),YOUNG:entry(ids[1],'YOUNG-R001',new Date().toISOString()),RECEIPTED:entry(ids[2],'RCPT-R001',old)}}));
- const run=extra=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_TEST_RESULT_NOT_FOUND:'OLD-R001,YOUNG-R001',...extra},stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ fs.writeFileSync(ledger,JSON.stringify({submitted:{},tried:{},pendingWrites:{OLD:entry(ids[0],'OLD-R001',old),YOUNG:entry(ids[1],'YOUNG-R001',new Date().toISOString()),RECEIPTED:entry(ids[2],'RCPT-R001',old),NOPAY:{ids:[ids[3]],requestIds:['NOPAY-R001'],at:old,status:'POSTING_OR_UNCONFIRMED'}}}));
+ const run=extra=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_TEST_RESULT_NOT_FOUND:'OLD-R001,YOUNG-R001,NOPAY-R001',...extra},stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
  try{
   let out=run({}),saved=JSON.parse(fs.readFileSync(ledger));
   assert.deepEqual(Object.keys(saved.pendingWrites).sort(),['RECEIPTED','YOUNG']);
-  assert.deepEqual(out.fence.released_not_applied,[{requestId:'OLD',reason:'NO_RECEIPT',ids:[ids[0]]}]);assert.equal(out.fence.pending_batches,2);assert.equal(out.fence.fenced_ids,2);
+  assert.deepEqual(out.fence.released_not_applied,[{requestId:'OLD',reason:'NO_RECEIPT',ids:[ids[0]]},{requestId:'NOPAY',reason:'NO_RECEIPT',ids:[ids[3]]}]);assert.deepEqual(saved.releasedNotApplied.NOPAY.ids,[ids[3]]);assert.equal(out.fence.pending_batches,2);assert.equal(out.fence.fenced_ids,2);
   assert.deepEqual(saved.releasedNotApplied.OLD.ids,[ids[0]]);assert.equal(saved.releasedNotApplied.OLD.requests,undefined,'the stored rulings are dropped, not kept for sending');
-  const sent=fs.existsSync(posts)?fs.readFileSync(posts,'utf8'):'';assert.doesNotMatch(sent,/STALE-SENTINEL|OLD-R001/,'the stored payload is never resent');
+  const sent=fs.existsSync(posts)?fs.readFileSync(posts,'utf8'):'';assert.doesNotMatch(sent,/STALE-SENTINEL|OLD-R001|NOPAY-R001/,'the stored payload is never resent');
   out=run({ENRICH_TEST_INDEX_FAIL:'1'});
   assert.ok(out.fence.proof_errors.some(e=>e.where==='proof'&&/receipt index offline/.test(e.message)),'proof errors are logged, not swallowed');
   assert.deepEqual(Object.keys(JSON.parse(fs.readFileSync(ledger)).pendingWrites).sort(),['RECEIPTED','YOUNG']);
