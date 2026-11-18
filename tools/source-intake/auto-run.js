@@ -23,7 +23,7 @@ const {knownRequestIds}=require('./known-requests');
 const Relevance=require('../relevance-screen/screen.cjs');
 const HelperRouting=require('../helper-routing/reservations.cjs'),Upstream=require('../pipeline-observability/upstream-flow');
 
-const CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs'),DiscoveryInputs=require('./discovery-inputs'),Captured=require('./captured-discovery');
+const BoxPass=require('./box-pass-report'),CatchUp=require('./catch-up'),Drain=require('../intake-drain/queue.cjs'),DiscoveryInputs=require('./discovery-inputs'),Captured=require('./captured-discovery');
 const SWITCH='control/SOURCE_INTAKE_RELEASE.json';
 // Eligibility comes only from the centrally configured relevance screen.
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
@@ -178,17 +178,19 @@ async function pass(argv,started){
  const drainSeeds=Drain.seeds('.');
  const report=JSON.parse(fs.readFileSync(opt('--report')||'state/source-trial-report.json','utf8'));
  const carried=carryForwardRoles(prior);
+ const box=BoxPass.load('.');
  let catchUp=null;
  if(argv.includes('--catch-up')){
   catchUp=CatchUp.load();const reports=[report,{new_roles:[...drainSeeds,...reviewed.roles]}];
   for(const file of ['state/source-trial-report.json','state/board-discovery-report.json'])if(fs.existsSync(file))reports.push(JSON.parse(fs.readFileSync(file)));
+  reports.push({new_roles:box.roles});
   CatchUp.ingest(catchUp,[...reports,{new_roles:carried}]);CatchUp.releaseSourceHolds(catchUp,r=>capturedInputs.find(r));catchUp.progress=CatchUp.report(catchUp,{sent,quarantined,blocking});
   if(!dry)CatchUp.save('.',catchUp);
   report.new_roles=CatchUp.due(catchUp);
  }
  // A rolled-over discovery report must not lose a reconciled run's untouched candidates.
  const uniqueRoles=new Map();
- for(const r of [...(catchUp?[]:carried),...(report.new_roles||[])]){
+ for(const r of [...(catchUp?[]:carried),...(report.new_roles||[]),...(catchUp?[]:box.roles)]){
   const id=requestId({COMPANY:normalizeCompany(r.company).company,TITLE:r.title,LOCATION:r.location,SOURCE_URL:r.url});
   if(!uniqueRoles.has(id))uniqueRoles.set(id,r);
  }
@@ -208,10 +210,11 @@ async function pass(argv,started){
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   const candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
+  if(candidate&&box.keys.has(CatchUp.id(r)))box.stat.candidates=(box.stat.candidates||0)+1;
   if(candidate)candidates.push(candidate);else if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}
  }
  const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
- console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,candidates:candidates.length}));
+ console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,candidates:candidates.length,workdayBoxPass:{...box.stat,inQueue:report.new_roles.filter(r=>box.keys.has(CatchUp.id(r))).length,picked:picked.filter(({r})=>box.keys.has(CatchUp.id(r))).length,candidates:box.stat.candidates||0}}));
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
  const statePath=path.join(DIR,run+'.json');
