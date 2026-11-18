@@ -1,0 +1,1 @@
+WHAT=auto-latch previous() drops each run record's Writer snapshots after parsing (849 of about 900 MB across 400 records; no previous() consumer reads them and snapshot readers re-read the file), so per-pass heap is about 60 MB instead of about 1.2 GB; latch behavior unchanged, test added (card 747558c); no cron, dispatch or Writer change
