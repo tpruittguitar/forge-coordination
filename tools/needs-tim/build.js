@@ -3,7 +3,7 @@
    Reads this repo as written today and publishes attention/NEEDS_TIM.json for the Pipeline Explorer "Needs you" page.
    Sources: asks/ register, latest run receipt per lane, open handoffs, rejected edit requests, open pull requests
    (passed in as JSON by the workflow). Pure Node, no dependencies. Read-only except the one output file.
-   Run: node tools/needs-tim/build.js [--root .] [--prs prs.json] [--now ISO] [--out attention/NEEDS_TIM.json] */
+   Run: node tools/needs-tim/build.js [--root .] [--prs prs.json] [--jobs master-rows.json] [--now ISO] [--out attention/NEEDS_TIM.json] */
 'use strict';
 const fs = require('fs'), path = require('path');
 const autoLatch = require('../source-intake/auto-latch');
@@ -15,6 +15,7 @@ const UNFINISHED = /^(IN_PROGRESS|STARTED|PENDING|PREFLIGHT|ACTIVE|QUEUED_PENDIN
    lane codes (WRITER_TRANSPORT_BLOCKED, BLOCKED_MAILBOX_VISIBILITY). */
 const BLOCKED = /^(HARD_BLOCKED|FAILED|FAILED_NO_WORK|FAILED_WITH_\w+|BLOCKED_\w+|\w+_BLOCKED)$/;
 const H = 3600000, DAY = 24 * H;
+const TERMINAL_BUCKETS = new Set(['APPLIED', 'REJECTED_BY_EMPLOYER', 'DECLINED_BY_TIM', 'CLOSED_DEAD', 'DUPLICATE', 'WITHDRAWN', 'INVALID_DISCOVERY']);
 
 /* US Eastern offset for a local ET date: EDT from the 2nd Sunday of March to the 1st Sunday of November. */
 function etOffset(y, m, d) {
@@ -240,18 +241,33 @@ function build(opts) {
 
   /* 6. AUTO source intake latch (Claude 2026-10-26): source-intake-auto exits 0 while an earlier run is unfinished, so the
      latch shows here instead of as a red run on every trigger. Same classification the intake itself uses. */
-  let autoRuns = { blocking: [], quarantined: [] };
-  try { autoRuns = autoLatch.latch(autoLatch.previous(root)); } catch (e) {
+  let autoRuns = { blocking: [], quarantined: [] }, autoStates = {};
+  try { const prior = autoLatch.previous(root); prior.forEach(p => { autoStates[p.file] = p.state; }); autoRuns = autoLatch.latch(prior); } catch (e) {
     add({ id: 'auto-intake-unreadable', section: 'FAILED', level: 'BLOCKING', title: 'AUTO intake run record unreadable', detail: clip(e.message, 300), action: 'Any AI: fix the JSON in receipts/auto-intake/; AUTO intake cannot start while it is unreadable.', source: 'receipts/auto-intake', sourceUrl: ghUrl('forge-coordination', 'receipts/auto-intake'), at: null, raisedBy: '' });
   }
   autoRuns.blocking.forEach(b => {
     add({ id: 'auto-intake-latched:' + b.file, section: 'FAILED', level: 'BLOCKING', title: 'AUTO source intake stopped: earlier run ' + (b.run || b.file) + ' is unfinished', detail: clip(b.message.replace(/\.?$/, '.') + (b.requestId ? ' Open request: ' + b.requestId + '.' : '') + ' Every later source-intake-auto run stops before any Writer call until this is reconciled.', 400), action: 'Reconcile with the Writer key: read the receipt index for the open request (COMPLETE receipt plus exact-row readback if it landed). Do not re-POST it. Then record the reconciliation in the run file.', source: b.file, sourceUrl: ghUrl('forge-coordination', b.file), at: b.haltAt, raisedBy: 'AUTO-INTAKE' });
   });
+  /* A held intake request is not an ask when the Writer proved it wrote nothing and the same job (company, title,
+     location) is already terminal in the master snapshot (opts.jobs). Without a snapshot every hold stays listed. */
+  const jobKey = r => autoLatch.identityKey(r) + '|' + String(r.LOCATION || '').toLowerCase().replace(/[^a-z0-9]+/g, ' ').trim();
+  const masterRows = {};
+  (Array.isArray(opts.jobs) ? opts.jobs : []).forEach(j => { if (j && j.COMPANY && j.TITLE) (masterRows[jobKey(j)] = masterRows[jobKey(j)] || []).push(String(j.BUCKET || '')); });
+  const terminalNoWrite = q => {
+    const st = autoStates[q.file] || {}, r = (st.results || {})[q.requestId], o = (r && r.outcome) || {};
+    const noWrite = !!r && r.ok !== true && r.WRITE_ACCEPTED !== true && !r.writeId && !r.receipt && r.status !== 'POST_IN_FLIGHT_UNKNOWN' &&
+      ((o.status === 'NOT_ACCEPTED' && o.masterMutations === 0) || /no master write attempted/.test(String(r.error || '')));
+    const rows = q.record ? masterRows[jobKey(q.record)] || [] : [];
+    return noWrite && rows.length > 0 && rows.every(b => TERMINAL_BUCKETS.has(b)) ? rows[0] : '';
+  };
+  const autoClosed = [];
   autoRuns.quarantined.forEach(q => {
+    const bucket = terminalNoWrite(q);
+    if (bucket) { autoClosed.push({ id: 'auto-intake-identity-hold:' + q.requestId, source: q.file, by: 'needs-tim-build', reason: 'Writer wrote nothing for this request and the job is already ' + bucket + ' in the master.' }); return; }
     add({ id: 'auto-intake-identity-hold:' + q.requestId, section: 'FAILED', level: 'ACTION', title: q.record ? 'Unconfirmed intake: ' + q.record.COMPANY + ' · ' + q.record.TITLE : 'One intake request is quarantined: ' + q.requestId, detail: clip((q.record ? q.record.LOCATION + '. ' : '') + (q.reason.startsWith('UNKNOWN_NO_REPLAY') ? 'The submission timed out; receipt and exact job identity remain unproven. ' : q.reason + '. ') + 'Other jobs continue normally. Request: ' + q.requestId, 400), action: 'ChatGPT Gofer: reconcile original execution evidence without replay. Tim may decline this exact role; that closes pursuit, not proof of the old write.', source: q.file, sourceUrl: ghUrl('forge-coordination', q.file), at: null, raisedBy: 'AUTO-INTAKE' });
   });
 
-  const dismissedOut = [];
+  const dismissedOut = autoClosed.slice();
   for (let i = items.length - 1; i >= 0; i--) {
     const it = items[i], key = it.id + '@' + String(it.source || '').split(path.sep).join('/');
     if (!it.askId && covered.some(c => it.id.indexOf(c) === 0)) { items.splice(i, 1); continue; }
@@ -268,7 +284,8 @@ if (require.main === module) {
   const a = process.argv.slice(2), arg = k => { const i = a.indexOf(k); return i >= 0 ? a[i + 1] : ''; };
   const root = arg('--root') || '.', out = arg('--out') || path.join(root, 'attention', 'NEEDS_TIM.json');
   let prs = []; if (arg('--prs')) { try { prs = JSON.parse(fs.readFileSync(arg('--prs'), 'utf8')); } catch (e) { prs = []; } }
-  const res = build({ root, prs, now: arg('--now') || '', commit: process.env.GITHUB_SHA || '' });
+  let jobs = []; if (arg('--jobs')) { try { const j = JSON.parse(fs.readFileSync(arg('--jobs'), 'utf8')); jobs = Array.isArray(j) ? j : []; } catch (e) { jobs = []; } }
+  const res = build({ root, prs, jobs, now: arg('--now') || '', commit: process.env.GITHUB_SHA || '' });
   fs.mkdirSync(path.dirname(out), { recursive: true });
   const prev = read(out); let same = false;
   try { const p = JSON.parse(prev); same = JSON.stringify([p.items, p.lanes, p.dismissed]) === JSON.stringify([res.items, res.lanes, res.dismissed]); } catch (e) { same = false; }
