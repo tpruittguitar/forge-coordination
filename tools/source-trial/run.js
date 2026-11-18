@@ -203,6 +203,8 @@ async function main(){
   if (WORKDAY_ONLY) fs.writeFileSync(path.join(OUT, WD.PASS_FILE), JSON.stringify({ schema: 'forge.workday-box-pass.v1', lastPassAt: at, finishedAt: new Date().toISOString(), due: order.length, read: boardStats.length, ok: boardStats.filter(s => s.status === 'OK').length, stoppedAt429 }, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, reportName + '.json'), JSON.stringify(report, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, reportName + '.health.json'), JSON.stringify(discoveryHealth(report)) + '\n');
+  const Evidence = require('./evidence-store'), evidenceSaved = found.filter(f => f.description && Evidence.persistPublicPosting(path.dirname(OUT), f, { observedAt: at, proof: 'state/' + reportName + '.json' })).length;
+  console.log('Posting text saved to state/discovery-evidence: ' + evidenceSaved);
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
     `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed${summary.boards.workday_deferred ? `, ${summary.boards.workday_deferred} Workday deferred after a 429` : ''}) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
