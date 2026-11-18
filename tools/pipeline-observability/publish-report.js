@@ -9,7 +9,8 @@ const sections=[
 const CHEAP_PATHS=['state/WRITER_ACTIVITY.json','state/WRITER_ACTIVITY_DETAILS.json','state/REPORTING_HEALTH.json'],SPAWN_TIMEOUT_MS=120000;
 function runSection(s,root){const r=cp.spawnSync(process.execPath,[s.script,...s.args||[]],{cwd:root,encoding:'utf8',timeout:SPAWN_TIMEOUT_MS,maxBuffer:4e6}),spawnError=r.error||null,signal=r.signal||null,error=spawnError?.message||(signal?'killed by '+signal:null)||r.stderr||'Report generation failed';return{ok:r.status===0&&!spawnError&&!signal,error,spawnError,signal,status:r.status};}
 function isSpawnFailure(result){const err=result&&result.error||'';return !!(result&&(result.spawnError||result.signal||/\bETIMEDOUT\b/.test(err)||/^spawnSync\b/.test(err)||/^killed by /.test(err)));}
-function fatalError(health){return Object.values(health?.components||{}).find(c=>c&&c.status==='STALE'&&isSpawnFailure(c));}
+function ranIds(opts={}){return opts.only||(opts.components||sections).map(s=>s.id);}
+function fatalError(health,ran){const allow=ran&&ran.length?new Set(Array.isArray(ran)?ran.map(s=>typeof s==='string'?s:s.id):[]):null;return Object.entries(health?.components||{}).find(([id,c])=>c&&c.status==='STALE'&&isSpawnFailure(c)&&(!allow||allow.has(id)))?.[1];}
 async function publish({root=process.cwd(),run=(s)=>runSection(s,root),sleep=ms=>new Promise(r=>setTimeout(r,ms)),now=()=>Date.now(),components=sections,only}={}){
  if(only){const want=new Set(only),selected=components.filter(s=>want.has(s.id));if(selected.length!==want.size)throw Error('Unknown publish section');components=selected;}
 
@@ -30,7 +31,7 @@ async function publish({root=process.cwd(),run=(s)=>runSection(s,root),sleep=ms=
  }
  fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(health,null,2)+'\n');return health;
 }
-async function runCli(opts){try{const h=await publish(opts);console.log(JSON.stringify(h));if(fatalError(h))process.exitCode=1;return h;}catch(e){console.error(e.message);process.exitCode=1;}}
+async function runCli(opts={}){try{const h=await publish(opts);console.log(JSON.stringify(h));if(fatalError(h,ranIds(opts)))process.exitCode=1;return h;}catch(e){console.error(e.message);process.exitCode=1;}}
 if(require.main===module){const only=process.argv.slice(2).filter(a=>!a.startsWith('-'));runCli({only:only.length?only:undefined});}
 module.exports={publish,sections,FILE,CHEAP_PATHS,isSpawnFailure,fatalError,runCli,SPAWN_TIMEOUT_MS,runSection};
 

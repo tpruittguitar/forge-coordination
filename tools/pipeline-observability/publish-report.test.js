@@ -48,3 +48,17 @@ test('a flow spawn timeout fails the step with a non-zero exit and is not retrie
   a.equal(n,1);a.equal(h.components.flow.status,'STALE');a.match(h.components.flow.error,/ETIMEDOUT/);a.ok(fatalError(h));a.equal(process.exitCode,1);
  }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
 });
+test('a leftover stale flow does not fail an activity-only run, but a timeout in this run still exits non-zero',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-leftover-'));const prev=process.exitCode,log=console.log;
+ const components=[{id:'activity',paths:['state/activity.json']},{id:'flow',paths:['state/flow.json']}];
+ try{
+  fs.mkdirSync(p.join(root,'state'));
+  fs.writeFileSync(p.join(root,'state/REPORTING_HEALTH.json'),JSON.stringify({schema:'forge.reporting-health.v1',at:'2026-11-18T04:28:17.118Z',components:{activity:{status:'CURRENT',at:'2026-11-18T04:21:58.170Z',lastSuccessAt:'2026-11-18T04:21:58.170Z',attempts:1},flow:{status:'STALE',at:'2026-11-18T04:28:17.118Z',lastSuccessAt:'2026-11-18T04:03:25.353Z',failureSince:'2026-11-18T04:28:17.118Z',error:'spawnSync node ETIMEDOUT',attempts:3,owner:'CODE',nextAction:'Automatic reporting retry; retain last successful metrics'}}}));
+  process.exitCode=0;console.log=()=>{};
+  const ok=await runCli({root,components,only:['activity'],sleep:async()=>{},now:()=>1000,run:s=>{if(s.id!=='activity')throw Error('flow should not run');fs.writeFileSync(p.join(root,'state/activity.json'),'cheap');return{ok:true};}});
+  a.equal(ok.components.activity.status,'CURRENT');a.equal(ok.components.flow.status,'STALE');a.match(ok.components.flow.error,/ETIMEDOUT/);a.equal(process.exitCode,0);
+  process.exitCode=0;
+  const bad=await runCli({root,components,only:['flow'],sleep:async()=>{},now:()=>2000,run:()=>({ok:false,error:'spawnSync node ETIMEDOUT',spawnError:{code:'ETIMEDOUT'}})});
+  a.equal(bad.components.flow.status,'STALE');a.match(bad.components.flow.error,/ETIMEDOUT/);a.ok(fatalError(bad,['flow']));a.equal(fatalError(bad,['activity']),undefined);a.equal(process.exitCode,1);
+ }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
+});
