@@ -581,6 +581,15 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(parsed){postingCache.save(Employer.resolve(r),api?.page||url,parsed);if(parsed.pay){exact=parsed;source=api?.page||url;break;}}
       }catch{} // Unsupported/failed sources retain the original estimate, never erase it.
     }
+    // Card 4c64076: a row with no saved posting read gets one retry of its own aggregator page (LinkedIn etc.) inside the same
+    // review read cap. Before this, a failed first read left the estimate final forever (MATHESON V2I-2B28826AE3AE; 112 rows).
+    const reviewAgg=!exact&&!skipSalaryLookup?L.aggregatorFor(r.p):null;
+    if(reviewAgg&&!postingCache.find(r,[reviewAgg.page])&&attempts<2&&review.target_reads<(CONFIG.maxSalaryReviewReads??6)&&Date.now()<reviewDeadline&&Date.now()-T0<CONFIG.maxRunMs&&providerAllowed(reviewAgg.fetch)){
+      attempts++;review.target_reads++;review.aggregator_reads=(review.aggregator_reads||0)+1;
+      try{const parsed=L.parseAggregator(reviewAgg.kind,await sourceReader().read(reviewAgg.fetch,{gapMs:CONFIG.aggregatorGapMs,headers:{'user-agent':CONFIG.userAgent,accept:'text/html'}}),r);aggregatorResult(reviewAgg.kind,parsed);
+        if(parsed&&!parsed.wall&&parsed.pay&&parsed.basis==='EMPLOYER_POSTED'){exact={pay:parsed.pay,at:new Date().toISOString()};source=reviewAgg.page;review.aggregator_pay=(review.aggregator_pay||0)+1;}
+      }catch{} // A failed retry keeps the estimate, as before.
+    }
     if(!exact&&!skipSalaryLookup&&Date.now()<reviewDeadline){const candidate=await benchmarkSearch.findExact(Employer.resolve(r));if(candidate){exact=candidate;source=candidate.sourceUrl;}}
     let fields=null,status='NO_STRONGER_EVIDENCE';
     if(exact){const p=exact.pay;fields={SALARY_BASE_LOW:p.low,SALARY_BASE_HIGH:p.high,SALARY_MIDPOINT:Math.round((p.low+p.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_CONF:'HIGH',SALARY_SOURCE:source,SALARY_ASOF:exact.at?exact.at.slice(0,10):today,SALARY_NOTE:'Active estimate review: exact employer posting, matched title and city/state; USD annual base pay, excludes bonus/equity.'};review.posted_planned++;status='EXACT_POSTED_PAY_PLANNED';}
