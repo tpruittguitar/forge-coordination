@@ -1,5 +1,1 @@
-CHANGE: enrich-ats-pay proof logging (card ba1b4f1)
-WHY: QA could not prove Workday window skips or never-consider rules from the stats line. workday_board_window_skips was created only on the first skip (absent when 0), and never_consider_excluded was a count with no rule ids.
-WHAT: run.js only. Stats now always carry workday_board_window_skips=0 and workday_window_active, plus never_consider_rules (active rule ids) and never_consider_by_rule (declines per rule id). The decline object has no ruleId field (Code.gs declineNeverConsiderRow_ returns ok/primaryId/ruling/after/error), so run.js's global wrapper adds nc.ruleId.
-PROOF: the next green enrich run's final JSON stats line shows those keys, including NC-008 and NC-013 in never_consider_rules.
-No cron, schedule, dispatch or Writer change.
+WHAT=enrich-ats-pay stats always carry workday_board_window_skips (explicit 0), workday_window_active, never_consider_rules (active rule ids) and never_consider_by_rule (declines per rule id, via a run.js wrapper that adds nc.ruleId) so QA can prove window skips and NC rules from one line (card ba1b4f1); no cron, dispatch or Writer change
