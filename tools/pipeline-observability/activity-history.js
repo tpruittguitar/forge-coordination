@@ -3,6 +3,17 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const FILE='state/WRITER_ACTIVITY_DETAILS.json',BASE='https://api.github.com/repos/tpruittguitar/forge-writer-state';
 function matches(a,b){return a?.s==='COMPLETE'&&b?.s==='COMPLETE'&&a.w===b.w&&a.at===b.at&&a.snapshotHash===b.snapshotHash;}
+const BUDGET=2*1024*1024;
+function writeCache(file,cache,now){
+ cache.at=new Date(now).toISOString();
+ let text=JSON.stringify(cache);
+ if(text.length<=BUDGET){fs.writeFileSync(file,text+'\n');return null;}
+ const oldest=Object.keys(cache.entries).sort((a,b)=>(Date.parse(cache.entries[a].entry&&cache.entries[a].entry.at)||0)-(Date.parse(cache.entries[b].entry&&cache.entries[b].entry.at)||0));
+ while(text.length>BUDGET&&oldest.length){delete cache.entries[oldest.shift()];text=JSON.stringify(cache);}
+ if(text.length>BUDGET)return 'Activity detail cache budget exceeded';
+ fs.writeFileSync(file,text+'\n');
+ return 'Activity detail cache budget exceeded; pruned oldest entries';
+}
 async function hydrate(index,{root,now=Date.now(),transport=fetch,token=process.env.GITHUB_TOKEN,maxReads=8}={}){
  const file=path.join(root,FILE);let cache={schema:'forge.activity-details.v1',entries:{}};
  if(fs.existsSync(file)){const old=JSON.parse(fs.readFileSync(file,'utf8'));if(old.schema===cache.schema&&old.entries)cache=old;}
@@ -24,7 +35,7 @@ async function hydrate(index,{root,now=Date.now(),transport=fetch,token=process.
  }
  // Capture current detail before Writer's 100-entry compaction drops it.
  for(const [id,e]of Object.entries(index.requests))if(e.s==='COMPLETE'&&Date.parse(e.at)>=cut&&Date.parse(e.at)<=now&&Array.isArray(e.items))cache.entries[id]={entry:e,sha:index.sourceSha};
- cache.at=new Date(now).toISOString();const text=JSON.stringify(cache);if(text.length>2*1024*1024)throw Error('Activity detail cache budget exceeded');fs.writeFileSync(file,text+'\n');
- return {index:clone,remaining:needed().length,sources:[...sources],error};
+ const budgetError=writeCache(file,cache,now);
+ return {index:clone,remaining:needed().length,sources:[...sources],error:error||budgetError};
 }
 module.exports={hydrate,matches};
