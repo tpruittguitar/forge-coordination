@@ -10,7 +10,7 @@ function publicUrl(url){try{return typeof url==='string'&&Source.publicUrl(url) 
 function validProof(proof){
  if(!proof||typeof proof.path!=='string'||!/^[a-f0-9]{64}$/.test(proof.sha256||''))return false;
  if(/^state\/discovery-evidence\/[a-f0-9]{64}\.json$/.test(proof.path))return proof.path.endsWith(proof.sha256+'.json');
- return /^(?:state\/(?:source-trial-report|board-discovery-report|UPSTREAM_LEDGER)\.json|receipts\/auto-intake\/catch-up\/state\.json)(?:@[a-f0-9]{40})?$/.test(proof.path);
+ return /^(?:state\/(?:source-trial-report|board-discovery-report|targeted-posting-lookup|UPSTREAM_LEDGER)\.json|receipts\/auto-intake\/catch-up\/state\.json)(?:@[a-f0-9]{40})?$/.test(proof.path);
 }
 const validRequisitions=ids=>ids==null||Array.isArray(ids)&&ids.every(x=>typeof x==='string'&&x.trim()&&x===x.trim().toLowerCase())&&new Set(ids).size===ids.length;
 function validEnvelope(e,{now=Date.now()}={}){

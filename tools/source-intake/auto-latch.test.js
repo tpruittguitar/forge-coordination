@@ -70,3 +70,17 @@ test('operator containment preserves UNKNOWN and blocks changed-URL identities w
  assert.equal(isolatedUnknown({...s,quarantine:{...s.quarantine,candidatesHash:'wrong'}}),null);
  assert.equal(isolatedUnknown({...s,quarantine:{...s.quarantine,carryForwardRequestIds:[]}}),null);
 });
+
+test('an existing pre-Writer halt receipt with empty outcomes and empty results does not block later runs',()=>{
+ // Exact latch shape of receipts/auto-intake/FORGE-AUTO-20261118T013807Z.json on main (completedAt null, no noCandidates).
+ const state={version:1,mode:'AUTO',sourceRunId:'FORGE-AUTO-20261118T013807Z',requestIds:['FORGE-SOURCE-F1011E7CAA77A34C0B0330DB'],
+  results:{},outcomes:[],halts:[{at:'2026-11-18T01:38:27.856Z',message:'BLOCKED: 1 to 200 reviewed intake candidates required',outcomes:[]}],completedAt:null};
+ const r=latch([{file:'receipts/auto-intake/FORGE-AUTO-20261118T013807Z.json',state}]);
+ assert.deepEqual(r.blocking,[]);assert.deepEqual(r.quarantined,[]);
+ const inflight={...state,sourceRunId:'FORGE-AUTO-INFLIGHT',results:{'FORGE-SOURCE-F1011E7CAA77A34C0B0330DB':{status:'POST_IN_FLIGHT_UNKNOWN'}}};
+ assert.equal(latch([{file:'inflight.json',state:inflight}]).blocking.length,1);
+ const written={...state,sourceRunId:'FORGE-AUTO-WRITTEN',results:{'FORGE-SOURCE-F1011E7CAA77A34C0B0330DB':{WRITE_ACCEPTED:true,writeId:'W1',receipt:{REQUEST_ID:'FORGE-SOURCE-F1011E7CAA77A34C0B0330DB'}}}};
+ assert.equal(latch([{file:'written.json',state:written}]).blocking.length,1);
+ const withOutcomes={...state,sourceRunId:'FORGE-AUTO-OUTCOMES',halts:[{...state.halts[0],outcomes:[{requestId:'FORGE-SOURCE-F1011E7CAA77A34C0B0330DB',status:'HOLD'}]}]};
+ assert.equal(latch([{file:'outcomes.json',state:withOutcomes}]).blocking.length,1);
+});

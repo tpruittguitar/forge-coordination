@@ -1,7 +1,8 @@
 'use strict';
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),crypto=require('node:crypto');
-const {snapshot,run,finalize}=require('./intake-cli');
+const {snapshot,run,finalize,shouldClosePreWriterHalt}=require('./intake-cli');
+const {latch}=require('./auto-latch');
 const {requestId}=require('./production-executor');
 const RULES_RAW='RULES v1',RULES_HASH=crypto.createHash('sha256').update(RULES_RAW).digest('hex');
 const norm=x=>String(x??'').trim().toLowerCase();
@@ -176,4 +177,35 @@ test('AUTO does not wait for one pending receipt before submitting other indepen
  let checks=0;const result=await auto({...opts,waitFn:async(_id,o)=>{checks++;assert.equal(o.timeoutMs,0);throw Error('PENDING');}});
  assert.equal(result.status,'PROGRESS_WITH_PENDING');assert.equal(checks,2);assert.equal(w.log.filter(x=>x==='POST').length,2);
  assert.equal(result.pending.length,2);assert.ok(!JSON.parse(fs.readFileSync(statePath)).completedAt);
+});
+
+test('a pre-Writer validation halt writes a closed receipt and the next auto-latch check does not block',async()=>{
+ const w=fakeWriter(),statePath=tmpState();
+ const bad=[candidate({COMPANY:'New Robotics',TITLE:'Director Manufacturing Engineering',LOCATION:'Huntsville, AL',REQ_ID:'R-N1'},'NEW',{evidenceVerified:false,evidenceSource:'CAPTURED_DISCOVERY',businessEvidenceApproved:false,discoveryEvidence:null})];
+ await snapshot('before',{statePath,candidates:bad,key:'fixture',transport:w.transport,switchTransport:ENABLED,sourceRunId:'FORGE-AUTO-TEST',mode:'AUTO'});
+ const r=await run({statePath,candidates:bad,key:'fixture',transport:w.transport,switchTransport:ENABLED});
+ assert.equal(r.status,'HALTED');assert.match(r.message,/1 to 200 reviewed intake candidates required/);
+ assert.ok(!w.log.includes('POST'));
+ const state=JSON.parse(fs.readFileSync(statePath,'utf8'));
+ assert.equal(state.noCandidates,true);assert.ok(state.completedAt);
+ assert.equal(state.halts.length,1);assert.deepEqual(state.results,{});assert.deepEqual(r.outcomes,[]);
+ const l=latch([{file:'receipts/auto-intake/FORGE-AUTO-TEST.json',state}]);
+ assert.deepEqual(l.blocking,[]);assert.deepEqual(l.quarantined,[]);
+});
+
+test('a halt with POST_IN_FLIGHT or a Writer call still latches',async()=>{
+ assert.equal(shouldClosePreWriterHalt({results:{},halts:[{message:'BLOCKED: 1 to 200 reviewed intake candidates required',outcomes:[]}]},{outcomes:[]}),true);
+ assert.equal(shouldClosePreWriterHalt({results:{R1:{status:'POST_IN_FLIGHT_UNKNOWN'}}},{outcomes:[]}),false);
+ assert.equal(shouldClosePreWriterHalt({results:{R1:{WRITE_ACCEPTED:true,writeId:'W1'}}},{outcomes:[]}),false);
+ assert.equal(shouldClosePreWriterHalt({results:{}},{outcomes:[{requestId:'R1',status:'HOLD'}]}),false);
+ const inflight={sourceRunId:'FORGE-AUTO-INFLIGHT',candidatesHash:'x',requestIds:['R1'],results:{R1:{status:'POST_IN_FLIGHT_UNKNOWN'}},outcomes:[],halts:[{at:'2026-11-18T01:38:27.856Z',message:'UNKNOWN: Writer POST outcome unconfirmed',outcomes:[]}],completedAt:null};
+ const written={sourceRunId:'FORGE-AUTO-WRITTEN',candidatesHash:'x',requestIds:['R1'],results:{R1:{WRITE_ACCEPTED:true,writeId:'W1',receipt:{REQUEST_ID:'R1'}}},outcomes:[],halts:[{at:'2026-11-18T01:38:27.856Z',message:'HOLD: Writer accepted intake record; durable receipt and exact-row readback required before proceeding',outcomes:[]}],completedAt:null};
+ assert.equal(latch([{file:'receipts/auto-intake/inflight.json',state:inflight}]).blocking.length,1);
+ assert.equal(latch([{file:'receipts/auto-intake/written.json',state:written}]).blocking.length,1);
+ const w=fakeWriter(),statePath=tmpState();
+ await snapshot('before',{statePath,candidates:CANDIDATES,key:'fixture',transport:w.transport,switchTransport:ENABLED,sourceRunId:'FORGE-STAGE-TEST',mode:'STAGE'});
+ const r=await run({statePath,candidates:CANDIDATES,key:'fixture',transport:w.transport,switchTransport:ENABLED});
+ assert.equal(r.status,'HALTED');assert.ok(w.log.includes('POST'));
+ const state=JSON.parse(fs.readFileSync(statePath,'utf8'));
+ assert.ok(!state.noCandidates);assert.equal(state.completedAt,null);
 });

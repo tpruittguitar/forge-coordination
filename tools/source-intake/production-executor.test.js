@@ -475,6 +475,23 @@ test('AUTO documents one busy Writer response and still submits the next indepen
  assert.equal(posted.length,2);assert.equal(result.outcomes[0].status,'DEFERRED');assert.equal(result.outcomes[1].status,'PENDING_VERIFICATION');assert.equal(rec.store[posted[0]].error,'Lock timeout');
 });
 
+const busyResponse=rid=>({ok:false,mode:'WRITER_NOT_ACCEPTED',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[rid],retryAfterMs:60000}});
+test('a request-bound WRITER_BUSY refusal is retried after 30 s and 60 s backoff instead of held',async()=>{
+ const rows=newOnly(1),base=mockWriter(),posted=[],waits=[];
+ const transport=async(u,o)=>{if(o.method==='POST'){const rid=JSON.parse(o.body).requestId;posted.push(rid);return{ok:true,json:async()=>posted.length<3?busyResponse(rid):insertResponse(rid,'V2I-BUSY')};}return base(u,o);};
+ const result=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async ms=>{waits.push(ms)}})).catch(e=>e);
+ assert.equal(posted.length,3);assert.equal(new Set(posted).size,1);assert.deepEqual(waits,[30000,60000]);
+ assert.equal(result.outcomes[0].status,'PENDING_VERIFICATION');
+});
+test('WRITER_BUSY retries stop after 3 and the case is RETRY_NEXT_RUN; an unproven lock error is never retried',async()=>{
+ const rows=newOnly(1),base=mockWriter();let posts=0;const waits=[];
+ const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>busyResponse(rid)};}return base(u,o);};
+ const result=await runIntake(rows,opts(transport,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async ms=>{waits.push(ms)}}));
+ assert.equal(posts,4);assert.deepEqual(waits,[30000,60000,120000]);assert.equal(result[0].status,'RETRY_NEXT_RUN');
+ let lockPosts=0;const lock=async(u,o)=>{if(o.method==='POST'){lockPosts++;return{ok:true,json:async()=>({ok:false,error:'Lock timeout'})};}return base(u,o);};
+ await runIntake(rows,opts(lock,{switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async()=>{throw Error('must not wait')}}));assert.equal(lockPosts,1);
+});
+
 test('Writer delimiter escaping does not create false identity holds; actual differences still hold',()=>{
  const {checkCanaryOutcome}=require('./intake-accounting');
  const record={COMPANY:'POLYWOOD®',TITLE:'Director | Operational Excellence - Quality & Continuous Improvement',LOCATION:'Syracuse, IN, USA'};
@@ -483,4 +500,48 @@ test('Writer delimiter escaping does not create false identity holds; actual dif
  const readbacks=[{primaryId:'V2I-123',found:true,matches:1,line:'1 | V2I-123 | POLYWOOD® | Director / Operational Excellence - Quality & Continuous Improvement | SCOUT_INTAKE | OPEN | P1 | UNCAPTURED | Syracuse, IN, USA | NOTES'}];
  assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record,result,receipt,readbacks}).status,'CONSISTENT_PENDING_INDEPENDENT_COUNT_CHECK');
  for(const patch of [{COMPANY:'Different'},{TITLE:'Director Operational Excellence - Quality & Continuous Improvement'},{LOCATION:'Syracuse, NY, USA'}])assert.equal(checkCanaryOutcome({expectedOutcome:'NEW',record:{...record,...patch},result,receipt,readbacks}).reason,'INSERT_IDENTITY_MISMATCH');
+});
+const notAccepted=(rid,over={})=>({ok:false,mode:'WRITE_FENCE',error:'Writer busy; this request was not accepted',outcome:{schema:'forge.writer-outcome.v1',status:'NOT_ACCEPTED',phase:'BEFORE_MUTATION',code:'WRITER_BUSY',masterMutations:0,requestIds:[rid],retryAfterMs:60000,...over}});
+test('proven never-accepted Writer refusal is retryable next run, not UNKNOWN, and the same request is re-posted',async()=>{
+ const rows=newOnly(1),rec=memRecorder(),base=mockWriter();let posts=0,refuse=true;
+ const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>refuse?notAccepted(rid):insertResponse(rid,'V2I-RETRY')}}return base(u,o)};
+ const run=extra=>runIntake(rows,opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO',sleep:async()=>{},...extra})).catch(e=>e);
+ const first=await run();
+ assert.equal(first[0].status,'RETRY_NEXT_RUN');assert.equal(first[0].reason,'WRITER_NOT_ACCEPTED_WRITER_BUSY');assert.equal(posts,4);
+ refuse=false;
+ const second=await run({priorResults:rec.store});
+ assert.equal(posts,5);assert.equal(second.outcomes[0].status,'PENDING_VERIFICATION');
+});
+test('a refusal that is not proven never-accepted stays fenced as UNKNOWN',async()=>{
+ const cases={
+  wrongRequest:rid=>notAccepted('OTHER-'+rid),
+  afterMutation:rid=>notAccepted(rid,{phase:'AFTER_MUTATION'}),
+  unknownMutations:rid=>notAccepted(rid,{masterMutations:null}),
+  terminalRejection:rid=>notAccepted(rid,{code:'REJECTED_SCHEMA'}),
+  acceptanceMarker:rid=>({...notAccepted(rid),writeId:'W-EXISTS'})
+ };
+ for(const [name,make] of Object.entries(cases)){
+  const rows=newOnly(1),rec=memRecorder(),base=mockWriter();let posts=0;
+  const transport=async(u,o)=>{if(o.method==='POST'){posts++;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>make(rid)}}return base(u,o)};
+  const o=opts(transport,{recorder:rec,switchTransport:autoSwitch(),expectedMode:'AUTO'});
+  const first=await runIntake(rows,o);
+  assert.equal(first[0].status,'DEFERRED',name);
+  await runIntake(rows,{...o,priorResults:rec.store});
+  assert.equal(posts,1,name+' must not be re-posted');
+ }
+});
+test('a busy shared Writer POST lock sends nothing, records no intent, and defers the whole remaining batch without waiting again',async()=>{
+ const rows=newOnly(2),rec=memRecorder(),base=mockWriter();let posts=0,tries=0;
+ const transport=async(u,o)=>{if(o.method==='POST')posts++;return base(u,o)};
+ const postLock={acquire:async()=>{tries++;return{ok:false,reason:'LOCK_BUSY',release:async()=>false}}};
+ const result=await runIntake(rows,opts(transport,{recorder:rec,postLock,switchTransport:autoSwitch(),expectedMode:'AUTO'}));
+ assert.equal(posts,0);assert.equal(tries,1);assert.deepEqual(Object.keys(rec.store),[]);
+ assert.ok(result.every(x=>x.status==='DEFERRED'&&x.reason==='WRITER_POST_LOCK_LOCK_BUSY'));
+});
+test('the shared Writer POST lock is held during the POST and released afterwards',async()=>{
+ const rows=newOnly(1),base=mockWriter();let held=false,releases=0,postedWhileHeld=false;
+ const transport=async(u,o)=>{if(o.method==='POST'){postedWhileHeld=held;const rid=JSON.parse(o.body).requestId;return{ok:true,json:async()=>insertResponse(rid,'V2I-LOCK')}}return base(u,o)};
+ const postLock={acquire:async()=>{held=true;return{ok:true,release:async()=>{if(held)releases++;held=false;return true}}}};
+ await runIntake(rows,opts(transport,{postLock,switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
+ assert.equal(postedWhileHeld,true);assert.equal(held,false);assert.equal(releases,1);
 });

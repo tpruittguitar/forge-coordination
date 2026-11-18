@@ -48,6 +48,8 @@ async function readBoard(board,searches,{fetcher=fetch,wait=ms=>new Promise(r=>s
  }
  return {board:b,jobs,succeeded,failed,attempts,tenantRecovered,error:lastError?String(lastError.message).slice(0,120):'',httpStatus:lastError?.status||null,retryAfterMs:lastError?.retryAfterMs||0,status:lastError?(succeeded?'PARTIAL':failure(lastError.status)):'OK'};
 }
+// A failed board stays unread until its retryAt; other readers (pay enrichment) honor the same window.
+function cooling(state,key,now=Date.now()){const h=key&&state?.boards?.[key];return !!h&&h.status!=='OK'&&Date.parse(h.retryAt||0)>now;}
 function loadState(text){if(!text)return {schema:'forge.board-health.v1',at:null,boards:{}};const s=JSON.parse(text);if(s.schema!=='forge.board-health.v1'||!s.boards||Array.isArray(s.boards))throw Error('Invalid board-health history; preserve it for recovery');return s;}
 function record(state,b,result,at){
  const prev=state.boards[b.key]||state.boards[b.repairedFrom]||{},ok=result.status==='OK',now=Date.parse(at),transientDelay=Math.min(4*3600000,15*60000*2**Math.min(prev.consecutiveFailures||0,4)),delay=Math.max(result.retryAfterMs||0,result.status==='ACCESS_RESTRICTED'?4*3600000:result.status==='ADDRESS_OR_REQUEST_ERROR'?6*3600000:transientDelay);
@@ -60,4 +62,4 @@ function recoveryBoards(state,paused,now=Date.now()){
  return Object.values(state.boards).filter(h=>!h.paused&&h.status!=='OK'&&h.descriptor&&Date.parse(h.retryAt||0)<=now&&!h.companies.every(c=>paused.has(P.normCo(c)))).sort((a,b)=>Date.parse(a.lastAttemptAt)-Date.parse(b.lastAttemptAt)).map(h=>({...repair(h.descriptor),companies:new Set(h.companies),tier:h.descriptor.tier||''}));
 }
 function summary(state,paused){const rows=Object.values(state.boards).filter(h=>!h.paused&&!h.companies.every(c=>paused.has(P.normCo(c))));return {tracked:rows.length,pending:rows.filter(h=>h.status!=='OK').length,unavailable:rows.filter(h=>h.status==='ACCESS_RESTRICTED'||h.status==='TEMPORARY_FAILURE').length};}
-module.exports={WORKDAY_GAP_MS,repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};
+module.exports={cooling,WORKDAY_GAP_MS,repair,failure,jsonRequest,validAnswer,workdayConfig,readBoard,loadState,record,recoveryBoards,summary};

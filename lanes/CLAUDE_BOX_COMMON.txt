@@ -1,24 +1,13 @@
-CLAUDE BOX COMMON — Tim 2026-11-16 12:40 PM ET (relayed by President): the six active ChatGPT lanes run as Claude on the shared Linux box.
-These rules replace only the Windows/Codex/PC-specific parts of the original procedures. All business rules, gates and Tim decisions in the shared entry, registry.common and the original lane procedure still apply.
-
-START
-1. Follow control/FORGE_SHARED_AUTOMATION_ENTRY.txt at INSTRUCTION_COMMIT (already checked out in WORKDIR). Require control/AI_AUTOMATION_TASKS.json tasks[TASK_KEY].owner=Claude; otherwise publish a BLOCKED receipt (OWNER_MISMATCH) and stop. Read registry.common once, then the original procedure named in the lane file. Never Consider runs first in every lane.
-2. The runner already took the lane lock (flock), made the fresh clone (WORKDIR) and, when needed, a read-only foreman-cockpit clone (COCKPIT_DIR = ACTIVITY_FC_DIR). Do not clone again or use scripts/research_workspace.py pools. Never use C:/Users/Tim paths, pwsh, launch.ps1, TIMMAY files or locks, Tim's private coordinator config, or the programmed coordinator.
-
-BOX SUBSTITUTIONS
-- "Run on Tim's local PC" means this box. Missed windows are never replayed or backfilled.
-- PC shared production lock: unavailable here. Never run tools that require FORGE_PRODUCTION_LOCK or the private connection file (programmed-coordinator apply/launch, relevance local.cjs --apply, source-bridge script). Those steps are BLOCKED reason PC_PRODUCTION_LOCK_UNAVAILABLE_ON_BOX; continue independent work.
-- Writer reads: node tools that read FORGE_WRITER_KEY from the environment, e.g. node -e "require('./tools/source-intake/writer-reader.js').read('<action>',{...}).then(r=>console.log(JSON.stringify(r.data)))" with actions master, archive, writer_status, request_result, receipt_index, row_readback, evidence. Never print, echo, log or write the key; never put it in a command line; never POST to the Writer URL.
-- Writer mutations: only the existing Drive AI_Coordination/WRITER_QUEUE route (folder 1IVyEKPxqY_7uL9GG9RV9Gu9raEco0AZ7; docs/GROK_DIRECT_WRITER.md, policy/current/COMMON_WRITER.txt). Use the Drive create_file tool with parentId=that folder, title CLAUDE_<requestId>.json, textContent=the exact JSON, contentMimeType text/plain, disableConversionToGoogleType true; confirm the returned mimeType is text/plain. Actor CLAUDE, request IDs start with RUN_ID, at most 25 homogeneous requests per file. Before each create, save the exact payload to PRIVATE_DIR/checkpoints/<requestId>.json; a payload whose create result is unknown is never re-sent. If the Drive tool is unavailable or converts the file, do not retry: record TRANSPORT_PENDING with the saved payload path; the next run may send only a payload that was provably never created.
-- Run limits (Tim): at most one intake request per run with at most 200 candidates; ENRICH rulings capped at 50 per run; application status upserts always in their own request, never mixed with intake.
-- VERIFIED = RESULT SUCCESS + independently later receipt_index COMPLETE + row_readback after COMPLETE. Queue files created this run are SUBMITTED. At start, check request IDs SUBMITTED by earlier box receipts of this task and report their current state; never replay.
-- Private data: this repository is PUBLIC. Mail bodies, addresses, calendar details and raw private sources stay in PRIVATE_DIR only.
-
-RECEIPT (always exactly one, even when idle or blocked)
-Write receipts/CLAUDE_BOX/<TASK_KEY>/<RUN_ID>.json (not receipts/CLAUDE_HELPERS: the collector treats every file there as a helper batch):
+CLAUDE BOX HEADER (Tim 2026-11-17). You are Claude on claude-box running TASK_KEY as RUN_ID; actor CLAUDE.
+CONTRACT: this header, your brief and task entry below at INSTRUCTION_COMMIT (WORKDIR; no re-clone). Read no registry, common, shared entry, packet or old procedure. Task owner not Claude: BLOCKED OWNER_MISMATCH receipt, stop.
+Never read a whole work JSON: node tools/claude-box-runner/next-work.js <file> --n <N> [--where k=v] [--fields a,b].
+No PC paths, pwsh, PC lock or coordinator config: that step is BLOCKED PC_ONLY_ON_BOX; continue the rest.
+NEVER CONSIDER FIRST: before pay, enrichment, liveness, scoring, research or Writer calls, screen with forge-policy NEVER_CONSIDER via tools/source-trial/preliminary-screen.js or intake-drain exclusions. A match gets no more work; decline only via Writer DECLINE. Staff, Senior Staff, Principal Engineer never decline here.
+WRITER IS THE AUTHORITY: only it changes master and scores. Read via tools/source-intake/writer-reader.js read(action). FORGE_WRITER_KEY stays in env; never print it or POST to the Writer. Never touch APPLIED, REJECTED_BY_EMPLOYER, DECLINED_BY_TIM, DUPLICATE, CLOSED_DEAD, ANTI_RESURRECTION rows or Tim rulings. VERIFIED = RESULT SUCCESS + later receipt_index COMPLETE + row_readback after it; queued = SUBMITTED.
+NO REPLAY: no missed-window runs. First report the state of IDs from this task's earlier box receipts; never re-send an unknown outcome. Same failure or result twice stops that step.
+Repo is PUBLIC: private mail/calendar/sources stay in PRIVATE_DIR.
+RECEIPT, exactly one, even idle: receipts/CLAUDE_BOX/<TASK_KEY>/<RUN_ID>.json
 {"schema":"forge.claude-box-run.v1","provider":"Claude","taskKey":"","runId":"","host":"claude-box","instructionCommit":"","startedAt":"","finishedAt":"","status":"COMPLETE|PARTIAL|BLOCKED|IDLE","steps":[{"step":"","status":"DONE|PARTIAL|BLOCKED|SKIPPED","reason":"","counts":{}}],"blocked":[{"step":"","reason":"","retryCondition":""}],"submittedRequestIds":[],"verifiedRequestIds":[],"pendingPayloads":[],"laneReceipt":""}
-Also write the lane's native receipt when the lane file names one, with Claude labels. Status COMPLETE only when no step is BLOCKED or PARTIAL. Missing access is BLOCKED/PARTIAL with the exact reason, never zero work or success.
-
-PUBLISH
-git add only the files this run created/updated; commit "CLAUDE BOX <TASK_KEY> <RUN_ID>: <status>"; git pull --rebase origin main; git push origin HEAD:main. On rejection repeat pull --rebase + push, at most 3 attempts in total. Confirm with git fetch origin main && git merge-base --is-ancestor HEAD origin/main. Never force-push, never rewrite others' files, no branches, PRs, merges, workflow dispatch, schedule/settings/code changes. If publishing fails, leave the commit (the runner preserves the workdir) and end with PUBLISH_FAILED.
-Stop rule: the same step failing twice or the same result twice stops that step. End with one line: <TASK_KEY> <RUN_ID> <status> submitted=<n> verified=<n> blocked=<reasons>.
+COMPLETE: no BLOCKED/PARTIAL step. No access = BLOCKED + reason.
+PUBLISH: add only your files; commit "CLAUDE BOX <TASK_KEY> <RUN_ID>: <status>"; pull --rebase, push origin HEAD:main, max 3 tries; no force/branch/PR/code change; else PUBLISH_FAILED.
+Last line: <TASK_KEY> <RUN_ID> <status> submitted=<n> verified=<n> blocked=<reasons>

@@ -23,7 +23,7 @@ function build(bytes,{now=Date.now()}={}){
    const content=raw(page),sha256=S.hash(content),file=pagePath(taskKey,sha256);
    files[file]=page;pages.push({file,sha256,gitBlobSha:blob(content),bytes:Buffer.byteLength(content),items:page.items.length});after=next.nextAfter;
   }while(after);
-  const index={schema:'forge.shared-helper-index.v1',source,provider:H.TASKS[taskKey],taskKey,evaluatedAt:new Date(now).toISOString(),validUntil,enabled:work.enabled,routingActive:work.routingActive,available:work.providers[taskKey].available,mode:'EVIDENCE_ONLY',canonicalCompletion:false,claimOrLease:false,backlogCounts:first.backlogCounts,laneOrder:first.laneOrder,total:pages.reduce((n,p)=>n+p.items,0),maxArtifactItems:H.MAX_ARTIFACT_ITEMS,runItemCap:null,pages};
+  const index={schema:'forge.shared-helper-index.v1',source,provider:H.TASKS[taskKey],taskKey,evaluatedAt:new Date(now).toISOString(),validUntil,enabled:work.enabled,routingActive:work.routingActive,available:work.providers[taskKey]?.available===true,mode:'EVIDENCE_ONLY',canonicalCompletion:false,claimOrLease:false,backlogCounts:first.backlogCounts,laneOrder:first.laneOrder,total:pages.reduce((n,p)=>n+p.items,0),maxArtifactItems:H.MAX_ARTIFACT_ITEMS,runItemCap:null,pages};
   indexes[indexPath(taskKey)]=index;
  }
  return{source,files,indexes};

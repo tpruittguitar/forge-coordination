@@ -18,6 +18,7 @@
 const fs=require('node:fs'),crypto=require('node:crypto');
 const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
 const {runIntake,requestId}=require('./production-executor');
+const {shouldClosePreWriterHalt}=require('./auto-latch');
 const {reconcileIntakeBatch}=require('./intake-accounting');
 const {read}=require('./writer-reader');
 const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED','SKIPPED']);
@@ -58,7 +59,7 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
  const state=bound(loadState(statePath),candidates);
  if(state.completedAt)return {status:'ALREADY_COMPLETE',outcomes:state.outcomes};
  try{
-  const outcomes=await runIntake(candidates,{key,transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
+  const outcomes=await runIntake(candidates,{key,postLock:require('../writer-post-lock.cjs').fromEnv(),transport,switchTransport,sourceRunId:state.sourceRunId,priorResults:state.results,recorder:fileRecorder(statePath,state),refreshReview:refreshReview?async(c,h)=>{const r=await refreshReview(c,h);if(r){state.reviewRefreshes=state.reviewRefreshes||[];state.reviewRefreshes.push({requestId:requestId(c.record),at:new Date().toISOString(),...r});saveState(statePath,state);}return r}:undefined,expectedMode:state.mode||'STAGE'});
   if(outcomes.length===candidates.length&&state.mode==='AUTO'&&outcomes.some(x=>x.status==='DEFERRED')&&outcomes.every(x=>ACCOUNTED.has(x.status)||x.status==='DEFERRED')){
    state.outcomes=outcomes;
    state.continuation={schema:'forge.intake-continuation.v1',at:new Date().toISOString(),candidatesHash:state.candidatesHash,
@@ -71,6 +72,7 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
  }catch(e){
   for(const o of e.outcomes||[])if(o.writerResult&&!state.results[o.requestId])state.results[o.requestId]=o.writerResult;
   state.halts.push({at:new Date().toISOString(),message:e.message,outcomes:(e.outcomes||[]).map(({writerResult,...rest})=>rest)});
+  if(shouldClosePreWriterHalt(state,e)){state.noCandidates=true;state.completedAt=new Date().toISOString();}
   saveState(statePath,state);
   return {status:'HALTED',message:e.message,outcomes:e.outcomes||[]};
  }
@@ -120,4 +122,4 @@ async function main(argv=process.argv.slice(2)){
  console.log(JSON.stringify(out,(k,v)=>k==='writerResult'?undefined:v,1));
 }
 if(require.main===module)main().catch(e=>{console.error(e.message);process.exitCode=1});
-module.exports={snapshot,run,auto,finalize,waitReceiptComplete,hashOf,fileRecorder};
+module.exports={snapshot,run,auto,finalize,waitReceiptComplete,hashOf,fileRecorder,shouldClosePreWriterHalt};

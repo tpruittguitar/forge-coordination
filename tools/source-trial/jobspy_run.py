@@ -34,13 +34,15 @@ for site in cfg["sites"]:
         logging.getLogger("jobspy").addHandler(cap)
         try:
             kw = dict(site_name=[site], search_term=term, location=cfg["location"], results_wanted=cfg["resultsWanted"],
-                      hours_old=cfg["hoursOld"], country_indeed="USA", verbose=0)
+                      hours_old=cfg["hoursOld"], country_indeed="USA", verbose=0,
+                      linkedin_fetch_description=True)  # LinkedIn search cards carry no description or pay text otherwise
             df = scrape_jobs(**kw)
             rows = json.loads(df.to_json(orient="records", date_format="iso")) if df is not None and len(df) else []
             for r in rows:
                 r["site"] = r.get("site") or site
                 out["jobs"].append({k: r.get(k) for k in ("site", "title", "company", "location", "job_url", "job_url_direct",
-                                                          "min_amount", "max_amount", "interval", "currency", "salary_source", "is_estimated", "date_posted", "description")})
+                                                          "min_amount", "max_amount", "interval", "currency", "salary_source", "is_estimated", "is_remote", "date_posted",
+                                                          "description")})
             rec["returned"] = len(rows)
         except Exception as e:
             rec["error"] = str(e)[:200]

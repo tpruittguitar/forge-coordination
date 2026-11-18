@@ -8,6 +8,8 @@ const R = {
   'https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4012345678': '<div>' + pad + 'Base pay range USD $150,000.00/yr - $190,000.00/yr</div>',
 };
 const fs = require('fs');
+// Production config sets maxPublicFetches 0; fallback-mechanics fixtures keep their prior 60-read budget unless a test sets one.
+if(process.env.ENRICH_MASTER_FILE){const c=process.env.ENRICH_TEST_CONFIG?JSON.parse(process.env.ENRICH_TEST_CONFIG):{};if(!Object.hasOwn(c,'maxPublicFetches'))process.env.ENRICH_TEST_CONFIG=JSON.stringify({maxPublicFetches:60,...c});}
 // Fixtures must not depend on the wall clock: never run inside the board-discovery window unless a test asks for it.
 process.env.ENRICH_BOARD_DISCOVERY_ACTIVE ??= '0';
 // Canonical-snapshot tests exercise real reservation validators with isolated

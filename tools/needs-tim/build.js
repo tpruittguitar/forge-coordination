@@ -45,6 +45,10 @@ function parseName(file) {
   const phaseM = String(tail || '').match(/(TERMINAL_DETAIL|TERMINAL|STANDDOWN|CHECKPOINT\d*|PREFLIGHT|START|EVAL\d*)$/);
   const phase = phaseM ? phaseM[1].replace(/\d+$/, '') : '';
   const variant = String(tail || '').replace(/[-_]?(TERMINAL_DETAIL|TERMINAL|STANDDOWN|CHECKPOINT\d*|PREFLIGHT|START|EVAL\d*)$/, '').replace(/^[-_]+/, '');
+  /* Compact UTC run stamps (FORGE-CODE-CHATGPT-20261117T172523377Z_TRANSPORT): the stamp is the run identity and its exact
+     time, so _TRANSPORT, _VERIFICATION, _SUMMARY and _TERMINAL files of one run share one key, and lane gaps use real times. */
+  const utc = hhmm ? null : String(tail || '').match(/^T(\d{2})(\d{2})(\d{2})\d*Z(?=[-_]|$)/);
+  if (utc) return { lane, provider, at: ymd.slice(0, 4) + '-' + ymd.slice(4, 6) + '-' + ymd.slice(6, 8) + 'T' + utc[1] + ':' + utc[2] + ':' + utc[3] + 'Z', runKey: lane + '|' + provider + '|' + ymd + 'T' + utc[1] + utc[2] + utc[3] + 'Z', phase };
   return { lane, provider, at: etIso(ymd, hhmm), runKey: lane + '|' + provider + '|' + ymd + (hhmm || '') + (variant ? '|' + variant : ''), phase };
 }
 

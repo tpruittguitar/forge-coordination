@@ -7,6 +7,7 @@
 const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
+const writerPostLock=require('../writer-post-lock.cjs').fromEnv();
 const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./site-estimate.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const SiteEstimate=require('./site-estimate');
 const WorkdayWindow=require('./workday-window');
@@ -52,6 +53,7 @@ const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-
 const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
   pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
 const sleep = ms => runtime.wait(process.env.ENRICH_TEST_FAST||SAVED_ONLY?0:ms);
+const WRITER_BUSY_BACKOFF_MS = [30000, 60000, 120000];
 let networkRequests=0;
 const progress = (phase, detail={}) => console.log(JSON.stringify({event:'PAY_PROGRESS',phase,elapsed_ms:runtime.elapsed(),...detail}));
 async function get(url, opts={}) {
@@ -217,16 +219,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const publicOrigins=SourceReads.originCircuit();
   stats.source_origin_skips=0;
   function sourceReader(){return SourceReads.create({read:async(url,opts)=>{const text=await(await get(url,opts)).text();publicOrigins.success(url);return text;},wait:sleep,
-    canRead:(url,reserve,category)=>runtime.canStart(reserve)&&providerAllowed(url)&&(category!=='fallback'||publicOrigins.allowed(url)&&stats.public_tried<(CONFIG.maxPublicFetches||60)),
+    canRead:(url,reserve,category)=>runtime.canStart(reserve)&&providerAllowed(url)&&!workdayCooling(L.boardOf({SOURCE_URL:url}))&&(category!=='fallback'||publicOrigins.allowed(url)&&stats.public_tried<(CONFIG.maxPublicFetches??60)),
     onAttempt:(url,retry,category)=>{stats.source_reads++;if(retry)stats.source_retries++;if(category==='fallback')stats.public_tried++;const p=SourceReads.provider(url);if(p){aggFetches++;stats.agg_tried[p]=(stats.agg_tried[p]||0)+1;}},
     onFailure:(url,e)=>{publicOrigins.failure(url,e);stats.source_origin_blocks=publicOrigins.blocked();const p=SourceReads.provider(url);if(p){blocked[p]=(blocked[p]||0)+1;stats.agg_failed[p]=(stats.agg_failed[p]||0)+1;(stats.agg_errors[p]=stats.agg_errors[p]||[]).length<3&&stats.agg_errors[p].push(String(e.status||e.message).slice(0,80));}}
   });}
   // REV-138 (Tim ruling 2026-10-21 02:31 ET): estimate sources in order: same employer, comparables, BLS cross-check (lib.js).
   const boardByCo = {}; rows.forEach(r => { const b = L.boardOf(r.p), c = L.normCo(r.COMPANY); if (b && c && !boardByCo[c]) boardByCo[c] = b; });
   const boards = {}; let boardFetches = 0;
+  // Workday boards whose source-trial health retryAt is still in the future are not read this run.
+  const BoardHealth=require('../source-trial/board-health'),boardHealthFile=process.env.ENRICH_BOARD_HEALTH_FILE||(process.env.ENRICH_MASTER_FILE?'':path.join(ROOT,'state/board-health.json'));
+  let boardHealth=null;try{boardHealth=boardHealthFile&&fs.existsSync(boardHealthFile)?BoardHealth.loadState(fs.readFileSync(boardHealthFile,'utf8')):null;}catch{boardHealth=null;}
+  stats.workday_cooling_skips=0;
+  const workdayCooling=b=>{const hit=b?.kind==='workday'&&BoardHealth.cooling(boardHealth,b.key);if(hit)stats.workday_cooling_skips++;return hit;};
   Object.assign(stats, { est_same_employer: 0, est_comparables: 0, boards_read: 0, boards_failed: 0, bls: { OK: 0, ABOVE: 0, BELOW: 0, NO_BLS: 0 }, bls_queries: 0 });
   async function employerPostings(b, row) {
-    if(!runtime.canStart())return [];
+    if(!runtime.canStart()||workdayCooling(b))return [];
     if(b.kind==='workday'&&WorkdayWindow.active()){stats.workday_board_window_skips=(stats.workday_board_window_skips||0)+1;return [];}
     const key = b.kind === 'workday' ? b.key + '|' + row.TITLE : b.key;
     if (boards[key]) return boards[key];
@@ -403,9 +410,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(unavailableIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r)||requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID))continue;
     if(planIds&&!planIds.has(r.PRIMARY_ID))continue;
     const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID));
-    if(fresh(r)&&!Recovery.newEvidence(r,need(r),ledger,saved))continue;
+    // Match saved evidence before the retry-backoff skip: complete retained facts need no source read.
     const f=RetainedFields.fields(need(r),saved);
     if(!RetainedFields.complete(need(r),f))continue;
+    if(fresh(r)&&ledger.progress?.[r.PRIMARY_ID]?.status==='EVIDENCE_FOUND'&&!Recovery.newEvidence(r,need(r),ledger,saved))continue;
     if(fresh(r))stats.recovery_evidence_wakeups=(stats.recovery_evidence_wakeups||0)+1;
     if(saved.fullPosting===true)f.FEASIBILITY_ATTEMPT_ASOF=today;
     ledger.needs[r.PRIMARY_ID]=needsOf(r);
@@ -441,7 +449,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     Object.assign(f,RetainedFields.fields(n,saved));
     const apiEvidence=api&&postingCache.find(r,[api.page]);
     const needsSourceRead=()=>!SiteEstimate.routed(r,siteInput)||n.includes('DEGREE')&&!checked&&!f.DEGREE_REQ;
-    if (api && !WorkdayWindow.paused(api.api) && !helperResearch && needsSourceRead() && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
+    if (api && !WorkdayWindow.paused(api.api) && !helperResearch && needsSourceRead() && !(api.kind==='workday'&&workdayCooling(L.boardOf({SOURCE_URL:api.page}))) && (!apiEvidence||n.includes('SALARY')&&apiEvidence.payNeedsRefresh) && (!saved||n.includes('SALARY')&&saved.payAmbiguous||n.includes('DEGREE')&&!checked)) {
       stats.ats_rows++; attempted = true;
       try {
         const parsed = Recovery.exactApi(r,api,JSON.parse(await sourceReads.read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
@@ -492,10 +500,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     // company/title JobPosting object; never infer NOT_STATED from page chrome.
     // Reuse alternate posting links already saved with this exact row; never research candidate identities.
     const recoveryUrls=Recovery.urls(r),knownBoard=boardByCo[L.normCo(r.COMPANY)];
-    if(!helperResearch&&needsSourceRead()&&!checked&&(!postedPay||n.includes('DEGREE'))&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches||60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
+    if(!helperResearch&&needsSourceRead()&&!checked&&(!postedPay||n.includes('DEGREE'))&&!api&&knownBoard&&stats.public_tried<(CONFIG.maxPublicFetches??60)&&Date.now()-T0<CONFIG.maxRunMs){const match=Recovery.boardMatch(r,await employerPostings(knownBoard,r));if(match&&P.publicUrl(match.page)){recoveryUrls.unshift(match.page);stats.exact_board_recovered=(stats.exact_board_recovered||0)+1;}}
     let fallbackReads=0;
     if(!helperResearch&&needsSourceRead()&&(!checked||n.includes('SALARY')&&saved?.payNeedsRefresh)&&(!postedPay||n.includes('DEGREE')))for(const publicUrl of new Set(recoveryUrls)){
-      if(fallbackReads>=4||stats.public_tried>=(CONFIG.maxPublicFetches||60)||Date.now()-T0>CONFIG.maxRunMs)break;
+      if(fallbackReads>=4||stats.public_tried>=(CONFIG.maxPublicFetches??60)||Date.now()-T0>CONFIG.maxRunMs)break;
       if(!Recovery.readableRoute(publicUrl,CONFIG.aggregatorsOff||[]))continue;
       const aggCandidate=L.aggregatorPage(publicUrl),alternateApi=L.atsApi(publicUrl),endpoint=alternateApi?.api||aggCandidate?.fetch||publicUrl;
       if(sourceReads.has(endpoint)){stats.source_duplicate_skips++;continue;}
@@ -589,6 +597,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     stats.products_planned++;if(productSample.length<5)productSample.push({id:r.PRIMARY_ID,reference:entry.id});
   }
   if(!PREPARE_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),JSON.stringify({schema:'forge.company-site-product-gaps.v1',at:new Date().toISOString(),mappedPlanned:stats.products_planned,unmappedSites:Object.values(productGaps).sort((a,b)=>b.jobs-a.jobs)},null,2)+'\n');
+  // Code-scored fit (Tim, Nov 17 2026): saved posting text (400+ chars) vs the resume profile, no AI and no network.
+  // Fit fields ride on this run's existing rulings or take a free slot inside maxBatches x 25; fenced rows are skipped.
+  if(!PRODUCTS_ONLY&&!PREPARE_ONLY){progress('code_fit',{planned:requests.length});try{const fitPlan=require('./code-fit').plan({rows,requests,fit:p=>Evidence.fit(p),active:activeProductRow,unavailable:unavailableIds,runId:RUN_ID,slots:CONFIG.maxBatches*25,max:CONFIG.codeFitPerRun||150,
+    saved:r=>Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r))});stats.code_fit={...fitPlan.stats,sample:fitPlan.sample};}catch(e){stats.code_fit={error:String(e.message||e).slice(0,200)};}}
   // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
   // archive or remembered postings; no new network). Posted pay and anything a lane wrote are never touched.
   const upgradeIds = new Set(); stats.upgraded = 0;
@@ -613,7 +625,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
     if(!runtime.canStart(60000)){stats.writer_budget_deferred=requests.length-b*25;break;}
-    let batch = requests.slice(b * 25, b * 25 + 25); const requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
+    let batch = requests.slice(b * 25, b * 25 + 25); let requestId = `${RUN_ID}-B${String(b + 1).padStart(2, '0')}`;
     progress('writer_readback',{batch:b+1,rows:batch.length});
     try {
       // Grok Bot QA: the structured copy can lag; re-read these rows from the Writer (read-only, no lock) and drop what a lane
@@ -625,6 +637,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const cur = now[q.ruling.primaryId]; if ((retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
+        if(require('./code-fit').guard(f,rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,p=>Evidence.fit(p)))stats.code_fit_guard_dropped=(stats.code_fit_guard_dropped||0)+1;
         const repairing = repairOriginal.has(q.ruling.primaryId);
         const repairUnchanged = repairing && repairOriginal.get(q.ruling.primaryId) === salaryStamp(cur);
         const reviewing=reviewOriginal.has(q.ruling.primaryId),reviewUnchanged=reviewing&&ActiveReview.eligible(cur)&&reviewOriginal.get(q.ruling.primaryId)===ActiveReview.fingerprint(cur);
@@ -639,12 +652,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
          verified, which it does no sooner than 120 s after the save. Batches now sit 130 s apart (batchGapMs); a fenced batch
          waits the Writer's retryAfterMs and goes again, up to fenceRetries times. A batch still fenced wrote nothing: it is
          counted as deferred (rows go again next run), never as failed, and the run stops sending. */
-      let res, fenced = 0;
+      let res, fenced = 0, busy = 0;
       for (;;) {
         if(!runtime.canStart(30000)){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;break batches;}
         progress('writer_post',{batch:b+1,attempt:fenced+1,rows:batch.length});
+        /* Shared Writer POST lock: never overlap the source-intake Writer posts. Taken before anything is marked pending, so a
+           busy lock sends nothing; the rows go again next run. Released as soon as the reply (or its loss) is known. */
+        const postHold=writerPostLock?await writerPostLock.acquire():{ok:true,release:async()=>true};
+        if(!postHold.ok){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;stats.writer_post_lock=postHold.reason;break batches;}
         try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');stats.salary_submitted+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
+          await postHold.release();
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
@@ -655,8 +673,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
           res = { mode: 'RECEIPT_COMPLETE', results: batch.map(q => ({ ok: proof.pids.has(q.ruling.primaryId), mode: proof.pids.has(q.ruling.primaryId) ? 'RECEIPT_COMPLETE' : 'NOT_IN_RECEIPT' })) };
         }
+        await postHold.release();
         if(res?.ok===false){retainResponse(requestId,ledger.pendingWrites[requestId],res);fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');
-          if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
+          if(await releaseRefusal(requestId,ledger.pendingWrites[requestId],res)){
+            /* A proven WRITER_BUSY refusal wrote nothing: wait 30 s, 60 s, then 120 s and send the same rows again under new
+               request identities (the refused ones stay recorded as not accepted), at most 3 times, before deferring to the next run. */
+            if(res.outcome?.code==='WRITER_BUSY'&&busy<WRITER_BUSY_BACKOFF_MS.length&&runtime.canStart(WRITER_BUSY_BACKOFF_MS[busy]+30000)){
+              await sleep(WRITER_BUSY_BACKOFF_MS[busy]);busy++;stats.writer_busy_retries=(stats.writer_busy_retries||0)+1;
+              requestId=requestId.replace(/-W\d+$/,'')+'-W'+busy;batch=batch.map(q=>({...q,ruling:{...q.ruling,requestId:q.ruling.requestId.replace(/-W\d+$/,'')+'-W'+busy}}));
+              continue;
+            }
+            stats.writer_deferred=(stats.writer_deferred||0)+batch.length;stats.writer_not_accepted=(stats.writer_not_accepted||0)+batch.length;continue batches;}}
         // A legacy mode/error string is not evidence of nonacceptance. Keep its
         // original checkpoint for read-only recovery; never retry it here.
         if(res.mode==='WRITE_FENCE'||res.mode==='BATCH_RULING_RETRY'){

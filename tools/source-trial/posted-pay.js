@@ -19,9 +19,17 @@ function eligible(c){
  if(!bound(p,c)||p.status!=='POSTED'||!Number.isFinite(Date.parse(p.observedAt))||!f||typeof f.low!=='number'||typeof f.high!=='number'||!Number.isFinite(f.low)||!Number.isFinite(f.high)||f.currency!=='USD'||f.period!=='YEAR'||f.basis!=='BASE'||!f.source||p.currency!=='USD'||p.period!=='YEAR'||p.basis!=='BASE'||p.low!==f.low||p.high!==f.high)return null;
  return Pay.values(f.low,f.high)?f:null;
 }
+// JobSpy/HiringCafe structured pay: a POSTED yearly USD range with no basis label and no payFacts.
+// Estimates stay out: capture() marks is_estimated/THIRD_PARTY_ESTIMATE as ESTIMATED.
+function sourceAnnual(c){
+ const p=c?.postedPay;
+ if(c?.payFacts||!bound(p,c)||p.status!=='POSTED'||p.basis!=null||p.currency!=='USD'||!Pay.annualUnit(p.period)||!Number.isFinite(Date.parse(p.observedAt)))return null;
+ if(!/^(?:direct_data|JOBSPY:|HIRINGCAFE)/i.test(String(p.source||''))||c.is_estimated===true||Pay.estimated(p.text)||/ESTIMAT/i.test(p.source))return null;
+ return Pay.fact(Pay.values(p.low,p.high),'SOURCE_POSTED_ANNUAL');
+}
 function fields(c){const f=eligible(c);return f?{SALARY_BASE_LOW:f.low,SALARY_BASE_HIGH:f.high,SALARY_MIDPOINT:Math.round((f.low+f.high)/2),SALARY_BASIS:'EMPLOYER_POSTED',SALARY_SOURCE:c.postedPay.sourceUrl,SALARY_ASOF:c.postedPay.observedAt.slice(0,10),SALARY_CONF:'HIGH'}:{};}
 function carry(c){const p=c.postedPay;return bound(p,c)?{postedPay:p,...(eligible(c)?{payFacts:c.payFacts}:{}),...(c.pay?{pay:c.pay}:{})}:{};}
-module.exports={schema,identity,bound,capture,eligible,fields,carry};
+module.exports={schema,identity,bound,capture,eligible,sourceAnnual,fields,carry};
 
 // Only call with an exact posting/card quote, never arbitrary notes or role requirements.
 function fromText(card,text,{observedAt,source='EXACT_POSTING_QUOTE'}={}){

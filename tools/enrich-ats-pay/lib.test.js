@@ -141,3 +141,14 @@ test('board discovery preserves strict payFacts rather than dropping currency, p
  const x=L.parseBoard({kind},j)[0];assert.equal(x.payFacts.currency,'USD');assert.equal(x.payFacts.period,'YEAR');assert.equal(x.payFacts.basis,'BASE');assert.equal(x.pay.low,x.payFacts.low);
  }
 });
+
+test('LinkedIn compensation__salary: the /yr range on its own line under Base pay range is employer-posted pay', () => {
+  const html = require('fs').readFileSync(require('path').join(__dirname, 'fixtures/linkedin-base-pay-range.html'), 'utf8');
+  const text = html.replace(/<[^>]+>/g, ' ');
+  assert.match(text, /Base pay range\s*\n[\s\S]*?\n\s*\$165,000\.00\/yr - \$205,000\.00\/yr/, 'fixture keeps heading and range on separate lines');
+  const row = { COMPANY: 'Acme', TITLE: 'Director of Quality', LOCATION: 'Dayton, OH' };
+  const got = L.parseAggregator('linkedin', html, row);
+  assert.deepStrictEqual([got.pay, got.basis], [{ low: 165000, high: 205000 }, 'EMPLOYER_POSTED']);
+  assert.strictEqual(L.parseAggregator('linkedin', html.replace(/\/yr/g, '/hr').replace(/165,000\.00/, '80.00').replace(/205,000\.00/, '95.00'), row).pay, null, 'hourly is not annual base');
+  assert.strictEqual(L.parseAggregator('indeed', html, row).pay, null, 'the LinkedIn element is read for LinkedIn only');
+});
