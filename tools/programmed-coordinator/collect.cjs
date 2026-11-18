@@ -20,7 +20,7 @@ function show(root, commit, file) {
 // Only the evidence contract changes here: the same trusted adapter owns writes.
 // This does not revive retired routes, transfer ownership, or accept prior writes.
 function writeThroughEvidenceMigration(root,batch,prior,task) {
-  const tasks=new Set(['FORGE_CHATGPT_ENRICHMENT_RESEARCH','FORGE_CLAUDE_SHARED_HELPER','FORGE_GROK_SHARED_HELPER',
+  const tasks=new Set(['FORGE_CHATGPT_ENRICHMENT_RESEARCH','FORGE_CLAUDE_SHARED_HELPER','FORGE_GROK_SHARED_HELPER','FORGE_CHATGPT_SHARED_HELPER',
     'FORGE_CLAUDE_INTAKE_A','FORGE_CLAUDE_INTAKE_B','FORGE_CLAUDE_ENRICHMENT','FORGE_CLAUDE_RELEVANCE_REVIEW']);
   const schemas=new Set(['forge.shared-helper-batch.v1','forge.claude-helper-batch.v1','forge.enrichment-helper-batch.v1','forge.relevance-helper-batch.v1']);
   return prior?.executionMode==='EVIDENCE_ONLY'&&task?.executionMode==='WRITE_THROUGH_SUPPORTED_WRITER'&&tasks.has(batch.taskKey)&&schemas.has(batch.schema)&&
