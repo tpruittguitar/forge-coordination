@@ -5,7 +5,7 @@
    Only a result whose company, title and location match the stuck item exactly is kept. It is saved under its
    own URL and also under the item's posting URL (aliasUrls), in state/targeted-posting-lookup.json, which the
    discovery index reads. The coordinator still checks identity and the helper's quotes against this text.
-   Read-only toward the Writer. Sniffer's hourly box runner runs these steps (Tim 2026-11-18 01:18 ET); no scheduled workflow.
+   Read-only toward the Writer. Sniffer runs these steps by hand on the box (Tim 2026-11-18 01:18 ET); there is no scheduled workflow.
      node tools/source-trial/targeted-lookup.js targets /tmp/targets.json
      python tools/source-trial/jobspy_targeted.py /tmp/targets.json /tmp/jobspy-targeted.json
      node tools/source-trial/targeted-lookup.js hiringcafe /tmp/targets.json /tmp/hc-targeted.json
