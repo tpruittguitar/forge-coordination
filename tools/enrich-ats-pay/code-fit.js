@@ -17,10 +17,15 @@ function score({title,text},profile){
 // while requests stay under `slots` (the existing maxBatches x 25 Writer limit).
 // Fenced rows (pending/refused writes, helper reservations) are in `unavailable`.
 function plan({rows,requests,saved,fit,active=()=>true,unavailable=new Set(),runId,slots,max=150,profile=Match.load()}){
- const stats={scored:0,merged:0,added:0,short_posting:0,no_posting:0,deferred:0},sample=[];
+ // Every row that is not scored lands in exactly one counter, so a zero run says why.
+ // already_fitted_legacy: the row carries only a legacy FIT_KEYS value (e.g. EXPERIENCE_FIT).
+ const stats={scored:0,merged:0,added:0,short_posting:0,no_posting:0,deferred:0,fenced:0,inactive:0,already_fitted:0,already_fitted_legacy:0},sample=[];
  for(const r of rows){
   if(stats.scored>=max)break;
-  if(unavailable.has(r.PRIMARY_ID)||!active(r)||fit(r.p||{}).value!=null)continue;
+  if(unavailable.has(r.PRIMARY_ID)){stats.fenced++;continue;}
+  if(!active(r)){stats.inactive++;continue;}
+  const had=fit(r.p||{});
+  if(had.value!=null){stats[had.legacy?'already_fitted_legacy':'already_fitted']++;continue;}
   const text=saved(r)?.text;
   if(typeof text!=='string'||!text.trim()){stats.no_posting++;continue;}
   if(text.trim().length<MIN_CHARS){stats.short_posting++;continue;}
