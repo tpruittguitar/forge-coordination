@@ -2,7 +2,7 @@
 // One coordinator-owned reservation pool. Helpers never claim or write canonical jobs.
 const path=require('node:path'),S=require('../programmed-coordinator/store.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
-const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok'};
+const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_CHATGPT_SHARED_HELPER:'ChatGPT'};
 const MAX_ARTIFACT_ITEMS=20;
 const CLOSED=new Set(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE']);
 const active=i=>!CLOSED.has(i.status), key=i=>i.primaryId||i.key;
