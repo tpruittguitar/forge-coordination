@@ -1225559,7 +1225559,7 @@
       "aliases": [
         "linkedin:4491526449"
       ],
-      "sourceVersion": "3697afb91c12378341760f093d8efd0f417335314da19258f675681ab9d99117",
+      "sourceVersion": "5c07f6e3563565b16ce429928a63cfc49a7a7590666902cac904aba12424ff60",
       "card": {
         "company": "Darling Ingredients",
         "title": "Plant Manager",
@@ -1225570,9 +1225570,9 @@
       "sourceConflict": null,
       "sourceFailure": null,
       "upstreamStatus": "WAITING",
-      "action": "INTAKE",
-      "taskKey": "CODE",
-      "owner": "CODE",
+      "action": "RECONCILE_WRITER",
+      "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+      "owner": "ChatGPT",
       "firstSeen": "2026-11-17T00:07:15.312Z",
       "sourceReferences": [
         "state/source-trial-report.json"
@@ -1225703,10 +1225703,31 @@
         "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
         "scopeReviewRequired": false
       },
-      "fence": null,
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-EDA6A94D20787897F9D938E5"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261118T135806Z.json",
+        "record": {
+          "COMPANY": "Darling Ingredients",
+          "TITLE": "Plant Manager",
+          "LOCATION": "East Dublin, GA, USA",
+          "SOURCE_URL": "https://www.linkedin.com/jobs/view/4491526449/",
+          "INITIATING_URL": "https://www.linkedin.com/jobs/view/4491526449/",
+          "SCOUT_NOTES": "Captured JOBSPY:linkedin; observed 2026-11-17T23:37:23.919Z; posting status UNVERIFIED; employer business UNKNOWN; proof state/UPSTREAM_LEDGER.json | resumeSHA=3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640 | Title selected as MFG_PROD / DIRECTOR_PLUS; location US. Role content unavailable; retain for intake review. Resume-supported hits: manufacturing_leadership.",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "EMPLOYER_PRIMARY_BUSINESS"
+          ],
+          "EMPLOYER_PRIMARY_BUSINESS": "",
+          "SOURCE_PROVIDER": "JOBSPY:linkedin"
+        }
+      },
       "scopeReviewHold": null,
       "scopeReviewHistory": null,
-      "nextAction": "Feed existing controlled intake; verify canonical outcome",
+      "nextAction": "Reconcile original request and independently COMPLETE receipt plus exact row effects; never replay",
       "canonicalCompletion": false,
       "status": "ACTION_REQUIRED"
     },
@@ -1275002,7 +1275023,7 @@
     }
   },
   "reviewErrors": {},
-  "at": "2026-11-18T13:37:11.801Z",
+  "at": "2026-11-18T15:12:35.113Z",
   "upstreamAt": "2026-11-18T13:12:36.266Z",
   "counts": {
     "ACCOUNTED_UPSTREAM": 3578,
@@ -1275011,10 +1275032,10 @@
     "INVENTORY_RECONCILIATION_REQUIRED": 4
   },
   "actions": {
-    "RECONCILE_WRITER": 7583,
+    "RECONCILE_WRITER": 7584,
     "RECOVER_SOURCE": 132,
     "RESOLVE_IDENTITY": 149,
-    "INTAKE": 165,
+    "INTAKE": 164,
     "REVIEW_SCOPE": 5
   },
   "noProcessingCap": true
