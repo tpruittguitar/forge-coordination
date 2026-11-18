@@ -19,7 +19,7 @@ for i in 1 2 3 4 5 6; do
   for f in "${FILES[@]}"; do [ ! -f "$f" ] || git add "$f"; done
   git diff --cached --quiet && { echo "No change"; rm -rf "$OUT"; exit 0; }
   git commit -q -m "board-health: workday box pass"
-  git_ push -q origin HEAD:main && { git rev-parse HEAD; rm -rf "$OUT"; exit 0; }
+  git_ push --no-thin -q origin HEAD:main && { git rev-parse HEAD; rm -rf "$OUT"; exit 0; }
   sleep $((i * 4 + RANDOM % 4))
   git_ fetch -q --depth 1 origin main && git reset -q --hard origin/main
   node tools/source-trial/workday-box-pass.js merge state/board-health.json "$OUT/board-health.json" "$OUT/board-health.json"
