@@ -171,16 +171,25 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     delete ledger.pendingWrites[requestId];return true;
   }
   const inFlightIds=new Set(),refusalStatuses=new Map();progress('pending_receipts',{batches:Object.keys(ledger.pendingWrites).length});
+  /* Fence proofs: errors are logged into stats.fence (capped), never swallowed. Proven-applied batches leave the fence;
+     proven-never-applied batches older than 24 h are dropped so the normal lane recomputes those rows with new request
+     ids. The dropped rulings are never sent: only ids and request ids are kept in ledger.releasedNotApplied for audit. */
+  const fence={released_applied:[],released_not_applied:[],drift_rows:0,proof_errors:[]},WriterProof=require('./writer-proof');
+  const fenceError=(where,requestId,e)=>{if(fence.proof_errors.length<20)fence.proof_errors.push({where,requestId,message:String(e?.message||e).slice(0,160)});else fence.proof_errors_more=(fence.proof_errors_more||0)+1;};
   let pendingIndex;for(const [requestId,entry] of Object.entries(ledger.pendingWrites)){
     if(PREPARE_ONLY){for(const id of entry.ids||[])inFlightIds.add(id);continue;}
-    try{const response=retainedResponse(requestId,entry);if((response||entry.responseProjection)&&entry.requests&&await releaseRefusal(requestId,entry,response))continue;}catch{}
-    try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();if(await require('./writer-proof').verify(entry.requests,{index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]})){delete ledger.pendingWrites[requestId];continue;}}}catch{}
+    try{const response=retainedResponse(requestId,entry);if((response||entry.responseProjection)&&entry.requests&&await releaseRefusal(requestId,entry,response))continue;}catch(e){fenceError('refusal',requestId,e);}
+    try{if(entry.requests){pendingIndex=pendingIndex||await receiptIndex();const proof={index:pendingIndex,read:writerRead,parse:line=>W.parseRows(line)[0]};
+      if(await WriterProof.verify(entry.requests,{...proof,onDrift:()=>fence.drift_rows++})){delete ledger.pendingWrites[requestId];fence.released_applied.push(requestId);continue;}
+      const never=runtime.canStart(60000)?await WriterProof.notApplied(entry,proof):null;
+      if(never){(ledger.releasedNotApplied||(ledger.releasedNotApplied={}))[requestId]={ids:entry.ids,requestIds:entry.requestIds,at:entry.at,releasedAt:new Date().toISOString(),reason:never.reason};
+        for(const id of entry.ids||[])delete ledger.progress?.[id];delete ledger.pendingWrites[requestId];fence.released_not_applied.push({requestId,reason:never.reason,ids:entry.ids});continue;}}}catch(e){fenceError('proof',requestId,e);}
     for(const id of entry.ids||[])inFlightIds.add(id);
   }
   for(const [requestId,entry]of Object.entries(ledger.notAccepted||{})){
     if(PREPARE_ONLY){for(const id of entry.ids||[])inFlightIds.add(id);continue;}
     const response=retainedResponse(requestId,entry);
-    if(!Outcome.released(proofRoot,{requestId,...entry}))try{if((response||entry.responseProjection)&&entry.requests)await releaseRefusal(requestId,entry,response);}catch{}
+    if(!Outcome.released(proofRoot,{requestId,...entry}))try{if((response||entry.responseProjection)&&entry.requests)await releaseRefusal(requestId,entry,response);}catch(e){fenceError('not_accepted',requestId,e);}
     let serverChanged=false;if(entry.retryable===false)try{const current=await currentWriterBuild();serverChanged=/^[a-f0-9]{7,40}$/.test(current)&&current!==entry.rejectedWriterCommit;}catch{}
     if(!Outcome.released(proofRoot,{requestId,...entry})||Date.parse(entry.retryAfter)>Date.now()||entry.retryable===false&&entry.clientRevision===PAY_CLIENT_REVISION&&!serverChanged)for(const id of entry.ids){inFlightIds.add(id);refusalStatuses.set(id,!Outcome.released(proofRoot,{requestId,...entry})?'WRITER_REFUSAL_PROOF_REQUIRED':entry.retryable===false?'WRITER_REQUEST_REJECTED':'WRITER_RETRY_WAIT');}
   }
@@ -191,7 +200,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
   const need = r => { const n = []; if (/SALARY/.test(needsOf(r))) n.push('SALARY'); if (/DEGREE/.test(needsOf(r))) n.push('DEGREE'); return n; };
   const needsOf = r => W.render('FORGE_ENRICH_FEASIBILITY', { lanes: { FORGE_ENRICH_FEASIBILITY: [r] } }, { generatedAt: 'x' }).match(/NEED=([A-Z,]*)/)[1];
-  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, never_consider_excluded: neverConsiderIds.size, never_consider_rules: (rules&&rules.activeIds)||[], never_consider_by_rule: (built.declines||[]).reduce((m,d)=>(m[d.ruleId||'UNKNOWN']=(m[d.ruleId||'UNKNOWN']||0)+1,m),{}), anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
+  const stats = { run: RUN_ID, dry: DRY, masterSource, rows: rows.length, eligible: list.length, never_consider_excluded: neverConsiderIds.size, never_consider_rules: (rules&&rules.activeIds)||[], never_consider_by_rule: (built.declines||[]).reduce((m,d)=>(m[d.ruleId||'UNKNOWN']=(m[d.ruleId||'UNKNOWN']||0)+1,m),{}), fence:{...fence,pending_batches:Object.keys(ledger.pendingWrites).length,fenced_ids:inFlightIds.size}, anchors: anchors.length, archive_anchors: archived.length, ats_rows: 0, ats_read: 0, ats_failed: 0, posted_pay: 0, degree: 0, estimates: 0, estimate_waiting_for_posting: 0, skipped_recent: 0, submitted: 0, guard_dropped: 0, writer_ok: 0, writer_failed: 0, writer_not_written: 0, remainder: 0 };
   const policyFingerprint=Store.hash(fs.readdirSync(__dirname).filter(f=>/\.(?:js|cjs)$/.test(f)&&!f.includes('.test.')).sort().map(f=>[f,fs.readFileSync(path.join(__dirname,f),'utf8')]).concat([['config',CONFIG],...['PipelineWorklists','PipelineEvidence','PipelinePostingFreshness','PipelineAts'].map(name=>[name,fs.readFileSync(path.join(require('os').tmpdir(),name+'.js'),'utf8')])]));
   const inputFingerprintOf=()=>require('./input-fingerprint').hash({anchors,context:salaryContext,benchmarks,payProfile,employerEvidence:EmployerCacheStore.read(employerCacheInput()),bls:fs.existsSync(BLS_CACHE)?JSON.parse(fs.readFileSync(BLS_CACHE,'utf8')):null});
   const inputFingerprint=inputFingerprintOf();
