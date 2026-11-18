@@ -1,6 +1,6 @@
 'use strict';
 const C=require('../programmed-coordinator/collect.cjs');
-const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
+const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS|SNIFFER_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
 function diagnostic(error){
  const message=String(error?.message||''),legacy={
   'Invalid enrichment evidence-only envelope':'INVALID_ENRICHMENT_ENVELOPE',
