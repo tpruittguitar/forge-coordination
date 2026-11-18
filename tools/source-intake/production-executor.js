@@ -1,5 +1,6 @@
 'use strict';
-/* Production Writer executor; never enabled by default, never automatically retries writes.
+/* Production Writer executor; never enabled by default, never automatically retries writes except after a request-bound
+ * WRITER_BUSY refusal that proves no mutation (up to 3 retries after 30 s, 60 s and 120 s).
  * Writer intake response contract (foreman-cockpit apps-script/Code.gs applyIntakeToMaster_/intakeResponse_):
  *  - insert: ok, WRITE_ACCEPTED=true, writeId, COMPLETION_STATUS=PENDING_VERIFICATION, receipt.NEW_PRIMARY_IDS=[pid];
  *    receipt_index gets {s:'PENDING',w:writeId} before the master write and later {s:'COMPLETE',items:[{pid,op:'INSERT'}]}.
@@ -18,7 +19,6 @@ const crypto=require('node:crypto');
 const {read,fetchAuthenticatedArchive}=require('./writer-reader');
 const {stableId}=require('./transaction-preflight');
 const {checkCanaryOutcome}=require('./intake-accounting');
-const WriterOutcome=require('../writer-outcome.cjs');
 const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-W3EDgUmKmoWevE-jZq95pm6SAulrJYHX1HmiPg8tx3i/exec';
 // Contents API, not raw.githubusercontent.com: the raw CDN can serve a stale switch for minutes after it is turned off.
 const SWITCH='https://api.github.com/repos/tpruittguitar/forge-coordination/contents/control/SOURCE_INTAKE_RELEASE.json?ref=main';
@@ -74,10 +74,14 @@ function classifyWriterResponse(result,rid){
 }
 // Proven never accepted: request-bound NOT_ACCEPTED, BEFORE_MUTATION, masterMutations 0, retryable code (reference/WRITER_OUTCOME_CONTRACT.json).
 // Anything else, including terminal rejections and unbound or malformed outcomes, returns null and stays fenced as UNKNOWN.
-const provenNotAccepted=(result,rid)=>{const c=WriterOutcome.classify(result,{requestId:rid});return c.kind==='NOT_ACCEPTED'&&c.retryable===true?c:null};
 const Captured=require('./captured-discovery');
+const Outcome=require('../writer-outcome.cjs');
+const provenNotAccepted=(result,rid)=>{const c=Outcome.classify(result,{requestId:rid});return c.kind==='NOT_ACCEPTED'&&c.retryable===true?c:null};
+// A request-bound WRITER_BUSY refusal wrote nothing (BEFORE_MUTATION, masterMutations 0), so the same case may be POSTed again.
+const WRITER_BUSY_BACKOFF_MS=[30000,60000,120000];
+const writerBusy=(response,result,rid)=>response.ok&&Outcome.classify(result,{requestId:rid}).code==='WRITER_BUSY';
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
-async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE'}={}){
+async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE',sleep=ms=>new Promise(r=>setTimeout(r,ms))}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
  const skipped=(rid,kind,result)=>({requestId:rid,status:'SKIPPED',reason:kind,accounting:{status:'SKIPPED',reason:kind},writerResult:result});
@@ -103,7 +107,10 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
  const outcomes=[];
  const halt=msg=>{const e=Error(msg);e.outcomes=outcomes;throw e};
  const defer=(rid,reason,result)=>outcomes.push({requestId:rid,status:'DEFERRED',reason,owner:'FORGE_APPLICATION_WRITER_GOFER',nextAction:'Reconcile original request, receipt and exact identity; do not replay an uncertain write',...(result?{writerResult:result}:{})});
- for(const [i,candidate] of records.entries()){
+ let lockFailure=null;
+ cases: for(const [i,candidate] of records.entries()){
+  let held=null;
+  try{
   const rules=releaseRules(await fetchRelease(switchTransport)); // fresh kill switch before each write
   if(rules.mode!==expectedMode)halt('BLOCKED: release switch is '+rules.mode+' but this run is '+expectedMode);
   if(records.length>rules.maxBatch)halt('BLOCKED: '+records.length+' candidates exceed the switch maxBatch '+rules.maxBatch);
@@ -169,19 +176,31 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   if(captured&&business===review.discoveryEvidence.card.description)business='';
   if(captured&&!business)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
   const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:business,...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
+  let response,result;
+  for(let busy=0;;busy++){
+  // Shared Writer POST lock: never overlap another Writer poster (enrich-ats-pay). Acquired before the intent is recorded,
+  // so a busy lock sends nothing and fences nothing; the case is simply deferred to the next run.
+  if(postLock){
+   if(lockFailure){defer(rid,lockFailure);continue cases}
+   held=await postLock.acquire();
+   if(!held.ok){lockFailure='WRITER_POST_LOCK_'+held.reason;defer(rid,lockFailure);continue cases}
+  }
   // Persist intent before sending: a lost response must still fence this exact request after a crash.
   const intent={requestId:rid,status:'POST_IN_FLIGHT_UNKNOWN',attemptedAt:new Date().toISOString(),recordHash:sha(JSON.stringify(record))};
   await recorder.record(rid,intent);
   if(JSON.stringify(await recorder.read(rid))!==JSON.stringify(intent))halt('BLOCKED: durable pre-POST intent readback failed');
-  let response;
   try { response=await transport(ENDPOINT,{method:'POST',headers:{'Content-Type':'text/plain'},body:JSON.stringify(body),redirect:'follow',signal:AbortSignal.timeout(180000)}); }
-  catch(e){if(auto){defer(rid,'POST_UNCONFIRMED',intent);continue;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'POST_UNCONFIRMED',writerResult:intent});halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay');}
-  let result;
-  try{result=await response.json()}catch{if(auto){defer(rid,'RESPONSE_INVALID',intent);continue;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_INVALID',writerResult:intent});halt('UNKNOWN: invalid Writer response; reconcile, never replay');}
+  catch(e){if(auto){defer(rid,'POST_UNCONFIRMED',intent);continue cases;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'POST_UNCONFIRMED',writerResult:intent});halt('UNKNOWN: Writer POST outcome unconfirmed; reconcile, never replay');}
+  try{result=await response.json()}catch{if(auto){defer(rid,'RESPONSE_INVALID',intent);continue cases;}outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_INVALID',writerResult:intent});halt('UNKNOWN: invalid Writer response; reconcile, never replay');}
   // Persist and read back before classifying: an accepted write must never lose its recovery evidence.
   let recorded=false;
   try{await recorder.record(rid,result);recorded=JSON.stringify(await recorder.read(rid))===JSON.stringify(result)}catch{}
+  if(held)await held.release();
   if(!recorded){outcomes.push({requestId:rid,status:'UNKNOWN',reason:'RESPONSE_NOT_DURABLY_RECORDED',writerResult:result});halt('UNKNOWN: Writer response not durably recorded; reconcile, never replay');}
+  if(!writerBusy(response,result,rid)||busy>=WRITER_BUSY_BACKOFF_MS.length)break;
+  held=null;
+  await sleep(WRITER_BUSY_BACKOFF_MS[busy]);
+  }
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
   const refused=provenNotAccepted(result,rid);
   if(refused){outcomes.push({requestId:rid,status:'RETRY_NEXT_RUN',reason:'WRITER_NOT_ACCEPTED_'+refused.code,retryAfterMs:refused.retryAfterMs,writerResult:result});continue}
@@ -208,6 +227,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,transport=glo
   try{accounting=await verifyNoopCase(candidate,rid,result,{key,transport})}
   catch(e){if(auto){defer(rid,e.message,result);continue;}outcomes.push({requestId:rid,status:'HOLD',reason:e.message,writerResult:result});halt(e.message)}
   outcomes.push({requestId:rid,status:'NOOP_ACCOUNTED',accounting,writerResult:result});
+  }finally{if(held)await held.release()}
  }
  return outcomes;
 }

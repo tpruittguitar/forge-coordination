@@ -28,6 +28,12 @@ test('empty reports and missing or null board failure counts preserve fallback d
   }
 });
 
+test('a pass that read no boards (TRIAL_SKIP_BOARDS) reports failedBoards as null, not 0', () => {
+  assert.equal(discoveryHealth({ summary: { at, boards: { read: 0, failed: 0 } }, new_roles: [] }).failedBoards, null);
+  assert.equal(discoveryHealth({ summary: { at, boards: { read: 98, failed: 0 } }, new_roles: [] }).failedBoards, 0);
+  assert.equal(discoveryHealth({ summary: { at, boards: { read: 98, failed: 12 } }, new_roles: [] }).failedBoards, 12);
+});
+
 test('per-report candidates remain distinct from the cross-report URL union', () => {
   const source = discoveryHealth({ summary: { at }, new_roles: [
     { url: 'https://example.test/shared#a' }, { url: 'https://example.test/shared#b' }, null,

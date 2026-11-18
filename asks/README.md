@@ -29,10 +29,12 @@ Create `asks/open/<ID>.json`. ID = `ASK-<YYYYMMDD>-<PROVIDER>-<HHMM>` (Claude's 
 - Keep writing `NEXT_OWNER=` in the receipt as before; the builder reads both.
 
 ## Close an item
-Create `asks/resolved/<ID>.json` with the same `id` (never edit or delete the open file):
+One step: `git mv asks/open/<ID>.json asks/resolved/<ID>.json`, then add the ruling fields to that same file and commit once.
+The open file is gone in the same commit, so an ask is never in both folders; resolved or stale asks are not kept in `asks/open`.
+The `asks-check` workflow (`tools/needs-tim/asks-check.js`) fails any push or PR that leaves the same file name or `id` in both folders. Fields to add:
 
 ```json
-{"id": "ASK-20261018-01", "resolvedAt": "...", "resolvedBy": "CLAUDE", "ruling": "Tim 2026-10-18 16:05 ET: WATCH"}
+{"resolvedAt": "...", "resolvedBy": "CLAUDE", "ruling": "Tim 2026-10-18 16:05 ET: WATCH"}
 ```
 
 ## Dismiss an item the builder found in a receipt or handoff
@@ -50,4 +52,4 @@ Item IDs are shown on the Needs you page under each item.
 The President checksheet section is rendered by `node tools/office-status/needs-tim-section.js [--out FILE]`; to refresh a pasted copy use
 `--merge <existing-section-file>`. Only the text between `<!-- NEEDS_TIM:BEGIN generated from asks/open -->` and `<!-- NEEDS_TIM:END -->` is replaced
 (markers are added at the end if missing); anything outside them is hand-written and left byte-identical.
-**Hand edits inside the markers are overwritten on the next render.** To remove a card, move its file to `asks/resolved/`.
+**Hand edits inside the markers are overwritten on the next render.** To remove a card, resolve it with `git mv` to `asks/resolved/` and add the ruling (see Close an item).

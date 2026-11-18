@@ -2,8 +2,9 @@
 # run-lane.sh <TASK_KEY>
 # One Claude box lane run: flock (skip if busy), fresh clone of forge-coordination
 # main (+ read-only foreman-cockpit main when the lane needs it), headless
-# `claude -p` with the box procedure from control/CLAUDE_BOX_LANES.json at that
-# same SHA, bounded by a timeout, logged, then cleaned up. The procedure itself
+# `claude -p` with a lean prompt (shared header + lane brief + only this task's
+# registry entry, built by build-prompt.js from control/CLAUDE_BOX_LANES.json at
+# that same SHA), bounded by a timeout, logged (incl. PROMPT_BYTES), cleaned up. The procedure itself
 # publishes the lane receipt (or a BLOCKED/PARTIAL receipt). This script never
 # pushes, never touches Writer and never prints secrets.
 set -uo pipefail
@@ -53,16 +54,15 @@ git config user.name tpruittguitar
 git config user.email tpruittguitar@users.noreply.github.com
 SHA=$(git rev-parse HEAD)
 
-LANE=$(node -e '
-  const fs=require("fs"),f="control/CLAUDE_BOX_LANES.json";if(!fs.existsSync(f))process.exit(3);const m=JSON.parse(fs.readFileSync(f,"utf8")),l=m.lanes[process.argv[1]];
-  if(m.schema!=="forge.claude-box-lanes.v1"||!l)process.exit(3);
-  const tools=[...m.baseTools,...(l.tools||[])].join(",");
-  console.log([m.common,l.procedure,l.model,l.timeoutMinutes,l.cockpit?1:0,tools].join("\t"));' "$TASK_KEY" 2>>"$LOG") \
-  || { log "BLOCKED NO_BOX_MAPPING control/CLAUDE_BOX_LANES.json at $SHA has no $TASK_KEY"; exit 1; }
-IFS=$'\t' read -r COMMON PROC MODEL TIMEOUT_MIN NEEDS_FC TOOLS <<<"$LANE"
-for f in "$COMMON" "$PROC" control/FORGE_SHARED_AUTOMATION_ENTRY.txt; do
-  [ -f "$f" ] || { log "BLOCKED MISSING_PROCEDURE $f at $SHA"; exit 1; }
-done
+# Prompt = run variables + shared header + lane brief + only this task's entry (build-prompt.js at the same SHA).
+BUILD=tools/claude-box-runner/build-prompt.js
+LANE=$(node "$BUILD" . "$TASK_KEY" --meta 2>>"$LOG"); brc=$?
+case $brc in
+  0) ;;
+  3) log "BLOCKED NO_BOX_MAPPING control/CLAUDE_BOX_LANES.json at $SHA has no $TASK_KEY"; exit 1;;
+  *) log "BLOCKED MISSING_PROCEDURE build-prompt rc=$brc at $SHA"; exit 1;;
+esac
+IFS=$'\t' read -r MODEL TIMEOUT_MIN NEEDS_FC TOOLS <<<"$LANE"
 
 FC=NONE
 if [ "$NEEDS_FC" = 1 ]; then
@@ -71,28 +71,18 @@ if [ "$NEEDS_FC" = 1 ]; then
   else log "COCKPIT_CLONE_FAILED (lane continues; steps needing it must report BLOCKED)"; fi
 fi
 
-PROMPT="PROVIDER=Claude
-TASK_KEY=$TASK_KEY
-RUN_ID=$RUN_ID
-HOST=claude-box (shared Linux box, headless claude -p, America/New_York schedule)
-WORKDIR=$WORK/repo (fresh clone of $REPO $REF)
-INSTRUCTION_COMMIT=$SHA
-COCKPIT_DIR=$FC${FC_SHA:+ (foreman-cockpit main $FC_SHA, read-only)}
-PRIVATE_DIR=$PRIVATE (box-local, outside git; never publish its contents)
-RUN_STARTED_UTC=$(date -u +%FT%TZ)
-Shared entry: control/FORGE_SHARED_AUTOMATION_ENTRY.txt at INSTRUCTION_COMMIT. Common box rules and the lane procedure follow.
-
-===== $COMMON =====
-$(cat "$COMMON")
-
-===== $PROC =====
-$(cat "$PROC")"
+PROMPT=$(RUN_ID="$RUN_ID" WORKDIR="$WORK/repo" REF="$REF" INSTRUCTION_COMMIT="$SHA" PRIVATE_DIR="$PRIVATE" \
+  COCKPIT_DIR="$FC${FC_SHA:+ (foreman-cockpit main $FC_SHA, read-only)}" RUN_STARTED_UTC="$(date -u +%FT%TZ)" \
+  node "$BUILD" . "$TASK_KEY" --prompt 2>>"$LOG") || { log "BLOCKED MISSING_PROCEDURE build-prompt failed at $SHA"; exit 1; }
+PROMPT_BYTES=$(printf '%s' "$PROMPT" | wc -c | tr -d ' ')
+log "PROMPT_BYTES=$PROMPT_BYTES task=$TASK_KEY run=$RUN_ID sha=$SHA"
+printf '%s\t%s\t%s\t%s\n' "$(date -u +%FT%TZ)" "$TASK_KEY" "$RUN_ID" "$PROMPT_BYTES" >> "$HOME_DIR/logs/prompt-bytes.tsv"
 
 export PROVIDER=Claude TASK_KEY RUN_ID FORGE_RUN_ID="$RUN_ID" FORGE_LANES_HOME="$HOME_DIR" \
        FORGE_PRIVATE_WORK_DIR="$PRIVATE" ACTIVITY_FC_DIR="$FC" INSTRUCTION_COMMIT="$SHA"
 [ -n "${WRITER_KEY:-}" ] && export FORGE_WRITER_KEY="$WRITER_KEY"   # value never logged
 
-log "CLAUDE model=$MODEL timeout=${TIMEOUT_MIN}m procedure=$PROC sha=$SHA cockpit=${FC_SHA:-none}"
+log "CLAUDE model=$MODEL timeout=${TIMEOUT_MIN}m prompt_bytes=$PROMPT_BYTES sha=$SHA cockpit=${FC_SHA:-none}"
 timeout --kill-after=60s "${TIMEOUT_MIN}m" claude -p "$PROMPT" \
   --model "$MODEL" --add-dir "$WORK" --allowedTools "$TOOLS" \
   --permission-mode dontAsk --no-session-persistence >> "$LOG" 2>&1

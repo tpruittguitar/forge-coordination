@@ -52,6 +52,18 @@ test('history checkpoint only parses new report revisions without dropping prior
   fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now).toISOString()},new_roles:[{company:'Acme',title:'Plant Manager',location:'Austin',url:'https://example.test/2'}]}));git('add','.');git('commit','-m','second');const next=U.collect(root,ledger);assert.equal(next.coverage.newReportCommits,1);assert.equal(next.coverage.reportRevisions,2);assert.equal(U.build({...next,prior:ledger,rows:[],now}).summary.total,2);
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+test('shallow checkout runs when it reaches a checkpointed report revision and throws when it reaches none',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),base=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-shallow-')),root=p.join(base,'full');
+ const git=(cwd,...args)=>execFileSync('git',args,{cwd,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'),{recursive:true});fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git(root,'init');git(root,'config','user.name','test');git(root,'config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json'),commit=(n,m)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git(root,'add','.');git(root,'commit','-m',m);};
+  commit(4,'base');commit(3,'first');fs.mkdirSync(p.join(root,'receipts'));const ledger=U.build({...U.collect(root,null),rows:[],now}).ledger;commit(2,'second');commit(1,'third');
+  let n=0;const clone=depth=>{const d=p.join(base,'d'+(n++));git(base,'clone','-q','--depth',String(depth),'file://'+root,d);fs.mkdirSync(p.join(d,'receipts'));return d;};
+  const reaches=U.collect(clone(3),ledger);assert.equal(reaches.coverage.reportRevisions,4);assert.equal(reaches.coverage.newReportCommits,2);assert.equal(U.build({...reaches,prior:ledger,rows:[],now}).summary.total,4);
+  assert.throws(()=>U.collect(clone(2),ledger),/Full discovery history required/);assert.throws(()=>U.collect(clone(1),null),/Full discovery history required/);
+ }finally{fs.rmSync(base,{recursive:true,force:true});}
+});
 test('source-bound posted salary survives candidate and durable upstream representation',()=>{const P=require('../source-trial/posted-pay'),r={company:'Acme',title:'Quality Director',location:'Austin',url:'https://www.linkedin.com/jobs/view/123/',source:'JOBSPY:linkedin',pay:'$180K-$220K',payFacts:{low:180125,high:220875,currency:'USD',period:'YEAR',basis:'BASE',source:'EXPLICIT_ANNUAL_BASE_TEXT'}};r.postedPay=P.capture(r,{observedAt:at});const candidate=U.candidate(r,at,'fixture'),result=U.build({records:[candidate],rows:[],now}),entry=result.ledger.entries[candidate.key];assert.equal(entry.payFacts.low,180125);assert.deepEqual(entry.postedPay,r.postedPay);const again=U.build({records:[],rows:[],prior:result.ledger,now:now+60000});assert.deepEqual(again.ledger.entries[candidate.key].postedPay,r.postedPay);});
 test('legacy rounded source salary becomes bound disclosure without invented exact amounts or units',()=>{const r={company:'Acme',title:'Quality Director',location:'Austin',url:'https://www.linkedin.com/jobs/view/123/',source:'JOBSPY:linkedin',pay:'$180K-$220K'};const candidate=U.candidate(r,at,'fixture');assert.equal(candidate.postedPay.status,'POSTED');assert.equal(candidate.postedPay.text,r.pay);assert.equal(candidate.postedPay.low,null);assert.equal(candidate.postedPay.currency,null);assert.equal(candidate.postedPay.period,null);assert.equal(candidate.postedPay.observedAt,at);assert.equal(candidate.payFacts,undefined);});
 test('historical bound email quote and original alert description reach upstream without replaying capture',()=>{const P=require('../source-trial/posted-pay'),r={company:'Acme',title:'Liaison Engineer',location:'Stuart, FL',url:'https://www.indeed.com/viewjob?jk=abc123',observedAt:at,description:'$71,300 - $95,000 a year Provide hands-on support.',discoveryReview:{contentBasis:'EXACT_ORIGINAL_ALERT_CARD',fullPosting:false}};for(const card of [r,{...r,description:'',sourcePayEvidence:[{quote:r.description,sourceUrl:r.url,observedAt:at,classification:'EXACT_SOURCE_QUOTE_NOT_EMPLOYER_VERIFIED'}]}]){const c=U.candidate(card,new Date(now).toISOString(),'state/EMAIL_RECOVERY_QUEUE.json');assert.equal(c.postedPay.low,71300);assert.equal(c.postedPay.observedAt,at);assert.equal(P.eligible(c),null);const e=U.build({records:[c],rows:[],now}).ledger.entries[c.key];assert.equal(e.postedPay.high,95000);}});
@@ -131,4 +143,40 @@ test('missing or placeholder company or location leaves the backlog; a missing t
  assert.equal(U.build({records:[placeholder],rows:[],now}).summary.counts.EXCLUDED,1);
  const http=U.candidate({company:'Howmet',title:'VP of Operations',location:'',url:'http://example.test/howmet/http'},at,'fixture');
  const httpOut=U.build({records:[http],rows:[],now});assert.equal(httpOut.ledger.entries[http.key].relevanceScreen.outcome,'HOLD_SOURCE_IDENTITY');assert.equal(httpOut.summary.counts.WAITING,1);
+});
+test('collect saves an incremental cursor after each report version, logs progress, and resumes after an interrupt',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-cursor-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');
+  const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
+  write(3);write(2);write(1);
+  const lines=[],commits=[];let n=0;const orig=console.log;console.log=(...a)=>lines.push(a.join(' '));
+  const commitProgress=file=>{n++;git('add',file);git('commit','-m','cursor '+n);commits.push(JSON.parse(fs.readFileSync(file,'utf8')));if(n===1)throw Error('interrupted');};
+  try{try{U.collect(root,null,{persistCursor:true,logProgress:true,commitProgress});assert.fail('should interrupt');}catch(e){assert.equal(e.message,'interrupted');}}finally{console.log=orig;}
+  assert.equal(n,1);assert.equal(commits[0].records.length,1);assert.equal(commits[0].reportHistory.commits.length,1);assert.match(lines.join('\n'),/upstream-flow progress commit=/);
+  assert.match(git('log','--oneline').toString(),/cursor 1/);
+  const resumed=U.collect(root,null,{persistCursor:true,commitProgress});
+  const fresh=U.collect(root,null,{ignoreCursor:true});
+  assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
+  assert.equal(n,3);assert.equal(resumed.coverage.reportRevisions,3);assert.equal(resumed.coverage.newReportCommits,3);
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+test('collect stops at a deadline after at least one new version and the next run resumes the cursor',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-budget-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');
+  const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
+  write(3);write(2);write(1);
+  let t=1000;const first=U.collect(root,null,{persistCursor:true,deadline:1500,now:()=>t,onProgress:()=>{t=2000;}});
+  assert.equal(first.incomplete,true);assert.equal(first.records.length,1);assert.equal(first.reportHistory.commits.length,1);
+  assert.ok(fs.existsSync(p.join(root,U.CURSOR_FILE)));
+  const resumed=U.collect(root,null,{persistCursor:true}),fresh=U.collect(root,null,{ignoreCursor:true});
+  assert.equal(resumed.incomplete,false);assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
 });

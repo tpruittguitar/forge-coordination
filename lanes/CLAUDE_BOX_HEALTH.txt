@@ -1,9 +1,15 @@
-CLAUDE BOX — PE_STACK_HEALTH_DAILY (07:45 ET, haiku)
-Original: lanes/CHATGPT_STACK_HEALTH_DAILY.txt. Read-only audit; every rule there applies except the location ("this local PC" -> claude-box) and owner labels (Claude).
+LANE BRIEF — PE_STACK_HEALTH_DAILY (07:45 ET, haiku). Merged from the box file and lanes/CHATGPT_STACK_HEALTH_DAILY.txt; neither is read at run time.
+JOB: Tim's read-only Forge / Pipeline Explorer stack health audit of WORKDIR (forge-coordination main) and COCKPIT_DIR (foreman-cockpit main). Master, Drive, code, settings and schedules stay read-only; the audit receipt is the only write.
 
-BOX METHOD
-- Sources: WORKDIR (forge-coordination main) and COCKPIT_DIR (foreman-cockpit main), gh api / gh run list / gh pr list for Actions failures/durations, intake latches and stale PRs, Writer reads (writer_status, master) through the Writer reader for backlog/holds/locks/fence, and state/ files for Explorer outbox, enrichment backlog and freshness. Compare with the newest prior receipts/HEALTH_AUDIT_*.json.
-- python3 tools/automation-health/read-native.py reads Tim's PC native automation configuration: BLOCKED on the box (NATIVE_CONFIG_NOT_ON_BOX); do not publish a readback.
-- Run node tools/automation-health/build.js when it works without PC paths; otherwise record it BLOCKED.
-- Notification: the box has no route to message Tim. Put meaningful changes and the ranked next-action list in the receipt (field notify) and in the final output line; never post PR comments or messages.
-NATIVE RECEIPT: receipts/HEALTH_AUDIT_YYYYMMDD_HHMMET.json exactly as the original specifies (automationId pe-stack-health-daily, readOnly true, status, checked source revisions, sourceEvidenceSha256, checks.writer / checks.github booleans tied to actual successful readbacks) plus provider Claude and host claude-box, and the CLAUDE_BOX run receipt. Always written, even when quiet.
+CHECK
+- Writer (writer_status, master via the Writer reader): backlog, holds, locks, fence, log rotation, trigger health.
+- GitHub (gh run list, gh pr list, gh api): Actions failures and durations, intake latches, stale PRs.
+- state/ files: Explorer outbox, polling and payload issues, enrichment backlog, data freshness (view big JSON with next-work.js).
+- Compare with the newest prior receipts/HEALTH_AUDIT_*.json.
+- Keep apart: file-queue throughput vs direct GitHub API writes; new job intake vs enrichment; missing run telemetry vs zero work.
+- python3 tools/automation-health/read-native.py needs Tim's PC: BLOCKED NATIVE_CONFIG_NOT_ON_BOX, publish no readback.
+- Run node tools/automation-health/build.js if it works without PC paths, else record it BLOCKED.
+- A failed read is recorded as a failure, never as a passed check.
+
+NOTIFY: the box cannot message Tim. Put meaningful changes, failures, stuck work and decisions with evidence, plus a short ranked next-action list, in the receipt field notify and the final line. Unchanged and non-actionable: stay quiet. No PR comments or messages; never bypass a safety block.
+NATIVE RECEIPT (always, even when quiet): receipts/HEALTH_AUDIT_YYYYMMDD_HHMMET.json with actual observation time, automationId pe-stack-health-daily, provider Claude, host claude-box, readOnly true, status, checked source revisions, sourceEvidenceSha256, checks.writer and checks.github booleans true only for successful readbacks, notify. Set laneReceipt to it. Preserve concurrent repo changes and verify the remote commit.

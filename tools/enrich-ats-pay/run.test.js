@@ -3,6 +3,8 @@
 // Needs a foreman-cockpit checkout: ENRICH_FC_DIR (default ../foreman-cockpit next to this repo).
 const test = require('node:test'), assert = require('node:assert'), fs = require('fs'), os = require('os'), path = require('path'), cp = require('child_process');
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
+// Every scoring/decision input, so a TIM_DECISION_REQUIRED fixture row passes the decision gate (decision-complete.js).
+const DECISION_COMPLETE='DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required; SCOPE_FIT_RAW=80; FLEX_CLASS=NO_FLEX; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
 const sourceRunOwners = new WeakSet();
 function sourceRun(t,lines,responses,config={},cache,ledger){
@@ -81,7 +83,7 @@ test('deadline inside decision salary repair stops nested research and preserves
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-deadline-')),master=path.join(dir,'master.txt'),context=path.join(dir,'context.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  fs.writeFileSync(context,JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]}));
  const stale='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
- fs.writeFileSync(master,[row(1,'V2I-TIM','Director of Quality','Dayton, OH',stale).replace('READY_TO_PURSUE','TIM_DECISION_REQUIRED'),row(2,'V2I-OTHER','Director of Quality','Dayton, OH',stale)].join('\n'));
+ fs.writeFileSync(master,[row(1,'V2I-TIM','Director of Quality','Dayton, OH',stale.replace('DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED',DECISION_COMPLETE)).replace('READY_TO_PURSUE','TIM_DECISION_REQUIRED'),row(2,'V2I-OTHER','Director of Quality','Dayton, OH',stale)].join('\n'));
  try{const stdout=cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_FAST:'1',ENRICH_TEST_CONFIG:JSON.stringify({maxRunMs:100,totalRunMs:1000}),ENRICH_TEST_CLOCK_STEP:'100',ENRICH_TEST_CLOCK_MATCH:'api.bls.gov'},encoding:'utf8',timeout:5000});
  const out=JSON.parse(fs.readFileSync(report));assert.equal(out.research_budget_exhausted,true);assert.equal(out.salary_repairs,0);assert.equal(out.submitted,0);assert.match(stdout,/"phase":"salary_repair".*"id":"V2I-TIM"/);assert.doesNotMatch(stdout,/"phase":"salary_repair".*"id":"V2I-OTHER"/);assert.match(stdout,/"phase":"complete"/);
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
@@ -415,7 +417,7 @@ test('active estimate review is bounded, promotes exact pay, skips protected job
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-active-')),master=path.join(dir,'master.txt'),pages=path.join(dir,'pages.json'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const lines=[],responses={},original={};for(let i=1;i<=7;i++){
   const id='V2I-REVIEW'+i,url='https://job-boards.greenhouse.io/acme/jobs/'+(900+i);
-  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
+  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SCOPE_FIT_RAW=80; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
   responses['https://boards-api.greenhouse.io/v1/boards/acme/jobs/'+(900+i)+'?pay_transparency=true']=JSON.stringify({id:900+i,title:'Director of Quality',location:{name:'Dayton, OH'},content:'A complete employer job description. '.repeat(25),pay_input_ranges:[{min_cents:18000000,max_cents:24000000,currency_type:'USD',interval:'year',title:'Base salary'}]});
  }
  lines.push(lines[0].replace('V2I-REVIEW1','V2I-DECLINED').replace('READY_TO_PURSUE','DECLINED_BY_TIM'),lines[0].replace('V2I-REVIEW1','V2I-APPLIED').replace('READY_TO_PURSUE','APPLIED'));
@@ -436,11 +438,11 @@ test('remote Meta tracking source reaches its direct posting and uses structured
 });
 
 
-test('pay bot records pre-mutation refusal, observes backoff, and retries only with new request identities',()=>{
+test('pay bot retries a busy Writer 3 times in-run, records each pre-mutation refusal, observes backoff, and retries only with new request identities',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'pay-not-accepted-')),master=path.join(dir,'master.txt'),rows=path.join(dir,'rows.json'),posts=path.join(dir,'posts.jsonl'),attempts=path.join(dir,'attempts.jsonl'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const id='V2I-00000000000A',line=row(1,id,'Director of Quality','Dayton, OH','SOURCE_URL=https://job-boards.greenhouse.io/acme/jobs/111; DATE_ADDED=2026-10-19');fs.writeFileSync(master,line);fs.writeFileSync(rows,JSON.stringify({[id]:line}));
  const run=(mode,now)=>cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js')],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_TEST_SUBMIT:'1',ENRICH_TEST_WRITER_ROWS:rows,ENRICH_TEST_POSTS:posts,ENRICH_TEST_ATTEMPTS:attempts,ENRICH_TEST_WRITER_MODE:mode,...(now?{ENRICH_TEST_NOW:String(now)}:{})},stdio:'pipe'});
- try{run('BUSY_NOT_ACCEPTED');let saved=JSON.parse(fs.readFileSync(ledger));assert.equal(Object.keys(saved.pendingWrites).length,0);assert.equal(Object.keys(saved.notAccepted).length,1);assert.equal(JSON.parse(fs.readFileSync(report)).writer_not_accepted,1);run('BUSY_NOT_ACCEPTED');assert.equal(fs.readFileSync(attempts,'utf8').trim().split('\n').length,1);run('OK',Date.now()+61000);const sent=fs.readFileSync(attempts,'utf8').trim().split('\n').map(JSON.parse);assert.equal(sent.length,2);assert.notEqual(sent[0].requestId,sent[1].requestId);assert.notEqual(sent[0].requests[0].ruling.requestId,sent[1].requests[0].ruling.requestId);assert.equal(JSON.parse(fs.readFileSync(report)).writer_ok,1);}finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+ try{run('BUSY_NOT_ACCEPTED');let saved=JSON.parse(fs.readFileSync(ledger));assert.equal(Object.keys(saved.pendingWrites).length,0);assert.equal(Object.keys(saved.notAccepted).length,4);assert.equal(JSON.parse(fs.readFileSync(report)).writer_not_accepted,1);assert.equal(JSON.parse(fs.readFileSync(report)).writer_busy_retries,3);run('BUSY_NOT_ACCEPTED');assert.equal(fs.readFileSync(attempts,'utf8').trim().split('\n').length,4);run('OK',Date.now()+61000);const sent=fs.readFileSync(attempts,'utf8').trim().split('\n').map(JSON.parse);assert.equal(sent.length,5);assert.equal(new Set(sent.map(x=>x.requestId)).size,5);assert.equal(new Set(sent.map(x=>x.requests[0].ruling.requestId)).size,5);assert.equal(JSON.parse(fs.readFileSync(report)).writer_ok,1);}finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
 });
 
 test('pay public ledgers and refusal proofs exclude private response bodies while retaining private original checksum',()=>{
@@ -659,12 +661,12 @@ test('attempt-only evidence does not consume the useful Writer planning cap',t=>
  const lines=[],responses={};
  for(let i=0;i<25;i++){
   const url='https://careers.example.org/capacity/no-pay-'+i;
-  lines.push(row(i+1,'V2I-NOPAY'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-10`));
+  lines.push(row(i+1,'V2I-NOPAY'+i,'Director of Quality','Dayton, OH',`SOURCE_URL=${url}; SCOPE_FIT_RAW=80; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-10`));
   const posting=JSON.parse(exactPosting().replace(/^<script[^>]*>|<\/script>$/g,''));delete posting.baseSalary;
   responses[url]={body:'<script type="application/ld+json">'+JSON.stringify(posting)+'</script>'};
  }
  const url='https://careers.example.org/capacity/usable';
- lines.push(row(26,'V2I-USEFUL','Director of Quality','Dayton, OH',`SOURCE_URL=${url}; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01`));
+ lines.push(row(26,'V2I-USEFUL','Director of Quality','Dayton, OH',`SOURCE_URL=${url}; SCOPE_FIT_RAW=80; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; DATE_ADDED=2026-11-01`));
  responses[url]={body:exactPosting()};
  const out=sourceRun(t,lines,responses,{maxBatches:1,blsMaxQueries:0});
  assert.equal(out.report.attempt_only_skipped,25);
@@ -699,7 +701,7 @@ test('decision correctness repair retains priority over complete retained gaps',
  for(const [i,id] of ['V2I-REPAIR-FIRST','V2I-RETAINED-SECOND'].entries()){
   const url='https://careers.example.org/priority/'+i,target={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
   Cache.create({cache}).save(target,url,{identityVerified:true,sourceIdentity:{company:'Acme',title:target.TITLE,location:target.LOCATION},text:'Lead manufacturing quality operations. '.repeat(20)+'Bachelor degree required.',pay:{low:180000,high:220000},basis:'EMPLOYER_POSTED'});
-  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED':'');
+  const payload='SOURCE_URL='+url+(i===0?'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=same-employer:V2I-INVALIDANCHOR; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; '+DECISION_COMPLETE:'');
   lines.push(row(i+1,id,target.TITLE,target.LOCATION,payload).replace('READY_TO_PURSUE',i===0?'TIM_DECISION_REQUIRED':'READY_TO_PURSUE'));
  }
  lines.push(row(3,'V2I-INVALIDANCHOR','Quality Associate Manager','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=100000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'));
@@ -755,4 +757,44 @@ test('coordinator and receipt fences stay closed and the coordinator is read onc
   assert.equal(fs.existsSync(reads)?fs.readFileSync(reads,'utf8'):'','');
   assert.equal(fs.readFileSync(counts,'utf8'),'1');
  }finally{if(before)fs.writeFileSync(report,before);else fs.rmSync(report,{force:true});fs.rmSync(dir,{recursive:true,force:true});}
+});
+
+test('saved JobSpy/HiringCafe yearly USD pay with no basis completes salary before the retry-backoff skip',t=>{
+ const E=require('../source-trial/evidence-store'),R=require('./recovery'),ev=fs.mkdtempSync(path.join(os.tmpdir(),'pay-source-annual-'));t.after(()=>fs.rmSync(ev,{recursive:true,force:true}));
+ const now=Date.now(),old=new Date(now-3*3600000).toISOString(),refs=[],rows=[];
+ for(const [i,site,extra] of [[1,'JOBSPY:linkedin',{salary_source:'direct_data'}],[2,'HIRINGCAFE',{salary_source:'HIRINGCAFE_MCP'}],[3,'JOBSPY:indeed',{salary_source:'direct_data',is_estimated:true}]]){
+  const id='V2I-SRC-ANNUAL-'+i,url='https://www.example-jobs.com/view/'+i,r={PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{SOURCE_URL:url}};
+  const card={source:site,company:'Acme',title:'Director of Quality',location:'Dayton, OH',url,description:'Director of Quality, Dayton plant.',min_amount:170000,max_amount:210000,interval:'yearly',currency:'USD',...extra};
+  const ref=E.capture(ev,card,{observedAt:old,proof:'state/source-trial-report.json',fullPosting:false});assert.ok(ref);refs.push([url,ref]);
+  const doc=E.read(ev,ref);assert.equal(doc.payFacts,null);assert.equal(doc.postedPay.basis,null);assert.equal(doc.postedPay.status,i===3?'ESTIMATED':'POSTED');
+  rows.push([r,url]);
+ }
+ fs.writeFileSync(path.join(ev,'state/discovery-evidence/manifest.json'),JSON.stringify({schema:'forge.discovery-evidence-manifest.v1',entries:Object.fromEntries(refs.map(([url,ref],i)=>['e'+i,{sourceUrl:url,evidenceRefs:[ref]}]))}));
+ // Every row is in retry backoff, and its last attempt is newer than the saved evidence.
+ const ledger={submitted:{},tried:{}};for(const [r,url] of rows)R.remember(ledger,r,'SALARY','SOURCE_RESEARCH_REQUIRED',[{url,status:'HTTP_403'}],now-3600000);
+ const prior=process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT;process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT=ev;
+ let out;try{out=sourceRun(t,rows.map(([r,url],i)=>row(i+1,r.PRIMARY_ID,r.TITLE,r.LOCATION,'SOURCE_URL='+url+'; DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required')),{},{},null,ledger);}
+ finally{if(prior===undefined)delete process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT;else process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT=prior;}
+ const fields=id=>out.report.sample.find(x=>x.id===id)?.fields||{};
+ for(const id of ['V2I-SRC-ANNUAL-1','V2I-SRC-ANNUAL-2'])assert.deepEqual([fields(id).SALARY_BASE_LOW,fields(id).SALARY_BASE_HIGH,fields(id).SALARY_BASIS],[170000,210000,'EMPLOYER_POSTED'],id);
+ assert.notEqual(fields('V2I-SRC-ANNUAL-3').SALARY_BASIS,'EMPLOYER_POSTED','a site estimate stays on the estimate path');
+ assert.deepEqual(out.reads,[]);
+});
+
+test('pay config: 60 s salary review, no public fallback reads, LinkedIn on, cooling Workday boards skipped',t=>{
+ const C=JSON.parse(fs.readFileSync(path.join(__dirname,'config.json'),'utf8'));
+ assert.equal(C.salaryReviewMaxMs,60000);assert.equal(C.maxPublicFetches,0);assert.ok(!(C.aggregatorsOff||[]).includes('linkedin'));
+ const wd='https://acme.wd5.myworkdayjobs.com/en-US/External/job/Dayton-OH/Director-of-Quality_R1',pub='https://careers.example.org/public-zero';
+ const health=path.join(fs.mkdtempSync(path.join(os.tmpdir(),'pay-board-health-')),'board-health.json');t.after(()=>fs.rmSync(path.dirname(health),{recursive:true,force:true}));
+ fs.writeFileSync(health,JSON.stringify({schema:'forge.board-health.v1',at:null,boards:{'workday:acme.wd5.myworkdayjobs.com/External':{key:'workday:acme.wd5.myworkdayjobs.com/External',status:'ACCESS_RESTRICTED',retryAt:new Date(Date.now()+3600000).toISOString(),companies:['Acme']}}}));
+ const prior=process.env.ENRICH_BOARD_HEALTH_FILE;process.env.ENRICH_BOARD_HEALTH_FILE=health;
+ let out;try{out=sourceRun(t,[row(1,'V2I-WD-COOL','Director of Quality','Dayton, OH','SOURCE_URL='+wd),row(2,'V2I-PUBLIC-ZERO','Director of Quality','Dayton, OH','SOURCE_URL='+pub)],{[pub]:{body:exactPosting()}},{maxPublicFetches:C.maxPublicFetches});}
+ finally{if(prior===undefined)delete process.env.ENRICH_BOARD_HEALTH_FILE;else process.env.ENRICH_BOARD_HEALTH_FILE=prior;}
+ assert.deepEqual(out.reads.filter(u=>/myworkdayjobs\.com/.test(u)),[],'no Workday read before retryAt');
+ assert.ok(out.report.workday_cooling_skips>=1);
+ assert.equal(out.report.public_tried,0);assert.ok(!out.reads.includes(pub),'maxPublicFetches 0 means no public fallback reads');
+ process.env.ENRICH_BOARD_HEALTH_FILE=health;
+ try{out=sourceRun(t,[row(1,'V2I-WD-COOL','Director of Quality','Dayton, OH','SOURCE_URL='+wd)],{},{maxPublicFetches:20});}
+ finally{if(prior===undefined)delete process.env.ENRICH_BOARD_HEALTH_FILE;else process.env.ENRICH_BOARD_HEALTH_FILE=prior;}
+ assert.deepEqual(out.reads.filter(u=>/myworkdayjobs\.com/.test(u)),[],'public fallback does not read a cooling Workday board either');
 });
