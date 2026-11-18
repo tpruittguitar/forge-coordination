@@ -112,5 +112,7 @@ test('persistPublicPosting saves a JobSpy body once and keeps a short body as no
  const ref=E.persistPublicPosting(root,c,o);a.equal(ref.fullPosting,true);a.deepEqual(E.persistPublicPosting(root,c,o),ref);
  a.equal(fs.readdirSync(path.join(root,'state/discovery-evidence')).length,1);
  a.equal(E.persistPublicPosting(root,{...c,description:body.slice(0,350)},o).fullPosting,false);
+ a.equal(E.persistPublicPosting(root,{...c,source:'HIRINGCAFE'},o).fullPosting,false);a.equal(E.persistPublicPosting(root,{...c,source:'EMAIL_ALERT'},o).fullPosting,false);
+ a.equal(E.persistPublicPosting(root,c,{...o,proof:'state/workday-box-pass-report.json'}),null);
  a.equal(E.persistPublicPosting(root,{...c,source:''},o),null);a.equal(E.persistPublicPosting(root,c,{...o,proof:'mail/x.json'}),null);
 });
