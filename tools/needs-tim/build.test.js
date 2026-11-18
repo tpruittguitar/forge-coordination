@@ -55,6 +55,32 @@ test('a run with only a START receipt older than 6 h is flagged unfinished', () 
   assert.ok(!fresh.items.some(i => i.id.indexOf('run-unfinished') === 0));
 });
 
+test('compact UTC run stamps: sidecar files join their run, a terminal clears it, and gaps use real times', () => {
+  const N = '2026-11-18T05:00:00Z';
+  const t = parseName('FORGE-CODE-CHATGPT-20261117T172523377Z_TRANSPORT.json');
+  assert.strictEqual(t.at, '2026-11-17T17:25:23Z');
+  assert.strictEqual(t.runKey, parseName('FORGE-CODE-CHATGPT-20261117T172523377Z_TERMINAL.json').runKey);
+  assert.strictEqual(parseName('AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261116T212438Z_TERMINAL.txt').runKey, parseName('FORGE-OUTCOME-CHATGPT-20261116T212438Z_VERIFICATION.json').runKey);
+  const done = build({ root: repo({
+    'receipts/FORGE-CODE-CHATGPT-20261117T172523377Z_TRANSPORT.json': '{"schema":"transport"}',
+    'receipts/FORGE-CODE-CHATGPT-20261117T172523377Z_TERMINAL.json': '{"schema":"forge.programmed-coordinator-report.v1"}',
+    'receipts/FORGE-OUTCOME-CHATGPT-20261116T212438Z_VERIFICATION.json': '{"schema":"verification"}',
+    'receipts/AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261116T212438Z_TERMINAL.txt': 'TERMINAL_STATUS=PARTIAL_WITH_PENDING_COORDINATOR_CONSUMPTION\n'
+  }), now: N });
+  assert.ok(!done.items.some(i => i.id.indexOf('run-unfinished') === 0), 'runs with a terminal receipt are finished');
+  const open = build({ root: repo({ 'receipts/FORGE-CODE-CHATGPT-20261117T172523377Z_TRANSPORT.json': '{"schema":"transport"}' }), now: N });
+  assert.ok(open.items.some(i => i.id === 'run-unfinished:CODE|CHATGPT'), 'a run with no terminal receipt stays listed');
+  const f = {};
+  ['T010000Z', 'T020000Z', 'T030000Z', 'T040000Z', 'T050000Z'].forEach(s => {
+    f['receipts/FORGE-OUTCOME-CHATGPT-20261116' + s + '_VERIFICATION.json'] = '{}';
+    f['receipts/AI_REASON_RUN_RECEIPT_FORGE-OUTCOME-CHATGPT-20261116' + s + '_TERMINAL.txt'] = 'TERMINAL_STATUS=COMPLETE\n';
+  });
+  const quiet = build({ root: repo(f), now: N });
+  assert.strictEqual(quiet.lanes.find(l => l.lane === 'OUTCOME').usualGapHours, 1);
+  const it = quiet.items.find(i => i.id === 'lane-overdue:OUTCOME');
+  assert.ok(it, 'a really quiet lane stays listed'); assert.match(it.title, /every 1 h/);
+});
+
 test('lane silence is judged per lane across providers (a lane handed to another AI is not overdue)', () => {
   const f = {};
   ['0100', '0400', '0700', '1000'].forEach(t => { f['receipts/AI_REASON_RUN_RECEIPT_FORGE-WEB-GROK-20261016-' + t + 'ET_TERMINAL.txt'] = 'RUN_TERMINAL_STATUS=COMPLETE\n'; });
