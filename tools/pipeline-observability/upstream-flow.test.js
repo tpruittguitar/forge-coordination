@@ -180,3 +180,18 @@ test('collect stops at a deadline after at least one new version and the next ru
   assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+// Same employer key as foreman-cockpit pull request #470 (employerKey_): accents folded, spaces dropped.
+test('employer spelling variants (initials, spacing, hyphen, accents) match the existing master row',()=>{
+ const pairs=[['L.B. Foster','LB Foster','Director of Operations, Rail','Pittsburgh, PA'],['L3Harris','L3 Harris','Senior Manager, Manufacturing Engineering','Huntsville, AL'],['Shirley Ryan AbilityLab','Shirley Ryan Ability Lab','Director, Quality Improvement','Chicago, IL'],['oura','ŌURA','Director, Quality','San Francisco, CA'],['FlexTek','Flex-Tek','Director of Operations','Melrose Park, IL'],['Nestlé Health Science','Nestle HealthScience','Director, Quality Assurance','Bridgewater, NJ']];
+ for(const [i,[have,incoming,title,loc]] of pairs.entries()){
+  const master={PRIMARY_ID:'V2I-EMP'+i,COMPANY:have,TITLE:title,LOCATION:loc,p:{SOURCE_URL:'https://example.test/master/'+i}};
+  const source=U.candidate({company:incoming,title,location:loc,url:'https://example.test/variant/'+i},at,'fixture');
+  // ŌURA/oura is already PRESENT through job-identity (which folds accents); the rest reach the master duplicate check.
+  assert.ok(['EXCLUDED','PRESENT'].includes(U.build({records:[source],rows:[master],now}).ledger.entries[source.key].status),incoming+' vs '+have);
+ }
+ for(const [have,incoming] of [['L3Harris','Harris'],['Oura','Aura']]){
+  const master={PRIMARY_ID:'V2I-DIFF',COMPANY:have,TITLE:'Plant Manager',LOCATION:'Dayton, OH',p:{SOURCE_URL:'https://example.test/master/diff'}};
+  const source=U.candidate({company:incoming,title:'Plant Manager',location:'Dayton, OH',url:'https://example.test/variant/diff'},at,'fixture');
+  assert.equal(U.build({records:[source],rows:[master],now}).ledger.entries[source.key].status,'WAITING',incoming+' vs '+have);
+ }
+});
