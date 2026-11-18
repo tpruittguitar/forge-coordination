@@ -113,9 +113,8 @@ const SCOPE_KEYS=['teamSize','management','reach'];
 function closeness(a,b){return 1/(1+Math.abs(Math.log2(a/b))/2);}
 function similarity(target,other){
  let weight=1,known=0;const missing=[];
- // Industry. A non-maker organization (nonprofit, sports body, school, care provider) never matches a
- // manufacturing target, including a target whose industry is unknown.
- if(other.industry&&NON_MAKER.has(other.industry)&&target.industry!==other.industry)return{weight:0,known,missing,conflict:'industry'};
+ // Industry. A known non-maker (nonprofit, sports body, school, care provider) is a known mismatch for a known
+ // manufacturing target; an unknown target industry keeps the sample at 0.75 like any other unknown.
  if(target.industry&&other.industry){known++;if(target.industry!==other.industry)return{weight:0,known,missing,conflict:'industry'};}
  else{missing.push('industry');weight*=MISSING_FACT_WEIGHT;}
  // Company size band.

@@ -81,11 +81,12 @@ test('calibration excludes target salary aliases and reports non-estimable cases
  const anchors=rows.map(r=>L.postedAnchor(r,r.p));const result=Cal.evaluate(rows,[...anchors,{...anchors[0],id:'COPY'}],ref,now);
  a.equal(result.eligible,1);a.equal(result.evaluated,0);a.equal(result.noComparables,1);a.equal(result.meanAbsoluteErrorPct,null);
 });
-test('fix A item 1: new industry buckets; non-makers never match a manufacturing target; a weak match is unknown',()=>{
+test('fix A item 1: new industry buckets; non-makers are a known mismatch for a known maker, 0.75 when the target is unknown; a weak match is unknown',()=>{
  for(const [text,label] of [['Furniture maker','FURNITURE'],['Packaged foods and beverages','FOOD_BEVERAGE'],['National retail chain','RETAIL'],['A nonprofit charity','NONPROFIT'],['Sporting goods maker','CONSUMER_PRODUCTS'],['United States Tennis Association','SPORTS_ORG'],['Private art school','EDUCATION'],['Vein and vascular center','HEALTHCARE_SERVICES'],['Industrial machinery manufacturer','GENERAL_MANUFACTURING']])a.equal(C.industryLabel(text),label,text);
  a.equal(C.industryLabel('Aerospace and automotive parts'),null,'two specific buckets is a weak match');
  for(const other of C.NON_MAKER){a.equal(C.similarity({industry:'GENERAL_MANUFACTURING'},{industry:other}).weight,0,other);a.equal(C.similarity({industry:'FURNITURE'},{industry:other}).weight,0,other);}
  a.equal(C.similarity({industry:'FURNITURE'},{industry:'FOOD_BEVERAGE'}).weight,0);
+ const scope={employees:5000,teamSize:20};for(const other of C.NON_MAKER)a.equal(C.similarity({...scope},{...scope,industry:other}).weight,0.75,other+' with an unknown target industry stays at the missing-fact weight');
 });
 test('fix A item 2: company aliases collapse and identical postings are counted once',()=>{
  a.deepEqual(['Schindler Group','Schindler Elevator Corporation (U.S.)','Schindler'].map(C.norm),['schindler','schindler','schindler']);
