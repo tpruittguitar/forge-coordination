@@ -102,9 +102,12 @@ async function main(){
   const Identity=require('./job-identity'),duplicates=new Map();
   const addFound = item => { item.postedPay=PostedPay.capture(item,{observedAt:at}); const key = T.identityKey(item.company,item.title,item.location), peers=discovered.get(key)||[], match=Identity.match(Identity.index(peers),item), prior=match.status==='PRESENT'?match.rows[0]:null; if (prior) { duplicates.set(item,prior); if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } peers.push(item);discovered.set(key,peers); found.push(item); return true; };
   let consumed = 0;const attempted=new Set();
+  const throttle=H.workdayThrottle(),workdayDeferred=[];
   for (const b of order) {
+    if(throttle.defer(b)){workdayDeferred.push(b.key);continue;}
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
     const result=await H.readBoard(b,CONFIG.workdaySearches,{wait:sleep,gapMs:CONFIG.gapMs});
+    throttle.seen(b,result);
     st.error=result.error;st.status=result.status;st.httpStatus=result.httpStatus;st.attempts=result.attempts;
     const history=H.record(health,result.board,result,new Date().toISOString());
     st.lastAttemptAt=history.lastAttemptAt;st.lastSuccessAt=history.lastSuccessAt;st.retryAt=history.retryAt;
@@ -178,7 +181,7 @@ async function main(){
   const summary = {
     screening:{atsZeroExcluded:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.decision==='EXCLUDE_ATS_ZERO').length,atsGateUnknown:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.preliminaryScreen?.atsGate?.status==='UNKNOWN').length,canonicalWrites:0},
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, master, archive, identityHeld: found.filter(f => f.status === 'IDENTITY_HOLD').length, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, workday_deferred: workdayDeferred.length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && ['EXISTING','EXISTING_PROTECTED'].includes(x.status)).length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
@@ -197,7 +200,7 @@ async function main(){
   fs.writeFileSync(path.join(OUT, reportName + '.health.json'), JSON.stringify(discoveryHealth(report)) + '\n');
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
     '| Source | Matching US roles | New | Already in master |', '|---|---|---|---|',
-    `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
+    `| Employer job boards (${summary.boards.read} read, ${summary.boards.failed} failed${summary.boards.workday_deferred ? `, ${summary.boards.workday_deferred} Workday deferred after a 429` : ''}) | ${summary.boards.matches} | ${summary.boards.new} | ${summary.boards.existing} |`,
     ...Object.keys(js.sites).map(s => `| JobSpy ${s} (${js.sites[s].returned} returned) | ${js.sites[s].matches} | ${js.sites[s].new} | ${js.sites[s].matches - js.sites[s].new - (js.sites[s].identityHeld||0)} |`),
     `| HiringCafe (${hc.returned} returned; ${hc.matches - hc.unique} already found by ${Object.entries(hc.overlap).map(([k, v]) => k + ' ' + v).join(', ') || 'no other source'}) | ${hc.matches} (${hc.unique} unique) | ${by('HIRINGCAFE', 'NEW')} | ${by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED')} |`,
     '', 'JobSpy errors: ' + (js.ran ? (js.errors.length ? js.errors.map(e => e.site + ': ' + e.error).join('; ') : 'none') : 'JobSpy did not run'), '',
