@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261118T2027Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261118T2232Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (64 read, 0 failed) | 126 | 37 | 57 |
+| Employer job boards (64 read, 0 failed) | 126 | 30 | 62 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -20,8 +20,8 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 20 | 26 |
-| SR_MANAGER | 9 | 13 |
-| SR_STAFF | 8 | 18 |
+| SR_MANAGER | 8 | 13 |
+| SR_STAFF | 2 | 23 |
 
 ## New roles
 
@@ -33,15 +33,8 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
 | BOARD:greenhouse | P2 Ursa Major | [Director of Operations](https://ursamajor.com/careers/?gh_jid=4729125005) | Berthoud, Colorado | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | P3 Blue Bird | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.ashbyhq.com/shield/7e75c843-f578-415c-aaf5-bb59bbcc2ac5) | San Diego, CA, US | MFG_PROD | SR_STAFF |  |
-| BOARD:ashby | P3 Blue Bird | [Staff Engineer, Field Quality (R4958)](https://jobs.ashbyhq.com/shield/9a07f502-d66d-4510-aea5-c8dfa00c0816) | Dallas, TX, US | QUALITY | SR_STAFF | $143K-$214K |
-| BOARD:ashby | P3 Blue Bird | [Senior Manager, Quality – Development Programs (R5315)](https://jobs.ashbyhq.com/shield/17129b78-ff3a-4aa5-84f4-cda8a787378b) | Dallas, TX, US | QUALITY | SR_MANAGER | $162K-$243K |
-| BOARD:ashby | P3 Blue Bird | [Staff Engineer, Quality (R5512)](https://jobs.ashbyhq.com/shield/de8bfd3f-1ff9-41be-92d6-183d6c4ec6a1) | Dallas, TX, US | QUALITY | SR_STAFF | $122K-$183K |
 | BOARD:ashby | P3 Blue Bird | [Director, Ops Analysis (R5036)](https://jobs.ashbyhq.com/shield/37451b51-45a6-4eff-bd46-cac71fb31c4b) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:ashby | P3 Blue Bird | [Staff Engineer, Quality Assurance (R5358)](https://jobs.ashbyhq.com/shield/403b3f43-a48d-4e5b-b22f-521fabd98a0e) | Wichita, KS, US | QUALITY | SR_STAFF | $112K-$168K |
-| BOARD:ashby | P3 Blue Bird | [Senior Staff Engineer, ML Ops (R4941)](https://jobs.ashbyhq.com/shield/19631305-76c9-4afb-b332-08e615346472) | San Mateo, CA, US | MFG_PROD | SR_STAFF |  |
-| BOARD:ashby | P3 Blue Bird | [Staff Engineer, Quality (R4840)](https://jobs.ashbyhq.com/shield/7be2d020-44b9-4958-a59c-975417d933f0) | Seattle, WA, US | QUALITY | SR_STAFF | $101K-$152K |
 | BOARD:ashby | P3 Blue Bird | [Senior Manager, Production Planning & Logistics – Development Programs (R5252)](https://jobs.ashbyhq.com/shield/f36981f7-6130-4b27-bf8e-158551f0a26c) | Seattle, WA, US | MFG_PROD | SR_MANAGER | $167K-$251K |
-| BOARD:ashby | P3 Blue Bird | [Senior Staff Engineer, Operations Analysis (R5869)](https://jobs.ashbyhq.com/shield/18fdf120-c3e5-403e-8af2-04bd5a7f999e) | Seattle, WA, US | MFG_PROD | SR_STAFF | $173K-$260K |
 | BOARD:ashby | P3 Blue Bird | [Head of Aircraft Quality (R6146)](https://jobs.ashbyhq.com/shield/0632a8c6-598d-48d4-ab6a-0ceed6284d16) | Seattle, WA, US | QUALITY | DIRECTOR_PLUS | $266K-$398K |
 | BOARD:ashby | P3 Blue Bird | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Remote | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | P3 Blue Bird | [Head of Operational Excellence](https://jobs.ashbyhq.com/shield/25f5bee0-1562-4969-b393-7ead35458117) | Dallas, TX, US | MFG_PROD | DIRECTOR_PLUS |  |
@@ -57,10 +50,10 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | BOARD:greenhouse | Anduril Industries | [Senior Manager, Deployment Operations](https://boards.greenhouse.io/andurilindustries/jobs/5232834007?gh_jid=5232834007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Chalice Oregon | [Director of Industrialization](https://job-boards.greenhouse.io/panthalassa/jobs/6201451004) | Portland, OR | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | SPX Technologies | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | SPX Technologies | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | 3D Systems Corporation | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | 3D Systems Corporation | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
 | BOARD:lever | BAE Systems, Inc. | [Head of Quality](https://jobs.lever.co/tutorintelligence/891b15af-e99a-4f61-b250-0d90dcce96ba) | Watertown, MA | QUALITY | DIRECTOR_PLUS | $220K-$280K |
