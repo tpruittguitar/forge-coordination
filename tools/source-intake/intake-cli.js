@@ -18,6 +18,7 @@
 const fs=require('node:fs'),crypto=require('node:crypto');
 const {fetchAuthenticatedMaster,fetchAuthenticatedArchive}=require('./writer-reader');
 const {runIntake,requestId}=require('./production-executor');
+const {shouldClosePreWriterHalt}=require('./auto-latch');
 const {reconcileIntakeBatch}=require('./intake-accounting');
 const {read}=require('./writer-reader');
 const ACCOUNTED=new Set(['NOOP_ACCOUNTED','RESUMED_ACCOUNTED','SKIPPED']);
@@ -75,15 +76,6 @@ async function run({statePath,candidates,key,transport,switchTransport,refreshRe
   saveState(statePath,state);
   return {status:'HALTED',message:e.message,outcomes:e.outcomes||[]};
  }
-}
-// Close a pre-Writer validation halt so later AUTO runs are not latched. A halt with any outcome,
-// recorded Writer result, or POST_IN_FLIGHT stays open for a person to reconcile.
-function shouldClosePreWriterHalt(state,e){
- if((e.outcomes||[]).length)return false;
- const results=state.results||{};
- if(Object.keys(results).length)return false;
- if(Object.values(results).some(r=>r&&(r.status==='POST_IN_FLIGHT_UNKNOWN'||r.WRITE_ACCEPTED===true||r.writeId||r.receipt)))return false;
- return true;
 }
 function finalize({statePath,candidates}){
  const state=bound(loadState(statePath),candidates);

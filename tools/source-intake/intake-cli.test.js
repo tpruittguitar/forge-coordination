@@ -194,7 +194,7 @@ test('a pre-Writer validation halt writes a closed receipt and the next auto-lat
 });
 
 test('a halt with POST_IN_FLIGHT or a Writer call still latches',async()=>{
- assert.equal(shouldClosePreWriterHalt({results:{}},{outcomes:[]}),true);
+ assert.equal(shouldClosePreWriterHalt({results:{},halts:[{message:'BLOCKED: 1 to 200 reviewed intake candidates required',outcomes:[]}]},{outcomes:[]}),true);
  assert.equal(shouldClosePreWriterHalt({results:{R1:{status:'POST_IN_FLIGHT_UNKNOWN'}}},{outcomes:[]}),false);
  assert.equal(shouldClosePreWriterHalt({results:{R1:{WRITE_ACCEPTED:true,writeId:'W1'}}},{outcomes:[]}),false);
  assert.equal(shouldClosePreWriterHalt({results:{}},{outcomes:[{requestId:'R1',status:'HOLD'}]}),false);

@@ -55,10 +55,22 @@ function stoppedAt(state){
  if(open)return open.requestId;
  return (state.requestIds||[]).find(r=>!done.has(r))||null;
 }
+// A recorded pre-Writer halt (empty outcomes, empty results, no POST_IN_FLIGHT, no Writer call)
+// is already closed: nothing uncertain to reconcile. Used when reading existing receipts and
+// when intake-cli writes a new halt of this shape. Any other shape stays latched.
+function shouldClosePreWriterHalt(state,e){
+ const halt=(state&&state.halts||[]).at(-1);
+ if(!halt)return false;
+ if((e&&e.outcomes||[]).length||(state.outcomes||[]).length||(halt.outcomes||[]).length)return false;
+ const results=state.results||{};
+ if(Object.keys(results).length)return false;
+ if(Object.values(results).some(r=>r&&(r.status==='POST_IN_FLIGHT_UNKNOWN'||r.WRITE_ACCEPTED===true||r.writeId||r.receipt)))return false;
+ return true;
+}
 function latch(prior){
  const blocking=[],quarantined=[];
  for(const p of prior){
-  if(p.state.reconciliation||p.state.noCandidates||require("./unknown-recovery").resolved(p.state))continue;
+  if(p.state.reconciliation||p.state.noCandidates||shouldClosePreWriterHalt(p.state)||require("./unknown-recovery").resolved(p.state))continue;
   const continuation=p.state.continuation;
   if(continuation?.schema==='forge.intake-continuation.v1'&&continuation.candidatesHash===p.state.candidatesHash&&Array.isArray(continuation.pending)&&continuation.pending.length&&
      Array.isArray(p.state.outcomes)&&p.state.outcomes.length===p.state.requestIds?.length&&new Set(p.state.outcomes.map(x=>x.requestId)).size===p.state.requestIds.length&&
@@ -80,4 +92,4 @@ function latch(prior){
  }
  return {blocking,quarantined};
 }
-module.exports={DIR,previous,latch,isolatedIdentityHold,isolatedUnknown,identityKey,stoppedAt};
+module.exports={DIR,previous,latch,isolatedIdentityHold,isolatedUnknown,identityKey,stoppedAt,shouldClosePreWriterHalt};
