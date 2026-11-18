@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-18T17:11:11.032Z",
+    "at": "2026-11-18T17:29:40.477Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -273,18 +273,18 @@
     "measurementOnly": true
   },
   "freshness": {
-    "due": 2296,
-    "current": 651,
+    "due": 2288,
+    "current": 658,
     "undated": 0
   },
-  "at": "2026-11-18T17:11:11.032Z",
+  "at": "2026-11-18T17:29:40.477Z",
   "queues": {
     "verification": 0,
-    "enrichment": 2947,
+    "enrichment": 2946,
     "readyForReview": 0,
-    "blockedClosed": 52
+    "blockedClosed": 53
   },
-  "needsEnrichment": 2947,
+  "needsEnrichment": 2946,
   "population": {
     "total": 2999,
     "accounted": 2999,
@@ -296,8 +296,8 @@
     "readyForReview": null
   },
   "reconciliation": {
-    "from": "2026-11-18T13:14:30.413Z",
-    "to": "2026-11-18T17:11:11.032Z",
+    "from": "2026-11-18T17:11:11.032Z",
+    "to": "2026-11-18T17:29:40.477Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -309,12 +309,12 @@
         "reconciled": true
       },
       "enrichment": {
-        "opening": 2946,
-        "entered": 12,
+        "opening": 2947,
+        "entered": 0,
         "completed": 0,
-        "otherExits": 11,
-        "closing": 2947,
-        "delta": 1,
+        "otherExits": 1,
+        "closing": 2946,
+        "delta": -1,
         "reconciled": true
       },
       "readyForReview": {
@@ -327,23 +327,23 @@
         "reconciled": true
       },
       "blockedClosed": {
-        "opening": 42,
-        "entered": 10,
+        "opening": 52,
+        "entered": 1,
         "completed": 0,
         "otherExits": 0,
-        "closing": 52,
-        "delta": 10,
+        "closing": 53,
+        "delta": 1,
         "reconciled": true
       }
     }
   },
   "completion": {
     "verification": {
-      "count36": 60,
-      "count": 60,
+      "count36": 66,
+      "count": 66,
       "windowHours": 36,
-      "perHour": 1.6666666666666667,
-      "last24h": 60,
+      "perHour": 1.8333333333333333,
+      "last24h": 66,
       "partial": true,
       "coverageHours": 36,
       "collectionGaps": 20,
@@ -370,11 +370,11 @@
   "completionByWindow": {
     "6": {
       "verification": {
-        "count36": 34,
-        "count": 34,
+        "count36": 40,
+        "count": 40,
         "windowHours": 6,
-        "perHour": 5.666666666666667,
-        "last24h": 60,
+        "perHour": 6.666666666666667,
+        "last24h": 66,
         "partial": true,
         "coverageHours": 6,
         "collectionGaps": 2,
@@ -400,11 +400,11 @@
     },
     "12": {
       "verification": {
-        "count36": 52,
-        "count": 52,
+        "count36": 58,
+        "count": 58,
         "windowHours": 12,
-        "perHour": 4.333333333333333,
-        "last24h": 60,
+        "perHour": 4.833333333333333,
+        "last24h": 66,
         "partial": true,
         "coverageHours": 12,
         "collectionGaps": 6,
@@ -430,14 +430,14 @@
     },
     "24": {
       "verification": {
-        "count36": 60,
-        "count": 60,
+        "count36": 66,
+        "count": 66,
         "windowHours": 24,
-        "perHour": 2.5,
-        "last24h": 60,
+        "perHour": 2.75,
+        "last24h": 66,
         "partial": true,
         "coverageHours": 24,
-        "collectionGaps": 10,
+        "collectionGaps": 9,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -451,7 +451,7 @@
         "last24h": 0,
         "partial": true,
         "coverageHours": 24,
-        "collectionGaps": 10,
+        "collectionGaps": 9,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -460,11 +460,11 @@
     },
     "36": {
       "verification": {
-        "count36": 60,
-        "count": 60,
+        "count36": 66,
+        "count": 66,
         "windowHours": 36,
-        "perHour": 1.6666666666666667,
-        "last24h": 60,
+        "perHour": 1.8333333333333333,
+        "last24h": 66,
         "partial": true,
         "coverageHours": 36,
         "collectionGaps": 20,
@@ -492,26 +492,26 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-18T17:09:22.528Z",
-    "sha256": "3db9cdca4fd321f91a6ae8feee0e825f57643e3cf29aa3a97d2325bd1c9ded2c",
+    "readAt": "2026-11-18T17:27:48.629Z",
+    "sha256": "20c9ba8f0d682431258f84cd1a08a80b6d6825b9274c78fe938063fd4b7a12d2",
     "rows": 9284
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-18T17:09:52.812Z",
-    "total": 13962,
-    "sourceIdentities": 14873,
-    "aliasesMerged": 911,
+    "at": "2026-11-18T17:28:12.773Z",
+    "total": 13996,
+    "sourceIdentities": 14908,
+    "aliasesMerged": 912,
     "counts": {
-      "WAITING": 413,
+      "WAITING": 442,
       "PRESENT": 5047,
-      "EXCLUDED": 7971,
+      "EXCLUDED": 7973,
       "HELD": 241,
-      "IDENTITY_HOLD": 290,
+      "IDENTITY_HOLD": 293,
       "MISSING_PREVIOUSLY_PRESENT": 0
     },
-    "waiting": 944,
-    "accounted": 13962,
+    "waiting": 976,
+    "accounted": 13996,
     "canonicalPopulation": {
       "total": 10066,
       "linked": 5047,
@@ -519,23 +519,23 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-18T13:12:36.266Z",
-      "to": "2026-11-18T17:09:52.812Z",
-      "opening": 924,
-      "arrivals": 22,
-      "admitted": 1,
-      "excluded": 1,
+      "from": "2026-11-18T17:09:52.812Z",
+      "to": "2026-11-18T17:28:12.773Z",
+      "opening": 944,
+      "arrivals": 32,
+      "admitted": 0,
+      "excluded": 0,
       "otherExits": 0,
-      "closing": 944
+      "closing": 976
     },
     "rates": {
       "discovery": {
-        "count": 180,
+        "count": 214,
         "windowHours": 36,
-        "perHour": 5,
+        "perHour": 5.944444444444445,
         "partial": true,
         "unit": "candidate identities",
-        "candidateCount": 180,
+        "candidateCount": 214,
         "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
       },
       "intake": {
@@ -549,12 +549,12 @@
     "ratesByWindow": {
       "6": {
         "discovery": {
-          "count": 33,
+          "count": 67,
           "windowHours": 6,
-          "perHour": 5.5,
+          "perHour": 11.166666666666666,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 33,
+          "candidateCount": 67,
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -567,12 +567,12 @@
       },
       "12": {
         "discovery": {
-          "count": 34,
+          "count": 68,
           "windowHours": 12,
-          "perHour": 2.8333333333333335,
+          "perHour": 5.666666666666667,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 34,
+          "candidateCount": 68,
           "basis": "Distinct captured candidate identities first observed within 12 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -585,12 +585,12 @@
       },
       "24": {
         "discovery": {
-          "count": 119,
+          "count": 153,
           "windowHours": 24,
-          "perHour": 4.958333333333333,
+          "perHour": 6.375,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 119,
+          "candidateCount": 153,
           "basis": "Distinct captured candidate identities first observed within 24 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -603,12 +603,12 @@
       },
       "36": {
         "discovery": {
-          "count": 180,
+          "count": 214,
           "windowHours": 36,
-          "perHour": 5,
+          "perHour": 5.944444444444445,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 180,
+          "candidateCount": 214,
           "basis": "Distinct captured candidate identities first observed within 36 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -621,23 +621,23 @@
       }
     },
     "screening": {
-      "at": "2026-11-18T17:09:52.812Z",
-      "reviewedSourceIdentities": 14873,
-      "pendingCandidates": 944,
-      "storedEvidence": 1988,
-      "fullPostings": 888,
+      "at": "2026-11-18T17:28:12.773Z",
+      "reviewedSourceIdentities": 14908,
+      "pendingCandidates": 976,
+      "storedEvidence": 2105,
+      "fullPostings": 1005,
       "atsZeroExcluded": 0,
-      "atsGateUnknown": 14873,
+      "atsGateUnknown": 14908,
       "neverConsiderExcluded": 2,
-      "titleOnly": 5608,
+      "titleOnly": 5596,
       "rulesSha256": "8ebdbafda8a7876f2b19577b123cd8287a238a6325588c9ff04776bf704fd341",
       "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
       "canonicalWrites": 0
     },
     "coverage": {
-      "reportRevisions": 274,
+      "reportRevisions": 276,
       "emailFiles": 68,
-      "identityUnresolved": 290,
+      "identityUnresolved": 293,
       "unreadSourceWindows": 654,
       "newReportCommits": 3,
       "unkeyedRecords": 2349,
