@@ -5,6 +5,8 @@ const test = require('node:test'), assert = require('node:assert'), fs = require
 const ROOT = path.resolve(__dirname, '../..'), FC = process.env.ENRICH_FC_DIR || path.resolve(ROOT, '../foreman-cockpit');
 // Every scoring/decision input, so a TIM_DECISION_REQUIRED fixture row passes the decision gate (decision-complete.js).
 const DECISION_COMPLETE='DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required; SCOPE_FIT_RAW=80; FLEX_CLASS=NO_FLEX; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
+// Every decision input except pay and degree, so salary repair/review fixtures are not skipped as blocked (repair-gate.js).
+const NON_PAY_READY='SCOPE_FIT_RAW=80; REMOTE_HYBRID=On-site; LATITUDE=39.76; LONGITUDE=-84.19; PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; OVERALL_RATING=80; SCORING_MODEL_REF=TIM_WEIGHTED_JOB_RATING v1 rev1';
 const row = (n, id, title, loc, payload) => `${n} | ${id} | Acme | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
 const sourceRunOwners = new WeakSet();
 function sourceRun(t,lines,responses,config={},cache,ledger){
@@ -112,14 +114,28 @@ test('live estimation route connects the shared source selector after target che
 test('production context route migrates filled estimates, keeps missing size nonblocking and records model without rewriting reference in dry run',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-context-')),master=path.join(dir,'master.txt'),context=path.join(dir,'context.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const ref=JSON.stringify({schema:'forge.company-site-context.v1',companies:[],roles:[]});fs.writeFileSync(context,ref);
- fs.writeFileSync(master,[row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX','SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(2,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
+ fs.writeFileSync(master,[row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX','SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; '+NON_PAY_READY),row(2,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
  try{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env:{...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_CONTEXT_FILE:context,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')},stdio:'pipe'});
  const out=JSON.parse(fs.readFileSync(report));const a=out.sample[0].fields;assert.equal(out.salary_repairs,1);assert.equal(a.SALARY_MODEL_VERSION,'pay-sample-match-v6a');assert.equal(a.SALARY_CONF,'LOW');assert.equal(a.SALARY_BASE_HIGH,240000);assert.equal(a.SALARY_CONTEXT_KEY.length,64);assert.equal(fs.readFileSync(context,'utf8'),ref);
  }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
 });
+test('card 8176bbb: a salary repair blocked by another missing decision input is skipped and stays queued; a pay-only gap is repaired',()=>{
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'repair-gate-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
+ const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
+ const blocked=bad+'; '+NON_PAY_READY.replace('PRODUCT=Industrial pumps; PRODUCT_REFERENCE=acme-dayton-oh; ','');
+ fs.writeFileSync(master,[row(1,'V2I-00000000G001','Sr. Manager of Quality','Austin, TX',bad+'; '+NON_PAY_READY),row(2,'V2I-00000000G002','Sr. Manager of Quality','Austin, TX',blocked),row(3,'V2I-00000000A001','Quality Associate Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(4,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')].join('\n'));
+ const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:path.join(dir,'ledger.json'),ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'employer.json')};
+ const run=()=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry'],{env,stdio:'pipe'});return JSON.parse(fs.readFileSync(report));};
+ try{for(let pass=0;pass<2;pass++){const out=run(),inv=Object.fromEntries(out.salary_invalid.map(x=>[x.id,x.status]));
+  assert.equal(out.salary_repairs,1);assert.ok(out.sample.some(x=>x.id==='V2I-00000000G001'&&x.fields.SALARY_BASE_HIGH),'pay-only gap is repaired');
+  assert.ok(!out.sample.some(x=>x.id==='V2I-00000000G002'),'blocked row gets no ruling');
+  assert.equal(inv['V2I-00000000G002'],'SKIPPED_BLOCKED_OTHER_FIELDS','blocked row stays in the repair queue every run');
+  assert.equal(out.salary_repair.skipped_blocked,1);assert.equal(out.salary_repair.by_missing['products (what they make)'],1);}
+ }finally{if(before)fs.writeFileSync(report,before);fs.rmSync(dir,{recursive:true,force:true});}
+});
 test('salary repair reaches already-filled rows, preserves protected jobs and drops concurrent salary changes',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-repair-')),master=path.join(dir,'master.txt'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
- const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED';
+ const bad='SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=MED; SALARY_SOURCE=same-employer:V2I-00000000A001; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; '+NON_PAY_READY;
  const target=row(1,'V2I-00000000T001','Sr. Manager of Quality','Austin, TX',bad);
  const input=[target,row(2,'V2I-00000000T002','Sr. Manager of Quality','Austin, TX',bad).replace('READY_TO_PURSUE','DECLINED_BY_TIM'),row(3,'V2I-00000000A001','Quality Associate Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=96000; SALARY_BASE_HIGH=168000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED'),row(4,'V2I-00000000A002','Senior Quality Manager','Austin, TX','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED')];
  fs.writeFileSync(master,input.join('\n'));const current=path.join(dir,'current.json'),posts=path.join(dir,'posts.jsonl');
@@ -282,8 +298,8 @@ test('REV-140: archived posted pay stays a comparable; remembered same-employer 
   const r2 = (n, id, co, title, loc, payload) => `${n} | ${id} | ${co} | ${title} | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | ${loc} | ${payload}`;
   const read = 'FEASIBILITY_ATTEMPT_ASOF=2026-10-20; DATE_ADDED=2026-10-19';
   fs.writeFileSync(master, [
-    r2(1, 'V2I-00000000Z001', 'Zeta Corp', 'Plant Manager', 'Akron, OH', read),                                                  // remembered Zeta posting
-    r2(2, 'V2I-00000000U001', 'Upsilon', 'Plant Manager', 'Toledo, OH', 'SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=comparables:V2I-X; SALARY_BASE_LOW=150000; SALARY_BASE_HIGH=190000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
+    r2(1, 'V2I-00000000Z001', 'Zeta Corp', 'Plant Manager', 'Akron, OH', read + '; ' + NON_PAY_READY),                                                  // remembered Zeta posting
+    r2(2, 'V2I-00000000U001', 'Upsilon', 'Plant Manager', 'Toledo, OH', 'SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=comparables:V2I-X; SALARY_BASE_LOW=150000; SALARY_BASE_HIGH=190000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS; '+NON_PAY_READY),
     r2(3, 'V2I-00000000U002', 'Upsilon', 'Plant Manager', 'Lima, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=175000; SALARY_BASE_HIGH=215000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS'),
   ].join('\n') + '\n');
   fs.writeFileSync(archive, r2(9, 'V2I-00000000A001', 'Archived Co', 'Plant Manager', 'Canton, OH', 'SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=165000; SALARY_BASE_HIGH=205000; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS') + '\n');
@@ -419,7 +435,7 @@ test('active estimate review is bounded, promotes exact pay, skips protected job
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'salary-active-')),master=path.join(dir,'master.txt'),pages=path.join(dir,'pages.json'),writer=path.join(dir,'writer.json'),posts=path.join(dir,'posts.jsonl'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
  const lines=[],responses={},original={};for(let i=1;i<=7;i++){
   const id='V2I-REVIEW'+i,url='https://job-boards.greenhouse.io/acme/jobs/'+(900+i);
-  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SCOPE_FIT_RAW=80; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED');lines.push(line);original[id]=line;
+  const line=row(i,id,'Director of Quality','Dayton, OH','ATS_POSTING_URL='+url+'; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=90000; SALARY_BASE_HIGH=130000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; '+NON_PAY_READY);lines.push(line);original[id]=line;
   responses['https://boards-api.greenhouse.io/v1/boards/acme/jobs/'+(900+i)+'?pay_transparency=true']=JSON.stringify({id:900+i,title:'Director of Quality',location:{name:'Dayton, OH'},content:'A complete employer job description. '.repeat(25),pay_input_ranges:[{min_cents:18000000,max_cents:24000000,currency_type:'USD',interval:'year',title:'Base salary'}]});
  }
  lines.push(lines[0].replace('V2I-REVIEW1','V2I-DECLINED').replace('READY_TO_PURSUE','DECLINED_BY_TIM'),lines[0].replace('V2I-REVIEW1','V2I-APPLIED').replace('READY_TO_PURSUE','APPLIED'));
@@ -515,7 +531,7 @@ test('full ATS no-pay reads survive across runs; unbound aggregator content and 
 });
 test('active salary review retains complete exact postings with and without pay for later degree work',t=>{
  for(const id of ['111','333']){
-  const source='https://job-boards.greenhouse.io/acme/jobs/'+id,line=row(1,'V2I-REVIEW-CACHE','Director of Quality','Dayton, OH',`SOURCE_URL=${source}; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED`),first=sourceRun(t,[line],{});
+  const source='https://job-boards.greenhouse.io/acme/jobs/'+id,line=row(1,'V2I-REVIEW-CACHE','Director of Quality','Dayton, OH',`SOURCE_URL=${source}; SALARY_BASIS=FORGE-ESTIMATE; SALARY_CONF=LOW; SALARY_SOURCE=BLS_OEWS; SALARY_BASE_LOW=100000; SALARY_BASE_HIGH=150000; DEGREE_REQ=NOT_STATED; DEGREE_TEXT=NOT_STATED; ${NON_PAY_READY}`),first=sourceRun(t,[line],{});
   const entries=Object.values(first.cache.postingEvidence);assert.equal(entries.length,1);assert.equal(entries[0].payStatus,id==='111'?'PAY_FOUND':'NO_PAY_STATED');
   const later=row(1,'V2I-REVIEW-CACHE','Director of Quality','Dayton, OH',`SOURCE_URL=${source}; SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=170000; SALARY_BASE_HIGH=210000`),again=sourceRun(t,[later],{}, {},first.cache);assert.equal(again.reads.length,0);assert.equal(again.report.sample[0].fields.DEGREE_REQ,id==='111'?'REQUIRED':'PREFERRED');
  }
@@ -630,7 +646,7 @@ test('blocked public hosts stop at three 403s and preserve fallback budget for e
 
 test('site salary estimate routes directly to the supported Forge model without salary-only employer reads',()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'site-model-run-')),master=path.join(dir,'master.txt'),ledger=path.join(dir,'ledger.json'),report=path.join(ROOT,'state/enrich-ats-pay-report.json'),before=fs.existsSync(report)?fs.readFileSync(report):null;
- const E=require('../source-trial/evidence-store'),url='https://www.linkedin.com/jobs/view/4012345678',id='V2I-SITE',today=new Date().toISOString().slice(0,10),payload='SOURCE_URL='+url+'; ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/111; DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required',anchor=row(2,'V2I-ANCHOR','Director of Quality','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; SALARY_ASOF='+today+'; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS');
+ const E=require('../source-trial/evidence-store'),url='https://www.linkedin.com/jobs/view/4012345678',id='V2I-SITE',today=new Date().toISOString().slice(0,10),payload='SOURCE_URL='+url+'; ATS_POSTING_URL=https://job-boards.greenhouse.io/acme/jobs/111; DEGREE_REQ=REQUIRED; DEGREE_TEXT=Bachelor degree required; '+NON_PAY_READY,anchor=row(2,'V2I-ANCHOR','Director of Quality','Dayton, OH','SALARY_BASIS=EMPLOYER_POSTED; SALARY_BASE_LOW=180000; SALARY_BASE_HIGH=240000; SALARY_ASOF='+today+'; DEGREE_REQ=REQUIRED; DEGREE_TEXT=BS');
  const card={company:'Acme',title:'Director of Quality',location:'Dayton, OH',url,description:'LinkedIn estimated annual base salary USD $120,000 - $160,000'},input={schema:'forge.posted-pay.v1',company:card.company,title:card.title,location:card.location,sourceUrl:url,text:card.description,low:120000,high:160000,currency:'USD',period:'YEAR',basis:'BASE',status:'ESTIMATED',observedAt:today,source:'LinkedIn estimate'};
  const env={...process.env,ENRICH_FC_DIR:FC,ENRICH_MASTER_FILE:master,ENRICH_TEST_FAST:'1',ENRICH_LEDGER:ledger,ENRICH_BLS_CACHE:path.join(dir,'bls.json'),ENRICH_EMPLOYER_CACHE:path.join(dir,'emp.json'),ENRICH_DISCOVERY_EVIDENCE_ROOT:dir,ENRICH_PREPARED_DIR:path.join(dir,'prepared')};
  const run=(extra=[])=>{cp.execFileSync(process.execPath,['--require',path.join(__dirname,'test/mock-fetch.js'),path.join(__dirname,'run.js'),'--dry',...extra],{env,stdio:'pipe',timeout:10000});return JSON.parse(fs.readFileSync(report));};
