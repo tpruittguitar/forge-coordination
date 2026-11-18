@@ -3,7 +3,7 @@
 /* AUTO source intake (Tim 2026-10-23): run by .github/workflows/source-intake-auto.yml after each source trial on main.
  * Does nothing unless control/SOURCE_INTAKE_RELEASE.json is armed as AUTO and FORGE_WRITER_KEY is set.
  * 1. Reconciles captured, completed prior writes without POSTing; preserves untouched candidates for fresh admission.
- *    If independent proof is unavailable, the unresolved latch fails this run and remains on attention/NEEDS_TIM.json.
+ *    If independent proof is unavailable, the unresolved latch fails this run and remains on attention/BOT_INCIDENTS.json.
  * 2. Ranks saved cards through the shared relevance screen, preserves all prior request fences,
  *    and sends eligible work in successive maxBatch transactions (not a daily/pass quota).
  * 3. snapshot before -> auto (one insert at a time, waits for each receipt) -> snapshot after -> finalize, with the same
