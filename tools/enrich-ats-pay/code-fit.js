@@ -16,16 +16,22 @@ function score({title,text},profile){
 // merged into its ruling (no extra Writer slot); otherwise a new ruling is added only
 // while requests stay under `slots` (the existing maxBatches x 25 Writer limit).
 // Fenced rows (pending/refused writes, helper reservations) are in `unavailable`.
+// Tim (Nov 17 2026 9:12 PM ET): code fit replaces the legacy title-level EXPERIENCE_FIT.
+// A row is open to code fit when it has no fit, or its only fit is EXPERIENCE_FIT
+// (no SCOPE_FIT_RAW). A row that already carries a CODE_FIT score is never overwritten.
+const codeFitted=p=>/^CODE_FIT\b/.test(String(p.SCOPE_FIT_MODEL_REF||''));
+function replaceable(p,fit){const h=fit(p);return!codeFitted(p)&&(h.value==null||h.legacy===true&&h.source==='EXPERIENCE_FIT');}
 function plan({rows,requests,saved,fit,active=()=>true,unavailable=new Set(),runId,slots,max=150,profile=Match.load()}){
  // Every row that is not scored lands in exactly one counter, so a zero run says why.
- // already_fitted_legacy: the row carries only a legacy FIT_KEYS value (e.g. EXPERIENCE_FIT).
- const stats={scored:0,merged:0,added:0,short_posting:0,no_posting:0,deferred:0,fenced:0,inactive:0,already_fitted:0,already_fitted_legacy:0},sample=[];
+ // already_fitted_legacy: the row carries a legacy FIT_KEYS value other than EXPERIENCE_FIT.
+ // legacy_replaced (a subset of scored): rows whose legacy EXPERIENCE_FIT was replaced by code fit.
+ const stats={scored:0,legacy_replaced:0,merged:0,added:0,short_posting:0,no_posting:0,deferred:0,fenced:0,inactive:0,already_fitted:0,already_fitted_legacy:0},sample=[];
  for(const r of rows){
   if(stats.scored>=max)break;
   if(unavailable.has(r.PRIMARY_ID)){stats.fenced++;continue;}
   if(!active(r)){stats.inactive++;continue;}
-  const had=fit(r.p||{});
-  if(had.value!=null){stats[had.legacy?'already_fitted_legacy':'already_fitted']++;continue;}
+  const p=r.p||{},had=fit(p);
+  if(!replaceable(p,fit)){stats[had.legacy&&!codeFitted(p)?'already_fitted_legacy':'already_fitted']++;continue;}
   const text=saved(r)?.text;
   if(typeof text!=='string'||!text.trim()){stats.no_posting++;continue;}
   if(text.trim().length<MIN_CHARS){stats.short_posting++;continue;}
@@ -34,16 +40,17 @@ function plan({rows,requests,saved,fit,active=()=>true,unavailable=new Set(),run
   const s=score({title:r.TITLE,text:text.trim()},profile);
   if(existing){Object.assign(existing.ruling.fields,s.fields);stats.merged++;}
   else{requests.push({action:'ruling',ruling:{requestId:`${runId}-F${String(stats.added+1).padStart(3,'0')}`,primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:s.fields}});stats.added++;}
-  stats.scored++;if(sample.length<5)sample.push({id:r.PRIMARY_ID,fit:s.value});
+  stats.scored++;if(had.value!=null)stats.legacy_replaced++;if(sample.length<5)sample.push({id:r.PRIMARY_ID,fit:s.value});
  }
  return{stats,sample};
 }
-// Writer readback guard: drop the fit fields when the row gained a fit meanwhile or its
+// Writer readback guard: drop the fit fields when the row gained a non-replaceable fit
+// (SCOPE_FIT_RAW, a CODE_FIT score or a non-EXPERIENCE_FIT legacy fit) meanwhile or its
 // identity changed, so a score never lands on a different job than the posting scored.
 const FIELDS=['SCOPE_FIT_RAW','SCOPE_FIT_MODEL_REF','EXPERIENCE_FIT_BASIS'];
 function guard(fields,planned,current,fit){
  if(fields.SCOPE_FIT_MODEL_REF!==MODEL_REF)return false;
- if(planned&&current&&fit(current.p||{}).value==null&&['COMPANY','TITLE','LOCATION'].every(k=>planned[k]===current[k]))return false;
+ if(planned&&current&&replaceable(current.p||{},fit)&&['COMPANY','TITLE','LOCATION'].every(k=>planned[k]===current[k]))return false;
  FIELDS.forEach(k=>delete fields[k]);return true;
 }
-module.exports={plan,score,guard,FIELDS,MODEL_REF,MIN_CHARS};
+module.exports={plan,score,guard,replaceable,FIELDS,MODEL_REF,MIN_CHARS};
