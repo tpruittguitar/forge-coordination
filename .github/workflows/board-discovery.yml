@@ -32,6 +32,8 @@ jobs:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
         run: node --test tools/source-trial/lib.test.js tools/source-trial/discovery-health.test.js tools/source-trial/run.test.js tools/source-trial/board-health.test.js tools/source-trial/discovery-review.test.js tools/source-trial/preliminary-screen.test.js tools/source-trial/resume-match.test.js
       - name: Boards
+        # Live board reads only off PRs: a PR run never commits state, and its Workday reads only add to the 429 throttle (card d4b2f93).
+        if: github.event_name != 'pull_request'
         env:
           TRIAL_FC_DIR: ${{ github.workspace }}/_fc
           TRIAL_BOARDS_ONLY: '1'
