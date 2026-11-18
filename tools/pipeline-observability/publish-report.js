@@ -6,7 +6,10 @@ const sections=[
  {id:'flow',script:'tools/pipeline-observability/process-flow.js',paths:['receipts/manual-backlog','state/PROCESS_COMPLETIONS.json','state/ENRICHMENT_OUTCOMES.json','state/RELEVANCE_SCREEN_GUARD.json','state/ENRICHMENT_FLOW.json','state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/discovery-evidence','state/DISCOVERY_SCREEN_REPORT.json']},
  {id:'intake-queue',script:'tools/intake-drain/queue.cjs',args:['sync'],paths:['state/INTAKE_DRAIN.json']}
 ];
-async function publish({root=process.cwd(),run=(s)=>{const r=cp.spawnSync(process.execPath,[s.script,...s.args||[]],{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:4e6});return{ok:r.status===0,error:r.error?.message||r.stderr||'Report generation failed'};},sleep=ms=>new Promise(r=>setTimeout(r,ms)),now=()=>Date.now(),components=sections}={}){
+const CHEAP_PATHS=['state/WRITER_ACTIVITY.json','state/WRITER_ACTIVITY_DETAILS.json','state/REPORTING_HEALTH.json'];
+async function publish({root=process.cwd(),run=(s)=>{const r=cp.spawnSync(process.execPath,[s.script,...s.args||[]],{cwd:root,encoding:'utf8',timeout:120000,maxBuffer:4e6});return{ok:r.status===0,error:r.error?.message||r.stderr||'Report generation failed'};},sleep=ms=>new Promise(r=>setTimeout(r,ms)),now=()=>Date.now(),components=sections,only}={}){
+ if(only){const want=new Set(only),selected=components.filter(s=>want.has(s.id));if(selected.length!==want.size)throw Error('Unknown publish section');components=selected;}
+
  const file=path.join(root,FILE),prior=fs.existsSync(file)?JSON.parse(fs.readFileSync(file)):{};
  const health={schema:'forge.reporting-health.v1',at:new Date(now()).toISOString(),components:{...prior.components}};
  for(const section of components){
@@ -24,5 +27,5 @@ async function publish({root=process.cwd(),run=(s)=>{const r=cp.spawnSync(proces
  }
  fs.mkdirSync(path.dirname(file),{recursive:true});fs.writeFileSync(file,JSON.stringify(health,null,2)+'\n');return health;
 }
-if(require.main===module)publish().then(h=>console.log(JSON.stringify(h))).catch(e=>{console.error(e.message);process.exitCode=1;});
-module.exports={publish,sections,FILE};
+if(require.main===module){const only=process.argv.slice(2).filter(a=>!a.startsWith('-'));publish({only:only.length?only:undefined}).then(h=>console.log(JSON.stringify(h))).catch(e=>{console.error(e.message);process.exitCode=1;});}
+module.exports={publish,sections,FILE,CHEAP_PATHS};

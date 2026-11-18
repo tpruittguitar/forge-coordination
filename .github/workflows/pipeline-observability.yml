@@ -41,9 +41,7 @@ jobs:
         run: |
           node tools/pipeline-observability/discovery-watchdog.js
           node tools/pipeline-observability/enrichment-watchdog.js
-      - name: Fetch 36 hours of main history for discovery report revisions
-        run: git fetch --no-tags --shallow-since="36 hours ago" origin main
-      - name: Publish bounded receipt summary
+      - name: Publish cheap Writer activity
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ACTIVITY_FC_DIR: _fc
@@ -52,17 +50,39 @@ jobs:
           git config user.name forge-activity-bot
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
-            node tools/pipeline-observability/publish-report.js
-            git add receipts/manual-backlog state/REPORTING_HEALTH.json state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json
-            git diff --cached --quiet && exit 0
-            git commit -m "ACTIVITY-BOT: publish compact verified receipt activity"
-            git push origin HEAD:main && exit 0
+            node tools/pipeline-observability/publish-report.js activity
+            node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/REPORTING_HEALTH.json && exit 0
             sleep $((attempt * 2 + RANDOM % 3))
             git fetch origin main
             # Reuse the completed report when other bots changed unrelated paths.
             # Conflicting policy/queue changes require a rebuild, never choosing a side.
             if git -c core.editor=true rebase origin/main; then
-              git push origin HEAD:main && exit 0
+              node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/REPORTING_HEALTH.json && exit 0
+            fi
+            git rebase --abort 2>/dev/null || true
+            git reset --hard origin/main
+          done
+          exit 1
+      - name: Fetch 36 hours of main history for discovery report revisions
+        run: git fetch --no-tags --shallow-since="36 hours ago" origin main
+      - name: Publish flow with incremental cursor
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
+          ACTIVITY_FC_DIR: _fc
+          UPSTREAM_FLOW_COMMIT_CURSOR: '1'
+        run: |
+          set -euo pipefail
+          git config user.name forge-activity-bot
+          git config user.email forge-activity-bot@users.noreply.github.com
+          for attempt in 1 2 3 4; do
+            node tools/pipeline-observability/publish-report.js flow intake-queue
+            node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json && exit 0
+            sleep $((attempt * 2 + RANDOM % 3))
+            git fetch origin main
+            # Reuse the completed report when other bots changed unrelated paths.
+            # Conflicting policy/queue changes require a rebuild, never choosing a side.
+            if git -c core.editor=true rebase origin/main; then
+              node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json && exit 0
             fi
             git rebase --abort 2>/dev/null || true
             git reset --hard origin/main
