@@ -25,11 +25,14 @@ function isolatedUnknown(state){
  return {requestId:q.requestId,reason:'UNKNOWN_NO_REPLAY; operator-contained, not resolved',record:q.record,identityKey:identityKey(q.record)};
 }
 
+// Writer master snapshots are about 95% of every run record (849 of about 900 MB over 400 records). Nothing that reads
+// previous() uses them; snapshot readers (intake-cli, interrupted-recovery) re-read the file. Dropping them keeps each pass's heap
+// near 50 MB instead of about 1.2 GB (card 747558c).
 function previous(root='.'){
  const dir=path.join(root,DIR);
  if(!fs.existsSync(dir))return [];
  return fs.readdirSync(dir).filter(f=>f.endsWith('.json')&&!f.endsWith('.candidates.json')).sort()
-  .map(f=>{const state=JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'));return {file:path.join(DIR,f).split(path.sep).join('/'),state,resolvedRequestIds:Object.keys(state.requestResolutions||{}).filter(id=>require('./reconciliation-proof').valid(root,state,id))};});
+  .map(f=>{const state=JSON.parse(fs.readFileSync(path.join(dir,f),'utf8'));delete state.snapshots;return {file:path.join(DIR,f).split(path.sep).join('/'),state,resolvedRequestIds:Object.keys(state.requestResolutions||{}).filter(id=>require('./reconciliation-proof').valid(root,state,id))};});
 }
 // The single exact shape that may be isolated (unchanged from auto-run.js before 2026-10-26).
 function isolatedIdentityHold(state){
