@@ -1,4 +1,4 @@
-const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),os=require('os'),p=require('path'),{publish,runCli,fatalError}=require('./publish-report');
+const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),os=require('os'),p=require('path'),{publish,runCli,fatalError,SPAWN_TIMEOUT_MS,isPushReject,isRetryable}=require('./publish-report');
 test('failed flow preserves old metrics, publishes independent output, retries reads and clears health on recovery',async()=>{
  const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-test-'));try{
  fs.mkdirSync(p.join(root,'state'));fs.writeFileSync(p.join(root,'state/flow.json'),'old');
@@ -60,5 +60,30 @@ test('a leftover stale flow does not fail an activity-only run, but a timeout in
   process.exitCode=0;
   const bad=await runCli({root,components,only:['flow'],sleep:async()=>{},now:()=>2000,run:()=>({ok:false,error:'spawnSync node ETIMEDOUT',spawnError:{code:'ETIMEDOUT'}})});
   a.equal(bad.components.flow.status,'STALE');a.match(bad.components.flow.error,/ETIMEDOUT/);a.ok(fatalError(bad,['flow']));a.equal(fatalError(bad,['activity']),undefined);a.equal(process.exitCode,1);
+ }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
+});
+test('flow spawn timeout is 15 minutes and stays inside the 20-minute job limit',()=>{
+ a.equal(SPAWN_TIMEOUT_MS,15*60*1000);
+ const y=fs.readFileSync(p.join(__dirname,'../../.github/workflows/pipeline-observability.yml'),'utf8');
+ const m=y.match(/timeout-minutes:\s*(\d+)/);
+ a.ok(m);a.equal(Number(m[1]),20);a.ok(SPAWN_TIMEOUT_MS<Number(m[1])*60*1000);
+});
+test('a rejected fetch-first push is retried and can recover, unlike a spawn timeout',async()=>{
+ a.ok(isPushReject(' ! [rejected] HEAD -> main (fetch first)\nerror: failed to push some refs'));
+ a.equal(isRetryable({ok:false,error:' ! [rejected] HEAD -> main (fetch first)'}),true);
+ a.equal(isRetryable({ok:false,error:'spawnSync node ETIMEDOUT',spawnError:{code:'ETIMEDOUT'}}),false);
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-fetch-'));try{
+  let n=0;
+  const h=await publish({root,components:[{id:'flow',paths:[]}],sleep:async()=>{},run:()=>++n===1?{ok:false,error:' ! [rejected]          HEAD -> main (fetch first)\nerror: failed to push some refs'}:{ok:true}});
+  a.equal(n,2);a.equal(h.components.flow.status,'CURRENT');
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
+test('a flow section that stays STALE from a rejected push exits non-zero and does not look like a green publish',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-stale-flow-'));const prev=process.exitCode,log=console.log;let n=0;
+ try{
+  process.exitCode=0;console.log=()=>{};
+  const h=await runCli({root,components:[{id:'flow',paths:[]},{id:'intake-queue',paths:[]}],only:['flow','intake-queue'],sleep:async()=>{},now:()=>1000,run:s=>{if(s.id==='intake-queue')return{ok:true};n++;return{ok:false,error:' ! [rejected] HEAD -> main (fetch first)'};}});
+  a.equal(n,3);a.equal(h.components.flow.status,'STALE');a.equal(h.components['intake-queue'].status,'CURRENT');
+  a.ok(fatalError(h,['flow','intake-queue']));a.equal(fatalError(h,['activity']),undefined);a.equal(process.exitCode,1);
  }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
 });

@@ -31,3 +31,17 @@ test('publish pushes to origin and retries after a rejected first push',()=>{
   assert.ok(msgs.includes('cheap'));assert.ok(msgs.includes('race'));
  }finally{fs.rmSync(base,{recursive:true,force:true});}
 });
+test('when rebase conflicts, publish resets to origin/main, replays the files, and pushes',()=>{
+ const {base,root,bare}=repo();
+ try{
+  fs.mkdirSync(path.join(root,'state'));fs.writeFileSync(path.join(root,'state/WRITER_ACTIVITY.json'),'{"ok":1}\n');
+  const dest=path.join(base,'race');git(base,'clone','-q',bare,dest);git(dest,'config','user.name','test');git(dest,'config','user.email','test@example.test');
+  fs.mkdirSync(path.join(dest,'state'));fs.writeFileSync(path.join(dest,'state/WRITER_ACTIVITY.json'),'{"race":1}\n');git(dest,'add','state/WRITER_ACTIVITY.json');git(dest,'commit','-m','race');git(dest,'push','-q','origin','HEAD:main');
+  const result=publish(root,['state/WRITER_ACTIVITY.json'],'cheap',{retries:3,sleep:()=>{},push:true});
+  assert.equal(result.pushed,true);assert.ok(result.attempts>=2);
+  const tip=git(bare,'show','HEAD:state/WRITER_ACTIVITY.json');
+  assert.match(tip,/"ok":1/);
+  const msgs=git(bare,'log','--pretty=%s').trim().split(/\n/);
+  assert.ok(msgs.includes('cheap'));assert.ok(msgs.includes('race'));
+ }finally{fs.rmSync(base,{recursive:true,force:true});}
+});
