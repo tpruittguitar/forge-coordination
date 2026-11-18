@@ -150,7 +150,7 @@ test('priority changes between pages reset the cursor without dropping the newly
 
 test('both providers can continue through 298 jobs in one invocation without a 20-item run cap',()=>{
  for(const [taskKey,provider] of Object.entries(H.TASKS)){
-  const w=base();w.items=Array.from({length:298},(_,n)=>({...assigned('V2I-'+String(n).padStart(3,'0')),taskKey,provider}));
+  const w=base();w.providers[taskKey]=w.providers[taskKey]||{provider,available:true};w.items=Array.from({length:298},(_,n)=>({...assigned('V2I-'+String(n).padStart(3,'0')),taskKey,provider}));
   const original=JSON.stringify(w),seen=new Set();let cursor=null,pages=0;
   for(;;){
    const page=H.next(w,taskKey,cursor);if(!page.items.length)break;pages++;
@@ -220,4 +220,34 @@ test('saved discovery details avoid a new shared source-research assignment whil
  const root=setup(t),job={key:'linkedin:1234',company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://www.linkedin.com/jobs/view/1234/',status:'UNSCREENED',evidence:[],submissions:[]};
  S.save(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{[job.key]:job}});S.save(root,'state/source-trial-report.json',{summary:{at:'2020-01-01T00:00:00Z'},new_roles:[{...job,source:'Recruiting agency',description:''}]});
  const result=A.replenish({root,state:state(),snapshot:{rows:[],archiveRows:[],source:{readAt:new Date().toISOString()}},runId:'FORGE-CODE-TEST',apply:false});a.equal(result.assigned,0);
+});
+test('with Sniffer live, every new shared item goes to Sniffer and none to Claude or retired Grok',t=>{
+ const root=setup(t),w=base();w.providers[other].available=false;w.providers[H.SNIFFER_TASK]={provider:'Sniffer',available:true};S.save(root,H.FILE,w);
+ const rows=Array.from({length:12},(_,n)=>row('V2I-S'+n,n));
+ const r=A.replenish({root,state:state(),snapshot:{rows,archiveRows:[],source:{readAt:at}},runId:'TEST',now:Date.parse(at),apply:true,checkLock(){}});
+ a.equal(r.assigned,12);const saved=H.load(root);
+ a.ok(saved.items.every(i=>i.taskKey===H.SNIFFER_TASK&&i.provider==='Sniffer'));
+ a.ok(saved.items.every(i=>i.fieldState),'Sniffer enrichment items carry field state like Grok items did');
+ a.equal(r.byTask[task],0);a.equal(r.byTask[H.SNIFFER_TASK],12);
+});
+test('an unavailable Sniffer provider falls back to the old provider spread',t=>{
+ const root=setup(t),w=base();w.providers[H.SNIFFER_TASK]={provider:'Sniffer',available:false};S.save(root,H.FILE,w);
+ A.replenish({root,state:state(),snapshot:{rows:Array.from({length:12},(_,n)=>row('V2I-F'+n,n)),archiveRows:[],source:{readAt:at}},runId:'TEST',now:Date.parse(at),apply:true,checkLock(){}});
+ a.ok(!H.load(root).items.some(i=>i.taskKey===H.SNIFFER_TASK));
+});
+test('a transferred Sniffer item keeps its field state and still settles from Writer receipts',t=>{
+ const root=setup(t),readAt='2026-11-10T20:55:00.000Z',now=Date.parse('2026-11-10T21:00:00.000Z'),id='V2I-01E5EF8F5A31';
+ const w=base();w.providers[H.SNIFFER_TASK]={provider:'Sniffer',available:true};
+ w.items=[{primaryId:id,kind:'ENRICHMENT',provider:'Grok',taskKey:other,assignmentVersion:1,sourceVersion:'a'.repeat(64),status:'ASSIGNED',missingFields:['SALARY','DEGREE','FIT','LINKS'],company:'Path Robotics',title:'Engineering Manager',location:'Columbus, OH'}];
+ S.save(root,H.FILE,w);
+ const snap={rows:[{...row(id),line:'canonical-line-v1',BUCKET:'SCOUT_INTAKE'}],archiveRows:[],source:{readAt}};
+ A.replenish({root,state:state(),snapshot:snap,runId:'T',now,apply:true,checkLock(){}});
+ const moved=H.load(root);a.ok(H.load(root).items[0].fieldState);
+ H.transfer(moved,id,H.SNIFFER_TASK,{checkpoint:'control/changes/x.txt',terminalRun:true,reason:'test'});S.save(root,H.FILE,moved);
+ const degree={DEGREE_TEXT:'Bachelor degree or equivalent experience.',DEGREE_EVIDENCE_URL:'https://employer.example/jobs/123'};
+ const evidence={url:'https://employer.example/jobs/123',quote:'Bachelor degree or equivalent experience.',observedAt:'2026-11-10T20:40:00.000Z',text:'Posting text. '.repeat(40)+'Bachelor degree or equivalent experience.'};
+ // Sniffer has no Writer authority; earlier Grok Writer receipts still settle the items it inherited.
+ const rid='FORGE-GROK-SHARED-20261110T205613Z-B001-R001';
+ const r=A.replenish({root,state:state(),snapshot:snap,runId:'T',now,apply:true,checkLock(){},writerReceipts:{index:{requests:{[rid]:{s:'COMPLETE',at:'2026-11-10T21:10:00.000Z',items:[{pid:id}]}},pending:[]},submissions:[{requestId:rid,primaryId:id,at:'2026-11-10T21:10:00.000Z',ok:true,mode:'SUCCESS',fields:degree,evidence}]}});
+ const item=H.load(root).items[0];a.equal(item.taskKey,H.SNIFFER_TASK);a.equal(item.fieldState.fields.DEGREE.status,'submitted');a.ok(r.fieldRoles.pending+r.fieldRoles.submitted>=1);
 });

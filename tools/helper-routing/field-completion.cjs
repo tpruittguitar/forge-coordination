@@ -216,7 +216,7 @@ function relevant(parsed,primaryId){
 }
 function tally(work){
  const counts={pending:0,submitted:0,satisfied:0};
- for(const item of work.items||[])if(item.taskKey==='FORGE_GROK_SHARED_HELPER'&&item.kind==='ENRICHMENT'&&item.fieldState?.role)counts[item.fieldState.role]++;
+ for(const item of work.items||[])if(['FORGE_GROK_SHARED_HELPER','FORGE_SNIFFER_SHARED_HELPER'].includes(item.taskKey)&&item.kind==='ENRICHMENT'&&item.fieldState?.role)counts[item.fieldState.role]++;
  return counts;
 }
 module.exports={GROUPS,ORDER,groupOf,seed,advance,parseReceipts,relevant,evidenceFor,rememberEvidence,storeEvidence,tally,valuesMatch};
