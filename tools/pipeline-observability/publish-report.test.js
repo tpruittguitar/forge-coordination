@@ -1,4 +1,4 @@
-const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),os=require('os'),p=require('path'),{publish}=require('./publish-report');
+const test=require('node:test'),a=require('node:assert/strict'),fs=require('fs'),os=require('os'),p=require('path'),{publish,runCli,fatalError}=require('./publish-report');
 test('failed flow preserves old metrics, publishes independent output, retries reads and clears health on recovery',async()=>{
  const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-test-'));try{
  fs.mkdirSync(p.join(root,'state'));fs.writeFileSync(p.join(root,'state/flow.json'),'old');
@@ -39,4 +39,12 @@ test('workflow commits cheap Writer activity before the history fetch and flow p
  a.match(y,/fetch-depth:\s*1/);
  a.ok(y.includes('git fetch --no-tags --shallow-since="36 hours ago" origin main'));
  a.ok(!/fetch-depth:\s*0/.test(y));
+});
+test('a flow spawn timeout fails the step with a non-zero exit and is not retried',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-timeout-'));const prev=process.exitCode,log=console.log;let n=0;
+ try{
+  process.exitCode=0;console.log=()=>{};
+  const h=await runCli({root,components:[{id:'flow',paths:[]}],sleep:async()=>{},now:()=>1000,run:()=>{n++;return{ok:false,error:'spawnSync node ETIMEDOUT',spawnError:{code:'ETIMEDOUT'}};}});
+  a.equal(n,1);a.equal(h.components.flow.status,'STALE');a.match(h.components.flow.error,/ETIMEDOUT/);a.ok(fatalError(h));a.equal(process.exitCode,1);
+ }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
 });

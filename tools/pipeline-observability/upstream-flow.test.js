@@ -164,3 +164,19 @@ test('collect saves an incremental cursor after each report version, logs progre
   assert.equal(n,3);assert.equal(resumed.coverage.reportRevisions,3);assert.equal(resumed.coverage.newReportCommits,3);
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });
+test('collect stops at a deadline after at least one new version and the next run resumes the cursor',()=>{
+ const fs=require('fs'),os=require('os'),p=require('path'),{execFileSync}=require('child_process'),root=fs.mkdtempSync(p.join(os.tmpdir(),'discovery-budget-'));
+ const git=(...args)=>execFileSync('git',args,{cwd:root,stdio:'pipe'});
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.mkdirSync(p.join(root,'receipts'));fs.writeFileSync(p.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),JSON.stringify({jobs:{},sources:{}}));git('init');git('config','user.name','test');git('config','user.email','test@example.test');
+  const report=p.join(root,'state/board-discovery-report.json');
+  const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
+  write(3);write(2);write(1);
+  let t=1000;const first=U.collect(root,null,{persistCursor:true,deadline:1500,now:()=>t,onProgress:()=>{t=2000;}});
+  assert.equal(first.incomplete,true);assert.equal(first.records.length,1);assert.equal(first.reportHistory.commits.length,1);
+  assert.ok(fs.existsSync(p.join(root,U.CURSOR_FILE)));
+  const resumed=U.collect(root,null,{persistCursor:true}),fresh=U.collect(root,null,{ignoreCursor:true});
+  assert.equal(resumed.incomplete,false);assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
+ }finally{fs.rmSync(root,{recursive:true,force:true});}
+});
