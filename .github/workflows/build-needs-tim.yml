@@ -1,4 +1,5 @@
 # Rebuilds attention/NEEDS_TIM.json for the Pipeline Explorer "Needs you" page (Tim 2026-10-18 15:41 ET).
+# Bot incidents go to attention/BOT_INCIDENTS.json (pipeline-health reads it); NEEDS_TIM.json keeps only real asks for Tim.
 # Runs on every push that is not its own output, every 30 minutes (lane silence and unfinished runs depend on time),
 # and on demand. Commits only when the list actually changed.
 name: build-needs-tim
@@ -59,7 +60,7 @@ jobs:
           # commit burst). The list is derived from main, so each retry starts from the latest main and rebuilds it:
           # no rebase can be left half done, and an unchanged list ends the step quietly.
           for i in 1 2 3 4 5 6; do
-            git add attention/NEEDS_TIM.json
+            git add attention/NEEDS_TIM.json attention/BOT_INCIDENTS.json
             git diff --cached --quiet -- attention/ && { echo "No change after refresh"; exit 0; }
             git commit -q -m "NEEDS-TIM-BOT: rebuild attention list"
             git push -q origin HEAD:main && exit 0

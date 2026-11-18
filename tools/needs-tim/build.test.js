@@ -252,3 +252,49 @@ test('AUTO intake: a hold whose request wrote nothing and whose job is terminal 
   assert.ok(r.dismissed.some(d => d.id === 'auto-intake-identity-hold:' + ids[0] && d.by === 'needs-tim-build' && /DECLINED_BY_TIM/.test(d.reason)));
   assert.strictEqual(listed(build({ root, now: '2026-11-18T07:00:00Z' })).length, 4, 'no master snapshot: every hold stays listed');
 });
+
+/* NEEDS_TIM split: real asks (DECIDE, JOBS) stay in NEEDS_TIM.json; bot incidents go to BOT_INCIDENTS.json. */
+const { split } = require('./build.js');
+const mixed = () => ({
+  'asks/open/Q1.json': { id: 'Q1', title: 'Pick a lane owner' },
+  'asks/open/Q2.json': { id: 'Q2', section: 'JOBS', title: 'Rule on Acme' },
+  'asks/open/Q3.json': { id: 'Q3', title: 'Already answered' },
+  'asks/resolved/Q3.json': { id: 'Q3', dismiss: [{ itemId: 'handoff-open:H2.txt', source: 'handoffs/H2.txt' }] },
+  'receipts/AI_REASON_RUN_RECEIPT_FORGE-EMAIL-CHATGPT-20261018-0900ET_TERMINAL.txt': 'RUN_TERMINAL_STATUS=HARD_BLOCKED\nTIM_DECISIONS=Approve the mailbox scope\n',
+  'handoffs/H1.txt': 'HANDOFF_STATUS=OPEN\nINCIDENT=Writer timeout\n',
+  'handoffs/H2.txt': 'HANDOFF_STATUS=OPEN\nINCIDENT=Dismissed one\n',
+  'edit-requests/rejected/X.result.txt': 'REJECTED: bad field\n'
+});
+const PRS = [{ repo: 'forge-coordination', number: 9, title: '#9 Fix', draft: false, created_at: '2026-10-18T10:00:00Z', url: 'https://github.com/tpruittguitar/forge-coordination/pull/9' }];
+
+test('split: every item lands in exactly one file, none lost, none duplicated', () => {
+  const res = build({ root: repo(mixed()), prs: PRS, now: NOW }), { needsTim, botIncidents } = split(res);
+  const a = needsTim.items.map(i => i.id), b = botIncidents.items.map(i => i.id);
+  assert.ok(a.length > 0 && b.length > 0, 'fixture yields both kinds: ' + JSON.stringify([a, b]));
+  assert.strictEqual(a.length + b.length, res.items.length, 'no item lost or duplicated');
+  assert.deepStrictEqual(a.concat(b).sort(), ids(res), 'union is exactly the built list');
+  assert.ok(!a.some(id => b.includes(id)), 'no item in both files');
+  assert.ok(needsTim.items.every(i => ['DECIDE', 'JOBS'].includes(i.section)), 'NEEDS_TIM holds only real asks');
+  assert.ok(botIncidents.items.every(i => ['FAILED', 'UPKEEP'].includes(i.section)), 'BOT_INCIDENTS holds only incidents');
+  assert.ok(a.includes('ask:Q1') && a.includes('ask:Q2') && !a.includes('ask:Q3'), 'open asks stay, resolved asks stay gone');
+  assert.ok(b.includes('pr:forge-coordination#9') && b.some(id => id.startsWith('run-blocked:')), 'PRs and failed runs are incidents');
+  assert.ok(a.includes('run-tim-decisions:EMAIL|CHATGPT') && b.includes('handoff-open:H1.txt') && b.includes('edit-rejected:X.result.txt'));
+  assert.strictEqual(needsTim.counts.total, a.length); assert.strictEqual(botIncidents.counts.total, b.length);
+  assert.strictEqual(needsTim.counts.FAILED + needsTim.counts.UPKEEP, 0); assert.strictEqual(botIncidents.counts.DECIDE + botIncidents.counts.JOBS, 0);
+  assert.strictEqual(needsTim.schema, 'forge.needs-tim.v1'); assert.strictEqual(botIncidents.schema, 'forge.bot-incidents.v1');
+  assert.deepStrictEqual(needsTim.dismissed, res.dismissed, 'dismissed path unchanged'); assert.ok(res.dismissed.some(d => d.id === 'handoff-open:H2.txt'));
+  assert.deepStrictEqual(needsTim.lanes, res.lanes);
+});
+
+test('split CLI writes both files with disjoint items covering the whole build', () => {
+  const root = repo(mixed()), prs = path.join(root, 'prs.json'); fs.writeFileSync(prs, JSON.stringify(PRS));
+  const run = () => require('child_process').execFileSync(process.execPath, [path.join(__dirname, 'build.js'), '--root', root, '--prs', prs, '--now', NOW], { encoding: 'utf8' });
+  try {
+    const out1 = run();
+    const nt = JSON.parse(fs.readFileSync(path.join(root, 'attention/NEEDS_TIM.json'), 'utf8')), bi = JSON.parse(fs.readFileSync(path.join(root, 'attention/BOT_INCIDENTS.json'), 'utf8'));
+    const all = ids(build({ root, prs: PRS, now: NOW })), a = nt.items.map(i => i.id), b = bi.items.map(i => i.id);
+    assert.deepStrictEqual(a.concat(b).sort(), all); assert.strictEqual(new Set(a.concat(b)).size, all.length);
+    assert.match(out1, /NEEDS_TIM items=3 .*\(written\)/); assert.match(out1, /BOT_INCIDENTS items=\d+ .*\(written\)/);
+    assert.match(run(), /NEEDS_TIM .*unchanged[^\n]*\nBOT_INCIDENTS .*unchanged/, 'unchanged lists are not rewritten');
+  } finally { fs.rmSync(root, { recursive: true, force: true }); }
+});

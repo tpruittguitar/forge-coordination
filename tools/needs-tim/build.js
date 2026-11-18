@@ -3,7 +3,10 @@
    Reads this repo as written today and publishes attention/NEEDS_TIM.json for the Pipeline Explorer "Needs you" page.
    Sources: asks/ register, latest run receipt per lane, open handoffs, rejected edit requests, open pull requests
    (passed in as JSON by the workflow). Pure Node, no dependencies. Read-only except the one output file.
-   Run: node tools/needs-tim/build.js [--root .] [--prs prs.json] [--jobs master-rows.json] [--now ISO] [--out attention/NEEDS_TIM.json] */
+   Bot incidents (FAILED and UPKEEP sections) go to attention/BOT_INCIDENTS.json; NEEDS_TIM.json keeps only real asks for Tim
+   (DECIDE and JOBS sections). split() puts every item in exactly one file.
+   Run: node tools/needs-tim/build.js [--root .] [--prs prs.json] [--jobs master-rows.json] [--now ISO] [--out attention/NEEDS_TIM.json]
+        [--incidents-out attention/BOT_INCIDENTS.json] */
 'use strict';
 const fs = require('fs'), path = require('path');
 const autoLatch = require('../source-intake/auto-latch');
@@ -275,21 +278,43 @@ function build(opts) {
   }
   const order = { BLOCKING: 0, ACTION: 1, WATCH: 2 };
   items.sort((a, b) => order[a.level] - order[b.level] || (Date.parse(a.at || 0) || 0) - (Date.parse(b.at || 0) || 0));
+  const counts = tally(items);
+  return { schema: 'forge.needs-tim.v1', builtAt: new Date(now).toISOString(), sourceCommit: opts.commit || '', counts, items, lanes, dismissed: dismissedOut };
+}
+
+/* Real asks for Tim are the DECIDE and JOBS sections; every other item is a bot incident. Each item lands in exactly one file. */
+const TIM_SECTIONS = new Set(['DECIDE', 'JOBS']);
+const isTimAsk = it => TIM_SECTIONS.has(it.section);
+function tally(items) {
   const counts = { total: items.length, BLOCKING: 0, ACTION: 0, WATCH: 0, DECIDE: 0, JOBS: 0, FAILED: 0, UPKEEP: 0 };
   items.forEach(i => { counts[i.level]++; counts[i.section]++; });
-  return { schema: 'forge.needs-tim.v1', builtAt: new Date(now).toISOString(), sourceCommit: opts.commit || '', counts, items, lanes, dismissed: dismissedOut };
+  return counts;
+}
+function split(res) {
+  const asks = res.items.filter(isTimAsk), incidents = res.items.filter(it => !isTimAsk(it));
+  const needsTim = Object.assign({}, res, { counts: tally(asks), items: asks });
+  const botIncidents = { schema: 'forge.bot-incidents.v1', builtAt: res.builtAt, sourceCommit: res.sourceCommit, counts: tally(incidents), items: incidents };
+  return { needsTim, botIncidents };
+}
+function writeIfChanged(file, obj, keys) {
+  fs.mkdirSync(path.dirname(file), { recursive: true });
+  let same = false;
+  try { const p = JSON.parse(read(file)); same = JSON.stringify(keys.map(k => p[k])) === JSON.stringify(keys.map(k => obj[k])); } catch (e) { same = false; }
+  if (!same) fs.writeFileSync(file, JSON.stringify(obj, null, 1) + '\n');
+  return same;
 }
 
 if (require.main === module) {
   const a = process.argv.slice(2), arg = k => { const i = a.indexOf(k); return i >= 0 ? a[i + 1] : ''; };
   const root = arg('--root') || '.', out = arg('--out') || path.join(root, 'attention', 'NEEDS_TIM.json');
+  const incOut = arg('--incidents-out') || path.join(path.dirname(out), 'BOT_INCIDENTS.json');
   let prs = []; if (arg('--prs')) { try { prs = JSON.parse(fs.readFileSync(arg('--prs'), 'utf8')); } catch (e) { prs = []; } }
   let jobs = []; if (arg('--jobs')) { try { const j = JSON.parse(fs.readFileSync(arg('--jobs'), 'utf8')); jobs = Array.isArray(j) ? j : []; } catch (e) { jobs = []; } }
   const res = build({ root, prs, jobs, now: arg('--now') || '', commit: process.env.GITHUB_SHA || '' });
-  fs.mkdirSync(path.dirname(out), { recursive: true });
-  const prev = read(out); let same = false;
-  try { const p = JSON.parse(prev); same = JSON.stringify([p.items, p.lanes, p.dismissed]) === JSON.stringify([res.items, res.lanes, res.dismissed]); } catch (e) { same = false; }
-  if (!same) fs.writeFileSync(out, JSON.stringify(res, null, 1) + '\n');
-  process.stdout.write('NEEDS_TIM items=' + res.items.length + ' blocking=' + res.counts.BLOCKING + ' action=' + res.counts.ACTION + ' watch=' + res.counts.WATCH + (same ? ' (unchanged; file not rewritten)' : ' (written)') + '\n');
+  const { needsTim, botIncidents } = split(res);
+  const same = writeIfChanged(out, needsTim, ['items', 'lanes', 'dismissed']), incSame = writeIfChanged(incOut, botIncidents, ['items']);
+  const c = needsTim.counts, ic = botIncidents.counts;
+  process.stdout.write('NEEDS_TIM items=' + c.total + ' blocking=' + c.BLOCKING + ' action=' + c.ACTION + ' watch=' + c.WATCH + (same ? ' (unchanged; file not rewritten)' : ' (written)') + '\n');
+  process.stdout.write('BOT_INCIDENTS items=' + ic.total + ' blocking=' + ic.BLOCKING + ' action=' + ic.ACTION + ' watch=' + ic.WATCH + (incSame ? ' (unchanged; file not rewritten)' : ' (written)') + '\n');
 }
-module.exports = { build, parseName, parseBody, etIso };
+module.exports = { build, split, isTimAsk, parseName, parseBody, etIso };
