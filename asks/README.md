@@ -29,7 +29,7 @@ Create `asks/open/<ID>.json`. ID = `ASK-<YYYYMMDD>-<PROVIDER>-<HHMM>` (Claude's 
 - Keep writing `NEXT_OWNER=` in the receipt as before; the builder reads both.
 
 ## Close an item
-Create `asks/resolved/<ID>.json` with the same `id` (never edit or delete the open file):
+Create `asks/resolved/<ID>.json` with the same `id` and the ruling, then delete the open file in the same commit. Resolved or stale asks are deleted, not archived:
 
 ```json
 {"id": "ASK-20261018-01", "resolvedAt": "...", "resolvedBy": "CLAUDE", "ruling": "Tim 2026-10-18 16:05 ET: WATCH"}
@@ -50,4 +50,4 @@ Item IDs are shown on the Needs you page under each item.
 The President checksheet section is rendered by `node tools/office-status/needs-tim-section.js [--out FILE]`; to refresh a pasted copy use
 `--merge <existing-section-file>`. Only the text between `<!-- NEEDS_TIM:BEGIN generated from asks/open -->` and `<!-- NEEDS_TIM:END -->` is replaced
 (markers are added at the end if missing); anything outside them is hand-written and left byte-identical.
-**Hand edits inside the markers are overwritten on the next render.** To remove a card, move its file to `asks/resolved/`.
+**Hand edits inside the markers are overwritten on the next render.** To remove a card, create its `asks/resolved/<ID>.json` with the ruling and delete the open file; resolved or stale asks are deleted, not archived.
