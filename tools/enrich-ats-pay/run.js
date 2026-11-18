@@ -594,6 +594,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     stats.products_planned++;if(productSample.length<5)productSample.push({id:r.PRIMARY_ID,reference:entry.id});
   }
   if(!PREPARE_ONLY&&!process.env.ENRICH_MASTER_FILE)fs.writeFileSync(path.join(ROOT,'state/enrich-ats-pay-products.json'),JSON.stringify({schema:'forge.company-site-product-gaps.v1',at:new Date().toISOString(),mappedPlanned:stats.products_planned,unmappedSites:Object.values(productGaps).sort((a,b)=>b.jobs-a.jobs)},null,2)+'\n');
+  // Code-scored fit (Tim, Nov 17 2026): saved posting text (400+ chars) vs the resume profile, no AI and no network.
+  // Fit fields ride on this run's existing rulings or take a free slot inside maxBatches x 25; fenced rows are skipped.
+  if(!PRODUCTS_ONLY&&!PREPARE_ONLY){progress('code_fit',{planned:requests.length});try{const fitPlan=require('./code-fit').plan({rows,requests,fit:p=>Evidence.fit(p),active:activeProductRow,unavailable:unavailableIds,runId:RUN_ID,slots:CONFIG.maxBatches*25,max:CONFIG.codeFitPerRun||150,
+    saved:r=>Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r))});stats.code_fit={...fitPlan.stats,sample:fitPlan.sample};}catch(e){stats.code_fit={error:String(e.message||e).slice(0,200)};}}
   // REV-140: a saved FORGE-ESTIMATE from comparables at LOW is replaced when a same-employer source now exists (master,
   // archive or remembered postings; no new network). Posted pay and anything a lane wrote are never touched.
   const upgradeIds = new Set(); stats.upgraded = 0;
@@ -630,6 +634,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const cur = now[q.ruling.primaryId]; if ((retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
+        if(require('./code-fit').guard(f,rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,p=>Evidence.fit(p)))stats.code_fit_guard_dropped=(stats.code_fit_guard_dropped||0)+1;
         const repairing = repairOriginal.has(q.ruling.primaryId);
         const repairUnchanged = repairing && repairOriginal.get(q.ruling.primaryId) === salaryStamp(cur);
         const reviewing=reviewOriginal.has(q.ruling.primaryId),reviewUnchanged=reviewing&&ActiveReview.eligible(cur)&&reviewOriginal.get(q.ruling.primaryId)===ActiveReview.fingerprint(cur);
