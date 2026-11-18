@@ -1,7 +1,8 @@
 'use strict';
 // Public, sourced context only. Size changes evidence weights, never salary amounts.
-const VERSION='pay-sample-match-v6',DAY=86400000;
-const norm=s=>String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
+const VERSION='pay-sample-match-v6a',DAY=86400000;
+const Alias=require('./company-alias');
+const norm=s=>Alias.canonical(s)||String(s||'').toLowerCase().replace(/\b(incorporated|corporation|corp|inc|llc|ltd)\b/g,'').replace(/[^a-z0-9]+/g,' ').trim();
 function fact(f,now=Date.now()){
  if(!f||f.status!=='CONFIRMED'||!f.sourceUrl||!f.quote||!Number.isFinite(Date.parse(f.asOf)))return null;
  try{const u=new URL(f.sourceUrl);if(u.protocol!=='https:'||u.username||u.password)return null;}catch{return null;}
@@ -14,7 +15,8 @@ function lookup(row,ref={},now=Date.now()){
  const roles=(ref.roles||[]).filter(r=>r.primaryId===row.PRIMARY_ID&&norm(r.company)===norm(row.COMPANY)&&norm(r.title)===norm(row.TITLE)&&norm(r.location)===norm(row.LOCATION));const role=roles.length===1?roles[0]:null;
  const out={};
  for(const [key,record] of [['employees',company?.facts?.employees],['revenueUsd',company?.facts?.revenueUsd],['siteEmployees',sites.length===1?sites[0].facts?.employees:null],...['teamSize','management','reach','minExperienceYears','minLeadershipYears','launch','clearance'].map(k=>[k,role?.facts?.[k]])]){const v=fact(record,now);if(v!==null)out[key]=v;}
- const industry=industryFrom([company?.builds,listedBuilds(row,ref),businessOf(row),companyOverview(postingOf(row))||rememberedOverview(row)]);
+ // Order (PAY SAMPLE MATCH): registry `builds`, EMPLOYER_PRIMARY_BUSINESS, posting company overview. No AI or web lookup.
+ const industry=industryFrom([listedBuilds(row,ref)||company?.builds,businessOf(row),companyOverview(postingOf(row))||rememberedOverview(row)]);
  if(industry)out.industry=industry;
  return out;
 }
@@ -25,18 +27,45 @@ function postingKey(a){
  }catch{}
  return norm(a.co)+'|'+norm(a.title)+'|'+norm(a.location||a.state)+'|'+a.low+'|'+a.high;
 }
-function identityKey(a){return norm(a.co)+'|'+norm(a.title).replace(/\bsr\b/g,'senior')+'|'+norm(a.location||a.state)+'|'+a.low+'|'+a.high;}
+// Location identity: city plus US state code when one is readable ("Orlando, FL" = "Orlando, Florida, United States").
+function locationKey(loc){
+ const t=String(loc||''),state=require('./lib').stateFrom(t),city=norm(t.split(',')[0]);
+ return state?city+' '+state.toLowerCase():norm(t);
+}
+const rangeKey=n=>Number.isFinite(Number(n))?Math.round(Number(n)/1000):String(n);
+// Same company (after alias normalization), title, location and range is one posting, whatever URL it came from.
+function identityKey(a){return norm(a.co)+'|'+norm(a.title).replace(/\bsr\b/g,'senior')+'|'+locationKey(a.location||a.state)+'|'+rangeKey(a.low)+'|'+rangeKey(a.high);}
+/** Drop repeated postings before any weighting; the newest copy is kept. */
+function dedupe(anchors){
+ const seen=new Set(),out=[];
+ for(const a of anchors.slice().sort((a,b)=>(Date.parse(b.asOf||b.seen)||0)-(Date.parse(a.asOf||a.seen)||0))){const k=postingKey(a),id=identityKey(a);if(seen.has(k)||seen.has(id))continue;seen.add(k);seen.add(id);out.push(a);}
+ return out;
+}
 const number=v=>typeof v==='number'&&Number.isFinite(v)&&v>0;
 const BANDS={employees:[[100,'UNDER_100'],[1000,'100_999'],[10000,'1000_9999'],[Infinity,'10000_PLUS']],teamSize:[[10,'UNDER_10'],[50,'10_49'],[200,'50_199'],[Infinity,'200_PLUS']]};
 function band(key,n){for(const [max,label] of BANDS[key])if(n<max)return label;return null;}
+// Industry buckets (PAY SAMPLE MATCH). Specific buckets first; GENERAL_MANUFACTURING is the catch-all for
+// industrial makers and only applies when no specific bucket matched. Two or more specific hits is a weak
+// match and counts as unknown.
 const INDUSTRY=[
  ['AEROSPACE_DEFENSE',/\b(aerospace|aircraft|aviation|spacecraft|satellite|orbital|rocket|launch vehicle|defense|defence|military|drone|uav|unmanned aerial|unmanned aircraft)\b/i],
  ['AUTOMOTIVE',/\b(automotive|automobile)\b/i],
  ['SEMICONDUCTOR',/\b(semiconductor|semiconductors)\b/i],
  ['PHARMA',/\b(pharmaceutical|pharmaceuticals|pharma|biopharmaceutical)\b/i],
  ['MEDICAL_DEVICE',/\b(medical device|medical devices)\b/i],
- ['ENERGY',/\b(oil and gas|refiner(?:y|ies)|solar power|battery energy)\b/i]
+ ['ENERGY',/\b(oil and gas|refiner(?:y|ies)|solar power|battery energy)\b/i],
+ ['FURNITURE',/\b(furniture|furnishings|cabinetry|mattress(?:es)?|bedding)\b/i],
+ ['FOOD_BEVERAGE',/\b(food|foods|beverage|beverages|brewery|breweries|brewing|bakery|bakeries|snacks?|dairy|meat processing|poultry|confection(?:s|ery)?|bottling|bottler)\b/i],
+ ['RETAIL',/\b(retailer|retailers|retail stores?|retail chain|department stores?|grocery|supermarkets?)\b/i],
+ ['NONPROFIT',/\b(non-?profit|not-for-profit|501\s?\(c\)\s?\(3\)|charity|charitable organization)\b/i],
+ ['CONSUMER_PRODUCTS',/\b(consumer (?:products|goods|electronics)|sporting goods|sports equipment|athletic (?:footwear|apparel|equipment)|household products|personal care products|toys?|apparel|footwear|cosmetics|home appliances)\b/i],
+ ['SPORTS_ORG',/\b(sports? (?:league|association|federation|club|organization|governing body)|tennis association|athletic association|national governing body|usta|ncaa|professional (?:sports )?league)\b/i],
+ ['EDUCATION',/\b(school|schools|university|universities|college|colleges|art school|school of art|k-12|educational institution)\b/i],
+ ['HEALTHCARE_SERVICES',/\b(clinic|clinics|hospital|hospitals|health system|healthcare provider|patient care|vein|vascular (?:center|clinic|care|institute)|medical center|physician practice|urgent care)\b/i],
 ];
+const GENERAL_MANUFACTURING=['GENERAL_MANUFACTURING',/\b(manufactur\w*|industrial|fabricat\w*|machining|machinery|factory|factories)\b/i];
+// Organizations that do not make products never match a manufacturing target.
+const NON_MAKER=new Set(['NONPROFIT','SPORTS_ORG','EDUCATION','HEALTHCARE_SERVICES']);
 const overviews=new Map();
 function unclearIndustryText(text){
  const t=String(text||'').trim();
@@ -48,7 +77,14 @@ function unclearIndustryText(text){
 function industryLabel(text){
  if(unclearIndustryText(text))return null;
  const hits=[];for(const [label,re] of INDUSTRY)if(re.test(text)&&!hits.includes(label))hits.push(label);
- return hits.length===1?hits[0]:null;
+ if(hits.length===1)return hits[0];
+ if(!hits.length&&GENERAL_MANUFACTURING[1].test(text))return GENERAL_MANUFACTURING[0];
+ return null;
+}
+/** Company registry (SECTION=TARGET_COMPANIES) from the canonical rules text: [{company,aliases,builds}]. */
+function registryFromRules(text){
+ const out=[];for(const m of String(text||'').matchAll(/^TARGET_COMPANY=(\{.*\})\s*$/gm)){try{const c=JSON.parse(m[1]);if(c&&c.company)out.push({company:c.company,aliases:Array.isArray(c.aliases)?c.aliases:[],builds:String(c.builds||'')});}catch{}}
+ return out;
 }
 function industryFrom(parts){for(const text of parts){const label=industryLabel(text);if(label)return label;}return null;}
 function companyOverview(text){
@@ -69,25 +105,43 @@ function listedBuilds(row,ref){
  }
  return '';
 }
+// PAY SAMPLE MATCH (Tim 2026-11-13): industry, company size band and scope are hard matches.
+// Known on both rows and different: the sample is excluded. Unknown on either row: the sample stays in
+// at the missing-fact weight (0.75), once per dimension.
+const MISSING_FACT_WEIGHT=0.75;
+const SCOPE_KEYS=['teamSize','management','reach'];
+function closeness(a,b){return 1/(1+Math.abs(Math.log2(a/b))/2);}
 function similarity(target,other){
  let weight=1,known=0;const missing=[];
- // Company size and team size (scope, including a stated direct-report count) exclude on a known band mismatch.
- // The same band keeps the existing closeness weight. A missing fact stays at 0.75.
- for(const key of ['employees','teamSize']){
-  if(number(target[key])&&number(other[key])){known++;if(band(key,target[key])!==band(key,other[key]))return{weight:0,known,missing,conflict:key};weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}
-  else{missing.push(key);if(number(target[key]))weight*=0.75;}
+ // Industry. A known non-maker (nonprofit, sports body, school, care provider) is a known mismatch for a known
+ // manufacturing target; an unknown target industry keeps the sample at 0.75 like any other unknown.
+ if(target.industry&&other.industry){known++;if(target.industry!==other.industry)return{weight:0,known,missing,conflict:'industry'};}
+ else{missing.push('industry');weight*=MISSING_FACT_WEIGHT;}
+ // Company size band.
+ if(number(target.employees)&&number(other.employees)){known++;if(band('employees',target.employees)!==band('employees',other.employees))return{weight:0,known,missing,conflict:'employees'};weight*=closeness(target.employees,other.employees);}
+ else{missing.push('employees');weight*=MISSING_FACT_WEIGHT;}
+ // Scope: team size (including a stated direct-report count), management layer, number of sites / reach.
+ let scopeKnown=0;
+ for(const key of SCOPE_KEYS){
+  const t=target[key],o=other[key],both=key==='teamSize'?number(t)&&number(o):!!(t&&o);
+  if(!both){missing.push(key);continue;}
+  known++;scopeKnown++;
+  if(key==='teamSize'){if(band(key,t)!==band(key,o))return{weight:0,known,missing,conflict:key};weight*=closeness(t,o);}
+  else if(t!==o)return{weight:0,known,missing,conflict:key};
  }
+ if(!scopeKnown)weight*=MISSING_FACT_WEIGHT;
+ // Softer context: closeness when both known; target-known/sample-unknown keeps the prior 0.75.
  for(const key of ['revenueUsd','siteEmployees','minExperienceYears','minLeadershipYears']){
-  if(number(target[key])&&number(other[key])){known++;weight*=1/(1+Math.abs(Math.log2(target[key]/other[key]))/2);}else{missing.push(key);if(number(target[key]))weight*=0.75;}
+  if(number(target[key])&&number(other[key])){known++;weight*=closeness(target[key],other[key]);}else{missing.push(key);if(number(target[key]))weight*=MISSING_FACT_WEIGHT;}
  }
- for(const key of ['industry','management','reach','launch','clearance']){
-  if(target[key]&&other[key]){known++;if(target[key]!==other[key]){if(key==='industry'||key==='management'||key==='reach')return{weight:0,known,missing,conflict:key};weight*=0.5;}}else{missing.push(key);if(target[key])weight*=0.75;}
+ for(const key of ['launch','clearance']){
+  if(target[key]&&other[key]){known++;if(target[key]!==other[key])weight*=0.5;}else{missing.push(key);if(target[key])weight*=MISSING_FACT_WEIGHT;}
  }
  return{weight,known,missing};
 }
 function rank(row,anchors,ref,now=Date.now()){
  const target=lookup(row,ref,now),seen=new Set(),out=[];
- for(const a of anchors.slice().sort((a,b)=>(Date.parse(b.asOf||b.seen)||0)-(Date.parse(a.asOf||a.seen)||0))){
+ for(const a of dedupe(anchors)){
   const key=postingKey(a),identity=identityKey(a);if(seen.has(key)||seen.has(identity))continue;
   const other=lookup({PRIMARY_ID:a.id,COMPANY:a.co||'',TITLE:a.title,LOCATION:a.location||'',business:a.business,postingText:a.postingText||a.text||a.description||'',p:a.p},ref,now),s=similarity(target,other);
   if(!s.weight)continue;
@@ -143,6 +197,8 @@ function learn(ref,row,text,sourceUrl,asOf){
  const facts={},conflicts=new Set(),put=(key,value,quote)=>{if(conflicts.has(key))return;if(facts[key]&&facts[key].value!==value){delete facts[key];conflicts.add(key);return;}facts[key]={value,quote:quote.slice(0,240),sourceUrl,asOf,status:'CONFIRMED'};};
  let m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(\d[\d,]*)\s+(?:people|employees|engineers|direct reports)\b/i);
  if(m)put('teamSize',Number(m[1].replace(/,/g,'')),m[0]);
+ m=text.match(/\b(\d{1,4})\s+direct reports\b/i);if(m&&!facts.teamSize&&!conflicts.has('teamSize'))put('teamSize',Number(m[1]),m[0]);
+ m=text.match(/\b(?:responsible for|oversee|overseeing|manage|managing|lead|leading|across)\s+(?:operations\s+(?:at|across)\s+)?(\d{1,3}|two|three|four|five|six|seven|eight|nine|ten)\s+(?:manufacturing\s+|production\s+)?(?:sites|plants|facilities)\b/i);if(m&&!/^(?:1|one)$/i.test(m[1]))put('reach','MULTI_SITE',m[0]);
  m=text.match(/\b(?:manage|lead|supervise)\s+(?:a\s+)?team of\s+(?:\d+\s+)?managers\b/i);if(m)put('management','MANAGES_MANAGERS',m[0]);
  m=text.match(/\b(?:this (?:role|position) is an individual contributor|individual contributor role)\b/i);if(m)put('management','INDIVIDUAL_CONTRIBUTOR',m[0]);
  m=text.match(/\b(?:responsible for|oversee|manage)\s+(?:operations\s+)?across multiple (?:sites|plants|facilities)\b/i);if(m)put('reach','MULTI_SITE',m[0]);
@@ -177,5 +233,5 @@ function merge(base,incoming){
   for(const [k,f]of Object.entries(r.facts||{}))if(!old.facts[k]||Date.parse(old.facts[k].asOf)<Date.parse(f.asOf))old.facts[k]=f;
  }return result;
 }
-module.exports={VERSION,norm,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge,industryLabel,industryFrom};
+module.exports={VERSION,MISSING_FACT_WEIGHT,NON_MAKER,norm,dedupe,registryFromRules,locationKey,fact,lookup,similarity,rank,select,weightedMedian,weightedQuantile,salaryValue,confidence,annotation,postingKey,identityKey,learn,merge,industryLabel,industryFrom};
 

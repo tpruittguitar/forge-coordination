@@ -152,3 +152,20 @@ test('LinkedIn compensation__salary: the /yr range on its own line under Base pa
   assert.strictEqual(L.parseAggregator('linkedin', html.replace(/\/yr/g, '/hr').replace(/165,000\.00/, '80.00').replace(/205,000\.00/, '95.00'), row).pay, null, 'hourly is not annual base');
   assert.strictEqual(L.parseAggregator('indeed', html, row).pay, null, 'the LinkedIn element is read for LinkedIn only');
 });
+
+test('fix A item 1: QUALITY, OPS, ENG, SUPPLY_CHAIN and EHS never cross; OTHER matches nothing', () => {
+  const titles = { QUALITY: 'Director of Quality', OPS: 'Director of Operations', ENG: 'Director of Engineering', SUPPLY_CHAIN: 'Director of Supply Chain', EHS: 'Director of EHS' };
+  for (const [k, t] of Object.entries(titles)) assert.strictEqual(L.func(t), k, t);
+  for (const a of Object.values(titles)) for (const b of Object.values(titles)) if (a !== b) assert.strictEqual(L.comparable({ TITLE: a }, { title: b }), false, a + ' vs ' + b);
+  assert.strictEqual(L.func('Director of Marketing'), 'OTHER');
+  assert.strictEqual(L.comparable({ TITLE: 'Director of Marketing' }, { title: 'Director of Marketing' }), false);
+  assert.strictEqual(L.estimate({ PRIMARY_ID: 'T', TITLE: 'Director of Marketing', LOCATION: 'Austin, TX' }, [{ id: 'A', title: 'Director of Marketing', low: 150000, high: 200000, level: 3, func: 'OTHER', region: 'S', state: 'TX' }]), null);
+});
+
+test('fix A item 3: SALARY_SOURCE cites comparables by URL and as-of date, never row ids', () => {
+  const c = L.citation({ id: 'V2I-0000000000AA', co: 'Acme', title: 'Director of Quality', sourceUrl: 'https://boards.greenhouse.io/acme/jobs/1#app', asOf: '2026-11-02T10:00:00Z' });
+  assert.deepStrictEqual([c.url, c.asOf], ['https://boards.greenhouse.io/acme/jobs/1', '2026-11-02']);
+  const text = L.salarySourceText('comparables', [c, L.citation({ id: 'V2I-0000000000BB', co: 'Beta', title: 'Director of Quality', sourceUrl: 'EMPLOYER_POSTED' })]);
+  assert.strictEqual(text, 'comparables: https://boards.greenhouse.io/acme/jobs/1 (as of 2026-11-02); no public URL (Beta, Director of Quality) (as of unknown)');
+  assert.doesNotMatch(text, /V2[IE]-/);
+});

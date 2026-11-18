@@ -1,7 +1,7 @@
 'use strict';
 const Context = require('./context');
 const Scope = require('./anchor-scope');
-const Pay=require('./pay-values'),Employer=require('./employer-identity');
+const Pay=require('./pay-values'),Employer=require('./employer-identity'),Alias=require('./company-alias');
 /* REV-116 (Tim 2026-10-20 18:09-18:17 ET): pay and degree from the posting first, estimates only after the posting was
    checked, or a trusted site-estimate input is available (Tim 2026-11-11), done off the Writer. Pure functions here; run.js does the network. */
 
@@ -14,11 +14,13 @@ const LEVELS = [
   [1, /\bmanager\b/i],
 ];
 function level(title) { title=String(title||'').replace(/\bmgr\b/gi,'manager');for (const [n, re] of LEVELS) if (re.test(title || '')) return n; return 0; }
+// Function buckets never cross: QUALITY, OPS, ENG, SUPPLY_CHAIN and EHS are distinct, and OTHER matches nothing.
 const FUNCS = [
-  ['QUALITY', /\bquality\b/i], ['ENG', /\bengineering\b/i], ['PROGRAM', /\b(program|project)\b/i],
-  ['MFG', /\b(manufactur\w*|production|plant|assembly|fabrication)\b/i], ['OPS', /\b(operations?|ops|supply chain|industrial)\b/i],
+  ['QUALITY', /\bquality\b/i], ['EHS', /\b(ehs|hse|eh&s|environment(?:al)?,? health(?:,| and| &) safety|health(?:,| and| &) safety|safety)\b/i],
+  ['ENG', /\bengineering\b/i], ['PROGRAM', /\b(program|project)\b/i],
+  ['MFG', /\b(manufactur\w*|production|plant|assembly|fabrication)\b/i], ['OPS', /\b(operations?|ops|industrial)\b/i],
 ];
-function func(title) { if(Scope.family(title)==='SUPPLY_CHAIN')return 'OPS';if(Scope.family(title)==='MANUFACTURING_TECHNOLOGY')return 'ENG';for (const [k, re] of FUNCS) if (re.test(title || '')) return k; return 'OTHER'; }
+function func(title) { const fam=Scope.family(title);if(fam==='SUPPLY_CHAIN')return 'SUPPLY_CHAIN';if(fam==='MANUFACTURING_TECHNOLOGY')return 'ENG';for (const [k, re] of FUNCS) if (re.test(title || '')) return k; return 'OTHER'; }
 const REGION = { NE: 'CT ME MA NH RI VT NJ NY PA', MW: 'IL IN MI OH WI IA KS MN MO NE ND SD', S: 'DE FL GA MD NC SC VA DC WV AL KY MS TN AR LA OK TX', W: 'AZ CO ID MT NV NM UT WY AK CA HI OR WA' };
 const STATE_REGION = {}; Object.keys(REGION).forEach(r => REGION[r].split(' ').forEach(s => { STATE_REGION[s] = r; }));
 function stateOf(loc) { const m = String(loc || '').match(/,\s*([A-Z]{2})\b/); return m ? m[1] : ''; }
@@ -68,9 +70,17 @@ function postedAnchor(r, p) {
   // A legacy posted flag must not promote a site-labelled estimate to employer evidence.
   if (Pay.estimated(p.PAY_POSTED) || /glassdoor\.com|salary\.com|payscale\.com/i.test(String(p.SALARY_SOURCE || ''))) return null;
   const lo = num(p.SALARY_BASE_LOW), hi = num(p.SALARY_BASE_HIGH);
-  if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION), ...(String(p.EMPLOYER_PRIMARY_BUSINESS||'').trim()?{business:String(p.EMPLOYER_PRIMARY_BUSINESS).trim()}:{}) };
+  if (basis === 'EMPLOYER_POSTED' && lo >= 40000 && hi >= lo) return { id: r.PRIMARY_ID, co: r.COMPANY, title: r.TITLE, location:r.LOCATION, asOf:p.SALARY_ASOF, sourceUrl:p.SALARY_SOURCE, ...(postingPage(p)?{page:postingPage(p)}:{}), low: lo, high: hi, level: level(r.TITLE), func: func(r.TITLE), region: regionOf(r.LOCATION), state: stateFrom(r.LOCATION), ...(String(p.EMPLOYER_PRIMARY_BUSINESS||'').trim()?{business:String(p.EMPLOYER_PRIMARY_BUSINESS).trim()}:{}) };
   return null;
 }
+/* ---------- Comparable citations (pay v6 fix A, item 3) ----------
+   SALARY_SOURCE names each kept comparable by its public posting URL and as-of date, never by an internal row id:
+     comparables: https://a.example/job/1 (as of 2026-11-02); https://b.example/job/2 (as of 2026-10-30) */
+function citeUrl(raw){const u=require('./public-posting').publicUrl(String(raw||'').trim());return u?u.replace(/#.*$/,''):null;}
+function postingPage(p){for(const k of ATS_URL_KEYS){const u=citeUrl(p&&p[k]);if(u)return u;}return null;}
+function citation(a){const asOf=String(a.asOf||a.seen||'').slice(0,10);return{id:a.id||null,url:citeUrl(a.sourceUrl)||citeUrl(a.page)||null,asOf:/^\d{4}-\d{2}-\d{2}$/.test(asOf)?asOf:null,company:a.co||'',title:a.title||''};}
+function citationText(c){return (c.url||'no public URL ('+[c.company,c.title].filter(Boolean).join(', ')+')')+' (as of '+(c.asOf||'unknown')+')';}
+function salarySourceText(prefix,comparables){return prefix+': '+(comparables||[]).map(citationText).join('; ');}
 function median(a) { const s = a.slice().sort((x, y) => x - y), n = s.length; return n ? (n % 2 ? s[(n - 1) / 2] : (s[n / 2 - 1] + s[n / 2]) / 2) : null; }
 function comparable(row, anchor) {
   // Recompute from actual titles, never trust a cached coarse level.
@@ -78,16 +88,25 @@ function comparable(row, anchor) {
   // Applied AI/ML leadership is not a generic plant-management comparator. Do not
   // infer a technology premium; with no matching specialty, retain missing evidence.
   const specialty=title=>/\b(?:AI|ML|artificial intelligence|machine learning)\b/i.test(title||'')?'AI_ML':'GENERAL';
-  return !!String(anchor.title || '').trim() && level(row.TITLE) === level(anchor.title) && func(row.TITLE) === func(anchor.title) && track(row.TITLE) === track(anchor.title) && specialty(row.TITLE)===specialty(anchor.title) && Scope.family(row.TITLE)===Scope.family(anchor.title) && Scope.executiveScope(row.TITLE)===Scope.executiveScope(anchor.title);
+  const F=func(row.TITLE);
+  return !!String(anchor.title || '').trim() && F !== 'OTHER' && level(row.TITLE) === level(anchor.title) && F === func(anchor.title) && track(row.TITLE) === track(anchor.title) && specialty(row.TITLE)===specialty(anchor.title) && Scope.family(row.TITLE)===Scope.family(anchor.title) && Scope.executiveScope(row.TITLE)===Scope.executiveScope(anchor.title);
+}
+const anchorUrlIndex=new WeakMap();
+function rowsByAnchorUrl(rows){
+  let m=anchorUrlIndex.get(rows);if(m)return m;m=new Map();
+  for(const r of rows){const a=postedAnchor(r,r.p||{});if(!a)continue;for(const u of [citeUrl(a.sourceUrl),a.page])if(u){if(!m.has(u))m.set(u,[]);m.get(u).push(r);}}
+  anchorUrlIndex.set(rows,m);return m;
 }
 function invalidSavedAnchors(row, rows) {
   const p = row.p || {};
-  if (p.SALARY_BASIS !== 'FORGE-ESTIMATE' || !/^(same-employer|comparables):/.test(p.SALARY_SOURCE || '')) return [];
-  const by = new Map(rows.map(r => [r.PRIMARY_ID, r]));
-  return [...new Set(String(p.SALARY_SOURCE).match(/V2[IE]-[A-Z0-9]+/g) || [])].flatMap(id => {
-    const a = by.get(id); if (!a) return []; // Missing history is not proof of a bad comparator.
-    return !postedAnchor(a, a.p || {}) || !comparable(row, { title: a.TITLE }) ? [id] : [];
-  });
+  if (p.SALARY_BASIS !== 'FORGE-ESTIMATE' || !/^(same-employer|comparables|leadership-postings):/.test(p.SALARY_SOURCE || '')) return [];
+  const by = new Map(rows.map(r => [r.PRIMARY_ID, r])), text=String(p.SALARY_SOURCE);
+  // Legacy saved sources name row ids; current ones cite posting URLs, resolved back to the rows that posted them.
+  const cited=[...new Set(text.match(/V2[IE]-[A-Z0-9]+/g) || [])].map(id=>by.get(id)).filter(Boolean);
+  const urls=(text.match(/https?:\/\/[^\s;]+?(?=\s\(as of|;|\s|$)/g)||[]).map(citeUrl).filter(Boolean);
+  if(urls.length){const index=rowsByAnchorUrl(rows);for(const u of urls)for(const r of index.get(u)||[])if(!cited.includes(r))cited.push(r);}
+  return cited.flatMap(a => // Missing history is not proof of a bad comparator.
+    !postedAnchor(a, a.p || {}) || !comparable(row, { title: a.TITLE }) ? [a.PRIMARY_ID] : []);
 }
 /* Tim's COMPENSATION_ESTIMATION: 1 employer-posted comparable = LOW; 2 = LOW (MED when role/geo close); 3+ strong = MED.
    Comparables must share level and function; same-region ones first. */
@@ -107,7 +126,7 @@ function estimate(row, anchors, context) {
   const tight = med > 0 && (Math.max.apply(null, mids) - Math.min.apply(null, mids)) / med <= 0.2;
   let conf = use.length >= 3 && close && tight ? 'HIGH' : use.length >= 2 && close ? 'MED' : 'LOW';
   if(context)conf=Context.confidence({conf},use);
-  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), modelVersion:context?Context.VERSION:null, basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}`+(context?'; '+Context.annotation(use):'') };
+  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, close, tight, ids: use.map(a => a.id), comparables: use.map(citation), modelVersion:context?Context.VERSION:null, basis: `${use.length} employer-posted comparable(s), level ${L} ${F}${close ? ' same region ' + R : ' any region'}`+(context?'; '+Context.annotation(use):'') };
 }
 /* Tim 2026-10-20 18:21 ET: pay shown on an aggregator posting (LinkedIn, Indeed, ZipRecruiter) is posting pay and comes
    before any estimate. Pay the site labels as its own estimate stays THIRD_PARTY_ESTIMATE input to the Forge model, never a final range (Tim 2026-11-11). */
@@ -186,7 +205,7 @@ function stateFrom(loc) {
   const low = t.toLowerCase(); for (const n of Object.keys(STATE_NAMES).sort((a, b) => b.length - a.length)) if (new RegExp('\\b' + n + '\\b').test(low)) return STATE_NAMES[n];
   return '';
 }
-function normCo(s) { return String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/&/g, ' and ').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(inc|llc|ltd|corp|corporation|company|co|the|plc|holdings|group|usa|us|na)\b/g, ' ').replace(/\s+/g, ' ').trim(); }
+function normCo(s) { return Alias.canonical(s) || String(s || '').toLowerCase().replace(/\(.*?\)/g, ' ').replace(/&/g, ' and ').replace(/[^a-z0-9 ]+/g, ' ').replace(/\b(inc|llc|ltd|corp|corporation|company|co|the|plc|holdings|group|usa|us|na)\b/g, ' ').replace(/\s+/g, ' ').trim(); }
 /** The employer's public ATS board, from any ATS link on the row: { kind, key, ... } or null. */
 function boardOf(p) {
   for (const k of ATS_URL_KEYS) {
@@ -241,7 +260,7 @@ function sameEmployerEstimate(row, comps, ratio, context) {
   const mids = adj.map(a => (a.low + a.high) / 2), med = median(mids), tight = med > 0 && (Math.max(...mids) - Math.min(...mids)) / med <= 0.2;
   let conf = use.length >= 2 && tight ? 'HIGH' : use.length>=2 ? 'MED' : 'LOW';
   if(context)conf=Context.confidence({conf},use);
-  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, ids: use.map(c => c.id || c.page).filter(Boolean), source: 'SAME_EMPLOYER',
+  return { low, high, mid: Math.round((low + high) / 2), conf, n: use.length, ids: use.map(c => c.id || c.page).filter(Boolean), comparables: use.map(citation), source: 'SAME_EMPLOYER',
     modelVersion:context?Context.VERSION:null,basis: `same employer, ${use.length} posted range(s) for level ${level(row.TITLE)} ${func(row.TITLE)} roles: ` + notes.join('; ')+(context?'; '+Context.annotation(use):'') };
 }
 /** Master anchors from the same employer (step 1, no network). */
@@ -251,7 +270,7 @@ function sameEmployerAnchors(row, anchors) {
     .map(a => ({ id: a.id, co:a.co, title: a.title, location:a.location, asOf:a.asOf,sourceUrl:a.sourceUrl,state: a.state || '', ...(a.business?{business:a.business}:{}), ...(a.postingText?{postingText:a.postingText}:{}), pay: { low: a.low, high: a.high }, page: '' })) : [];
 }
 /* BLS OEWS (step 3). SOC by function; series OEU S <state FIPS>00000 000000 <SOC> <datatype>; 12 = P25, 13 = median, 15 = P90. */
-const SOC = { QUALITY: '113051', MFG: '113051', OPS: '111021', ENG: '119041', PROGRAM: '111021', OTHER: '111021' };
+const SOC = { QUALITY: '113051', MFG: '113051', OPS: '111021', ENG: '119041', PROGRAM: '111021', SUPPLY_CHAIN: '113071', EHS: '111021', OTHER: '111021' };
 function socOf(title) { return /supply chain|logistics|procurement|purchasing/i.test(title || '') ? '113071' : SOC[func(title)]; }
 function blsSeries(state, soc, dt) { return STATE_FIPS[state] ? 'OEUS' + STATE_FIPS[state] + '00000' + '000000' + soc + dt : null; }
 /** Cross-check: { flag, note, conf } given the estimate and the state's P25/median/P90 (numbers or null). */
@@ -288,4 +307,5 @@ function blsEstimate(row, w, mlPoints) {
 
 module.exports = { stateFrom, normCo, boardOf, boardListRequest, parseBoard, similarPostings, sameEmployerEstimate, sameEmployerAnchors, socOf, blsSeries, blsCheck, blsEstimate, PAY_TRANSPARENCY, aggregatorFor, atsFor, ATS_URL_KEYS, level, func, regionOf, payFromText, degreeFromText, atsApi, parseAts, postedAnchor, estimate, num , aggregatorPage, parseAggregator, looksLikePosting };
 module.exports.comparable = comparable; module.exports.invalidSavedAnchors = invalidSavedAnchors;
+module.exports.citation = citation; module.exports.salarySourceText = salarySourceText; module.exports.citeUrl = citeUrl;
 

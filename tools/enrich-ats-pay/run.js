@@ -12,7 +12,8 @@ const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),req
 const SiteEstimate=require('./site-estimate');
 const WorkdayWindow=require('./workday-window');
 const Pay=require('./pay-values'),Employer=require('./employer-identity'),Leadership=require('./leadership');
-const salarySource=e=>e.siteEstimate?'site-estimate:'+e.siteEstimate.sourceUrl:e.source==='SAME_EMPLOYER'?'same-employer:'+e.ids.join(','):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?'comparables:'+e.ids.join(','):e.source==='LEADERSHIP_POSTINGS'?'leadership-postings:'+e.ids.join(','):e.source||'UNKNOWN';
+// SALARY_SOURCE cites each kept comparable by posting URL and as-of date (PAY SAMPLE MATCH evidence/anchors), never internal row ids.
+const salarySource=e=>e.siteEstimate?'site-estimate:'+e.siteEstimate.sourceUrl:e.source==='SAME_EMPLOYER'?L.salarySourceText('same-employer',e.comparables):e.source==='COMPARABLES'||e.source==='BLENDED_POSTINGS'?L.salarySourceText('comparables',e.comparables):e.source==='LEADERSHIP_POSTINGS'?L.salarySourceText('leadership-postings',e.comparables):e.source||'UNKNOWN';
 const P = require('./public-posting.js');
 const SourceReads=require('./source-reads'),PostingCache=require('./posting-cache');
 const SourceProfile=require('./source-profile'),SourceSearch=require('./source-search');
@@ -68,12 +69,14 @@ async function get(url, opts={}) {
 }
 const FC_DIR = process.env.ENRICH_FC_DIR || '';   // tests: a local foreman-cockpit checkout instead of raw GitHub
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + rel)).text(); }
+let rulesText = '';
 async function neverConsiderRules() {
   if (process.env.ENRICH_MASTER_FILE && !process.env.ENRICH_RULES_FILE) return null;   // tests only
   if (!FC_DIR) throw Error('NEVER_CONSIDER_GATE_REQUIRES_ENRICH_FC_DIR');
   const Writer = require(path.join(FC_DIR, 'apps-script/Code.gs'));
   Object.assign(globalThis, { classifyNeverConsider: Writer.classifyNeverConsider, declineNeverConsiderRow_: Writer.declineNeverConsiderRow_ });
   const text = process.env.ENRICH_MASTER_FILE ? fs.readFileSync(process.env.ENRICH_RULES_FILE, 'utf8') : await (await get('https://raw.githubusercontent.com/tpruittguitar/forge-policy/main/rules/TIM_PIPELINE_RULES_CANONICAL.txt?nc=' + Date.now())).text();
+  rulesText = text;
   const rules = Writer.parseCanonicalNeverConsiderRules(text);
   if (rules.status !== 'ACTIVE') throw Error('NEVER_CONSIDER_RULES_UNAVAILABLE: ' + (rules.error || rules.status));
   return rules;
@@ -106,6 +109,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   const rules=await neverConsiderRules();
   const built = W.build(text,{rules}), rows = W.parseRows(text), list = built.lanes.FORGE_ENRICH_FEASIBILITY;
   const neverConsiderIds=new Set((built.declines||[]).map(d=>d.primaryId));
+  // PAY SAMPLE MATCH reads industry from the company registry `builds` first (SECTION=TARGET_COMPANIES in the rules text).
+  // Kept non-enumerable so it is never saved into the shared context file.
+  if(salaryContext&&rulesText)Object.defineProperty(salaryContext,'registry',{value:Context.registryFromRules(rulesText),enumerable:false,configurable:true});
   let planIds=null;
   if(PLAN_FILE){
     if(!SNAPSHOT_FILE||!PREPARE_ONLY)throw Error('Plan requires snapshot preparation');
@@ -612,7 +618,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if (unavailableIds.has(r.PRIMARY_ID) || !ActiveReview.eligible(r) || !weak(r) || requests.some(q => q.ruling.primaryId === r.PRIMARY_ID)) continue;
     const est = await estimateFor(r, { noNetwork: true }); if (!est || est.source !== 'SAME_EMPLOYER' || est.conf === 'LOW') continue;   // LOW for LOW is no upgrade
     stats.upgraded++; upgradeIds.add(r.PRIMARY_ID);
-    requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: 'same-employer:' + est.ids.join(','), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
+    requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
   // Every pay write carries an arithmetic midpoint and a separate policy scoring point.

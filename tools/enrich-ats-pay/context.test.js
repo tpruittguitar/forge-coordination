@@ -32,9 +32,12 @@ test('explicit posting facts are learned with provenance; role facts never becom
  const newer=JSON.parse(JSON.stringify(r));newer.roles[0].facts.teamSize=fact(20,'2026-10-31');r.roles[0].facts.teamSize=fact(10,'2026-10-01');a.equal(C.merge(newer,r).roles[0].facts.teamSize.value,20);
 });
 test('known industry mismatch is excluded and an unknown industry stays at 0.75',()=>{
+ // Size and scope unknown on both rows: each dimension carries the missing-fact weight once.
+ const known={employees:5000,teamSize:20},same={...known};
  a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AUTOMOTIVE'}).weight,0);
- a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{industry:'AEROSPACE_DEFENSE'}).weight,1);
- a.equal(C.similarity({industry:'AEROSPACE_DEFENSE'},{}).weight,0.75);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE',...known},{industry:'AEROSPACE_DEFENSE',...same}).weight,1);
+ a.equal(C.similarity({industry:'AEROSPACE_DEFENSE',...known},{...same}).weight,0.75);
+ a.equal(C.similarity({...known},{industry:'AEROSPACE_DEFENSE',...same}).weight,0.75,'unknown on the target also counts as missing');
 });
 test('industry source order is builds, then EMPLOYER_PRIMARY_BUSINESS, then the posting overview',()=>{
  const base={PRIMARY_ID:'T',COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Austin, TX'};
@@ -56,11 +59,12 @@ test('industry source order is builds, then EMPLOYER_PRIMARY_BUSINESS, then the 
  a.equal(C.lookup({...base,p:{EMPLOYER_PRIMARY_BUSINESS:'semiconductor equipment'}},{companies:[{company:'Acme',builds:'Builds aerospace parts and automotive components.'}]},now).industry,'SEMICONDUCTOR');
 });
 test('a known company-size band or scope mismatch excludes the sample',()=>{
+ const ind={industry:'AEROSPACE_DEFENSE'};
  a.equal(C.similarity({employees:100000},{employees:50}).weight,0);
  a.ok(C.similarity({employees:100000},{employees:90000}).weight>0);
- a.equal(C.similarity({employees:80},{}).weight,0.75);
+ a.equal(C.similarity({...ind,employees:80,teamSize:12},{...ind,teamSize:12}).weight,0.75);
  a.equal(C.similarity({teamSize:12},{teamSize:400}).weight,0);
- a.equal(C.similarity({teamSize:12},{}).weight,0.75);
+ a.equal(C.similarity({...ind,employees:80,teamSize:12},{...ind,employees:80}).weight,0.75);
  a.equal(C.similarity({reach:'MULTI_SITE'},{reach:'SINGLE_SITE'}).weight,0);
  a.equal(C.similarity({management:'MANAGES_MANAGERS'},{management:'INDIVIDUAL_CONTRIBUTOR'}).weight,0);
 });
@@ -76,4 +80,21 @@ test('calibration excludes target salary aliases and reports non-estimable cases
  const rows=[{...row,PRIMARY_ID:'A',p:{SALARY_BASIS:'EMPLOYER_POSTED',SALARY_BASE_LOW:150000,SALARY_BASE_HIGH:200000,SALARY_SOURCE:'https://employer.com/jobs/a',SALARY_ASOF:'2026-09-01'}}];
  const anchors=rows.map(r=>L.postedAnchor(r,r.p));const result=Cal.evaluate(rows,[...anchors,{...anchors[0],id:'COPY'}],ref,now);
  a.equal(result.eligible,1);a.equal(result.evaluated,0);a.equal(result.noComparables,1);a.equal(result.meanAbsoluteErrorPct,null);
+});
+test('fix A item 1: new industry buckets; non-makers are a known mismatch for a known maker, 0.75 when the target is unknown; a weak match is unknown',()=>{
+ for(const [text,label] of [['Furniture maker','FURNITURE'],['Packaged foods and beverages','FOOD_BEVERAGE'],['National retail chain','RETAIL'],['A nonprofit charity','NONPROFIT'],['Sporting goods maker','CONSUMER_PRODUCTS'],['United States Tennis Association','SPORTS_ORG'],['Private art school','EDUCATION'],['Vein and vascular center','HEALTHCARE_SERVICES'],['Industrial machinery manufacturer','GENERAL_MANUFACTURING']])a.equal(C.industryLabel(text),label,text);
+ a.equal(C.industryLabel('Aerospace and automotive parts'),null,'two specific buckets is a weak match');
+ for(const other of C.NON_MAKER){a.equal(C.similarity({industry:'GENERAL_MANUFACTURING'},{industry:other}).weight,0,other);a.equal(C.similarity({industry:'FURNITURE'},{industry:other}).weight,0,other);}
+ a.equal(C.similarity({industry:'FURNITURE'},{industry:'FOOD_BEVERAGE'}).weight,0);
+ const scope={employees:5000,teamSize:20};for(const other of C.NON_MAKER)a.equal(C.similarity({...scope},{...scope,industry:other}).weight,0.75,other+' with an unknown target industry stays at the missing-fact weight');
+});
+test('fix A item 2: company aliases collapse and identical postings are counted once',()=>{
+ a.deepEqual(['Schindler Group','Schindler Elevator Corporation (U.S.)','Schindler'].map(C.norm),['schindler','schindler','schindler']);
+ a.deepEqual(['Schindler Group','Schindler Elevator Corporation (U.S.)','Schindler'].map(L.normCo),['schindler','schindler','schindler']);
+ a.equal(C.norm('Schindler Lake Resort'),'schindler lake resort','only a whole cleaned name is an alias');
+ const usta={id:'A',co:'USTA',title:'Director, Operations',location:'Orlando, FL',low:150000,high:200000,asOf:'2026-11-10'};
+ const twin={...usta,id:'B',co:'United States Tennis Association',location:'Orlando, Florida, United States',page:'https://jobs.example/usta/2',asOf:'2026-11-16'};
+ const kept=C.dedupe([usta,twin]);a.equal(kept.length,1);a.equal(kept[0].id,'B','newest copy kept');
+ a.equal(C.dedupe([usta,{...twin,high:210000}]).length,2,'a different range is a different posting');
+ a.equal(C.rank({PRIMARY_ID:'T',COMPANY:'Acme',TITLE:'Director, Operations',LOCATION:'Orlando, FL'},[usta,twin],{},Date.parse('2026-11-18')).length,1);
 });
