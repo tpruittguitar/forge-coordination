@@ -72,8 +72,11 @@ function classifyWriterResponse(result,rid){
  if(r.result==='NEVER_CONSIDER_EXCLUDED'&&!result.writeId&&!ids.length)return {kind:'EXCLUDED'};
  return {kind:'UNKNOWN'};
 }
+// Proven never accepted: request-bound NOT_ACCEPTED, BEFORE_MUTATION, masterMutations 0, retryable code (reference/WRITER_OUTCOME_CONTRACT.json).
+// Anything else, including terminal rejections and unbound or malformed outcomes, returns null and stays fenced as UNKNOWN.
 const Captured=require('./captured-discovery');
 const Outcome=require('../writer-outcome.cjs');
+const provenNotAccepted=(result,rid)=>{const c=Outcome.classify(result,{requestId:rid});return c.kind==='NOT_ACCEPTED'&&c.retryable===true?c:null};
 // A request-bound WRITER_BUSY refusal wrote nothing (BEFORE_MUTATION, masterMutations 0), so the same case may be POSTed again.
 const WRITER_BUSY_BACKOFF_MS=[30000,60000,120000];
 const writerBusy=(response,result,rid)=>response.ok&&Outcome.classify(result,{requestId:rid}).code==='WRITER_BUSY';
@@ -120,7 +123,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
   const record=candidate.record,rid=requestId(record);
   const pre=await preflight(record,{key,transport});
   const prior=Object.hasOwn(priorResults,rid)?priorResults[rid]:undefined;
-  if(auto&&prior!==undefined&&classifyWriterResponse(prior,rid).kind==='UNKNOWN'&&!autoSkip(prior,rid,'UNKNOWN',candidate)){
+  const retryPrior=prior!==undefined&&provenNotAccepted(prior,rid)!==null;
+  if(auto&&prior!==undefined&&!retryPrior&&classifyWriterResponse(prior,rid).kind==='UNKNOWN'&&!autoSkip(prior,rid,'UNKNOWN',candidate)){
    defer(rid,'ORIGINAL_REQUEST_RECONCILIATION_REQUIRED',prior);continue;
   }
   if(pre.mode==='EXISTING_REQUEST_HOLD'){
@@ -146,7 +150,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
    continue;
   }
   if(pre.mode!=='READY_FOR_WRITER_ADJUDICATION'){outcomes.push({requestId:rid,status:'HOLD',reason:pre.mode});halt('BLOCKED: existing or uncertain request; reconcile before retry')}
-  if(prior!==undefined){
+  if(prior!==undefined&&!retryPrior){
    // A captured response with no receipt_index entry can only be a no-op. Re-verify it; never re-POST.
    const pk=classifyWriterResponse(prior,rid).kind;
    const priorSkip=autoSkip(prior,rid,pk,candidate);
@@ -198,6 +202,8 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
   await sleep(WRITER_BUSY_BACKOFF_MS[busy]);
   }
   // writerResult must be persisted by the operator and passed back as priorResults[requestId] to resume.
+  const refused=provenNotAccepted(result,rid);
+  if(refused){outcomes.push({requestId:rid,status:'RETRY_NEXT_RUN',reason:'WRITER_NOT_ACCEPTED_'+refused.code,retryAfterMs:refused.retryAfterMs,writerResult:result});continue}
   const verdict=response.ok?classifyWriterResponse(result,rid):{kind:'UNKNOWN'};
   const skipReason=response.ok?autoSkip(result,rid,verdict.kind,candidate):null;
   if(skipReason){outcomes.push(skipped(rid,skipReason,result));continue}
