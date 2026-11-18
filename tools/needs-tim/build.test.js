@@ -231,3 +231,24 @@ test('fresh native schedule inventory supersedes inferred ad-hoc silence without
   files[key].at=NOW;files[key].local.pop();
   assert.ok(build({root:repo(files),now:NOW}).items.some(x => x.id.startsWith('lane-overdue:')), 'partial inventory cannot retire the fallback');
 });
+
+test('AUTO intake: a hold whose request wrote nothing and whose job is terminal in the master is closed, not listed', () => {
+  const { requestId } = require('../source-intake/production-executor');
+  const rec = (c, t) => ({ COMPANY: c, TITLE: t, LOCATION: 'Akron, OH', SOURCE_URL: 'https://example.com/' + c });
+  const recs = [rec('Acme Inc', 'Plant Manager'), rec('Beta', 'Director'), rec('Gamma', 'VP Ops'), rec('Delta', 'Lead')];
+  const ids = recs.map(requestId), refused = { ok: false, outcome: { status: 'NOT_ACCEPTED', phase: 'BEFORE_MUTATION', masterMutations: 0 } };
+  const state = { sourceRunId: 'FORGE-AUTO-20261106T051305Z', candidatesHash: 'h', requestIds: ids,
+    results: { [ids[0]]: refused, [ids[1]]: refused, [ids[2]]: { ok: false, error: 'receipt index GitHub write failed (fail closed): HTTP 500' }, [ids[3]]: refused },
+    outcomes: ids.map(id => ({ requestId: id, status: 'DEFERRED' })),
+    continuation: { schema: 'forge.intake-continuation.v1', candidatesHash: 'h', pending: ids.map((id, i) => ({ requestId: id, reason: 'ORIGINAL_REQUEST_RECONCILIATION_REQUIRED', record: recs[i] })) } };
+  const root = repo({ 'receipts/auto-intake/FORGE-AUTO-20261106T051305Z.json': state });
+  const jobs = [{ COMPANY: 'Acme', TITLE: 'Plant Manager', LOCATION: 'Akron, OH', BUCKET: 'DECLINED_BY_TIM' },
+    { COMPANY: 'Beta', TITLE: 'Director', LOCATION: 'Akron, OH', BUCKET: 'SCOUT_INTAKE' },
+    { COMPANY: 'Gamma', TITLE: 'VP Ops', LOCATION: 'Akron, OH', BUCKET: 'CLOSED_DEAD' },
+    { COMPANY: 'Delta', TITLE: 'Lead', LOCATION: 'Toledo, OH', BUCKET: 'DECLINED_BY_TIM' }];
+  const listed = r => r.items.filter(i => /^auto-intake-identity-hold:/.test(i.id)).map(i => i.id.split(':')[1]).sort();
+  const r = build({ root, jobs, now: '2026-11-18T07:00:00Z' });
+  assert.deepStrictEqual(listed(r), [ids[1], ids[2], ids[3]].sort(), 'terminal + no write closes; live row, possible write and other worksite stay');
+  assert.ok(r.dismissed.some(d => d.id === 'auto-intake-identity-hold:' + ids[0] && d.by === 'needs-tim-build' && /DECLINED_BY_TIM/.test(d.reason)));
+  assert.strictEqual(listed(build({ root, now: '2026-11-18T07:00:00Z' })).length, 4, 'no master snapshot: every hold stays listed');
+});

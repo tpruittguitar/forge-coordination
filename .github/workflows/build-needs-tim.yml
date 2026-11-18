@@ -35,8 +35,19 @@ jobs:
               --jq "[.[] | {repo: \"$r\", number, title, draft, created_at, url: .html_url}]" > /tmp/pr_$r.json || echo '[]' > /tmp/pr_$r.json
           done
           jq -s 'add' /tmp/pr_*.json > /tmp/prs.json
+      - name: Fetch master snapshot
+        run: |
+          echo '[]' > /tmp/jobs.json; : > /tmp/jobs.ndjson; off=0
+          while :; do
+            curl -fsS --max-time 30 "https://foreman-cockpit.pages.dev/api/structured/jobs?limit=500&offset=$off" > /tmp/page.json || exit 0
+            n=$(jq '.jobs|length' /tmp/page.json); total=$(jq '.total' /tmp/page.json)
+            jq -c '.jobs[]|{COMPANY,TITLE,LOCATION,BUCKET}' /tmp/page.json >> /tmp/jobs.ndjson
+            off=$((off+n)); [ "$n" -gt 0 ] && [ "$off" -lt "$total" ] || break
+          done
+          [ "$off" = "$total" ] && jq -s . /tmp/jobs.ndjson > /tmp/jobs.json || true
+          echo "master rows: $(jq length /tmp/jobs.json)"
       - name: Build
-        run: node tools/needs-tim/build.js --prs /tmp/prs.json
+        run: node tools/needs-tim/build.js --prs /tmp/prs.json --jobs /tmp/jobs.json
       - name: Commit if changed
         run: |
           if git diff --quiet -- attention/ && [ -z "$(git ls-files --others --exclude-standard attention/)" ]; then
@@ -55,6 +66,6 @@ jobs:
             sleep $((i * 4 + RANDOM % 4))
             git rebase --abort 2>/dev/null || true
             git fetch -q origin main && git reset -q --hard origin/main
-            node tools/needs-tim/build.js --prs /tmp/prs.json
+            node tools/needs-tim/build.js --prs /tmp/prs.json --jobs /tmp/jobs.json
           done
           exit 1
