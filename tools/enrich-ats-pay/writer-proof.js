@@ -38,14 +38,16 @@ async function verify(batch, {index, read, parse, onDrift}) {
 // and none of those rows carries all of its submitted master values. Returns {reason} or null (stays fenced).
 // The stored rulings are only read here for comparison; the caller drops them and never sends them.
 async function notApplied(entry, {index, read, parse, now=Date.now(), minAgeMs=DAY}) {
-  const batch=entry?.requests;
-  if(!Array.isArray(batch)||!batch.length||!(now-Date.parse(entry.at)>=minAgeMs))return null;
+  // A batch saved without its rulings (Nov 2 ledger entries) is judged on the receipt evidence alone (President, Nov 18).
+  const stored=Array.isArray(entry?.requests),batch=stored?entry.requests:(Array.isArray(entry?.requestIds)?entry.requestIds:[]).map(requestId=>({ruling:{requestId}}));
+  if(!batch.length||!(now-Date.parse(entry.at)>=minAgeMs))return null;
   const state=q=>index.requests?.[q.ruling.requestId]?.s,open=batch.filter(q=>state(q)!=='COMPLETE');
   if(!open.length||!open.every(q=>!state(q)||state(q)==='NOT_PERSISTED'))return null;
   const first=open[0].ruling.requestId,result=await read('request_result',{requestId:first});
   if(result?.ok!==true||result.requestId!==first)return null;
   const reason=result.found===false&&!state(open[0])?'NO_RECEIPT':result.found===true&&result.status==='NOT_PERSISTED'&&result.durable===false?'NOT_PERSISTED':null;
   if(!reason)return null;
+  if(!stored)return {reason,open:open.length,complete:batch.length-open.length,payload:'NONE'};
   const rb=await read('row_readback',{requestId:first,ids:open.map(q=>q.ruling.primaryId).join(',')});
   if(!rb?.ok||rb.master?.endMarkerPresent!==true)return null;
   const absent=open.every(q=>{
