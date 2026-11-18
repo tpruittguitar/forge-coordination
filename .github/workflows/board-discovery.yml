@@ -30,7 +30,7 @@ jobs:
       - name: Test
         env:
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
-        run: node --test tools/source-trial/lib.test.js tools/source-trial/discovery-health.test.js tools/source-trial/run.test.js tools/source-trial/board-health.test.js tools/source-trial/discovery-review.test.js tools/source-trial/preliminary-screen.test.js tools/source-trial/resume-match.test.js
+        run: node --test tools/source-trial/lib.test.js tools/source-trial/discovery-health.test.js tools/source-trial/run.test.js tools/source-trial/board-health.test.js tools/source-trial/discovery-review.test.js tools/source-trial/preliminary-screen.test.js tools/source-trial/resume-match.test.js tools/source-trial/workday-box-pass.test.js
       - name: Boards
         # Live board reads only off PRs: a PR run never commits state, and its Workday reads only add to the 429 throttle (card d4b2f93).
         if: github.event_name != 'pull_request'
@@ -63,6 +63,8 @@ jobs:
             git push -q origin HEAD:main && exit 0
             sleep $((i * 4 + RANDOM % 4))
             git fetch -q origin main && git reset -q --hard origin/main
+            # Newer attempt per board wins, so a Workday box pass that landed meanwhile is kept (card 14c6e4a).
+            [ ! -f /tmp/out/board-health.json ] || [ ! -f state/board-health.json ] || node tools/source-trial/workday-box-pass.js merge state/board-health.json /tmp/out/board-health.json /tmp/out/board-health.json
             cp /tmp/out/* state/
           done
           exit 1

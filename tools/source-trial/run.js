@@ -13,6 +13,7 @@ const fs = require('fs'), path = require('path'), vm = require('vm'), os = requi
 const P = require('../enrich-ats-pay/lib.js'), T = require('./lib.js');
 const H = require('./board-health'), PostedPay=require('./posted-pay');
 const { discoveryHealth } = require('./discovery-health');
+const WD = require('./workday-box-pass'), WORKDAY_ONLY = !!process.env.TRIAL_WORKDAY_ONLY;
 const ROOT = path.resolve(__dirname, '../..');
 const CONFIG = JSON.parse(fs.readFileSync(path.join(__dirname, 'config.json'), 'utf8'));
 const RAW = 'https://raw.githubusercontent.com/tpruittguitar/';
@@ -65,7 +66,7 @@ async function main(){
   for (const c of priority) {
     if (c.tier === 'PAUSED') { probes.push({ company: c.name, found: null, skipped: 'PAUSED' }); continue; }
     let b = T.boardFromCareers(c.careers) || coBoard[P.normCo(c.name)] || null;
-    if (!b && !process.env.TRIAL_SKIP_BOARDS) {
+    if (!b && !process.env.TRIAL_SKIP_BOARDS && !WORKDAY_ONLY) {
       for (const slug of T.slugGuesses(c.name)) {
         for (const kind of ['greenhouse', 'lever', 'ashby']) {
           const cand = { kind, key: kind + ':' + slug, board: slug }, req = P.boardListRequest(cand, '');
@@ -93,21 +94,23 @@ async function main(){
       start = i < 0 ? 0 : i;
     } catch (e) { start = 0; }
   }
-  const rotation=ranked.slice(start,start+cap),recoveries=H.recoveryBoards(health,paused).slice(0,Math.min(10,Math.max(1,Math.floor(cap/4))));
+  /* Workday boards belong to the box pass while its last pass is under 4 h old (card 14c6e4a). */
+  const skipWorkday=!WORKDAY_ONLY&&WD.fresh(WD.loadPass(path.join(OUT,WD.PASS_FILE))),budgetMs=WORKDAY_ONLY?WD.BUDGET_MS:CONFIG.boardBudgetMs;
+  const rotation=ranked.slice(start,start+cap),recoveries=H.recoveryBoards(health,paused).filter(b=>!(skipWorkday&&b.kind==='workday')).slice(0,Math.min(10,Math.max(1,Math.floor(cap/4))));
   const cooling=new Set(rotation.filter(b=>health.boards[b.key]?.status!=='OK'&&Date.parse(health.boards[b.key]?.retryAt||0)>Date.now()).map(b=>b.key));
-  const order=process.env.TRIAL_SKIP_BOARDS?[]:[...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key))].map(b=>[b.key,b])).values()].slice(0,cap);
+  const order=process.env.TRIAL_SKIP_BOARDS?[]:WORKDAY_ONLY?WD.workdayOrder(H.recoveryBoards(health,paused),ranked,health).slice(0,cap):[...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key)&&!(skipWorkday&&b.kind==='workday'))].map(b=>[b.key,b])).values()].slice(0,cap);
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
   const Identity=require('./job-identity'),duplicates=new Map();
   const addFound = item => { item.postedPay=PostedPay.capture(item,{observedAt:at}); const key = T.identityKey(item.company,item.title,item.location), peers=discovered.get(key)||[], match=Identity.match(Identity.index(peers),item), prior=match.status==='PRESENT'?match.rows[0]:null; if (prior) { duplicates.set(item,prior); if (item.status === 'EXISTING_PROTECTED') prior.status = item.status; else if (item.status === 'EXISTING' && prior.status === 'NEW') prior.status = item.status; return false; } peers.push(item);discovered.set(key,peers); found.push(item); return true; };
   let consumed = 0;const attempted=new Set();
-  const throttle=H.workdayThrottle(),workdayDeferred=[];
+  const throttle=H.workdayThrottle(),workdayDeferred=[];let stoppedAt429=null;
   for (const b of order) {
     if(throttle.defer(b)){workdayDeferred.push(b.key);continue;}
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
-    const result=await H.readBoard(b,CONFIG.workdaySearches,{wait:sleep,gapMs:CONFIG.gapMs});
-    throttle.seen(b,result);
+    const result=await H.readBoard(b,CONFIG.workdaySearches,{wait:sleep,gapMs:WORKDAY_ONLY?WD.GAP_MS:CONFIG.gapMs});
+    throttle.seen(b,result);if(WORKDAY_ONLY&&WD.stopsPass(b,result))stoppedAt429=b.key;
     st.error=result.error;st.status=result.status;st.httpStatus=result.httpStatus;st.attempts=result.attempts;
     const history=H.record(health,result.board,result,new Date().toISOString());
     st.lastAttemptAt=history.lastAttemptAt;st.lastSuccessAt=history.lastSuccessAt;st.retryAt=history.retryAt;
@@ -126,11 +129,12 @@ async function main(){
     try{fs.writeFileSync(healthFd,JSON.stringify(health,null,1)+'\n');fs.fsyncSync(healthFd);}finally{fs.closeSync(healthFd);}fs.renameSync(healthTmp,healthFile);
     boardStats.push(st);
     attempted.add(b.key);consumed++;
-    if (Date.now() - T0 > CONFIG.boardBudgetMs) { st.note = 'time budget reached; later boards not read'; break; }
+    if (stoppedAt429) { st.note = 'Workday 429; box pass stopped, later boards untouched'; break; }
+    if (Date.now() - T0 > budgetMs) { st.note = 'time budget reached; later boards not read'; break; }
   }
   let cursorNext = '';
   if (!process.env.TRIAL_SKIP_BOARDS && ranked.length) {
-    let covered=0;while(covered<rotation.length&&(attempted.has(rotation[covered].key)||cooling.has(rotation[covered].key)))covered++;
+    let covered=0;while(covered<rotation.length&&(attempted.has(rotation[covered].key)||cooling.has(rotation[covered].key)||skipWorkday&&rotation[covered].kind==='workday'))covered++;
     const nextPos = start + covered;
     cursorNext = ranked[nextPos >= ranked.length ? 0 : nextPos].key;
   }
@@ -174,14 +178,14 @@ async function main(){
   // Reuse ATS content already fetched; Workday list cards get one exact detail read within this run's budget.
   const needsReview=found.some(card=>!['EXISTING','EXISTING_PROTECTED'].includes(card.status));
   const screenContext=needsReview?await require('./preliminary-screen').context({key}):undefined;
-  await require('./discovery-review').reviewAll(found,{screenContext,deadline:T0+CONFIG.boardBudgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
+  await require('./discovery-review').reviewAll(found,{screenContext,deadline:T0+budgetMs,detail:async url=>(await H.jsonRequest({url},{attempts:1})).data});
 
   /* report */
   const by = (src, st) => found.filter(f => f.source.startsWith(src) && (!st || f.status === st)).length;
   const summary = {
     screening:{atsZeroExcluded:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.decision==='EXCLUDE_ATS_ZERO').length,atsGateUnknown:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.preliminaryScreen?.atsGate?.status==='UNKNOWN').length,canonicalWrites:0},
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, master, archive, identityHeld: found.filter(f => f.status === 'IDENTITY_HOLD').length, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, workday_deferred: workdayDeferred.length, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, workday_deferred: workdayDeferred.length, workday_only: WORKDAY_ONLY, workday_skipped_for_box_pass: skipWorkday, stopped_at_429: stoppedAt429, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && ['EXISTING','EXISTING_PROTECTED'].includes(x.status)).length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
@@ -190,12 +194,13 @@ async function main(){
   };
   const report = { caution: 'NEW is provisional: checked against the master' + (archive.read ? ' and the terminal archive' : ' only (terminal archive NOT read: ' + archive.error + ')') + ', not adjudicated by the Writer.', summary, new_roles: found.filter(f => f.status === 'NEW').sort((a, b) => (b.tier ? 1 : 0) - (a.tier ? 1 : 0)), identity_held_roles: found.filter(f => f.status === 'IDENTITY_HOLD'), existing_roles: found.filter(f => ['EXISTING','EXISTING_PROTECTED'].includes(f.status)), protected_roles: found.filter(f => f.status === 'EXISTING_PROTECTED'), boards: boardStats };
   fs.mkdirSync(OUT, { recursive: true });
-  if (!process.env.TRIAL_SKIP_BOARDS) {
+  if (!process.env.TRIAL_SKIP_BOARDS && !WORKDAY_ONLY) {
     const cursorBody = { at, next: cursorNext, start, read: consumed, ranked: ranked.length, source: 'Pipeline Explorer Target Companies ranking via forge-policy derived/TARGET_COMPANIES_PRIORITY.txt', order: ranked.map(b => ({ key: b.key, tier: b.tier || '', company: [...b.companies][0] || '' })) };
     fs.mkdirSync(path.dirname(cursorFile), { recursive: true });
     fs.writeFileSync(cursorFile, JSON.stringify(cursorBody, null, 1) + '\n');
   }
-  const reportName = process.env.TRIAL_BOARDS_ONLY ? 'board-discovery-report' : 'source-trial-report';
+  const reportName = WORKDAY_ONLY ? 'workday-box-pass-report' : process.env.TRIAL_BOARDS_ONLY ? 'board-discovery-report' : 'source-trial-report';
+  if (WORKDAY_ONLY) fs.writeFileSync(path.join(OUT, WD.PASS_FILE), JSON.stringify({ schema: 'forge.workday-box-pass.v1', lastPassAt: at, finishedAt: new Date().toISOString(), due: order.length, read: boardStats.length, ok: boardStats.filter(s => s.status === 'OK').length, stoppedAt429 }, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, reportName + '.json'), JSON.stringify(report, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, reportName + '.health.json'), JSON.stringify(discoveryHealth(report)) + '\n');
   const md = ['# Forge source trial ' + summary.run, '', 'Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.', '', 'Terminal archive: ' + (archive.read ? archive.rows + ' rows read; archived roles count as protected, never NEW.' : 'NOT read (' + archive.error + '); NEW may include archived roles.'), '',
