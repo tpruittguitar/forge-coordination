@@ -1,6 +1,6 @@
 'use strict';
 const C=require('../programmed-coordinator/collect.cjs');
-const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
+const repository='tpruittguitar/forge-coordination',publicReceipt=/^receipts\/(?:CLAUDE_RELEVANCE\/[A-Za-z0-9_-]+|(?:CLAUDE_HELPERS|GROK_HELPERS|CHATGPT_HELPERS|SNIFFER_HELPERS)\/FORGE_[A-Z0-9_]+\/[A-Za-z0-9_-]+)\.json$/;
 function diagnostic(error){
  const message=String(error?.message||''),legacy={
   'Invalid enrichment evidence-only envelope':'INVALID_ENRICHMENT_ENVELOPE',
@@ -27,10 +27,10 @@ async function harvest({root,privateDir,commit,pr,api,validate=C.validateEnvelop
 }
 const shaPattern=/^[a-f0-9]{40}$/;
 function branchIdentity(branch){
- const match=/^(claude|grok)-shared-helper-batch-[A-Za-z0-9][A-Za-z0-9_-]{0,159}$/.exec(branch?.name||'');
+ const match=/^(claude|grok|sniffer)-shared-helper-batch-[A-Za-z0-9][A-Za-z0-9_-]{0,159}$/.exec(branch?.name||'');
  if(!match||branch.repo&&branch.repo.full_name!==repository)return null;
  const owner=match[1].toUpperCase();
- return{provider:owner==='CLAUDE'?'Claude':'Grok',taskKey:'FORGE_'+owner+'_SHARED_HELPER',directory:'receipts/'+owner+'_HELPERS/FORGE_'+owner+'_SHARED_HELPER/',sourceKey:'branch:'+repository+':'+branch.name};
+ return{provider:owner[0]+owner.slice(1).toLowerCase(),taskKey:'FORGE_'+owner+'_SHARED_HELPER',directory:'receipts/'+owner+'_HELPERS/FORGE_'+owner+'_SHARED_HELPER/',sourceKey:'branch:'+repository+':'+branch.name};
 }
 function completeCompare(comparison,base,head){
  // GitHub returns at most 300 changed files, without a total file count.

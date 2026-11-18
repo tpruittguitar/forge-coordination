@@ -107,3 +107,7 @@ test('the native branch reader lists, compares and reads only with GET using fix
  };
  const r=await D.collect({...f,api:D.github('synthetic-test-token')});a.equal(r.results.find(x=>x.branch).captured,1);a.ok(requests.every(([url,method])=>url.startsWith('https://api.github.com/repos/'+repository+'/')&&method==='GET'));a.ok(requests.some(([url])=>url.includes('/compare/'+base+'...'+head)));a.ok(requests.some(([url])=>url.includes('/contents/')&&url.endsWith('?ref='+head)));
 });
+test('Sniffer shared branches deliver the same way (Tim 2026-11-18 01:18 ET)',async t=>{
+ const f=fixture(t,'Sniffer');f.batch.items[0].provider='Sniffer';const r=(await D.collect(f)).results.find(x=>x.branch===f.branch.name);
+ a.equal(r.status,'CAPTURED');a.equal(r.captured,1);a.equal(inbox(f).length,1);a.equal(f.calls.some(x=>x[0]==='create'),false);
+});

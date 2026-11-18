@@ -18,7 +18,7 @@ function existingOwners(root){
  for(const k of require('../intake-drain/queue.cjs').ownedKeys(root))keys.add(k);
  return keys;
 }
-const GROK_TASK='FORGE_GROK_SHARED_HELPER';
+const FIELD_TASKS=H.FIELD_TASKS;
 const TRACKED=new Set(['ASSIGNED','DIRECT_REQUEST_SUBMITTED','AWAITING_FIELD_READBACK','ALREADY_COMPLETE']);
 function capturedEvidence(root,state){
  const out=[];
@@ -36,7 +36,7 @@ function capturedEvidence(root,state){
 function settleGrokFields(work,byId,writerReceipts,captured,readAt,now){
  const parsed=F.parseReceipts(writerReceipts);
  for(const item of work.items){
-  if(item.taskKey!==GROK_TASK||item.kind!=='ENRICHMENT'||!TRACKED.has(item.status))continue;
+  if(!FIELD_TASKS.has(item.taskKey)||item.kind!=='ENRICHMENT'||!TRACKED.has(item.status))continue;
   const row=byId.get(item.primaryId);if(!row)continue;
   if(item.status==='ALREADY_COMPLETE'&&!item.fieldState&&!F.relevant(parsed,item.primaryId)&&!captured.some(c=>c.primaryId===item.primaryId))continue;
   F.advance(item,{needs:needs(row),row,canonicalHash:S.hash(row.line||row),readAt,now,submissions:parsed?.submissions||[],unbound:parsed?.unbound||[],captured});
@@ -55,16 +55,17 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if(inspection){
    const row=item.kind==='ENRICHMENT'?byId.get(item.primaryId):null;
    const remaining=row?needs(row).filter(f=>(item.missingFields||[]).includes(f)):null;
-   if(item.taskKey===GROK_TASK&&item.kind==='ENRICHMENT'){if(!item.fieldState)F.seed(item,item.missingFields||(row?needs(row):[]));F.storeEvidence(item,captured);}
+   if(FIELD_TASKS.has(item.taskKey)&&item.kind==='ENRICHMENT'){if(!item.fieldState)F.seed(item,item.missingFields||(row?needs(row):[]));F.storeEvidence(item,captured);}
    item.status=inspection.status==='PROTECTED_SKIP'?'PROTECTED_SKIP':row&&remaining.length===0?'CONSUMED':/^EXISTING/.test(inspection.status)?'CONSUMED':/^VERIFIED|^NO_MISSING/.test(inspection.status)?'RETURNED_PARTIALLY_CONSUMED':'RETURNED_PENDING_REVIEW';
    if(remaining)item.remainingFields=remaining;
    item.returnProof=inspection.batch;continue;
   }
-  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length&&item.taskKey!==GROK_TASK){item.status='ALREADY_COMPLETE';continue;}}
+  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length&&!FIELD_TASKS.has(item.taskKey)){item.status='ALREADY_COMPLETE';continue;}}
  }
  settleGrokFields(work,byId,writerReceipts,captured,snapshot.source.readAt,new Date(now).toISOString());
  const reserved=H.reservedKeys(work);for(const k of reserved)occupied.add(k);
- const available=Object.keys(H.TASKS).filter(t=>work.providers[t].available),old=new Set(work.items.map(H.key)),candidates=[];
+ // Tim, Nov 18 2026, 1:18 AM ET: once Sniffer is live, every new shared item goes to Sniffer and none to Claude.
+ const available=work.providers[H.SNIFFER_TASK]?.available===true?[H.SNIFFER_TASK]:Object.keys(H.TASKS).filter(t=>work.providers[t]?.available),old=new Set(work.items.map(H.key)),candidates=[];
  for(const row of snapshot.rows){const id=row.PRIMARY_ID,missingFields=needs(row);
   if(!id||old.has(id)||occupied.has(id)||!missingFields.length||T.protectedRow(row)||T.fenced(root,state,id))continue;
   candidates.push({primaryId:id,kind:'ENRICHMENT',lane:row.BUCKET==='MANUAL_RESEARCH'?'RESEARCH':'ENRICHMENT',...T.identity(row),missingFields,priority:row.BUCKET==='MANUAL_RESEARCH'?0:1,sourceUrls:require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)),sourceVersion:S.hash(row.line||row),canonicalObservedAt:snapshot.source.readAt});
@@ -89,11 +90,11 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   if([H.key(item),...item.aliases||[]].some(k=>occupied.has(k)))continue;
   const taskKey=available[parseInt(S.hash(H.key(item)).slice(0,8),16)%available.length];
   const assignment={...item,taskKey,provider:H.TASKS[taskKey],assignmentVersion:1,status:'ASSIGNED',assignedAt:new Date(now).toISOString(),assignedBy:runId};
-  if(taskKey===GROK_TASK&&assignment.kind==='ENRICHMENT')F.seed(assignment,assignment.missingFields||[]);
+  if(FIELD_TASKS.has(taskKey)&&assignment.kind==='ENRICHMENT')F.seed(assignment,assignment.missingFields||[]);
   work.items.push(assignment);assigned.push(H.key(item));for(const k of [H.key(item),...item.aliases||[]])occupied.add(k);
  }
  work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;work.priority={basis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',counts:order.counts,laneOrder:order.lanes,observedAt:work.at};
  H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);require('./shared-pages.cjs').generate(root,{now,checkLock});};
- return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),fieldRoles:F.tally(work),canonicalWrites:0,noProcessingCap:true};
+ return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).filter(t=>work.providers[t]).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),fieldRoles:F.tally(work),canonicalWrites:0,noProcessingCap:true};
 }
 module.exports={needs,existingOwners,replenish,parseReceipts:F.parseReceipts};

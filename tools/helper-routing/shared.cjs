@@ -2,7 +2,11 @@
 // One coordinator-owned reservation pool. Helpers never claim or write canonical jobs.
 const path=require('node:path'),S=require('../programmed-coordinator/store.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
-const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok'};
+const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_SNIFFER_SHARED_HELPER:'Sniffer'};
+// Sniffer took over the retired Grok helper's work (Tim, Nov 18 2026, 1:18 AM ET); older work files have no Sniffer provider yet.
+const SNIFFER_TASK='FORGE_SNIFFER_SHARED_HELPER',OPTIONAL_TASKS=new Set([SNIFFER_TASK]);
+// Lanes whose enrichment items carry per-field state (seeded, settled from Writer receipts).
+const FIELD_TASKS=new Set(['FORGE_GROK_SHARED_HELPER',SNIFFER_TASK]);
 const MAX_ARTIFACT_ITEMS=20;
 const CLOSED=new Set(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE']);
 const active=i=>!CLOSED.has(i.status), key=i=>i.primaryId||i.key;
@@ -21,7 +25,7 @@ function captureProof(e){
 function validateWork(w){
  if(w?.schema!=='forge.shared-helper-work.v1'||typeof w.enabled!=='boolean'||typeof w.routingActive!=='boolean'||!proof(w.assignmentId)||!Array.isArray(w.items)||!w.providers)throw Error('INVALID_SHARED_HELPER_WORK');
  const seen=new Set();
- for(const [task,provider]of Object.entries(TASKS))if(w.providers[task]?.provider!==provider||typeof w.providers[task]?.available!=='boolean')throw Error('INVALID_SHARED_HELPER_PROVIDER');
+ for(const [task,provider]of Object.entries(TASKS))if(!(OPTIONAL_TASKS.has(task)&&!w.providers[task])&&(w.providers[task]?.provider!==provider||typeof w.providers[task]?.available!=='boolean'))throw Error('INVALID_SHARED_HELPER_PROVIDER');
  for(const i of w.items){
   if(!proof(key(i))||seen.has(key(i))||!['ENRICHMENT','INTAKE','DISCOVERY'].includes(i.kind)||TASKS[i.taskKey]!==i.provider||!Number.isSafeInteger(i.assignmentVersion)||i.assignmentVersion<1||!proof(i.status)||!proof(i.sourceVersion))throw Error('INVALID_OR_OVERLAPPING_SHARED_ASSIGNMENT');
   if(i.kind==='ENRICHMENT'&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(i.primaryId||''))throw Error('EXACT_SHARED_JOB_ID_REQUIRED');
@@ -88,7 +92,7 @@ function next(w,taskKey,after=null,now=Date.now()){
   if(cursor.version!==cursorVersion)cursorReset=true; // Changed priority/ownership: resume at current eligible work, never skip it.
   else{index=mine.findIndex(i=>key(i)===cursor.after);if(index<0)throw Error('UNKNOWN_SHARED_CURSOR');}
  }
- const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),remaining=w.enabled&&w.routingActive&&w.providers[taskKey].available?mine.slice(index+1).filter(i=>eligible.has(key(i))):[],items=remaining.slice(0,MAX_ARTIFACT_ITEMS);
+ const eligible=new Set(order.actionable.map(key)),all=mine.filter(i=>eligible.has(key(i))),remaining=w.enabled&&w.routingActive&&w.providers[taskKey]?.available?mine.slice(index+1).filter(i=>eligible.has(key(i))):[],items=remaining.slice(0,MAX_ARTIFACT_ITEMS);
  // Artifact bounds are transport constraints, never a provider's run budget.
  const continuation={maxArtifactItems:MAX_ARTIFACT_ITEMS,runItemCap:null,remainingAfterPage:remaining.length-items.length,nextAction:remaining.length>items.length?'CONTINUE_THIS_INVOCATION':'RECHECK_FRESH_WORK',advanceCursorAfter:'CHECKPOINT_EVERY_PAGE_ITEM',deliveryBlockScope:'TRANSPORT_ONLY'};
  return{schema:'forge.shared-helper-next.v1',assignmentId:w.assignmentId,provider:TASKS[taskKey],taskKey,mode:'EVIDENCE_ONLY',priorityBasis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',backlogCounts:order.counts,laneOrder:order.lanes,sourceAt:w.at||null,continuation,items,total:all.length,nextAfter:items.length?'SHARED:'+Buffer.from(JSON.stringify({taskKey,after:key(items.at(-1)),version:cursorVersion})).toString('base64url'):null,cursorReset,canonicalCompletion:false};
@@ -102,9 +106,9 @@ function assertCurrent(root,item,batch){const w=load(root);validateBatch({...bat
 // Explicit coordinator handoff only; quota reset or elapsed time is never a release.
 function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPending=false}={}){
  validateWork(w);const item=w.items.find(i=>key(i)===itemKey);
- if(!item||!active(item)||!TASKS[toTask]||!w.providers[toTask].available||!proof(checkpoint)||terminalRun!==true||!proof(reason)||transactionPending||item.status!=='ASSIGNED')throw Error('SAFE_SHARED_HANDOFF_PROOF_REQUIRED');
+ if(!item||!active(item)||!TASKS[toTask]||!w.providers[toTask]?.available||!proof(checkpoint)||terminalRun!==true||!proof(reason)||transactionPending||item.status!=='ASSIGNED')throw Error('SAFE_SHARED_HANDOFF_PROOF_REQUIRED');
  const history=item.assignmentHistory||(item.assignmentHistory=[]);history.push({provider:item.provider,taskKey:item.taskKey,assignmentVersion:item.assignmentVersion,checkpoint,reason});
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={SNIFFER_TASK,FIELD_TASKS,FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
