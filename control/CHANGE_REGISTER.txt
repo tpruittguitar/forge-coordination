@@ -1055,3 +1055,5 @@ REV-1017  2026-11-18  forge-coordination   #444          MERGED   Observability 
 REV-1018  2026-11-18  forge-coordination   #446          MERGED   Raise flow publish spawn timeout to 15 min, retry rejected git pushes, and fail the step when flow stays STALE.
 REV-1019  2026-11-18  forge-coordination   #445          MERGED   needs-tim builder keys compact UTC run stamps as one run with its exact time, so runs with a terminal receipt stop showing as unfinished and lane gaps stop reading 0 h ([#445](https://github.com/tpruittguitar/forge-coordination/pull/445))
 REV-1020  2026-11-18  forge-coordination   #447          MERGED   Close a pre-Writer AUTO intake halt with noCandidates and completedAt so later runs are not latched.
+REV-1021  2026-11-18  forge-coordination   #449          MERGED   Treat an existing pre-Writer AUTO halt receipt (empty outcomes, empty results, no Writer call) as closed when the latch is read, so later runs are not blocked.
+REV-1022  2026-11-18  forge-coordination   #410          MERGED   Source intake retries Writer refusals proven never accepted (NOT_ACCEPTED, BEFORE_MUTATION, 0 mutations) instead of marking them UNKNOWN
