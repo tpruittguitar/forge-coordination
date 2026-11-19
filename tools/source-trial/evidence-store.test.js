@@ -107,3 +107,12 @@ test('a new requisition extension cannot revive old text for another requisition
  const root=dir(t),old=E.capture(root,{...card,reqId:'REQ-1',validThrough:new Date(now-1000).toISOString()},{observedAt:at,proof}),extension=E.capture(root,{...card,reqId:'REQ-2',description:'New requisition partial detail.',validThrough:'2030-01-01T00:00:00Z'},{observedAt:new Date(now).toISOString(),proof}),store=E.index(root,{entries:{k:{sourceUrl:card.url,evidenceRefs:[old,extension]}}});
  a.equal(E.forRow(store,{COMPANY:card.company,TITLE:card.title,LOCATION:card.location,p:{SOURCE_URL:card.url}},now),null);
 });
+test('persistPublicPosting saves a JobSpy body once and keeps a short body as not a full posting (FINDINGS4)',t=>{
+ const root=dir(t),body='Lead plant operations and quality systems across three sites. '.repeat(10),c={...card,source:'JOBSPY:linkedin',description:body},o={observedAt:at,proof:'state/source-trial-report.json'};
+ const ref=E.persistPublicPosting(root,c,o);a.equal(ref.fullPosting,true);a.deepEqual(E.persistPublicPosting(root,c,o),ref);
+ a.equal(fs.readdirSync(path.join(root,'state/discovery-evidence')).length,1);
+ a.equal(E.persistPublicPosting(root,{...c,description:body.slice(0,350)},o).fullPosting,false);
+ a.equal(E.persistPublicPosting(root,{...c,source:'HIRINGCAFE'},o).fullPosting,false);a.equal(E.persistPublicPosting(root,{...c,source:'EMAIL_ALERT'},o).fullPosting,false);
+ a.equal(E.persistPublicPosting(root,c,{...o,proof:'state/workday-box-pass-report.json'}),null);
+ a.equal(E.persistPublicPosting(root,{...c,source:''},o),null);a.equal(E.persistPublicPosting(root,c,{...o,proof:'mail/x.json'}),null);
+});

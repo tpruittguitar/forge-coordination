@@ -1,5 +1,5 @@
 # REV-156 (Tim 2026-10-21 18:09 ET): one-off, read-only trial of employer job boards, JobSpy and (REV-187) HiringCafe for Tim's three role
-# families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md,health.json}; nothing is sent to the Writer.
+# families. Manual start (or a PR touching it). Writes state/source-trial-report.{json,md,health.json} and new posting text in state/discovery-evidence; nothing is sent to the Writer.
 # Tim 2026-10-23: also every 6 hours (read-only discovery report; Writer intake stays the approved canary/stage path).
 name: source-trial
 on:
@@ -59,17 +59,17 @@ jobs:
       - name: Commit report (main only; a PR-branch run never pushes)
         if: github.ref == 'refs/heads/main'
         run: |
-          mkdir -p /tmp/out && cp state/source-trial-report.* /tmp/out/
+          mkdir -p /tmp/out /tmp/ev && cp state/source-trial-report.* /tmp/out/ && cp -r state/discovery-evidence/. /tmp/ev/ 2>/dev/null || true
           git config user.name forge-source-trial-bot
           git config user.email forge-source-trial-bot@users.noreply.github.com
           for i in 1 2 3 4 5 6; do
-            git add state/source-trial-report.*
+            git add state/source-trial-report.* state/discovery-evidence
             git diff --cached --quiet && { echo "No change"; exit 0; }
             git commit -q -m "SOURCE-TRIAL-BOT: source trial report"
             git push -q origin HEAD:main && exit 0
             sleep $((i * 4 + RANDOM % 4))
             git fetch -q origin main && git reset -q --hard origin/main
-            cp /tmp/out/* state/
+            cp /tmp/out/* state/ && mkdir -p state/discovery-evidence && cp -rn /tmp/ev/. state/discovery-evidence/
           done
           exit 1
       - name: Start source intake (a dispatched run fires no workflow_run; Tim 2026-11-16 21:26 ET)

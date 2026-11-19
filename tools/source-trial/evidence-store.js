@@ -37,6 +37,12 @@ function capture(root,card,options={}){
  else if(hash(JSON.parse(fs.readFileSync(full)))!==sha)throw Error('DISCOVERY_EVIDENCE_CHANGED');
  return {path:file,sha256:sha,observedAt,proof,fullPosting:doc.fullPosting};
 }
+// FINDINGS4 (Tim 2:54 PM): any step holding a public posting body saves it once; under 400 characters or a HiringCafe/Tavily/email snippet is kept as fullPosting:false.
+function persistPublicPosting(root,card,{observedAt,proof,source,fullPosting}={}){
+ const c={...card,source:card?.source||source};if(!c.source)return null;
+ const full=fullPosting!==false&&!/^(?:HIRINGCAFE|TAVILY|EMAIL_ALERT)/.test(c.source)&&Source.text(c.description||'').length>=400&&postingComplete(c);if(!full)c.contentBasis='INCOMPLETE_ROLE_CONTENT';
+ try{return capture(root,c,{observedAt,proof,fullPosting:full});}catch{return null;}
+}
 function read(root,ref){
  if(!/^state\/discovery-evidence\/[a-f0-9]{64}\.json$/.test(ref?.path||'')||!ref.path.endsWith(ref.sha256+'.json'))return null;
  try{const d=JSON.parse(fs.readFileSync(path.join(root,ref.path)));return hash(d)===ref.sha256&&d.schema==='forge.discovery-evidence.v1'&&hash(d.text)===d.textSha256?d:null;}catch{return null;}
@@ -142,4 +148,4 @@ function forRow(store,row,now=Date.now()){
  const doc=found.doc,text=full?.doc.text||doc.text,constraint=constraintsByUrl.get(Identity.urlKey(doc.url)),pay=salary?(PostedPay.eligible(doc)||(!doc.postedPay?annualBase(doc.text):null)||PostedPay.sourceAnnual(doc)):null;
  return{identity:JSON.stringify([row.COMPANY,row.TITLE,row.LOCATION]),at:doc.postedPay?.observedAt||found.ref.observedAt,url:doc.url,fullPosting:!!full,text,postedPay:doc.postedPay||null,payFacts:salary?PostedPay.eligible(doc):null,degree:full?L.degreeFromText(full.doc.text):null,degreeAt:full?.ref.observedAt||null,degreeUrl:full?.doc.url||null,pay,payAmbiguous:!pay&&/\$\s*\d|USD\s*\d/i.test(text),basis:'EMPLOYER_POSTED',postingStatus:'UNVERIFIED',...(constraint?{postingFacts:{validThrough:constraint.validThrough},validThroughEvidence:constraint}:{}),discoveryEvidence:found.ref.path,factsVersion:Pay.VERSION};
 }
-module.exports={capture,read,index,forRow,annualBase,identity,hash,postingComplete,requisitions,sameRequisition,constraintOrder};
+module.exports={capture,persistPublicPosting,read,index,forRow,annualBase,identity,hash,postingComplete,requisitions,sameRequisition,constraintOrder};
