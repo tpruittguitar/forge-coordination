@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T17:57:16.857Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T175356829Z",
+ "at": "2026-11-19T18:05:37.545Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T180141619Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T17:54:04.757Z",
+  "readAt": "2026-11-19T18:01:52.336Z",
   "sha256": "fdac95fa106df266c011883be57279069274baa7e79bfd1bc83ea37b4c5312d7",
   "rows": 9370
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 602,
- "skipped_recent": 329,
+ "estimate_waiting_for_posting": 599,
+ "skipped_recent": 326,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,22 +63,24 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 4
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {
   "linkedin": 3
  },
  "agg_errors": {
   "linkedin": [
-   "404",
-   "404",
+   "429",
+   "429",
    "429"
   ]
  },
  "agg_wall": {},
- "source_reads": 3,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -124,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T17:54:11.053Z",
+  "profile_as_of": "2026-11-19T18:01:58.059Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14733,8 +14735,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 620,
- "nothing_found": 623,
+ "not_attempted": 621,
+ "nothing_found": 624,
+ "attempt_only_skipped": 2,
  "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
@@ -14768,8 +14771,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2247,
- "network_requests": 9,
+ "roles_researched": 2244,
+ "network_requests": 10,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14780,9 +14783,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 125,
-  "SOURCE_RESEARCH_REQUIRED": 758,
+  "SOURCE_RESEARCH_REQUIRED": 761,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
-  "EVIDENCE_FOUND": 63,
+  "EVIDENCE_FOUND": 60,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15181,19 +15184,6 @@
      "status": "HTTP_429"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AD21CCCD063A",
-   "company": "Rise Technical",
-   "title": "Director of Manufacturing Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:56:53.696Z",
-   "retryAt": "2026-11-19T17:56:53.696Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -21056,37 +21046,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-5D76118132AC",
-   "company": "GFL Environmental Inc.",
-   "title": "General Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:57:00.216Z",
-   "retryAt": "2026-11-19T17:57:00.216Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481779508",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-2FC9A1EBABDE",
    "company": "DB&A - DeWolff, Boberg & Associates, Inc",
    "title": "Distribution/Operations Manager (Management Consultant Opportunity)",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:57:03.388Z",
-   "retryAt": "2026-11-19T17:57:03.388Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T18:02:53.824Z",
+   "retryAt": "2026-11-20T10:02:53.824Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4145795036",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21098,13 +21070,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:57:06.541Z",
-   "retryAt": "2026-11-19T17:57:06.541Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T18:02:56.889Z",
+   "retryAt": "2026-11-20T10:02:56.889Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482575053",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21116,13 +21088,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:57:09.700Z",
-   "retryAt": "2026-11-19T17:57:09.700Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T18:02:59.975Z",
+   "retryAt": "2026-11-20T10:02:59.975Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481294822",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21134,7 +21106,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T16:57:12.905Z",
    "retryAt": "2026-11-19T17:57:12.905Z",
    "attempts": [
@@ -29669,63 +29641,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-5E4BDAE1C7F3",
-   "company": "Gables Search Group",
-   "title": "Quality Manager (Automotive)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:55:00.732Z",
-   "retryAt": "2026-11-20T09:55:00.732Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479133571",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D29A0661DFE6",
-   "company": "Page Executive",
-   "title": "President - PE backed Automotive and Industrial Supplier",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:55:03.869Z",
-   "retryAt": "2026-11-20T09:55:03.869Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483385775",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B50E3F7A1986",
-   "company": "Aend Industries LLC, HLC Dist.",
-   "title": "General Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:55:06.900Z",
-   "retryAt": "2026-11-20T09:55:06.900Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4474656535",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-0DFAECE43BF5",
    "company": "Splash Software LLC",
    "title": "Chief Operating Officer (COO) / U.S. General Manager",
@@ -32203,6 +32118,63 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477848942",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5E4BDAE1C7F3",
+   "company": "Gables Search Group",
+   "title": "Quality Manager (Automotive)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:55:00.732Z",
+   "retryAt": "2026-11-20T09:55:00.732Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479133571",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D29A0661DFE6",
+   "company": "Page Executive",
+   "title": "President - PE backed Automotive and Industrial Supplier",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:55:03.869Z",
+   "retryAt": "2026-11-20T09:55:03.869Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483385775",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B50E3F7A1986",
+   "company": "Aend Industries LLC, HLC Dist.",
+   "title": "General Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:55:06.900Z",
+   "retryAt": "2026-11-20T09:55:06.900Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4474656535",
      "status": "HTTP_429"
     }
    ],
