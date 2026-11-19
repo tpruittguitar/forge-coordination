@@ -10,6 +10,22 @@ test('workday-only order: Workday boards only, cooling boards skipped, recoverie
  const ranked=[{kind:'greenhouse',key:'greenhouse:acme'},wd('ok'),wd('cool'),wd('due'),wd('new')];
  assert.deepStrictEqual(WD.workdayOrder([wd('due')],ranked,health,NOW).map(b=>b.key),['workday:due','workday:ok','workday:new']);
 });
+test('a 429 at board k starts the next pass at k+1; the last board wraps; a finished pass clears the cursor',()=>{
+ const due=[wd('a'),wd('b'),wd('c')];
+ const health={boards:{'workday:a':{status:'OK',retryAt:null},'workday:b':{status:'OK',retryAt:null},'workday:c':{status:'OK',retryAt:null}}};
+ const stopped=WD.cursorAfterStop(due,'workday:b');
+ assert.equal(stopped.nextDue,'workday:c');
+ assert.deepStrictEqual(stopped.dueOrder,['workday:a','workday:b','workday:c']);
+ assert.deepStrictEqual(WD.workdayOrder(due,due,health,NOW,stopped).map(b=>b.key),['workday:c','workday:a','workday:b']);
+ const wrap=WD.cursorAfterStop(due,'workday:c');
+ assert.equal(wrap.nextDue,'workday:a');
+ assert.deepStrictEqual(WD.workdayOrder(due,due,health,NOW,wrap).map(b=>b.key),['workday:a','workday:b','workday:c']);
+ const cleared=WD.clearCursor();
+ assert.equal(cleared.nextDue,null);
+ assert.equal(WD.workdayOrder([wd('a')],due,health,NOW,cleared).map(b=>b.key)[0],'workday:a');
+ assert.deepStrictEqual(WD.startFrom([wd('b'),wd('c'),wd('a')],stopped).map(b=>b.key),['workday:c','workday:a','workday:b']);
+ assert.deepStrictEqual(WD.startFrom([wd('a'),wd('b')],{nextDue:'workday:c',dueOrder:['workday:a','workday:b','workday:c']}).map(b=>b.key),['workday:a','workday:b']);
+});
 test('box pass gap is 60 s before every Workday request',async()=>{
  const waits=[];const fetcher=async()=>({ok:true,status:200,headers:{get:()=>null},json:async()=>({jobPostings:[]})});
  const r=await H.readBoard(wd('a.wd1.myworkdayjobs.com'),['Quality','Manufacturing','Production'],{fetcher,wait:async ms=>waits.push(ms),gapMs:WD.GAP_MS});
@@ -41,8 +57,13 @@ test('runner: box pass reads Workday only and stops at the first 429; GitHub run
  assert.deepStrictEqual(report.boards.map(b=>b.board),['workday:alpha.wd1.myworkdayjobs.com/ext','workday:bravo.wd1.myworkdayjobs.com/ext']);
  assert.equal(fetched.includes('greenhouse'),false);assert.equal(fetched.includes('charlie'),false);
  assert.equal(pass.read,2);assert.equal(pass.ok,1);assert.equal(pass.stoppedAt429,'workday:bravo.wd1.myworkdayjobs.com/ext');
+ assert.equal(pass.nextDue,'workday:charlie.wd1.myworkdayjobs.com/ext');
  assert.equal(health.boards['workday:bravo.wd1.myworkdayjobs.com/ext'].httpStatus,429);assert.equal('workday:charlie.wd1.myworkdayjobs.com/ext' in health.boards,false);
  assert.equal(fs.existsSync(cursor),false,'the box pass leaves the GitHub cursor alone');
+ const second=run({TRIAL_WORKDAY_ONLY:'1'});
+ const report2=JSON.parse(fs.readFileSync(path.join(out,'workday-box-pass-report.json'),'utf8')),pass2=JSON.parse(fs.readFileSync(path.join(out,WD.PASS_FILE),'utf8'));
+ assert.equal(report2.boards[0].board,'workday:charlie.wd1.myworkdayjobs.com/ext');
+ assert.equal(second.includes('charlie.wd1.myworkdayjobs.com'),true);assert.equal(pass2.nextDue,null);
  const skipped=run({});
  assert.equal(skipped.includes('myworkdayjobs'),false);assert.equal(skipped.includes('greenhouse.io/v1/boards/acme'),true);
  assert.equal(JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8')).summary.boards.workday_skipped_for_box_pass,true);
