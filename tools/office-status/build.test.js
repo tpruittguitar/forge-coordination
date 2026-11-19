@@ -178,3 +178,23 @@ test('missing usage block leaves the Usage Budget row untouched', () => {
   const o2 = withUsageRow(); o2.usage = { as_of: '2026-11-16T13:00:00Z' };
   assert.deepEqual(row(B.build(o2, [], NOW).doc, 'Usage Budget'), o2.bots[3]);
 });
+
+/* Hermes desk (foreman-cockpit #474) resolves by bot_id; the row is hand-written, so the rebuild must keep it. */
+test('live OFFICE_STATUS.json: 15 bots incl. Hermes, and the row survives build.js', () => {
+  const fs = require('fs'), path = require('path'), ask = require('./ask.js');
+  const root = path.resolve(__dirname, '../..');
+  const office = JSON.parse(fs.readFileSync(path.join(root, 'control/OFFICE_STATUS.json'), 'utf8'));
+  const HERMES = '15ab4cfb-2d51-4809-9ae3-f1285ebd829f';
+  const check = doc => {
+    assert.equal(doc.bots.length, 15);
+    assert.equal(new Set(doc.bots.map(b => b.bot_id)).size, 15, 'bot_ids are unique');
+    const h = doc.bots.filter(b => b.bot_id === HERMES);
+    assert.equal(h.length, 1); assert.equal(h[0].bot, 'Hermes');
+  };
+  check(office);
+  const asks = { open: ask.collect(root, 'open'), resolved: ask.collect(root, 'resolved') };
+  const readings = fs.readFileSync(path.join(root, 'usage/AI_USAGE_READINGS.jsonl'), 'utf8');
+  const once = B.build(office, [], Date.now(), readings, asks).doc;
+  check(once);
+  check(B.build(once, [], Date.now() + 3600000, readings, asks).doc);
+});
