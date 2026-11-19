@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-19T23:23:01.524Z",
+    "at": "2026-11-19T23:28:57.008Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,7 +277,7 @@
     "current": 691,
     "undated": 0
   },
-  "at": "2026-11-19T23:23:01.524Z",
+  "at": "2026-11-19T23:28:57.008Z",
   "queues": {
     "verification": 0,
     "enrichment": 3010,
@@ -296,8 +296,8 @@
     "readyForReview": null
   },
   "reconciliation": {
-    "from": "2026-11-19T23:14:53.708Z",
-    "to": "2026-11-19T23:23:01.524Z",
+    "from": "2026-11-19T23:23:01.524Z",
+    "to": "2026-11-19T23:28:57.008Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -309,12 +309,12 @@
         "reconciled": true
       },
       "enrichment": {
-        "opening": 3009,
-        "entered": 1,
+        "opening": 3010,
+        "entered": 0,
         "completed": 0,
         "otherExits": 0,
         "closing": 3010,
-        "delta": 1,
+        "delta": 0,
         "reconciled": true
       },
       "readyForReview": {
@@ -377,7 +377,7 @@
         "last24h": 10,
         "partial": true,
         "coverageHours": 6,
-        "collectionGaps": 3,
+        "collectionGaps": 2,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -391,7 +391,7 @@
         "last24h": 0,
         "partial": true,
         "coverageHours": 6,
-        "collectionGaps": 3,
+        "collectionGaps": 2,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-19T23:20:46.499Z",
+    "readAt": "2026-11-19T23:26:49.915Z",
     "sha256": "079c54b02423e5b3050a040c3f980fd6beb497bc4d34706415a8440873d17482",
     "rows": 9381
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-19T23:21:11.191Z",
+    "at": "2026-11-19T23:27:08.654Z",
     "total": 14218,
     "sourceIdentities": 15155,
     "aliasesMerged": 937,
@@ -519,11 +519,11 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-19T23:13:27.411Z",
-      "to": "2026-11-19T23:21:11.191Z",
-      "opening": 1108,
-      "arrivals": 3,
-      "admitted": 2,
+      "from": "2026-11-19T23:21:11.191Z",
+      "to": "2026-11-19T23:27:08.654Z",
+      "opening": 1109,
+      "arrivals": 0,
+      "admitted": 0,
       "excluded": 0,
       "otherExits": 0,
       "closing": 1109
@@ -594,9 +594,9 @@
           "basis": "Distinct captured candidate identities first observed within 24 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 54,
+          "count": 53,
           "windowHours": 24,
-          "perHour": 2.25,
+          "perHour": 2.2083333333333335,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 24 hours."
         }
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-19T23:21:11.191Z",
+      "at": "2026-11-19T23:27:08.654Z",
       "reviewedSourceIdentities": 15155,
       "pendingCandidates": 1109,
       "storedEvidence": 2372,
@@ -639,7 +639,7 @@
       "emailFiles": 68,
       "identityUnresolved": 311,
       "unreadSourceWindows": 654,
-      "newReportCommits": 2,
+      "newReportCommits": 0,
       "unkeyedRecords": 2349,
       "missingAdmissionTimes": 724,
       "masterRows": 9381,
