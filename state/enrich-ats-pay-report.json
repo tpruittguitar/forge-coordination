@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T10:30:53.807Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T102703838Z",
+ "at": "2026-11-19T10:48:14.789Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T104210915Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T10:27:15.455Z",
+  "readAt": "2026-11-19T10:42:20.965Z",
   "sha256": "3c4c60165b70d0ae18e7cc65dd3fd1fb4bc33ad8e46102f19de28488567aba9b",
   "rows": 9357
  },
@@ -35,11 +35,43 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261118T103217927Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-27A3049C3171",
+     "V2I-DB79C8507326",
+     "V2I-DBA98B30A887",
+     "V2I-DBB95C896788",
+     "V2I-DC487F109B3E",
+     "V2I-DC6264CC911C",
+     "V2I-DC94063E3E7C",
+     "V2I-DCD78F185439",
+     "V2I-DDB434005DF4",
+     "V2I-DEF6E7B95781",
+     "V2I-E2120FC21486",
+     "V2I-E26681EAB043",
+     "V2I-E2FB5D6B6B86",
+     "V2I-E5B2719415CF",
+     "V2I-E5BC37FE237D",
+     "V2I-EFE1625C70DF",
+     "V2I-D53CB9AF87DB",
+     "V2I-B28A7A665098",
+     "V2I-F602EE88347D",
+     "V2I-83997AEC94C2",
+     "V2I-0F700403CD7A",
+     "V2I-D91CBCD79579",
+     "V2I-A526D249EC9E",
+     "V2I-69E7E09689FB",
+     "V2I-642823AE104E"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 14,
-  "fenced_ids": 159
+  "pending_batches": 13,
+  "fenced_ids": 134
  },
  "anchors": 1308,
  "archive_anchors": 5,
@@ -49,11 +81,11 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 597,
- "skipped_recent": 327,
- "submitted": 0,
+ "estimate_waiting_for_posting": 598,
+ "skipped_recent": 326,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
@@ -65,13 +97,13 @@
  "agg_tried": {
   "linkedin": 1
  },
- "agg_read": {
-  "linkedin": 1
- },
+ "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
- "agg_wall": {},
+ "agg_wall": {
+  "linkedin": 1
+ },
  "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
@@ -118,7 +150,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T10:27:20.936Z",
+  "profile_as_of": "2026-11-19T10:42:27.547Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14703,7 +14735,7 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1714,
+  "review_skipped_blocked": 1738,
   "by_missing": {
    "products (what they make)": 1764,
    "work arrangement (remote/hybrid/on-site)": 1110,
@@ -14712,7 +14744,7 @@
  },
  "salary_review": {
   "eligible": 1846,
-  "due": 1714,
+  "due": 1738,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -14727,33 +14759,37 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 618,
- "nothing_found": 618,
- "attempt_only_skipped": 1,
+ "not_attempted": 620,
+ "nothing_found": 621,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
+  "scored": 1,
+  "legacy_replaced": 1,
   "merged": 0,
-  "added": 0,
+  "added": 1,
   "short_posting": 0,
-  "no_posting": 2543,
+  "no_posting": 2567,
   "deferred": 0,
-  "fenced": 159,
+  "fenced": 134,
   "inactive": 6361,
   "already_fitted": 294,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-A526D249EC9E",
+    "fit": 100
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
   "has_business": 165,
-  "no_overview": 2672,
+  "no_overview": 2697,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 159,
+  "fenced": 134,
   "inactive": 6361,
   "by_label": {},
   "sample": []
@@ -14762,10 +14798,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2156,
- "network_requests": 7,
- "planned": 0,
+ "roles_researched": 2178,
+ "network_requests": 9,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14774,8 +14811,8 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 124,
-  "SOURCE_RESEARCH_REQUIRED": 738,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 38,
+  "SOURCE_RESEARCH_REQUIRED": 739,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 37,
   "EVIDENCE_FOUND": 78,
   "MODEL_INPUTS_REQUIRED": 6
  },
@@ -15193,9 +15230,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T08:29:29.631Z",
-   "retryAt": "2026-11-19T10:29:29.631Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-19T10:43:37.564Z",
+   "retryAt": "2026-11-19T14:43:37.564Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -15210,9 +15247,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T08:29:29.632Z",
-   "retryAt": "2026-11-19T10:29:29.632Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-19T10:43:37.564Z",
+   "retryAt": "2026-11-19T14:43:37.564Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -21577,6 +21614,24 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-CA52D87AFDB0",
+   "company": "Delaware North",
+   "title": "General Manager, EverBank Stadium",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T10:28:14.621Z",
+   "retryAt": "2026-11-19T11:28:14.621Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-0DA28212F674",
    "company": "Graphic Packaging International",
    "title": "Plant Sr Manager",
@@ -22862,6 +22917,25 @@
    "lastAttemptAt": null,
    "retryAt": null,
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-27A3049C3171",
+   "company": "Walker Lovell",
+   "title": "Mine Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T10:43:40.993Z",
+   "retryAt": "2026-11-19T12:43:40.993Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484435480",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -29504,25 +29578,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-27A3049C3171",
-   "company": "Walker Lovell",
-   "title": "Mine Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T10:34:37.330Z",
-   "retryAt": "2026-11-18T11:34:37.330Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484435480",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-1756D0ED600C",
    "company": "Karman Space & Defense",
    "title": "Director of Continuous Improvement",
@@ -32240,7 +32295,16 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-A526D249EC9E",
+   "fields": {
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 6/11 resume competencies observed in a 5672-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, manufacturing_systems, lean_operations, supplier_quality"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
