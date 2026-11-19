@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T09:21:34.826Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T091719179Z",
+ "at": "2026-11-19T09:34:13.913Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T092554590Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T09:17:27.459Z",
+  "readAt": "2026-11-19T09:26:05.119Z",
   "sha256": "9524d2a86476492a4427b66b75e1325f27f90e3927491878a45055ab33887469",
   "rows": 9357
  },
@@ -35,11 +35,43 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261118T091857448Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-4F9339351024",
+     "V2I-C652057F20E8",
+     "V2I-C81B64C0FFB5",
+     "V2I-C8624E040BF0",
+     "V2I-C994FBAB8DE2",
+     "V2I-CA52D87AFDB0",
+     "V2I-CC2C1E8CE2B9",
+     "V2I-CCD73AE7DDB4",
+     "V2I-CD0A2DE3F364",
+     "V2I-CF21855617A0",
+     "V2I-CF4321CA2E76",
+     "V2I-D0873A8DC373",
+     "V2I-D191DC32FF73",
+     "V2I-9ECF1A17289A",
+     "V2I-DD9AECB07DDE",
+     "V2I-847E6F45EF7F",
+     "V2I-877C89EEBA71",
+     "V2I-AD3310BFA831",
+     "V2I-BC344F068151",
+     "V2I-138E2CFFFDB8",
+     "V2I-5EE72B71CC69",
+     "V2I-730DB190A82C",
+     "V2I-BCDC373210A8",
+     "V2I-6841A8DA12CB",
+     "V2I-13FE836CB43B"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 15,
-  "fenced_ids": 184
+  "pending_batches": 14,
+  "fenced_ids": 159
  },
  "anchors": 1308,
  "archive_anchors": 5,
@@ -48,31 +80,31 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
+ "estimates": 1,
  "estimate_waiting_for_posting": 595,
- "skipped_recent": 320,
- "submitted": 0,
+ "skipped_recent": 328,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {
-  "linkedin": 9
+  "linkedin": 1
  },
  "agg_read": {
-  "linkedin": 9
+  "linkedin": 1
  },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 9,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -80,11 +112,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -105,9 +137,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 6,
+  "saved_reused": 6,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -118,7 +150,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T09:17:32.989Z",
+  "profile_as_of": "2026-11-19T09:26:10.565Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14703,7 +14735,7 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1688,
+  "review_skipped_blocked": 1712,
   "by_missing": {
    "products (what they make)": 1763,
    "work arrangement (remote/hybrid/on-site)": 1109,
@@ -14712,7 +14744,7 @@
  },
  "salary_review": {
   "eligible": 1845,
-  "due": 1688,
+  "due": 1712,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -14727,33 +14759,46 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 616,
- "nothing_found": 616,
- "attempt_only_skipped": 9,
+ "not_attempted": 617,
+ "nothing_found": 617,
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
-  "merged": 0,
-  "added": 0,
+  "scored": 3,
+  "legacy_replaced": 3,
+  "merged": 1,
+  "added": 2,
   "short_posting": 0,
-  "no_posting": 2521,
+  "no_posting": 2543,
   "deferred": 0,
-  "fenced": 184,
+  "fenced": 159,
   "inactive": 6361,
   "already_fitted": 291,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-877C89EEBA71",
+    "fit": 67
+   },
+   {
+    "id": "V2I-AD3310BFA831",
+    "fit": 83
+   },
+   {
+    "id": "V2I-4F9339351024",
+    "fit": 100
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
   "has_business": 165,
-  "no_overview": 2647,
+  "no_overview": 2672,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 184,
+  "fenced": 159,
   "inactive": 6361,
   "by_label": {},
   "sample": []
@@ -14762,10 +14807,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2131,
- "network_requests": 15,
- "planned": 0,
+ "roles_researched": 2153,
+ "network_requests": 9,
+ "planned": 3,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14775,8 +14821,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 124,
   "SOURCE_RESEARCH_REQUIRED": 763,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 40,
-  "EVIDENCE_FOUND": 52,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 38,
+  "EVIDENCE_FOUND": 54,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15702,6 +15748,24 @@
    "lastAttemptAt": "2026-11-19T09:03:46.044Z",
    "retryAt": "2026-11-19T10:03:46.044Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC419D176355",
+   "company": "Guardian Dentistry Partners",
+   "title": "Director, Tactical Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:25.404Z",
+   "retryAt": "2026-11-19T10:18:25.404Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -18468,20 +18532,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-4F9339351024",
-   "company": "TWIST BIOSCIENCE",
-   "title": "Director, Protein Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T09:21:19.607Z",
-   "retryAt": "2026-11-18T10:21:19.607Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-992B913F50EB",
    "company": "Continental Dairy Facilities Southwest, LLC",
    "title": "Plant Manager",
@@ -20269,24 +20319,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-CA52D87AFDB0",
-   "company": "Delaware North",
-   "title": "General Manager, EverBank Stadium",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T08:47:08.817Z",
-   "retryAt": "2026-11-18T09:47:08.817Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-404F8D0103CC",
    "company": "Troon",
    "title": "General Manager",
@@ -21154,11 +21186,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T01:25:15.967Z",
-   "retryAt": "2026-11-19T09:25:15.967Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-19T09:27:32.153Z",
+   "retryAt": "2026-11-20T01:27:32.153Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-521C8D614D2A",
@@ -21449,6 +21481,150 @@
    "lastAttemptAt": "2026-11-19T09:04:24.028Z",
    "retryAt": "2026-11-19T10:04:24.028Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4034A8A34AFF",
+   "company": "Lennox",
+   "title": "Manager, Production",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:28.831Z",
+   "retryAt": "2026-11-19T10:18:28.831Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477870954",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-16C39E63D998",
+   "company": "US Door & More Inc.",
+   "title": "Workshop Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:32.020Z",
+   "retryAt": "2026-11-19T10:18:32.020Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480871025",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5F577C9712C1",
+   "company": "First Quality",
+   "title": "Learning & Talent Management Leader",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:35.179Z",
+   "retryAt": "2026-11-19T10:18:35.179Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484229959",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-682F7C51C227",
+   "company": "Focus Ten Care Schools",
+   "title": "Childcare Center Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:38.320Z",
+   "retryAt": "2026-11-19T10:18:38.320Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483124051",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5394FA4BBADD",
+   "company": "ICE",
+   "title": "QC Manager (Mortgage)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:41.480Z",
+   "retryAt": "2026-11-19T10:18:41.480Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485605134",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CDBEF98F4186",
+   "company": "Onterris",
+   "title": "Region Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:44.664Z",
+   "retryAt": "2026-11-19T10:18:44.664Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471901258",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2CDC90A5943",
+   "company": "YMCA of the Suncoast",
+   "title": "Executive Director - Hernando County",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:47.763Z",
+   "retryAt": "2026-11-19T10:18:47.763Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BFBAE1D979F7",
+   "company": "Phillips Infrastructure",
+   "title": "General Superintendent",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T09:18:51.051Z",
+   "retryAt": "2026-11-19T10:18:51.051Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4428073187",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -32115,7 +32291,74 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-4F9339351024",
+   "fields": {
+    "DEGREE_TEXT": "PhD in protein biochemistry, biological chemistry, immunology, or a related field with 8+ years of experience in biotech, biopharma, or life science tools; or a BS/MS with 12+ years of equivalent experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://grnh.se/9i4c1uhn1us",
+    "DEGREE_ASOF": "2026-11-18",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 110000,
+    "SALARY_BASE_HIGH": 225000,
+    "SALARY_MIDPOINT": 167500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_SOURCE": "comparables: https://job-boards.greenhouse.io/panthalassa/jobs/6233383004 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4417222884 (as of 2026-11-19); https://caresource.wd1.myworkdayjobs.com/en-US/CareSource/job/Remote/Director--EDS-Strategy-and-Operations_R14601-1 (as of 2026-11-19); https://www.linkedin.com/jobs/view/4483093266 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4485419373 (as of 2026-11-18); https://jobs.dsv.com/job/Fort-Worth-Director%2C-Operations-TX-76140/1456596033/ (as of 2026-11-18); https://www.indeed.com/viewjob?jk=4f28d7c3fd06fb05 (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-22DCC2B9A382, V2I-C81D0DD31F29, V2I-F57392336D6F, V2I-17D2AD3D4512, V2I-208863265EB8, V2I-302FF0033CC8, V2I-7D723DF74DB5]; 7 employer-posted comparable(s), level 2 OPS same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS OR 111021 P25-P90 $75K-$237K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 7/11 resume competencies observed in a 5332-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations",
+    "SALARY_SCORE_POINT": 196250
+   }
+  },
+  {
+   "id": "V2I-877C89EEBA71",
+   "fields": {
+    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 6014-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, manufacturing_systems"
+   }
+  },
+  {
+   "id": "V2I-AD3310BFA831",
+   "fields": {
+    "SCOPE_FIT_RAW": "83",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 5/11 resume competencies observed in a 7147-char saved posting (6+ = 100): quality_systems, team_building, manufacturing_systems, lean_operations, supplier_quality"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-4F9339351024",
+   "company": "TWIST BIOSCIENCE",
+   "title": "Director, Protein Operations",
+   "location": "Wilsonville, OR, USA",
+   "posting": "https://grnh.se/9i4c1uhn1us",
+   "est": [
+    110000,
+    225000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 OPS same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-22DCC2B9A382",
+    "V2I-C81D0DD31F29",
+    "V2I-F57392336D6F",
+    "V2I-17D2AD3D4512",
+    "V2I-208863265EB8",
+    "V2I-302FF0033CC8",
+    "V2I-7D723DF74DB5"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
