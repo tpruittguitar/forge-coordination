@@ -1,15 +1,15 @@
 {
- "at": "2026-11-19T22:39:32.459Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T223611518Z",
+ "at": "2026-11-19T22:46:46.765Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T224357870Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T22:36:17.960Z",
-  "sha256": "777938a4a73b499c184a5619a7d5318ca61d37dbf44c688dd42a479de954d8ca",
-  "rows": 9373
+  "readAt": "2026-11-19T22:44:05.323Z",
+  "sha256": "995a555f1da293bd8c49a46e85c2b3d996f4d87bfa5f6e04fb982924b5136d3e",
+  "rows": 9376
  },
- "rows": 9373,
- "eligible": 989,
+ "rows": 9376,
+ "eligible": 992,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 601,
- "skipped_recent": 327,
+ "estimate_waiting_for_posting": 604,
+ "skipped_recent": 333,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,24 +63,14 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 6
+  "linkedin": 1
  },
- "agg_read": {
-  "linkedin": 3
- },
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 3
- },
- "agg_errors": {
-  "linkedin": [
-   "429",
-   "429",
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 6,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -92,10 +82,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -113,7 +104,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -126,7 +117,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T22:36:23.625Z",
+  "profile_as_of": "2026-11-19T22:44:10.359Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14720,14 +14711,22 @@
  },
  "salary_review": {
   "eligible": 1857,
-  "due": 1842,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1843,
+  "reviewed": 1,
+  "target_reads": 1,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-D5C47FE26F7B",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14735,10 +14734,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 622,
+ "not_attempted": 625,
  "nothing_found": 625,
- "attempt_only_skipped": 3,
- "source_origin_blocks": {},
+ "est_bls": 1,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14746,7 +14744,7 @@
   "merged": 0,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2642,
+  "no_posting": 2645,
   "deferred": 0,
   "fenced": 34,
   "inactive": 6361,
@@ -14759,7 +14757,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 165,
-  "no_overview": 2813,
+  "no_overview": 2816,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 34,
@@ -14771,8 +14769,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2280,
- "network_requests": 12,
+ "roles_researched": 2282,
+ "network_requests": 7,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14782,7 +14780,7 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 128,
+  "NOT_YET_ATTEMPTED": 131,
   "SOURCE_RESEARCH_REQUIRED": 771,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
   "EVIDENCE_FOUND": 50,
@@ -15733,6 +15731,48 @@
      "status": "FULL_POSTING_READ"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3A1E8ED7ACD2",
+   "company": "Honeywell Aerospace",
+   "title": "Sr Director - Advanced Manufacturing Engineer - NPI",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-18E06E6D599A",
+   "company": "Quanex",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F5A79962BD70",
+   "company": "Kreate",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -21087,60 +21127,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-48E2D58CA5A0",
-   "company": "Sabal Palms Recovery Center",
-   "title": "Director of Revenue Cycle Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T22:37:20.783Z",
-   "retryAt": "2026-11-20T14:37:20.783Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D1E70BA958B4",
-   "company": "ADM",
-   "title": "Maintenance Superintendent - Chattanooga, TN",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T22:37:23.812Z",
-   "retryAt": "2026-11-20T14:37:23.812Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4774403633B7",
-   "company": "SOLV Energy",
-   "title": "Director of Solar Construction, SDI Services",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T22:37:26.869Z",
-   "retryAt": "2026-11-20T14:37:26.869Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482731041",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A9A1418340FD",
    "company": "Teradyne",
    "title": "Customer Production Support Manager (Global Customer Service) - Austin, TX",
@@ -21426,6 +21412,114 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BFBAE1D979F7",
+   "company": "Phillips Infrastructure",
+   "title": "General Superintendent",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:11.401Z",
+   "retryAt": "2026-11-19T23:37:11.401Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4428073187",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CA52D87AFDB0",
+   "company": "Delaware North",
+   "title": "General Manager, EverBank Stadium",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:14.577Z",
+   "retryAt": "2026-11-19T23:37:14.577Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5D76118132AC",
+   "company": "GFL Environmental Inc.",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:17.713Z",
+   "retryAt": "2026-11-19T23:37:17.713Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481779508",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-48E2D58CA5A0",
+   "company": "Sabal Palms Recovery Center",
+   "title": "Director of Revenue Cycle Management",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:20.783Z",
+   "retryAt": "2026-11-20T14:37:20.783Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D1E70BA958B4",
+   "company": "ADM",
+   "title": "Maintenance Superintendent - Chattanooga, TN",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:23.812Z",
+   "retryAt": "2026-11-20T14:37:23.812Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4774403633B7",
+   "company": "SOLV Energy",
+   "title": "Director of Solar Construction, SDI Services",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T22:37:26.869Z",
+   "retryAt": "2026-11-20T14:37:26.869Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482731041",
      "status": "HTTP_429"
     }
    ],
