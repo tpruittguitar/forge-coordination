@@ -1,15 +1,15 @@
 {
- "at": "2026-11-18T23:16:53.953Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261118T230634818Z",
+ "at": "2026-11-19T00:06:00.286Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261118T235936115Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-18T23:06:45.183Z",
-  "sha256": "3d27a9d881aa0632d1a8a7c5278533a16e7eda635149ace1c9e549842e4925a2",
-  "rows": 9322
+  "readAt": "2026-11-18T23:59:44.706Z",
+  "sha256": "34d96621ab51390fdbb2f18fc7361bf382da3991c62e4738ec04f42baac0c75e",
+  "rows": 9332
  },
- "rows": 9322,
- "eligible": 1027,
+ "rows": 9332,
+ "eligible": 1037,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -38,66 +38,74 @@
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 15,
-  "fenced_ids": 254
+  "pending_batches": 16,
+  "fenced_ids": 257
  },
  "anchors": 1272,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
- "degree": 3,
- "estimates": 3,
- "estimate_waiting_for_posting": 588,
- "skipped_recent": 333,
- "submitted": 0,
+ "degree": 2,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 625,
+ "skipped_recent": 283,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 3,
- "salary_independently_verified": 0,
+ "salary_submitted": 2,
+ "salary_independently_verified": 2,
  "agg_tried": {
-  "linkedin": 7
+  "ziprecruiter": 1,
+  "linkedin": 14
  },
  "agg_read": {
-  "linkedin": 5
+  "linkedin": 7
  },
  "agg_pay": {},
  "agg_failed": {
-  "linkedin": 2
+  "ziprecruiter": 1,
+  "linkedin": 6
  },
  "agg_errors": {
+  "ziprecruiter": [
+   "403"
+  ],
   "linkedin": [
    "429",
-   "429"
+   "429",
+   "404"
   ]
  },
- "agg_wall": {},
- "source_reads": 7,
+ "agg_wall": {
+  "linkedin": 1
+ },
+ "source_reads": 16,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
  "workday_window_active": false,
- "est_same_employer": 0,
- "est_comparables": 3,
- "boards_read": 2,
+ "est_same_employer": 1,
+ "est_comparables": 1,
+ "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 3,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 3,
+ "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
   "hits": 13,
@@ -112,20 +120,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 3,
-  "candidates": 30,
-  "saved_reused": 30,
+  "targets": 1,
+  "candidates": 8,
+  "saved_reused": 6,
   "cache_hits": 0,
-  "reads": 0,
+  "reads": 2,
   "found": 0,
-  "failed": 0,
+  "failed": 2,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 3,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-18T23:06:51.860Z",
+  "profile_as_of": "2026-11-18T23:59:50.063Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14755,7 +14763,7 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1474,
-  "review_skipped_blocked": 1555,
+  "review_skipped_blocked": 1569,
   "by_missing": {
    "products (what they make)": 1758,
    "work arrangement (remote/hybrid/on-site)": 1088,
@@ -14764,7 +14772,7 @@
  },
  "salary_review": {
   "eligible": 1819,
-  "due": 1555,
+  "due": 1569,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -14779,10 +14787,15 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 606,
- "nothing_found": 608,
- "attempt_only_skipped": 2,
+ "not_attempted": 630,
+ "nothing_found": 638,
  "source_origin_blocks": {},
+ "attempt_only_skipped": 30,
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14790,9 +14803,9 @@
   "merged": 0,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2487,
+  "no_posting": 2494,
   "deferred": 0,
-  "fenced": 254,
+  "fenced": 257,
   "inactive": 6357,
   "already_fitted": 224,
   "already_fitted_legacy": 0,
@@ -14803,10 +14816,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 147,
-  "no_overview": 2564,
+  "no_overview": 2571,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 254,
+  "fenced": 257,
   "inactive": 6357,
   "by_label": {},
   "sample": []
@@ -14815,12 +14828,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2068,
- "network_requests": 15,
- "planned": 3,
+ "roles_researched": 2113,
+ "network_requests": 24,
+ "planned": 2,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 3,
- "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14828,10 +14840,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 115,
-  "SOURCE_RESEARCH_REQUIRED": 782,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 69,
-  "EVIDENCE_FOUND": 42,
+  "NOT_YET_ATTEMPTED": 123,
+  "SOURCE_RESEARCH_REQUIRED": 784,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 72,
+  "EVIDENCE_FOUND": 39,
   "MODEL_INPUTS_REQUIRED": 7
  },
  "pending": [
@@ -15602,9 +15614,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T21:14:15.683Z",
-   "retryAt": "2026-11-18T23:14:15.683Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:00:37.613Z",
+   "retryAt": "2026-11-19T04:00:37.613Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
@@ -15671,333 +15683,19 @@
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
-   "id": "V2I-7C50989FE9F3",
-   "company": "EnduroSat",
-   "title": "VP of Programs & Mission Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.141Z",
-   "retryAt": "2026-11-18T23:42:44.141Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482167222",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A60EDB322D13",
-   "company": "ABB",
-   "title": "Head of Quality Engineering",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.143Z",
-   "retryAt": "2026-11-18T23:42:44.143Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2650824AD6BB",
-   "company": "FXI",
-   "title": "Plant Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.144Z",
-   "retryAt": "2026-11-18T23:42:44.144Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-20B993666C8F",
-   "company": "Valley Beverage",
-   "title": "Bottling Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.145Z",
-   "retryAt": "2026-11-18T23:42:44.145Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6F8DCCE3936A",
-   "company": "Carriage Services",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.146Z",
-   "retryAt": "2026-11-18T23:42:44.146Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-26F931FD92DA",
-   "company": "Armstrong World Industries",
-   "title": "Plant Manager, Arktura",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.148Z",
-   "retryAt": "2026-11-18T23:42:44.148Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1909D52A9556",
-   "company": "Netflix",
-   "title": "Technical Director Pre Production",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.149Z",
-   "retryAt": "2026-11-18T23:42:44.149Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B74147790ED4",
-   "company": "Pacific Seafood",
-   "title": "Director of Technical Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.151Z",
-   "retryAt": "2026-11-18T23:42:44.151Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-82B5D9C00B84",
-   "company": "Copperstate Ambulance",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.152Z",
-   "retryAt": "2026-11-18T23:42:44.152Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E18A9B526E0F",
-   "company": "SANY",
-   "title": "Senior Manager – Reman & Refurb Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.153Z",
-   "retryAt": "2026-11-18T23:42:44.153Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C3E2F1D85782",
-   "company": "American Plating Solutions",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.154Z",
-   "retryAt": "2026-11-18T23:42:44.154Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7D1BBD2B1448",
-   "company": "Bagel Brands",
-   "title": "Director of Operations Excellence",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.155Z",
-   "retryAt": "2026-11-18T23:42:44.155Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F8705860AD08",
-   "company": "MDI Rock",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.156Z",
-   "retryAt": "2026-11-18T23:42:44.156Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B915032C6304",
-   "company": "Golden Valley Farms",
-   "title": "Seed Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.157Z",
-   "retryAt": "2026-11-18T23:42:44.157Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E0C96532DBF6",
-   "company": "Premier Linen Services",
-   "title": "Plant Manager – Commercial Laundry",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.158Z",
-   "retryAt": "2026-11-18T23:42:44.158Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1636DD79BA74",
-   "company": "Coordinated Services Management",
-   "title": "Regional Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.159Z",
-   "retryAt": "2026-11-18T23:42:44.159Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8522B995027A",
-   "company": "Material Delivery",
-   "title": "Dewey Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.160Z",
-   "retryAt": "2026-11-18T23:42:44.160Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-98936E68426E",
-   "company": "Colliers",
-   "title": "Director of Brokerage Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.161Z",
-   "retryAt": "2026-11-18T23:42:44.161Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-01B17AAAA304",
-   "company": "LawnStarter",
-   "title": "Director of Operations, Service Delivery",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.163Z",
-   "retryAt": "2026-11-18T23:42:44.163Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D6632FA6A11D",
-   "company": "Lyra Health",
-   "title": "Senior Director, Enterprise Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.166Z",
-   "retryAt": "2026-11-18T23:42:44.166Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1CAA147B7608",
-   "company": "Crane Worldwide Logistics",
-   "title": "Director Customs Quality Program",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:44.168Z",
-   "retryAt": "2026-11-18T23:42:44.168Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AD58DE56BE9B",
-   "company": "Western Union",
-   "title": "Director, Product Operations – Wallets and Card Issuance",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:47.345Z",
-   "retryAt": "2026-11-18T23:42:47.345Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484580990",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-91C63174CB65",
-   "company": "IRP Medical",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:50.518Z",
-   "retryAt": "2026-11-18T23:42:50.518Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-C806B4C35FF9",
    "company": "SkyWater Search Partners",
    "title": "Head of Enterprise Operations",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:53.754Z",
-   "retryAt": "2026-11-18T23:42:53.754Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:00:51.978Z",
+   "retryAt": "2026-11-19T16:00:51.978Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465876600",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -16018,6 +15716,155 @@
      "status": "HTTP_429"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AEF7ACBA86A2",
+   "company": "MAHLE",
+   "title": "Head of Plant Production Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:00:55.005Z",
+   "retryAt": "2026-11-19T02:00:55.005Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492080527",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FFCDD94820FB",
+   "company": "KC Associates",
+   "title": "Steel Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-19T00:00:55.006Z",
+   "retryAt": "2026-11-19T02:00:55.006Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8627523778C9",
+   "company": "RELIANT HOLDINGS LTD",
+   "title": "Plant Manager - Brandon, Mississippi",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-27092DDCC992",
+   "company": "DeVry University",
+   "title": "Program Director, Advanced Manufacturing Technology",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B713983B2DC8",
+   "company": "Carrier",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-45CE9A4C3752",
+   "company": "Big Beverages Contract Manufacturing L.L.C.",
+   "title": "Director of Manufacturing - Big Beverages",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3A777022C26B",
+   "company": "Inpria",
+   "title": "Director of Engineering and Manufacturing Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-7301CF88DD1C",
+   "company": "Lasko Products, Inc",
+   "title": "Director of Plant Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A5E2644F102E",
+   "company": "Primo Brands",
+   "title": "VP, Regional Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-431B4A9B7480",
+   "company": "L3Harris",
+   "title": "Director, Manufacturing Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -19906,44 +19753,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-E7CE88598975",
-   "company": "Unusual Machines",
-   "title": "Director of Production - Headset and Battery",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T19:08:04.930Z",
-   "retryAt": "2026-11-18T23:08:04.930Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4458661304",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9574543B6BAD",
-   "company": "Oracle",
-   "title": "Senior Manager of Manufacturing Product & Test Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T19:08:08.047Z",
-   "retryAt": "2026-11-18T23:08:08.047Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449834248",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-FDC7B6092B49",
    "company": "iLocatum",
    "title": "Project Director - Greenfield Food Manufacturing",
@@ -19989,13 +19798,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T19:19:58.979Z",
-   "retryAt": "2026-11-18T23:19:58.979Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:01:25.440Z",
+   "retryAt": "2026-11-19T08:01:25.440Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485438245",
-     "status": "HTTP_429"
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20224,20 +20033,6 @@
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A10BB7FA6297",
-   "company": "Chick-fil-A Restaurants",
-   "title": "Front of House Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:42:57.001Z",
-   "retryAt": "2026-11-18T23:42:57.001Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -20621,49 +20416,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T07:37:56.051Z",
-   "retryAt": "2026-11-18T23:37:56.051Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:01:28.549Z",
+   "retryAt": "2026-11-19T16:01:28.549Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483206369",
      "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1E554DEF2228",
-   "company": "KLA",
-   "title": "North America Inspection Technical Engagement Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T07:38:33.967Z",
-   "retryAt": "2026-11-18T23:38:33.967Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488577578",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2CDC90A5943",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director - Hernando County",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T07:40:30.956Z",
-   "retryAt": "2026-11-18T23:40:30.956Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21670,54 +21429,15 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:06.450Z",
-   "retryAt": "2026-11-18T23:43:06.450Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:01:37.929Z",
+   "retryAt": "2026-11-19T04:01:37.929Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481953095",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A9A1418340FD",
-   "company": "Teradyne",
-   "title": "Customer Production Support Manager (Global Customer Service) - Austin, TX",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:09.602Z",
-   "retryAt": "2026-11-18T23:43:09.602Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E34823A5DD1F",
-   "company": "YQN LINK",
-   "title": "Director of Operational Excellence",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:09.603Z",
-   "retryAt": "2026-11-18T23:43:09.603Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-45A3E171A392",
-   "company": "Ingram Content Group",
-   "title": "Sr. Manager Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:09.605Z",
-   "retryAt": "2026-11-18T23:43:09.605Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -21727,13 +21447,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:12.795Z",
-   "retryAt": "2026-11-18T23:43:12.795Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:01:40.956Z",
+   "retryAt": "2026-11-19T16:01:40.956Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480639197",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21799,13 +21519,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:55:06.922Z",
-   "retryAt": "2026-11-18T23:55:06.922Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T00:01:43.982Z",
+   "retryAt": "2026-11-19T16:01:43.982Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21835,7 +21555,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T22:55:13.448Z",
    "retryAt": "2026-11-18T23:55:13.448Z",
    "attempts": [
@@ -21853,7 +21573,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T22:55:16.626Z",
    "retryAt": "2026-11-18T23:55:16.626Z",
    "attempts": [
@@ -21871,7 +21591,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T22:55:19.780Z",
    "retryAt": "2026-11-18T23:55:19.780Z",
    "attempts": [
@@ -21889,7 +21609,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T22:55:22.981Z",
    "retryAt": "2026-11-18T23:55:22.981Z",
    "attempts": [
@@ -21907,12 +21627,48 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T22:55:26.186Z",
    "retryAt": "2026-11-18T23:55:26.186Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4034A8A34AFF",
+   "company": "Lennox",
+   "title": "Manager, Production",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-18T23:07:58.375Z",
+   "retryAt": "2026-11-19T00:07:58.375Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477870954",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-16C39E63D998",
+   "company": "US Door & More Inc.",
+   "title": "Workshop Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-18T23:08:01.579Z",
+   "retryAt": "2026-11-19T00:08:01.579Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480871025",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29832,44 +29588,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-16D5751360B9",
-   "company": "DBF Recruiting LLC",
-   "title": "Plant Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-18T23:08:04.933Z",
-   "retryAt": "2026-11-19T15:08:04.933Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489484390",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-633444ECEF13",
-   "company": "CMCO Brasil",
-   "title": "Manufacturing Leader - 2nd Shift",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-18T23:08:08.006Z",
-   "retryAt": "2026-11-19T15:08:08.006Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-20890049D143",
    "company": "YMCA of the USA",
    "title": "Associate Executive Director",
@@ -29877,7 +29595,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:40:37.459Z",
    "retryAt": "2026-11-18T23:40:37.459Z",
    "attempts": [
@@ -29896,9 +29614,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T07:40:37.469Z",
-   "retryAt": "2026-11-18T23:40:37.469Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-19T00:01:44.096Z",
+   "retryAt": "2026-11-19T16:01:44.096Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29914,7 +29632,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:52:31.207Z",
    "retryAt": "2026-11-18T23:52:31.207Z",
    "attempts": [
@@ -29933,7 +29651,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:52:34.394Z",
    "retryAt": "2026-11-18T23:52:34.394Z",
    "attempts": [
@@ -29952,7 +29670,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:52:44.939Z",
    "retryAt": "2026-11-18T23:52:44.939Z",
    "attempts": [
@@ -29971,7 +29689,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:52:48.032Z",
    "retryAt": "2026-11-18T23:52:48.032Z",
    "attempts": [
@@ -29990,7 +29708,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T07:52:51.200Z",
    "retryAt": "2026-11-18T23:52:51.200Z",
    "attempts": [
@@ -32339,7 +32057,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T21:32:07.860Z",
    "retryAt": "2026-11-18T23:32:07.860Z",
    "attempts": [
@@ -32358,7 +32076,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T21:32:10.939Z",
    "retryAt": "2026-11-18T23:32:10.939Z",
    "attempts": [
@@ -32377,7 +32095,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-18T21:32:14.030Z",
    "retryAt": "2026-11-18T23:32:14.030Z",
    "attempts": [
@@ -32633,16 +32351,98 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-A4C73A8D927F",
-   "company": "CPS, Inc.",
-   "title": "Global Quality Assurance Director - Specialty Chemicals",
+   "id": "V2I-16D5751360B9",
+   "company": "DBF Recruiting LLC",
+   "title": "Plant Operations Manager",
    "needs": [
+    "SALARY",
     "DEGREE"
    ],
    "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-18T22:43:22.204Z",
-   "retryAt": "2026-11-18T23:43:22.204Z",
-   "attempts": [],
+   "lastAttemptAt": "2026-11-18T23:08:04.933Z",
+   "retryAt": "2026-11-19T15:08:04.933Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489484390",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-633444ECEF13",
+   "company": "CMCO Brasil",
+   "title": "Manufacturing Leader - 2nd Shift",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-18T23:08:08.006Z",
+   "retryAt": "2026-11-19T15:08:08.006Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5CD47C68D424",
+   "company": "Alvarez & Marsal",
+   "title": "Manager: Operations Group/Transformation Services (OPEN TO ALL U.S. LOCATIONS)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-18T23:08:38.054Z",
+   "retryAt": "2026-11-19T00:08:38.054Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4440993487",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-34008EB1178B",
+   "company": "(R) DB&A - DeWolff, Boberg & Associates, Inc",
+   "title": "Operations Manager [Management Consultant]",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-18T23:09:10.001Z",
+   "retryAt": "2026-11-19T00:09:10.001Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4145790642",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-96847AEFFEAF",
+   "company": "Siemens Energy",
+   "title": "Field Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-18T23:09:41.625Z",
+   "retryAt": "2026-11-19T00:09:41.625Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483220871",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -32722,143 +32522,97 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-5CD47C68D424",
+   "id": "V2I-E7CE88598975",
    "fields": {
-    "DEGREE_TEXT": "MBA from a top-tier school highly preferred.",
+    "DEGREE_TEXT": "A bachelor's degree in engineering, manufacturing, operations, business, or a related field is preferred.",
     "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4440993487",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4458661304",
     "DEGREE_ASOF": "2026-11-18",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 96000,
-    "SALARY_BASE_HIGH": 145000,
-    "SALARY_MIDPOINT": 120500,
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 210000,
+    "SALARY_MIDPOINT": 185000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-18",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483812560 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481254211 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4477622597 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4464031885 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481232003 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4482160832 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4484230697 (as of 2026-11-17)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-E3316EA3DDE9, V2I-5EBC7E632DCD, V2I-7B31E7C37157, V2I-8A86389C0B05, V2I-DF7A248C7351, V2I-F630D88928BB, V2I-2C01EC9C61C8]; 7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW; BLS GA 111021 P25-P90 $68K-$237K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4480484574/ (as of 2026-11-02); https://www.linkedin.com/jobs/view/4483852093 (as of 2026-10-31); https://100hires.com/j/dk6ZKe5 (as of 2026-11-17); https://msudenver.wd1.myworkdayjobs.com/en-US/MSUDenver/job/Denver-Colorado/Director-of-the-Advanced-Manufacturing-Sciences-Institute_JR105958-1 (as of 2026-11-17); https://www.linkedin.com/jobs/view/4489484502 (as of 2026-11-11); https://apply.workable.com/j/AA5E66E7E3 (as of 2026-11-10); https://100hires.com/j/Ke8TeAT (as of 2026-11-10)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-201672478ADB, V2I-BC3126A7A42C, V2I-966687F249F5, V2I-BE499C6EF3EC, V2I-FFC9F1E19147, V2I-06FA54EEB025, V2I-A97622E23B8C]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-18",
-    "SALARY_SCORE_POINT": 132750
+    "SALARY_SCORE_POINT": 197500
    }
   },
   {
-   "id": "V2I-34008EB1178B",
+   "id": "V2I-9574543B6BAD",
    "fields": {
-    "DEGREE_TEXT": "A Bachelor's Degree in Business, Management, Engineering or related field.",
+    "DEGREE_TEXT": "Bachelor's degree in engineering (Electrical, Computer, or related field); Master's degree or MBA preferred.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4145790642",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4449834248",
     "DEGREE_ASOF": "2026-11-18",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 96000,
-    "SALARY_BASE_HIGH": 145000,
-    "SALARY_MIDPOINT": 120500,
+    "SALARY_BASE_LOW": 146000,
+    "SALARY_BASE_HIGH": 264000,
+    "SALARY_MIDPOINT": 205000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-18",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483812560 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481254211 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4477622597 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4464031885 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481232003 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4482160832 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4484230697 (as of 2026-11-17)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-E3316EA3DDE9, V2I-5EBC7E632DCD, V2I-7B31E7C37157, V2I-8A86389C0B05, V2I-DF7A248C7351, V2I-F630D88928BB, V2I-2C01EC9C61C8]; 7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW; BLS GA 111021 P25-P90 $68K-$237K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483071319 (as of 2026-10-31); https://boards.greenhouse.io/andurilindustries/jobs/5274989007 (as of 2026-11-10); https://www.linkedin.com/jobs/view/4468270352 (as of 2026-11-03); https://zerogtalent.com/defense-jobs/anduril-industries/senior-manager-manufacturing-safety-engineering-5260514007 (as of 2026-10-21); https://www.linkedin.com/jobs/view/4468588963 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4453891977 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4474094555 (as of 2026-11-03)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-F2E49AA5F7CD, V2I-15489A9AF6A9, V2I-3A78C321533C, V2I-320E50579AF9, V2I-9539FE5B19A7, V2I-2E97DCF01763, V2I-39CB7A7699C6]; 7 employer-posted comparable(s), level 1.5 ENG same region W; context model pay-sample-match-v6a; 7 distinct postings; blended employer/peer evidence; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium; BLS CA 119041 P25-P90 $169K-$296K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-18",
-    "SALARY_SCORE_POINT": 132750
-   }
-  },
-  {
-   "id": "V2I-96847AEFFEAF",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in engineering, Construction Management, Business Administration, or a related field preferred; equivalent relevant experience may be considered.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4483220871",
-    "DEGREE_ASOF": "2026-11-18",
-    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 96000,
-    "SALARY_BASE_HIGH": 145000,
-    "SALARY_MIDPOINT": 120500,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-18",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4484230697 (as of 2026-11-17); https://www.linkedin.com/jobs/view/4481254211 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4477622597 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4464031885 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481232003 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4483812560 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4482160832 (as of 2026-11-18)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-2C01EC9C61C8, V2I-5EBC7E632DCD, V2I-7B31E7C37157, V2I-8A86389C0B05, V2I-DF7A248C7351, V2I-E3316EA3DDE9, V2I-F630D88928BB]; 7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW; BLS FL 111021 P25-P90 $68K-$226K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-18",
-    "SALARY_SCORE_POINT": 132750
+    "SALARY_SCORE_POINT": 234500
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-5CD47C68D424",
-   "company": "Alvarez & Marsal",
-   "title": "Manager: Operations Group/Transformation Services (OPEN TO ALL U.S. LOCATIONS)",
-   "location": "Atlanta, GA",
-   "posting": "https://www.linkedin.com/jobs/view/4440993487/",
+   "id": "V2I-E7CE88598975",
+   "company": "Unusual Machines",
+   "title": "Director of Production - Headset and Battery",
+   "location": "Orlando, FL, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4458661304",
    "est": [
-    96000,
-    145000,
+    160000,
+    210000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
    "comparables": [
-    "V2I-E3316EA3DDE9",
-    "V2I-5EBC7E632DCD",
-    "V2I-7B31E7C37157",
-    "V2I-8A86389C0B05",
-    "V2I-DF7A248C7351",
-    "V2I-F630D88928BB",
-    "V2I-2C01EC9C61C8"
+    "V2I-201672478ADB",
+    "V2I-BC3126A7A42C",
+    "V2I-966687F249F5",
+    "V2I-BE499C6EF3EC",
+    "V2I-FFC9F1E19147",
+    "V2I-06FA54EEB025",
+    "V2I-A97622E23B8C"
    ]
   },
   {
    "basis": "POSTING_READ",
-   "id": "V2I-34008EB1178B",
-   "company": "(R) DB&A - DeWolff, Boberg & Associates, Inc",
-   "title": "Operations Manager [Management Consultant]",
-   "location": "Atlanta, GA",
-   "posting": "https://www.linkedin.com/jobs/view/4145790642/",
+   "id": "V2I-9574543B6BAD",
+   "company": "Oracle",
+   "title": "Senior Manager of Manufacturing Product & Test Engineering",
+   "location": "Santa Clara, CA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4449834248",
    "est": [
-    96000,
-    145000,
+    146000,
+    264000,
     "LOW"
    ],
-   "source": "COMPARABLES",
+   "source": "BLENDED_POSTINGS",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 ENG same region W; context model pay-sample-match-v6a; 7 distinct postings; blended employer/peer evidence; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium",
    "comparables": [
-    "V2I-E3316EA3DDE9",
-    "V2I-5EBC7E632DCD",
-    "V2I-7B31E7C37157",
-    "V2I-8A86389C0B05",
-    "V2I-DF7A248C7351",
-    "V2I-F630D88928BB",
-    "V2I-2C01EC9C61C8"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-96847AEFFEAF",
-   "company": "Siemens Energy",
-   "title": "Field Operations Manager",
-   "location": "Orlando, FL",
-   "posting": "https://www.linkedin.com/jobs/view/4483220871/",
-   "est": [
-    96000,
-    145000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2I-2C01EC9C61C8",
-    "V2I-5EBC7E632DCD",
-    "V2I-7B31E7C37157",
-    "V2I-8A86389C0B05",
-    "V2I-DF7A248C7351",
-    "V2I-E3316EA3DDE9",
-    "V2I-F630D88928BB"
+    "V2I-F2E49AA5F7CD",
+    "V2I-15489A9AF6A9",
+    "V2I-3A78C321533C",
+    "V2I-320E50579AF9",
+    "V2I-9539FE5B19A7",
+    "V2I-2E97DCF01763",
+    "V2I-39CB7A7699C6"
    ]
   }
  ],
