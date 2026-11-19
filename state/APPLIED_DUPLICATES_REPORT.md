@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-19T02:42:34.770Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-19T11:56:52.738Z from CANONICAL_WRITER_MASTER.
 
-Of 3053 jobs waiting on Tim, 77 match a role he already applied to, was rejected from, or declined:
+Of 3072 jobs waiting on Tim, 78 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 77
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 78
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (77)
+## Kept, labeled (78)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -26,6 +26,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 71 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 70 | Shield | Senior Manager, Supplier Quality (R6220) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-235C950A82AF → V2I-159B6D7FCA48 |
 | 67 | Axalta Coating Systems | Houston Plant Manager | You declined 2026-11-04 · possible repeat | Posting first seen 2026-11-18, 14 days after 2026-11-04; no posting identity to compare | V2I-D632B0C9EF00 → V2I-FFF3F7B12EB2 |
+| 67 | PSC Industries | Plant Manager | You declined 2026-11-07 · different site | Different worksite: Park City, KS, USA vs earlier Louisville, KY | V2I-8C31B41A402D → V2I-6D5AD21175C5 |
 | 64 | Amazon Web Services (AWS) | Sr. Mfg Eng, Process Quality, Hardware Engineering Services - Manufacturing | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare | V2I-CF667B16D785 → V2I-AD5D63DD4099 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
 | 63 | Tesla | Staff Technical Program Manager, Manufacturing Engineering, Energy & Charging | You declined 2026-10-21 · possible repeat | Posting first seen 2026-11-08, 18 days after 2026-10-21; no posting identity to compare | V2I-037645C8D76B → V2I-C52F42BB9C96 |
@@ -64,6 +65,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 42 | Teledyne | Manufacturing Engineering Manager | You declined 2026-11-01 · different site | Different worksite: Miamisburg, OH, United States vs earlier Oak Ridge, TN | V2I-8B83F40E0A48 → V2I-9061815B8B3C |
 | 42 | NORTHROP GRUMMAN | Manager Manufacturing Engineering 3 | You declined 2026-10-31 · different site | Different worksite: Sunnyvale, CA, United States vs earlier Elkton, MD | V2I-E6F0AD255E86 → V2I-40045C299C5B |
 | 42 | GAF | Manager Operations | You declined 2026-11-15 · different site | Different worksite: Tampa, FL vs earlier Myerstown, PA | V2I-04F697C774F9 → V2I-4AD4412BE594 |
+| 42 | GE Appliances, a Haier company | Senior Materials Manager | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-13, 5 days after 2026-11-08; no posting identity to compare | V2I-32DA5EE65984 → V2I-5567E190E6F4 |
 | 42 | Moog, Inc. | Manufacturing Engineering Manager | You declined 2026-11-05 · different site | Different worksite: Torrance, CA, United States vs earlier Buffalo, NY | V2I-B0B8711BCC22 → V2I-94862B1E6FE5 |
 | 41 | Tesla | Associate Regional Collision Manager | You declined 2026-11-14 · different site | Different worksite: San Jose, CA vs earlier North Brunswick, NJ | V2I-E802AE14FB90 → V2I-DF7EC4402AB6 |
 | 41 | Tesla | Technical Program Manager | You declined 2026-11-08 · different site | Different worksite: Brookshire, TX vs earlier Austin, TX | V2I-2F293C0330F0 → V2I-E4FEAAD56A53 |
@@ -84,7 +86,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 38 | DB&A - DeWolff, Boberg & Associates, Inc | Distribution/Operations Manager (Management Consultant Opportunity) | You declined 2026-11-01 · different site | Different worksite: Atlanta, GA vs earlier Austin, TX | V2I-2FC9A1EBABDE → V2I-1D65C5B2EA51 |
 | 38 | L3Harris | Lead, Quality Engineering - Capacity Expansion Projects | You declined 2026-11-07 · possible repeat | Posting first seen 2026-11-12, 5 days after 2026-11-07; no posting identity to compare | V2I-8CDE0F07E8E6 → V2I-74A895CE33C7 |
 | 38 | Lockheed Martin | Quality Engineering Manager - L5 | Applied 2026-09-20 · possible repost | Posting first seen 2026-11-13, more than 30 days after applying 2026-09-20 | V2I-FBCC6F76E6B0 → V2E-1A9E405618CA |
-| 38 | GE Appliances, a Haier company | Senior Materials Manager | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-13, 5 days after 2026-11-08; no posting identity to compare | V2I-32DA5EE65984 → V2I-5567E190E6F4 |
 | 38 | EnerSys Energy Products, Inc | Senior Quality Manager | You declined 2026-10-26 · different site | Different worksite: Greenville, SC 29673, United States vs earlier Suwanee, GA | V2I-1A93D309E2D2 → V2I-7AEEB1760DCA |
 | 38 | Renk | Quality Manager | You declined 2026-11-14 · different site | Different worksite: Cincinnati, OH, United States vs earlier Muskegon, MI, United States | V2I-32019049EF25 → V2I-B8E875558C52 |
 | 38 | nVent | Quality Manager | You declined 2026-11-14 · different site | Different worksite: Richland, MS, United States vs earlier Anoka, MN, United States | V2I-209DB6CF028D → V2I-CB8A4D06EAC7 |
