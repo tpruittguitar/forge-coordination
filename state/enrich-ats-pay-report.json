@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T17:08:58.220Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T170444763Z",
+ "at": "2026-11-19T17:19:50.082Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T171406604Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T17:04:58.139Z",
+  "readAt": "2026-11-19T17:14:20.301Z",
   "sha256": "d1924591ecd1254839ad7a276abbd1fbb0f7e0969d7360e0d58f8ce0ed8cac6b",
   "rows": 9370
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 602,
- "skipped_recent": 317,
+ "estimate_waiting_for_posting": 605,
+ "skipped_recent": 308,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,14 +63,14 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 8
+  "linkedin": 21
  },
  "agg_read": {
-  "linkedin": 4
+  "linkedin": 12
  },
  "agg_pay": {},
  "agg_failed": {
-  "linkedin": 4
+  "linkedin": 8
  },
  "agg_errors": {
   "linkedin": [
@@ -79,8 +79,10 @@
    "429"
   ]
  },
- "agg_wall": {},
- "source_reads": 8,
+ "agg_wall": {
+  "linkedin": 1
+ },
+ "source_reads": 21,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -126,7 +128,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T17:05:04.967Z",
+  "profile_as_of": "2026-11-19T17:14:28.059Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1622,12 +1624,6 @@
   },
   {
    "id": "V2I-AB4062E0FD54",
-   "invalidAnchors": [],
-   "contextRefresh": true,
-   "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
-  },
-  {
-   "id": "V2I-F453BAA69C04",
    "invalidAnchors": [],
    "contextRefresh": true,
    "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
@@ -14710,7 +14706,7 @@
   }
  ],
  "salary_repair": {
-  "skipped_blocked": 1471,
+  "skipped_blocked": 1470,
   "review_skipped_blocked": 1808,
   "by_missing": {
    "products (what they make)": 1768,
@@ -14735,10 +14731,10 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 627,
- "nothing_found": 631,
+ "not_attempted": 623,
+ "nothing_found": 632,
  "source_origin_blocks": {},
- "attempt_only_skipped": 4,
+ "attempt_only_skipped": 12,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14771,8 +14767,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2249,
- "network_requests": 14,
+ "roles_researched": 2254,
+ "network_requests": 27,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14783,9 +14779,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 125,
-  "SOURCE_RESEARCH_REQUIRED": 753,
+  "SOURCE_RESEARCH_REQUIRED": 757,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
-  "EVIDENCE_FOUND": 68,
+  "EVIDENCE_FOUND": 64,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -14983,30 +14979,12 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T01:14:27.961Z",
-   "retryAt": "2026-11-19T17:14:27.961Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:15:30.016Z",
+   "retryAt": "2026-11-20T09:15:30.016Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484580990",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-91C63174CB65",
-   "company": "IRP Medical",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T01:14:30.986Z",
-   "retryAt": "2026-11-19T17:14:30.986Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
      "status": "HTTP_429"
     }
    ],
@@ -15182,24 +15160,6 @@
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C806B4C35FF9",
-   "company": "SkyWater Search Partners",
-   "title": "Head of Enterprise Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:05:59.880Z",
-   "retryAt": "2026-11-20T09:05:59.880Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465876600",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15724,6 +15684,24 @@
    "lastAttemptAt": "2026-11-19T16:56:53.696Z",
    "retryAt": "2026-11-19T17:56:53.696Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C806B4C35FF9",
+   "company": "SkyWater Search Partners",
+   "title": "Head of Enterprise Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:05:59.880Z",
+   "retryAt": "2026-11-20T09:05:59.880Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465876600",
+     "status": "HTTP_429"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -20897,78 +20875,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-46A779F757EE",
-   "company": "Baker Roofing Company",
-   "title": "Regional Vice President",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:06:15.779Z",
-   "retryAt": "2026-11-20T09:06:15.779Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BA6D16923397",
-   "company": "ASSA ABLOY Group",
-   "title": "Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:06:18.885Z",
-   "retryAt": "2026-11-20T09:06:18.885Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463496157",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-50152038491A",
-   "company": "nVent",
-   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T17:06:21.923Z",
-   "retryAt": "2026-11-20T09:06:21.923Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-751CEC83998F",
-   "company": "Asset Living",
-   "title": "Regional Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T16:06:05.838Z",
-   "retryAt": "2026-11-19T17:06:05.838Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484108414",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-D5F8D2D26003",
    "company": "General Motors",
    "title": "Senior Manager - AV Evaluation",
@@ -21005,91 +20911,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-E7840F6D3836",
-   "company": "Capstone Logistics, LLC",
-   "title": "CPS Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T16:06:15.210Z",
-   "retryAt": "2026-11-19T17:06:15.210Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4456960684",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-279BC8F1C11B",
    "company": "BAE Systems, Inc.",
    "title": "Director III, Product Lifecycle Applications",
    "needs": [
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T16:06:18.389Z",
-   "retryAt": "2026-11-19T17:06:18.389Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:15:43.008Z",
+   "retryAt": "2026-11-20T09:15:43.008Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4453847196",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6E8C3632387C",
-   "company": "Wave Central",
-   "title": "Senior Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T16:06:21.542Z",
-   "retryAt": "2026-11-19T17:06:21.542Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484861467",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-953657141BEE",
-   "company": "CT19",
-   "title": "Technology Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:06:24.711Z",
-   "retryAt": "2026-11-19T17:06:24.711Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485320286",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-634DAC073DAA",
-   "company": "Sikla GmbH",
-   "title": "Customer Service & Order Fulfillment Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:06:27.875Z",
-   "retryAt": "2026-11-19T17:06:27.875Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481002754",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21155,13 +20989,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:14:50.992Z",
-   "retryAt": "2026-11-19T17:14:50.992Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:15:55.911Z",
+   "retryAt": "2026-11-20T09:15:55.911Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482393509",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21173,85 +21007,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:14:54.150Z",
-   "retryAt": "2026-11-19T17:14:54.150Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:15:58.995Z",
+   "retryAt": "2026-11-20T09:15:58.995Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478621757",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6CB5FE5A5426",
-   "company": "Performance Food Group",
-   "title": "President, Opco I",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:14:57.296Z",
-   "retryAt": "2026-11-19T17:14:57.296Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475981765",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-04349F175169",
-   "company": "BENTELER Group",
-   "title": "Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:00.505Z",
-   "retryAt": "2026-11-19T17:15:00.505Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487090482",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A6448AFF5B38",
-   "company": "Tree Top Staffing LLC",
-   "title": "General Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:03.745Z",
-   "retryAt": "2026-11-19T17:15:03.745Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B14E6A8086F0",
-   "company": "RBC Bearings",
-   "title": "Quality Assurance Mgr",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:06.894Z",
-   "retryAt": "2026-11-19T17:15:06.894Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4383834848",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21263,13 +21025,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:10.199Z",
-   "retryAt": "2026-11-19T17:15:10.199Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:16:14.857Z",
+   "retryAt": "2026-11-20T09:16:14.857Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468805968",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21281,49 +21043,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:13.347Z",
-   "retryAt": "2026-11-19T17:15:13.347Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:16:17.964Z",
+   "retryAt": "2026-11-20T09:16:17.964Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481792918",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7F4C3B3F2683",
-   "company": "New Reach",
-   "title": "Managing Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:16.579Z",
-   "retryAt": "2026-11-19T17:15:16.579Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482156284",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F453BAA69C04",
-   "company": "Gerber Collision & Glass",
-   "title": "General Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T16:15:19.732Z",
-   "retryAt": "2026-11-19T17:15:19.732Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481953095",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21597,6 +21323,132 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481263743",
      "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E0D7C981E07C",
+   "company": "Akima Infrastructure Services",
+   "title": "Business Management Senior Manager with Security Clearance",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:03.214Z",
+   "retryAt": "2026-11-19T18:06:03.214Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480639197",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-48E2D58CA5A0",
+   "company": "Sabal Palms Recovery Center",
+   "title": "Director of Revenue Cycle Management",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:06.367Z",
+   "retryAt": "2026-11-19T18:06:06.367Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D1E70BA958B4",
+   "company": "ADM",
+   "title": "Maintenance Superintendent - Chattanooga, TN",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:09.518Z",
+   "retryAt": "2026-11-19T18:06:09.518Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4774403633B7",
+   "company": "SOLV Energy",
+   "title": "Director of Solar Construction, SDI Services",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:12.705Z",
+   "retryAt": "2026-11-19T18:06:12.705Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482731041",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-46A779F757EE",
+   "company": "Baker Roofing Company",
+   "title": "Regional Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:15.779Z",
+   "retryAt": "2026-11-20T09:06:15.779Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BA6D16923397",
+   "company": "ASSA ABLOY Group",
+   "title": "Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:18.885Z",
+   "retryAt": "2026-11-20T09:06:18.885Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463496157",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-50152038491A",
+   "company": "nVent",
+   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T17:06:21.923Z",
+   "retryAt": "2026-11-20T09:06:21.923Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29607,13 +29459,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T00:58:04.130Z",
-   "retryAt": "2026-11-19T16:58:04.130Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:16:27.897Z",
+   "retryAt": "2026-11-20T09:16:27.897Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478604672",
-     "status": "HTTP_404"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29626,13 +29478,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T00:58:10.408Z",
-   "retryAt": "2026-11-19T16:58:10.408Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:16:30.980Z",
+   "retryAt": "2026-11-20T09:16:30.980Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485119317",
-     "status": "NO_EXACT_COMPLETE_POSTING"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29645,9 +29497,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T00:58:13.551Z",
-   "retryAt": "2026-11-19T16:58:13.551Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T17:16:34.205Z",
+   "retryAt": "2026-11-20T09:16:34.205Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479454384",
@@ -29683,7 +29535,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T01:14:40.560Z",
    "retryAt": "2026-11-19T17:14:40.560Z",
    "attempts": [
@@ -29702,7 +29554,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T01:14:43.735Z",
    "retryAt": "2026-11-19T17:14:43.735Z",
    "attempts": [
@@ -29721,7 +29573,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T01:14:46.795Z",
    "retryAt": "2026-11-19T17:14:46.795Z",
    "attempts": [
