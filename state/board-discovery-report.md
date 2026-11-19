@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261119T2133Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261119T2312Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (66 read, 1 failed, 30 Workday deferred after a 429) | 127 | 30 | 62 |
+| Employer job boards (62 read, 1 failed, 30 Workday deferred after a 429) | 123 | 31 | 58 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,15 +19,15 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 20 | 26 |
-| SR_MANAGER | 8 | 13 |
-| SR_STAFF | 2 | 23 |
+| DIRECTOR_PLUS | 20 | 23 |
+| SR_MANAGER | 8 | 12 |
+| SR_STAFF | 3 | 23 |
 
 ## New roles
 
 | Source | Company | Title | Location | Family | Level | Pay |
 |---|---|---|---|---|---|---|
-| BOARD:greenhouse | P1 Tesla | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:ashby | P2 Hadrian | [Sr. Director, Additive Manufacturing Systems Engineering](https://jobs.ashbyhq.com/hadrian-automation/d058506b-21bd-4267-b5f3-18cd1b8f4165) | Los Angeles, CA | MFG_PROD | DIRECTOR_PLUS | $300K-$350K |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
@@ -38,6 +38,7 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | BOARD:ashby | P3 Blue Bird | [Head of Aircraft Quality (R6146)](https://jobs.ashbyhq.com/shield/0632a8c6-598d-48d4-ab6a-0ceed6284d16) | Seattle, WA, US | QUALITY | DIRECTOR_PLUS | $266K-$398K |
 | BOARD:ashby | P3 Blue Bird | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Remote | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | P3 Blue Bird | [Head of Operational Excellence](https://jobs.ashbyhq.com/shield/25f5bee0-1562-4969-b393-7ead35458117) | Dallas, TX, US | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:ashby | P3 Blue Bird | [Staff Engineer, Advanced Manufacturing Programs (R6571)](https://jobs.ashbyhq.com/shield/6c487f16-cd01-40c2-baaf-6618b52ea611) | Dallas, TX, US | MFG_PROD | SR_STAFF | $143K-$214K |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Crusoe | [Director, Accounting – Manufacturing](https://jobs.ashbyhq.com/Crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f) | Tulsa, OK - US (1) | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
