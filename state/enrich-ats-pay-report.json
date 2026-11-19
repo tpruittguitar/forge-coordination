@@ -1,10 +1,10 @@
 {
- "at": "2026-11-19T16:17:23.582Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T161352279Z",
+ "at": "2026-11-19T16:28:01.806Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T162257823Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T16:14:03.585Z",
+  "readAt": "2026-11-19T16:23:06.468Z",
   "sha256": "0263780bc927366c2fdaa085d0e3781744d9b98ab46c32e73508b9c23ea76eb8",
   "rows": 9370
  },
@@ -50,7 +50,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 598,
- "skipped_recent": 322,
+ "skipped_recent": 327,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,22 +63,23 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 11
+  "linkedin": 6
  },
  "agg_read": {
-  "linkedin": 10
+  "linkedin": 4
  },
  "agg_pay": {},
  "agg_failed": {
-  "linkedin": 1
+  "linkedin": 2
  },
  "agg_errors": {
   "linkedin": [
+   "429",
    "429"
   ]
  },
  "agg_wall": {},
- "source_reads": 11,
+ "source_reads": 6,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -124,7 +125,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T16:14:09.874Z",
+  "profile_as_of": "2026-11-19T16:23:19.634Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1620,6 +1621,12 @@
   },
   {
    "id": "V2I-AB4062E0FD54",
+   "invalidAnchors": [],
+   "contextRefresh": true,
+   "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
+  },
+  {
+   "id": "V2I-F453BAA69C04",
    "invalidAnchors": [],
    "contextRefresh": true,
    "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
@@ -14702,7 +14709,7 @@
   }
  ],
  "salary_repair": {
-  "skipped_blocked": 1470,
+  "skipped_blocked": 1471,
   "review_skipped_blocked": 1808,
   "by_missing": {
    "products (what they make)": 1768,
@@ -14728,8 +14735,8 @@
   "degree": 0
  },
  "not_attempted": 619,
- "nothing_found": 620,
- "attempt_only_skipped": 10,
+ "nothing_found": 621,
+ "attempt_only_skipped": 4,
  "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
@@ -14763,8 +14770,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2245,
- "network_requests": 17,
+ "roles_researched": 2244,
+ "network_requests": 12,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14775,9 +14782,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 125,
-  "SOURCE_RESEARCH_REQUIRED": 746,
+  "SOURCE_RESEARCH_REQUIRED": 748,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
-  "EVIDENCE_FOUND": 75,
+  "EVIDENCE_FOUND": 73,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -20722,24 +20729,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-54558FFC36E5",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T16:15:22.858Z",
-   "retryAt": "2026-11-20T08:15:22.858Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483340597",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-5C28DE3BEDFE",
    "company": "Applied Materials",
    "title": "Technical Project/Program Management Director - Advanced Packaging",
@@ -20830,37 +20819,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-682F7C51C227",
-   "company": "Focus Ten Care Schools",
-   "title": "Childcare Center Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:32.259Z",
-   "retryAt": "2026-11-19T16:17:32.259Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483124051",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-5394FA4BBADD",
    "company": "ICE",
    "title": "QC Manager (Mortgage)",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:35.439Z",
-   "retryAt": "2026-11-19T16:17:35.439Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T16:24:27.948Z",
+   "retryAt": "2026-11-20T08:24:27.948Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485605134",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20872,67 +20843,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:38.638Z",
-   "retryAt": "2026-11-19T16:17:38.638Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-19T16:24:30.999Z",
+   "retryAt": "2026-11-20T08:24:30.999Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471901258",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2CDC90A5943",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director - Hernando County",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:41.827Z",
-   "retryAt": "2026-11-19T16:17:41.827Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BFBAE1D979F7",
-   "company": "Phillips Infrastructure",
-   "title": "General Superintendent",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:44.983Z",
-   "retryAt": "2026-11-19T16:17:44.983Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4428073187",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CA52D87AFDB0",
-   "company": "Delaware North",
-   "title": "General Manager, EverBank Stadium",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:48.152Z",
-   "retryAt": "2026-11-19T16:17:48.152Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21475,6 +21392,204 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472062391",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1014C18CF6D6",
+   "company": "Sikla GmbH",
+   "title": "Customer Service & Order Fulfillment Manager (m / f / d)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:14:50.992Z",
+   "retryAt": "2026-11-19T17:14:50.992Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482393509",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F09DD0A1A7AC",
+   "company": "Copeland",
+   "title": "Materials Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:14:54.150Z",
+   "retryAt": "2026-11-19T17:14:54.150Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478621757",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6CB5FE5A5426",
+   "company": "Performance Food Group",
+   "title": "President, Opco I",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:14:57.296Z",
+   "retryAt": "2026-11-19T17:14:57.296Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475981765",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-04349F175169",
+   "company": "BENTELER Group",
+   "title": "Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:00.505Z",
+   "retryAt": "2026-11-19T17:15:00.505Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487090482",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A6448AFF5B38",
+   "company": "Tree Top Staffing LLC",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:03.745Z",
+   "retryAt": "2026-11-19T17:15:03.745Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B14E6A8086F0",
+   "company": "RBC Bearings",
+   "title": "Quality Assurance Mgr",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:06.894Z",
+   "retryAt": "2026-11-19T17:15:06.894Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4383834848",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3F75A8C167A1",
+   "company": "The Clorox Company",
+   "title": "Shift Maintenance Manager (Day or Night Shift)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:10.199Z",
+   "retryAt": "2026-11-19T17:15:10.199Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468805968",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CF9C4D3FB9D6",
+   "company": "Chugach Government Solutions, LLC",
+   "title": "Sr. Business Manager - NASA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:13.347Z",
+   "retryAt": "2026-11-19T17:15:13.347Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481792918",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-7F4C3B3F2683",
+   "company": "New Reach",
+   "title": "Managing Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:16.579Z",
+   "retryAt": "2026-11-19T17:15:16.579Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482156284",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F453BAA69C04",
+   "company": "Gerber Collision & Glass",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:19.732Z",
+   "retryAt": "2026-11-19T17:15:19.732Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481953095",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-54558FFC36E5",
+   "company": "YMCA of the Suncoast",
+   "title": "Executive Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-19T16:15:22.858Z",
+   "retryAt": "2026-11-20T08:15:22.858Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483340597",
      "status": "HTTP_429"
     }
    ],
