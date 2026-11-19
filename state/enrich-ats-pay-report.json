@@ -1,11 +1,11 @@
 {
- "at": "2026-11-19T15:38:02.828Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T152937210Z",
+ "at": "2026-11-19T15:51:24.571Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T154316530Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T15:29:54.263Z",
-  "sha256": "bd73ff803f210ff95e68977c430404ca85fbf4cd7148c751b3d1b91bb2c17cf4",
+  "readAt": "2026-11-19T15:43:32.211Z",
+  "sha256": "24982c3e27f64093c9820f295014e7a15bc0f2f4114c7bb207b89d8158923980",
   "rows": 9370
  },
  "rows": 9370,
@@ -47,38 +47,32 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 620,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 619,
  "skipped_recent": 293,
- "submitted": 1,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
- "salary_independently_verified": 1,
+ "salary_submitted": 2,
+ "salary_independently_verified": 2,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 10
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 10
+ },
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 3
- },
- "agg_errors": {
-  "linkedin": [
-   "429",
-   "429",
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 11,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -90,10 +84,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -111,7 +106,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -124,7 +119,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T15:30:00.888Z",
+  "profile_as_of": "2026-11-19T15:43:38.928Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14733,10 +14728,10 @@
   "salary": 1,
   "degree": 0
  },
- "not_attempted": 625,
- "nothing_found": 629,
- "source_origin_blocks": {},
- "attempt_only_skipped": 30,
+ "not_attempted": 619,
+ "nothing_found": 619,
+ "attempt_only_skipped": 39,
+ "est_bls": 1,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14770,8 +14765,8 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 2271,
- "network_requests": 10,
- "planned": 1,
+ "network_requests": 17,
+ "planned": 2,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14782,9 +14777,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 125,
-  "SOURCE_RESEARCH_REQUIRED": 743,
+  "SOURCE_RESEARCH_REQUIRED": 738,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
-  "EVIDENCE_FOUND": 79,
+  "EVIDENCE_FOUND": 84,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15152,78 +15147,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-B0A5F27EE840",
-   "company": "The People Co.",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T15:31:01.715Z",
-   "retryAt": "2026-11-20T07:31:01.715Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486638723",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-26D40D235438",
-   "company": "Princess Cruises",
-   "title": "Director, Food and Beverage Operations and Experiences",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T15:31:04.752Z",
-   "retryAt": "2026-11-20T07:31:04.752Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483769628",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-3643313A3D65",
-   "company": "Mondi Group",
-   "title": "Vice President of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T15:31:07.785Z",
-   "retryAt": "2026-11-20T07:31:07.785Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4469496484",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-3AFF8639C2E0",
-   "company": "STO Building Group",
-   "title": "Director of MEP Operations - Mission Critical",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T14:24:46.279Z",
-   "retryAt": "2026-11-19T15:24:46.279Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477824153",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-2D41E91681F5",
    "company": "(R) Red Frog Solutions",
    "title": "VP of Operations - Supply Chain/Manufacturing",
@@ -15237,96 +15160,6 @@
     {
      "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
      "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C6A429589607",
-   "company": "Benchmark",
-   "title": "Director, Operations - Precision Machining",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T14:24:52.499Z",
-   "retryAt": "2026-11-19T15:24:52.499Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432825763",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-42C64A9DD1EB",
-   "company": "Applied Materials",
-   "title": "Senior Director, Operations Management (Site Leader)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-19T15:31:09.570Z",
-   "retryAt": "2026-11-20T07:31:09.570Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5253340007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8199525A8534",
-   "company": "Florida International University",
-   "title": "Director of Operations for Aquarius Reef Base and Working Diving Safety Officer (Islamorada, FL)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T14:25:00.540Z",
-   "retryAt": "2026-11-19T15:25:00.540Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475113203",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7C50989FE9F3",
-   "company": "EnduroSat",
-   "title": "VP of Programs & Mission Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T14:25:03.659Z",
-   "retryAt": "2026-11-19T15:25:03.659Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482167222",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AC419D176355",
-   "company": "Guardian Dentistry Partners",
-   "title": "Director, Tactical Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T14:25:06.866Z",
-   "retryAt": "2026-11-19T15:25:06.866Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -31662,25 +31495,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-27A3049C3171",
-   "company": "Walker Lovell",
-   "title": "Mine Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T10:43:40.993Z",
-   "retryAt": "2026-11-19T12:43:40.993Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484435480",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-4ADD439A2798",
    "company": "(R) VirtualVocations",
    "title": "Quality Systems Manager",
@@ -31918,8 +31732,47 @@
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
     "SALARY_SCORE_POINT": 49500
    }
+  },
+  {
+   "id": "V2I-27A3049C3171",
+   "fields": {
+    "DEGREE_TEXT": "A degree in mining or geology, or equivalent relevant experience, is desirable.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4484435480",
+    "DEGREE_ASOF": "2026-11-19",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 246000,
+    "SALARY_MIDPOINT": 183000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_SOURCE": "BLS_OEWS",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 0 employer-posted comparable(s) []; BLS OEWS TN SOC 111021 30-110% of P25-P90 $73K-$231K (no anchors; required); BLS TN 111021 P25-P90 $73K-$231K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SALARY_SCORE_POINT": 214500
+   }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-27A3049C3171",
+   "company": "Walker Lovell",
+   "title": "Mine Manager",
+   "location": "Crab Orchard, TN",
+   "posting": "https://www.linkedin.com/jobs/view/4484435480/",
+   "est": [
+    120000,
+    246000,
+    "LOW"
+   ],
+   "source": "BLS_OEWS",
+   "bls": "OK",
+   "basis_detail": "BLS OEWS TN SOC 111021 30-110% of P25-P90 $73K-$231K (no anchors; required)",
+   "comparables": []
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
