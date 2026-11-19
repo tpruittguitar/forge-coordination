@@ -95,10 +95,10 @@ async function main(){
     } catch (e) { start = 0; }
   }
   /* Workday boards belong to the box pass while its last pass is under 4 h old (card 14c6e4a). */
-  const skipWorkday=!WORKDAY_ONLY&&WD.fresh(WD.loadPass(path.join(OUT,WD.PASS_FILE))),budgetMs=WORKDAY_ONLY?WD.BUDGET_MS:CONFIG.boardBudgetMs;
+  const pass=WD.loadPass(path.join(OUT,WD.PASS_FILE)),skipWorkday=!WORKDAY_ONLY&&WD.fresh(pass),budgetMs=WORKDAY_ONLY?WD.BUDGET_MS:CONFIG.boardBudgetMs;
   const rotation=ranked.slice(start,start+cap),recoveries=H.recoveryBoards(health,paused).filter(b=>!(skipWorkday&&b.kind==='workday')).slice(0,Math.min(10,Math.max(1,Math.floor(cap/4))));
   const cooling=new Set(rotation.filter(b=>health.boards[b.key]?.status!=='OK'&&Date.parse(health.boards[b.key]?.retryAt||0)>Date.now()).map(b=>b.key));
-  const order=process.env.TRIAL_SKIP_BOARDS?[]:WORKDAY_ONLY?WD.workdayOrder(H.recoveryBoards(health,paused),ranked,health).slice(0,cap):[...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key)&&!(skipWorkday&&b.kind==='workday'))].map(b=>[b.key,b])).values()].slice(0,cap);
+  const order=process.env.TRIAL_SKIP_BOARDS?[]:WORKDAY_ONLY?WD.workdayOrder(H.recoveryBoards(health,paused),ranked,health,Date.now(),pass).slice(0,cap):WD.startWorkdayFrom([...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key)&&!(skipWorkday&&b.kind==='workday'))].map(b=>[b.key,b])).values()],pass).slice(0,cap);
 
   /* read each board, keep Tim's three families in the US */
   const found = [], boardStats = [], discovered = new Map();
@@ -110,7 +110,7 @@ async function main(){
     if(throttle.defer(b)){workdayDeferred.push(b.key);continue;}
     const st = { board: b.key, companies: [...b.companies].slice(0, 3), tier: b.tier, openings: 0, matches: 0, error: '' };
     const result=await H.readBoard(b,CONFIG.workdaySearches,{wait:sleep,gapMs:WORKDAY_ONLY?WD.GAP_MS:CONFIG.gapMs});
-    throttle.seen(b,result);if(WORKDAY_ONLY&&WD.stopsPass(b,result))stoppedAt429=b.key;
+    throttle.seen(b,result);if(WD.stopsPass(b,result)&&!stoppedAt429)stoppedAt429=b.key;
     st.error=result.error;st.status=result.status;st.httpStatus=result.httpStatus;st.attempts=result.attempts;
     const history=H.record(health,result.board,result,new Date().toISOString());
     st.lastAttemptAt=history.lastAttemptAt;st.lastSuccessAt=history.lastSuccessAt;st.retryAt=history.retryAt;
@@ -129,7 +129,7 @@ async function main(){
     try{fs.writeFileSync(healthFd,JSON.stringify(health,null,1)+'\n');fs.fsyncSync(healthFd);}finally{fs.closeSync(healthFd);}fs.renameSync(healthTmp,healthFile);
     boardStats.push(st);
     attempted.add(b.key);consumed++;
-    if (stoppedAt429) { st.note = 'Workday 429; box pass stopped, later boards untouched'; break; }
+    if (WORKDAY_ONLY&&stoppedAt429) { st.note = 'Workday 429; box pass stopped, later boards untouched'; break; }
     if (Date.now() - T0 > budgetMs) { st.note = 'time budget reached; later boards not read'; break; }
   }
   let cursorNext = '';
@@ -200,7 +200,14 @@ async function main(){
     fs.writeFileSync(cursorFile, JSON.stringify(cursorBody, null, 1) + '\n');
   }
   const reportName = WORKDAY_ONLY ? 'workday-box-pass-report' : process.env.TRIAL_BOARDS_ONLY ? 'board-discovery-report' : 'source-trial-report';
-  if (WORKDAY_ONLY) fs.writeFileSync(path.join(OUT, WD.PASS_FILE), JSON.stringify({ schema: 'forge.workday-box-pass.v1', lastPassAt: at, finishedAt: new Date().toISOString(), due: order.length, read: boardStats.length, ok: boardStats.filter(s => s.status === 'OK').length, stoppedAt429 }, null, 1) + '\n');
+  if (WORKDAY_ONLY) {
+    const cursor=stoppedAt429?WD.cursorAfterStop(order,stoppedAt429):WD.clearCursor();
+    fs.writeFileSync(path.join(OUT, WD.PASS_FILE), JSON.stringify({ schema: 'forge.workday-box-pass.v1', lastPassAt: at, finishedAt: new Date().toISOString(), due: order.length, read: boardStats.length, ok: boardStats.filter(s => s.status === 'OK').length, stoppedAt429, nextDue:cursor.nextDue, dueOrder:cursor.dueOrder }, null, 1) + '\n');
+  } else if (!skipWorkday&&(stoppedAt429||boardStats.some(s=>String(s.board||'').startsWith('workday:')))) {
+    const cursor=stoppedAt429?WD.cursorAfterStop(order.filter(b=>b.kind==='workday'),stoppedAt429):WD.clearCursor();
+    fs.writeFileSync(path.join(OUT, WD.PASS_FILE), JSON.stringify({ ...(pass||{schema:'forge.workday-box-pass.v1'}), nextDue:cursor.nextDue, dueOrder:cursor.dueOrder }, null, 1) + '\n');
+  }
+
   fs.writeFileSync(path.join(OUT, reportName + '.json'), JSON.stringify(report, null, 1) + '\n');
   fs.writeFileSync(path.join(OUT, reportName + '.health.json'), JSON.stringify(discoveryHealth(report)) + '\n');
   const Evidence = require('./evidence-store'), evidenceSaved = found.filter(f => f.description && Evidence.persistPublicPosting(path.dirname(OUT), f, { observedAt: at, proof: 'state/' + reportName + '.json' })).length;
