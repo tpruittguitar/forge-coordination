@@ -1,15 +1,15 @@
 {
- "at": "2026-11-19T08:46:25.060Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T084040709Z",
+ "at": "2026-11-19T08:58:45.037Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T085058877Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T08:40:52.128Z",
-  "sha256": "55acf206cf68c4f1c9315b98f05b3d11cb6c2eca5a1a240b3b8f6143d43e0df4",
-  "rows": 9355
+  "readAt": "2026-11-19T08:51:06.113Z",
+  "sha256": "0673b183080e2be3da5f05c7bdbbc57d1ff92e2297fce1573d180c311c51ff44",
+  "rows": 9357
  },
- "rows": 9355,
- "eligible": 997,
+ "rows": 9357,
+ "eligible": 999,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -35,11 +35,43 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261118T084158191Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-F57392336D6F",
+     "V2I-5F51F86DAE96",
+     "V2I-BB5FC4C7A846",
+     "V2I-BF47383B107F",
+     "V2I-C0CC2048D2D3",
+     "V2I-C344C1FB8223",
+     "V2I-C5BDE59B3C11",
+     "V2I-A01FE3895180",
+     "V2I-6435EE02B310",
+     "V2I-AB34EFA7588F",
+     "V2I-4BC95B68C7A0",
+     "V2I-46F9C2C53AE6",
+     "V2I-0B01C1070286",
+     "V2I-D76B5EBC6FF8",
+     "V2I-5060CD4526F1",
+     "V2I-B95242BA0D97",
+     "V2I-97F49C2D4EC2",
+     "V2I-E39EE961935B",
+     "V2I-65C6B65B6830",
+     "V2I-1B537ECC584E",
+     "V2I-68B4C187848A",
+     "V2I-0F35C33869E0",
+     "V2I-4E85A5B70951",
+     "V2I-C4661DECEBC3",
+     "V2I-179AE935C538"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 16,
-  "fenced_ids": 209
+  "pending_batches": 15,
+  "fenced_ids": 184
  },
  "anchors": 1307,
  "archive_anchors": 5,
@@ -47,25 +79,27 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 593,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 596,
  "skipped_recent": 328,
- "submitted": 0,
+ "submitted": 5,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 5,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 2,
+ "salary_independently_verified": 2,
  "agg_tried": {
   "linkedin": 2
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
@@ -78,21 +112,20 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
   "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0,
-  "BLS_EST": 1
+  "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 2,
  "posting_cache": {
   "saved": 0,
-  "hits": 13,
+  "hits": 17,
   "no_pay_hits": 4
  },
  "employer_benchmarks": {
@@ -105,19 +138,19 @@
  "pay_source_search": {
   "enabled": true,
   "targets": 2,
-  "candidates": 2,
-  "saved_reused": 2,
+  "candidates": 23,
+  "saved_reused": 22,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
+  "backoff": 1,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 1,
+  "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-19T08:40:59.121Z",
+  "profile_as_of": "2026-11-19T08:51:14.266Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14711,20 +14744,14 @@
  },
  "salary_review": {
   "eligible": 1844,
-  "due": 1667,
-  "reviewed": 2,
+  "due": 1688,
+  "reviewed": 1,
   "target_reads": 2,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 2,
+  "no_improvement": 1,
   "guard_dropped": 0,
   "samples": [
-   {
-    "id": "V2I-F94F32C19DB4",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
    {
     "id": "V2I-993719D67F83",
     "status": "NO_STRONGER_EVIDENCE",
@@ -14732,7 +14759,7 @@
     "basis": "FORGE-ESTIMATE"
    }
   ],
-  "aggregator_reads": 2
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14740,33 +14767,49 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 614,
- "nothing_found": 614,
- "est_bls": 1,
+ "not_attempted": 616,
+ "nothing_found": 616,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
-  "merged": 0,
-  "added": 0,
+  "scored": 4,
+  "legacy_replaced": 4,
+  "merged": 2,
+  "added": 2,
   "short_posting": 0,
-  "no_posting": 2498,
+  "no_posting": 2521,
   "deferred": 0,
-  "fenced": 209,
+  "fenced": 184,
   "inactive": 6361,
   "already_fitted": 287,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-B95242BA0D97",
+    "fit": 67
+   },
+   {
+    "id": "V2I-0F35C33869E0",
+    "fit": 33
+   },
+   {
+    "id": "V2I-5F51F86DAE96",
+    "fit": 33
+   },
+   {
+    "id": "V2I-F57392336D6F",
+    "fit": 50
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
-  "has_business": 161,
-  "no_overview": 2624,
+  "has_business": 165,
+  "no_overview": 2647,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 209,
+  "fenced": 184,
   "inactive": 6361,
   "by_label": {},
   "sample": []
@@ -14775,10 +14818,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2106,
- "network_requests": 8,
- "planned": 0,
+ "roles_researched": 2129,
+ "network_requests": 11,
+ "planned": 5,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14786,10 +14830,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 122,
+  "NOT_YET_ATTEMPTED": 124,
   "SOURCE_RESEARCH_REQUIRED": 759,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 43,
-  "EVIDENCE_FOUND": 55,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 40,
+  "EVIDENCE_FOUND": 58,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15720,6 +15764,34 @@
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AB717DA1708D",
+   "company": "Oxford Biomedica",
+   "title": "Director - Quality Control",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8A554844DCED",
+   "company": "HM.CLAUSE",
+   "title": "Plant manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -18453,58 +18525,6 @@
     {
      "url": "https://jobs.buildsubmarines.com/jobs/645520430-director-of-quality-assurance-at-haydon-companies",
      "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F57392336D6F",
-   "company": "CareSource",
-   "title": "Director, EDS Strategy and Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T08:44:09.716Z",
-   "retryAt": "2026-11-18T09:44:09.716Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5F51F86DAE96",
-   "company": "Anduril Industries",
-   "title": "Head of Operations, Space Ground Systems",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T08:44:33.604Z",
-   "retryAt": "2026-11-18T09:44:33.604Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5286038007?pay_transparency=true",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BB5FC4C7A846",
-   "company": "C.H. Guenther",
-   "title": "Director of Quality Assurance",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-18T08:44:58.323Z",
-   "retryAt": "2026-11-18T09:44:58.323Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491725581",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32301,7 +32321,105 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-F57392336D6F",
+   "fields": {
+    "SALARY_BASE_LOW": 135600,
+    "SALARY_BASE_HIGH": 237400,
+    "SALARY_MIDPOINT": 186500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://caresource.wd1.myworkdayjobs.com/en-US/CareSource/job/Remote/Director--EDS-Strategy-and-Operations_R14601-1",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in business, information systems, analytics, or a related field required Equivalent years of relevant work experience may be accepted in lieu of required education",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://caresource.wd1.myworkdayjobs.com/en-US/CareSource/job/Remote/Director--EDS-Strategy-and-Operations_R14601-1",
+    "DEGREE_ASOF": "2026-11-19",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SCOPE_FIT_RAW": "50",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 5539-char saved posting (6+ = 100): quality_systems, team_building, manufacturing_systems",
+    "SALARY_SCORE_POINT": 211950
+   }
+  },
+  {
+   "id": "V2I-5F51F86DAE96",
+   "fields": {
+    "DEGREE_TEXT": "PREFERRED QUALIFICATIONS MBA or similar degree",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5286038007?gh_jid=5286038007",
+    "DEGREE_ASOF": "2026-11-19",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SCOPE_FIT_RAW": "33",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 7754-char saved posting (6+ = 100): team_building, manufacturing_systems"
+   }
+  },
+  {
+   "id": "V2I-BB5FC4C7A846",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in Food Science, Microbiology, Chemistry, or related field (Master's degree preferred).",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4491725581",
+    "DEGREE_ASOF": "2026-11-19",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 157000,
+    "SALARY_BASE_HIGH": 231000,
+    "SALARY_MIDPOINT": 194000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_SOURCE": "comparables: https://chg.wd5.myworkdayjobs.com/en-US/US_External_Career_Site/job/San-Antonio-TX-CH-Guenther/Director-of-Quality-Assurance_R820487 (as of 2026-11-17); https://wd1.myworkdaysite.com/recruiting/cart/Cart/job/Remote---Texas-Central-Standard-Time/Director-Quality---Compliance_R-102621 (as of 2026-11-17); https://www.linkedin.com/jobs/view/4478470914 (as of 2026-10-21); https://gilead.wd1.myworkdayjobs.com/en-US/gileadcareers/job/United-States---California---Santa-Monica/Director--Digital-Quality_R0056645-3 (as of 2026-11-19); https://www.linkedin.com/jobs/view/4490126988 (as of 2026-11-18); https://morganstanley.eightfold.ai/careers/job?domain=morganstanley.com&pid=549786603679 (as of 2026-11-18); https://medline.wd5.myworkdayjobs.com/en-US/Medline/job/Southaven-Mississippi/Director-Quality_R2623152 (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-4698FC3EA95B, V2I-A196D7711281, V2I-308A8C264244, V2I-261257FA41ED, V2I-6BA0AEF4F8FD, V2I-91C09903500A, V2I-C61657DF9FC1]; 7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SALARY_SCORE_POINT": 212500
+   }
+  },
+  {
+   "id": "V2I-B95242BA0D97",
+   "fields": {
+    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 2732-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, lean_operations"
+   }
+  },
+  {
+   "id": "V2I-0F35C33869E0",
+   "fields": {
+    "SCOPE_FIT_RAW": "33",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 2936-char saved posting (6+ = 100): manufacturing_leadership, lean_operations"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-BB5FC4C7A846",
+   "company": "C.H. Guenther",
+   "title": "Director of Quality Assurance",
+   "location": "San Antonio, TX, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4491725581",
+   "est": [
+    157000,
+    231000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-4698FC3EA95B",
+    "V2I-A196D7711281",
+    "V2I-308A8C264244",
+    "V2I-261257FA41ED",
+    "V2I-6BA0AEF4F8FD",
+    "V2I-91C09903500A",
+    "V2I-C61657DF9FC1"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
