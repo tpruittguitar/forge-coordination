@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T13:37:51.749Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T133436726Z",
+ "at": "2026-11-20T13:52:54.879Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T134321654Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T13:34:46.509Z",
-  "sha256": "a4fd40fd525a020c7e1833c1030e6ce4e2b472a4c34bb1c6601267a2915a27bf",
-  "rows": 9455
+  "readAt": "2026-11-20T13:43:30.466Z",
+  "sha256": "bdc65c7f8dbf1b7876bbb0d2890f73ca44167f4ddc40e7fb55d7e9d9696a537c",
+  "rows": 9456
  },
- "rows": 9455,
- "eligible": 1013,
+ "rows": 9456,
+ "eligible": 1014,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -48,9 +48,9 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 618,
- "skipped_recent": 340,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 616,
+ "skipped_recent": 341,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -60,19 +60,15 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 3,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 1
- },
- "agg_read": {
-  "linkedin": 1
- },
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -80,17 +76,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 16,
@@ -105,9 +101,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 11,
+  "saved_reused": 11,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -116,9 +112,9 @@
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-20T13:34:53.379Z",
+  "profile_as_of": "2026-11-20T13:43:36.857Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14723,27 +14719,47 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 1,
+  "salary": 1,
+  "degree": 1
  },
- "not_attempted": 639,
- "nothing_found": 639,
- "attempt_only_skipped": 1,
+ "not_attempted": 635,
+ "nothing_found": 635,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
-  "merged": 0,
+  "scored": 5,
+  "legacy_replaced": 5,
+  "merged": 5,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2662,
+  "no_posting": 2658,
   "deferred": 0,
   "fenced": 32,
   "inactive": 6365,
   "already_fitted": 396,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-B84B3FE20D23",
+    "fit": 33
+   },
+   {
+    "id": "V2I-D2B97757ED6D",
+    "fit": 100
+   },
+   {
+    "id": "V2I-9ACC1D022B83",
+    "fit": 67
+   },
+   {
+    "id": "V2I-6A05D2BC85C5",
+    "fit": 100
+   },
+   {
+    "id": "V2I-3DC5701F1EFB",
+    "fit": 50
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
@@ -14751,7 +14767,7 @@
   "added": 0,
   "has_business": 163,
   "no_overview": 2895,
-  "no_single_label": 0,
+  "no_single_label": 1,
   "deferred": 0,
   "fenced": 32,
   "inactive": 6365,
@@ -14762,10 +14778,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2320,
- "network_requests": 7,
- "planned": 0,
+ "roles_researched": 2321,
+ "network_requests": 6,
+ "planned": 5,
  "research_budget_exhausted": false,
+ "writer_unconfirmed": 5,
+ "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14773,10 +14791,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 144,
+  "NOT_YET_ATTEMPTED": 140,
   "SOURCE_RESEARCH_REQUIRED": 782,
+  "EVIDENCE_FOUND": 53,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 21,
-  "EVIDENCE_FOUND": 48,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15840,62 +15858,6 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-20T13:25:33.826Z",
    "retryAt": "2026-11-20T14:25:33.826Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6A05D2BC85C5",
-   "company": "Marriott International",
-   "title": "Director of Quality & Training",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": null,
-   "retryAt": null,
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9ACC1D022B83",
-   "company": "L3Harris",
-   "title": "Senior Manager, Quality Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": null,
-   "retryAt": null,
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D2B97757ED6D",
-   "company": "Collier County, FL",
-   "title": "Plant Manager-Northeast Water Treatment Plant",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": null,
-   "retryAt": null,
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B84B3FE20D23",
-   "company": "Signature HealthCARE LLC",
-   "title": "Plant Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": null,
-   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -21836,6 +21798,24 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-14F8AE4DEE12",
+   "company": "FormFactor Inc.",
+   "title": "Sr Manager, Process Integration",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T13:35:45.414Z",
+   "retryAt": "2026-11-20T14:35:45.414Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4430851005",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32390,7 +32370,122 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-6A05D2BC85C5",
+   "fields": {
+    "SALARY_BASE_LOW": 75000,
+    "SALARY_BASE_HIGH": 93000,
+    "SALARY_MIDPOINT": 84000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "4-year bachelor's degree in Business Administration, Hotel and Restaurant Management, or related major; 2 years experience in the guest services, front desk, housekeeping, sales and marketing, management operations, or related professional area.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 6/11 resume competencies observed in a 5271-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, manufacturing_systems, lean_operations, supplier_quality",
+    "SALARY_SCORE_POINT": 88500
+   }
+  },
+  {
+   "id": "V2I-3DC5701F1EFB",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://aa270.taleo.net/careersection/ex/jobdetail.ftl?job=827538&tz=GMT-06%3A00&tzname=America%2FChicago",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "50",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 7918-char saved posting (6+ = 100): team_building, manufacturing_systems, lean_operations"
+   }
+  },
+  {
+   "id": "V2I-9ACC1D022B83",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's Degree with a minimum of 12 years prior relevant experience.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.harris.com/job/-/-/4832/103525974208",
+    "DEGREE_ASOF": "2026-11-20",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 152000,
+    "SALARY_BASE_HIGH": 243000,
+    "SALARY_MIDPOINT": 197500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4492065650 (as of 2026-11-20); https://jobs.dayforcehcm.com/en-US/chromalloy/CANDIDATEPORTAL/jobs/41524 (as of 2026-11-19); https://jobs.ashbyhq.com/shield/17129b78-ff3a-4aa5-84f4-cda8a787378b (as of 2026-11-18); https://careers.zimmerbiomet.com/us/en/job/ZBUZBRUS13588EXTERNALENUS/Quality-Systems-Project-Sr-Manager?utm_source=indeed&utm_medium=phenom-feeds (as of 2026-11-17); https://www.linkedin.com/jobs/view/4490978399 (as of 2026-11-17); https://regulatoryjobs.com/jobs/sr-mgr-supplier-quality-management (as of 2026-11-07); https://www.linkedin.com/jobs/view/4486911459 (as of 2026-11-06)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-A4A9855D4342, V2I-63B665DF84C8, V2I-C3F94FA3DBF6, V2I-3B72CD24CD62, V2I-58A80D06CF3A, V2I-BB6E8AE93276, V2I-27734B67D27B]; 7 employer-posted comparable(s), level 1.5 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW; BLS AR 113051 P25-P90 $97K-$202K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 5974-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, manufacturing_systems, lean_operations",
+    "SALARY_SCORE_POINT": 220250
+   }
+  },
+  {
+   "id": "V2I-D2B97757ED6D",
+   "fields": {
+    "SALARY_BASE_LOW": 87076,
+    "SALARY_BASE_HIGH": 141062,
+    "SALARY_MIDPOINT": 114069,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.governmentjobs.com/careers/collier/jobs/5555698/plant-manager-northeast-water-treatment-plant",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_CONF": "HIGH",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 6/11 resume competencies observed in a 10243-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, automation_robotics, manufacturing_systems, supplier_quality",
+    "SALARY_SCORE_POINT": 127566
+   }
+  },
+  {
+   "id": "V2I-B84B3FE20D23",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://signaturehealthcarejobs.com/jobs/33463/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "33",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 3464-char saved posting (6+ = 100): manufacturing_leadership, quality_systems"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-9ACC1D022B83",
+   "company": "L3Harris",
+   "title": "Senior Manager, Quality Management",
+   "location": "Camden, AR, USA",
+   "posting": "https://careers.harris.com/job/-/-/4832/103525974208",
+   "est": [
+    152000,
+    243000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 10 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-A4A9855D4342",
+    "V2I-63B665DF84C8",
+    "V2I-C3F94FA3DBF6",
+    "V2I-3B72CD24CD62",
+    "V2I-58A80D06CF3A",
+    "V2I-BB6E8AE93276",
+    "V2I-27734B67D27B"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
