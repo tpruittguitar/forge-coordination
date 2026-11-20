@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-20T11:58:22.269Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-20T20:36:42.589Z from CANONICAL_WRITER_MASTER.
 
-Of 3166 jobs waiting on Tim, 81 match a role he already applied to, was rejected from, or declined:
+Of 3182 jobs waiting on Tim, 84 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 81
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 84
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 3 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (81)
+## Kept, labeled (84)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -25,6 +25,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 87 | Honeywell | Director Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-10, after rejection 2026-10-30 | V2I-6CF5BAFCF396 → V2E-6920E7E88F4B |
 | 71 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 70 | Shield | Senior Manager, Supplier Quality (R6220) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-235C950A82AF → V2I-159B6D7FCA48 |
+| 69 | CTS Corporation | Director of Operations, North America | You declined 2026-10-26 · different site | Different worksite: Houston, TX, USA vs earlier Lisle, IL | V2I-954806CA62FF → V2I-6C9C8F6C58A3 |
 | 67 | PSC Industries | Plant Manager | You declined 2026-11-07 · different site | Different worksite: Park City, KS, USA vs earlier Louisville, KY | V2I-8C31B41A402D → V2I-6D5AD21175C5 |
 | 64 | Amazon Web Services (AWS) | Sr. Mfg Eng, Process Quality, Hardware Engineering Services - Manufacturing | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-11, -3 days after 2026-11-14; no posting identity to compare | V2I-CF667B16D785 → V2I-AD5D63DD4099 |
 | 63 | Anduril Industries | Deputy Head of Production, Connected Warfare | Applied 2026-09-28 · Rejected 2026-10-16 · possible repost | Posting first seen 2026-10-18, after rejection 2026-10-16 | V2I-54CC9711AE6D → V2F-04613C31341E |
@@ -35,9 +36,11 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 60 | Valstad Shipworks | Head of Manufacturing & Industrialization | Applied 2026-10-25 · possible repeat | Posting first seen 2026-11-13, 19 days after 2026-10-25; no posting identity to compare | V2I-165704D594BE → V2I-01D3C4D0646F |
 | 59 | Amazon | Sr. Operations Manager, ARS | You declined 2026-10-26 · different site | Different worksite: Tallahassee, FL vs earlier West Columbia, SC | V2I-E75C98EA8A7A → V2I-4724C8D0C8BA |
 | 59 | EnerSys | Senior Quality Manager | You declined 2026-10-23 · different site | Different worksite: Greenville, SC vs earlier Suwanee, GA | V2I-22F36AC5761C → V2I-61AB6BF8F95B |
+| 59 | Atlas Roofing Corporation | Plant Manager | You declined 2026-11-05 · different site | Different worksite: East Moline, Illinois, United States vs earlier Murray, UT, USA | V2I-5ECA336F70D0 → V2I-2B52D04B0E52 |
 | 58 | BAE Systems, Inc. | Director of Supplier Quality | You declined 2026-11-14 · different site | Different worksite: Fort Wayne, IN vs earlier Nashua, NH, USA | V2I-25AAA3AF1625 → V2I-291757EAD78B |
 | 58 | Oceans Healthcare | Quality Director | You declined 2026-11-07 · different site | Different worksite: De Ridder, LA, USA vs earlier Longview, TX, USA | V2I-783683EE9FFD → V2I-E76AD0565AF1 |
 | 58 | Shield | Compensation Director, Aircraft Engineering and Manufacturing (R6270) | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-17, 15 days after 2026-11-02; no posting identity to compare | V2I-C13E52963961 → V2I-BF8E4CDF88E3 |
+| 58 | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
 | 57 | Tesla | Regional Manager, Service Distribution | You declined 2026-11-14 · different site | Different worksite: The Colony, TX vs earlier Silver Spring, MD | V2I-847E6F45EF7F → V2I-0EEF32C5FA54 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
@@ -58,6 +61,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Arena Family of Companies | Director of Quality (Aerospace & Defense) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-6BA0AEF4F8FD → V2I-4D814A27A330 |
 | 50 | Sanmina | VP, Operations | You declined 2026-10-26 · different site | Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2) | V2I-34A6A4DD91D8 → V2I-981E839AC295 |
 | 49 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
+| 47 | KinderCare Learning Companies | Director Quality and Education | You declined 2026-11-13 · different site | Different worksite: Las Vegas, NV, USA vs earlier The Woodlands, TX, USA | V2I-A3325F8B7054 → V2I-29939DFD531D |
 | 46 | Magna International | Operations Manager | You declined 2026-11-14 · different site | Different worksite: Duncan, SC vs earlier Holly, MI | V2I-C66ADD3B6F79 → V2I-C996CB68A404 |
 | 45 | Sanmina | VP Operations, USA | You declined 2026-10-26 · different site | Different worksite: Fremont, CA vs earlier Huntsville, AL (SCI Plant 2) | V2I-EF96178B6B97 → V2I-981E839AC295 |
 | 44 | Tesla | Robotaxi Operations Manager | You declined 2026-10-21 · this is a new posting | Different requisition: req:1010302900401 vs earlier req:1010287781069 | V2I-FA1DF4DF4B9C → V2I-0375A5FAABFB |
@@ -81,7 +85,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 39 | Panasonic | General Manager of Operations | You declined 2026-11-01 · possible repeat | Posting first seen 2026-11-13, 12 days after 2026-11-01; no posting identity to compare | V2I-887A74689BD8 → V2I-B757EA22C43D |
 | 39 | Green Thumb Industries | Director, Production Optimization (Remote) | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-13, 11 days after 2026-11-02; no posting identity to compare | V2I-62699A0C7C87 → V2I-10BFDD032D58 |
 | 39 | Lockheed Martin | Multifunctional Manufacturing Mgr - L5 | You declined 2026-11-05 · different site | Different worksite: Ocala, FL vs earlier Greenville, SC | V2I-F439C723F6A9 → V2I-B6546F0C3FB7 |
-| 39 | Atlas Roofing Corporation | Plant Manager | You declined 2026-11-05 · different site | Different worksite: East Moline, Illinois, United States vs earlier Murray, UT, USA | V2I-5ECA336F70D0 → V2I-2B52D04B0E52 |
 | 39 | Kreate | Plant Manager | You declined 2026-11-02 · different site | Different worksite: Lima, Ohio, United States vs earlier Clearwater, FL | V2I-F5A79962BD70 → V2I-0FF00A919FBE |
 | 38 | Amazon | Sr. Operations Manager | You declined 2026-10-26 · this is a new posting | Different requisition: req:A10488827 vs earlier req:A10555456 | V2I-AAF12E75D415 → V2I-4724C8D0C8BA |
 | 38 | Amazon | Sr. Operations Manager | You declined 2026-10-26 · this is a new posting | Different requisition: req:A10456493 vs earlier req:A10555456 | V2I-CB9B223AA01F → V2I-4724C8D0C8BA |
