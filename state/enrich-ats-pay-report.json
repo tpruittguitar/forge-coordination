@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T23:01:31.484Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T225510239Z",
+ "at": "2026-11-20T23:10:05.799Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T230602942Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T22:55:21.080Z",
+  "readAt": "2026-11-20T23:06:11.753Z",
   "sha256": "b86fc1c30f84b4e18fb3c33aa13446d0a992a73f19aec82c92f7d49598931efd",
   "rows": 9467
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 614,
- "skipped_recent": 334,
+ "estimate_waiting_for_posting": 613,
+ "skipped_recent": 336,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,23 +63,20 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 4
+  "linkedin": 2
  },
- "agg_read": {
-  "linkedin": 1
- },
+ "agg_read": {},
  "agg_pay": {},
  "agg_failed": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_errors": {
   "linkedin": [
-   "429",
    "429"
   ]
  },
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -91,10 +88,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 3,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 2
  },
  "bls_queries": 0,
  "est_shared_low": 1,
@@ -112,20 +110,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 39,
-  "saved_reused": 39,
+  "targets": 3,
+  "candidates": 8,
+  "saved_reused": 7,
   "cache_hits": 0,
-  "reads": 0,
+  "reads": 1,
   "found": 0,
-  "failed": 0,
+  "failed": 1,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-20T22:55:27.840Z",
+  "profile_as_of": "2026-11-20T23:06:17.048Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14710,31 +14708,43 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1864,
+  "review_skipped_blocked": 1871,
   "by_missing": {
-   "products (what they make)": 1802,
-   "work arrangement (remote/hybrid/on-site)": 1144,
+   "products (what they make)": 1809,
+   "work arrangement (remote/hybrid/on-site)": 1151,
    "location / geography": 12
   }
  },
  "salary_review": {
   "eligible": 1886,
-  "due": 1872,
-  "reviewed": 1,
-  "target_reads": 2,
+  "due": 1874,
+  "reviewed": 3,
+  "target_reads": 4,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 1,
+  "no_improvement": 3,
   "guard_dropped": 0,
   "samples": [
    {
-    "id": "V2I-42E984DD7EA6",
+    "id": "V2I-26AFABD9D539",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-68409806765F",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-049F340F3D8E",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    }
   ],
-  "aggregator_reads": 1
+  "aggregator_reads": 2
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14743,9 +14753,10 @@
   "degree": 0
  },
  "not_attempted": 633,
- "nothing_found": 635,
- "source_origin_blocks": {},
+ "nothing_found": 633,
  "attempt_only_skipped": 1,
+ "source_origin_blocks": {},
+ "est_bls": 2,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -15330,19 +15341,6 @@
      "status": "HTTP_429"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A10BB7FA6297",
-   "company": "Chick-fil-A Restaurants",
-   "title": "Front of House Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T21:57:33.045Z",
-   "retryAt": "2026-11-20T22:57:33.045Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -18823,44 +18821,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2FFD9B49A246",
-   "company": "Jobot",
-   "title": "Director, Protection & Controls Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T22:56:34.971Z",
-   "retryAt": "2026-11-21T14:56:34.971Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0744ECF3C0CB",
-   "company": "Jobot",
-   "title": "Regional VP - Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T22:56:38.007Z",
-   "retryAt": "2026-11-21T14:56:38.007Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-7FD341FBC23B",
    "company": "Ann Storck Center",
    "title": "Director of ICF & Quality Enhancement",
@@ -20141,6 +20101,44 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FFD9B49A246",
+   "company": "Jobot",
+   "title": "Director, Protection & Controls Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T22:56:34.971Z",
+   "retryAt": "2026-11-21T14:56:34.971Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0744ECF3C0CB",
+   "company": "Jobot",
+   "title": "Regional VP - Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T22:56:38.007Z",
+   "retryAt": "2026-11-21T14:56:38.007Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
      "status": "HTTP_429"
     }
    ],
@@ -21797,6 +21795,24 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475981765",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FD41C06F51A",
+   "company": "Nissan Motor Corporation",
+   "title": "Purchasing Critical Minerals Intern - Summer 2027 - Franklin, TN",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T22:56:41.317Z",
+   "retryAt": "2026-11-20T23:56:41.317Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477182490",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
