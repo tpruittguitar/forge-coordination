@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T11:01:31.247Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T105703970Z",
+ "at": "2026-11-20T11:33:34.592Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T112709129Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T10:57:13.691Z",
-  "sha256": "1a9761c45ae951ada4d82269c9dee4d0eb3204a3889cc08dc6d757bee7ab7cac",
-  "rows": 9448
+  "readAt": "2026-11-20T11:27:18.177Z",
+  "sha256": "e1c430222607796c3c3b5e94c362d4028965f83230315fa56e67d7d87467037c",
+  "rows": 9451
  },
- "rows": 9448,
- "eligible": 1008,
+ "rows": 9451,
+ "eligible": 1011,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -49,38 +49,38 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 627,
- "skipped_recent": 315,
- "submitted": 0,
+ "estimate_waiting_for_posting": 626,
+ "skipped_recent": 327,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 2,
+ "salary_independently_verified": 2,
  "agg_tried": {
-  "linkedin": 10
+  "linkedin": 5
  },
  "agg_read": {
-  "linkedin": 7
+  "linkedin": 2
  },
  "agg_pay": {},
  "agg_failed": {
-  "linkedin": 3
+  "linkedin": 1
  },
  "agg_errors": {
   "linkedin": [
-   "429",
-   "429",
-   "429"
+   "404"
   ]
  },
- "agg_wall": {},
- "source_reads": 10,
+ "agg_wall": {
+  "linkedin": 2
+ },
+ "source_reads": 5,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -113,7 +113,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
+  "targets": 0,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -126,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T10:57:19.522Z",
+  "profile_as_of": "2026-11-20T11:27:24.693Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14731,19 +14731,19 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 2,
+  "salary": 2,
+  "degree": 2
  },
- "not_attempted": 648,
- "nothing_found": 651,
- "attempt_only_skipped": 9,
+ "not_attempted": 643,
+ "nothing_found": 646,
+ "attempt_only_skipped": 2,
  "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
-  "merged": 0,
+  "scored": 3,
+  "legacy_replaced": 3,
+  "merged": 3,
   "added": 0,
   "short_posting": 0,
   "no_posting": 2658,
@@ -14752,14 +14752,27 @@
   "inactive": 6365,
   "already_fitted": 393,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-27CC95274889",
+    "fit": 50
+   },
+   {
+    "id": "V2I-41A5A0BB1704",
+    "fit": 33
+   },
+   {
+    "id": "V2I-C5826C7E7009",
+    "fit": 67
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
   "has_business": 163,
-  "no_overview": 2888,
+  "no_overview": 2891,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 32,
@@ -14772,9 +14785,10 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 2330,
- "network_requests": 16,
- "planned": 0,
+ "network_requests": 11,
+ "planned": 3,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14784,8 +14798,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 140,
   "SOURCE_RESEARCH_REQUIRED": 774,
+  "EVIDENCE_FOUND": 58,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 21,
-  "EVIDENCE_FOUND": 55,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15805,6 +15819,32 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-20T10:45:40.032Z",
    "retryAt": "2026-11-20T11:45:40.032Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-584FA9AD0307",
+   "company": "The Guest House Las Vegas",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:11.262Z",
+   "retryAt": "2026-11-20T11:58:11.262Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6E0E74BFFF60",
+   "company": "Sigma Oilfield Solutions",
+   "title": "Asset Integrity Mgr / Operations Director",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:11.263Z",
+   "retryAt": "2026-11-20T11:58:11.263Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -21230,60 +21270,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-46A779F757EE",
-   "company": "Baker Roofing Company",
-   "title": "Regional Vice President",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T10:58:36.792Z",
-   "retryAt": "2026-11-21T02:58:36.792Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BA6D16923397",
-   "company": "ASSA ABLOY Group",
-   "title": "Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T10:58:39.845Z",
-   "retryAt": "2026-11-21T02:58:39.845Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463496157",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-50152038491A",
-   "company": "nVent",
-   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T10:58:42.910Z",
-   "retryAt": "2026-11-21T02:58:42.910Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-953657141BEE",
    "company": "CT19",
    "title": "Technology Manager",
@@ -21387,42 +21373,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481953095",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-682F7C51C227",
-   "company": "Focus Ten Care Schools",
-   "title": "Childcare Center Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-20T09:49:50.379Z",
-   "retryAt": "2026-11-20T10:49:50.379Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483124051",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-440744D3EF09",
-   "company": "Chick-fil-A Supply",
-   "title": "Safety Manager I",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-20T09:49:53.820Z",
-   "retryAt": "2026-11-20T10:49:53.820Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4417680929",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21639,6 +21589,186 @@
    "lastAttemptAt": "2026-11-20T10:48:00.056Z",
    "retryAt": "2026-11-20T11:48:00.056Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-46FFE5339741",
+   "company": "Lyft",
+   "title": "Repair Operations Lead",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:14.628Z",
+   "retryAt": "2026-11-20T11:58:14.628Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472062391",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CDBEF98F4186",
+   "company": "Onterris",
+   "title": "Region Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:17.858Z",
+   "retryAt": "2026-11-20T11:58:17.858Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471901258",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-226009AAA44D",
+   "company": "Nissan Motor Corporation",
+   "title": "Purchasing Project Management Intern - Summer 2027 - Franklin, TN",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:21.097Z",
+   "retryAt": "2026-11-20T11:58:21.097Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485311555",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-792B900224AE",
+   "company": "Roy Jorgensen Associates, Inc.",
+   "title": "Regional Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:24.262Z",
+   "retryAt": "2026-11-20T11:58:24.262Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480427082",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-226061853433",
+   "company": "Authority Brands",
+   "title": "VP of Contact Centers",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:27.382Z",
+   "retryAt": "2026-11-20T11:58:27.382Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483939386",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C28DE3BEDFE",
+   "company": "Applied Materials",
+   "title": "Technical Project/Program Management Director - Advanced Packaging",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:30.559Z",
+   "retryAt": "2026-11-20T11:58:30.559Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-14F8AE4DEE12",
+   "company": "FormFactor Inc.",
+   "title": "Sr Manager, Process Integration",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:33.739Z",
+   "retryAt": "2026-11-20T11:58:33.739Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4430851005",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-46A779F757EE",
+   "company": "Baker Roofing Company",
+   "title": "Regional Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:36.792Z",
+   "retryAt": "2026-11-21T02:58:36.792Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BA6D16923397",
+   "company": "ASSA ABLOY Group",
+   "title": "Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:39.845Z",
+   "retryAt": "2026-11-21T02:58:39.845Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463496157",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-50152038491A",
+   "company": "nVent",
+   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T10:58:42.910Z",
+   "retryAt": "2026-11-21T02:58:42.910Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
+     "status": "HTTP_429"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -29608,9 +29738,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T16:57:22.503Z",
-   "retryAt": "2026-11-20T08:57:22.503Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T11:28:28.152Z",
+   "retryAt": "2026-11-21T03:28:28.152Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480654524",
@@ -29627,9 +29757,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T17:37:08.974Z",
-   "retryAt": "2026-11-20T09:37:08.974Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T11:28:31.266Z",
+   "retryAt": "2026-11-21T03:28:31.266Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478604672",
@@ -29646,9 +29776,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T17:37:12.173Z",
-   "retryAt": "2026-11-20T09:37:12.173Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T11:28:34.431Z",
+   "retryAt": "2026-11-21T03:28:34.431Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485119317",
@@ -32191,7 +32321,63 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-C5826C7E7009",
+   "fields": {
+    "SALARY_BASE_LOW": 202300,
+    "SALARY_BASE_HIGH": 238000,
+    "SALARY_MIDPOINT": 220150,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.dayforcehcm.com/en-US/taiho/CANDIDATEPORTAL/jobs/5379",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "​​​​​​​​Bachelor's degree in life sciences, quality, regulatory affairs, information management, business, or a related discipline required; advanced degree preferred.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.dayforcehcm.com/en-US/taiho/CANDIDATEPORTAL/jobs/5379",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 11086-char saved posting (6+ = 100): quality_systems, team_building, manufacturing_systems, lean_operations",
+    "SALARY_SCORE_POINT": 229075
+   }
+  },
+  {
+   "id": "V2I-27CC95274889",
+   "fields": {
+    "SALARY_BASE_LOW": 201000,
+    "SALARY_BASE_HIGH": 251000,
+    "SALARY_MIDPOINT": 226000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.revmed.com/careers-list/?gh_jid=8209388003",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Education: B.S./B.A. in Business, Life Sciences, Supply Chain, or Finance (MBA or advanced degree preferred).",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.revmed.com/careers-list/?gh_jid=8209388003",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "50",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 7216-char saved posting (6+ = 100): quality_systems, team_building, manufacturing_systems",
+    "SALARY_SCORE_POINT": 238500
+   }
+  },
+  {
+   "id": "V2I-41A5A0BB1704",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.teamworkonline.com/basketball-jobs/nbateamjobs/los-angeles-sparks/director-facility-operations-2200413?source=Indeed",
+    "DEGREE_ASOF": "2026-11-20",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "33",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 7070-char saved posting (6+ = 100): manufacturing_leadership, team_building"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
