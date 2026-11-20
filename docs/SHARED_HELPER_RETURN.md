@@ -57,7 +57,7 @@ Without shell, construct the same full object from fresh, verified assignment pa
 |---|---|---|
 | `DEGREE` | `DEGREE_TEXT`, `DEGREE_REQ` | `DEGREE_REQ` is `REQUIRED`, `PREFERRED` or `NOT_STATED`. `DEGREE_TEXT` is verbatim from the posting. A high school diploma or GED is not a degree. `NOT_STATED` needs `fullPostingRead: true` and a page that was not cut off; the coordinator also needs its own read of the whole posting to find no degree. |
 | `SALARY` | `SALARY_BASE_LOW`, `SALARY_BASE_HIGH`, `SALARY_BASIS` | Both ends, above zero, low ≤ high, both figures shown in the quote. `SALARY_BASIS` is `EMPLOYER_POSTED`. Annual base only: no hourly, total-compensation, OTE or estimate text. |
-| `WORK_ARRANGEMENT` | `WORK_ARRANGEMENT`, `REMOTE_HYBRID` | `ONSITE`, `HYBRID` or `REMOTE`; the quote must say it, and both fields must agree. |
+| `WORK_ARRANGEMENT` | `WORK_ARRANGEMENT`, `REMOTE_HYBRID` | `ONSITE`, `HYBRID` or `REMOTE`; both fields agree. The quote states this job's mode ("This position is onsite in…", "Workplace type: Hybrid"). Rejected: negations, option lists ("onsite, remote, or hybrid"), another team or place ("on-site Operations teams"), and remote or onsite quotes that mention hybrid or days in the office. |
 | `REQ_ID` | `REQ_ID` | The employer's requisition ID, literally in the quote. Fills a blank only. |
 | `POSTING_DATE` | `POSTING_DATE` | `YYYY-MM-DD`; the quote shows the same calendar date (not "3 days ago"). |
 | `CLIENT_EMPLOYER` | `CLIENT_EMPLOYER` | Named in the quote, for agency or staffing postings. Fills a blank only. |

@@ -44,14 +44,31 @@ const PROTECTED = ['PRIMARY_ID','COMPANY','TITLE','LOCATION','REQ','BUCKET','DIS
 // ("not eligible for remote work"). Real postings, Nov 20 2026.
 const MODE = {REMOTE:'remote(?:ly)?', HYBRID:'hybrid', ONSITE:'on[- ]?site|in[- ](?:office|person)'};
 const JOB = '(?:position|role|job|workplace|work type|work mode|work|working|employee|candidate|schedule|arrangement|model|environment|opportunit\w*|days?|week|located|location|based|eligible|option)';
+// After "position is onsite", the mode word must end the statement or lead into how or where the
+// job is worked. "with on-site Data Center Operations" or "Remote Operations Center" names another
+// team or place and does not state this job's mode. Real postings, Nov 20 2026.
+const FOLLOW = `(?=\\s*(?:$|[.,;:!?()\\[\\]*|•·\\-–—]|\\d|(?:in|at|from|for|on|only|required|basis|status|presence|daily|full[- ]time|one|two|three|four|five|monday|each|every|per|and\\s+(?:requires?|will|is|must|may|includes?))\\b|${JOB}\\b))`;
 const WORK = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(
- `(?:^|[|•·,;:(\\[-])\\s*\\**\\s*(?:${m})\\s*\\**\\s*(?:$|[|•·,;()\\]])`+          // a label: "| On-site |", "Remote"
+ `(?:^|[|•·;:(\\[-])\\s*\\**\\s*(?:${m})\\s*\\**\\s*(?:$|[|•·;()\\]])`+            // a label: "| On-site |", "Remote"
  `|\\b(?:fully|100%|primarily|mostly)\\s+(?:${m})\\b`+                          // "fully remote"
  `|\\b(?:${m})[- ](?:first|based|eligible|friendly|${JOB})\\b`+                // "remote role", "hybrid schedule"
- `|\\b${JOB}\\b[^.!?\\n]{0,60}?\\b(?:${m})\\b`+                                  // "position is onsite"
+ `|\\b${JOB}\\b[^.!?\\n]{0,60}?\\b(?:${m})\\b${FOLLOW}`+                                 // "position is onsite"
  `|\\b(?:work(?:ing)? from home|wfh)\\b`.repeat(k==='REMOTE'?1:0), 'i')]));
 const NEGATED = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(`\\b(?:not|no|non|never|isn't|is not|ineligible|cannot|can't|without)\\b[^.!?\\n]{0,40}?\\b(?:${m})\\b|\\bnon[- ](?:${m})\\b`, 'i')]));
-const statesMode = (q, v) => WORK[v].test(String(q)) && !NEGATED[v].test(String(q));
+// Commas also separate labels ("Austin, TX, Remote"), but only in a short line; in a long
+// sentence "manned, remote, and autonomous operation" is a list, not the job's mode.
+const LISTED = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(`(?:^|,)\\s*\\**\\s*(?:${m})\\s*\\**\\s*(?:$|[,()])`, 'i')]));
+// "Remote work with select days in the office" or "Hybrid remote" is hybrid, not remote; a quote
+// that mentions hybrid does not prove a fully on-site or fully remote job.
+const NOT_FULLY_REMOTE = /\b(?:days?|time)\b[^.!?\n]{0,30}?\bin[- ](?:the\s+)?office\b/i;
+// "Remote work not considered", "unable to consider ... for remote work".
+const NEGATED_AFTER = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(`\\b(?:${m})\\b[^.!?\\n]{0,40}?\\b(?:not|isn't|unable)\\b|\\bunable\\b[^.!?\\n]{0,80}?\\b(?:${m})\\b`, 'i')]));
+// "may be onsite, remotely, or in a hybrid arrangement" lists options; it settles nothing.
+const ANY_MODE = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(`\\b(?:${m})\\b`, 'i')]));
+const options = s => /\bor\b/i.test(s) && Object.values(ANY_MODE).filter(r => r.test(s)).length > 1;
+const statesMode = (q, v) => { const s = String(q);
+ return (WORK[v].test(s) || s.length <= 120 && LISTED[v].test(s)) && !NEGATED[v].test(s) && !NEGATED_AFTER[v].test(s) && !options(s)
+  && !(v !== 'HYBRID' && /\bhybrid\b/i.test(s)) && !(v === 'REMOTE' && NOT_FULLY_REMOTE.test(s)); };
 const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 const literal = s => String(s||'').normalize('NFKC').replace(/\s+/g,' ').trim();
 const shortened = s => /\.\.\.|…/.test(String(s));
@@ -201,7 +218,8 @@ function verified(e, source){
   if (!q) continue;   // legacy degree/salary without a quote: code derives its own
   if (shortened(q)) throw fail('HELPER_FIELD_QUOTE_SHORTENED', g);
   if (!literal(body).includes(literal(q))) throw fail('HELPER_FIELD_QUOTE_NOT_IN_POSTING', g);
-  try { values(g, raw, q, e, {body, fullPosting}); } catch (err) { if (/QUOTE/.test(err.message)) throw err; continue; }
+  // A value the quote does not support drops only its own group; the item's other facts still count.
+  try { values(g, raw, q, e, {body, fullPosting}); } catch (err) { if (/^HELPER_FIELD_QUOTE/.test(err.message)) throw err; continue; }
   for (const k of GROUPS[g]) if (Object.hasOwn(raw,k)) out[k] = raw[k];
   out[g+'__QUOTE'] = literal(q);
  }

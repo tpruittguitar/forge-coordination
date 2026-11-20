@@ -33,3 +33,17 @@ Exact verbatim quotes; no "..." or "…"; salary above zero, low ≤ high, emplo
 ## Tests
 
 `tools/helper-routing/helper-fields.test.cjs` (11 tests). Full helper-routing, programmed-coordinator and sniffer suites: 349 tests, 348 pass, 1 skipped (pre-existing), 0 fail.
+
+## Follow-up: work-mode quote check (Nov 20, after deploy)
+
+What happened: after deploy, a dry run of the coordinator's own field path on real stored postings (state/discovery-evidence) accepted "working in close coordination with on-site Data Center Operations" as ONSITE, a list "manned, remote, and autonomous operation" as REMOTE, and "remote work arrangement with select days in the office" as REMOTE. No helper had sent the new fields yet, so nothing wrong reached the master.
+
+What changed (tools/helper-routing/helper-fields.cjs):
+- In "position ... onsite", the mode word must end the statement or lead into how or where the job is worked (punctuation, a number, in/at/from, a job word). "on-site Data Center Operations" fails.
+- Comma-separated labels count only in a line of 120 characters or less ("Austin, TX, Remote").
+- Rejected: negation after the mode ("Remote work not considered", "unable to consider ... for remote work"), option lists naming two or more modes with "or", REMOTE or ONSITE quotes that mention hybrid, and REMOTE quotes with days in the office.
+- At the coordinator, a value the quote does not support drops only that field group. Before, the whole item became an exception. Quote-validity failures (not in posting, shortened) still reject the item.
+
+Trade-off (judgment): fewer accepted quotes. "This position is onsite and is not a remote position" now fails ONSITE. A blank field costs less than a wrong one, and the field fills blanks only.
+
+Not changed: other groups, coordinator write rules, the Writer.
