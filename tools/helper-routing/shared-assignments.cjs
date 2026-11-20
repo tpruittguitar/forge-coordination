@@ -2,7 +2,8 @@
 const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Source=require('../programmed-coordinator/source.cjs'),H=require('./shared.cjs'),F=require('./field-completion.cjs');
 function needs(row){const p=row.p||{},out=[];
  if(!Source.known(p.SALARY_BASE_LOW))out.push('SALARY');
- if(!Source.known(p.DEGREE_REQ)&&!Source.known(p.DEGREE_TEXT))out.push('DEGREE');
+ // A full-posting read that found no degree (NOT_STATED + REQUIREMENTS_REVIEWED=YES) is settled.
+ if(!Source.known(p.DEGREE_REQ)&&!Source.known(p.DEGREE_TEXT)&&!(String(p.DEGREE_REQ||'').toUpperCase()==='NOT_STATED'&&String(p.REQUIREMENTS_REVIEWED||'').toUpperCase()==='YES'))out.push('DEGREE');
  if(!Source.known(p.SCOPE_FIT_RAW)&&!Source.known(p.FIT_EVIDENCE))out.push('FIT');
  if(!Source.known(p.SOURCE_URL))out.push('LINKS');
  return out;

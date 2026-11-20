@@ -192,7 +192,10 @@ function inspectLinkedIn(raw,route,finalUrl,expected,quote,now){
   return inspectJobs([job],expected,quote,now);
 }
 function helperEvidence(source,item,profile) {
-  const out={...source};delete out.fitEvidence;delete out.exactLink;
+  const out={...source};delete out.fitEvidence;delete out.exactLink;delete out.helperFields;
+  // Job-text facts a helper quoted. Each quote must be in this posting's own text.
+  const quoted=require('../helper-routing/helper-fields.cjs').verified(item.sourceEvidence,source);
+  if(Object.keys(quoted).length)out.helperFields=quoted;
   const fit=item.sourceEvidence?.fit;
   if(fit){
     const Resume=require('../source-trial/resume-match');profile=profile||Resume.load();
@@ -221,14 +224,21 @@ function helperEvidence(source,item,profile) {
   }catch{}
   return out;
 }
-function enrichmentFields(source, row) {
+// meta.replace lists the groups whose stored values this read replaces (Tim's rule below).
+function enrichmentFields(source, row, meta={}) {
   const fields = {}, p = row.p || {};if(!Number.isFinite(Date.parse(source.observedAt)))return fields;const date = source.observedAt.slice(0,10);
-  if (source.degree && !known(p.DEGREE_TEXT) && !known(p.DEGREE_REQ)) Object.assign(fields, {DEGREE_TEXT:source.degree.text, DEGREE_REQ:source.degree.req, DEGREE_EVIDENCE_URL:source.sourceUrl, DEGREE_ASOF:date,...(source.sourceCaptured&&source.fullPosting!==true?{}:{REQUIREMENTS_REVIEWED:'YES'})});
-  if (source.pay && source.identityVerified===true && source.sourceIdentity && ['company','title','location'].every(k=>source.sourceIdentity[k]===row[{company:'COMPANY',title:'TITLE',location:'LOCATION'}[k]]) && !known(p.SALARY_BASE_LOW)) Object.assign(fields, {
-    SALARY_BASE_LOW:source.pay.low, SALARY_BASE_HIGH:source.pay.high, SALARY_MIDPOINT:Math.round((source.pay.low+source.pay.high)/2),
-    SALARY_BASIS:'EMPLOYER_POSTED', SALARY_SOURCE:source.sourceUrl, SALARY_ASOF:date, SALARY_CONF:'HIGH'
-  });
   const bound=source.identityVerified===true&&source.sourceIdentity&&['company','title','location'].every(k=>source.sourceIdentity[k]===row[{company:'COMPANY',title:'TITLE',location:'LOCATION'}[k]]);
+  const replace=new Set(),lit=s=>String(s??'').normalize('NFKC').replace(/\s+/g,' ').trim();
+  // A group is open when nothing is stored, or when Tim's newer-employer-data rule lets this read replace it.
+  const open=(group,same)=>{const stored=REPLACE_GROUPS[group].slice(0,2).some(k=>known(p[k]));if(!stored)return true;if(same||!replaceable(source,p,group,date))return false;replace.add(group);return true;};
+  const degreeFields=(text,req,reviewed)=>({DEGREE_TEXT:text, DEGREE_REQ:req, DEGREE_EVIDENCE_URL:source.sourceUrl, DEGREE_ASOF:date,...(reviewed?{REQUIREMENTS_REVIEWED:'YES'}:{})});
+  const salaryFields=pay=>({SALARY_BASE_LOW:pay.low, SALARY_BASE_HIGH:pay.high, SALARY_MIDPOINT:Math.round((pay.low+pay.high)/2),
+    SALARY_BASIS:'EMPLOYER_POSTED', SALARY_SOURCE:source.sourceUrl, SALARY_ASOF:date, SALARY_CONF:'HIGH'});
+  const sameDegree=d=>lit(p.DEGREE_TEXT)===lit(d.text)&&String(p.DEGREE_REQ||'')===d.req;
+  const samePay=pay=>Number(p.SALARY_BASE_LOW)===pay.low&&Number(p.SALARY_BASE_HIGH)===pay.high;
+  // Code-read values first.
+  if (source.degree && open('DEGREE',sameDegree(source.degree))) Object.assign(fields, degreeFields(source.degree.text,source.degree.req,!(source.sourceCaptured&&source.fullPosting!==true)));
+  if (source.pay && bound && open('SALARY',samePay(source.pay))) Object.assign(fields, salaryFields(source.pay));
   if(bound&&source.exactLink&&!known(p.SOURCE_URL))fields.SOURCE_URL=source.exactLink;
   if(bound&&source.exactLink&&source.format==='ATS_API'&&!known(p.COMPANY_SOURCE_URL))fields.COMPANY_SOURCE_URL=source.exactLink;
   if(bound&&source.fitEvidence&&!known(p.FIT_EVIDENCE)&&!known(p.FIT_BASIS)){
@@ -236,7 +246,39 @@ function enrichmentFields(source, row) {
     Object.assign(fields,{FIT_EVIDENCE:fit.requirements.map(r=>r.quote).join(' / '),
       FIT_BASIS:'Observed requirement overlap only, not final fit; resume '+fit.resumeTextSha256+'; '+fit.requirements.map(r=>r.competencyIds.length?r.competencyIds.join(','):'NO_OBSERVED_RESUME_OVERLAP').join(' / '),FIT_ASOF:date,FIT_CONF:'LOW'});
   }
+  // Helper-quoted facts (already checked against this posting's text) fill what code could not read.
+  const h=bound&&source.helperFields||{};
+  if(h.DEGREE_REQ&&h.DEGREE_TEXT&&fields.DEGREE_TEXT===undefined){
+    const Q=require('../enrich-ats-pay/qualification'),d={text:h.DEGREE_TEXT,req:h.DEGREE_REQ};
+    // "Not stated" needs the whole posting and code's own read of it to agree.
+    const ok=d.req==='NOT_STATED'?Q.parse(source.description)?.text==='NOT_STATED'&&(!source.sourceCaptured||source.fullPosting===true)
+      :/\b(?:degree|bachelor|master|associate|mba|ph\.?\s?d|b\.?\s?[sa]\b|m\.?\s?s\b)/i.test(d.text)&&(r=>!r||r.text==='NOT_STATED'||r.req===d.req)(Q.parse(h.DEGREE__QUOTE));
+    if(ok&&(d.req==='NOT_STATED'?!known(p.DEGREE_TEXT)&&!known(p.DEGREE_REQ)&&String(p.REQUIREMENTS_REVIEWED||'').toUpperCase()!=='YES':open('DEGREE',sameDegree(d))))Object.assign(fields,degreeFields(d.text,d.req,true));
+  }
+  if(h.SALARY_BASE_LOW!==undefined&&fields.SALARY_BASE_LOW===undefined){
+    const Pay=require('../enrich-ats-pay/pay-values'),pay=Pay.values(h.SALARY_BASE_LOW,h.SALARY_BASE_HIGH),q=h.SALARY__QUOTE,parsed=L.payFromText(q);
+    const ok=pay&&!Pay.mixed.test(q)&&(!parsed||parsed.low===pay.low&&parsed.high===pay.high)&&!Pay.conflicts(source.description,pay,L.payFromText)&&!Pay.estimatedPay(source.description,pay,L.payFromText);
+    if(ok&&open('SALARY',samePay(pay)))Object.assign(fields,salaryFields(pay));
+  }
+  // These carry no as-of date, so a newer read cannot be proven: fill blanks only.
+  for(const k of ['WORK_ARRANGEMENT','REMOTE_HYBRID','REQ_ID','POSTING_DATE','CLIENT_EMPLOYER'])if(h[k]!==undefined&&!known(p[k]))fields[k]=h[k];
+  const groups=[...replace].filter(g=>fields[REPLACE_GROUPS[g][0]]!==undefined);
+  if(groups.length)meta.replace=groups;
   return fields;
 }
+// Tim (standing rule): newer data from the employer's own site replaces older stored
+// values. Employer-owned = an ATS API read or the employer's own page, never an
+// aggregator page or a captured discovery card. Only degree and salary carry an as-of
+// date, so only those two groups can be proven newer and replaced.
+const REPLACE_GROUPS={DEGREE:['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED'],
+  SALARY:['SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']};
+const AGGREGATOR_HOST=/(?:^|\.)(?:linkedin|indeed|ziprecruiter|glassdoor|monster|careerbuilder|simplyhired|dice)\.com$/i;
+function employerOwned(source){
+  if(source.sourceCaptured||source.format==='LINKEDIN_GUEST')return false;
+  if(source.format==='ATS_API')return true;
+  const url=source.finalUrl||source.sourceUrl;let host='';try{host=new URL(url).hostname;}catch{}
+  return source.format==='HTML'&&!!host&&!L.aggregatorPage(url)&&!AGGREGATOR_HOST.test(host);
+}
+function replaceable(source,p,group,date){const was=Date.parse(p[group+'_ASOF']);return employerOwned(source)&&Number.isFinite(was)&&was<Date.parse(date);}
 function known(value){return value!=null&&!/^(?:UNKNOWN|NOT_STATED|NOT_AVAILABLE|N\/A|NONE|)$/i.test(String(value).trim());}
-module.exports = {RETRY_VERSION,PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, capturedSource,verify, helperEvidence, enrichmentFields,known};
+module.exports = {RETRY_VERSION,PARSER_VERSION,norm,employer, location, publicUrl, page, text, postings, inspect,inspectJobs, capturedSource,verify, helperEvidence, enrichmentFields,known,employerOwned,REPLACE_GROUPS};

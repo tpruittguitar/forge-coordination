@@ -8,7 +8,17 @@ const rejectedUnchanged=(item,writerCommit)=>!!item?.notAcceptedTerminal&&item.n
 const MAX_ENRICHMENT_BATCH = 25;
 const allowed = new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','DEGREE_ASOF','REQUIREMENTS_REVIEWED',
   'SOURCE_URL','COMPANY_SOURCE_URL','FIT_EVIDENCE','FIT_BASIS','FIT_ASOF','FIT_CONF',
-  'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF']);
+  'SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_MIDPOINT','SALARY_BASIS','SALARY_SOURCE','SALARY_ASOF','SALARY_CONF',
+  // Job-text facts a helper quoted and code re-checked against the posting (helper-fields.cjs).
+  'WORK_ARRANGEMENT','REMOTE_HYBRID','REQ_ID','POSTING_DATE','CLIENT_EMPLOYER']);
+// Tim's rule: a newer employer-site read may replace an older stored degree or salary group.
+// The group must be complete in the job and dated after the stored as-of date.
+function replaces(job,row,k){
+  const g=Object.entries(Source.REPLACE_GROUPS).find(([,keys])=>keys.includes(k))?.[0];
+  if(!g||!Array.isArray(job.replace)||!job.replace.includes(g))return false;
+  const was=Date.parse(row.p?.[g+'_ASOF']),now=Date.parse(job.fields[g+'_ASOF']);
+  return Number.isFinite(was)&&Number.isFinite(now)&&was<now&&Source.REPLACE_GROUPS[g].slice(0,4).every(f=>job.fields[f]!==undefined);
+}
 const pending = (tx,root) => tx.status!=='VERIFIED'&&!(tx.status==='NOT_ACCEPTED'&&typeof root==='string'&&Outcome.released(root,tx));
 function healthy(status) {
   if (!Object.hasOwn(status, 'freeze') || status.freeze !== null || String(status.level).toUpperCase() !== 'OK' ||
@@ -56,7 +66,7 @@ async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fences.has(job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
     if (!Object.keys(job.fields).length || Object.keys(job.fields).some(k => !allowed.has(k))) throw Error('Unsupported enrichment fields');
-    if (Object.entries(job.fields).some(([k,v]) => Source.known(rows[0].p?.[k]) && cell(rows[0].p[k]) !== cell(v))) throw Error('CONFLICTING_CURRENT_EVIDENCE');
+    if (Object.entries(job.fields).some(([k,v]) => Source.known(rows[0].p?.[k]) && cell(rows[0].p[k]) !== cell(v) && !replaces(job,rows[0],k))) throw Error('CONFLICTING_CURRENT_EVIDENCE');
     accepted.push(job);
    } catch(e) {
     // Only pre-POST item validation may discard a row from this envelope.

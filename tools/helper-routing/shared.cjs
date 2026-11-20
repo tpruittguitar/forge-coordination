@@ -1,6 +1,6 @@
 'use strict';
 // One coordinator-owned reservation pool. Helpers never claim or write canonical jobs.
-const path=require('node:path'),S=require('../programmed-coordinator/store.cjs');
+const path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),HF=require('./helper-fields.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
 const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_SNIFFER_SHARED_HELPER:'Sniffer'};
 // Sniffer took over the retired Grok helper's work (Tim, Nov 18 2026, 1:18 AM ET); older work files have no Sniffer provider yet.
@@ -64,9 +64,9 @@ function validateBatch(b,w=load()){
    require('../programmed-coordinator/source.cjs').publicUrl(e.url);
    if(!Number.isFinite(Date.parse(e.observedAt))||!capture&&!/^[a-f0-9]{64}$/.test(e.sourceSha256||'')||!proof(e.quote))throw Error('SHARED_SOURCE_PROOF_REQUIRED');
   }else if(!proof(item.reason)||!proof(item.retryCondition)||!proof(item.researchOwner))throw Error('SHARED_EXCEPTION_ACCOUNTING_REQUIRED');
-  const raw=e.proposedRawFields||{};
-  const allowed=new Set(['DEGREE_TEXT','DEGREE_REQ','DEGREE_EVIDENCE_URL','SALARY_BASE_LOW','SALARY_BASE_HIGH','SALARY_BASIS','SALARY_SOURCE','SOURCE_URL']);
-  if(Object.keys(raw).some(f=>!allowed.has(f))||['bucket','disposition','needsTim','timDecision','score','fields'].some(f=>Object.hasOwn(item,f)))throw Error('HELPER_PROTECTED_FIELDS_FORBIDDEN');
+  // Job-text fields only (helper-fields.cjs). Scores, bookkeeping and identity stay with the Writer.
+  if(['bucket','disposition','needsTim','timDecision','score','fields'].some(f=>Object.hasOwn(item,f)))throw Error('HELPER_PROTECTED_FIELDS_FORBIDDEN');
+  HF.check(e,{capture:capture?e.capture.text:null});
   seen.add(k);
  }
  return{valid:true,items:seen.size,productionAuthorized:false,...(sourceCaptures.length?{sourceCaptures}:{})};

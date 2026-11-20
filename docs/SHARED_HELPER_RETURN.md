@@ -49,6 +49,27 @@ Without shell, construct the same full object from fresh, verified assignment pa
 - Non-ready items use `SOURCE_BLOCKED`, `RESEARCH_INCOMPLETE`, `EXISTING_CANONICAL` or `PROTECTED_SKIP`, with actual `reason`, `researchOwner`, `retryCondition` and source identity. Remove unused null capture/proof fields rather than inventing source facts. A blocked or truncated page does not prove `NOT_STATED`. Do not use a blocker to claim research that never occurred.
 - Keep `writerSubmitted:false` only as a truthful evidence-return declaration. Prefer explicit per-item false for compatibility. An item may omit it only when the batch explicitly declares false; missing at both levels, null, non-boolean or contradictory flags are rejected. Never alter an old artifact to add flags. Validation of a new return does not authorize replay of an original Writer attempt.
 
+## Job-text fields a helper may propose
+
+`sourceEvidence.proposedRawFields` may carry every master field that comes from the job posting's own text. Each group needs one exact, contiguous, unshortened quote in `sourceEvidence.fieldQuotes`, keyed by group. The quote must appear in `capture.text` when a capture is sent, and the coordinator checks it again against the posting it reads itself. Code sets links, dates, confidence and midpoints; the Writer computes every score.
+
+| Group (`fieldQuotes` key) | Fields | Rules |
+|---|---|---|
+| `DEGREE` | `DEGREE_TEXT`, `DEGREE_REQ` | `DEGREE_REQ` is `REQUIRED`, `PREFERRED` or `NOT_STATED`. `DEGREE_TEXT` is verbatim from the posting. A high school diploma or GED is not a degree. `NOT_STATED` needs `fullPostingRead: true` and a page that was not cut off; the coordinator also needs its own read of the whole posting to find no degree. |
+| `SALARY` | `SALARY_BASE_LOW`, `SALARY_BASE_HIGH`, `SALARY_BASIS` | Both ends, above zero, low ≤ high, both figures shown in the quote. `SALARY_BASIS` is `EMPLOYER_POSTED`. Annual base only: no hourly, total-compensation, OTE or estimate text. |
+| `WORK_ARRANGEMENT` | `WORK_ARRANGEMENT`, `REMOTE_HYBRID` | `ONSITE`, `HYBRID` or `REMOTE`; the quote must say it, and both fields must agree. |
+| `REQ_ID` | `REQ_ID` | The employer's requisition ID, literally in the quote. Fills a blank only. |
+| `POSTING_DATE` | `POSTING_DATE` | `YYYY-MM-DD`; the quote shows the same calendar date (not "3 days ago"). |
+| `CLIENT_EMPLOYER` | `CLIENT_EMPLOYER` | Named in the quote, for agency or staffing postings. Fills a blank only. |
+
+Link fields (`SOURCE_URL`, `COMPANY_SOURCE_URL`, `DEGREE_EVIDENCE_URL`, `SALARY_SOURCE`) are accepted as `https://` URLs, but code always rebuilds them from the verified posting.
+
+Old returns that send only degree or salary without `fieldQuotes` still validate; code re-reads those two from the posting itself.
+
+Never sent by a helper: scores and computed columns (`OVERALL`, `GEO`, `NET_COMP`, `PAY_WORTH`, `FLEX_*`, `ADJUSTED_FIT`, `SALARY_MIDPOINT`, `SALARY_SCORE_POINT`, `FLOOR_*`, `SCOPE_FIT_RAW`, `FIT_*`, geocodes, `*_ASOF`, `*_CONF`), identity columns (`COMPANY`, `TITLE`, `LOCATION`, `REQ`), bucket, disposition, `TIM_*`, and Writer evidence keys such as `LOCATION_NOTE` or any `*_QUOTE`/`*_NOTE`.
+
+Newer data from the employer's own site (an ATS API read or the employer's own page, never an aggregator or a captured discovery card) replaces older stored degree and salary values when the stored as-of date is older. Other fields fill blanks only.
+
 ## Check exact bytes before and after publication
 
 ```sh
