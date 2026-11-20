@@ -118,3 +118,13 @@ test('Writer submit allows new fields and only a dated replace may overwrite sto
  a.deepEqual(await run({fields:{...fields,SALARY_ASOF:'2026-08-01'},replace:['SALARY']}),['CONFLICTING_CURRENT_EVIDENCE']);
  a.deepEqual(await run({fields:{...fields,PAY_WORTH:'9'},replace:['SALARY']}),['Unsupported enrichment fields']);
 });
+test('work arrangement quotes must state how the job is worked, without negation (real postings, Nov 20)',()=>{
+ const yes=[['ONSITE','* This position will be located onsite 5 days a week in East Peoria, IL (Building KK).'],['ONSITE','**New Jersey, USA | On-site | Dechra Pharmaceuticals**'],
+  ['ONSITE','Work Location - This position will be onsite 4 to 5 days per week at our Long Beach, CA facility'],['HYBRID','This is a hybrid role with three days on site each week.'],
+  ['HYBRID','Workplace type: Hybrid'],['REMOTE','This is a fully remote position.'],['REMOTE','Location: Remote (US)']];
+ const no=[['REMOTE',"Our Facility Remote Operations Center is the nerve center for this footprint"],['REMOTE','Residing in New York City : This role is not eligible for remote work in New York City.'],
+  ['HYBRID','Experience with hybrid electric vehicle powertrains.'],['ONSITE','We have an onsite gym and cafeteria.'],['REMOTE','Support remote monitoring of equipment.'],['REMOTE','This is not a remote position.']];
+ for(const [v,q]of yes)a.equal(HF.statesMode(q,v),true,q);
+ for(const [v,q]of no)a.equal(HF.statesMode(q,v),false,q);
+ a.throws(()=>HF.check(evidence({WORK_ARRANGEMENT:'REMOTE',REMOTE_HYBRID:'REMOTE'},{WORK_ARRANGEMENT:'This is not a remote position.'})),/WORK_ARRANGEMENT_NOT_IN_QUOTE/);
+});
