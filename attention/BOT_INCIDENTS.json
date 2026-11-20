@@ -1,15 +1,15 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-20T09:57:41.269Z",
- "sourceCommit": "27d13ad5b49d6e40302d098c30480e45e911c971",
+ "builtAt": "2026-11-20T14:32:48.164Z",
+ "sourceCommit": "46b414385cc2001394d722dd739668b3c6b1eafe",
  "counts": {
-  "total": 204,
+  "total": 205,
   "BLOCKING": 0,
   "ACTION": 204,
-  "WATCH": 0,
+  "WATCH": 1,
   "DECIDE": 0,
   "JOBS": 0,
-  "FAILED": 196,
+  "FAILED": 197,
   "UPKEEP": 8
  },
  "items": [
@@ -2378,18 +2378,6 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "lane-overdue:INSPECT",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "INSPECT lane has gone quiet (usually reports every 1 h)",
-   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-INSPECT-CHATGPT-20261113T150238Z_TERMINAL.txt (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-INSPECT-CHATGPT-20261113T150238Z_TERMINAL.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-INSPECT-CHATGPT-20261113T150238Z_TERMINAL.txt",
-   "at": "2026-11-13T15:02:38Z",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "lane-overdue:POSTVAL",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -2442,12 +2430,24 @@
    "section": "UPKEEP",
    "level": "ACTION",
    "title": "CODE lane has gone quiet (usually reports every 0.8 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261117T172523377Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
    "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261117T172523377Z_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261117T172523377Z_TERMINAL.json",
-   "at": "2026-11-17T17:25:23Z",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
+   "at": "2026-11-17T18:10:23Z",
    "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "pr:forge-coordination#478",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "forge-coordination PR #478: CLAUDE hermes-setup-20261120: document Hermes Gmail credential file",
+   "detail": "Open since 2026-11-20. Waiting for your review and merge.",
+   "action": "Open the PR → review → Merge (or Close with a one-line reason).",
+   "source": "forge-coordination #478",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/pull/478",
+   "at": "2026-11-20T10:05:07Z",
+   "raisedBy": "CLAUDE"
   },
   {
    "id": "intake-assignment-health",
@@ -2458,8 +2458,20 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-20T09:57:41.269Z",
+   "at": "2026-11-20T14:32:48.164Z",
    "raisedBy": "CODE"
+  },
+  {
+   "id": "run-unfinished:CODE|CHATGPT",
+   "section": "FAILED",
+   "level": "WATCH",
+   "title": "CODE · CHATGPT — run never wrote a terminal receipt",
+   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
+   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
+   "at": "2026-11-17T18:10:23Z",
+   "raisedBy": "CHATGPT"
   }
  ]
 }
