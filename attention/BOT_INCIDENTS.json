@@ -1,16 +1,16 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-20T14:57:47.590Z",
- "sourceCommit": "c9065a2320723b647c87eb37bf3e0a96977a4500",
+ "builtAt": "2026-11-20T15:06:42.332Z",
+ "sourceCommit": "3fa4a77bb3737040efbced5c47871b3ebd840d88",
  "counts": {
-  "total": 205,
+  "total": 203,
   "BLOCKING": 0,
-  "ACTION": 204,
-  "WATCH": 1,
+  "ACTION": 203,
+  "WATCH": 0,
   "DECIDE": 0,
   "JOBS": 0,
-  "FAILED": 197,
-  "UPKEEP": 8
+  "FAILED": 196,
+  "UPKEEP": 7
  },
  "items": [
   {
@@ -2426,18 +2426,6 @@
    "raisedBy": "CHATGPT"
   },
   {
-   "id": "lane-overdue:CODE",
-   "section": "UPKEEP",
-   "level": "ACTION",
-   "title": "CODE lane has gone quiet (usually reports every 0.8 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
-   "at": "2026-11-17T18:10:23Z",
-   "raisedBy": "CHATGPT"
-  },
-  {
    "id": "pr:forge-coordination#478",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -2458,20 +2446,8 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-20T14:57:47.590Z",
+   "at": "2026-11-20T15:06:42.332Z",
    "raisedBy": "CODE"
-  },
-  {
-   "id": "run-unfinished:CODE|CHATGPT",
-   "section": "FAILED",
-   "level": "WATCH",
-   "title": "CODE · CHATGPT — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261117T181023481Z_TRANSPORT.json",
-   "at": "2026-11-17T18:10:23Z",
-   "raisedBy": "CHATGPT"
   }
  ]
 }
