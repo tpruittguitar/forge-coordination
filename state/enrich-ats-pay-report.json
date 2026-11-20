@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T23:18:01.191Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T231453304Z",
+ "at": "2026-11-20T23:25:31.363Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T232216170Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T23:15:01.696Z",
-  "sha256": "b86fc1c30f84b4e18fb3c33aa13446d0a992a73f19aec82c92f7d49598931efd",
-  "rows": 9467
+  "readAt": "2026-11-20T23:22:25.130Z",
+  "sha256": "3fee67a85bb48a215f37982bd2443ed06e3a3554b980c5e17c2924fae333cbf9",
+  "rows": 9468
  },
- "rows": 9467,
- "eligible": 1010,
+ "rows": 9468,
+ "eligible": 1011,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 612,
- "skipped_recent": 337,
+ "estimate_waiting_for_posting": 616,
+ "skipped_recent": 334,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,13 +62,23 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
+ "agg_tried": {
+  "linkedin": 3
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "404",
+   "404",
+   "404"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -114,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T23:15:07.196Z",
+  "profile_as_of": "2026-11-20T23:22:30.185Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14723,8 +14733,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 633,
- "nothing_found": 633,
+ "not_attempted": 634,
+ "nothing_found": 637,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14732,7 +14743,7 @@
   "merged": 0,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2656,
+  "no_posting": 2657,
   "deferred": 0,
   "fenced": 39,
   "inactive": 6365,
@@ -14745,7 +14756,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 163,
-  "no_overview": 2900,
+  "no_overview": 2901,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 39,
@@ -14757,8 +14768,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2316,
- "network_requests": 6,
+ "roles_researched": 2320,
+ "network_requests": 9,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14768,7 +14779,7 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 140,
+  "NOT_YET_ATTEMPTED": 141,
   "SOURCE_RESEARCH_REQUIRED": 779,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
   "EVIDENCE_FOUND": 45,
@@ -15808,6 +15819,20 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-20T23:07:03.485Z",
    "retryAt": "2026-11-21T00:07:03.485Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A4E828EC9564",
+   "company": "The Father's Table",
+   "title": "Director of Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -29765,13 +29790,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T07:19:07.947Z",
-   "retryAt": "2026-11-20T23:19:07.947Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T23:23:17.068Z",
+   "retryAt": "2026-11-21T15:23:17.068Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482162652",
-     "status": "HTTP_429"
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29784,13 +29809,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T07:19:11.042Z",
-   "retryAt": "2026-11-20T23:19:11.042Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T23:23:20.142Z",
+   "retryAt": "2026-11-21T15:23:20.142Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479425934",
-     "status": "HTTP_429"
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29803,9 +29828,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T07:19:14.094Z",
-   "retryAt": "2026-11-20T23:19:14.094Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T23:23:23.206Z",
+   "retryAt": "2026-11-21T15:23:23.206Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488254632",
