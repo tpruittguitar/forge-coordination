@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-20T19:28:58.301Z",
+    "at": "2026-11-20T19:35:16.760Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,7 +277,7 @@
     "current": 648,
     "undated": 0
   },
-  "at": "2026-11-20T19:28:58.301Z",
+  "at": "2026-11-20T19:35:16.760Z",
   "queues": {
     "verification": 0,
     "enrichment": 3092,
@@ -296,8 +296,8 @@
     "readyForReview": null
   },
   "reconciliation": {
-    "from": "2026-11-20T18:56:28.939Z",
-    "to": "2026-11-20T19:28:58.301Z",
+    "from": "2026-11-20T19:28:58.301Z",
+    "to": "2026-11-20T19:35:16.760Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -309,12 +309,12 @@
         "reconciled": true
       },
       "enrichment": {
-        "opening": 3091,
-        "entered": 1,
+        "opening": 3092,
+        "entered": 0,
         "completed": 0,
         "otherExits": 0,
         "closing": 3092,
-        "delta": 1,
+        "delta": 0,
         "reconciled": true
       },
       "readyForReview": {
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-20T19:26:38.228Z",
-    "sha256": "d066c9140e2196184b7b0eb52e603c5e8872634b4b4fc7879ca2f815a8010640",
+    "readAt": "2026-11-20T19:33:05.776Z",
+    "sha256": "d5dc0409d91d7d92ad01015b014994146eca4c8b444bd042d2908cbba290d612",
     "rows": 9466
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-20T19:27:02.810Z",
+    "at": "2026-11-20T19:33:25.848Z",
     "total": 14351,
     "sourceIdentities": 15299,
     "aliasesMerged": 948,
@@ -519,11 +519,11 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-20T18:55:06.868Z",
-      "to": "2026-11-20T19:27:02.810Z",
-      "opening": 1158,
+      "from": "2026-11-20T19:27:02.810Z",
+      "to": "2026-11-20T19:33:25.848Z",
+      "opening": 1157,
       "arrivals": 0,
-      "admitted": 1,
+      "admitted": 0,
       "excluded": 0,
       "otherExits": 0,
       "closing": 1157
@@ -558,9 +558,9 @@
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 14,
+          "count": 11,
           "windowHours": 6,
-          "perHour": 2.3333333333333335,
+          "perHour": 1.8333333333333333,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
         }
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-20T19:27:02.810Z",
+      "at": "2026-11-20T19:33:25.848Z",
       "reviewedSourceIdentities": 15299,
       "pendingCandidates": 1157,
       "storedEvidence": 2521,
