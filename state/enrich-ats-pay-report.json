@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T01:12:17.832Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T010449803Z",
+ "at": "2026-11-20T01:20:33.876Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T011646389Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T01:04:59.524Z",
-  "sha256": "5485ac135ad492642c0220566f052815c23b1d7b3b319ee269b97b92dd834f9e",
-  "rows": 9392
+  "readAt": "2026-11-20T01:16:56.570Z",
+  "sha256": "3045508412f8a48af2eb89ea1b37a05ce8529550aef728089173f90d8177e4a3",
+  "rows": 9396
  },
- "rows": 9392,
- "eligible": 992,
+ "rows": 9396,
+ "eligible": 995,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -35,21 +35,13 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [
-   {
-    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261119T005645682Z-B02",
-    "reason": "NO_RECEIPT",
-    "ids": [
-     "V2I-237CA98D1937"
-    ]
-   }
-  ],
+  "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
   "pending_batches": 3,
   "fenced_ids": 30
  },
- "anchors": 1324,
+ "anchors": 1325,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
@@ -57,36 +49,28 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 605,
- "skipped_recent": 329,
- "submitted": 2,
+ "estimate_waiting_for_posting": 608,
+ "skipped_recent": 335,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 2,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
- "salary_independently_verified": 1,
+ "salary_submitted": 0,
+ "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 5
- },
- "agg_read": {
-  "linkedin": 4
- },
- "agg_pay": {},
- "agg_failed": {
   "linkedin": 1
  },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_read": {},
+ "agg_pay": {},
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 5,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -98,10 +82,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -132,7 +117,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T01:05:05.815Z",
+  "profile_as_of": "2026-11-20T01:17:02.445Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14726,55 +14711,53 @@
  },
  "salary_review": {
   "eligible": 1866,
-  "due": 1851,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1852,
+  "reviewed": 1,
+  "target_reads": 1,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-95CF66C66560",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 1,
-  "salary": 1,
-  "degree": 1
+  "planned": 0,
+  "salary": 0,
+  "degree": 0
  },
- "not_attempted": 625,
- "nothing_found": 626,
- "attempt_only_skipped": 5,
- "source_origin_blocks": {},
+ "not_attempted": 629,
+ "nothing_found": 629,
+ "est_bls": 1,
  "products_planned": 0,
  "code_fit": {
-  "scored": 2,
-  "legacy_replaced": 2,
-  "merged": 1,
-  "added": 1,
+  "scored": 0,
+  "legacy_replaced": 0,
+  "merged": 0,
+  "added": 0,
   "short_posting": 0,
-  "no_posting": 2649,
+  "no_posting": 2653,
   "deferred": 0,
   "fenced": 30,
   "inactive": 6364,
-  "already_fitted": 347,
+  "already_fitted": 349,
   "already_fitted_legacy": 0,
-  "sample": [
-   {
-    "id": "V2I-237CA98D1937",
-    "fit": 50
-   },
-   {
-    "id": "V2I-756E3FCBB9C3",
-    "fit": 67
-   }
-  ]
+  "sample": []
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
   "has_business": 164,
-  "no_overview": 2834,
+  "no_overview": 2838,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 30,
@@ -14786,11 +14769,10 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2292,
- "network_requests": 13,
- "planned": 2,
+ "roles_researched": 2293,
+ "network_requests": 7,
+ "planned": 0,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14798,10 +14780,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 131,
+  "NOT_YET_ATTEMPTED": 135,
   "SOURCE_RESEARCH_REQUIRED": 773,
-  "EVIDENCE_FOUND": 51,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 19,
+  "EVIDENCE_FOUND": 50,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15743,6 +15725,93 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-20T00:56:51.668Z",
    "retryAt": "2026-11-20T01:56:51.668Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-801B31404DAE",
+   "company": "DNV",
+   "title": "Senior Manager ICT Delivery & Technical Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:16.534Z",
+   "retryAt": "2026-11-20T02:06:16.534Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4466934811",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BE0104254B88",
+   "company": "BAT",
+   "title": "Supply Network & Manufacturing Contingency Design Senior Manager",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:16.539Z",
+   "retryAt": "2026-11-20T02:06:16.539Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A2291B070FD6",
+   "company": "The Cheesecake Factory",
+   "title": "VP Quality Assurance and Safety",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-37158840AD88",
+   "company": "L3Harris Technologies",
+   "title": "Senior Manager, Quality Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-901DFB9BCFAF",
+   "company": "Celestica",
+   "title": "Senior Manager, Global Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F617AB10CEB9",
+   "company": "Integra Mission Critical",
+   "title": "Director, Project Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -20235,24 +20304,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-75EAE0DB6430",
-   "company": "Signal & Strand",
-   "title": "Chief Product Officer - Global Consumer Hardware Brand - $400,000 to $500,000 + Bonus",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T01:06:22.998Z",
-   "retryAt": "2026-11-20T17:06:22.998Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483522330",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A610E13ACFC0",
    "company": "RR Donnelley",
    "title": "Plant President",
@@ -21479,6 +21530,78 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FD41C06F51A",
+   "company": "Nissan Motor Corporation",
+   "title": "Purchasing Critical Minerals Intern - Summer 2027 - Franklin, TN",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:19.930Z",
+   "retryAt": "2026-11-20T02:06:19.930Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477182490",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-75EAE0DB6430",
+   "company": "Signal & Strand",
+   "title": "Chief Product Officer - Global Consumer Hardware Brand - $400,000 to $500,000 + Bonus",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:22.998Z",
+   "retryAt": "2026-11-20T17:06:22.998Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483522330",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4B064CD3A522",
+   "company": "Illuminate USA",
+   "title": "Director Talent Development",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:26.338Z",
+   "retryAt": "2026-11-20T02:06:26.338Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481825268",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T01:06:29.493Z",
+   "retryAt": "2026-11-20T02:06:29.493Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -32053,37 +32176,7 @@
   }
  ],
  "product_sample": [],
- "sample": [
-  {
-   "id": "V2I-756E3FCBB9C3",
-   "fields": {
-    "SALARY_BASE_LOW": 225000,
-    "SALARY_BASE_HIGH": 250000,
-    "SALARY_MIDPOINT": 237500,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://hazelhawkins.recruiterbox.com/jobs/fk0zckr?fjb_hash=ezLpq610",
-    "SALARY_ASOF": "2026-11-19",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree(Engineering, Microbiology, Nursing, Public Health, Epidemiology, or other Healthcare related field) required; Master degree in either Microbiology, Nursing, Public Health, Epidemiology, or other Healthcare related field preferred.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://hazelhawkins.recruiterbox.com/jobs/fk0zckr?fjb_hash=ezLpq610",
-    "DEGREE_ASOF": "2026-11-19",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
-    "SCOPE_FIT_RAW": "67",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 8491-char saved posting (6+ = 100): quality_systems, manufacturing_systems, lean_operations, supplier_quality",
-    "SALARY_SCORE_POINT": 243750
-   }
-  },
-  {
-   "id": "V2I-237CA98D1937",
-   "fields": {
-    "SCOPE_FIT_RAW": "50",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 2620-char saved posting (6+ = 100): manufacturing_leadership, team_building, lean_operations"
-   }
-  }
- ],
+ "sample": [],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
