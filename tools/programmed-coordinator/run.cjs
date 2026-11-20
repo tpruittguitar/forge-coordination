@@ -70,9 +70,9 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       item.attempts++;item.sourceParserVersion=Source.PARSER_VERSION;item.sourceRetryVersion=Source.RETRY_VERSION;
       const source=captured||await sourceVerify(options);
       if (enrichment) {
-        const fields=Source.enrichmentFields(source,row);
+        const meta={},fields=Source.enrichmentFields(source,row,meta);
         if (!Object.keys(fields).length) { if(source.sourceCaptured){exception(state,item,'CAPTURED_EVIDENCE_MISSING_REQUESTED_FIELDS','CODE');continue;}item.status='NO_MISSING_SUPPORTED_FIELDS'; delete state.exceptions[item.key]; continue; }
-        item.prepared={primaryId:row.PRIMARY_ID,itemKey:item.key,identity:expected,fields,sourceSha256:source.sourceSha256};
+        item.prepared={primaryId:row.PRIMARY_ID,itemKey:item.key,identity:expected,fields,sourceSha256:source.sourceSha256,...(meta.replace?{replace:meta.replace}:{})};
         item.status='READY_ENRICHMENT';
       } else {
         item.sourceEvidence={...expected,url:source.sourceUrl,initiatingUrl,observedAt:source.observedAt,sourceSha256:source.sourceSha256,independentlyVerified:!source.sourceCaptured,postingStatus:source.postingStatus||'UNVERIFIED',...(source.sourceCaptured?{discoveryEvidence:source.discoveryEvidence,fullPosting:source.fullPosting,contentBasis:source.contentBasis}:{}),...(typeof source.description==='string'&&source.description?{description:source.description,descriptionSha256:S.hash(source.description),contentBasis:source.contentBasis||'CAPTURED_ROLE_CONTENT'}:{})};
