@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T20:27:32.670Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T202329677Z",
+ "at": "2026-11-20T20:38:11.247Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T203301133Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T20:23:39.216Z",
+  "readAt": "2026-11-20T20:33:10.296Z",
   "sha256": "d110c1e218713a50799221025c8d01b4c238840bb2fe9aa4d02cf36a8ed6d7e0",
   "rows": 9467
  },
@@ -43,14 +43,14 @@
  },
  "anchors": 1363,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 612,
- "skipped_recent": 334,
+ "skipped_recent": 331,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,10 +63,10 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 6
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 5
  },
  "agg_pay": {},
  "agg_failed": {
@@ -78,7 +78,7 @@
   ]
  },
  "agg_wall": {},
- "source_reads": 3,
+ "source_reads": 7,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -111,7 +111,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -124,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T20:23:45.027Z",
+  "profile_as_of": "2026-11-20T20:33:17.296Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14735,8 +14735,8 @@
  },
  "not_attempted": 633,
  "nothing_found": 634,
- "attempt_only_skipped": 2,
  "source_origin_blocks": {},
+ "attempt_only_skipped": 5,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14769,8 +14769,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2317,
- "network_requests": 9,
+ "roles_researched": 2319,
+ "network_requests": 13,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14781,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 140,
-  "SOURCE_RESEARCH_REQUIRED": 775,
+  "SOURCE_RESEARCH_REQUIRED": 776,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 49,
+  "EVIDENCE_FOUND": 48,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15276,13 +15276,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:09.828Z",
-   "retryAt": "2026-11-20T20:31:09.828Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T20:34:22.871Z",
+   "retryAt": "2026-11-21T12:34:22.871Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15301,28 +15301,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486638723",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-42C64A9DD1EB",
-   "company": "Applied Materials",
-   "title": "Senior Director, Operations Management (Site Leader)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:17.686Z",
-   "retryAt": "2026-11-20T20:31:17.686Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5253340007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    },
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484374877",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21517,24 +21495,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-0E8C5076C80A",
-   "company": "Wycliffe Bible Translators USA",
-   "title": "Dir. of Innovative Workforce Initiatives",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T20:24:45.763Z",
-   "retryAt": "2026-11-21T12:24:45.763Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-011DF7129CA9",
    "company": "Lockheed Martin",
    "title": "Manufacturing Engineering Mgr - Level 5",
@@ -21584,78 +21544,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478621757",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6CB5FE5A5426",
-   "company": "Performance Food Group",
-   "title": "President, Opco I",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:27.157Z",
-   "retryAt": "2026-11-20T20:31:27.157Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475981765",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-04349F175169",
-   "company": "BENTELER Group",
-   "title": "Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:30.311Z",
-   "retryAt": "2026-11-20T20:31:30.311Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487090482",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CA52D87AFDB0",
-   "company": "Delaware North",
-   "title": "General Manager, EverBank Stadium",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:33.411Z",
-   "retryAt": "2026-11-20T20:31:33.411Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2FD41C06F51A",
-   "company": "Nissan Motor Corporation",
-   "title": "Purchasing Critical Minerals Intern - Summer 2027 - Franklin, TN",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:31:36.611Z",
-   "retryAt": "2026-11-20T20:31:36.611Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477182490",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21778,6 +21666,60 @@
    "retryAt": "2026-11-21T12:15:21.201Z",
    "attempts": [],
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+  },
+  {
+   "id": "V2I-358C3813AE41",
+   "company": "Rosen Aquatic & Fitness Center",
+   "title": "Associate Executive Director of Rosen Aquatic & Fitness Center",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T20:24:39.420Z",
+   "retryAt": "2026-11-20T21:24:39.420Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484891866",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4B064CD3A522",
+   "company": "Illuminate USA",
+   "title": "Director Talent Development",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T20:24:42.653Z",
+   "retryAt": "2026-11-20T21:24:42.653Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481825268",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T20:24:45.763Z",
+   "retryAt": "2026-11-21T12:24:45.763Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
    "id": "V2I-14B5BEB7CC51",
