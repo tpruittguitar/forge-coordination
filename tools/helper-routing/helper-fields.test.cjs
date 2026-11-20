@@ -121,9 +121,19 @@ test('Writer submit allows new fields and only a dated replace may overwrite sto
 test('work arrangement quotes must state how the job is worked, without negation (real postings, Nov 20)',()=>{
  const yes=[['ONSITE','* This position will be located onsite 5 days a week in East Peoria, IL (Building KK).'],['ONSITE','**New Jersey, USA | On-site | Dechra Pharmaceuticals**'],
   ['ONSITE','Work Location - This position will be onsite 4 to 5 days per week at our Long Beach, CA facility'],['HYBRID','This is a hybrid role with three days on site each week.'],
-  ['HYBRID','Workplace type: Hybrid'],['REMOTE','This is a fully remote position.'],['REMOTE','Location: Remote (US)']];
+  ['HYBRID','Workplace type: Hybrid'],['REMOTE','This is a fully remote position.'],['REMOTE','Location: Remote (US)'],
+  ['ONSITE','**This position is onsite in Roselle, Illinois and requires travel as business needs require.**'],['ONSITE','This role is on-site and requires presence at the plant.'],
+  ['REMOTE','This position is remote.'],['REMOTE','Austin, TX, Remote'],['HYBRID','*This is a hybrid position with an expectation of 3 days per week on-site in Broomfield, CO.*'],['ONSITE','Port Allen, LA | Full-Time | On-Site'],['HYBRID','The role is hybrid, with two days per week in the office.']];
  const no=[['REMOTE',"Our Facility Remote Operations Center is the nerve center for this footprint"],['REMOTE','Residing in New York City : This role is not eligible for remote work in New York City.'],
-  ['HYBRID','Experience with hybrid electric vehicle powertrains.'],['ONSITE','We have an onsite gym and cafeteria.'],['REMOTE','Support remote monitoring of equipment.'],['REMOTE','This is not a remote position.']];
+  ['HYBRID','Experience with hybrid electric vehicle powertrains.'],['ONSITE','We have an onsite gym and cafeteria.'],['REMOTE','Support remote monitoring of equipment.'],['REMOTE','This is not a remote position.'],
+  ['ONSITE','The Senior Manager will build and lead a team of shift supervisors and operations specialists who serve as the first line of detection, triage, and escalation for facility events, working in close coordination with on-site Data Center Operations, Engineering, and Critical Facilities teams.'],
+  ['REMOTE','You will work closely with remote teams across three regions.'],
+  ['REMOTE',"- Collaborate with autonomy and software engineering teams to verify integration between traditional machinery control systems and the vessel's autonomy stack across manned, remote, and autonomous operating modes"],
+  ['REMOTE','We value a healthy work-life balance and promote in-person collaboration by providing a flexible remote work arrangement with select days in the office, as needed.'],
+  ['REMOTE','Work Location: Hybrid remote in Washington, DC 20002'],['REMOTE','Remote work not considered.'],
+  ['REMOTE','Due to state-specific employment regulations, we are unable to consider applicants currently residing in California for remote work.'],
+  ['ONSITE','*This is a hybrid position with an expectation of 3 days per week on-site in Broomfield, CO.*'],['ONSITE','Hybrid-Eligible Or On-Site Eligible'],
+  ['HYBRID','Work is primarily performed in a professional office environment and may be conducted onsite, remotely, or in a hybrid work arrangement based on business need.']];
  for(const [v,q]of yes)a.equal(HF.statesMode(q,v),true,q);
  for(const [v,q]of no)a.equal(HF.statesMode(q,v),false,q);
  a.throws(()=>HF.check(evidence({WORK_ARRANGEMENT:'REMOTE',REMOTE_HYBRID:'REMOTE'},{WORK_ARRANGEMENT:'This is not a remote position.'})),/WORK_ARRANGEMENT_NOT_IN_QUOTE/);
