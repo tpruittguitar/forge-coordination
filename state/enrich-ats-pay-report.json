@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T07:22:43.663Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T071746012Z",
+ "at": "2026-11-20T07:36:50.646Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T072802204Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T07:17:55.745Z",
+  "readAt": "2026-11-20T07:28:09.922Z",
   "sha256": "b9afa194f6ed7efd20b58c18f4a00569ccebef76ae7e25e07fb7dcc28dc135b2",
   "rows": 9424
  },
@@ -47,38 +47,34 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 618,
- "skipped_recent": 331,
- "submitted": 0,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 614,
+ "skipped_recent": 334,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 2
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 3
+ "agg_failed": {},
+ "agg_errors": {},
+ "agg_wall": {
+  "linkedin": 1
  },
- "agg_errors": {
-  "linkedin": [
-   "429",
-   "429",
-   "404"
-  ]
- },
- "agg_wall": {},
- "source_reads": 3,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -86,17 +82,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 16,
@@ -111,9 +107,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 3,
+  "saved_reused": 2,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -121,10 +117,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "unsupported_routes": 1,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-20T07:18:01.518Z",
+  "profile_as_of": "2026-11-20T07:28:16.276Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14733,23 +14729,27 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 636,
- "nothing_found": 639,
- "source_origin_blocks": {},
+ "not_attempted": 634,
+ "nothing_found": 635,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
+  "scored": 1,
+  "legacy_replaced": 1,
   "merged": 0,
-  "added": 0,
+  "added": 1,
   "short_posting": 0,
-  "no_posting": 2658,
+  "no_posting": 2657,
   "deferred": 0,
   "fenced": 29,
   "inactive": 6365,
   "already_fitted": 372,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-6988283B545F",
+    "fit": 100
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
@@ -14768,10 +14768,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2310,
- "network_requests": 9,
- "planned": 0,
+ "roles_researched": 2307,
+ "network_requests": 8,
+ "planned": 2,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14780,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 139,
-  "SOURCE_RESEARCH_REQUIRED": 778,
+  "SOURCE_RESEARCH_REQUIRED": 777,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 18,
-  "EVIDENCE_FOUND": 47,
+  "EVIDENCE_FOUND": 48,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -29629,82 +29630,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-CD67BA1E6058",
-   "company": "BoardRoom magazine",
-   "title": "General Manager/Chief Operating Officer, The Country Club of Orlando",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T07:19:07.947Z",
-   "retryAt": "2026-11-20T23:19:07.947Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482162652",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F495C28FB52C",
-   "company": "Jobot",
-   "title": "Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T07:19:11.042Z",
-   "retryAt": "2026-11-20T23:19:11.042Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479425934",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6501AA1851EF",
-   "company": "Dr. Klein Hannover",
-   "title": "Director of Operational Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-20T07:19:14.094Z",
-   "retryAt": "2026-11-20T23:19:14.094Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488254632",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-16D5751360B9",
-   "company": "DBF Recruiting LLC",
-   "title": "Plant Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T15:18:03.951Z",
-   "retryAt": "2026-11-20T07:18:03.951Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4489484390",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-633444ECEF13",
    "company": "CMCO Brasil",
    "title": "Manufacturing Leader - 2nd Shift",
@@ -29712,13 +29637,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-19T15:18:06.996Z",
-   "retryAt": "2026-11-20T07:18:06.996Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T07:29:51.330Z",
+   "retryAt": "2026-11-20T23:29:51.330Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
-     "status": "HTTP_429"
+     "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32151,6 +32076,63 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-CD67BA1E6058",
+   "company": "BoardRoom magazine",
+   "title": "General Manager/Chief Operating Officer, The Country Club of Orlando",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T07:19:07.947Z",
+   "retryAt": "2026-11-20T23:19:07.947Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482162652",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F495C28FB52C",
+   "company": "Jobot",
+   "title": "Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T07:19:11.042Z",
+   "retryAt": "2026-11-20T23:19:11.042Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479425934",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6501AA1851EF",
+   "company": "Dr. Klein Hannover",
+   "title": "Director of Operational Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T07:19:14.094Z",
+   "retryAt": "2026-11-20T23:19:14.094Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488254632",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-A4C73A8D927F",
    "company": "CPS, Inc.",
    "title": "Global Quality Assurance Director - Specialty Chemicals",
@@ -32238,7 +32220,62 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-16D5751360B9",
+   "fields": {
+    "DEGREE_TEXT": "Minimum BA/BS, MBA preferred",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4489484390",
+    "DEGREE_ASOF": "2026-11-20",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 125000,
+    "SALARY_BASE_HIGH": 215000,
+    "SALARY_MIDPOINT": 170000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483260367 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4480644713 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4382477254 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4483986569 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4480068526 (as of 2026-10-25); https://www.linkedin.com/jobs/view/4457791375 (as of 2026-10-21)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 6 employer-posted comparable(s) [V2I-70EE31AB3BFA, V2I-C342E8793DFC, V2I-04539BBF2E09, V2I-709EEFB18B85, V2I-FEAA0A2C0A27, V2I-45113FF7B7B6]; 6 employer-posted comparable(s), level 1 MFG same region S; context model pay-sample-match-v6a; 6 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SALARY_SCORE_POINT": 192500
+   }
+  },
+  {
+   "id": "V2I-6988283B545F",
+   "fields": {
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 7/11 resume competencies observed in a 3336-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality"
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-16D5751360B9",
+   "company": "DBF Recruiting LLC",
+   "title": "Plant Operations Manager",
+   "location": "Jacksonville, FL",
+   "posting": "https://www.linkedin.com/jobs/view/4489484390/",
+   "est": [
+    125000,
+    215000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "6 employer-posted comparable(s), level 1 MFG same region S; context model pay-sample-match-v6a; 6 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-70EE31AB3BFA",
+    "V2I-C342E8793DFC",
+    "V2I-04539BBF2E09",
+    "V2I-709EEFB18B85",
+    "V2I-FEAA0A2C0A27",
+    "V2I-45113FF7B7B6"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
