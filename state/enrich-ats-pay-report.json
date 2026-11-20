@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T01:20:33.876Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T011646389Z",
+ "at": "2026-11-20T01:58:02.642Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T015010850Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T01:16:56.570Z",
-  "sha256": "3045508412f8a48af2eb89ea1b37a05ce8529550aef728089173f90d8177e4a3",
-  "rows": 9396
+  "readAt": "2026-11-20T01:50:17.641Z",
+  "sha256": "859cbd775e5ba29e47deef2add4cd838ba156271da7a34632ae9c7d57fbd0cce",
+  "rows": 9399
  },
- "rows": 9396,
- "eligible": 995,
+ "rows": 9399,
+ "eligible": 998,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -43,56 +43,66 @@
  },
  "anchors": 1325,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 608,
- "skipped_recent": 335,
- "submitted": 0,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 788,
+ "skipped_recent": 127,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 3,
+ "salary_independently_verified": 3,
  "agg_tried": {
+  "linkedin": 4
+ },
+ "agg_read": {
   "linkedin": 1
  },
- "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 5,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
- "workday_cooling_skips": 0,
+ "workday_cooling_skips": 1,
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 3,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0,
-  "BLS_EST": 1
+  "BLS_EST": 2
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
-  "hits": 16,
+  "hits": 17,
   "no_pay_hits": 4
  },
  "employer_benchmarks": {
@@ -104,20 +114,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 3,
+  "candidates": 21,
+  "saved_reused": 17,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "backoff": 1,
+  "unsupported_routes": 3,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-20T01:17:02.445Z",
+  "profile_as_of": "2026-11-20T01:50:24.414Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14702,66 +14712,87 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1851,
+  "review_skipped_blocked": 1850,
   "by_missing": {
    "products (what they make)": 1788,
-   "work arrangement (remote/hybrid/on-site)": 1131,
+   "work arrangement (remote/hybrid/on-site)": 1130,
    "location / geography": 12
   }
  },
  "salary_review": {
-  "eligible": 1866,
+  "eligible": 1865,
   "due": 1852,
-  "reviewed": 1,
-  "target_reads": 1,
+  "reviewed": 2,
+  "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 1,
+  "no_improvement": 2,
   "guard_dropped": 0,
   "samples": [
    {
-    "id": "V2I-95CF66C66560",
+    "id": "V2I-DF9B96E18925",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-8E988362060C",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    }
-  ],
-  "aggregator_reads": 1
+  ]
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 2,
+  "salary": 2,
+  "degree": 1
  },
- "not_attempted": 629,
- "nothing_found": 629,
- "est_bls": 1,
+ "not_attempted": 801,
+ "nothing_found": 804,
+ "attempt_only_skipped": 33,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
+ "est_bls": 2,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
-  "merged": 0,
+  "scored": 2,
+  "legacy_replaced": 2,
+  "merged": 2,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2653,
+  "no_posting": 2654,
   "deferred": 0,
   "fenced": 30,
-  "inactive": 6364,
-  "already_fitted": 349,
+  "inactive": 6365,
+  "already_fitted": 348,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-63B665DF84C8",
+    "fit": 100
+   },
+   {
+    "id": "V2I-91B0120ACEDB",
+    "fit": 67
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
   "merged": 0,
   "added": 0,
-  "has_business": 164,
-  "no_overview": 2838,
+  "has_business": 163,
+  "no_overview": 2841,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 30,
-  "inactive": 6364,
+  "inactive": 6365,
   "by_label": {},
   "sample": []
  },
@@ -14769,10 +14800,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2293,
- "network_requests": 7,
- "planned": 0,
+ "roles_researched": 2485,
+ "network_requests": 11,
+ "planned": 3,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14780,10 +14812,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 135,
-  "SOURCE_RESEARCH_REQUIRED": 773,
+  "NOT_YET_ATTEMPTED": 136,
+  "SOURCE_RESEARCH_REQUIRED": 776,
+  "EVIDENCE_FOUND": 49,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 19,
-  "EVIDENCE_FOUND": 50,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15275,408 +15307,21 @@
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
-   "id": "V2I-6AC2A130D9A6",
-   "company": "DeConna Ice Cream",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:29.574Z",
-   "retryAt": "2026-11-20T01:42:29.574Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7972527A8E62",
-   "company": "Happy Money",
-   "title": "Head of Customer Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:33.156Z",
-   "retryAt": "2026-11-20T01:42:33.156Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482107702",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-AD58DE56BE9B",
    "company": "Western Union",
    "title": "Director, Product Operations – Wallets and Card Issuance",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.348Z",
-   "retryAt": "2026-11-20T01:42:36.348Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T01:51:19.729Z",
+   "retryAt": "2026-11-20T17:51:19.729Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484580990",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7D1BBD2B1448",
-   "company": "Bagel Brands",
-   "title": "Director of Operations Excellence",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.350Z",
-   "retryAt": "2026-11-20T01:42:36.350Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8627523778C9",
-   "company": "RELIANT HOLDINGS LTD",
-   "title": "Plant Manager - Brandon, Mississippi",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.351Z",
-   "retryAt": "2026-11-20T01:42:36.351Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-431B4A9B7480",
-   "company": "L3Harris",
-   "title": "Director, Manufacturing Engineering",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.352Z",
-   "retryAt": "2026-11-20T01:42:36.352Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A60EDB322D13",
-   "company": "ABB",
-   "title": "Head of Quality Engineering",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.353Z",
-   "retryAt": "2026-11-20T01:42:36.353Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2650824AD6BB",
-   "company": "FXI",
-   "title": "Plant Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.355Z",
-   "retryAt": "2026-11-20T01:42:36.355Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-20B993666C8F",
-   "company": "Valley Beverage",
-   "title": "Bottling Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.358Z",
-   "retryAt": "2026-11-20T01:42:36.358Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6F8DCCE3936A",
-   "company": "Carriage Services",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.360Z",
-   "retryAt": "2026-11-20T01:42:36.360Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-26F931FD92DA",
-   "company": "Armstrong World Industries",
-   "title": "Plant Manager, Arktura",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.362Z",
-   "retryAt": "2026-11-20T01:42:36.362Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1909D52A9556",
-   "company": "Netflix",
-   "title": "Technical Director Pre Production",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.363Z",
-   "retryAt": "2026-11-20T01:42:36.363Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B74147790ED4",
-   "company": "Pacific Seafood",
-   "title": "Director of Technical Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.365Z",
-   "retryAt": "2026-11-20T01:42:36.365Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-82B5D9C00B84",
-   "company": "Copperstate Ambulance",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.366Z",
-   "retryAt": "2026-11-20T01:42:36.366Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E18A9B526E0F",
-   "company": "SANY",
-   "title": "Senior Manager – Reman & Refurb Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.367Z",
-   "retryAt": "2026-11-20T01:42:36.367Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1636DD79BA74",
-   "company": "Coordinated Services Management",
-   "title": "Regional Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.369Z",
-   "retryAt": "2026-11-20T01:42:36.369Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C3E2F1D85782",
-   "company": "American Plating Solutions",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.370Z",
-   "retryAt": "2026-11-20T01:42:36.370Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F8705860AD08",
-   "company": "MDI Rock",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.371Z",
-   "retryAt": "2026-11-20T01:42:36.371Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B915032C6304",
-   "company": "Golden Valley Farms",
-   "title": "Seed Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.372Z",
-   "retryAt": "2026-11-20T01:42:36.372Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E0C96532DBF6",
-   "company": "Premier Linen Services",
-   "title": "Plant Manager – Commercial Laundry",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.373Z",
-   "retryAt": "2026-11-20T01:42:36.373Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8522B995027A",
-   "company": "Material Delivery",
-   "title": "Dewey Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:36.375Z",
-   "retryAt": "2026-11-20T01:42:36.375Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-98936E68426E",
-   "company": "Colliers",
-   "title": "Director of Brokerage Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.150Z",
-   "retryAt": "2026-11-20T01:42:38.150Z",
-   "attempts": [
-    {
-     "url": "https://colliers.wd3.myworkdayjobs.com/wday/cxs/colliers/Colliers-External-Career-Site/job/Atlanta-Georgia-United-States-of-America/Director-of-Brokerage-Operations_JR18893",
      "status": "HTTP_429"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-01B17AAAA304",
-   "company": "LawnStarter",
-   "title": "Director of Operations, Service Delivery",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.152Z",
-   "retryAt": "2026-11-20T01:42:38.152Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D6632FA6A11D",
-   "company": "Lyra Health",
-   "title": "Senior Director, Enterprise Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.153Z",
-   "retryAt": "2026-11-20T01:42:38.153Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1CAA147B7608",
-   "company": "Crane Worldwide Logistics",
-   "title": "Director Customs Quality Program",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.155Z",
-   "retryAt": "2026-11-20T01:42:38.155Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9356C7A57B45",
-   "company": "Ace Parking Management",
-   "title": "VP, Operations/Regional Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.156Z",
-   "retryAt": "2026-11-20T01:42:38.156Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2D702A52205",
-   "company": "Hollandia Bakeries Ltd (Commercial Bakeries Group)",
-   "title": "Food Safety Quality Assurance (FSQA) Senior Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.157Z",
-   "retryAt": "2026-11-20T01:42:38.157Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5F51F86DAE96",
-   "company": "Anduril Industries",
-   "title": "Head of Operations, Space Ground Systems",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.159Z",
-   "retryAt": "2026-11-20T01:42:38.159Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AD21CCCD063A",
-   "company": "Rise Technical",
-   "title": "Director of Manufacturing Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.160Z",
-   "retryAt": "2026-11-20T01:42:38.160Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E5EFB5CB07B3",
-   "company": "Owens Corning",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:38.162Z",
-   "retryAt": "2026-11-20T01:42:38.162Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -15686,13 +15331,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:41.347Z",
-   "retryAt": "2026-11-20T01:42:41.347Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T01:51:24.895Z",
+   "retryAt": "2026-11-20T17:51:24.895Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4469496484",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15704,13 +15349,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:44.456Z",
-   "retryAt": "2026-11-20T01:42:44.456Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T01:51:27.961Z",
+   "retryAt": "2026-11-20T17:51:27.961Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -18738,9 +18383,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:17.404Z",
-   "retryAt": "2026-11-20T01:40:17.404Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.550Z",
+   "retryAt": "2026-11-20T17:51:48.550Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18756,7 +18401,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:40:20.644Z",
    "retryAt": "2026-11-20T01:40:20.644Z",
    "attempts": [
@@ -18775,9 +18420,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:20.645Z",
-   "retryAt": "2026-11-20T01:40:20.645Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.551Z",
+   "retryAt": "2026-11-20T17:51:48.551Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18793,7 +18438,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:40:23.812Z",
    "retryAt": "2026-11-20T01:40:23.812Z",
    "attempts": [
@@ -18812,9 +18457,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:23.813Z",
-   "retryAt": "2026-11-20T01:40:23.813Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.552Z",
+   "retryAt": "2026-11-20T17:51:48.552Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18830,7 +18475,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:40:26.875Z",
    "retryAt": "2026-11-20T01:40:26.875Z",
    "attempts": [
@@ -18849,9 +18494,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.876Z",
-   "retryAt": "2026-11-20T01:40:26.876Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.552Z",
+   "retryAt": "2026-11-20T17:51:48.552Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18867,9 +18512,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.876Z",
-   "retryAt": "2026-11-20T01:40:26.876Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.553Z",
+   "retryAt": "2026-11-20T17:51:48.553Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18885,9 +18530,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.877Z",
-   "retryAt": "2026-11-20T01:40:26.877Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.553Z",
+   "retryAt": "2026-11-20T17:51:48.553Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18903,9 +18548,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.877Z",
-   "retryAt": "2026-11-20T01:40:26.877Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.554Z",
+   "retryAt": "2026-11-20T17:51:48.554Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18921,9 +18566,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.878Z",
-   "retryAt": "2026-11-20T01:40:26.878Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.554Z",
+   "retryAt": "2026-11-20T17:51:48.554Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18939,9 +18584,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.879Z",
-   "retryAt": "2026-11-20T01:40:26.879Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.554Z",
+   "retryAt": "2026-11-20T17:51:48.554Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18957,9 +18602,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.879Z",
-   "retryAt": "2026-11-20T01:40:26.879Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.555Z",
+   "retryAt": "2026-11-20T17:51:48.555Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18975,9 +18620,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.880Z",
-   "retryAt": "2026-11-20T01:40:26.880Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.555Z",
+   "retryAt": "2026-11-20T17:51:48.555Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18993,9 +18638,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.880Z",
-   "retryAt": "2026-11-20T01:40:26.880Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.556Z",
+   "retryAt": "2026-11-20T17:51:48.556Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19011,9 +18656,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.881Z",
-   "retryAt": "2026-11-20T01:40:26.881Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.556Z",
+   "retryAt": "2026-11-20T17:51:48.556Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19029,9 +18674,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.881Z",
-   "retryAt": "2026-11-20T01:40:26.881Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.556Z",
+   "retryAt": "2026-11-20T17:51:48.556Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19047,9 +18692,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.882Z",
-   "retryAt": "2026-11-20T01:40:26.882Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.557Z",
+   "retryAt": "2026-11-20T17:51:48.557Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19065,9 +18710,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.882Z",
-   "retryAt": "2026-11-20T01:40:26.882Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.557Z",
+   "retryAt": "2026-11-20T17:51:48.557Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19083,9 +18728,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.883Z",
-   "retryAt": "2026-11-20T01:40:26.883Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.557Z",
+   "retryAt": "2026-11-20T17:51:48.557Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19101,9 +18746,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.883Z",
-   "retryAt": "2026-11-20T01:40:26.883Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.558Z",
+   "retryAt": "2026-11-20T17:51:48.558Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19119,9 +18764,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.883Z",
-   "retryAt": "2026-11-20T01:40:26.883Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.558Z",
+   "retryAt": "2026-11-20T17:51:48.558Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19137,9 +18782,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.884Z",
-   "retryAt": "2026-11-20T01:40:26.884Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.558Z",
+   "retryAt": "2026-11-20T17:51:48.558Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19155,9 +18800,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.884Z",
-   "retryAt": "2026-11-20T01:40:26.884Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.559Z",
+   "retryAt": "2026-11-20T17:51:48.559Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19173,9 +18818,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.885Z",
-   "retryAt": "2026-11-20T01:40:26.885Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.559Z",
+   "retryAt": "2026-11-20T17:51:48.559Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19191,9 +18836,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.885Z",
-   "retryAt": "2026-11-20T01:40:26.885Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.559Z",
+   "retryAt": "2026-11-20T17:51:48.559Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19209,9 +18854,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.886Z",
-   "retryAt": "2026-11-20T01:40:26.886Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.560Z",
+   "retryAt": "2026-11-20T17:51:48.560Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19227,9 +18872,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.886Z",
-   "retryAt": "2026-11-20T01:40:26.886Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.560Z",
+   "retryAt": "2026-11-20T17:51:48.560Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19245,9 +18890,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.887Z",
-   "retryAt": "2026-11-20T01:40:26.887Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.561Z",
+   "retryAt": "2026-11-20T17:51:48.561Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19263,9 +18908,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.887Z",
-   "retryAt": "2026-11-20T01:40:26.887Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.561Z",
+   "retryAt": "2026-11-20T17:51:48.561Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19281,9 +18926,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.888Z",
-   "retryAt": "2026-11-20T01:40:26.888Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.561Z",
+   "retryAt": "2026-11-20T17:51:48.561Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19299,9 +18944,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.888Z",
-   "retryAt": "2026-11-20T01:40:26.888Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.562Z",
+   "retryAt": "2026-11-20T17:51:48.562Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19317,9 +18962,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.889Z",
-   "retryAt": "2026-11-20T01:40:26.889Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.562Z",
+   "retryAt": "2026-11-20T17:51:48.562Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19335,9 +18980,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.889Z",
-   "retryAt": "2026-11-20T01:40:26.889Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.562Z",
+   "retryAt": "2026-11-20T17:51:48.562Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19353,9 +18998,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.889Z",
-   "retryAt": "2026-11-20T01:40:26.889Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.563Z",
+   "retryAt": "2026-11-20T17:51:48.563Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19371,9 +19016,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.890Z",
-   "retryAt": "2026-11-20T01:40:26.890Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.563Z",
+   "retryAt": "2026-11-20T17:51:48.563Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19389,9 +19034,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.890Z",
-   "retryAt": "2026-11-20T01:40:26.890Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.563Z",
+   "retryAt": "2026-11-20T17:51:48.563Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19407,9 +19052,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.891Z",
-   "retryAt": "2026-11-20T01:40:26.891Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.564Z",
+   "retryAt": "2026-11-20T17:51:48.564Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19425,9 +19070,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.891Z",
-   "retryAt": "2026-11-20T01:40:26.891Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.564Z",
+   "retryAt": "2026-11-20T17:51:48.564Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19443,9 +19088,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.892Z",
-   "retryAt": "2026-11-20T01:40:26.892Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.564Z",
+   "retryAt": "2026-11-20T17:51:48.564Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19461,9 +19106,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.892Z",
-   "retryAt": "2026-11-20T01:40:26.892Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.565Z",
+   "retryAt": "2026-11-20T17:51:48.565Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19479,9 +19124,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.892Z",
-   "retryAt": "2026-11-20T01:40:26.892Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.565Z",
+   "retryAt": "2026-11-20T17:51:48.565Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19497,9 +19142,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.893Z",
-   "retryAt": "2026-11-20T01:40:26.893Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.565Z",
+   "retryAt": "2026-11-20T17:51:48.565Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19515,9 +19160,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.894Z",
-   "retryAt": "2026-11-20T01:40:26.894Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.566Z",
+   "retryAt": "2026-11-20T17:51:48.566Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19533,9 +19178,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.894Z",
-   "retryAt": "2026-11-20T01:40:26.894Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.566Z",
+   "retryAt": "2026-11-20T17:51:48.566Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19551,9 +19196,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.894Z",
-   "retryAt": "2026-11-20T01:40:26.894Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.566Z",
+   "retryAt": "2026-11-20T17:51:48.566Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19569,9 +19214,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.895Z",
-   "retryAt": "2026-11-20T01:40:26.895Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.567Z",
+   "retryAt": "2026-11-20T17:51:48.567Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19587,9 +19232,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.895Z",
-   "retryAt": "2026-11-20T01:40:26.895Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.567Z",
+   "retryAt": "2026-11-20T17:51:48.567Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19605,9 +19250,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.896Z",
-   "retryAt": "2026-11-20T01:40:26.896Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.567Z",
+   "retryAt": "2026-11-20T17:51:48.567Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19623,9 +19268,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.896Z",
-   "retryAt": "2026-11-20T01:40:26.896Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.568Z",
+   "retryAt": "2026-11-20T17:51:48.568Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19641,9 +19286,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.897Z",
-   "retryAt": "2026-11-20T01:40:26.897Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.568Z",
+   "retryAt": "2026-11-20T17:51:48.568Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19659,9 +19304,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.897Z",
-   "retryAt": "2026-11-20T01:40:26.897Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.568Z",
+   "retryAt": "2026-11-20T17:51:48.568Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19931,20 +19576,6 @@
      "status": "HTTP_404"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A10BB7FA6297",
-   "company": "Chick-fil-A Restaurants",
-   "title": "Front of House Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:47.836Z",
-   "retryAt": "2026-11-20T01:42:47.836Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -20310,11 +19941,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:27:32.153Z",
-   "retryAt": "2026-11-20T01:27:32.153Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-20T01:51:48.583Z",
+   "retryAt": "2026-11-20T17:51:48.583Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-51A6A0CE41D3",
@@ -20323,9 +19954,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.917Z",
-   "retryAt": "2026-11-20T01:40:26.917Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.584Z",
+   "retryAt": "2026-11-20T17:51:48.584Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -20340,9 +19971,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.917Z",
-   "retryAt": "2026-11-20T01:40:26.917Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.584Z",
+   "retryAt": "2026-11-20T17:51:48.584Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -20357,11 +19988,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.918Z",
-   "retryAt": "2026-11-20T01:40:26.918Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-20T01:51:48.585Z",
+   "retryAt": "2026-11-20T17:51:48.585Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-42D7E92EF757",
@@ -20370,9 +20001,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:26.918Z",
-   "retryAt": "2026-11-20T01:40:26.918Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.585Z",
+   "retryAt": "2026-11-20T17:51:48.585Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -20387,7 +20018,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:49:28.946Z",
    "retryAt": "2026-11-20T01:49:28.946Z",
    "attempts": [
@@ -20405,7 +20036,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:49:32.055Z",
    "retryAt": "2026-11-20T01:49:32.055Z",
    "attempts": [
@@ -21335,45 +20966,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-A9A1418340FD",
-   "company": "Teradyne",
-   "title": "Customer Production Support Manager (Global Customer Service) - Austin, TX",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:47.867Z",
-   "retryAt": "2026-11-20T01:42:47.867Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E34823A5DD1F",
-   "company": "YQN LINK",
-   "title": "Director of Operational Excellence",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:47.868Z",
-   "retryAt": "2026-11-20T01:42:47.868Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-45A3E171A392",
-   "company": "Ingram Content Group",
-   "title": "Sr. Manager Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:42:47.872Z",
-   "retryAt": "2026-11-20T01:42:47.872Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-521C8D614D2A",
    "company": "Consolidated Precision Products Corp",
    "title": "Section Manager (Post Cast)",
@@ -21398,7 +20990,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:42:54.115Z",
    "retryAt": "2026-11-20T01:42:54.115Z",
    "attempts": [
@@ -21416,7 +21008,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:42:57.277Z",
    "retryAt": "2026-11-20T01:42:57.277Z",
    "attempts": [
@@ -21434,7 +21026,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:43:00.416Z",
    "retryAt": "2026-11-20T01:43:00.416Z",
    "attempts": [
@@ -21452,7 +21044,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:43:03.660Z",
    "retryAt": "2026-11-20T01:43:03.660Z",
    "attempts": [
@@ -21470,7 +21062,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:43:06.771Z",
    "retryAt": "2026-11-20T01:43:06.771Z",
    "attempts": [
@@ -21488,7 +21080,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:43:09.942Z",
    "retryAt": "2026-11-20T01:43:09.942Z",
    "attempts": [
@@ -21524,7 +21116,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T00:43:16.179Z",
    "retryAt": "2026-11-20T01:43:16.179Z",
    "attempts": [
@@ -21605,6 +21197,20 @@
      "status": "FULL_POSTING_READ"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A4A9855D4342",
+   "company": "Lennox",
+   "title": "Sr. Manager, Quality Assurance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -29556,9 +29162,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.236Z",
-   "retryAt": "2026-11-20T01:40:27.236Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.767Z",
+   "retryAt": "2026-11-20T17:51:48.767Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29574,9 +29180,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.236Z",
-   "retryAt": "2026-11-20T01:40:27.236Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.767Z",
+   "retryAt": "2026-11-20T17:51:48.767Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29592,9 +29198,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.237Z",
-   "retryAt": "2026-11-20T01:40:27.237Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.768Z",
+   "retryAt": "2026-11-20T17:51:48.768Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29610,9 +29216,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.239Z",
-   "retryAt": "2026-11-20T01:40:27.239Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.768Z",
+   "retryAt": "2026-11-20T17:51:48.768Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29628,9 +29234,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.239Z",
-   "retryAt": "2026-11-20T01:40:27.239Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.768Z",
+   "retryAt": "2026-11-20T17:51:48.768Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29646,9 +29252,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.240Z",
-   "retryAt": "2026-11-20T01:40:27.240Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.769Z",
+   "retryAt": "2026-11-20T17:51:48.769Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29664,9 +29270,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.240Z",
-   "retryAt": "2026-11-20T01:40:27.240Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.769Z",
+   "retryAt": "2026-11-20T17:51:48.769Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29682,9 +29288,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.241Z",
-   "retryAt": "2026-11-20T01:40:27.241Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.769Z",
+   "retryAt": "2026-11-20T17:51:48.769Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29700,9 +29306,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.241Z",
-   "retryAt": "2026-11-20T01:40:27.241Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.770Z",
+   "retryAt": "2026-11-20T17:51:48.770Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29718,9 +29324,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.242Z",
-   "retryAt": "2026-11-20T01:40:27.242Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.770Z",
+   "retryAt": "2026-11-20T17:51:48.770Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29736,9 +29342,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.242Z",
-   "retryAt": "2026-11-20T01:40:27.242Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.770Z",
+   "retryAt": "2026-11-20T17:51:48.770Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29754,9 +29360,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.243Z",
-   "retryAt": "2026-11-20T01:40:27.243Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.771Z",
+   "retryAt": "2026-11-20T17:51:48.771Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29772,9 +29378,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.243Z",
-   "retryAt": "2026-11-20T01:40:27.243Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.771Z",
+   "retryAt": "2026-11-20T17:51:48.771Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29790,9 +29396,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.244Z",
-   "retryAt": "2026-11-20T01:40:27.244Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.771Z",
+   "retryAt": "2026-11-20T17:51:48.771Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29808,9 +29414,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.244Z",
-   "retryAt": "2026-11-20T01:40:27.244Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.772Z",
+   "retryAt": "2026-11-20T17:51:48.772Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29826,9 +29432,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.245Z",
-   "retryAt": "2026-11-20T01:40:27.245Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.772Z",
+   "retryAt": "2026-11-20T17:51:48.772Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29844,9 +29450,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.245Z",
-   "retryAt": "2026-11-20T01:40:27.245Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.772Z",
+   "retryAt": "2026-11-20T17:51:48.772Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29862,9 +29468,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.246Z",
-   "retryAt": "2026-11-20T01:40:27.246Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.773Z",
+   "retryAt": "2026-11-20T17:51:48.773Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29880,9 +29486,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.246Z",
-   "retryAt": "2026-11-20T01:40:27.246Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.773Z",
+   "retryAt": "2026-11-20T17:51:48.773Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29898,9 +29504,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.246Z",
-   "retryAt": "2026-11-20T01:40:27.246Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.773Z",
+   "retryAt": "2026-11-20T17:51:48.773Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29916,9 +29522,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.247Z",
-   "retryAt": "2026-11-20T01:40:27.247Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.774Z",
+   "retryAt": "2026-11-20T17:51:48.774Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29934,9 +29540,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.247Z",
-   "retryAt": "2026-11-20T01:40:27.247Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.774Z",
+   "retryAt": "2026-11-20T17:51:48.774Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29952,9 +29558,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.248Z",
-   "retryAt": "2026-11-20T01:40:27.248Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.774Z",
+   "retryAt": "2026-11-20T17:51:48.774Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29970,9 +29576,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.248Z",
-   "retryAt": "2026-11-20T01:40:27.248Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.775Z",
+   "retryAt": "2026-11-20T17:51:48.775Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29988,9 +29594,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.249Z",
-   "retryAt": "2026-11-20T01:40:27.249Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.775Z",
+   "retryAt": "2026-11-20T17:51:48.775Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30006,9 +29612,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.249Z",
-   "retryAt": "2026-11-20T01:40:27.249Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.775Z",
+   "retryAt": "2026-11-20T17:51:48.775Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30024,9 +29630,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.250Z",
-   "retryAt": "2026-11-20T01:40:27.250Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.776Z",
+   "retryAt": "2026-11-20T17:51:48.776Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30042,9 +29648,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.250Z",
-   "retryAt": "2026-11-20T01:40:27.250Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.776Z",
+   "retryAt": "2026-11-20T17:51:48.776Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30060,9 +29666,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.251Z",
-   "retryAt": "2026-11-20T01:40:27.251Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.776Z",
+   "retryAt": "2026-11-20T17:51:48.776Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30078,9 +29684,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.251Z",
-   "retryAt": "2026-11-20T01:40:27.251Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.777Z",
+   "retryAt": "2026-11-20T17:51:48.777Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30096,9 +29702,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.252Z",
-   "retryAt": "2026-11-20T01:40:27.252Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.777Z",
+   "retryAt": "2026-11-20T17:51:48.777Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30114,9 +29720,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.252Z",
-   "retryAt": "2026-11-20T01:40:27.252Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.779Z",
+   "retryAt": "2026-11-20T17:51:48.779Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30132,9 +29738,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.253Z",
-   "retryAt": "2026-11-20T01:40:27.253Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.780Z",
+   "retryAt": "2026-11-20T17:51:48.780Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30150,9 +29756,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.253Z",
-   "retryAt": "2026-11-20T01:40:27.253Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.780Z",
+   "retryAt": "2026-11-20T17:51:48.780Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30168,9 +29774,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.254Z",
-   "retryAt": "2026-11-20T01:40:27.254Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.780Z",
+   "retryAt": "2026-11-20T17:51:48.780Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30186,9 +29792,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.254Z",
-   "retryAt": "2026-11-20T01:40:27.254Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.781Z",
+   "retryAt": "2026-11-20T17:51:48.781Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30204,9 +29810,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.255Z",
-   "retryAt": "2026-11-20T01:40:27.255Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.781Z",
+   "retryAt": "2026-11-20T17:51:48.781Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30222,9 +29828,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.255Z",
-   "retryAt": "2026-11-20T01:40:27.255Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.781Z",
+   "retryAt": "2026-11-20T17:51:48.781Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30240,9 +29846,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.256Z",
-   "retryAt": "2026-11-20T01:40:27.256Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.782Z",
+   "retryAt": "2026-11-20T17:51:48.782Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30258,9 +29864,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.256Z",
-   "retryAt": "2026-11-20T01:40:27.256Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.782Z",
+   "retryAt": "2026-11-20T17:51:48.782Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30276,9 +29882,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.257Z",
-   "retryAt": "2026-11-20T01:40:27.257Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.782Z",
+   "retryAt": "2026-11-20T17:51:48.782Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30294,9 +29900,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.257Z",
-   "retryAt": "2026-11-20T01:40:27.257Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.783Z",
+   "retryAt": "2026-11-20T17:51:48.783Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30312,9 +29918,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.258Z",
-   "retryAt": "2026-11-20T01:40:27.258Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.783Z",
+   "retryAt": "2026-11-20T17:51:48.783Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30330,9 +29936,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.259Z",
-   "retryAt": "2026-11-20T01:40:27.259Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.784Z",
+   "retryAt": "2026-11-20T17:51:48.784Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30348,9 +29954,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.259Z",
-   "retryAt": "2026-11-20T01:40:27.259Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.784Z",
+   "retryAt": "2026-11-20T17:51:48.784Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30366,9 +29972,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.260Z",
-   "retryAt": "2026-11-20T01:40:27.260Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.784Z",
+   "retryAt": "2026-11-20T17:51:48.784Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30384,9 +29990,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.260Z",
-   "retryAt": "2026-11-20T01:40:27.260Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.785Z",
+   "retryAt": "2026-11-20T17:51:48.785Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30402,9 +30008,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.261Z",
-   "retryAt": "2026-11-20T01:40:27.261Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.785Z",
+   "retryAt": "2026-11-20T17:51:48.785Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30420,9 +30026,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.261Z",
-   "retryAt": "2026-11-20T01:40:27.261Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.785Z",
+   "retryAt": "2026-11-20T17:51:48.785Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30438,9 +30044,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.262Z",
-   "retryAt": "2026-11-20T01:40:27.262Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.786Z",
+   "retryAt": "2026-11-20T17:51:48.786Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30456,9 +30062,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.262Z",
-   "retryAt": "2026-11-20T01:40:27.262Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.786Z",
+   "retryAt": "2026-11-20T17:51:48.786Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30474,9 +30080,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.263Z",
-   "retryAt": "2026-11-20T01:40:27.263Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.786Z",
+   "retryAt": "2026-11-20T17:51:48.786Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30492,9 +30098,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.263Z",
-   "retryAt": "2026-11-20T01:40:27.263Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.787Z",
+   "retryAt": "2026-11-20T17:51:48.787Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30510,9 +30116,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.264Z",
-   "retryAt": "2026-11-20T01:40:27.264Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.787Z",
+   "retryAt": "2026-11-20T17:51:48.787Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30528,9 +30134,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.264Z",
-   "retryAt": "2026-11-20T01:40:27.264Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.787Z",
+   "retryAt": "2026-11-20T17:51:48.787Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30546,9 +30152,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.265Z",
-   "retryAt": "2026-11-20T01:40:27.265Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.788Z",
+   "retryAt": "2026-11-20T17:51:48.788Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30564,9 +30170,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.265Z",
-   "retryAt": "2026-11-20T01:40:27.265Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.788Z",
+   "retryAt": "2026-11-20T17:51:48.788Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30582,9 +30188,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.265Z",
-   "retryAt": "2026-11-20T01:40:27.265Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.788Z",
+   "retryAt": "2026-11-20T17:51:48.788Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30600,9 +30206,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.266Z",
-   "retryAt": "2026-11-20T01:40:27.266Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.789Z",
+   "retryAt": "2026-11-20T17:51:48.789Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30618,9 +30224,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.266Z",
-   "retryAt": "2026-11-20T01:40:27.266Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.789Z",
+   "retryAt": "2026-11-20T17:51:48.789Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30636,9 +30242,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.267Z",
-   "retryAt": "2026-11-20T01:40:27.267Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.789Z",
+   "retryAt": "2026-11-20T17:51:48.789Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30654,9 +30260,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.267Z",
-   "retryAt": "2026-11-20T01:40:27.267Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.790Z",
+   "retryAt": "2026-11-20T17:51:48.790Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30672,9 +30278,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.268Z",
-   "retryAt": "2026-11-20T01:40:27.268Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.790Z",
+   "retryAt": "2026-11-20T17:51:48.790Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30690,9 +30296,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.268Z",
-   "retryAt": "2026-11-20T01:40:27.268Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.790Z",
+   "retryAt": "2026-11-20T17:51:48.790Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30708,9 +30314,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.269Z",
-   "retryAt": "2026-11-20T01:40:27.269Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.791Z",
+   "retryAt": "2026-11-20T17:51:48.791Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30726,9 +30332,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.269Z",
-   "retryAt": "2026-11-20T01:40:27.269Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.791Z",
+   "retryAt": "2026-11-20T17:51:48.791Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30744,9 +30350,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.270Z",
-   "retryAt": "2026-11-20T01:40:27.270Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.791Z",
+   "retryAt": "2026-11-20T17:51:48.791Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30762,9 +30368,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.270Z",
-   "retryAt": "2026-11-20T01:40:27.270Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.792Z",
+   "retryAt": "2026-11-20T17:51:48.792Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30780,9 +30386,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.271Z",
-   "retryAt": "2026-11-20T01:40:27.271Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.792Z",
+   "retryAt": "2026-11-20T17:51:48.792Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30798,9 +30404,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.271Z",
-   "retryAt": "2026-11-20T01:40:27.271Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.792Z",
+   "retryAt": "2026-11-20T17:51:48.792Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30816,9 +30422,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.272Z",
-   "retryAt": "2026-11-20T01:40:27.272Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.793Z",
+   "retryAt": "2026-11-20T17:51:48.793Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30834,9 +30440,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.272Z",
-   "retryAt": "2026-11-20T01:40:27.272Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.793Z",
+   "retryAt": "2026-11-20T17:51:48.793Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30852,7 +30458,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T09:40:27.273Z",
    "retryAt": "2026-11-20T01:40:27.273Z",
    "attempts": [
@@ -30870,9 +30476,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.273Z",
-   "retryAt": "2026-11-20T01:40:27.273Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.794Z",
+   "retryAt": "2026-11-20T17:51:48.794Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30888,9 +30494,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.274Z",
-   "retryAt": "2026-11-20T01:40:27.274Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.794Z",
+   "retryAt": "2026-11-20T17:51:48.794Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30906,9 +30512,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.274Z",
-   "retryAt": "2026-11-20T01:40:27.274Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.794Z",
+   "retryAt": "2026-11-20T17:51:48.794Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30924,9 +30530,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.275Z",
-   "retryAt": "2026-11-20T01:40:27.275Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.795Z",
+   "retryAt": "2026-11-20T17:51:48.795Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30942,9 +30548,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.275Z",
-   "retryAt": "2026-11-20T01:40:27.275Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.795Z",
+   "retryAt": "2026-11-20T17:51:48.795Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30960,9 +30566,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.276Z",
-   "retryAt": "2026-11-20T01:40:27.276Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.795Z",
+   "retryAt": "2026-11-20T17:51:48.795Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30978,9 +30584,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.276Z",
-   "retryAt": "2026-11-20T01:40:27.276Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.796Z",
+   "retryAt": "2026-11-20T17:51:48.796Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30996,9 +30602,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.277Z",
-   "retryAt": "2026-11-20T01:40:27.277Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.796Z",
+   "retryAt": "2026-11-20T17:51:48.796Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31014,9 +30620,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.277Z",
-   "retryAt": "2026-11-20T01:40:27.277Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.796Z",
+   "retryAt": "2026-11-20T17:51:48.796Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31032,9 +30638,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.278Z",
-   "retryAt": "2026-11-20T01:40:27.278Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.797Z",
+   "retryAt": "2026-11-20T17:51:48.797Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31050,9 +30656,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.278Z",
-   "retryAt": "2026-11-20T01:40:27.278Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.797Z",
+   "retryAt": "2026-11-20T17:51:48.797Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31068,9 +30674,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.278Z",
-   "retryAt": "2026-11-20T01:40:27.278Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.797Z",
+   "retryAt": "2026-11-20T17:51:48.797Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31086,9 +30692,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.279Z",
-   "retryAt": "2026-11-20T01:40:27.279Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.798Z",
+   "retryAt": "2026-11-20T17:51:48.798Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31104,9 +30710,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.279Z",
-   "retryAt": "2026-11-20T01:40:27.279Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.798Z",
+   "retryAt": "2026-11-20T17:51:48.798Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31122,9 +30728,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.280Z",
-   "retryAt": "2026-11-20T01:40:27.280Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.798Z",
+   "retryAt": "2026-11-20T17:51:48.798Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31140,9 +30746,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.280Z",
-   "retryAt": "2026-11-20T01:40:27.280Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.799Z",
+   "retryAt": "2026-11-20T17:51:48.799Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31158,9 +30764,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.280Z",
-   "retryAt": "2026-11-20T01:40:27.280Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.799Z",
+   "retryAt": "2026-11-20T17:51:48.799Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31176,9 +30782,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.281Z",
-   "retryAt": "2026-11-20T01:40:27.281Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.799Z",
+   "retryAt": "2026-11-20T17:51:48.799Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31194,9 +30800,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.281Z",
-   "retryAt": "2026-11-20T01:40:27.281Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.800Z",
+   "retryAt": "2026-11-20T17:51:48.800Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31212,9 +30818,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.282Z",
-   "retryAt": "2026-11-20T01:40:27.282Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.800Z",
+   "retryAt": "2026-11-20T17:51:48.800Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31230,9 +30836,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.282Z",
-   "retryAt": "2026-11-20T01:40:27.282Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.800Z",
+   "retryAt": "2026-11-20T17:51:48.800Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31248,9 +30854,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.283Z",
-   "retryAt": "2026-11-20T01:40:27.283Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.801Z",
+   "retryAt": "2026-11-20T17:51:48.801Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31266,9 +30872,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.283Z",
-   "retryAt": "2026-11-20T01:40:27.283Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.801Z",
+   "retryAt": "2026-11-20T17:51:48.801Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31284,9 +30890,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.283Z",
-   "retryAt": "2026-11-20T01:40:27.283Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.801Z",
+   "retryAt": "2026-11-20T17:51:48.801Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31302,9 +30908,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.284Z",
-   "retryAt": "2026-11-20T01:40:27.284Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.802Z",
+   "retryAt": "2026-11-20T17:51:48.802Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31320,9 +30926,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.284Z",
-   "retryAt": "2026-11-20T01:40:27.284Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.802Z",
+   "retryAt": "2026-11-20T17:51:48.802Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31338,9 +30944,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.285Z",
-   "retryAt": "2026-11-20T01:40:27.285Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.802Z",
+   "retryAt": "2026-11-20T17:51:48.802Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31356,9 +30962,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.285Z",
-   "retryAt": "2026-11-20T01:40:27.285Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.803Z",
+   "retryAt": "2026-11-20T17:51:48.803Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31374,9 +30980,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.285Z",
-   "retryAt": "2026-11-20T01:40:27.285Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.803Z",
+   "retryAt": "2026-11-20T17:51:48.803Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31392,9 +30998,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.286Z",
-   "retryAt": "2026-11-20T01:40:27.286Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.803Z",
+   "retryAt": "2026-11-20T17:51:48.803Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32089,19 +31695,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-A4C73A8D927F",
-   "company": "CPS, Inc.",
-   "title": "Global Quality Assurance Director - Specialty Chemicals",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T00:43:19.689Z",
-   "retryAt": "2026-11-20T01:43:19.689Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-F50E736493BC",
    "company": "Pick Your Part",
    "title": "Plant Manager",
@@ -32128,9 +31721,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.300Z",
-   "retryAt": "2026-11-20T01:40:27.300Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.814Z",
+   "retryAt": "2026-11-20T17:51:48.814Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32146,9 +31739,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T09:40:27.300Z",
-   "retryAt": "2026-11-20T01:40:27.300Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-20T01:51:48.814Z",
+   "retryAt": "2026-11-20T17:51:48.814Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32176,7 +31769,93 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-6AC2A130D9A6",
+   "fields": {
+    "SALARY_BASE_LOW": 42000,
+    "SALARY_BASE_HIGH": 52000,
+    "SALARY_MIDPOINT": 47000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=07481bbda4215ab6",
+    "SALARY_ASOF": "2026-11-17",
+    "SALARY_CONF": "HIGH",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SALARY_SCORE_POINT": 49500
+   }
+  },
+  {
+   "id": "V2I-63B665DF84C8",
+   "fields": {
+    "SALARY_BASE_LOW": 152064,
+    "SALARY_BASE_HIGH": 190000,
+    "SALARY_MIDPOINT": 171032,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.dayforcehcm.com/en-US/chromalloy/CANDIDATEPORTAL/jobs/41524",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in Aerospace, Mechanical, Industrial Engineering, or a related field; equivalent experience may be considered in lieu of a degree.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.dayforcehcm.com/en-US/chromalloy/CANDIDATEPORTAL/jobs/41524",
+    "DEGREE_ASOF": "2026-11-19",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 8/11 resume competencies observed in a 7816-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality",
+    "SALARY_SCORE_POINT": 180516
+   }
+  },
+  {
+   "id": "V2I-91B0120ACEDB",
+   "fields": {
+    "DEGREE_TEXT": "Associate degree or RN diploma required.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://oceansjobboard.com/job-detail/15316/2026-11-18?referral=indeed",
+    "DEGREE_ASOF": "2026-11-19",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 175000,
+    "SALARY_BASE_HIGH": 250000,
+    "SALARY_MIDPOINT": 212500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-20",
+    "SALARY_SOURCE": "comparables: https://chg.wd5.myworkdayjobs.com/en-US/US_External_Career_Site/job/San-Antonio-TX-CH-Guenther/Director-of-Quality-Assurance_R820487 (as of 2026-11-17); https://wd1.myworkdaysite.com/recruiting/cart/Cart/job/Remote---Texas-Central-Standard-Time/Director-Quality---Compliance_R-102621 (as of 2026-11-17); https://www.linkedin.com/jobs/view/4478470914 (as of 2026-10-21); https://gilead.wd1.myworkdayjobs.com/en-US/gileadcareers/job/United-States---California---Santa-Monica/Director--Digital-Quality_R0056645-3 (as of 2026-11-19); https://www.indeed.com/viewjob?jk=cf9da0904c9e4ff8 (as of 2026-11-19); https://hazelhawkins.recruiterbox.com/jobs/fk0zckr?fjb_hash=ezLpq610 (as of 2026-11-19); https://www.linkedin.com/jobs/view/4490126988 (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-4698FC3EA95B, V2I-A196D7711281, V2I-308A8C264244, V2I-261257FA41ED, V2I-4782F4372853, V2I-756E3FCBB9C3, V2I-6BA0AEF4F8FD]; 7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
+    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 3589-char saved posting (6+ = 100): quality_systems, team_building, manufacturing_systems, supplier_quality",
+    "SALARY_SCORE_POINT": 231250
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-91B0120ACEDB",
+   "company": "OCEANS HEALTHCARE",
+   "title": "Quality Director RN",
+   "location": "Katy, TX, USA",
+   "posting": "https://oceansjobboard.com/job-detail/15316/2026-11-18",
+   "est": [
+    175000,
+    250000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-4698FC3EA95B",
+    "V2I-A196D7711281",
+    "V2I-308A8C264244",
+    "V2I-261257FA41ED",
+    "V2I-4782F4372853",
+    "V2I-756E3FCBB9C3",
+    "V2I-6BA0AEF4F8FD"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
