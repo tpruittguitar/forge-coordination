@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T20:07:40.563Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T200342333Z",
+ "at": "2026-11-20T20:18:19.538Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T201352860Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T20:03:50.279Z",
+  "readAt": "2026-11-20T20:14:00.854Z",
   "sha256": "d110c1e218713a50799221025c8d01b4c238840bb2fe9aa4d02cf36a8ed6d7e0",
   "rows": 9467
  },
@@ -52,7 +52,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 613,
- "skipped_recent": 336,
+ "skipped_recent": 331,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -64,13 +64,23 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
+ "agg_tried": {
+  "linkedin": 3
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -91,7 +101,7 @@
  "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
-  "hits": 16,
+  "hits": 15,
   "no_pay_hits": 4
  },
  "employer_benchmarks": {
@@ -116,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T20:03:55.918Z",
+  "profile_as_of": "2026-11-20T20:14:06.933Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14725,8 +14735,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 633,
- "nothing_found": 633,
+ "not_attempted": 635,
+ "nothing_found": 638,
+ "source_origin_blocks": {},
  "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
@@ -14760,8 +14771,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2317,
- "network_requests": 8,
+ "roles_researched": 2318,
+ "network_requests": 11,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14772,10 +14783,10 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 140,
-  "SOURCE_RESEARCH_REQUIRED": 772,
+  "SOURCE_RESEARCH_REQUIRED": 775,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 53,
-  "MODEL_INPUTS_REQUIRED": 5
+  "EVIDENCE_FOUND": 49,
+  "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
   {
@@ -15267,13 +15278,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:06:39.410Z",
-   "retryAt": "2026-11-20T20:06:39.410Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T20:15:14.843Z",
+   "retryAt": "2026-11-21T12:15:14.843Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484580990",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15285,13 +15296,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:06:42.581Z",
-   "retryAt": "2026-11-20T20:06:42.581Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T20:15:17.881Z",
+   "retryAt": "2026-11-21T12:15:17.881Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4469496484",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15303,13 +15314,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:06:45.763Z",
-   "retryAt": "2026-11-20T20:06:45.763Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T20:15:20.942Z",
+   "retryAt": "2026-11-21T12:15:20.942Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20483,7 +20494,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T04:10:58.915Z",
    "retryAt": "2026-11-20T20:10:58.915Z",
    "attempts": [
@@ -21519,16 +21530,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T19:06:49.139Z",
-   "retryAt": "2026-11-20T20:06:49.139Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484327048",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-20T20:15:21.201Z",
+   "retryAt": "2026-11-21T12:15:21.201Z",
+   "attempts": [],
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-4B064CD3A522",
