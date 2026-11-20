@@ -1,15 +1,15 @@
 {
- "at": "2026-11-19T23:54:22.321Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T234743093Z",
+ "at": "2026-11-20T00:07:00.830Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-19T23:47:53.746Z",
-  "sha256": "8b10aa42e97c36699b8fc371813ca0b58316dcf60a23fb1a150ebd9f60c9598a",
-  "rows": 9382
+  "readAt": "2026-11-19T23:59:24.065Z",
+  "sha256": "bab6f971ee35cba15c0cd8e140b34b4bf728007ddd52cf3d689295d70bcb906b",
+  "rows": 9385
  },
- "rows": 9382,
- "eligible": 988,
+ "rows": 9385,
+ "eligible": 991,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -41,7 +41,7 @@
   "pending_batches": 4,
   "fenced_ids": 31
  },
- "anchors": 1320,
+ "anchors": 1321,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
@@ -49,18 +49,18 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 603,
+ "estimate_waiting_for_posting": 604,
  "skipped_recent": 333,
- "submitted": 1,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 1,
  "salary_independently_verified": 0,
  "agg_tried": {},
  "agg_read": {},
@@ -114,12 +114,13 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-19T23:48:00.701Z",
+  "profile_as_of": "2026-11-19T23:59:30.559Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 10,
+ "ats_candidates": 11,
  "ats_by_kind": {
+  "ashby": 1,
   "workday": 3,
   "greenhouse": 6,
   "lever": 1
@@ -14719,29 +14720,34 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 2,
+  "salary": 1,
+  "degree": 2
  },
- "not_attempted": 623,
- "nothing_found": 623,
+ "not_attempted": 624,
+ "nothing_found": 624,
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
-  "scored": 1,
-  "legacy_replaced": 1,
-  "merged": 1,
+  "scored": 2,
+  "legacy_replaced": 2,
+  "merged": 2,
   "added": 0,
   "short_posting": 0,
-  "no_posting": 2645,
+  "no_posting": 2646,
   "deferred": 0,
   "fenced": 31,
   "inactive": 6362,
-  "already_fitted": 343,
+  "already_fitted": 344,
   "already_fitted_legacy": 0,
   "sample": [
    {
-    "id": "V2I-BE0104254B88",
-    "fit": 67
+    "id": "V2I-6980DE1CAB6D",
+    "fit": 100
+   },
+   {
+    "id": "V2I-7D2D8A75E212",
+    "fit": 83
    }
   ]
  },
@@ -14750,7 +14756,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 165,
-  "no_overview": 2824,
+  "no_overview": 2827,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 31,
@@ -14762,11 +14768,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2286,
+ "roles_researched": 2289,
  "network_requests": 6,
- "planned": 1,
+ "planned": 2,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
+ "writer_unconfirmed": 2,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14774,9 +14781,9 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 129,
+  "NOT_YET_ATTEMPTED": 130,
   "SOURCE_RESEARCH_REQUIRED": 775,
-  "EVIDENCE_FOUND": 47,
+  "EVIDENCE_FOUND": 49,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 19,
   "MODEL_INPUTS_REQUIRED": 6
  },
@@ -15725,6 +15732,20 @@
      "status": "FULL_POSTING_READ"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E277E996B9E0",
+   "company": "AMETEK",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -32062,16 +32083,37 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-BE0104254B88",
+   "id": "V2I-7D2D8A75E212",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in supply chain, Engineering, Operations or related field.",
+    "DEGREE_TEXT": "Bachelor's degree in engineering or a physical science; an advanced degree is strongly preferred.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://careers.bat.com/en/job/winston-salem/supply-network-and-manufacturing-contingency-design-senior-manager/1045/47053161472",
+    "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/hadrian-automation/d058506b-21bd-4267-b5f3-18cd1b8f4165",
     "DEGREE_ASOF": "2026-11-19",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
-    "SCOPE_FIT_RAW": "67",
+    "SCOPE_FIT_RAW": "83",
     "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 12163-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, lean_operations"
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 5/11 resume competencies observed in a 10938-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, automation_robotics, manufacturing_systems"
+   }
+  },
+  {
+   "id": "V2I-6980DE1CAB6D",
+   "fields": {
+    "SALARY_BASE_LOW": 113000,
+    "SALARY_BASE_HIGH": 145000,
+    "SALARY_MIDPOINT": 129000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://grnh.se/fvf064931us",
+    "SALARY_ASOF": "2026-11-19",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in Industrial Engineering, Operations Management, Supply Chain, or equivalent management experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://grnh.se/fvf064931us",
+    "DEGREE_ASOF": "2026-11-19",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+    "SCOPE_FIT_RAW": "100",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 8/11 resume competencies observed in a 6364-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality",
+    "SALARY_SCORE_POINT": 137000
    }
   }
  ],

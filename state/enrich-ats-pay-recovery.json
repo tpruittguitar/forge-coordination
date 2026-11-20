@@ -1,7 +1,7 @@
 {
   "schema": "forge.enrichment-recovery.v1",
-  "at": "2026-11-19T23:52:05.201Z",
-  "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T234743093Z",
+  "at": "2026-11-20T00:05:06.152Z",
+  "run": "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z",
   "rows": [
     {
       "id": "V2I-79D267B71EF7",
@@ -37,16 +37,29 @@
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
-      "id": "V2I-BE0104254B88",
-      "company": "BAT",
-      "title": "Supply Network & Manufacturing Contingency Design Senior Manager",
+      "id": "V2I-7D2D8A75E212",
+      "company": "Hadrian",
+      "title": "Sr. Director, Additive Manufacturing Systems Engineering",
+      "needs": [
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-20T00:00:20.200Z",
+      "retryAt": "2026-11-20T01:00:20.200Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-E277E996B9E0",
+      "company": "AMETEK",
+      "title": "Plant Manager",
       "needs": [
         "SALARY",
         "DEGREE"
       ],
-      "status": "EVIDENCE_FOUND",
-      "lastAttemptAt": "2026-11-19T23:49:00.654Z",
-      "retryAt": "2026-11-20T00:49:00.654Z",
+      "status": "NOT_YET_ATTEMPTED",
+      "lastAttemptAt": null,
+      "retryAt": null,
       "attempts": [],
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
@@ -4785,6 +4798,20 @@
           "status": "HTTP_403"
         }
       ],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-6980DE1CAB6D",
+      "company": "HelloFresh",
+      "title": "Senior Manager, Operational Excellence- Factor US",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-20T00:00:20.395Z",
+      "retryAt": "2026-11-20T01:00:20.395Z",
+      "attempts": [],
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
@@ -16606,6 +16633,19 @@
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
+      "id": "V2I-BE0104254B88",
+      "company": "BAT",
+      "title": "Supply Network & Manufacturing Contingency Design Senior Manager",
+      "needs": [
+        "SALARY"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-20T00:00:20.523Z",
+      "retryAt": "2026-11-20T01:00:20.523Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
       "id": "V2I-9356C7A57B45",
       "company": "Ace Parking Management",
       "title": "VP, Operations/Regional Director",
@@ -18021,6 +18061,66 @@
         }
       ],
       "at": "2026-11-19T15:04:51.043Z",
+      "status": "POSTING_OR_UNCONFIRMED"
+    },
+    "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z-B01": {
+      "ids": [
+        "V2I-7D2D8A75E212",
+        "V2I-6980DE1CAB6D"
+      ],
+      "requestIds": [
+        "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z-E001",
+        "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z-E002"
+      ],
+      "requests": [
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z-E001",
+            "primaryId": "V2I-7D2D8A75E212",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "Bachelor's degree in engineering or a physical science; an advanced degree is strongly preferred.",
+              "DEGREE_REQ": "REQUIRED",
+              "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/hadrian-automation/d058506b-21bd-4267-b5f3-18cd1b8f4165",
+              "DEGREE_ASOF": "2026-11-19",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+              "SCOPE_FIT_RAW": "83",
+              "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+              "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 5/11 resume competencies observed in a 10938-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, automation_robotics, manufacturing_systems"
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261119T235915364Z-E002",
+            "primaryId": "V2I-6980DE1CAB6D",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "SALARY_BASE_LOW": 113000,
+              "SALARY_BASE_HIGH": 145000,
+              "SALARY_MIDPOINT": 129000,
+              "SALARY_BASIS": "EMPLOYER_POSTED",
+              "SALARY_SOURCE": "https://grnh.se/fvf064931us",
+              "SALARY_ASOF": "2026-11-19",
+              "SALARY_CONF": "HIGH",
+              "DEGREE_TEXT": "Bachelor's degree in Industrial Engineering, Operations Management, Supply Chain, or equivalent management experience.",
+              "DEGREE_REQ": "PREFERRED",
+              "DEGREE_EVIDENCE_URL": "https://grnh.se/fvf064931us",
+              "DEGREE_ASOF": "2026-11-19",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-19",
+              "SCOPE_FIT_RAW": "100",
+              "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+              "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 8/11 resume competencies observed in a 6364-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch, team_building, automation_robotics, manufacturing_systems, lean_operations, supplier_quality",
+              "SALARY_SCORE_POINT": 137000
+            }
+          }
+        }
+      ],
+      "at": "2026-11-20T00:00:37.705Z",
       "status": "POSTING_OR_UNCONFIRMED"
     }
   },
