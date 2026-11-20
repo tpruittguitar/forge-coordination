@@ -1,15 +1,15 @@
 {
- "at": "2026-11-20T19:12:51.128Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T190521753Z",
+ "at": "2026-11-20T19:23:09.063Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T191803384Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T19:05:37.894Z",
-  "sha256": "a4a0ac846e13dacb28b3ecf4c122e30099cb8c7c32b88a43a6872e6715fb9802",
+  "readAt": "2026-11-20T19:18:11.637Z",
+  "sha256": "d066c9140e2196184b7b0eb52e603c5e8872634b4b4fc7879ca2f815a8010640",
   "rows": 9466
  },
  "rows": 9466,
- "eligible": 1017,
+ "eligible": 1015,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -41,7 +41,7 @@
   "pending_batches": 6,
   "fenced_ids": 39
  },
- "anchors": 1355,
+ "anchors": 1357,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
@@ -50,29 +50,35 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 613,
- "skipped_recent": 337,
- "submitted": 2,
+ "skipped_recent": 338,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 2,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
- "salary_independently_verified": 2,
+ "salary_submitted": 0,
+ "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 4
+  "linkedin": 3
  },
  "agg_read": {
-  "linkedin": 4
+  "linkedin": 2
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -118,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T19:05:44.270Z",
+  "profile_as_of": "2026-11-20T19:18:19.476Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14723,36 +14729,28 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 2,
-  "salary": 2,
-  "degree": 2
+  "planned": 0,
+  "salary": 0,
+  "degree": 0
  },
  "not_attempted": 634,
- "nothing_found": 634,
- "attempt_only_skipped": 4,
+ "nothing_found": 635,
+ "attempt_only_skipped": 2,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
-  "scored": 2,
-  "legacy_replaced": 2,
-  "merged": 2,
+  "scored": 0,
+  "legacy_replaced": 0,
+  "merged": 0,
   "added": 0,
   "short_posting": 0,
   "no_posting": 2657,
   "deferred": 0,
   "fenced": 39,
   "inactive": 6365,
-  "already_fitted": 403,
+  "already_fitted": 405,
   "already_fitted_legacy": 0,
-  "sample": [
-   {
-    "id": "V2I-DE7AA6BD9AC3",
-    "fit": 50
-   },
-   {
-    "id": "V2I-954806CA62FF",
-    "fit": 100
-   }
-  ]
+  "sample": []
  },
  "business_label": {
   "labeled": 0,
@@ -14771,11 +14769,10 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2319,
- "network_requests": 10,
- "planned": 2,
+ "roles_researched": 2317,
+ "network_requests": 9,
+ "planned": 0,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14784,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 140,
-  "SOURCE_RESEARCH_REQUIRED": 773,
-  "EVIDENCE_FOUND": 59,
+  "SOURCE_RESEARCH_REQUIRED": 772,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
+  "EVIDENCE_FOUND": 58,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -15814,6 +15811,60 @@
    "lastAttemptAt": "2026-11-20T18:51:59.155Z",
    "retryAt": "2026-11-20T19:51:59.155Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AD58DE56BE9B",
+   "company": "Western Union",
+   "title": "Director, Product Operations – Wallets and Card Issuance",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T19:06:39.410Z",
+   "retryAt": "2026-11-20T20:06:39.410Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484580990",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3643313A3D65",
+   "company": "Mondi Group",
+   "title": "Vice President of Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T19:06:42.581Z",
+   "retryAt": "2026-11-20T20:06:42.581Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4469496484",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC419D176355",
+   "company": "Guardian Dentistry Partners",
+   "title": "Director, Tactical Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T19:06:45.763Z",
+   "retryAt": "2026-11-20T20:06:45.763Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -20520,42 +20571,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-4B064CD3A522",
-   "company": "Illuminate USA",
-   "title": "Director Talent Development",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T03:07:40.957Z",
-   "retryAt": "2026-11-20T19:07:40.957Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481825268",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0E8C5076C80A",
-   "company": "Wycliffe Bible Translators USA",
-   "title": "Dir. of Innovative Workforce Initiatives",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T03:07:44.019Z",
-   "retryAt": "2026-11-20T19:07:44.019Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-279BC8F1C11B",
    "company": "BAE Systems, Inc.",
    "title": "Director III, Product Lifecycle Applications",
@@ -21490,13 +21505,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T18:07:18.762Z",
-   "retryAt": "2026-11-20T19:07:18.762Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T19:19:34.694Z",
+   "retryAt": "2026-11-21T11:19:34.694Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21822,6 +21837,24 @@
    "retryAt": "2026-11-20T19:41:56.796Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-15C643826EA4",
+   "company": "Dematic",
+   "title": "Electro-Mechanical Assistant Site Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T19:06:49.139Z",
+   "retryAt": "2026-11-20T20:06:49.139Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484327048",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
    "id": "V2I-14B5BEB7CC51",
@@ -32373,50 +32406,7 @@
   }
  ],
  "product_sample": [],
- "sample": [
-  {
-   "id": "V2I-954806CA62FF",
-   "fields": {
-    "SALARY_BASE_LOW": 150000,
-    "SALARY_BASE_HIGH": 200000,
-    "SALARY_MIDPOINT": 175000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=8748d6a1e9a56064",
-    "SALARY_ASOF": "2026-11-20",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Operations Management, Supply Chain, Business Administration, or a related field required; master's degree or MBA preferred.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=8748d6a1e9a56064",
-    "DEGREE_ASOF": "2026-11-20",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
-    "SCOPE_FIT_RAW": "100",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 6/11 resume competencies observed in a 11296-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, automation_robotics, manufacturing_systems, lean_operations, supplier_quality",
-    "SALARY_SCORE_POINT": 187500
-   }
-  },
-  {
-   "id": "V2I-DE7AA6BD9AC3",
-   "fields": {
-    "SALARY_BASE_LOW": 140000,
-    "SALARY_BASE_HIGH": 160000,
-    "SALARY_MIDPOINT": 150000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://careers.gmr.net/gmr/jobs/62994/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-    "SALARY_ASOF": "2026-11-20",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree in Business Administration, Healthcare Administration, or a related field, or equivalent professional experience.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://careers.gmr.net/gmr/jobs/62994/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
-    "DEGREE_ASOF": "2026-11-20",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-20",
-    "SCOPE_FIT_RAW": "50",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 4123-char saved posting (6+ = 100): quality_systems, team_building, lean_operations",
-    "SALARY_SCORE_POINT": 155000
-   }
-  }
- ],
+ "sample": [],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
