@@ -1,10 +1,10 @@
 {
- "at": "2026-11-20T07:12:06.567Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T070831109Z",
+ "at": "2026-11-20T07:22:43.663Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261120T071746012Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-20T07:08:41.747Z",
+  "readAt": "2026-11-20T07:17:55.745Z",
   "sha256": "b9afa194f6ed7efd20b58c18f4a00569ccebef76ae7e25e07fb7dcc28dc135b2",
   "rows": 9424
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 613,
- "skipped_recent": 334,
+ "estimate_waiting_for_posting": 618,
+ "skipped_recent": 331,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,16 +63,22 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 2
+  "linkedin": 3
  },
- "agg_read": {
-  "linkedin": 2
- },
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "404"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 2,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -118,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-20T07:08:46.910Z",
+  "profile_as_of": "2026-11-20T07:18:01.518Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14727,9 +14733,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 634,
- "nothing_found": 634,
- "attempt_only_skipped": 2,
+ "not_attempted": 636,
+ "nothing_found": 639,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14762,8 +14768,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2305,
- "network_requests": 8,
+ "roles_researched": 2310,
+ "network_requests": 9,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -21622,6 +21628,42 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449936030",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-14F8AE4DEE12",
+   "company": "FormFactor Inc.",
+   "title": "Sr Manager, Process Integration",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T07:09:41.562Z",
+   "retryAt": "2026-11-20T08:09:41.562Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4430851005",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5F577C9712C1",
+   "company": "First Quality",
+   "title": "Learning & Talent Management Leader",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-20T07:09:44.696Z",
+   "retryAt": "2026-11-20T08:09:44.696Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484229959",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29594,13 +29636,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:51.464Z",
-   "retryAt": "2026-11-20T07:17:51.464Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T07:19:07.947Z",
+   "retryAt": "2026-11-20T23:19:07.947Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482162652",
-     "status": "HTTP_404"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29613,13 +29655,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:17:54.578Z",
-   "retryAt": "2026-11-20T07:17:54.578Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T07:19:11.042Z",
+   "retryAt": "2026-11-20T23:19:11.042Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4479425934",
-     "status": "HTTP_404"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29632,13 +29674,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-19T15:18:00.903Z",
-   "retryAt": "2026-11-20T07:18:00.903Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-20T07:19:14.094Z",
+   "retryAt": "2026-11-20T23:19:14.094Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488254632",
-     "status": "HTTP_429"
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29651,7 +29693,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T15:18:03.951Z",
    "retryAt": "2026-11-20T07:18:03.951Z",
    "attempts": [
@@ -29670,7 +29712,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-19T15:18:06.996Z",
    "retryAt": "2026-11-20T07:18:06.996Z",
    "attempts": [
