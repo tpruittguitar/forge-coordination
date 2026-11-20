@@ -39,7 +39,19 @@ const PROTECTED = ['PRIMARY_ID','COMPANY','TITLE','LOCATION','REQ','BUCKET','DIS
  'ENRICH_UPDATED_AT','IDENTITY_SOURCE','IDENTITY_UPDATED_AT','INITIATING_URL','EVIDENCE_REF','ANTI_RESURRECTION','POSTING_STATE','TIM_*','APP_*',
  'DECLINE_REASON_*','REJECTION_*'];
 
-const WORK = {REMOTE:/\bremote\b/i, HYBRID:/\bhybrid\b/i, ONSITE:/\bon[- ]?site\b|\bin[- ](?:office|person)\b|\bonsite\b/i};
+// The quote must state how the job itself is worked, not merely contain the word
+// ("Remote Operations Center", "hybrid vehicle"), and must not negate it
+// ("not eligible for remote work"). Real postings, Nov 20 2026.
+const MODE = {REMOTE:'remote(?:ly)?', HYBRID:'hybrid', ONSITE:'on[- ]?site|in[- ](?:office|person)'};
+const JOB = '(?:position|role|job|workplace|work type|work mode|work|working|employee|candidate|schedule|arrangement|model|environment|opportunit\w*|days?|week|located|location|based|eligible|option)';
+const WORK = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(
+ `(?:^|[|•·,;:(\\[-])\\s*\\**\\s*(?:${m})\\s*\\**\\s*(?:$|[|•·,;()\\]])`+          // a label: "| On-site |", "Remote"
+ `|\\b(?:fully|100%|primarily|mostly)\\s+(?:${m})\\b`+                          // "fully remote"
+ `|\\b(?:${m})[- ](?:first|based|eligible|friendly|${JOB})\\b`+                // "remote role", "hybrid schedule"
+ `|\\b${JOB}\\b[^.!?\\n]{0,60}?\\b(?:${m})\\b`+                                  // "position is onsite"
+ `|\\b(?:work(?:ing)? from home|wfh)\\b`.repeat(k==='REMOTE'?1:0), 'i')]));
+const NEGATED = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(`\\b(?:not|no|non|never|isn't|is not|ineligible|cannot|can't|without)\\b[^.!?\\n]{0,40}?\\b(?:${m})\\b|\\bnon[- ](?:${m})\\b`, 'i')]));
+const statesMode = (q, v) => WORK[v].test(String(q)) && !NEGATED[v].test(String(q));
 const MONTHS = ['jan','feb','mar','apr','may','jun','jul','aug','sep','oct','nov','dec'];
 const literal = s => String(s||'').normalize('NFKC').replace(/\s+/g,' ').trim();
 const shortened = s => /\.\.\.|…/.test(String(s));
@@ -151,7 +163,7 @@ function values(g, raw, q, e, {capture=null, body=null, fullPosting=null} = {}){
   const vals = ['WORK_ARRANGEMENT','REMOTE_HYBRID'].filter(k => Object.hasOwn(raw,k)).map(k => raw[k]);
   for (const v of vals) if (!Object.hasOwn(WORK, v)) throw fail('WORK_ARRANGEMENT_INVALID');
   if (new Set(vals).size > 1) throw fail('WORK_ARRANGEMENT_CONFLICT');
-  if (!WORK[vals[0]].test(q)) throw fail('WORK_ARRANGEMENT_NOT_IN_QUOTE');
+  if (!statesMode(q, vals[0])) throw fail('WORK_ARRANGEMENT_NOT_IN_QUOTE');
   return;
  }
  if (g === 'REQ_ID') {
@@ -198,4 +210,4 @@ function verified(e, source){
  return out;
 }
 
-module.exports = {GROUPS, URL_FIELDS, LEGACY, FIELDS, COMPUTED, PROTECTED, GROUP_OF, check, values, legacy, verified, highSchoolOnly, amountIn, dateIn, truncatedText};
+module.exports = {GROUPS, URL_FIELDS, LEGACY, FIELDS, COMPUTED, PROTECTED, GROUP_OF, check, values, legacy, statesMode, verified, highSchoolOnly, amountIn, dateIn, truncatedText};
