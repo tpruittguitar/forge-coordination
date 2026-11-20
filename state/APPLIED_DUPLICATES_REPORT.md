@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-19T20:52:02.237Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-20T02:28:19.826Z from CANONICAL_WRITER_MASTER.
 
-Of 3085 jobs waiting on Tim, 79 match a role he already applied to, was rejected from, or declined:
+Of 3117 jobs waiting on Tim, 81 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 79
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 81
 
-Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 2 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (79)
+## Kept, labeled (81)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -58,6 +58,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Arena Family of Companies | Director of Quality (Aerospace & Defense) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-6BA0AEF4F8FD → V2I-4D814A27A330 |
 | 50 | Sanmina | VP, Operations | You declined 2026-10-26 · different site | Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2) | V2I-34A6A4DD91D8 → V2I-981E839AC295 |
 | 49 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
+| 47 | Kreate | Plant Manager | You declined 2026-11-02 · different site | Different worksite: Lima, Ohio, United States vs earlier Clearwater, FL | V2I-F5A79962BD70 → V2I-0FF00A919FBE |
 | 46 | Magna International | Operations Manager | You declined 2026-11-14 · different site | Different worksite: Duncan, SC vs earlier Holly, MI | V2I-C66ADD3B6F79 → V2I-C996CB68A404 |
 | 45 | Sanmina | VP Operations, USA | You declined 2026-10-26 · different site | Different worksite: Fremont, CA vs earlier Huntsville, AL (SCI Plant 2) | V2I-EF96178B6B97 → V2I-981E839AC295 |
 | 44 | Tesla | Robotaxi Operations Manager | You declined 2026-10-21 · this is a new posting | Different requisition: req:1010302900401 vs earlier req:1010287781069 | V2I-FA1DF4DF4B9C → V2I-0375A5FAABFB |
@@ -92,6 +93,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 38 | nVent | Quality Manager | You declined 2026-11-14 · different site | Different worksite: Richland, MS, United States vs earlier Anoka, MN, United States | V2I-209DB6CF028D → V2I-CB8A4D06EAC7 |
 | 38 | Eaton Aerospace | Quality Manager | You declined 2026-10-23 · different site | Different worksite: North Little Rock, AR, United States vs earlier Cleveland, TN | V2I-BEC62BD94DB7 → V2I-0E15E0B49579 |
 | 38 | nVent | Quality Manager | You declined 2026-11-14 · different site | Different worksite: Houston, TX, United States vs earlier Anoka, MN, United States | V2I-11C2EA7009A2 → V2I-CB8A4D06EAC7 |
+| 38 | L3Harris Technologies | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, Arkansas, United States vs earlier Mason, OH | V2I-37158840AD88 → V2I-7BAB613B2728 |
 | 37 | NORTHROP GRUMMAN | Principal /Sr. Principal Engineer Manufacturing | You declined 2026-10-27 · different site | Different worksite: Sunnyvale, CA, United States vs earlier Plymouth, MN | V2I-F92932B38F57 → V2I-98D2E21A96F9 |
 | 37 | NORTHROP GRUMMAN | Engineer Manufacturing / Principal Engineer Manufacturing | You declined 2026-10-27 · different site | Different worksite: Sunnyvale, CA, United States vs earlier Plymouth, MN | V2I-DF80EC3B09FE → V2I-98D2E21A96F9 |
 | 37 | Southwire Company | Process Optimization Manager | You declined 2026-11-07 · different site | Different worksite: Carrollton, GA vs earlier Starkville, MS | V2I-B50C45DDC874 → V2I-D0E01741BF7C |
