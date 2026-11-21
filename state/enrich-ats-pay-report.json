@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T06:21:01.218Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T061607170Z",
+ "at": "2026-11-21T06:50:45.093Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T064524150Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T06:16:15.341Z",
+  "readAt": "2026-11-21T06:45:33.527Z",
   "sha256": "425bab129d35809e63e6de6f808f63c41acfd216e2cabeb3dc0dacb45872688f",
   "rows": 9501
  },
@@ -50,7 +50,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 617,
- "skipped_recent": 342,
+ "skipped_recent": 336,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,13 +62,23 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "agg_tried": {
+  "linkedin": 6
+ },
+ "agg_read": {
+  "linkedin": 5
+ },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 6,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -114,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T06:16:21.113Z",
+  "profile_as_of": "2026-11-21T06:45:39.578Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14724,7 +14734,9 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 638,
+ "nothing_found": 639,
+ "attempt_only_skipped": 5,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14757,8 +14769,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2333,
- "network_requests": 6,
+ "roles_researched": 2335,
+ "network_requests": 12,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14769,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 145,
-  "SOURCE_RESEARCH_REQUIRED": 774,
+  "SOURCE_RESEARCH_REQUIRED": 772,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 55,
+  "EVIDENCE_FOUND": 57,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15339,24 +15351,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482167222",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C806B4C35FF9",
-   "company": "SkyWater Search Partners",
-   "title": "Head of Enterprise Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T05:29:36.758Z",
-   "retryAt": "2026-11-21T06:29:36.758Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465876600",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20654,48 +20648,12 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T14:27:34.906Z",
-   "retryAt": "2026-11-21T06:27:34.906Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T06:47:00.997Z",
+   "retryAt": "2026-11-21T22:47:00.997Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484108414",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E7840F6D3836",
-   "company": "Capstone Logistics, LLC",
-   "title": "CPS Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T14:27:37.943Z",
-   "retryAt": "2026-11-21T06:27:37.943Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4456960684",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A6448AFF5B38",
-   "company": "Tree Top Staffing LLC",
-   "title": "General Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T14:27:41.016Z",
-   "retryAt": "2026-11-21T06:27:41.016Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
      "status": "HTTP_429"
     }
    ],
@@ -21764,42 +21722,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480427082",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-226061853433",
-   "company": "Authority Brands",
-   "title": "VP of Contact Centers",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T05:29:43.153Z",
-   "retryAt": "2026-11-21T06:29:43.153Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483939386",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5C28DE3BEDFE",
-   "company": "Applied Materials",
-   "title": "Technical Project/Program Management Director - Advanced Packaging",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T05:29:46.251Z",
-   "retryAt": "2026-11-21T06:29:46.251Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
