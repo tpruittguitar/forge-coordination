@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261121T0640Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261121T1157Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -7,11 +7,9 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
 | Employer job boards (0 read, 0 failed) | 0 | 0 | 0 |
-| JobSpy linkedin (190 returned) | 62 | 25 | 29 |
-| JobSpy indeed (720 returned) | 116 | 63 | 50 |
-| HiringCafe (340 returned; 16 already found by JOBSPY 15, HIRINGCAFE 1) | 107 (91 unique) | 40 | 51 |
+| HiringCafe (341 returned; 2 already found by HIRINGCAFE 2) | 108 (106 unique) | 46 | 60 |
 
-JobSpy errors: linkedin: response status code 429 (blocked: use a proxy) (8 of 18 searches)
+JobSpy errors: JobSpy did not run
 
 HiringCafe: no errors. Unique = matching US roles no board or JobSpy result already covered.
 
@@ -21,118 +19,35 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 101 | 103 |
-| SR_MANAGER | 27 | 25 |
-| SR_STAFF | 0 | 2 |
+| DIRECTOR_PLUS | 40 | 52 |
+| SR_MANAGER | 6 | 7 |
+| SR_STAFF | 0 | 1 |
 
 ## New roles
 
 | Source | Company | Title | Location | Family | Level | Pay |
 |---|---|---|---|---|---|---|
 | HIRINGCAFE | P2 Hadrian | [Sr. Director, Additive Manufacturing Systems Engineering](https://hiringcafe.com/job/sr-director-additive-manufacturing-systems-engineering-hadrian-4237w7nx2mtfyguo) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $300K-$350K |
-| JOBSPY:linkedin | Global Finishing Solutions LLC | [Director of Quality Assurance & CI](https://www.linkedin.com/jobs/view/4492981593) | Osseo, WI, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | STERIS | [Director, Quality](https://www.linkedin.com/jobs/view/4492978451) | Plymouth, MN, USA | QUALITY | DIRECTOR_PLUS | $145K-$187K |
-| JOBSPY:linkedin | Olympus Corporation | [Director, Quality Operations, Bartlett](https://www.linkedin.com/jobs/view/4491964331) | Bartlett, TN, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Amrize Building Envelope | [Director of Quality Assurance](https://www.linkedin.com/jobs/view/4474475373) | Florence, KY, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | The Coca-Cola Company | [Director, Field Quality](https://www.linkedin.com/jobs/view/4492593965) | Seattle, WA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | The Coca-Cola Company | [Director, Field Quality](https://www.linkedin.com/jobs/view/4492805378) | Portland, OR, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | CAMP Systems International, Inc. | [Director of Quality Assurance](https://www.linkedin.com/jobs/view/4492724718) | Merrimack, NH, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Executive AvailaSearch | [Director of Quality Assurance](https://www.linkedin.com/jobs/view/4491627432) | Lancaster County, PA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Deringer-Ney Inc. | [Director of Quality, Regulatory & Improvement](https://www.linkedin.com/jobs/view/4492712279) | Bloomfield, CT, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Confidential Manufacturing Company | [Director of Quality](https://www.linkedin.com/jobs/view/4491625796) | Charlotte, NC, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Ensign-Bickford Aerospace & Defense Company (EBAD) | [Director, Quality](https://www.linkedin.com/jobs/view/4491303860) | Simsbury, CT, USA | QUALITY | DIRECTOR_PLUS | $175K-$225K |
-| JOBSPY:linkedin | Ontic | [Quality Director](https://www.linkedin.com/jobs/view/4491784073) | Weston, FL, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Tree Top Staffing LLC | [Director of Quality](https://www.linkedin.com/jobs/view/4492051168) | New Jersey, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Magna International | [Regional Quality Director - NA](https://www.linkedin.com/jobs/view/4490966508) | Auburn Hills, MI, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Hutchinson | [Director Quality](https://www.linkedin.com/jobs/view/4490665060) | Auburn Hills, MI, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Judge Direct Placement | [Director of Quality](https://www.linkedin.com/jobs/view/4490930966) | Attleboro, MA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | PAM Health Specialty Hospital of Tulsa | [Director of Quality Management (RN) / Tulsa LTACH](https://www.linkedin.com/jobs/view/4490915181) | Tulsa, OK, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | HEICO | [Director, Quality - Aero-Glen International](https://www.linkedin.com/jobs/view/4491235482) | Fort Worth, TX, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Kiss Beauty Group | [Senior Manager, Asia Manufacturing Strategy & Operations](https://www.linkedin.com/jobs/view/4483227486) | Port Washington, NY, USA | MFG_PROD | SR_MANAGER |  |
-| JOBSPY:linkedin | Bloom Energy | [Sr. Manager, Quality](https://www.linkedin.com/jobs/view/4491768711) | Newark, DE, USA | QUALITY | SR_MANAGER |  |
-| JOBSPY:linkedin | Thermo Fisher Scientific | [Sr. Manager Quality Sterility Assurance](https://www.linkedin.com/jobs/view/4489335488) | Ridgefield, NJ, USA | QUALITY | SR_MANAGER | $143K-$215K |
-| JOBSPY:linkedin | Westinghouse Electric Company | [Senior Manager, Manufacturing Engineering Programs](https://www.linkedin.com/jobs/view/4492107138) | Cranberry Township, PA, USA | MFG_ENG | SR_MANAGER |  |
-| JOBSPY:linkedin | ŌURA | [Senior Manager, Operations Program Manager](https://www.linkedin.com/jobs/view/4483096595) | San Francisco, CA, USA | MFG_PROD | SR_MANAGER | $173K-$203K |
-| JOBSPY:linkedin | Studs | [Senior Manager, Product Development & Production](https://www.linkedin.com/jobs/view/4492476196) | New York, NY, USA | MFG_PROD | SR_MANAGER |  |
-| JOBSPY:linkedin | TERREPOWER (formerly BBB Industries) | [Director of Continuous Improvement](https://www.linkedin.com/jobs/view/4445547338) | Daphne, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Cogitic Corporation | [Director of Quality](https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~) | Colorado Springs, CO, USA | QUALITY | DIRECTOR_PLUS | $150K-$200K |
-| JOBSPY:indeed | React Health | [Director, Quality Engineering](https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a78839fa1ccde6f01a1cfd1e542126d&source=Indeed+Free) | Bothell, WA, USA | QUALITY | DIRECTOR_PLUS | $190K-$230K |
-| JOBSPY:indeed | Loos & Co. | [Corporate Director of Quality](https://jobs.dayforcehcm.com/en-US/centralwire/LOOSCAREERS/jobs/5574) | Pomfret, CT, USA | QUALITY | DIRECTOR_PLUS | $142K-$205K |
-| JOBSPY:indeed | Homecare Homebase | [Director of Quality Assurance](https://careers.hearst.com/jobs/director-of-quality-assurance-wichita-ks-direc002895-jobs--quality-operations--) | Wichita, KS, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Revvity | [Director, Quality Operations](https://jobs.revvity.com/job/hopkinton/director-quality-operations/20539/103536091920) | Hopkinton, MA, USA | QUALITY | DIRECTOR_PLUS | $159K-$185K |
-| JOBSPY:indeed | Transmedics | [Head of Global Quality Strategic Initiatives](https://transmedics.wd1.myworkdayjobs.com/TransMedics_Careers/job/Andover-MA/Head-of-Global-Quality-Strategic-Initiatives_R-101553) | Andover, MA, USA | QUALITY | DIRECTOR_PLUS | $233K-$331K |
-| JOBSPY:indeed | First Class Air | [Sr. Director of Quality](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=51e3eb42-532a-4253-91b9-97d928495214&ccId=9202001847390_21&jobId=751561&source=IN&lang=en_US) | Bristow, OK, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Priority Technology Holdings, LLC | [Director, Engineering - Quality Assurance](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=94f16522-9f0f-4a13-b72c-b0eaf60d119d&ccId=19000101_000001&jobId=614124&source=IN&lang=en_US) | Remote, USA | QUALITY | DIRECTOR_PLUS | $190K-$291K |
-| JOBSPY:indeed | City Of Cambridge, MA | [Director of Quality & Training of Youth Programs](https://phe.tbe.taleo.net/phe02/ats/careers/v2/viewRequisition?org=CAMBRIDGEMA&cws=37&rid=1942) | Cambridge, MA, USA | QUALITY | DIRECTOR_PLUS | $93K-$126K |
-| JOBSPY:indeed | Medtronic | [Director, Quality Center of Expertise – Design Quality](https://medtronic.wd1.myworkdayjobs.com/en-US/MedtronicCareers/job/Minneapolis-Minnesota-United-States-of-America/Director--Quality-Center-of-Expertise---Design-Quality_R81729-1) | Minneapolis, MN, USA | QUALITY | DIRECTOR_PLUS | $184K-$276K |
-| JOBSPY:indeed | Bora Pharmaceuticals | [Head of Quality](https://boracorpcdmo.wd108.myworkdayjobs.com/en-US/BoraExternalCareers/job/US---Rockville/Head-of-Quality_10035) | Rockville, MD, USA | QUALITY | DIRECTOR_PLUS | $192K-$270K |
-| JOBSPY:indeed | Regeneron | [Senior Director, Quality](https://careers.regeneron.com/en/jobs/r53236/senior-director-quality/) | New York, NY, USA | QUALITY | DIRECTOR_PLUS | $207K-$407K |
-| JOBSPY:indeed | Dechra | [Head of Quality](https://dechra.teamtailor.com/jobs/8749423-head-of-quality) | East Windsor, NJ, USA | QUALITY | DIRECTOR_PLUS | $200K-$250K |
-| JOBSPY:indeed | Community Care of North Carolina Inc | [Director of Quality Improvement Strategy](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=e19abba7-a8ad-4c26-948f-cf26888754a7&ccId=19000101_000001&jobId=598727&source=IN&lang=en_US) | Remote, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Maker's Pride | [Director Food Safety and Quality](https://jobs.dayforcehcm.com/en-US/hearthfs/MakersPride/jobs/39543) | Downers Grove, IL, USA | QUALITY | DIRECTOR_PLUS | $141K-$212K |
-| JOBSPY:indeed | American Photonics | [General Manager/President – Precision Manufacturing](https://www.indeed.com/viewjob?jk=50d11202b4a0d049) | Sarasota, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Ensign-Bickford Aerospace & Defense Company | [Director, Quality](https://ebi.wd5.myworkdayjobs.com/es/ebicareers/job/Simsbury-CT/Director--Quality_REQ106405-1) | Simsbury, CT, USA | QUALITY | DIRECTOR_PLUS | $175K-$225K |
-| JOBSPY:indeed | Centric Brands | [VP, Production - Soft Accessories](https://careers-centricbrands.icims.com/jobs/23085/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $200K-$240K |
-| JOBSPY:indeed | SkyWater Technology Foundry | [Director of Integrated Fab Manufacturing](https://jobs.dayforcehcm.com/en-US/skywater/CANDIDATEPORTAL/jobs/13073) | Bloomington, MN, USA | MFG_PROD | DIRECTOR_PLUS | $159K-$239K |
-| JOBSPY:indeed | The Lauridsen Group | [Director of Operations - Proliant Dairy Ingredients - Ankeny, Iowa](https://lgi.wd5.myworkdayjobs.com/en-US/LGI_Careers/job/Ankeny-Iowa/Director-of-Operations---Proliant-Dairy-Ingredients---Ankeny--Iowa_R4097-1) | Ankeny, IA, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Scholastic | [Senior Director, Merchandise Manufacturing & Sourcing](https://scholastic.wd5.myworkdayjobs.com/en-US/External/job/New-York-New-York/Senior-Director--Merchandise-Manufacturing---Sourcing_R15915) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $196K-$228K |
-| JOBSPY:indeed | AMETEK | [Director of Operations](https://jobs.ametek.com/job/Garden-City-Director-of-Operations-NY-11530/1452756500/) | Garden City, NY, USA | MFG_PROD | DIRECTOR_PLUS | $200K-$225K |
-| JOBSPY:indeed | Weiss-Aug | [Director of Operations](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4681631/WeissAug-East-Hanover-NJ/Director-of-Operations?source=Indeed_Feed) | East Hanover, NJ, USA | MFG_PROD | DIRECTOR_PLUS | $150K-$180K |
-| JOBSPY:indeed | Larimar Therapeutics | [Director, Quality GxP Vendor Management & Audit Programs](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4666966/Larimar-Therapeutics/Director-Quality-GxP-Vendor-Management-Audit-Programs?source=Indeed_Feed) | Philadelphia, PA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Transmedics | [Senior Director, Automation & New Process Engineering](https://transmedics.wd1.myworkdayjobs.com/TransMedics_Careers/job/Andover-MA/Senior-Director--Automation---New-Process-Engineering_R-101552) | Andover, MA, USA | MFG_ENG | DIRECTOR_PLUS | $221K-$314K |
-| JOBSPY:indeed | Buckhead Meat & Seafood Mid-Atlantic | [Plant Manager](https://careers.sysco.com/job/-/-/1105/103568123056) | Orlando, FL, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Viron Air Systems | [Vice President and General Manager- Manufacturing](https://100hires.com/j/KNaytK3) | Temple, TX, USA | MFG_PROD | DIRECTOR_PLUS | $175K-$200K |
-| JOBSPY:indeed | Maker's Pride | [Plant Manager](https://jobs.dayforcehcm.com/en-US/hearthfs/MakersPride/jobs/39864) | Grand Rapids, MI, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Luminant | [Plant Manager](https://vst.wd5.myworkdayjobs.com/en-US/vistra_careers/job/Lakewood-NJ/Plant-Manager_40017042-1) | Lakewood, NJ, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Emterra Group | [MRF Plant Manager](https://recruitingbypaycor.com/career/JobIntroduction.action?id=8a7883a8a1f5f44e01a1faef12da3721&source=Indeed+Free) | Lansing, MI, USA | MFG_PROD | DIRECTOR_PLUS | $90K-$100K |
-| JOBSPY:indeed | Adonis | [Senior Manager, Operations - Quality](https://jobs.ashbyhq.com/adonis/0dcc5dfc-83d2-4268-bf2a-982ff447435e?utm_source=aZ2DzLbbzW) | New York, NY, USA | QUALITY | SR_MANAGER | $140K-$180K |
-| JOBSPY:indeed | Stored Energy Systems | [Senior Manager, Manufacturing Engineering](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=4b01b1ef-1960-4219-8f3f-6c0652a81377&ccId=19000101_000001&jobId=569894&source=IN&lang=en_US) | Longmont, CO, USA | MFG_ENG | SR_MANAGER | $120K-$175K |
-| JOBSPY:indeed | GXO Logistics | [Senior Manager, Industrial Engineering](https://career41.sapsf.com/career?company=xpologisti&career_ns=job_listing&career_job_req_id=390212&lang=en_US&jobPipeline=Indeed) | GA, USA | MFG_ENG | SR_MANAGER |  |
-| JOBSPY:indeed | Amazon.com | [Senior Manager, Quality, Fauna](https://www.amazon.jobs/jobs/10608897/senior-manager-quality-fauna-?cmpid=DA_INAD200785B) | New York, NY, USA | QUALITY | SR_MANAGER | $198K-$267K |
-| JOBSPY:indeed | OpTerra Energy Services | [Plant Manager (Yokosuka, Japan)](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=ae01af2b-1df8-4eab-916c-c82d36b29f03&ccId=19000101_000003&jobId=600749&jwId=SYS:JW:001&source=IN&lang=en_US) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $130K-$150K |
-| JOBSPY:indeed | GE Appliances | [Senior Manager, Manufacturing Quality](https://haier.wd3.myworkdayjobs.com/en-US/GE_Appliances/job/USA-Louisville-KY/Senior-Manager--Manufacturing-Quality_REQ-27293-1) | Louisville, KY, USA | QUALITY | SR_MANAGER |  |
-| JOBSPY:indeed | Horizon Organic Dairy, LL | [Senior Manager - Operations External Manufact](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=f09aec1a-4339-4554-9c9a-53202b0386ad&ccId=19000101_000001&jobId=567382&source=IN&lang=en_US) | Broomfield, CO, USA | MFG_PROD | SR_MANAGER | $125K-$140K |
-| JOBSPY:indeed | Laborie Medical Technologies | [Senior Manager Quality](https://app.jobvite.com/CompanyJobs/Job.aspx?j=o2Q6Afwi&s=Indeed) | Maple Grove, MN, USA | QUALITY | SR_MANAGER | $161K-$187K |
-| JOBSPY:indeed | Post Consumer Brands | [Sr. Manager - Continuous Improvement](https://postconsumerbrandssljobs-postholdings.icims.com/jobs/34683/job) | Battle Creek, MI, USA | MFG_PROD | SR_MANAGER |  |
-| JOBSPY:indeed | Xenon Pharmaceuticals Inc. | [Manager/Senior Manager, Global Quality Systems](https://jobs.ashbyhq.com/xenon/e432cad5-79d5-43a1-a34c-d5b79254951c?utm_source=4lKXNomdVM) | Needham, MA, USA | QUALITY | SR_MANAGER | $131K-$173K |
-| JOBSPY:indeed | Pratt & Whitney | [Senior Manager, Model-Based Quality Deployment (Onsite)](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01890561&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01890561%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3Dd978cde8-e489-11f1-bd5b-5b95f30b8d48%26rx_job%3D01890561%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261121T060415Z%26rx_vp%3Dcpc) | East Hartford, CT, USA | QUALITY | SR_MANAGER | $132K-$252K |
-| JOBSPY:indeed | Vertex Pharmaceuticals | [Senior Manager Operational Area Quality (Hybrid)](https://vrtx.wd501.myworkdayjobs.com/en-US/vertex_careers/job/Boston-MA/Senior-Manager-Operational-Area-Quality--Hybrid-_REQ-30642) | Boston, MA, USA | QUALITY | SR_MANAGER | $134K-$201K |
-| JOBSPY:indeed | Collins Aerospace | [Senior Manager, Program Quality Leader (onsite)](https://jsv3.recruitics.com/redirect?rx_cid=3426&rx_jobId=01888746&rx_url=https%3A%2F%2Fcareers.rtx.com%2Fglobal%2Fen%2Fjob%2F01888746%3Frx_a%3D0%26rx_c%3D%26rx_ch%3Djobp4p%26rx_group%3D122223%26rx_id%3Dfb1cc525-e22e-11f1-919e-49630ca12e29%26rx_job%3D01888746%26rx_medium%3Dcpc%26rx_product%3Dprogrammatic-ppc%252Ccore%26rx_r%3Dnone%26rx_source%3Dindeed%26rx_ts%3D20261121T060415Z%26rx_vp%3Dcpc) | El Segundo, CA, USA | QUALITY | SR_MANAGER | $146K-$277K |
-| JOBSPY:indeed | PTC Therapeutics | [Senior Manager, Quality Assurance - GxP (GCP)](https://ptcbio.wd5.myworkdayjobs.com/PTC_Careers/job/USA---New-Jersey---Warren/Senior-Manager--Quality-Assurance---GxP--GCP-_R3876) | Warren, NJ, USA | QUALITY | SR_MANAGER | $142K-$175K |
-| JOBSPY:indeed | Michael Kors | [Senior Manager, Global Visual Merchandising Production](https://capri.wd1.myworkdayjobs.com/en-US/Michael_Kors/job/NY-Metro-Area/Senior-Manager--Global-Visual-Merchandising-Production_R_787925-1) | New York, NY, USA | MFG_PROD | SR_MANAGER | $140K-$150K |
-| JOBSPY:indeed | Flex | [Senior Manager - Process Engineering - Walker, MI Plant](https://flextronics.wd1.myworkdayjobs.com/en-US/Careers/job/USA-MI-Coopersville/Senior-Manager---Process-Engineering---Walker--MI-Plant_WD234373) | Coopersville, MI, USA | MFG_ENG | SR_MANAGER |  |
-| JOBSPY:indeed | Gwynedd Manufacturing | [Senior Manager of Production](https://www.paycomonline.net/v4/ats/web.php/portal/FDDD0938A19741AB40F5F7110BA2010C/jobs/301936?source=Indeed) | North Wales, PA, USA | MFG_PROD | SR_MANAGER | $120K-$140K |
-| JOBSPY:indeed | Low Temp Industries | [Chief of Staff and Strategic Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=101405c4-219e-495f-b0b6-dd6945a511c2&ccId=19000101_000001&jobId=641706&source=IN&lang=en_US) | Jonesboro, GA, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Mercury Systems | [Director, Program Operations](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001234100006&c=1162151&d=jobs.mrcy.com&rb=INDEED&idUnique=5001234100006) | Hudson, NH, USA | MFG_PROD | DIRECTOR_PLUS | $139K-$295K |
-| JOBSPY:indeed | MacAllister Machinery Company, Inc. | [Director - Corporate Continuous Improvement](https://macallistercareers.ttcportals.com/jobs/18503099-director-corporate-continuous-improvement?tm_job=2026-1885&tm_event=view&tm_company=14633) | Indianapolis, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | Mom's Meals, a PurFoods Company | [Director of Process Engineering & Continuous Improvement](https://jobs.lever.co/momsmeals/e1b40e1e-b078-465f-a5a6-e9a551d651f5?lever-source=Indeed) | Ankeny, IA, USA | MFG_ENG | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | City of Philadelphia, PA | [Revenue - Director of Special Projects and Continuous Improvement](https://jobs.smartrecruiters.com/CityofPhiladelphia/744000162572308-revenue-director-of-special-projects-and-continuous-improvement-) | Philadelphia, PA, USA | MFG_PROD | DIRECTOR_PLUS | $91K-$115K |
-| JOBSPY:indeed | Domino's | [Director, Continuous Improvement](https://jobs.smartrecruiters.com/Dominos/744000162300653-director-continuous-improvement) | Ann Arbor, MI, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:indeed | 3M | [Plant Director*](https://3m.wd1.myworkdayjobs.com/en-US/Search/job/US-New-York-Tonawanda/Plant-Director-_R01172778-1) | Tonawanda, NY, USA | MFG_PROD | DIRECTOR_PLUS | $250K-$306K |
-| JOBSPY:indeed | bioMerieux | [Director, Instrument Manufacturing](https://app.jobvite.com/CompanyJobs/Job.aspx?j=oZX7Afwn&s=Indeed) | Hazelwood, MO, USA | MFG_PROD | DIRECTOR_PLUS | $155K-$198K |
-| JOBSPY:indeed | Pfizer | [Director, Operational Excellence](https://pfizer.wd1.myworkdayjobs.com/en-US/PfizerCareers/job/United-States---New-York---New-York-City/Director--Operational-Excellence_4967825-2) | New York, NY, USA | MFG_PROD | DIRECTOR_PLUS | $177K-$294K |
-| JOBSPY:indeed | Crypto Council for Innovation | [Director of Operations](https://www.indeed.com/viewjob?jk=b6b6c25ce4b70042) | Washington, DC, USA | MFG_PROD | DIRECTOR_PLUS | $172K-$241K |
-| JOBSPY:indeed | Revolution Medicines | [Director, Stakeholder Engagement, Congress Strategy & Operations, Congresses](https://www.revmed.com/careers-list/?gh_jid=8211066003) | Redwood City, CA, USA | MFG_PROD | DIRECTOR_PLUS | $211K-$264K |
-| JOBSPY:indeed | Motek Florida | [Operations Director](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4684155/Happy-Corner-Hospitality/Operations-Director?source=Indeed_Feed) | Fort Lauderdale, FL, USA | MFG_PROD | DIRECTOR_PLUS | $115K-$130K |
-| JOBSPY:indeed | KU Endowment | [Sr Director or AVP, Fundraising Operations](https://recruiting.paylocity.com/Recruiting/Jobs/Details/4673194/Kansas-University-Endowment-Association/Sr-Director-or-AVP-Fundraising-Operations?source=Indeed_Feed) | Lawrence, KS, USA | MFG_PROD | DIRECTOR_PLUS | $124K-$150K |
-| JOBSPY:indeed | Diversified Maintenance | [Director of Operations](https://apply-v41.jobsync.io/indeed/r-app/b59101d18a03780e895f4cdad69e0c3ba0cd21fad64b4a2763fa9241/) | Phoenix, AZ, USA | MFG_PROD | DIRECTOR_PLUS | $90K-$90K |
-| JOBSPY:indeed | El Pollo Loco | [Regional Director of Operations](https://jobs.dayforcehcm.com/en-US/loco/CANDIDATEPORTAL/jobs/33527) | Costa Mesa, CA, USA | MFG_PROD | DIRECTOR_PLUS | $132K-$165K |
-| JOBSPY:indeed | FujiFilm | [Vice President Quality Control](https://uscareers-fujifilm.icims.com/jobs/39262/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f) | Morrisville, NC, USA | QUALITY | DIRECTOR_PLUS | $272K-$325K |
 | HIRINGCAFE | Electro Rent | [Director of Quality](https://hiringcafe.com/job/director-of-quality-electro-rent-van-nuys-california-48gqfh7a4s1aymxr) | Van Nuys, California, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | PharmaLogic | [Director of Quality (Head of Quality)](https://hiringcafe.com/job/director-of-quality-head-of-quality-pharmalogic-rockaway-new-jersey-7w58xi4wive0oge2) | Rockaway, New Jersey, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Central Wire Industries | [Corporate Director of Quality](https://hiringcafe.com/job/corporate-director-of-quality-central-wire-industries-pomfret-3firsa1hb7ozt917) | Pomfret, Connecticut, United States | QUALITY | DIRECTOR_PLUS | $142K-$205K |
+| HIRINGCAFE | CAMP Systems International | [Director of Quality Assurance](https://hiringcafe.com/job/director-of-quality-assurance-camp-systems-international-merrimack-qrccd99sjvgbfm5f) | Merrimack, New Hampshire, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Greiner Bio-One | [Director of Quality Management](https://hiringcafe.com/job/director-of-quality-management-greiner-bio-one-monroe-iowa-kweyvkqpvg1ag2tm) | Monroe, Iowa, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Caldic | [Director, Quality](https://hiringcafe.com/job/director-quality-caldic-meriden-connecticut-oo11k2qzpeksmcfv) | Meriden, Connecticut, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Precede Biosciences | [Director, Quality](https://hiringcafe.com/job/director-quality-precede-biosciences-cambridge-massachusetts-jwpkejni6eyj0pkg) | Cambridge, Massachusetts, United States | QUALITY | DIRECTOR_PLUS | $215K-$250K |
+| HIRINGCAFE | Global Finishing Solutions | [Director of Quality Assurance & CI](https://hiringcafe.com/job/director-of-quality-assurance-and-ci-global-finishing-solutions-osseo-ha6rg4bou3niw3sz) | Osseo, Wisconsin, United States | QUALITY | DIRECTOR_PLUS | $125K-$157K |
 | HIRINGCAFE | Cognito Therapeutics | [Director, Design Quality](https://hiringcafe.com/job/director-design-quality-cognito-therapeutics-cambridge-massachusetts-hd4n8a119zni05ya) | Cambridge, Massachusetts, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Rise Baking Company | [Director, Quality Assurance](https://hiringcafe.com/job/director-quality-assurance-rise-baking-company-united-states-jv8iok62vqscnw18) | United States | QUALITY | DIRECTOR_PLUS |  |
+| HIRINGCAFE | React Health | [Director, Quality Engineering](https://hiringcafe.com/job/director-quality-engineering-react-health-bothell-washington-908l3t8jq8j52i5g) | Bothell, Washington, United States | QUALITY | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Feldmeier Equipment | [Vice President of Quality – Manufacturing](https://hiringcafe.com/job/vice-president-of-quality-manufacturing-feldmeier-equipment-syracuse-mn3pd6p3gwrzru91) | Syracuse, New York, United States | QUALITY | DIRECTOR_PLUS | $180K-$230K |
 | HIRINGCAFE | Adams Communication & Engineering Technology | [Director of Manufacturing](https://hiringcafe.com/job/director-of-manufacturing-adams-communication-and-engineering-ljm9t1mbpcrtdsnl) | Havelock, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | SkyWater Technology | [Director of Integrated Fab Manufacturing](https://hiringcafe.com/job/director-of-integrated-fab-manufacturing-skywater-technology-5xv9qm25713ml19n) | Bloomington, Minnesota, United States | MFG_PROD | DIRECTOR_PLUS | $159K-$239K |
 | HIRINGCAFE | PSG (Pump Solutions Group) | [Director of Operations - Industrial Manufacturing](https://hiringcafe.com/job/director-of-operations-industrial-manufacturing-psg-pump-solutions-ri6sj93pru34zrlm) | Grand Rapids, Michigan, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | ZT Systems | [Director of Engineering, Global Manufacturing Engineering & NPI](https://hiringcafe.com/job/director-of-engineering-global-manufacturing-engineering-and-npi-zt-rxtalaccil28s42j) | Secaucus, New Jersey, United States | MFG_ENG | DIRECTOR_PLUS |  |
+| HIRINGCAFE | Weiss-Aug | [Director of Operations](https://hiringcafe.com/job/director-of-operations-weiss-aug-east-hanover-new-jersey-ozlz655ounjon0yv) | East Hanover, New Jersey, United States | MFG_PROD | DIRECTOR_PLUS | $150K-$180K |
+| HIRINGCAFE | AMETEK | [Director of Operations](https://hiringcafe.com/job/director-of-operations-ametek-garden-city-new-york-9ae0jspvyyntwam0) | Garden City, New York, United States | MFG_PROD | DIRECTOR_PLUS | $200K-$225K |
 | HIRINGCAFE | MPE Inc. | [Director of Operations](https://hiringcafe.com/job/director-of-operations-mpe-inc-milwaukee-wisconsin-fpg9k8u1d4n9a6ck) | Milwaukee, Wisconsin, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| HIRINGCAFE | Hussey Copper | [Plant Manager](https://hiringcafe.com/job/plant-manager-hussey-copper-leetsdale-pennsylvania-1l77vosqw0qtio6r) | Leetsdale, Pennsylvania, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| HIRINGCAFE | Hussey Copper | [Plant Manager](https://hiringcafe.com/job/plant-manager-hussey-copper-leetsdale-pennsylvania-gmrsqsma4jd84izp) | Leetsdale, Pennsylvania, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | ClarkDietrich | [Plant Manager](https://hiringcafe.com/job/plant-manager-clarkdietrich-woodland-california-3vj99ixzsodqfzs2) | Woodland, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | ImageFIRST | [Plant Manager](https://hiringcafe.com/job/plant-manager-imagefirst-cortland-new-york-87j06d7zotlwezhe) | Cortland, New York, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Unitex | [Manufacturing/Plant Manager](https://hiringcafe.com/job/manufacturing-plant-manager-unitex-mount-vernon-new-york-8cezaeyei2l8u2ip) | Mount Vernon, New York, United States | MFG_PROD | DIRECTOR_PLUS | $100K-$110K |
@@ -140,9 +55,10 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | HIRINGCAFE | Bicron Electronics | [Plant Manager](https://hiringcafe.com/job/plant-manager-bicron-electronics-torrington-connecticut-0fglrsueyk2pkump) | Torrington, Connecticut, United States | MFG_PROD | DIRECTOR_PLUS | $120K-$165K |
 | HIRINGCAFE | Graham Packaging | [Plant Manager - West Chicago](https://hiringcafe.com/job/plant-manager-west-chicago-graham-packaging-west-chicago-illinois-eln3fh5zvt4r2xag) | West Chicago, Illinois, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | HIRINGCAFE | Empire Dynamics Machinery | [Director, Turnkey Projects and Manufacturing Operations](https://hiringcafe.com/job/director-turnkey-projects-and-manufacturing-operations-empire-x8q88r1usb1xcqb4) | Albany, New York, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| HIRINGCAFE | Stored Energy Systems | [Senior Manager, Manufacturing Engineering](https://hiringcafe.com/job/senior-manager-manufacturing-engineering-stored-energy-systems-qi0feepdkqh45zsu) | Longmont, Colorado, United States | MFG_ENG | SR_MANAGER | $120K-$175K |
 | HIRINGCAFE | Thermo Fisher Scientific | [Sr. Manager Manufacturing Engineer](https://hiringcafe.com/job/sr-manager-manufacturing-engineer-thermo-fisher-scientific-ridgefield-3fkz3lyhrzql4pem) | Ridgefield, New Jersey, United States | MFG_ENG | SR_MANAGER | $155K-$233K |
+| HIRINGCAFE | Laborie Medical Technologies | [Senior Manager Quality](https://hiringcafe.com/job/senior-manager-quality-laborie-medical-technologies-maple-grove-ayq16lp5ktvdkpq8) | Maple Grove, Minnesota, United States | QUALITY | SR_MANAGER | $161K-$187K |
 | HIRINGCAFE | Essor | [Quality & Packaging Senior Manager](https://hiringcafe.com/job/quality-and-packaging-senior-manager-essor-boston-massachusetts-kfqyyra1var1vjhl) | Boston, Massachusetts, United States | QUALITY | SR_MANAGER | $125K-$150K |
-| HIRINGCAFE | Liquid I.V. | [Senior Manager, Innovation Quality](https://hiringcafe.com/job/senior-manager-innovation-quality-liquid-i-v-el-segundo-california-tti9b3eajpoa2cit) | El Segundo, California, United States | QUALITY | SR_MANAGER | $116K-$165K |
 | HIRINGCAFE | AbbVie | [Quality Senior Manager (Distribution)](https://hiringcafe.com/job/quality-senior-manager-distribution-abbvie-north-chicago-illinois-3r7hmy698lexzmm6) | North Chicago, Illinois, United States | QUALITY | SR_MANAGER | $125K-$237K |
 | HIRINGCAFE | Amazon | [Senior Manager, Quality, Fauna](https://hiringcafe.com/job/senior-manager-quality-fauna-amazon-new-york-city-new-york-rdk3e2xz5gzfe47n) | New York City, New York, United States | QUALITY | SR_MANAGER | $198K-$267K |
 | HIRINGCAFE | Domino's Pizza | [Director, Continuous Improvement](https://hiringcafe.com/job/director-continuous-improvement-dominos-pizza-ann-arbor-michigan-qm44ey5yfq6wjm80) | Ann Arbor, Michigan, United States | MFG_PROD | DIRECTOR_PLUS |  |
