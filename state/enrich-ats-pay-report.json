@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T15:10:14.992Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T150534429Z",
+ "at": "2026-11-21T15:21:13.091Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T151609239Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T15:05:41.395Z",
+  "readAt": "2026-11-21T15:16:17.740Z",
   "sha256": "0287ab94d2803648bf721589e27fa39bf71f8416d07bad9cc44c345326240eab",
   "rows": 9528
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 624,
- "skipped_recent": 334,
+ "estimate_waiting_for_posting": 620,
+ "skipped_recent": 349,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,36 +63,26 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 12
+  "linkedin": 1
  },
- "agg_read": {
-  "linkedin": 8
- },
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 4
- },
- "agg_errors": {
-  "linkedin": [
-   "404",
-   "404",
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 12,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
  "workday_window_active": false,
- "est_same_employer": 0,
+ "est_same_employer": 1,
  "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -126,7 +116,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T15:05:47.267Z",
+  "profile_as_of": "2026-11-21T15:16:24.609Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14720,14 +14710,22 @@
  },
  "salary_review": {
   "eligible": 1907,
-  "due": 1891,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1892,
+  "reviewed": 1,
+  "target_reads": 2,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-B7429E4C362A",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14736,9 +14734,7 @@
   "degree": 0
  },
  "not_attempted": 641,
- "nothing_found": 645,
- "attempt_only_skipped": 11,
- "source_origin_blocks": {},
+ "nothing_found": 641,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14771,8 +14767,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2349,
- "network_requests": 18,
+ "roles_researched": 2342,
+ "network_requests": 8,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -15958,6 +15954,45 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-21T14:57:13.932Z",
    "retryAt": "2026-11-21T15:57:13.932Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3DC5701F1EFB",
+   "company": "State of Texas",
+   "title": "Deputy Director of Strategic Operations and Transformation (Austin)",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:38.154Z",
+   "retryAt": "2026-11-21T16:06:38.154Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D2B97757ED6D",
+   "company": "Collier County, FL",
+   "title": "Plant Manager-Northeast Water Treatment Plant",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:38.155Z",
+   "retryAt": "2026-11-21T16:06:38.155Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B84B3FE20D23",
+   "company": "Signature HealthCARE LLC",
+   "title": "Plant Director",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:38.156Z",
+   "retryAt": "2026-11-21T16:06:38.156Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -19120,44 +19155,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2FFD9B49A246",
-   "company": "Jobot",
-   "title": "Director, Protection & Controls Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T15:06:41.549Z",
-   "retryAt": "2026-11-22T07:06:41.549Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0744ECF3C0CB",
-   "company": "Jobot",
-   "title": "Regional VP - Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T15:06:44.640Z",
-   "retryAt": "2026-11-22T07:06:44.640Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-61D7A3CC0D46",
    "company": "FujiFilm",
    "title": "Vice President Quality Control",
@@ -20379,6 +20376,44 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FFD9B49A246",
+   "company": "Jobot",
+   "title": "Director, Protection & Controls Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:41.549Z",
+   "retryAt": "2026-11-22T07:06:41.549Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0744ECF3C0CB",
+   "company": "Jobot",
+   "title": "Regional VP - Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:44.640Z",
+   "retryAt": "2026-11-22T07:06:44.640Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21722,24 +21757,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-0E8C5076C80A",
-   "company": "Wycliffe Bible Translators USA",
-   "title": "Dir. of Innovative Workforce Initiatives",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T15:06:50.898Z",
-   "retryAt": "2026-11-22T07:06:50.898Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-4B064CD3A522",
    "company": "Illuminate USA",
    "title": "Director Talent Development",
@@ -21752,24 +21769,6 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481825268",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-011DF7129CA9",
-   "company": "Lockheed Martin",
-   "title": "Manufacturing Engineering Mgr - Level 5",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T15:06:53.962Z",
-   "retryAt": "2026-11-22T07:06:53.962Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
      "status": "HTTP_429"
     }
    ],
@@ -21893,6 +21892,186 @@
    "retryAt": "2026-11-22T06:57:20.361Z",
    "attempts": [],
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+  },
+  {
+   "id": "V2I-6CB5FE5A5426",
+   "company": "Performance Food Group",
+   "title": "President, Opco I",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:47.837Z",
+   "retryAt": "2026-11-21T16:06:47.837Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475981765",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:50.898Z",
+   "retryAt": "2026-11-22T07:06:50.898Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-011DF7129CA9",
+   "company": "Lockheed Martin",
+   "title": "Manufacturing Engineering Mgr - Level 5",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:53.962Z",
+   "retryAt": "2026-11-22T07:06:53.962Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-279BC8F1C11B",
+   "company": "BAE Systems, Inc.",
+   "title": "Director III, Product Lifecycle Applications",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:06:57.124Z",
+   "retryAt": "2026-11-21T16:06:57.124Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4453847196",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1014C18CF6D6",
+   "company": "Sikla GmbH",
+   "title": "Customer Service & Order Fulfillment Manager (m / f / d)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:00.277Z",
+   "retryAt": "2026-11-21T16:07:00.277Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482393509",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4774403633B7",
+   "company": "SOLV Energy",
+   "title": "Director of Solar Construction, SDI Services",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:03.452Z",
+   "retryAt": "2026-11-21T16:07:03.452Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482731041",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-46A779F757EE",
+   "company": "Baker Roofing Company",
+   "title": "Regional Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:06.571Z",
+   "retryAt": "2026-11-21T16:07:06.571Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A6448AFF5B38",
+   "company": "Tree Top Staffing LLC",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:09.768Z",
+   "retryAt": "2026-11-21T16:07:09.768Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C28DE3BEDFE",
+   "company": "Applied Materials",
+   "title": "Technical Project/Program Management Director - Advanced Packaging",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:12.958Z",
+   "retryAt": "2026-11-21T16:07:12.958Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-04349F175169",
+   "company": "BENTELER Group",
+   "title": "Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T15:07:16.136Z",
+   "retryAt": "2026-11-21T16:07:16.136Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487090482",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
    "id": "V2I-14B5BEB7CC51",
