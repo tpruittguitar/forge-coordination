@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261121T1257Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261121T1437Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -48,9 +48,9 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | BOARD:greenhouse | Anduril Industries | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Anduril Industries | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Anduril Industries | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Chalice Oregon | [Director of Industrialization](https://job-boards.greenhouse.io/panthalassa/jobs/6201451004) | Portland, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
