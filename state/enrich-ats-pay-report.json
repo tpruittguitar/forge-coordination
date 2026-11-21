@@ -1,15 +1,15 @@
 {
- "at": "2026-11-21T14:13:01.727Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T140445816Z",
+ "at": "2026-11-21T14:22:09.178Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T141832707Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T14:04:57.242Z",
-  "sha256": "8f41e6311ad904b653682e33015e79901116ea04d808503c881df451e5d9d148",
+  "readAt": "2026-11-21T14:18:44.433Z",
+  "sha256": "0287ab94d2803648bf721589e27fa39bf71f8416d07bad9cc44c345326240eab",
   "rows": 9528
  },
  "rows": 9528,
- "eligible": 1031,
+ "eligible": 1028,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -41,7 +41,7 @@
   "pending_batches": 5,
   "fenced_ids": 38
  },
- "anchors": 1384,
+ "anchors": 1387,
  "archive_anchors": 5,
  "ats_rows": 0,
  "ats_read": 0,
@@ -49,32 +49,40 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 622,
- "skipped_recent": 346,
- "submitted": 3,
+ "estimate_waiting_for_posting": 621,
+ "skipped_recent": 348,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 3,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 3,
- "salary_independently_verified": 3,
- "agg_tried": {},
+ "salary_submitted": 0,
+ "salary_independently_verified": 0,
+ "agg_tried": {
+  "linkedin": 1
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
- "workday_window_active": false,
+ "workday_window_active": true,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -114,7 +122,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T14:05:04.114Z",
+  "profile_as_of": "2026-11-21T14:18:51.512Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14719,40 +14727,27 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 3,
-  "salary": 3,
-  "degree": 3
+  "planned": 0,
+  "salary": 0,
+  "degree": 0
  },
  "not_attempted": 641,
- "nothing_found": 641,
- "attempt_only_skipped": 3,
+ "nothing_found": 642,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
-  "scored": 3,
-  "legacy_replaced": 3,
-  "merged": 3,
+  "scored": 0,
+  "legacy_replaced": 0,
+  "merged": 0,
   "added": 0,
   "short_posting": 0,
   "no_posting": 2666,
   "deferred": 0,
   "fenced": 38,
   "inactive": 6366,
-  "already_fitted": 455,
+  "already_fitted": 458,
   "already_fitted_legacy": 0,
-  "sample": [
-   {
-    "id": "V2I-87F830BF6B7C",
-    "fit": 33
-   },
-   {
-    "id": "V2I-BE73E46A5287",
-    "fit": 83
-   },
-   {
-    "id": "V2I-696779A6F0E1",
-    "fit": 33
-   }
-  ]
+  "sample": []
  },
  "business_label": {
   "labeled": 0,
@@ -14771,11 +14766,10 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2348,
- "network_requests": 6,
- "planned": 3,
+ "roles_researched": 2343,
+ "network_requests": 7,
+ "planned": 0,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14785,8 +14779,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
   "SOURCE_RESEARCH_REQUIRED": 771,
-  "EVIDENCE_FOUND": 69,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 26,
+  "EVIDENCE_FOUND": 66,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -15959,6 +15953,45 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-21T13:52:07.489Z",
    "retryAt": "2026-11-21T14:52:07.489Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3DC5701F1EFB",
+   "company": "State of Texas",
+   "title": "Deputy Director of Strategic Operations and Transformation (Austin)",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T14:06:04.195Z",
+   "retryAt": "2026-11-21T15:06:04.195Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D2B97757ED6D",
+   "company": "Collier County, FL",
+   "title": "Plant Manager-Northeast Water Treatment Plant",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T14:06:04.196Z",
+   "retryAt": "2026-11-21T15:06:04.196Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B84B3FE20D23",
+   "company": "Signature HealthCARE LLC",
+   "title": "Plant Director",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T14:06:04.198Z",
+   "retryAt": "2026-11-21T15:06:04.198Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -20335,9 +20368,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T10:19:36.831Z",
-   "retryAt": "2026-11-21T14:19:36.831Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T14:19:39.984Z",
+   "retryAt": "2026-11-21T22:19:39.984Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492593965",
@@ -32575,71 +32608,7 @@
   }
  ],
  "product_sample": [],
- "sample": [
-  {
-   "id": "V2I-696779A6F0E1",
-   "fields": {
-    "SALARY_BASE_LOW": 150000,
-    "SALARY_BASE_HIGH": 175000,
-    "SALARY_MIDPOINT": 162500,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.workstream.us/j/f40a0b39/dc-restaurant-group/arlington-261454/director-of-operations-a7ff2abb?referer_source=Indeed&source=Indeed",
-    "SALARY_ASOF": "2026-11-21",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.workstream.us/j/f40a0b39/dc-restaurant-group/arlington-261454/director-of-operations-a7ff2abb?referer_source=Indeed&source=Indeed",
-    "DEGREE_ASOF": "2026-11-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-21",
-    "SCOPE_FIT_RAW": "33",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 3926-char saved posting (6+ = 100): team_building, lean_operations",
-    "SALARY_SCORE_POINT": 168750
-   }
-  },
-  {
-   "id": "V2I-BE73E46A5287",
-   "fields": {
-    "SALARY_BASE_LOW": 130000,
-    "SALARY_BASE_HIGH": 150000,
-    "SALARY_MIDPOINT": 140000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.paycomonline.net/v4/ats/web.php/portal/158AB94EE689D2158E78E337C9738B3C/jobs/627166?source=Indeed",
-    "SALARY_ASOF": "2026-11-21",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree in finance, accounting, business, real estate, public administration or a related field required.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.paycomonline.net/v4/ats/web.php/portal/158AB94EE689D2158E78E337C9738B3C/jobs/627166?source=Indeed",
-    "DEGREE_ASOF": "2026-11-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-21",
-    "SCOPE_FIT_RAW": "83",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 5/11 resume competencies observed in a 17703-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, manufacturing_systems, lean_operations",
-    "SALARY_SCORE_POINT": 145000
-   }
-  },
-  {
-   "id": "V2I-87F830BF6B7C",
-   "fields": {
-    "SALARY_BASE_LOW": 196000,
-    "SALARY_BASE_HIGH": 220000,
-    "SALARY_MIDPOINT": 208000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=76c61a3541a951e3",
-    "SALARY_ASOF": "2026-11-21",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=76c61a3541a951e3",
-    "DEGREE_ASOF": "2026-11-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-21",
-    "SCOPE_FIT_RAW": "33",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 2038-char saved posting (6+ = 100): manufacturing_systems, lean_operations",
-    "SALARY_SCORE_POINT": 214000
-   }
-  }
- ],
+ "sample": [],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
