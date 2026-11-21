@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T00:33:46.002Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T002853366Z",
+ "at": "2026-11-21T00:41:32.893Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T003804775Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T00:29:02.410Z",
+  "readAt": "2026-11-21T00:38:12.420Z",
   "sha256": "bb14f3d7e76e67c8a986bf3cbe6c35d90a2a13787abbb6e2757eeeb82961c1e4",
   "rows": 9476
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 615,
- "skipped_recent": 332,
+ "estimate_waiting_for_posting": 614,
+ "skipped_recent": 329,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,9 +63,11 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 4
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {
   "linkedin": 3
@@ -78,7 +80,7 @@
   ]
  },
  "agg_wall": {},
- "source_reads": 3,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -124,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T00:29:08.625Z",
+  "profile_as_of": "2026-11-21T00:38:18.031Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14733,8 +14735,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 636,
- "nothing_found": 639,
+ "not_attempted": 638,
+ "nothing_found": 641,
+ "attempt_only_skipped": 1,
  "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
@@ -14769,7 +14772,7 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 2325,
- "network_requests": 9,
+ "network_requests": 10,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14780,9 +14783,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 142,
-  "SOURCE_RESEARCH_REQUIRED": 779,
+  "SOURCE_RESEARCH_REQUIRED": 778,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 44,
+  "EVIDENCE_FOUND": 45,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -20513,87 +20516,15 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2FD2071D86E7",
-   "company": "Chick-fil-A Supply",
-   "title": "Assistant General Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T00:30:13.904Z",
-   "retryAt": "2026-11-21T16:30:13.904Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4417232664",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F523692857A9",
-   "company": "ZRG",
-   "title": "Group Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T00:30:16.929Z",
-   "retryAt": "2026-11-21T16:30:16.929Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483206369",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF94D03A2886",
-   "company": "Target",
-   "title": "Production Controller- Flow Center- Hampton GA",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T00:30:19.986Z",
-   "retryAt": "2026-11-21T16:30:19.986Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485994753",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F84E586E3938",
-   "company": "Precision Castparts",
-   "title": "Technical Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T08:36:53.931Z",
-   "retryAt": "2026-11-21T00:36:53.931Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4473032789",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-D5F8D2D26003",
    "company": "General Motors",
    "title": "Senior Manager - AV Evaluation",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T08:36:57.014Z",
-   "retryAt": "2026-11-21T00:36:57.014Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T00:39:12.775Z",
+   "retryAt": "2026-11-21T16:39:12.775Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465347449",
@@ -20609,9 +20540,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T08:37:12.933Z",
-   "retryAt": "2026-11-21T00:37:12.933Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T00:39:15.897Z",
+   "retryAt": "2026-11-21T16:39:15.897Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483340597",
@@ -20627,9 +20558,9 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T08:37:15.991Z",
-   "retryAt": "2026-11-21T00:37:15.991Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T00:39:19.011Z",
+   "retryAt": "2026-11-21T16:39:19.011Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485605134",
@@ -20645,7 +20576,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T08:37:34.874Z",
    "retryAt": "2026-11-21T00:37:34.874Z",
    "attempts": [
@@ -20663,7 +20594,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T08:37:37.937Z",
    "retryAt": "2026-11-21T00:37:37.937Z",
    "attempts": [
@@ -20681,7 +20612,7 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-20T08:37:41.017Z",
    "retryAt": "2026-11-21T00:37:41.017Z",
    "attempts": [
@@ -21825,6 +21756,60 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477182490",
      "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FD2071D86E7",
+   "company": "Chick-fil-A Supply",
+   "title": "Assistant General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T00:30:13.904Z",
+   "retryAt": "2026-11-21T16:30:13.904Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4417232664",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F523692857A9",
+   "company": "ZRG",
+   "title": "Group Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T00:30:16.929Z",
+   "retryAt": "2026-11-21T16:30:16.929Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483206369",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AF94D03A2886",
+   "company": "Target",
+   "title": "Production Controller- Flow Center- Hampton GA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T00:30:19.986Z",
+   "retryAt": "2026-11-21T16:30:19.986Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485994753",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29789,24 +29774,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-1DD1A72C87EC",
-   "company": "AES Corporation",
-   "title": "Principal Mechanical Engineer - Thermal Projects",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-21T00:30:20.239Z",
-   "retryAt": "2026-11-21T16:30:20.239Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-20890049D143",
    "company": "YMCA of the USA",
    "title": "Associate Executive Director",
@@ -32287,6 +32254,24 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1DD1A72C87EC",
+   "company": "AES Corporation",
+   "title": "Principal Mechanical Engineer - Thermal Projects",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T00:30:20.239Z",
+   "retryAt": "2026-11-21T16:30:20.239Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
