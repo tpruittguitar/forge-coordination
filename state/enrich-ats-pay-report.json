@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T01:45:23.860Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T014110152Z",
+ "at": "2026-11-21T01:59:33.882Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T015211858Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T01:41:20.281Z",
+  "readAt": "2026-11-21T01:52:25.183Z",
   "sha256": "9e55de7029076a154a602252fc4d166a22a5595cfc86ba27110fa370290d5e9b",
   "rows": 9482
  },
@@ -50,7 +50,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 614,
- "skipped_recent": 337,
+ "skipped_recent": 336,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,10 +63,10 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 4
+  "linkedin": 7
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 4
  },
  "agg_pay": {},
  "agg_failed": {
@@ -79,7 +79,7 @@
   ]
  },
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 7,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -91,10 +91,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 2
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -112,7 +113,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 2,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -125,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T01:41:26.828Z",
+  "profile_as_of": "2026-11-21T01:52:30.582Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1621,6 +1622,12 @@
   },
   {
    "id": "V2I-AB4062E0FD54",
+   "invalidAnchors": [],
+   "contextRefresh": true,
+   "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
+  },
+  {
+   "id": "V2I-F453BAA69C04",
    "invalidAnchors": [],
    "contextRefresh": true,
    "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
@@ -14703,7 +14710,7 @@
   }
  ],
  "salary_repair": {
-  "skipped_blocked": 1470,
+  "skipped_blocked": 1471,
   "review_skipped_blocked": 1877,
   "by_missing": {
    "products (what they make)": 1815,
@@ -14713,14 +14720,28 @@
  },
  "salary_review": {
   "eligible": 1892,
-  "due": 1877,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1879,
+  "reviewed": 2,
+  "target_reads": 2,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 2,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-DF9B96E18925",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-8E988362060C",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 2
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14729,23 +14750,29 @@
   "degree": 0
  },
  "not_attempted": 635,
- "nothing_found": 637,
+ "nothing_found": 636,
+ "attempt_only_skipped": 4,
  "source_origin_blocks": {},
- "attempt_only_skipped": 2,
+ "est_bls": 2,
  "products_planned": 0,
  "code_fit": {
-  "scored": 0,
-  "legacy_replaced": 0,
+  "scored": 1,
+  "legacy_replaced": 1,
   "merged": 0,
-  "added": 0,
+  "added": 1,
   "short_posting": 0,
-  "no_posting": 2657,
+  "no_posting": 2656,
   "deferred": 0,
   "fenced": 39,
   "inactive": 6366,
   "already_fitted": 420,
   "already_fitted_legacy": 0,
-  "sample": []
+  "sample": [
+   {
+    "id": "V2I-F9E2F9D31F22",
+    "fit": 33
+   }
+  ]
  },
  "business_label": {
   "labeled": 0,
@@ -14764,10 +14791,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2325,
- "network_requests": 10,
- "planned": 0,
+ "roles_researched": 2326,
+ "network_requests": 13,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_unconfirmed": 1,
+ "writer_error": "The operation was aborted due to timeout; receipt PENDING_DELIVERY",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14776,9 +14805,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 142,
-  "SOURCE_RESEARCH_REQUIRED": 776,
+  "SOURCE_RESEARCH_REQUIRED": 774,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 52,
+  "EVIDENCE_FOUND": 54,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15296,42 +15325,6 @@
     {
      "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
      "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C6A429589607",
-   "company": "Benchmark",
-   "title": "Director, Operations - Precision Machining",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T00:48:12.312Z",
-   "retryAt": "2026-11-21T01:48:12.312Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4432825763",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7C50989FE9F3",
-   "company": "EnduroSat",
-   "title": "VP of Programs & Mission Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T00:48:15.460Z",
-   "retryAt": "2026-11-21T01:48:15.460Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482167222",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20574,90 +20567,18 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-3F75A8C167A1",
-   "company": "The Clorox Company",
-   "title": "Shift Maintenance Manager (Day or Night Shift)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T01:42:21.891Z",
-   "retryAt": "2026-11-21T17:42:21.891Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468805968",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CF9C4D3FB9D6",
-   "company": "Chugach Government Solutions, LLC",
-   "title": "Sr. Business Manager - NASA",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T01:42:24.987Z",
-   "retryAt": "2026-11-21T17:42:24.987Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481792918",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-722242A5F67B",
    "company": "RESA Power",
    "title": "Service Branch Manager - Electrical Testing & Maintenance",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T09:49:56.854Z",
-   "retryAt": "2026-11-21T01:49:56.854Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T01:53:18.966Z",
+   "retryAt": "2026-11-21T17:53:18.966Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480682464",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FF9C22F69589",
-   "company": "Troon",
-   "title": "Resort Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T09:49:59.890Z",
-   "retryAt": "2026-11-21T01:49:59.890Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463935181",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E07CDDD02FC3",
-   "company": "State of Florida",
-   "title": "DETENTION SUPERINTENDENT - 80003866",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T09:50:02.922Z",
-   "retryAt": "2026-11-21T01:50:02.922Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483153395",
      "status": "HTTP_429"
     }
    ],
@@ -21850,6 +21771,78 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4383834848",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3F75A8C167A1",
+   "company": "The Clorox Company",
+   "title": "Shift Maintenance Manager (Day or Night Shift)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T01:42:21.891Z",
+   "retryAt": "2026-11-21T17:42:21.891Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468805968",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CF9C4D3FB9D6",
+   "company": "Chugach Government Solutions, LLC",
+   "title": "Sr. Business Manager - NASA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T01:42:24.987Z",
+   "retryAt": "2026-11-21T17:42:24.987Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481792918",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F453BAA69C04",
+   "company": "Gerber Collision & Glass",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T01:42:28.136Z",
+   "retryAt": "2026-11-21T02:42:28.136Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481953095",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F84E586E3938",
+   "company": "Precision Castparts",
+   "title": "Technical Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T01:42:31.252Z",
+   "retryAt": "2026-11-21T02:42:31.252Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4473032789",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32404,7 +32397,16 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-F9E2F9D31F22",
+   "fields": {
+    "SCOPE_FIT_RAW": "33",
+    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
+    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 2/11 resume competencies observed in a 3514-char saved posting (6+ = 100): manufacturing_leadership, automation_robotics"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
