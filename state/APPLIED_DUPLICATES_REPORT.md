@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-21T02:37:50.704Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-21T11:30:35.623Z from CANONICAL_WRITER_MASTER.
 
-Of 3205 jobs waiting on Tim, 84 match a role he already applied to, was rejected from, or declined:
+Of 3232 jobs waiting on Tim, 87 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
-- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 84
+- Kept, labeled with the earlier application (new posting, different site, or possible repeat): 87
 
-Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 3 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -16,7 +16,7 @@ Marked DUPLICATE of the row Tim already decided. Reopen from the row if one is w
 | Score | Company | Title | Label | Evidence | Rows |
 |---|---|---|---|---|---|
 
-## Kept, labeled (84)
+## Kept, labeled (87)
 Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 
 | Score | Company | Title | Label | Evidence | Rows |
@@ -41,6 +41,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 58 | Oceans Healthcare | Quality Director | You declined 2026-11-07 · different site | Different worksite: De Ridder, LA, USA vs earlier Longview, TX, USA | V2I-783683EE9FFD → V2I-E76AD0565AF1 |
 | 58 | Shield | Compensation Director, Aircraft Engineering and Manufacturing (R6270) | You declined 2026-11-02 · possible repeat | Posting first seen 2026-11-17, 15 days after 2026-11-02; no posting identity to compare | V2I-C13E52963961 → V2I-BF8E4CDF88E3 |
 | 58 | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
+| 58 | PAM Health Specialty Hospital of Tulsa | Director of Quality Management (RN) / Tulsa LTACH | You declined 2026-11-14 · possible repeat | Posting first seen 2026-11-21, 7 days after 2026-11-14; no posting identity to compare | V2I-806CB8BCC2B6 → V2I-26861E8AD7A2 |
 | 57 | Tesla | Regional Manager, Service Distribution | You declined 2026-11-14 · different site | Different worksite: The Colony, TX vs earlier Silver Spring, MD | V2I-847E6F45EF7F → V2I-0EEF32C5FA54 |
 | 57 | EY | SAP - Production Planning - Digital Manufacturing Cloud - Senior Manager-Consulting - Location OPEN | You declined 2026-11-04 · different site | Different worksite: Huntsville, AL vs earlier Chattanooga, TN | V2I-A168D592C34D → V2I-3A2F23AAE156 |
 | 56 | Technifite | Plant Manager-paper manufacturing | You declined 2026-11-08 · possible repeat | Posting first seen 2026-11-01, -7 days after 2026-11-08; no posting identity to compare | V2I-4978430E32DA → V2I-984763270B32 |
@@ -59,6 +60,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Lockheed Martin | Multifunctional Manufacturing Planner Asc Mgr - L4 | You declined 2026-11-05 · possible repeat | Posting first seen 2026-11-13, 8 days after 2026-11-05; no posting identity to compare | V2I-05D9CC9BF898 → V2I-324E94DE9152 |
 | 51 | Generac | Senior Manager Value Stream | You declined 2026-11-14 · different site | Different worksite: Holdrege, NE vs earlier Whitewater, WI | V2I-620A2C661996 → V2I-B598F8FCC62F |
 | 51 | Arena Family of Companies | Director of Quality (Aerospace & Defense) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-6BA0AEF4F8FD → V2I-4D814A27A330 |
+| 51 | Confidential Manufacturing Company | Director of Quality | You declined 2026-11-18 · different site | Different worksite: Charlotte, NC, USA vs earlier Washington DC-Baltimore Area | V2I-410BF471CBF6 → V2I-546CC32EA838 |
 | 50 | Sanmina | VP, Operations | You declined 2026-10-26 · different site | Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2) | V2I-34A6A4DD91D8 → V2I-981E839AC295 |
 | 49 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 47 | KinderCare Learning Companies | Director Quality and Education | You declined 2026-11-13 · different site | Different worksite: Las Vegas, NV, USA vs earlier The Woodlands, TX, USA | V2I-A3325F8B7054 → V2I-29939DFD531D |
@@ -97,6 +99,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 38 | Eaton Aerospace | Quality Manager | You declined 2026-10-23 · different site | Different worksite: North Little Rock, AR, United States vs earlier Cleveland, TN | V2I-BEC62BD94DB7 → V2I-0E15E0B49579 |
 | 38 | nVent | Quality Manager | You declined 2026-11-14 · different site | Different worksite: Houston, TX, United States vs earlier Anoka, MN, United States | V2I-11C2EA7009A2 → V2I-CB8A4D06EAC7 |
 | 38 | L3Harris Technologies | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, Arkansas, United States vs earlier Mason, OH | V2I-37158840AD88 → V2I-7BAB613B2728 |
+| 38 | L3Harris Technologies | Senior Manager, Quality Management (48241) | You declined 2026-11-02 · different site | Different worksite: Orange County, Virginia, United States vs earlier Mason, OH | V2I-F346A7051036 → V2I-7BAB613B2728 |
 | 37 | NORTHROP GRUMMAN | Principal /Sr. Principal Engineer Manufacturing | You declined 2026-10-27 · different site | Different worksite: Sunnyvale, CA, United States vs earlier Plymouth, MN | V2I-F92932B38F57 → V2I-98D2E21A96F9 |
 | 37 | NORTHROP GRUMMAN | Engineer Manufacturing / Principal Engineer Manufacturing | You declined 2026-10-27 · different site | Different worksite: Sunnyvale, CA, United States vs earlier Plymouth, MN | V2I-DF80EC3B09FE → V2I-98D2E21A96F9 |
 | 37 | Southwire Company | Process Optimization Manager | You declined 2026-11-07 · different site | Different worksite: Carrollton, GA vs earlier Starkville, MS | V2I-B50C45DDC874 → V2I-D0E01741BF7C |
