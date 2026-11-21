@@ -1,15 +1,15 @@
 {
- "at": "2026-11-21T03:24:06.864Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T031622904Z",
+ "at": "2026-11-21T03:31:57.618Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T032831304Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T03:16:34.721Z",
-  "sha256": "2c8932f331c15378d09927b24078537b2d76fbc4f9d1a63cb5c6fefef35da7f0",
+  "readAt": "2026-11-21T03:28:44.324Z",
+  "sha256": "e72b4188f7ad922431210fee20426e57c83848297f4eafaa0898d5ae3b9f0746",
   "rows": 9493
  },
  "rows": 9493,
- "eligible": 1020,
+ "eligible": 1019,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -34,9 +34,7 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [
-   "FORGE-ENRICH_ATS-ATSBOT-20261121T030443705Z-B01"
-  ],
+  "released_applied": [],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -49,13 +47,13 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 1,
+ "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 615,
- "skipped_recent": 339,
- "submitted": 1,
+ "estimate_waiting_for_posting": 618,
+ "skipped_recent": 340,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
@@ -65,16 +63,22 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 5
+  "linkedin": 3
  },
- "agg_read": {
-  "linkedin": 5
- },
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 5,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -120,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T03:16:40.193Z",
+  "profile_as_of": "2026-11-21T03:28:50.009Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -5577,6 +5581,12 @@
   },
   {
    "id": "V2I-854CDAC1AFA3",
+   "invalidAnchors": [],
+   "contextRefresh": true,
+   "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
+  },
+  {
+   "id": "V2I-BA6D16923397",
    "invalidAnchors": [],
    "contextRefresh": true,
    "status": "SKIPPED_BLOCKED_OTHER_FIELDS"
@@ -14698,17 +14708,17 @@
   }
  ],
  "salary_repair": {
-  "skipped_blocked": 1470,
-  "review_skipped_blocked": 1880,
+  "skipped_blocked": 1471,
+  "review_skipped_blocked": 1881,
   "by_missing": {
-   "products (what they make)": 1818,
-   "work arrangement (remote/hybrid/on-site)": 1161,
+   "products (what they make)": 1819,
+   "work arrangement (remote/hybrid/on-site)": 1162,
    "location / geography": 13
   }
  },
  "salary_review": {
   "eligible": 1896,
-  "due": 1880,
+  "due": 1881,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -14724,8 +14734,8 @@
   "degree": 0
  },
  "not_attempted": 636,
- "nothing_found": 636,
- "attempt_only_skipped": 4,
+ "nothing_found": 639,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14758,11 +14768,10 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2328,
- "network_requests": 13,
- "planned": 1,
+ "roles_researched": 2331,
+ "network_requests": 9,
+ "planned": 0,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -14773,7 +14782,7 @@
   "NOT_YET_ATTEMPTED": 143,
   "SOURCE_RESEARCH_REQUIRED": 775,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 28,
-  "EVIDENCE_FOUND": 56,
+  "EVIDENCE_FOUND": 55,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -21839,6 +21848,78 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465336407",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-46A779F757EE",
+   "company": "Baker Roofing Company",
+   "title": "Regional Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T03:17:35.125Z",
+   "retryAt": "2026-11-21T04:17:35.125Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4472318699",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-50152038491A",
+   "company": "nVent",
+   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T03:17:41.461Z",
+   "retryAt": "2026-11-21T04:17:41.461Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FF9C22F69589",
+   "company": "Troon",
+   "title": "Resort Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T03:17:44.603Z",
+   "retryAt": "2026-11-21T04:17:44.603Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463935181",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E07CDDD02FC3",
+   "company": "State of Florida",
+   "title": "DETENTION SUPERINTENDENT - 80003866",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T03:17:47.786Z",
+   "retryAt": "2026-11-21T04:17:47.786Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483153395",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29810,13 +29891,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T11:28:28.152Z",
-   "retryAt": "2026-11-21T03:28:28.152Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T03:29:39.698Z",
+   "retryAt": "2026-11-21T19:29:39.698Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480654524",
-     "status": "NO_EXACT_COMPLETE_POSTING"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29829,13 +29910,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T11:28:31.266Z",
-   "retryAt": "2026-11-21T03:28:31.266Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T03:29:42.775Z",
+   "retryAt": "2026-11-21T19:29:42.775Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478604672",
-     "status": "HTTP_404"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29848,13 +29929,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-20T11:28:34.431Z",
-   "retryAt": "2026-11-21T03:28:34.431Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T03:29:45.866Z",
+   "retryAt": "2026-11-21T19:29:45.866Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485119317",
-     "status": "NO_EXACT_COMPLETE_POSTING"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32393,18 +32474,7 @@
   }
  ],
  "product_sample": [],
- "sample": [
-  {
-   "id": "V2I-BA6D16923397",
-   "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Operations Management, Business, or a related field.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4463496157",
-    "DEGREE_ASOF": "2026-11-21",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-21"
-   }
-  }
- ],
+ "sample": [],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
