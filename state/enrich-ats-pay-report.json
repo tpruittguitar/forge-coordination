@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T23:07:35.347Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T230258157Z",
+ "at": "2026-11-21T23:17:09.618Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T231223305Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T23:03:18.247Z",
+  "readAt": "2026-11-21T23:12:31.372Z",
   "sha256": "5576d63aab275f62ab4c9a5d4bb2b61a71d91581c65f897126f37eb8046f0c26",
   "rows": 9534
  },
@@ -63,16 +63,22 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 3
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 3,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -84,10 +90,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 3,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 2
  },
  "bls_queries": 0,
  "est_shared_low": 1,
@@ -105,20 +112,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 39,
-  "saved_reused": 39,
+  "targets": 3,
+  "candidates": 8,
+  "saved_reused": 7,
   "cache_hits": 0,
-  "reads": 0,
+  "reads": 1,
   "found": 0,
-  "failed": 0,
+  "failed": 1,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-21T23:03:23.715Z",
+  "profile_as_of": "2026-11-21T23:12:36.553Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14712,22 +14719,34 @@
  },
  "salary_review": {
   "eligible": 1911,
-  "due": 1896,
-  "reviewed": 1,
-  "target_reads": 2,
+  "due": 1898,
+  "reviewed": 3,
+  "target_reads": 4,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 1,
+  "no_improvement": 3,
   "guard_dropped": 0,
   "samples": [
    {
-    "id": "V2I-42E984DD7EA6",
+    "id": "V2I-26AFABD9D539",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-68409806765F",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-049F340F3D8E",
     "status": "NO_STRONGER_EVIDENCE",
     "priorConfidence": "LOW",
     "basis": "FORGE-ESTIMATE"
    }
   ],
-  "aggregator_reads": 1
+  "aggregator_reads": 2
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14736,8 +14755,10 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 638,
- "attempt_only_skipped": 2,
+ "nothing_found": 639,
+ "attempt_only_skipped": 1,
+ "source_origin_blocks": {},
+ "est_bls": 2,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14770,8 +14791,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2344,
- "network_requests": 12,
+ "roles_researched": 2345,
+ "network_requests": 15,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14782,9 +14803,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 776,
+  "SOURCE_RESEARCH_REQUIRED": 777,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 58,
+  "EVIDENCE_FOUND": 57,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -21808,37 +21829,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-FF9C22F69589",
-   "company": "Troon",
-   "title": "Resort Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T22:12:37.613Z",
-   "retryAt": "2026-11-21T23:12:37.613Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463935181",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-1014C18CF6D6",
    "company": "Sikla GmbH",
    "title": "Customer Service & Order Fulfillment Manager (m / f / d)",
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T22:12:40.744Z",
-   "retryAt": "2026-11-21T23:12:40.744Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-21T23:13:33.858Z",
+   "retryAt": "2026-11-22T15:13:33.858Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482393509",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21962,6 +21965,42 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483124051",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CDBEF98F4186",
+   "company": "Onterris",
+   "title": "Region Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T23:04:24.201Z",
+   "retryAt": "2026-11-22T00:04:24.201Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471901258",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-226009AAA44D",
+   "company": "Nissan Motor Corporation",
+   "title": "Purchasing Project Management Intern - Summer 2027 - Franklin, TN",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T23:04:27.360Z",
+   "retryAt": "2026-11-22T00:04:27.360Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485311555",
      "status": "FULL_POSTING_READ"
     }
    ],
