@@ -1,10 +1,10 @@
 {
- "at": "2026-11-21T14:22:09.178Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T141832707Z",
+ "at": "2026-11-21T14:29:37.786Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261121T142640096Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-21T14:18:44.433Z",
+  "readAt": "2026-11-21T14:26:49.268Z",
   "sha256": "0287ab94d2803648bf721589e27fa39bf71f8416d07bad9cc44c345326240eab",
   "rows": 9528
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 621,
- "skipped_recent": 348,
+ "estimate_waiting_for_posting": 620,
+ "skipped_recent": 349,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,21 +62,13 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 1
- },
+ "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 1
- },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -122,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-21T14:18:51.512Z",
+  "profile_as_of": "2026-11-21T14:26:54.104Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14732,8 +14724,7 @@
   "degree": 0
  },
  "not_attempted": 641,
- "nothing_found": 642,
- "source_origin_blocks": {},
+ "nothing_found": 641,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14766,8 +14757,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2343,
- "network_requests": 7,
+ "roles_researched": 2342,
+ "network_requests": 6,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -20361,25 +20352,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-C2D696A21D4D",
-   "company": "The Coca-Cola Company",
-   "title": "Director, Field Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-21T14:19:39.984Z",
-   "retryAt": "2026-11-21T22:19:39.984Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492593965",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-8CE06A81C199",
    "company": "Warker LLC",
    "title": "Manufacturing Operations Director",
@@ -20413,6 +20385,25 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492187848",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2D696A21D4D",
+   "company": "The Coca-Cola Company",
+   "title": "Director, Field Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-21T14:19:39.984Z",
+   "retryAt": "2026-11-21T22:19:39.984Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492593965",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
