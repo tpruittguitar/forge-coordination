@@ -725,7 +725,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(!plan||!completeGrantBatch||blocked(r)||!validIdentity(r)||plan.identity!==Store.hash([r.COMPANY,r.TITLE,r.LOCATION]))return null;
       const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       const capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
-      if(capture&&bulkSource?.routeConflict(r,capture.url))return null;
+      if(capture&&[capture.url,capture.degreeUrl].some(url=>url&&bulkSource?.routeConflict(r,url)))return null;
       const accepted=grantExtraction.acceptedBulkResearch(r,capture,ledger,getProduct(r));
       if(!accepted||plan.source!==Store.hash([capture?.url,capture?.text]))return null;
       const normalize=require('../source-intake/writer-cell').normalizeCell;
@@ -759,7 +759,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(!validIdentity(r)){coverage.identityNeedsGovernedRepair++;continue;}
       let old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
-      const conflictingUrl=bulkSource&&[capture?.url,old?.url].find(url=>url&&bulkSource.routeConflict(r,url));
+      const conflictingUrl=bulkSource&&[capture?.url,capture?.degreeUrl,old?.url,old?.degreeUrl].find(url=>url&&bulkSource.routeConflict(r,url));
       if(conflictingUrl){capture=null;old=null;exactPublic.stats.blockedIdentity++;}
       const rawNeeds=rawNeeded(r);
       if(!rawNeeds&&!productNeeded(r)&&!grantExtraction.productProposal)continue;
