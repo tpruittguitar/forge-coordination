@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T17:31:58.882Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T172732399Z",
+ "at": "2026-11-22T17:40:23.583Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T173644433Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T17:27:41.711Z",
+  "readAt": "2026-11-22T17:36:53.913Z",
   "sha256": "6c594a4a24412e05295d2d4fe70950cde215535c70512c5c8d374aa4eceaa11a",
   "rows": 9542
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 619,
- "skipped_recent": 332,
+ "estimate_waiting_for_posting": 617,
+ "skipped_recent": 348,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,27 +62,13 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 16
- },
- "agg_read": {
-  "linkedin": 12
- },
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 3
- },
- "agg_errors": {
-  "linkedin": [
-   "429",
-   "429",
-   "429"
-  ]
- },
- "agg_wall": {
-  "linkedin": 1
- },
- "source_reads": 16,
+ "agg_failed": {},
+ "agg_errors": {},
+ "agg_wall": {},
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -128,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T17:27:47.166Z",
+  "profile_as_of": "2026-11-22T17:36:59.370Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14738,9 +14724,7 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 642,
- "source_origin_blocks": {},
- "attempt_only_skipped": 12,
+ "nothing_found": 638,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14773,8 +14757,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2353,
- "network_requests": 24,
+ "roles_researched": 2348,
+ "network_requests": 8,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -20645,42 +20629,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-48E2D58CA5A0",
-   "company": "Sabal Palms Recovery Center",
-   "title": "Director of Revenue Cycle Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T17:28:43.954Z",
-   "retryAt": "2026-11-23T09:28:43.954Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D1E70BA958B4",
-   "company": "ADM",
-   "title": "Maintenance Superintendent - Chattanooga, TN",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T17:28:47.019Z",
-   "retryAt": "2026-11-23T09:28:47.019Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-51A6A0CE41D3",
    "company": "Schneider Electric",
    "title": "Manufacturing Quality Manager",
@@ -21674,6 +21622,258 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4468805968",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-48E2D58CA5A0",
+   "company": "Sabal Palms Recovery Center",
+   "title": "Director of Revenue Cycle Management",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:43.954Z",
+   "retryAt": "2026-11-23T09:28:43.954Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D1E70BA958B4",
+   "company": "ADM",
+   "title": "Maintenance Superintendent - Chattanooga, TN",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:47.019Z",
+   "retryAt": "2026-11-23T09:28:47.019Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5394FA4BBADD",
+   "company": "ICE",
+   "title": "QC Manager (Mortgage)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:50.165Z",
+   "retryAt": "2026-11-22T18:28:50.165Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485605134",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-16C39E63D998",
+   "company": "US Door & More Inc.",
+   "title": "Workshop Operations Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:53.299Z",
+   "retryAt": "2026-11-22T18:28:53.299Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480871025",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-27B8271F4EB4",
+   "company": "Minth North America, Inc.",
+   "title": "Program Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:56.438Z",
+   "retryAt": "2026-11-22T18:28:56.438Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449936030",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-904A8EF1475F",
+   "company": "General Motors",
+   "title": "Manager, AV Evaluation",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:28:59.556Z",
+   "retryAt": "2026-11-22T18:28:59.556Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4465336407",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CF9C4D3FB9D6",
+   "company": "Chugach Government Solutions, LLC",
+   "title": "Sr. Business Manager - NASA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:02.666Z",
+   "retryAt": "2026-11-22T18:29:02.666Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4481792918",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FD2071D86E7",
+   "company": "Chick-fil-A Supply",
+   "title": "Assistant General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:05.807Z",
+   "retryAt": "2026-11-22T18:29:05.807Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4417232664",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-54558FFC36E5",
+   "company": "YMCA of the Suncoast",
+   "title": "Executive Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:08.934Z",
+   "retryAt": "2026-11-22T18:29:08.934Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483340597",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C28DE3BEDFE",
+   "company": "Applied Materials",
+   "title": "Technical Project/Program Management Director - Advanced Packaging",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:12.076Z",
+   "retryAt": "2026-11-22T18:29:12.076Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:15.230Z",
+   "retryAt": "2026-11-22T18:29:15.230Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-011DF7129CA9",
+   "company": "Lockheed Martin",
+   "title": "Manufacturing Engineering Mgr - Level 5",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:18.386Z",
+   "retryAt": "2026-11-22T18:29:18.386Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CA52D87AFDB0",
+   "company": "Delaware North",
+   "title": "General Manager, EverBank Stadium",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:21.545Z",
+   "retryAt": "2026-11-22T18:29:21.545Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AF94D03A2886",
+   "company": "Target",
+   "title": "Production Controller- Flow Center- Hampton GA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:24.663Z",
+   "retryAt": "2026-11-22T18:29:24.663Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485994753",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29596,44 +29796,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-857F8DA39D81",
-   "company": "AutoZone",
-   "title": "District Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T17:29:27.954Z",
-   "retryAt": "2026-11-23T09:29:27.954Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4466866567",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2612A363DDCC",
-   "company": "Tesla",
-   "title": "Technical Program Manager, Operations, Reman",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T17:29:30.987Z",
-   "retryAt": "2026-11-23T09:29:30.987Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485936094",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-DE3BAD0A4B55",
    "company": "TAE Power Solutions",
    "title": "Manager, PMO",
@@ -32056,6 +32218,44 @@
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-857F8DA39D81",
+   "company": "AutoZone",
+   "title": "District Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:27.954Z",
+   "retryAt": "2026-11-23T09:29:27.954Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4466866567",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2612A363DDCC",
+   "company": "Tesla",
+   "title": "Technical Program Manager, Operations, Reman",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T17:29:30.987Z",
+   "retryAt": "2026-11-23T09:29:30.987Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485936094",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
