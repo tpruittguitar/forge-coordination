@@ -55,7 +55,7 @@ function productResult(result,e,row){
 async function completeProductSmoke({ledger,proof,row,product,capture,Products,Evidence,index,read,parse,now=Date.now()}){
   const {proposal,ruling}=proof||{},pid=row?.PRIMARY_ID;
   const invalid=()=>{throw Error('ATS_GRANT_PRODUCT_SMOKE_WRITE_UNVERIFIED');};
-  if(!pid||proposal?.primaryId!==pid||ruling?.primaryId!==pid||ruling.kind!=='ENRICH'||ruling.actor!=='ATSBOT'
+  if(!pid||proposal?.primaryId!==pid||ruling?.primaryId!==pid||ruling.kind!=='ENRICH'||!['ATSBOT','CHATGPT'].includes(ruling.actor)
     ||!/^[-_A-Za-z0-9]{3,160}$/.test(ruling.requestId||'')||product?.primaryId!==pid)return invalid();
   // The canonical row already has Product now; reproduce only the original
   // source binding and literal-quote checks, never submit a new grant request.
