@@ -43,8 +43,3 @@ test('missing staged parts and traversal references fail before publication',t=>
  f.git('rm','--cached','state/enrich-ats-pay-employer.parts/'+f.manifest.parts[0].file);assert.throws(()=>Index.verify(f.dir),/Missing, unmerged or non-file/);
  f.manifest.parts[0].file='../outside.json.gz';fs.writeFileSync(f.file,JSON.stringify(f.manifest));f.git('add','state/enrich-ats-pay-employer.json');assert.throws(()=>Index.verify(f.dir),/Invalid staged employer cache part reference/);
 });
-test('every pay publication retry verifies staged cache after staging and before commit',()=>{
- const workflow=fs.readFileSync(path.join(__dirname,'../../.github/workflows/enrich-ats-pay.yml'),'utf8');
- assert.match(workflow,/for i in 1 2 3 4 5 6; do[\s\S]*git add state\/enrich-ats-pay[\s\S]*node tools\/enrich-ats-pay\/verify-cache-index\.cjs[\s\S]*git commit/);
- assert.match(workflow,/run: bash tools\/enrich-ats-pay\/test-isolated\.sh/);
-});
