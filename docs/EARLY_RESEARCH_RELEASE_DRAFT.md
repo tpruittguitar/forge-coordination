@@ -88,3 +88,26 @@ node --test tools/grant-backlog/*.test.cjs tools/helper-routing/*.test.cjs tools
 The synthetic five-job run prepares five shared evidence envelopes, leaves
 Hermes membership byte-for-byte unchanged and records zero Writer submissions.
 These results must never be described as a real first batch.
+
+## Supplied lookup shortlist — not an allocation
+
+The parent supplied these IDs from queue blob prefix `62499e7` (06:16), shared
+pool prefix `4fa960c` (06:01), and ATS cache prefix `4741cab`:
+
+- V2I-39600AE8523C
+- V2I-717A830D14D1
+- V2I-C76E1C79842A
+- V2I-2F0BC30F539C
+- V2I-93E1F0EE150A
+
+These are lookup hints only. The cache dates November 2–15 fail the new one-day
+admission-capture freshness check on November 22. The reported pool counts
+(3,160 waiting; 1,662 assigned; 491 returned/pending/partially consumed; 1,007
+outside those statuses) are not eligibility or reservation evidence. All five
+still need fresh canonical identity/protection/receipt checks, reviewed public
+source and policy proofs, and compare-before-claim. No live source or assignment
+checks for these IDs were performed here.
+
+`V2I-9299940A9C7E` remains outside this shortlist and fenced to Claude Shared
+Helper v3 per the supplied Hermes context. Do not release it, substitute it,
+replay its uncertain work or infer ownership transfer from an idle schedule.
