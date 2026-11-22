@@ -68,7 +68,7 @@ whose reviewed registry explicitly binds executionIdentity `Hermes`, is enabled,
 is not retired, uses the shared work path and is available in that same work.
 It also needs a source-hashed receipt with schema
 `forge.shared-execution-identity-ack.v1`, status ACKNOWLEDGED, a run ID and exact
-Hermes identity/task/provider/assignment ID. Both identity receipt paths are
+Hermes identity/task/provider/assignment ID, plus sorted exact active `assignments` (primaryId, assignmentVersion, sourceVersion). Both identity receipt paths are
 confined to `receipts/SHARED_HELPER_IDENTITY/<name>.json` and must exist at the
 instruction revision. These contracts specify required evidence; arbitrary
 worker-written assertions are not authorization to add them to main.
@@ -118,3 +118,5 @@ and the existing $1/expiry limits remain. This draft does not wire or start it.
 Notify Tim only after a real separately authorized first batch, with exact
 prepared/submitted/verified counts and original request IDs. No such run or
 notification is claimed, scheduled or sent by this engineering work.
+
+Offline TIMMAY bridge and remaining production reader/release gates: [TIMMAY_API_ADAPTER_DRAFT.md](TIMMAY_API_ADAPTER_DRAFT.md).

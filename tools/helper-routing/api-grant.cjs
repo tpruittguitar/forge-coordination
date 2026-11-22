@@ -33,6 +33,8 @@ function assertBound(root,work){
     auth.hermesTaskKey!==b.hermes.taskKey||auth.host!==b.host||auth.project!==b.project||auth.grantOnly!==true)fail('API_AUTHORIZATION_MISMATCH');
  if(ack.schema!=='forge.shared-execution-identity-ack.v1'||ack.identity!=='Hermes'||ack.taskKey!==b.hermes.taskKey||ack.provider!==b.hermes.provider||
     ack.assignmentId!==work.assignmentId||ack.status!=='ACKNOWLEDGED'||!ack.runId)fail('HERMES_IDENTITY_UNACKNOWLEDGED');
+ const exact=work.items.filter(i=>i.taskKey===b.hermes.taskKey&&H.active(i)).map(i=>({primaryId:i.primaryId,assignmentVersion:i.assignmentVersion,sourceVersion:i.sourceVersion})).sort((a,b)=>a.primaryId.localeCompare(b.primaryId));
+ if(!exact.length||!Array.isArray(ack.assignments)||S.hash(ack.assignments)!==S.hash(exact))fail('HERMES_EXACT_ASSIGNMENT_ACK_REQUIRED');
  return b;
 }
 function claims(root,work,state){
@@ -117,4 +119,4 @@ function envelope({root,items,runId,instructionCommit}){
  const batch={schema:'forge.shared-helper-batch.v1',provider:'ChatGPT',taskKey:TASK,assignmentId:work.assignmentId,runId,instructionCommit,writerSubmitted:false,items:structuredClone(items)};
  H.validateBatch(batch,work);return{path:PREFIX+runId+'.json',batch,writerSubmitted:false,published:false};
 }
-module.exports={TASK,WORK,PROCEDURE,PREFIX,binding,assertBound,plan,reserve,validateBatch,assertReturn,envelope};
+module.exports={TASK,WORK,PROCEDURE,PREFIX,binding,assertBound,claims,plan,reserve,validateBatch,assertReturn,envelope};

@@ -60,7 +60,7 @@ function liveBlockers(g, now=Date.now()) {
   return out;
 }
 
-function openState(dir) {
+function openState(dir, routeKey=TASK) {
   if(!path.isAbsolute(dir)) fail('ABSOLUTE_PRIVATE_CHECKPOINT_DIRECTORY_REQUIRED');
   fs.mkdirSync(dir,{recursive:true,mode:0o700});
   const file=path.join(dir,'checkpoint.json');
@@ -69,6 +69,8 @@ function openState(dir) {
   if(state.schema!=='forge.grant-worker-checkpoint.v1'||state.worker!==NAME||state.mode!=='dry'||
      !Number.isSafeInteger(state.reservedMicrousd)||state.reservedMicrousd<0||state.reservedMicrousd>LIMITS.totalMicrousd||
      !Number.isSafeInteger(state.batches)||!state.jobs||Array.isArray(state.jobs)) fail('INVALID_CHECKPOINT');
+  if((state.routeKey||TASK)!==routeKey && Object.keys(state.jobs).length) fail('CHECKPOINT_ROUTE_MISMATCH');
+  state.routeKey=routeKey;
   return {state, flush:()=>save(file,state)};
 }
 
@@ -142,19 +144,20 @@ function report(s) {
 
 // Adapter contract is read-only. A production adapter is deliberately not wired
 // until routing, allocation, credential, durability and Writer gates are proven.
-async function run({dir,adapter,mode='dry',now=Date.now,jobMs=LIMITS.jobMs,batchMs=LIMITS.batchMs}) {
+async function run({dir,adapter,mode='dry',now=Date.now,jobMs=LIMITS.jobMs,batchMs=LIMITS.batchMs,route}) {
   if(mode!=='dry') fail('LIVE_RELEASE_DISABLED');
   if(!(jobMs>0&&jobMs<=LIMITS.jobMs&&batchMs>0&&batchMs<=LIMITS.batchMs)) fail('TIMEOUT_CAP');
   const token=crypto.randomUUID(),lockFile=path.join(dir,NAME+'.lock');
   if(!lock(lockFile,'acquire',token).acquired) fail('SINGLE_INSTANCE_LOCK');
   try {
-    const {state,flush}=openState(dir);
+    const {state,flush}=openState(dir,route?.key||TASK);
+    const validateAllocation=route?.allocation||allocation;
     // A prior in-flight operation is held permanently until independent review.
     for(const j of Object.values(state.jobs)) if(j.status==='MODEL_IN_FLIGHT') j.status='MODEL_OUTCOME_UNKNOWN';
     flush();
     if(state.stop) return report(state);
     const view=await bounded(signal=>adapter.authority(signal),jobMs);
-    const {work,ids}=allocation(view,now());
+    const {work,ids}=validateAllocation(view,now());
     const candidates=work.items.filter(i=>ids.has(i.primaryId)&&!/^RETURNED/.test(i.status||'')&&!state.jobs[i.primaryId]);
     for(let start=0;start<candidates.length;start+=LIMITS.batchJobs) {
       if(now()>=Date.parse(LIMITS.stopAt)) break;
@@ -167,7 +170,7 @@ async function run({dir,adapter,mode='dry',now=Date.now,jobMs=LIMITS.jobMs,batch
         try {
           await bounded(async signal=>{
             const current=await adapter.current(id,signal);signal.throwIfAborted();
-            const currentAuthority=allocation(current.authority,now());
+            const currentAuthority=validateAllocation(current.authority,now());
             if(!currentAuthority.ids.has(id)||current.authority.instructionCommit!==view.instructionCommit) fail('ALLOCATION_CHANGED');
             const active=currentAuthority.work.items.find(i=>i.primaryId===id);
             if(!active||/^RETURNED/.test(active.status||'')) fail('ALREADY_RETURNED');
@@ -195,8 +198,9 @@ async function run({dir,adapter,mode='dry',now=Date.now,jobMs=LIMITS.jobMs,batch
             const batch={schema:'forge.enrichment-helper-batch.v1',provider:'ChatGPT',taskKey:TASK,
               assignmentId:work.assignmentId,runId:'FORGE-CHATGPT-GRANT-DRY-'+hash([id,p.evidence]).slice(0,24),
               instructionCommit:view.instructionCommit,items:[item]};
-            Enrichment.validateBatch(batch,currentAuthority.work);
-            record.status='PREPARED';record.item=item;record.degree=p.degree;record.batch=batch;
+            const prepared=route?route.batch({item,assigned:active,view:current.authority}):batch;
+            if(!route) Enrichment.validateBatch(batch,currentAuthority.work);
+            record.status='PREPARED';record.item=item;record.degree=p.degree;record.batch=prepared;
           },Math.min(jobMs,Math.max(1,deadline-Date.now())));
         } catch(e) {
           if(e.message==='CHECKPOINT_DURABILITY_FAILURE') throw e;
