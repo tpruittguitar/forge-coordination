@@ -21,7 +21,7 @@ const FC_DIR = process.env.TRIAL_FC_DIR || '', OUT = process.env.TRIAL_OUT_DIR |
 const sleep = ms => new Promise(r => setTimeout(r, process.env.TRIAL_FAST ? 0 : ms));
 async function get(url, opts) { const r = await fetch(url, Object.assign({ signal: AbortSignal.timeout(20000) }, opts)); if (!r.ok) { const e = new Error('HTTP ' + r.status); e.status = r.status; throw e; } return r; }
 async function fcFile(rel) { return FC_DIR ? fs.readFileSync(path.join(FC_DIR, rel), 'utf8') : (await get(RAW + 'foreman-cockpit/main/' + rel)).text(); }
-async function loadModule(name) { const src = await fcFile('apps-script/' + name); const file = path.join(os.tmpdir(), 'trial-' + name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./trial-$1.js')")); return file; }
+async function loadModule(moduleDir,name) { const src = await fcFile('apps-script/' + name); const file = path.join(moduleDir, 'trial-' + name.replace('.gs', '.js')); fs.writeFileSync(file, src.replace(/require\('\.\/([A-Za-z]+)\.gs'\)/g, "require('./trial-$1.js')")); return file; }
 
 // One fresh canonical acquisition per run; all candidate lookups share its in-memory index.
 async function loadCanonical({W,key,transport=globalThis.fetch,clock,masterFile=process.env.TRIAL_MASTER_FILE,archiveFile=process.env.TRIAL_ARCHIVE_FILE}={}){
@@ -43,10 +43,13 @@ async function loadCanonical({W,key,transport=globalThis.fetch,clock,masterFile=
 }
 
 async function main(){
+  // Concurrent trial runs must not truncate another process's require target.
+  const moduleDir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-trial-modules-'));
+  try{
   const T0 = Date.now(), at = new Date().toISOString();
   const conn = {}; vm.runInNewContext((await fcFile('pipeline-connection.js')).replace(/^var /m, 'this.'), conn);
   const key = conn.PipelineConnection.key;
-  await loadModule('PipelineEvidence.gs'); await loadModule('PipelineAts.gs'); const W = require(await loadModule('PipelineWorklists.gs'));
+  await loadModule(moduleDir,'PipelineEvidence.gs'); await loadModule(moduleDir,'PipelineAts.gs'); const W = require(await loadModule(moduleDir,'PipelineWorklists.gs'));
 
   const {rows,idx,archive,master}=await loadCanonical({W,key});
 
@@ -224,6 +227,7 @@ async function main(){
     ...report.new_roles.slice(0, 200).map(f => `| ${f.source} | ${(f.tier ? f.tier + ' ' : '') + f.company} | [${f.title.replace(/\|/g, '/')}](${f.url}) | ${String(f.location).replace(/\|/g, '/')} | ${f.family} | ${f.level} | ${f.pay} |`), ''];
   fs.writeFileSync(path.join(OUT, reportName + '.md'), md.join('\n'));
   console.log(JSON.stringify(summary));
+  }finally{fs.rmSync(moduleDir,{recursive:true,force:true});}
 }
 if(require.main===module)main().catch(e => { console.error(e); process.exitCode=1; });
 module.exports={loadCanonical,main};
