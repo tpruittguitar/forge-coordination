@@ -1,0 +1,1 @@
+{"targets":[{"target_name":"forge_wincred","sources":["wincred.cc"],"conditions":[["OS=='win'",{"libraries":["Advapi32.lib"],"defines":["UNICODE","_UNICODE"],"msvs_settings":{"VCCLCompilerTool":{"ExceptionHandling":1}}}]]}]}

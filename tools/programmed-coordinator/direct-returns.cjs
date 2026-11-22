@@ -48,7 +48,7 @@ function settleShared({root,state,snapshot,select,checkLock}){
  const H=require('../helper-routing/shared.cjs'),work=S.read(root,H.FILE,null);if(!work)return{updated:0,newAssignments:0};
  H.validateWork(work);const byId=new Map(snapshot.rows.map(r=>[r.PRIMARY_ID,r])),intake=require('../routine-handoffs/intake-state.cjs').load(root);let updated=0;
  for(const item of Object.values(state.items)){
-  if(!select(item)||state.batches[item.batch]?.status!=='VALIDATED'||!H.TASKS[item.taskKey])continue;
+  if(!select(item)||state.batches[item.batch]?.status!=='VALIDATED'||!H.providerFor(item.taskKey))continue;
   const batch=S.read(root,item.batch),source=batch.items.find(i=>H.key(i)===item.itemKey),reservation=work.items.find(i=>H.key(i)===item.itemKey);
   if(!source||!reservation||!H.active(reservation))continue;
   // Preserve ownership and every original-request fence, even across retries.

@@ -3,6 +3,9 @@
 const path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),HF=require('./helper-fields.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
 const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_SNIFFER_SHARED_HELPER:'Sniffer'};
+// Explicit API route is intentionally absent from generic auto-allocation/page loops.
+const API_TASK='FORGE_API_GRANT_ENRICHMENT';
+const providerFor=task=>task===API_TASK?'ChatGPT':TASKS[task];
 // Sniffer took over the retired Grok helper's work (Tim, Nov 18 2026, 1:18 AM ET); older work files have no Sniffer provider yet.
 const SNIFFER_TASK='FORGE_SNIFFER_SHARED_HELPER',OPTIONAL_TASKS=new Set([SNIFFER_TASK]);
 // Lanes whose enrichment items carry per-field state (seeded, settled from Writer receipts).
@@ -27,7 +30,8 @@ function validateWork(w){
  const seen=new Set();
  for(const [task,provider]of Object.entries(TASKS))if(!(OPTIONAL_TASKS.has(task)&&!w.providers[task])&&(w.providers[task]?.provider!==provider||typeof w.providers[task]?.available!=='boolean'))throw Error('INVALID_SHARED_HELPER_PROVIDER');
  for(const i of w.items){
-  if(!proof(key(i))||seen.has(key(i))||!['ENRICHMENT','INTAKE','DISCOVERY'].includes(i.kind)||TASKS[i.taskKey]!==i.provider||!Number.isSafeInteger(i.assignmentVersion)||i.assignmentVersion<1||!proof(i.status)||!proof(i.sourceVersion))throw Error('INVALID_OR_OVERLAPPING_SHARED_ASSIGNMENT');
+  if(!proof(key(i))||seen.has(key(i))||!['ENRICHMENT','INTAKE','DISCOVERY'].includes(i.kind)||providerFor(i.taskKey)!==i.provider||!Number.isSafeInteger(i.assignmentVersion)||i.assignmentVersion<1||!proof(i.status)||!proof(i.sourceVersion))throw Error('INVALID_OR_OVERLAPPING_SHARED_ASSIGNMENT');
+  if(i.taskKey===API_TASK&&(i.kind!=='ENRICHMENT'||i.worker!=='forge-grant-luna'))throw Error('API_ENRICHMENT_ONLY');
   if(i.kind==='ENRICHMENT'&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(i.primaryId||''))throw Error('EXACT_SHARED_JOB_ID_REQUIRED');
   seen.add(key(i));
  }
@@ -37,7 +41,8 @@ function load(root=ROOT){return validateWork(S.read(root,FILE));}
 function reservedKeys(w){return new Set(w?.enabled&&w.routingActive?w.items.filter(active).flatMap(i=>[key(i),...i.aliases||[]]):[]);}
 function validateBatch(b,w=load()){
  validateWork(w);
- if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||TASKS[b.taskKey]!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||(!b.items.length&&b.mode!=='READINESS_ONLY')||b.items.length>MAX_ARTIFACT_ITEMS)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
+ if(!w.enabled||!w.routingActive||b?.schema!=='forge.shared-helper-batch.v1'||providerFor(b.taskKey)!==b.provider||b.assignmentId!==w.assignmentId||!new RegExp('^FORGE-'+String(b.provider).toUpperCase()+'-[A-Za-z0-9_-]+$').test(b.runId||'')||!/^[a-f0-9]{40}$/.test(b.instructionCommit||'')||!Array.isArray(b.items)||(!b.items.length&&b.mode!=='READINESS_ONLY')||b.items.length>MAX_ARTIFACT_ITEMS)throw Error('INVALID_SHARED_HELPER_ENVELOPE');
+ if(b.taskKey===API_TASK)require('./api-grant.cjs').validateBatch(b,w);
  if(b.mode!==undefined&&b.mode!=='READINESS_ONLY')throw Error('INVALID_SHARED_HELPER_MODE');
  if(b.mode==='READINESS_ONLY'){
   // A provider tests its actual return transport before receiving job assignments.
@@ -83,7 +88,7 @@ function ordering(items,now=Date.now()){
 }
 function next(w,taskKey,after=null,now=Date.now()){
  validateWork(w);if(!TASKS[taskKey])throw Error('UNKNOWN_SHARED_HELPER_TASK');
- const order=ordering(w.items.filter(i=>w.providers[i.taskKey]?.available),now),mine=w.items.filter(i=>i.taskKey===taskKey).sort(order.sort);
+ const order=ordering(w.items.filter(i=>i.taskKey!==API_TASK&&w.providers[i.taskKey]?.available),now),mine=w.items.filter(i=>i.taskKey===taskKey).sort(order.sort);
  const cursorVersion=S.hash({assignmentId:w.assignmentId,taskKey,lanes:order.lanes,counts:order.counts,eligible:order.actionable.map(key),items:mine.map(i=>[key(i),i.status,i.assignmentVersion,i.sourceVersion,i.retryAfter||null])});
  let index=-1,cursorReset=false;
  if(after){
@@ -102,7 +107,7 @@ function validateRouting(batch,before,current){
   if(!a||!b||[a,b].some(i=>i.taskKey!==batch.taskKey||i.provider!==batch.provider||i.assignmentVersion!==item.assignmentVersion||i.sourceVersion!==item.sourceVersion))throw Error('STALE_SHARED_OWNERSHIP');
  }
 }
-function assertCurrent(root,item,batch){const w=load(root);validateBatch({...batch,items:[item]},w);const current=w.items.find(i=>key(i)===key(item));if(!active(current))throw Error('SHARED_RESERVATION_CLOSED');return current;}
+function assertCurrent(root,item,batch){const w=load(root);if(batch.taskKey===API_TASK)require('./api-grant.cjs').assertReturn(root,w,{...batch,items:[item]});validateBatch({...batch,items:[item]},w);const current=w.items.find(i=>key(i)===key(item));if(!active(current))throw Error('SHARED_RESERVATION_CLOSED');return current;}
 // Explicit coordinator handoff only; quota reset or elapsed time is never a release.
 function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPending=false}={}){
  validateWork(w);const item=w.items.find(i=>key(i)===itemKey);
@@ -111,4 +116,4 @@ function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPen
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={SNIFFER_TASK,FIELD_TASKS,FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={API_TASK,providerFor,SNIFFER_TASK,FIELD_TASKS,FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};

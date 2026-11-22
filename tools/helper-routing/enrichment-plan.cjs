@@ -93,4 +93,4 @@ if(require.main===module){
   console.log(JSON.stringify({schema:result.schema,assignmentId:result.assignmentId,eligible:result.items.length,appended:result.appended.length,counts:result.counts,fingerprint:result.fingerprint,requiresPublishedMembership:result.requiresPublishedMembership,writerSubmissions:0}));
  }catch(e){console.error(e.message);process.exitCode=1;}
 }
-module.exports={plan,persistMembership};
+module.exports={plan,persistMembership,fullSnapshot};
