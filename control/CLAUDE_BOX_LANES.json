@@ -7,47 +7,12 @@
   "schedule": "tools/claude-box-runner/crontab.txt",
   "note": "Registry owner/procedure in control/AI_AUTOMATION_TASKS.json are unchanged; this file only adds the box procedure, model and timeout per task.",
   "lanes": {
-    "FORGE_APPLICATION_WRITER_GOFER": {
-      "procedure": "lanes/CLAUDE_BOX_GOFER.txt",
-      "model": "sonnet",
-      "timeoutMinutes": 25,
-      "cockpit": true,
-      "tools": ["mcp__claude_ai_TinyFish__fetch_content", "mcp__claude_ai_TinyFish__search", "mcp__claude_ai_Google_Drive__search_files", "mcp__claude_ai_Google_Drive__create_file", "mcp__claude_ai_Google_Drive__get_file_metadata", "mcp__claude_ai_Google_Drive__read_file_content"]
-    },
     "FORGE_APPLICATION_OUTCOME_TRACKER": {
       "procedure": "lanes/CLAUDE_BOX_OUTCOME.txt",
       "model": "sonnet",
       "timeoutMinutes": 25,
       "cockpit": true,
       "tools": ["mcp__claude_ai_Gmail__search_threads", "mcp__claude_ai_Gmail__get_thread", "mcp__claude_ai_Gmail__get_message", "mcp__claude_ai_Google_Calendar__list_events", "mcp__claude_ai_Google_Calendar__get_event"]
-    },
-    "FORGE_CHATGPT_ENRICHMENT_RESEARCH": {
-      "procedure": "lanes/CLAUDE_BOX_ENRICH.txt",
-      "model": "sonnet",
-      "timeoutMinutes": 25,
-      "cockpit": true,
-      "tools": ["mcp__claude_ai_TinyFish__fetch_content", "mcp__claude_ai_TinyFish__search", "mcp__claude_ai_Google_Drive__search_files", "mcp__claude_ai_Google_Drive__create_file", "mcp__claude_ai_Google_Drive__get_file_metadata", "mcp__claude_ai_Google_Drive__read_file_content"]
-    },
-    "FORGE_POSTING_VALIDATION": {
-      "procedure": "lanes/CLAUDE_BOX_POSTVAL.txt",
-      "model": "haiku",
-      "timeoutMinutes": 25,
-      "cockpit": true,
-      "tools": ["mcp__claude_ai_TinyFish__fetch_content", "mcp__claude_ai_Google_Drive__search_files", "mcp__claude_ai_Google_Drive__create_file", "mcp__claude_ai_Google_Drive__get_file_metadata", "mcp__claude_ai_Google_Drive__read_file_content"]
-    },
-    "FORGE_AI_USAGE_READER": {
-      "procedure": "lanes/CLAUDE_BOX_USAGE.txt",
-      "model": "haiku",
-      "timeoutMinutes": 10,
-      "cockpit": false,
-      "tools": ["Bash(bash tools/claude-box-runner/claude-usage.sh)"]
-    },
-    "PE_STACK_HEALTH_DAILY": {
-      "procedure": "lanes/CLAUDE_BOX_HEALTH.txt",
-      "model": "haiku",
-      "timeoutMinutes": 40,
-      "cockpit": true,
-      "tools": []
     }
   },
   "baseTools": ["Read", "Write", "Edit", "Glob", "Grep", "Bash(git *)", "Bash(gh *)", "Bash(node *)", "Bash(python3 *)", "Bash(date *)", "Bash(sha256sum *)", "Bash(ls *)", "Bash(mkdir *)", "Bash(jq *)"]

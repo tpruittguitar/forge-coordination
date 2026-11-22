@@ -53,7 +53,7 @@ class ReleaseTests(unittest.TestCase):
         m=copy.deepcopy(self.manifest)
         m['lanes'][task].update(sha256=r.digest(data),blob_sha=r.blob_sha(data))
         with self.assertRaisesRegex(ValueError,'mixed release'):
-            r.verify_packet(m,task,'Claude',data)
+            r.verify_packet(m,task,'ChatGPT',data)
 
     def test_traversal_missing_lane_unknown_schema_rejected(self):
         for alter in (lambda m:m['lanes']['FORGE_POSTING_VALIDATION'].update(file='../CONTROL.txt'),
@@ -64,10 +64,9 @@ class ReleaseTests(unittest.TestCase):
             with self.assertRaises(ValueError): r.validate_manifest(m)
 
     def test_temporary_chatgpt_ownership_and_legacy_provider_rejection(self):
-        # Tim 2026-11-16 12:40 ET: Gofer and posting validation moved to Claude.
-        claude = {'FORGE_APPLICATION_WRITER_GOFER', 'FORGE_POSTING_VALIDATION'}
+        # Tim's November 22 cutover returns both explicit runtime lanes to ChatGPT.
         for task, lane in self.manifest['lanes'].items():
-            owner = 'Claude' if task in claude else 'ChatGPT'
+            owner = 'ChatGPT'
             self.assertEqual(lane['owner'], owner)
             self.assertTrue(r.select_task(self.manifest, owner, task, 0)[1])
             for other in {'ChatGPT', 'Claude', 'Grok'} - {owner}:
@@ -82,33 +81,13 @@ class ReleaseTests(unittest.TestCase):
             self.assertIn(normal, text)
             self.assertIn('EMPLOYER_PRIMARY_BUSINESS per FORGE CORE', text)
 
-    def test_chatgpt_rotation_preserves_slots_and_legacy_launcher_map(self):
-        expected = {
-            1: 'FORGE_APPLICATION_WRITER_GOFER',
-            9: 'FORGE_APPLICATION_WRITER_GOFER',
-            17: 'FORGE_APPLICATION_WRITER_GOFER',
-            5: 'FORGE_POSTING_VALIDATION',
-            13: 'FORGE_POSTING_VALIDATION',
-            21: 'FORGE_POSTING_VALIDATION',
-        }
+    def test_transferred_lanes_require_explicit_task_not_legacy_rotation(self):
+        # An old ChatGPT launcher consults rotations.Grok before supplying its real
+        # provider, so neither legacy map may resolve a transferred lane.
         for h in range(24):
             for provider in ('ChatGPT', 'Grok'):
-                if h in expected:
-                    task, owned = r.select_task(self.manifest, provider, 'ROTATION', h)
-                    self.assertEqual(task, expected[h])
-                    # Slots are kept; since Tim's 2026-11-16 move to Claude the old
-                    # ChatGPT/Grok rotation launchers resolve them but do not own them.
-                    self.assertFalse(owned)
-                    self.assertTrue(r.select_task(self.manifest, 'Claude', task, h)[1])
-                else:
-                    with self.assertRaises(ValueError):
-                        r.select_task(self.manifest, provider, 'ROTATION', h)
-        # The existing ChatGPT launcher resolves rotations.Grok then uses its actual provider.
-        for h, task in expected.items():
-            legacy_task = self.manifest['rotations']['Grok'][str(h)]
-            self.assertEqual(legacy_task, task)
-            self.assertTrue(r.select_task(self.manifest, 'Claude', legacy_task, h)[1])
-            self.assertFalse(r.select_task(self.manifest, 'ChatGPT', legacy_task, h)[1])
+                with self.assertRaises(ValueError):
+                    r.select_task(self.manifest, provider, 'ROTATION', h)
         for h in range(0, 24, 3):
             self.assertFalse(r.select_task(self.manifest, 'Claude', 'ROTATION', h)[1])
 
