@@ -61,7 +61,7 @@ async function main(){
   const staffEligible = (company, title) => T.level(title) !== 'SR_STAFF' || activePriority.has(P.normCo(company));
   const discoveryRows = rows.filter(T.discoverySeed);
   const coBoard = {};   // normCo(company) -> board key, from the master's own ATS links
-  discoveryRows.forEach(r => { const b = P.boardOf(r.p || {}); if (b) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });
+  discoveryRows.forEach(r => { const b = P.boardOf(r.p || {}); if (b && (!['greenhouse', 'lever', 'ashby'].includes(b.kind) || T.slugMatches(b, r.COMPANY))) { coBoard[P.normCo(r.COMPANY)] = coBoard[P.normCo(r.COMPANY)] || b; } });  // a misfiled row must not hand its company another employer's board (Blue Bird -> ashby:shield)
   const probes = [];
   for (const c of priority) {
     if (c.tier === 'PAUSED') { probes.push({ company: c.name, found: null, skipped: 'PAUSED' }); continue; }
@@ -119,7 +119,7 @@ async function main(){
           st.openings++;
           const fam = T.family(x.title), place = T.usPlace(x.location);
           if (!fam || !place) return;
-          const company = [...b.companies][0];
+          const company = T.boardCompany(b, b.companies, priority.map(x => x.name));
           if (!staffEligible(company, x.title)) return;
           st.matches++;
           addFound({ source: 'BOARD:' + b.kind, company, tier: b.tier, title: x.title, location: x.location, place, family: fam, level: T.level(x.title), url: x.page, description: x.description || '', detailUrl: x.detail || '', payFacts:x.payFacts||null,salaryText:x.salaryText||'', pay: x.pay ? `$${Math.round(x.pay.low / 1000)}K-$${Math.round(x.pay.high / 1000)}K` : '', status: T.novelty(idx, company, x.title, x.page, x.location) });

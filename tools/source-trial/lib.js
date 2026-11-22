@@ -65,6 +65,24 @@ function slugGuesses(name) {
   return out;
 }
 
+/** True when an ATS board slug names this company: "shield" or "shieldai" -> Shield AI, never Blue Bird.
+    Only Greenhouse, Lever and Ashby slugs are company names; Workday tenants are not, so they never match. */
+function slugMatches(board, company) {
+  if (!board || !['greenhouse', 'lever', 'ashby'].includes(board.kind)) return false;
+  const s = String(board.board || '').toLowerCase().replace(/[^a-z0-9]+/g, '');
+  const n = String(company || '').toLowerCase().replace(/&/g, 'and').replace(/\(.*?\)/g, ' ').replace(/[^a-z0-9]+/g, '');
+  if (s.length < 3 || n.length < 3) return false;
+  return s === n || n.startsWith(s) || s.startsWith(n);
+}
+
+/** Company to credit a board's postings to. A board collects every master company whose row links to it, and
+    misfiled rows put unrelated names on it (Blue Bird on ashby:shield). Prefer the priority company the slug names,
+    then any company the slug names, then the first company (old behaviour, kept for Workday and odd slugs). */
+function boardCompany(board, companies, priorityNames) {
+  const list = [...(companies || [])];
+  return [...(priorityNames || [])].find(c => slugMatches(board, c)) || list.find(c => slugMatches(board, c)) || list[0];
+}
+
 /** Rank of a Pipeline Explorer Target Companies priority. PAUSED is not searched. Unlisted boards sort after WATCH. */
 const TIER_RANK = { DREAM: 0, P1: 1, P2: 2, P3: 3, WATCH: 4 };
 function tierRank(tier) {
@@ -87,4 +105,4 @@ function level(title) {
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
-module.exports = { discoverySeed, level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, parsePriority, tierRank };
+module.exports = { discoverySeed, level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, slugMatches, boardCompany, parsePriority, tierRank };
