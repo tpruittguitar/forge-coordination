@@ -114,7 +114,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   // parser, classifier and decline ruling through its worklist code (Apps Script shares one global scope). A match leaves
   // every work set here; the Writer's worklist refresh queues its DECLINE. No rules, no pay work.
   const rules=await neverConsiderRules();
-  const built = W.build(text,{rules}), rows = W.parseRows(text), list = broadGrant?SourceBlanks.waiting(rows,built,Evidence):built.lanes.FORGE_ENRICH_FEASIBILITY;
+  const built = W.build(text,{rules}), rows = W.parseRows(text), list = broadGrant?SourceBlanks.waiting(rows,built,Evidence).filter(r=>grantExtraction.isEligibleId(r.PRIMARY_ID)):built.lanes.FORGE_ENRICH_FEASIBILITY;
   const neverConsiderIds=new Set((built.declines||[]).map(d=>d.primaryId));
   // PAY SAMPLE MATCH reads industry from the company registry `builds` first (SECTION=TARGET_COMPANIES in the rules text).
   // Kept non-enumerable so it is never saved into the shared context file.
@@ -200,7 +200,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     let serverChanged=false;if(entry.retryable===false)try{const current=await currentWriterBuild();serverChanged=/^[a-f0-9]{7,40}$/.test(current)&&current!==entry.rejectedWriterCommit;}catch{}
     if(!Outcome.released(proofRoot,{requestId,...entry})||Date.parse(entry.retryAfter)>Date.now()||entry.retryable===false&&entry.clientRevision===PAY_CLIENT_REVISION&&!serverChanged)for(const id of entry.ids){inFlightIds.add(id);refusalStatuses.set(id,!Outcome.released(proofRoot,{requestId,...entry})?'WRITER_REFUSAL_PROOF_REQUIRED':entry.retryable===false?'WRITER_REQUEST_REJECTED':'WRITER_RETRY_WAIT');}
   }
-  if(broadGrant&&!grantExtraction.smoke)grantExtraction.requireBulkSmoke(ledger);
+  if(broadGrant&&!grantExtraction.smoke){
+    if(process.env.FORGE_ATS_GRANT_PRODUCT_SMOKE_PROOF){
+      const proof=JSON.parse(fs.readFileSync(process.env.FORGE_ATS_GRANT_PRODUCT_SMOKE_PROOF,'utf8'));
+      const row=rows.find(r=>r.PRIMARY_ID===proof?.proposal?.primaryId);
+      const product=row&&Products.lookup(row,productsReference);
+      const capture=row&&SourceBlanks.exactStoredPosting(discoveryEvidence,row);
+      if(await GrantExtraction.completeProductSmoke({ledger,proof,row,product,capture,Products,Evidence,
+        index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0]}))GrantExtraction.checkpoint(LEDGER,ledger);
+    }
+    grantExtraction.requireBulkSmoke(ledger);
+  }
   const helperResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
   const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds,...neverConsiderIds]);
   const researchUnavailableIds=new Set([...unavailableIds,...helperResearchIds]);
@@ -598,7 +608,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-R${String(requests.length + 1).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: f } });
   }
   progress('active_salary_review',{planned:requests.length});
-  const reviewDue=PRODUCTS_ONLY||PREPARE_ONLY||grantExtraction?.productProposal?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds,Date.now(),decisionIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
+  const reviewDue=PRODUCTS_ONLY||PREPARE_ONLY||broadGrant?[]:ActiveReview.order(rows,ledger.salaryReview,researchUnavailableIds,Date.now(),decisionIds).filter(r=>!requests.some(q=>q.ruling.primaryId===r.PRIMARY_ID));review.due=reviewDue.length;
   reviewDeadline=Date.now()+(CONFIG.salaryReviewMaxMs??90000);
   for(const r of reviewDue){
     if(requests.length>=CONFIG.maxBatches*25||Date.now()>=reviewDeadline||Date.now()-T0>=CONFIG.maxRunMs)break;
@@ -669,11 +679,12 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
   if(broadGrant){
-    const coverage=stats.grant_backlog={waiting:list.length,examined:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0};
+    const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
     for(const r of ordered){
-      if(requests.length>=(grantExtraction.smoke?1:CONFIG.maxBatches*25)||!runtime.canStart(60000))break;
+      if(requests.length>=Math.min(grantExtraction.rowLimit,CONFIG.maxBatches*25)||!runtime.canStart(60000))break;
+      if(!grantExtraction.smoke&&coverage.admitted>=grantExtraction.rowLimit)break;
       if(grantExtraction.smoke&&grantExtraction.attempts)break;
-      if(grantSmokeId&&r.PRIMARY_ID!==grantSmokeId)continue;
+      if((grantSmokeId&&r.PRIMARY_ID!==grantSmokeId)||!grantExtraction.isEligibleId(r.PRIMARY_ID))continue;
       coverage.examined++;
       if(unavailableIds.has(r.PRIMARY_ID)||helperResearchIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r)){
         coverage.protectedOrReserved++;continue;
@@ -682,6 +693,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
       const rawNeeds=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys].some(keys=>SourceBlanks.missing(r.p,keys));
+      if(!rawNeeds&&!SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!grantExtraction.productProposal)continue;
+      coverage.admitted++;
       const api=atsOf.get(r);
       if((rawNeeds||grantExtraction.productProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
         // The existing exact posting parser/reader binds the canonical identity.
@@ -714,6 +727,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED'].includes(e.message))throw e;
         stats.grant_extraction_stop=e.message;
         break;
+      }
+      for(const field of require('./decision-complete').missingFields({...r,p:{...r.p,...f}},Evidence)){
+        const remaining=coverage.remainingByFieldAfterPlan;
+        remaining[field]=(remaining[field]||0)+1;
       }
       if(!Object.keys(f).length)continue;
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}};
