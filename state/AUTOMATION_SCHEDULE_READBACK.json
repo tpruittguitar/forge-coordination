@@ -1,6 +1,6 @@
 {
   "schema": "forge.schedule-readback.v1",
-  "at": "2026-11-16T21:58:09.490652Z",
+  "at": "2026-11-22T23:45:01.757095Z",
   "timezone": "America/New_York",
   "owner": "ChatGPT/Codex until Tim explicitly changes it",
   "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
@@ -44,19 +44,6 @@
       "nativeUpdatedAt": "1793844608825",
       "sharedEntry": true,
       "nativeConfigurationSha256": "c42d62e6eca84617bef638a8b10c33d9b7af477850971bb0ede0fb7c1551102e",
-      "managed": true
-    },
-    {
-      "id": "forge-email-discovery",
-      "name": "FORGE_HELPER_COORDINATOR",
-      "status": "ACTIVE",
-      "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=2;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "taskKey": "FORGE_EMAIL_DISCOVERY",
-      "provider": "ChatGPT",
-      "nativeUpdatedAt": "1793778225914",
-      "sharedEntry": true,
-      "nativeConfigurationSha256": "0465b3334d73eec2bd50ce58c6a6a62c590d0bd38d27b80f8891b84f82ef53b4",
       "managed": true
     },
     {
@@ -150,13 +137,19 @@
     }
   ],
   "configurationReadbackScope": "LOCAL_CODEX_ONLY",
-  "configurationDiscrepancies": [],
+  "configurationDiscrepancies": [
+    {
+      "code": "MISSING_REGISTERED_NATIVE_TASK",
+      "nativeId": "forge-email-discovery",
+      "taskKey": "FORGE_EMAIL_DISCOVERY"
+    }
+  ],
   "configurationInformational": [],
-  "configurationAligned": true,
+  "configurationAligned": false,
   "observationScopes": {
     "LOCAL_CODEX": {
       "status": "READ",
-      "at": "2026-11-16T21:58:09.490652Z"
+      "at": "2026-11-22T23:45:01.757095Z"
     },
     "CLOUD_AUTOMATIONS": {
       "status": "NOT_READ",
