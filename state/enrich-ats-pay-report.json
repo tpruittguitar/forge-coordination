@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T05:14:33.689Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T050908846Z",
+ "at": "2026-11-22T05:25:55.645Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T052031757Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T05:09:15.994Z",
+  "readAt": "2026-11-22T05:20:40.481Z",
   "sha256": "cdf709e6fd2fc8d04b1952346966517342ceee45895f70018095fba452884b49",
   "rows": 9538
  },
@@ -50,7 +50,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 617,
- "skipped_recent": 349,
+ "skipped_recent": 347,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -65,7 +65,9 @@
  "agg_tried": {
   "linkedin": 2
  },
- "agg_read": {},
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {
   "linkedin": 1
@@ -84,15 +86,14 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 2,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0,
-  "BLS_EST": 1
+  "NO_BLS": 0
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -110,20 +111,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 5,
-  "saved_reused": 4,
+  "targets": 0,
+  "candidates": 0,
+  "saved_reused": 0,
   "cache_hits": 0,
-  "reads": 1,
+  "reads": 0,
   "found": 0,
-  "failed": 1,
+  "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T05:09:22.357Z",
+  "profile_as_of": "2026-11-22T05:20:47.123Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14708,37 +14709,23 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1889,
+  "review_skipped_blocked": 1896,
   "by_missing": {
-   "products (what they make)": 1827,
-   "work arrangement (remote/hybrid/on-site)": 1169,
+   "products (what they make)": 1834,
+   "work arrangement (remote/hybrid/on-site)": 1176,
    "location / geography": 14
   }
  },
  "salary_review": {
   "eligible": 1912,
-  "due": 1898,
-  "reviewed": 2,
-  "target_reads": 2,
+  "due": 1896,
+  "reviewed": 0,
+  "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 2,
+  "no_improvement": 0,
   "guard_dropped": 0,
-  "samples": [
-   {
-    "id": "V2I-32DA5EE65984",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-5ACD06695437",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   }
-  ],
-  "aggregator_reads": 2
+  "samples": []
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14747,9 +14734,9 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 638,
- "est_bls": 1,
+ "nothing_found": 639,
  "source_origin_blocks": {},
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14782,8 +14769,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2345,
- "network_requests": 11,
+ "roles_researched": 2344,
+ "network_requests": 10,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14794,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 767,
+  "SOURCE_RESEARCH_REQUIRED": 768,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 66,
+  "EVIDENCE_FOUND": 65,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -21686,31 +21673,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T04:13:53.568Z",
-   "retryAt": "2026-11-22T05:13:53.568Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T05:22:05.833Z",
+   "retryAt": "2026-11-22T21:22:05.833Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483153395",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2CDC90A5943",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director - Hernando County",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T04:13:56.663Z",
-   "retryAt": "2026-11-22T05:13:56.663Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
