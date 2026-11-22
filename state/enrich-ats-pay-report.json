@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T08:20:52.279Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T081602586Z",
+ "at": "2026-11-22T08:37:41.247Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T083058963Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T08:16:11.522Z",
+  "readAt": "2026-11-22T08:31:07.806Z",
   "sha256": "fedb7f599f677437c1869b9d0962ddf79dae0322bf66fec89b562f71e472c23a",
   "rows": 9538
  },
@@ -43,14 +43,14 @@
  },
  "anchors": 1400,
  "archive_anchors": 5,
- "ats_rows": 1,
+ "ats_rows": 0,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 617,
- "skipped_recent": 346,
+ "estimate_waiting_for_posting": 618,
+ "skipped_recent": 348,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,16 +63,18 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 5
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 5
+  "linkedin": 2
  },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
- "agg_wall": {},
- "source_reads": 6,
+ "agg_wall": {
+  "linkedin": 1
+ },
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -80,17 +82,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 16,
@@ -105,9 +107,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 39,
+  "saved_reused": 39,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -116,9 +118,9 @@
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-22T08:16:17.920Z",
+  "profile_as_of": "2026-11-22T08:31:14.716Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14703,23 +14705,31 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1899,
+  "review_skipped_blocked": 0,
   "by_missing": {
-   "products (what they make)": 1837,
-   "work arrangement (remote/hybrid/on-site)": 1179,
-   "location / geography": 14
+   "work arrangement (remote/hybrid/on-site)": 866,
+   "products (what they make)": 1420,
+   "location / geography": 10
   }
  },
  "salary_review": {
   "eligible": 1914,
-  "due": 1899,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1900,
+  "reviewed": 1,
+  "target_reads": 2,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-6927190ECFF1",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14728,8 +14738,8 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 638,
- "attempt_only_skipped": 5,
+ "nothing_found": 639,
+ "attempt_only_skipped": 2,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14762,8 +14772,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2350,
- "network_requests": 14,
+ "roles_researched": 2348,
+ "network_requests": 13,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -16019,6 +16029,28 @@
    "lastAttemptAt": "2026-11-22T08:08:08.483Z",
    "retryAt": "2026-11-22T09:08:08.483Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-42C64A9DD1EB",
+   "company": "Applied Materials",
+   "title": "Senior Director, Operations Management (Site Leader)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:17:34.893Z",
+   "retryAt": "2026-11-22T09:17:34.893Z",
+   "attempts": [
+    {
+     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5253340007?pay_transparency=true",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    },
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484374877",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -21621,42 +21653,6 @@
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
-   "id": "V2I-CA52D87AFDB0",
-   "company": "Delaware North",
-   "title": "General Manager, EverBank Stadium",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T07:29:16.612Z",
-   "retryAt": "2026-11-22T08:29:16.612Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C2CDC90A5943",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director - Hernando County",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T07:29:19.750Z",
-   "retryAt": "2026-11-22T08:29:19.750Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-1FCE09E786D1",
    "company": "SunState Medical Specialists",
    "title": "VP, Urology",
@@ -21829,6 +21825,78 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483939386",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A6448AFF5B38",
+   "company": "Tree Top Staffing LLC",
+   "title": "General Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:17:38.361Z",
+   "retryAt": "2026-11-22T09:17:38.361Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C28DE3BEDFE",
+   "company": "Applied Materials",
+   "title": "Technical Project/Program Management Director - Advanced Packaging",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:17:41.475Z",
+   "retryAt": "2026-11-22T09:17:41.475Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:17:44.637Z",
+   "retryAt": "2026-11-22T09:17:44.637Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-011DF7129CA9",
+   "company": "Lockheed Martin",
+   "title": "Manufacturing Engineering Mgr - Level 5",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:17:47.768Z",
+   "retryAt": "2026-11-22T09:17:47.768Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29759,9 +29827,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T16:20:27.371Z",
-   "retryAt": "2026-11-22T08:20:27.371Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T08:32:38.848Z",
+   "retryAt": "2026-11-23T00:32:38.848Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
