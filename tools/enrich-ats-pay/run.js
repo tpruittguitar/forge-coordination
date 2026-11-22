@@ -52,7 +52,7 @@ const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit ||
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
 const GrantExtraction=require('./grant-extract.cjs');
 const grantExtraction=GrantExtraction.configured({root:ROOT,live:!DRY&&!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE,writerPostLock});
-const broadGrant=!!grantExtraction, SourceBlanks=require('./source-blanks.cjs');
+const broadGrant=!!grantExtraction, SourceBlanks=require('./source-blanks.cjs'), GrantSalary=require('./grant-salary-estimate.cjs');
 const grantSmokeId=grantExtraction?.smoke?process.env.FORGE_ATS_GRANT_SMOKE_ID:null;
 if(grantSmokeId&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(grantSmokeId))throw Error('ATS_GRANT_SMOKE_ID_INVALID');
 
@@ -320,7 +320,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   async function estimateFor(r, opts) {
     if(!runtime.canStart())return null;
     researchedIds.add(r.PRIMARY_ID);
-    const siteInput=siteEstimates.forRow(r),skipSalaryLookup=SiteEstimate.routed(r,siteInput);
+    const siteInput=opts?.ignoreSiteEstimate?null:siteEstimates.forRow(r),skipSalaryLookup=!opts?.ignoreSiteEstimate&&SiteEstimate.routed(r,siteInput);
     r=Employer.resolve(r);
     opts = {...opts,...(skipSalaryLookup?{noBoard:true}:{})};
     const soc = L.socOf(r.TITLE), rowState = L.stateFrom(r.LOCATION);
@@ -728,6 +728,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         stats.grant_extraction_stop=e.message;
         break;
       }
+      const estimate=await GrantSalary.plan({row:r,capture,old,fields:f,
+        enabled:!grantExtraction.smoke&&runtime.canStart(60000)&&need(r).includes('SALARY'),
+        estimateFor,modelFields,salarySource,today});
+      if(estimate.SALARY_BASIS){Object.assign(f,estimate);stats.estimates++;coverage.salaryEstimated=(coverage.salaryEstimated||0)+1;}
       for(const field of require('./decision-complete').missingFields({...r,p:{...r.p,...f}},Evidence)){
         const remaining=coverage.remainingByFieldAfterPlan;
         remaining[field]=(remaining[field]||0)+1;
@@ -772,7 +776,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const cur = now[q.ruling.primaryId]; if ((grantFactIds.has(q.ruling.primaryId)||retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(broadGrant){
-          q.ruling.fields=SourceBlanks.select(cur.p,f);
+          q.ruling.fields=GrantSalary.liveFields(cur,f);
           return Object.keys(q.ruling.fields).length>0;
         }
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
