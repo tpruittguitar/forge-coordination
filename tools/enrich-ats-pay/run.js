@@ -670,7 +670,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   stats.network_requests=networkRequests;
   stats.planned = requests.length;
   stats.research_budget_exhausted=runtime.expired();
-  if(grantExtraction){await grantExtraction.verifyExclusive();stats.grant_extraction_attempts=grantExtraction.attempts;stats.grant_extraction_fact_rows=grantFactIds.size;grantExtraction.close();}
+  if(grantExtraction){
+    await grantExtraction.verifyExclusive();
+    stats.grant_extraction_attempts=grantExtraction.attempts;stats.grant_extraction_fact_rows=grantFactIds.size;
+    stats.grant_extraction_accounting=grantExtraction.accounting;
+    // The grant invocation sends only its own ATSBOT rows, not ordinary planned work.
+    for(let i=requests.length-1;i>=0;i--){
+      if(!grantFactIds.has(requests[i].ruling.primaryId))requests.splice(i,1);
+      else for(const k of Object.keys(requests[i].ruling.fields))if(!/^SALARY_(?:BASE_LOW|BASE_HIGH|BASIS|SOURCE|ASOF|CONF|MIDPOINT|SCORE_POINT)$/.test(k))delete requests[i].ruling.fields[k];
+    }
+    stats.planned=requests.length;
+    grantExtraction.close();
+  }
   runtime.setPhase('writer');
   progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
@@ -718,7 +729,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
              on; a failed receipt = failed; nothing or still pending = unconfirmed, counted, and the run continues to the next batch. Never re-POSTed here. */
-          const proof = await receiptFor(batch);
+          const proof = await receiptFor(batch, {exact:grantExtraction?.smoke===true});
           if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue batches; }
           delete ledger.pendingWrites[requestId];
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
@@ -748,6 +759,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
       const committed = res.mode === 'BATCH_RULING_SINGLE_COMMIT' || res.mode === 'RECEIPT_COMPLETE' || !!res.writeId;
       batch.forEach((q, i) => { const it = results[i] || {}; const saved = it.ok && (committed || it.mode === 'ALREADY_APPLIED'); if (saved) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else if (it.ok) stats.writer_not_written++; else { stats.writer_failed++; const m = String(it.mode || it.error || res.mode || res.error || 'NO_RESULT').slice(0, 60); (stats.writer_fail_modes = stats.writer_fail_modes || {})[m] = (stats.writer_fail_modes[m] || 0) + 1; } });
+      if(grantExtraction?.smoke&&batch.length===1&&committed&&results[0]?.ok){
+        const smoke=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r.phase==='SMOKE'&&r.primaryId===batch[0].ruling.primaryId&&r.status==='FACTS_ACCEPTED');
+        if(smoke&&(res.mode==='RECEIPT_COMPLETE'||(await receiptFor(batch,{exact:true})).status==='COMPLETE')){
+          smoke.status='WRITER_VERIFIED';smoke.writerRequestId=batch[0].ruling.requestId;
+          GrantExtraction.checkpoint(LEDGER,ledger);
+          stats.grant_smoke_writer_verified=true;
+        }
+      }
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
@@ -758,7 +777,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
   // is PENDING (the Writer verifies a save no sooner than 120 s after it), up to replyCheckPolls x replyCheckGapMs.
-  async function receiptFor(batch) {
+  async function receiptFor(batch,{exact=false}={}) {
     const rid = batch[0].ruling.requestId; let s = 'NO_ENTRY';
     for (let i = 0; i < (CONFIG.replyCheckPolls || 6); i++) {
       if(!runtime.canStart((CONFIG.replyCheckGapMs||30000)+30000))return {status:s};
@@ -767,7 +786,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       let d; try { d = await (await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(rid)}`)).json(); } catch (e) { continue; }
       const entry = d && d.request; s = entry ? String(entry.s || 'UNKNOWN') : 'NO_ENTRY';
       if (s === 'COMPLETE' && d.source==='GITHUB'){
-        try{if(await require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0]})){stats.salary_independently_verified+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;return {status:s,pids:new Set(batch.map(q=>q.ruling.primaryId))};}}catch{}
+        try{let drift=false;if(await require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0],onDrift:()=>{drift=true}})&&(!exact||!drift)){stats.salary_independently_verified+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;return {status:s,pids:new Set(batch.map(q=>q.ruling.primaryId))};}}catch{}
         s='COMPLETE_READBACK_UNCONFIRMED';
       }
       if (['NEEDS_RESOLUTION', 'NOT_PERSISTED', 'FALSE_COMPLETE'].includes(s)) return { status: s, failed: true };

@@ -8,7 +8,8 @@ const {response}=require('../grant-backlog/responses.cjs');
 const Store=require('../programmed-coordinator/store.cjs');
 const Source=require('../programmed-coordinator/source.cjs');
 const {lock}=require('../automation-run-lock.cjs');
-const MAX_ATTEMPTS=W.LIMITS.batchJobs;
+const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=37470000;
+const {reservationMicrousd}=W.LIMITS;
 const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
 
 function input(row,capture,needs,fields,now,{payUnresolved=false}={}) {
@@ -49,12 +50,14 @@ function resultFields(result,e,groups,row,{ambiguousPay=false}={}){
   return out;
 }
 
-function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=MAX_ATTEMPTS}){
-  if(![5,MAX_ATTEMPTS].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
-  let attempts=0, stopped=false, projectId=null, credential;
+function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT}){
+  if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
+  let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, projectId=null, credential;
   return {
     close(){credential?.close();credential=null;},
     get attempts(){return attempts;},
+    get accounting(){return {reportedCostMicrousd,unknownAttempts,unknownReservedMicrousd:unknownAttempts*reservationMicrousd,cumulativeCapMicrousd:GRANT_CAP};},
+    get smoke(){return maxAttempts===SMOKE_LIMIT;},
     async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved}){
       if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
@@ -63,11 +66,17 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const {e,groups,ambiguousPay}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
       if(Object.hasOwn(records,key))return {};
+      const entries=Object.values(records),smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
+      if(maxAttempts===BULK_LIMIT&&!smoke)throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
+      if(maxAttempts===SMOKE_LIMIT&&entries.some(r=>r?.phase==='SMOKE'))throw Error('ATS_GRANT_SMOKE_ALREADY_ATTEMPTED');
+      const reserved=(entries.length+1)*reservationMicrousd;
+      if(reserved>GRANT_CAP||maxAttempts===SMOKE_LIMIT&&reservationMicrousd>SMOKE_CAP)throw Error('ATS_GRANT_CAP_REACHED');
+
       let proof;
       try {
         proof=await readFunding();
         if(funding(proof,now()).length||proof.funding.availableMicrousd-proof.funding.otherConsumersReservedMicrousd
-          <W.LIMITS.balanceFloorMicrousd+maxAttempts*W.LIMITS.reservationMicrousd||projectId&&projectId!==proof.project.id)throw Error('GRANT_FUNDING_BLOCKED');
+          <W.LIMITS.balanceFloorMicrousd+maxAttempts*reservationMicrousd||projectId&&projectId!==proof.project.id)throw Error('GRANT_FUNDING_BLOCKED');
         projectId=proof.project.id;
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
@@ -76,12 +85,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
       const timeout=AbortSignal.timeout(remaining);
-      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN'};
+      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK'};
       checkpoint(); // same normal ATS ledger, before any model request; no second ledger.
-      attempts++;
+      attempts++;unknownAttempts++;
       try {
         const r=await response(body,{secureRuntime:credential.secureRuntime,projectId,
           signal:signal?AbortSignal.any([signal,timeout]):timeout,transport});
+        const cost=Math.ceil(r.usage.input_tokens*W.LIMITS.inputUsdPerMillion+r.usage.output_tokens*W.LIMITS.outputUsdPerMillion);
+        Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
+        reportedCostMicrousd+=cost;unknownAttempts--;
         const fields=resultFields(r.result,e,groups,row,{ambiguousPay});
         records[key].status=Object.keys(fields).length?'FACTS_ACCEPTED':'NO_SUPPORTED_FACTS';
         return fields;
@@ -115,8 +127,8 @@ function configured({root,live,writerPostLock,env=process.env}){
   const privateFile=fs.realpathSync(file),checkout=fs.realpathSync(root);
   if(privateFile.toLowerCase().startsWith(checkout.toLowerCase()+path.sep))throw Error('ATS_GRANT_FUNDING_MUST_BE_PRIVATE');
   const configuredLimit=env.FORGE_ATS_GRANT_MAX_ROWS;
-  if(configuredLimit!==undefined&&!['5',String(MAX_ATTEMPTS)].includes(configuredLimit))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
-  const maxAttempts=configuredLimit===undefined?MAX_ATTEMPTS:Number(configuredLimit);
+  if(configuredLimit!==undefined&&!['1','50'].includes(configuredLimit))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
+  const maxAttempts=configuredLimit===undefined?SMOKE_LIMIT:Number(configuredLimit);
   const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
   if(!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
   // Fail closed if the existing authoritative ATS workflow is enabled or still

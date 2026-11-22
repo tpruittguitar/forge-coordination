@@ -45,7 +45,7 @@ test('no paid fallback, ambiguous figures and unknown outcomes cannot produce fi
   const u=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),transport:async()=>{calls++;throw Error('unknown')}});
   const args=c();await a.rejects(u.extract(args),/GRANT_RESPONSE_UNVERIFIED/);
   a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');
-  a.deepEqual(await u.extract(args),{});a.equal(calls,1);
+  a.deepEqual(await u.extract(args),{});a.equal(calls,1);a.equal(u.accounting.unknownReservedMicrousd,2048);
 });
 test('conflicting location pay stays unresolved and independently parsed degree stays intact',async()=>{
   const original=c(degreeFields()), conflict={...capture,pay:null,payAmbiguous:true,text:text+'\nOhio: annual base salary $170,000 to $190,000. California: annual base salary $210,000 to $250,000.'};
@@ -58,14 +58,30 @@ test('conflicting location pay stays unresolved and independently parsed degree 
   a.deepEqual(fields,degreeFields());
 });
 function degreeFields(){return {DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree,DEGREE_EVIDENCE_URL:url,DEGREE_ASOF:'2026-11-22'};}
-test('first native production pass can cap grant work at five rows',async()=>{
+test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 reservation ceiling',async()=>{
   let calls=0;
-  const g=G.create({maxAttempts:5,now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),
-   transport:async()=>{calls++;return wrapped(payOnly)}});
-  const args=c();
-  for(let j=0;j<8;j++)await g.extract({...args,row:{...row,PRIMARY_ID:'V2I-ATS-'+j}});
-  a.equal(calls,5);a.equal(Object.keys(args.ledger.grantExtractionAttempts).length,5);
-  a.throws(()=>G.create({maxAttempts:6}),/ATS_GRANT_ROW_LIMIT_INVALID/);
+  const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),
+    transport:async()=>{calls++;return wrapped(payOnly)}};
+  const args=c(),rowArgs=j=>({...args,row:{...row,PRIMARY_ID:'V2I-ATS-'+j}});
+  const bulk=G.create({...options,maxAttempts:50}),smoke=G.create(options);
+  await a.rejects(bulk.extract(rowArgs(0)),/SMOKE_WRITE_UNVERIFIED/);
+  await smoke.extract(rowArgs(0));await smoke.extract(rowArgs(1));
+  a.equal(calls,1);
+  a.deepEqual(smoke.accounting,{reportedCostMicrousd:80,unknownAttempts:0,unknownReservedMicrousd:0,cumulativeCapMicrousd:37470000});
+  const record=Object.values(args.ledger.grantExtractionAttempts)[0];
+  a.equal(record.phase,'SMOKE');a.equal(record.status,'FACTS_ACCEPTED');
+  await a.rejects(bulk.extract(rowArgs(1)),/SMOKE_WRITE_UNVERIFIED/);
+  a.equal(calls,1);
+  Object.assign(record,{status:'WRITER_VERIFIED',writerRequestId:'GRANT-WRITER-1'});
+  for(let j=1;j<=52;j++)await bulk.extract(rowArgs(j));
+  a.equal(calls,51);
+  const reserve=require('../grant-backlog/worker.cjs').LIMITS.reservationMicrousd;
+  a.ok(reserve<=10000);
+  const entries=args.ledger.grantExtractionAttempts;
+  for(let j=Object.keys(entries).length;j<Math.floor(37470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
+  await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(100)),/ATS_GRANT_CAP_REACHED/);
+  a.equal(calls,51);
+  a.throws(()=>G.create({maxAttempts:5}),/ATS_GRANT_ROW_LIMIT_INVALID/);
 });
 test('grant mode is off by default and old enabled or running GitHub ATS authority blocks launch',async()=>{
   a.equal(G.configured({env:{}}),null);
