@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T06:52:43.461Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T064706217Z",
+ "at": "2026-11-22T07:03:29.796Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T065844998Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T06:47:23.271Z",
+  "readAt": "2026-11-22T06:58:58.629Z",
   "sha256": "cdf709e6fd2fc8d04b1952346966517342ceee45895f70018095fba452884b49",
   "rows": 9538
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 617,
- "skipped_recent": 345,
+ "estimate_waiting_for_posting": 624,
+ "skipped_recent": 337,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,16 +63,29 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 4
+  "ziprecruiter": 1,
+  "linkedin": 6
  },
  "agg_read": {
-  "linkedin": 4
+  "linkedin": 3
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "ziprecruiter": 1,
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "ziprecruiter": [
+   "403"
+  ],
+  "linkedin": [
+   "404",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 7,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -118,7 +131,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T06:47:29.805Z",
+  "profile_as_of": "2026-11-22T06:59:04.563Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14727,9 +14740,10 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 638,
- "nothing_found": 638,
- "attempt_only_skipped": 4,
+ "not_attempted": 643,
+ "nothing_found": 647,
+ "source_origin_blocks": {},
+ "attempt_only_skipped": 3,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14762,8 +14776,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2344,
- "network_requests": 12,
+ "roles_researched": 2353,
+ "network_requests": 15,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14774,9 +14788,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 767,
+  "SOURCE_RESEARCH_REQUIRED": 764,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 66,
+  "EVIDENCE_FOUND": 69,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15001,67 +15015,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:56:54.592Z",
-   "retryAt": "2026-11-22T06:56:54.592Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:00:11.082Z",
+   "retryAt": "2026-11-22T23:00:11.082Z",
    "attempts": [
     {
      "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
      "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-26D40D235438",
-   "company": "Princess Cruises",
-   "title": "Director, Food and Beverage Operations and Experiences",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:00.871Z",
-   "retryAt": "2026-11-22T06:57:00.871Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483769628",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8199525A8534",
-   "company": "Florida International University",
-   "title": "Director of Operations for Aquarius Reef Base and Working Diving Safety Officer (Islamorada, FL)",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:03.936Z",
-   "retryAt": "2026-11-22T06:57:03.936Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475113203",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AC419D176355",
-   "company": "Guardian Dentistry Partners",
-   "title": "Director, Tactical Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:13.931Z",
-   "retryAt": "2026-11-22T06:57:13.931Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -15974,6 +15934,42 @@
    "lastAttemptAt": "2026-11-22T06:36:38.247Z",
    "retryAt": "2026-11-22T07:36:38.247Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B0A5F27EE840",
+   "company": "The People Co.",
+   "title": "Director of Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T06:48:48.044Z",
+   "retryAt": "2026-11-22T07:48:48.044Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4486638723",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3AFF8639C2E0",
+   "company": "STO Building Group",
+   "title": "Director of MEP Operations - Mission Critical",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T06:48:51.174Z",
+   "retryAt": "2026-11-22T07:48:51.174Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477824153",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -19137,9 +19133,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:17.190Z",
-   "retryAt": "2026-11-22T06:57:17.190Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
+   "retryAt": "2026-11-22T23:00:23.813Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484169592",
@@ -19156,9 +19152,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:17.191Z",
-   "retryAt": "2026-11-22T06:57:17.191Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
+   "retryAt": "2026-11-22T23:00:23.813Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19174,9 +19170,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:17.191Z",
-   "retryAt": "2026-11-22T06:57:17.191Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T07:00:23.814Z",
+   "retryAt": "2026-11-22T23:00:23.814Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19192,13 +19188,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:20.318Z",
-   "retryAt": "2026-11-22T06:57:20.318Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:00:26.905Z",
+   "retryAt": "2026-11-22T23:00:26.905Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
-     "status": "NO_EXACT_COMPLETE_POSTING"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20648,11 +20644,16 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:20.361Z",
-   "retryAt": "2026-11-22T06:57:20.361Z",
-   "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:00:29.987Z",
+   "retryAt": "2026-11-22T23:00:29.987Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484327048",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-0E8C5076C80A",
@@ -21899,6 +21900,42 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485311555",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-50152038491A",
+   "company": "nVent",
+   "title": "Process Transformation Leader - nVent Engineered Building Solutions",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T06:48:54.738Z",
+   "retryAt": "2026-11-22T07:48:54.738Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4460120504",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-226061853433",
+   "company": "Authority Brands",
+   "title": "VP of Contact Centers",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T06:48:57.908Z",
+   "retryAt": "2026-11-22T07:48:57.908Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483939386",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29829,9 +29866,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:20.547Z",
-   "retryAt": "2026-11-22T06:57:20.547Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T07:00:30.159Z",
+   "retryAt": "2026-11-22T23:00:30.159Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29847,9 +29884,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:20.547Z",
-   "retryAt": "2026-11-22T06:57:20.547Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
+   "retryAt": "2026-11-22T23:00:30.160Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29865,9 +29902,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T14:57:20.547Z",
-   "retryAt": "2026-11-22T06:57:20.547Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
+   "retryAt": "2026-11-22T23:00:30.160Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
