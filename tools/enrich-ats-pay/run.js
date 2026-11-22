@@ -50,6 +50,9 @@ const RetainedFields=require('./retained-fields');
 const PREPARED_DIR=PREPARATION_DIR||process.env.ENRICH_PREPARED_DIR||(process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):path.join(ROOT,'state'));
 const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
+const GrantExtraction=require('./grant-extract.cjs');
+const grantExtraction=GrantExtraction.configured({root:ROOT,live:!DRY&&!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE,writerPostLock});
+
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:.]/g, '');
 const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
   pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
@@ -85,6 +88,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 
 (async () => {
   const T0 = Date.now();
+  if(grantExtraction)await grantExtraction.acquire();
   progress('startup');
   // Synthetic-master runs use a non-production fixture endpoint and no private
   // connection file. Real runs still use the existing local Writer connection.
@@ -441,6 +445,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(f.DEGREE_REQ)stats.retained_completion.degree++;
     requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-E'+String(stats.retained_completion.planned).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}});
   }
+  const grantFactIds=new Set();
   progress('missing_fields',{planned:requests.length});
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
@@ -537,6 +542,20 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           if(n.includes('DEGREE')&&e.degree){stats.degree++;Object.assign(f,{DEGREE_TEXT:e.degree.text,DEGREE_REQ:e.degree.req,DEGREE_EVIDENCE_URL:reuse?.degreeUrl||publicUrl,DEGREE_ASOF:(reuse?.degreeAt||observedAt).slice(0,10)});}readAttempts.push({url:publicUrl,status:'FULL_POSTING_READ'});break;
         }stats.public_failed++;readAttempts.push({url:publicUrl,status:'NO_EXACT_COMPLETE_POSTING'});
       }catch(e){stats.public_failed++;readAttempts.push({url:publicUrl,status:e.status?'HTTP_'+e.status:'READ_ERROR'});}
+    }
+    if(grantExtraction&&!helperResearch&&!externallyFenced(r.PRIMARY_ID)&&runtime.canStart(60000)){
+      try {
+        const grantFields=await grantExtraction.extract({row:r,capture:preparationSource||saved,needs:n,fields:f,ledger,payUnresolved,
+          checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+        if(Object.keys(grantFields).length){
+          if(grantFields.SALARY_BASE_LOW){postedPay={low:grantFields.SALARY_BASE_LOW,high:grantFields.SALARY_BASE_HIGH};stats.posted_pay++;}
+          Object.assign(f,grantFields);
+          grantFactIds.add(r.PRIMARY_ID);
+        }
+      } catch(e) {
+        if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED'].includes(e.message))throw e;
+        stats.grant_extraction_stop=e.message;
+      }
     }
     // Tim 2026-11-11: a trusted site estimate bypasses salary-only posting checks.
     // For rows without that signal, retain the existing checked/no-pay route.
@@ -651,6 +670,18 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   stats.network_requests=networkRequests;
   stats.planned = requests.length;
   stats.research_budget_exhausted=runtime.expired();
+  if(grantExtraction){
+    await grantExtraction.verifyExclusive();
+    stats.grant_extraction_attempts=grantExtraction.attempts;stats.grant_extraction_fact_rows=grantFactIds.size;
+    stats.grant_extraction_accounting=grantExtraction.accounting;
+    // The grant invocation sends only its own ATSBOT rows, not ordinary planned work.
+    for(let i=requests.length-1;i>=0;i--){
+      if(!grantFactIds.has(requests[i].ruling.primaryId))requests.splice(i,1);
+      else for(const k of Object.keys(requests[i].ruling.fields))if(!/^SALARY_(?:BASE_LOW|BASE_HIGH|BASIS|SOURCE|ASOF|CONF|MIDPOINT|SCORE_POINT)$/.test(k))delete requests[i].ruling.fields[k];
+    }
+    stats.planned=requests.length;
+    grantExtraction.close();
+  }
   runtime.setPhase('writer');
   progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
@@ -664,7 +695,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (!rb.ok) throw new Error('row_readback: ' + (rb.error || 'not ok'));
       const now = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) now[x.primaryId] = W.parseRows(x.line)[0]; });
       batch = batch.filter(q => {
-        const cur = now[q.ruling.primaryId]; if ((retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
+        const cur = now[q.ruling.primaryId]; if ((grantFactIds.has(q.ruling.primaryId)||retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         if(require('./business-label').guard(f,rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur))stats.business_label_guard_dropped=(stats.business_label_guard_dropped||0)+1;
@@ -698,7 +729,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
              batch (2026-10-23 05:22: 22 rows saved, receipts COMPLETE, bot reported 22 failed and stopped). The reply is not
              the record; the receipt index is. Read it (read-only) for this batch's rulings: COMPLETE = saved and the run goes
              on; a failed receipt = failed; nothing or still pending = unconfirmed, counted, and the run continues to the next batch. Never re-POSTed here. */
-          const proof = await receiptFor(batch);
+          const proof = await receiptFor(batch, {exact:grantExtraction?.smoke===true});
           if (proof.status !== 'COMPLETE') { const c = proof.failed ? 'writer_failed' : 'writer_unconfirmed'; stats[c] = (stats[c] || 0) + batch.length; stats.writer_error = String(e.message).slice(0, 160) + '; receipt ' + proof.status; continue batches; }
           delete ledger.pendingWrites[requestId];
           stats.writer_reply_lost = (stats.writer_reply_lost || 0) + 1;
@@ -728,6 +759,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       // nothing written; only a committed batch (or an item already applied) counts as saved, the rest is retried next run.
       const committed = res.mode === 'BATCH_RULING_SINGLE_COMMIT' || res.mode === 'RECEIPT_COMPLETE' || !!res.writeId;
       batch.forEach((q, i) => { const it = results[i] || {}; const saved = it.ok && (committed || it.mode === 'ALREADY_APPLIED'); if (saved) { stats.writer_ok++; ledger.submitted[q.ruling.primaryId] = new Date().toISOString(); } else if (it.ok) stats.writer_not_written++; else { stats.writer_failed++; const m = String(it.mode || it.error || res.mode || res.error || 'NO_RESULT').slice(0, 60); (stats.writer_fail_modes = stats.writer_fail_modes || {})[m] = (stats.writer_fail_modes[m] || 0) + 1; } });
+      if(grantExtraction?.smoke&&batch.length===1&&committed&&results[0]?.ok){
+        const smoke=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r.phase==='SMOKE'&&r.primaryId===batch[0].ruling.primaryId&&r.status==='FACTS_ACCEPTED');
+        if(smoke&&(res.mode==='RECEIPT_COMPLETE'||(await receiptFor(batch,{exact:true})).status==='COMPLETE')){
+          smoke.status='WRITER_VERIFIED';smoke.writerRequestId=batch[0].ruling.requestId;
+          GrantExtraction.checkpoint(LEDGER,ledger);
+          stats.grant_smoke_writer_verified=true;
+        }
+      }
       if (res.mode === 'BATCH_RULING_RETRY') { stats.writer_retry = (stats.writer_retry || 0) + 1; }
       stats.submitted += batch.length;
       if (res.remainder) { stats.remainder += (res.remainder.requests || []).length; break; }   // Writer ran out of time: the rest waits for the next run
@@ -738,7 +777,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   }
   // Receipt index entry for a batch whose reply was lost: every ruling's requestId maps to the one batch entry. Polls while it
   // is PENDING (the Writer verifies a save no sooner than 120 s after it), up to replyCheckPolls x replyCheckGapMs.
-  async function receiptFor(batch) {
+  async function receiptFor(batch,{exact=false}={}) {
     const rid = batch[0].ruling.requestId; let s = 'NO_ENTRY';
     for (let i = 0; i < (CONFIG.replyCheckPolls || 6); i++) {
       if(!runtime.canStart((CONFIG.replyCheckGapMs||30000)+30000))return {status:s};
@@ -747,7 +786,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       let d; try { d = await (await get(`${conn.PipelineConnection.url}?action=receipt_index&key=${encodeURIComponent(key)}&requestId=${encodeURIComponent(rid)}`)).json(); } catch (e) { continue; }
       const entry = d && d.request; s = entry ? String(entry.s || 'UNKNOWN') : 'NO_ENTRY';
       if (s === 'COMPLETE' && d.source==='GITHUB'){
-        try{if(await require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0]})){stats.salary_independently_verified+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;return {status:s,pids:new Set(batch.map(q=>q.ruling.primaryId))};}}catch{}
+        try{let drift=false;if(await require('./writer-proof').verify(batch,{index:await receiptIndex(),read:writerRead,parse:line=>W.parseRows(line)[0],onDrift:()=>{drift=true}})&&(!exact||!drift)){stats.salary_independently_verified+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;return {status:s,pids:new Set(batch.map(q=>q.ruling.primaryId))};}}catch{}
         s='COMPLETE_READBACK_UNCONFIRMED';
       }
       if (['NEEDS_RESOLUTION', 'NOT_PERSISTED', 'FALSE_COMPLETE'].includes(s)) return { status: s, failed: true };
@@ -781,4 +820,5 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
   progress('complete',{planned:stats.planned,accepted:stats.writer_ok});
-})().catch(e => { console.error(e.message); process.exit(1); });
+})().finally(()=>{if(grantExtraction){grantExtraction.close();grantExtraction.release();}})
+  .catch(e => { console.error(e.message); process.exit(1); });
