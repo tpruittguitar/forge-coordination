@@ -183,3 +183,11 @@ promoted to employer-posted pay. Pending requests,
 helper reservations, protected decisions, expiry/identity checks, fresh-attempt
 backoff and the live pre-submit guard remain enforced. `retained_completion` reports
 planned rows and salary/degree field counts, not Writer completion.
+
+### Optional TIMMAY grant-only extraction (disabled by default)
+
+The normal ATS pay/degree job stays unchanged unless the authorized TIMMAY production executor configures the private `FORGE_ATS_GRANT_FUNDING_FILE` and `FORGE_ATS_GRANT_EXPECTED_SID`. Do not add the OpenAI credential or private proof to GitHub. This mode requires the existing GitHub Writer POST lock and refuses before work if the old GitHub ATS production workflow is not disabled and drained. Move the existing durable ATS ledger/publisher and designated single native executor together before enabling. Do not invoke a second producer from an ad hoc checkout.
+
+The private funding proof must be produced by an authorized account verifier, use the existing `forge.grant-funding-observation.v1` contract, and be refreshed within five minutes. A key or an hourly public balance alone is not proof of promotional-only project funding, no paid fallback, expiry or concurrent reservations. The checked-in code does not produce that proof or enable a scheduler.
+
+The bounded extractor reads only canonical-identity-matched public posting text for still-missing employer-posted pay/degree. It uses the existing TIMMAY Credential Manager target and Responses transport. It independently checks facts against literal captures, persists the attempt in the normal ATS ledger before dispatch, and never retries an uncertain outcome. Supported facts enter the current ATSBOT request in the same run, through its existing exact-row, protection, pending-request, Writer-lock and readback rules. No helper return, evidence review queue, alternate Writer, or billing fallback.

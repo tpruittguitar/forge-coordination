@@ -50,6 +50,9 @@ const RetainedFields=require('./retained-fields');
 const PREPARED_DIR=PREPARATION_DIR||process.env.ENRICH_PREPARED_DIR||(process.env.ENRICH_MASTER_FILE?path.dirname(LEDGER):path.join(ROOT,'state'));
 const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit || (process.env.ENRICH_MASTER_FILE && process.env.ENRICH_TEST_SUBMIT));   // ENRICH_TEST_SUBMIT: tests only
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
+const GrantExtraction=require('./grant-extract.cjs');
+const grantExtraction=GrantExtraction.configured({root:ROOT,live:!DRY&&!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE,writerPostLock});
+
 const today = new Date().toISOString().slice(0, 10), RUN_ID = 'FORGE-ENRICH_ATS-ATSBOT-' + new Date().toISOString().replace(/[-:.]/g, '');
 const runtime = require('./runtime').create({researchMs:CONFIG.maxRunMs,totalMs:CONFIG.totalRunMs||1080000,
   pause:ms=>new Promise(r=>setTimeout(r,process.env.ENRICH_TEST_FAST?0:ms))});
@@ -85,6 +88,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
 
 (async () => {
   const T0 = Date.now();
+  if(grantExtraction)await grantExtraction.acquire();
   progress('startup');
   // Synthetic-master runs use a non-production fixture endpoint and no private
   // connection file. Real runs still use the existing local Writer connection.
@@ -441,6 +445,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(f.DEGREE_REQ)stats.retained_completion.degree++;
     requests.push({action:'ruling',ruling:{requestId:RUN_ID+'-E'+String(stats.retained_completion.planned).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}});
   }
+  const grantFactIds=new Set();
   progress('missing_fields',{planned:requests.length});
   for (const r of ordered) {
     if (requests.length >= CONFIG.maxBatches * 25 || !runtime.canStart()) break;
@@ -537,6 +542,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           if(n.includes('DEGREE')&&e.degree){stats.degree++;Object.assign(f,{DEGREE_TEXT:e.degree.text,DEGREE_REQ:e.degree.req,DEGREE_EVIDENCE_URL:reuse?.degreeUrl||publicUrl,DEGREE_ASOF:(reuse?.degreeAt||observedAt).slice(0,10)});}readAttempts.push({url:publicUrl,status:'FULL_POSTING_READ'});break;
         }stats.public_failed++;readAttempts.push({url:publicUrl,status:'NO_EXACT_COMPLETE_POSTING'});
       }catch(e){stats.public_failed++;readAttempts.push({url:publicUrl,status:e.status?'HTTP_'+e.status:'READ_ERROR'});}
+    }
+    if(grantExtraction&&!helperResearch&&!externallyFenced(r.PRIMARY_ID)&&runtime.canStart(60000)){
+      try {
+        const grantFields=await grantExtraction.extract({row:r,capture:preparationSource||saved,needs:n,fields:f,ledger,
+          checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+        if(Object.keys(grantFields).length){
+          if(grantFields.SALARY_BASE_LOW){postedPay={low:grantFields.SALARY_BASE_LOW,high:grantFields.SALARY_BASE_HIGH};stats.posted_pay++;}
+          if(grantFields.DEGREE_REQ)stats.degree++;
+          Object.assign(f,grantFields);
+          grantFactIds.add(r.PRIMARY_ID);
+        }
+      } catch(e) {
+        if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED'].includes(e.message))throw e;
+        stats.grant_extraction_stop=e.message;
+      }
     }
     // Tim 2026-11-11: a trusted site estimate bypasses salary-only posting checks.
     // For rows without that signal, retain the existing checked/no-pay route.
@@ -651,6 +671,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   stats.network_requests=networkRequests;
   stats.planned = requests.length;
   stats.research_budget_exhausted=runtime.expired();
+  if(grantExtraction){await grantExtraction.verifyExclusive();stats.grant_extraction_attempts=grantExtraction.attempts;stats.grant_extraction_fact_rows=grantFactIds.size;grantExtraction.close();}
   runtime.setPhase('writer');
   progress('writer_batches',{planned:requests.length});
   if (!DRY) batches: for (let b = 0; b * 25 < requests.length && b < CONFIG.maxBatches; b++) {
@@ -664,7 +685,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if (!rb.ok) throw new Error('row_readback: ' + (rb.error || 'not ok'));
       const now = {}; (rb.rows || []).forEach(x => { if (x.found && x.matches === 1) now[x.primaryId] = W.parseRows(x.line)[0]; });
       batch = batch.filter(q => {
-        const cur = now[q.ruling.primaryId]; if ((retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
+        const cur = now[q.ruling.primaryId]; if ((grantFactIds.has(q.ruling.primaryId)||retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         if(require('./business-label').guard(f,rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur))stats.business_label_guard_dropped=(stats.business_label_guard_dropped||0)+1;
@@ -781,4 +802,5 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if (!prev || strip_(prev) !== strip_(body)) fs.writeFileSync(REPORT, JSON.stringify(Object.assign({ at: new Date().toISOString() }, body), null, 1) + '\n');   // unchanged dry run: no new commit
   console.log(JSON.stringify(stats));
   progress('complete',{planned:stats.planned,accepted:stats.writer_ok});
-})().catch(e => { console.error(e.message); process.exit(1); });
+})().finally(()=>{if(grantExtraction){grantExtraction.close();grantExtraction.release();}})
+  .catch(e => { console.error(e.message); process.exit(1); });
