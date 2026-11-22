@@ -8,6 +8,8 @@ const fs = require('fs'), path = require('path'), vm = require('vm');
 const L = require('./lib.js');
 const Outcome=require('../writer-outcome.cjs'),Store=require('../programmed-coordinator/store.cjs');
 const writerPostLock=require('../writer-post-lock.cjs').fromEnv();
+// PILOT_FENCE_RECHECK_V1: fresh published pilot reservations, reread under the Writer POST lock (writer-post-recheck.cjs).
+const pilotFenceRecheck=require('../writer-post-recheck.cjs').fromEnv();
 const PAY_CLIENT_REVISION=Store.hash([__filename,require.resolve('./lib.js'),require.resolve('./recovery.js'),require.resolve('./site-estimate.js'),require.resolve('./public-posting.js'),require.resolve('../writer-outcome.cjs')].map(f=>fs.readFileSync(f,'utf8')).join('\n'));
 const SiteEstimate=require('./site-estimate');
 const WorkdayWindow=require('./workday-window');
@@ -691,6 +693,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
            busy lock sends nothing; the rows go again next run. Released as soon as the reply (or its loss) is known. */
         const postHold=writerPostLock?await writerPostLock.acquire():{ok:true,release:async()=>true};
         if(!postHold.ok){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;stats.writer_post_lock=postHold.reason;break batches;}
+        /* PILOT_FENCE_RECHECK_V1: a direct-pilot reservation published on another host after this run started is only
+           visible on main. Reread it now, under the lock the pilot also holds while publishing, and drop reserved rows.
+           A failed read sends nothing; the rows go again next run. */
+        if(pilotFenceRecheck){
+          let freshFence;
+          try{freshFence=await pilotFenceRecheck.fresh();}
+          catch(e){await postHold.release();stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;stats.pilot_fence_recheck=String(e.message).slice(0,160);break batches;}
+          const kept=batch.filter(q=>!freshFence.has(q.ruling.primaryId));
+          if(kept.length!==batch.length){stats.pilot_fence_dropped=(stats.pilot_fence_dropped||0)+batch.length-kept.length;batch=kept;}
+          if(!batch.length){await postHold.release();continue batches;}
+        }
         try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');stats.salary_submitted+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
           await postHold.release();

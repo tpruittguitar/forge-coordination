@@ -38,10 +38,7 @@ function fenceIndex(root, state, {excludePilotGrant} = {}) {
     // reader may omit its own reservation; original Writer fences still apply.
     const pilotWork=S.read(root,'control/SHARED_HELPER_WORK.json',{items:[]});
     if(excludePilotGrant&&pilotWork.directPilot?.grants?.[excludePilotGrant]?.status!=='RESERVED')throw Error('PILOT_GRANT_NOT_ACTIVE');
-    for(const i of pilotWork.items||[])if(i.taskKey==='FORGE_OPENAI_DIRECT_PILOT'&&!['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE'].includes(i.status)&&(!excludePilotGrant||i.pilotGrantId!==excludePilotGrant)){
-      if(!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(i.primaryId||''))throw Error('INVALID_PILOT_FENCE_ID');
-      ids.add(i.primaryId);for(const alias of i.aliases||[])ids.add(alias);
-    }
+    require('../writer-post-recheck.cjs').pilotFenceIds(pilotWork,{excludePilotGrant,into:ids});
     for(const tx of Object.values(state.transactions))
       if(tx.status!=='VERIFIED'&&!Outcome.released(root,tx)){if(!Array.isArray(tx.ids))throw Error('INVALID_TRANSACTION_FENCE_IDS');for(const id of tx.ids)ids.add(id);}
     const ledger=S.read(root,'state/enrich-ats-pay.json',{});

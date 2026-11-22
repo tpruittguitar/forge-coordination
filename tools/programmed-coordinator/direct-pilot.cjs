@@ -66,10 +66,10 @@ function privateGrant(root,dir,ref){
  if(value.receiptId!==ref||value.checkpointDir!==dir)fail('PRIVATE_GRANT_MISMATCH');
  return value;
 }
-async function issue({root,ids,grantId,checkpointDir,checkLock,readView,readFunding,now=Date.now,verifyPublished=()=>published(root,now()),persist=(w)=>require('../grant-backlog/checkpoint.cjs').save(path.join(root,H.FILE),w)}){
+async function issue({root,ids,grantId,checkpointDir,checkLock,readView,readFunding,serialization,now=Date.now,verifyPublished=()=>published(root,now()),persist=(w)=>require('../grant-backlog/checkpoint.cjs').save(path.join(root,H.FILE),w)}){
  if(typeof checkLock!=='function'||typeof readView!=='function'||typeof readFunding!=='function')fail('COORDINATOR_CAPABILITIES_REQUIRED');
  if(!/^FORGE-OPENAI-PILOT-[A-Za-z0-9_-]{3,100}$/.test(grantId||'')||!path.isAbsolute(checkpointDir||'')||path.resolve(checkpointDir).startsWith(path.resolve(root)+path.sep)||path.resolve(checkpointDir)===path.resolve(root))fail('PRIVATE_PILOT_OUTPUT_REQUIRED');
- const r=release(root,now());Serialization.check();checkLock();const proof=verifyPublished(),before=H.load(root),l=ledger(before);
+ const r=release(root,now());Serialization.check(serialization,{lock:true});checkLock();const proof=verifyPublished(),before=H.load(root),l=ledger(before);
  if(l.grants[grantId])fail('GRANT_ALREADY_EXISTS_USE_RESUME');
  const grants=Object.values(l.grants);
  if(grants.length>=r.maxGrants||l.reservedMicrousd+N.CAP>r.budgetMicrousd)fail('CUMULATIVE_PILOT_BUDGET_STOP');
@@ -98,9 +98,9 @@ async function issue({root,ids,grantId,checkpointDir,checkLock,readView,readFund
  after.items.push(...items.map(i=>({...i,pilotGrantId:grantId,assignedAt:g.readAt,assignedBy:OWNER})));
  H.validateWork(after);persist(after);return {grantId,ids,assignmentWrites:5,reservedMicrousd:N.CAP,published:false,writerRequests:0};
 }
-function authority({root,checkpointDir,checkLock,readView,readFunding,readEvidence,now=Date.now,verifyPublished=()=>published(root,now())}){
+function authority({root,checkpointDir,checkLock,readView,readFunding,readEvidence,serialization,now=Date.now,verifyPublished=()=>published(root,now())}){
  async function verifyGrant(ref,signal){
-  signal?.throwIfAborted();Serialization.check();checkLock();const p=verifyPublished(),r=release(root,now()),w=H.load(root),l=ledger(w),g=l.grants[ref];
+  signal?.throwIfAborted();Serialization.check(serialization);checkLock();const p=verifyPublished(),r=release(root,now()),w=H.load(root),l=ledger(w),g=l.grants[ref];
   if(!g||g.revision!==p.releaseSha256||g.status!=='RESERVED'||l.reservedMicrousd>r.budgetMicrousd)fail('CURRENT_PILOT_GRANT_REQUIRED');
   const items=w.items.filter(i=>i.pilotGrantId===ref&&i.taskKey===H.PILOT_TASK);
   if(items.length!==5||items.some(i=>i.status!=='ASSIGNED'||i.provider!=='OpenAI'||!g.ids.includes(i.primaryId)))fail('EXACT_PILOT_CLAIMS_REQUIRED');
@@ -115,7 +115,7 @@ function authority({root,checkpointDir,checkLock,readView,readFunding,readEviden
   const v=await readView(signal);signal?.throwIfAborted();inspect({root,ids:g.ids,view:v,now:now(),ownGrant:ref});
   const row=v.snapshot.rows.find(r=>r.PRIMARY_ID===id),a=H.load(root).items.find(i=>i.primaryId===id);
   if(a.sourceVersion!==S.hash(row.line))fail('PILOT_ROW_CHANGED');
-  const captured=await readEvidence(id,signal);signal?.throwIfAborted();Serialization.check();checkLock();
+  const captured=await readEvidence(id,signal);signal?.throwIfAborted();Serialization.check(serialization);checkLock();
   if(captured.priorEvidenceReviewed!==true)fail('PRIOR_EVIDENCE_REVIEW_REQUIRED');
   return {receiptId:ref,revision:g.revision,exclusive:true,returned:false,originalRequestsReconciled:true,priorEvidenceReviewed:true,
    snapshot:v.snapshot,row,missingGroups:a.missingFields,admission:v.snapshot.neverConsiderById[id],evidence:captured.evidence,reusableResult:captured.reusableResult};
@@ -141,10 +141,14 @@ async function execute(operation,options){
  recordResult({...options,report:result});return result;
 }
 async function launch(operation,options){
- const {root,grantId,ids,readerOptions,readFunding,readEvidence}=options;
+ const {root,grantId,ids,readerOptions,readFunding,readEvidence,sharedWriter}=options;
  // Before taking a lock or loading any authorized reader/secret, require the
  // reviewed release on clean current main and the existing coordinator role.
- Serialization.check();published(root);release(root);
+ published(root);release(root);
+ // Cross-host serialization with Ubuntu ATS: reserve holds the shared Writer POST
+ // lock until its reservation is on main; ATS rereads main under that lock.
+ const serialization=await Serialization.establish({root,capability:sharedWriter,hold:operation==='reserve',owner:'direct-pilot-'+String(grantId||'').slice(0,80)});
+ try{
  const contract=fs.readFileSync(path.join(root,'policy/current/AI_AUTOMATION_COMMON.txt'),'utf8');
  const lockFile=contract.match(/automation-run-lock\.cjs acquire (\S+) <unique-RUN_ID>/)?.[1];
  if(!lockFile||!path.isAbsolute(lockFile))fail('CURRENT_SHARED_PRODUCTION_LOCK_REQUIRED');
@@ -154,13 +158,23 @@ async function launch(operation,options){
  try{
   const selected=operation==='reserve'?ids:ledger(H.load(root)).grants[grantId]?.ids;
   const readers=require('../grant-backlog/host-readers.cjs').createPilot({...readerOptions,root,admissionIds:selected});
-  const result=await execute(operation,{...options,readView:readers.readView,checkLock,readFunding,readEvidence});
+  const result=await execute(operation,{...options,readView:readers.readView,checkLock,readFunding,readEvidence,serialization});
   // Existing accounting publication makes reservations visible to all helpers.
   // A failed publication cannot start a model call or release/recreate a grant.
+  // A reservation is published only while this invocation still holds the shared lock.
+  if(operation==='reserve')await Serialization.confirmHeld(serialization);
   require('../helper-routing/shared-pages.cjs').generate(root,{checkLock});
   const publication=require('./publish.cjs').publish(root);
   if(!publication.published)fail('PILOT_ACCOUNTING_NOT_PUBLISHED');
   return {...result,publication};
  }finally{Lock.lock(lockFile,'release',token);}
+ }finally{await Serialization.end(serialization);}
 }
-module.exports={launch,RELEASE,OWNER,release,published,ledger,inspect,issue,authority,recordResult,execute};
+// Retrying a failed accounting publication must also hold the shared lock, or the
+// reservation could reach main while an ATS POST that has not seen it is in flight.
+async function republish({root,sharedWriter,grantId}){
+ const serialization=await Serialization.establish({root,capability:sharedWriter,hold:true,owner:'direct-pilot-republish-'+String(grantId||'').slice(0,80)});
+ try{await Serialization.confirmHeld(serialization);const publication=require('./publish.cjs').publish(root);if(!publication.published)fail('PILOT_ACCOUNTING_NOT_PUBLISHED');return publication;}
+ finally{await Serialization.end(serialization);}
+}
+module.exports={republish,launch,RELEASE,OWNER,release,published,ledger,inspect,issue,authority,recordResult,execute};
