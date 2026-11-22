@@ -1,0 +1,7 @@
+'use strict';
+const {test}=require('node:test'),a=require('node:assert/strict'),crypto=require('node:crypto'),P=require('./policy-source.cjs');
+const raw='SECTION=NEVER_CONSIDER\n- NC-001 SYNTHETIC: test.\n',commit='a'.repeat(40),blob=crypto.createHash('sha1').update('blob '+Buffer.byteLength(raw)+'\0'+raw).digest('hex');
+const git=args=>({remote:'https://github.com/tpruittguitar/forge-policy.git','rev-parse':args.length===2&&args[1]==='HEAD'?commit:blob,'ls-remote':commit+'\trefs/heads/main',status:'',show:raw})[args[0]];
+test('policy source preserves exact bytes, verifies Git blob and published commit without granting CLEAR',()=>{const r=P.read({root:'unused',git});a.equal(r.raw,raw);a.equal(r.proof.blob,blob);a.equal(r.status,undefined);});
+test('wrong repository, unpublished head, dirty policy and corrupted blob fail closed',()=>{for(const [command,value]of [['remote','https://example.com'],['ls-remote','b'.repeat(40)],['status',' M rules/x'],['show',raw+'changed']])a.throws(()=>P.read({root:'unused',git:args=>args[0]===command?value:git(args)}));});
+test('policy head change during read and transport error preserve no partial proof',()=>{let count=0;a.throws(()=>P.read({root:'unused',git:args=>args[0]==='ls-remote'&&++count===2?'b'.repeat(40):git(args)}),/SOURCE_CHAIN/);a.throws(()=>P.read({root:'unused',git:()=>{throw Error('private transport detail');}}),e=>e.message==='POLICY_SOURCE_READ_FAILED');});

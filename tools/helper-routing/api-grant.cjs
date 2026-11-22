@@ -104,6 +104,10 @@ function reserve(options){
  if(typeof checkLock!=='function')fail('EXISTING_COORDINATOR_LOCK_REQUIRED');
  checkLock();const prepared=plan({...options,apply:false});checkLock();
  if(S.hash(S.read(root,WORK))!==prepared.baseWorkSha256)fail('API_RESERVATION_STATE_CHANGED');
+ // Recheck all existing claim authorities after the final lock check, not just
+ // the shared file. A late legacy claim must prevent this save.
+ const compared=plan({...options,apply:false});
+ if(S.hash(compared)!==S.hash(prepared))fail('API_RESERVATION_INPUTS_CHANGED');
  S.save(root,WORK,prepared.work);
  require('./shared-pages.cjs').generate(root,{now:options.now,checkLock});
  return {...prepared,assignmentWrites:prepared.ids.length,published:false};

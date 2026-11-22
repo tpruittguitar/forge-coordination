@@ -107,3 +107,5 @@ production permissions. No credential, external network, API spend, Writer
 submission, registry edit, schedule or installation is required. Preserve normal
 persistent TIMMAY checkpoint ACLs and same-state resume; do not clear holds or
 increase caps to force a launch.
+
+Exact-five update: [API_FIVE_JOB_GATE.md](API_FIVE_JOB_GATE.md). The reader now additionally requires `readPolicy`, bound to `policy-source.read({root: existingPolicyCheckout})`; current policy bytes must match Writer rules. This establishes provenance, not positive eligibility.

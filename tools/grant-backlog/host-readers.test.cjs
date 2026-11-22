@@ -6,13 +6,13 @@ const {fixture}=require('../helper-routing/api-grant-fixture.cjs');
 function setup(t){
  const f=fixture(t);S.save(f.root,H.FILE,API.plan(f).work);S.save(f.root,'state/PROGRAMMED_COORDINATOR.json',f.state);
  const at=f.snapshot.source.readAt,text=f.snapshot.rows.map(r=>r.line).join('\n')+'\nEND V2_CURRENT_POPULATION_MASTER';
- const data={master:{ok:true,text,fetchedAt:at,rowCount:2},writer_status:{ok:true,...f.snapshot.status,build:{commit:'b'.repeat(40)},now:at},rules:{ok:true,rules:{source:'TIM_PIPELINE_RULES_CANONICAL',status:'ACTIVE',raw:'SYNTHETIC RULES',rules:[]}}};
+ const data={master:{ok:true,text,fetchedAt:at,rowCount:2},writer_status:{ok:true,...f.snapshot.status,build:{commit:'b'.repeat(40)},now:at},rules:{ok:true,rules:{source:'TIM_PIPELINE_RULES_CANONICAL',policySource:'GITHUB',id:'tpruittguitar/forge-policy/rules/TIM_PIPELINE_RULES_CANONICAL.txt',status:'ACTIVE',raw:'SYNTHETIC RULES',rules:[]}}};
  const calls=[],index={version:1,requests:{},pending:[]},revision='a'.repeat(40);
  const git=args=>{
   calls.push('git:'+args.join(' '));
   switch(args[0]){case 'remote':return Host.REMOTE;case 'rev-parse':return revision;case 'ls-remote':return revision+'\trefs/heads/main';case 'status':return '';case 'show':return JSON.stringify(H.load(f.root));default:a.fail('unexpected git command');}
  };
- const options={root:f.root,now:()=>f.now,git,
+ const options={readPolicy:async()=>({raw:data.rules.rules.raw,proof:{repo:'tpruittguitar/forge-policy',path:'rules/TIM_PIPELINE_RULES_CANONICAL.txt',branch:'main',commit:'e'.repeat(40),blob:'f'.repeat(40),rawSha256:S.hash(data.rules.rules.raw),readAt:at}}),root:f.root,now:()=>f.now,git,
   // Synthetic implementation of the exact PipelineWorklists parse/build/render interface.
   W:{parseRows:()=>structuredClone(f.snapshot.rows),build:()=>({lanes:{FORGE_ENRICH_FEASIBILITY:f.snapshot.rows}}),render:()=> 'NEED=DEGREE'},
   writerRead:async action=>{calls.push(action);return {data:structuredClone(data[action]),startedAt:at,completedAt:at};},
@@ -69,4 +69,9 @@ test('future transport timestamps and receipt capability failures are sanitized'
  await a.rejects(Host.create(f.options).readView(),/STALE_AUTHORIZED_READ/);
  f.options.writerRead=read;f.options.readReceiptIndex=async()=>{throw Error('PRIVATE AUTH BODY');};
  await a.rejects(Host.create(f.options).readView(),e=>e.message==='AUTHORIZED_RECEIPT_READ_FAILED');
+});
+test('fresh policy must match Writer bytes, source and bracketed policy revision',async t=>{
+ for(const change of [f=>f.data.rules.rules.policySource='DRIVE',f=>{const p=f.options.readPolicy;f.options.readPolicy=async()=>({...await p(),raw:'different'});},f=>{const p=f.options.readPolicy;let n=0;f.options.readPolicy=async()=>{const r=await p();if(++n===2)r.proof.commit='0'.repeat(40);return r;};}]){
+  const f=setup(t);change(f);await a.rejects(Host.create(f.options).readView(),/POLICY/);
+ }
 });

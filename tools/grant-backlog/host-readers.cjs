@@ -21,8 +21,8 @@ function published(root,git=gitReader(root)){
  }catch(e){if(/^[A-Z][A-Z0-9_]+$/.test(e.message))throw e;fail('PUBLISHED_REVISION_READ_FAILED');}
 }
 const statusVersion=s=>({build:s.build,freeze:s.freeze,level:s.level,errors:s.errors,unverified:s.unverified,migration:s.migration,queue:s.queue&&{...s.queue,processing:s.queue.processing?.map(({ageMs,...p})=>p)}});
-function create({root,W,writerRead,readReceiptIndex,now=Date.now,git}){
- if(!W||['parseRows','build','render'].some(k=>typeof W[k]!=='function')||typeof writerRead!=='function'||typeof readReceiptIndex!=='function')fail('AUTHORIZED_READ_CAPABILITIES_REQUIRED');
+function create({root,W,writerRead,readReceiptIndex,readPolicy,now=Date.now,git}){
+ if(!W||['parseRows','build','render'].some(k=>typeof W[k]!=='function')||typeof writerRead!=='function'||typeof readReceiptIndex!=='function'||typeof readPolicy!=='function')fail('AUTHORIZED_READ_CAPABILITIES_REQUIRED');
  function fresh(at){const t=Date.parse(at);if(!Number.isFinite(t)||t>now()||now()-t>900000)fail('STALE_AUTHORIZED_READ');}
  async function read(action,signal){
   signal?.throwIfAborted();
@@ -33,6 +33,10 @@ function create({root,W,writerRead,readReceiptIndex,now=Date.now,git}){
   fresh(r.startedAt);fresh(r.completedAt);
   if(Date.parse(r.completedAt)<Date.parse(r.startedAt))fail('READ_CLOCK_INVALID');
   return r;
+ }
+ async function policyRead(signal){
+  let r;try{r=await readPolicy();}catch{fail('AUTHORIZED_POLICY_READ_FAILED');}
+  signal?.throwIfAborted();fresh(r?.proof?.readAt);return r;
  }
  async function index(signal){
   signal?.throwIfAborted();let r;try{r=await readReceiptIndex();}catch{fail('AUTHORIZED_RECEIPT_READ_FAILED');}
@@ -50,6 +54,8 @@ function create({root,W,writerRead,readReceiptIndex,now=Date.now,git}){
   if(state?.schema!=='forge.programmed-coordinator.v1'||!state.items||!state.transactions)fail('CURRENT_COORDINATOR_STATE_REQUIRED');
   const status=await read('writer_status',signal);T.healthy(status.data);
   const receipts=await index(signal),rules=await read('rules',signal);
+  const policy=await policyRead(signal);
+  if(policy.proof.repo!=='tpruittguitar/forge-policy'||policy.proof.path!=='rules/TIM_PIPELINE_RULES_CANONICAL.txt'||policy.proof.branch!=='main'||!/^[a-f0-9]{40}$/.test(policy.proof.commit||'')||!/^[a-f0-9]{40}$/.test(policy.proof.blob||'')||policy.proof.rawSha256!==S.hash(policy.raw)||rules.data.rules?.raw!==policy.raw||rules.data.rules?.policySource!=='GITHUB'||rules.data.rules?.id!=='tpruittguitar/forge-policy/rules/TIM_PIPELINE_RULES_CANONICAL.txt')fail('WRITER_POLICY_SOURCE_CHAIN_MISMATCH');
   if(rules.data.rules?.source!=='TIM_PIPELINE_RULES_CANONICAL'||rules.data.rules.status!=='ACTIVE'||typeof rules.data.rules.raw!=='string'||!rules.data.rules.raw)fail('CURRENT_RULES_REQUIRED');
   let masterReply;
   const master=await Canon.readCanonical({W,reader:async action=>{masterReply=await read(action,signal);return masterReply;}});
@@ -67,11 +73,13 @@ function create({root,W,writerRead,readReceiptIndex,now=Date.now,git}){
   const later=await read('master',signal),laterRules=await read('rules',signal),laterStatus=await read('writer_status',signal),laterIndex=await index(signal);
   T.healthy(laterStatus.data);fresh(later.data.fetchedAt);
   if(S.hash(later.data.text)!==master.source.sha256||S.hash(laterRules.data.rules)!==S.hash(rules.data.rules)||S.hash(statusVersion(laterStatus.data))!==S.hash(statusVersion(status.data))||laterIndex.sha!==receipts.sha||S.hash(laterIndex.index)!==S.hash(receipts.index))fail('CANONICAL_STATE_CHANGED_DURING_READ');
+  const finalPolicy=await policyRead(signal);
+  if(finalPolicy.proof.commit!==policy.proof.commit||finalPolicy.proof.blob!==policy.proof.blob||finalPolicy.raw!==policy.raw)fail('POLICY_CHANGED_DURING_READ');
   const after=published(root,git);
   if(S.hash(after)!==S.hash(before)||S.hash(S.read(root,'state/PROGRAMMED_COORDINATOR.json',null))!==S.hash(state))fail('COORDINATION_CHANGED_DURING_READ');
   if(now()<started||now()-started>45000)fail('HOST_READ_DEADLINE');
   const pending=[...receipts.index.pending,...Object.values(receipts.index.requests).filter(e=>e.s!=='COMPLETE')];
-  const snapshot={...master,status:status.data,needsById,writerReceiptIndex:{...receipts.index,pending},neverConsiderById:{}};
+  const snapshot={...master,policyProof:policy.proof,status:status.data,needsById,writerReceiptIndex:{...receipts.index,pending},neverConsiderById:{}};
   require('../helper-routing/enrichment-plan.cjs').fullSnapshot(snapshot);
   // No checked-in supported reader grants authoritative CLEAR. Do not promote
   // preliminary-screen.NO_CONFIRMED_EXCLUSION (canonicalEligibility:false).
