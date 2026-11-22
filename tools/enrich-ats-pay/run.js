@@ -683,7 +683,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
       const rawNeeds=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys].some(keys=>SourceBlanks.missing(r.p,keys));
       const api=atsOf.get(r);
-      if(rawNeeds&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
+      if((rawNeeds||grantExtraction.productProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
         // The existing exact posting parser/reader binds the canonical identity.
         try{
           const parsed=Recovery.exactApi(r,api,JSON.parse(await sourceReader().read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
@@ -691,6 +691,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }catch{Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{url:api.page,status:'NO_EXACT_COMPLETE_POSTING'}]);}
       }
       if(rawNeeds&&!capture)coverage.noExactPosting++;
+      if(grantExtraction.productProposal){
+        try{
+          const evidence=await grantExtraction.extract({row:r,capture,ledger,
+            checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+          if(Object.keys(evidence).length)stats.grant_product_proposal=evidence;
+        }catch(e){
+          if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED','ATS_GRANT_PRODUCT_ALREADY_ATTEMPTED'].includes(e.message))throw e;
+          stats.grant_extraction_stop=e.message;
+        }
+        break; // Evidence only until Products.lookup can see the normal committed record.
+      }
       const product=Products.lookup(r,productsReference);
       if(SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!product)coverage.noMatchingProductReference++;
       let f;
