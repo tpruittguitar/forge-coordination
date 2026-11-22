@@ -8,6 +8,7 @@ const Fields = require('../helper-routing/helper-fields.cjs');
 const Transactions = require('../programmed-coordinator/transactions.cjs');
 const Source = require('../programmed-coordinator/source.cjs');
 const {lock} = require('../automation-run-lock.cjs');
+const {save} = require('./checkpoint.cjs');
 const NAME = 'forge-grant-luna';
 const TASK = 'FORGE_CHATGPT_ENRICHMENT_RESEARCH';
 const LIMITS = Object.freeze({batchJobs:15, jobMs:45000, batchMs:600000,
@@ -46,6 +47,7 @@ function liveBlockers(g, now=Date.now()) {
   const out=['LIVE_RELEASE_DISABLED']; // Remove only in a reviewed host integration change.
   try { allocation(g?.authority,now); } catch(e) { out.push(e.message); }
   if (!g?.project || g.project.restrictedCredentialVerified!==true || !g.project.secureRuntimeBinding ||
+      g.project.secureRuntimeBinding!=='Forge/OpenAI/Default/Responses'||g.project.name!=='Default'||g.project.responsesOnlyVerified!==true||
       !g.project.projectId || g.project.grantOnly!==true || g.project.noPaidFallback!==true) out.push('PROJECT_GRANT_ONLY_PROOF_REQUIRED');
   if (!g?.credit || !fresh(g.credit.verifiedAt,now,3600000) ||
       !Number.isSafeInteger(g.credit.balanceMicrousd) ||
@@ -58,17 +60,6 @@ function liveBlockers(g, now=Date.now()) {
   return out;
 }
 
-function save(file, value) {
-  try {
-  const tmp=file+'.tmp-'+crypto.randomUUID();
-  const fd=fs.openSync(tmp,'wx',0o600);
-  try {fs.writeFileSync(fd,JSON.stringify(value,null,2)+'\n');fs.fsyncSync(fd);} finally {fs.closeSync(fd);}
-  fs.renameSync(tmp,file);
-  // Fail closed if the filesystem cannot supply directory durability.
-  const dir=fs.openSync(path.dirname(file),'r');
-  try {fs.fsyncSync(dir);} finally {fs.closeSync(dir);}
-  } catch { fail('CHECKPOINT_DURABILITY_FAILURE'); }
-}
 function openState(dir) {
   if(!path.isAbsolute(dir)) fail('ABSOLUTE_PRIVATE_CHECKPOINT_DIRECTORY_REQUIRED');
   fs.mkdirSync(dir,{recursive:true,mode:0o700});

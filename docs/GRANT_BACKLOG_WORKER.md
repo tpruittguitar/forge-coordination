@@ -6,6 +6,11 @@ not yet an unattended production service. No API call, Writer submission,
 allocation change, publication of a helper return, deployment, merge, schedule
 change or Hermes action is part of this build.
 
+The selected host is now **TIMMAY (Windows)**. See
+[Windows credential adapter and exact no-secret commands](GRANT_BACKLOG_WINDOWS.md)
+for the approved Default-project scope, fixed Credential Manager target,
+native build, private checkpoint directory and current allocation preflight.
+
 ## Reproduce without credentials or network
 
 Node 22 or newer, from an existing coordination checkout:
@@ -45,8 +50,11 @@ allocation was found in the inspected supported routing contracts.
 
 Other live gates remain unverified:
 
-- Approved secure-runtime binding for the restricted OpenAI project credential,
-  exact project identity, grant eligibility and global no-paid-fallback evidence.
+- Issuance/storage and host verification of the restricted credential: Tim has
+  approved the Default project only and the Windows adapter is implemented,
+  but its real native execution and project binding remain unverified.
+  Exact project identity, grant eligibility and global no-paid-fallback evidence
+  remain required at live startup.
   No credential or unrelated authentication store was read. No account/project
   changes were made. A project budget alert is not a billing hard cap.
 - A fresh balance observation. $37.47 and November 30 expiry are user-supplied
@@ -165,10 +173,11 @@ would bypass the local single-instance lock. The reviewed host must enforce
 that fixed location. Keep the existing production mutation lock separate and
 acquire it only through the existing Writer wrapper, never during research.
 
-Checkpoint saves use exclusive sibling files, fsync, atomic replacement and
-directory fsync. Filesystem/durability errors stop processing. Test those
-guarantees on the intended volume: this implementation requires directory fsync
-and is not yet validated on the Windows host. Preserve staging files after any
+Checkpoint saves use exclusive sibling files and fsync. POSIX uses atomic rename
+and directory fsync; Windows uses the native write-through replacement described
+in the Windows runbook. Filesystem/durability errors stop processing. Test those
+guarantees on the intended volume: native execution is not yet validated on
+TIMMAY. Preserve staging files after any
 failure. The existing run lock never expires or steals an abandoned lock.
 
 On normal exit the same directory resumes without repeating any recorded job.
