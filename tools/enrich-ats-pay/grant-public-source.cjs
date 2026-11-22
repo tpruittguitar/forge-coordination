@@ -20,7 +20,7 @@ function rejectedProposal(row,entry){
 function make({privateDir,providerAllowed,canStart,gapMs=1500,verify=Source.verify,page=Source.page,transport=globalThis.fetch,wait=ms=>new Promise(r=>setTimeout(r,ms)),now=Date.now}){
   const visited=new Set(), budgetMs=90000;let attempts=0,physical=0,startedAt;
   const stats={attempts:0,requests:0,found:0,blockedIdentity:0};
-  return {stats,async find(row,{off=[],skip=[]}={}){
+  return {stats,async find(row,{off=[],skip=[],skipEndpoints=[]}={}){
     if(!canStart()||attempts>=16)return null;
     const routes=Recovery.urls(row).filter(url=>{
       if(routeConflict(row,url)||!Recovery.readableRoute(url,off)||skip.includes(url))return false;
@@ -33,7 +33,7 @@ function make({privateDir,providerAllowed,canStart,gapMs=1500,verify=Source.veri
     const reqId=[row.p.REQ_ID,row.p.REQUISITION_ID].find(x=>/^[A-Za-z0-9][A-Za-z0-9_-]{2,80}$/.test(x||'')&&!/^(?:UNKNOWN|NONE|NA|TBD)$/i.test(x));
     let rowAttempts=0;
     const fetchPage=async target=>{
-      if(!canStart()||attempts>=16||rowAttempts>=4||visited.has(target)||!providerAllowed(target))throw Error('GRANT_SOURCE_ROUTE_UNAVAILABLE');
+      if(!canStart()||attempts>=16||rowAttempts>=4||visited.has(target)||skipEndpoints.includes(target)||!providerAllowed(target))throw Error('GRANT_SOURCE_ROUTE_UNAVAILABLE');
       startedAt??=now();
       const remaining=budgetMs-(now()-startedAt);
       if(remaining<=gapMs)return Promise.reject(Error('GRANT_SOURCE_BUDGET'));
