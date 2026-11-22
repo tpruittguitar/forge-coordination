@@ -154,6 +154,20 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
     requireBulkSmoke(ledger){
       if(maxAttempts!==BULK_LIMIT||!Object.values(ledger.grantExtractionAttempts||{}).some(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId))throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
     },
+    acceptedBulkResearch(row,capture,ledger,product){
+      if(maxAttempts!==BULK_LIMIT)return null;
+      const source=Prepared.posting(row,capture,now());
+      if(!source?.identityVerified||!source?.fullPosting||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(source.url)))return null;
+      const key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(source.url),fingerprint(source.text)]));
+      const record=ledger.grantExtractionAttempts?.[key];
+      if(record?.primaryId!==row.PRIMARY_ID||record.phase!=='BULK'||!Number.isSafeInteger(record.reportedCostMicrousd))return null;
+      if(record.status==='FACTS_ACCEPTED'&&record.acceptedFields)return {fields:record.acceptedFields};
+      const e=record.productReference;
+      if(record.status==='PRODUCT_PROPOSED'&&e?.primaryId===row.PRIMARY_ID&&product?.id===e.id&&
+        product.provenance?.grantAttemptKey===key&&product.provenance?.fullPostingTextSha256===e.provenance.fullPostingTextSha256&&
+        JSON.stringify(product.products)===JSON.stringify(e.products)&&JSON.stringify(product.sources)===JSON.stringify(e.sources))return {fields:{}};
+      return null;
+    },
     pendingProduct(row,ledger){
       const e=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&r.status==='PRODUCT_PROPOSED')?.productReference;
       return e&&e.company===row.COMPANY&&e.location===row.LOCATION&&
@@ -245,6 +259,9 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
             provenance:{scope:'JOB_POSTING',grantAttemptKey:key,grantAttemptAt:records[key].at,costMicrousd:cost,
               quote:fields.quote,fullPostingTextSha256:fields.fullPostingTextSha256}};
           checkpoint(); // The exact proposal survives a stop before registry publication.
+        }else if(maxAttempts===BULK_LIMIT&&records[key].status==='FACTS_ACCEPTED'){
+          records[key].acceptedFields=fields;
+          checkpoint(); // The returned verified facts are reusable without another model call.
         }
         diagnostic={category:records[key].status};
         return fields;
