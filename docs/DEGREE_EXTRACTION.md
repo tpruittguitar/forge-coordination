@@ -17,6 +17,11 @@ producer and programmed enrichment/coordinator paths use this contract.
 - Equivalence to a technical field is not experience equivalence. Negated
   equivalence is not flexibility. A genuinely independent mandatory credential
   still governs. The Writer remains responsible for FLEX and scoring.
+- A high school diploma or GED is not a degree (Tim, 2026-11-20). A clause that
+  names only a high school level credential is skipped, so a posting that asks only
+  for one reads as `NOT_STATED`, and its `required` never makes a preferred
+  college degree `REQUIRED`. A college credential in the same line still counts, and
+  a technical diploma in a named field ("Diploma in Mechanical Engineering") is kept.
 - The ATS producer does not invent `NOT_STATED` for an unreadable/ambiguous block.
   Existing `DEGREE_TEXT` is not overwritten by a routine ATS liveness check.
 - Degree extraction has its own version. Retained, identity-bound full posting
