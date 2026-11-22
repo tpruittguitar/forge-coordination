@@ -331,6 +331,7 @@ function configured({root,live,writerPostLock,env=process.env}){
   let owned=false;
   return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,productId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
     isEligibleId(pid){return !frozen||frozen.has(pid);},
+    get firstPassScope(){return maxAttempts===BULK_LIMIT&&!productId?{partition:API_PARTITION,size:frozen.size}:null;},
     get rowLimit(){return maxAttempts;},
     async acquire(){
       await assertGithubOwnerStopped(github);

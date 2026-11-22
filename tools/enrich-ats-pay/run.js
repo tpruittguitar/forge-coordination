@@ -145,6 +145,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   if(archiveComplete&&!process.env.ENRICH_MASTER_FILE)try{const effective=W.parseRows(require('../source-intake/writer-reader').parseArchive(archiveText).map(r=>r.RAW_ROW).join('\n'));payProfile=SourceProfile.build([...rows.map(r=>({...r,store:'MASTER'})),...effective.filter(r=>!liveIds.has(r.PRIMARY_ID)).map(r=>({...r,store:'ARCHIVE'}))],{context:salaryContext||{}});profileRebuilt=true;profileRefreshStatus='COMPLETE_CANONICAL_SNAPSHOT';}catch{profileRefreshStatus='PROFILE_REFRESH_UNCONFIRMED_PREVIOUS_RETAINED';}
   const ledger = fs.existsSync(LEDGER) ? JSON.parse(fs.readFileSync(LEDGER, 'utf8')) : { submitted: {}, tried: {} }; ledger.tried = ledger.tried || {}; ledger.failedReads = ledger.failedReads || {};
   ledger.needs = ledger.needs || {}; ledger.pendingWrites=ledger.pendingWrites||{};
+  // Capture old tracked Writer identities before reconciliation can remove those pending entries.
+  const firstPass=grantExtraction?.firstPassScope?require('./grant-first-pass.cjs').open({
+    ledger,scope:grantExtraction.firstPassScope,isEligible:id=>grantExtraction.isEligibleId(id),run:RUN_ID,
+    checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)}):null;
   const siteEstimates=SiteEstimate.create({root:process.env.ENRICH_MASTER_FILE&&process.env.ENRICH_DISCOVERY_EVIDENCE_ROOT||ROOT,ledger});
   const writerRead=async(action,params={})=>{const u=new URL(conn.PipelineConnection.url);u.searchParams.set('key',key);u.searchParams.set('action',action);for(const[k,v]of Object.entries(params))u.searchParams.set(k,v);return(await get(u.toString())).json();};
   const receiptIndex=async()=> (await get('https://raw.githubusercontent.com/tpruittguitar/forge-writer-state/main/PIPELINE_RECEIPT_INDEX.json?pay='+Date.now())).json();
@@ -685,23 +689,75 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   };
   if(broadGrant){
     const productBatch=[];
-    const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
-    for(const r of ordered){
+    const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,skippedEarlierFirstPass:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
+    const blocked=r=>unavailableIds.has(r.PRIMARY_ID)||helperResearchIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r);
+    const validIdentity=r=>[r.COMPANY,r.TITLE,r.LOCATION].every(x=>SourceBlanks.identityKnown(x));
+    const rawGroups=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys];
+    const rawNeeded=r=>rawGroups.some(keys=>SourceBlanks.missing(r.p,keys));
+    const productNeeded=r=>SourceBlanks.missing(r.p,SourceBlanks.productKeys);
+    const productsById=new Map();
+    const getProduct=r=>{
+      const id=r.PRIMARY_ID;
+      if(!productsById.has(id))productsById.set(id,Products.lookup(r,productsReference));
+      return productsById.get(id);
+    };
+    const productEvidence=r=>{
+      const key=(p,reference,scope,site,source)=>Store.hash({p,reference,scope,site,source});
+      const e=getProduct(r),p=r.p;
+      if(e){const f=Products.fields(e);return key(f.PRODUCT,f.PRODUCT_REFERENCE,f.PRODUCT_SCOPE,f.PRODUCT_SITE,f.PRODUCT_SOURCE);}
+      return Products.known(p.PRODUCT)&&Products.known(p.PRODUCT_REFERENCE)
+        ?key(p.PRODUCT,p.PRODUCT_REFERENCE,p.PRODUCT_SCOPE,p.PRODUCT_SITE,p.PRODUCT_SOURCE):null;
+    };
+    const canVisit=r=>!firstPass||firstPass.canClaim(r.PRIMARY_ID,()=>productEvidence(r));
+    const grantOrder=firstPass?[...ordered].sort((a,b)=>Number(firstPass.seen(a.PRIMARY_ID))-Number(firstPass.seen(b.PRIMARY_ID))):ordered;
+    const addGrantRequest=(r,fields)=>{
+      const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}};
+      coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
+    };
+    // Restore only positively retained, never-attempted plans. This path does no model or live evidence fetching.
+    const restorePlan=r=>{
+      const plan=firstPass?.planned(r.PRIMARY_ID);
+      if(!plan||!completeGrantBatch||blocked(r)||!validIdentity(r)||plan.identity!==Store.hash([r.COMPANY,r.TITLE,r.LOCATION]))return null;
+      const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
+      const capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
+      const accepted=grantExtraction.acceptedBulkResearch(r,capture,ledger,getProduct(r));
+      if(!accepted||plan.source!==Store.hash([capture?.url,capture?.text]))return null;
+      const normalize=require('../source-intake/writer-cell').normalizeCell;
+      if(Object.entries(plan.fields).some(([k,v])=>r.p[k]!=null&&String(r.p[k]).trim()&&normalize(r.p[k])!==normalize(v)))return null;
+      if(plan.fields.PRODUCT||plan.fields.PRODUCT_REFERENCE){
+        const product=getProduct(r);
+        if(!product||plan.productEvidence!==productEvidence(r))return null;
+      }
+      const selected=GrantSalary.liveFields(r,plan.fields);
+      return Object.keys(selected).length&&!projectedGrantMissing(r,selected).length?selected:null;
+    };
+    let restorable=0;
+    if(firstPass)for(const r of grantOrder){
+      if(!firstPass.planned(r.PRIMARY_ID))continue;
+      const fields=restorePlan(r);
+      if(!fields)continue;
+      if(requests.length>=Math.min(grantExtraction.rowLimit,CONFIG.maxBatches*25)||!runtime.canStart(60000)){restorable++;continue;}
+      addGrantRequest(r,fields);
+      coverage.resumedWriterPlans=(coverage.resumedWriterPlans||0)+1;
+    }
+    for(const r of grantOrder){
       if(requests.length>=Math.min(grantExtraction.rowLimit,CONFIG.maxBatches*25)||!runtime.canStart(60000))break;
       if(!grantExtraction.smoke&&coverage.admitted>=grantExtraction.rowLimit)break;
       if(grantExtraction.smoke&&grantExtraction.attempts)break;
       if((grantSmokeId&&r.PRIMARY_ID!==grantSmokeId)||!grantExtraction.isEligibleId(r.PRIMARY_ID))continue;
+      if(!canVisit(r)){coverage.skippedEarlierFirstPass++;continue;}
       coverage.examined++;
-      if(unavailableIds.has(r.PRIMARY_ID)||helperResearchIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r)){
+      if(blocked(r)){
         coverage.protectedOrReserved++;continue;
       }
-      if(![r.COMPANY,r.TITLE,r.LOCATION].every(x=>SourceBlanks.identityKnown(x))){coverage.identityNeedsGovernedRepair++;continue;}
+      if(!validIdentity(r)){coverage.identityNeedsGovernedRepair++;continue;}
       const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
-      const rawNeeds=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys].some(keys=>SourceBlanks.missing(r.p,keys));
-      if(!rawNeeds&&!SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!grantExtraction.productProposal)continue;
+      const rawNeeds=rawNeeded(r);
+      if(!rawNeeds&&!productNeeded(r)&&!grantExtraction.productProposal)continue;
+      if(firstPass&&!firstPass.claim(r.PRIMARY_ID,()=>productEvidence(r)))continue;
       coverage.admitted++;
-      const product=Products.lookup(r,productsReference);
+      const product=getProduct(r);
       const bulkProduct=!grantExtraction.smoke&&!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
         (!Products.known(r.p.PRODUCT)||SourceBlanks.missing(r.p,['PRODUCT_SOURCE']));
       const cachedProposal=bulkProduct&&grantExtraction.pendingProduct(r,ledger);
@@ -759,6 +815,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       }catch(e){
         if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED'].includes(e.message))throw e;
         stats.grant_extraction_stop=e.message;
+        firstPass?.finish(r.PRIMARY_ID,'GRANT_STOPPED');
         break;
       }
       const estimate=await GrantSalary.plan({row:r,capture,old,fields:f,
@@ -773,11 +830,25 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(completeGrantBatch&&(!acceptedGrant||missing.length)){
         const reason=!acceptedGrant?'noAcceptedGrantResearch':'notFull11';
         coverage[reason]=(coverage[reason]||0)+1;
+        const productOnly=missing.length===1&&missing[0]==='products (what they make)';
+        if(productOnly||capture||Object.keys(f).length)firstPass?.finish(r.PRIMARY_ID,'INCOMPLETE',{
+          reason:productOnly?'PRODUCT_EVIDENCE_REQUIRED':!acceptedGrant?'GRANT_RESEARCH_UNVERIFIED':'DECISION_FIELDS_INCOMPLETE',
+          missing,productEvidence:productOnly?productEvidence(r):null});
+        else firstPass?.finish(r.PRIMARY_ID,'NO_SUPPORTED_FIELDS');
         continue;
       }
-      if(!Object.keys(f).length)continue;
-      const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}};
-      coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
+      if(!Object.keys(f).length){firstPass?.finish(r.PRIMARY_ID,'NO_SUPPORTED_FIELDS');continue;}
+      firstPass?.finish(r.PRIMARY_ID,'FIELDS_PLANNED',{plan:{identity:Store.hash([r.COMPANY,r.TITLE,r.LOCATION]),
+        source:Store.hash([capture?.url,capture?.text]),productEvidence:productEvidence(r),fields:{...f}}});
+      addGrantRequest(r,f);
+    }
+    if(firstPass){
+      const remaining=ordered.filter(r=>canVisit(r)&&(rawNeeded(r)||productNeeded(r)));
+      const eligibleWaiting=remaining.filter(r=>!blocked(r)&&validIdentity(r)).length;
+      const summary=firstPass.summary(),productWaiting=ordered.filter(r=>firstPass.awaitingProduct(r.PRIMARY_ID)&&!canVisit(r)&&!blocked(r)&&validIdentity(r)).length;
+      coverage.firstPass={...summary,eligibleWaiting,productWaiting,restorableWriterPlans:restorable,heldOrIdentityRepair:remaining.length-eligibleWaiting,
+        remainingReason:stats.grant_extraction_stop?'GRANT_RUN_STOPPED':eligibleWaiting>0?'MORE_FIRST_PASS_WORK':
+          restorable>0?'MORE_NEVER_ATTEMPTED_WRITER_PLANS':productWaiting>0?'WAITING_FOR_DURABLE_PRODUCT_EVIDENCE':'NO_ACTIONABLE_FIRST_PASS_ROWS'};
     }
     if(productBatch.length)stats.grant_product_registry_batch={schema:'forge.company-site-products.v1',entries:productBatch};
   }
@@ -852,7 +923,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
            busy lock sends nothing; the rows go again next run. Released as soon as the reply (or its loss) is known. */
         const postHold=writerPostLock?await writerPostLock.acquire():{ok:true,release:async()=>true};
         if(!postHold.ok){stats.writer_budget_deferred=(stats.writer_budget_deferred||0)+batch.length;stats.writer_post_lock=postHold.reason;break batches;}
-        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');stats.salary_submitted+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
+        try { ledger.pendingWrites[requestId]={ids:batch.map(q=>q.ruling.primaryId),requestIds:batch.map(q=>q.ruling.requestId),requests:batch,at:new Date().toISOString(),status:'POSTING_OR_UNCONFIRMED'};if(firstPass){firstPass.markWriterAttempt(requestId,batch);GrantExtraction.checkpoint(LEDGER,ledger);}else{fs.mkdirSync(path.dirname(LEDGER),{recursive:true});fs.writeFileSync(LEDGER,JSON.stringify(ledger,null,1)+'\n');}stats.salary_submitted+=batch.filter(q=>q.ruling.fields.SALARY_BASE_LOW).length;res = await (await get(conn.PipelineConnection.url, { method: 'POST', headers: { 'content-type': 'text/plain' }, body: JSON.stringify({ action: 'batch', key, requestId, requests: batch }) })).json(); }
         catch (e) {
           await postHold.release();
           /* Google's web-app front end can lose the reply (HTTP 404 on the redirect) after the Writer has already saved the
