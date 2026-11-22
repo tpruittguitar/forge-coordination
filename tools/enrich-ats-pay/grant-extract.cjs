@@ -98,11 +98,13 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
-        const hasReceipt=id=>Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
+        // A distinct corrected target cannot replay either older attempt.
+        // Only the exact prior grant records govern that final opt-in.
+        const hasOlderGuardEvidence=id=>Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
           Object.values(ledger[group]||{}).some(x=>x?.ids?.includes(id)||x?.requests?.some(q=>q?.ruling?.primaryId===id)));
-        const unknown=entry=>entry?.[0]!==key&&entry?.[1]?.status==='POSTING_OR_UNKNOWN'&&!entry[1].writerRequestId&&!hasReceipt(entry[1].primaryId);
+        const unknown=entry=>entry?.[0]!==key&&entry?.[1]?.status==='POSTING_OR_UNKNOWN'&&!entry[1].writerRequestId;
         const exactChain=retryOriginalId?priorSmokes.length===2&&unknown(original)&&!original[1].retryOf&&previous?.[1]?.retryOf===original[0]
-          :priorSmokes.length===1&&!previous?.[1]?.retryOf;
+          :priorSmokes.length===1&&!previous?.[1]?.retryOf&&!hasOlderGuardEvidence(retryPriorId);
         if(!retryPriorId||!exactChain||row.PRIMARY_ID!==retryTargetId||!unknown(previous))throw Error('ATS_GRANT_SMOKE_ALREADY_ATTEMPTED');
         priorKey=previous[0];
       }

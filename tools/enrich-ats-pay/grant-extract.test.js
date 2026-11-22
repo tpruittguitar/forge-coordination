@@ -165,8 +165,8 @@ test('corrected final smoke requires both pinned unknown ancestors, no Writer ev
     transport:async()=>{calls++;return wrapped(payOnly)}};
  const retry={retryOriginalId:original,retryPriorId:previous,retryTargetId:target};
  for(const invalid of [
-   {...args,ledger:{...ledger,submitted:{[original]:'earlier'}}},
-   {...args,ledger:{...ledger,pendingWrites:{batch:{ids:[previous]}}}},
+   {...args,ledger:{grantExtractionAttempts:{old:{...records.old,writerRequestId:'EXACT-RECEIPT'},later:records.later}}},
+   {...args,ledger:{grantExtractionAttempts:{old:records.old,later:{...records.later,writerRequestId:'EXACT-RECEIPT'}}}},
    {...args,ledger:{grantExtractionAttempts:{old:records.old,later:{...records.later,retryOf:'different'}}}}
  ])await a.rejects(G.create({...options,...retry}).extract(invalid),/ALREADY_ATTEMPTED/);
  await a.rejects(G.create({...options,retryPriorId:previous,retryTargetId:target}).extract(args),/ALREADY_ATTEMPTED/);
@@ -176,5 +176,24 @@ test('corrected final smoke requires both pinned unknown ancestors, no Writer ev
  a.equal(Object.values(ledger.grantExtractionAttempts).find(r=>r.primaryId===target).retryOf,'later');
  a.equal(Object.keys(ledger.grantExtractionAttempts).length*2048,6144);
  await a.rejects(G.create({...options,...retry,retryTargetId:fourth}).extract({...args,row:{...row,PRIMARY_ID:fourth}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,1);
+});
+
+
+test('final distinct smoke ignores unrelated older-row ATS history without dropping either exact grant hold',async()=>{
+ const [original,previous,target]=['V2I-FIRST','V2I-SECOND','V2I-THIRD'];
+ const records={first:{primaryId:original,phase:'SMOKE',status:'POSTING_OR_UNKNOWN'},
+  second:{primaryId:previous,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',retryOf:'first'}};
+ const historical='unrelated ordinary ATS row history',ledger={grantExtractionAttempts:structuredClone(records),
+   submitted:{[previous]:historical},pendingWrites:{older:{ids:[original]}}};
+ const args={...c(),row:{...row,PRIMARY_ID:target},ledger};
+ let calls=0;
+ const g=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+  retryOriginalId:original,retryPriorId:previous,retryTargetId:target,transport:async()=>{calls++;return wrapped(payOnly)}});
+ a.equal((await g.extract(args)).SALARY_BASE_LOW,180000);
+ a.equal(ledger.submitted[previous],historical);
+ a.deepEqual(ledger.pendingWrites.older,{ids:[original]});
+ a.deepEqual(ledger.grantExtractionAttempts.first,records.first);
+ a.deepEqual(ledger.grantExtractionAttempts.second,records.second);
  a.equal(calls,1);
 });
