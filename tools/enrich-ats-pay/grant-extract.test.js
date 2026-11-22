@@ -1,6 +1,6 @@
 'use strict';
 const {test}=require('node:test'),a=require('node:assert/strict');
-const G=require('./grant-extract.cjs'), R=require('./recovery'), C=require('../grant-backlog/windows-credential.cjs');
+const G=require('./grant-extract.cjs'), R=require('./recovery');
 const now=Date.parse('2026-11-22T18:00:00Z'), url='https://example.org/job';
 const row={PRIMARY_ID:'V2I-ATS-GRANT',COMPANY:'Acme',TITLE:'Director',LOCATION:'Dayton, OH',BUCKET:'SCOUT_INTAKE',
   p:{SOURCE_URL:url,SALARY_BASE_LOW:'',SALARY_BASE_HIGH:'',SALARY_BASIS:'',DEGREE_REQ:'',DEGREE_TEXT:'',PRIVATE_NOTE:'never send'}};
@@ -11,9 +11,9 @@ const capture=R.saveEvidence({},row,url,{identityVerified:true,sourceIdentity:{c
 const proposal={fields:{SALARY_BASE_LOW:180000,SALARY_BASE_HIGH:230000,SALARY_BASIS:'EMPLOYER_POSTED',DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree},
   quotes:{SALARY:quote,DEGREE:degree},degree:{requirement:'REQUIRED',equivalence:'UNKNOWN',confidence:'HIGH',quote:degree}};
 const payOnly={...proposal,fields:Object.fromEntries(Object.entries(proposal.fields).filter(([k])=>k.startsWith('SALARY'))),quotes:{SALARY:quote}};
-const proof=()=>({schema:'forge.grant-funding-observation.v1',source:'AUTHORIZED_ACCOUNT_VERIFIER',observedAt:new Date(now-1000).toISOString(),evidenceSha256:'a'.repeat(64),
- project:{name:'Default',id:'proj_test',responsesOnly:true,credentialTarget:C.TARGET},funding:{kind:'PROMOTIONAL_ONLY',paidFallbackEnabled:false,autoRechargeEnabled:false,noPaidFallbackVerified:true,
- availableMicrousd:11000000,otherConsumersReservedMicrousd:0,expiresAt:new Date(now+172800000).toISOString()}});
+const proof=()=>({schema:'forge.ats-grant-only-account.v1',source:'SIGNED_IN_ACCOUNT_OPERATOR',observedAt:new Date(now-600000).toISOString(),
+ organizationId:'org-test',projectId:'proj_test',projectName:'Default',keyName:'forge-enrichment-responses',keySuffix:'T123',keyPermissions:'All',
+ grant:{availableMicrousd:11000000,expiresAt:new Date(now+172800000).toISOString()},noPaidBillingPlan:true,noPurchasedCredits:true,autoRechargeEnabled:false});
 const wrapped=result=>new Response(JSON.stringify({status:'completed',model:'gpt-6-luna',service_tier:'default',usage:{input_tokens:550,output_tokens:50},
  output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(result)}]}]}));
 const c=fields=>({row,capture,needs:['SALARY','DEGREE'],fields:fields||{},ledger:{},checkpoint(){}});
@@ -27,8 +27,8 @@ test('exact allowed ATS posting only; protected, wrong or missing source and alr
 });
 test('funded transport writes durable attempt before request and returns only exact ATS fields, with no replay',async()=>{
   let reads=0,calls=0,checkpoints=0;
-  const g=G.create({now:()=>now,readFunding:async()=>{reads++;return proof()},openCredential:()=>({secureRuntime:fn=>fn('fixture')}),
-   transport:async(u,opts)=>{calls++;a.equal(checkpoints,1);a.match(u,/^https:\/\/api\.openai\.com\/v1\/responses$/);a.doesNotMatch(opts.body,/PRIVATE_NOTE|never send|V2I-ATS/);return wrapped(payOnly)}});
+  const g=G.create({now:()=>now,readFunding:async()=>{reads++;return proof()},openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+   transport:async(u,opts)=>{calls++;a.equal(checkpoints,1);a.match(u,/^https:\/\/api\.openai\.com\/v1\/responses$/);a.equal(opts.headers['OpenAI-Organization'],'org-test');a.equal(opts.headers['OpenAI-Project'],'proj_test');a.doesNotMatch(opts.body,/PRIVATE_NOTE|never send|V2I-ATS/);return wrapped(payOnly)}});
   const args={...c(),checkpoint:()=>checkpoints++};
   const f=await g.extract(args);
   a.deepEqual(f,{SALARY_BASE_LOW:180000,SALARY_BASE_HIGH:230000,SALARY_BASIS:'EMPLOYER_POSTED',SALARY_SOURCE:url,SALARY_ASOF:'2026-11-22',SALARY_CONF:'HIGH'});
@@ -38,11 +38,11 @@ test('funded transport writes durable attempt before request and returns only ex
 });
 test('no paid fallback, ambiguous figures and unknown outcomes cannot produce fields or replay',async()=>{
   let calls=0;
-  const bad=proof();bad.funding.paidFallbackEnabled=true;
+  const bad=proof();bad.noPaidBillingPlan=false;
   const g=G.create({now:()=>now,readFunding:async()=>bad,openCredential:()=>{throw Error('must not read')},transport:()=>{calls++}});
   await a.rejects(g.extract(c()),/GRANT_FUNDING_OR_HOST_BLOCKED/);a.equal(calls,0);
   const i=G.input(row,capture,['SALARY'],{},now);a.throws(()=>G.resultFields({...payOnly,fields:{...payOnly.fields,SALARY_BASE_HIGH:600000}},i.e,i.groups,row),/SALARY_NOT_IN_QUOTE/);
-  const u=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),transport:async()=>{calls++;throw Error('unknown')}});
+  const u=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),transport:async()=>{calls++;throw Error('unknown')}});
   const args=c();await a.rejects(u.extract(args),/GRANT_RESPONSE_UNVERIFIED/);
   a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');
   a.deepEqual(await u.extract(args),{});a.equal(calls,1);a.equal(u.accounting.unknownReservedMicrousd,2048);
@@ -60,7 +60,7 @@ test('conflicting location pay stays unresolved and independently parsed degree 
 function degreeFields(){return {DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree,DEGREE_EVIDENCE_URL:url,DEGREE_ASOF:'2026-11-22'};}
 test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 reservation ceiling',async()=>{
   let calls=0;
-  const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),
+  const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
     transport:async()=>{calls++;return wrapped(payOnly)}};
   const args=c(),rowArgs=j=>({...args,row:{...row,PRIMARY_ID:'V2I-ATS-'+j}});
   const bulk=G.create({...options,maxAttempts:50}),smoke=G.create(options);
@@ -82,6 +82,18 @@ test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 
   await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(100)),/ATS_GRANT_CAP_REACHED/);
   a.equal(calls,51);
   a.throws(()=>G.create({maxAttempts:5}),/ATS_GRANT_ROW_LIMIT_INVALID/);
+});
+test('bounded operator proof accepts the linked All key but wrong suffix, paid fallback, stale proof and depletion never fall through',async()=>{
+  let calls=0;
+  const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('wrong-suffix')}),
+    transport:async()=>{calls++;return new Response('',{status:429})}};
+  await a.rejects(G.create(options).extract(c()),/GRANT_RESPONSE_UNVERIFIED/);a.equal(calls,0);
+  const paid={...proof(),noPurchasedCredits:false},stale={...proof(),observedAt:new Date(now-31*60000).toISOString()};
+  for(const p of [paid,stale])await a.rejects(G.create({...options,readFunding:async()=>p}).extract(c()),/GRANT_FUNDING_OR_HOST_BLOCKED/);
+  a.equal(calls,0);
+  const g=G.create({...options,openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')})});
+  const args=c();await a.rejects(g.extract(args),/GRANT_RESPONSE_UNVERIFIED/);
+  a.deepEqual(await g.extract({...args,row:{...row,PRIMARY_ID:'V2I-ANOTHER'}}),{});a.equal(calls,1);
 });
 test('grant mode is off by default and old enabled or running GitHub ATS authority blocks launch',async()=>{
   a.equal(G.configured({env:{}}),null);

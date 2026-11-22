@@ -3,7 +3,6 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const Prepared=require('./prepared.cjs'),Cache=require('./posting-cache'),Recovery=require('./recovery'),L=require('./lib');
 const W=require('../grant-backlog/worker.cjs'), C=require('../grant-backlog/windows-credential.cjs');
-const {funding}=require('../grant-backlog/coordinator-preflight.cjs');
 const {response}=require('../grant-backlog/responses.cjs');
 const Store=require('../programmed-coordinator/store.cjs');
 const Source=require('../programmed-coordinator/source.cjs');
@@ -50,9 +49,25 @@ function resultFields(result,e,groups,row,{ambiguousPay=false}={}){
   return out;
 }
 
+// The operator reads the linked org/project billing and key metadata once. This
+// private receipt is not a billing credential, a grant balance feed, or a paid fallback.
+function accountDeadline(proof,now){
+  const observed=Date.parse(proof?.observedAt),expiry=Date.parse(proof?.grant?.expiresAt);
+  if(proof?.schema!=='forge.ats-grant-only-account.v1'||proof.source!=='SIGNED_IN_ACCOUNT_OPERATOR'
+    ||!Number.isFinite(observed)||observed>now||!Number.isFinite(expiry)
+    ||!/^org[-_][A-Za-z0-9_-]+$/.test(proof.organizationId||'')||!/^proj_[A-Za-z0-9_-]+$/.test(proof.projectId||'')
+    ||proof.projectName!=='Default'||proof.keyName!=='forge-enrichment-responses'||!/^[A-Za-z0-9_-]{4}$/.test(proof.keySuffix||'')
+    ||!['All','Responses only'].includes(proof.keyPermissions)||proof.noPaidBillingPlan!==true
+    ||proof.noPurchasedCredits!==true||proof.autoRechargeEnabled!==false
+    ||!Number.isSafeInteger(proof.grant.availableMicrousd)||proof.grant.availableMicrousd<=0)throw Error('GRANT_ACCOUNT_PROOF_INVALID');
+  const deadline=Math.min(observed+30*60000,expiry,Date.parse(W.LIMITS.stopAt));
+  if(now>=deadline)throw Error('GRANT_ACCOUNT_PROOF_EXPIRED');
+  return deadline;
+}
+
 function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT}){
   if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
-  let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, projectId=null, credential;
+  let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, proof, credential;
   return {
     close(){credential?.close();credential=null;},
     get attempts(){return attempts;},
@@ -72,15 +87,14 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const reserved=(entries.length+1)*reservationMicrousd;
       if(reserved>GRANT_CAP||maxAttempts===SMOKE_LIMIT&&reservationMicrousd>SMOKE_CAP)throw Error('ATS_GRANT_CAP_REACHED');
 
-      let proof;
+      let deadline;
       try {
-        proof=await readFunding();
-        if(funding(proof,now()).length||proof.funding.availableMicrousd-proof.funding.otherConsumersReservedMicrousd
-          <W.LIMITS.balanceFloorMicrousd+maxAttempts*reservationMicrousd||projectId&&projectId!==proof.project.id)throw Error('GRANT_FUNDING_BLOCKED');
-        projectId=proof.project.id;
+        proof??=await readFunding(); // Single bounded attestation snapshot per run.
+        deadline=accountDeadline(proof,now());
+        const sinceProof=entries.filter(r=>Date.parse(r?.at)>=Date.parse(proof.observedAt)).length;
+        if((sinceProof+1)*reservationMicrousd>proof.grant.availableMicrousd)throw Error('GRANT_HEADROOM_REQUIRED');
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
-      const deadline=Math.min(Date.parse(proof.observedAt)+300000,Date.parse(proof.funding.expiresAt),Date.parse(W.LIMITS.stopAt));
       const body=W.request(e,groups);
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
@@ -89,8 +103,16 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       checkpoint(); // same normal ATS ledger, before any model request; no second ledger.
       attempts++;unknownAttempts++;
       try {
-        const r=await response(body,{secureRuntime:credential.secureRuntime,projectId,
-          signal:signal?AbortSignal.any([signal,timeout]):timeout,transport});
+        // Token bytes never leave the existing native callback except to the
+        // fixed Responses transport; the visible suffix is compared in memory.
+        const r=await response(body,{
+          secureRuntime:use=>credential.secureRuntime(secret=>{
+            if(typeof secret!=='string'||!secret.endsWith(proof.keySuffix))throw Error('GRANT_NATIVE_KEY_LINK_MISMATCH');
+            return use(secret);
+          }),
+          projectId:proof.projectId,signal:signal?AbortSignal.any([signal,timeout]):timeout,
+          transport:(url,options)=>transport(url,{...options,headers:{...options.headers,'OpenAI-Organization':proof.organizationId}})
+        });
         const cost=Math.ceil(r.usage.input_tokens*W.LIMITS.inputUsdPerMillion+r.usage.output_tokens*W.LIMITS.outputUsdPerMillion);
         Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
         reportedCostMicrousd+=cost;unknownAttempts--;
