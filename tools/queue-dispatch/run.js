@@ -50,12 +50,24 @@ function main() {
       '-f', 'depth=' + String(decision.nextDepth)
     ];
     console.log('gh ' + args.join(' '));
-    execFileSync('gh', args, { stdio: 'inherit' });
+    try {
+      execFileSync('gh', args, { stdio: ['ignore', 'inherit', 'pipe'] });
+    } catch (err) {
+      const msg = String((err && err.stderr) || (err && err.message) || '');
+      process.stderr.write(msg);
+      // A paused (disabled) target must not stop the rest of the chain.
+      if (isDisabledError(msg)) { console.log('skipped ' + target.workflow + ': workflow is disabled'); continue; }
+      throw err;
+    }
   }
+}
+
+function isDisabledError(text) {
+  return /disabled workflow/i.test(String(text || ''));
 }
 
 if (require.main === module) {
   main();
 }
 
-module.exports = { main };
+module.exports = { main, isDisabledError };
