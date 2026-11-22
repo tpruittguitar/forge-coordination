@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T07:12:05.577Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T070830526Z",
+ "at": "2026-11-22T07:23:24.845Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T071807884Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T07:08:40.202Z",
+  "readAt": "2026-11-22T07:18:15.546Z",
   "sha256": "cdf709e6fd2fc8d04b1952346966517342ceee45895f70018095fba452884b49",
   "rows": 9538
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 619,
- "skipped_recent": 345,
+ "estimate_waiting_for_posting": 617,
+ "skipped_recent": 349,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,24 +62,13 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 4
- },
- "agg_read": {
-  "linkedin": 2
- },
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 2
- },
- "agg_errors": {
-  "linkedin": [
-   "404",
-   "404"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 4,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -125,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T07:08:45.848Z",
+  "profile_as_of": "2026-11-22T07:18:21.608Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14735,9 +14724,7 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 640,
- "source_origin_blocks": {},
- "attempt_only_skipped": 2,
+ "nothing_found": 638,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14770,8 +14757,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2347,
- "network_requests": 12,
+ "roles_researched": 2344,
+ "network_requests": 8,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -19174,44 +19161,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-2FFD9B49A246",
-   "company": "Jobot",
-   "title": "Director, Protection & Controls Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:09:45.638Z",
-   "retryAt": "2026-11-22T23:09:45.638Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0744ECF3C0CB",
-   "company": "Jobot",
-   "title": "Regional VP - Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:09:48.770Z",
-   "retryAt": "2026-11-22T23:09:48.770Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-C2D696A21D4D",
    "company": "The Coca-Cola Company",
    "title": "Director, Field Quality",
@@ -20325,6 +20274,44 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2FFD9B49A246",
+   "company": "Jobot",
+   "title": "Director, Protection & Controls Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:09:45.638Z",
+   "retryAt": "2026-11-22T23:09:45.638Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0744ECF3C0CB",
+   "company": "Jobot",
+   "title": "Regional VP - Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:09:48.770Z",
+   "retryAt": "2026-11-22T23:09:48.770Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21952,6 +21939,42 @@
     }
    ],
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:09:52.065Z",
+   "retryAt": "2026-11-22T08:09:52.065Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-011DF7129CA9",
+   "company": "Lockheed Martin",
+   "title": "Manufacturing Engineering Mgr - Level 5",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:09:55.162Z",
+   "retryAt": "2026-11-22T08:09:55.162Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
    "id": "V2I-14B5BEB7CC51",
