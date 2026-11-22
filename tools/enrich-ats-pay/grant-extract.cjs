@@ -11,13 +11,15 @@ const {lock}=require('../automation-run-lock.cjs');
 const MAX_ATTEMPTS=W.LIMITS.batchJobs;
 const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
 
-function input(row,capture,needs,fields,now) {
+function input(row,capture,needs,fields,now,{payUnresolved=false}={}) {
   if(Prepared.protectedRow(row)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
   const source=Prepared.posting(row,capture,now);
   if(!source||source.basis!=='EMPLOYER_POSTED'||source.identityVerified!==true)return null;
   const groups=[];
-  if(needs.includes('SALARY')&&!fields.SALARY_BASE_LOW&&/\$\s*\d|\bUSD\s*\d/i.test(source.text))groups.push('SALARY');
-  if(needs.includes('DEGREE')&&!fields.DEGREE_REQ&&/\b(?:degree|bachelor|master|mba|phd)/i.test(source.text))groups.push('DEGREE');
+  const ambiguousPay=payUnresolved||[capture,source].some(s=>s.payAmbiguous===true||s.payNeedsRefresh===true||s.payStatus==='PAY_UNRESOLVED');
+  if(!ambiguousPay&&needs.includes('SALARY')&&!fields.SALARY_BASE_LOW&&/\$\s*\d|\bUSD\s*\d/i.test(source.text))groups.push('SALARY');
+  // The ATS degree parser has already handled this capture. Do not spend
+  // on a degree-only request that the same parser would reject or duplicate.
   if(!groups.length)return null;
   // Unmodified public source text; omit long bodies rather than cut away governing clauses.
   if(Buffer.byteLength(source.text)>4500)return null;
@@ -27,13 +29,14 @@ function input(row,capture,needs,fields,now) {
   const e={
     company:row.COMPANY,title:row.TITLE,location:row.LOCATION,url:source.url,
     text:source.text,observedAt:source.at,sha256:fingerprint(source.text)};
-  return {e,groups};
+  return {e,groups,ambiguousPay};
 }
 
-function resultFields(result,e,groups,row){
+function resultFields(result,e,groups,row,{ambiguousPay=false}={}){
+  if(ambiguousPay)return {}; // Direct/late callers must preserve the same hold.
   const p=W.proposal(result,e,groups,row), fields=p.fields, q=p.evidence.fieldQuotes;
   const asOf=e.observedAt.slice(0,10), out={};
-  if(fields.SALARY_BASE_LOW&&fields.SALARY_BASE_HIGH&&fields.SALARY_BASIS==='EMPLOYER_POSTED'){
+  if(!ambiguousPay&&fields.SALARY_BASE_LOW&&fields.SALARY_BASE_HIGH&&fields.SALARY_BASIS==='EMPLOYER_POSTED'){
     // Quote location and numeric presence are not enough on a multi-range posting.
     // Re-derive one exact annual base range from the quoted clause.
     const quote=q.SALARY, parsed=L.payFromText(quote);
@@ -43,34 +46,28 @@ function resultFields(result,e,groups,row){
         SALARY_SOURCE:e.url,SALARY_ASOF:asOf,SALARY_CONF:'HIGH'});
     }
   }
-  if(fields.DEGREE_REQ&&fields.DEGREE_TEXT){
-    const parsed=L.degreeFromText(e.text);
-    // Validate against the full exact capture (including alternatives), not the model's isolated quote.
-    if(parsed?.req===fields.DEGREE_REQ&&parsed.text===fields.DEGREE_TEXT){
-      Object.assign(out,{DEGREE_REQ:parsed.req,DEGREE_TEXT:parsed.text,DEGREE_EVIDENCE_URL:e.url,DEGREE_ASOF:asOf});
-    }
-  }
   return out;
 }
 
-function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now}){
+function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=MAX_ATTEMPTS}){
+  if(![5,MAX_ATTEMPTS].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
   let attempts=0, stopped=false, projectId=null, credential;
   return {
     close(){credential?.close();credential=null;},
     get attempts(){return attempts;},
-    async extract({row,capture,needs,fields,ledger,checkpoint,signal}){
-      if(stopped||attempts>=MAX_ATTEMPTS||signal?.aborted)return {};
+    async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved}){
+      if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
-      try{selected=input(row,capture,needs,fields,now());}catch{return {};}
+      try{selected=input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
       if(!selected)return {};
-      const {e,groups}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
+      const {e,groups,ambiguousPay}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
       if(Object.hasOwn(records,key))return {};
       let proof;
       try {
         proof=await readFunding();
         if(funding(proof,now()).length||proof.funding.availableMicrousd-proof.funding.otherConsumersReservedMicrousd
-          <W.LIMITS.balanceFloorMicrousd+MAX_ATTEMPTS*W.LIMITS.reservationMicrousd||projectId&&projectId!==proof.project.id)throw Error('GRANT_FUNDING_BLOCKED');
+          <W.LIMITS.balanceFloorMicrousd+maxAttempts*W.LIMITS.reservationMicrousd||projectId&&projectId!==proof.project.id)throw Error('GRANT_FUNDING_BLOCKED');
         projectId=proof.project.id;
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
@@ -85,7 +82,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       try {
         const r=await response(body,{secureRuntime:credential.secureRuntime,projectId,
           signal:signal?AbortSignal.any([signal,timeout]):timeout,transport});
-        const fields=resultFields(r.result,e,groups,row);
+        const fields=resultFields(r.result,e,groups,row,{ambiguousPay});
         records[key].status=Object.keys(fields).length?'FACTS_ACCEPTED':'NO_SUPPORTED_FACTS';
         return fields;
       } catch {
@@ -117,6 +114,9 @@ function configured({root,live,writerPostLock,env=process.env}){
   if(process.platform!=='win32'||!live||!writerPostLock||!path.isAbsolute(file))throw Error('ATS_GRANT_RUNTIME_REQUIRED');
   const privateFile=fs.realpathSync(file),checkout=fs.realpathSync(root);
   if(privateFile.toLowerCase().startsWith(checkout.toLowerCase()+path.sep))throw Error('ATS_GRANT_FUNDING_MUST_BE_PRIVATE');
+  const configuredLimit=env.FORGE_ATS_GRANT_MAX_ROWS;
+  if(configuredLimit!==undefined&&!['5',String(MAX_ATTEMPTS)].includes(configuredLimit))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
+  const maxAttempts=configuredLimit===undefined?MAX_ATTEMPTS:Number(configuredLimit);
   const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
   if(!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
   // Fail closed if the existing authoritative ATS workflow is enabled or still
@@ -124,7 +124,7 @@ function configured({root,live,writerPostLock,env=process.env}){
   const github={token:env.GITHUB_TOKEN||env.GH_TOKEN,repo:env.GITHUB_REPOSITORY};
   const lockPath=privateFile+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
   let owned=false;
-  return Object.assign(create({expectedSid,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
+  return Object.assign(create({expectedSid,maxAttempts,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
     async acquire(){
       await assertGithubOwnerStopped(github);
       if(!lock(lockPath,'acquire',token).acquired)throw Error('ATS_GRANT_NATIVE_RUN_ALREADY_ACTIVE');

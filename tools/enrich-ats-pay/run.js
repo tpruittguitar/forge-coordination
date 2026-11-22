@@ -545,11 +545,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     }
     if(grantExtraction&&!helperResearch&&!externallyFenced(r.PRIMARY_ID)&&runtime.canStart(60000)){
       try {
-        const grantFields=await grantExtraction.extract({row:r,capture:preparationSource||saved,needs:n,fields:f,ledger,
+        const grantFields=await grantExtraction.extract({row:r,capture:preparationSource||saved,needs:n,fields:f,ledger,payUnresolved,
           checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
         if(Object.keys(grantFields).length){
           if(grantFields.SALARY_BASE_LOW){postedPay={low:grantFields.SALARY_BASE_LOW,high:grantFields.SALARY_BASE_HIGH};stats.posted_pay++;}
-          if(grantFields.DEGREE_REQ)stats.degree++;
           Object.assign(f,grantFields);
           grantFactIds.add(r.PRIMARY_ID);
         }

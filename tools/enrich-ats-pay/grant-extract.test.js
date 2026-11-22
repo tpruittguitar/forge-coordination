@@ -19,7 +19,8 @@ const wrapped=result=>new Response(JSON.stringify({status:'completed',model:'gpt
 const c=fields=>({row,capture,needs:['SALARY','DEGREE'],fields:fields||{},ledger:{},checkpoint(){}});
 test('exact allowed ATS posting only; protected, wrong or missing source and already-filled facts do not spend',()=>{
   const i=G.input(row,capture,['SALARY','DEGREE'],{},now);
-  a.deepEqual(i?.groups,['SALARY','DEGREE']);
+  a.deepEqual(i?.groups,['SALARY']);
+  a.equal(G.input(row,capture,['DEGREE'],{},now),null);
   for(const r of [{...row,p:{...row.p,DO_NOT_REWORK:'YES'}},{...row,TITLE:'Different'},
     {...row,p:{...row.p,SOURCE_URL:'https://example.org/other'}}])a.equal(G.input(r,capture,['SALARY'],{},now),null);
   a.equal(G.input(row,capture,['SALARY','DEGREE'],{SALARY_BASE_LOW:1,DEGREE_REQ:'REQUIRED'},now),null);
@@ -46,11 +47,25 @@ test('no paid fallback, ambiguous figures and unknown outcomes cannot produce fi
   a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');
   a.deepEqual(await u.extract(args),{});a.equal(calls,1);
 });
-test('explicit degree can be accepted, but no inferred absent or changed classification',()=>{
-  const i=G.input(row,capture,['DEGREE'],{},now);
-  const r={...proposal,fields:{DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree},quotes:{DEGREE:degree}};
-  a.deepEqual(G.resultFields(r,i.e,i.groups,row),{DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree,DEGREE_EVIDENCE_URL:url,DEGREE_ASOF:'2026-11-22'});
-  a.throws(()=>G.resultFields({...r,fields:{DEGREE_REQ:'NOT_STATED'}},i.e,i.groups,row),/ABSENCE_NOT_PROVEN/);
+test('conflicting location pay stays unresolved and independently parsed degree stays intact',async()=>{
+  const original=c(degreeFields()), conflict={...capture,pay:null,payAmbiguous:true,text:text+'\nOhio: annual base salary $170,000 to $190,000. California: annual base salary $210,000 to $250,000.'};
+  const fields=original.fields;
+  const g=G.create({now:()=>now,readFunding:async()=>{throw Error('must not read funding')}});
+  a.deepEqual(await g.extract({...original,capture:conflict}),{});
+  a.deepEqual(await g.extract({...original,payUnresolved:true}),{});
+  const i=G.input(row,capture,['SALARY'],{},now);
+  a.deepEqual(G.resultFields(payOnly,i.e,i.groups,row,{ambiguousPay:true}),{});
+  a.deepEqual(fields,degreeFields());
+});
+function degreeFields(){return {DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree,DEGREE_EVIDENCE_URL:url,DEGREE_ASOF:'2026-11-22'};}
+test('first native production pass can cap grant work at five rows',async()=>{
+  let calls=0;
+  const g=G.create({maxAttempts:5,now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture')}),
+   transport:async()=>{calls++;return wrapped(payOnly)}});
+  const args=c();
+  for(let j=0;j<8;j++)await g.extract({...args,row:{...row,PRIMARY_ID:'V2I-ATS-'+j}});
+  a.equal(calls,5);a.equal(Object.keys(args.ledger.grantExtractionAttempts).length,5);
+  a.throws(()=>G.create({maxAttempts:6}),/ATS_GRANT_ROW_LIMIT_INVALID/);
 });
 test('grant mode is off by default and old enabled or running GitHub ATS authority blocks launch',async()=>{
   a.equal(G.configured({env:{}}),null);
