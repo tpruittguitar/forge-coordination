@@ -736,14 +736,17 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(completeGrantBatch){
           f=SourceBlanks.project({row:r,capture,product,Products});
           acceptedGrant=grantExtraction.acceptedBulkResearch(r,capture,ledger,product);
-          if(!acceptedGrant&&!bulkProduct&&capture?.fullPosting===true&&runtime.canStart(60000)){
-            const groups=[...need(r)];
-            if(SourceBlanks.missing(r.p,SourceBlanks.workKeys))groups.push('WORK_ARRANGEMENT');
-            if(SourceBlanks.missing(r.p,SourceBlanks.degreeKeys))groups.push('DEGREE');
-            // Supply the exact posting, never the already-found answer. The
-            // stock extractors independently validate the model's return.
-            await grantExtraction.extract({row:r,capture,needs:groups,fields:{},ledger,
-              payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+          if(capture?.fullPosting===true&&runtime.canStart(60000)){
+            const groups=[...new Set([...need(r),
+              ...(SourceBlanks.missing(r.p,SourceBlanks.workKeys)?['WORK_ARRANGEMENT']:[]),
+              ...(SourceBlanks.missing(r.p,SourceBlanks.degreeKeys)?['DEGREE']:[])])];
+            // Each applicable missing group gets at most one exact-source
+            // attempt, even when Product was researched from the same posting.
+            for(const group of groups){
+              if(!runtime.canStart(60000))break;
+              await grantExtraction.extract({row:r,capture,needs:[group],fields:{},ledger,
+                payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+            }
             acceptedGrant=grantExtraction.acceptedBulkResearch(r,capture,ledger,product);
           }
           if(acceptedGrant)Object.assign(f,SourceBlanks.select(r.p,acceptedGrant.fields));

@@ -158,15 +158,20 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(maxAttempts!==BULK_LIMIT)return null;
       const source=Prepared.posting(row,capture,now());
       if(!source?.identityVerified||!source?.fullPosting||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(source.url)))return null;
-      const key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(source.url),fingerprint(source.text)]));
-      const record=ledger.grantExtractionAttempts?.[key];
-      if(record?.primaryId!==row.PRIMARY_ID||record.phase!=='BULK'||!Number.isSafeInteger(record.reportedCostMicrousd))return null;
-      if(record.status==='FACTS_ACCEPTED'&&record.acceptedFields)return {fields:record.acceptedFields};
-      const e=record.productReference;
-      if(record.status==='PRODUCT_PROPOSED'&&e?.primaryId===row.PRIMARY_ID&&product?.id===e.id&&
-        product.provenance?.grantAttemptKey===key&&product.provenance?.fullPostingTextSha256===e.provenance.fullPostingTextSha256&&
-        JSON.stringify(product.products)===JSON.stringify(e.products)&&JSON.stringify(product.sources)===JSON.stringify(e.sources))return {fields:{}};
-      return null;
+      const sourceKey=[row.PRIMARY_ID,Cache.route(source.url),fingerprint(source.text)];
+      const records=ledger.grantExtractionAttempts||{},fields={};
+      let accepted=false;
+      for(const group of ['', 'PRODUCT','WORK_ARRANGEMENT','DEGREE','SALARY']){
+        const key=fingerprint(JSON.stringify(group?[...sourceKey,group]:sourceKey));
+        const record=records[key];
+        if(record?.primaryId!==row.PRIMARY_ID||record.phase!=='BULK'||!Number.isSafeInteger(record.reportedCostMicrousd))continue;
+        if(record.status==='FACTS_ACCEPTED'&&record.acceptedFields){Object.assign(fields,record.acceptedFields);accepted=true;}
+        const e=record.productReference;
+        if(record.status==='PRODUCT_PROPOSED'&&e?.primaryId===row.PRIMARY_ID&&product?.id===e.id&&
+          product.provenance?.grantAttemptKey===key&&product.provenance?.fullPostingTextSha256===e.provenance.fullPostingTextSha256&&
+          JSON.stringify(product.products)===JSON.stringify(e.products)&&JSON.stringify(product.sources)===JSON.stringify(e.sources))accepted=true;
+      }
+      return accepted?{fields}:null;
     },
     pendingProduct(row,ledger){
       const e=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&r.status==='PRODUCT_PROPOSED')?.productReference;
@@ -181,10 +186,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(productId&&row.PRIMARY_ID!==productId)return {};
       try{selected=proposeProduct?productInput(row,capture,now(),{allowKnown:bulkProduct}):input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
       if(!selected)return {};
-      const {e,groups,ambiguousPay,candidate,source}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
+      const {e,groups,ambiguousPay,candidate,source}=selected;
+      const sourceKey=[row.PRIMARY_ID,Cache.route(e.url),e.sha256], legacyKey=fingerprint(JSON.stringify(sourceKey));
+      const group=maxAttempts===BULK_LIMIT?groups[0]:null, key=group?fingerprint(JSON.stringify([...sourceKey,group])):legacyKey;
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
-      if(Object.hasOwn(records,key))return {};
-      const entries=Object.values(records),smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
+      const legacy=group&&records[legacyKey];
+      if(Object.hasOwn(records,key)||legacy?.phase==='BULK'&&(!legacy.purpose||group==='PRODUCT'))return {};
+      const entries=Object.values(records);
+      if(group&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&r.status==='POSTING_OR_UNKNOWN'))return {};
+      const smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
       if(maxAttempts===BULK_LIMIT&&!smoke)throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
       const priorSmokes=Object.entries(records).filter(([,r])=>r?.phase==='SMOKE');
       let priorKey;
@@ -221,7 +231,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
       const timeout=AbortSignal.timeout(remaining);
-      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(proposeProduct?{purpose:'PRODUCT_PROPOSAL'}:{}),...(priorKey?{retryOf:priorKey}:{})};
+      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(group?{group}:{}),...(proposeProduct?{purpose:'PRODUCT_PROPOSAL'}:{}),...(priorKey?{retryOf:priorKey}:{})};
       checkpoint(); // same normal ATS ledger, before any model request; no second ledger.
       attempts++;unknownAttempts++;
       try {
