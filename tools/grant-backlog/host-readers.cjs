@@ -21,7 +21,7 @@ function published(root,git=gitReader(root)){
  }catch(e){if(/^[A-Z][A-Z0-9_]+$/.test(e.message))throw e;fail('PUBLISHED_REVISION_READ_FAILED');}
 }
 const statusVersion=s=>({build:s.build,freeze:s.freeze,level:s.level,errors:s.errors,unverified:s.unverified,migration:s.migration,queue:s.queue&&{...s.queue,processing:s.queue.processing?.map(({ageMs,...p})=>p)}});
-function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvidence,classifyNeverConsider,writerSourceRoot,admissionIds,now=Date.now,git}){
+function createBound({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvidence,classifyNeverConsider,writerSourceRoot,admissionIds,now=Date.now,git},publication){
  if(!W||['parseRows','build','render'].some(k=>typeof W[k]!=='function')||typeof writerRead!=='function'||typeof readReceiptIndex!=='function'||typeof readPolicy!=='function')fail('AUTHORIZED_READ_CAPABILITIES_REQUIRED');
  function fresh(at){const t=Date.parse(at);if(!Number.isFinite(t)||t>now()||now()-t>900000)fail('STALE_AUTHORIZED_READ');}
  async function read(action,signal){
@@ -49,7 +49,7 @@ function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvid
   return r;
  }
  return Object.freeze({async readView(signal){
-  const started=now(),before=published(root,git);
+  const started=now(),before=publication();
   const state=S.read(root,'state/PROGRAMMED_COORDINATOR.json',null);
   if(state?.schema!=='forge.programmed-coordinator.v1'||!state.items||!state.transactions)fail('CURRENT_COORDINATOR_STATE_REQUIRED');
   const status=await read('writer_status',signal);T.healthy(status.data);
@@ -76,7 +76,7 @@ function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvid
   if(S.hash(later.data.text)!==master.source.sha256||S.hash(laterRules.data.rules)!==S.hash(rules.data.rules)||S.hash(statusVersion(laterStatus.data))!==S.hash(statusVersion(status.data))||laterIndex.sha!==receipts.sha||S.hash(laterIndex.index)!==S.hash(receipts.index))fail('CANONICAL_STATE_CHANGED_DURING_READ');
   const finalPolicy=await policyRead(signal);
   if(finalPolicy.proof.commit!==policy.proof.commit||finalPolicy.proof.blob!==policy.proof.blob||finalPolicy.raw!==policy.raw)fail('POLICY_CHANGED_DURING_READ');
-  const after=published(root,git);
+  const after=publication();
   if(S.hash(after)!==S.hash(before)||S.hash(S.read(root,'state/PROGRAMMED_COORDINATOR.json',null))!==S.hash(state))fail('COORDINATION_CHANGED_DURING_READ');
   if(now()<started||now()-started>45000)fail('HOST_READ_DEADLINE');
   const pending=[...receipts.index.pending,...Object.values(receipts.index.requests).filter(e=>e.s!=='COMPLETE')];
@@ -101,4 +101,9 @@ function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvid
    readerProof:{rulesSha256:S.hash(rules.data.rules.raw),receiptBlob:receipts.sha,checkedAt:new Date(now()).toISOString(),eligibility:readAdmissionEvidence?'SOURCE_BOUND_EARLY_RESEARCH_ONLY':'ADMISSION_EVIDENCE_UNAVAILABLE'}};
  }});
 }
-module.exports={REMOTE,published,create};
+function create(options){return createBound(options,()=>published(options.root,options.git));}
+function createPilot(options){
+ if(!Array.isArray(options.admissionIds)||options.admissionIds.length!==5||new Set(options.admissionIds).size!==5)fail('EXACT_FIVE_REQUIRED');
+ return createBound(options,()=>require('../programmed-coordinator/direct-pilot.cjs').published(options.root,(options.now||Date.now)(),options.git));
+}
+module.exports={REMOTE,published,create,createPilot};
