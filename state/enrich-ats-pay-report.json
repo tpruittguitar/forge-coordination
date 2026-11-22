@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T23:32:49.515Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T232836148Z",
+ "at": "2026-11-22T23:40:36.087Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T233711501Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T23:28:49.578Z",
+  "readAt": "2026-11-22T23:37:21.230Z",
   "sha256": "b97c10e02ca4893ec72e6325d6eb3889f60ee0d4ac6a7942199859b6230b7fff",
   "rows": 9545
  },
@@ -68,7 +68,7 @@
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 6,
+ "source_reads": 5,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -114,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T23:28:55.204Z",
+  "profile_as_of": "2026-11-22T23:37:26.787Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -160,6 +160,7 @@
   "waiting": 1574,
   "examined": 50,
   "admitted": 50,
+  "skippedEarlierFirstPass": 0,
   "protectedOrReserved": 0,
   "identityNeedsGovernedRepair": 0,
   "noExactPosting": 41,
@@ -167,14 +168,29 @@
   "sourceSupported": 0,
   "remainingByFieldAfterPlan": {
    "degree FLEX class": 25,
-   "degree evidence": 34,
+   "degree evidence": 35,
    "work arrangement (remote/hybrid/on-site)": 44,
    "pay range": 15,
    "pay basis and source": 13,
    "products (what they make)": 49,
    "location / geography": 4
   },
-  "noAcceptedGrantResearch": 50
+  "noAcceptedGrantResearch": 50,
+  "firstPass": {
+   "frozen": 1582,
+   "previouslyReached": 0,
+   "legacySeeded": 0,
+   "reached": 50,
+   "notReached": 1532,
+   "reopened": 0,
+   "awaitingProductEvidence": 1,
+   "priorInterrupted": 0,
+   "eligibleWaiting": 1517,
+   "productWaiting": 1,
+   "restorableWriterPlans": 0,
+   "heldOrIdentityRepair": 7,
+   "remainingReason": "MORE_FIRST_PASS_WORK"
+  }
  },
  "source_origin_blocks": {},
  "grant_product_registry_batch": {
@@ -230,19 +246,16 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 0,
- "network_requests": 13,
+ "network_requests": 12,
  "planned": 0,
  "research_budget_exhausted": false,
- "grant_extraction_attempts": 5,
+ "grant_extraction_attempts": 0,
  "grant_extraction_fact_rows": 0,
  "grant_extraction_accounting": {
-  "reportedCostMicrousd": 431,
+  "reportedCostMicrousd": 0,
   "unknownAttempts": 0,
   "unknownReservedMicrousd": 0,
   "cumulativeCapMicrousd": 37470000
- },
- "grant_extraction_diagnostic": {
-  "category": "NO_SUPPORTED_FACTS"
  },
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
@@ -251,8 +264,8 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 245,
-  "SOURCE_RESEARCH_REQUIRED": 421,
+  "NOT_YET_ATTEMPTED": 244,
+  "SOURCE_RESEARCH_REQUIRED": 422,
   "EVIDENCE_FOUND": 900,
   "MODEL_INPUTS_REQUIRED": 3,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 5
