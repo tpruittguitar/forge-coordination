@@ -720,6 +720,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     await grantExtraction.verifyExclusive();
     stats.grant_extraction_attempts=grantExtraction.attempts;stats.grant_extraction_fact_rows=grantFactIds.size;
     stats.grant_extraction_accounting=grantExtraction.accounting;
+    if(grantExtraction.diagnostic)stats.grant_extraction_diagnostic=grantExtraction.diagnostic;
     // The grant invocation sends only its own ATSBOT rows, not ordinary planned work.
     for(let i=requests.length-1;i>=0;i--){
       if(!grantFactIds.has(requests[i].ruling.primaryId))requests.splice(i,1);

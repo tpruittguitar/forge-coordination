@@ -118,3 +118,20 @@ test('one real model request can emit only a quoted work blank from a long payle
   transport:async()=>wrapped({fields:{WORK_ARRANGEMENT:'REMOTE'},quotes:{WORK_ARRANGEMENT:'This role will be hybrid requiring a minimum of 3 days in office.'}})});
  a.deepEqual(await bad.extract({...args,ledger:{}}),{});
 });
+
+test('ATS diagnostics project only allowlisted failure categories, HTTP status and provider code; unknown spend stays fenced',async()=>{
+ const setup=(transport,more={})=>G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),transport,...more});
+ const admitted=await (await wrapped(payOnly)).json();
+ const options=[
+   [setup(async()=>{throw Object.assign(Error('PRIVATE MESSAGE'),{cause:{code:'ENOTFOUND'}})}),{category:'TRANSPORT_DNS'}],
+   [setup(async()=>new Response(JSON.stringify({error:{code:'credit_balance_exhausted',message:'PRIVATE BODY'}}),{status:429})),{category:'HTTP_REJECTION',httpStatus:429,providerCode:'credit_balance_exhausted'}],
+   [setup(async()=>new Response(JSON.stringify({error:{code:'PRIVATE_BODY_FRAGMENT'}}),{status:400})),{category:'HTTP_REJECTION',httpStatus:400}],
+   [setup(async()=>new Response('PRIVATE MALFORMED JSON')),{category:'RESPONSE_JSON'}],
+   [setup(async()=>new Response(JSON.stringify({...admitted,model:'PRIVATE_ALIAS'}))),{category:'RESPONSE_MODEL'}],
+   [setup(async()=>new Response(JSON.stringify({...admitted,service_tier:'priority'}))),{category:'RESPONSE_SERVICE_TIER'}],
+   [setup(()=>{throw Error('must not transport')},{openCredential:()=>({secureRuntime:fn=>fn('wrong')})}),{category:'NATIVE_KEY_LINK_MISMATCH'}]
+ ];
+ for(const [g,want] of options){const args=c();await a.rejects(g.extract(args),/GRANT_RESPONSE_UNVERIFIED/);a.deepEqual(g.diagnostic,want);
+   a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');}
+ const good=setup(async()=>wrapped(payOnly));await good.extract(c());a.equal(good.diagnostic.category,'FACTS_ACCEPTED');a.equal(good.accounting.reportedCostMicrousd,80);
+});

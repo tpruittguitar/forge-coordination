@@ -69,10 +69,11 @@ function accountDeadline(proof,now){
 
 function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT}){
   if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
-  let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, proof, credential;
+  let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, proof, credential, diagnostic;
   return {
     close(){credential?.close();credential=null;},
     get attempts(){return attempts;},
+    get diagnostic(){return diagnostic;},
     get accounting(){return {reportedCostMicrousd,unknownAttempts,unknownReservedMicrousd:unknownAttempts*reservationMicrousd,cumulativeCapMicrousd:GRANT_CAP};},
     get smoke(){return maxAttempts===SMOKE_LIMIT;},
     requireBulkSmoke(ledger){
@@ -94,12 +95,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
 
       let deadline;
       try {
+        diagnostic={category:'ACCOUNT_PREFLIGHT'};
         proof??=await readFunding(); // Single bounded attestation snapshot per run.
         deadline=accountDeadline(proof,now());
         const sinceProof=entries.filter(r=>Date.parse(r?.at)>=Date.parse(proof.observedAt)).length;
         if((sinceProof+1)*reservationMicrousd>proof.grant.availableMicrousd)throw Error('GRANT_HEADROOM_REQUIRED');
+        diagnostic={category:'NATIVE_CREDENTIAL_PREFLIGHT'};
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
+      diagnostic={category:'REQUEST_VALIDATION'};
       const body=W.request(e,groups);
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
@@ -112,17 +116,29 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         // fixed Responses transport; the visible suffix is compared in memory.
         const r=await response(body,{
           secureRuntime:use=>credential.secureRuntime(secret=>{
-            if(typeof secret!=='string'||!secret.endsWith(proof.keySuffix))throw Error('GRANT_NATIVE_KEY_LINK_MISMATCH');
+            if(typeof secret!=='string'||!secret.endsWith(proof.keySuffix)){diagnostic={category:'NATIVE_KEY_LINK_MISMATCH'};throw Error('GRANT_NATIVE_KEY_LINK_MISMATCH');}
             return use(secret);
           }),
           projectId:proof.projectId,signal:signal?AbortSignal.any([signal,timeout]):timeout,
-          transport:(url,options)=>transport(url,{...options,headers:{...options.headers,'OpenAI-Organization':proof.organizationId}})
+          observe:detail=>{diagnostic=detail;},
+          transport:async(url,options)=>{
+            diagnostic={category:'TRANSPORT'};
+            try{return await transport(url,{...options,headers:{...options.headers,'OpenAI-Organization':proof.organizationId}});}
+            catch(e){
+              if(options.signal?.aborted)diagnostic={category:'TRANSPORT_ABORTED'};
+              else if(['ENOTFOUND','EAI_AGAIN'].includes(e?.cause?.code))diagnostic={category:'TRANSPORT_DNS'};
+              else if(['ETIMEDOUT','UND_ERR_CONNECT_TIMEOUT','UND_ERR_HEADERS_TIMEOUT'].includes(e?.cause?.code))diagnostic={category:'TRANSPORT_TIMEOUT'};
+              throw e;
+            }
+          }
         });
         const cost=Math.ceil(r.usage.input_tokens*W.LIMITS.inputUsdPerMillion+r.usage.output_tokens*W.LIMITS.outputUsdPerMillion);
         Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
         reportedCostMicrousd+=cost;unknownAttempts--;
+        diagnostic={category:'FACT_VALIDATION'};
         const fields=candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
         records[key].status=Object.keys(fields).length?'FACTS_ACCEPTED':'NO_SUPPORTED_FACTS';
+        diagnostic={category:records[key].status};
         return fields;
       } catch {
         stopped=true; // No retry or alternate account on invalid, unknown or unverifiable outcomes.
