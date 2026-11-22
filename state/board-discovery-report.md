@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261122T2105Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261122T2336Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (62 read, 1 failed, 43 Workday deferred after a 429) | 118 | 27 | 58 |
+| Employer job boards (67 read, 1 failed, 48 Workday deferred after a 429) | 121 | 27 | 60 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -20,7 +20,7 @@ Priority companies with no board found: Anduril, Ramon.Space, UVify, MatrixSpace
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 18 | 23 |
-| SR_MANAGER | 7 | 12 |
+| SR_MANAGER | 7 | 14 |
 | SR_STAFF | 2 | 23 |
 
 ## New roles
