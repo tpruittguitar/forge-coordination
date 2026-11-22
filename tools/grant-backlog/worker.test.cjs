@@ -53,10 +53,32 @@ test('built-in evidence reuse uses the existing degree parser without conflating
  c.evidence.text='Bachelor degree or equivalent experience.';a.equal(reuseDegree(c),null);
 });
 test('checkpoint durability failure stops before any model call',async t=>{
- const f=fixture(1),dir=temp(t);let calls=0;f.adapter.simulate=async()=>{calls++;return f.result;};
- f.adapter.current=async id=>{t.mock.method(fs,'renameSync',()=>{throw Error('synthetic disk failure');});return f.current(id);};
- await a.rejects(W.run({dir,adapter:f.adapter,now:f.now}),/CHECKPOINT_DURABILITY_FAILURE/);
- a.equal(calls,0);
+ const f=fixture(1),dir=temp(t);let calls=0,failReplace=false,failedReplacements=0;
+ f.adapter.simulate=async()=>{calls++;return f.result;};
+ // Inject at the existing checkpoint seam in an isolated worker import. Exercise
+ // the Win32 branch on every platform, without loading the real credential addon.
+ const checkpointPath=require.resolve('./checkpoint.cjs'),workerPath=require.resolve('./worker.cjs');
+ const checkpointModule=require.cache[checkpointPath],originalCheckpoint=checkpointModule.exports,originalWorker=require.cache[workerPath];
+ const native={replaceCheckpoint(from,to){
+  if(failReplace){
+   const pending=JSON.parse(fs.readFileSync(from,'utf8'));
+   a.equal(pending.jobs['V2I-SYNTHETIC-0'].status,'MODEL_IN_FLIGHT');
+   a.equal(pending.reservedMicrousd,W.LIMITS.reservationMicrousd);
+   failedReplacements++;throw Error('synthetic native replacement failure');
+  }
+  fs.renameSync(from,to); // Mock successful setup writes only.
+ }};
+ let worker;
+ try {
+  checkpointModule.exports={...originalCheckpoint,save:(file,value)=>originalCheckpoint.save(file,value,{platform:'win32',native})};
+  delete require.cache[workerPath];worker=require(workerPath);
+ } finally {checkpointModule.exports=originalCheckpoint;require.cache[workerPath]=originalWorker;}
+ f.adapter.current=async id=>{failReplace=true;return f.current(id);};
+ await a.rejects(worker.run({dir,adapter:f.adapter,now:f.now}),/^Error: CHECKPOINT_DURABILITY_FAILURE$/);
+ a.equal(failedReplacements,1);a.equal(calls,0);
+ const retained=JSON.parse(fs.readFileSync(path.join(dir,'checkpoint.json'),'utf8'));
+ a.equal(retained.jobs['V2I-SYNTHETIC-0'].status,'CHECKING');a.equal(retained.reservedMicrousd,0);
+ a.equal(fs.readdirSync(dir).filter(name=>name.startsWith('checkpoint.json.tmp-')).length,1);
 });
 test('one dollar lifetime reservation stops before exceeding cap',async t=>{
  const f=fixture(500);const r=await W.run({dir:temp(t),adapter:f.adapter,now:f.now});
