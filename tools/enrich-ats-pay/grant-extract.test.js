@@ -135,3 +135,22 @@ test('ATS diagnostics project only allowlisted failure categories, HTTP status a
    a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');}
  const good=setup(async()=>wrapped(payOnly));await good.extract(c());a.equal(good.diagnostic.category,'FACTS_ACCEPTED');a.equal(good.accounting.reportedCostMicrousd,80);
 });
+
+test('explicit one-time unknown smoke retry uses a distinct pinned job and preserves original accounting',async()=>{
+ const prior='V2I-PRIOR',target='V2I-RETRY',third='V2I-THIRD';
+ const original={primaryId:prior,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',at:new Date(now-100).toISOString()};
+ const ledger={grantExtractionAttempts:{old:structuredClone(original)}}, args={...c(),row:{...row,PRIMARY_ID:target},ledger};
+ let calls=0;
+ const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+    transport:async()=>{calls++;return wrapped(payOnly)}};
+ const retry={retryPriorId:prior,retryTargetId:target};
+ await a.rejects(G.create(options).extract(args),/ALREADY_ATTEMPTED/);
+ await a.rejects(G.create({...options,...retry}).extract({...args,ledger:{...ledger,pendingWrites:{batch:{ids:[prior]}}}}),/ALREADY_ATTEMPTED/);
+ await a.rejects(G.create({...options,...retry}).extract({...args,row:{...row,PRIMARY_ID:prior}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,0);
+ a.equal((await G.create({...options,...retry}).extract(args)).SALARY_BASE_LOW,180000);
+ a.deepEqual(ledger.grantExtractionAttempts.old,original);
+ a.equal(Object.values(ledger.grantExtractionAttempts).find(r=>r.primaryId===target).retryOf,'old');
+ await a.rejects(G.create({...options,retryPriorId:prior,retryTargetId:third}).extract({...args,row:{...row,PRIMARY_ID:third}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,1);
+});
