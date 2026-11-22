@@ -74,7 +74,7 @@ function plan({root,ids,hermesIds,snapshot,state,now=Date.now(),apply=false}){
   if(occupied.has(id))fail('EXISTING_CLAIM_REQUIRES_EXPLICIT_RELEASE');
   const rows=snapshot.rows.filter(r=>r.PRIMARY_ID===id);if(rows.length!==1)fail('EXACT_CANONICAL_ID_REQUIRED');const row=rows[0];
   const screen=snapshot.neverConsiderById?.[id];
-  if(screen?.status!=='CLEAR'||screen.rowSha256!==S.hash(row.line)||screen.readAt!==snapshot.source.readAt||!/^[a-f0-9]{64}$/.test(screen.policySha256||''))fail('CURRENT_NEVER_CONSIDER_PROOF_REQUIRED');
+  require('../grant-backlog/research-eligibility.cjs').validate(screen,row,snapshot);
   if(T.protectedRow(row)||fences.has(id)||receiptFences.has(id))fail('PROTECTED_OR_UNRESOLVED_ORIGINAL');
   const missing=A.needs(row).filter(g=>snapshot.needsById[id].includes(g));if(!missing.length)fail('NO_CURRENT_MISSING_FIELDS');
   proposed.items.push({primaryId:id,kind:'ENRICHMENT',lane:'ENRICHMENT',taskKey:TASK,provider:'ChatGPT',worker:b.worker,

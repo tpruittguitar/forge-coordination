@@ -4,8 +4,8 @@ const {fixture}=require('../helper-routing/api-grant-fixture.cjs');
 const API=require('../helper-routing/api-grant.cjs'),S=require('../programmed-coordinator/store.cjs');
 const H=require('../helper-routing/shared.cjs'),Host=require('./timmay-adapter.cjs');
 const {fixture:workerFixture}=require('./fixture.cjs');
-function setup(t){
- const f=fixture(t);
+function setup(t,count=2){
+ const f=fixture(t,count);
  for(const row of f.snapshot.rows){row.line+='; DEGREE_TEXT=; DEGREE_REQ=';row.p.DEGREE_TEXT='';row.p.DEGREE_REQ='';f.snapshot.neverConsiderById[row.PRIMARY_ID].rowSha256=S.hash(row.line);}
  const p=API.plan(f);S.save(f.root,H.FILE,p.work);
  // Unknown canonical fields must explicitly exist for evidence proposal checking.
@@ -53,4 +53,13 @@ test('dry checkpoint cannot be reused across legacy and API routes',async t=>{
 test('same assignment name with changed Hermes IDs invalidates its exact ACK',t=>{
  const f=setup(t),work=H.load(f.root);work.items[0].primaryId='V2I-CHANGED';S.save(f.root,H.FILE,work);
  a.throws(()=>API.assertBound(f.root,work),/EXACT_ASSIGNMENT_ACK_REQUIRED/);
+});
+
+test('five-job adapter preserves separate Hermes authority and refuses added worker IDs',async t=>{
+ const f=setup(t,5),before=H.load(f.root),wf=workerFixture();
+ const e=wf.current('x').evidence;Object.assign(e,{company:'Factory',title:'Manager',location:'Ohio'});e.text+=' Manufacturing leadership and operational quality.'.repeat(8);e.sha256=S.hash(e.text);
+ let calls=0;const host=Host.create({root:f.root,expectedIds:f.ids,now:()=>f.now,readView:async()=>f.view,readPublicEvidence:async()=>e,reuse:async()=>null,simulate:async()=>{calls++;return wf.result;}});
+ const report=await host.runDry(f.dir);a.equal(report.preparedJobs,5);a.equal(calls,5);a.deepEqual(H.load(f.root),before);a.equal(report.writerSubmittedJobs,0);
+ const other=Host.create({root:f.root,expectedIds:[...f.ids.slice(0,4),'V2I-HERMES'],now:()=>f.now,readView:async()=>f.view,readPublicEvidence:async()=>e,reuse:async()=>null,simulate:async()=>{a.fail('no model');}});
+ await a.rejects(other.runDry(path.join(f.root,'other')),/EXACT_FIVE_WORKER_PARTITION/);
 });

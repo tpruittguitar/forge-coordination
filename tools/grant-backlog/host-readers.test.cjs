@@ -22,8 +22,8 @@ function setup(t){
 test('bound readers use complete canonical source and published revision, never invent eligibility',async t=>{
  const f=setup(t),view=await Host.create(f.options).readView();
  a.equal(view.instructionCommit,'a'.repeat(40));a.equal(view.snapshot.rows.length,2);a.deepEqual(view.snapshot.needsById[f.ids[0]],['DEGREE']);
- a.deepEqual(view.snapshot.neverConsiderById,{});a.equal(view.readerProof.eligibility,'AUTHORITATIVE_CLEAR_UNAVAILABLE');
- a.throws(()=>Adapter.current(f.root,f.ids[0],view,f.now),/CURRENT_NEVER_CONSIDER_PROOF_REQUIRED/);
+ a.deepEqual(view.snapshot.neverConsiderById,{});a.equal(view.readerProof.eligibility,'ADMISSION_EVIDENCE_UNAVAILABLE');
+ a.throws(()=>Adapter.current(f.root,f.ids[0],view,f.now),/CURRENT_RESEARCH_ADMISSION_REQUIRED/);
  a.deepEqual(f.calls.filter(c=>!c.startsWith('git:')),['writer_status','index','rules','master','master','rules','writer_status','index']);
 });
 test('wrong origin, unpublished revision, dirty checkout or disabled route block before authorized reads',async t=>{
@@ -74,4 +74,13 @@ test('fresh policy must match Writer bytes, source and bracketed policy revision
  for(const change of [f=>f.data.rules.rules.policySource='DRIVE',f=>{const p=f.options.readPolicy;f.options.readPolicy=async()=>({...await p(),raw:'different'});},f=>{const p=f.options.readPolicy;let n=0;f.options.readPolicy=async()=>{const r=await p();if(++n===2)r.proof.commit='0'.repeat(40);return r;};}]){
   const f=setup(t);change(f);await a.rejects(Host.create(f.options).readView(),/POLICY/);
  }
+});
+test('bound reader produces early research proof from saved complete public capture before enrichment',async t=>{
+ const f=setup(t),patterns=require('../source-trial/never-consider-patterns.json').rules;
+ Object.assign(f.data.rules.rules,{raw:'SECTION=NEVER_CONSIDER\n'+patterns.map(r=>'- '+r.id+' '+r.category+': '+r.match).join('\n'),rules:patterns.map(r=>({RULE_ID:r.id,CATEGORY:r.category,MATCH:r.match,active:true,ACTION:'DO_NOT_ADD'}))});
+ const quote='We manufacture industrial metal fasteners.',text=quote+' '+ 'The manager leads manufacturing operations and quality improvement. '.repeat(8);let read=0;
+ f.options.readAdmissionEvidence=async()=>{read++;return {businessScopeReviewed:true,employerBusinessQuote:quote,posting:{kind:'PUBLIC_JOB_POSTING_EXCERPT',publicReviewed:true,identityVerified:true,company:'Factory',title:'Manager',location:'Ohio',url:'https://example.com/job',observedAt:f.snapshot.source.readAt,text,sha256:S.hash(text),fullPosting:true}};};
+ f.options.classifyNeverConsider=()=>({outcome:'ALLOW'});
+ const v=await Host.create(f.options).readView();a.equal(read,2);a.equal(v.snapshot.neverConsiderById[f.ids[0]].status,'RESEARCH_ADMITTED');
+ a.equal(Adapter.current(f.root,f.ids[0],v,f.now).neverConsider,'CLEAR');a.equal(v.snapshot.neverConsiderById[f.ids[0]].canonicalEligibility,false);
 });

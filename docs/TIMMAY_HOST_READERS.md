@@ -109,3 +109,5 @@ persistent TIMMAY checkpoint ACLs and same-state resume; do not clear holds or
 increase caps to force a launch.
 
 Exact-five update: [API_FIVE_JOB_GATE.md](API_FIVE_JOB_GATE.md). The reader now additionally requires `readPolicy`, bound to `policy-source.read({root: existingPolicyCheckout})`; current policy bytes must match Writer rules. This establishes provenance, not positive eligibility.
+
+Latest draft implementation supersedes the earlier missing-CLEAR-endpoint discussion: [EARLY_RESEARCH_RELEASE_DRAFT.md](EARLY_RESEARCH_RELEASE_DRAFT.md). Research-only source-bound admission and an exact-five worker binding now exist; live release remains off.

@@ -21,7 +21,7 @@ function published(root,git=gitReader(root)){
  }catch(e){if(/^[A-Z][A-Z0-9_]+$/.test(e.message))throw e;fail('PUBLISHED_REVISION_READ_FAILED');}
 }
 const statusVersion=s=>({build:s.build,freeze:s.freeze,level:s.level,errors:s.errors,unverified:s.unverified,migration:s.migration,queue:s.queue&&{...s.queue,processing:s.queue.processing?.map(({ageMs,...p})=>p)}});
-function create({root,W,writerRead,readReceiptIndex,readPolicy,now=Date.now,git}){
+function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvidence,classifyNeverConsider,admissionIds,now=Date.now,git}){
  if(!W||['parseRows','build','render'].some(k=>typeof W[k]!=='function')||typeof writerRead!=='function'||typeof readReceiptIndex!=='function'||typeof readPolicy!=='function')fail('AUTHORIZED_READ_CAPABILITIES_REQUIRED');
  function fresh(at){const t=Date.parse(at);if(!Number.isFinite(t)||t>now()||now()-t>900000)fail('STALE_AUTHORIZED_READ');}
  async function read(action,signal){
@@ -81,10 +81,23 @@ function create({root,W,writerRead,readReceiptIndex,readPolicy,now=Date.now,git}
   const pending=[...receipts.index.pending,...Object.values(receipts.index.requests).filter(e=>e.s!=='COMPLETE')];
   const snapshot={...master,policyProof:policy.proof,status:status.data,needsById,writerReceiptIndex:{...receipts.index,pending},neverConsiderById:{}};
   require('../helper-routing/enrichment-plan.cjs').fullSnapshot(snapshot);
-  // No checked-in supported reader grants authoritative CLEAR. Do not promote
-  // preliminary-screen.NO_CONFIRMED_EXCLUSION (canonicalEligibility:false).
+  // Reuse already captured, reviewed public evidence; never fetch or research
+  // sources to get around the first gate. Missing captures stay held.
+  if(readAdmissionEvidence){
+   const ids=admissionIds||H.load(root).items.filter(i=>i.taskKey===API.TASK&&H.active(i)).map(i=>i.primaryId);
+   for(const id of ids){
+    signal?.throwIfAborted();const rows=master.rows.filter(r=>r.PRIMARY_ID===id);
+    if(rows.length!==1)throw Error('EXACT_CANONICAL_ID_REQUIRED');
+    try{
+     const evidence=await readAdmissionEvidence(id);signal?.throwIfAborted();
+     snapshot.neverConsiderById[id]=require('./research-eligibility.cjs').evaluate({root,row:rows[0],rules:rules.data.rules,policyProof:policy.proof,evidence,readAt:master.source.readAt,now:now(),classifyNeverConsider});
+    }catch(e){
+     signal?.throwIfAborted();snapshot.neverConsiderById[id]={status:'HOLD',reason:/^[A-Z][A-Z0-9_]+$/.test(e.message)?e.message:'RESEARCH_ADMISSION_HOLD'};
+    }
+   }
+  }
   return {readAt:master.source.readAt,instructionCommit:before.commit,publishedInstructionCommit:before.commit,publishedWorkSha256:before.workSha256,state,snapshot,
-   readerProof:{rulesSha256:S.hash(rules.data.rules.raw),receiptBlob:receipts.sha,checkedAt:new Date(now()).toISOString(),eligibility:'AUTHORITATIVE_CLEAR_UNAVAILABLE'}};
+   readerProof:{rulesSha256:S.hash(rules.data.rules.raw),receiptBlob:receipts.sha,checkedAt:new Date(now()).toISOString(),eligibility:readAdmissionEvidence?'SOURCE_BOUND_EARLY_RESEARCH_ONLY':'ADMISSION_EVIDENCE_UNAVAILABLE'}};
  }});
 }
 module.exports={REMOTE,published,create};

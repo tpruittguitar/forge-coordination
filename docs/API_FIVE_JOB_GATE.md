@@ -115,3 +115,5 @@ accessed or installed here. Live release remains disabled; even valid synthetic
 preflight receipts cannot launch it. Existing grant/token/time caps are unchanged.
 
 For five model attempts, the unchanged 2,048-microdollar per-attempt reservation totals 10,240 microdollars ($0.01024). This is a conservative reservation, not actual spend or permission to call the API. Existing per-job/per-batch timeouts, global credit/expiry checks and no-paid-fallback remain mandatory.
+
+Latest draft implementation supersedes the earlier missing-CLEAR-endpoint discussion: [EARLY_RESEARCH_RELEASE_DRAFT.md](EARLY_RESEARCH_RELEASE_DRAFT.md). Research-only source-bound admission and an exact-five worker binding now exist; live release remains off.

@@ -30,7 +30,7 @@ function current(root,id,view,now){
  const row=rows[0],assigned=work.items.find(i=>i.primaryId===id);
  if(S.hash(row.line)!==assigned.sourceVersion||!T.same(row,assigned))fail('ASSIGNMENT_SOURCE_CHANGED');
  const screen=snapshot.neverConsiderById?.[id];
- if(screen?.status!=='CLEAR'||screen.rowSha256!==S.hash(row.line)||screen.readAt!==view.readAt||!/^[a-f0-9]{64}$/.test(screen.policySha256||''))fail('CURRENT_NEVER_CONSIDER_PROOF_REQUIRED');
+ require('./research-eligibility.cjs').validate(screen,row,snapshot);
  if(T.protectedRow(row)||T.fenceIndex(root,view.state).has(id))fail('PROTECTED_OR_UNRESOLVED_ORIGINAL');
  const index=snapshot.writerReceiptIndex;
  if(!index?.requests||Array.isArray(index.requests)||!Array.isArray(index.pending))fail('LIVE_RECEIPT_INDEX_REQUIRED');
@@ -41,10 +41,12 @@ function current(root,id,view,now){
  const missingGroups=A.needs(row).filter(g=>snapshot.needsById[id]?.includes(g)&&assigned.missingFields.includes(g));
  return {authority:view,readAt:view.readAt,row,missingGroups,neverConsider:'CLEAR',originalRequestsReconciled:true,writerFenced:false};
 }
-function create({root,readView,readPublicEvidence,simulate,reuse,now=Date.now}){
+function create({root,readView,readPublicEvidence,simulate,reuse,expectedIds,now=Date.now}){
  if([readView,readPublicEvidence,simulate,reuse].some(f=>typeof f!=='function'))fail('OFFLINE_HOST_DEPENDENCIES_REQUIRED');
- const route={key:API.TASK,allocation:(v,n)=>authority(root,v,n),batch({item,assigned,view}){
-  authority(root,view,now());
+ if(expectedIds&&(!Array.isArray(expectedIds)||expectedIds.length!==5||new Set(expectedIds).size!==5))fail('EXACTLY_FIVE_DISTINCT_IDS_REQUIRED');
+ const check=(v,n)=>{const a=authority(root,v,n);if(expectedIds&&(a.ids.size!==5||expectedIds.some(id=>!a.ids.has(id))))fail('EXACT_FIVE_WORKER_PARTITION_REQUIRED');return a;};
+ const route={key:API.TASK,allocation:check,batch({item,assigned,view}){
+  check(view,now());
   // Construct only the existing shared return contract; never include host data.
   const evidence={...item.sourceEvidence,quote:Object.values(item.sourceEvidence.fieldQuotes)[0]};
   const shared={primaryId:item.primaryId,kind:'ENRICHMENT',worker:W.NAME,
@@ -65,4 +67,8 @@ function bindReaders(options){
  const readers=require('./host-readers.cjs').create(options);
  return create({...options,readView:readers.readView});
 }
-module.exports={authority,current,create,bindReaders};
+function bindFiveReaders(options){
+ if(!Array.isArray(options.ids)||options.ids.length!==5||new Set(options.ids).size!==5)fail('EXACTLY_FIVE_DISTINCT_IDS_REQUIRED');
+ return bindReaders({...options,expectedIds:[...options.ids],admissionIds:[...options.ids]});
+}
+module.exports={authority,current,create,bindReaders,bindFiveReaders};

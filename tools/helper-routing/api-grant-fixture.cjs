@@ -2,7 +2,7 @@
 const a=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const API=require('./api-grant.cjs'),H=require('./shared.cjs'),S=require('../programmed-coordinator/store.cjs'),C=require('../programmed-coordinator/collect.cjs'),T=require('../programmed-coordinator/transactions.cjs');
 const partner='FORGE_CLAUDE_SHARED_HELPER',at='2026-11-22T04:00:00Z';
-function fixture(t){
+function fixture(t,count=2){
  const root=fs.mkdtempSync(path.join(os.tmpdir(),'api-route-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));
  const work={schema:'forge.shared-helper-work.v1',assignmentId:'SYNTHETIC-API',enabled:true,routingActive:true,
   providers:{[partner]:{provider:'Claude',available:true},FORGE_GROK_SHARED_HELPER:{provider:'Grok',available:false},[API.TASK]:{provider:'ChatGPT',available:true}},
@@ -20,10 +20,10 @@ function fixture(t){
  S.save(root,'control/ENRICHMENT_HELPER_WORK.json',{schema:'forge.enrichment-helper-work.v1',enabled:true,assignmentId:'LEGACY',provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',items:[]});
  S.save(root,'control/CLAUDE_HELPER_WORK.json',{schema:'forge.claude-helper-work.v1',enabled:false,intake:[],enrichment:[]});
  for(const file of [registry.common,API.PROCEDURE]){fs.mkdirSync(path.dirname(path.join(root,file)),{recursive:true});fs.writeFileSync(path.join(root,file),'Synthetic contract\n');}
- const ids=['V2I-API1','V2I-API2'],snapshot={source:{kind:'CANONICAL_WRITER_MASTER',readAt:at},rows:[],archiveRows:[],needsById:{},neverConsiderById:{},writerReceiptIndex:{requests:{},pending:[]},status:{freeze:null,level:'OK',errors:[],unverified:{count:0}}};
+ const ids=Array.from({length:count},(_,i)=>'V2I-API'+(i+1)),snapshot={source:{kind:'CANONICAL_WRITER_MASTER',readAt:at},rows:[],archiveRows:[],needsById:{},neverConsiderById:{},policyProof:{rawSha256:'f'.repeat(64),commit:'a'.repeat(40)},writerReceiptIndex:{requests:{},pending:[]},status:{freeze:null,level:'OK',errors:[],unverified:{count:0}}};
  for(const id of ids){const row={PRIMARY_ID:id,COMPANY:'Factory',TITLE:'Manager',LOCATION:'Ohio',BUCKET:'SCOUT_INTAKE',p:{SOURCE_URL:'https://example.com/job'}};
   row.line='1 | '+id+' | Factory | Manager | SCOUT_INTAKE | - | - | - | Ohio | SOURCE_URL=https://example.com/job';snapshot.rows.push(row);snapshot.needsById[id]=['DEGREE'];
-  snapshot.neverConsiderById[id]={status:'CLEAR',rowSha256:S.hash(row.line),readAt:at,policySha256:'f'.repeat(64)};
+  snapshot.neverConsiderById[id]={schema:'forge.early-research-admission.v1',status:'RESEARCH_ADMITTED',scope:'MISSING_PUBLIC_FACTS_ONLY',primaryId:id,rowSha256:S.hash(row.line),readAt:at,policySha256:'f'.repeat(64),policyCommit:'a'.repeat(40),canonicalEligibility:false,writerAuthorized:false,evidenceSha256:'e'.repeat(64),sourceSha256:'d'.repeat(64),screenStatus:'NO_CONFIRMED_EXCLUSION',writerClassification:'ALLOW'};
  }
  return{root,work,registry,ids,hermesIds:['V2I-HERMES'],snapshot,state:C.empty(),now:Date.parse(at)};
 }

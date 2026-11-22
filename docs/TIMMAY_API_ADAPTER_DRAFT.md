@@ -79,3 +79,5 @@ reservation/lock semantics and stop at the existing caps/cutoff; do not increase
 caps or erase checkpoints to continue. No assumption of unattended cloud lifetime.
 
 Reader implementation update: [TIMMAY_HOST_READERS.md](TIMMAY_HOST_READERS.md) binds existing published Git, canonical snapshot, worklist and authorized receipt/read capabilities. The exact remaining policy-screen authorization gap is documented there; no CLEAR value is invented.
+
+Latest draft implementation supersedes the earlier missing-CLEAR-endpoint discussion: [EARLY_RESEARCH_RELEASE_DRAFT.md](EARLY_RESEARCH_RELEASE_DRAFT.md). Research-only source-bound admission and an exact-five worker binding now exist; live release remains off.
