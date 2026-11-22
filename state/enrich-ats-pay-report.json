@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T08:37:41.247Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T083058963Z",
+ "at": "2026-11-22T08:49:32.293Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T084405612Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T08:31:07.806Z",
+  "readAt": "2026-11-22T08:44:15.042Z",
   "sha256": "fedb7f599f677437c1869b9d0962ddf79dae0322bf66fec89b562f71e472c23a",
   "rows": 9538
  },
@@ -63,10 +63,10 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 4
+  "linkedin": 2
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_pay": {},
  "agg_failed": {},
@@ -74,7 +74,7 @@
  "agg_wall": {
   "linkedin": 1
  },
- "source_reads": 4,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -82,17 +82,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
   "hits": 16,
@@ -107,9 +107,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 39,
-  "saved_reused": 39,
+  "targets": 0,
+  "candidates": 0,
+  "saved_reused": 0,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -118,9 +118,9 @@
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 1,
+  "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T08:31:14.716Z",
+  "profile_as_of": "2026-11-22T08:44:21.677Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14705,31 +14705,23 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 0,
+  "review_skipped_blocked": 1899,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 866,
-   "products (what they make)": 1420,
-   "location / geography": 10
+   "products (what they make)": 1837,
+   "work arrangement (remote/hybrid/on-site)": 1179,
+   "location / geography": 14
   }
  },
  "salary_review": {
   "eligible": 1914,
-  "due": 1900,
-  "reviewed": 1,
-  "target_reads": 2,
+  "due": 1899,
+  "reviewed": 0,
+  "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 1,
+  "no_improvement": 0,
   "guard_dropped": 0,
-  "samples": [
-   {
-    "id": "V2I-6927190ECFF1",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   }
-  ],
-  "aggregator_reads": 1
+  "samples": []
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14737,9 +14729,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 638,
- "nothing_found": 639,
- "attempt_only_skipped": 2,
+ "not_attempted": 639,
+ "nothing_found": 640,
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14772,8 +14764,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2348,
- "network_requests": 13,
+ "roles_researched": 2349,
+ "network_requests": 10,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14784,9 +14776,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 760,
+  "SOURCE_RESEARCH_REQUIRED": 759,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 16,
-  "EVIDENCE_FOUND": 75,
+  "EVIDENCE_FOUND": 76,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -20641,31 +20633,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T16:38:39.716Z",
-   "retryAt": "2026-11-22T08:38:39.716Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T08:45:40.445Z",
+   "retryAt": "2026-11-23T00:45:40.445Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483206369",
      "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AF94D03A2886",
-   "company": "Target",
-   "title": "Production Controller- Flow Center- Hampton GA",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T16:38:42.759Z",
-   "retryAt": "2026-11-22T08:38:42.759Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485994753",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21897,6 +21871,42 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CA52D87AFDB0",
+   "company": "Delaware North",
+   "title": "General Manager, EverBank Stadium",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:32:32.325Z",
+   "retryAt": "2026-11-22T09:32:32.325Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2CDC90A5943",
+   "company": "YMCA of the Suncoast",
+   "title": "Executive Director - Hernando County",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:32:35.512Z",
+   "retryAt": "2026-11-22T09:32:35.512Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29820,25 +29830,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-633444ECEF13",
-   "company": "CMCO Brasil",
-   "title": "Manufacturing Leader - 2nd Shift",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T08:32:38.848Z",
-   "retryAt": "2026-11-23T00:32:38.848Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-1DD1A72C87EC",
    "company": "AES Corporation",
    "title": "Principal Mechanical Engineer - Thermal Projects",
@@ -29846,9 +29837,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T16:38:42.948Z",
-   "retryAt": "2026-11-22T08:38:42.948Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T08:45:43.812Z",
+   "retryAt": "2026-11-23T00:45:43.812Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32299,6 +32290,25 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488254632",
      "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-633444ECEF13",
+   "company": "CMCO Brasil",
+   "title": "Manufacturing Leader - 2nd Shift",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T08:32:38.848Z",
+   "retryAt": "2026-11-23T00:32:38.848Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487428502",
+     "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
