@@ -688,6 +688,11 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     return missing;
   };
   if(broadGrant){
+    const bulkSource=completeGrantBatch?require('./grant-public-source.cjs'):null;
+    const exactPublic=bulkSource?.make({privateDir:path.join(path.dirname(fs.realpathSync(process.env.FORGE_ATS_GRANT_FUNDING_FILE)),'ats-public-source'),
+      providerAllowed:url=>providerAllowed(url)&&!workdayCooling(L.boardOf({SOURCE_URL:url})),
+      canStart:()=>runtime.canStart(60000),gapMs:CONFIG.fetchGapMs,wait:sleep});
+    if(exactPublic)stats.grant_public_source=exactPublic.stats;
     const productBatch=[];
     const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,skippedEarlierFirstPass:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
     const blocked=r=>unavailableIds.has(r.PRIMARY_ID)||helperResearchIds.has(r.PRIMARY_ID)||externallyFenced(r.PRIMARY_ID)||Prepared.protectedRow(r);
@@ -720,6 +725,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(!plan||!completeGrantBatch||blocked(r)||!validIdentity(r)||plan.identity!==Store.hash([r.COMPANY,r.TITLE,r.LOCATION]))return null;
       const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       const capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
+      if(capture&&[capture.url,capture.degreeUrl].some(url=>url&&bulkSource?.routeConflict(r,url)))return null;
       const accepted=grantExtraction.acceptedBulkResearch(r,capture,ledger,getProduct(r));
       if(!accepted||plan.source!==Store.hash([capture?.url,capture?.text]))return null;
       const normalize=require('../source-intake/writer-cell').normalizeCell;
@@ -751,8 +757,10 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         coverage.protectedOrReserved++;continue;
       }
       if(!validIdentity(r)){coverage.identityNeedsGovernedRepair++;continue;}
-      const old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
+      let old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
       let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
+      const conflictingUrl=bulkSource&&[capture?.url,capture?.degreeUrl,old?.url,old?.degreeUrl].find(url=>url&&bulkSource.routeConflict(r,url));
+      if(conflictingUrl){capture=null;old=null;exactPublic.stats.blockedIdentity++;}
       const rawNeeds=rawNeeded(r);
       if(!rawNeeds&&!productNeeded(r)&&!grantExtraction.productProposal)continue;
       if(firstPass&&!firstPass.claim(r.PRIMARY_ID,()=>productEvidence(r)))continue;
@@ -761,14 +769,28 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const bulkProduct=!grantExtraction.smoke&&!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
         (!Products.known(r.p.PRODUCT)||SourceBlanks.missing(r.p,['PRODUCT_SOURCE']));
       const cachedProposal=bulkProduct&&grantExtraction.pendingProduct(r,ledger);
-      const api=atsOf.get(r);
-      if((rawNeeds||grantExtraction.productProposal||bulkProduct&&!cachedProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
+      const rejectedProductUrl=bulkProduct&&grantExtraction.rejectedProductSource(r,ledger);
+      if(rejectedProductUrl&&capture?.url===rejectedProductUrl){capture=null;old=null;}
+      const api=atsOf.get(r),recoverPosting=rawNeeds||grantExtraction.productProposal||bulkProduct&&!cachedProposal;
+      const due=!fresh(r);
+      let attemptedApi=false;
+      if(recoverPosting&&!capture&&api&&due&&!WorkdayWindow.paused(api.api)&&api.page!==rejectedProductUrl&&!(bulkSource&&bulkSource.routeConflict(r,api.page))){
         // The existing exact posting parser/reader binds the canonical identity.
         try{
+          attemptedApi=true;
           const parsed=Recovery.exactApi(r,api,JSON.parse(await sourceReader().read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
           if(parsed)capture=postingCache.save(r,api.page,parsed);
-        }catch{Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{url:api.page,status:'NO_EXACT_COMPLETE_POSTING'}]);}
+        }catch{}
       }
+      if(recoverPosting&&!capture&&due&&exactPublic){
+        const before=exactPublic.stats.attempts;
+        const better=await exactPublic.find(r,{off:CONFIG.aggregatorsOff||[],skip:[conflictingUrl,rejectedProductUrl].filter(Boolean),skipEndpoints:attemptedApi?[api.api]:[]});
+        if(better){
+          capture=postingCache.save(r,better.url,better,{at:better.at});
+          if(capture)Recovery.saveEvidence(ledger,r,better.url,better,Date.parse(better.at));
+        }
+        if(!capture&&(attemptedApi||exactPublic.stats.attempts>before))Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{status:'NO_EXACT_COMPLETE_POSTING'}]);
+      }else if(!capture&&attemptedApi)Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{url:api.page,status:'NO_EXACT_COMPLETE_POSTING'}]);
       if((rawNeeds||bulkProduct&&!cachedProposal)&&!capture)coverage.noExactPosting++;
       if(grantExtraction.productProposal){
         try{

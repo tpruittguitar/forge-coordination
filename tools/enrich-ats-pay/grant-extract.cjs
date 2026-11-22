@@ -173,8 +173,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       }
       return accepted?{fields}:null;
     },
+    rejectedProductSource(row,ledger){
+      const rejected=require('./grant-public-source.cjs').rejectedProposal;
+      const draft=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&
+        (r.rejectedProductUrl||r.status==='PRODUCT_PROPOSED'&&rejected(row,r.productReference)));
+      return draft?.rejectedProductUrl||draft?.productReference?.sources?.[0];
+    },
     pendingProduct(row,ledger){
-      const e=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&r.status==='PRODUCT_PROPOSED')?.productReference;
+      const rejected=require('./grant-public-source.cjs').rejectedProposal;
+      const e=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&r.status==='PRODUCT_PROPOSED'&&!rejected(row,r.productReference))?.productReference;
       return e&&e.company===row.COMPANY&&e.location===row.LOCATION&&
         (!Source.known(row.p.PRODUCT)||e.products[0]===row.p.PRODUCT)?e:null;
     },
@@ -199,7 +206,8 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const priorSmokes=Object.entries(records).filter(([,r])=>r?.phase==='SMOKE');
       let priorKey;
       if(productId&&entries.some(r=>r?.primaryId===productId))throw Error('ATS_GRANT_PRODUCT_ALREADY_ATTEMPTED');
-      if(bulkProduct&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&(r.purpose==='PRODUCT_PROPOSAL'||r.status==='POSTING_OR_UNKNOWN')))return {};
+      if(bulkProduct&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&
+        (r.status==='POSTING_OR_UNKNOWN'||r.purpose==='PRODUCT_PROPOSAL'&&!r.rejectedProductUrl&&!require('./grant-public-source.cjs').rejectedProposal(row,r.productReference))))return {};
       if(!productId&&maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
@@ -261,6 +269,9 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         diagnostic={category:'FACT_VALIDATION'};
         let fields=proposeProduct?productResult(r.result,e,row):candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
         // Product provenance cannot legitimize a different already-stored fact.
+        if(bulkProduct&&require('./grant-public-source.cjs').rejectedProposal(row,{products:[fields.product],sources:[e.url],provenance:{quote:fields.quote}})){
+          records[key].rejectedProductUrl=e.url;fields={};
+        }
         if(bulkProduct&&Source.known(row.p.PRODUCT)&&fields.product!==row.p.PRODUCT)fields={};
         records[key].status=Object.keys(fields).length?(proposeProduct?'PRODUCT_PROPOSED':'FACTS_ACCEPTED'):'NO_SUPPORTED_FACTS';
         if(bulkProduct&&records[key].status==='PRODUCT_PROPOSED'){
@@ -273,6 +284,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
           records[key].acceptedFields=fields;
           checkpoint(); // The returned verified facts are reusable without another model call.
         }
+        if(records[key].rejectedProductUrl)checkpoint();
         diagnostic={category:records[key].status};
         return fields;
       } catch {
