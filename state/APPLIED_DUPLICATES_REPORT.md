@@ -1,8 +1,8 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-22T11:45:14.126Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-22T19:54:35.974Z from CANONICAL_WRITER_MASTER.
 
-Of 3250 jobs waiting on Tim, 88 match a role he already applied to, was rejected from, or declined:
+Of 3254 jobs waiting on Tim, 88 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 88
 
@@ -23,6 +23,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 |---|---|---|---|---|---|
 | 90 | GKN Aerospace | Director of Quality, Site | Applied 2026-10-15 · possible repeat | Posting first seen 2026-11-12, 28 days after 2026-10-15; no posting identity to compare | V2I-E649AD5628D3 → V2S-GKN-SITE-QUALITY-DIR-1442097333 |
 | 87 | Honeywell | Director Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-10, after rejection 2026-10-30 | V2I-6CF5BAFCF396 → V2E-6920E7E88F4B |
+| 76 | Confidential Manufacturing Company | Director of Quality | You declined 2026-11-18 · different site | Different worksite: Charlotte, NC, USA vs earlier Washington DC-Baltimore Area | V2I-410BF471CBF6 → V2I-546CC32EA838 |
 | 71 | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 | 70 | Shield | Senior Manager, Supplier Quality (R6220) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-235C950A82AF → V2I-159B6D7FCA48 |
 | 69 | CTS Corporation | Director of Operations, North America | You declined 2026-10-26 · different site | Different worksite: Houston, TX, USA vs earlier Lisle, IL | V2I-954806CA62FF → V2I-6C9C8F6C58A3 |
@@ -60,7 +61,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 51 | Lockheed Martin | Multifunctional Manufacturing Planner Asc Mgr - L4 | You declined 2026-11-05 · possible repeat | Posting first seen 2026-11-13, 8 days after 2026-11-05; no posting identity to compare | V2I-05D9CC9BF898 → V2I-324E94DE9152 |
 | 51 | Generac | Senior Manager Value Stream | You declined 2026-11-14 · different site | Different worksite: Holdrege, NE vs earlier Whitewater, WI | V2I-620A2C661996 → V2I-B598F8FCC62F |
 | 51 | Arena Family of Companies | Director of Quality (Aerospace & Defense) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-6BA0AEF4F8FD → V2I-4D814A27A330 |
-| 51 | Confidential Manufacturing Company | Director of Quality | You declined 2026-11-18 · different site | Different worksite: Charlotte, NC, USA vs earlier Washington DC-Baltimore Area | V2I-410BF471CBF6 → V2I-546CC32EA838 |
 | 50 | Sanmina | VP, Operations | You declined 2026-10-26 · different site | Different worksite: Carrollton, TX vs earlier Huntsville, AL (SCI Plant 2) | V2I-34A6A4DD91D8 → V2I-981E839AC295 |
 | 49 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 49 | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
