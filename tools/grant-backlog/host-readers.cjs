@@ -21,7 +21,7 @@ function published(root,git=gitReader(root)){
  }catch(e){if(/^[A-Z][A-Z0-9_]+$/.test(e.message))throw e;fail('PUBLISHED_REVISION_READ_FAILED');}
 }
 const statusVersion=s=>({build:s.build,freeze:s.freeze,level:s.level,errors:s.errors,unverified:s.unverified,migration:s.migration,queue:s.queue&&{...s.queue,processing:s.queue.processing?.map(({ageMs,...p})=>p)}});
-function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvidence,classifyNeverConsider,admissionIds,now=Date.now,git}){
+function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvidence,classifyNeverConsider,writerSourceRoot,admissionIds,now=Date.now,git}){
  if(!W||['parseRows','build','render'].some(k=>typeof W[k]!=='function')||typeof writerRead!=='function'||typeof readReceiptIndex!=='function'||typeof readPolicy!=='function')fail('AUTHORIZED_READ_CAPABILITIES_REQUIRED');
  function fresh(at){const t=Date.parse(at);if(!Number.isFinite(t)||t>now()||now()-t>900000)fail('STALE_AUTHORIZED_READ');}
  async function read(action,signal){
@@ -53,6 +53,7 @@ function create({root,W,writerRead,readReceiptIndex,readPolicy,readAdmissionEvid
   const state=S.read(root,'state/PROGRAMMED_COORDINATOR.json',null);
   if(state?.schema!=='forge.programmed-coordinator.v1'||!state.items||!state.transactions)fail('CURRENT_COORDINATOR_STATE_REQUIRED');
   const status=await read('writer_status',signal);T.healthy(status.data);
+  if(writerSourceRoot)classifyNeverConsider=require('./verified-classifier.cjs').load({root:writerSourceRoot,writerStatus:status.data}).classifyNeverConsider;
   const receipts=await index(signal),rules=await read('rules',signal);
   const policy=await policyRead(signal);
   if(policy.proof.repo!=='tpruittguitar/forge-policy'||policy.proof.path!=='rules/TIM_PIPELINE_RULES_CANONICAL.txt'||policy.proof.branch!=='main'||!/^[a-f0-9]{40}$/.test(policy.proof.commit||'')||!/^[a-f0-9]{40}$/.test(policy.proof.blob||'')||policy.proof.rawSha256!==S.hash(policy.raw)||rules.data.rules?.raw!==policy.raw||rules.data.rules?.policySource!=='GITHUB'||rules.data.rules?.id!=='tpruittguitar/forge-policy/rules/TIM_PIPELINE_RULES_CANONICAL.txt')fail('WRITER_POLICY_SOURCE_CHAIN_MISMATCH');
