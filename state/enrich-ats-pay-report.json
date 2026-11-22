@@ -1,11 +1,11 @@
 {
- "at": "2026-11-22T22:21:12.531Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T221700734Z",
+ "at": "2026-11-22T22:34:23.697Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T223058160Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T22:17:11.185Z",
-  "sha256": "17ca4b80627299ee7dce94148b5b5f561b0936c6c26cf35495ca6164073d549f",
+  "readAt": "2026-11-22T22:31:07.073Z",
+  "sha256": "6e2fa0b7e8953f681eda352fd9987ae229084e6b34ba5a5ba518d5e6ec3608ae",
   "rows": 9542
  },
  "rows": 9542,
@@ -75,12 +75,12 @@
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
  "workday_window_active": true,
- "est_same_employer": 1,
- "est_comparables": 1,
+ "est_same_employer": 0,
+ "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 2,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -114,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T22:17:16.172Z",
+  "profile_as_of": "2026-11-22T22:31:13.902Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -134,36 +134,19 @@
  "salary_invalid": [],
  "salary_repair": {
   "skipped_blocked": 0,
-  "review_skipped_blocked": 1888,
-  "by_missing": {
-   "products (what they make)": 1834,
-   "work arrangement (remote/hybrid/on-site)": 1162,
-   "location / geography": 14
-  }
+  "review_skipped_blocked": 0,
+  "by_missing": {}
  },
  "salary_review": {
   "eligible": 1907,
-  "due": 1890,
-  "reviewed": 2,
+  "due": 0,
+  "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
-  "estimate_planned": 2,
+  "estimate_planned": 0,
   "no_improvement": 0,
   "guard_dropped": 0,
-  "samples": [
-   {
-    "id": "V2I-02D08F72691F",
-    "status": "STRONGER_ESTIMATE_PLANNED",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   },
-   {
-    "id": "V2I-037645C8D76B",
-    "status": "STRONGER_ESTIMATE_PLANNED",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   }
-  ]
+  "samples": []
  },
  "decision_waiting": 16,
  "retained_completion": {
@@ -175,27 +158,38 @@
  "upgraded": 0,
  "grant_backlog": {
   "waiting": 3146,
-  "examined": 0,
+  "examined": 1,
   "protectedOrReserved": 0,
   "identityNeedsGovernedRepair": 0,
   "noExactPosting": 0,
   "noMatchingProductReference": 0,
   "sourceSupported": 0
  },
+ "grant_product_proposal": {
+  "primaryId": "V2I-D72D291842B6",
+  "product": "VLEO buses & payloads",
+  "quote": "You'll join a team that has already proven what others said wasn't feasible and is now scaling and upgrading our VLEO buses & payloads to serve mission sets across sensing, communications, and responsive operations.",
+  "sourceUrl": "https://grnh.se/lkfx8hah9us",
+  "sourceObservedAt": "2026-11-22T16:21:42.408Z",
+  "fullPostingTextSha256": "ceec91311a4de86d2433f8ea72f5b1b6e19ac8bedaf0928b49e16fdfc444bfb3"
+ },
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2,
+ "roles_researched": 0,
  "network_requests": 8,
  "planned": 0,
  "research_budget_exhausted": false,
- "grant_extraction_attempts": 0,
+ "grant_extraction_attempts": 1,
  "grant_extraction_fact_rows": 0,
  "grant_extraction_accounting": {
-  "reportedCostMicrousd": 0,
+  "reportedCostMicrousd": 125,
   "unknownAttempts": 0,
   "unknownReservedMicrousd": 0,
   "cumulativeCapMicrousd": 37470000
+ },
+ "grant_extraction_diagnostic": {
+  "category": "PRODUCT_PROPOSED"
  },
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
@@ -213,27 +207,6 @@
  "pending": [],
  "product_sample": [],
  "sample": [],
- "estimate_samples": [
-  {
-   "basis": "ACTIVE_REVIEW",
-   "id": "V2I-02D08F72691F",
-   "source": "COMPARABLES",
-   "est": [
-    124000,
-    204000,
-    "LOW"
-   ]
-  },
-  {
-   "basis": "ACTIVE_REVIEW",
-   "id": "V2I-037645C8D76B",
-   "source": "COMPARABLES",
-   "est": [
-    108000,
-    235000,
-    "LOW"
-   ]
-  }
- ],
+ "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
