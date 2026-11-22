@@ -784,7 +784,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       }
       if(recoverPosting&&!capture&&due&&exactPublic){
         const before=exactPublic.stats.attempts;
-        const better=await exactPublic.find(r,{off:CONFIG.aggregatorsOff||[],skip:[conflictingUrl,rejectedProductUrl,attemptedApi?api.page:null].filter(Boolean)});
+        const better=await exactPublic.find(r,{off:CONFIG.aggregatorsOff||[],skip:[conflictingUrl,rejectedProductUrl].filter(Boolean),skipEndpoints:attemptedApi?[api.api]:[]});
         if(better){
           capture=postingCache.save(r,better.url,better,{at:better.at});
           if(capture)Recovery.saveEvidence(ledger,r,better.url,better,Date.parse(better.at));
