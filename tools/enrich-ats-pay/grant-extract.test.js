@@ -197,3 +197,33 @@ test('final distinct smoke ignores unrelated older-row ATS history without dropp
  a.deepEqual(ledger.grantExtractionAttempts.second,records.second);
  a.equal(calls,1);
 });
+
+test('one frozen fresh product proposal uses literal model evidence and existing aggregate smoke cap',async()=>{
+ const lo=Array.from({length:1582},(_,i)=>'V2I-'+i.toString(16).toUpperCase().padStart(12,'0'));
+ const hi=Array.from({length:1582},(_,i)=>'V2I-'+(0x8e2e8e000000+i).toString(16).toUpperCase().padStart(12,'0'));
+ const target=hi[0],queue={schema:'forge.waiting-queues.v1',reconciled:true,ids:{enrichment:[...lo,...hi]}};
+ G.requireFrozenApiId(target,queue);a.throws(()=>G.requireFrozenApiId(lo[0],queue),/FROZEN_API_ID/);
+ a.throws(()=>G.requireFrozenApiId('V2I-FFFFFFFFFFFF',queue),/FROZEN_API_ID/);
+ const product='industrial traction converters', quote='This team makes industrial traction converters for transit.';
+ const r={...row,PRIMARY_ID:target},body='Own this engineering program. '.repeat(20)+'\n'+quote;
+ const cover=R.saveEvidence({},r,url,{text:body,fullPosting:true,identityVerified:true,basis:'EMPLOYER_POSTED',
+  sourceIdentity:{company:r.COMPANY,title:r.TITLE,location:r.LOCATION}},now-1000);
+ let calls=0;
+ const records=Object.fromEntries([1,2,3].map(n=>['old'+n,{primaryId:'V2I-OLD'+n,phase:'SMOKE',status:'POSTING_OR_UNKNOWN'}]));
+ const ledger={grantExtractionAttempts:structuredClone(records)};
+ const make=()=>G.create({productId:target,now:()=>now,readFunding:async()=>proof(),
+  openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),transport:async(_url,o)=>{
+   calls++;const req=JSON.parse(o.body),data=JSON.parse(req.input[1].content);
+   a.deepEqual(data.missingGroups,['PRODUCT']);a.equal(data.posting,body);a.equal(data.product,undefined);
+   return wrapped({product,quote});
+  }});
+ const options={row:r,capture:cover,ledger,checkpoint(){}};
+ const got=await make().extract(options);
+ a.deepEqual([got.primaryId,got.product,got.quote,got.sourceUrl],[target,product,quote,url]);
+ a.equal(Object.values(ledger.grantExtractionAttempts).find(x=>x.primaryId===target).status,'PRODUCT_PROPOSED');
+ for(const [k,v] of Object.entries(records))a.deepEqual(ledger.grantExtractionAttempts[k],v);
+ a.deepEqual(await make().extract(options),{});a.equal(calls,1);
+ const capped={grantExtractionAttempts:{...ledger.grantExtractionAttempts,extra:{primaryId:'V2I-EXTRA',phase:'SMOKE',status:'POSTING_OR_UNKNOWN'}}};
+ delete capped.grantExtractionAttempts[Object.keys(capped.grantExtractionAttempts).find(k=>capped.grantExtractionAttempts[k].primaryId===target)];
+ await a.rejects(make().extract({...options,ledger:capped}),/CAP_REACHED/);a.equal(calls,1);
+});

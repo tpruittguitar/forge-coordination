@@ -8,9 +8,42 @@ const Store=require('../programmed-coordinator/store.cjs');
 const Source=require('../programmed-coordinator/source.cjs');
 const SourceBlanks=require('./source-blanks.cjs');
 const {lock}=require('../automation-run-lock.cjs');
+const {execFileSync}=require('node:child_process');
 const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=37470000;
 const {reservationMicrousd}=W.LIMITS;
 const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
+
+const API_PARTITION='a1e2b300e063764faac242364e009cd8a3b72987';
+const API_FIRST='V2I-7E2E8E0559E8';
+function requireFrozenApiId(pid,queue){
+  const ids=queue?.ids?.enrichment;
+  if(queue?.schema!=='forge.waiting-queues.v1'||queue.reconciled!==true||!Array.isArray(ids)||ids.length!==3164
+    ||new Set(ids).size!==3164||ids.filter(id=>id>=API_FIRST).length!==1582
+    ||!/^V2I-[A-F0-9]{12}$/.test(pid||'')||pid<API_FIRST||!ids.includes(pid))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
+}
+function productInput(row,capture,now){
+  if(Prepared.protectedRow(row)||Source.known(row.p.PRODUCT)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
+  const source=Prepared.posting(row,capture,now);
+  if(!source||source.identityVerified!==true||source.fullPosting!==true)return null;
+  Source.publicUrl(source.url);const u=new URL(source.url);
+  if(u.search||u.hash||/docs\.google|drive\.google|mail\.|localhost/i.test(u.hostname))return null;
+  // Model receives a bounded contiguous excerpt, not an operator-selected answer.
+  let text=source.text;
+  if(Buffer.byteLength(text)>4300){
+    text=Buffer.from(text).subarray(0,4300).toString('utf8');
+    const cut=Math.max(text.lastIndexOf('\n'),text.lastIndexOf('. '));
+    if(cut<300)return null;
+    text=text.slice(0,cut+1);
+  }
+  return {e:{url:source.url,text,sha256:fingerprint(source.text),observedAt:source.at},source,groups:['PRODUCT']};
+}
+function productResult(result,e,row){
+  if(!result||Array.isArray(result)||Object.keys(result).sort().join(',')!=='product,quote')return {};
+  const {product,quote}=result;
+  if(typeof product!=='string'||product.length<3||product.length>160||product!==product.trim()||/[\r\n]/.test(product)
+    ||typeof quote!=='string'||quote.length<15||quote.length>1000||!e.text.includes(quote)||!quote.includes(product))return {};
+  return {primaryId:row.PRIMARY_ID,product,quote,sourceUrl:e.url,sourceObservedAt:e.observedAt,fullPostingTextSha256:e.sha256};
+}
 
 function input(row,capture,needs,fields,now,{payUnresolved=false}={}) {
   if(Prepared.protectedRow(row)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
@@ -67,9 +100,10 @@ function accountDeadline(proof,now){
   return deadline;
 }
 
-function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null,retryOriginalId=null}){
+function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null,retryOriginalId=null,productId=null}){
   if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
   const id=/^V2[A-Z]-[A-Za-z0-9_-]+$/;
+  if(productId&&(maxAttempts!==SMOKE_LIMIT||!id.test(productId)||retryPriorId||retryOriginalId))throw Error('ATS_GRANT_PRODUCT_PROPOSAL_SCOPE');
   if(retryPriorId&&(maxAttempts!==SMOKE_LIMIT||!id.test(retryPriorId)||!id.test(retryTargetId||'')||retryPriorId===retryTargetId))throw Error('ATS_GRANT_SMOKE_RETRY_SCOPE_INVALID');
   if(retryOriginalId&&(!retryPriorId||!id.test(retryOriginalId)||new Set([retryOriginalId,retryPriorId,retryTargetId]).size!==3))throw Error('ATS_GRANT_SMOKE_RETRY_SCOPE_INVALID');
 
@@ -80,13 +114,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
     get diagnostic(){return diagnostic;},
     get accounting(){return {reportedCostMicrousd,unknownAttempts,unknownReservedMicrousd:unknownAttempts*reservationMicrousd,cumulativeCapMicrousd:GRANT_CAP};},
     get smoke(){return maxAttempts===SMOKE_LIMIT;},
+    get productProposal(){return !!productId;},
     requireBulkSmoke(ledger){
       if(maxAttempts!==BULK_LIMIT||!Object.values(ledger.grantExtractionAttempts||{}).some(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId))throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
     },
     async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved}){
       if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
-      try{selected=input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
+      if(productId&&row.PRIMARY_ID!==productId)return {};
+      try{selected=productId?productInput(row,capture,now()):input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
       if(!selected)return {};
       const {e,groups,ambiguousPay,candidate,source}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
@@ -95,7 +131,8 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(maxAttempts===BULK_LIMIT&&!smoke)throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
       const priorSmokes=Object.entries(records).filter(([,r])=>r?.phase==='SMOKE');
       let priorKey;
-      if(maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
+      if(productId&&entries.some(r=>r?.primaryId===productId))throw Error('ATS_GRANT_PRODUCT_ALREADY_ATTEMPTED');
+      if(!productId&&maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
         // A distinct corrected target cannot replay either older attempt.
@@ -122,11 +159,11 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
       diagnostic={category:'REQUEST_VALIDATION'};
-      const body=W.request(e,groups,{explicitJsonMessage:true});
+      const body=W.request(e,groups,{explicitJsonMessage:true,productProposal:!!productId});
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
       const timeout=AbortSignal.timeout(remaining);
-      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(priorKey?{retryOf:priorKey}:{})};
+      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(productId?{purpose:'PRODUCT_PROPOSAL'}:{}),...(priorKey?{retryOf:priorKey}:{})};
       checkpoint(); // same normal ATS ledger, before any model request; no second ledger.
       attempts++;unknownAttempts++;
       try {
@@ -154,8 +191,8 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
         reportedCostMicrousd+=cost;unknownAttempts--;
         diagnostic={category:'FACT_VALIDATION'};
-        const fields=candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
-        records[key].status=Object.keys(fields).length?'FACTS_ACCEPTED':'NO_SUPPORTED_FACTS';
+        const fields=productId?productResult(r.result,e,row):candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
+        records[key].status=Object.keys(fields).length?(productId?'PRODUCT_PROPOSED':'FACTS_ACCEPTED'):'NO_SUPPORTED_FACTS';
         diagnostic={category:records[key].status};
         return fields;
       } catch {
@@ -192,6 +229,12 @@ function configured({root,live,writerPostLock,env=process.env}){
   const maxAttempts=configuredLimit===undefined?SMOKE_LIMIT:Number(configuredLimit);
   const retryPriorId=env.FORGE_ATS_GRANT_RETRY_PRIOR_ID||null,retryTargetId=env.FORGE_ATS_GRANT_SMOKE_ID||null;
   const retryOriginalId=env.FORGE_ATS_GRANT_RETRY_ORIGINAL_ID||null;
+  let productId=null;
+  if(env.FORGE_ATS_GRANT_PRODUCT_PROPOSAL==='1'){
+    requireFrozenApiId(retryTargetId,JSON.parse(execFileSync('git',['show',API_PARTITION+':state/PIPELINE_WAITING_QUEUES.json'],
+      {cwd:root,encoding:'utf8',maxBuffer:262144})));
+    productId=retryTargetId;
+  }
   const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
   if(!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
   // Fail closed if the existing authoritative ATS workflow is enabled or still
@@ -199,7 +242,7 @@ function configured({root,live,writerPostLock,env=process.env}){
   const github={token:env.GITHUB_TOKEN||env.GH_TOKEN,repo:env.GITHUB_REPOSITORY};
   const lockPath=privateFile+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
   let owned=false;
-  return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
+  return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,productId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
     async acquire(){
       await assertGithubOwnerStopped(github);
       if(!lock(lockPath,'acquire',token).acquired)throw Error('ATS_GRANT_NATIVE_RUN_ALREADY_ACTIVE');
@@ -210,4 +253,4 @@ function configured({root,live,writerPostLock,env=process.env}){
   });
 }
 function checkpoint(file,ledger){Store.save(path.dirname(file),path.basename(file),ledger);}
-module.exports={create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped};
+module.exports={requireFrozenApiId,create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped};
