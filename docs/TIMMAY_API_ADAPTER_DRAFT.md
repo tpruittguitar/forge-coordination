@@ -77,3 +77,5 @@ The durable checkpoint holds prepared shared envelopes; transport remains pendin
 and Writer counts remain zero. A future live loop must reuse the same durable
 reservation/lock semantics and stop at the existing caps/cutoff; do not increase
 caps or erase checkpoints to continue. No assumption of unattended cloud lifetime.
+
+Reader implementation update: [TIMMAY_HOST_READERS.md](TIMMAY_HOST_READERS.md) binds existing published Git, canonical snapshot, worklist and authorized receipt/read capabilities. The exact remaining policy-screen authorization gap is documented there; no CLEAR value is invented.

@@ -61,4 +61,8 @@ function create({root,readView,readPublicEvidence,simulate,reuse,now=Date.now}){
   // Global release gate deliberately precedes native loading/credential access.
   launch(){fail('LIVE_RELEASE_DISABLED');}});
 }
-module.exports={authority,current,create};
+function bindReaders(options){
+ const readers=require('./host-readers.cjs').create(options);
+ return create({...options,readView:readers.readView});
+}
+module.exports={authority,current,create,bindReaders};
