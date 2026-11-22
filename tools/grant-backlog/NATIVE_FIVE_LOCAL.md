@@ -42,3 +42,5 @@ node --test tools/grant-backlog/native-five.test.cjs
 ```
 
 Pending operational input: the authorized coordinator host's verified direct-pilot grant and read capability for the selected five real rows. A fresh master alone does not supply that authority. No production grant, identity, release or host installation is created here.
+
+QA release barrier: the coordinator adapter now hard-blocks production because TIMMAY does not share a proven last-POST serialization protocol with Ubuntu ATS. Local fences are not proof of cross-host exclusivity. Private billing/host facts are stored only in the private grant file, never the public shared pool. Continuation requires five validated PREPARED checkpoint records, not five visited IDs. The native call refreshes grant/credit at dispatch and uses the earlier validity deadline.

@@ -27,6 +27,7 @@ function captureProof(e){
  return{kind:c.kind,sha256,bytes:Buffer.byteLength(c.text,'utf8'),basis:'SUBMITTED_TEXT_ONLY',independentlyVerified:false};
 }
 function validateWork(w){
+ require('../programmed-coordinator/pilot-public.cjs').validate(w);
  if(w?.schema!=='forge.shared-helper-work.v1'||typeof w.enabled!=='boolean'||typeof w.routingActive!=='boolean'||!proof(w.assignmentId)||!Array.isArray(w.items)||!w.providers)throw Error('INVALID_SHARED_HELPER_WORK');
  const seen=new Set();
  for(const [task,provider]of Object.entries(TASKS))if(!(OPTIONAL_TASKS.has(task)&&!w.providers[task])&&(w.providers[task]?.provider!==provider||typeof w.providers[task]?.available!=='boolean'))throw Error('INVALID_SHARED_HELPER_PROVIDER');

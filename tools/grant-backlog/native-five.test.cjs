@@ -52,3 +52,14 @@ test('concurrent local invocation is excluded',async t=>{
 test('absent credential reports zero model attempts and stops without leaking an error body',async t=>{
  const f=setup(t);f.deps.startup=()=>{throw Error('CREDENTIAL_ABSENT');};const r=await N.run(f.args,f.deps);a.equal(r.modelAttempts,0);a.equal(r.stop,'CREDENTIAL_ABSENT');a.equal(f.counts().calls,0);a.equal(r.reservedMicrousd,2048);
 });
+test('credit revoked during evidence read prevents HTTP dispatch',async t=>{
+ const f=setup(t);f.authority.readCurrent=async(ref,id)=>{const c=f.current(id);f.g.project.grantOnly=false;return c;};const r=await N.run(f.args,f.deps);a.equal(f.counts().calls,0);a.equal(r.stop,'GRANT_ONLY_BUDGET_REQUIRED');
+});
+test('grant revoked after native startup is rechecked before HTTP',async t=>{
+ const f=setup(t),open=f.deps.startup;f.deps.startup=()=>{const c=open();f.g.release='DISABLED';return c;};const r=await N.run(f.args,f.deps);a.equal(f.counts().calls,0);a.equal(r.stop,'AUTHORITATIVE_EXACT_FIVE_RELEASE_REQUIRED');
+});
+test('request aborts at earlier credit observation deadline, then stays unknown without replay',async t=>{
+ const f=setup(t);let calls=0,start=Date.now();const base=f.deps.now();f.deps.now=()=>base+Date.now()-start;f.g.credit.verifiedAt=new Date(base-900000+80).toISOString();
+ f.deps.response=async(body,{signal})=>{calls++;await new Promise((resolve,reject)=>{signal.addEventListener('abort',()=>reject(Error('API_OUTCOME_UNKNOWN')),{once:true});});};
+ const r=await N.run(f.args,f.deps);a.equal(calls,1);a.equal(r.unknownOutcomeJobs,1);a.ok(Date.now()-start<2000);f.g.credit.verifiedAt=new Date(f.deps.now()).toISOString();await N.run(f.args,f.deps);a.equal(calls,1);
+});

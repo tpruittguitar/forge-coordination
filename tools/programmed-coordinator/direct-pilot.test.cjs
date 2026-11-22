@@ -2,6 +2,7 @@
 const {test}=require('node:test'),a=require('node:assert/strict'),path=require('node:path'),fs=require('node:fs'),os=require('node:os');
 const P=require('./direct-pilot.cjs'),S=require('./store.cjs'),H=require('../helper-routing/shared.cjs'),N=require('../grant-backlog/native-five.cjs');
 function setup(t){
+ const serialization=require('./pilot-serialization.cjs'),original=serialization.check;serialization.check=()=>{};t.after(()=>{serialization.check=original;});
  const f=require('../helper-routing/api-grant-fixture.cjs').fixture(t,5),dir=fs.mkdtempSync(path.join(os.tmpdir(),'pilot-output-'));t.after(()=>fs.rmSync(dir,{recursive:true,force:true}));
  const r={schema:'forge.direct-pilot-release.v1',enabled:true,ownerTask:P.OWNER,ownerProvider:'Claude',provider:'OpenAI',host:'TIMMAY',purpose:'FIVE_JOB_LOCAL_EVIDENCE_ONLY',authorizationReference:'SYNTHETIC-OWNER-INSTRUCTION',expiresAt:'2026-11-23T00:00:00Z',maxGrants:1,budgetMicrousd:10240};
  f.registry.tasks[P.OWNER]={owner:'Claude',route:'runtime'};S.save(f.root,'control/AI_AUTOMATION_TASKS.json',f.registry);S.save(f.root,P.RELEASE,r);
@@ -44,10 +45,10 @@ test('second batch cannot bypass predecessor verification or cumulative budget b
  const f=setup(t);await P.issue(f.options);f.options.grantId+='2';await a.rejects(P.issue(f.options),/BUDGET_STOP/);
  f.r.maxGrants=2;f.r.budgetMicrousd=20480;S.save(f.root,P.RELEASE,f.r);await a.rejects(P.issue(f.options),/VERIFICATION_REQUIRED/);
 });
-test('local completion retains reservations, has no Writer path, and binds independent continuation review',async t=>{
- const f=setup(t);await P.issue(f.options);const report={mode:'live-evidence-only',jobs:5,modelAttempts:5,writerRequests:0,reservedMicrousd:10240,unknownOutcomeJobs:0,stop:null};
- fs.writeFileSync(path.join(f.options.checkpointDir,'native-five-checkpoint.json'),'synthetic checkpoint');
- const out=P.recordResult({root:f.root,grantId:f.options.grantId,report,checkLock(){}}),w=H.load(f.root);a.equal(w.directPilot.grants[f.options.grantId].status,'LOCAL_COMPLETE');a.equal(out.resultSha256,S.hash({report,checkpointSha256:S.hash('synthetic checkpoint')}));a.equal(H.reservedKeys(w).size,5);a.ok(w.items.every(i=>i.status==='RETURNED_PENDING_REVIEW'));
+test('fabricated summary cannot promote an interrupted or malformed checkpoint',async t=>{
+ const f=setup(t);await P.issue(f.options);fs.writeFileSync(path.join(f.options.checkpointDir,'native-five-checkpoint.json'),'{}');
+ a.throws(()=>P.recordResult({root:f.root,grantId:f.options.grantId,checkpointDir:f.options.checkpointDir,report:{mode:'live-evidence-only',jobs:5,modelAttempts:5,writerRequests:0,reservedMicrousd:10240,unknownOutcomeJobs:0,stop:null},checkLock(){}}),/CHECKPOINT_NOT_VERIFIABLE/);
+ a.equal(H.load(f.root).directPilot.grants[f.options.grantId].status,'RESERVED');
 });
 test('missing publication proof blocks verified grant before native startup',async t=>{
  const f=setup(t);await P.issue(f.options);f.options.verifyPublished=()=>{throw Error('PILOT_FRESH_PUBLISHED_STATE_REQUIRED');};await a.rejects(P.authority(f.options).verifyGrant(f.options.grantId),/PUBLISHED/);
@@ -66,8 +67,21 @@ test('issued coordinator capability drives native worker with mocks, no Writer o
  let calls=0;const result=await N.run({grantRef:f.options.grantId,dir:f.options.checkpointDir,authority:P.authority(f.options)},
  {now:()=>f.now,startup:()=>({secureRuntime(){a.fail('real credential use');},close(){}}),response:async()=>{calls++;return{result:{fields:{},quotes:{},degree:{requirement:'UNKNOWN',equivalence:'UNKNOWN',confidence:'LOW',quote:''}},usage:{input_tokens:1,output_tokens:1},responseId:'synthetic'};}});
  a.equal(calls,5);a.equal(result.writerRequests,0);a.equal(result.confirmedUsageMicrousd,5);
- P.recordResult({root:f.root,grantId:f.options.grantId,report:result,checkLock(){}});a.equal(H.load(f.root).directPilot.grants[f.options.grantId].status,'LOCAL_COMPLETE');
+ P.recordResult({root:f.root,grantId:f.options.grantId,checkpointDir:f.options.checkpointDir,report:result,checkLock(){}});a.equal(H.load(f.root).directPilot.grants[f.options.grantId].status,'LOCAL_HELD');
 });
 test('losing accounting cannot reset the lifetime budget while claims remain',async t=>{
  const f=setup(t);await P.issue(f.options);const w=H.load(f.root);delete w.directPilot;S.save(f.root,H.FILE,w);f.options.grantId+='2';await a.rejects(P.issue(f.options),/ACCOUNTING_MISSING/);
+});
+test('production cross-host barrier is unconditional, not a release flag or callback',async t=>{
+ const f=setup(t),serialization=require('./pilot-serialization.cjs');const key=require.resolve('./pilot-serialization.cjs'),cached=require.cache[key];delete require.cache[key];const real=require('./pilot-serialization.cjs');require.cache[key]=cached;
+ serialization.check=real.check;await a.rejects(P.issue({...f.options,exclusive:true,serializationVerified:true}),/CROSS_HOST_WRITER_SERIALIZATION_UNPROVEN/);a.equal(H.load(f.root).directPilot,undefined);
+});
+test('public projection excludes billing ID, balance, SID and private path; local file is hash bound',async t=>{
+ const f=setup(t);await P.issue(f.options);const publicText=fs.readFileSync(path.join(f.root,H.FILE),'utf8'),local=JSON.parse(fs.readFileSync(path.join(f.options.checkpointDir,'native-five-grant.json')));
+ for(const secret of [f.funding.project.id,String(f.funding.credit.balanceMicrousd),f.funding.expectedSid,f.options.checkpointDir])a.equal(publicText.includes(secret),false);
+ const w=H.load(f.root),g=w.directPilot.grants[f.options.grantId];a.equal(S.hash(local),g.localBindingSha256);a.equal(local.checkpointDir,f.options.checkpointDir);
+ for(const k of ['project','credit','expectedSid','checkpointDir']){const copy=structuredClone(w);copy.directPilot.grants[f.options.grantId][k]=local[k];a.throws(()=>H.validateWork(copy),/PUBLIC_PROJECTION/);S.save(f.root,H.FILE,copy);a.throws(()=>require('../helper-routing/shared-pages.cjs').validateStored(f.root),/PUBLIC_PROJECTION/);} S.save(f.root,H.FILE,w);
+});
+test('missing or altered private grant cannot resume and cannot reconstruct funding from public data',async t=>{
+ const f=setup(t);await P.issue(f.options);const file=path.join(f.options.checkpointDir,'native-five-grant.json'),g=JSON.parse(fs.readFileSync(file));g.expectedSid+='9';fs.writeFileSync(file,JSON.stringify(g));await a.rejects(P.authority(f.options).verifyGrant(f.options.grantId),/PRIVATE_GRANT_MISMATCH/);
 });

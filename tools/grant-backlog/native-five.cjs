@@ -70,8 +70,18 @@ async function run({grantRef,dir,authority},deps={}){
     record.status='RESERVED';record.requestHash=W.hash(body);
     s.reservedMicrousd+=W.LIMITS.reservationMicrousd;write(file,s);
     credential ||= open({expectedSid:g.expectedSid});
+    // Reverify after all potentially slow row/evidence/native reads, immediately
+    // before dispatch. Re-read credit rather than reusing the batch-start value.
+    const dispatchGrant=await readGrant(signal);signal.throwIfAborted();
+    if(grantCheck(dispatchGrant,now(),dir)!==binding)deny('AUTHORITY_CHANGED');
     record.status='IN_FLIGHT';record.attempted=true;write(file,s);
-    const result=await call(body,{secureRuntime:credential.secureRuntime,projectId:g.project.id,signal,transport:globalThis.fetch});
+    grantCheck(dispatchGrant,now(),dir);
+    const until=Math.min(Date.parse(dispatchGrant.expiresAt),Date.parse(dispatchGrant.readAt)+900000,
+      Date.parse(dispatchGrant.credit.verifiedAt)+900000,Date.parse(dispatchGrant.credit.expiresAt)-86400000,Date.parse(W.LIMITS.stopAt));
+    const remaining=Math.floor(until-now());if(remaining<=0)deny('GRANT_VALIDITY_EXPIRED');
+    const callSignal=AbortSignal.any([signal,AbortSignal.timeout(remaining)]);
+    const result=await call(body,{secureRuntime:credential.secureRuntime,projectId:dispatchGrant.project.id,signal:callSignal,transport:globalThis.fetch});
+    callSignal.throwIfAborted();
     signal.throwIfAborted();
     const usage=result.usage;
     if(!Number.isSafeInteger(usage?.input_tokens)||usage.input_tokens<0||usage.input_tokens>W.LIMITS.inputTokens||

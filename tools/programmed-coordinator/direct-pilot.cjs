@@ -4,6 +4,7 @@ const fs=require('node:fs'),path=require('node:path'),cp=require('node:child_pro
 const S=require('./store.cjs'),H=require('../helper-routing/shared.cjs'),T=require('./transactions.cjs');
 const A=require('../helper-routing/api-grant.cjs'),N=require('../grant-backlog/native-five.cjs');
 const E=require('../grant-backlog/research-eligibility.cjs');
+const Serialization=require('./pilot-serialization.cjs'),Public=require('./pilot-public.cjs');
 const RELEASE='control/OPENAI_DIRECT_PILOT_RELEASE.json',OWNER='FORGE_APPLICATION_WRITER_GOFER';
 const fail=c=>{throw Error(c);};
 const fresh=(at,now)=>Number.isFinite(Date.parse(at))&&Date.parse(at)<=now&&now-Date.parse(at)<=900000;
@@ -26,6 +27,7 @@ function published(root,now=Date.now(),git=args=>cp.execFileSync('git',args,{cwd
  return {commit,workSha256:S.hash(work),releaseSha256:S.hash(S.read(root,RELEASE))};
 }
 function ledger(work){
+ Public.validate(work);
  if(!work.directPilot&&work.items?.some(i=>i.taskKey===H.PILOT_TASK))fail('PILOT_ACCOUNTING_MISSING');
  const l=work.directPilot||{schema:'forge.direct-pilot-accounting.v1',reservedMicrousd:0,grants:{}};
  if(l.schema!=='forge.direct-pilot-accounting.v1'||!l.grants||Array.isArray(l.grants)||!Number.isSafeInteger(l.reservedMicrousd)||l.reservedMicrousd<0||
@@ -56,10 +58,18 @@ function inspect({root,ids,view,now=Date.now(),ownGrant}){
   return {primaryId:id,kind:'ENRICHMENT',lane:'ENRICHMENT',provider:'OpenAI',taskKey:H.PILOT_TASK,worker:'forge-grant-luna',status:'ASSIGNED',assignmentVersion:1,sourceVersion:S.hash(row.line),...T.identity(row),missingFields:missing};
  });
 }
+function privateGrant(root,dir,ref){
+ if(!path.isAbsolute(dir||''))fail('PRIVATE_PILOT_OUTPUT_REQUIRED');
+ const real=fs.realpathSync(dir),repo=fs.realpathSync(root),relative=path.relative(repo,real);
+ if(!relative||!relative.startsWith('..'+path.sep)&&relative!=='..'&&!path.isAbsolute(relative))fail('PRIVATE_PILOT_OUTPUT_REQUIRED');
+ const value=JSON.parse(fs.readFileSync(path.join(real,'native-five-grant.json'),'utf8'));
+ if(value.receiptId!==ref||value.checkpointDir!==dir)fail('PRIVATE_GRANT_MISMATCH');
+ return value;
+}
 async function issue({root,ids,grantId,checkpointDir,checkLock,readView,readFunding,now=Date.now,verifyPublished=()=>published(root,now()),persist=(w)=>require('../grant-backlog/checkpoint.cjs').save(path.join(root,H.FILE),w)}){
  if(typeof checkLock!=='function'||typeof readView!=='function'||typeof readFunding!=='function')fail('COORDINATOR_CAPABILITIES_REQUIRED');
  if(!/^FORGE-OPENAI-PILOT-[A-Za-z0-9_-]{3,100}$/.test(grantId||'')||!path.isAbsolute(checkpointDir||'')||path.resolve(checkpointDir).startsWith(path.resolve(root)+path.sep)||path.resolve(checkpointDir)===path.resolve(root))fail('PRIVATE_PILOT_OUTPUT_REQUIRED');
- const r=release(root,now());checkLock();const proof=verifyPublished(),before=H.load(root),l=ledger(before);
+ const r=release(root,now());Serialization.check();checkLock();const proof=verifyPublished(),before=H.load(root),l=ledger(before);
  if(l.grants[grantId])fail('GRANT_ALREADY_EXISTS_USE_RESUME');
  const grants=Object.values(l.grants);
  if(grants.length>=r.maxGrants||l.reservedMicrousd+N.CAP>r.budgetMicrousd)fail('CUMULATIVE_PILOT_BUDGET_STOP');
@@ -76,19 +86,28 @@ async function issue({root,ids,grantId,checkpointDir,checkLock,readView,readFund
  const compared=inspect({root,ids,view:later,now:now()});
  if(S.hash(items)!==S.hash(compared)||S.hash(H.load(root))!==S.hash(before)||S.hash(release(root,now()))!==S.hash(r))fail('PILOT_INPUTS_CHANGED');
  verifyPublished();checkLock();
- const after=structuredClone(before);after.directPilot=structuredClone(l);after.directPilot.reservedMicrousd+=N.CAP;after.directPilot.grants[grantId]=g;
+ const after=structuredClone(before);after.directPilot=structuredClone(l);after.directPilot.reservedMicrousd+=N.CAP;g.nonce=require('node:crypto').randomBytes(32).toString('hex');
+ const localFile=path.join(checkpointDir,'native-five-grant.json');
+ if(fs.existsSync(localFile))fail('PRIVATE_GRANT_ALREADY_EXISTS');
+ fs.mkdirSync(checkpointDir,{recursive:true,mode:0o700});
+ // Reject symlinks resolving inside the public checkout before persisting facts.
+ const relative=path.relative(fs.realpathSync(root),fs.realpathSync(checkpointDir));
+ if(!relative||!relative.startsWith('..'+path.sep)&&relative!=='..'&&!path.isAbsolute(relative))fail('PRIVATE_PILOT_OUTPUT_REQUIRED');
+ require('../grant-backlog/checkpoint.cjs').save(localFile,g);
+ after.directPilot.grants[grantId]=Public.project(g,S.hash(g));
  after.items.push(...items.map(i=>({...i,pilotGrantId:grantId,assignedAt:g.readAt,assignedBy:OWNER})));
  H.validateWork(after);persist(after);return {grantId,ids,assignmentWrites:5,reservedMicrousd:N.CAP,published:false,writerRequests:0};
 }
-function authority({root,checkLock,readView,readFunding,readEvidence,now=Date.now,verifyPublished=()=>published(root,now())}){
+function authority({root,checkpointDir,checkLock,readView,readFunding,readEvidence,now=Date.now,verifyPublished=()=>published(root,now())}){
  async function verifyGrant(ref,signal){
-  signal?.throwIfAborted();checkLock();const p=verifyPublished(),r=release(root,now()),w=H.load(root),l=ledger(w),g=l.grants[ref];
+  signal?.throwIfAborted();Serialization.check();checkLock();const p=verifyPublished(),r=release(root,now()),w=H.load(root),l=ledger(w),g=l.grants[ref];
   if(!g||g.revision!==p.releaseSha256||g.status!=='RESERVED'||l.reservedMicrousd>r.budgetMicrousd)fail('CURRENT_PILOT_GRANT_REQUIRED');
   const items=w.items.filter(i=>i.pilotGrantId===ref&&i.taskKey===H.PILOT_TASK);
   if(items.length!==5||items.some(i=>i.status!=='ASSIGNED'||i.provider!=='OpenAI'||!g.ids.includes(i.primaryId)))fail('EXACT_PILOT_CLAIMS_REQUIRED');
+  const local=privateGrant(root,checkpointDir,ref);if(S.hash(local)!==g.localBindingSha256)fail('PRIVATE_GRANT_MISMATCH');
   const funding=await readFunding();signal?.throwIfAborted();
-  const v={...g,readAt:new Date(now()).toISOString(),...funding};N.grantCheck(v,now(),g.checkpointDir);
-  if(S.hash(g.project)!==S.hash(funding.project)||g.expectedSid!==funding.expectedSid||funding.credit.balanceMicrousd<10000000+l.reservedMicrousd)fail('PILOT_FUNDING_CHANGED');
+  const v={...local,readAt:new Date(now()).toISOString(),project:funding.project,credit:funding.credit,expectedSid:funding.expectedSid};N.grantCheck(v,now(),checkpointDir);
+  if(S.hash(local.project)!==S.hash(funding.project)||local.expectedSid!==funding.expectedSid||funding.credit.balanceMicrousd<10000000+l.reservedMicrousd)fail('PILOT_FUNDING_CHANGED');
   return v;
  }
  return {verifyGrant,async readCurrent(ref,id,signal){
@@ -96,17 +115,19 @@ function authority({root,checkLock,readView,readFunding,readEvidence,now=Date.no
   const v=await readView(signal);signal?.throwIfAborted();inspect({root,ids:g.ids,view:v,now:now(),ownGrant:ref});
   const row=v.snapshot.rows.find(r=>r.PRIMARY_ID===id),a=H.load(root).items.find(i=>i.primaryId===id);
   if(a.sourceVersion!==S.hash(row.line))fail('PILOT_ROW_CHANGED');
-  const captured=await readEvidence(id,signal);signal?.throwIfAborted();checkLock();
+  const captured=await readEvidence(id,signal);signal?.throwIfAborted();Serialization.check();checkLock();
   if(captured.priorEvidenceReviewed!==true)fail('PRIOR_EVIDENCE_REVIEW_REQUIRED');
   return {receiptId:ref,revision:g.revision,exclusive:true,returned:false,originalRequestsReconciled:true,priorEvidenceReviewed:true,
    snapshot:v.snapshot,row,missingGroups:a.missingFields,admission:v.snapshot.neverConsiderById[id],evidence:captured.evidence,reusableResult:captured.reusableResult};
  }};
 }
-function recordResult({root,grantId,report,checkLock}){
+function recordResult({root,grantId,checkpointDir,report,checkLock}){
  checkLock();const w=H.load(root),g=ledger(w).grants[grantId];if(!g||g.status!=='RESERVED')fail('CURRENT_PILOT_GRANT_REQUIRED');
  if(report.mode!=='live-evidence-only'||report.jobs>5||report.modelAttempts>5||report.writerRequests!==0||report.reservedMicrousd>N.CAP)fail('INVALID_PILOT_RESULT');
- const checkpoint=fs.readFileSync(path.join(g.checkpointDir,'native-five-checkpoint.json'));
- g.checkpointSha256=S.hash(checkpoint);g.resultSha256=S.hash({report,checkpointSha256:g.checkpointSha256});g.result=report;g.status=report.jobs===5&&!report.stop&&!report.unknownOutcomeJobs?'LOCAL_COMPLETE':'LOCAL_HELD';
+ const local=privateGrant(root,checkpointDir,grantId);if(S.hash(local)!==g.localBindingSha256)fail('PRIVATE_GRANT_MISMATCH');
+ const checkpoint=fs.readFileSync(path.join(checkpointDir,'native-five-checkpoint.json'));
+ const complete=require('./pilot-terminal.cjs').validate(JSON.parse(checkpoint),local,report);
+ g.checkpointSha256=S.hash(checkpoint);g.resultSha256=S.hash({report,checkpointSha256:g.checkpointSha256});g.result=report;g.status=complete?'LOCAL_COMPLETE':'LOCAL_HELD';
  // Claims remain fenced until the normal coordinator explicitly reconciles them.
  for(const i of w.items.filter(i=>i.pilotGrantId===grantId))i.status='RETURNED_PENDING_REVIEW';
  require('../grant-backlog/checkpoint.cjs').save(path.join(root,H.FILE),w);return {resultSha256:g.resultSha256,writerRequests:0};
@@ -123,7 +144,7 @@ async function launch(operation,options){
  const {root,grantId,ids,readerOptions,readFunding,readEvidence}=options;
  // Before taking a lock or loading any authorized reader/secret, require the
  // reviewed release on clean current main and the existing coordinator role.
- published(root);release(root);
+ Serialization.check();published(root);release(root);
  const contract=fs.readFileSync(path.join(root,'policy/current/AI_AUTOMATION_COMMON.txt'),'utf8');
  const lockFile=contract.match(/automation-run-lock\.cjs acquire (\S+) <unique-RUN_ID>/)?.[1];
  if(!lockFile||!path.isAbsolute(lockFile))fail('CURRENT_SHARED_PRODUCTION_LOCK_REQUIRED');
