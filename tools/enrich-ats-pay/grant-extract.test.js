@@ -16,11 +16,11 @@ const proof=()=>({schema:'forge.ats-grant-only-account.v1',source:'SIGNED_IN_ACC
  grant:{availableMicrousd:11000000,expiresAt:new Date(now+172800000).toISOString()},noPaidBillingPlan:true,noPurchasedCredits:true,autoRechargeEnabled:false});
 const wrapped=result=>new Response(JSON.stringify({status:'completed',model:'gpt-6-luna',service_tier:'default',usage:{input_tokens:550,output_tokens:50},
  output:[{type:'message',content:[{type:'output_text',text:JSON.stringify(result)}]}]}));
-const c=fields=>({row,capture,needs:['SALARY','DEGREE'],fields:fields||{},ledger:{},checkpoint(){}});
+const c=fields=>({row,capture,needs:['SALARY'],fields:fields||{},ledger:{},checkpoint(){}});
 test('exact allowed ATS posting only; protected, wrong or missing source and already-filled facts do not spend',()=>{
-  const i=G.input(row,capture,['SALARY','DEGREE'],{},now);
+  const i=G.input(row,capture,['SALARY'],{},now);
   a.deepEqual(i?.groups,['SALARY']);
-  a.equal(G.input(row,capture,['DEGREE'],{},now),null);
+  a.equal(G.input(row,capture,[],{},now),null);
   for(const r of [{...row,p:{...row.p,DO_NOT_REWORK:'YES'}},{...row,TITLE:'Different'},
     {...row,p:{...row.p,SOURCE_URL:'https://example.org/other'}}])a.equal(G.input(r,capture,['SALARY'],{},now),null);
   a.equal(G.input(row,capture,['SALARY','DEGREE'],{SALARY_BASE_LOW:1,DEGREE_REQ:'REQUIRED'},now),null);
@@ -102,4 +102,19 @@ test('grant mode is off by default and old enabled or running GitHub ATS authori
   await a.rejects(check('active',0),/NOT_DISABLED/);
   await a.rejects(check('disabled_manually',1),/NOT_DRAINED/);
   await check('disabled_manually',0);
+});
+
+test('one real model request can emit only a quoted work blank from a long payless posting, not deterministic fallback',async()=>{
+ const text='Lead the manufacturing operations team. '.repeat(140)+'\nThis role will be hybrid requiring a minimum of 3 days in office.';
+ const e=require('./source-blanks.cjs').exactStoredPosting({find:()=>({doc:{text,url,fullPosting:true},ref:{observedAt:new Date(now-1000).toISOString()},fullPosting:true})},row,now);
+ let requests=0;
+ const g=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+  transport:async(_url,opts)=>{requests++;const input=JSON.parse(JSON.parse(opts.body).input);a.deepEqual(input.missingGroups,['WORK_ARRANGEMENT']);a.equal(input.posting,'This role will be hybrid requiring a minimum of 3 days in office.');
+   return wrapped({fields:{WORK_ARRANGEMENT:'HYBRID'},quotes:{WORK_ARRANGEMENT:'This role will be hybrid requiring a minimum of 3 days in office.'}});}});
+ const args={...c(),row:{...row,p:{...row.p,WORK_ARRANGEMENT:'HYBRID'}},capture:e,needs:['WORK_ARRANGEMENT','DEGREE']};
+ const fields=await g.extract(args);
+ a.deepEqual(fields,{REMOTE_HYBRID:'HYBRID'});a.equal(requests,1);
+ const bad=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+  transport:async()=>wrapped({fields:{WORK_ARRANGEMENT:'REMOTE'},quotes:{WORK_ARRANGEMENT:'This role will be hybrid requiring a minimum of 3 days in office.'}})});
+ a.deepEqual(await bad.extract({...args,ledger:{}}),{});
 });
