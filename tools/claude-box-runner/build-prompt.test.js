@@ -7,6 +7,9 @@ const B = require('./build-prompt.js');
 const ROOT = path.resolve(__dirname, '../..');
 const lanes = JSON.parse(fs.readFileSync(path.join(ROOT, 'control/CLAUDE_BOX_LANES.json'), 'utf8'));
 const registry = JSON.parse(fs.readFileSync(path.join(ROOT, 'control/AI_AUTOMATION_TASKS.json'), 'utf8'));
+const PAUSED_OUTCOME = 'FORGE_APPLICATION_OUTCOME_TRACKER';
+const CUTOVER = ['FORGE_APPLICATION_WRITER_GOFER', 'FORGE_CHATGPT_ENRICHMENT_RESEARCH',
+  'FORGE_POSTING_VALIDATION', 'FORGE_AI_USAGE_READER', 'PE_STACK_HEALTH_DAILY'];
 const KEYS = Object.keys(lanes.lanes);
 const env = { RUN_ID: 'FORGE-CLAUDE-BOX-TEST-20261117-1900ET', WORKDIR: '/w/repo', INSTRUCTION_COMMIT: 'abc123', PRIVATE_DIR: '/p', RUN_STARTED_UTC: '2026-11-18T00:00:00Z' };
 
@@ -37,11 +40,15 @@ for (const key of KEYS) {
 test('unknown task -> exit 3 (NO_BOX_MAPPING); --meta prints model, timeout, cockpit, tools', () => {
   const run = args => cp.spawnSync(process.execPath, [path.join(__dirname, 'build-prompt.js'), ROOT, ...args], { encoding: 'utf8' });
   assert.equal(run(['NOT_A_LANE', '--meta']).status, 3);
-  const meta = run(['FORGE_AI_USAGE_READER', '--meta']);
+  for (const key of CUTOVER) {
+    assert.equal(registry.tasks[key].owner, 'ChatGPT');
+    assert.equal(run([key, '--meta']).status, 3, key);
+  }
+  const meta = run([PAUSED_OUTCOME, '--meta']);
   assert.equal(meta.status, 0);
   const [model, timeout, fc, tools] = meta.stdout.trim().split('\t');
-  assert.deepEqual([model, timeout, fc], ['haiku', '10', '0']);
-  assert.ok(tools.split(',').includes('Bash(bash tools/claude-box-runner/claude-usage.sh)'));
+  assert.deepEqual([model, timeout, fc], ['sonnet', '25', '1']);
+  assert.ok(tools.split(',').includes('mcp__claude_ai_Gmail__search_threads'));
 });
 
 test('run-lane.sh logs PROMPT_BYTES equal to the prompt claude receives (stubbed git/claude)', { skip: process.platform === 'win32' }, () => {
@@ -55,19 +62,31 @@ exec ${realGit} "$@"
   fs.writeFileSync(path.join(bin, 'claude'), '#!/usr/bin/env bash\nprintf "%s" "$2" > "$STUB_OUT"\n', { mode: 0o755 });
   const repo = path.join(tmp, 'repo');   // minimal git repo holding just what the runner and builder need
   for (const rel of ['control/CLAUDE_BOX_LANES.json', 'control/AI_AUTOMATION_TASKS.json', 'runtime/current.json', lanes.common,
-    lanes.lanes.FORGE_AI_USAGE_READER.procedure, 'tools/claude-box-runner/build-prompt.js']) {
+    lanes.lanes[PAUSED_OUTCOME].procedure, 'tools/claude-box-runner/build-prompt.js']) {
     fs.mkdirSync(path.dirname(path.join(repo, rel)), { recursive: true }); fs.copyFileSync(path.join(ROOT, rel), path.join(repo, rel));
   }
   const g = a => cp.execFileSync(realGit, ['-C', repo, '-c', 'user.name=t', '-c', 'user.email=t@t', ...a], { stdio: 'ignore' });
   g(['init', '-q']); g(['add', '-A']); g(['commit', '-qm', 'fixture']);
   const home = path.join(tmp, 'home'), out = path.join(tmp, 'prompt.txt');
-  const r = cp.spawnSync('bash', [path.join(__dirname, 'run-lane.sh'), 'FORGE_AI_USAGE_READER'], {
+  const r = cp.spawnSync('bash', [path.join(__dirname, 'run-lane.sh'), PAUSED_OUTCOME], {
     encoding: 'utf8', env: Object.assign({}, process.env, { PATH: bin + ':' + process.env.PATH, STUB_REPO: repo, STUB_OUT: out, FORGE_LANES_HOME: home }) });
   assert.equal(r.status, 0, r.stderr);
-  const logDir = path.join(home, 'logs/FORGE_AI_USAGE_READER'), log = fs.readFileSync(path.join(logDir, fs.readdirSync(logDir)[0]), 'utf8');
+  const logDir = path.join(home, 'logs', PAUSED_OUTCOME), log = fs.readFileSync(path.join(logDir, fs.readdirSync(logDir)[0]), 'utf8');
   const bytes = Number((/PROMPT_BYTES=(\d+)/.exec(log) || [])[1]);
   assert.equal(bytes, fs.statSync(out).size);
-  assert.match(fs.readFileSync(path.join(home, 'logs/prompt-bytes.tsv'), 'utf8'), new RegExp('\\tFORGE_AI_USAGE_READER\\t\\S+\\t' + bytes + '\\n'));
+  assert.match(fs.readFileSync(path.join(home, 'logs/prompt-bytes.tsv'), 'utf8'), new RegExp('\\t' + PAUSED_OUTCOME + '\\t\\S+\\t' + bytes + '\\n'));
   assert.match(log, /DONE rc=0/);
+  fs.unlinkSync(out);
+  for (const key of CUTOVER) {
+    const blocked = cp.spawnSync('bash', [path.join(__dirname, 'run-lane.sh'), key], {
+      encoding: 'utf8', env: { ...process.env, PATH: bin + ':' + process.env.PATH,
+        STUB_REPO: repo, STUB_OUT: out, FORGE_LANES_HOME: home, FORGE_BOX_REF: 'main' },
+    });
+    assert.equal(blocked.status, 1, key);
+    assert.ok(!fs.existsSync(out), key + ' must exit before invoking Claude');
+    const blockedDir = path.join(home, 'logs', key);
+    const blockedLog = fs.readFileSync(path.join(blockedDir, fs.readdirSync(blockedDir)[0]), 'utf8');
+    assert.match(blockedLog, /BLOCKED NO_BOX_MAPPING/);
+  }
   fs.rmSync(tmp, { recursive: true, force: true });
 });

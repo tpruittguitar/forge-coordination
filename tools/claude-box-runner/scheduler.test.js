@@ -45,9 +45,9 @@ test('day-of-month / day-of-week use standard cron OR semantics', () => {
 });
 
 test('due() fires once per window and never catches up missed windows', () => {
-  const specs = S.parseCrontab(fs.readFileSync(path.join(__dirname, 'crontab.txt'), 'utf8'));
-  assert.equal(specs.length, 5);
-  assert.ok(!specs.some(s => s.task === 'FORGE_APPLICATION_OUTCOME_TRACKER'), 'outcome tracker is paused');
+  const specs = S.parseCrontab(['12 * * * * FORGE_CHATGPT_ENRICHMENT_RESEARCH',
+    '12 5,13,21 * * * FORGE_POSTING_VALIDATION', '5 2,8,14,20 * * * FORGE_AI_USAGE_READER',
+    '42 * * * * FORGE_APPLICATION_WRITER_GOFER'].join('\n'));
   let r = S.due(specs, et('2026-11-16T13:12:05-05:00'), null);
   assert.deepEqual(r.tasks.sort(), ['FORGE_CHATGPT_ENRICHMENT_RESEARCH', 'FORGE_POSTING_VALIDATION']);
   assert.deepEqual(S.due(specs, et('2026-11-16T13:12:50-05:00'), r.key).tasks, []); // same minute again
@@ -55,6 +55,11 @@ test('due() fires once per window and never catches up missed windows', () => {
   r = S.due(specs, et('2026-11-16T13:50:01-05:00'), '2026-11-16T13:20');
   assert.deepEqual(r.tasks, []);
   assert.deepEqual(S.due(specs, et('2026-11-16T14:05:00-05:00'), r.key).tasks, ['FORGE_AI_USAGE_READER']);
+});
+
+test('checked-in box crontab has no due lanes after cutover', () => {
+  const specs = S.parseCrontab(fs.readFileSync(path.join(__dirname, 'crontab.txt'), 'utf8'));
+  assert.deepEqual(specs, []);
 });
 
 test('DST fall-back repeated hour runs a window only once', () => {
