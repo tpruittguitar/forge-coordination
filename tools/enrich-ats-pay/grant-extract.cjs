@@ -98,9 +98,18 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
-        const hasReceipt=id=>Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
-          Object.values(ledger[group]||{}).some(x=>x?.ids?.includes(id)||x?.requests?.some(q=>q?.ruling?.primaryId===id)));
-        const unknown=entry=>entry?.[0]!==key&&entry?.[1]?.status==='POSTING_OR_UNKNOWN'&&!entry[1].writerRequestId&&!hasReceipt(entry[1].primaryId);
+        const hasReceipt=(id,attempt)=>{
+          // Ordinary ATS stores a bare per-row UTC timestamp, not a request
+          // identity. Ignore it only when it provably predates this attempt.
+          const iso=/^\d{4}-\d{2}-\d{2}T\d{2}:\d{2}:\d{2}\.\d{3}Z$/;
+          const recorded=ledger.submitted?.[id],submittedAt=typeof recorded==='string'&&iso.test(recorded)&&Date.parse(recorded),
+            attemptedAt=iso.test(attempt?.at||'')&&Date.parse(attempt.at);
+          const sameOrUnproven=Object.hasOwn(ledger.submitted||{},id)&&
+            !(Number.isFinite(submittedAt)&&Number.isFinite(attemptedAt)&&submittedAt<attemptedAt);
+          return sameOrUnproven||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
+            Object.values(ledger[group]||{}).some(x=>x?.ids?.includes(id)||x?.requests?.some(q=>q?.ruling?.primaryId===id)));
+        };
+        const unknown=entry=>entry?.[0]!==key&&entry?.[1]?.status==='POSTING_OR_UNKNOWN'&&!entry[1].writerRequestId&&!hasReceipt(entry[1].primaryId,entry[1]);
         const exactChain=retryOriginalId?priorSmokes.length===2&&unknown(original)&&!original[1].retryOf&&previous?.[1]?.retryOf===original[0]
           :priorSmokes.length===1&&!previous?.[1]?.retryOf;
         if(!retryPriorId||!exactChain||row.PRIMARY_ID!==retryTargetId||!unknown(previous))throw Error('ATS_GRANT_SMOKE_ALREADY_ATTEMPTED');

@@ -178,3 +178,27 @@ test('corrected final smoke requires both pinned unknown ancestors, no Writer ev
  await a.rejects(G.create({...options,...retry,retryTargetId:fourth}).extract({...args,row:{...row,PRIMARY_ID:fourth}}),/ALREADY_ATTEMPTED/);
  a.equal(calls,1);
 });
+
+test('final smoke ignores only a provably older ordinary ATS timestamp, not same-attempt or pending Writer evidence',async()=>{
+ const [original,previous,target]=['V2I-FIRST','V2I-SECOND','V2I-THIRD'];
+ const firstAt=new Date(now-2000).toISOString(),secondAt=new Date(now-1000).toISOString();
+ const records={first:{primaryId:original,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',at:firstAt},
+  second:{primaryId:previous,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',at:secondAt,retryOf:'first'}};
+ const historic=new Date(now-86400000).toISOString(),ledger={grantExtractionAttempts:structuredClone(records),submitted:{[previous]:historic}};
+ const args={...c(),row:{...row,PRIMARY_ID:target},ledger};
+ let requests=0;
+ const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+  retryOriginalId:original,retryPriorId:previous,retryTargetId:target,transport:async()=>{requests++;return wrapped(payOnly)}};
+ for(const [submitted,pendingWrites,attempts] of [
+   [{[previous]:secondAt},{},records],
+   [{[previous]:new Date(now).toISOString()},{},records],
+   [{[previous]:{requestId:'STILL-BOUND'}},{},records],
+   [{[previous]:historic},{batch:{requests:[{ruling:{primaryId:previous}}]}},records],
+   [{[previous]:historic},{},{...records,second:{...records.second,writerRequestId:'SAME-ATTEMPT'}}]
+ ])await a.rejects(G.create(options).extract({...args,ledger:{submitted,pendingWrites,grantExtractionAttempts:attempts}}),/ALREADY_ATTEMPTED/);
+ a.equal(requests,0);
+ a.equal((await G.create(options).extract(args)).SALARY_BASE_LOW,180000);
+ a.equal(ledger.submitted[previous],historic);
+ a.deepEqual(ledger.grantExtractionAttempts.second,records.second);
+ a.equal(requests,1);
+});
