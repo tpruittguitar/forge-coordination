@@ -693,17 +693,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(rawNeeds&&!capture)coverage.noExactPosting++;
       const product=Products.lookup(r,productsReference);
       if(SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!product)coverage.noMatchingProductReference++;
-      let f=grantExtraction.smoke?{}:SourceBlanks.project({row:r,capture,product,Products});
-      if(capture&&runtime.canStart(60000)){
-        try{
-          const apiFields=await grantExtraction.extract({row:r,capture,needs:['WORK_ARRANGEMENT','DEGREE',...need(r)],fields:f,ledger,
-            payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
-          f={...f,...SourceBlanks.select(r.p,apiFields)};
-        }catch(e){
-          if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED'].includes(e.message))throw e;
-          stats.grant_extraction_stop=e.message;
-          break;
-        }
+      let f;
+      try{
+        const fallback=need(r).includes('SALARY')&&runtime.canStart(60000)?()=>grantExtraction.extract({
+          row:r,capture,needs:['SALARY'],fields:{},ledger,
+          payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)}):null;
+        f=await SourceBlanks.directOrFallback({row:r,capture,product,Products},fallback);
+      }catch(e){
+        if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED'].includes(e.message))throw e;
+        stats.grant_extraction_stop=e.message;
+        break;
       }
       if(!Object.keys(f).length)continue;
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}};

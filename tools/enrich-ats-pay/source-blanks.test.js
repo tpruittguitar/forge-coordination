@@ -28,3 +28,14 @@ test('different pay, product, identity or conflicting remote mode gets no matchi
  a.deepEqual(S.project({row:{...row,TITLE:'Wrong'},capture:capture(),now}),{});
  a.equal(S.identityKnown('unknown'),false);
 });
+
+test('exact posting work fields go to Writer without a model opinion; missing employer pay stays blank',async()=>{
+ const payless='Lead manufacturing quality operations. '.repeat(10)+'\nThis role will be hybrid requiring a minimum of 3 days in office.';
+ const r={...row,p:{...row.p,WORK_ARRANGEMENT:'HYBRID'}};
+ const fields=await S.directOrFallback({row:r,capture:capture(r,payless,{pay:null}),now},()=>{throw Error('proven fields must not use the model');});
+ a.deepEqual(fields,{REMOTE_HYBRID:'HYBRID'});
+ let calls=0;
+ const noFact='Lead manufacturing quality operations. '.repeat(10);
+ a.deepEqual(await S.directOrFallback({row:r,capture:capture(r,noFact,{pay:null}),now},async()=>{calls++;return {}}),{});
+ a.equal(calls,1);
+});
