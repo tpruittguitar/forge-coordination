@@ -1,12 +1,12 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-22T20:16:43.706Z",
- "sourceCommit": "ff0c423c26cc3f32655cbed8fa120541f277d30d",
+ "builtAt": "2026-11-22T20:32:42.265Z",
+ "sourceCommit": "0cd64e58f95b773b50ff387c9b931fcb01cab266",
  "counts": {
   "total": 206,
   "BLOCKING": 0,
-  "ACTION": 201,
-  "WATCH": 5,
+  "ACTION": 202,
+  "WATCH": 4,
   "DECIDE": 0,
   "JOBS": 0,
   "FAILED": 196,
@@ -2414,6 +2414,18 @@
    "raisedBy": "CHATGPT"
   },
   {
+   "id": "lane-overdue:CODE",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "CODE lane has gone quiet (usually reports every 0.5 h)",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json",
+   "at": "2026-11-22T08:30:23Z",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "intake-assignment-health",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -2422,20 +2434,8 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-22T20:16:43.706Z",
+   "at": "2026-11-22T20:32:42.265Z",
    "raisedBy": "CODE"
-  },
-  {
-   "id": "lane-overdue:CODE",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "CODE lane has gone quiet (usually reports every 0.5 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261122T083023589Z_TERMINAL.json",
-   "at": "2026-11-22T08:30:23Z",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "pr:foreman-cockpit#507",
