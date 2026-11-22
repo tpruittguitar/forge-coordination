@@ -12,7 +12,7 @@ const validators = {
 };
 const historyCache = new Map();
 function show(root, commit, file) {
-  if (!/^[a-f0-9]{40}$/.test(commit) || !/^(control|lanes|policy)\/[A-Za-z0-9_./-]+$/.test(file) || file.includes('..')) throw Error('Invalid instruction reference');
+  if (!/^[a-f0-9]{40}$/.test(commit) || !(/^(control|lanes|policy)\/[A-Za-z0-9_./-]+$/.test(file)||/^receipts\/SHARED_HELPER_IDENTITY\/[A-Za-z0-9_-]+\.json$/.test(file)) || file.includes('..')) throw Error('Invalid instruction reference');
   const key=root+':'+commit+':'+file;
   if(!historyCache.has(key)) historyCache.set(key,cp.execFileSync('git', ['show', commit + ':' + file], {cwd: root, encoding: 'utf8', maxBuffer: 8e6, stdio: ['ignore','pipe','pipe']}).replace(/\r\n/g,'\n'));
   return historyCache.get(key);
@@ -62,6 +62,12 @@ function routingProof(root, batch, current, historical = show) {
   const currentProcedure = fs.readFileSync(path.join(root, task.procedure), 'utf8').replace(/\r\n/g, '\n');
   const contractChanged = evidenceMigration || priorCommon !== currentCommon || priorContract !== currentContract || priorProcedure !== currentProcedure;
   const work = S.read(root, task.workAssignments), before = JSON.parse(historical(root, batch.instructionCommit, task.workAssignments));
+  if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK){
+    const api=require('../helper-routing/api-grant.cjs'),binding=api.assertBound(root,work);
+    if(prior.enabled!==true||prior.executionIdentity!==binding.worker||S.hash(before.apiGrantBinding)!==S.hash(work.apiGrantBinding))throw Error('STALE_API_BINDING');
+    for(const [file,digest] of [[binding.authorizationRef,binding.authorizationSha256],[binding.hermes.acknowledgmentRef,binding.hermes.acknowledgmentSha256]])
+      if(S.hash(historical(root,batch.instructionCommit,file))!==digest)throw Error('API_PROOF_NOT_AT_INSTRUCTION_REVISION');
+  }
   const partition = w => ({assignmentId: w.assignmentId, enabled: w.enabled, routingActive: w.routingActive, routing: w.routing});
   if (S.hash(partition(work)) !== S.hash(partition(before))) throw Error('STALE_ASSIGNMENT_ROUTING');
   if(batch.schema==='forge.shared-helper-batch.v1')require('../helper-routing/shared.cjs').validateRouting(batch,before,work);
@@ -71,7 +77,7 @@ function routingProof(root, batch, current, historical = show) {
   return {instructionCommit: batch.instructionCommit, checkedAgainst: current, contractChanged, ...(evidenceMigration?{writeThroughEvidenceMigration:true}:{}), commonAtInstruction:priorCommon, commonAtCurrent:currentCommon, currentPolicyRecheckRequired:true};
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
-function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!envelopeProviderOk(root,task,batch)||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');return validate(batch,S.read(root,task.workAssignments));}
+function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!envelopeProviderOk(root,task,batch)||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');const work=S.read(root,task.workAssignments);if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK)require('../helper-routing/api-grant.cjs').assertReturn(root,work,batch);return validate(batch,work);}
 function collect({root, state, commit, routing = routingProof}) {
   const registry = S.read(root, 'control/AI_AUTOMATION_TASKS.json');
   const legacy = new Set(S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}).items.map(i=>i.batch));
@@ -93,6 +99,7 @@ function collect({root, state, commit, routing = routingProof}) {
       const validate = validators[batch.schema], task = registry.tasks[batch.taskKey];
       if (!validate || !envelopeProviderOk(root, task, batch)) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
       const work = S.read(root, task.workAssignments);
+      if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK)require('../helper-routing/api-grant.cjs').assertReturn(root,work,batch,rel);
       const validation=validate(batch, work);
       if(legacy.has(rel)) {
         state.batches[rel]={id:batch.taskKey+':'+batch.runId,sha256,checkedAgainst:commit,status:'LEGACY_TRACKED',items:batch.items.length,

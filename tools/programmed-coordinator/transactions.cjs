@@ -61,7 +61,7 @@ async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
   for (const job of jobs) {
    try {
     const inspection=state.items[job.itemKey];
-    if(inspection?.taskKey&&require('../helper-routing/shared.cjs').TASKS[inspection.taskKey]){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
+    if(inspection?.taskKey&&require('../helper-routing/shared.cjs').providerFor(inspection.taskKey)){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
     if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fences.has(job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
