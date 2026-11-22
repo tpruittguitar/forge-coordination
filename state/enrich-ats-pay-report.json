@@ -1,15 +1,15 @@
 {
- "at": "2026-11-22T22:34:23.697Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T223058160Z",
+ "at": "2026-11-22T23:00:39.380Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T225306035Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T22:31:07.073Z",
-  "sha256": "6e2fa0b7e8953f681eda352fd9987ae229084e6b34ba5a5ba518d5e6ec3608ae",
-  "rows": 9542
+  "readAt": "2026-11-22T22:53:15.654Z",
+  "sha256": "8d4e405e8b49ede7880317c6d7903332379fc8079cd113741cb6716f480f5995",
+  "rows": 9545
  },
- "rows": 9542,
- "eligible": 3146,
+ "rows": 9545,
+ "eligible": 1574,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -68,13 +68,13 @@
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
- "workday_cooling_skips": 0,
+ "workday_cooling_skips": 1,
  "workday_board_window_skips": 0,
- "workday_window_active": true,
+ "workday_window_active": false,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -114,16 +114,16 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T22:31:13.902Z",
+  "profile_as_of": "2026-11-22T22:53:21.370Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 235,
+ "ats_candidates": 109,
  "ats_by_kind": {
-  "ashby": 73,
-  "workday": 98,
-  "greenhouse": 58,
-  "lever": 6
+  "ashby": 33,
+  "workday": 53,
+  "greenhouse": 21,
+  "lever": 2
  },
  "skipped_closed": 0,
  "ats_unconfirmed": 0,
@@ -148,7 +148,7 @@
   "guard_dropped": 0,
   "samples": []
  },
- "decision_waiting": 16,
+ "decision_waiting": 17,
  "retained_completion": {
   "planned": 0,
   "salary": 0,
@@ -157,40 +157,41 @@
  "products_planned": 0,
  "upgraded": 0,
  "grant_backlog": {
-  "waiting": 3146,
-  "examined": 1,
+  "waiting": 1574,
+  "examined": 50,
+  "admitted": 50,
   "protectedOrReserved": 0,
   "identityNeedsGovernedRepair": 0,
-  "noExactPosting": 0,
-  "noMatchingProductReference": 0,
-  "sourceSupported": 0
- },
- "grant_product_proposal": {
-  "primaryId": "V2I-D72D291842B6",
-  "product": "VLEO buses & payloads",
-  "quote": "You'll join a team that has already proven what others said wasn't feasible and is now scaling and upgrading our VLEO buses & payloads to serve mission sets across sensing, communications, and responsive operations.",
-  "sourceUrl": "https://grnh.se/lkfx8hah9us",
-  "sourceObservedAt": "2026-11-22T16:21:42.408Z",
-  "fullPostingTextSha256": "ceec91311a4de86d2433f8ea72f5b1b6e19ac8bedaf0928b49e16fdfc444bfb3"
+  "noExactPosting": 28,
+  "noMatchingProductReference": 49,
+  "sourceSupported": 4,
+  "remainingByFieldAfterPlan": {
+   "degree FLEX class": 28,
+   "degree evidence": 35,
+   "work arrangement (remote/hybrid/on-site)": 40,
+   "pay range": 29,
+   "pay basis and source": 27,
+   "products (what they make)": 49,
+   "location / geography": 5
+  }
  },
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 0,
- "network_requests": 8,
- "planned": 0,
+ "network_requests": 14,
+ "planned": 4,
  "research_budget_exhausted": false,
- "grant_extraction_attempts": 1,
- "grant_extraction_fact_rows": 0,
+ "grant_extraction_attempts": 0,
+ "grant_extraction_fact_rows": 4,
  "grant_extraction_accounting": {
-  "reportedCostMicrousd": 125,
+  "reportedCostMicrousd": 0,
   "unknownAttempts": 0,
   "unknownReservedMicrousd": 0,
   "cumulativeCapMicrousd": 37470000
  },
- "grant_extraction_diagnostic": {
-  "category": "PRODUCT_PROPOSED"
- },
+ "writer_unconfirmed": 4,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -198,15 +199,44 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "SOURCE_RESEARCH_REQUIRED": 848,
-  "NOT_YET_ATTEMPTED": 471,
-  "EVIDENCE_FOUND": 1805,
-  "MODEL_INPUTS_REQUIRED": 6,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 16
+  "NOT_YET_ATTEMPTED": 246,
+  "SOURCE_RESEARCH_REQUIRED": 419,
+  "EVIDENCE_FOUND": 901,
+  "MODEL_INPUTS_REQUIRED": 3,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 5
  },
  "pending": [],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-F8705860AD08",
+   "fields": {
+    "WORK_ARRANGEMENT": "ONSITE",
+    "REMOTE_HYBRID": "ONSITE"
+   }
+  },
+  {
+   "id": "V2I-B915032C6304",
+   "fields": {
+    "WORK_ARRANGEMENT": "ONSITE",
+    "REMOTE_HYBRID": "ONSITE"
+   }
+  },
+  {
+   "id": "V2I-E0C96532DBF6",
+   "fields": {
+    "WORK_ARRANGEMENT": "ONSITE",
+    "REMOTE_HYBRID": "ONSITE"
+   }
+  },
+  {
+   "id": "V2I-C3E2F1D85782",
+   "fields": {
+    "WORK_ARRANGEMENT": "ONSITE",
+    "REMOTE_HYBRID": "ONSITE"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
