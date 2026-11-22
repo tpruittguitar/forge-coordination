@@ -1,12 +1,15 @@
-TEMPORARY OWNERSHIP UPDATE -- Tim 2026-10-28
-OWNER=ChatGPT/Codex until Tim explicitly changes the assignment. Tim 2026-10-30: no automatic handback to Claude or Grok on any date, quota reset, or expiry.
-CURRENT CODEX SCHEDULE=Hourly at :05 America/New_York; automation forge-ai-usage-reader, active in chat 01a184da-4336-7221-8a99-5e405f1af7ad.
-FIRST VERIFIED CHATGPT RUN=e09dd734e835f543faef57f1b9b118b448d76adf; 3 weekly readings.
-Use CHATGPT USAGE-READER in ChatGPT commit messages. Use supported signed-in Chrome browser tools available to the actual runner; the Claude tool names below are historical implementation details. Never sign in or click billing controls.
-The historical Claude task's current enabled state is not verified; Tim originally required it to remain unchanged during the test. The name of this file is a stable legacy path, not an ownership assignment. Exactly three weekly observations and explicit failure statuses remain binding. The usage log is append-only; do not truncate, rotate, rewrite, or remove history.
-INVENTORY=docs/AUTOMATION_OWNERSHIP_20261028.md
+FORGE AI USAGE READER — CURRENT OPERATING INSTRUCTIONS
+OWNER=ChatGPT Dot. Tim approved the hourly cloud publisher on 2026-11-21 ET. The file name is a legacy path, not an assignment to Claude.
+SCHEDULE=Publish Forge Usage Readings, hourly at minute :05, America/New_York, using the Dot cloud Chrome profile. It does not depend on TIMMAY or on provider tabs remaining open. The existing TIMMAY native heartbeat forge-ai-usage-reader remains paused; never enable a second writer or hand this lane back automatically.
+PROOF=The 2026-11-21 ET unattended cloud verification read all four sources using fresh tabs. It did not publish; the first scheduled publish is separate and must have its own verified commit.
 
-HISTORICAL CLAUDE IMPLEMENTATION (current ownership and schedule above supersede conflicting labels below)
+1. Read the authenticated provider pages with the supported browser only. Wait for the numeric value tied to the exact label: Claude This week (all models), Grok Weekly Ultra/Premium/SuperGrok Limit (overall, not Grok Bot share), ChatGPT Weekly limit (100 minus percent left), and OpenAI API Billing Overview API credit balance and next expiration. No login automation, CAPTCHA, settings changes, purchases or inference API calls. Cloud browser session loss is a named failure, not a reason to use TIMMAY.
+2. Append exactly one weekly object per provider, exactly three total, to usage/AI_USAGE_READINGS.jsonl on main. Preserve all preceding bytes, use an actual observed UTC timestamp and per-slot idempotency key, and verify the resulting commit. This is the existing public usage feed; publish only the approved weekly values/reset times and the verified OpenAI API credit balance/expiry. Attach the billing observation as optional openaiCredit on the ChatGPT row, with its own timestamp; do not carry stale balance forward under a new timestamp. On missing readings record explicit failure with null usage; never substitute another meter, expose billing metadata, or trim history.
+3. Routine reads stay quiet. Verify and report the first scheduled 4-of-4 publish once; flag a repeated source failure once when action is needed. The 3D Office page independently reloads the ledger; its GitHub Office status builder is code-only on a separate 10-minute schedule. A successful ledger readback is evidence of a publish, not evidence that the paused native task ran.
+
+INVENTORY=docs/AUTOMATION_OWNERSHIP_20261028.md (historical ownership record).
+
+HISTORICAL IMPLEMENTATION — reference only; do not execute, enable, or use as fallback
 CLAUDE AI USAGE READER -- lane brief (scheduled task "Forge AI Usage Reader", hourly at :05 America/New_York; runs on Tim's PC so Chrome is available)
 AUTHORIZED_BY=Tim 2026-10-13 15:54 ET ("B now": usage bar chart with projected run-out in the Pipeline Explorer, PC keep-alive, reader)
 PURPOSE: read each AI's usage page in Tim's Chrome and append the numbers to usage/AI_USAGE_READINGS.jsonl in this repo. The Pipeline Explorer System panel draws the bars and run-out projection from that file. Read-only on every website: never click Buy, Upgrade, credits, toggles or settings; never sign in or type passwords.
