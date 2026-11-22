@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-22T23:08:46.518Z",
+  "at": "2026-11-22T23:49:38.362Z",
   "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -146,10 +146,10 @@
     },
     {
       "id": "pe-stack-health-daily",
-      "at": "2026-11-16T12:48:59.215Z",
-      "status": "ENRICHMENT_MEMORY_FAILURE_WITH_KNOWN_COORDINATOR_BLOCK",
+      "at": "2026-11-22T23:47:45.269Z",
+      "status": "ISSUES_OBSERVED_NO_PRODUCTION_CHANGES",
       "evidenceFiles": [
-        "receipts/HEALTH_AUDIT_20261116_0748ET.json"
+        "receipts/HEALTH_AUDIT_20261122_1847ET.json"
       ],
       "executionVerified": true
     }
@@ -168,7 +168,7 @@
   ],
   "intakeAssignmentHealth": {
     "schema": "forge.intake-assignment-health.v1",
-    "at": "2026-11-22T23:08:46.518Z",
+    "at": "2026-11-22T23:49:38.362Z",
     "status": "ACTION_REQUIRED",
     "checkedItems": 625,
     "issueCount": 7,
@@ -263,39 +263,29 @@
     "corroborated": true
   },
   "schedules": {
-    "configurationObservedAt": "2026-11-16T21:58:09.490652Z",
+    "configurationObservedAt": "2026-11-22T23:45:01.757095Z",
     "configurationReadbackScope": "LOCAL_CODEX_ONLY",
     "observationScopes": {
       "LOCAL_CODEX": {
         "status": "READ",
-        "at": "2026-11-16T21:58:09.490652Z"
+        "at": "2026-11-22T23:45:01.757095Z"
       },
       "CLOUD_AUTOMATIONS": {
         "status": "NOT_READ",
         "reason": "Local files cannot establish cloud task configuration"
       }
     },
-    "configurationDiscrepancies": [],
+    "configurationDiscrepancies": [
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-email-discovery",
+        "taskKey": "FORGE_EMAIL_DISCOVERY"
+      }
+    ],
     "nativeInvocationVerified": false,
     "nativeInvocationStatus": "NOT_OBSERVED",
     "nativeInvocationLimitation": "Task-work receipts are not scheduler invocation or destination-delivery records; no bound native execution-record producer is configured",
-    "active": [
-      {
-        "id": "forge-email-discovery",
-        "lastDueAt": "2026-11-22T21:02:00.000Z",
-        "lastRunAt": "2026-11-02T02:07:20.898Z",
-        "status": "RETURNS_COLLECTED_WITH_PENDING_SOURCE_CORRECTION",
-        "executionVerified": false,
-        "taskExecutionVerified": false,
-        "nativeInvocationVerified": false,
-        "proofScope": "TASK_WORK_ONLY",
-        "evidenceFiles": [
-          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_TERMINAL.json",
-          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET_HELPER_COLLECTION.json",
-          "receipts/FORGE-COORDINATOR-CHATGPT-20261101-2057ET-E001_VERIFIED.json"
-        ]
-      }
-    ],
+    "active": [],
     "executionVerified": false
   }
 }
