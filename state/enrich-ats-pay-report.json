@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T01:19:14.724Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T011457050Z",
+ "at": "2026-11-22T01:28:58.973Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T012441448Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T01:15:05.622Z",
+  "readAt": "2026-11-22T01:24:52.055Z",
   "sha256": "245002fe37fa92172b5db8c79f5b89a94fe676d25cd942e728e3f8aeba155fa8",
   "rows": 9534
  },
@@ -50,7 +50,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 617,
- "skipped_recent": 347,
+ "skipped_recent": 348,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -65,12 +65,17 @@
  "agg_tried": {
   "linkedin": 3
  },
- "agg_read": {
-  "linkedin": 3
- },
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 2
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
  "source_reads": 3,
  "source_retries": 0,
@@ -84,10 +89,11 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -118,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T01:15:11.773Z",
+  "profile_as_of": "2026-11-22T01:24:58.371Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14712,14 +14718,22 @@
  },
  "salary_review": {
   "eligible": 1911,
-  "due": 1895,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1896,
+  "reviewed": 1,
+  "target_reads": 1,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 1,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-95CF66C66560",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 1
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14728,8 +14742,9 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 638,
- "attempt_only_skipped": 3,
+ "nothing_found": 640,
+ "source_origin_blocks": {},
+ "est_bls": 1,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14762,7 +14777,7 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2344,
+ "roles_researched": 2345,
  "network_requests": 11,
  "planned": 0,
  "research_budget_exhausted": false,
@@ -14774,9 +14789,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 775,
+  "SOURCE_RESEARCH_REQUIRED": 777,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 59,
+  "EVIDENCE_FOUND": 57,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -21847,13 +21862,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T00:25:29.628Z",
-   "retryAt": "2026-11-22T01:25:29.628Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T01:26:00.651Z",
+   "retryAt": "2026-11-22T17:26:00.651Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21865,13 +21880,13 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T00:25:32.793Z",
-   "retryAt": "2026-11-22T01:25:32.793Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T01:26:03.731Z",
+   "retryAt": "2026-11-22T17:26:03.731Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21944,6 +21959,60 @@
    "lastAttemptAt": "2026-11-22T00:54:52.196Z",
    "retryAt": "2026-11-22T01:54:52.196Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CDBEF98F4186",
+   "company": "Onterris",
+   "title": "Region Vice President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T01:16:15.530Z",
+   "retryAt": "2026-11-22T02:16:15.530Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4471901258",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-226009AAA44D",
+   "company": "Nissan Motor Corporation",
+   "title": "Purchasing Project Management Intern - Summer 2027 - Franklin, TN",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T01:16:18.755Z",
+   "retryAt": "2026-11-22T02:16:18.755Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485311555",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FF9C22F69589",
+   "company": "Troon",
+   "title": "Resort Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T01:16:21.863Z",
+   "retryAt": "2026-11-22T02:16:21.863Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463935181",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
