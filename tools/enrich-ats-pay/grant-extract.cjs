@@ -15,11 +15,16 @@ const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
 
 const API_PARTITION='a1e2b300e063764faac242364e009cd8a3b72987';
 const API_FIRST='V2I-7E2E8E0559E8';
-function requireFrozenApiId(pid,queue){
-  const ids=queue?.ids?.enrichment;
+function frozenApiIds(queue){
+  const ids=queue?.ids?.enrichment,id=/^V2I-[A-F0-9]{12}$/;
   if(queue?.schema!=='forge.waiting-queues.v1'||queue.reconciled!==true||!Array.isArray(ids)||ids.length!==3164
-    ||new Set(ids).size!==3164||ids.filter(id=>id>=API_FIRST).length!==1582
-    ||!/^V2I-[A-F0-9]{12}$/.test(pid||'')||pid<API_FIRST||!ids.includes(pid))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
+    ||new Set(ids).size!==3164||!ids.every(pid=>typeof pid==='string'&&id.test(pid)))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
+  const api=new Set(ids.filter(pid=>pid>=API_FIRST));
+  if(api.size!==1582)throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
+  return api;
+}
+function requireFrozenApiId(pid,queue){
+  if(!frozenApiIds(queue).has(pid))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
 }
 function productInput(row,capture,now){
   if(Prepared.protectedRow(row)||Source.known(row.p.PRODUCT)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
@@ -43,6 +48,37 @@ function productResult(result,e,row){
   if(typeof product!=='string'||product.length<3||product.length>160||product!==product.trim()||/[\r\n]/.test(product)
     ||typeof quote!=='string'||quote.length<15||quote.length>1000||!e.text.includes(quote)||!quote.includes(product))return {};
   return {primaryId:row.PRIMARY_ID,product,quote,sourceUrl:e.url,sourceObservedAt:e.observedAt,fullPostingTextSha256:e.sha256};
+}
+
+// Promote the actual Product proposal only after the exact stock Writer ruling
+// is durable and its fresh canonical row still has the proven Product and 11/11.
+async function completeProductSmoke({ledger,proof,row,product,capture,Products,Evidence,index,read,parse,now=Date.now()}){
+  const {proposal,ruling}=proof||{},pid=row?.PRIMARY_ID;
+  const invalid=()=>{throw Error('ATS_GRANT_PRODUCT_SMOKE_WRITE_UNVERIFIED');};
+  if(!pid||proposal?.primaryId!==pid||ruling?.primaryId!==pid||ruling.kind!=='ENRICH'||ruling.actor!=='ATSBOT'
+    ||!/^[-_A-Za-z0-9]{3,160}$/.test(ruling.requestId||'')||product?.primaryId!==pid)return invalid();
+  // The canonical row already has Product now; reproduce only the original
+  // source binding and literal-quote checks, never submit a new grant request.
+  const selected=productInput({...row,p:{...row.p,PRODUCT:''}},capture,now);
+  const bound=selected&&productResult({product:proposal.product,quote:proposal.quote},selected.e,row);
+  if(!bound?.primaryId||Object.keys(bound).some(k=>bound[k]!==proposal[k]))return invalid();
+  const key=fingerprint(JSON.stringify([pid,Cache.route(bound.sourceUrl),bound.fullPostingTextSha256]));
+  const record=ledger.grantExtractionAttempts?.[key],expected=Products.fields(product);
+  const fields=ruling.fields;
+  if(record?.primaryId!==pid||record?.phase!=='SMOKE'||record.purpose!=='PRODUCT_PROPOSAL'
+    ||!['PRODUCT_PROPOSED','WRITER_VERIFIED'].includes(record.status)||!Number.isSafeInteger(record.reportedCostMicrousd)
+    ||record.reportedCostMicrousd<=0||record.writerRequestId&&record.writerRequestId!==ruling.requestId
+    ||!fields||expected.PRODUCT_SCOPE!=='JOB_POSTING'||expected.PRODUCT!==proposal.product
+    ||expected.PRODUCT_SOURCE!==proposal.sourceUrl||Object.entries(expected).some(([k,v])=>fields[k]!==v))return invalid();
+  if(record.status==='WRITER_VERIFIED')return false;
+  let drift=false,complete=false;
+  if(!await require('./writer-proof').verify([{action:'ruling',ruling}],{index,read,parse:line=>{
+    const current=parse(line);
+    complete=!!current&&require('./decision-complete').isDecisionComplete(current,Evidence)&&!!current.p?.PRODUCT_SOURCE;
+    return current;
+  },onDrift:()=>{drift=true;}})||drift||!complete)return invalid();
+  Object.assign(record,{status:'WRITER_VERIFIED',writerRequestId:ruling.requestId});
+  return true;
 }
 
 function input(row,capture,needs,fields,now,{payUnresolved=false}={}) {
@@ -229,10 +265,13 @@ function configured({root,live,writerPostLock,env=process.env}){
   const maxAttempts=configuredLimit===undefined?SMOKE_LIMIT:Number(configuredLimit);
   const retryPriorId=env.FORGE_ATS_GRANT_RETRY_PRIOR_ID||null,retryTargetId=env.FORGE_ATS_GRANT_SMOKE_ID||null;
   const retryOriginalId=env.FORGE_ATS_GRANT_RETRY_ORIGINAL_ID||null;
-  let productId=null;
-  if(env.FORGE_ATS_GRANT_PRODUCT_PROPOSAL==='1'){
-    requireFrozenApiId(retryTargetId,JSON.parse(execFileSync('git',['show',API_PARTITION+':state/PIPELINE_WAITING_QUEUES.json'],
+  let productId=null,frozen=null;
+  if(maxAttempts===BULK_LIMIT||env.FORGE_ATS_GRANT_PRODUCT_PROPOSAL==='1'){
+    frozen=frozenApiIds(JSON.parse(execFileSync('git',['show',API_PARTITION+':state/PIPELINE_WAITING_QUEUES.json'],
       {cwd:root,encoding:'utf8',maxBuffer:262144})));
+  }
+  if(env.FORGE_ATS_GRANT_PRODUCT_PROPOSAL==='1'){
+    if(!frozen.has(retryTargetId))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
     productId=retryTargetId;
   }
   const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
@@ -243,6 +282,8 @@ function configured({root,live,writerPostLock,env=process.env}){
   const lockPath=privateFile+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
   let owned=false;
   return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,productId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
+    isEligibleId(pid){return !frozen||frozen.has(pid);},
+    get rowLimit(){return maxAttempts;},
     async acquire(){
       await assertGithubOwnerStopped(github);
       if(!lock(lockPath,'acquire',token).acquired)throw Error('ATS_GRANT_NATIVE_RUN_ALREADY_ACTIVE');
@@ -253,4 +294,4 @@ function configured({root,live,writerPostLock,env=process.env}){
   });
 }
 function checkpoint(file,ledger){Store.save(path.dirname(file),path.basename(file),ledger);}
-module.exports={requireFrozenApiId,create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped};
+module.exports={completeProductSmoke,frozenApiIds,requireFrozenApiId,create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped};
