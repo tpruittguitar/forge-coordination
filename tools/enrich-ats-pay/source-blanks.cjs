@@ -77,6 +77,13 @@ function project({row,capture,product,Products,now=Date.now()}){
   }
   return select(p,fields);
 }
+// Exact, source-proven fields go straight to the existing Writer. The
+// optional model is only a fallback when this row has no supported direct fill.
+async function directOrFallback(options,fallback){
+  const fields=project(options);
+  if(Object.keys(fields).length||!options.capture||!fallback)return fields;
+  return select(options.row.p,await fallback());
+}
 // Find a viable MODEL candidate before spend. Whole-source checks still govern
 // every result; only the original quote itself is sent to the model.
 function modelCandidate(row,source,now,groups){
@@ -104,4 +111,4 @@ function modelResult(result,candidate,source){
   const keys=candidate.group==='DEGREE'?degreeKeys:workKeys;
   return Object.fromEntries(Object.entries(candidate.fields).filter(([k])=>keys.includes(k)));
 }
-module.exports={exactStoredPosting,modelCandidate,modelResult,waiting,identityKnown,project,select,missing,payKeys,degreeKeys,workKeys,productKeys};
+module.exports={directOrFallback,exactStoredPosting,modelCandidate,modelResult,waiting,identityKnown,project,select,missing,payKeys,degreeKeys,workKeys,productKeys};
