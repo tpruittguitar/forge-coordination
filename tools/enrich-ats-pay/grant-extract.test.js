@@ -118,3 +118,39 @@ test('one real model request can emit only a quoted work blank from a long payle
   transport:async()=>wrapped({fields:{WORK_ARRANGEMENT:'REMOTE'},quotes:{WORK_ARRANGEMENT:'This role will be hybrid requiring a minimum of 3 days in office.'}})});
  a.deepEqual(await bad.extract({...args,ledger:{}}),{});
 });
+
+test('ATS diagnostics project only allowlisted failure categories, HTTP status and provider code; unknown spend stays fenced',async()=>{
+ const setup=(transport,more={})=>G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),transport,...more});
+ const admitted=await (await wrapped(payOnly)).json();
+ const options=[
+   [setup(async()=>{throw Object.assign(Error('PRIVATE MESSAGE'),{cause:{code:'ENOTFOUND'}})}),{category:'TRANSPORT_DNS'}],
+   [setup(async()=>new Response(JSON.stringify({error:{code:'credit_balance_exhausted',message:'PRIVATE BODY'}}),{status:429})),{category:'HTTP_REJECTION',httpStatus:429,providerCode:'credit_balance_exhausted'}],
+   [setup(async()=>new Response(JSON.stringify({error:{code:'PRIVATE_BODY_FRAGMENT'}}),{status:400})),{category:'HTTP_REJECTION',httpStatus:400}],
+   [setup(async()=>new Response('PRIVATE MALFORMED JSON')),{category:'RESPONSE_JSON'}],
+   [setup(async()=>new Response(JSON.stringify({...admitted,model:'PRIVATE_ALIAS'}))),{category:'RESPONSE_MODEL'}],
+   [setup(async()=>new Response(JSON.stringify({...admitted,service_tier:'priority'}))),{category:'RESPONSE_SERVICE_TIER'}],
+   [setup(()=>{throw Error('must not transport')},{openCredential:()=>({secureRuntime:fn=>fn('wrong')})}),{category:'NATIVE_KEY_LINK_MISMATCH'}]
+ ];
+ for(const [g,want] of options){const args=c();await a.rejects(g.extract(args),/GRANT_RESPONSE_UNVERIFIED/);a.deepEqual(g.diagnostic,want);
+   a.equal(Object.values(args.ledger.grantExtractionAttempts)[0].status,'POSTING_OR_UNKNOWN');}
+ const good=setup(async()=>wrapped(payOnly));await good.extract(c());a.equal(good.diagnostic.category,'FACTS_ACCEPTED');a.equal(good.accounting.reportedCostMicrousd,80);
+});
+
+test('explicit one-time unknown smoke retry uses a distinct pinned job and preserves original accounting',async()=>{
+ const prior='V2I-PRIOR',target='V2I-RETRY',third='V2I-THIRD';
+ const original={primaryId:prior,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',at:new Date(now-100).toISOString()};
+ const ledger={grantExtractionAttempts:{old:structuredClone(original)}}, args={...c(),row:{...row,PRIMARY_ID:target},ledger};
+ let calls=0;
+ const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+    transport:async()=>{calls++;return wrapped(payOnly)}};
+ const retry={retryPriorId:prior,retryTargetId:target};
+ await a.rejects(G.create(options).extract(args),/ALREADY_ATTEMPTED/);
+ await a.rejects(G.create({...options,...retry}).extract({...args,ledger:{...ledger,pendingWrites:{batch:{ids:[prior]}}}}),/ALREADY_ATTEMPTED/);
+ await a.rejects(G.create({...options,...retry}).extract({...args,row:{...row,PRIMARY_ID:prior}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,0);
+ a.equal((await G.create({...options,...retry}).extract(args)).SALARY_BASE_LOW,180000);
+ a.deepEqual(ledger.grantExtractionAttempts.old,original);
+ a.equal(Object.values(ledger.grantExtractionAttempts).find(r=>r.primaryId===target).retryOf,'old');
+ await a.rejects(G.create({...options,retryPriorId:prior,retryTargetId:third}).extract({...args,row:{...row,PRIMARY_ID:third}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,1);
+});
