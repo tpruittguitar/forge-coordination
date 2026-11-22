@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T10:36:36.572Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T102932689Z",
+ "at": "2026-11-22T10:44:35.558Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T104120213Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T10:29:41.711Z",
+  "readAt": "2026-11-22T10:41:28.951Z",
   "sha256": "829ac57eb2d047735a98e8ef9f86dd26c904c5826d83c6fc40ea22b8b2087bcc",
   "rows": 9538
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 619,
- "skipped_recent": 341,
+ "estimate_waiting_for_posting": 617,
+ "skipped_recent": 350,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,26 +62,13 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 10
- },
- "agg_read": {
-  "linkedin": 6
- },
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 2
- },
- "agg_errors": {
-  "linkedin": [
-   "429",
-   "404"
-  ]
- },
- "agg_wall": {
-  "linkedin": 1
- },
- "source_reads": 10,
+ "agg_failed": {},
+ "agg_errors": {},
+ "agg_wall": {},
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -89,17 +76,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": true,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 0,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
   "hits": 16,
@@ -114,9 +101,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 2,
-  "saved_reused": 2,
+  "targets": 0,
+  "candidates": 0,
+  "saved_reused": 0,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -125,9 +112,9 @@
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 1,
+  "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T10:29:48.414Z",
+  "profile_as_of": "2026-11-22T10:41:34.511Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14712,31 +14699,23 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 0,
+  "review_skipped_blocked": 1899,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 866,
-   "products (what they make)": 1420,
-   "location / geography": 10
+   "products (what they make)": 1837,
+   "work arrangement (remote/hybrid/on-site)": 1179,
+   "location / geography": 14
   }
  },
  "salary_review": {
   "eligible": 1914,
-  "due": 1900,
-  "reviewed": 1,
-  "target_reads": 2,
+  "due": 1899,
+  "reviewed": 0,
+  "target_reads": 0,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 1,
+  "no_improvement": 0,
   "guard_dropped": 0,
-  "samples": [
-   {
-    "id": "V2I-993719D67F83",
-    "status": "NO_STRONGER_EVIDENCE",
-    "priorConfidence": "LOW",
-    "basis": "FORGE-ESTIMATE"
-   }
-  ],
-  "aggregator_reads": 1
+  "samples": []
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14745,9 +14724,7 @@
   "degree": 0
  },
  "not_attempted": 638,
- "nothing_found": 641,
- "attempt_only_skipped": 6,
- "source_origin_blocks": {},
+ "nothing_found": 638,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14780,8 +14757,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2351,
- "network_requests": 19,
+ "roles_researched": 2347,
+ "network_requests": 8,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -21463,24 +21440,6 @@
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
-   "id": "V2I-C2CDC90A5943",
-   "company": "YMCA of the Suncoast",
-   "title": "Executive Director - Hernando County",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T10:31:18.018Z",
-   "retryAt": "2026-11-23T02:31:18.018Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-46A779F757EE",
    "company": "Baker Roofing Company",
    "title": "Regional Vice President",
@@ -21816,6 +21775,132 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484492303",
      "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5C28DE3BEDFE",
+   "company": "Applied Materials",
+   "title": "Technical Project/Program Management Director - Advanced Packaging",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:05.578Z",
+   "retryAt": "2026-11-22T11:31:05.578Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484307695",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0E8C5076C80A",
+   "company": "Wycliffe Bible Translators USA",
+   "title": "Dir. of Innovative Workforce Initiatives",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:08.688Z",
+   "retryAt": "2026-11-22T11:31:08.688Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-011DF7129CA9",
+   "company": "Lockheed Martin",
+   "title": "Manufacturing Engineering Mgr - Level 5",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:11.792Z",
+   "retryAt": "2026-11-22T11:31:11.792Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CA52D87AFDB0",
+   "company": "Delaware North",
+   "title": "General Manager, EverBank Stadium",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:14.930Z",
+   "retryAt": "2026-11-22T11:31:14.930Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482574257",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C2CDC90A5943",
+   "company": "YMCA of the Suncoast",
+   "title": "Executive Director - Hernando County",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:18.018Z",
+   "retryAt": "2026-11-23T02:31:18.018Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4482004913",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F523692857A9",
+   "company": "ZRG",
+   "title": "Group Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:21.174Z",
+   "retryAt": "2026-11-22T11:31:21.174Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483206369",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AF94D03A2886",
+   "company": "Target",
+   "title": "Production Controller- Flow Center- Hampton GA",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:24.339Z",
+   "retryAt": "2026-11-22T11:31:24.339Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485994753",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -29738,44 +29823,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-20890049D143",
-   "company": "YMCA of the USA",
-   "title": "Associate Executive Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T10:31:27.734Z",
-   "retryAt": "2026-11-23T02:31:27.734Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483410686",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7260BFC3E86D",
-   "company": "HHS, LLC",
-   "title": "Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T10:31:30.853Z",
-   "retryAt": "2026-11-23T02:31:30.853Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480718855",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-32C6B187C1D1",
    "company": "Three Saints Bay, LLC",
    "title": "Classified Material Manager (5561) with Security Clearance",
@@ -32217,6 +32264,44 @@
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-20890049D143",
+   "company": "YMCA of the USA",
+   "title": "Associate Executive Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:27.734Z",
+   "retryAt": "2026-11-23T02:31:27.734Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483410686",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-7260BFC3E86D",
+   "company": "HHS, LLC",
+   "title": "Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T10:31:30.853Z",
+   "retryAt": "2026-11-23T02:31:30.853Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480718855",
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
