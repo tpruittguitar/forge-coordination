@@ -26,8 +26,8 @@ function frozenApiIds(queue){
 function requireFrozenApiId(pid,queue){
   if(!frozenApiIds(queue).has(pid))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
 }
-function productInput(row,capture,now){
-  if(Prepared.protectedRow(row)||Source.known(row.p.PRODUCT)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
+function productInput(row,capture,now,{allowKnown=false}={}){
+  if(Prepared.protectedRow(row)||(!allowKnown&&Source.known(row.p.PRODUCT))||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
   const source=Prepared.posting(row,capture,now);
   if(!source||source.identityVerified!==true||source.fullPosting!==true)return null;
   Source.publicUrl(source.url);const u=new URL(source.url);
@@ -154,20 +154,52 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
     requireBulkSmoke(ledger){
       if(maxAttempts!==BULK_LIMIT||!Object.values(ledger.grantExtractionAttempts||{}).some(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId))throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
     },
-    async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved}){
+    acceptedBulkResearch(row,capture,ledger,product){
+      if(maxAttempts!==BULK_LIMIT)return null;
+      const source=Prepared.posting(row,capture,now());
+      if(!source?.identityVerified||!source?.fullPosting||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(source.url)))return null;
+      const sourceKey=[row.PRIMARY_ID,Cache.route(source.url),fingerprint(source.text)];
+      const records=ledger.grantExtractionAttempts||{},fields={};
+      let accepted=false;
+      for(const group of ['', 'PRODUCT','WORK_ARRANGEMENT','DEGREE','SALARY']){
+        const key=fingerprint(JSON.stringify(group?[...sourceKey,group]:sourceKey));
+        const record=records[key];
+        if(record?.primaryId!==row.PRIMARY_ID||record.phase!=='BULK'||!Number.isSafeInteger(record.reportedCostMicrousd))continue;
+        if(record.status==='FACTS_ACCEPTED'&&record.acceptedFields){Object.assign(fields,record.acceptedFields);accepted=true;}
+        const e=record.productReference;
+        if(record.status==='PRODUCT_PROPOSED'&&e?.primaryId===row.PRIMARY_ID&&product?.id===e.id&&
+          product.provenance?.grantAttemptKey===key&&product.provenance?.fullPostingTextSha256===e.provenance.fullPostingTextSha256&&
+          JSON.stringify(product.products)===JSON.stringify(e.products)&&JSON.stringify(product.sources)===JSON.stringify(e.sources))accepted=true;
+      }
+      return accepted?{fields}:null;
+    },
+    pendingProduct(row,ledger){
+      const e=Object.values(ledger.grantExtractionAttempts||{}).find(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&r.status==='PRODUCT_PROPOSED')?.productReference;
+      return e&&e.company===row.COMPANY&&e.location===row.LOCATION&&
+        (!Source.known(row.p.PRODUCT)||e.products[0]===row.p.PRODUCT)?e:null;
+    },
+    async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved,bulkProduct=false}){
       if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
+      if(bulkProduct&&maxAttempts!==BULK_LIMIT)throw Error("ATS_GRANT_PRODUCT_PROPOSAL_SCOPE");
+      const proposeProduct=!!productId||bulkProduct;
       if(productId&&row.PRIMARY_ID!==productId)return {};
-      try{selected=productId?productInput(row,capture,now()):input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
+      try{selected=proposeProduct?productInput(row,capture,now(),{allowKnown:bulkProduct}):input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
       if(!selected)return {};
-      const {e,groups,ambiguousPay,candidate,source}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
+      const {e,groups,ambiguousPay,candidate,source}=selected;
+      const sourceKey=[row.PRIMARY_ID,Cache.route(e.url),e.sha256], legacyKey=fingerprint(JSON.stringify(sourceKey));
+      const group=maxAttempts===BULK_LIMIT?groups[0]:null, key=group?fingerprint(JSON.stringify([...sourceKey,group])):legacyKey;
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
-      if(Object.hasOwn(records,key))return {};
-      const entries=Object.values(records),smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
+      const legacy=group&&records[legacyKey];
+      if(Object.hasOwn(records,key)||legacy?.phase==='BULK'&&(!legacy.purpose||group==='PRODUCT'))return {};
+      const entries=Object.values(records);
+      if(group&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&r.status==='POSTING_OR_UNKNOWN'))return {};
+      const smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
       if(maxAttempts===BULK_LIMIT&&!smoke)throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
       const priorSmokes=Object.entries(records).filter(([,r])=>r?.phase==='SMOKE');
       let priorKey;
       if(productId&&entries.some(r=>r?.primaryId===productId))throw Error('ATS_GRANT_PRODUCT_ALREADY_ATTEMPTED');
+      if(bulkProduct&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&(r.purpose==='PRODUCT_PROPOSAL'||r.status==='POSTING_OR_UNKNOWN')))return {};
       if(!productId&&maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
@@ -195,11 +227,11 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
       diagnostic={category:'REQUEST_VALIDATION'};
-      const body=W.request(e,groups,{explicitJsonMessage:true,productProposal:!!productId});
+      const body=W.request(e,groups,{explicitJsonMessage:true,productProposal:proposeProduct});
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
       const timeout=AbortSignal.timeout(remaining);
-      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(productId?{purpose:'PRODUCT_PROPOSAL'}:{}),...(priorKey?{retryOf:priorKey}:{})};
+      records[key]={primaryId:row.PRIMARY_ID,at:new Date(now()).toISOString(),status:'POSTING_OR_UNKNOWN',phase:maxAttempts===SMOKE_LIMIT?'SMOKE':'BULK',...(group?{group}:{}),...(proposeProduct?{purpose:'PRODUCT_PROPOSAL'}:{}),...(priorKey?{retryOf:priorKey}:{})};
       checkpoint(); // same normal ATS ledger, before any model request; no second ledger.
       attempts++;unknownAttempts++;
       try {
@@ -227,11 +259,27 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
         reportedCostMicrousd+=cost;unknownAttempts--;
         diagnostic={category:'FACT_VALIDATION'};
-        const fields=productId?productResult(r.result,e,row):candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
-        records[key].status=Object.keys(fields).length?(productId?'PRODUCT_PROPOSED':'FACTS_ACCEPTED'):'NO_SUPPORTED_FACTS';
+        let fields=proposeProduct?productResult(r.result,e,row):candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
+        // Product provenance cannot legitimize a different already-stored fact.
+        if(bulkProduct&&Source.known(row.p.PRODUCT)&&fields.product!==row.p.PRODUCT)fields={};
+        records[key].status=Object.keys(fields).length?(proposeProduct?'PRODUCT_PROPOSED':'FACTS_ACCEPTED'):'NO_SUPPORTED_FACTS';
+        if(bulkProduct&&records[key].status==='PRODUCT_PROPOSED'){
+          records[key].productReference={id:'ats-grant-'+row.PRIMARY_ID.toLowerCase(),primaryId:row.PRIMARY_ID,company:row.COMPANY,location:row.LOCATION,
+            products:[fields.product],status:'CONFIRMED',sources:[fields.sourceUrl],verifiedAt:fields.sourceObservedAt,
+            provenance:{scope:'JOB_POSTING',grantAttemptKey:key,grantAttemptAt:records[key].at,costMicrousd:cost,
+              quote:fields.quote,fullPostingTextSha256:fields.fullPostingTextSha256}};
+          checkpoint(); // The exact proposal survives a stop before registry publication.
+        }else if(maxAttempts===BULK_LIMIT&&records[key].status==='FACTS_ACCEPTED'){
+          records[key].acceptedFields=fields;
+          checkpoint(); // The returned verified facts are reusable without another model call.
+        }
         diagnostic={category:records[key].status};
         return fields;
       } catch {
+        // A bounded per-job timeout stays individually fenced, but does not
+        // stall other bulk IDs. Funding/HTTP/unknown errors still stop the lane.
+        if(maxAttempts===BULK_LIMIT&&!signal?.aborted&&
+          (diagnostic?.category==='TRANSPORT_TIMEOUT'||diagnostic?.category==='TRANSPORT_ABORTED'&&timeout.aborted))return {};
         stopped=true; // No retry or alternate account on invalid, unknown or unverifiable outcomes.
         throw Error('GRANT_RESPONSE_UNVERIFIED');
       }

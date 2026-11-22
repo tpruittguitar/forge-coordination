@@ -52,7 +52,7 @@ const DRY = PREPARE_ONLY || process.argv.includes('--dry') || !(CONFIG.submit ||
 const PRODUCTS_ONLY=process.argv.includes('--products-only')||process.env.ENRICH_PRODUCTS_ONLY==='1';
 const GrantExtraction=require('./grant-extract.cjs');
 const grantExtraction=GrantExtraction.configured({root:ROOT,live:!DRY&&!PRODUCTS_ONLY&&!process.env.ENRICH_MASTER_FILE,writerPostLock});
-const broadGrant=!!grantExtraction, SourceBlanks=require('./source-blanks.cjs'), GrantSalary=require('./grant-salary-estimate.cjs');
+const broadGrant=!!grantExtraction,completeGrantBatch=broadGrant&&!grantExtraction.smoke, SourceBlanks=require('./source-blanks.cjs'), GrantSalary=require('./grant-salary-estimate.cjs');
 const grantSmokeId=grantExtraction?.smoke?process.env.FORGE_ATS_GRANT_SMOKE_ID:null;
 if(grantSmokeId&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(grantSmokeId))throw Error('ATS_GRANT_SMOKE_ID_INVALID');
 
@@ -678,7 +678,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     requests.push({ action: 'ruling', ruling: { requestId: `${RUN_ID}-U${String(stats.upgraded).padStart(3, '0')}`, primaryId: r.PRIMARY_ID, kind: 'ENRICH', actor: 'ATSBOT', fields: { ...modelFields(r), SALARY_BASE_LOW: est.low, SALARY_BASE_HIGH: est.high, SALARY_MIDPOINT: est.mid, SALARY_BASIS: 'FORGE-ESTIMATE', SALARY_CONF: est.conf, SALARY_ASOF: today, SALARY_SOURCE: salarySource(est), SALARY_NOTE: 'FORGE-ESTIMATE upgraded from a comparables LOW estimate: ' + est.basis + '; ' + est.bls.note } } });
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
+  const projectedGrantMissing=(row,fields)=>{
+    const p={...row.p,...fields},missing=require('./decision-complete').missingFields({...row,p},Evidence);
+    if(!Products.known(p.PRODUCT_SOURCE)&&!missing.includes('products (what they make)'))missing.push('products (what they make)');
+    return missing;
+  };
   if(broadGrant){
+    const productBatch=[];
     const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
     for(const r of ordered){
       if(requests.length>=Math.min(grantExtraction.rowLimit,CONFIG.maxBatches*25)||!runtime.canStart(60000))break;
@@ -695,15 +701,19 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const rawNeeds=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys].some(keys=>SourceBlanks.missing(r.p,keys));
       if(!rawNeeds&&!SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!grantExtraction.productProposal)continue;
       coverage.admitted++;
+      const product=Products.lookup(r,productsReference);
+      const bulkProduct=!grantExtraction.smoke&&!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
+        (!Products.known(r.p.PRODUCT)||SourceBlanks.missing(r.p,['PRODUCT_SOURCE']));
+      const cachedProposal=bulkProduct&&grantExtraction.pendingProduct(r,ledger);
       const api=atsOf.get(r);
-      if((rawNeeds||grantExtraction.productProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
+      if((rawNeeds||grantExtraction.productProposal||bulkProduct&&!cachedProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
         // The existing exact posting parser/reader binds the canonical identity.
         try{
           const parsed=Recovery.exactApi(r,api,JSON.parse(await sourceReader().read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
           if(parsed)capture=postingCache.save(r,api.page,parsed);
         }catch{Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{url:api.page,status:'NO_EXACT_COMPLETE_POSTING'}]);}
       }
-      if(rawNeeds&&!capture)coverage.noExactPosting++;
+      if((rawNeeds||bulkProduct&&!cachedProposal)&&!capture)coverage.noExactPosting++;
       if(grantExtraction.productProposal){
         try{
           const evidence=await grantExtraction.extract({row:r,capture,ledger,
@@ -715,31 +725,61 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }
         break; // Evidence only until Products.lookup can see the normal committed record.
       }
-      const product=Products.lookup(r,productsReference);
       if(SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!product)coverage.noMatchingProductReference++;
-      let f;
+      let f,acceptedGrant;
       try{
-        const fallback=need(r).includes('SALARY')&&runtime.canStart(60000)?()=>grantExtraction.extract({
-          row:r,capture,needs:['SALARY'],fields:{},ledger,
-          payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)}):null;
-        f=await SourceBlanks.directOrFallback({row:r,capture,product,Products},fallback);
+        if(bulkProduct&&!cachedProposal&&capture&&runtime.canStart(60000)){
+          await grantExtraction.extract({row:r,capture,bulkProduct:true,ledger,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+        }
+        const proposal=cachedProposal||bulkProduct&&grantExtraction.pendingProduct(r,ledger);
+        if(proposal)productBatch.push(proposal);
+        if(completeGrantBatch){
+          f=SourceBlanks.project({row:r,capture,product,Products});
+          acceptedGrant=grantExtraction.acceptedBulkResearch(r,capture,ledger,product);
+          if(capture?.fullPosting===true&&runtime.canStart(60000)){
+            const groups=[...new Set([...need(r),
+              ...(SourceBlanks.missing(r.p,SourceBlanks.workKeys)?['WORK_ARRANGEMENT']:[]),
+              ...(SourceBlanks.missing(r.p,SourceBlanks.degreeKeys)?['DEGREE']:[])])];
+            // Each applicable missing group gets at most one exact-source
+            // attempt, even when Product was researched from the same posting.
+            for(const group of groups){
+              if(!runtime.canStart(60000))break;
+              await grantExtraction.extract({row:r,capture,needs:[group],fields:{},ledger,
+                payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+            }
+            acceptedGrant=grantExtraction.acceptedBulkResearch(r,capture,ledger,product);
+          }
+          if(acceptedGrant)Object.assign(f,SourceBlanks.select(r.p,acceptedGrant.fields));
+        }else{
+          const fallback=need(r).includes('SALARY')&&runtime.canStart(60000)?()=>grantExtraction.extract({
+            row:r,capture,needs:['SALARY'],fields:{},ledger,
+            payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)}):null;
+          f=await SourceBlanks.directOrFallback({row:r,capture,product,Products},fallback);
+        }
       }catch(e){
         if(!['GRANT_FUNDING_OR_HOST_BLOCKED','GRANT_RESPONSE_UNVERIFIED','ATS_GRANT_CAP_REACHED'].includes(e.message))throw e;
         stats.grant_extraction_stop=e.message;
         break;
       }
       const estimate=await GrantSalary.plan({row:r,capture,old,fields:f,
-        enabled:!grantExtraction.smoke&&runtime.canStart(60000)&&need(r).includes('SALARY'),
+        enabled:completeGrantBatch&&!!acceptedGrant&&runtime.canStart(60000)&&need(r).includes('SALARY'),
         estimateFor,modelFields,salarySource,today});
       if(estimate.SALARY_BASIS){Object.assign(f,estimate);stats.estimates++;coverage.salaryEstimated=(coverage.salaryEstimated||0)+1;}
-      for(const field of require('./decision-complete').missingFields({...r,p:{...r.p,...f}},Evidence)){
+      const missing=projectedGrantMissing(r,f);
+      for(const field of missing){
         const remaining=coverage.remainingByFieldAfterPlan;
         remaining[field]=(remaining[field]||0)+1;
+      }
+      if(completeGrantBatch&&(!acceptedGrant||missing.length)){
+        const reason=!acceptedGrant?'noAcceptedGrantResearch':'notFull11';
+        coverage[reason]=(coverage[reason]||0)+1;
+        continue;
       }
       if(!Object.keys(f).length)continue;
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}};
       coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
     }
+    if(productBatch.length)stats.grant_product_registry_batch={schema:'forge.company-site-products.v1',entries:productBatch};
   }
   // Every pay write carries an arithmetic midpoint and a separate policy scoring point.
   for(const q of requests){const f=q.ruling.fields,v=Pay.values(f.SALARY_BASE_LOW,f.SALARY_BASE_HIGH);if(v){const extra={SALARY_MIDPOINT:v.mid,SALARY_SCORE_POINT:v.scorePoint};Object.assign(f,broadGrant?SourceBlanks.select(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId).p,extra):extra);}}
@@ -776,8 +816,16 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const cur = now[q.ruling.primaryId]; if ((grantFactIds.has(q.ruling.primaryId)||retainedIds.has(q.ruling.primaryId)||preparedIds.has(q.ruling.primaryId)||preparedSourceById.has(q.ruling.primaryId))&&!Prepared.liveAllowed(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur,{blocked:inFlightIds.has(q.ruling.primaryId),fenced:externallyFenced(q.ruling.primaryId)})){stats.guard_dropped++;return false;} if (!cur || !['SCOUT_INTAKE','DISCOVERY_LEAD','TIM_DECISION_REQUIRED','BLOCKED','MANUAL_RESEARCH','READY_TO_PURSUE'].includes(cur.BUCKET) || /^YES/i.test(cur.p.ANTI_RESURRECTION||'') || cur.p.DO_NOT_REWORK || (/^CLOSED/.test(cur.p.LIVENESS||'') || /^CLOSED/.test(cur.p.ATS_CHECK_RESULT||''))) { stats.guard_dropped++; return false; }
         const left = needsOf(cur), f = q.ruling.fields;
         if(broadGrant){
-          q.ruling.fields=GrantSalary.liveFields(cur,f);
-          return Object.keys(q.ruling.fields).length>0;
+          const selected=GrantSalary.liveFields(cur,f);
+          if(completeGrantBatch){
+            const normalize=require('../source-intake/writer-cell').normalizeCell;
+            if(projectedGrantMissing(cur,selected).length||
+              Object.entries(f).some(([k,v])=>cur.p[k]!=null&&String(cur.p[k]).trim()&&normalize(cur.p[k])!==normalize(v))){
+              stats.guard_dropped++;return false;
+            }
+          }
+          q.ruling.fields=selected;
+          return Object.keys(selected).length>0;
         }
         if(f.PRODUCT){const entry=Products.lookup(cur,productsReference);if(!entry||!Products.needsUpdate(cur,entry)||entry.id!==f.PRODUCT_REFERENCE)Object.keys(f).filter(k=>/^PRODUCT(?:_|$)/.test(k)).forEach(k=>delete f[k]);}
         if(require('./business-label').guard(f,rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId),cur))stats.business_label_guard_dropped=(stats.business_label_guard_dropped||0)+1;
