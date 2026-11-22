@@ -109,7 +109,7 @@ test('one real model request can emit only a quoted work blank from a long payle
  const e=require('./source-blanks.cjs').exactStoredPosting({find:()=>({doc:{text,url,fullPosting:true},ref:{observedAt:new Date(now-1000).toISOString()},fullPosting:true})},row,now);
  let requests=0;
  const g=G.create({now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
-  transport:async(_url,opts)=>{requests++;const input=JSON.parse(JSON.parse(opts.body).input);a.deepEqual(input.missingGroups,['WORK_ARRANGEMENT']);a.equal(input.posting,'This role will be hybrid requiring a minimum of 3 days in office.');
+  transport:async(_url,opts)=>{requests++;const request=JSON.parse(opts.body),[instruction,data]=request.input;a.equal(instruction.role,'developer');a.match(instruction.content,/^Return JSON\./);a.equal(data.role,'user');a.equal(request.text.format.type,'json_object');a.equal(request.max_output_tokens,1024);const input=JSON.parse(data.content);a.deepEqual(input.missingGroups,['WORK_ARRANGEMENT']);a.equal(input.posting,'This role will be hybrid requiring a minimum of 3 days in office.');
    return wrapped({fields:{WORK_ARRANGEMENT:'HYBRID'},quotes:{WORK_ARRANGEMENT:'This role will be hybrid requiring a minimum of 3 days in office.'}});}});
  const args={...c(),row:{...row,p:{...row.p,WORK_ARRANGEMENT:'HYBRID'}},capture:e,needs:['WORK_ARRANGEMENT','DEGREE']};
  const fields=await g.extract(args);
@@ -125,7 +125,7 @@ test('ATS diagnostics project only allowlisted failure categories, HTTP status a
  const options=[
    [setup(async()=>{throw Object.assign(Error('PRIVATE MESSAGE'),{cause:{code:'ENOTFOUND'}})}),{category:'TRANSPORT_DNS'}],
    [setup(async()=>new Response(JSON.stringify({error:{code:'credit_balance_exhausted',message:'PRIVATE BODY'}}),{status:429})),{category:'HTTP_REJECTION',httpStatus:429,providerCode:'credit_balance_exhausted'}],
-   [setup(async()=>new Response(JSON.stringify({error:{code:'PRIVATE_BODY_FRAGMENT'}}),{status:400})),{category:'HTTP_REJECTION',httpStatus:400}],
+   [setup(async()=>new Response(JSON.stringify({error:{code:'PRIVATE_BODY_FRAGMENT',param:'input'}}),{status:400})),{category:'HTTP_REJECTION',httpStatus:400,providerParam:'input'}],
    [setup(async()=>new Response('PRIVATE MALFORMED JSON')),{category:'RESPONSE_JSON'}],
    [setup(async()=>new Response(JSON.stringify({...admitted,model:'PRIVATE_ALIAS'}))),{category:'RESPONSE_MODEL'}],
    [setup(async()=>new Response(JSON.stringify({...admitted,service_tier:'priority'}))),{category:'RESPONSE_SERVICE_TIER'}],
@@ -152,5 +152,29 @@ test('explicit one-time unknown smoke retry uses a distinct pinned job and prese
  a.deepEqual(ledger.grantExtractionAttempts.old,original);
  a.equal(Object.values(ledger.grantExtractionAttempts).find(r=>r.primaryId===target).retryOf,'old');
  await a.rejects(G.create({...options,retryPriorId:prior,retryTargetId:third}).extract({...args,row:{...row,PRIMARY_ID:third}}),/ALREADY_ATTEMPTED/);
+ a.equal(calls,1);
+});
+
+test('corrected final smoke requires both pinned unknown ancestors, no Writer evidence, a third distinct row and no fourth',async()=>{
+ const [original,previous,target,fourth]=['V2I-FIRST','V2I-SECOND','V2I-THIRD','V2I-FOURTH'];
+ const records={old:{primaryId:original,phase:'SMOKE',status:'POSTING_OR_UNKNOWN'},later:{primaryId:previous,phase:'SMOKE',status:'POSTING_OR_UNKNOWN',retryOf:'old'}};
+ const ledger={grantExtractionAttempts:structuredClone(records)};
+ const args={...c(),row:{...row,PRIMARY_ID:target},ledger};
+ let calls=0;
+ const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
+    transport:async()=>{calls++;return wrapped(payOnly)}};
+ const retry={retryOriginalId:original,retryPriorId:previous,retryTargetId:target};
+ for(const invalid of [
+   {...args,ledger:{...ledger,submitted:{[original]:'earlier'}}},
+   {...args,ledger:{...ledger,pendingWrites:{batch:{ids:[previous]}}}},
+   {...args,ledger:{grantExtractionAttempts:{old:records.old,later:{...records.later,retryOf:'different'}}}}
+ ])await a.rejects(G.create({...options,...retry}).extract(invalid),/ALREADY_ATTEMPTED/);
+ await a.rejects(G.create({...options,retryPriorId:previous,retryTargetId:target}).extract(args),/ALREADY_ATTEMPTED/);
+ a.equal(calls,0);
+ a.equal((await G.create({...options,...retry}).extract(args)).SALARY_BASE_LOW,180000);
+ a.deepEqual(ledger.grantExtractionAttempts.old,records.old);a.deepEqual(ledger.grantExtractionAttempts.later,records.later);
+ a.equal(Object.values(ledger.grantExtractionAttempts).find(r=>r.primaryId===target).retryOf,'later');
+ a.equal(Object.keys(ledger.grantExtractionAttempts).length*2048,6144);
+ await a.rejects(G.create({...options,...retry,retryTargetId:fourth}).extract({...args,row:{...row,PRIMARY_ID:fourth}}),/ALREADY_ATTEMPTED/);
  a.equal(calls,1);
 });

@@ -6,15 +6,18 @@ const {LIMITS}=require('./worker.cjs');
 const providerCodes=new Set(['invalid_api_key','invalid_organization','invalid_project','model_not_found','insufficient_quota',
   'credit_balance_exhausted','rate_limit_exceeded','invalid_request_error','invalid_value','unsupported_value','unknown_parameter',
   'missing_required_parameter','organization_usage_limit_exceeded','organization_spend_limit_exceeded','project_spend_limit_exceeded']);
-async function providerCode(r){
+const providerParams=new Set(['input','instructions','model','service_tier','text.format','text.format.type','reasoning.effort',
+  'max_output_tokens','tool_choice','tools','store','background']);
+async function providerError(r){
   try{
     const reader=r.body.getReader(),chunks=[];let size=0;
     try{for(;;){
       const {done,value}=await reader.read();if(done)break;
       size+=value.length;if(size>4096)return null;chunks.push(Buffer.from(value));
     }}finally{await reader.cancel();}
-    const code=JSON.parse(Buffer.concat(chunks).toString('utf8'))?.error?.code;
-    return providerCodes.has(code)?code:null;
+    const error=JSON.parse(Buffer.concat(chunks).toString('utf8'))?.error;
+    return {...(providerCodes.has(error?.code)?{providerCode:error.code}:{}),
+      ...(providerParams.has(error?.param)?{providerParam:error.param}:{})};
   }catch{return null;}
 }
 async function response(body,{secureRuntime,projectId,signal,transport,observe}) {
@@ -37,8 +40,8 @@ async function response(body,{secureRuntime,projectId,signal,transport,observe})
   if(!r.ok&&observe){
     const status=Number.isInteger(r.status)&&r.status>=300&&r.status<=599?{httpStatus:r.status}:{};
     note('HTTP_REJECTION',status);
-    const code=await providerCode(r);
-    if(code)note('HTTP_REJECTION',{...status,providerCode:code});
+    const error=await providerError(r);
+    if(error)note('HTTP_REJECTION',{...status,...error});
   }
   if([401,402,403,429].includes(r.status)) throw Error('API_AUTH_OR_CREDIT_FAILURE');
   if(!r.ok) throw Error('API_OUTCOME_UNKNOWN');

@@ -67,10 +67,11 @@ function accountDeadline(proof,now){
   return deadline;
 }
 
-function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null}){
+function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null,retryOriginalId=null}){
   if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
   const id=/^V2[A-Z]-[A-Za-z0-9_-]+$/;
   if(retryPriorId&&(maxAttempts!==SMOKE_LIMIT||!id.test(retryPriorId)||!id.test(retryTargetId||'')||retryPriorId===retryTargetId))throw Error('ATS_GRANT_SMOKE_RETRY_SCOPE_INVALID');
+  if(retryOriginalId&&(!retryPriorId||!id.test(retryOriginalId)||new Set([retryOriginalId,retryPriorId,retryTargetId]).size!==3))throw Error('ATS_GRANT_SMOKE_RETRY_SCOPE_INVALID');
 
   let attempts=0, reportedCostMicrousd=0, unknownAttempts=0, stopped=false, proof, credential, diagnostic;
   return {
@@ -95,11 +96,14 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const priorSmokes=Object.entries(records).filter(([,r])=>r?.phase==='SMOKE');
       let priorKey;
       if(maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
-        const previous=priorSmokes[0];
-        const hasReceipt=Object.hasOwn(ledger.submitted||{},retryPriorId)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
-          Object.values(ledger[group]||{}).some(x=>x?.ids?.includes(retryPriorId)||x?.requests?.some(q=>q?.ruling?.primaryId===retryPriorId)));
-        if(!retryPriorId||priorSmokes.length!==1||previous[1].primaryId!==retryPriorId||row.PRIMARY_ID!==retryTargetId
-          ||previous[0]===key||previous[1].status!=='POSTING_OR_UNKNOWN'||previous[1].writerRequestId||hasReceipt)throw Error('ATS_GRANT_SMOKE_ALREADY_ATTEMPTED');
+        const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
+        const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
+        const hasReceipt=id=>Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>
+          Object.values(ledger[group]||{}).some(x=>x?.ids?.includes(id)||x?.requests?.some(q=>q?.ruling?.primaryId===id)));
+        const unknown=entry=>entry?.[0]!==key&&entry?.[1]?.status==='POSTING_OR_UNKNOWN'&&!entry[1].writerRequestId&&!hasReceipt(entry[1].primaryId);
+        const exactChain=retryOriginalId?priorSmokes.length===2&&unknown(original)&&!original[1].retryOf&&previous?.[1]?.retryOf===original[0]
+          :priorSmokes.length===1&&!previous?.[1]?.retryOf;
+        if(!retryPriorId||!exactChain||row.PRIMARY_ID!==retryTargetId||!unknown(previous))throw Error('ATS_GRANT_SMOKE_ALREADY_ATTEMPTED');
         priorKey=previous[0];
       }
       const reserved=(entries.length+1)*reservationMicrousd;
@@ -116,7 +120,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
       diagnostic={category:'REQUEST_VALIDATION'};
-      const body=W.request(e,groups);
+      const body=W.request(e,groups,{explicitJsonMessage:true});
       const remaining=Math.min(W.LIMITS.jobMs,deadline-now());
       if(remaining<=0||signal?.aborted)return {};
       const timeout=AbortSignal.timeout(remaining);
@@ -185,6 +189,7 @@ function configured({root,live,writerPostLock,env=process.env}){
   if(configuredLimit!==undefined&&!['1','50'].includes(configuredLimit))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
   const maxAttempts=configuredLimit===undefined?SMOKE_LIMIT:Number(configuredLimit);
   const retryPriorId=env.FORGE_ATS_GRANT_RETRY_PRIOR_ID||null,retryTargetId=env.FORGE_ATS_GRANT_SMOKE_ID||null;
+  const retryOriginalId=env.FORGE_ATS_GRANT_RETRY_ORIGINAL_ID||null;
   const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
   if(!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
   // Fail closed if the existing authoritative ATS workflow is enabled or still
@@ -192,7 +197,7 @@ function configured({root,live,writerPostLock,env=process.env}){
   const github={token:env.GITHUB_TOKEN||env.GH_TOKEN,repo:env.GITHUB_REPOSITORY};
   const lockPath=privateFile+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
   let owned=false;
-  return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
+  return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
     async acquire(){
       await assertGithubOwnerStopped(github);
       if(!lock(lockPath,'acquire',token).acquired)throw Error('ATS_GRANT_NATIVE_RUN_ALREADY_ACTIVE');
