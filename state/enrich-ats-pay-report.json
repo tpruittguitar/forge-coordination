@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T07:03:29.796Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T065844998Z",
+ "at": "2026-11-22T07:12:05.577Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T070830526Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T06:58:58.629Z",
+  "readAt": "2026-11-22T07:08:40.202Z",
   "sha256": "cdf709e6fd2fc8d04b1952346966517342ceee45895f70018095fba452884b49",
   "rows": 9538
  },
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 624,
- "skipped_recent": 337,
+ "estimate_waiting_for_posting": 619,
+ "skipped_recent": 345,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,29 +63,23 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "ziprecruiter": 1,
-  "linkedin": 6
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 3
+  "linkedin": 2
  },
  "agg_pay": {},
  "agg_failed": {
-  "ziprecruiter": 1,
-  "linkedin": 3
+  "linkedin": 2
  },
  "agg_errors": {
-  "ziprecruiter": [
-   "403"
-  ],
   "linkedin": [
    "404",
-   "429",
-   "429"
+   "404"
   ]
  },
  "agg_wall": {},
- "source_reads": 7,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -131,7 +125,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T06:59:04.563Z",
+  "profile_as_of": "2026-11-22T07:08:45.848Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14740,10 +14734,10 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 643,
- "nothing_found": 647,
+ "not_attempted": 638,
+ "nothing_found": 640,
  "source_origin_blocks": {},
- "attempt_only_skipped": 3,
+ "attempt_only_skipped": 2,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14776,8 +14770,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2353,
- "network_requests": 15,
+ "roles_researched": 2347,
+ "network_requests": 12,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14788,9 +14782,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 764,
+  "SOURCE_RESEARCH_REQUIRED": 762,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 69,
+  "EVIDENCE_FOUND": 71,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15006,24 +15000,6 @@
    "lastAttemptAt": "2026-11-20T18:51:56.837Z",
    "retryAt": "2026-11-20T19:51:56.837Z",
    "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2D41E91681F5",
-   "company": "(R) Red Frog Solutions",
-   "title": "VP of Operations - Supply Chain/Manufacturing",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:00:11.082Z",
-   "retryAt": "2026-11-22T23:00:11.082Z",
-   "attempts": [
-    {
-     "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
-     "status": "HTTP_403"
-    }
-   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -15967,6 +15943,78 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4477824153",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2D41E91681F5",
+   "company": "(R) Red Frog Solutions",
+   "title": "VP of Operations - Supply Chain/Manufacturing",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:11.082Z",
+   "retryAt": "2026-11-22T23:00:11.082Z",
+   "attempts": [
+    {
+     "url": "https://www.ziprecruiter.com/c/red-frog-solutions/Job/VP-of-Operations-Supply-Chain-Manufacturing/-in-Loves-Park,IL?jid=794182f61c31e44d",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-26D40D235438",
+   "company": "Princess Cruises",
+   "title": "Director, Food and Beverage Operations and Experiences",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:14.203Z",
+   "retryAt": "2026-11-22T08:00:14.203Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483769628",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8199525A8534",
+   "company": "Florida International University",
+   "title": "Director of Operations for Aquarius Reef Base and Working Diving Safety Officer (Islamorada, FL)",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:17.343Z",
+   "retryAt": "2026-11-22T08:00:17.343Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475113203",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC419D176355",
+   "company": "Guardian Dentistry Partners",
+   "title": "Director, Tactical Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:20.510Z",
+   "retryAt": "2026-11-22T08:00:20.510Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4470643222",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -19126,80 +19174,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-FDC7B6092B49",
-   "company": "iLocatum",
-   "title": "Project Director - Greenfield Food Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
-   "retryAt": "2026-11-22T23:00:23.813Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484169592",
-     "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4A14D40C9A54",
-   "company": "(R) VirtualVocations",
-   "title": "Assistant Vice President of Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
-   "retryAt": "2026-11-22T23:00:23.813Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-909C91732DFE",
-   "company": "(R) VirtualVocations",
-   "title": "Senior Manager, IVD Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-22T07:00:23.814Z",
-   "retryAt": "2026-11-22T23:00:23.814Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-EE8C16D8D2D3",
-   "company": "Killdeer Mountain Manufacturing, Inc.",
-   "title": "Director of Manufacturing",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:00:26.905Z",
-   "retryAt": "2026-11-22T23:00:26.905Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-2FFD9B49A246",
    "company": "Jobot",
    "title": "Director, Protection & Controls Operations",
@@ -19207,9 +19181,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T15:06:41.549Z",
-   "retryAt": "2026-11-22T07:06:41.549Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:09:45.638Z",
+   "retryAt": "2026-11-22T23:09:45.638Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478924927",
@@ -19226,9 +19200,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T15:06:44.640Z",
-   "retryAt": "2026-11-22T07:06:44.640Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T07:09:48.770Z",
+   "retryAt": "2026-11-22T23:09:48.770Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4478679991",
@@ -20282,6 +20256,80 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-FDC7B6092B49",
+   "company": "iLocatum",
+   "title": "Project Director - Greenfield Food Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
+   "retryAt": "2026-11-22T23:00:23.813Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484169592",
+     "status": "HTTP_404"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4A14D40C9A54",
+   "company": "(R) VirtualVocations",
+   "title": "Assistant Vice President of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:23.813Z",
+   "retryAt": "2026-11-22T23:00:23.813Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-909C91732DFE",
+   "company": "(R) VirtualVocations",
+   "title": "Senior Manager, IVD Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:23.814Z",
+   "retryAt": "2026-11-22T23:00:23.814Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EE8C16D8D2D3",
+   "company": "Killdeer Mountain Manufacturing, Inc.",
+   "title": "Director of Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:26.905Z",
+   "retryAt": "2026-11-22T23:00:26.905Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4480804844",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-3E300502C27E",
    "company": "(R) Ladders",
    "title": "Senior Director, Service Manager",
@@ -20633,60 +20681,6 @@
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-15C643826EA4",
-   "company": "Dematic",
-   "title": "Electro-Mechanical Assistant Site Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "MODEL_INPUTS_REQUIRED",
-   "lastAttemptAt": "2026-11-22T07:00:29.987Z",
-   "retryAt": "2026-11-22T23:00:29.987Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484327048",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
-  },
-  {
-   "id": "V2I-0E8C5076C80A",
-   "company": "Wycliffe Bible Translators USA",
-   "title": "Dir. of Innovative Workforce Initiatives",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T15:06:50.898Z",
-   "retryAt": "2026-11-22T07:06:50.898Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4418757270",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-011DF7129CA9",
-   "company": "Lockheed Martin",
-   "title": "Manufacturing Engineering Mgr - Level 5",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T15:06:53.962Z",
-   "retryAt": "2026-11-22T07:06:53.962Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4488934955",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -21940,6 +21934,24 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-15C643826EA4",
+   "company": "Dematic",
+   "title": "Electro-Mechanical Assistant Site Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:29.987Z",
+   "retryAt": "2026-11-22T23:00:29.987Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484327048",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
    "id": "V2I-14B5BEB7CC51",
@@ -29859,60 +29871,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-4ADD439A2798",
-   "company": "(R) VirtualVocations",
-   "title": "Quality Systems Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-22T07:00:30.159Z",
-   "retryAt": "2026-11-22T23:00:30.159Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-394575D052F2",
-   "company": "(R) VirtualVocations",
-   "title": "Quality Performance Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
-   "retryAt": "2026-11-22T23:00:30.160Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-15B5656E45BA",
-   "company": "(R) VirtualVocations",
-   "title": "Manager of Quality Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
-   "retryAt": "2026-11-22T23:00:30.160Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-CD67BA1E6058",
    "company": "BoardRoom magazine",
    "title": "General Manager/Chief Operating Officer, The Country Club of Orlando",
@@ -32335,6 +32293,60 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-22T02:38:37.209Z",
    "retryAt": "2026-11-22T18:38:37.209Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4ADD439A2798",
+   "company": "(R) VirtualVocations",
+   "title": "Quality Systems Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:30.159Z",
+   "retryAt": "2026-11-22T23:00:30.159Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-394575D052F2",
+   "company": "(R) VirtualVocations",
+   "title": "Quality Performance Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
+   "retryAt": "2026-11-22T23:00:30.160Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-15B5656E45BA",
+   "company": "(R) VirtualVocations",
+   "title": "Manager of Quality Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T07:00:30.160Z",
+   "retryAt": "2026-11-22T23:00:30.160Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
