@@ -1,10 +1,10 @@
 {
- "at": "2026-11-22T05:03:33.651Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T045815624Z",
+ "at": "2026-11-22T05:14:33.689Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T050908846Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T04:58:24.475Z",
+  "readAt": "2026-11-22T05:09:15.994Z",
   "sha256": "cdf709e6fd2fc8d04b1952346966517342ceee45895f70018095fba452884b49",
   "rows": 9538
  },
@@ -62,13 +62,21 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
+ "agg_tried": {
+  "linkedin": 2
+ },
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -76,14 +84,15 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 0,
+  "BLS_EST": 1
  },
  "bls_queries": 0,
  "est_shared_low": 0,
@@ -101,20 +110,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 2,
+  "candidates": 5,
+  "saved_reused": 4,
   "cache_hits": 0,
-  "reads": 0,
+  "reads": 1,
   "found": 0,
-  "failed": 0,
+  "failed": 1,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T04:58:30.629Z",
+  "profile_as_of": "2026-11-22T05:09:22.357Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14699,23 +14708,37 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1471,
-  "review_skipped_blocked": 1896,
+  "review_skipped_blocked": 1889,
   "by_missing": {
-   "products (what they make)": 1834,
-   "work arrangement (remote/hybrid/on-site)": 1176,
+   "products (what they make)": 1827,
+   "work arrangement (remote/hybrid/on-site)": 1169,
    "location / geography": 14
   }
  },
  "salary_review": {
   "eligible": 1912,
-  "due": 1896,
-  "reviewed": 0,
-  "target_reads": 0,
+  "due": 1898,
+  "reviewed": 2,
+  "target_reads": 2,
   "posted_planned": 0,
   "estimate_planned": 0,
-  "no_improvement": 0,
+  "no_improvement": 2,
   "guard_dropped": 0,
-  "samples": []
+  "samples": [
+   {
+    "id": "V2I-32DA5EE65984",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   },
+   {
+    "id": "V2I-5ACD06695437",
+    "status": "NO_STRONGER_EVIDENCE",
+    "priorConfidence": "LOW",
+    "basis": "FORGE-ESTIMATE"
+   }
+  ],
+  "aggregator_reads": 2
  },
  "decision_waiting": 9,
  "retained_completion": {
@@ -14725,6 +14748,8 @@
  },
  "not_attempted": 638,
  "nothing_found": 638,
+ "est_bls": 1,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14757,8 +14782,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2344,
- "network_requests": 8,
+ "roles_researched": 2345,
+ "network_requests": 11,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
