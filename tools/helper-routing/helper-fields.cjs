@@ -47,7 +47,7 @@ const JOB = '(?:position|role|job|workplace|work type|work mode|work|working|emp
 // After "position is onsite", the mode word must end the statement or lead into how or where the
 // job is worked. "with on-site Data Center Operations" or "Remote Operations Center" names another
 // team or place and does not state this job's mode. Real postings, Nov 20 2026.
-const FOLLOW = `(?=\\s*(?:$|[.,;:!?()\\[\\]*|•·\\-–—]|\\d|(?:in|at|from|for|on|only|required|basis|status|presence|daily|full[- ]time|one|two|three|four|five|monday|each|every|per|and\\s+(?:requires?|will|is|must|may|includes?))\\b|${JOB}\\b))`;
+const FOLLOW = `(?=\\s*(?:$|[.,;:!?()\\[\\]*|•·\\-–—]|\\d|(?:in|at|from|for|on|only|required|requiring|basis|status|presence|daily|full[- ]time|one|two|three|four|five|monday|each|every|per|and\\s+(?:requires?|will|is|must|may|includes?))\\b|${JOB}\\b))`;
 const WORK = Object.fromEntries(Object.entries(MODE).map(([k,m]) => [k, new RegExp(
  `(?:^|[|•·;:(\\[-])\\s*\\**\\s*(?:${m})\\s*\\**\\s*(?:$|[|•·;()\\]])`+            // a label: "| On-site |", "Remote"
  `|\\b(?:fully|100%|primarily|mostly)\\s+(?:${m})\\b`+                          // "fully remote"

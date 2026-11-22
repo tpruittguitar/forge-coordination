@@ -6,6 +6,7 @@ const W=require('../grant-backlog/worker.cjs'), C=require('../grant-backlog/wind
 const {response}=require('../grant-backlog/responses.cjs');
 const Store=require('../programmed-coordinator/store.cjs');
 const Source=require('../programmed-coordinator/source.cjs');
+const SourceBlanks=require('./source-blanks.cjs');
 const {lock}=require('../automation-run-lock.cjs');
 const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=37470000;
 const {reservationMicrousd}=W.LIMITS;
@@ -15,21 +16,22 @@ function input(row,capture,needs,fields,now,{payUnresolved=false}={}) {
   if(Prepared.protectedRow(row)||!Recovery.urls(row).some(u=>Cache.route(u)===Cache.route(capture?.url)))return null;
   const source=Prepared.posting(row,capture,now);
   if(!source||source.basis!=='EMPLOYER_POSTED'||source.identityVerified!==true)return null;
-  const groups=[];
+  const candidate=SourceBlanks.modelCandidate(row,source,now,needs.filter(g=>g==='WORK_ARRANGEMENT'?!fields.WORK_ARRANGEMENT&&!fields.REMOTE_HYBRID:g==='DEGREE'?!fields.DEGREE_REQ&&!fields.DEGREE_TEXT:true)),groups=candidate?[candidate.group]:[];
   const ambiguousPay=payUnresolved||[capture,source].some(s=>s.payAmbiguous===true||s.payNeedsRefresh===true||s.payStatus==='PAY_UNRESOLVED');
-  if(!ambiguousPay&&needs.includes('SALARY')&&!fields.SALARY_BASE_LOW&&/\$\s*\d|\bUSD\s*\d/i.test(source.text))groups.push('SALARY');
+  if(!candidate&&!ambiguousPay&&needs.includes('SALARY')&&!fields.SALARY_BASE_LOW&&/\$\s*\d|\bUSD\s*\d/i.test(source.text))groups.push('SALARY');
   // The ATS degree parser has already handled this capture. Do not spend
   // on a degree-only request that the same parser would reject or duplicate.
   if(!groups.length)return null;
   // Unmodified public source text; omit long bodies rather than cut away governing clauses.
-  if(Buffer.byteLength(source.text)>4500)return null;
+  const text=candidate?.text||source.text;
+  if(Buffer.byteLength(text)>4500)return null;
   Source.publicUrl(source.url);
   const u=new URL(source.url);
   if(u.search||u.hash||/docs\.google|drive\.google|mail\.|localhost/i.test(u.hostname))return null;
   const e={
     company:row.COMPANY,title:row.TITLE,location:row.LOCATION,url:source.url,
-    text:source.text,observedAt:source.at,sha256:fingerprint(source.text)};
-  return {e,groups,ambiguousPay};
+    text,observedAt:source.at,sha256:fingerprint(source.text)};
+  return {e,groups,ambiguousPay,candidate,source};
 }
 
 function resultFields(result,e,groups,row,{ambiguousPay=false}={}){
@@ -73,12 +75,15 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
     get attempts(){return attempts;},
     get accounting(){return {reportedCostMicrousd,unknownAttempts,unknownReservedMicrousd:unknownAttempts*reservationMicrousd,cumulativeCapMicrousd:GRANT_CAP};},
     get smoke(){return maxAttempts===SMOKE_LIMIT;},
+    requireBulkSmoke(ledger){
+      if(maxAttempts!==BULK_LIMIT||!Object.values(ledger.grantExtractionAttempts||{}).some(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId))throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
+    },
     async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved}){
       if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
       try{selected=input(row,capture,needs,fields,now(),{payUnresolved});}catch{return {};}
       if(!selected)return {};
-      const {e,groups,ambiguousPay}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
+      const {e,groups,ambiguousPay,candidate,source}=selected,key=fingerprint(JSON.stringify([row.PRIMARY_ID,Cache.route(e.url),e.sha256]));
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
       if(Object.hasOwn(records,key))return {};
       const entries=Object.values(records),smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
@@ -116,7 +121,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
         const cost=Math.ceil(r.usage.input_tokens*W.LIMITS.inputUsdPerMillion+r.usage.output_tokens*W.LIMITS.outputUsdPerMillion);
         Object.assign(records[key],{reportedCostMicrousd:cost,inputTokens:r.usage.input_tokens,outputTokens:r.usage.output_tokens});
         reportedCostMicrousd+=cost;unknownAttempts--;
-        const fields=resultFields(r.result,e,groups,row,{ambiguousPay});
+        const fields=candidate?SourceBlanks.modelResult(r.result,candidate,source):resultFields(r.result,e,groups,row,{ambiguousPay});
         records[key].status=Object.keys(fields).length?'FACTS_ACCEPTED':'NO_SUPPORTED_FACTS';
         return fields;
       } catch {
