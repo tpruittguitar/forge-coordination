@@ -1,11 +1,11 @@
 {
- "at": "2026-11-22T00:19:04.097Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T001450983Z",
+ "at": "2026-11-22T00:27:45.500Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261122T002415539Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-22T00:14:58.927Z",
-  "sha256": "5576d63aab275f62ab4c9a5d4bb2b61a71d91581c65f897126f37eb8046f0c26",
+  "readAt": "2026-11-22T00:24:24.521Z",
+  "sha256": "f768b970b7185baf803295571faaea74328d9079fc46f93c73d57aa0f639269f",
   "rows": 9534
  },
  "rows": 9534,
@@ -49,8 +49,8 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 617,
- "skipped_recent": 349,
+ "estimate_waiting_for_posting": 636,
+ "skipped_recent": 326,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -63,16 +63,22 @@
  "salary_submitted": 0,
  "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 3
  },
  "agg_read": {
-  "linkedin": 1
+  "linkedin": 2
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "404"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -118,7 +124,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-22T00:15:04.859Z",
+  "profile_as_of": "2026-11-22T00:24:30.035Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14727,9 +14733,10 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 638,
- "nothing_found": 638,
- "attempt_only_skipped": 1,
+ "not_attempted": 659,
+ "nothing_found": 660,
+ "source_origin_blocks": {},
+ "attempt_only_skipped": 2,
  "products_planned": 0,
  "code_fit": {
   "scored": 0,
@@ -14762,8 +14769,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 2343,
- "network_requests": 9,
+ "roles_researched": 2366,
+ "network_requests": 11,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -14774,9 +14781,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 148,
-  "SOURCE_RESEARCH_REQUIRED": 778,
+  "SOURCE_RESEARCH_REQUIRED": 776,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 56,
+  "EVIDENCE_FOUND": 58,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -15001,11 +15008,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:39.107Z",
-   "retryAt": "2026-11-22T00:18:39.107Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-22T00:25:23.188Z",
+   "retryAt": "2026-11-22T16:25:23.188Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-ED09A8C302EB",
@@ -15014,11 +15021,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:39.110Z",
-   "retryAt": "2026-11-22T00:18:39.110Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-22T00:25:23.189Z",
+   "retryAt": "2026-11-22T16:25:23.189Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-68E495E3F1A4",
@@ -15027,11 +15034,11 @@
    "needs": [
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:39.112Z",
-   "retryAt": "2026-11-22T00:18:39.112Z",
+   "status": "MODEL_INPUTS_REQUIRED",
+   "lastAttemptAt": "2026-11-22T00:25:23.190Z",
+   "retryAt": "2026-11-22T16:25:23.190Z",
    "attempts": [],
-   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-C806B4C35FF9",
@@ -19178,9 +19185,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:42.550Z",
-   "retryAt": "2026-11-22T00:18:42.550Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:23.359Z",
+   "retryAt": "2026-11-22T16:25:23.359Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19196,9 +19203,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:42.550Z",
-   "retryAt": "2026-11-22T00:18:42.550Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:23.359Z",
+   "retryAt": "2026-11-22T16:25:23.359Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19214,9 +19221,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:42.551Z",
-   "retryAt": "2026-11-22T00:18:42.551Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:23.359Z",
+   "retryAt": "2026-11-22T16:25:23.359Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19232,9 +19239,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:42.552Z",
-   "retryAt": "2026-11-22T00:18:42.552Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:23.359Z",
+   "retryAt": "2026-11-22T16:25:23.359Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -19250,9 +19257,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:45.672Z",
-   "retryAt": "2026-11-22T00:18:45.672Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-22T00:25:26.513Z",
+   "retryAt": "2026-11-22T16:25:26.513Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485438245",
@@ -20702,42 +20709,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-48E2D58CA5A0",
-   "company": "Sabal Palms Recovery Center",
-   "title": "Director of Revenue Cycle Management",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:51.905Z",
-   "retryAt": "2026-11-22T00:18:51.905Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4475490018",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D1E70BA958B4",
-   "company": "ADM",
-   "title": "Maintenance Superintendent - Chattanooga, TN",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:54.944Z",
-   "retryAt": "2026-11-22T00:18:54.944Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4484884136",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-576BFF61DAF7",
    "company": "Composite Technology International, Inc.",
    "title": "General Manager (GM) of CTI Door Components",
@@ -21977,6 +21948,24 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485311555",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FF9C22F69589",
+   "company": "Troon",
+   "title": "Resort Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-22T00:16:09.332Z",
+   "retryAt": "2026-11-22T01:16:09.332Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4463935181",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -29907,9 +29896,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.195Z",
-   "retryAt": "2026-11-22T00:18:55.195Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.929Z",
+   "retryAt": "2026-11-22T16:25:32.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29925,9 +29914,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.195Z",
-   "retryAt": "2026-11-22T00:18:55.195Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.929Z",
+   "retryAt": "2026-11-22T16:25:32.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29943,9 +29932,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.195Z",
-   "retryAt": "2026-11-22T00:18:55.195Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.929Z",
+   "retryAt": "2026-11-22T16:25:32.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29961,9 +29950,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.196Z",
-   "retryAt": "2026-11-22T00:18:55.196Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.930Z",
+   "retryAt": "2026-11-22T16:25:32.930Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29979,9 +29968,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.196Z",
-   "retryAt": "2026-11-22T00:18:55.196Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.930Z",
+   "retryAt": "2026-11-22T16:25:32.930Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -29997,9 +29986,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.197Z",
-   "retryAt": "2026-11-22T00:18:55.197Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.930Z",
+   "retryAt": "2026-11-22T16:25:32.930Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30015,9 +30004,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.197Z",
-   "retryAt": "2026-11-22T00:18:55.197Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.930Z",
+   "retryAt": "2026-11-22T16:25:32.930Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30033,9 +30022,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.197Z",
-   "retryAt": "2026-11-22T00:18:55.197Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.930Z",
+   "retryAt": "2026-11-22T16:25:32.930Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30051,9 +30040,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.198Z",
-   "retryAt": "2026-11-22T00:18:55.198Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.931Z",
+   "retryAt": "2026-11-22T16:25:32.931Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30069,9 +30058,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.198Z",
-   "retryAt": "2026-11-22T00:18:55.198Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.931Z",
+   "retryAt": "2026-11-22T16:25:32.931Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30087,9 +30076,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.198Z",
-   "retryAt": "2026-11-22T00:18:55.198Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.931Z",
+   "retryAt": "2026-11-22T16:25:32.931Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30105,9 +30094,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.199Z",
-   "retryAt": "2026-11-22T00:18:55.199Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.931Z",
+   "retryAt": "2026-11-22T16:25:32.931Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -30123,9 +30112,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.199Z",
-   "retryAt": "2026-11-22T00:18:55.199Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.931Z",
+   "retryAt": "2026-11-22T16:25:32.931Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32423,9 +32412,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-21T08:18:55.232Z",
-   "retryAt": "2026-11-22T00:18:55.232Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-22T00:25:32.949Z",
+   "retryAt": "2026-11-22T16:25:32.949Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
