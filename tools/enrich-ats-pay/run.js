@@ -679,6 +679,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     estSamples.length < 5 && estSamples.push({ basis: 'UPGRADE', id: r.PRIMARY_ID, company: r.COMPANY, title: r.TITLE, location: r.LOCATION, est: [est.low, est.high, est.conf], source: est.source, bls: est.bls.flag, basis_detail: est.basis, comparables: est.ids });
   }
   if(broadGrant){
+    const productBatch=[];
     const coverage=stats.grant_backlog={waiting:list.length,examined:0,admitted:0,protectedOrReserved:0,identityNeedsGovernedRepair:0,noExactPosting:0,noMatchingProductReference:0,sourceSupported:0,remainingByFieldAfterPlan:{}};
     for(const r of ordered){
       if(requests.length>=Math.min(grantExtraction.rowLimit,CONFIG.maxBatches*25)||!runtime.canStart(60000))break;
@@ -695,15 +696,19 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const rawNeeds=[SourceBlanks.payKeys,SourceBlanks.degreeKeys,SourceBlanks.workKeys].some(keys=>SourceBlanks.missing(r.p,keys));
       if(!rawNeeds&&!SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!grantExtraction.productProposal)continue;
       coverage.admitted++;
+      const product=Products.lookup(r,productsReference);
+      const bulkProduct=!grantExtraction.smoke&&!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
+        (!Products.known(r.p.PRODUCT)||SourceBlanks.missing(r.p,['PRODUCT_SOURCE']));
+      const cachedProposal=bulkProduct&&grantExtraction.pendingProduct(r,ledger);
       const api=atsOf.get(r);
-      if((rawNeeds||grantExtraction.productProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
+      if((rawNeeds||grantExtraction.productProposal||bulkProduct&&!cachedProposal)&&!capture&&api&&!fresh(r)&&!WorkdayWindow.paused(api.api)){
         // The existing exact posting parser/reader binds the canonical identity.
         try{
           const parsed=Recovery.exactApi(r,api,JSON.parse(await sourceReader().read(api.api,{gapMs:CONFIG.fetchGapMs,headers:{accept:'application/json'}})));
           if(parsed)capture=postingCache.save(r,api.page,parsed);
         }catch{Recovery.remember(ledger,r,needsOf(r),'SOURCE_RESEARCH_REQUIRED',[{url:api.page,status:'NO_EXACT_COMPLETE_POSTING'}]);}
       }
-      if(rawNeeds&&!capture)coverage.noExactPosting++;
+      if((rawNeeds||bulkProduct&&!cachedProposal)&&!capture)coverage.noExactPosting++;
       if(grantExtraction.productProposal){
         try{
           const evidence=await grantExtraction.extract({row:r,capture,ledger,
@@ -715,11 +720,15 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         }
         break; // Evidence only until Products.lookup can see the normal committed record.
       }
-      const product=Products.lookup(r,productsReference);
       if(SourceBlanks.missing(r.p,SourceBlanks.productKeys)&&!product)coverage.noMatchingProductReference++;
       let f;
       try{
-        const fallback=need(r).includes('SALARY')&&runtime.canStart(60000)?()=>grantExtraction.extract({
+        if(bulkProduct&&!cachedProposal&&capture&&runtime.canStart(60000)){
+          await grantExtraction.extract({row:r,capture,bulkProduct:true,ledger,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+        }
+        const proposal=cachedProposal||bulkProduct&&grantExtraction.pendingProduct(r,ledger);
+        if(proposal)productBatch.push(proposal);
+        const fallback=!bulkProduct&&need(r).includes('SALARY')&&runtime.canStart(60000)?()=>grantExtraction.extract({
           row:r,capture,needs:['SALARY'],fields:{},ledger,
           payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)}):null;
         f=await SourceBlanks.directOrFallback({row:r,capture,product,Products},fallback);
@@ -736,6 +745,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields:f}};
       coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
     }
+    if(productBatch.length)stats.grant_product_registry_batch={schema:'forge.company-site-products.v1',entries:productBatch};
   }
   // Every pay write carries an arithmetic midpoint and a separate policy scoring point.
   for(const q of requests){const f=q.ruling.fields,v=Pay.values(f.SALARY_BASE_LOW,f.SALARY_BASE_HIGH);if(v){const extra={SALARY_MIDPOINT:v.mid,SALARY_SCORE_POINT:v.scorePoint};Object.assign(f,broadGrant?SourceBlanks.select(rows.find(r=>r.PRIMARY_ID===q.ruling.primaryId).p,extra):extra);}}
