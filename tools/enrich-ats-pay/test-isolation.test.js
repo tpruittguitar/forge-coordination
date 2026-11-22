@@ -39,9 +39,10 @@ for(const fail of [false,true])test('isolated '+(fail?'failing':'passing')+' tes
  assert.equal(JSON.parse(fs.readFileSync(path.join(f.repo,'state/enrich-ats-pay-report.json'))).writer_ok,4);
  assert.equal(JSON.parse(fs.readFileSync(path.join(f.repo,'state/enrich-ats-pay.json'))).pendingWrites.original.status,'POSTING_OR_UNCONFIRMED');
 });
-test('pay workflow isolates tests and still preserves failed-run evidence',()=>{
+test('pay workflow isolates tests, verifies staged cache on each retry, and preserves failed-run evidence',()=>{
  const workflow=fs.readFileSync(path.join(__dirname,'../../.github/workflows/enrich-ats-pay.yml'),'utf8');
  assert.match(workflow,/run: bash tools\/enrich-ats-pay\/test-isolated\.sh/);
+ assert.match(workflow,/for i in 1 2 3 4 5 6; do[\s\S]*git add state\/enrich-ats-pay[\s\S]*node tools\/enrich-ats-pay\/verify-cache-index\.cjs[\s\S]*git commit/);
  assert.doesNotMatch(workflow,/run: node --test tools\/enrich-ats-pay/);
  assert.match(workflow,/- name: Preserve report and pending-write evidence\s+if: always\(\)/);
  assert.match(workflow,/- name: Commit report and ledger\s+if: always\(\)/);
