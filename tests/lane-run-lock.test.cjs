@@ -18,7 +18,7 @@ test('registry names no owner and every old AI-named key resolves to the same re
  const r=L.read(REPO);
  for(const [k,t] of Object.entries(r.tasks)){a.equal(t.owner,undefined,k);a.equal(t.currentOwner,undefined,k);}
  for(const [neutral,record] of Object.entries(r.laneKeys)){a.ok(r.tasks[record],neutral);a.equal(L.resolve(r,neutral).key,L.resolve(r,record).key);}
- a.ok(['ChatGPT','Claude','Hermes','President','Grok','Grokbot President'].every(p=>L.authorized(r,p)));a.equal(L.authorized(r,'Bogus'),false);
+ a.ok(['ChatGPT','Claude','Hermes','President','Grokbot President'].every(p=>L.authorized(r,p)));a.ok(['Bogus','Grok'].every(p=>!L.authorized(r,p)));
 });
 
 test('one run holds a lane across alias and old key; stale locks are taken over; only the holder releases',()=>{
