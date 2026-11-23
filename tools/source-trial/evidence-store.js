@@ -76,7 +76,7 @@ function reportEvidence(root){
  return out;
 }
 function index(root,ledger){
- if(!ledger)try{const m=JSON.parse(fs.readFileSync(path.join(root,'state/discovery-evidence/manifest.json')));if(m.schema!=='forge.discovery-evidence-manifest.v1')throw Error('manifest');ledger={entries:m.entries};}catch{try{ledger=JSON.parse(fs.readFileSync(path.join(root,'state/UPSTREAM_LEDGER.json')));}catch{ledger={entries:{}};}}
+ if(!ledger)try{const m=JSON.parse(fs.readFileSync(path.join(root,'state/discovery-evidence/manifest.json')));if(m.schema!=='forge.discovery-evidence-manifest.v1')throw Error('manifest');ledger={entries:m.entries};}catch{ledger=require('../upstream-ledger/store.cjs').readLedger(root,{entries:{}});}
  const byUrl=new Map(),key=u=>require('../pipeline-observability/upstream-flow').key(u),memo=new Map();
  for(const e of Object.values(ledger.entries||{}))for(const ref of e.evidenceRefs||[]){const k=key(e.sourceUrl);if(k){if(!byUrl.has(k))byUrl.set(k,[]);byUrl.get(k).push(ref);}}
  function find(card,{now=Date.now(),maxAgeMs=6*3600000,payOnly=false,allowRoleText=false}={}){

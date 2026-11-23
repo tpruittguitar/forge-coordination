@@ -35,7 +35,7 @@ function create({root,ledger={},now=()=>Date.now()}={}){
  ledger.siteEstimates=ledger.siteEstimates||{};const byUrl=new Map(),seen=new Set();
  function add(p){if(p?.status!=='ESTIMATED'||!key(p.sourceUrl))return;const k=key(p.sourceUrl);if(!byUrl.has(k))byUrl.set(k,[]);byUrl.get(k).push(p);}
  function read(file){try{return JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));}catch{return null;}}
- const manifest=read('state/discovery-evidence/manifest.json'),entries=manifest?.schema==='forge.discovery-evidence-manifest.v1'?manifest.entries:read('state/UPSTREAM_LEDGER.json')?.entries;
+ const manifest=read('state/discovery-evidence/manifest.json'),entries=manifest?.schema==='forge.discovery-evidence-manifest.v1'?manifest.entries:require('../upstream-ledger/store.cjs').readLedger(root,null)?.entries;
  for(const e of Object.values(entries||{}))for(const ref of e.evidenceRefs||[]){if(seen.has(ref.sha256))continue;seen.add(ref.sha256);const d=Evidence.read(root,ref);if(d&&PostedPay.bound(d.postedPay,d))add(d.postedPay);}
  // The report can precede publication of the immutable evidence manifest. Only
  // source-bound salary disclosure is usable even when the provider returned no

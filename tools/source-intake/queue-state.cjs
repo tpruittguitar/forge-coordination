@@ -1,6 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
-const supported=new Set(['state/INTAKE_DRAIN.json','state/RELEVANCE_SCREEN_GUARD.json']);
+const Store=require('../upstream-ledger/store.cjs');
+const supported=new Set([Store.DRAIN_PATH,Store.DRAIN_ARCHIVE,Store.LEDGER_ARCHIVE,'state/RELEVANCE_SCREEN_GUARD.json']);
 function sides(raw){
  const out=[[],[]];let mode='common',conflicts=0;
  for(const line of raw.split('\n')){
@@ -16,8 +17,18 @@ function sides(raw){
  return out.map(lines=>JSON.parse(lines.join('\n')));
 }
 function read(root,file,fallback){
- let raw;try{raw=fs.readFileSync(path.join(root,file),'utf8');}catch(e){if(e.code==='ENOENT'&&fallback!==undefined)return structuredClone(fallback);throw e;}
- try{return JSON.parse(raw);}catch(e){if(!supported.has(file)||!/^<<<<<<< /m.test(raw))throw e;}
+ if(file===Store.LEDGER_PATH)return Store.readLedger(root,fallback);
+ const readFile=name=>fs.readFileSync(path.join(root,name),'utf8');
+ let raw;try{raw=readFile(file);}catch(e){
+  if(e.code==='ENOENT'&&file===Store.DRAIN_PATH)return Store.readDrain(root,fallback);
+  if(e.code==='ENOENT'&&fallback!==undefined)return structuredClone(fallback);throw e;
+ }
+ const archive=[Store.DRAIN_ARCHIVE,Store.LEDGER_ARCHIVE].find(dir=>file.startsWith(dir+'/')&&supported.has(dir));
+ let parsed;try{parsed=JSON.parse(raw);}catch(e){
+  if(archive)throw Object.assign(new Error('Invalid queue archive: '+file,{cause:e}),{code:'ERR_LEDGER_ARCHIVE'});
+  if(!supported.has(file)||!/^<<<<<<< /m.test(raw))throw e;
+ }
+ if(parsed!==undefined)return file===Store.DRAIN_PATH?Store.hydrateDrain(readFile,parsed):parsed;
  const [ours,theirs]=sides(raw),sha=crypto.createHash('sha256').update(raw).digest('hex');
  // Union text can corrupt JSON or drop Writer fences. Audit both sides, then
  // fail open for unrelated intake while holding disputed items for reconciliation.
@@ -25,6 +36,9 @@ function read(root,file,fallback){
  fs.mkdirSync(path.dirname(audit),{recursive:true});
  try{fs.writeFileSync(audit,JSON.stringify({file,sha256:sha,raw})+'\n',{flag:'wx'});}catch(e){if(e.code!=='EEXIST')throw e;}
  if(file==='state/RELEVANCE_SCREEN_GUARD.json')return{mergeConflict:sha};
+ // Two split live files can point at different archive generations. Preserve
+ // the conflict audit and refuse to merge their stubs as complete records.
+ for(const side of [ours,theirs])Store.hydrateDrain(()=>{throw Error('Split drain merge conflict');},side);
  if(!ours.items||!theirs.items)throw Error('INVALID_DRAIN_CONFLICT');
  const items={...ours.items,...theirs.items};
  for(const key of Object.keys(items)){

@@ -4,7 +4,8 @@ const fs=require('node:fs'),path=require('node:path');
 const S=require('../programmed-coordinator/store.cjs'),Source=require('../programmed-coordinator/source.cjs');
 const Screen=require('../relevance-screen/screen.cjs'),U=require('../pipeline-observability/upstream-flow');
 const Resume=require('../source-trial/resume-match'),PostedPay=require('../source-trial/posted-pay');
-const FILE='state/INTAKE_DRAIN.json',REVIEWS='receipts/INTAKE_DRAIN',TASKS={REVIEW_SCOPE:'FORGE_INTAKE_SCOPE_REVIEW',RECOVER_SOURCE:'FORGE_INTAKE_SOURCE_RECOVERY',RESOLVE_IDENTITY:'FORGE_INTAKE_HELD_RECONCILIATION',RECONCILE_WRITER:'FORGE_INTAKE_HELD_RECONCILIATION',INTAKE:'CODE'};
+const Store=require('../upstream-ledger/store.cjs');
+const FILE=Store.DRAIN_PATH,REVIEWS='receipts/INTAKE_DRAIN',TASKS={REVIEW_SCOPE:'FORGE_INTAKE_SCOPE_REVIEW',RECOVER_SOURCE:'FORGE_INTAKE_SOURCE_RECOVERY',RESOLVE_IDENTITY:'FORGE_INTAKE_HELD_RECONCILIATION',RECONCILE_WRITER:'FORGE_INTAKE_HELD_RECONCILIATION',INTAKE:'CODE'};
 const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRESENT']);
 const dismissed=e=>e?.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'||require('../live-backlog/model.cjs').activeDeletion(e);
 const empty=()=>({schema:'forge.intake-drain.v1',items:{},reviewErrors:{}});
@@ -43,7 +44,7 @@ function scopeReviewHold(item){
  return item.scopeReviewHold||(item.action==='REVIEW_SCOPE'&&reason?{reason,reviewPath:item.review?.path||null}:null);
 }
 function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
- const up=read(root,'state/UPSTREAM_LEDGER.json'),old=read(root,FILE,empty()),mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),present=new Set(),at=new Date(now).toISOString();
+ const up=Store.readLedger(root),old=read(root,FILE,empty()),mail=read(root,'state/EMAIL_RECOVERY_QUEUE.json',{jobs:{}}),present=new Set(),at=new Date(now).toISOString();
  if(old.schema!=='forge.intake-drain.v1'||!old.items||Array.isArray(old.items))throw Error('VALID_DURABLE_DRAIN_INVENTORY_REQUIRED');
  if(up.schema!=='forge.upstream-ledger.v1'||!up.entries||!up.groups||!Number.isFinite(Date.parse(up.at))||Date.parse(up.at)>now+120000||now-Date.parse(up.at)>24*3600000)throw Error('CURRENT_UPSTREAM_INVENTORY_REQUIRED');
  const resumeVersion=Resume.load().source.textSha256;
@@ -112,7 +113,7 @@ function sync(root,{now=Date.now(),apply=false,config=Screen.load()}={}){
   if(item.validation?.reviewSha256===S.hash(review))item.status=item.validation.status==='READY_FOR_CONTROLLED_EXCLUSION'&&now-Date.parse(item.validation.observedAt)>=86400000?'PENDING_INDEPENDENT_VALIDATION':item.validation.status;
  }catch(e){old.reviewErrors[path.relative(root,file).split(path.sep).join('/')]={reason:e.message};}}
  old.counts={};old.actions={};for(const item of Object.values(old.items)){old.counts[item.status]=(old.counts[item.status]||0)+1;if(item.status!=='ACCOUNTED_UPSTREAM')old.actions[item.action]=(old.actions[item.action]||0)+1;}
- old.noProcessingCap=true;if(apply)S.save(root,FILE,old);return old;
+ old.noProcessingCap=true;if(apply)Store.writeDrain(root,old);return old;
 }
 function reviewPath(review){return REVIEWS+'/'+S.hash(review)+'.json';}
 function validate(r,item,now=Date.now()){
@@ -155,7 +156,7 @@ async function verify(root,{privateDir,now=Date.now(),verifySource=Source.verify
    item.validation={...PostedPay.carry(payCard),status:'READY_FOR_CONTROLLED_INTAKE',reviewSha256:S.hash(review),observedAt:new Date(now).toISOString(),resumeMatch:overlap,sourceSha256:source.sourceSha256,sourceUrl:source.sourceUrl};item.status=item.validation.status;result.verified++;
   }catch(e){item.validation={status:'SOURCE_VALIDATION_REQUIRED',reviewSha256:S.hash(review),observedAt:new Date(now).toISOString(),reason:e.message,retryAfter:new Date(now+6*3600000).toISOString()};item.status=item.validation.status;result.failed++;}
  }
- if(apply)S.save(root,FILE,work);return{...result,canonicalWrites:0};
+ if(apply)Store.writeDrain(root,work);return{...result,canonicalWrites:0};
 }
 function approved(root,now=Date.now()){
  const work=read(root,FILE,empty()),roles=[],proofs=new Map(),shared=sharedKeys(root);

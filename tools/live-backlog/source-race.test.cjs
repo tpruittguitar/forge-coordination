@@ -2,6 +2,7 @@
 const test=require('node:test'),assert=require('node:assert/strict');
 const fs=require('node:fs'),os=require('node:os'),path=require('node:path'),cp=require('node:child_process');
 const {GitStore}=require('./git-store.cjs'),M=require('./model.cjs'),W=require('../pipeline-observability/waiting-queues');
+const Store=require('../upstream-ledger/store.cjs');
 const key='url:'+'1'.repeat(24),other='url:'+'2'.repeat(24);
 const requestId='12345678-1234-4123-8123-123456789abc',otherId='22345678-1234-4123-8123-123456789abc';
 const at='2026-11-07T07:00:00.000Z';
@@ -15,7 +16,8 @@ function fixture(t){
   const groups=M.regroup(entries),counts={};for(const g of Object.values(groups))counts[g.status]=(counts[g.status]||0)+1;
   const ledger={schema:'forge.upstream-ledger.v1',at,entries,groups},summary={schema:'forge.upstream-flow.v1',at,waiting:Object.values(groups).filter(g=>M.pending.has(g.status)).length,reconciled:true,counts};
   const built=W.build({states:{},queues:{enrichment:0,readyForReview:0}},{ledger,summary},at);
-  for(const [p,value]of [['state/UPSTREAM_LEDGER.json',ledger],['state/UPSTREAM_FLOW.json',summary],['state/ENRICHMENT_FLOW.json',{at,upstream:summary}],['state/PIPELINE_WAITING_QUEUES.json',built.index]])write(root,p,JSON.stringify(value));
+  Store.writeLedger(root,ledger,{activePrimaryIds:Store.activeIds(built.index)});
+  for(const [p,value]of [['state/UPSTREAM_FLOW.json',summary],['state/ENRICHMENT_FLOW.json',{at,upstream:summary}],['state/PIPELINE_WAITING_QUEUES.json',built.index]])write(root,p,JSON.stringify(value));
   for(const page of built.pages)write(root,page.path,page.body);
  };
  fs.mkdirSync(work);git(['init','-b','main']);git(['config','user.name','Fixture']);git(['config','user.email','fixture@example.invalid']);
@@ -32,7 +34,7 @@ function fixture(t){
  };
  const update=change=>{
   git(['fetch','origin','main'],background);git(['reset','--hard','FETCH_HEAD'],background);
-  const entries=JSON.parse(fs.readFileSync(path.join(background,'state/UPSTREAM_LEDGER.json'),'utf8')).entries;
+  const {entries}=Store.readLedger(background);
   change(entries,background);writeSource(background,entries);git(['add','.'],background);git(['commit','--allow-empty','-m','background update'],background);git(['push','origin','main'],background);
   return git(['rev-parse','HEAD'],background).trim();
  };

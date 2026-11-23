@@ -1,6 +1,7 @@
 'use strict';
 // Existing observer owns upstream accounting; Writer retains all canonical mutations.
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process');
+const Store=require('../upstream-ledger/store.cjs');
 const API='https://foreman-cockpit.pages.dev/api/backlog-decisions';
 const hash=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const norm=x=>String(x||'').toLowerCase().replace(/[^a-z0-9]/g,'');
@@ -57,7 +58,7 @@ async function load(root,{key,fetchImpl=fetch}={}){
 }
 function prepare(root,requests,{ledger,rows,snapshotReader=snapshot}={}){
  const decisions=new Map(),receipts=[],snapshots=new Map(),fences=require('../intake-drain/queue.cjs').writerFences(root);
- const drain=JSON.parse(fs.readFileSync(path.join(root,'state/INTAKE_DRAIN.json'),'utf8'));
+ const drain=Store.readDrain(root);
  for(const input of requests){
   const r=normalize(input);if(hash(r)!==input.receiptId)throw Error('MANUAL_REQUEST_HASH_MISMATCH');
   const receipt={schema:'forge.manual-backlog-receipt.v1',receiptId:input.receiptId,requestId:r.requestId,status:'COMPLETE',decision:r.decision,snapshotRevision:r.snapshotRevision,observedAt:new Date().toISOString(),canonicalWrites:0,...(r.scope?{scope:r.scope}:{}),items:[]};
@@ -88,7 +89,7 @@ function publish(root,prepared,up){
  }
 }
 function dismissedKeys(root){
- const ledger=JSON.parse(fs.readFileSync(path.join(root,'state/UPSTREAM_LEDGER.json'),'utf8'));
+ const ledger=Store.readLedger(root);
  if(ledger.schema!=='forge.upstream-ledger.v1'||!ledger.entries)throw Error('DISMISSAL_LEDGER_REQUIRED');
  return new Set(Object.values(ledger.entries).filter(e=>require('../live-backlog/model.cjs').activeDeletion(e)||(e.status==='EXCLUDED'&&e.manualDecision?.scope==='DISCOVERY_CARD_DISMISSAL'&&e.manualDecision.cardSha256===hash(card(e)))).map(e=>e.key));
 }

@@ -1,11 +1,16 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), crypto = require('node:crypto');
+const Ledger = require('../upstream-ledger/store.cjs');
 const hash = x => crypto.createHash('sha256').update(typeof x === 'string' || Buffer.isBuffer(x) ? x : JSON.stringify(x)).digest('hex');
 function read(root, file, fallback) {
+  if (file === Ledger.LEDGER_PATH) return Ledger.readLedger(root, fallback);
+  if (file === Ledger.DRAIN_PATH) return Ledger.readDrain(root, fallback);
   try { return JSON.parse(fs.readFileSync(path.join(root, file), 'utf8')); }
   catch (e) { if (e.code === 'ENOENT' && fallback !== undefined) return structuredClone(fallback); throw e; }
 }
 function save(root, file, value) {
+  if (file === Ledger.LEDGER_PATH) return Ledger.writeLedger(root, value);
+  if (file === Ledger.DRAIN_PATH) return Ledger.writeDrain(root, value);
   // Never overwrite an earlier failed save's evidence or share a staging file
   // with another invocation. Keep it beside the destination for atomic rename.
   const dest = path.join(root, file), tmp = dest + '.tmp-' + crypto.randomUUID();

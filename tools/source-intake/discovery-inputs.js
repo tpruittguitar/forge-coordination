@@ -44,7 +44,8 @@ function index(root){
  for(const raw of Array.isArray(targeted?.value?.roles)?targeted.value.roles:[])add(raw,targeted.proof,raw.observedAt||targeted.value.at);
  const catchup=read('receipts/auto-intake/catch-up/state.json');
  for(const item of Object.values(catchup?.value?.roles||{}))add(item.role,catchup.proof,item.firstSeen||item.observedAt);
- const upstream=read('state/UPSTREAM_LEDGER.json');
+ const Store=require('../upstream-ledger/store.cjs'),{value,sha256}=Store.readLedgerSource(root,null);
+ const upstream=value&&{value,proof:{path:Store.LEDGER_PATH,sha256}};
  for(const item of Object.values(upstream?.value?.entries||{}))add(item,upstream.proof,item.firstSeen);
  return {find(card,{now=Date.now()}={}){
   const key=U.key(card.url||card.SOURCE_URL||card.sourceUrl),ids=identity(card);
