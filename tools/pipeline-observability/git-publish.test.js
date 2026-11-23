@@ -75,3 +75,53 @@ test('intake publication and its cursor cannot rebase across or overwrite a work
   assert.deepEqual(JSON.parse(git(bare,'show','HEAD:'+ledger)).worksheetDeletion,deleted.worksheetDeletion);
  }finally{fs.rmSync(base,{recursive:true,force:true});}
 });
+test('only a completed flow can retarget once across exact status files; real input writes stay fenced',()=>{
+ const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/INTAKE_DRAIN.json','state/UPSTREAM_COLLECT_CURSOR.json'];
+ const ledger=flow[0],usage='usage/AI_USAGE_READINGS.jsonl',display='control/OFFICE_STATUS.json';
+ for(const forbidden of [null,'verify/recovery/latest.json','receipts/live-backlog/new.json']){
+  const {base,root,bare}=repo(),race=path.join(base,'race');
+  const put=(dir,file,body)=>{const p=path.join(dir,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,body);};
+  try{
+   put(root,ledger,'old ledger');put(root,'state/waiting-queues/intake-0001.json','old page');git(root,'add','state');git(root,'commit','-m','flow base');git(root,'push','-q','origin','HEAD:main');
+   git(base,'clone','-q',bare,race);git(race,'config','user.name','test');git(race,'config','user.email','test@example.test');
+   put(race,usage,'fresh usage');put(race,display,'fresh display');if(forbidden)put(race,forbidden,'new source');
+   git(race,'add','-A');git(race,'commit','-m','new main');git(race,'push','-q','origin','HEAD:main');
+   const newer=git(bare,'rev-parse','HEAD').trim();
+   assert.throws(()=>publish(root,[flow.at(-1)],'cursor',{allowFlowStatusReparent:true}),/complete flow/);
+   put(root,ledger,'fresh ledger');fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
+   if(forbidden){
+    assert.throws(()=>publish(root,flow,'finished',{allowFlowStatusReparent:true}),/Flow inputs changed/);
+    assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
+   }else{
+    const result=publish(root,flow,'finished',{allowFlowStatusReparent:true});
+    assert.equal(result.reparented,true);assert.equal(result.attempts,2);
+    assert.equal(git(bare,'rev-parse','HEAD^').trim(),newer);
+    assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
+    assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
+    assert.equal(git(bare,'show','HEAD:'+ledger),'fresh ledger');
+    assert.equal(git(bare,'show','HEAD:state/waiting-queues/intake-0002.json'),'new page');
+    assert.throws(()=>git(bare,'cat-file','-e','HEAD:state/waiting-queues/intake-0001.json'));
+   }
+  }finally{fs.rmSync(base,{recursive:true,force:true});}
+ }
+});
+
+test('CLI parses --allow-status-only-reparent, keeps it out of paths, and leaves the default off',()=>{
+ const {base,root}=repo();
+ const script=path.join(__dirname,'git-publish.js');
+ const cli=(args)=>{try{return {status:0,stdout:execFileSync(process.execPath,[script,...args],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}),stderr:''};}catch(e){return {status:e.status,stdout:e.stdout||'',stderr:String(e.stderr||'')}};};
+ try{
+  fs.writeFileSync(path.join(root,'--allow-status-only-reparent'),'not a flag\n');
+  const off=cli(['--no-push']);
+  assert.equal(off.status,0,off.stderr);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+  const on=cli(['--allow-status-only-reparent','--no-push']);
+  assert.notEqual(on.status,0);
+  assert.match(on.stderr,/complete flow/);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+  const mixed=cli(['--no-push','--allow-status-only-reparent','--allow-status-only-reparent']);
+  assert.notEqual(mixed.status,0);
+  assert.match(mixed.stderr,/complete flow/);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+ }finally{fs.rmSync(base,{recursive:true,force:true});}
+});
