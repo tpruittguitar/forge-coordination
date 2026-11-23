@@ -18,7 +18,7 @@ test('registry names no owner and every old AI-named key resolves to the same re
  const r=L.read(REPO);
  for(const [k,t] of Object.entries(r.tasks)){a.equal(t.owner,undefined,k);a.equal(t.currentOwner,undefined,k);}
  for(const [neutral,record] of Object.entries(r.laneKeys)){a.ok(r.tasks[record],neutral);a.equal(L.resolve(r,neutral).key,L.resolve(r,record).key);}
- a.ok(['ChatGPT','Claude','Hermes'].every(p=>L.authorized(r,p)));a.equal(L.authorized(r,'Grok'),false);
+ a.ok(['ChatGPT','Claude','Hermes','President','Grok','Grokbot President'].every(p=>L.authorized(r,p)));a.equal(L.authorized(r,'Bogus'),false);
 });
 
 test('one run holds a lane across alias and old key; stale locks are taken over; only the holder releases',()=>{
@@ -29,7 +29,7 @@ test('one run holds a lane across alias and old key; stale locks are taken over;
   const busy=run('acquire','FORGE_CLAUDE_INTAKE_A','RUN-TWO-02','ChatGPT',t0+60000);
   a.equal(busy.result,'BUSY');a.equal(busy.heldBy.provider,'Hermes');
   a.equal(run('acquire','FORGE_INTAKE_B','RUN-TWO-02','ChatGPT',t0+60000).result,'ACQUIRED');
-  a.equal(run('acquire','FORGE_INTAKE_A','RUN-BAD-03','Grok').reason,'PROVIDER_NOT_AUTHORIZED');
+  a.equal(run('acquire','FORGE_INTAKE_A','RUN-BAD-03','Bogus').reason,'PROVIDER_NOT_AUTHORIZED');
   const taken=run('acquire','FORGE_CLAUDE_INTAKE_A','RUN-THREE-03','Claude',t0+91*60000);
   a.equal(taken.result,'ACQUIRED');a.equal(taken.tookOverStale.runId,'RUN-ONE-01');
   a.equal(run('release','FORGE_INTAKE_A','RUN-ONE-01','Hermes').result,'NOT_HELD');
