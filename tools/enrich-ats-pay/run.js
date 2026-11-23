@@ -714,7 +714,21 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         ?key(p.PRODUCT,p.PRODUCT_REFERENCE,p.PRODUCT_SCOPE,p.PRODUCT_SITE,p.PRODUCT_SOURCE):null;
     };
     const canVisit=r=>!firstPass||firstPass.canClaim(r.PRIMARY_ID,()=>productEvidence(r));
-    const grantOrder=firstPass?[...ordered].sort((a,b)=>Number(firstPass.seen(a.PRIMARY_ID))-Number(firstPass.seen(b.PRIMARY_ID))):ordered;
+    const retainedRank=new Map();
+    if(firstPass&&completeGrantBatch)for(const r of ordered){
+      const id=r.PRIMARY_ID;
+      if(firstPass.seen(id)||!grantExtraction.isEligibleId(id)||blocked(r)||!validIdentity(r))continue;
+      const retained=Recovery.cached(ledger,r)||postingCache.find(r);
+      const capture=Prepared.posting(r,retained)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
+      if(capture?.fullPosting!==true||capture.identityVerified!==true||
+        [capture.url,capture.degreeUrl].some(url=>url&&bulkSource.routeConflict(r,url)))continue;
+      const projected=SourceBlanks.project({row:r,capture,product:getProduct(r),Products});
+      retainedRank.set(id,projectedGrantMissing(r,projected).length);
+    }
+    // Unchanged legacy order breaks ties and orders rows without exact retained evidence.
+    const grantOrder=firstPass?[...ordered].sort((a,b)=>
+      Number(firstPass.seen(a.PRIMARY_ID))-Number(firstPass.seen(b.PRIMARY_ID))||
+      (retainedRank.get(a.PRIMARY_ID)??Infinity)-(retainedRank.get(b.PRIMARY_ID)??Infinity)):ordered;
     const addGrantRequest=(r,fields)=>{
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}};
       coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
