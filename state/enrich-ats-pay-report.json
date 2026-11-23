@@ -1,14 +1,14 @@
 {
- "at": "2026-11-23T13:34:04.275Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T132638343Z",
+ "at": "2026-11-23T13:47:30.560Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T133924185Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T13:26:48.237Z",
-  "sha256": "c2e36738ba23a92c3bbb63e1efc604ae4915630fa3c2e8bab181705db6fbf8bf",
-  "rows": 9907
+  "readAt": "2026-11-23T13:39:43.018Z",
+  "sha256": "1451e6bf02222946302a1bff9d2696587aa3805c8d1c9209477b0e8ff59d20fb",
+  "rows": 9909
  },
- "rows": 9907,
+ "rows": 9909,
  "eligible": 1191,
  "never_consider_excluded": 0,
  "never_consider_rules": [
@@ -34,7 +34,9 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [],
+  "released_applied": [
+   "FORGE-ENRICH_ATS-ATSBOT-20261123T132638343Z-B01"
+  ],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -47,9 +49,9 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 2,
- "estimates": 2,
- "estimate_waiting_for_posting": 142,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 143,
  "skipped_recent": 98,
  "submitted": 0,
  "guard_dropped": 0,
@@ -60,17 +62,23 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
+ "salary_submitted": 1,
  "salary_independently_verified": 0,
  "agg_tried": {
   "linkedin": 2
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
  "source_reads": 2,
  "source_retries": 0,
@@ -79,18 +87,18 @@
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
  "workday_window_active": false,
- "est_same_employer": 2,
- "est_comparables": 0,
+ "est_same_employer": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 2,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 0,
@@ -105,9 +113,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 10,
+  "saved_reused": 10,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -118,7 +126,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-23T13:26:54.275Z",
+  "profile_as_of": "2026-11-23T13:39:48.774Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12245,16 +12253,16 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1257,
-  "review_skipped_blocked": 81,
+  "review_skipped_blocked": 83,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 822,
-   "products (what they make)": 1290,
+   "work arrangement (remote/hybrid/on-site)": 824,
+   "products (what they make)": 1292,
    "location / geography": 11
   }
  },
  "salary_review": {
-  "eligible": 1714,
-  "due": 81,
+  "eligible": 1716,
+  "due": 83,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -12269,8 +12277,9 @@
   "salary": 0,
   "degree": 0
  },
+ "source_origin_blocks": {},
+ "nothing_found": 143,
  "not_attempted": 142,
- "nothing_found": 142,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12280,7 +12289,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 0,
-  "no_overview": 338,
+  "no_overview": 340,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 3194,
@@ -12293,11 +12302,11 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 191,
- "network_requests": 8,
- "planned": 2,
+ "network_requests": 10,
+ "planned": 1,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 2,
- "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
+ "writer_unconfirmed": 1,
+ "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12306,9 +12315,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 287,
-  "SOURCE_RESEARCH_REQUIRED": 806,
+  "SOURCE_RESEARCH_REQUIRED": 807,
+  "EVIDENCE_FOUND": 45,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 34,
-  "EVIDENCE_FOUND": 46,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -12885,6 +12894,25 @@
     {
      "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5291343007?pay_transparency=true",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D3FAD926BE6B",
+   "company": "High Ticket Teams",
+   "title": "Senior Director of Field Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-23T13:40:42.952Z",
+   "retryAt": "2026-11-23T15:40:42.952Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493280817",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -32625,85 +32653,51 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-C9AFB760E141",
+   "id": "V2I-42792AFC8635",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in engineering, physics, or a related technical field; master's degree preferred",
+    "DEGREE_TEXT": "Required: MBA or a similar advanced degree in business or a related field.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4491378540",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485620858",
     "DEGREE_ASOF": "2026-11-23",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 123000,
-    "SALARY_BASE_HIGH": 188000,
-    "SALARY_MIDPOINT": 155500,
+    "SALARY_BASE_LOW": 175000,
+    "SALARY_BASE_HIGH": 355000,
+    "SALARY_MIDPOINT": 265000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-23",
-    "SALARY_SOURCE": "same-employer: https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Denver-CO/Sr-Manager--Assembly--Integration---Test--Project-Sunrise---Orbital-Data-Centers_R75913 (as of 2026-11-20)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 1 same-employer posted range(s) [V2I-2D9F4BB38014]; same employer, 1 posted range(s) for level 1.5 PROGRAM roles: Sr. Manager, Assembly, Integration & Test, Project Sunrise - Orbital Data Centers (CO) $157K-$240K x0.78 BLS state ratio; context model pay-sample-match-v6a; 1 distinct postings; same-employer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium; BLS TX 111021 P25-P90 $64K-$265K; this posting read, no pay stated; uncertainty: wide, same-employer range outside the state wage band",
+    "SALARY_SOURCE": "comparables: https://taskus.wd1.myworkdayjobs.com/en-US/Careers/job/Director-of-Operations_R_2611_14458 (as of 2026-11-22); https://careers.fyrfly.vc/companies/lawnstarter/jobs/100007769-director-of-operations-service-delivery (as of 2026-11-22); https://nvidia.wd5.myworkdayjobs.com/en-US/NVIDIAExternalCareerSite/job/US-CA-Santa-Clara/Director--Service-Operations-Trade-Compliance-Operations_JR2030027 (as of 2026-11-22); https://www.indeed.com/viewjob?jk=41f8ec65c99e1577 (as of 2026-11-22); https://careers-ovg.icims.com/jobs/36097/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-22); https://dsp.prng.co/yH5359b (as of 2026-11-22); https://www.indeed.com/viewjob?jk=9eed27b7453d5bf0 (as of 2026-11-22)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-017393355359, V2I-01B17AAAA304, V2I-1932942058DE, V2I-311DB2FD2C4E, V2I-492E0BF6E7D7, V2I-DAEF299CA136, V2I-FF49483B57F4]; 7 employer-posted comparable(s), level 2 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 16 eligible roles from the same comparables, so LOW; BLS LA 111021 P25-P90 $69K-$219K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
-    "SALARY_SCORE_POINT": 171750
-   }
-  },
-  {
-   "id": "V2I-9E71B4FCF1A9",
-   "fields": {
-    "DEGREE_TEXT": "Degree in Electrical Engineering, Mechanical Engineering, or Manufacturing Engineering, Industrial Engineering, or equivalent experience",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4492238490",
-    "DEGREE_ASOF": "2026-11-23",
-    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
-    "SALARY_CONTEXT_KEY": "e4d11c6e2c0da0b0aadfcc2c0c641c20874399d99887d2545d6cfd19364da887",
-    "SALARY_BASE_LOW": 112000,
-    "SALARY_BASE_HIGH": 288000,
-    "SALARY_MIDPOINT": 200000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-23",
-    "SALARY_SOURCE": "same-employer: https://www.linkedin.com/jobs/view/4485635836 (as of 2026-11-03)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 1 same-employer posted range(s) [V2I-2FA71392C3C7]; same employer, 1 posted range(s) for level 1 ENG roles: Technical Program Manager, Manufacturing Test Engineering (CA) $112K-$288K; context model pay-sample-match-v6a; 1 distinct postings; same-employer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium; BLS CA 119041 P25-P90 $169K-$296K; this posting read, no pay stated; uncertainty: wide, same-employer range outside the state wage band",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
-    "SALARY_SCORE_POINT": 244000
+    "SALARY_SCORE_POINT": 310000
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-C9AFB760E141",
-   "company": "Blue Origin",
-   "title": "Sr. Manager, Assembly, Integration & Test, Project Sunrise - Orbital Data Centers",
-   "location": "Hutto, TX",
-   "posting": "https://www.linkedin.com/jobs/view/4491378540/",
+   "id": "V2I-42792AFC8635",
+   "company": "JM Test Systems, LLC.",
+   "title": "Director of Operations",
+   "location": "Baton Rouge, LA",
+   "posting": "https://www.linkedin.com/jobs/view/4485620858/",
    "est": [
-    123000,
-    188000,
+    175000,
+    355000,
     "LOW"
    ],
-   "source": "SAME_EMPLOYER",
+   "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "same employer, 1 posted range(s) for level 1.5 PROGRAM roles: Sr. Manager, Assembly, Integration & Test, Project Sunrise - Orbital Data Centers (CO) $157K-$240K x0.78 BLS state ratio; context model pay-sample-match-v6a; 1 distinct postings; same-employer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium",
+   "basis_detail": "7 employer-posted comparable(s), level 2 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 16 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-2D9F4BB38014"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-9E71B4FCF1A9",
-   "company": "Tesla",
-   "title": "Technical Program Manager, Manufacturing Test Engineering, Charging & Residential Energy",
-   "location": "Palo Alto, CA",
-   "posting": "https://www.linkedin.com/jobs/view/4492238490/",
-   "est": [
-    112000,
-    288000,
-    "LOW"
-   ],
-   "source": "SAME_EMPLOYER",
-   "bls": "OK",
-   "basis_detail": "same employer, 1 posted range(s) for level 1 ENG roles: Technical Program Manager, Manufacturing Test Engineering (CA) $112K-$288K; context model pay-sample-match-v6a; 1 distinct postings; same-employer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; cross-state same-employer ranges use available BLS median ratio (0.75–1.10), no assumed industry premium",
-   "comparables": [
-    "V2I-2FA71392C3C7"
+    "V2I-017393355359",
+    "V2I-01B17AAAA304",
+    "V2I-1932942058DE",
+    "V2I-311DB2FD2C4E",
+    "V2I-492E0BF6E7D7",
+    "V2I-DAEF299CA136",
+    "V2I-FF49483B57F4"
    ]
   }
  ],
