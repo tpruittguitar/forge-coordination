@@ -1,15 +1,15 @@
 {
- "at": "2026-11-23T21:21:04.813Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T211224328Z",
+ "at": "2026-11-23T21:34:30.424Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T212631168Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T21:12:32.190Z",
-  "sha256": "973d8d6f3b7162c94adbfe1fba526e9525c495c0e1872c9505521eb47ff849a2",
-  "rows": 9923
+  "readAt": "2026-11-23T21:26:42.122Z",
+  "sha256": "3d7e47db6c14a02a69ad21a839acdbdfef3ab6bfa85a79ee876e11a2ad4e64d6",
+  "rows": 9926
  },
- "rows": 9923,
- "eligible": 1197,
+ "rows": 9926,
+ "eligible": 1198,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -34,7 +34,9 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [],
+  "released_applied": [
+   "FORGE-ENRICH_ATS-ATSBOT-20261123T211224328Z-B01"
+  ],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -43,36 +45,42 @@
  },
  "anchors": 1434,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 2,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 2,
- "estimate_waiting_for_posting": 147,
- "skipped_recent": 98,
- "submitted": 0,
+ "estimate_waiting_for_posting": 174,
+ "skipped_recent": 67,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
- "salary_independently_verified": 0,
+ "salary_submitted": 3,
+ "salary_independently_verified": 3,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 1
+  "linkedin": 3
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 6,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -84,10 +92,10 @@
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 2,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
-  "NO_BLS": 0
+  "NO_BLS": 1
  },
  "bls_queries": 0,
  "est_shared_low": 1,
@@ -105,20 +113,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 22,
-  "saved_reused": 20,
+  "targets": 4,
+  "candidates": 48,
+  "saved_reused": 40,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 2,
-  "estimates_with_profile_sources": 0,
+  "backoff": 2,
+  "unsupported_routes": 6,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-23T21:12:37.287Z",
+  "profile_as_of": "2026-11-23T21:26:48.225Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12245,16 +12253,16 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1257,
-  "review_skipped_blocked": 89,
+  "review_skipped_blocked": 91,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 830,
-   "products (what they make)": 1298,
+   "work arrangement (remote/hybrid/on-site)": 832,
+   "products (what they make)": 1300,
    "location / geography": 11
   }
  },
  "salary_review": {
-  "eligible": 1722,
-  "due": 89,
+  "eligible": 1724,
+  "due": 91,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -12265,12 +12273,14 @@
  },
  "decision_waiting": 15,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 1,
+  "salary": 1,
+  "degree": 1
  },
- "not_attempted": 147,
- "nothing_found": 147,
+ "attempt_only_skipped": 6,
+ "not_attempted": 171,
+ "nothing_found": 172,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12280,7 +12290,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 0,
-  "no_overview": 353,
+  "no_overview": 356,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 3195,
@@ -12292,12 +12302,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 202,
- "network_requests": 7,
- "planned": 2,
+ "roles_researched": 235,
+ "network_requests": 14,
+ "planned": 3,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 2,
- "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12306,7 +12315,7 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 292,
-  "SOURCE_RESEARCH_REQUIRED": 805,
+  "SOURCE_RESEARCH_REQUIRED": 806,
   "EVIDENCE_FOUND": 47,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
   "MODEL_INPUTS_REQUIRED": 6
@@ -12856,37 +12865,6 @@
    "lastAttemptAt": "2026-11-22T23:19:15.331Z",
    "retryAt": "2026-11-23T00:19:15.331Z",
    "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8B74BC22199B",
-   "company": "QXO",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:35.717Z",
-   "retryAt": "2026-11-23T21:22:35.717Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B9405D3189E2",
-   "company": "Anduril",
-   "title": "Head of Operations, Intelligence Systems",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:37.465Z",
-   "retryAt": "2026-11-23T21:22:37.465Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5291343007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -17234,9 +17212,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:15.960Z",
-   "retryAt": "2026-11-23T21:16:15.960Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:30.644Z",
+   "retryAt": "2026-11-24T13:28:30.644Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18920,91 +18898,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-A25994AA3001",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Space Vehicle Integration",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:39.086Z",
-   "retryAt": "2026-11-23T21:22:39.086Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303750007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CF0AC691F3C5",
-   "company": "Transcom",
-   "title": "Site Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:42.303Z",
-   "retryAt": "2026-11-23T21:22:42.303Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491311566",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AD122BFD0512",
-   "company": "Neros Technologies",
-   "title": "Motor Manufacturing Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:45.459Z",
-   "retryAt": "2026-11-23T21:22:45.459Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492867732",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B837D5600C29",
-   "company": "The Goodwin Group",
-   "title": "General Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:48.698Z",
-   "retryAt": "2026-11-23T21:22:48.698Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-BDFD91ABD290",
    "company": "United States",
    "title": "Nova Global",
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T20:22:51.879Z",
-   "retryAt": "2026-11-23T21:22:51.879Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-23T21:28:45.018Z",
+   "retryAt": "2026-11-24T13:28:45.018Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
-     "status": "FULL_POSTING_READ"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -31591,9 +31497,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.956Z",
-   "retryAt": "2026-11-23T21:16:33.956Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.083Z",
+   "retryAt": "2026-11-24T13:28:45.083Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31609,9 +31515,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.956Z",
-   "retryAt": "2026-11-23T21:16:33.956Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.084Z",
+   "retryAt": "2026-11-24T13:28:45.084Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31627,9 +31533,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.957Z",
-   "retryAt": "2026-11-23T21:16:33.957Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.084Z",
+   "retryAt": "2026-11-24T13:28:45.084Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31645,9 +31551,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.957Z",
-   "retryAt": "2026-11-23T21:16:33.957Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.084Z",
+   "retryAt": "2026-11-24T13:28:45.084Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31663,9 +31569,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.957Z",
-   "retryAt": "2026-11-23T21:16:33.957Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.084Z",
+   "retryAt": "2026-11-24T13:28:45.084Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31681,9 +31587,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.957Z",
-   "retryAt": "2026-11-23T21:16:33.957Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.085Z",
+   "retryAt": "2026-11-24T13:28:45.085Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31699,9 +31605,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.958Z",
-   "retryAt": "2026-11-23T21:16:33.958Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.085Z",
+   "retryAt": "2026-11-24T13:28:45.085Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31717,9 +31623,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.958Z",
-   "retryAt": "2026-11-23T21:16:33.958Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.085Z",
+   "retryAt": "2026-11-24T13:28:45.085Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31735,9 +31641,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.958Z",
-   "retryAt": "2026-11-23T21:16:33.958Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.085Z",
+   "retryAt": "2026-11-24T13:28:45.085Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31753,9 +31659,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.958Z",
-   "retryAt": "2026-11-23T21:16:33.958Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.086Z",
+   "retryAt": "2026-11-24T13:28:45.086Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31771,9 +31677,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.958Z",
-   "retryAt": "2026-11-23T21:16:33.958Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.086Z",
+   "retryAt": "2026-11-24T13:28:45.086Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31789,9 +31695,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.959Z",
-   "retryAt": "2026-11-23T21:16:33.959Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.087Z",
+   "retryAt": "2026-11-24T13:28:45.087Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31807,9 +31713,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.959Z",
-   "retryAt": "2026-11-23T21:16:33.959Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.087Z",
+   "retryAt": "2026-11-24T13:28:45.087Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31825,9 +31731,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.959Z",
-   "retryAt": "2026-11-23T21:16:33.959Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.087Z",
+   "retryAt": "2026-11-24T13:28:45.087Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31843,9 +31749,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:33.959Z",
-   "retryAt": "2026-11-23T21:16:33.959Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.088Z",
+   "retryAt": "2026-11-24T13:28:45.088Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31861,9 +31767,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:59.649Z",
-   "retryAt": "2026-11-23T21:16:59.649Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.088Z",
+   "retryAt": "2026-11-24T13:28:45.088Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31879,9 +31785,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:16:59.649Z",
-   "retryAt": "2026-11-23T21:16:59.649Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.088Z",
+   "retryAt": "2026-11-24T13:28:45.088Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31897,9 +31803,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.914Z",
-   "retryAt": "2026-11-23T21:17:07.914Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.088Z",
+   "retryAt": "2026-11-24T13:28:45.088Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31915,9 +31821,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.914Z",
-   "retryAt": "2026-11-23T21:17:07.914Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.088Z",
+   "retryAt": "2026-11-24T13:28:45.088Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31933,9 +31839,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.914Z",
-   "retryAt": "2026-11-23T21:17:07.914Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.089Z",
+   "retryAt": "2026-11-24T13:28:45.089Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31951,9 +31857,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.915Z",
-   "retryAt": "2026-11-23T21:17:07.915Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.089Z",
+   "retryAt": "2026-11-24T13:28:45.089Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31969,9 +31875,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.915Z",
-   "retryAt": "2026-11-23T21:17:07.915Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.089Z",
+   "retryAt": "2026-11-24T13:28:45.089Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31987,9 +31893,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T13:17:07.915Z",
-   "retryAt": "2026-11-23T21:17:07.915Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T21:28:45.089Z",
+   "retryAt": "2026-11-24T13:28:45.089Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32714,97 +32620,115 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-68030F222BB8",
+   "id": "V2I-3E9BF2EF4FAB",
    "fields": {
+    "SALARY_BASE_LOW": 124568,
+    "SALARY_BASE_HIGH": 155000,
+    "SALARY_MIDPOINT": 139784,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://fa-evdq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/13502",
+    "SALARY_ASOF": "2026-11-23",
+    "SALARY_CONF": "HIGH",
     "DEGREE_TEXT": "NOT_STATED",
     "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.paycomonline.net/v4/ats/web.php/portal/17DAD2DB01D80256A98388561F4CEF57/jobs/192383?source=Indeed",
+    "DEGREE_EVIDENCE_URL": "https://fa-evdq-saasfaprod1.fa.ocs.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX_1/requisitions/preview/13502",
     "DEGREE_ASOF": "2026-11-23",
-    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 160000,
-    "SALARY_BASE_HIGH": 220000,
-    "SALARY_MIDPOINT": 190000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-23",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4491422644 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4486755668 (as of 2026-11-05); https://jobs.limagrain.com/job/Plant-manager/2814-en_US (as of 2026-11-23); https://www.linkedin.com/jobs/view/4491185648 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4492601461 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23); https://secure6.saashr.com/ta/6182016.jobs?ShowJob=772163008 (as of 2026-11-21)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-DDB10C939A6F, V2I-9196DC54982D, V2I-47885E05709D, V2I-5A626AB08A25, V2I-91C9E7BC594D, V2I-A86C2E8C1E82, V2I-1D55E7CC8E88]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS TN 113051 P25-P90 $92K-$199K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
-    "SALARY_SCORE_POINT": 205000
+    "SALARY_SCORE_POINT": 147392
    }
   },
   {
-   "id": "V2I-E67A6852CE84",
+   "id": "V2I-648B06BAAF1E",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's of Science in Engineering or similar.",
+    "DEGREE_TEXT": "Bachelor's degree from a four-year college or university in Health Care field required.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4494043331",
+    "DEGREE_EVIDENCE_URL": "https://ht-jobs.net/b7k0act?s=in",
     "DEGREE_ASOF": "2026-11-23",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
     "SALARY_BASE_LOW": 130000,
-    "SALARY_BASE_HIGH": 220000,
-    "SALARY_MIDPOINT": 175000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 165000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-23",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4492601461 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4481371065/ (as of 2026-11-02); https://www.linkedin.com/jobs/view/4484126506 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4484752045 (as of 2026-10-30); https://jobs.limagrain.com/job/Plant-manager/2814-en_US (as of 2026-11-23); https://www.linkedin.com/jobs/view/4491185648 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-91C9E7BC594D, V2I-57401D7A47E1, V2I-48640594A74B, V2I-3E0432A2974E, V2I-47885E05709D, V2I-5A626AB08A25, V2I-A86C2E8C1E82]; 7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS IL 113051 P25-P90 $102K-$205K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4489779205 (as of 2026-11-23); https://talent.com/view?id=646777057785808244 (as of 2026-11-22); https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~ (as of 2026-11-22); https://communityhealthplanofimperialvalley.applytojob.com/apply/SC1SyxyGRD/Health-Plan-Quality-Director?source=INDE&~ (as of 2026-11-21); https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed (as of 2026-11-21); https://www.paycomonline.net/v4/ats/web.php/portal/AEE60468937B1AC7AFF8976A120E1E9B/jobs/551788?source=Indeed (as of 2026-11-21); https://www.linkedin.com/jobs/view/4492593965 (as of 2026-11-21)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-40D5C5969E61, V2I-01969D64081E, V2I-6C89D85095A9, V2I-5AA8CF6F2738, V2I-6A05D2BC85C5, V2I-7FD341FBC23B, V2I-C2D696A21D4D]; 7 employer-posted comparable(s), level 2 QUALITY any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 18 eligible roles from the same comparables, so LOW; BLS state wage n/a; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
-    "SALARY_SCORE_POINT": 197500
+    "SALARY_SCORE_POINT": 182500
+   }
+  },
+  {
+   "id": "V2I-4BEBBFEE5462",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree or equivalent preferred.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://efhn.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/requisitions/preview/101611",
+    "DEGREE_ASOF": "2026-11-23",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 130000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 165000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-23",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4489779205 (as of 2026-11-23); https://morganstanley.eightfold.ai/careers/job?domain=morganstanley.com&pid=549786603679 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4482457617 (as of 2026-11-02); https://talent.com/view?id=646777057785808244 (as of 2026-11-22); https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~ (as of 2026-11-22); https://communityhealthplanofimperialvalley.applytojob.com/apply/SC1SyxyGRD/Health-Plan-Quality-Director?source=INDE&~ (as of 2026-11-21); https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed (as of 2026-11-21)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-40D5C5969E61, V2I-91C09903500A, V2I-B601E080FA31, V2I-01969D64081E, V2I-6C89D85095A9, V2I-5AA8CF6F2738, V2I-6A05D2BC85C5]; 7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS GA 113051 P25-P90 $99K-$194K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
+    "SALARY_SCORE_POINT": 182500
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-68030F222BB8",
-   "company": "Everidge",
-   "title": "Plant Manager",
-   "location": "Greeneville, TN, USA",
-   "posting": "https://www.paycomonline.net/v4/ats/web.php/portal/17DAD2DB01D80256A98388561F4CEF57/jobs/192383",
+   "id": "V2I-648B06BAAF1E",
+   "company": "Avel eCare",
+   "title": "Director of Quality",
+   "location": "Remote, USA",
+   "posting": "https://ht-jobs.net/b7k0act?s=in",
    "est": [
-    160000,
-    220000,
+    130000,
+    200000,
     "LOW"
    ],
    "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
+   "bls": "NO_BLS",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 18 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-DDB10C939A6F",
-    "V2I-9196DC54982D",
-    "V2I-47885E05709D",
-    "V2I-5A626AB08A25",
-    "V2I-91C9E7BC594D",
-    "V2I-A86C2E8C1E82",
-    "V2I-1D55E7CC8E88"
+    "V2I-40D5C5969E61",
+    "V2I-01969D64081E",
+    "V2I-6C89D85095A9",
+    "V2I-5AA8CF6F2738",
+    "V2I-6A05D2BC85C5",
+    "V2I-7FD341FBC23B",
+    "V2I-C2D696A21D4D"
    ]
   },
   {
    "basis": "POSTING_READ",
-   "id": "V2I-E67A6852CE84",
-   "company": "Universal Air Filter",
-   "title": "Plant Manager",
-   "location": "Sauget, IL, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4494043331",
+   "id": "V2I-4BEBBFEE5462",
+   "company": "Construction Specialties",
+   "title": "Director, Quality & EHS",
+   "location": "Kennesaw, GA, USA",
+   "posting": "https://efhn.fa.us6.oraclecloud.com/hcmUI/CandidateExperience/en/sites/CX/requisitions/preview/101611",
    "est": [
     130000,
-    220000,
+    200000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
    "comparables": [
-    "V2I-91C9E7BC594D",
-    "V2I-57401D7A47E1",
-    "V2I-48640594A74B",
-    "V2I-3E0432A2974E",
-    "V2I-47885E05709D",
-    "V2I-5A626AB08A25",
-    "V2I-A86C2E8C1E82"
+    "V2I-40D5C5969E61",
+    "V2I-91C09903500A",
+    "V2I-B601E080FA31",
+    "V2I-01969D64081E",
+    "V2I-6C89D85095A9",
+    "V2I-5AA8CF6F2738",
+    "V2I-6A05D2BC85C5"
    ]
   }
  ],
