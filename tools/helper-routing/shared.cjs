@@ -35,10 +35,17 @@ function validateWork(w){
   if(i.kind==='ENRICHMENT'&&!/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(i.primaryId||''))throw Error('EXACT_SHARED_JOB_ID_REQUIRED');
   seen.add(key(i));
  }
+ if(Object.hasOwn(w,'enrichmentPartitionReservations')){
+  const r=w.enrichmentPartitionReservations,P=require('./worker-partition.cjs');
+  try{P.validate({schema:'forge.enrichment-worker-partition.v1',sourceCommit:r?.sourceCommit,sourcePath:'state/PIPELINE_WAITING_QUEUES.json',workers:r?.workers});}
+  catch{throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');}
+  if(r.schema!=='forge.enrichment-partition-reservations.v1'||r.sourcePath!==P.FILE)throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
+ }
  return w;
 }
 function load(root=ROOT){return validateWork(S.read(root,FILE));}
-function reservedKeys(w){return new Set(w?.enabled&&w.routingActive?w.items.filter(active).flatMap(i=>[key(i),...i.aliases||[]]):[]);}
+function partitionReservationIds(w){return (w?.enrichmentPartitionReservations?.workers||[]).flatMap(x=>x.primaryIds||[]);}
+function reservedKeys(w){const fromItems=w?.enabled&&w.routingActive?w.items.filter(active).flatMap(i=>[key(i),...i.aliases||[]]):[];return new Set([...fromItems,...partitionReservationIds(w)]);}
 // Lanes have no owner (Tim 2026-11-22): any authorized provider may run a shared
 // lane. Item provider is the lane's reservation label; the batch records who ran it.
 function providerOk(b){
