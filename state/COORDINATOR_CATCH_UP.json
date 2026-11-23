@@ -1,9 +1,9 @@
 {
   "schema": "forge.coordinator-catch-up.v1",
-  "at": "2026-11-23T06:19:29.342Z",
-  "runId": "FORGE-CODE-CHATGPT-20261123T054023962Z",
+  "at": "2026-11-23T06:56:25.047Z",
+  "runId": "FORGE-CODE-CHATGPT-20261123T062024112Z",
   "scope": "Persisted visible alert cards and coordinator intake plan; unseen historical coverage is unproven",
-  "status": "ACTIVE",
+  "status": "WAITING_RECONCILIATION",
   "verifiedPrimaryIds": [
     "V2E-910A90DFD99F",
     "V2F-111AE22AE911",
@@ -1638,32 +1638,31 @@
     "V2I-FF626C116358"
   ],
   "intake": {
-    "ready": 204,
+    "ready": 0,
     "reviewCards": 1076,
-    "pendingOriginalRequests": 25,
-    "pendingCards": 2285,
+    "pendingOriginalRequests": 28,
+    "pendingCards": 2489,
     "statusCounts": {
       "HELD_WRITER_IDENTITY": 676,
       "HOLD_SOURCE_IDENTITY": 1152,
       "SOURCE_REVALIDATION_REQUIRED": 400,
       "ORIGINAL_WRITER_FENCE": 886,
-      "POST_IN_FLIGHT_UNKNOWN": 2285,
+      "POST_IN_FLIGHT_UNKNOWN": 2489,
       "REUSE_DURABLE_DISPOSITION": 5,
-      "READY": 204,
       "CLOSED_FUNCTION_MISMATCH": 123,
       "EXCLUDED": 5
     },
     "verifiedDistinctJobs": 1631,
-    "newVerifiedSincePrevious": 205
+    "newVerifiedSincePrevious": 0
   },
   "alerts": {
     "awaitingCapture": 259,
-    "awaitingEvaluation": 744,
-    "visibleCardsDispositioned": 53
+    "awaitingEvaluation": 738,
+    "visibleCardsDispositioned": 59
   },
   "ai": {
-    "actionRequired": 2918
+    "actionRequired": 3021
   },
-  "nextAction": "Next five-minute coordinator pass drains independent READY jobs",
+  "nextAction": "Keep original requests fenced; Gofer/AI reconciles exceptions. Resume changed evidence and due retries.",
   "noProcessingCap": true
 }
