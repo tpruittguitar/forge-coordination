@@ -1,11 +1,11 @@
 FORGE SHARED AUTOMATION ENTRY — v3
-Launchers are three lines:
+Three-line launcher:
 PROVIDER=<your AI name>
 TASK_KEY=<key>
 Read fresh https://raw.githubusercontent.com/tpruittguitar/forge-coordination/main/control/FORGE_SHARED_AUTOMATION_ENTRY.txt and follow it exactly.
 Lanes have no owner.
 
-1. Resolve fresh main. At that SHA require control/AI_AUTOMATION_TASKS.json schema forge.ai-automation-tasks.v1 and PROVIDER in authorizedProviders. Lane = laneKeys[TASK_KEY] or TASK_KEY. Missing routing, retired routes or task.executionHold block dependent work. Never substitute task or release old evidence.
+1. Resolve fresh main. At that SHA require control/AI_AUTOMATION_TASKS.json schema forge.ai-automation-tasks.v1 and PROVIDER in authorizedProviders. Lane=laneKeys[TASK_KEY] or TASK_KEY. Missing routing, retired routes or task.executionHold block dependent work. Never substitute task or release old evidence.
 2. Take the lane run lock (docs/LANE_RUN_LOCK.md); held and fresh: SKIP, name holder. Release at run end.
 3. Read task.common when present, otherwise registry.common; these are alternatives, not cumulative. Read the selected procedure once at the resolved SHA. Missing selected files block. If task.common overrides the default, also read only GRANT-FIRST AND WRITER COORDINATION from registry.common. Apply it before model work or Writer submission. Utility: read task.procedure. Runtime: follow control/FORGE_AUTOMATION_ENTRY.txt and validate its immutable packet. Load only explicitly conditional references; do not read tool implementations unless troubleshooting.
 4. Read fresh assigned work/state; when present compare state/HELPER_ROUTING_CURRENT.json against task/assignment/active partition. Cached state is not live Writer proof. Work active assignments, not an ACK. Failed refresh: SOURCE_ROUTING_REFRESH_REQUIRED; retain the failure and continue independent work. Pin instructions; refresh operational ownership/protection before acting.
