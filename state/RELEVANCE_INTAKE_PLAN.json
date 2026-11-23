@@ -1,21 +1,22 @@
 {
   "schema": "forge.relevance-intake-plan.v1",
-  "runId": "FORGE-CODE-CHATGPT-20261123T062024112Z",
-  "at": "2026-11-23T06:47:39.004Z",
+  "runId": "FORGE-CODE-CHATGPT-20261123T070024696Z",
+  "at": "2026-11-23T07:37:08.199Z",
   "policyCommit": "f81142fef4d864176adc8bbc7e7c3292d330c54e",
-  "canonicalReadAt": "2026-11-23T06:47:03.024Z",
+  "canonicalReadAt": "2026-11-23T07:36:30.798Z",
   "counts": {
     "VERIFIED_INSERTED": 3793,
     "VERIFIED_EXISTING": 101,
     "HELD_WRITER_IDENTITY": 676,
     "SOURCE_REVALIDATION_REQUIRED": 400,
-    "POST_IN_FLIGHT_UNKNOWN": 2285,
+    "POST_IN_FLIGHT_UNKNOWN": 2489,
     "CLOSED_FUNCTION_MISMATCH": 123,
-    "ORIGINAL_WRITER_FENCE": 886,
+    "ORIGINAL_WRITER_FENCE": 893,
     "HOLD_SOURCE_IDENTITY": 1152,
     "REUSE_DURABLE_DISPOSITION": 5,
     "EXCLUDED": 5,
-    "READY": 204
+    "READY": 5,
+    "EXISTING_CANONICAL": 1
   },
   "items": [
     {
@@ -42147,6 +42148,47 @@
         "DISCOVERED_AT_ET": "2026-11-22 23:53 ET"
       },
       "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+    },
+    {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T044023772Z-B002",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T044023772Z-B002"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "Hunter Engineering Company",
+          "TITLE": "Lead, Advanced Manufacturing Engineer",
+          "LOCATION": "Bridgeton, MO",
+          "SOURCE_URL": "https://www.indeed.com/viewjob?jk=fc8ff9cc6fe25a4e",
+          "INITIATING_URL": "https://www.indeed.com/viewjob?jk=fc8ff9cc6fe25a4e",
+          "SOURCE_PROVIDER": "INDEED",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "Experience: 7-10 years of hands-on manufacturing engineering experience in sheet metal fabrication, industrial equipment, automotive service equipment, or sheet…",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:fc8ff9cc6fe25a4e | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-22 00:20 ET"
+        }
+      },
+      "key": "linkedin:4491972696",
+      "queueKey": "linkedin:4491972696",
+      "status": "ORIGINAL_WRITER_FENCE",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 0,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4491972696",
+      "sourceEvidenceSha256": "55601cef71dca6264b717b6380ffda53cb5bb06355a8ca38ec2fdcd78e17d84b",
+      "sourceDate": "2026-11-23T05:53:03.000Z"
     },
     {
       "key": "linkedin:4470756944",
@@ -95778,7 +95820,8 @@
           "status": "EXCLUDED_BY_WRITER",
           "sourceEmails": [
             "1a2019fe01307a9c",
-            "1a1fcc9ef5c29e90"
+            "1a1fcc9ef5c29e90",
+            "1a20709f123b2498"
           ],
           "evidence": [
             {
@@ -95812,6 +95855,22 @@
               "template": "INDEED_SAVED_ALERT_V1",
               "sourceCardSha256": "d2fd2839f36fe91bb75a7205c27d89d4d19f54e5d20db2dfb61cd7ce7e00eb92",
               "cardHash": "9d9df01d705fed6f732f0ecdfd267a7a3332e654aa2400109788a0ddd81bcb35"
+            },
+            {
+              "gmailId": "1a20709f123b2498",
+              "at": "2026-11-23T06:13:41.000Z",
+              "page": "https://www.indeed.com/viewjob?jk=941fe5095af8acac",
+              "paragraphs": [
+                "Senior Manager/Associate Director, Quality Assurance, GMP",
+                "Xenon Pharmaceuticals",
+                "Needham, MA",
+                "$142,700 - $210,400 a year The candidate will provide quality support primarily for the manufacturing and release of cGMP drug substance active pharmaceutical ingredients (APIs) for…"
+              ],
+              "source": "FULL_ORIGINAL_ALERT",
+              "sourceSha256": "c4794dbf7d08f4f062814d0523357770491f7cc2cadaab78f1e0a00c22bbe26e",
+              "template": "INDEED_SAVED_ALERT_V1",
+              "sourceCardSha256": "9e4c33a2f014017e94acae562b10e60d3357b22bc4bf876f80064527f78c6612",
+              "cardHash": "eed3dab221509fdbde7f1d604da53db83d7501d3fc571eb39c8d5f8a171257c4"
             }
           ],
           "description": "$142,700 - $210,400 a year Bachelor’s degree in a life sciences discipline, with a minimum of 5-8+ years of relevant management experience in GMP management positions.",
@@ -95828,7 +95887,7 @@
             "period": "YEAR",
             "basis": null,
             "status": "POSTED",
-            "observedAt": "2026-11-21T06:27:33.000Z",
+            "observedAt": "2026-11-23T06:13:41.000Z",
             "source": "EXACT_ORIGINAL_ALERT_CARD"
           },
           "selectionReason": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:941fe5095af8acac",
@@ -95842,7 +95901,7 @@
           },
           "preliminaryScreen": {
             "schema": "forge.discovery-preliminary-screen.v1",
-            "checkedAt": "2026-11-23T04:01:07.262Z",
+            "checkedAt": "2026-11-23T07:06:42.536Z",
             "ats": {
               "schema": "forge.resume-overlap.v1",
               "matcherVersion": "explicit-variants-v2",
@@ -95853,14 +95912,24 @@
               "contentBasis": "TITLE_AND_ROLE_CONTENT",
               "matches": [
                 {
+                  "competencyId": "manufacturing_leadership",
+                  "postingTerms": [
+                    "manufacturing"
+                  ],
+                  "postingQuotes": [
+                    "$142,700 - $210,400 a year The candidate will provide quality support primarily for the manufacturing and release of cGMP drug substance active pharmaceutical ingredients (APIs) for…"
+                  ],
+                  "resumeEvidenceSha256": "f7574a1a2baa4902271577e622a9a8493509f3cd857306eba5a59d05f7250094"
+                },
+                {
                   "competencyId": "quality_systems",
                   "postingTerms": [
                     "Quality",
                     "Quality Assurance"
                   ],
                   "postingQuotes": [
-                    "Senior Manager/Associate Director, Quality Assurance, GMP\n$142,700 - $210,400 a year Bachelor’s degree in a life sciences discipline, with a minimum of 5-8+ years of relevant management experience in GMP management positions.",
-                    "Senior Manager/Associate Director, Quality Assurance, GMP\n$142,700 - $210,400 a year Bachelor’s degree in a life sciences discipline, with a minimum of 5-8+ years of relevant management experience in GMP management positions."
+                    "Senior Manager/Associate Director, Quality Assurance, GMP\n$142,700 - $210,400 a year The candidate will provide quality support primarily for the manufacturing and release of cGMP drug substance active pharmaceutical ingredients (APIs) for…",
+                    "Senior Manager/Associate Director, Quality Assurance, GMP\n$142,700 - $210,400 a year The candidate will provide quality support primarily for the manufacturing and release of cGMP drug substance active pharmaceutical ingredients (APIs) for…"
                   ],
                   "resumeEvidenceSha256": "81f1b9183ff643545567dfbcfa5083b762ec0e318c9f1bb3cb600d2627dc23e7"
                 }
@@ -95883,18 +95952,18 @@
                 "title": "Senior Manager/Associate Director, Quality Assurance, GMP",
                 "location": "Needham, MA"
               },
-              "sourceSha256": "d621c83b6cf6748972db3ff30ddfc4d102179e64962874fb44f17281a16a6cce",
+              "sourceSha256": "0c78ebb980219cfd5589d9a065199bd5d53a0edd41c42166365c10dab680c349",
               "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
               "resumeVersion": "2026-10-13T22:42:09.660Z",
               "canonicalWrites": 0
             },
             "neverConsider": {
-              "status": "REVIEW_RULE_CHANGED",
+              "status": "NO_CONFIRMED_EXCLUSION",
               "rulesSha256": "8ebdbafda8a7876f2b19577b123cd8287a238a6325588c9ff04776bf704fd341",
               "ruleId": null,
               "quote": null,
               "sourceUrl": "https://www.indeed.com/viewjob?jk=941fe5095af8acac",
-              "sourceSha256": "d621c83b6cf6748972db3ff30ddfc4d102179e64962874fb44f17281a16a6cce",
+              "sourceSha256": "0c78ebb980219cfd5589d9a065199bd5d53a0edd41c42166365c10dab680c349",
               "canonicalEligibility": false
             },
             "unresolved": [
@@ -95959,7 +96028,8 @@
           "observedAt": "2026-11-22T04:59:43.000Z",
           "status": "EXCLUDED_BY_WRITER",
           "sourceEmails": [
-            "1a2019fe01307a9c"
+            "1a2019fe01307a9c",
+            "1a20709f123b2498"
           ],
           "evidence": [
             {
@@ -95977,6 +96047,22 @@
               "template": "INDEED_SAVED_ALERT_V1",
               "sourceCardSha256": "b1d62d8f93917c0c9c63ad469b294e4ccdda60a499ca6d91bc5c5695d9b38f2b",
               "cardHash": "0e3bf9487631de93a542ae216c08d34768887dcdc17c22ad0a89a79feecafe1e"
+            },
+            {
+              "gmailId": "1a20709f123b2498",
+              "at": "2026-11-23T06:13:41.000Z",
+              "page": "https://www.indeed.com/viewjob?jk=b1a4c5ca91fdd5bb",
+              "paragraphs": [
+                "Director, Quality",
+                "Caldic",
+                "Meriden, CT",
+                "The Director of Quality provides leadership, direction, and support to the Quality team, fostering a culture of collaboration, accountability, continuous…"
+              ],
+              "source": "FULL_ORIGINAL_ALERT",
+              "sourceSha256": "c4794dbf7d08f4f062814d0523357770491f7cc2cadaab78f1e0a00c22bbe26e",
+              "template": "INDEED_SAVED_ALERT_V1",
+              "sourceCardSha256": "a3b0b175a6fe72abedc660705d63e5dfe17ef3586ba50552af04229cfcc9dad4",
+              "cardHash": "0e3bf9487631de93a542ae216c08d34768887dcdc17c22ad0a89a79feecafe1e"
             }
           ],
           "description": "The Director of Quality provides leadership, direction, and support to the Quality team, fostering a culture of collaboration, accountability, continuous…",
@@ -95991,7 +96077,7 @@
           },
           "preliminaryScreen": {
             "schema": "forge.discovery-preliminary-screen.v1",
-            "checkedAt": "2026-11-23T04:01:07.262Z",
+            "checkedAt": "2026-11-23T07:06:42.536Z",
             "ats": {
               "schema": "forge.resume-overlap.v1",
               "matcherVersion": "explicit-variants-v2",
@@ -96036,7 +96122,7 @@
               "canonicalWrites": 0
             },
             "neverConsider": {
-              "status": "REVIEW_RULE_CHANGED",
+              "status": "NO_CONFIRMED_EXCLUSION",
               "rulesSha256": "8ebdbafda8a7876f2b19577b123cd8287a238a6325588c9ff04776bf704fd341",
               "ruleId": null,
               "quote": null,
@@ -99586,6 +99672,234 @@
       "sourceProof": "state/source-trial-report.json@1bfe67f99bcaa457fecadeda2597b10a435720925fa7cd92232f1310b344a49c",
       "sourceEvidenceSha256": "c5d51723b72c52ee2bf0856924f033407d23c0f2b7cd06df12b279ec73f8dbd0",
       "sourceDate": "2026-11-23T06:12:03.365Z"
+    },
+    {
+      "key": "indeed:01fdcff61bc67de4",
+      "queueKey": "indeed:01fdcff61bc67de4",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:01fdcff61bc67de4",
+      "sourceEvidenceSha256": "f5e8cbc481822f0168ec8624e0917f00d55a239c084d9161fd65d6fb6b70c977",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "record": {
+        "COMPANY": "Loos & Co",
+        "TITLE": "Corporate Director of Quality",
+        "LOCATION": "Pomfret, CT",
+        "SOURCE_URL": "https://www.indeed.com/viewjob?jk=01fdcff61bc67de4",
+        "INITIATING_URL": "https://www.indeed.com/viewjob?jk=01fdcff61bc67de4",
+        "SOURCE_PROVIDER": "INDEED",
+        "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+        "REMOTE_HYBRID": "UNKNOWN",
+        "IDENTITY_CONFIDENCE": "HIGH",
+        "ROLE_TEXT": "$142,000 - $204,500 a year Demonstrated use of Quality data and statistical methods to improve performance, including examples of measurable reduction in defects, escapes, cost of poor…",
+        "INITIAL_UNKNOWN_FIELDS": [
+          "PAY",
+          "DEGREE",
+          "FLEX",
+          "REQ_ID"
+        ],
+        "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:01fdcff61bc67de4 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T070024696Z. Current relevance screen applies. Missing inputs go to enrichment.",
+        "DISCOVERED_AT_ET": "2026-11-23 01:13 ET"
+      },
+      "requestId": "FORGE-CODE-CHATGPT-20261123T070024696Z-B001"
+    },
+    {
+      "key": "indeed:58587f8a0f974398",
+      "queueKey": "indeed:58587f8a0f974398",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:58587f8a0f974398",
+      "sourceEvidenceSha256": "610f0a236911872823cb2b15d763852e5f0e94d6a6c4e84693100fc157940147",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "record": {
+        "COMPANY": "MIRATECH Corporation",
+        "TITLE": "Quality Manager",
+        "LOCATION": "Tulsa, OK",
+        "SOURCE_URL": "https://www.indeed.com/viewjob?jk=58587f8a0f974398",
+        "INITIATING_URL": "https://www.indeed.com/viewjob?jk=58587f8a0f974398",
+        "SOURCE_PROVIDER": "INDEED",
+        "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+        "REMOTE_HYBRID": "UNKNOWN",
+        "IDENTITY_CONFIDENCE": "HIGH",
+        "ROLE_TEXT": "5+ years of Quality Control experience. Support the development and maintenance of quality standards. Maintain accurate records of testing, audits, and…",
+        "INITIAL_UNKNOWN_FIELDS": [
+          "PAY",
+          "DEGREE",
+          "FLEX",
+          "REQ_ID"
+        ],
+        "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:58587f8a0f974398 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T070024696Z. Current relevance screen applies. Missing inputs go to enrichment.",
+        "DISCOVERED_AT_ET": "2026-11-23 01:13 ET"
+      },
+      "requestId": "FORGE-CODE-CHATGPT-20261123T070024696Z-B001"
+    },
+    {
+      "requestId": "FORGE-SOURCE-63596395A8D54936FE247B0F",
+      "fence": {
+        "requestIds": [
+          "FORGE-SOURCE-63596395A8D54936FE247B0F"
+        ],
+        "proof": "receipts/auto-intake/FORGE-AUTO-20261121T123137Z.json",
+        "record": {
+          "COMPANY": "Global Finishing Solutions",
+          "TITLE": "Director of Quality Assurance & CI",
+          "LOCATION": "Osseo, Wisconsin, United States",
+          "SOURCE_URL": "https://hiringcafe.com/job/director-of-quality-assurance-and-ci-global-finishing-solutions-osseo-ha6rg4bou3niw3sz",
+          "INITIATING_URL": "https://hiringcafe.com/job/director-of-quality-assurance-and-ci-global-finishing-solutions-osseo-ha6rg4bou3niw3sz",
+          "SCOUT_NOTES": "Captured HIRINGCAFE; observed 2026-11-21T11:57:36.995Z; posting status UNVERIFIED; employer business UNKNOWN; proof state/source-trial-report.json | resumeSHA=3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640 | Title selected as QUALITY / DIRECTOR_PLUS; location WI. Role content unavailable; retain for intake review. Resume-supported hits: quality_systems.",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "EMPLOYER_PRIMARY_BUSINESS"
+          ],
+          "EMPLOYER_PRIMARY_BUSINESS": "",
+          "SOURCE_PROVIDER": "HIRINGCAFE"
+        }
+      },
+      "key": "indeed:68439e1f1304010e",
+      "queueKey": "indeed:68439e1f1304010e",
+      "status": "ORIGINAL_WRITER_FENCE",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:68439e1f1304010e",
+      "sourceEvidenceSha256": "31269481a0b41813ff9a3752c886c515d7ee4817a1ace578d5b8824750005317",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
+    },
+    {
+      "key": "indeed:6a50f1c607890512",
+      "queueKey": "indeed:6a50f1c607890512",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:6a50f1c607890512",
+      "sourceEvidenceSha256": "4d42c3ed7ba78f46a5990b8e2bd897bc93fa33ff81785e1389655f73df2e859b",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "record": {
+        "COMPANY": "OFI",
+        "TITLE": "Sr. Quality and Food Safety Manager",
+        "LOCATION": "Deming, NM",
+        "SOURCE_URL": "https://www.indeed.com/viewjob?jk=6a50f1c607890512",
+        "INITIATING_URL": "https://www.indeed.com/viewjob?jk=6a50f1c607890512",
+        "SOURCE_PROVIDER": "INDEED",
+        "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+        "REMOTE_HYBRID": "UNKNOWN",
+        "IDENTITY_CONFIDENCE": "HIGH",
+        "ROLE_TEXT": "$140,000 - $160,000 a year Candidates substituting years of experience in lieu of degree must have a total of fifteen (15) years of relevant experience.",
+        "INITIAL_UNKNOWN_FIELDS": [
+          "PAY",
+          "DEGREE",
+          "FLEX",
+          "REQ_ID"
+        ],
+        "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:6a50f1c607890512 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T070024696Z. Current relevance screen applies. Missing inputs go to enrichment.",
+        "DISCOVERED_AT_ET": "2026-11-23 01:13 ET"
+      },
+      "requestId": "FORGE-CODE-CHATGPT-20261123T070024696Z-B001"
+    },
+    {
+      "key": "indeed:90b0c333f13c5ca3",
+      "queueKey": "indeed:90b0c333f13c5ca3",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:90b0c333f13c5ca3",
+      "sourceEvidenceSha256": "f4d2c6cfb3279d0412db792fc8d677723920a18d2640c0d9b00ffb03c91ef308",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "record": {
+        "COMPANY": "Gilead Sciences",
+        "TITLE": "Associate Director, Quality Assurance Compliance",
+        "LOCATION": "Foster City, CA",
+        "SOURCE_URL": "https://www.indeed.com/viewjob?jk=90b0c333f13c5ca3",
+        "INITIATING_URL": "https://www.indeed.com/viewjob?jk=90b0c333f13c5ca3",
+        "SOURCE_PROVIDER": "INDEED",
+        "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+        "REMOTE_HYBRID": "UNKNOWN",
+        "IDENTITY_CONFIDENCE": "HIGH",
+        "ROLE_TEXT": "$165,495 - $235,620 a year In order to ensure reasonable accommodation for individuals protected by Section 503 of the Rehabilitation Act of 1973, the Vietnam Era Veterans' Readjustment…",
+        "INITIAL_UNKNOWN_FIELDS": [
+          "PAY",
+          "DEGREE",
+          "FLEX",
+          "REQ_ID"
+        ],
+        "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:90b0c333f13c5ca3 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T070024696Z. Current relevance screen applies. Missing inputs go to enrichment.",
+        "DISCOVERED_AT_ET": "2026-11-23 01:13 ET"
+      },
+      "requestId": "FORGE-CODE-CHATGPT-20261123T070024696Z-B001"
+    },
+    {
+      "key": "indeed:a14282b5d7e9ac32",
+      "queueKey": "indeed:a14282b5d7e9ac32",
+      "status": "EXISTING_CANONICAL",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:a14282b5d7e9ac32",
+      "sourceEvidenceSha256": "e0ba9db2daa13d5d53251c2f061823d658fd70fb674a4da6d746275677a1a16d",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "primaryId": "V2I-BF3BB2D1D8F5",
+      "proof": "receipts/FORGE-CODE-CHATGPT-20261123T070024696Z_SCREEN.json"
+    },
+    {
+      "key": "indeed:d3c23916af62cbef",
+      "queueKey": "indeed:d3c23916af62cbef",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "screen": {
+        "outcome": "ADMIT",
+        "rank": 1,
+        "reason": "Complete source identity; scope and title level are advisory. Writer decides canonical admission and Never Consider",
+        "scopeReviewRequired": false
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#indeed:d3c23916af62cbef",
+      "sourceEvidenceSha256": "e0b10032274708d3e175deafb5ee57830b5a94290aa25cb109b135a31be4d165",
+      "sourceDate": "2026-11-23T06:13:41.000Z",
+      "record": {
+        "COMPANY": "Gilead Sciences",
+        "TITLE": "Associate Director, External Quality",
+        "LOCATION": "Frederick, MD",
+        "SOURCE_URL": "https://www.indeed.com/viewjob?jk=d3c23916af62cbef",
+        "INITIATING_URL": "https://www.indeed.com/viewjob?jk=d3c23916af62cbef",
+        "SOURCE_PROVIDER": "INDEED",
+        "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+        "REMOTE_HYBRID": "UNKNOWN",
+        "IDENTITY_CONFIDENCE": "HIGH",
+        "ROLE_TEXT": "$165,495 - $214,170 a year Master’s Degree and 8+ years’ experience of Compliance and Quality Assurance/Quality Control within Biopharmaceutical or Pharmaceutical manufacturing, OR.",
+        "INITIAL_UNKNOWN_FIELDS": [
+          "PAY",
+          "DEGREE",
+          "FLEX",
+          "REQ_ID"
+        ],
+        "SCOUT_NOTES": "Exact saved INDEED alert card; state/EMAIL_RECOVERY_QUEUE.json#indeed:d3c23916af62cbef | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T070024696Z. Current relevance screen applies. Missing inputs go to enrichment.",
+        "DISCOVERED_AT_ET": "2026-11-23 01:13 ET"
+      },
+      "requestId": "FORGE-CODE-CHATGPT-20261123T070024696Z-B001"
     },
     {
       "key": "linkedin:4469357193",
@@ -268292,9 +268606,36 @@
       "sourceDate": "2026-11-17T06:49:35.000Z"
     },
     {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "AFI Industries",
+          "TITLE": "QUALITY MANAGER - FASTENERS, SCREWS, COLD HEADING",
+          "LOCATION": "Carol Stream, IL",
+          "SOURCE_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "INITIATING_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "SOURCE_PROVIDER": "GLASSDOOR",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "$75K - $100K (Employer est.) Easy Apply",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:5d748a23fe2d689b35c95357 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-20 17:23 ET"
+        }
+      },
       "key": "alert-card:7dd0ef1e86642da11195cba8b8c87ec452af0617e54c6f002c5bc5ee548818e2",
       "queueKey": "alert-card:7dd0ef1e86642da11195cba8b8c87ec452af0617e54c6f002c5bc5ee548818e2",
-      "status": "HOLD_SOURCE_IDENTITY",
+      "status": "ORIGINAL_WRITER_FENCE",
       "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
@@ -269707,9 +270048,36 @@
       "sourceDate": "2026-11-19T06:00:05.000Z"
     },
     {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "AFI Industries",
+          "TITLE": "QUALITY MANAGER - FASTENERS, SCREWS, COLD HEADING",
+          "LOCATION": "Carol Stream, IL",
+          "SOURCE_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "INITIATING_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "SOURCE_PROVIDER": "GLASSDOOR",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "$75K - $100K (Employer est.) Easy Apply",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:5d748a23fe2d689b35c95357 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-20 17:23 ET"
+        }
+      },
       "key": "alert-card:acacf27c3553a12049832a5cf77f6a33d74c4ae673306ab5d15e498ff89e249f",
       "queueKey": "alert-card:acacf27c3553a12049832a5cf77f6a33d74c4ae673306ab5d15e498ff89e249f",
-      "status": "HOLD_SOURCE_IDENTITY",
+      "status": "ORIGINAL_WRITER_FENCE",
       "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
@@ -270771,9 +271139,36 @@
       "sourceDate": "2026-11-20T04:37:50.000Z"
     },
     {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "AFI Industries",
+          "TITLE": "QUALITY MANAGER - FASTENERS, SCREWS, COLD HEADING",
+          "LOCATION": "Carol Stream, IL",
+          "SOURCE_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "INITIATING_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "SOURCE_PROVIDER": "GLASSDOOR",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "$75K - $100K (Employer est.) Easy Apply",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:5d748a23fe2d689b35c95357 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-20 17:23 ET"
+        }
+      },
       "key": "alert-card:4c3eef3bee29965453346724fdec68772ec09e80b0e54ac34ef14b444a679a2c",
       "queueKey": "alert-card:4c3eef3bee29965453346724fdec68772ec09e80b0e54ac34ef14b444a679a2c",
-      "status": "HOLD_SOURCE_IDENTITY",
+      "status": "ORIGINAL_WRITER_FENCE",
       "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
@@ -271206,9 +271601,36 @@
       "sourceDate": "2026-11-21T02:47:44.000Z"
     },
     {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "AFI Industries",
+          "TITLE": "QUALITY MANAGER - FASTENERS, SCREWS, COLD HEADING",
+          "LOCATION": "Carol Stream, IL",
+          "SOURCE_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "INITIATING_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "SOURCE_PROVIDER": "GLASSDOOR",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "$75K - $100K (Employer est.) Easy Apply",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:5d748a23fe2d689b35c95357 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-20 17:23 ET"
+        }
+      },
       "key": "alert-card:902a910ca33f309d715a8cb95bf697cc3083a66b14e6700e13ab9df14b7f38b8",
       "queueKey": "alert-card:902a910ca33f309d715a8cb95bf697cc3083a66b14e6700e13ab9df14b7f38b8",
-      "status": "HOLD_SOURCE_IDENTITY",
+      "status": "ORIGINAL_WRITER_FENCE",
       "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
@@ -272814,9 +273236,36 @@
       "sourceDate": "2026-11-22T05:20:23.000Z"
     },
     {
+      "requestId": "FORGE-CODE-CHATGPT-20261123T062024112Z-B001",
+      "fence": {
+        "requestIds": [
+          "FORGE-CODE-CHATGPT-20261123T062024112Z-B001"
+        ],
+        "proof": "state/RELEVANCE_INTAKE_PLAN.json",
+        "record": {
+          "COMPANY": "AFI Industries",
+          "TITLE": "QUALITY MANAGER - FASTENERS, SCREWS, COLD HEADING",
+          "LOCATION": "Carol Stream, IL",
+          "SOURCE_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "INITIATING_URL": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010327775681",
+          "SOURCE_PROVIDER": "GLASSDOOR",
+          "DISCOVERY_SOURCE": "SAVED_SOURCE_EVIDENCE",
+          "REMOTE_HYBRID": "UNKNOWN",
+          "IDENTITY_CONFIDENCE": "HIGH",
+          "ROLE_TEXT": "$75K - $100K (Employer est.) Easy Apply",
+          "INITIAL_UNKNOWN_FIELDS": [
+            "PAY",
+            "DEGREE",
+            "FLEX",
+            "REQ_ID"
+          ],
+          "SCOUT_NOTES": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:5d748a23fe2d689b35c95357 | Programmed source evidence reused; FORGE-CODE-CHATGPT-20261123T035523772Z. Current relevance screen applies. Missing inputs go to enrichment.",
+          "DISCOVERED_AT_ET": "2026-11-20 17:23 ET"
+        }
+      },
       "key": "alert-card:aeaa8df726cde049380f9cf9ea228f7d9362b4410bf1180ca81fb163933db8a9",
       "queueKey": "alert-card:aeaa8df726cde049380f9cf9ea228f7d9362b4410bf1180ca81fb163933db8a9",
-      "status": "HOLD_SOURCE_IDENTITY",
+      "status": "ORIGINAL_WRITER_FENCE",
       "screen": {
         "outcome": "HOLD_SOURCE_IDENTITY",
         "rank": 8,
@@ -273352,6 +273801,71 @@
       "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:2732aa46d10889ef179a4de98cd65d06b552eaceb3a9d502753fb7c82e06d619",
       "sourceEvidenceSha256": "d45ac4a677779c949662df200cf65e0c92d537006e97a2afee1ef91982e9456f",
       "sourceDate": "2026-11-23T05:15:19.000Z"
+    },
+    {
+      "key": "alert-card:05296b85b748816767c734f9ab89b17915562730ee6bb4a72de86fcfc667190d",
+      "queueKey": "alert-card:05296b85b748816767c734f9ab89b17915562730ee6bb4a72de86fcfc667190d",
+      "status": "HOLD_SOURCE_IDENTITY",
+      "screen": {
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:05296b85b748816767c734f9ab89b17915562730ee6bb4a72de86fcfc667190d",
+      "sourceEvidenceSha256": "3c1213d658965eff0b5aaf9ef0d1e3509a8de802628c20f42c3945d9f87b674f",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
+    },
+    {
+      "key": "alert-card:53e9dd43888f33f35b30287180d6667611b1ebc826417df3f0b85e0bc2e1fb02",
+      "queueKey": "alert-card:53e9dd43888f33f35b30287180d6667611b1ebc826417df3f0b85e0bc2e1fb02",
+      "status": "HOLD_SOURCE_IDENTITY",
+      "screen": {
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:53e9dd43888f33f35b30287180d6667611b1ebc826417df3f0b85e0bc2e1fb02",
+      "sourceEvidenceSha256": "7eae646e3fe7c08b92b207ef482013b4f85e746df566a428b372efb25fda9319",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
+    },
+    {
+      "key": "alert-card:71e6478dd7173df12be9910553e93eb0a5af35d0d810e4fedef357651f0d760a",
+      "queueKey": "alert-card:71e6478dd7173df12be9910553e93eb0a5af35d0d810e4fedef357651f0d760a",
+      "status": "HOLD_SOURCE_IDENTITY",
+      "screen": {
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:71e6478dd7173df12be9910553e93eb0a5af35d0d810e4fedef357651f0d760a",
+      "sourceEvidenceSha256": "3eb21229d8072c12141bde0b461b6d200856823ecb7cdb395eab8a871e7520ce",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
+    },
+    {
+      "key": "alert-card:72a0ba86f46ac0739c5dee353e1ff089bc363301629d6c391d36ef0888302140",
+      "queueKey": "alert-card:72a0ba86f46ac0739c5dee353e1ff089bc363301629d6c391d36ef0888302140",
+      "status": "HOLD_SOURCE_IDENTITY",
+      "screen": {
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:72a0ba86f46ac0739c5dee353e1ff089bc363301629d6c391d36ef0888302140",
+      "sourceEvidenceSha256": "919b57a9c0120c8032d2e8deee4f75a00342ac61e7582cea2adbaa12a5f3b4b9",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
+    },
+    {
+      "key": "alert-card:74844b6438e5e2827c28796259c7d68750614064c0bd34e4eb40c123210416b5",
+      "queueKey": "alert-card:74844b6438e5e2827c28796259c7d68750614064c0bd34e4eb40c123210416b5",
+      "status": "HOLD_SOURCE_IDENTITY",
+      "screen": {
+        "outcome": "HOLD_SOURCE_IDENTITY",
+        "rank": 8,
+        "reason": "Missing card company, title, location or exact source URL"
+      },
+      "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#alert-card:74844b6438e5e2827c28796259c7d68750614064c0bd34e4eb40c123210416b5",
+      "sourceEvidenceSha256": "6f1ec19a025efcc23ff34317c8f5ea3c2a7a701a71dd70afa0808f6aa54bcfce",
+      "sourceDate": "2026-11-23T06:13:41.000Z"
     },
     {
       "key": "indeed:04c6e17aba803be0",
