@@ -1,7 +1,44 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{execFileSync}=require('node:child_process');
 const DEFAULT_MESSAGE='ACTIVITY-BOT: publish compact verified receipt activity';
-function run(root,args){return execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']});}
+function run(root,args,env){return execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe'],env:env?{...process.env,...env}:undefined});}
+// These four presentation/usage records are not read by final flow or intake calculation.
+const FLOW_STATUS_ONLY=new Set(['attention/BOT_INCIDENTS.json','control/AUTOMATIONS_STATUS.json','control/OFFICE_STATUS.json','usage/AI_USAGE_READINGS.jsonl']);
+const COMPLETE_FLOW=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/INTAKE_DRAIN.json','state/UPSTREAM_COLLECT_CURSOR.json'];
+const FLOW_PROTECTED=['state','receipts','verify','reference','tools','policy/current','.github/workflows/pipeline-observability.yml','control/AI_AUTOMATION_TASKS.json','control/RELEVANCE_SCREEN.json','control/ENRICHMENT_HELPER_WORK.json','control/SHARED_HELPER_WORK.json','control/shared-helper-pages'];
+function reparentFinishedFlow(root,{base,finished,paths,message}){
+ run(root,['fetch','--no-tags','origin','refs/heads/main']);
+ const latest=run(root,['rev-parse','FETCH_HEAD']).trim();
+ if(latest===base||latest===finished)throw Error('Flow reparent requires a strictly newer canonical main');
+ run(root,['merge-base','--is-ancestor',base,latest]);
+ const commits=run(root,['rev-list','--first-parent','--reverse','--max-count=65',base+'..'+latest]).trim().split(/\s+/);
+ if(commits.length>64||run(root,['rev-parse',commits[0]+'^']).trim()!==base)throw Error('Flow input history is not a bounded linear continuation');
+ const names=(from,to)=>run(root,['diff','--name-only','--no-renames','-z',from,to]).split('\0').filter(Boolean);
+ for(const c of commits){
+  const changed=names(c+'^',c);
+  if(!changed.length||changed.some(p=>!FLOW_STATUS_ONLY.has(p)))throw Error('Flow inputs changed: rebuild from fresh main');
+ }
+ // Verify exact protected input and destination parity, in addition to the per-commit allowlist.
+ run(root,['diff','--quiet',base,latest,'--',...FLOW_PROTECTED]);
+ const delta=names(base,finished);
+ if(!delta.length||delta.some(f=>!paths.some(p=>f===p||f.startsWith(p+'/'))))throw Error('Finished flow contains an out-of-scope publication');
+ run(root,['diff','--quiet',base,latest,'--',...delta]);
+ const dir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-flow-reparent-')),env={GIT_INDEX_FILE:path.join(dir,'index')};
+ try{
+  run(root,['read-tree',latest],env);
+  for(const file of delta){
+   const entries=run(root,['ls-tree','-z',finished,'--',file]);
+   if(!entries){run(root,['update-index','--force-remove','--',file],env);continue;}
+   const match=/^(100644|100755) blob ([a-f0-9]{40})\t([^\0]+)\0$/.exec(entries);
+   if(!match||match[3]!==file)throw Error('Finished flow path is not an exact regular Git blob');
+   run(root,['update-index','--add','--cacheinfo',match[1],match[2],file],env);
+  }
+  const tree=run(root,['write-tree'],env).trim();
+  const commit=run(root,['commit-tree',tree,'-p',latest,'-m',message]).trim();
+  run(root,['push','origin',commit+':refs/heads/main']);
+  return {changed:true,pushed:true,attempts:2,reparented:true,commit};
+ }finally{fs.rmSync(dir,{recursive:true,force:true});}
+}
 function present(root,paths){return paths.filter(p=>fs.existsSync(path.join(root,p)));}
 function snapshot(root,paths,dest){
  for(const p of present(root,paths)){fs.mkdirSync(path.dirname(path.join(dest,p)),{recursive:true});fs.cpSync(path.join(root,p),path.join(dest,p),{recursive:true});}
@@ -16,17 +53,24 @@ function commitListed(root,paths,message){
  let changed=false;try{run(root,['diff','--cached','--quiet']);}catch{run(root,['commit','-m',message]);changed=true;}
  return changed;
 }
-function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,ref='HEAD:main'}={}){
+function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,ref='HEAD:main',allowFlowStatusReparent=false}={}){
  // Queue outputs (and their in-run cursor) belong to the exact input ledger revision.
  // Never rebase/replay these files: a fresh worksheet tombstone could be overwritten.
  const relativePaths=paths.map(p=>path.relative(root,path.resolve(root,p)).split(path.sep).join('/'));
  if(relativePaths.some(p=>p==='..'||p.startsWith('../')||path.isAbsolute(p)))throw Error('Publish paths must stay inside the repository');
  const sourceBound=relativePaths.some(p=>p==='state/UPSTREAM_LEDGER.json'||p==='state/UPSTREAM_FLOW.json'||p==='state/UPSTREAM_COLLECT_CURSOR.json'||p==='state/PIPELINE_WAITING_QUEUES.json'||p==='state/waiting-queues'||p.startsWith('state/waiting-queues/'));
+ if(allowFlowStatusReparent&&(!sourceBound||ref!=='HEAD:main'||!COMPLETE_FLOW.every(p=>relativePaths.includes(p))))throw Error('Status-only reparent requires the complete flow and canonical main');
  if(sourceBound){
+  const base=allowFlowStatusReparent?run(root,['rev-parse','HEAD']).trim():null;
   const changed=commitListed(root,relativePaths,message);
   if(!push)return {changed,pushed:false};
-  run(root,['push','origin',ref]);
-  return {changed,pushed:true,attempts:1};
+  try{run(root,['push','origin',ref]);return {changed,pushed:true,attempts:1};}
+  catch(e){
+   if(!allowFlowStatusReparent||!changed||!/\[rejected\].*(?:fetch first|non-fast-forward)/i.test(String(e.stderr||'')))throw e;
+   const finished=run(root,['rev-parse','HEAD']).trim();
+   if(run(root,['rev-parse',finished+'^']).trim()!==base)throw Error('Finished flow is not a direct child of build input');
+   return reparentFinishedFlow(root,{base,finished,paths:relativePaths,message});
+  }
  }
  const backup=fs.mkdtempSync(path.join(os.tmpdir(),'git-publish-'));
  try{
@@ -54,9 +98,9 @@ function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,r
  }finally{fs.rmSync(backup,{recursive:true,force:true});}
 }
 if(require.main===module){
- const argv=process.argv.slice(2),paths=[];let message=DEFAULT_MESSAGE;
+ const argv=process.argv.slice(2),paths=[];let message=DEFAULT_MESSAGE,allowFlowStatusReparent=false;
  for(let i=0;i<argv.length;i++){if(argv[i]==='--message'){message=argv[++i];continue;}if(argv[i]==='--no-push'){process.env.GIT_PUBLISH_NO_PUSH='1';continue;}paths.push(argv[i]);}
- try{const result=publish(process.cwd(),paths,message,{push:process.env.GIT_PUBLISH_NO_PUSH!=='1'});if(result.changed)console.log(result.pushed?'Published':'Committed');process.exitCode=0;}
+ try{const result=publish(process.cwd(),paths,message,{push:process.env.GIT_PUBLISH_NO_PUSH!=='1',allowFlowStatusReparent});if(result.changed)console.log(result.pushed?'Published':'Committed');process.exitCode=0;}
  catch(e){console.error(e.stderr||e.message);process.exitCode=1;}
 }
 module.exports={publish,present,DEFAULT_MESSAGE};

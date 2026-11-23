@@ -79,11 +79,11 @@ jobs:
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
             # Every build, including the first, starts at canonical main. A rejected
-            # cursor or flow publish cannot reuse outputs derived from an older ledger.
+            # cursor or a real flow input change must rebuild; only proven status-only drift may retarget.
             git fetch --no-tags origin main
             git reset --hard FETCH_HEAD
             if node tools/pipeline-observability/publish-report.js flow intake-queue &&
-               node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json; then
+               node tools/pipeline-observability/git-publish.js --allow-status-only-reparent --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json; then
               exit 0
             fi
             sleep $((attempt * 2 + RANDOM % 3))
