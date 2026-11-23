@@ -216,7 +216,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     grantExtraction.requireBulkSmoke(ledger);
   }
   const helperResearchIds=process.env.ENRICH_MASTER_FILE?new Set():require('../helper-routing/enrichment.cjs').researchIds();
-  const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds(),unavailableIds=new Set([...inFlightIds,...helperReservedIds,...neverConsiderIds]);
+  const helperReservedIds=process.env.ENRICH_MASTER_FILE?new Set():HelperRouting.enrichmentIds();
+  const partitionReservedIds=process.env.ENRICH_MASTER_FILE?new Set():(()=>{
+    const P=require('../helper-routing/worker-partition.cjs'),S=require('../helper-routing/shared.cjs');
+    const partition=P.load(ROOT),overlap=S.reservedKeys(S.load());
+    // The ChatGPT grant may enter only its own half, and never bypass an independent reservation.
+    return P.atsReserved(partition,{grant:broadGrant,independent:[...partition.api].filter(id=>overlap.has(id))});
+  })();
+  const unavailableIds=new Set([...inFlightIds,...helperReservedIds,...partitionReservedIds,...neverConsiderIds]);
   const researchUnavailableIds=new Set([...unavailableIds,...helperResearchIds]);
   const fresh = r => !Recovery.due(r,needsOf(r),ledger);
   const val = (r, k) => String(r.p[k] == null ? '' : r.p[k]).trim();
@@ -472,7 +479,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
     if(SAVED_ONLY&&Prepared.attempted(PREPARED_DIR,r,policyFingerprint,roleInputs(r,inputFingerprint))){stats.unchanged_source_gaps=(stats.unchanged_source_gaps||0)+1;continue;}
     if(PREPARE_ONLY&&(Prepared.protectedRow(r)||externallyFenced(r.PRIMARY_ID)))continue;
     if (closedByChecker(r)) { stats.skipped_closed++; continue; }   // the Writer's ATS checker found the posting closed; the closing lane owns it
-    if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
+    if(unavailableIds.has(r.PRIMARY_ID)){pending.push(Recovery.unresolved(r,need(r),ledger,helperReservedIds.has(r.PRIMARY_ID)?'CLAUDE_EVIDENCE_PREPARATION_RESERVED':partitionReservedIds.has(r.PRIMARY_ID)?'ENRICHMENT_WORKER_PARTITION_RESERVED':refusalStatuses.get(r.PRIMARY_ID)||'WRITER_REQUEST_PENDING_NO_REPLAY'));continue;}
     const saved=Recovery.combine(Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r)),preparedSourceById.get(r.PRIMARY_ID));
     let siteInput=siteEstimates.forRow(r)||siteEstimates.remember(r,SiteEstimate.fromParsed(r,saved,saved?.url,saved?.at));
     const newRetainedEvidence=!!siteInput&&ledger.progress?.[r.PRIMARY_ID]?.siteEstimateSha256!==Store.hash(siteInput)||Recovery.newEvidence(r,need(r),ledger,saved);
