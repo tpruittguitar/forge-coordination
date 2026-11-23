@@ -1,10 +1,11 @@
 {
   "schema": "forge.coordinator-catch-up.v1",
-  "at": "2026-11-22T09:05:33.734Z",
-  "runId": "FORGE-CODE-CHATGPT-20261122T083023589Z",
+  "at": "2026-11-23T04:34:44.210Z",
+  "runId": "FORGE-CODE-CHATGPT-20261123T035523772Z",
   "scope": "Persisted visible alert cards and coordinator intake plan; unseen historical coverage is unproven",
-  "status": "WAITING_RECONCILIATION",
+  "status": "ACTIVE",
   "verifiedPrimaryIds": [
+    "V2E-910A90DFD99F",
     "V2F-111AE22AE911",
     "V2F-252906CBE189",
     "V2I-0057BAF35686",
@@ -72,6 +73,7 @@
     "V2I-0A1773D1ED89",
     "V2I-0A1D107EC638",
     "V2I-0A38E4CDFBDC",
+    "V2I-0A4F459BC34E",
     "V2I-0A85A5AD553D",
     "V2I-0A9FA6A29B28",
     "V2I-0ADA6DDEC1E6",
@@ -676,6 +678,7 @@
     "V2I-72479052A51F",
     "V2I-72DB04C7294F",
     "V2I-72EFC5E9E22C",
+    "V2I-7301CF88DD1C",
     "V2I-7306D0337A62",
     "V2I-7316D7F837F8",
     "V2I-733B391AB246",
@@ -778,6 +781,7 @@
     "V2I-8453A3C74B3D",
     "V2I-8462A41623FE",
     "V2I-846F81D99E91",
+    "V2I-84912994EA18",
     "V2I-8510F567ABF7",
     "V2I-851F5AD52C7D",
     "V2I-8538027DF8B5",
@@ -857,6 +861,7 @@
     "V2I-9592754B2B85",
     "V2I-95B6D6175514",
     "V2I-9614F7DD10CB",
+    "V2I-9655EC5E45C6",
     "V2I-968320B32035",
     "V2I-969599146FD8",
     "V2I-96CBF9A73985",
@@ -934,6 +939,7 @@
     "V2I-A3A994FAB6AA",
     "V2I-A3C12D9F26B5",
     "V2I-A3CB8CF3FC1B",
+    "V2I-A4149C2737DB",
     "V2I-A49B0FFBBD41",
     "V2I-A4AF8EEDA2A7",
     "V2I-A4E2B0952FD8",
@@ -993,6 +999,7 @@
     "V2I-AE916DE546A8",
     "V2I-AEA603DA61CB",
     "V2I-AEF1A267A407",
+    "V2I-AF1CE0FAE03B",
     "V2I-AF31016E4CD3",
     "V2I-AF431F9ACC36",
     "V2I-AF44CF87CC07",
@@ -1426,31 +1433,33 @@
     "V2I-FF626C116358"
   ],
   "intake": {
-    "ready": 0,
+    "ready": 700,
     "reviewCards": 1062,
     "pendingOriginalRequests": 24,
     "pendingCards": 2185,
     "statusCounts": {
       "HELD_WRITER_IDENTITY": 662,
-      "HOLD_SOURCE_IDENTITY": 887,
+      "HOLD_SOURCE_IDENTITY": 1147,
       "SOURCE_REVALIDATION_REQUIRED": 400,
-      "ORIGINAL_WRITER_FENCE": 608,
+      "ORIGINAL_WRITER_FENCE": 687,
       "POST_IN_FLIGHT_UNKNOWN": 2185,
       "REUSE_DURABLE_DISPOSITION": 5,
-      "CLOSED_FUNCTION_MISMATCH": 118,
+      "READY": 700,
+      "EXISTING_CANONICAL": 9,
+      "CLOSED_FUNCTION_MISMATCH": 123,
       "EXCLUDED": 5
     },
-    "verifiedDistinctJobs": 1419,
-    "newVerifiedSincePrevious": 0
+    "verifiedDistinctJobs": 1426,
+    "newVerifiedSincePrevious": 7
   },
   "alerts": {
-    "awaitingCapture": 181,
-    "awaitingEvaluation": 549,
-    "visibleCardsDispositioned": 52
+    "awaitingCapture": 257,
+    "awaitingEvaluation": 741,
+    "visibleCardsDispositioned": 53
   },
   "ai": {
-    "actionRequired": 1389
+    "actionRequired": 2778
   },
-  "nextAction": "Keep original requests fenced; Gofer/AI reconciles exceptions. Resume changed evidence and due retries.",
+  "nextAction": "Next five-minute coordinator pass drains independent READY jobs",
   "noProcessingCap": true
 }
