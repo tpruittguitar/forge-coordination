@@ -1,15 +1,15 @@
 {
- "at": "2026-11-23T21:05:20.507Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T205638325Z",
+ "at": "2026-11-23T21:21:04.813Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T211224328Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T20:56:48.716Z",
-  "sha256": "aff36eab3f17122915ef3f34b25b33bddd62475f52e2b7fb958113ee4e55366d",
-  "rows": 9920
+  "readAt": "2026-11-23T21:12:32.190Z",
+  "sha256": "973d8d6f3b7162c94adbfe1fba526e9525c495c0e1872c9505521eb47ff849a2",
+  "rows": 9923
  },
- "rows": 9920,
- "eligible": 1195,
+ "rows": 9923,
+ "eligible": 1197,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -47,21 +47,21 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 1,
- "estimates": 1,
- "estimate_waiting_for_posting": 151,
- "skipped_recent": 93,
- "submitted": 1,
+ "degree": 0,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 147,
+ "skipped_recent": 98,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
- "salary_independently_verified": 1,
+ "salary_submitted": 2,
+ "salary_independently_verified": 0,
  "agg_tried": {
   "linkedin": 1
  },
@@ -80,11 +80,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -105,9 +105,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 6,
-  "saved_reused": 5,
+  "targets": 2,
+  "candidates": 22,
+  "saved_reused": 20,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -115,10 +115,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 1,
-  "estimates_with_profile_sources": 1,
+  "unsupported_routes": 2,
+  "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-23T20:56:56.419Z",
+  "profile_as_of": "2026-11-23T21:12:37.287Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12245,16 +12245,16 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1257,
-  "review_skipped_blocked": 88,
+  "review_skipped_blocked": 89,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 829,
-   "products (what they make)": 1297,
+   "work arrangement (remote/hybrid/on-site)": 830,
+   "products (what they make)": 1298,
    "location / geography": 11
   }
  },
  "salary_review": {
-  "eligible": 1721,
-  "due": 88,
+  "eligible": 1722,
+  "due": 89,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -12269,8 +12269,8 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 151,
- "nothing_found": 151,
+ "not_attempted": 147,
+ "nothing_found": 147,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12280,7 +12280,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 0,
-  "no_overview": 350,
+  "no_overview": 353,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 3195,
@@ -12292,11 +12292,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 204,
+ "roles_researched": 202,
  "network_requests": 7,
- "planned": 1,
+ "planned": 2,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
+ "writer_unconfirmed": 2,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12304,9 +12305,9 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 291,
+  "NOT_YET_ATTEMPTED": 292,
   "SOURCE_RESEARCH_REQUIRED": 805,
-  "EVIDENCE_FOUND": 46,
+  "EVIDENCE_FOUND": 47,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 35,
   "MODEL_INPUTS_REQUIRED": 6
  },
@@ -19204,6 +19205,20 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2DFF920B4DD7",
+   "company": "Sequoyah Early Enrichment Preschool",
+   "title": "Director of SHEEP",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -31569,96 +31584,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-B88287D02019",
-   "company": "Redwire Space",
-   "title": "Facilities & Equipment Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-23T20:58:39.361Z",
-   "retryAt": "2026-11-24T12:58:39.361Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-405CBABF023B",
-   "company": "Shield's Precision CNC",
-   "title": "Site Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-23T20:58:39.362Z",
-   "retryAt": "2026-11-24T12:58:39.362Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F4555220BDE5",
-   "company": "Motional",
-   "title": "Principal Engineer - Autonomy Systems Engineering, Vehicle Platform & Control Interfaces",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-23T20:58:39.362Z",
-   "retryAt": "2026-11-24T12:58:39.362Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D939301AC5D9",
-   "company": "EDF power solutions",
-   "title": "Site Operations Manager [On Site]",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-23T20:58:39.363Z",
-   "retryAt": "2026-11-24T12:58:39.363Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F9ED2C077923",
-   "company": "PROPWR",
-   "title": "Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-23T20:58:39.363Z",
-   "retryAt": "2026-11-24T12:58:39.363Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-9A1B464E15DC",
    "company": "FirstEnergy Corp",
    "title": "Executive Assistant - Program Delivery - Akron FirstEnergy Headquarters",
@@ -32577,6 +32502,96 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-B88287D02019",
+   "company": "Redwire Space",
+   "title": "Facilities & Equipment Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T20:58:39.361Z",
+   "retryAt": "2026-11-24T12:58:39.361Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-405CBABF023B",
+   "company": "Shield's Precision CNC",
+   "title": "Site Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T20:58:39.362Z",
+   "retryAt": "2026-11-24T12:58:39.362Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F4555220BDE5",
+   "company": "Motional",
+   "title": "Principal Engineer - Autonomy Systems Engineering, Vehicle Platform & Control Interfaces",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T20:58:39.362Z",
+   "retryAt": "2026-11-24T12:58:39.362Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D939301AC5D9",
+   "company": "EDF power solutions",
+   "title": "Site Operations Manager [On Site]",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T20:58:39.363Z",
+   "retryAt": "2026-11-24T12:58:39.363Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F9ED2C077923",
+   "company": "PROPWR",
+   "title": "Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T20:58:39.363Z",
+   "retryAt": "2026-11-24T12:58:39.363Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-A4C73A8D927F",
    "company": "CPS, Inc.",
    "title": "Global Quality Assurance Director - Specialty Chemicals",
@@ -32699,51 +32714,97 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-E2BFB9667C1C",
+   "id": "V2I-68030F222BB8",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Business, Life Sciences, or a related field, or equivalent knowledge and experience.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4477482397",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.paycomonline.net/v4/ats/web.php/portal/17DAD2DB01D80256A98388561F4CEF57/jobs/192383?source=Indeed",
     "DEGREE_ASOF": "2026-11-23",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 133000,
-    "SALARY_BASE_HIGH": 222000,
-    "SALARY_MIDPOINT": 177500,
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 190000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-23",
-    "SALARY_SOURCE": "comparables: https://jobs.ashbyhq.com/shield/47c6a7d6-74e9-4b91-9bef-9690abc03786 (as of 2026-11-23); https://evotecgroup.wd3.myworkdayjobs.com/en-US/Evotec_Career_Site/job/Redmond/Senior-Manager--Manufacturing-Operations_JOBID-15338 (as of 2026-11-20); https://jsrglobal.wd1.myworkdayjobs.com/en-US/KBI_Biopharma/job/USA---CO---Boulder/Manager-Senior-Manager--Manufacturing-Investigations_R00009003 (as of 2026-11-20); https://careers.altria.com/job/Senior-Manager-Manufacturing-Training/3772-en_US (as of 2026-11-19); https://grnh.se/lkfx8hah9us (as of 2026-11-19); https://100hires.com/j/rQni3fT (as of 2026-11-18); https://careers.caterpillar.com/en/jobs/r0000405152/senior-manager-production/ (as of 2026-11-18)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-32537E2168C3, V2I-4091C336A649, V2I-50A902F939E8, V2I-1CB8E5896C79, V2I-D72D291842B6, V2I-C3CC8006C810, V2I-E52A460EF008]; 7 employer-posted comparable(s), level 1.5 MFG any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS MO 113051 P25-P90 $91K-$183K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4491422644 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4486755668 (as of 2026-11-05); https://jobs.limagrain.com/job/Plant-manager/2814-en_US (as of 2026-11-23); https://www.linkedin.com/jobs/view/4491185648 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4492601461 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23); https://secure6.saashr.com/ta/6182016.jobs?ShowJob=772163008 (as of 2026-11-21)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-DDB10C939A6F, V2I-9196DC54982D, V2I-47885E05709D, V2I-5A626AB08A25, V2I-91C9E7BC594D, V2I-A86C2E8C1E82, V2I-1D55E7CC8E88]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS TN 113051 P25-P90 $92K-$199K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
-    "SALARY_SCORE_POINT": 199750
+    "SALARY_SCORE_POINT": 205000
+   }
+  },
+  {
+   "id": "V2I-E67A6852CE84",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's of Science in Engineering or similar.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4494043331",
+    "DEGREE_ASOF": "2026-11-23",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 130000,
+    "SALARY_BASE_HIGH": 220000,
+    "SALARY_MIDPOINT": 175000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-23",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4492601461 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4481371065/ (as of 2026-11-02); https://www.linkedin.com/jobs/view/4484126506 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4484752045 (as of 2026-10-30); https://jobs.limagrain.com/job/Plant-manager/2814-en_US (as of 2026-11-23); https://www.linkedin.com/jobs/view/4491185648 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-91C9E7BC594D, V2I-57401D7A47E1, V2I-48640594A74B, V2I-3E0432A2974E, V2I-47885E05709D, V2I-5A626AB08A25, V2I-A86C2E8C1E82]; 7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS IL 113051 P25-P90 $102K-$205K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
+    "SALARY_SCORE_POINT": 197500
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-E2BFB9667C1C",
-   "company": "Catalent",
-   "title": "Senior Manager, Production",
-   "location": "Kansas City, MO, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4477482397",
+   "id": "V2I-68030F222BB8",
+   "company": "Everidge",
+   "title": "Plant Manager",
+   "location": "Greeneville, TN, USA",
+   "posting": "https://www.paycomonline.net/v4/ats/web.php/portal/17DAD2DB01D80256A98388561F4CEF57/jobs/192383",
    "est": [
-    133000,
-    222000,
+    160000,
+    220000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1.5 MFG any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-32537E2168C3",
-    "V2I-4091C336A649",
-    "V2I-50A902F939E8",
-    "V2I-1CB8E5896C79",
-    "V2I-D72D291842B6",
-    "V2I-C3CC8006C810",
-    "V2I-E52A460EF008"
+    "V2I-DDB10C939A6F",
+    "V2I-9196DC54982D",
+    "V2I-47885E05709D",
+    "V2I-5A626AB08A25",
+    "V2I-91C9E7BC594D",
+    "V2I-A86C2E8C1E82",
+    "V2I-1D55E7CC8E88"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-E67A6852CE84",
+   "company": "Universal Air Filter",
+   "title": "Plant Manager",
+   "location": "Sauget, IL, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4494043331",
+   "est": [
+    130000,
+    220000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-91C9E7BC594D",
+    "V2I-57401D7A47E1",
+    "V2I-48640594A74B",
+    "V2I-3E0432A2974E",
+    "V2I-47885E05709D",
+    "V2I-5A626AB08A25",
+    "V2I-A86C2E8C1E82"
    ]
   }
  ],
