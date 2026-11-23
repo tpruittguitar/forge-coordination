@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-23T12:07:35.612Z",
+    "at": "2026-11-23T12:30:52.803Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,7 +277,7 @@
     "current": 775,
     "undated": 0
   },
-  "at": "2026-11-23T12:07:35.612Z",
+  "at": "2026-11-23T12:30:52.803Z",
   "queues": {
     "verification": 0,
     "enrichment": 3063,
@@ -296,8 +296,8 @@
     "readyForReview": "2026-11-22T22:14:35.492Z"
   },
   "reconciliation": {
-    "from": "2026-11-23T11:52:38.202Z",
-    "to": "2026-11-23T12:07:35.612Z",
+    "from": "2026-11-23T12:07:35.612Z",
+    "to": "2026-11-23T12:30:52.803Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -400,10 +400,10 @@
     },
     "12": {
       "verification": {
-        "count36": 7,
-        "count": 7,
+        "count36": 0,
+        "count": 0,
         "windowHours": 12,
-        "perHour": 0.5833333333333334,
+        "perHour": 0,
         "last24h": 41,
         "partial": true,
         "coverageHours": 12,
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-23T12:04:52.285Z",
+    "readAt": "2026-11-23T12:29:13.982Z",
     "sha256": "4a63d5cb638c1f781595ec318e4779476cb866c99e0e31f75e8032687e785185",
     "rows": 9902
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-23T12:05:16.813Z",
+    "at": "2026-11-23T12:29:32.600Z",
     "total": 15467,
     "sourceIdentities": 16531,
     "aliasesMerged": 1064,
@@ -519,8 +519,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-23T11:50:24.771Z",
-      "to": "2026-11-23T12:05:16.813Z",
+      "from": "2026-11-23T12:05:16.813Z",
+      "to": "2026-11-23T12:29:32.600Z",
       "opening": 846,
       "arrivals": 0,
       "admitted": 0,
@@ -549,12 +549,12 @@
     "ratesByWindow": {
       "6": {
         "discovery": {
-          "count": 21,
+          "count": 9,
           "windowHours": 6,
-          "perHour": 3.5,
+          "perHour": 1.5,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 21,
+          "candidateCount": 9,
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -567,12 +567,12 @@
       },
       "12": {
         "discovery": {
-          "count": 100,
+          "count": 97,
           "windowHours": 12,
-          "perHour": 8.333333333333334,
+          "perHour": 8.083333333333334,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 100,
+          "candidateCount": 97,
           "basis": "Distinct captured candidate identities first observed within 12 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-23T12:05:16.813Z",
+      "at": "2026-11-23T12:29:32.600Z",
       "reviewedSourceIdentities": 16531,
       "pendingCandidates": 846,
       "storedEvidence": 2808,
