@@ -83,3 +83,22 @@ test('receiptUsage and formatEst helpers', () => {
   assert.equal(B.formatEst(2, null), '2 calls');
   assert.equal(B.formatEst(null, null), null);
 });
+
+test('deleted box intake lanes stay off the office wall even when still listed in tasks', () => {
+  const out = B.build({
+    tasks: { tasks: {
+      FORGE_EMAIL_DISCOVERY: { owner: 'ChatGPT' },
+      FORGE_INTAKE_SCOPE_REVIEW: { owner: 'ChatGPT' },
+      FORGE_INTAKE_SOURCE_RECOVERY: { owner: 'ChatGPT' },
+      FORGE_INTAKE_HELD_RECONCILIATION: { owner: 'ChatGPT' }
+    } },
+    readback: { local: [
+      { id: 'email', taskKey: 'FORGE_EMAIL_DISCOVERY', status: 'ACTIVE', rrule: 'RRULE:FREQ=HOURLY;BYMINUTE=2' },
+      { id: 'scope', taskKey: 'FORGE_INTAKE_SCOPE_REVIEW', status: 'ACTIVE', rrule: 'RRULE:FREQ=HOURLY;BYMINUTE=32' },
+      { id: 'recovery', taskKey: 'FORGE_INTAKE_SOURCE_RECOVERY', status: 'ACTIVE', rrule: 'RRULE:FREQ=HOURLY;BYMINUTE=42' },
+      { id: 'held', taskKey: 'FORGE_INTAKE_HELD_RECONCILIATION', status: 'ACTIVE', rrule: 'RRULE:FREQ=HOURLY;BYMINUTE=52' }
+    ] }
+  }, NOW);
+  assert.deepEqual(out.automations.map(a => a.name), ['FORGE_EMAIL_DISCOVERY']);
+  assert.ok(out.runs.every(r => r.name === 'FORGE_EMAIL_DISCOVERY'));
+});

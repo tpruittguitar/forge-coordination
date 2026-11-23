@@ -18,6 +18,9 @@
 const fs = require('fs'), path = require('path');
 const MIN = 60000, HOUR = 60 * MIN, DAY = 24 * HOUR, WEEK = 7 * DAY, TZ = 'America/New_York';
 const DEFAULT_RUN_MIN = 10;
+// Box lanes deleted 2026-11-23 (cs-a7e4613b / cs-0170c263). Keep them off the 3D office wall
+// even though they remain in AI_AUTOMATION_TASKS.json.
+const HIDDEN_FROM_WALL = new Set(['FORGE_INTAKE_SCOPE_REVIEW', 'FORGE_INTAKE_SOURCE_RECOVERY', 'FORGE_INTAKE_HELD_RECONCILIATION']);
 const THRESHOLDS = { last_write_age_min: [90, 240], writes_per_hour: [1, 0], error_rate: [0.05, 0.2], lock_waits: [1, 3] };
 
 function etOffsetMin(ms) {
@@ -151,7 +154,7 @@ function build(inputs, now) {
   const day0 = etDayStart(now) - DAY, day3 = day0 + 3 * DAY;
   const automations = [], runs = [];
   for (const [key, t] of Object.entries(tasks)) {
-    if (t.retired) continue;
+    if (t.retired || HIDDEN_FROM_WALL.has(key)) continue;
     const native = rr.get(key), id = (native && native.id) || t.nativeId || key.toLowerCase().replace(/_/g, '-');
     const sch = parseSchedule((native && native.status === 'ACTIVE' && native.rrule) || t.nativeSchedule || t.scheduleIntent);
     const e = ev.get(id), last = e && Date.parse(e.lastRunAt) ? Date.parse(e.lastRunAt) : null;

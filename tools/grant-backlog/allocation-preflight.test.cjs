@@ -14,7 +14,7 @@ test('existing shared or Claude reservation overlaps are explicit blockers',()=>
  const data=input();data.claude.enabled=true;data.claude.enrichment=[{primaryId:'V2I-SYNTHETIC-0',task:'FORGE_CLAUDE_ENRICHMENT'}];
  const r=inspect(data);a.equal(r.overlapCount,1);a.ok(r.blockers.includes('EXISTING_RESERVATION_OVERLAP'));
 });
-test('authoritative controls prove the exact split, reserve both halves, and exempt only own grant capacity',()=>{
+test('authoritative controls prove the exact split, keep Hermes reserved, and skip the released ChatGPT half only when independently reserved',()=>{
  const fs=require('node:fs'),path=require('node:path'),P=require('../helper-routing/worker-partition.cjs');
  const root=path.resolve(__dirname,'../..'),json=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
  const data=input(),record=json(P.FILE),registry=json('control/AI_AUTOMATION_TASKS.json'),owner=json('control/ENRICHMENT_RESEARCH_OWNER.json');
@@ -27,7 +27,7 @@ test('authoritative controls prove the exact split, reserve both halves, and exe
  a.ok(!r.blockers.includes('AUTHORITATIVE_WORKER_PARTITION_UNAVAILABLE'));
  a.ok(r.blockers.includes('EXISTING_RESERVATION_OVERLAP'));
  const ordinary=P.atsReserved(split),grant=P.atsReserved(split,{grant:true,independent:[external]});
- a.equal(ordinary.size,3164);a.ok(ordinary.has(hermes)&&ordinary.has(api));a.equal(grant.size,1583);
+ a.equal(ordinary.size,1582);a.ok(ordinary.has(hermes)&&!ordinary.has(api));a.equal(grant.size,1583);
  a.ok(grant.has(hermes)&&!grant.has(api)&&grant.has(external));
  record.workers[1].primaryIds[2]='V2I-7E2E8E0559E8';
  a.throws(()=>P.validate(record),/PARTITION_INVALID/);
