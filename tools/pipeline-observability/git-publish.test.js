@@ -75,10 +75,11 @@ test('intake publication and its cursor cannot rebase across or overwrite a work
   assert.deepEqual(JSON.parse(git(bare,'show','HEAD:'+ledger)).worksheetDeletion,deleted.worksheetDeletion);
  }finally{fs.rmSync(base,{recursive:true,force:true});}
 });
-test('only a completed flow can retarget once across exact status files; real input writes stay fenced',()=>{
+test('only a completed flow can retarget once across non-input commits; real input writes stay fenced',()=>{
  const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/upstream-ledger-archive','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/UPSTREAM_COLLECT_CURSOR.json'];
  const ledger=flow[0],usage='usage/AI_USAGE_READINGS.jsonl',display='control/OFFICE_STATUS.json';
- for(const forbidden of [null,'verify/recovery/latest.json','receipts/live-backlog/new.json']){
+ // [extra file committed on main during the build, whether it is a real flow input]
+ for(const [forbidden,fenced] of [[null,false],['state/AUTOMATION_EXECUTION_EVIDENCE.json',false],['reference/EMPLOYER_PAY_SOURCES.json',false],['verify/recovery/latest.json',false],['receipts/live-backlog/new.json',true],['state/UPSTREAM_COLLECT_CURSOR.json',true]]){
   const {base,root,bare}=repo(),race=path.join(base,'race');
   const put=(dir,file,body)=>{const p=path.join(dir,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,body);};
   try{
@@ -89,7 +90,7 @@ test('only a completed flow can retarget once across exact status files; real in
    const newer=git(bare,'rev-parse','HEAD').trim();
    assert.throws(()=>publish(root,[flow.at(-1)],'cursor',{allowFlowStatusReparent:true}),/complete flow/);
    put(root,ledger,JSON.stringify('fresh ledger'));fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
-   if(forbidden){
+   if(fenced){
     assert.throws(()=>publish(root,flow,'finished',{allowFlowStatusReparent:true}),/Flow inputs changed/);
     assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
    }else{
@@ -98,6 +99,7 @@ test('only a completed flow can retarget once across exact status files; real in
     assert.equal(git(bare,'rev-parse','HEAD^').trim(),newer);
     assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
     assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
+    if(forbidden)assert.equal(git(bare,'show','HEAD:'+forbidden),'new source');
     assert.equal(JSON.parse(git(bare,'show','HEAD:'+ledger)),'fresh ledger');
     assert.equal(git(bare,'show','HEAD:state/waiting-queues/intake-0002.json'),'new page');
     assert.throws(()=>git(bare,'cat-file','-e','HEAD:state/waiting-queues/intake-0001.json'));

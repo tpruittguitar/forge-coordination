@@ -2,13 +2,23 @@
 const fs=require('node:fs'),path=require('node:path'),os=require('node:os'),{execFileSync}=require('node:child_process');
 const DEFAULT_MESSAGE='ACTIVITY-BOT: publish compact verified receipt activity';
 function run(root,args,env){return execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe'],env:env?{...process.env,...env}:undefined});}
-// These four presentation/usage records are not read by final flow or intake calculation.
-const FLOW_STATUS_ONLY=new Set(['attention/BOT_INCIDENTS.json','control/AUTOMATIONS_STATUS.json','control/OFFICE_STATUS.json','usage/AI_USAGE_READINGS.jsonl']);
+// Exact inputs of `publish-report.js flow intake-queue`, derived from the literal repo paths in the
+// transitive require tree of process-flow.js, intake-drain/queue.cjs and publish-report.js, plus the
+// code and workflow that run them. A commit touching any of these between build and push forces a
+// rebuild from fresh main; every other commit (evidence, verify, other reference/state files,
+// status displays, usage readings) is unrelated to the flow and is safely reparented over.
+const FLOW_INPUTS=['tools','.github/workflows/pipeline-observability.yml','policy/current','lanes/FORGE_API_GRANT_ENRICHMENT.txt','README.md',
+ 'control/AI_AUTOMATION_TASKS.json','control/CHATGPT_OWNER_CUTOVER.json','control/CLAUDE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json','control/ENRICHMENT_HELPER_WORK.json','control/ENRICHMENT_RESEARCH_OWNER.json','control/ENRICHMENT_WORKER_PARTITION.json','control/GROK_INTAKE_HELPER_WORK.json','control/RELEVANCE_SCREEN.json','control/RESUME_MATCH_PROFILE.json','control/RESUME_MATCH_VARIANTS.json','control/SHARED_HELPER_WORK.json','control/claude-relevance','control/grok-intake','control/shared-helper-pages',
+ 'receipts/manual-backlog','receipts/INTAKE_DRAIN','receipts/auto-intake','receipts/live-backlog','receipts/CHATGPT_HELPERS',
+ 'reference/COMPANY_SITE_CONTEXT.json','reference/EXCLUSION_BUSINESS_EVIDENCE.json','reference/EXCLUSION_ROLE_EVIDENCE.json','reference/EXCLUSION_TITLE_RULES.json',
+ 'state/CLAUDE_HELPER_CONSUMPTION.json','state/CODE_INTAKE_CONSUMPTION.json','state/DISCOVERY_SCREEN_REPORT.json','state/EMAIL_RECOVERY_QUEUE.json','state/ENRICHMENT_FLOW.json','state/ENRICHMENT_OUTCOMES.json','state/HELPER_HANDOFFS.json','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/PIPELINE_WAITING_QUEUES.json','state/PROCESS_COMPLETIONS.json','state/PROGRAMMED_COORDINATOR.json','state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/REPORTING_HEALTH.json','state/UPSTREAM_COLLECT_CURSOR.json','state/UPSTREAM_FLOW.json','state/UPSTREAM_LEDGER.json','state/upstream-ledger-archive','state/board-discovery-report.json','state/discovery-evidence','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay.json','state/source-trial-report.json','state/targeted-posting-lookup.json','state/waiting-queues'];
+// Top-level receipts read by name pattern (upstream-flow.js email files; transactions/writer-outcome/handoff receipts).
+const FLOW_INPUT_PATTERNS=[/^receipts\/EMAIL_(?:CANDIDATE_LEDGER|EVAL|PENDING)[^/]*\.json$/,/^receipts\/[^/]+_(?:CHECKPOINT|VERIFIED|NOT_ACCEPTED|HANDOFFS)\.json$/];
+const isFlowInput=p=>FLOW_INPUTS.some(x=>p===x||p.startsWith(x+'/'))||FLOW_INPUT_PATTERNS.some(r=>r.test(p));
 const Store=require('../upstream-ledger/store.cjs');
 const {LEDGER_PATH,LEDGER_ARCHIVE,DRAIN_PATH,DRAIN_ARCHIVE}=Store;
 const INVENTORIES=[[LEDGER_PATH,LEDGER_ARCHIVE],[DRAIN_PATH,DRAIN_ARCHIVE]];
 const COMPLETE_FLOW=[LEDGER_PATH,LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues',DRAIN_PATH,DRAIN_ARCHIVE,'state/UPSTREAM_COLLECT_CURSOR.json'];
-const FLOW_PROTECTED=['state','receipts','verify','reference','tools','policy/current','.github/workflows/pipeline-observability.yml','control/AI_AUTOMATION_TASKS.json','control/RELEVANCE_SCREEN.json','control/ENRICHMENT_HELPER_WORK.json','control/SHARED_HELPER_WORK.json','control/shared-helper-pages'];
 function reparentFinishedFlow(root,{base,finished,paths,message}){
  run(root,['fetch','--no-tags','origin','refs/heads/main']);
  const latest=run(root,['rev-parse','FETCH_HEAD']).trim();
@@ -19,10 +29,10 @@ function reparentFinishedFlow(root,{base,finished,paths,message}){
  const names=(from,to)=>run(root,['diff','--name-only','--no-renames','-z',from,to]).split('\0').filter(Boolean);
  for(const c of commits){
   const changed=names(c+'^',c);
-  if(!changed.length||changed.some(p=>!FLOW_STATUS_ONLY.has(p)))throw Error('Flow inputs changed: rebuild from fresh main');
+  if(!changed.length||changed.some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
  }
- // Verify exact protected input and destination parity, in addition to the per-commit allowlist.
- run(root,['diff','--quiet',base,latest,'--',...FLOW_PROTECTED]);
+ // Verify exact input parity across the whole span, in addition to the per-commit check.
+ if(names(base,latest).some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
  const delta=names(base,finished);
  if(!delta.length||delta.some(f=>!paths.some(p=>f===p||f.startsWith(p+'/'))))throw Error('Finished flow contains an out-of-scope publication');
  run(root,['diff','--quiet',base,latest,'--',...delta]);
@@ -110,4 +120,4 @@ if(require.main===module){
  try{const result=publish(process.cwd(),paths,message,{push:process.env.GIT_PUBLISH_NO_PUSH!=='1',allowFlowStatusReparent});if(result.changed)console.log(result.pushed?'Published':'Committed');process.exitCode=0;}
  catch(e){console.error(e.stderr||e.message);process.exitCode=1;}
 }
-module.exports={publish,present,DEFAULT_MESSAGE};
+module.exports={publish,present,DEFAULT_MESSAGE,FLOW_INPUTS,isFlowInput};
