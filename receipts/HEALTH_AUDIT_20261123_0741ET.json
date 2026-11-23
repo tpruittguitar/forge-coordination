@@ -1,0 +1,154 @@
+{
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "checks": {
+    "writer": true,
+    "explorer": true,
+    "nativeConfiguration": true,
+    "github": true
+  },
+  "findings": {
+    "writer": {
+      "unverified": 0,
+      "pending": 0,
+      "observedAt": "2026-11-23T12:43:10.6Z",
+      "holds": 0,
+      "recentRuns": [
+        {
+          "finishedAt": "2026-11-23T08:54:21.649Z",
+          "totalMs": 72829,
+          "records": 1,
+          "terminalStatus": "SUCCESS"
+        },
+        {
+          "finishedAt": "2026-11-23T05:48:24.263Z",
+          "totalMs": 76037,
+          "records": 1,
+          "terminalStatus": "SUCCESS"
+        },
+        {
+          "finishedAt": "2026-11-23T02:43:35.29Z",
+          "totalMs": 32782,
+          "records": 20,
+          "terminalStatus": "SUCCESS"
+        }
+      ],
+      "processing": 0,
+      "fileQueueIsNotDirectApiThroughput": true,
+      "freeze": null,
+      "errors": [],
+      "build": "0222c7f",
+      "localProductionLockPresent": false,
+      "triggerInstalled": true,
+      "unidentifiedFailureWarningPreserved": true
+    },
+    "explorer": {
+      "pollingVerified": false,
+      "issues": 200,
+      "ok": false,
+      "sourceSha256": "11fbb298ee89b3e3eb80ebb7e635f0f7a2e1d70db1f414e786879f94edebb624",
+      "priorIssues": 202,
+      "payloadVerified": false,
+      "checks": {
+        "processFlow": {
+          "ok": true,
+          "at": "2026-11-23T12:37:42.117Z"
+        },
+        "boards": {
+          "ok": true,
+          "observed": true,
+          "label": "latest pass",
+          "at": "2026-11-23T12:29:26.643Z",
+          "failedBoards": 1,
+          "candidates": 17
+        }
+      },
+      "outboxVerified": false,
+      "sourceRevision": "bd563273403c33104df291c1c5db248b191368dd"
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-23T12:35:23.502Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-23T12:33:34.499Z",
+          "lastSuccessAt": "2026-11-23T12:33:34.499Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-23T12:37:46.09Z",
+          "lastSuccessAt": "2026-11-23T12:37:46.09Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-23T12:38:07.595Z",
+          "lastSuccessAt": "2026-11-23T12:38:07.595Z",
+          "attempts": 1
+        }
+      }
+    },
+    "github": {
+      "cockpitSample": 10,
+      "coordinationSample": 15,
+      "oldestOpenPRs": {
+        "cockpit": [
+          534
+        ],
+        "coordination": [
+          489,
+          510
+        ]
+      },
+      "failures": [
+        {
+          "reason": "Earlier-run recovery publication rejected; intake drain changed on main, rebuild validation from current inventory",
+          "workflow": "source-intake-auto",
+          "seconds": 334,
+          "run": 45175592258
+        },
+        {
+          "reason": "Run every browser test on base and branch failed",
+          "workflow": "browser-tests-compare",
+          "seconds": 2166,
+          "run": 45129921814
+        }
+      ]
+    },
+    "enrichment": {
+      "fencedIds": 46,
+      "eligible": 1189,
+      "at": "2026-11-23T12:12:17.046Z",
+      "masterSource": {
+        "kind": "CANONICAL_WRITER_MASTER",
+        "readAt": "2026-11-23T12:06:55.403Z",
+        "sha256": "4a63d5cb638c1f781595ec318e4779476cb866c99e0e31f75e8032687e785185",
+        "rows": 9902
+      },
+      "pendingBatches": 4
+    }
+  },
+  "status": "ISSUES_OBSERVED_NO_PRODUCTION_CHANGES",
+  "checkedSourceRevisions": {
+    "foremanCockpit": "4cf0ce88b37c8ffb6e6e3c8286ce601ef25e1a5d",
+    "sharedInstructions": "cfed743f287e8fdd21a11bfbf7ad52f1901a78da",
+    "forgeCoordination": "cfed743f287e8fdd21a11bfbf7ad52f1901a78da"
+  },
+  "limitations": [
+    "Writer status does not expose full distributed locks or log rotation inventory.",
+    "Explorer HTTP health only; signed-in browser outbox, polling and payload not inspected.",
+    "Zero file queue is not zero direct API work; no canonical writes or replay."
+  ],
+  "sourceEvidenceSha256": "4e36390d9180bf99b740b234fe369398f1240be37ca1a0ba6991d28028eac1b1",
+  "automationId": "pe-stack-health-daily",
+  "runId": "PE-HEALTH-CHATGPT-20261123T124112Z",
+  "provider": "ChatGPT",
+  "at": "2026-11-23T12:44:47.8737360Z",
+  "readOnly": true,
+  "nextActions": [
+    "Code owner: rebuild intake recovery validation against current inventory before publication; preserve original request fences.",
+    "Code owner: inspect failed browser comparison before treating UI validation as passed.",
+    "Keep 4 pending enrichment batches and 46 fenced IDs protected; current run makes no resolution claim."
+  ]
+}
