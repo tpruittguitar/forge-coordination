@@ -24,11 +24,12 @@ function summary({taskKey,items,eligible,errors={},at,now=Date.now(),source}){
 function check(root,taskKey,{now=Date.now()}={}){
  try{
   if(taskKey==='FORGE_APPLICATION_WRITER_GOFER')return require('./gofer.cjs').check(root,{now});
-  const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),route=registry.tasks?.[taskKey];
-  if(registry.schema!=='forge.ai-automation-tasks.v1'||!route||(!require('../helper-routing/shared.cjs').TASKS[taskKey]&&!['ChatGPT','Claude'].includes(route.owner))||route.retired)throw Error('CURRENT_CHATGPT_RESEARCH_ROUTE_REQUIRED');
+  const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),lane=require('../automation-lanes.cjs').resolve(registry,taskKey),route=lane?.task;
+  if(lane)taskKey=lane.key;
+  if(registry.schema!=='forge.ai-automation-tasks.v1'||!route||route.retired)throw Error('CURRENT_RESEARCH_ROUTE_REQUIRED');
   if(require('../helper-routing/shared.cjs').TASKS[taskKey]){
    const H=require('../helper-routing/shared.cjs'),work=H.load(root);
-   if(route.owner!==H.TASKS[taskKey]||route.procedure!=='lanes/FORGE_SHARED_HELPER.txt')throw Error('SHARED_RESEARCH_ROUTE_CHANGED');
+   if(route.procedure!=='lanes/FORGE_SHARED_HELPER.txt')throw Error('SHARED_RESEARCH_ROUTE_CHANGED');
    const next=H.next(work,taskKey);return summary({taskKey,items:work.items.filter(i=>i.taskKey===taskKey),eligible:next.items,at:work.at,now,source:H.FILE});
   }
   if(DRAIN_TASKS.has(taskKey)){

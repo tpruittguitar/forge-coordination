@@ -36,13 +36,13 @@ class ReleaseTests(unittest.TestCase):
         self.assertEqual(r.build(), (self.outputs, self.manifest))
         for task,lane in self.manifest['lanes'].items():
             path = 'runtime/releases/' + self.manifest['release_id'] + '/' + lane['file']
-            self.assertTrue(r.verify_packet(self.manifest,task,lane['owner'],self.outputs[path]))
+            self.assertTrue(r.verify_packet(self.manifest,task,lane['adapter'],self.outputs[path]))
 
-    def test_wrong_provider_or_changed_bytes_rejected(self):
+    def test_any_provider_verifies_and_changed_bytes_rejected(self):
         task = 'FORGE_EMAIL_DISCOVERY'
         data = self.outputs['runtime/releases/'+self.manifest['release_id']+'/'+task+'.txt']
-        with self.assertRaisesRegex(ValueError,'own lane'):
-            r.verify_packet(self.manifest,task,'Grok',data)
+        for provider in ('ChatGPT', 'Claude', 'Hermes'):
+            self.assertTrue(r.verify_packet(self.manifest,task,provider,data))
         with self.assertRaisesRegex(ValueError,'hash mismatch'):
             r.verify_packet(self.manifest,task,'ChatGPT',data+b'\n')
 
@@ -63,14 +63,15 @@ class ReleaseTests(unittest.TestCase):
             alter(m)
             with self.assertRaises(ValueError): r.validate_manifest(m)
 
-    def test_temporary_chatgpt_ownership_and_legacy_provider_rejection(self):
-        # Tim's November 22 cutover returns both explicit runtime lanes to ChatGPT.
+    def test_lanes_have_no_owner_any_provider_runs_an_explicit_task(self):
+        # Tim 2026-11-22: whichever scheduler fires an explicit lane runs it.
         for task, lane in self.manifest['lanes'].items():
-            owner = 'ChatGPT'
-            self.assertEqual(lane['owner'], owner)
-            self.assertTrue(r.select_task(self.manifest, owner, task, 0)[1])
-            for other in {'ChatGPT', 'Claude', 'Grok'} - {owner}:
-                self.assertFalse(r.select_task(self.manifest, other, task, 0)[1])
+            self.assertNotIn('owner', lane)
+            self.assertEqual(lane['adapter'], 'ChatGPT')
+            for provider in ('ChatGPT', 'Claude', 'Hermes'):
+                self.assertTrue(r.select_task(self.manifest, provider, task, 0)[1])
+        with self.assertRaises(ValueError):
+            r.select_task(self.manifest, '', 'FORGE_EMAIL_DISCOVERY', 0)
         self.assertEqual(self.manifest['addons'], {})
 
     def test_intake_packets_state_the_short_business_rule_once(self):

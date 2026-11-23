@@ -27,26 +27,19 @@ function writeThroughEvidenceMigration(root,batch,prior,task) {
     Array.isArray(batch.items)&&batch.items.every(i=>i.writerSubmitted===false)&&
     !S.read(root,'control/CHATGPT_OWNER_CUTOVER.json',{retired:[]}).retired?.some(r=>r.taskKey===batch.taskKey);
 }
-// A relevance receipt remains evidence when its provider was the owner at that
-// instruction revision. The old provider gets no current authority. Every other
-// ownership, assignment, or cutover change still blocks the return.
-function savedRelevanceEvidence(batch, prior) {
-  return batch?.schema === 'forge.relevance-helper-batch.v1' && typeof prior?.owner === 'string' && prior.owner === batch.provider;
-}
+// Lanes have no owner (Tim 2026-11-22): any authorized provider's return is
+// accepted on routing, assignment and validator checks; the provider is recorded.
 function envelopeProviderOk(root, task, batch) {
-  if (!task || typeof batch?.provider !== 'string') return false;
-  if (task.owner === batch.provider) return true;
-  return batch.schema === 'forge.relevance-helper-batch.v1' && relevance.providerAccepted(batch, task.owner, relevance.ownerAtInstruction(root, batch.instructionCommit, batch.taskKey));
+  return !!task && require('../automation-lanes.cjs').receiptProvider(S.read(root, 'control/AI_AUTOMATION_TASKS.json'), batch?.taskKey, batch?.provider);
 }
 function routingProof(root, batch, current, historical = show) {
   const registry = 'control/AI_AUTOMATION_TASKS.json';
   const old = JSON.parse(historical(root, batch.instructionCommit, registry));
   const now = S.read(root, registry), task = now.tasks[batch.taskKey], prior = old.tasks?.[batch.taskKey];
-  const route = t => t && ({owner:t.owner, route:t.route, procedure:t.procedure, executionMode:t.executionMode, workAssignments:t.workAssignments});
-  const evidenceMigration=writeThroughEvidenceMigration(root,batch,prior,task),beforeRoute=route(prior),saved=savedRelevanceEvidence(batch,prior);
+  const route = t => t && ({route:t.route, procedure:t.procedure, executionMode:t.executionMode, workAssignments:t.workAssignments});
+  const evidenceMigration=writeThroughEvidenceMigration(root,batch,prior,task),beforeRoute=route(prior);
   if(evidenceMigration&&beforeRoute)beforeRoute.executionMode=task.executionMode;
-  if(saved&&task&&beforeRoute&&task.owner!==batch.provider)beforeRoute.owner=task.owner;
-  if (!task || !beforeRoute || (task.owner !== batch.provider && !saved) || S.hash(route(task)) !== S.hash(beforeRoute)) throw Error('STALE_TASK_ROUTING');
+  if (!task || !beforeRoute || !envelopeProviderOk(root, task, batch) || S.hash(route(task)) !== S.hash(beforeRoute)) throw Error('STALE_TASK_ROUTING');
   // Resolve both revisions separately: a wording-only contract split preserves
   // saved facts, but still requires current-policy revalidation. Never silently
   // fall back when a selected contract is missing or use an unchecked path.

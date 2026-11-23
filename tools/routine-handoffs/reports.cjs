@@ -46,7 +46,7 @@ function ingest({root,privateDir,state,text,source,commit,validate=C.validateEnv
  for(const relative of references){const filename=path.join(root,relative);if(!fs.existsSync(filename))continue;for(const b of batches(fs.readFileSync(filename,'utf8')))if(!parsed.some(p=>canonical(p.value)===canonical(b.value)))parsed.push(b);}
  for(const {value:b,raw} of parsed){
   try{
-   if(!/^[A-Za-z0-9_-]{3,160}$/.test(b.runId||'')||!/^[A-Z][A-Z0-9_]{3,80}$/.test(b.taskKey||'')||!source.provider||source.provider!==b.provider||source.taskKey!==b.taskKey||S.read(root,'control/AI_AUTOMATION_TASKS.json').tasks[b.taskKey]?.owner!==b.provider)throw Error('REPORT_TASK_OR_PROVIDER_MISMATCH');
+   if(!/^[A-Za-z0-9_-]{3,160}$/.test(b.runId||'')||!/^[A-Z][A-Z0-9_]{3,80}$/.test(b.taskKey||'')||!source.provider||source.provider!==b.provider||source.taskKey!==b.taskKey||!require('../automation-lanes.cjs').receiptProvider(S.read(root,'control/AI_AUTOMATION_TASKS.json'),b.taskKey,b.provider))throw Error('REPORT_TASK_OR_PROVIDER_MISMATCH');
    const privateBatch=b.schema==='forge.outcome-helper-batch.v1',relative=schemas[b.schema](b),targetRoot=privateBatch?privateDir:root,dest=path.join(targetRoot,relative);
    if(fs.existsSync(dest)){
     if(canonical(JSON.parse(fs.readFileSync(dest,'utf8')))!==canonical(b))throw Error('IMMUTABLE_BATCH_COLLISION');

@@ -65,6 +65,9 @@ function healthStatus(metric, v) {
   if (metric === 'writes_per_hour') return v >= th[0] ? 'green' : v > th[1] ? 'amber' : 'red';
   return v <= th[0] ? 'green' : v <= th[1] ? 'amber' : 'red';
 }
+// Lanes have no owner (Tim 2026-11-22): the AI shown is whoever's receipt ran it last.
+const RUNNER = { CHATGPT: 'ChatGPT', CLAUDE: 'Claude', HERMES: 'Hermes', SNIFFER: 'Sniffer' };
+function ranBy(e) { const m = ((e && e.evidenceFiles) || []).join(' ').match(/-(CHATGPT|CLAUDE|HERMES|SNIFFER)-/); return m ? RUNNER[m[1]] : 'Any'; }
 function writerHealth(wa, evidence, now) {
   const H = {};
   const put = (k, value, source) => { H[k] = { value: value == null ? null : value, status: source ? healthStatus(k, value) : null, source: source || null }; };
@@ -97,12 +100,12 @@ function build(inputs, now) {
     const sch = parseSchedule((native && native.status === 'ACTIVE' && native.rrule) || t.nativeSchedule || t.scheduleIntent);
     const e = ev.get(id), last = e && Date.parse(e.lastRunAt) ? Date.parse(e.lastRunAt) : null;
     const writer = writerTouching(key, t), stale = isStale(last, sch, now), result = stale && sch ? 'STALE' : e ? mapResult(e.status) : 'EMPTY', nxt = nextRun(sch, now);
-    automations.push({ ai: t.owner || 'Other', name: key, schedule: (native && native.rrule) || (typeof t.scheduleIntent === 'string' ? t.scheduleIntent : t.nativeSchedule ? JSON.stringify(t.nativeSchedule) : t.scheduleIntent ? JSON.stringify(t.scheduleIntent) : ''),
+    automations.push({ ai: ranBy(e), name: key, schedule: (native && native.rrule) || (typeof t.scheduleIntent === 'string' ? t.scheduleIntent : t.nativeSchedule ? JSON.stringify(t.nativeSchedule) : t.scheduleIntent ? JSON.stringify(t.scheduleIntent) : ''),
       last_run_at: last ? new Date(last).toISOString() : null, result, next_run_at: nxt ? new Date(nxt).toISOString() : null, running: false, started_at: null, stale, writer });
     const iv = intervalMs(sch), dur = Math.min(DEFAULT_RUN_MIN * MIN, iv || Infinity);
     for (const t0 of occurrences(sch, day0, day3)) {
       const actual = last != null && Math.abs(last - t0) < Math.min(iv || HOUR, HOUR) / 2 + 15 * MIN;
-      runs.push({ ai: t.owner || 'Other', name: key, start: new Date(t0).toISOString(), end: new Date(t0 + dur).toISOString(), result: actual ? mapResult(e.status) : t0 > now ? 'UPCOMING' : 'NO_RECEIPT', writer, expected: !actual });
+      runs.push({ ai: ranBy(e), name: key, start: new Date(t0).toISOString(), end: new Date(t0 + dur).toISOString(), result: actual ? mapResult(e.status) : t0 > now ? 'UPCOMING' : 'NO_RECEIPT', writer, expected: !actual });
     }
   }
   return { generated_at: new Date(now).toISOString(), schema: 'forge.automations-status.v1', automations, runs, writer_health: writerHealth(inputs.writer, inputs.evidence, now) };

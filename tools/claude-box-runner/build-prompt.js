@@ -25,7 +25,7 @@ function taskEntry(root, taskKey) {
   if (t && t.route === 'runtime') {
     try {
       const cur = JSON.parse(fs.readFileSync(path.join(root, 'runtime/current.json'), 'utf8')), rl = cur.lanes && cur.lanes[taskKey];
-      runtime = rl ? { release_id: cur.release_id, owner: rl.owner } : { release_id: cur.release_id, owner: null };
+      runtime = rl ? { release_id: cur.release_id, adapter: rl.adapter } : { release_id: cur.release_id, adapter: null };
     } catch (e) { runtime = { error: 'runtime/current.json unreadable' }; }
   }
   return { task: t || null, runtime };

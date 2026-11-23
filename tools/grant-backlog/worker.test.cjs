@@ -19,8 +19,8 @@ test('listed required degree does not require invented equivalence',()=>{
  a.equal(p.fields.DEGREE_REQ,'REQUIRED');a.equal(p.degree.equivalence,'UNKNOWN');
  const bad=structuredClone(f.result);bad.degree.equivalence='EXPLICIT';a.throws(()=>W.proposal(bad,c.evidence,['DEGREE'],c.row),/EQUIVALENCE_NOT_QUOTED/);
 });
-test('owner conflict, missing full allocation, outside IDs and Hermes overlap block',()=>{
- for(const mutate of [v=>v.registryOwner='Claude',v=>v.allocationComplete=false,v=>v.allocations.push({primaryId:'V2I-SYNTHETIC-0',worker:'Hermes'}),v=>v.allocations.push({primaryId:'V2I-NOT_ASSIGNED',worker:W.NAME})]){
+test('missing full allocation, outside IDs and Hermes overlap block',()=>{
+ for(const mutate of [v=>v.allocationComplete=false,v=>v.allocations.push({primaryId:'V2I-SYNTHETIC-0',worker:'Hermes'}),v=>v.allocations.push({primaryId:'V2I-NOT_ASSIGNED',worker:W.NAME})]){
   const f=fixture(1);mutate(f.view);a.throws(()=>W.allocation(f.view,f.now()));
  }
 });

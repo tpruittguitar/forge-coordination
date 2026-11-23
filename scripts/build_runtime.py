@@ -103,14 +103,17 @@ def validate_payload(value, accounting=None):
 
 
 def select_task(manifest, provider, task, et_hour):
-    require(provider in PROVIDERS, 'unknown provider')
-    if task == 'ROTATION':
+    # Lanes have no owner (Tim 2026-11-22): any provider whose scheduler fires an
+    # explicit lane runs it. The packet's adapter names tools, never who may run.
+    # Legacy ROTATION launchers still resolve but never run: only an explicit TASK_KEY runs.
+    require(isinstance(provider, str) and bool(provider), 'provider required')
+    rotation = task == 'ROTATION'
+    if rotation:
         require(type(et_hour) is int and 0 <= et_hour < 24, 'America/New_York hour required')
         task = manifest['rotations'].get(provider, {}).get(str(et_hour))
         require(task is not None, 'no rotation slot; do not guess a lane')
     require(task in manifest['lanes'], 'unknown task')
-    lane = manifest['lanes'][task]
-    return task, lane['owner'] == provider
+    return task, not rotation
 
 
 def verified(result_success, index_complete, after_complete, row_matches):
@@ -152,8 +155,8 @@ def build(root=ROOT):
     for provider, name in registry['adapters'].items():
         render(name, provider, 'ADAPTER')
     for task, lane in registry['lanes'].items():
-        owner = lane['owner']
-        require(owner in PROVIDERS, 'invalid lane owner')
+        owner = lane['adapter']
+        require(owner in PROVIDERS, 'invalid lane adapter')
         chunks = [f'RELEASE_ID={release}\nTASK_KEY={task}\nPROVIDER={owner}\nPOLICY_REVISION={registry["policy_revision"]}\n']
         common = lane.get('common') or registry['common']
         chunks.extend(render(name, owner, task) for name in common)
@@ -172,11 +175,11 @@ def build(root=ROOT):
         require(b'read the full CONTROL' not in data and b'full READ ORDER' not in data, 'recursive fallback')
         path = prefix + task + '.txt'
         outputs[path] = data
-        packet_meta[task] = {'owner': owner, 'file': task + '.txt', 'sha256': digest(data), 'blob_sha': blob_sha(data), 'estimated_tokens': estimated}
+        packet_meta[task] = {'adapter': owner, 'file': task + '.txt', 'sha256': digest(data), 'blob_sha': blob_sha(data), 'estimated_tokens': estimated}
     addons = {}
     for key, addon in registry['addons'].items():
-        require(addon['parent'] in TASKS and registry['lanes'][addon['parent']]['owner'] == addon['owner'], 'addon ownership drift')
-        data = (f'RELEASE_ID={release}\nPARENT_TASK={addon["parent"]}\n' + render(addon['source'], addon['owner'], addon['parent'])).encode()
+        require(addon['parent'] in TASKS and registry['lanes'][addon['parent']]['adapter'] == addon['adapter'], 'addon adapter drift')
+        data = (f'RELEASE_ID={release}\nPARENT_TASK={addon["parent"]}\n' + render(addon['source'], addon['adapter'], addon['parent'])).encode()
         require((len(data.decode()) + 3) // 4 <= addon['max_estimated_tokens'], 'addon size budget')
         outputs[prefix + key + '.txt'] = data
         addons[key] = {'parent': addon['parent'], 'file': key + '.txt', 'sha256': digest(data), 'blob_sha': blob_sha(data)}
@@ -221,7 +224,7 @@ def validate_manifest(manifest):
     require(rules.get('repository') == 'tpruittguitar/forge-policy' and rules.get('path') == 'rules/TIM_PIPELINE_RULES_CANONICAL.txt', 'invalid policy binding')
     require(bool(re.fullmatch(r'[0-9a-f]{40}', rules.get('blob_sha', ''))), 'invalid policy fingerprint')
     for task, lane in manifest['lanes'].items():
-        require(lane.get('owner') in PROVIDERS, 'invalid owner')
+        require(lane.get('adapter') in PROVIDERS, 'invalid adapter')
         require(lane.get('file') == task + '.txt', 'packet traversal or task mismatch')
         require(bool(re.fullmatch(r'[0-9a-f]{64}', lane.get('sha256', ''))), 'invalid packet hash')
         require(bool(re.fullmatch(r'[0-9a-f]{40}', lane.get('blob_sha', ''))), 'invalid packet blob SHA')
@@ -238,10 +241,9 @@ def verify_packet(manifest, task, provider, data):
     validate_manifest(manifest)
     require(task in manifest['lanes'], 'unknown task')
     lane = manifest['lanes'][task]
-    require(lane['owner'] == provider, 'provider does not own lane')
     require(digest(data) == lane['sha256'] and blob_sha(data) == lane['blob_sha'], 'packet hash mismatch')
     text = data.decode('utf-8')
-    require(text.startswith(f'RELEASE_ID={manifest["release_id"]}\nTASK_KEY={task}\nPROVIDER={provider}\n'), 'mixed release/task/provider')
+    require(text.startswith(f'RELEASE_ID={manifest["release_id"]}\nTASK_KEY={task}\nPROVIDER={lane["adapter"]}\n'), 'mixed release/task/adapter')
     return True
 
 
@@ -272,7 +274,7 @@ def main():
         return 1
     print(('Checked ' if args.check else 'Built ') + manifest['release_id'])
     for task, lane in manifest['lanes'].items():
-        print(f'{task}: {lane["owner"]}, ~{lane["estimated_tokens"]} tokens')
+        print(f'{task}: {lane["adapter"]} adapter, ~{lane["estimated_tokens"]} tokens')
     return 0
 
 
