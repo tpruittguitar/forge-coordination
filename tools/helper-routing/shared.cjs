@@ -40,9 +40,9 @@ function validateWork(w){
  }
  if(Object.hasOwn(w,'enrichmentPartitionReservations')){
   const r=w.enrichmentPartitionReservations,P=require('./worker-partition.cjs');
-  try{P.validate({schema:'forge.enrichment-worker-partition.v1',sourceCommit:r?.sourceCommit,sourcePath:'state/PIPELINE_WAITING_QUEUES.json',workers:r?.workers});}
-  catch{throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');}
-  if(r.schema!=='forge.enrichment-partition-reservations.v1'||r.sourcePath!==P.FILE)throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
+  if(r.schema!=='forge.enrichment-partition-reservations.v1'||r.sourcePath!==P.FILE||r.sourceCommit!==P.SOURCE||!Array.isArray(r.workers)||r.workers.length!==1)throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
+  const [h]=r.workers,part=P.load(ROOT);
+  if(h?.provider!=='Hermes'||!Array.isArray(h.primaryIds)||h.primaryIds.length!==part.hermes.size||h.primaryIds.some(id=>!part.hermes.has(id)))throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
  }
  return w;
 }

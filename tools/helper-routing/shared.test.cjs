@@ -259,22 +259,36 @@ test('partition reservations are reserved without assigning the shared helper la
   a.throws(()=>H.validateWork(w),/INVALID_ENRICHMENT_PARTITION_RESERVATIONS/);
 });
 
-test('published 1582/1582 split is in helper reservations and enrich-ats-pay skip logic holds all 3164',()=>{
+test('published reservations keep Hermes 1582 and release ChatGPT 1582 so ATS-PAY partition skip no longer holds that half',()=>{
   const P=require('./worker-partition.cjs');
   const w=JSON.parse(fs.readFileSync(path.join(__dirname,'../../control/SHARED_HELPER_WORK.json'),'utf8'));
   const part=P.load(path.join(__dirname,'../..'));
   H.validateWork(w);
   const reserved=H.reservedKeys(w);
+  const partitionIds=new Set((w.enrichmentPartitionReservations.workers||[]).flatMap(x=>x.primaryIds||[]));
   a.equal(part.hermes.size,1582);
   a.equal(part.api.size,1582);
-  for(const id of part.hermes)a.ok(reserved.has(id));
-  for(const id of part.api)a.ok(reserved.has(id));
+  a.equal(w.enrichmentPartitionReservations.workers.length,1);
+  a.equal(w.enrichmentPartitionReservations.workers[0].provider,'Hermes');
+  a.equal((w.enrichmentPartitionReservations.workers[0].taskKey||null),null);
+  a.equal(w.enrichmentPartitionReservations.workers[0].primaryIds.length,1582);
+  for(const id of part.hermes){a.ok(reserved.has(id));a.ok(partitionIds.has(id));}
+  for(const id of part.api)a.ok(!partitionIds.has(id));
+  const chatgptLaneReserved=w.enrichmentPartitionReservations.workers.filter(x=>x.taskKey==='FORGE_CHATGPT_ENRICHMENT_RESEARCH'||x.provider==='ChatGPT').reduce((n,x)=>n+(x.primaryIds||[]).length,0);
+  a.equal(chatgptLaneReserved,0);
+  const partitionOnly=P.atsReserved(part,{grant:false,independent:[]});
+  a.equal(partitionOnly.size,1582);
+  for(const id of part.api)a.ok(!partitionOnly.has(id));
   const independent=[...part.api].filter(id=>reserved.has(id));
-  a.equal(independent.length,1582);
   const normal=P.atsReserved(part,{grant:false,independent});
   const grant=P.atsReserved(part,{grant:true,independent});
-  a.equal(normal.size,3164);
-  a.equal(grant.size,3164);
-  for(const id of [...part.hermes,...part.api]){a.ok(normal.has(id));a.ok(grant.has(id));}
+  a.equal(normal.size,1582+independent.length);
+  a.equal(grant.size,1582+independent.length);
+  for(const id of part.hermes){a.ok(normal.has(id));a.ok(grant.has(id));}
+  for(const id of part.api){
+    if(independent.includes(id)){a.ok(normal.has(id));a.ok(grant.has(id));}
+    else{a.ok(!normal.has(id));a.ok(!grant.has(id));}
+  }
+  a.ok(independent.length<1582);
 });
 

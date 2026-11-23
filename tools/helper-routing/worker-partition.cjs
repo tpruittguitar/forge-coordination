@@ -19,6 +19,8 @@ function validate(x){
 }
 function load(root){return validate(JSON.parse(fs.readFileSync(path.join(root,FILE),'utf8')));}
 function atsReserved(partition,{grant=false,independent=[]}={}){
-  return new Set([...partition.hermes,...(grant?[]:partition.api),...independent]);
+  // ChatGPT's half is released (cs-0170c263). Skip those IDs only when independently reserved.
+  // Hermes's half stays reserved. `grant` is kept for callers.
+  return new Set([...partition.hermes,...independent]);
 }
 module.exports={FILE,SOURCE,TASK,validate,load,atsReserved};
