@@ -50,3 +50,35 @@ test('code fit replaces legacy EXPERIENCE_FIT inside the 2x25 Writer slots and n
   const f=fields();assert.equal(F.guard(f,planned,row('L0',p),fit),true);assert.equal(f.SCOPE_FIT_RAW,undefined);
  }
 });
+
+test('run.js leaves writer requests alone unless CODE_FIT is explicitly enabled',()=>{
+ const fs=require('node:fs'),vm=require('node:vm');
+ const source=fs.readFileSync(require.resolve('./run.js'),'utf8');
+ // Exercise the planning block without loading the rest of the Writer or its checkout dependencies.
+ const start=source.indexOf('  // Code-scored fit'),end=source.indexOf('  // Card 6e439fa',start);
+ assert.ok(start>=0&&end>start);
+ const block=new vm.Script(source.slice(start,end));
+ const config=require('./config.json');
+ assert.strictEqual(config.codeFitEnabled,false);
+ for(const enabled of [config.codeFitEnabled,undefined,'true',true]){
+  const requests=[{ruling:{fields:{SALARY_BASE_LOW:'1'}}}],stats={};
+  let calls=0;
+  block.runInNewContext({
+   CONFIG:{...config,codeFitEnabled:enabled},stats,requests,broadGrant:false,PRODUCTS_ONLY:false,PREPARE_ONLY:false,
+   progress(){},rows:[],Evidence:{},activeProductRow(){},unavailableIds:new Set(),RUN_ID:'RUN',
+   require(id){
+    assert.strictEqual(id,'./code-fit');
+    return {plan({requests}){
+     calls++;
+     Object.assign(requests[0].ruling.fields,{SCOPE_FIT_RAW:'72',SCOPE_FIT_MODEL_REF:'CODE_FIT rev1'});
+     return {stats:{scored:1}};
+    }};
+   },
+  });
+  assert.strictEqual(calls,enabled===true?1:0);
+  if(enabled!==true){
+   assert.deepStrictEqual(requests,[{ruling:{fields:{SALARY_BASE_LOW:'1'}}}]);
+   assert.strictEqual(stats.code_fit.disabled,'Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)');
+  }
+ }
+});
