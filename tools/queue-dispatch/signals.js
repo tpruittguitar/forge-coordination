@@ -7,9 +7,10 @@ function parseStamp(value) {
   const s = String(value).trim();
   const iso = Date.parse(s);
   if (Number.isFinite(iso)) return iso;
-  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})(\d{0,3})Z?$/.exec(s);
+  // Older receipts are named to the minute (T1330Z); seconds are optional.
+  const m = /^(\d{4})(\d{2})(\d{2})T(\d{2})(\d{2})(\d{2})?(\d{0,3})Z?$/.exec(s);
   if (!m) return NaN;
-  return Date.parse(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6]}.${(m[7] || '0').padEnd(3, '0')}Z`);
+  return Date.parse(`${m[1]}-${m[2]}-${m[3]}T${m[4]}:${m[5]}:${m[6] || '00'}.${(m[7] || '0').padEnd(3, '0')}Z`);
 }
 
 function readJson(file) {
@@ -30,7 +31,7 @@ function waitingFromFlow(root) {
 }
 
 function receiptStamp(name, rec) {
-  const fromName = /^FORGE-AUTO-(\d{8}T\d{6,9}Z)\.json$/.exec(name);
+  const fromName = /^FORGE-AUTO-(\d{8}T\d{4,9}Z)\.json$/.exec(name);
   if (fromName) return parseStamp(fromName[1]);
   return parseStamp(rec?.sourceRunId && String(rec.sourceRunId).replace(/^FORGE-AUTO-/, ''));
 }
@@ -49,7 +50,8 @@ function wroteRowsFromReceipts(root, sinceMs) {
     let rec;
     try { rec = readJson(file); } catch { continue; }
     const at = receiptStamp(name, rec);
-    if (Number.isFinite(sinceMs) && Number.isFinite(at) && at < sinceMs) continue;
+    // A receipt whose time cannot be read is not proof of a write in this run.
+    if (!Number.isFinite(at) || at < sinceMs) continue;
     const inserted = rec.reconciliation?.insertedIds;
     if (Array.isArray(inserted)) {
       for (const id of inserted) if (id) ids.add(id);

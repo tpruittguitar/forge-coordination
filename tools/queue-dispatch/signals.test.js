@@ -72,3 +72,15 @@ test('missing since does not count leftover receipts or reports as this run', ()
     lane: 'enrich-ats-pay', fromThisRun: false
   });
 }));
+
+test('minute-stamped old receipts do not count as this-run writes', () => {
+  const os = require('node:os'), fsx = require('node:fs'), px = require('node:path');
+  const { wroteRowsFromReceipts, parseStamp } = require('./signals');
+  const root = fsx.mkdtempSync(px.join(os.tmpdir(), 'qd-'));
+  const dir = px.join(root, 'receipts/auto-intake');
+  fsx.mkdirSync(dir, { recursive: true });
+  fsx.writeFileSync(px.join(dir, 'FORGE-AUTO-20261026T1330Z.json'), JSON.stringify({ reconciliation: { beforeCount: 1, afterCount: 42 } }));
+  fsx.writeFileSync(px.join(dir, 'FORGE-AUTO-20261123T004302Z.json'), JSON.stringify({ reconciliation: { insertedIds: ['A', 'B'] } }));
+  assert.equal(parseStamp('20261026T1330Z'), Date.parse('2026-10-26T13:30:00Z'));
+  assert.equal(wroteRowsFromReceipts(root, Date.parse('2026-11-23T00:00:00Z')), 2);
+});
