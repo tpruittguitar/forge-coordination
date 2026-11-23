@@ -1,10 +1,10 @@
 {
- "at": "2026-11-23T00:15:11.328Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T001223438Z",
+ "at": "2026-11-23T00:19:56.454Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T001547652Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T00:12:34.090Z",
+  "readAt": "2026-11-23T00:16:07.171Z",
   "sha256": "1e883ed2b8691f8b51957ee089f896dfba6fbada07238e061a7a539655a95c27",
   "rows": 9545
  },
@@ -68,7 +68,7 @@
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 7,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -88,8 +88,8 @@
  "bls_queries": 0,
  "est_shared_low": 0,
  "posting_cache": {
-  "saved": 0,
-  "hits": 2,
+  "saved": 2,
+  "hits": 0,
   "no_pay_hits": 0
  },
  "employer_benchmarks": {
@@ -114,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-23T00:12:39.366Z",
+  "profile_as_of": "2026-11-23T00:16:12.249Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -157,10 +157,10 @@
  "products_planned": 0,
  "upgraded": 0,
  "grant_public_source": {
-  "attempts": 4,
-  "requests": 4,
-  "found": 0,
-  "blockedIdentity": 0
+  "attempts": 15,
+  "requests": 16,
+  "found": 2,
+  "blockedIdentity": 3
  },
  "grant_backlog": {
   "waiting": 1573,
@@ -169,79 +169,213 @@
   "skippedEarlierFirstPass": 0,
   "protectedOrReserved": 5,
   "identityNeedsGovernedRepair": 0,
-  "noExactPosting": 43,
-  "noMatchingProductReference": 49,
+  "noExactPosting": 24,
+  "noMatchingProductReference": 50,
   "sourceSupported": 0,
   "remainingByFieldAfterPlan": {
-   "work arrangement (remote/hybrid/on-site)": 50,
-   "products (what they make)": 49,
-   "degree FLEX class": 43,
-   "degree evidence": 45,
-   "pay range": 44,
-   "pay basis and source": 44
+   "products (what they make)": 50,
+   "work arrangement (remote/hybrid/on-site)": 32,
+   "degree evidence": 5,
+   "location / geography": 1,
+   "degree FLEX class": 1,
+   "pay range": 1,
+   "pay basis and source": 1
   },
   "noAcceptedGrantResearch": 50,
   "firstPass": {
    "frozen": 1582,
-   "previouslyReached": 298,
+   "previouslyReached": 348,
    "legacySeeded": 0,
-   "reached": 348,
-   "notReached": 1234,
+   "reached": 398,
+   "notReached": 1184,
    "reopened": 0,
-   "awaitingProductEvidence": 44,
+   "awaitingProductEvidence": 60,
    "priorInterrupted": 0,
-   "eligibleWaiting": 1218,
-   "productWaiting": 44,
+   "eligibleWaiting": 1168,
+   "productWaiting": 60,
    "restorableWriterPlans": 0,
    "heldOrIdentityRepair": 7,
    "remainingReason": "MORE_FIRST_PASS_WORK"
   }
  },
+ "source_origin_blocks": {},
  "grant_product_registry_batch": {
   "schema": "forge.company-site-products.v1",
   "entries": [
    {
-    "id": "ats-grant-v2i-daa906d63719",
-    "primaryId": "V2I-DAA906D63719",
-    "company": "Fresh And Ready Foods",
-    "location": "Lenexa, KS, USA",
+    "id": "ats-grant-v2i-f992b173c39c",
+    "primaryId": "V2I-F992B173C39C",
+    "company": "NURIX",
+    "location": "Brisbane, CA, USA",
     "products": [
-     "Fresh & Ready Foods"
+     "clinical programs"
     ],
     "status": "CONFIRMED",
     "sources": [
-     "https://apply-v3.jobsync.io/indeed/r-app/eb1c428814f79c08de25a4aed61c524fce784cceb6e0058ffe09efe1/"
+     "https://grnh.se/kwb52pn32us"
     ],
     "verifiedAt": "2026-11-19T23:08:50.605Z",
     "provenance": {
      "scope": "JOB_POSTING",
-     "grantAttemptKey": "670e88cbf305795f9446ba08280ab2c26094cf3bd483acf38e9b78aac1f3181e",
-     "grantAttemptAt": "2026-11-23T00:13:39.641Z",
-     "costMicrousd": 108,
-     "quote": "Fresh & Ready Foods",
-     "fullPostingTextSha256": "c2f7dc9614696ce244510ea60287f2b3d40fd1cfb5b281ddb8c4415f9d078dfd"
+     "grantAttemptKey": "0966cd5e102392110c87656b981e1137edcc95335344c3e6a45d3c60d7fed45a",
+     "grantAttemptAt": "2026-11-23T00:17:20.054Z",
+     "costMicrousd": 105,
+     "quote": "Own the supply chain and CMC project engine behind Nurix's clinical programs and commercial readiness.",
+     "fullPostingTextSha256": "e951d41c7c02d3baf4a59a9e807d3d18699a3aa15f5799c39818f3230a3a2e92"
     }
    },
    {
-    "id": "ats-grant-v2i-bed1534d954d",
-    "primaryId": "V2I-BED1534D954D",
-    "company": "Blue Origin",
-    "location": "FL, USA",
+    "id": "ats-grant-v2i-be499c6ef3ec",
+    "primaryId": "V2I-BE499C6EF3EC",
+    "company": "Metropolitan State University of Denver",
+    "location": "Denver, CO, USA",
     "products": [
-     "rocket production program"
+     "Advanced Manufacturing Sciences Institute"
     ],
     "status": "CONFIRMED",
     "sources": [
-     "https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Space-Coast-FL/Sr-Director--Manufacturing--Operations----Production_R75651"
+     "https://msudenver.wd1.myworkdayjobs.com/en-US/MSUDenver/job/Denver-Colorado/Director-of-the-Advanced-Manufacturing-Sciences-Institute_JR105958-1"
     ],
-    "verifiedAt": "2026-11-17T18:47:46.114Z",
+    "verifiedAt": "2026-11-19T02:03:17.743Z",
     "provenance": {
      "scope": "JOB_POSTING",
-     "grantAttemptKey": "c3e53d409c3dc4ff22981b4693d85e68d98796e512b3b0552c9607e561ff7dca",
-     "grantAttemptAt": "2026-11-23T00:13:45.714Z",
+     "grantAttemptKey": "f21779370acd6000e88a34007178b90438c1b28bd2f3ae34ee920b1f3b7a8a26",
+     "grantAttemptAt": "2026-11-23T00:17:23.972Z",
+     "costMicrousd": 112,
+     "quote": "MSU Denver seeks a Director to lead the Advanced Manufacturing Sciences Institute ( AMSI )",
+     "fullPostingTextSha256": "c4d53bb0eda8afe45c2b8815f237aa74d123a1074a8a62cb82ffaea40f5c98f2"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-88e8c9016313",
+    "primaryId": "V2I-88E8C9016313",
+    "company": "GE Vernova",
+    "location": "Atlanta, GA, USA",
+    "products": [
+     "GE Vernova Gas Power portfolio"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://careers.gevernova.com/senior-director-engine-plant-solutions-strategy/job/R5058982"
+    ],
+    "verifiedAt": "2026-11-22T22:22:09.000Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "6b972504723d370b9218b4b00a4d8dccc4b52bfc6b1134b5f0619b5baf8a8161",
+     "grantAttemptAt": "2026-11-23T00:17:25.737Z",
+     "costMicrousd": 106,
+     "quote": "This role defines how the GE Vernova Gas Power portfolio should evolve over a 5-year horizon",
+     "fullPostingTextSha256": "78875f19f97eba375d63849a4e857c5e0665c6d197e719cbe4f0597a913e837b"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-dc0d62c532ec",
+    "primaryId": "V2I-DC0D62C532EC",
+    "company": "Good Samaritan Hospital",
+    "location": "Puyallup, WA, USA",
+    "products": [
+     "MultiCare Health System"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://click.appcast.io/t/ZCCtPSsYgrZfgEpmQD4Y3xiQL7pGYZDkc9Rhw7SOEh8="
+    ],
+    "verifiedAt": "2026-11-17T13:22:26.313Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "3c4d18849d0c548a38b4bfb62d0e665e1e6e44ba3d1bed500b3c9c53d6633c11",
+     "grantAttemptAt": "2026-11-23T00:17:28.293Z",
+     "costMicrousd": 107,
+     "quote": "The Market Director, Facility Operations provides strategic and operational leadership for facility operations across the East Pierce Market within MultiCare Health System",
+     "fullPostingTextSha256": "8ab2673e73ade400397e40096600aea806df3e968ac14c1ff11e3e4e77c2896b"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-c3f94fa3dbf6",
+    "primaryId": "V2I-C3F94FA3DBF6",
+    "company": "Blue Bird",
+    "location": "Dallas, TX, US",
+    "products": [
+     "XBAT"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://jobs.ashbyhq.com/shield/17129b78-ff3a-4aa5-84f4-cda8a787378b"
+    ],
+    "verifiedAt": "2026-11-22T23:36:23.005Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "cbafcc9af9b76924150d48b6375d8acbba7d00e2cdd0cc30159974463e72a5f8",
+     "grantAttemptAt": "2026-11-23T00:18:18.315Z",
      "costMicrousd": 104,
-     "quote": "lead high-performing teams in support of our rocket production program",
-     "fullPostingTextSha256": "888e7d0d96c8c3fb32109b63811b102ce96947c5b93aa51cad9796a588858421"
+     "quote": "Serve as the quality leader for XBAT development.",
+     "fullPostingTextSha256": "46afd4c38b426220bd27f1f590542d60ba76beb675454c5050b1e1df9fee524a"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-9527686c6444",
+    "primaryId": "V2I-9527686C6444",
+    "company": "Blue Bird",
+    "location": "Seattle, WA, US",
+    "products": [
+     "X-BAT"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://jobs.ashbyhq.com/shield/3df53a74-0c3c-49eb-ba1e-50fc61d56144"
+    ],
+    "verifiedAt": "2026-11-22T23:36:23.005Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "27576fff9dd9023b0cc03f545334516c73d114b867661771f2944752ddc1f8f1",
+     "grantAttemptAt": "2026-11-23T00:18:19.708Z",
+     "costMicrousd": 117,
+     "quote": "We’re looking for a hands-on manufacturing leader to take X-BAT from early prototype builds through production launch and into rate production.",
+     "fullPostingTextSha256": "f9497cfb3669dda5157fe1aa629b682e55084e6f0b3358d71b490e74b0090dc9"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-c61657df9fc1",
+    "primaryId": "V2I-C61657DF9FC1",
+    "company": "Medline Industries",
+    "location": "Southaven, MS, USA",
+    "products": [
+     "Medline branded products"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://medline.wd5.myworkdayjobs.com/en-US/Medline/job/Southaven-Mississippi/Director-Quality_R2623152"
+    ],
+    "verifiedAt": "2026-11-21T12:39:12.066Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "16d7b7a66bd436dbb898dc7894a26d574ea5437ff75098d636661a77613da9a9",
+     "grantAttemptAt": "2026-11-23T00:18:21.735Z",
+     "costMicrousd": 120,
+     "quote": "Direct the development of product specifications for Medline branded products; such as the testing requirements, procedures and methods for testing, inspecting or qualifying new products and suppliers.",
+     "fullPostingTextSha256": "f6b720c2f66b03452ceead2479cf448b5f562844ebecf0580952ab9d0cebded7"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-e36dfa124c4d",
+    "primaryId": "V2I-E36DFA124C4D",
+    "company": "Heartflow",
+    "location": "San Francisco, CA, USA",
+    "products": [
+     "Heartflow FFRCT Analysis"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://www.linkedin.com/jobs/view/4461390098"
+    ],
+    "verifiedAt": "2026-11-22T22:22:09.000Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "337d98b11e55613873b4e522f787cac752a1bb3410134c2b9f51880fde5e8326",
+     "grantAttemptAt": "2026-11-23T00:18:22.971Z",
+     "costMicrousd": 122,
+     "quote": "The flagship product—an AI-driven, non-invasive cardiac test supported by the ACC/AHA Chest Pain Guidelines called the Heartflow FFRCT Analysis",
+     "fullPostingTextSha256": "a5dc5fc679da919e2e8964231706c14df3dfb681583825674ac098a78fef9aac"
     }
    }
   ]
@@ -250,19 +384,19 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 0,
- "network_requests": 6,
+ "network_requests": 13,
  "planned": 0,
  "research_budget_exhausted": false,
- "grant_extraction_attempts": 4,
+ "grant_extraction_attempts": 22,
  "grant_extraction_fact_rows": 0,
  "grant_extraction_accounting": {
-  "reportedCostMicrousd": 414,
+  "reportedCostMicrousd": 2127,
   "unknownAttempts": 0,
   "unknownReservedMicrousd": 0,
   "cumulativeCapMicrousd": 37470000
  },
  "grant_extraction_diagnostic": {
-  "category": "PRODUCT_PROPOSED"
+  "category": "NO_SUPPORTED_FACTS"
  },
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
@@ -272,8 +406,8 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 240,
-  "SOURCE_RESEARCH_REQUIRED": 446,
-  "EVIDENCE_FOUND": 879,
+  "SOURCE_RESEARCH_REQUIRED": 454,
+  "EVIDENCE_FOUND": 871,
   "MODEL_INPUTS_REQUIRED": 3,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 5
  },
