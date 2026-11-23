@@ -144,3 +144,17 @@ test('declined jobs cannot seed discovery but open pursuit jobs can',()=>{
  assert.equal(T.discoverySeed({BUCKET:'READY_TO_PURSUE',DISPOSITION:'RESOLVED/PURSUE_CANDIDATE'}),true);
  assert.equal(T.discoverySeed({BUCKET:'MANUAL_RESEARCH',p:{DO_NOT_REWORK:'YES'}}),false);
 });
+
+test('Shield AI postings on ashby:shield are credited to Shield AI, not the first master company (Blue Bird)', () => {
+  const shield = { kind: 'ashby', key: 'ashby:shield', board: 'shield' };
+  const seen = ['Blue Bird', 'Blue Bird Corporation', 'Advanced Energy', 'Shield'];
+  assert.equal(T.slugMatches(shield, 'Blue Bird'), false);
+  assert.equal(T.slugMatches(shield, 'Shield AI'), true);
+  assert.equal(T.slugMatches({ kind: 'lever', board: 'shieldai' }, 'Shield AI'), true);
+  assert.equal(T.boardCompany(shield, seen, ['Blue Bird', 'Shield AI']), 'Shield AI');
+  assert.equal(T.boardCompany(shield, seen, []), 'Shield');
+  // Workday tenants and slugs that name nobody keep the old first-company behaviour.
+  assert.equal(T.boardCompany({ kind: 'workday', key: 'workday:mksinst.wd1.myworkdayjobs.com/x' }, ['MKS Inc.']), 'MKS Inc.');
+  assert.equal(T.slugMatches({ kind: 'workday', board: 'mksinst' }, 'MKS Inc.'), false);
+  assert.equal(T.boardCompany({ kind: 'greenhouse', board: 'acmeinc' }, ['Foo', 'Bar']), 'Foo');
+});
