@@ -2,14 +2,15 @@
 // Discovery evidence only. No canonical writes, final fit score, or rejection on missing facts.
 const crypto=require('node:crypto'),Resume=require('./resume-match'),Source=require('../programmed-coordinator/source.cjs');
 const hash=s=>crypto.createHash('sha256').update(s).digest('hex');
-const protectedBusiness=/\b(suppliers?|supplies|serving|serves|customers?|for the|to the|machinery|machines?|tooling|equipment for|equipment makers?|equipment manufacturers?|packaging equipment|process equipment|machine builders?|automation|integrators?|integration|consulting|consultancy|software|logistics|components?|engineering firms?|contract engineering|vendors?)\b/i;
+const protectedBusiness=/\b(suppliers?|supplies|serving|serves|customers?|for the|to the|machinery|machines?|tooling|equipment for|equipment makers?|equipment manufacturers?|packaging equipment|process equipment|machine builders?|manufacturing (?:facilities|plants)|automation|integrators?|integration|consulting|consultancy|consultants?|software|logistics|components?|engineering firms?|contract engineering|vendors?)\b/i;
 // Producing packaging or machinery for a category is not producing that category's
 // products. This is a supplier carveout, never evidence of an exclusion.
-const industryInputs=/\b(?:food|beverage|medical|surgical|diagnostic|pharmaceutical|drug|restaurants?|catering|food.service)(?:\s+[a-z-]+){0,3}\s+(?:packaging|machines?|machinery|components?|tooling|equipment)\b|\b(?:packaging|machines?|machinery|components?|tooling|equipment)(?:\s+(?:manufacturers?|makers?|suppliers?|products?))?\s+(?:for|to|serving)\s+(?:the\s+)?(?:restaurants?|caterers?|food.service)\b/i;
+const industryInputs=/\b(?:food|beverage|medical|surgical|diagnostic|biotech(?:nology)?|biopharmaceutic(?:al|als)|pharmaceutical|drug|restaurants?|catering|food.service)(?:\s+[a-z-]+){0,3}\s+(?:packaging|machines?|machinery|components?|tooling|equipment)\b|\b(?:packaging|machines?|machinery|components?|tooling|equipment)(?:\s+(?:manufacturers?|makers?|suppliers?|products?))?\s+(?:for|to|serving)\s+(?:the\s+)?(?:restaurants?|caterers?|food.service)\b/i;
+const declaredBusiness=/\b(?:manufacturer|producer|developer|manufacturing company|development company|restaurants?|caterer|food.service operator|(?:bio(?:technology|tech)|bio[ -]?pharmaceutical|pharmaceutical|medical devices?|food(?: and beverage)?|beverage) (?:company|business|firm)|contract development and manufacturing organi[sz]ation|CDMO)\b/i;
 const categories={
- PHARMACEUTICAL_MANUFACTURER:/\b(?:pharmaceutical|drug)\s+(?:development|manufacturer|manufacturing|production|developer)|\b(?:manufacture|produce|develop)\s+(?:pharmaceuticals|drugs|medicines)\b/i,
- MEDICAL_DEVICE_MANUFACTURER:/\b(?:medical|surgical|diagnostic)\s+devices?\b/i,
- FOOD_OR_BEVERAGE_MANUFACTURER:/\b(?:food|beverage)\s+(?:manufacturer|manufacturing|producer|production|processing)|\b(?:manufacture|produce|process)\s+(?:food|beverages)\b/i,
+ PHARMACEUTICAL_MANUFACTURER:/\b(?:bio(?:technology|tech)|bio[ -]?pharmaceutical|pharmaceutical|drug)\s+(?:company|business|firm|development|manufacturer|manufacturing|production|developer)\b|\b(?:manufactur(?:e|es|ing)|produc(?:e|es|ing)|develop(?:s|ing)?)\s+(?:(?:innovative|new|novel|therapeutic)\s+)?(?:pharmaceuticals|drugs|medicines|biologics|vaccines|(?:cell|gene|cell and gene) therap(?:y|ies)|plasma[- ]derived (?:medicines|therapeutics)|(?:peptide )?active pharmaceutical ingredients|peptide APIs)\b|\b(?:contract development and manufacturing organi[sz]ation|CDMO)\b/i,
+ MEDICAL_DEVICE_MANUFACTURER:/\b(?:(?:medical|surgical|diagnostic)\s+devices?|medical supplies|life[- ]science tools|diagnostic (?:kits|instruments))\b/i,
+ FOOD_OR_BEVERAGE_MANUFACTURER:/\b(?:food(?: and beverage)?|beverage)\s+(?:manufacturer|manufacturing|producer|production|processing|company|business|firm)\b|\b(?:manufactur(?:e|es|ing)|produc(?:e|es|ing)|process(?:es|ing)?|packag(?:e|es|ing)|crafts?)\s+(?:(?:prepared|frozen|ready[- ]to[- ]eat)\s+|brands and\s+)?(?:foods?|beverages|meals)\b|\bprepares? and ships? meals\b/i,
  RESTAURANT_OR_FOOD_SERVICE:/\b(?:restaurants?|fast.food|quick.service|catering|food.service)\b/i
 };
 async function context({key,reader=require('../source-intake/writer-reader').read,profile}={}){
@@ -42,15 +43,17 @@ function screen(card,{profile,rules,documents,checkedAt=new Date().toISOString()
  // An employer's own explicit business statement is required. Job title, employer name,
  // industry customers, missing ATS terms and an agency's unnamed client cannot exclude.
  const escaped=company.replace(/[.*+?^${}()|[\]\\]/g,'\\$&');
- const self=new RegExp('^(?:we (?:are|manufacture|produce|develop|operate)|'+(escaped?escaped+' (?:is|manufactures|produces|develops|operates)':'(?!)')+')\\b','i');
- const verb=new RegExp('^(?:we|'+(escaped||'(?!)')+') (?:manufacture|manufactures|produce|produces|develop|develops|operate|operates)\\b','i');
+ const subject='(?:we|'+(escaped||'(?!)')+')';
+ const verbs='(?:manufactures?|produces?|develops?|operates?|process(?:es)?|packages?|crafts?|prepares?)';
+ const self=new RegExp('^'+subject+' (?:are|is|'+verbs+')\\b','i');
+ const verb=new RegExp('^'+subject+' '+verbs+'\\b','i');
  const statements=text.split(/\n|(?<=[.!?])\s+/).map(x=>x.trim()).filter(x=>self.test(x));
- const quotes=statements.filter(x=>(/\b(?:manufacturer|producer|developer|manufacturing company|development company|restaurants?|caterer|food.service operator)\b/i.test(x)||verb.test(x))&&!(/\b(?:not|no longer|our client|on behalf|recruiting|staffing agency|seeking|hiring|looking for|searching for|partner with|partnering with|proud to|supporting)\b/i.test(x)));
+ const quotes=statements.filter(x=>(declaredBusiness.test(x)||verb.test(x))&&!(/\b(?:not|no longer|our client|on behalf|recruiting|staffing agency|seeking|hiring|looking for|searching for|partner with|partnering with|proud to|supporting)\b/i.test(x)));
  if(active&&/^https:\/\//.test(url)&&company){
   for(const rule of rules.rules||[]){if(!rule.active||rule.ACTION!=='DO_NOT_ADD'||!categories[rule.CATEGORY])continue;
+   const quote=quotes.find(q=>categories[rule.CATEGORY].test(q));if(!quote)continue;
    const definition=require('./never-consider-patterns.json').rules.find(r=>r.id===rule.RULE_ID&&r.category===rule.CATEGORY&&r.matchSha256===hash(rule.MATCH||''));
    if(!definition){nc.status='REVIEW_RULE_CHANGED';continue;}
-   const quote=quotes.find(q=>categories[rule.CATEGORY].test(q));if(!quote)continue;
    nc.status=protectedBusiness.test(statements.join(' '))||industryInputs.test(quote)?'REVIEW_PROTECTED_SUPPLIER':'EXCLUDE';nc.ruleId=rule.RULE_ID;nc.quote=quote;nc.confidence=nc.status==='EXCLUDE'?'HIGH':'REVIEW';break;
   }
  }

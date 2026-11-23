@@ -12,6 +12,25 @@ test('each current never-consider rule requires an explicit employer business st
   const r=P.screen({...card,description},ctx);a.equal(r.decision,'EXCLUDE_NEVER_CONSIDER',description);a.equal(r.neverConsider.ruleId,id);a.equal(r.neverConsider.rulesSha256,P.hash(rules.raw));a.equal(r.neverConsider.quote,description);
  }
 });
+test('active Writer rule fingerprints classify sourced biotech, pharma and food businesses, not bare keywords',()=>{
+ const expected=['52ff3d097b8349f052aa3c4f7fc9b794bc466c8cfdbf8a3ff2e72e879a4804fe','ad4a2ef9ab01a1c8ab911c7e75d1a514a5330cdc65b59e6f8aa80daa16473069','eee50cf16320cfb43b3e910751417a1d341435660e92c96f5c268ee9b88ede68','5002e98d6616cee7e2456afa652cbedc6db99236e00701d8259a690304e753fc'];
+ a.deepEqual(rules.rules.map(r=>P.hash(r.MATCH)),expected);
+ for(const [company,description,id] of [
+  ['AbbVie','AbbVie is a global biopharmaceutical company with focus and capabilities to address some of the world\'s greatest health challenges.','NC-001'],
+  ['Gene Forge','We are a biotechnology company focused on early-stage research.','NC-001'],
+  ['Gene Forge','We develop novel biologics.','NC-001'],
+  ['Peptide Labs','We manufacture peptide APIs.','NC-001'],
+  ['Device Labs','We produce life-science tools.','NC-002'],
+  ['The Coca-Cola Company','We craft brands and beverages people love.','NC-003'],
+  ['Mom’s Meals','We prepare and ship meals according to our own strict operational procedures.','NC-003'],
+  ['Food Service Operator','We operate restaurants throughout Texas.','NC-004']
+ ]){const result=P.screen({...card,company,description},ctx);a.equal(result.neverConsider.ruleId,id,description);a.equal(result.decision,'EXCLUDE_NEVER_CONSIDER',description);a.equal(result.neverConsider.quote,description);}
+ const stale={...rules,rules:rules.rules.map(r=>r.RULE_ID==='NC-001'?{...r,MATCH:r.MATCH.replace(', biotech','')}:r)};
+ a.equal(P.screen({...card,description:'We are a biotechnology company.'},{...ctx,rules:stale}).neverConsider.status,'REVIEW_RULE_CHANGED');
+ for(const description of ['We produce renewable biogas.','We are a biotech automation company.','We are a food processing equipment maker.','We develop biotechnology software.','Our client is a biopharmaceutical company.','We are recruiting for a biotech company.','Biotechnology, pharma and food experience is a plus.']) {
+  a.equal(P.screen({...card,description},ctx).decision,'PROGRESS_TO_INTAKE',description);
+ }
+});
 test('employer names, titles, customers, suppliers and agency clients cannot cause industry exclusion',()=>{
  for(const description of ['Pharmaceutical manufacturing experience required.','Our customers manufacture medical devices.','We are an automation supplier serving pharmaceutical manufacturers.','We are a food manufacturing equipment maker.','We are a manufacturer of machinery for the food manufacturing industry.','Our client is a food manufacturer.','We are seeking a director with pharmaceutical manufacturing experience.','We are a team of experts in food manufacturing.','We are proud to partner with a medical device manufacturer.','We are not a food manufacturer.','We are a pharmaceutical manufacturer. We are an equipment supplier.']){
   const r=P.screen({...card,company:'Pharma Foods Restaurant',description},ctx);a.equal(r.decision,'PROGRESS_TO_INTAKE',description);
@@ -48,14 +67,14 @@ test('early exclusions remain captured discoveries and current rule changes reop
  const protectedRow={PRIMARY_ID:'V2I-EXISTING',COMPANY:card.company,TITLE:card.title,LOCATION:card.location,BUCKET:'DECLINED_BY_TIM',p:{SOURCE_URL:card.url}};
  const present=U.build({records:[record],rows:[protectedRow],now,screenContext:ctx});a.equal(present.summary.counts.PRESENT,1);a.equal(present.summary.counts.EXCLUDED,0);
 });
-test('AUTO picks the next independent candidate after a current, grounded discovery exclusion',()=>{
- const {pick}=require('../source-intake/auto-run'),first={...card,description:'We are a food manufacturer.'},second={...card,company:'Factory Automation',url:'https://example.test/jobs/2',description:'We are an automation supplier serving food manufacturers.'};
+test('AUTO picks the next independent candidate after a current, grounded biotech exclusion',()=>{
+ const {pick}=require('../source-intake/auto-run'),first={...card,description:'We are a biotechnology company.'},second={...card,company:'Factory Automation',url:'https://example.test/jobs/2',description:'We are an automation supplier serving biotechnology customers.'};
  const chosen=pick({new_roles:[first,second]},{max:20,sent:new Set(),screenContext:ctx});a.equal(chosen.length,1);a.equal(chosen[0].r.company,second.company);
 });
 test('first email card capture receives preliminary ATS and rule evidence without disposing unknowns',()=>{
  const L=require('../email-recovery/ledger.cjs'),l=L.empty();L.seed(l,[{gmailId:'m',url:'https://www.linkedin.com/jobs/view/123/',advertisedUnseen:0}]);
- L.capture(l,{gmailId:'m',url:l.sources.m.url,at:'2026-11-05T21:00:00Z',jobs:[{jobId:'123',paragraphs:[card.title,card.company,card.location,'We are a food manufacturer.']}],next:false,endConfirmed:true},{screenContext:ctx});
- const j=l.jobs['linkedin:123'];a.equal(j.preliminaryScreen.neverConsider.ruleId,'NC-003');a.equal(j.preliminaryScreen.ats.resumeTextSha256,profile.source.textSha256);a.equal(j.status,'UNSCREENED','source screening is not a canonical disposition');
+ L.capture(l,{gmailId:'m',url:l.sources.m.url,at:'2026-11-05T21:00:00Z',jobs:[{jobId:'123',paragraphs:[card.title,card.company,card.location,'We are a biopharmaceutical company.']}],next:false,endConfirmed:true},{screenContext:ctx});
+ const j=l.jobs['linkedin:123'];a.equal(j.preliminaryScreen.neverConsider.ruleId,'NC-001');a.equal(j.preliminaryScreen.ats.resumeTextSha256,profile.source.textSha256);a.equal(j.status,'UNSCREENED','source screening is not a canonical disposition');
 });
 
 const unrelated=('Oversee customer support across all regions. Coordinate client appointments, resolve account inquiries, and report monthly service results. Set budgets and direct branch administrators, including daily scheduling and customer correspondence. ' ).repeat(2);
