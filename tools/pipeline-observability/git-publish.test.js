@@ -105,3 +105,23 @@ test('only a completed flow can retarget once across exact status files; real in
   }finally{fs.rmSync(base,{recursive:true,force:true});}
  }
 });
+
+test('CLI parses --allow-status-only-reparent, keeps it out of paths, and leaves the default off',()=>{
+ const {base,root}=repo();
+ const script=path.join(__dirname,'git-publish.js');
+ const cli=(args)=>{try{return {status:0,stdout:execFileSync(process.execPath,[script,...args],{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe']}),stderr:''};}catch(e){return {status:e.status,stdout:e.stdout||'',stderr:String(e.stderr||'')}};};
+ try{
+  fs.writeFileSync(path.join(root,'--allow-status-only-reparent'),'not a flag\n');
+  const off=cli(['--no-push']);
+  assert.equal(off.status,0,off.stderr);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+  const on=cli(['--allow-status-only-reparent','--no-push']);
+  assert.notEqual(on.status,0);
+  assert.match(on.stderr,/complete flow/);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+  const mixed=cli(['--no-push','--allow-status-only-reparent','--allow-status-only-reparent']);
+  assert.notEqual(mixed.status,0);
+  assert.match(mixed.stderr,/complete flow/);
+  assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+ }finally{fs.rmSync(base,{recursive:true,force:true});}
+});

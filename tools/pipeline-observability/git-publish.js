@@ -99,7 +99,7 @@ function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,r
 }
 if(require.main===module){
  const argv=process.argv.slice(2),paths=[];let message=DEFAULT_MESSAGE,allowFlowStatusReparent=false;
- for(let i=0;i<argv.length;i++){if(argv[i]==='--message'){message=argv[++i];continue;}if(argv[i]==='--no-push'){process.env.GIT_PUBLISH_NO_PUSH='1';continue;}paths.push(argv[i]);}
+ for(let i=0;i<argv.length;i++){if(argv[i]==='--message'){message=argv[++i];continue;}if(argv[i]==='--no-push'){process.env.GIT_PUBLISH_NO_PUSH='1';continue;}if(argv[i]==='--allow-status-only-reparent'){allowFlowStatusReparent=true;continue;}paths.push(argv[i]);}
  try{const result=publish(process.cwd(),paths,message,{push:process.env.GIT_PUBLISH_NO_PUSH!=='1',allowFlowStatusReparent});if(result.changed)console.log(result.pushed?'Published':'Committed');process.exitCode=0;}
  catch(e){console.error(e.stderr||e.message);process.exitCode=1;}
 }
