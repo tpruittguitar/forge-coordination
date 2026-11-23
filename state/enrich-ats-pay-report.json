@@ -1,11 +1,11 @@
 {
- "at": "2026-11-23T11:35:47.355Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T112720248Z",
+ "at": "2026-11-23T11:48:00.604Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T114234423Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T11:27:33.948Z",
-  "sha256": "92c1c34ea26f2ac6e086e1790d1ba822823d6528f3bb5d15c0101f8c58919dc3",
+  "readAt": "2026-11-23T11:42:49.094Z",
+  "sha256": "4a63d5cb638c1f781595ec318e4779476cb866c99e0e31f75e8032687e785185",
   "rows": 9902
  },
  "rows": 9902,
@@ -34,9 +34,7 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [
-   "FORGE-ENRICH_ATS-ATSBOT-20261123T111236471Z-B01"
-  ],
+  "released_applied": [],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -45,17 +43,17 @@
  },
  "anchors": 1432,
  "archive_anchors": 5,
- "ats_rows": 2,
+ "ats_rows": 1,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 140,
- "skipped_recent": 100,
- "submitted": 1,
+ "estimate_waiting_for_posting": 138,
+ "skipped_recent": 99,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
@@ -64,13 +62,17 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "agg_tried": {
+  "linkedin": 3
+ },
+ "agg_read": {
+  "linkedin": 3
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 2,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -103,7 +105,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -116,7 +118,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-23T11:27:39.237Z",
+  "profile_as_of": "2026-11-23T11:42:56.332Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12267,7 +12269,7 @@
   "salary": 0,
   "degree": 0
  },
- "attempt_only_skipped": 2,
+ "attempt_only_skipped": 4,
  "not_attempted": 137,
  "nothing_found": 137,
  "products_planned": 0,
@@ -12293,9 +12295,8 @@
  "salary_estimates_prepared": 0,
  "roles_researched": 186,
  "network_requests": 10,
- "planned": 1,
+ "planned": 0,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12305,8 +12306,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 282,
   "SOURCE_RESEARCH_REQUIRED": 811,
-  "EVIDENCE_FOUND": 44,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 34,
+  "EVIDENCE_FOUND": 44,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -12853,6 +12854,19 @@
    "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
    "lastAttemptAt": "2026-11-22T23:19:15.331Z",
    "retryAt": "2026-11-23T00:19:15.331Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8B74BC22199B",
+   "company": "QXO",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T11:28:45.594Z",
+   "retryAt": "2026-11-23T12:28:45.594Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -18840,42 +18854,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-CF0AC691F3C5",
-   "company": "Transcom",
-   "title": "Site Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T10:40:10.741Z",
-   "retryAt": "2026-11-23T11:40:10.741Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491311566",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AD122BFD0512",
-   "company": "Neros Technologies",
-   "title": "Motor Manufacturing Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T10:40:13.899Z",
-   "retryAt": "2026-11-23T11:40:13.899Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492867732",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-BDFD91ABD290",
    "company": "United States",
    "title": "Nova Global",
@@ -18889,24 +18867,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B837D5600C29",
-   "company": "The Goodwin Group",
-   "title": "General Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T10:40:20.209Z",
-   "retryAt": "2026-11-23T11:40:20.209Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -19104,6 +19064,24 @@
    "attempts": [
     {
      "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5082600007?pay_transparency=true",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A25994AA3001",
+   "company": "Anduril",
+   "title": "Staff Manufacturing Engineer, Space Vehicle Integration",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T11:28:48.824Z",
+   "retryAt": "2026-11-23T12:28:48.824Z",
+   "attempts": [
+    {
+     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303750007?pay_transparency=true",
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
@@ -32597,18 +32575,7 @@
   }
  ],
  "product_sample": [],
- "sample": [
-  {
-   "id": "V2I-B9405D3189E2",
-   "fields": {
-    "DEGREE_TEXT": "PREFERRED QUALIFICATIONS MBA or similar degree.",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5291343007?gh_jid=5291343007",
-    "DEGREE_ASOF": "2026-11-23",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23"
-   }
-  }
- ],
+ "sample": [],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
