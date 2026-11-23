@@ -76,19 +76,19 @@ test('intake publication and its cursor cannot rebase across or overwrite a work
  }finally{fs.rmSync(base,{recursive:true,force:true});}
 });
 test('only a completed flow can retarget once across exact status files; real input writes stay fenced',()=>{
- const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/INTAKE_DRAIN.json','state/UPSTREAM_COLLECT_CURSOR.json'];
+ const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/upstream-ledger-archive','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/UPSTREAM_COLLECT_CURSOR.json'];
  const ledger=flow[0],usage='usage/AI_USAGE_READINGS.jsonl',display='control/OFFICE_STATUS.json';
  for(const forbidden of [null,'verify/recovery/latest.json','receipts/live-backlog/new.json']){
   const {base,root,bare}=repo(),race=path.join(base,'race');
   const put=(dir,file,body)=>{const p=path.join(dir,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,body);};
   try{
-   put(root,ledger,'old ledger');put(root,'state/waiting-queues/intake-0001.json','old page');git(root,'add','state');git(root,'commit','-m','flow base');git(root,'push','-q','origin','HEAD:main');
+   put(root,ledger,JSON.stringify('old ledger'));put(root,'state/waiting-queues/intake-0001.json','old page');git(root,'add','state');git(root,'commit','-m','flow base');git(root,'push','-q','origin','HEAD:main');
    git(base,'clone','-q',bare,race);git(race,'config','user.name','test');git(race,'config','user.email','test@example.test');
    put(race,usage,'fresh usage');put(race,display,'fresh display');if(forbidden)put(race,forbidden,'new source');
    git(race,'add','-A');git(race,'commit','-m','new main');git(race,'push','-q','origin','HEAD:main');
    const newer=git(bare,'rev-parse','HEAD').trim();
    assert.throws(()=>publish(root,[flow.at(-1)],'cursor',{allowFlowStatusReparent:true}),/complete flow/);
-   put(root,ledger,'fresh ledger');fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
+   put(root,ledger,JSON.stringify('fresh ledger'));fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
    if(forbidden){
     assert.throws(()=>publish(root,flow,'finished',{allowFlowStatusReparent:true}),/Flow inputs changed/);
     assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
@@ -98,7 +98,7 @@ test('only a completed flow can retarget once across exact status files; real in
     assert.equal(git(bare,'rev-parse','HEAD^').trim(),newer);
     assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
     assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
-    assert.equal(git(bare,'show','HEAD:'+ledger),'fresh ledger');
+    assert.equal(JSON.parse(git(bare,'show','HEAD:'+ledger)),'fresh ledger');
     assert.equal(git(bare,'show','HEAD:state/waiting-queues/intake-0002.json'),'new page');
     assert.throws(()=>git(bare,'cat-file','-e','HEAD:state/waiting-queues/intake-0001.json'));
    }
@@ -123,5 +123,30 @@ test('CLI parses --allow-status-only-reparent, keeps it out of paths, and leaves
   assert.notEqual(mixed.status,0);
   assert.match(mixed.stderr,/complete flow/);
   assert.equal(git(root,'status','--porcelain').trim(),'?? --allow-status-only-reparent');
+ }finally{fs.rmSync(base,{recursive:true,force:true});}
+});
+
+test('publication stages each inventory, its manifest and shards as one group',()=>{
+ const {base,root}=repo(),Store=require('../upstream-ledger/store.cjs');
+ try{
+  const item={key:'one',firstSeen:'2026-11-03',detail:{history:['old']}};
+  Store.writeLedger(root,{entries:{one:{...item,status:'EXCLUDED'}}});
+  Store.writeDrain(root,{items:{one:{...item,status:'ACCOUNTED_UPSTREAM'}}});
+  publish(root,[Store.LEDGER_PATH,Store.DRAIN_ARCHIVE+'/manifest.json'],'split inventory',{push:false});
+  const paths=git(root,'diff-tree','--no-commit-id','--name-only','-r','HEAD').trim().split('\n');
+  assert.deepEqual(paths.sort(),[
+   Store.LEDGER_PATH,Store.DRAIN_PATH,
+   ...[Store.LEDGER_ARCHIVE,Store.DRAIN_ARCHIVE].flatMap(dir=>[dir+'/manifest.json',dir+'/2026-11-03.json'])
+  ].sort());
+
+  fs.appendFileSync(path.join(root,Store.DRAIN_ARCHIVE,'2026-11-03.json'),' ');
+  assert.throws(()=>publish(root,[Store.DRAIN_ARCHIVE],'broken snapshot',{push:false}),/sha256 mismatch/);
+  assert.equal(git(root,'log','-1','--pretty=%s').trim(),'split inventory');
+
+  Store.writeDrain(root,{items:{one:{...item,status:'ACTION_REQUIRED'}}});
+  fs.rmdirSync(path.join(root,Store.DRAIN_ARCHIVE));
+  publish(root,[Store.DRAIN_PATH],'reopen inventory',{push:false});
+  assert.throws(()=>git(root,'cat-file','-e','HEAD:'+Store.DRAIN_ARCHIVE+'/manifest.json'));
+  assert.equal(JSON.parse(git(root,'show','HEAD:'+Store.DRAIN_PATH)).items.one.detail.history[0],'old');
  }finally{fs.rmSync(base,{recursive:true,force:true});}
 });

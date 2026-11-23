@@ -1,0 +1,187 @@
+'use strict';
+
+const fs = require('node:fs');
+const os = require('node:os');
+const path = require('node:path');
+const {execFileSync} = require('node:child_process');
+const assert = require('node:assert/strict');
+const {test} = require('node:test');
+const Store = require('./store.cjs');
+const QueueState = require('../source-intake/queue-state.cjs');
+const Coordinator = require('../programmed-coordinator/store.cjs');
+
+function fixture(t) {
+  const root = fs.mkdtempSync(path.join(os.tmpdir(), 'forge-ledger-store-'));
+  const locate = file => path.join(root, file);
+  const read = file => fs.readFileSync(locate(file), 'utf8');
+  const put = (file, value) => fs.writeFileSync(locate(file), JSON.stringify(value));
+  fs.mkdirSync(locate('state'));
+  t.after(() => fs.rmSync(root, {recursive: true, force: true}));
+  return {root, locate, read, put};
+}
+
+const firstSeen = '2026-11-03T22:00:00-05:00';
+const entry = (key, status, fields = {}) => ({
+  key, firstSeen, discoveryReview: {observedAt: firstSeen, findings: ['α', 'β']},
+  company: 'Factory', status, title: 'Plant Manager', sourceUrl: 'https://example.test/job', ...fields
+});
+const ledger = entries => ({schema: 'forge.upstream-ledger.v1', at: '2026-11-05T00:00:00Z', entries, groups: {}, reportHistory: null});
+
+test('legacy files without archives read as-is', t => {
+  const f = fixture(t);
+  const upstream = ledger({z: entry('z', 'EXCLUDED'), a: entry('a', 'WAITING')});
+  const drain = {schema: 'forge.intake-drain.v1', items: {z: entry('z', 'ACCOUNTED_UPSTREAM')}};
+  f.put(Store.LEDGER_PATH, upstream);
+  f.put(Store.DRAIN_PATH, drain);
+  assert.deepEqual(Store.readLedger(f.root), upstream);
+  assert.deepEqual(Store.readDrain(f.root), drain);
+  assert.deepEqual(Coordinator.read(f.root, Store.LEDGER_PATH), upstream);
+  assert.deepEqual(QueueState.read(f.root, Store.DRAIN_PATH), drain);
+});
+
+test('ledger preserves full objects, order, canonical work and unresolved evidence', t => {
+  const f = fixture(t);
+  const original = ledger({
+    z: entry('z', 'EXCLUDED'),
+    a: entry('a', 'PRESENT', {primaryId: 'V2I-A'}),
+    p: entry('p', 'PRESENT', {primaryId: 'V2I-P'}),
+    i: entry('i', 'PRESENT', {primaryId: 'V2I-I', evidenceStatus: 'POST_IN_FLIGHT_UNKNOWN'}),
+    h: entry('h', 'HELD'),
+    u: entry('u', 'UNRECOGNIZED'),
+    l: entry('l', 'EXCLUDED', {firstSeen: null}),
+    d: entry('d', 'EXCLUDED', {evidenceStatus: 'POST_IN_FLIGHT_UNKNOWN', worksheetDeletion: {
+      schema: 'forge.worksheet-deletion.v1', key: 'd', receiptId: 'a'.repeat(64), currentStatus: 'HELD'
+    }}),
+    f: entry('f', 'EXCLUDED', {evidenceStatus: 'POST_IN_FLIGHT_UNKNOWN'})
+  });
+  original.groups = {z: {status: 'EXCLUDED', aliases: ['z']}};
+  f.put('state/PIPELINE_WAITING_QUEUES.json', {ids: {enrichment: ['V2I-P'], decision: []}});
+  Store.writeLedger(f.root, original);
+  const live = JSON.parse(f.read(Store.LEDGER_PATH));
+  for (const id of ['a', 'z', 'l', 'd']) {
+    assert.equal(live.entries[id].discoveryReview, undefined);
+    assert.equal(live.entries[id].key, id);
+    assert.equal(live.entries[id].company, original.entries[id].company);
+  }
+  for (const id of ['p', 'i', 'h', 'u', 'f']) assert.deepEqual(live.entries[id], original.entries[id]);
+  assert.deepEqual(live.groups, original.groups);
+  assert.deepEqual(Store.readLedger(f.root), original);
+  assert.equal(JSON.stringify(Store.readLedger(f.root)), JSON.stringify(original));
+  const manifest = JSON.parse(f.read(Store.LEDGER_ARCHIVE + '/manifest.json'));
+  assert.deepEqual(manifest.shards.map(({name, count}) => [name, count]), [['1970-01-01.json', 1], ['2026-11-04.json', 3]]);
+  const shard = JSON.parse(f.read(Store.LEDGER_ARCHIVE + '/2026-11-04.json'));
+  assert.deepEqual(Object.keys(shard.entries), ['a', 'd', 'z']);
+  assert.equal(shard.entries.a.detail.company, undefined);
+
+  original.at = '2026-11-06T00:00:00Z';
+  Store.writeLedger(f.root, original);
+  assert.deepEqual(JSON.parse(f.read(Store.LEDGER_ARCHIVE + '/manifest.json')), manifest);
+  assert.deepEqual(Store.readLedger(f.root), original);
+});
+
+test('drain preserves fenced items and moves reopened detail fully back to live', t => {
+  const f = fixture(t);
+  const card = {company: 'Factory', title: 'Plant Manager', url: 'https://example.test/job', description: 'Captured text'};
+  const original = {items: {
+    z: entry('z', 'ACCOUNTED_UPSTREAM', {aliases: ['z'], card}),
+    a: entry('a', 'ACCOUNTED_UPSTREAM', {fence: {requestIds: ['request']}, card})
+  }};
+  Coordinator.save(f.root, Store.DRAIN_PATH, original);
+  const live = JSON.parse(f.read(Store.DRAIN_PATH));
+  assert.equal(live.items.z.card.description, undefined);
+  assert.equal(live.items.z.card.url, card.url);
+  assert.deepEqual(live.items.a, original.items.a);
+  assert.deepEqual(QueueState.read(f.root, Store.DRAIN_PATH), original);
+
+  const reopened = Store.readDrain(f.root);
+  reopened.items.z.status = 'ACTION_REQUIRED';
+  Store.writeDrain(f.root, reopened);
+  assert.deepEqual(JSON.parse(f.read(Store.DRAIN_PATH)), reopened);
+  assert.deepEqual(fs.readdirSync(f.locate(Store.DRAIN_ARCHIVE)), []);
+});
+
+test('uses UTF-8 bytes to limit shards, and removes stale parts', t => {
+  const f = fixture(t);
+  const entries = Object.fromEntries(['c', 'b', 'a'].map(id => [id, entry(id, 'EXCLUDED', {body: 'é'.repeat(130)})]));
+  const value = ledger(entries);
+  const targetBytes = 600;
+  Store.writeLedger(f.root, value, {targetBytes});
+  const first = Store.loadLedger(f.read);
+  assert.deepEqual(first.value, value);
+  assert.deepEqual(first.shards.map(s => s.name), ['2026-11-04.json', '2026-11-04-02.json', '2026-11-04-03.json']);
+  for (const shard of first.shards) assert.ok(shard.bytes <= targetBytes);
+  const bodies = first.shards.map(s => f.read(s.file));
+  Store.writeLedger(f.root, Store.readLedger(f.root), {targetBytes});
+  assert.deepEqual(first.shards.map(s => f.read(s.file)), bodies);
+  delete entries.b;
+  Store.writeLedger(f.root, value, {targetBytes});
+  assert.equal(fs.existsSync(f.locate(first.shards[2].file)), false);
+  assert.deepEqual(Store.readLedger(f.root), value);
+});
+
+test('settled entries omit undefined properties just as the legacy writer did', t => {
+  const f = fixture(t);
+  const original = ledger({z: entry('z', 'EXCLUDED', {primaryId: undefined, evidenceRefs: undefined})});
+  Store.writeLedger(f.root, original);
+  assert.deepEqual(Store.readLedger(f.root), JSON.parse(JSON.stringify(original)));
+});
+
+test('missing or corrupt parts fail loudly through both local and generic readers', t => {
+  const f = fixture(t);
+  Store.writeDrain(f.root, {items: {z: entry('z', 'ACCOUNTED_UPSTREAM')}});
+  const shard = f.locate(Store.DRAIN_ARCHIVE + '/2026-11-04.json');
+  fs.appendFileSync(shard, ' ');
+  assert.throws(() => Store.readDrain(f.root), /sha256 mismatch/);
+  fs.unlinkSync(shard);
+  assert.throws(() => QueueState.read(f.root, Store.DRAIN_PATH, {items: {}}), /archive file unavailable/);
+  fs.unlinkSync(f.locate(Store.DRAIN_ARCHIVE + '/manifest.json'));
+  assert.throws(() => Coordinator.read(f.root, Store.DRAIN_PATH, {items: {}}), /archive file unavailable/);
+});
+
+test('single oversize detail is rejected before touching the inventory', t => {
+  const f = fixture(t);
+  const original = ledger({z: entry('z', 'WAITING')});
+  f.put(Store.LEDGER_PATH, original);
+  const oversized = ledger({z: entry('z', 'EXCLUDED', {body: 'x'.repeat(Store.HARD_BYTES)})});
+  assert.throws(() => Store.writeLedger(f.root, oversized), /single record exceeds/);
+  assert.deepEqual(Store.readLedger(f.root), original);
+});
+
+test('a failed replacement rolls back changed shards and the manifest', t => {
+  const f = fixture(t);
+  const original = ledger({z: entry('z', 'EXCLUDED')});
+  Store.writeLedger(f.root, original);
+  const rename = fs.renameSync;
+  const mock = t.mock.method(fs, 'renameSync', (from, to) => {
+    if (to === f.locate(Store.LEDGER_PATH)) throw Error('injected rename failure');
+    return rename(from, to);
+  });
+  const changed = ledger({z: entry('z', 'EXCLUDED', {evidenceRefs: [{proof: 'new'}]})});
+  assert.throws(() => Store.writeLedger(f.root, changed), /injected rename failure/);
+  mock.mock.restore();
+  assert.deepEqual(Store.readLedger(f.root), original);
+  Store.writeLedger(f.root, changed);
+  assert.deepEqual(Store.readLedger(f.root), changed);
+});
+
+test('CLI compacts both files and check reads without rewriting', t => {
+  const f = fixture(t);
+  f.put(Store.LEDGER_PATH, ledger({z: entry('z', 'EXCLUDED')}));
+  f.put(Store.DRAIN_PATH, {items: {z: entry('z', 'ACCOUNTED_UPSTREAM')}});
+  const run = (...args) => {
+    const fd = fs.openSync(f.locate('cli.log'), 'w');
+    try {
+      execFileSync(process.execPath, [path.join(__dirname, 'compact.cjs'), '--root', f.root, ...args], {stdio: ['ignore', fd, 'pipe']});
+    } finally {
+      fs.closeSync(fd);
+    }
+    return f.read('cli.log');
+  };
+  const result = run();
+  const file = f.locate(Store.LEDGER_PATH);
+  const before = fs.statSync(file).mtimeMs;
+  assert.equal(run('--check'), result);
+  assert.equal(fs.statSync(file).mtimeMs, before);
+  assert.match(result, /1 entries, 1 archived/);
+  assert.match(result, /1 items, 1 archived/);
+});

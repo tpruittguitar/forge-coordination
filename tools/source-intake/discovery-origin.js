@@ -8,7 +8,8 @@ const shape=r=>[r.company||r.COMPANY,r.title||r.TITLE,r.location||r.LOCATION].ma
 const emailSource=s=>/^(?:EMAIL_RECOVERY|(?:state\/)?EMAIL_RECOVERY_QUEUE\.json(?:#.*)?|(?:receipts\/)?EMAIL_(?:CANDIDATE_LEDGER|EVAL|PENDING)[^/]*)$/.test(s||'');
 function index(root){
  const read=file=>{try{const raw=fs.readFileSync(path.join(root,file),'utf8');return {data:JSON.parse(raw),proof:{path:file,sha256:crypto.createHash('sha256').update(raw).digest('hex')}};}catch{return {data:{},proof:null};}};
- const email=read('state/EMAIL_RECOVERY_QUEUE.json'),upstream=read('state/UPSTREAM_LEDGER.json'),byKey=new Map();
+ const Store=require('../upstream-ledger/store.cjs'),{value,sha256}=Store.readLedgerSource(root,{});
+ const email=read('state/EMAIL_RECOVERY_QUEUE.json'),upstream={data:value,proof:{path:Store.LEDGER_PATH,sha256}},byKey=new Map();
  for(const job of Object.values(email.data.jobs||{})){
   const key=Identity.urlKey(job.url||job.SOURCE_URL),ids=shape(job);
   if(!key||ids.some(x=>!x)||!Array.isArray(job.sourceEmails)||!job.sourceEmails.some(id=>typeof id==='string'&&/^[a-f0-9]{16}$/i.test(id)))continue;

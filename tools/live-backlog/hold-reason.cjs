@@ -21,7 +21,7 @@ function baseline(item,source){
 }
 function savedIndex(read,source,readMany){
  const result=new Map();for(const item of source.items)result.set(item.key,baseline(item,source));
- let drain;try{drain=JSON.parse(read('state/INTAKE_DRAIN.json'));}catch{return result;}
+ let drain;try{drain=require('../upstream-ledger/store.cjs').loadDrain(read).value;}catch(error){if(error.code==='ERR_LEDGER_ARCHIVE')throw error;return result;}
  // A mixed-age inventory must not present old research as the current explanation.
  if(!drain||typeof drain!=='object'||Array.isArray(drain)||drain.schema!=='forge.intake-drain.v1'||drain.upstreamAt!==source.ledger?.at||!drain.items||Array.isArray(drain.items))return result;
  // Prefetch only current rows' safely shaped references. Every assignment and

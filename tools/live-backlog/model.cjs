@@ -1,6 +1,7 @@
 'use strict';
 // Recoverable discovery-card removal. Never reads or mutates canonical Writer data.
 const crypto=require('node:crypto');
+const Store=require('../upstream-ledger/store.cjs');
 const pending=new Set(['WAITING','HELD','IDENTITY_HOLD','MISSING_PREVIOUSLY_PRESENT']);
 const sha=x=>crypto.createHash('sha256').update(typeof x==='string'?x:JSON.stringify(x)).digest('hex');
 const receiptPath=id=>'receipts/live-backlog/'+id+'.json';
@@ -9,7 +10,7 @@ const stable=x=>JSON.stringify(x,(_,v)=>v&&typeof v==='object'&&!Array.isArray(v
 function activeDeletion(e){return e?.worksheetDeletion?.schema==='forge.worksheet-deletion.v1'&&e.worksheetDeletion.key===e.key&&/^[a-f0-9]{64}$/.test(e.worksheetDeletion.receiptId||'');}
 function regroup(entries){const groups={};for(const e of Object.values(entries)){const key=e.primaryId&&e.status==='PRESENT'?'pid:'+e.primaryId:e.key;let g=groups[key];if(!g)g=groups[key]={status:e.status,firstSeen:e.firstSeen,aliases:[]};g.aliases.push(e.key);if(e.firstSeen&&(!g.firstSeen||e.firstSeen<g.firstSeen))g.firstSeen=e.firstSeen;}return groups;}
 function load(read){
- const ledger=JSON.parse(read('state/UPSTREAM_LEDGER.json')),index=JSON.parse(read('state/PIPELINE_WAITING_QUEUES.json')),flow=JSON.parse(read('state/ENRICHMENT_FLOW.json')),upstream=JSON.parse(read('state/UPSTREAM_FLOW.json'));
+ const {value:ledger,shards}=Store.loadLedger(read),index=JSON.parse(read('state/PIPELINE_WAITING_QUEUES.json')),flow=JSON.parse(read('state/ENRICHMENT_FLOW.json')),upstream=JSON.parse(read('state/UPSTREAM_FLOW.json'));
  if(ledger.at!==upstream.at||stable(flow.upstream)!==stable(upstream)||stable(regroup(ledger.entries))!==stable(ledger.groups))throw Error('SOURCE_LEDGER_SUMMARY_MISMATCH');
  if(ledger.schema!=='forge.upstream-ledger.v1'||index.schema!=='forge.waiting-queues.v1'||!index.reconciled||!upstream.reconciled||flow.at!==index.at||flow.upstream?.waiting!==index.counts.intake)throw Error('SOURCE_SNAPSHOT_NOT_RECONCILED');
  const items=[],seen=new Set();for(const p of index.intake.pages){if(!/^state\/waiting-queues\/intake-\d{4}\.json$/.test(p.path))throw Error('INVALID_PAGE_PATH');const raw=read(p.path),page=JSON.parse(raw);if(sha(raw)!==p.sha256||page.items.length!==p.count)throw Error('SOURCE_PAGE_HASH_MISMATCH');for(const item of page.items){if(seen.has(item.key)||!pending.has(ledger.groups[item.key]?.status))throw Error('SOURCE_IDENTITY_MISMATCH');seen.add(item.key);items.push(item);}}
@@ -17,7 +18,7 @@ function load(read){
  const current={states:Object.fromEntries([...index.ids.enrichment.map(id=>[id,{enrichment:false}]),...index.ids.decision.map(id=>[id,{enrichment:true}])]),queues:{enrichment:index.counts.enrichment,readyForReview:index.counts.decision}};
  const expected=require('../pipeline-observability/waiting-queues').build(current,{ledger,summary:upstream},index.at);
  if(stable(expected.index.intake.pages)!==stable(index.intake.pages))throw Error('DISPLAYED_CARDS_DO_NOT_MATCH_LEDGER');
- return {ledger,index,flow,upstream,items};
+ return {ledger,ledgerShardPaths:shards.map(shard=>shard.file),index,flow,upstream,items};
 }
 function validateRequest(input){if(!/^[a-f0-9]{40}$/.test(input.revision||'')||!/^[a-f0-9-]{36}$/i.test(input.requestId||''))throw Error('INVALID_REQUEST');}
 function mutate(source,input,kind,original=null,now=new Date().toISOString()){
@@ -46,7 +47,9 @@ function mutate(source,input,kind,original=null,now=new Date().toISOString()){
  const current={states:Object.fromEntries([...s.index.ids.enrichment.map(id=>[id,{enrichment:false}]),...s.index.ids.decision.map(id=>[id,{enrichment:true}])]),queues:{enrichment:s.index.counts.enrichment,readyForReview:s.index.counts.decision}};
  const built=require('../pipeline-observability/waiting-queues').build(current,{ledger:s.ledger,summary},s.index.at);
  built.index.worksheetUpdatedAt=now;
- const files=new Map([['state/UPSTREAM_LEDGER.json',json(s.ledger)],['state/UPSTREAM_FLOW.json',json(summary)],['state/ENRICHMENT_FLOW.json',json(s.flow)],['state/PIPELINE_WAITING_QUEUES.json',json(built.index)]]);
+ const files=Store.splitLedger(s.ledger,{activePrimaryIds:Store.activeIds(s.index)});
+ for(const file of [...(s.ledgerShardPaths||[]),Store.LEDGER_ARCHIVE+'/manifest.json'])if(!files.has(file)&&s.ledgerShardPaths?.length)files.set(file,null);
+ files.set('state/UPSTREAM_FLOW.json',json(summary));files.set('state/ENRICHMENT_FLOW.json',json(s.flow));files.set('state/PIPELINE_WAITING_QUEUES.json',json(built.index));
  for(const p of s.index.intake.pages)files.set(p.path,null);for(const p of built.pages)files.set(p.path,p.body);
  if(kind==='restore')receipt.restored=Math.max(0,closing-opening);
  receipt.activeBefore=opening;receipt.activeAfter=closing;receipt.status='COMMITTED';files.set(receiptPath(id),json(receipt));

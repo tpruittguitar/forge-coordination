@@ -4,7 +4,10 @@ const DEFAULT_MESSAGE='ACTIVITY-BOT: publish compact verified receipt activity';
 function run(root,args,env){return execFileSync('git',args,{cwd:root,encoding:'utf8',stdio:['ignore','pipe','pipe'],env:env?{...process.env,...env}:undefined});}
 // These four presentation/usage records are not read by final flow or intake calculation.
 const FLOW_STATUS_ONLY=new Set(['attention/BOT_INCIDENTS.json','control/AUTOMATIONS_STATUS.json','control/OFFICE_STATUS.json','usage/AI_USAGE_READINGS.jsonl']);
-const COMPLETE_FLOW=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/INTAKE_DRAIN.json','state/UPSTREAM_COLLECT_CURSOR.json'];
+const Store=require('../upstream-ledger/store.cjs');
+const {LEDGER_PATH,LEDGER_ARCHIVE,DRAIN_PATH,DRAIN_ARCHIVE}=Store;
+const INVENTORIES=[[LEDGER_PATH,LEDGER_ARCHIVE],[DRAIN_PATH,DRAIN_ARCHIVE]];
+const COMPLETE_FLOW=[LEDGER_PATH,LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues',DRAIN_PATH,DRAIN_ARCHIVE,'state/UPSTREAM_COLLECT_CURSOR.json'];
 const FLOW_PROTECTED=['state','receipts','verify','reference','tools','policy/current','.github/workflows/pipeline-observability.yml','control/AI_AUTOMATION_TASKS.json','control/RELEVANCE_SCREEN.json','control/ENRICHMENT_HELPER_WORK.json','control/SHARED_HELPER_WORK.json','control/shared-helper-pages'];
 function reparentFinishedFlow(root,{base,finished,paths,message}){
  run(root,['fetch','--no-tags','origin','refs/heads/main']);
@@ -49,18 +52,22 @@ function restore(root,paths,src){
 function commitListed(root,paths,message){
  const files=present(root,paths),missing=paths.filter(p=>!files.includes(p));
  if(files.length)run(root,['add','--',...files]);
- if(missing.length)try{run(root,['add','-A','--',...missing]);}catch{}
+ for(const pathspec of missing)if(run(root,['ls-files','--',pathspec]))run(root,['add','-A','--',pathspec]);
  let changed=false;try{run(root,['diff','--cached','--quiet']);}catch{run(root,['commit','-m',message]);changed=true;}
  return changed;
 }
 function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,ref='HEAD:main',allowFlowStatusReparent=false}={}){
  // Queue outputs (and their in-run cursor) belong to the exact input ledger revision.
  // Never rebase/replay these files: a fresh worksheet tombstone could be overwritten.
- const relativePaths=paths.map(p=>path.relative(root,path.resolve(root,p)).split(path.sep).join('/'));
+ let relativePaths=paths.map(p=>path.relative(root,path.resolve(root,p)).split(path.sep).join('/'));
  if(relativePaths.some(p=>p==='..'||p.startsWith('../')||path.isAbsolute(p)))throw Error('Publish paths must stay inside the repository');
- const sourceBound=relativePaths.some(p=>p==='state/UPSTREAM_LEDGER.json'||p==='state/UPSTREAM_FLOW.json'||p==='state/UPSTREAM_COLLECT_CURSOR.json'||p==='state/PIPELINE_WAITING_QUEUES.json'||p==='state/waiting-queues'||p.startsWith('state/waiting-queues/'));
+ const inventoryPaths=([file,dir])=>relativePaths.some(p=>p===file||p===dir||p.startsWith(dir+'/'));
+ const inventories=INVENTORIES.filter(inventoryPaths);
+ const sourceBound=inventories.length>0||relativePaths.some(p=>p==='state/UPSTREAM_FLOW.json'||p==='state/UPSTREAM_COLLECT_CURSOR.json'||p==='state/PIPELINE_WAITING_QUEUES.json'||p==='state/waiting-queues'||p.startsWith('state/waiting-queues/'));
  if(allowFlowStatusReparent&&(!sourceBound||ref!=='HEAD:main'||!COMPLETE_FLOW.every(p=>relativePaths.includes(p))))throw Error('Status-only reparent requires the complete flow and canonical main');
  if(sourceBound){
+  for(const [file] of inventories)(file===LEDGER_PATH?Store.readLedger:Store.readDrain)(root,null);
+  relativePaths=[...new Set([...relativePaths,...inventories.flat()])];
   const base=allowFlowStatusReparent?run(root,['rev-parse','HEAD']).trim():null;
   const changed=commitListed(root,relativePaths,message);
   if(!push)return {changed,pushed:false};
