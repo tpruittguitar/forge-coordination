@@ -27,7 +27,7 @@ function fresh(at, now, age=900000) {
 // The host must supply all active per-ID owners (including Hermes and helpers).
 function allocation(view, now) {
   if (!fresh(view?.readAt,now) || !/^[a-f0-9]{40}$/.test(view.instructionCommit||'')) fail('FRESH_AUTHORITY_REQUIRED');
-  if (view.registryOwner!=='ChatGPT' || view.owner?.provider!=='ChatGPT' ||
+  if (view.owner?.provider!=='ChatGPT' ||
       view.owner.taskKey!==TASK || view.owner.assignmentId!==view.work?.assignmentId) fail('OWNER_CONFLICT');
   const work=Enrichment.validateWork(view.work);
   if (!work.enabled || Enrichment.owner(work).provider!=='ChatGPT') fail('ASSIGNMENT_DISABLED');

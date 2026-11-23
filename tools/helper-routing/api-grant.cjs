@@ -20,12 +20,12 @@ function proof(root,file,sha){
 }
 function assertBound(root,work){
  const b=binding(work),H=require('./shared.cjs'),r=S.read(root,'control/AI_AUTOMATION_TASKS.json'),t=r.tasks?.[TASK],partner=r.tasks?.[b.hermes.taskKey];
- if(r.schema!=='forge.ai-automation-tasks.v1'||t?.owner!=='ChatGPT'||t.enabled!==true||t.executionIdentity!==b.worker||t.route!=='utility'||
+ if(r.schema!=='forge.ai-automation-tasks.v1'||!t||t.enabled!==true||t.executionIdentity!==b.worker||t.route!=='utility'||
     t.procedure!==PROCEDURE||t.workAssignments!==WORK||t.executionMode!=='WRITE_THROUGH_SUPPORTED_WRITER')fail('API_TASK_NOT_BOUND');
  // Hermes is an acknowledged execution identity of a supported shared slot.
  // Do not invent a Hermes provider alias or accept a free-form registry entry.
- if(!H.TASKS[b.hermes.taskKey]||H.TASKS[b.hermes.taskKey]!==b.hermes.provider||partner?.owner!==b.hermes.provider||
-    partner.enabled!==true||partner.executionIdentity!=='Hermes'||partner.workAssignments!==WORK||
+ if(!H.TASKS[b.hermes.taskKey]||H.TASKS[b.hermes.taskKey]!==b.hermes.provider||
+    partner?.enabled!==true||partner.executionIdentity!=='Hermes'||partner.workAssignments!==WORK||
     work.providers[b.hermes.taskKey]?.available!==true||work.providers[b.hermes.taskKey]?.provider!==b.hermes.provider||
     S.read(root,'control/CHATGPT_OWNER_CUTOVER.json',{retired:[]}).retired.some(x=>x.taskKey===b.hermes.taskKey))fail('HERMES_IDENTITY_UNSUPPORTED');
  const auth=proof(root,b.authorizationRef,b.authorizationSha256),ack=proof(root,b.hermes.acknowledgmentRef,b.hermes.acknowledgmentSha256);

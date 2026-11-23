@@ -5,8 +5,8 @@
 # `claude -p` with a lean prompt (shared header + lane brief + only this task's
 # registry entry, built by build-prompt.js from control/CLAUDE_BOX_LANES.json at
 # that same SHA), bounded by a timeout, logged (incl. PROMPT_BYTES), cleaned up. The procedure itself
-# publishes the lane receipt (or a BLOCKED/PARTIAL receipt). This script never
-# pushes, never touches Writer and never prints secrets.
+# publishes the lane receipt (or a BLOCKED/PARTIAL receipt). This script pushes
+# only the run-locks branch, never touches Writer and never prints secrets.
 set -uo pipefail
 TASK_KEY=${1:-}
 [[ $TASK_KEY =~ ^[A-Z][A-Z0-9_]{2,80}$ ]] || { echo "usage: run-lane.sh TASK_KEY" >&2; exit 2; }
@@ -32,6 +32,9 @@ log "START $TASK_KEY run=$RUN_ID ref=$REF"
 
 cleanup() {
   local keep=0
+  if [ "${LANE_LOCKED:-0}" = 1 ]; then
+    node "$WORK/repo/tools/lane-run-lock.cjs" release "$TASK_KEY" "$RUN_ID" Claude --root "$WORK/repo" >> "$LOG" 2>&1 || log "LANE_RUN_LOCK_RELEASE_FAILED (stale timeout frees it)"
+  fi
   if [ -d "$WORK/repo/.git" ]; then
     git -C "$WORK/repo" fetch -q origin "$REF" 2>/dev/null
     if [ -n "$(git -C "$WORK/repo" status --porcelain 2>/dev/null)" ] || \
@@ -53,6 +56,14 @@ git config --add credential.helper '!gh auth git-credential'
 git config user.name tpruittguitar
 git config user.email tpruittguitar@users.noreply.github.com
 SHA=$(git rev-parse HEAD)
+
+# Shared cross-provider lane lock (any AI may run any lane; docs/LANE_RUN_LOCK.md).
+LOCK_OUT=$(node tools/lane-run-lock.cjs acquire "$TASK_KEY" "$RUN_ID" Claude 2>>"$LOG"); lrc=$?
+case $lrc in
+  0) LANE_LOCKED=1; log "LANE_RUN_LOCK $LOCK_OUT";;
+  2) log "SKIPPED_LANE_LOCK_HELD $LOCK_OUT"; exit 0;;
+  *) log "BLOCKED LANE_RUN_LOCK $LOCK_OUT"; exit 1;;
+esac
 
 # Prompt = run variables + shared header + lane brief + only this task's entry (build-prompt.js at the same SHA).
 BUILD=tools/claude-box-runner/build-prompt.js

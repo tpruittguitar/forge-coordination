@@ -114,11 +114,11 @@ function automationSignals(autoStatus, evidence, tasks) {
   for (const a of (autoStatus && autoStatus.automations) || []) {
     const bot = AI_BOT[a.ai], at = time(a.last_run_at); if (bot && at != null) out.push({ bot, at, source: 'automation ' + a.name + ' (control/AUTOMATIONS_STATUS.json)' });
   }
-  const owner = {};
-  for (const [k, t] of Object.entries((tasks && tasks.tasks) || {})) owner[t.nativeId || k.toLowerCase().replace(/_/g, '-')] = t.owner;
-  const ev = [].concat(((evidence && evidence.executions) || []).map(e => [e.id, e.at]), ((evidence && evidence.schedules && evidence.schedules.active) || []).map(e => [e.id, e.lastRunAt]));
-  for (const [id, when] of ev) {
-    const bot = AI_BOT[owner[id]], at = time(when); if (bot && at != null) out.push({ bot, at, source: 'automation ' + id + ' (state/AUTOMATION_EXECUTION_EVIDENCE.json)' });
+  // Lanes have no owner (Tim 2026-11-22): credit the AI named in the run's receipt.
+  const ranBy = e => { const m = ((e && e.evidenceFiles) || []).join(' ').match(/-(CHATGPT|CLAUDE)-/); return m ? (m[1] === 'CHATGPT' ? 'ChatGPT' : 'Claude') : null; };
+  const ev = [].concat(((evidence && evidence.executions) || []).map(e => [e.id, e.at, ranBy(e)]), ((evidence && evidence.schedules && evidence.schedules.active) || []).map(e => [e.id, e.lastRunAt, ranBy(e)]));
+  for (const [id, when, who] of ev) {
+    const bot = AI_BOT[who], at = time(when); if (bot && at != null) out.push({ bot, at, source: 'automation ' + id + ' (state/AUTOMATION_EXECUTION_EVIDENCE.json)' });
   }
   return out;
 }

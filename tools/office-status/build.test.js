@@ -97,7 +97,7 @@ test('signal extractors: receipts, change records, git log, automations', () => 
   const log = 'aaa\x1f2026-11-16T09:57:33-05:00\x1fPresident (Grok Bot)\x1foffice: refresh\n\x1e\nbbb\x1f2026-11-16T14:00:00Z\x1ftpruittguitar\x1fMerge thing\n\n* record (PROVIDER=claude)\n\x1e\nccc\x1f2026-11-16T14:01:00Z\x1fforge-needs-tim-bot\x1fNEEDS-TIM-BOT: x\x1e';
   assert.deepEqual(B.gitSignals(log).map(s => [s.bot, new Date(s.at).toISOString()]), [['President', '2026-11-16T14:57:33.000Z'], ['Claude', '2026-11-16T14:00:00.000Z']]);
   const a = B.automationSignals({ automations: [{ ai: 'ChatGPT', name: 'EX_A', last_run_at: '2026-11-16T14:29:04.839Z' }, { ai: 'Grok', name: 'EX_G', last_run_at: '2026-11-16T14:00:00Z' }, { ai: 'Claude', name: 'EX_C', last_run_at: null }] },
-    { executions: [{ id: 'ex-c', at: '2026-11-16T13:00:00Z' }] }, { tasks: { EX_C: { owner: 'Claude' } } });
+    { executions: [{ id: 'ex-c', at: '2026-11-16T13:00:00Z', evidenceFiles: ['receipts/FORGE-X-CLAUDE-20261116T130000Z.json'] }, { id: 'ex-n', at: '2026-11-16T13:30:00Z' }] }, { tasks: {} });
   assert.deepEqual(a.map(s => s.bot), ['ChatGPT', 'Claude']);
 });
 

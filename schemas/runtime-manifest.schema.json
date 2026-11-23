@@ -14,9 +14,9 @@
     "lanes": {
       "type": "object", "minProperties": 6, "maxProperties": 6,
       "additionalProperties": {
-        "type": "object", "required": ["owner", "file", "sha256", "blob_sha", "estimated_tokens"],
+        "type": "object", "required": ["adapter", "file", "sha256", "blob_sha", "estimated_tokens"],
         "properties": {
-          "owner": {"enum": ["ChatGPT", "Claude", "Grok"]},
+          "adapter": {"enum": ["ChatGPT", "Claude", "Grok"]},
           "file": {"type": "string", "pattern": "^FORGE_[A-Z_]+\\.txt$"},
           "sha256": {"type": "string", "pattern": "^[0-9a-f]{64}$"},
           "blob_sha": {"type": "string", "pattern": "^[0-9a-f]{40}$"},

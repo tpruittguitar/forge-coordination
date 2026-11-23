@@ -10,17 +10,17 @@ function inspect({registry,owner,work,shared,claude,partition,sha}) {
   if(!partition||task.workerPartition!==P.FILE||owner?.workerPartition!==P.FILE)blockers.push('AUTHORITATIVE_WORKER_PARTITION_UNAVAILABLE');
   else try{verified=P.validate(partition);}catch{blockers.push('AUTHORITATIVE_WORKER_PARTITION_INVALID');}
   if(task.route!=='utility'||task.procedure!=='lanes/CHATGPT_ENRICHMENT_RESEARCH.txt'||task.workAssignments!=='control/ENRICHMENT_HELPER_WORK.json')blockers.push('UNSUPPORTED_CURRENT_ROUTE');
-  if(task.owner!==owner?.provider||owner?.taskKey!==TASK||owner?.assignmentId!==work?.assignmentId)blockers.push('OWNER_CONFLICT');
+  if(owner?.taskKey!==TASK||owner?.assignmentId!==work?.assignmentId)blockers.push('OWNER_CONFLICT');
   E.validateWork(work);H.validateWork(shared);C.validate(claude);
   const mine=E.assignedIds(work),sharedIds=H.reservedKeys(shared),claudeIds=C.enrichmentIds(claude);
   const overlaps=[...mine].filter(id=>sharedIds.has(id)||claudeIds.has(id));
   const independent=new Set([...sharedIds,...claudeIds,...E.researchIds(work)]);
   const partitionOverlaps=verified?[...verified.hermes,...verified.api].filter(id=>independent.has(id)):[];
   if(overlaps.length||partitionOverlaps.length)blockers.push('EXISTING_RESERVATION_OVERLAP');
-  const hermesTasks=Object.entries(registry.tasks).filter(([k,v])=>/hermes/i.test(k+' '+v.owner)).map(([k])=>k);
+  const hermesTasks=Object.entries(registry.tasks).filter(([k,v])=>/hermes/i.test(k+' '+(v.executionIdentity||''))).map(([k])=>k);
   return {schema:'forge.grant-allocation-preflight.v1',snapshotSha:sha,
     freshness:'PINNED_GIT_SNAPSHOT_NOT_LIVE_WRITER_STATE',worker:NAME,taskKey:TASK,
-    registryOwner:task.owner,enrichmentOwner:owner.provider,assignmentId:work.assignmentId,
+    enrichmentAssignmentLabel:owner.provider,assignmentId:work.assignmentId,
     requiredMechanism:{entry:'control/FORGE_SHARED_AUTOMATION_ENTRY.txt',registry:'control/AI_AUTOMATION_TASKS.json',
       ownership:'control/ENRICHMENT_RESEARCH_OWNER.json',membership:task.workAssignments,workerPartition:P.FILE,
       validator:'tools/helper-routing/enrichment.cjs validate <batch>',
