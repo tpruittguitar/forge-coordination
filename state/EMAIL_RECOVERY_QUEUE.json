@@ -1,6 +1,6 @@
 {
   "schema": "forge.email-recovery.v1",
-  "at": "2026-11-23T19:05:54.845Z",
+  "at": "2026-11-23T21:09:55.882Z",
   "sources": {
     "1a18ecd5d9385086": {
       "gmailId": "1a18ecd5d9385086",
@@ -69420,6 +69420,36 @@
             "sourceCardSha256": "a820cfe3a37f29e7e64f6d297c34a094474b2b176da7b2e9bb86a17fa23568c3"
           }
         ],
+        "unseenHistoricalCoverage": "UNPROVEN"
+      }
+    },
+    "1a209f808cfa8d5f": {
+      "gmailId": "1a209f808cfa8d5f",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010333378805",
+      "status": "CAPTURED_ALERT_PENDING",
+      "access": "OK",
+      "pages": [],
+      "jobKeys": [
+        "url:2fddc6bd62e4735894892f4c"
+      ],
+      "historicalCoverage": "UNPROVEN",
+      "nextPageRequired": false,
+      "exhausted": false,
+      "advertisedUnseen": 0,
+      "sourceKind": "FULL_ALERT_BODY",
+      "originalAlertRecovery": {
+        "sourceSha256": "be9290c4f03844e44cbaea6c807d98acee1b599696526229c6405917d38e84e5",
+        "at": "2026-11-23T20:37:06.571Z",
+        "originalDate": "2026-11-23T19:52:58.000Z",
+        "visibleKeys": [
+          "url:2fddc6bd62e4735894892f4c"
+        ],
+        "newKeys": [
+          "url:2fddc6bd62e4735894892f4c"
+        ],
+        "template": "GLASSDOOR_SAVED_ALERT_V1",
+        "unresolvedKeys": [],
+        "pendingCards": [],
         "unseenHistoricalCoverage": "UNPROVEN"
       }
     }
@@ -1058160,6 +1058190,111 @@
         "decision": "PROGRESS_TO_INTAKE",
         "finalFit": false,
         "canonicalWrites": 0
+      }
+    },
+    "url:2fddc6bd62e4735894892f4c": {
+      "key": "url:2fddc6bd62e4735894892f4c",
+      "jobId": "1010333378805",
+      "provider": "GLASSDOOR",
+      "title": "Director of SHEEP",
+      "company": "Sequoyah Early Enrichment Preschool",
+      "location": "Knoxville, TN",
+      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010333378805",
+      "observedAt": "2026-11-23T19:52:58.000Z",
+      "status": "POST_IN_FLIGHT_UNKNOWN",
+      "sourceEmails": [
+        "1a209f808cfa8d5f"
+      ],
+      "evidence": [
+        {
+          "gmailId": "1a209f808cfa8d5f",
+          "at": "2026-11-23T19:52:58.000Z",
+          "page": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010333378805",
+          "paragraphs": [
+            "Director of SHEEP",
+            "Sequoyah Early Enrichment Preschool",
+            "Knoxville, TN",
+            "$50K - $61K (Employer est.) Easy Apply Just posted"
+          ],
+          "source": "FULL_ORIGINAL_ALERT",
+          "sourceSha256": "be9290c4f03844e44cbaea6c807d98acee1b599696526229c6405917d38e84e5",
+          "template": "GLASSDOOR_SAVED_ALERT_V1",
+          "sourceCardSha256": "d9edbeb69551df7db333439ab8feaa4d3b7edaaf83a68c7cc1eb88f91621e084",
+          "cardHash": "ece4d81d594e50123890dfa0b1487550d40740cdd66666dc8cee1d9c16183e43"
+        }
+      ],
+      "description": "$50K - $61K (Employer est.) Easy Apply Just posted",
+      "selectionReason": "Exact saved GLASSDOOR alert card; state/EMAIL_RECOVERY_QUEUE.json#url:2fddc6bd62e4735894892f4c",
+      "discoveryReview": {
+        "sourceSha256": "be9290c4f03844e44cbaea6c807d98acee1b599696526229c6405917d38e84e5",
+        "sourceProof": "state/EMAIL_RECOVERY_QUEUE.json#url:2fddc6bd62e4735894892f4c",
+        "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+        "fullPosting": false,
+        "provider": "GLASSDOOR",
+        "pendingFacts": []
+      },
+      "preliminaryScreen": {
+        "schema": "forge.discovery-preliminary-screen.v1",
+        "checkedAt": "2026-11-23T20:35:59.964Z",
+        "ats": {
+          "schema": "forge.resume-overlap.v1",
+          "matcherVersion": "explicit-variants-v2",
+          "resumeFileId": "1xsJaRZu9DBzqIgvtA09YXXWsFvgpOep_",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "method": "OBSERVED_TERM_OVERLAP_WITH_RESUME_SUPPORTED_COMPETENCIES",
+          "contentBasis": "TITLE_AND_ROLE_CONTENT",
+          "matches": [],
+          "unresolved": [],
+          "finalFit": false,
+          "automaticRejection": false,
+          "status": "PRELIMINARY_OVERLAP",
+          "resumeAuthority": "User attachment in this chat; same dated private Drive resume retained for recurring access"
+        },
+        "atsGate": {
+          "schema": "forge.discovery-ats-gate.v1",
+          "status": "UNKNOWN",
+          "hits": null,
+          "reason": "LATEST_RESUME_INVENTORY_UNVERIFIED",
+          "contentBasis": "EXACT_ORIGINAL_ALERT_CARD",
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010333378805",
+          "sourceIdentity": {
+            "company": "Sequoyah Early Enrichment Preschool",
+            "title": "Director of SHEEP",
+            "location": "Knoxville, TN"
+          },
+          "sourceSha256": "405e840a163721cc92e721a78fafd88b74112149c8c59e5c821cc61fd6f34193",
+          "resumeTextSha256": "3a13fd015d0b6424ad5380457924368dc3bf770018211fd206f425b78a89a640",
+          "resumeVersion": "2026-10-13T22:42:09.660Z",
+          "canonicalWrites": 0
+        },
+        "neverConsider": {
+          "status": "NO_CONFIRMED_EXCLUSION",
+          "rulesSha256": "8ebdbafda8a7876f2b19577b123cd8287a238a6325588c9ff04776bf704fd341",
+          "ruleId": null,
+          "quote": null,
+          "sourceUrl": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010333378805",
+          "sourceSha256": "405e840a163721cc92e721a78fafd88b74112149c8c59e5c821cc61fd6f34193",
+          "canonicalEligibility": false
+        },
+        "unresolved": [
+          "EMPLOYER_BUSINESS_NOT_REVIEWED"
+        ],
+        "decision": "PROGRESS_TO_INTAKE",
+        "finalFit": false,
+        "canonicalWrites": 0
+      },
+      "submissions": [
+        {
+          "requestId": "FORGE-CODE-CHATGPT-20261123T203024929Z-B001",
+          "at": "2026-11-23T21:09:55.882Z",
+          "proof": "receipts/FORGE-CODE-CHATGPT-20261123T203024929Z-B001_CHECKPOINT.json"
+        }
+      ],
+      "submission": {
+        "requestId": "FORGE-CODE-CHATGPT-20261123T203024929Z-B001",
+        "at": "2026-11-23T21:09:55.882Z",
+        "proof": "receipts/FORGE-CODE-CHATGPT-20261123T203024929Z-B001_CHECKPOINT.json"
       }
     }
   },
