@@ -1,6 +1,6 @@
 'use strict';
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process');
-const S = require('./store.cjs');
+const S = require('./store.cjs'), Hermes=require('./hermes-returns.cjs');
 const relevance = require('../helper-routing/relevance.cjs');
 const validators = {
   'forge.shared-helper-batch.v1': require('../helper-routing/shared.cjs').validateBatch,
@@ -71,14 +71,14 @@ function routingProof(root, batch, current, historical = show) {
 }
 const empty = () => ({schema:'forge.programmed-coordinator.v1', batches:{}, items:{}, transactions:{}, exceptions:{}});
 function validateEnvelope(root,batch){const registry=S.read(root,'control/AI_AUTOMATION_TASKS.json'),task=registry.tasks[batch.taskKey],validate=validators[batch.schema];if(!envelopeProviderOk(root,task,batch)||!validate||!task.workAssignments)throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');const work=S.read(root,task.workAssignments);if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK)require('../helper-routing/api-grant.cjs').assertReturn(root,work,batch);return validate(batch,work);}
-function collect({root, state, commit, routing = routingProof}) {
+function collect({root, privateDir, state, commit, routing = routingProof}) {
   const registry = S.read(root, 'control/AI_AUTOMATION_TASKS.json');
   const legacy = new Set(S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}).items.map(i=>i.batch));
   const paths = ['receipts/CLAUDE_HELPERS', 'receipts/GROK_HELPERS', 'receipts/CHATGPT_HELPERS', 'receipts/SNIFFER_HELPERS', 'receipts/CLAUDE_RELEVANCE'];
   let newBatches = 0, newItems = 0, updatedItems = 0;
-  for (const dir of paths) for (const file of S.files(path.join(root, dir))) {
-    const rel = path.relative(root, file).replace(/\\/g, '/'), raw = fs.readFileSync(file, 'utf8'), normalized=raw.replace(/\r\n/g,'\n'),sha256 = S.hash(normalized);
-    if(dir !== 'receipts/CLAUDE_RELEVANCE' && rel.split('/').length < 4) continue; // ACKs/manifests are not returns.
+  for (const dir of privateDir?[...paths,Hermes.DIR]:paths) for (const file of S.files(path.join(dir===Hermes.DIR?privateDir:root, dir))) {
+    const rel = path.relative(dir===Hermes.DIR?privateDir:root, file).replace(/\\/g, '/'), raw = fs.readFileSync(file, 'utf8'), normalized=raw.replace(/\r\n/g,'\n'),sha256 = S.hash(normalized);
+    if(dir===Hermes.DIR?!Hermes.privatePath(rel):dir !== 'receipts/CLAUDE_RELEVANCE' && rel.split('/').length < 4) continue; // ACKs/manifests are not returns.
     const prior = state.batches[rel];
     // Git/Windows checkout line-ending conversion is not changed evidence.
     // All other byte differences, including JSON whitespace, remain immutable.
@@ -90,16 +90,21 @@ function collect({root, state, commit, routing = routingProof}) {
     try {
       batch = JSON.parse(raw);
       const validate = validators[batch.schema], task = registry.tasks[batch.taskKey];
-      if (!validate || !envelopeProviderOk(root, task, batch)) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
-      const work = S.read(root, task.workAssignments);
-      if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK)require('../helper-routing/api-grant.cjs').assertReturn(root,work,batch,rel);
-      const validation=validate(batch, work);
+      let validation={};
+      if(dir===Hermes.DIR){
+        Hermes.validate(batch,S.read(root,Hermes.PARTITION),path.basename(file));
+      }else{
+        if (!validate || !envelopeProviderOk(root, task, batch)) throw Error('UNKNOWN_ENVELOPE_OR_PROVIDER');
+        const work = S.read(root, task.workAssignments);
+        if(batch.taskKey===require('../helper-routing/api-grant.cjs').TASK)require('../helper-routing/api-grant.cjs').assertReturn(root,work,batch,rel);
+        validation=validate(batch, work);
+      }
       if(legacy.has(rel)) {
         state.batches[rel]={id:batch.taskKey+':'+batch.runId,sha256,checkedAgainst:commit,status:'LEGACY_TRACKED',items:batch.items.length,
           dispositionLedger:'state/CLAUDE_HELPER_CONSUMPTION.json',productionAuthorized:false};
         delete state.exceptions['batch:'+rel];continue;
       }
-      const proof = routing(root, batch, commit);
+      const proof = dir===Hermes.DIR?(Hermes.history(root,batch,show),{provider:'Hermes',instructionCommit:batch.instructionCommit,partitionSha256:batch.partitionSha256}):routing(root, batch, commit);
       const id = batch.taskKey + ':' + batch.runId;
       const collision = Object.values(state.batches).find(b => b.id === id && b.sha256 !== sha256);
       if (collision) throw Error('IMMUTABLE_RUN_ID_COLLISION');
@@ -133,6 +138,7 @@ function collect({root, state, commit, routing = routingProof}) {
   // A full explicitly linked correction replaces the transport obligation,
   // while the original bytes and downstream item/transaction fences remain.
   for(const [rel,meta] of Object.entries(state.batches).filter(([,b])=>b.status==='VALIDATED')){
+    if(Hermes.privatePath(rel))continue;
     let original;
     delete state.exceptions['correction:'+rel];
     try{
@@ -170,4 +176,4 @@ function collect({root, state, commit, routing = routingProof}) {
   return {newBatches, newItems, updatedItems, validated:Object.values(state.batches).filter(b => b.status === 'VALIDATED').length,
     quarantined:Object.values(state.batches).filter(b => b.status === 'QUARANTINED').length};
 }
-module.exports = {empty, collect, routingProof,validateEnvelope};
+module.exports = {empty, collect, routingProof,validateEnvelope,hermesRouting:(root,batch)=>Hermes.history(root,batch,show)};

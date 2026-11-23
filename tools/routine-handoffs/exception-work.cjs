@@ -83,6 +83,7 @@ function applySourceReviews({root,state,now=Date.now()}){
  for(const {record,proof,sha256} of reviews(root,work,now)){
   if(record.disposition!=='SOURCE_EVIDENCE')continue;const job=work.cases[record.exceptionId],item=state.items[job.binding.key];
   if(!item||item.version!==record.sourceVersion||item.transactionId||terminal(item.status)||state.batches[item.batch]?.status!=='VALIDATED'||item.sourceRecoveryReview===sha256)continue;
+  if(require('../programmed-coordinator/hermes-returns.cjs').privatePath(item.batch))continue;
   const original=S.read(root,item.batch).items.find(e=>(e.key||e.primaryId)===item.itemKey);
   if(!original||S.hash(original)!==item.version)continue;
   if(!original||!['INTAKE_READY','ENRICHMENT_EVIDENCE_READY','SOURCE_BLOCKED','NEEDS_SOURCE_EVIDENCE'].includes(original.recommendation))continue;
