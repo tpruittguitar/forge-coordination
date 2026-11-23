@@ -1,10 +1,10 @@
 {
- "at": "2026-11-23T09:05:06.091Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T090031878Z",
+ "at": "2026-11-23T09:18:28.841Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T091113190Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T09:00:40.523Z",
+  "readAt": "2026-11-23T09:11:21.620Z",
   "sha256": "7a5fc279010f63fde170923dcf670ca7b4e9d9e75048e68babe8b413acde3d8e",
   "rows": 9884
  },
@@ -47,32 +47,40 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 137,
- "skipped_recent": 100,
- "submitted": 0,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 169,
+ "skipped_recent": 68,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {
-  "linkedin": 1
+  "linkedin": 4
  },
  "agg_read": {
   "linkedin": 1
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -80,17 +88,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 0,
@@ -105,9 +113,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 1,
+  "saved_reused": 1,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -116,9 +124,9 @@
   "pay_unresolved": 0,
   "backoff": 0,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-23T09:00:47.544Z",
+  "profile_as_of": "2026-11-23T09:11:27.842Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12263,9 +12271,9 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 137,
- "nothing_found": 137,
- "attempt_only_skipped": 1,
+ "not_attempted": 166,
+ "nothing_found": 169,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12287,10 +12295,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 176,
- "network_requests": 7,
- "planned": 0,
+ "roles_researched": 208,
+ "network_requests": 10,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12299,9 +12308,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 282,
-  "SOURCE_RESEARCH_REQUIRED": 822,
+  "SOURCE_RESEARCH_REQUIRED": 821,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 31,
-  "EVIDENCE_FOUND": 31,
+  "EVIDENCE_FOUND": 32,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -17168,9 +17177,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:03:58.445Z",
-   "retryAt": "2026-11-23T09:03:58.445Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.137Z",
+   "retryAt": "2026-11-23T13:12:25.137Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -18883,6 +18892,24 @@
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CF0AC691F3C5",
+   "company": "Transcom",
+   "title": "Site Director",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-23T09:01:59.629Z",
+   "retryAt": "2026-11-23T10:01:59.629Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491311566",
      "status": "FULL_POSTING_READ"
     }
    ],
@@ -31027,9 +31054,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.877Z",
-   "retryAt": "2026-11-23T09:04:42.877Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.199Z",
+   "retryAt": "2026-11-23T13:12:25.199Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31045,9 +31072,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.882Z",
-   "retryAt": "2026-11-23T09:04:42.882Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.200Z",
+   "retryAt": "2026-11-23T13:12:25.200Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31063,9 +31090,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.890Z",
-   "retryAt": "2026-11-23T09:04:42.890Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.200Z",
+   "retryAt": "2026-11-23T13:12:25.200Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31081,9 +31108,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.890Z",
-   "retryAt": "2026-11-23T09:04:42.890Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.200Z",
+   "retryAt": "2026-11-23T13:12:25.200Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31099,9 +31126,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.890Z",
-   "retryAt": "2026-11-23T09:04:42.890Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.201Z",
+   "retryAt": "2026-11-23T13:12:25.201Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31117,9 +31144,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.891Z",
-   "retryAt": "2026-11-23T09:04:42.891Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.201Z",
+   "retryAt": "2026-11-23T13:12:25.201Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31135,9 +31162,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.891Z",
-   "retryAt": "2026-11-23T09:04:42.891Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.201Z",
+   "retryAt": "2026-11-23T13:12:25.201Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31153,9 +31180,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.892Z",
-   "retryAt": "2026-11-23T09:04:42.892Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.202Z",
+   "retryAt": "2026-11-23T13:12:25.202Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31171,31 +31198,12 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:42.892Z",
-   "retryAt": "2026-11-23T09:04:42.892Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:25.202Z",
+   "retryAt": "2026-11-23T13:12:25.202Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BD261F98E01B",
-   "company": "United Launch Alliance (ULA)",
-   "title": "Program Management Leader 6",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:04:45.983Z",
-   "retryAt": "2026-11-23T09:04:45.983Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492469421",
-     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -31208,9 +31216,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.868Z",
-   "retryAt": "2026-11-23T09:05:23.868Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.697Z",
+   "retryAt": "2026-11-23T13:12:54.697Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31226,9 +31234,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.868Z",
-   "retryAt": "2026-11-23T09:05:23.868Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.697Z",
+   "retryAt": "2026-11-23T13:12:54.697Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31244,9 +31252,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.869Z",
-   "retryAt": "2026-11-23T09:05:23.869Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.697Z",
+   "retryAt": "2026-11-23T13:12:54.697Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31262,9 +31270,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.869Z",
-   "retryAt": "2026-11-23T09:05:23.869Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.698Z",
+   "retryAt": "2026-11-23T13:12:54.698Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31280,9 +31288,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.870Z",
-   "retryAt": "2026-11-23T09:05:23.870Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.698Z",
+   "retryAt": "2026-11-23T13:12:54.698Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31298,9 +31306,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:23.870Z",
-   "retryAt": "2026-11-23T09:05:23.870Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:54.699Z",
+   "retryAt": "2026-11-23T13:12:54.699Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31316,9 +31324,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:05:26.961Z",
-   "retryAt": "2026-11-23T09:05:26.961Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-23T09:12:57.799Z",
+   "retryAt": "2026-11-23T13:12:57.799Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492768030",
@@ -31335,9 +31343,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:06:04.678Z",
-   "retryAt": "2026-11-23T09:06:04.678Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:57.800Z",
+   "retryAt": "2026-11-23T13:12:57.800Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31353,9 +31361,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:06:04.678Z",
-   "retryAt": "2026-11-23T09:06:04.678Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:12:57.800Z",
+   "retryAt": "2026-11-23T13:12:57.800Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31371,9 +31379,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:06:10.983Z",
-   "retryAt": "2026-11-23T09:06:10.983Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-23T09:13:00.869Z",
+   "retryAt": "2026-11-23T13:13:00.869Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491668368",
@@ -31390,9 +31398,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:06:26.896Z",
-   "retryAt": "2026-11-23T09:06:26.896Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-23T09:13:03.925Z",
+   "retryAt": "2026-11-23T13:13:03.925Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492246029",
@@ -31409,7 +31417,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-23T07:06:29.986Z",
    "retryAt": "2026-11-23T09:06:29.986Z",
    "attempts": [
@@ -31428,7 +31436,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-23T07:08:04.931Z",
    "retryAt": "2026-11-23T09:08:04.931Z",
    "attempts": [
@@ -31447,7 +31455,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-23T07:08:07.968Z",
    "retryAt": "2026-11-23T09:08:07.968Z",
    "attempts": [
@@ -31466,9 +31474,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:08:48.544Z",
-   "retryAt": "2026-11-23T09:08:48.544Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.927Z",
+   "retryAt": "2026-11-23T13:13:03.927Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31484,7 +31492,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-23T07:09:04.992Z",
    "retryAt": "2026-11-23T09:09:04.992Z",
    "attempts": [
@@ -31503,7 +31511,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-23T07:09:21.018Z",
    "retryAt": "2026-11-23T09:09:21.018Z",
    "attempts": [
@@ -31522,9 +31530,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:09:44.199Z",
-   "retryAt": "2026-11-23T09:09:44.199Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.928Z",
+   "retryAt": "2026-11-23T13:13:03.928Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31540,9 +31548,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:09:44.200Z",
-   "retryAt": "2026-11-23T09:09:44.200Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.928Z",
+   "retryAt": "2026-11-23T13:13:03.928Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31558,9 +31566,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:09:44.200Z",
-   "retryAt": "2026-11-23T09:09:44.200Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.929Z",
+   "retryAt": "2026-11-23T13:13:03.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31576,9 +31584,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:09:47.397Z",
-   "retryAt": "2026-11-23T09:09:47.397Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.929Z",
+   "retryAt": "2026-11-23T13:13:03.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -31594,9 +31602,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-23T07:09:47.397Z",
-   "retryAt": "2026-11-23T09:09:47.397Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-23T09:13:03.929Z",
+   "retryAt": "2026-11-23T13:13:03.929Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -32547,7 +32555,50 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-BD261F98E01B",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4492469421",
+    "DEGREE_ASOF": "2026-11-23",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 104000,
+    "SALARY_BASE_HIGH": 218000,
+    "SALARY_MIDPOINT": 161000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-23",
+    "SALARY_SOURCE": "comparables: https://caci-stg.phenompro.com/global/en/job/CACIGLOBAL310287EXTERNALENGLOBAL/Naval-Architecture-Program-Lead (as of 2026-11-22); https://www.linkedin.com/jobs/view/4460360839 (as of 2026-11-01)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 2 employer-posted comparable(s) [V2I-01E3FB6BB9B9, V2I-3335776DF5AF]; 2 employer-posted comparable(s), level 0 PROGRAM any region; context model pay-sample-match-v6a; 2 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 9 eligible roles from the same comparables, so LOW; BLS AL 111021 P25-P90 $77K-$244K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
+    "SALARY_SCORE_POINT": 189500
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-BD261F98E01B",
+   "company": "United Launch Alliance (ULA)",
+   "title": "Program Management Leader 6",
+   "location": "Decatur, AL",
+   "posting": "https://www.linkedin.com/jobs/view/4492469421/",
+   "est": [
+    104000,
+    218000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "2 employer-posted comparable(s), level 0 PROGRAM any region; context model pay-sample-match-v6a; 2 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 9 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-01E3FB6BB9B9",
+    "V2I-3335776DF5AF"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
