@@ -61,6 +61,8 @@ function validateImmutableFile(root,file){
  return page;
 }
 function validateStored(root,{now=Date.now(),required=false,allowExpired=false}={}){
+ // Publication must reject private pilot fields even before page indexes exist.
+ if(fs.existsSync(path.join(root,H.FILE)))require('../programmed-coordinator/pilot-public.cjs').validate(S.read(root,H.FILE));
  const present=tasks.filter(t=>fs.existsSync(path.join(root,indexPath(t))));
  if(!required&&!present.length)return{present:false};
  if(present.length!==tasks.length)throw Error('MISSING_SHARED_PROJECTION_INDEX');
