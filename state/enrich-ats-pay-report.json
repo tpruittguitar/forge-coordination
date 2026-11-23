@@ -1,10 +1,10 @@
 {
- "at": "2026-11-23T00:11:49.209Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T000821694Z",
+ "at": "2026-11-23T00:15:11.328Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T001223438Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T00:08:30.014Z",
+  "readAt": "2026-11-23T00:12:34.090Z",
   "sha256": "1e883ed2b8691f8b51957ee089f896dfba6fbada07238e061a7a539655a95c27",
   "rows": 9545
  },
@@ -89,7 +89,7 @@
  "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
-  "hits": 0,
+  "hits": 2,
   "no_pay_hits": 0
  },
  "employer_benchmarks": {
@@ -114,7 +114,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-23T00:08:35.585Z",
+  "profile_as_of": "2026-11-23T00:12:39.366Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -157,10 +157,10 @@
  "products_planned": 0,
  "upgraded": 0,
  "grant_public_source": {
-  "attempts": 16,
-  "requests": 16,
+  "attempts": 4,
+  "requests": 4,
   "found": 0,
-  "blockedIdentity": 3
+  "blockedIdentity": 0
  },
  "grant_backlog": {
   "waiting": 1573,
@@ -169,34 +169,82 @@
   "skippedEarlierFirstPass": 0,
   "protectedOrReserved": 5,
   "identityNeedsGovernedRepair": 0,
-  "noExactPosting": 38,
+  "noExactPosting": 43,
   "noMatchingProductReference": 49,
   "sourceSupported": 0,
   "remainingByFieldAfterPlan": {
-   "work arrangement (remote/hybrid/on-site)": 39,
+   "work arrangement (remote/hybrid/on-site)": 50,
    "products (what they make)": 49,
-   "degree evidence": 19,
-   "degree FLEX class": 14,
-   "pay range": 14,
-   "pay basis and source": 14,
-   "location / geography": 3
+   "degree FLEX class": 43,
+   "degree evidence": 45,
+   "pay range": 44,
+   "pay basis and source": 44
   },
   "noAcceptedGrantResearch": 50,
   "firstPass": {
    "frozen": 1582,
-   "previouslyReached": 248,
+   "previouslyReached": 298,
    "legacySeeded": 0,
-   "reached": 298,
-   "notReached": 1284,
+   "reached": 348,
+   "notReached": 1234,
    "reopened": 0,
    "awaitingProductEvidence": 44,
    "priorInterrupted": 0,
-   "eligibleWaiting": 1268,
+   "eligibleWaiting": 1218,
    "productWaiting": 44,
    "restorableWriterPlans": 0,
    "heldOrIdentityRepair": 7,
    "remainingReason": "MORE_FIRST_PASS_WORK"
   }
+ },
+ "grant_product_registry_batch": {
+  "schema": "forge.company-site-products.v1",
+  "entries": [
+   {
+    "id": "ats-grant-v2i-daa906d63719",
+    "primaryId": "V2I-DAA906D63719",
+    "company": "Fresh And Ready Foods",
+    "location": "Lenexa, KS, USA",
+    "products": [
+     "Fresh & Ready Foods"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://apply-v3.jobsync.io/indeed/r-app/eb1c428814f79c08de25a4aed61c524fce784cceb6e0058ffe09efe1/"
+    ],
+    "verifiedAt": "2026-11-19T23:08:50.605Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "670e88cbf305795f9446ba08280ab2c26094cf3bd483acf38e9b78aac1f3181e",
+     "grantAttemptAt": "2026-11-23T00:13:39.641Z",
+     "costMicrousd": 108,
+     "quote": "Fresh & Ready Foods",
+     "fullPostingTextSha256": "c2f7dc9614696ce244510ea60287f2b3d40fd1cfb5b281ddb8c4415f9d078dfd"
+    }
+   },
+   {
+    "id": "ats-grant-v2i-bed1534d954d",
+    "primaryId": "V2I-BED1534D954D",
+    "company": "Blue Origin",
+    "location": "FL, USA",
+    "products": [
+     "rocket production program"
+    ],
+    "status": "CONFIRMED",
+    "sources": [
+     "https://blueorigin.wd5.myworkdayjobs.com/en-US/BlueOrigin/job/Space-Coast-FL/Sr-Director--Manufacturing--Operations----Production_R75651"
+    ],
+    "verifiedAt": "2026-11-17T18:47:46.114Z",
+    "provenance": {
+     "scope": "JOB_POSTING",
+     "grantAttemptKey": "c3e53d409c3dc4ff22981b4693d85e68d98796e512b3b0552c9607e561ff7dca",
+     "grantAttemptAt": "2026-11-23T00:13:45.714Z",
+     "costMicrousd": 104,
+     "quote": "lead high-performing teams in support of our rocket production program",
+     "fullPostingTextSha256": "888e7d0d96c8c3fb32109b63811b102ce96947c5b93aa51cad9796a588858421"
+    }
+   }
+  ]
  },
  "preparation_only": false,
  "prepared_reused": 0,
@@ -205,16 +253,16 @@
  "network_requests": 6,
  "planned": 0,
  "research_budget_exhausted": false,
- "grant_extraction_attempts": 5,
+ "grant_extraction_attempts": 4,
  "grant_extraction_fact_rows": 0,
  "grant_extraction_accounting": {
-  "reportedCostMicrousd": 442,
+  "reportedCostMicrousd": 414,
   "unknownAttempts": 0,
   "unknownReservedMicrousd": 0,
   "cumulativeCapMicrousd": 37470000
  },
  "grant_extraction_diagnostic": {
-  "category": "NO_SUPPORTED_FACTS"
+  "category": "PRODUCT_PROPOSED"
  },
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
