@@ -23,6 +23,9 @@ function createServer(store){const session=crypto.randomBytes(32).toString('hex'
  });return server;
 }
 if(require.main===module){const root=path.resolve(__dirname,'../..');let store;try{store=new GitStore({root});}catch(e){console.error('Run inside the Forge repository with existing git access. '+e.message);process.exit(1);}
- const server=createServer(store);server.listen(0,'127.0.0.1',()=>console.log('Live backlog worksheet: http://127.0.0.1:'+server.address().port+'\nReads main on every refresh. Deletes commit directly to main only when you select and confirm rows. No Writer calls. Ctrl+C stops.'));
+ const port=Number(process.env.LIVE_BACKLOG_PORT||51415);
+ const server=createServer(store);
+ server.on('error',e=>{console.error(e.code==='EADDRINUSE'?'Port '+port+' is already in use. The worksheet is probably already running at http://127.0.0.1:'+port+'/':String(e.message||e));process.exit(1);});
+ server.listen(port,'127.0.0.1',()=>console.log('Live backlog worksheet: http://127.0.0.1:'+server.address().port+'\nReads main on every refresh. Deletes commit directly to main only when you select and confirm rows. No Writer calls. Ctrl+C stops.'));
 }
 module.exports={createServer};

@@ -16,7 +16,7 @@ After updating the checkout to include this change, run:
 node tools/live-backlog/server.cjs
 ```
 
-Open the loopback URL printed in the terminal on that same computer. It binds only to `127.0.0.1` on a random available port. Stop with Ctrl+C. The random session value is local, ephemeral CSRF protection, not a persistent service credential.
+Open the loopback URL printed in the terminal on that same computer. It binds only to `127.0.0.1` on fixed port 51415, the address the Foreman Cockpit **Backlog worksheet** link opens (override with `LIVE_BACKLOG_PORT`). If the port is taken, it exits with a message saying the worksheet is probably already running. On TIMMAY, `tools/live-backlog/start-hidden.vbs` starts it at logon without a console window. Stop with Ctrl+C. The random session value is local, ephemeral CSRF protection, not a persistent service credential.
 
 ## Appearance
 
