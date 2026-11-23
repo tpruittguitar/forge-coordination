@@ -58,8 +58,9 @@ test('intake publication and its cursor cannot rebase across or overwrite a work
   write(dest,ledger,deleted);write(dest,queue,{items:[]});
   git(dest,'add','state');git(dest,'commit','-m','worksheet deletion');git(dest,'push','-q','origin','HEAD:main');
   const fresh=git(bare,'rev-parse','HEAD');
+  assert.throws(()=>publish(root,[path.join(base,cursor)],'outside checkout'),/inside the repository/);
   write(root,cursor,{offset:1});
-  assert.throws(()=>publish(root,[cursor],'stale cursor',{retries:4}),/rejected/);
+  assert.throws(()=>publish(root,[path.join(root,cursor)],'stale cursor',{retries:4}),/rejected/);
   assert.notEqual(git(root,'rev-parse','HEAD^'),fresh,'cursor must not advance HEAD over a stale calculation');
   write(root,ledger,{status:'WAITING',checked:true});write(root,queue,{items:['posting']});
   assert.throws(()=>publish(root,[ledger,'state/waiting-queues'],'stale intake',{retries:4}),/rejected/);

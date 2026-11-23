@@ -87,3 +87,14 @@ test('a flow section that stays STALE from a rejected push exits non-zero and do
   a.ok(fatalError(h,['flow','intake-queue']));a.equal(fatalError(h,['activity']),undefined);a.equal(process.exitCode,1);
  }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
 });
+test('cursor push contention makes retained-old flow a CLI failure and never publishes it',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-cursor-race-')),previous=process.exitCode,log=console.log;
+ const ledger='state/UPSTREAM_LEDGER.json',prior='{"status":"EXCLUDED","worksheetDeletion":{"receiptId":"verified"}}';
+ try{
+  fs.mkdirSync(p.join(root,'state'));fs.writeFileSync(p.join(root,ledger),prior);process.exitCode=0;console.log=()=>{};
+  const output=await runCli({root,only:['flow'],components:[{id:'flow',paths:[ledger]}],sleep:async()=>{},run:()=>{
+   fs.writeFileSync(p.join(root,ledger),'{"status":"WAITING"}');return{ok:false,error:'Updates were rejected (non-fast-forward)'};
+  }});
+  a.equal(output.components.flow.status,'STALE');a.equal(process.exitCode,1);a.equal(fs.readFileSync(p.join(root,ledger),'utf8'),prior);
+ }finally{console.log=log;process.exitCode=previous;fs.rmSync(root,{recursive:true,force:true});}
+});
