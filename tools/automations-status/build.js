@@ -5,12 +5,18 @@
      state/AUTOMATION_SCHEDULE_READBACK.json   native RRULEs (local Codex automations)
      state/AUTOMATION_EXECUTION_EVIDENCE.json  latest run per automation (lastRunAt, status) from the receipts
      state/WRITER_ACTIVITY.json                Writer write counts / problem receipts (receipt-derived)
-   Output: { generated_at, automations:[{ai,name,schedule,last_run_at,result,next_run_at,running,started_at,stale,writer}],
+   Output: { generated_at, automations:[{ai,name,schedule,last_run_at,result,next_run_at,running,started_at,stale,writer,
+             est_per_run,est_week,runs_per_week}],
              runs:[{ai,name,start,end,result,writer,expected}] (yesterday..tomorrow, ET), writer_health:{metric:{value,status,source}} }
+   est_per_run / est_week are display strings labeled "est." on the office wall (cs-0e5860cc).
+   Per-run comes from the latest evidence receipt (duration = runId timestamp to `at`;
+   AI calls = 0 when fundingMode says no model invocation, else aiInvestigations).
+   Weekly is that figure times runs_per_week from the active schedule (0 if the native task is paused).
+   No network; receipts not listed in evidence are not opened. Duration is not invented when missing.
    Writer ping: no unauthenticated read-only Writer endpoint exists, so last_ping has no source (null) by design. */
 'use strict';
 const fs = require('fs'), path = require('path');
-const MIN = 60000, HOUR = 60 * MIN, DAY = 24 * HOUR, TZ = 'America/New_York';
+const MIN = 60000, HOUR = 60 * MIN, DAY = 24 * HOUR, WEEK = 7 * DAY, TZ = 'America/New_York';
 const DEFAULT_RUN_MIN = 10;
 const THRESHOLDS = { last_write_age_min: [90, 240], writes_per_hour: [1, 0], error_rate: [0.05, 0.2], lock_waits: [1, 3] };
 
@@ -88,10 +94,60 @@ function writerHealth(wa, evidence, now) {
   return H;
 }
 
+
+/* Usage estimates for the office Automations wall (cs-0e5860cc). */
+function runIdMs(s) {
+  const m = String(s || '').match(/(20\d{6})T(\d{6})/);
+  if (!m) return null;
+  return Date.UTC(+m[1].slice(0, 4), +m[1].slice(4, 6) - 1, +m[1].slice(6, 8), +m[2].slice(0, 2), +m[2].slice(2, 4), +m[2].slice(4, 6));
+}
+function receiptUsage(rec) {
+  if (!rec || typeof rec !== 'object') return { minutes: null, calls: null };
+  let calls = null;
+  if (/NO_MODEL_INVOCATION/i.test(String(rec.fundingMode || ''))) calls = 0;
+  else if (typeof rec.aiInvestigations === 'number' && Number.isFinite(rec.aiInvestigations)) calls = rec.aiInvestigations;
+  const t0 = runIdMs(rec.runId), t1 = Date.parse(rec.at);
+  let minutes = null;
+  if (t0 && t1 && t1 >= t0 && t1 - t0 < 6 * HOUR) minutes = (t1 - t0) / MIN;
+  return { minutes, calls };
+}
+function fmtMin(min) {
+  if (min == null || !Number.isFinite(min)) return null;
+  const sec = min * 60;
+  if (sec < 90) return Math.round(sec) + ' s';
+  if (min < 90) return String(+(Math.round(min * 10) / 10)).replace(/\.0$/, '') + ' min';
+  return String(+(Math.round((min / 60) * 10) / 10)).replace(/\.0$/, '') + ' h';
+}
+function fmtCalls(n) {
+  if (n == null || !Number.isFinite(n)) return null;
+  const v = Math.abs(n - Math.round(n)) < 0.05 ? Math.round(n) : +n.toFixed(1);
+  return v + (v === 1 ? ' call' : ' calls');
+}
+function formatEst(calls, minutes) {
+  const parts = [fmtCalls(calls), fmtMin(minutes)].filter(Boolean);
+  return parts.length ? parts.join(', ') : null;
+}
+function runsPerWeek(sch, native) {
+  if (native && native.status && native.status !== 'ACTIVE') return 0;
+  const iv = intervalMs(sch);
+  if (!iv) return null;
+  return WEEK / iv;
+}
+function readListedReceipt(entry, readReceipt) {
+  if (!entry || !readReceipt) return null;
+  for (const p of entry.evidenceFiles || []) {
+    const rec = readReceipt(p);
+    if (rec && typeof rec === 'object') return rec;
+  }
+  return null;
+}
+
 function build(inputs, now) {
   const tasks = (inputs.tasks && inputs.tasks.tasks) || {};
   const rr = new Map(((inputs.readback && inputs.readback.local) || []).map(a => [a.taskKey, a]));
   const ev = new Map(((inputs.evidence && inputs.evidence.schedules && inputs.evidence.schedules.active) || []).map(a => [a.id, a]));
+  const exById = new Map(((inputs.evidence && inputs.evidence.executions) || []).map(a => [a.id, a]));
+  const readReceipt = inputs.readReceipt || (p => null);
   const day0 = etDayStart(now) - DAY, day3 = day0 + 3 * DAY;
   const automations = [], runs = [];
   for (const [key, t] of Object.entries(tasks)) {
@@ -100,8 +156,13 @@ function build(inputs, now) {
     const sch = parseSchedule((native && native.status === 'ACTIVE' && native.rrule) || t.nativeSchedule || t.scheduleIntent);
     const e = ev.get(id), last = e && Date.parse(e.lastRunAt) ? Date.parse(e.lastRunAt) : null;
     const writer = writerTouching(key, t), stale = isStale(last, sch, now), result = stale && sch ? 'STALE' : e ? mapResult(e.status) : 'EMPTY', nxt = nextRun(sch, now);
+    const rec = readListedReceipt(exById.get(id) || e, readReceipt), used = receiptUsage(rec);
+    const rp = runsPerWeek(sch, native);
+    const est_per_run = formatEst(used.calls, used.minutes);
+    const est_week = rp === 0 ? '0' : formatEst(rp != null && used.calls != null ? rp * used.calls : null, rp != null && used.minutes != null ? rp * used.minutes : null);
     automations.push({ ai: ranBy(e), name: key, schedule: (native && native.rrule) || (typeof t.scheduleIntent === 'string' ? t.scheduleIntent : t.nativeSchedule ? JSON.stringify(t.nativeSchedule) : t.scheduleIntent ? JSON.stringify(t.scheduleIntent) : ''),
-      last_run_at: last ? new Date(last).toISOString() : null, result, next_run_at: nxt ? new Date(nxt).toISOString() : null, running: false, started_at: null, stale, writer });
+      last_run_at: last ? new Date(last).toISOString() : null, result, next_run_at: nxt ? new Date(nxt).toISOString() : null, running: false, started_at: null, stale, writer,
+      est_per_run, est_week, runs_per_week: rp });
     const iv = intervalMs(sch), dur = Math.min(DEFAULT_RUN_MIN * MIN, iv || Infinity);
     for (const t0 of occurrences(sch, day0, day3)) {
       const actual = last != null && Math.abs(last - t0) < Math.min(iv || HOUR, HOUR) / 2 + 15 * MIN;
@@ -113,7 +174,8 @@ function build(inputs, now) {
 
 if (require.main === module) {
   const root = path.resolve(__dirname, '../..'), rd = p => { try { return JSON.parse(fs.readFileSync(path.join(root, p), 'utf8')); } catch (e) { return null; } };
-  const out = build({ tasks: rd('control/AI_AUTOMATION_TASKS.json'), readback: rd('state/AUTOMATION_SCHEDULE_READBACK.json'), evidence: rd('state/AUTOMATION_EXECUTION_EVIDENCE.json'), writer: rd('state/WRITER_ACTIVITY.json') }, Date.now());
+  const readReceipt = p => { try { return JSON.parse(fs.readFileSync(path.join(root, p), 'utf8')); } catch (e) { return null; } };
+  const out = build({ tasks: rd('control/AI_AUTOMATION_TASKS.json'), readback: rd('state/AUTOMATION_SCHEDULE_READBACK.json'), evidence: rd('state/AUTOMATION_EXECUTION_EVIDENCE.json'), writer: rd('state/WRITER_ACTIVITY.json'), readReceipt }, Date.now());
   const file = path.join(root, 'control/AUTOMATIONS_STATUS.json');
   const prev = fs.existsSync(file) ? JSON.parse(fs.readFileSync(file, 'utf8')) : null;
   // keep generated_at stable when nothing else changed, so the Action only commits real changes
@@ -121,4 +183,4 @@ if (require.main === module) {
   if (!same) fs.writeFileSync(file, JSON.stringify(out, null, 1) + '\n');
   console.log(same ? 'AUTOMATIONS_STATUS.json unchanged' : 'wrote AUTOMATIONS_STATUS.json: ' + out.automations.length + ' automations, ' + out.runs.length + ' runs');
 }
-module.exports = { build, parseSchedule, occurrences, nextRun, intervalMs, mapResult, isStale, writerHealth, healthStatus, etDayStart, THRESHOLDS };
+module.exports = { build, parseSchedule, occurrences, nextRun, intervalMs, mapResult, isStale, writerHealth, healthStatus, etDayStart, THRESHOLDS, receiptUsage, formatEst, runsPerWeek, fmtMin, fmtCalls };
