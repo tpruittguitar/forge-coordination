@@ -33,24 +33,27 @@ function open({ledger,scope,isEligible,run,checkpoint}){
   if(seeded)checkpoint();
   const prior=Object.keys(rows).length;
   let reopened=0;
-  const canClaim=(id,getProductEvidence)=>{
+  const canClaim=(id,getProductEvidence,hasValidatedProduct=()=>false)=>{
     if(!isEligible(id))return false;
     if(!seen(id))return true;
     const previous=rows[id];
-    if(previous.writerAttempt||hasTracking(id)||previous.run===run)return false;
-    if((previous.status==='INCOMPLETE'||previous.status==='NO_SUPPORTED_FIELDS')&&!previous.partialPolicyTried)return true;
+    if(previous.writerAttempt||hasOriginalTracking(id)||previous.run===run)return false;
+    if(!hasHistoricalSubmit(id)&&(previous.status==='INCOMPLETE'||previous.status==='NO_SUPPORTED_FIELDS')&&!previous.partialPolicyTried)return true;
     if(previous.status!=='INCOMPLETE'||previous.reason!=='PRODUCT_EVIDENCE_REQUIRED')return false;
+    if(hasHistoricalSubmit(id)&&!hasValidatedProduct())return false;
     const next=getProductEvidence?.();
     return typeof next==='string'&&/^[a-f0-9]{64}$/.test(next)&&next!==previous.productEvidence;
   };
-  function hasTracking(id){
-    return Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>Object.values(ledger[group]||{}).some(e=>
+  const hasHistoricalSubmit=id=>Object.hasOwn(ledger.submitted||{},id);
+  function hasOriginalTracking(id){
+    return ['pendingWrites','notAccepted','releasedNotApplied'].some(group=>Object.values(ledger[group]||{}).some(e=>
       e.ids?.includes(id)||e.requests?.some(q=>q.ruling?.primaryId===id)));
   }
   return {
     planned(id){
       const row=rows[id];
-      if(row?.status==='FIELDS_PLANNED'&&row.run!==run&&!row.writerAttempt&&row.plan&&!hasTracking(id))return row.plan;
+      if(row?.status==='FIELDS_PLANNED'&&row.run!==run&&!row.writerAttempt&&row.plan&&!hasOriginalTracking(id)&&
+        (!hasHistoricalSubmit(id)||row.historicalProductRefresh===true))return row.plan;
       return null;
     },
     markWriterAttempt(batch,requests){
@@ -60,12 +63,16 @@ function open({ledger,scope,isEligible,run,checkpoint}){
       }
       // Caller commits the attempt and original pending checkpoint together, before POST.
     },
-    seen,canClaim,awaitingProduct:id=>rows[id]?.status==='INCOMPLETE'&&rows[id]?.reason==='PRODUCT_EVIDENCE_REQUIRED',
-    claim(id,getProductEvidence){
-      if(!canClaim(id,getProductEvidence))return false;
+    seen,canClaim,awaitingProduct:id=>rows[id]?.status==='INCOMPLETE'&&rows[id]?.reason==='PRODUCT_EVIDENCE_REQUIRED'&&
+      !rows[id].writerAttempt&&!hasOriginalTracking(id),
+    claim(id,getProductEvidence,hasValidatedProduct){
+      if(!canClaim(id,getProductEvidence,hasValidatedProduct))return false;
       const previous=rows[id],at=new Date().toISOString();
       if(previous)reopened++;
-      rows[id]={status:'IN_PROGRESS',run,at,firstAt:previous?.firstAt||previous?.at||at,partialPolicyTried:true};
+      // This tag is possible only through the changed Product proof above.
+      // It preserves recovery of a new plan if interrupted before any POST.
+      rows[id]={status:'IN_PROGRESS',run,at,firstAt:previous?.firstAt||previous?.at||at,partialPolicyTried:true,
+        ...(previous&&hasHistoricalSubmit(id)?{historicalProductRefresh:true}:{})};
       checkpoint(); // A killed or stalled process cannot claim this ID again in the same first pass.
       return true;
     },
