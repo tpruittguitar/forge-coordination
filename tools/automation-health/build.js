@@ -1,7 +1,7 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path');
 // Lanes have no owner (Tim 2026-11-22): any authorized provider's receipt counts.
-const RUNNERS=new Set(['ChatGPT','Claude','Hermes','Sniffer','President','Grok','Grokbot President']);
+const RUNNERS=new Set(['ChatGPT','Claude','Hermes','Sniffer','President','Grokbot President']);
 const iso=x=>Number.isFinite(Date.parse(x||''));
 function receiptName(value){const name=String(value||'').replace(/^receipts\//,'');if(!/^[A-Za-z0-9_.-]+\.(?:json|txt)$/.test(name)||name.includes('..'))throw Error('Invalid receipt reference');return name;}
 function build(root='.',now=Date.now()){
