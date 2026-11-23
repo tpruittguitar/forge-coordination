@@ -1,11 +1,11 @@
 {
- "at": "2026-11-23T01:06:52.520Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T010033256Z",
+ "at": "2026-11-23T01:26:32.500Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261123T012015289Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-23T01:00:42.434Z",
-  "sha256": "e2f44aca20f13f102bb0ad956c46dd26325e80ba51af81c51de41f2d2a79af7f",
+  "readAt": "2026-11-23T01:20:25.176Z",
+  "sha256": "8e6b9cf415d0e30cc59e1fa3416ced077c7f1ec5e77d4a6644ae0192fc50347d",
   "rows": 9545
  },
  "rows": 9545,
@@ -48,27 +48,31 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
+ "estimates": 1,
  "estimate_waiting_for_posting": 0,
- "skipped_recent": 1,
- "submitted": 3,
+ "skipped_recent": 0,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 3,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
- "agg_tried": {},
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
+ "agg_tried": {
+  "linkedin": 1
+ },
  "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
- "agg_wall": {},
- "source_reads": 0,
+ "agg_wall": {
+  "linkedin": 1
+ },
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -76,17 +80,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 0,
@@ -101,20 +105,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 9,
+  "saved_reused": 5,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "backoff": 2,
+  "unsupported_routes": 2,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-23T01:00:48.230Z",
+  "profile_as_of": "2026-11-23T01:20:31.571Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -14958,31 +14962,18 @@
  },
  "products_planned": 0,
  "code_fit": {
-  "scored": 3,
-  "legacy_replaced": 3,
+  "scored": 0,
+  "legacy_replaced": 0,
   "merged": 0,
-  "added": 3,
+  "added": 0,
   "short_posting": 0,
   "no_posting": 0,
   "deferred": 0,
   "fenced": 3173,
   "inactive": 6369,
-  "already_fitted": 0,
+  "already_fitted": 3,
   "already_fitted_legacy": 0,
-  "sample": [
-   {
-    "id": "V2I-C4AA44A1D8E9",
-    "fit": 67
-   },
-   {
-    "id": "V2I-D0982C495263",
-    "fit": 50
-   },
-   {
-    "id": "V2I-1D72A06C2309",
-    "fit": 50
-   }
-  ]
+  "sample": []
  },
  "business_label": {
   "labeled": 0,
@@ -15001,9 +14992,9 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 0,
- "network_requests": 6,
- "planned": 3,
+ "roles_researched": 3,
+ "network_requests": 7,
+ "planned": 1,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
@@ -15014,8 +15005,8 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 145,
-  "SOURCE_RESEARCH_REQUIRED": 739,
-  "EVIDENCE_FOUND": 38,
+  "SOURCE_RESEARCH_REQUIRED": 738,
+  "EVIDENCE_FOUND": 39,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 13,
   "MODEL_INPUTS_REQUIRED": 6
  },
@@ -19432,25 +19423,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485623029",
      "status": "HTTP_404"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1D72A06C2309",
-   "company": "AreOnePath",
-   "title": "Director of Manufacturing Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-22T23:19:18.497Z",
-   "retryAt": "2026-11-23T01:19:18.497Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4493511414",
-     "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -31663,30 +31635,53 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-C4AA44A1D8E9",
-   "fields": {
-    "SCOPE_FIT_RAW": "67",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 4/11 resume competencies observed in a 5670-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building, lean_operations"
-   }
-  },
-  {
-   "id": "V2I-D0982C495263",
-   "fields": {
-    "SCOPE_FIT_RAW": "50",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 5592-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, team_building"
-   }
-  },
-  {
    "id": "V2I-1D72A06C2309",
    "fields": {
-    "SCOPE_FIT_RAW": "50",
-    "SCOPE_FIT_MODEL_REF": "CODE_FIT rev1",
-    "EXPERIENCE_FIT_BASIS": "CODE_FIT rev1: 3/11 resume competencies observed in a 1319-char saved posting (6+ = 100): manufacturing_leadership, quality_systems, startup_launch"
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4493511414",
+    "DEGREE_ASOF": "2026-11-22",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 185000,
+    "SALARY_BASE_HIGH": 248000,
+    "SALARY_MIDPOINT": 216500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-23",
+    "SALARY_SOURCE": "comparables: https://jobs.lever.co/mammothbiosci/c0fbfa61-2704-4949-8cca-2afe67655342?lever-source=Indeed (as of 2026-11-19); https://100hires.com/j/iirhr32 (as of 2026-11-14); https://e2helo.breezy.hr/p/0cff1327471f-director-of-manufacturing (as of 2026-11-05); https://www.linkedin.com/jobs/view/4485830515 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4487298964 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4471133734 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4479190936 (as of 2026-11-02)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-6542B7F55865, V2I-AB852B2E56C8, V2I-4A52694BE303, V2I-D29AA43C3F70, V2I-D49A3BEC8CC2, V2I-940180A9C89B, V2I-66CA91C933CA]; 7 employer-posted comparable(s), level 2 MFG same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW; BLS CA 113051 P25-P90 $102K-$222K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-23",
+    "SALARY_SCORE_POINT": 232250
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-1D72A06C2309",
+   "company": "AreOnePath",
+   "title": "Director of Manufacturing Operations",
+   "location": "North Fair Oaks, CA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4493511414",
+   "est": [
+    185000,
+    248000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-6542B7F55865",
+    "V2I-AB852B2E56C8",
+    "V2I-4A52694BE303",
+    "V2I-D29AA43C3F70",
+    "V2I-D49A3BEC8CC2",
+    "V2I-940180A9C89B",
+    "V2I-66CA91C933CA"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
