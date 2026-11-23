@@ -72,6 +72,32 @@ function capture({root,privateDir,inbox=path.join(process.env.USERPROFILE||'','M
 }
 // Restrict the network route to URLs already on the exact canonical row, and
 // pass neither captured text nor a helper's arbitrary extra URL to the fetcher.
+function standingFence(root,nativeFile=path.join(process.env.USERPROFILE||'','forge-ats490-offline-20261122','state','enrich-ats-pay.json')){
+ const error='HERMES_ATS_WRITER_FENCE_UNREADABLE',fenced=new Set();
+ let native;
+ try{
+  requireThat(path.isAbsolute(nativeFile),error);
+  native=JSON.parse(fs.readFileSync(nativeFile,'utf8'));
+  requireThat(object(native)&&object(native.pendingWrites),error);
+ }catch{throw Error(error);}
+ for(const ledger of [S.read(root,'state/enrich-ats-pay.json',{}),native]){
+  requireThat(object(ledger),error);
+  for(const key of ['pendingWrites','notAccepted','releasedNotApplied']){
+   const entries=ledger[key];
+   if(entries===undefined)continue;
+   requireThat(object(entries),error);
+   for(const entry of Object.values(entries)){
+    requireThat(Array.isArray(entry?.ids)&&entry.ids.every(i=>typeof i==='string'),error);
+    for(const primaryId of entry.ids)fenced.add(primaryId);
+   }
+  }
+  if(ledger.grantFirstPass!==undefined){
+   requireThat(object(ledger.grantFirstPass?.rows),error);
+   for(const [primaryId,row] of Object.entries(ledger.grantFirstPass.rows))if(row?.writerAttempt)fenced.add(primaryId);
+  }
+ }
+ return fenced;
+}
 function trustedUrl(returned,urls){
  return urls.find(u=>u===returned);
 }
@@ -83,4 +109,4 @@ function blanks(fields,row,evidence,Source){
  for(const k of Object.keys(fields))if(!keys.has(k)||Source.known(row.p?.[k])||conflicted.has(Object.keys(Source.REPLACE_GROUPS).find(g=>Source.REPLACE_GROUPS[g].includes(k))||F.GROUP_OF[k]||k))delete fields[k];
  return fields;
 }
-module.exports={blanks,SCHEMA,TASK,PARTITION,DIR,privatePath,membership,validate,history,read,capture,trustedUrl};
+module.exports={standingFence,blanks,SCHEMA,TASK,PARTITION,DIR,privatePath,membership,validate,history,read,capture,trustedUrl};

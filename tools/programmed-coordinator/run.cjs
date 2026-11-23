@@ -19,7 +19,7 @@ function publicReport(state, coverage, at) {
     canonicalSource:state.canonicalSource||null, coverage, noProcessingCap:true, savingsMeasured:false};
 }
 async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now(), select = () => true}) {
-  let fences;
+  let fences,hermesFences;
   const cache = new Map(),discovery=require('../source-intake/discovery-inputs').index(root);
   for (const item of Object.values(state.items)) {
     if (!select(item)) continue;
@@ -52,6 +52,10 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       if (rows.length !== 1) { exception(state,item,'EXACT_LIVE_IDENTITY_REQUIRED','AI'); continue; }
       row = rows[0];
       if (T.protectedRow(row)) { item.status='PROTECTED_SKIP'; delete state.exceptions[item.key]; continue; }
+      if(hermes){
+        try{if((hermesFences||=Hermes.standingFence(root)).has(row.PRIMARY_ID)){exception(state,item,'ORIGINAL_TRANSACTION_FENCE','CODE');continue;}}
+        catch(e){exception(state,item,e.message,'CODE');continue;}
+      }
       if ((fences ||= T.fenceIndex(root,state)).has(row.PRIMARY_ID)) { exception(state,item,'ORIGINAL_TRANSACTION_FENCE','CODE'); continue; }
       expected = T.identity(row);
       if (!T.same(row,evidence.sourceEvidence)) { exception(state,item,'CONFLICTING_SOURCE_IDENTITY','AI'); continue; }

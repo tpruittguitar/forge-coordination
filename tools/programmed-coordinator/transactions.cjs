@@ -58,12 +58,13 @@ async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
   if (!jobs.length || jobs.length > MAX_ENRICHMENT_BATCH || new Set(jobs.map(j => j.primaryId)).size !== jobs.length) throw Error('Invalid transaction size or duplicate job');
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
-  const accepted=[],fences=fenceIndex(root,state);
+  const accepted=[],fences=fenceIndex(root,state);let hermesFences;
   for (const job of jobs) {
    try {
     const inspection=state.items[job.itemKey];
     if(inspection?.taskKey&&require('../helper-routing/shared.cjs').providerFor(inspection.taskKey)){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
     if(Hermes.privatePath(inspection?.batch)){
+      if((hermesFences||=Hermes.standingFence(root)).has(job.primaryId))throw Error('ORIGINAL_TRANSACTION_FENCE');
       const b=Hermes.read(root,privateDir,inspection.batch),i=b.items.find(x=>x.primaryId===job.primaryId);
       Hermes.validate(b,S.read(root,Hermes.PARTITION));
       if(!i||S.hash(i)!==inspection.version)throw Error('HERMES_IMMUTABLE_SOURCE_RETURN_REQUIRED');

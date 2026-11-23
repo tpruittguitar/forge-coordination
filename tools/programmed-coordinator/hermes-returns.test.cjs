@@ -24,6 +24,13 @@ test('captures only a frozen Hermes evidentiary return once; conflicting, stale,
  const rel=H.DIR+'/'+b.runId+'.json';
  assert.deepEqual(H.read(root,privateDir,rel),b);
  assert.equal(fs.existsSync(path.join(root,rel)),false);
+ S.save(root,'state/enrich-ats-pay.json',{releasedNotApplied:{old:{ids:[id]}}});
+ const native=path.join(temp,'native-ledger.json');
+ assert.throws(()=>H.standingFence(root,native),/HERMES_ATS_WRITER_FENCE_UNREADABLE/);
+ fs.writeFileSync(native,JSON.stringify({pendingWrites:{old:{ids:[other]}}}));
+ assert.equal(H.standingFence(root,native).has(id),true);assert.equal(H.standingFence(root,native).has(other),true);
+ S.save(root,'state/enrich-ats-pay.json',{notAccepted:{broken:{}}});
+ assert.throws(()=>H.standingFence(root,native),/HERMES_ATS_WRITER_FENCE_UNREADABLE/);
  assert.equal(H.trustedUrl('https://other.example/job/1',[b.items[0].sourceEvidence.url]),undefined);
  assert.equal(H.trustedUrl(b.items[0].sourceEvidence.url,[b.items[0].sourceEvidence.url]),b.items[0].sourceEvidence.url);
  const projection={WORK_ARRANGEMENT:'ONSITE',REMOTE_HYBRID:'ONSITE',FIT_BASIS:'Internal scoring evidence'},known=v=>!!v;
