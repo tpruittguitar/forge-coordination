@@ -721,7 +721,35 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         ?key(p.PRODUCT,p.PRODUCT_REFERENCE,p.PRODUCT_SCOPE,p.PRODUCT_SITE,p.PRODUCT_SOURCE):null;
     };
     const canVisit=r=>!firstPass||firstPass.canClaim(r.PRIMARY_ID,()=>productEvidence(r));
-    const grantOrder=firstPass?[...ordered].sort((a,b)=>Number(firstPass.seen(a.PRIMARY_ID))-Number(firstPass.seen(b.PRIMARY_ID))):ordered;
+    const retainedById=new Map();
+    const getRetained=r=>{
+      const id=r.PRIMARY_ID;
+      if(!retainedById.has(id)){
+        const readOld=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
+        const readCapture=Prepared.posting(r,readOld)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
+        const conflictingUrl=bulkSource&&[readCapture?.url,readCapture?.degreeUrl,readOld?.url,readOld?.degreeUrl].find(url=>url&&bulkSource.routeConflict(r,url));
+        retainedById.set(id,{old:conflictingUrl?null:readOld,capture:conflictingUrl?null:readCapture,conflictingUrl});
+      }
+      return retainedById.get(id);
+    };
+    // Prefer fields the normal projection can already substantiate. Only
+    // reorder the existing eligible grant rows; do not claim or fetch here.
+    const retainedReady=new Set();
+    if(firstPass&&completeGrantBatch)for(const r of ordered){
+      if(!runtime.canStart(60000))break;
+      if(!grantExtraction.isEligibleId(r.PRIMARY_ID)||blocked(r)||!validIdentity(r)||!canVisit(r)||
+        !rawNeeded(r)&&!productNeeded(r))continue;
+      const product=getProduct(r);
+      let {capture}=getRetained(r);
+      if(!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
+        (!Products.known(r.p.PRODUCT)||SourceBlanks.missing(r.p,['PRODUCT_SOURCE']))&&
+        capture?.url===grantExtraction.rejectedProductSource(r,ledger))capture=null;
+      if(Object.keys(SourceBlanks.project({row:r,capture,product,Products})).length)retainedReady.add(r.PRIMARY_ID);
+    }
+    if(firstPass&&completeGrantBatch)coverage.retainedReadyPriority=retainedReady.size;
+    const grantOrder=firstPass?[...ordered].sort((a,b)=>
+      Number(retainedReady.has(b.PRIMARY_ID))-Number(retainedReady.has(a.PRIMARY_ID))||
+      Number(firstPass.seen(a.PRIMARY_ID))-Number(firstPass.seen(b.PRIMARY_ID))):ordered;
     const addGrantRequest=(r,fields)=>{
       const req={action:'ruling',ruling:{requestId:RUN_ID+'-GB'+String(coverage.sourceSupported+1).padStart(3,'0'),primaryId:r.PRIMARY_ID,kind:'ENRICH',actor:'ATSBOT',fields}};
       coverage.sourceSupported++;grantFactIds.add(r.PRIMARY_ID);requests.push(req);
@@ -765,10 +793,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         coverage.protectedOrReserved++;continue;
       }
       if(!validIdentity(r)){coverage.identityNeedsGovernedRepair++;continue;}
-      let old=Recovery.combine(Recovery.combine(Recovery.cached(ledger,r),postingCache.find(r)),require('../source-trial/evidence-store').forRow(discoveryEvidence,r));
-      let capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
-      const conflictingUrl=bulkSource&&[capture?.url,capture?.degreeUrl,old?.url,old?.degreeUrl].find(url=>url&&bulkSource.routeConflict(r,url));
-      if(conflictingUrl){capture=null;old=null;exactPublic.stats.blockedIdentity++;}
+      let {old,capture,conflictingUrl}=getRetained(r);
+      if(conflictingUrl)exactPublic.stats.blockedIdentity++;
       const rawNeeds=rawNeeded(r);
       if(!rawNeeds&&!productNeeded(r)&&!grantExtraction.productProposal)continue;
       if(firstPass&&!firstPass.claim(r.PRIMARY_ID,()=>productEvidence(r)))continue;
