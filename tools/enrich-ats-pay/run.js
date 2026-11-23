@@ -720,7 +720,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       return Products.known(p.PRODUCT)&&Products.known(p.PRODUCT_REFERENCE)
         ?key(p.PRODUCT,p.PRODUCT_REFERENCE,p.PRODUCT_SCOPE,p.PRODUCT_SITE,p.PRODUCT_SOURCE):null;
     };
-    const canVisit=r=>!firstPass||firstPass.canClaim(r.PRIMARY_ID,()=>productEvidence(r));
+    const canVisit=r=>!firstPass||firstPass.canClaim(r.PRIMARY_ID,()=>productEvidence(r),()=>!!getProduct(r));
     const retainedById=new Map();
     const getRetained=r=>{
       const id=r.PRIMARY_ID;
@@ -766,7 +766,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(!accepted&&!capture&&!getProduct(r))return null;
       const normalize=require('../source-intake/writer-cell').normalizeCell;
       if(Object.entries(plan.fields).some(([k,v])=>r.p[k]!=null&&String(r.p[k]).trim()&&normalize(r.p[k])!==normalize(v)))return null;
-      if(plan.fields.PRODUCT||plan.fields.PRODUCT_REFERENCE){
+      if(Object.keys(plan.fields).some(k=>k==='PRODUCT'||k.startsWith('PRODUCT_'))){
         const product=getProduct(r);
         if(!product||plan.productEvidence!==productEvidence(r))return null;
       }
@@ -797,7 +797,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       if(conflictingUrl)exactPublic.stats.blockedIdentity++;
       const rawNeeds=rawNeeded(r);
       if(!rawNeeds&&!productNeeded(r)&&!grantExtraction.productProposal)continue;
-      if(firstPass&&!firstPass.claim(r.PRIMARY_ID,()=>productEvidence(r)))continue;
+      if(firstPass&&!firstPass.claim(r.PRIMARY_ID,()=>productEvidence(r),()=>!!getProduct(r)))continue;
       coverage.admitted++;
       const product=getProduct(r);
       const bulkProduct=!grantExtraction.smoke&&!product&&!Products.known(r.p.PRODUCT_REFERENCE)&&
