@@ -17,6 +17,15 @@ function commitListed(root,paths,message){
  return changed;
 }
 function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,ref='HEAD:main'}={}){
+ // Queue outputs (and their in-run cursor) belong to the exact input ledger revision.
+ // Never rebase/replay these files: a fresh worksheet tombstone could be overwritten.
+ const sourceBound=paths.some(p=>p==='state/UPSTREAM_LEDGER.json'||p==='state/UPSTREAM_FLOW.json'||p==='state/UPSTREAM_COLLECT_CURSOR.json'||p==='state/PIPELINE_WAITING_QUEUES.json'||p==='state/waiting-queues'||p.startsWith('state/waiting-queues/'));
+ if(sourceBound){
+  const changed=commitListed(root,paths,message);
+  if(!push)return {changed,pushed:false};
+  run(root,['push','origin',ref]);
+  return {changed,pushed:true,attempts:1};
+ }
  const backup=fs.mkdtempSync(path.join(os.tmpdir(),'git-publish-'));
  try{
   snapshot(root,paths,backup);

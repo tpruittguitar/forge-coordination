@@ -78,17 +78,15 @@ jobs:
           git config user.name forge-activity-bot
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
-            node tools/pipeline-observability/publish-report.js flow intake-queue
-            node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json && exit 0
-            sleep $((attempt * 2 + RANDOM % 3))
-            git fetch origin main
-            # Reuse the completed report when other bots changed unrelated paths.
-            # Conflicting policy/queue changes require a rebuild, never choosing a side.
-            if git -c core.editor=true rebase origin/main; then
-              node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json && exit 0
+            # Every build, including the first, starts at canonical main. A rejected
+            # cursor or flow publish cannot reuse outputs derived from an older ledger.
+            git fetch --no-tags origin main
+            git reset --hard FETCH_HEAD
+            if node tools/pipeline-observability/publish-report.js flow intake-queue &&
+               node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" receipts/manual-backlog state/REPORTING_HEALTH.json state/PROCESS_COMPLETIONS.json state/ENRICHMENT_OUTCOMES.json state/RELEVANCE_SCREEN_GUARD.json state/ENRICHMENT_FLOW.json state/UPSTREAM_LEDGER.json state/UPSTREAM_FLOW.json state/PIPELINE_WAITING_QUEUES.json state/waiting-queues state/discovery-evidence state/DISCOVERY_SCREEN_REPORT.json state/INTAKE_DRAIN.json state/UPSTREAM_COLLECT_CURSOR.json; then
+              exit 0
             fi
-            git rebase --abort 2>/dev/null || true
-            git reset --hard origin/main
+            sleep $((attempt * 2 + RANDOM % 3))
           done
           exit 1
       - name: Retain reporting evidence
