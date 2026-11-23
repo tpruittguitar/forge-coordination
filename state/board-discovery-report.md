@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261123T0939Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261123T1044Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,22 +6,22 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (67 read, 1 failed, 41 Workday deferred after a 429) | 142 | 49 | 30 |
+| Employer job boards (66 read, 1 failed, 40 Workday deferred after a 429) | 89 | 17 | 27 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
 
 HiringCafe: did not run. Unique = matching US roles no board or JobSpy result already covered.
 
-Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
+Priority companies with no board found: Tesla, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
 
 ## By level
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 24 | 17 |
-| SR_MANAGER | 7 | 7 |
-| SR_STAFF | 18 | 6 |
+| DIRECTOR_PLUS | 11 | 15 |
+| SR_MANAGER | 5 | 6 |
+| SR_STAFF | 1 | 6 |
 
 ## New roles
 
@@ -37,38 +37,6 @@ Priority companies with no board found: Tesla, Anduril, Ramon.Space, UVify, Matr
 | BOARD:ashby | Shield AI | [Senior Manager, Production Planning & Logistics – Development Programs (R5252)](https://jobs.ashbyhq.com/shield/f36981f7-6130-4b27-bf8e-158551f0a26c) | Seattle, WA, US | MFG_PROD | SR_MANAGER | $167K-$251K |
 | BOARD:ashby | Shield AI | [Head of Aircraft Quality (R6146)](https://jobs.ashbyhq.com/shield/0632a8c6-598d-48d4-ab6a-0ceed6284d16) | Seattle, WA, US | QUALITY | DIRECTOR_PLUS | $266K-$398K |
 | BOARD:ashby | Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
-| BOARD:greenhouse | Anduril | [Chief of Staff, Production](https://boards.greenhouse.io/andurilindustries/jobs/5251746007?gh_jid=5251746007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Deputy Head of Production, Autonomous Airpower (Fury)](https://boards.greenhouse.io/andurilindustries/jobs/4962385007?gh_jid=4962385007) | Ashville, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Director, Manufacturing Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5118136007?gh_jid=5118136007) | Ashville, Ohio, United States | MFG_ENG | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Director of Manufacturing Operations, AD&S](https://boards.greenhouse.io/andurilindustries/jobs/5236720007?gh_jid=5236720007) | Ashville, Ohio, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Director of Production, Optics ](https://boards.greenhouse.io/andurilindustries/jobs/5268363007?gh_jid=5268363007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Director of Quality](https://boards.greenhouse.io/andurilindustries/jobs/5131489007?gh_jid=5131489007) | Costa Mesa, California, United States | QUALITY | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Head of Operations, Intelligence Systems](https://boards.greenhouse.io/andurilindustries/jobs/5291343007?gh_jid=5291343007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Head of Production, Compute & Comms](https://boards.greenhouse.io/andurilindustries/jobs/5213199007?gh_jid=5213199007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Anduril | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Anduril | [Staff Automation Engineer, Manufacturing Automation](https://boards.greenhouse.io/andurilindustries/jobs/5234626007?gh_jid=5234626007) | Costa Mesa, California, United States | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Controls Engineer, Manufacturing Automation](https://boards.greenhouse.io/andurilindustries/jobs/5234566007?gh_jid=5234566007) | Ashville, Ohio, United States | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Industrial Engineer, Supply Chain Material Flow](https://boards.greenhouse.io/andurilindustries/jobs/5045104007?gh_jid=5045104007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Actuators](https://boards.greenhouse.io/andurilindustries/jobs/5009371007?gh_jid=5009371007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Actuators](https://boards.greenhouse.io/andurilindustries/jobs/5266126007?gh_jid=5266126007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Fury](https://boards.greenhouse.io/andurilindustries/jobs/5232410007?gh_jid=5232410007) | Ashville, Ohio, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Low Observable](https://boards.greenhouse.io/andurilindustries/jobs/5275363007?gh_jid=5275363007) | Ashville, Ohio, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Manufacturing Automation ](https://boards.greenhouse.io/andurilindustries/jobs/5234657007?gh_jid=5234657007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Mechanical Actuation Systems](https://boards.greenhouse.io/andurilindustries/jobs/5082600007?gh_jid=5082600007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Propulsion](https://boards.greenhouse.io/andurilindustries/jobs/5250964007?gh_jid=5250964007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Propulsion & Energetics](https://boards.greenhouse.io/andurilindustries/jobs/5303727007?gh_jid=5303727007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Sensors and Avionics](https://boards.greenhouse.io/andurilindustries/jobs/5303733007?gh_jid=5303733007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Space Systems](https://boards.greenhouse.io/andurilindustries/jobs/5090409007?gh_jid=5090409007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Space Vehicle Integration](https://boards.greenhouse.io/andurilindustries/jobs/5303750007?gh_jid=5303750007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Manufacturing Engineer, Thunder](https://boards.greenhouse.io/andurilindustries/jobs/5219430007?gh_jid=5219430007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Mechanical Engineer, Manufacturing Automation](https://boards.greenhouse.io/andurilindustries/jobs/5234641007?gh_jid=5234641007) | Costa Mesa, California, United States | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [Staff Robotics Engineer, Manufacturing Automation ](https://boards.greenhouse.io/andurilindustries/jobs/5234655007?gh_jid=5234655007) | Costa Mesa, California, United States | MFG_PROD | SR_STAFF |  |
-| BOARD:greenhouse | Anduril | [ VP Production, Connected Warfare](https://boards.greenhouse.io/andurilindustries/jobs/5173257007?gh_jid=5173257007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | Anduril | [VP Production, Frontier Systems](https://boards.greenhouse.io/andurilindustries/jobs/5218932007?gh_jid=5218932007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Tesla | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
