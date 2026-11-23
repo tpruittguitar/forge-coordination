@@ -37,12 +37,14 @@ function open({ledger,scope,isEligible,run,checkpoint}){
     if(!isEligible(id))return false;
     if(!seen(id))return true;
     const previous=rows[id];
-    if(previous.status!=='INCOMPLETE'||previous.reason!=='PRODUCT_EVIDENCE_REQUIRED'||previous.run===run)return false;
+    if(previous.writerAttempt||hasTracking(id)||previous.run===run)return false;
+    if((previous.status==='INCOMPLETE'||previous.status==='NO_SUPPORTED_FIELDS')&&!previous.partialPolicyTried)return true;
+    if(previous.status!=='INCOMPLETE'||previous.reason!=='PRODUCT_EVIDENCE_REQUIRED')return false;
     const next=getProductEvidence?.();
     return typeof next==='string'&&/^[a-f0-9]{64}$/.test(next)&&next!==previous.productEvidence;
   };
   function hasTracking(id){
-    return ['pendingWrites','notAccepted','releasedNotApplied'].some(group=>Object.values(ledger[group]||{}).some(e=>
+    return Object.hasOwn(ledger.submitted||{},id)||['pendingWrites','notAccepted','releasedNotApplied'].some(group=>Object.values(ledger[group]||{}).some(e=>
       e.ids?.includes(id)||e.requests?.some(q=>q.ruling?.primaryId===id)));
   }
   return {
@@ -63,7 +65,7 @@ function open({ledger,scope,isEligible,run,checkpoint}){
       if(!canClaim(id,getProductEvidence))return false;
       const previous=rows[id],at=new Date().toISOString();
       if(previous)reopened++;
-      rows[id]={status:'IN_PROGRESS',run,at,firstAt:previous?.firstAt||previous?.at||at};
+      rows[id]={status:'IN_PROGRESS',run,at,firstAt:previous?.firstAt||previous?.at||at,partialPolicyTried:true};
       checkpoint(); // A killed or stalled process cannot claim this ID again in the same first pass.
       return true;
     },

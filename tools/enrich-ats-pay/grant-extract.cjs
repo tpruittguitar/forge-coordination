@@ -161,8 +161,8 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       const sourceKey=[row.PRIMARY_ID,Cache.route(source.url),fingerprint(source.text)];
       const records=ledger.grantExtractionAttempts||{},fields={};
       let accepted=false;
-      for(const group of ['', 'PRODUCT','WORK_ARRANGEMENT','DEGREE','SALARY']){
-        const key=fingerprint(JSON.stringify(group?[...sourceKey,group]:sourceKey));
+      for(const [group,retry] of [['',null],...['PRODUCT','WORK_ARRANGEMENT','DEGREE','SALARY'].flatMap(g=>[[g,null],[g,'RETRY']])]){
+        const key=fingerprint(JSON.stringify(group?[...sourceKey,group,...(retry?[retry]:[])]:sourceKey));
         const record=records[key];
         if(record?.primaryId!==row.PRIMARY_ID||record.phase!=='BULK'||!Number.isSafeInteger(record.reportedCostMicrousd))continue;
         if(record.status==='FACTS_ACCEPTED'&&record.acceptedFields){Object.assign(fields,record.acceptedFields);accepted=true;}
@@ -185,7 +185,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       return e&&e.company===row.COMPANY&&e.location===row.LOCATION&&
         (!Source.known(row.p.PRODUCT)||e.products[0]===row.p.PRODUCT)?e:null;
     },
-    async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved,bulkProduct=false}){
+    async extract({row,capture,needs,fields,ledger,checkpoint,signal,payUnresolved,bulkProduct=false,retryKnownNoFacts=false}){
       if(stopped||attempts>=maxAttempts||signal?.aborted)return {};
       let selected;
       if(bulkProduct&&maxAttempts!==BULK_LIMIT)throw Error("ATS_GRANT_PRODUCT_PROPOSAL_SCOPE");
@@ -195,11 +195,19 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       if(!selected)return {};
       const {e,groups,ambiguousPay,candidate,source}=selected;
       const sourceKey=[row.PRIMARY_ID,Cache.route(e.url),e.sha256], legacyKey=fingerprint(JSON.stringify(sourceKey));
-      const group=maxAttempts===BULK_LIMIT?groups[0]:null, key=group?fingerprint(JSON.stringify([...sourceKey,group])):legacyKey;
+      const group=maxAttempts===BULK_LIMIT?groups[0]:null;
+      const normalKey=group?fingerprint(JSON.stringify([...sourceKey,group])):legacyKey;
       const records=ledger.grantExtractionAttempts??=(Object.create(null));
-      const legacy=group&&records[legacyKey];
+      const legacy=group&&records[legacyKey], first=records[normalKey];
+      // No retry of an uncertain request; a second request is a new bounded
+      // extraction only after an accounted-for no-facts response.
+      if(retryKnownNoFacts&&(!group||first?.phase!=='BULK'||first.status!=='NO_SUPPORTED_FACTS'||
+        !Number.isSafeInteger(first.reportedCostMicrousd)||first.rejectedProductUrl))return {};
+      const key=retryKnownNoFacts?fingerprint(JSON.stringify([...sourceKey,group,'RETRY'])):normalKey;
       if(Object.hasOwn(records,key)||legacy?.phase==='BULK'&&(!legacy.purpose||group==='PRODUCT'))return {};
       const entries=Object.values(records);
+      if(group&&entries.filter(r=>r?.primaryId===row.PRIMARY_ID&&r.phase==='BULK'&&
+        (r.group===group||!r.group&&(!r.purpose||group==='PRODUCT'))).length>=2)return {};
       if(group&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&r.status==='POSTING_OR_UNKNOWN'))return {};
       const smoke=entries.find(r=>r?.phase==='SMOKE'&&r.status==='WRITER_VERIFIED'&&r.writerRequestId);
       if(maxAttempts===BULK_LIMIT&&!smoke)throw Error('ATS_GRANT_SMOKE_WRITE_UNVERIFIED');
@@ -207,7 +215,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       let priorKey;
       if(productId&&entries.some(r=>r?.primaryId===productId))throw Error('ATS_GRANT_PRODUCT_ALREADY_ATTEMPTED');
       if(bulkProduct&&entries.some(r=>r?.primaryId===row.PRIMARY_ID&&
-        (r.status==='POSTING_OR_UNKNOWN'||r.purpose==='PRODUCT_PROPOSAL'&&!r.rejectedProductUrl&&!require('./grant-public-source.cjs').rejectedProposal(row,r.productReference))))return {};
+        (r.status==='POSTING_OR_UNKNOWN'||r.purpose==='PRODUCT_PROPOSAL'&&r.status==='PRODUCT_PROPOSED'&&!r.rejectedProductUrl&&!require('./grant-public-source.cjs').rejectedProposal(row,r.productReference))))return {};
       if(!productId&&maxAttempts===SMOKE_LIMIT&&(retryPriorId||priorSmokes.length)){
         const previous=priorSmokes.find(([,r])=>r.primaryId===retryPriorId);
         const original=priorSmokes.find(([,r])=>r.primaryId===retryOriginalId);
@@ -284,7 +292,7 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
           records[key].acceptedFields=fields;
           checkpoint(); // The returned verified facts are reusable without another model call.
         }
-        if(records[key].rejectedProductUrl)checkpoint();
+        if(records[key].rejectedProductUrl||maxAttempts===BULK_LIMIT&&records[key].status==='NO_SUPPORTED_FACTS')checkpoint();
         diagnostic={category:records[key].status};
         return fields;
       } catch {
