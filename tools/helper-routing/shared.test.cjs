@@ -251,3 +251,30 @@ test('a transferred Sniffer item keeps its field state and still settles from Wr
  const r=A.replenish({root,state:state(),snapshot:snap,runId:'T',now,apply:true,checkLock(){},writerReceipts:{index:{requests:{[rid]:{s:'COMPLETE',at:'2026-11-10T21:10:00.000Z',items:[{pid:id}]}},pending:[]},submissions:[{requestId:rid,primaryId:id,at:'2026-11-10T21:10:00.000Z',ok:true,mode:'SUCCESS',fields:degree,evidence}]}});
  const item=H.load(root).items[0];a.equal(item.taskKey,H.SNIFFER_TASK);a.equal(item.fieldState.fields.DEGREE.status,'submitted');a.ok(r.fieldRoles.pending+r.fieldRoles.submitted>=1);
 });
+
+test('partition reservations are reserved without assigning the shared helper lane',()=>{
+  const w={...base(),enabled:false,routingActive:false,enrichmentPartitionReservations:{schema:'forge.enrichment-partition-reservations.v1',sourcePath:'control/ENRICHMENT_WORKER_PARTITION.json',sourceCommit:'a1e2b300e063764faac242364e009cd8a3b72987',workers:[{provider:'Hermes',primaryIds:['V2I-AAAAAAAAAAAA']},{provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',execution:'API_GRANT',primaryIds:['V2I-BBBBBBBBBBBB']}]}};
+  a.deepEqual([...H.reservedKeys(w)].sort(),['V2I-AAAAAAAAAAAA','V2I-BBBBBBBBBBBB']);
+  a.equal(w.items.length,0);
+  a.throws(()=>H.validateWork(w),/INVALID_ENRICHMENT_PARTITION_RESERVATIONS/);
+});
+
+test('published 1582/1582 split is in helper reservations and enrich-ats-pay skip logic holds all 3164',()=>{
+  const P=require('./worker-partition.cjs');
+  const w=JSON.parse(fs.readFileSync(path.join(__dirname,'../../control/SHARED_HELPER_WORK.json'),'utf8'));
+  const part=P.load(path.join(__dirname,'../..'));
+  H.validateWork(w);
+  const reserved=H.reservedKeys(w);
+  a.equal(part.hermes.size,1582);
+  a.equal(part.api.size,1582);
+  for(const id of part.hermes)a.ok(reserved.has(id));
+  for(const id of part.api)a.ok(reserved.has(id));
+  const independent=[...part.api].filter(id=>reserved.has(id));
+  a.equal(independent.length,1582);
+  const normal=P.atsReserved(part,{grant:false,independent});
+  const grant=P.atsReserved(part,{grant:true,independent});
+  a.equal(normal.size,3164);
+  a.equal(grant.size,3164);
+  for(const id of [...part.hermes,...part.api]){a.ok(normal.has(id));a.ok(grant.has(id));}
+});
+
