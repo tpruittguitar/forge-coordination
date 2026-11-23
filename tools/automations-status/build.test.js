@@ -38,3 +38,48 @@ test('writer health: thresholds and no-data metrics have a null source', () => {
   for (const k of ['last_ping', 'queue_depth', 'timeout_rate']) assert.deepEqual(h[k], { value: null, status: null, source: null });
   assert.equal(B.healthStatus('error_rate', 0.5), 'red'); assert.equal(B.healthStatus('writes_per_hour', 0), 'red');
 });
+
+test('est_per_run / est_week: last receipt duration and 0 calls times an hourly schedule', () => {
+  const receipt = {
+    runId: 'FORGE-GOFER-CHATGPT-20261123T214451Z',
+    at: '2026-11-23T21:45:38.614Z',
+    fundingMode: 'NO_MODEL_INVOCATION',
+    taskKey: 'FORGE_APPLICATION_WRITER_GOFER'
+  };
+  const out = B.build({
+    tasks: { tasks: { FORGE_APPLICATION_WRITER_GOFER: { owner: 'ChatGPT' } } },
+    readback: { local: [{ id: 'forge-application-writer-gofer', taskKey: 'FORGE_APPLICATION_WRITER_GOFER', status: 'ACTIVE', rrule: 'RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0' }] },
+    evidence: { executions: [{ id: 'forge-application-writer-gofer', evidenceFiles: ['receipts/gofer.json'] }], schedules: { active: [{ id: 'forge-application-writer-gofer', lastRunAt: '2026-11-23T21:45:38.614Z', status: 'DEFERRED_GRANT_RUNTIME_UNVERIFIED' }] } },
+    readReceipt: p => p === 'receipts/gofer.json' ? receipt : null
+  }, NOW);
+  const row = out.automations[0];
+  assert.equal(row.runs_per_week, 168);
+  assert.equal(row.est_per_run, '0 calls, 48 s');
+  assert.equal(row.est_week, '0 calls, 2.2 h');
+});
+
+test('est fields stay null without a receipt; a paused native task has weekly est 0', () => {
+  const live = B.build({
+    tasks: { tasks: { PE_STACK_HEALTH_DAILY: {} } },
+    readback: { local: [{ id: 'pe-stack-health-daily', taskKey: 'PE_STACK_HEALTH_DAILY', status: 'ACTIVE', rrule: 'RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45' }] }
+  }, NOW);
+  assert.equal(live.automations[0].runs_per_week, 7);
+  assert.equal(live.automations[0].est_per_run, null);
+  assert.equal(live.automations[0].est_week, null);
+
+  const paused = B.build({
+    tasks: { tasks: { FORGE_AI_USAGE_READER: { nativeSchedule: 'Hourly at minute 05, America/New_York' } } },
+    readback: { local: [{ id: 'forge-ai-usage-reader', taskKey: 'FORGE_AI_USAGE_READER', status: 'PAUSED', rrule: 'RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5' }] }
+  }, NOW);
+  assert.equal(paused.automations[0].runs_per_week, 0);
+  assert.equal(paused.automations[0].est_week, '0');
+  assert.equal(paused.automations[0].est_per_run, null);
+});
+
+test('receiptUsage and formatEst helpers', () => {
+  assert.deepEqual(B.receiptUsage({ runId: 'X-20261123T214451Z', at: '2026-11-23T21:45:38Z', fundingMode: 'DEFERRED_NO_MODEL_INVOCATION' }), { minutes: 47 / 60, calls: 0 });
+  assert.equal(B.formatEst(0, 47 / 60), '0 calls, 47 s');
+  assert.equal(B.formatEst(null, 3.6), '3.6 min');
+  assert.equal(B.formatEst(2, null), '2 calls');
+  assert.equal(B.formatEst(null, null), null);
+});
