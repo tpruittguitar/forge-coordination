@@ -734,7 +734,8 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       const capture=Prepared.posting(r,old)||SourceBlanks.exactStoredPosting(discoveryEvidence,r);
       if(capture&&[capture.url,capture.degreeUrl].some(url=>url&&bulkSource?.routeConflict(r,url)))return null;
       const accepted=grantExtraction.acceptedBulkResearch(r,capture,ledger,getProduct(r));
-      if(!accepted||plan.source!==Store.hash([capture?.url,capture?.text]))return null;
+      if(plan.source!==Store.hash([capture?.url,capture?.text]))return null;
+      if(!accepted&&!capture&&!getProduct(r))return null;
       const normalize=require('../source-intake/writer-cell').normalizeCell;
       if(Object.entries(plan.fields).some(([k,v])=>r.p[k]!=null&&String(r.p[k]).trim()&&normalize(r.p[k])!==normalize(v)))return null;
       if(plan.fields.PRODUCT||plan.fields.PRODUCT_REFERENCE){
@@ -742,7 +743,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         if(!product||plan.productEvidence!==productEvidence(r))return null;
       }
       const selected=GrantSalary.liveFields(r,plan.fields);
-      return Object.keys(selected).length&&!projectedGrantMissing(r,selected).length?selected:null;
+      return Object.keys(selected).length?selected:null;
     };
     let restorable=0;
     if(firstPass)for(const r of grantOrder){
@@ -814,7 +815,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       let f,acceptedGrant;
       try{
         if(bulkProduct&&!cachedProposal&&capture&&runtime.canStart(60000)){
-          await grantExtraction.extract({row:r,capture,bulkProduct:true,ledger,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+          const args={row:r,capture,bulkProduct:true,ledger,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)};
+          await grantExtraction.extract(args);
+          if(runtime.canStart(60000))await grantExtraction.extract({...args,retryKnownNoFacts:true});
         }
         const proposal=cachedProposal||bulkProduct&&grantExtraction.pendingProduct(r,ledger);
         if(proposal)productBatch.push(proposal);
@@ -825,12 +828,14 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
             const groups=[...new Set([...need(r),
               ...(SourceBlanks.missing(r.p,SourceBlanks.workKeys)?['WORK_ARRANGEMENT']:[]),
               ...(SourceBlanks.missing(r.p,SourceBlanks.degreeKeys)?['DEGREE']:[])])];
-            // Each applicable missing group gets at most one exact-source
-            // attempt, even when Product was researched from the same posting.
+            // Reuse deterministic/verified facts first. A second live attempt
+            // is allowed only after a billed, validated no-facts response.
             for(const group of groups){
               if(!runtime.canStart(60000))break;
-              await grantExtraction.extract({row:r,capture,needs:[group],fields:{},ledger,
-                payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)});
+              const args={row:r,capture,needs:[group],fields:{...f,...acceptedGrant?.fields},ledger,
+                payUnresolved:old?.payAmbiguous===true,checkpoint:()=>GrantExtraction.checkpoint(LEDGER,ledger)};
+              await grantExtraction.extract(args);
+              if(runtime.canStart(60000))await grantExtraction.extract({...args,retryKnownNoFacts:true});
             }
             acceptedGrant=grantExtraction.acceptedBulkResearch(r,capture,ledger,product);
           }
@@ -848,7 +853,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         break;
       }
       const estimate=await GrantSalary.plan({row:r,capture,old,fields:f,
-        enabled:completeGrantBatch&&!!acceptedGrant&&runtime.canStart(60000)&&need(r).includes('SALARY'),
+        enabled:completeGrantBatch&&runtime.canStart(60000)&&need(r).includes('SALARY'),
         estimateFor,modelFields,salarySource,today});
       if(estimate.SALARY_BASIS){Object.assign(f,estimate);stats.estimates++;coverage.salaryEstimated=(coverage.salaryEstimated||0)+1;}
       const missing=projectedGrantMissing(r,f);
@@ -856,17 +861,13 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
         const remaining=coverage.remainingByFieldAfterPlan;
         remaining[field]=(remaining[field]||0)+1;
       }
-      if(completeGrantBatch&&(!acceptedGrant||missing.length)){
-        const reason=!acceptedGrant?'noAcceptedGrantResearch':'notFull11';
-        coverage[reason]=(coverage[reason]||0)+1;
+      if(!Object.keys(f).length){
         const productOnly=missing.length===1&&missing[0]==='products (what they make)';
-        if(productOnly||capture||Object.keys(f).length)firstPass?.finish(r.PRIMARY_ID,'INCOMPLETE',{
-          reason:productOnly?'PRODUCT_EVIDENCE_REQUIRED':!acceptedGrant?'GRANT_RESEARCH_UNVERIFIED':'DECISION_FIELDS_INCOMPLETE',
-          missing,productEvidence:productOnly?productEvidence(r):null});
+        if(productOnly)firstPass?.finish(r.PRIMARY_ID,'INCOMPLETE',{reason:'PRODUCT_EVIDENCE_REQUIRED',missing,productEvidence:productEvidence(r)});
         else firstPass?.finish(r.PRIMARY_ID,'NO_SUPPORTED_FIELDS');
         continue;
       }
-      if(!Object.keys(f).length){firstPass?.finish(r.PRIMARY_ID,'NO_SUPPORTED_FIELDS');continue;}
+      if(completeGrantBatch&&missing.length)coverage.partialPlanned=(coverage.partialPlanned||0)+1;
       firstPass?.finish(r.PRIMARY_ID,'FIELDS_PLANNED',{plan:{identity:Store.hash([r.COMPANY,r.TITLE,r.LOCATION]),
         source:Store.hash([capture?.url,capture?.text]),productEvidence:productEvidence(r),fields:{...f}}});
       addGrantRequest(r,f);
@@ -919,8 +920,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
           const selected=GrantSalary.liveFields(cur,f);
           if(completeGrantBatch){
             const normalize=require('../source-intake/writer-cell').normalizeCell;
-            if(projectedGrantMissing(cur,selected).length||
-              Object.entries(f).some(([k,v])=>cur.p[k]!=null&&String(cur.p[k]).trim()&&normalize(cur.p[k])!==normalize(v))){
+            if(Object.entries(f).some(([k,v])=>cur.p[k]!=null&&String(cur.p[k]).trim()&&normalize(cur.p[k])!==normalize(v))){
               stats.guard_dropped++;return false;
             }
           }
