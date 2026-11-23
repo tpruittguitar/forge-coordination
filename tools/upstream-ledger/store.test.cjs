@@ -79,6 +79,21 @@ test('ledger preserves full objects, order, canonical work and unresolved eviden
   assert.deepEqual(Store.readLedger(f.root), original);
 });
 
+test('ledger round-trips a populated reportHistory losslessly', t => {
+  const f = fixture(t);
+  const original = ledger({z: entry('z', 'EXCLUDED'), a: entry('a', 'EXCLUDED'), p: entry('p', 'PRESENT', {primaryId: 'V2I-P'})});
+  original.reportHistory = {schema: 'forge.discovery-report-history.v2', commits: ['c1', 'c2', 'c3'],
+    versions: [{sha: 'c1', at: '2026-11-03T22:00:00-05:00', records: 2}, {sha: 'c3', at: '2026-11-04T09:00:00-05:00', records: 5, note: 'α'}], incomplete: false};
+  f.put('state/PIPELINE_WAITING_QUEUES.json', {ids: {enrichment: ['V2I-P'], decision: []}});
+  Store.writeLedger(f.root, original);
+  assert.equal(JSON.stringify(Store.readLedger(f.root)), JSON.stringify(original));
+  const manifest = JSON.parse(f.read(Store.LEDGER_ARCHIVE + '/manifest.json'));
+  const archived = manifest.shards.reduce((n, s) => n + s.count, 0);
+  const live = JSON.parse(f.read(Store.LEDGER_PATH));
+  assert.equal(Object.keys(live.entries).length + archived >= Object.keys(original.entries).length, true);
+  assert.deepEqual(Store.readLedger(f.root).reportHistory, original.reportHistory);
+});
+
 test('drain preserves fenced items and moves reopened detail fully back to live', t => {
   const f = fixture(t);
   const card = {company: 'Factory', title: 'Plant Manager', url: 'https://example.test/job', description: 'Captured text'};
