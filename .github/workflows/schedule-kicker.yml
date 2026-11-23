@@ -1,0 +1,27 @@
+name: schedule-kicker
+# GitHub creates only a few of this repo's scheduled runs, so every push to main checks writer-verify and
+# receipt-recovery and dispatches one that is overdue (tools/schedule-kicker/kick.js). Reads and one dispatch only.
+on:
+  push:
+    branches: [main]
+  schedule:
+    - cron: '4,34 * * * *' # backup when pushes are quiet
+  workflow_dispatch: {}
+permissions:
+  actions: write
+  contents: read
+concurrency:
+  group: schedule-kicker
+  cancel-in-progress: true
+jobs:
+  kick:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          sparse-checkout: tools/schedule-kicker
+      - name: Dispatch an overdue verification run
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: node tools/schedule-kicker/kick.js
