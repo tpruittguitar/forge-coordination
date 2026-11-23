@@ -114,13 +114,13 @@ function capturedSource({root=path.resolve(__dirname,'../..'),discovery,item,exp
   }
   return null;
 }
-async function verify({item, expected, privateDir,root=path.resolve(__dirname,'../..'),discovery,sourceUrls=[],requireRoleText=false,validateClaims=true,fetchPage = page, now = Date.now()}) {
-  const captured=capturedSource({root,discovery,item,expected,sourceUrls,now,requireRoleText,validateClaims});if(captured)return captured;
+async function verify({item, expected, privateDir,root=path.resolve(__dirname,'../..'),discovery,sourceUrls=[],requireRoleText=false,validateClaims=true,fetchPage = page, now = Date.now(), independentFresh=false}) {
+  const captured=independentFresh?null:capturedSource({root,discovery,item,expected,sourceUrls,now,requireRoleText,validateClaims});if(captured)return captured;
   const url = publicUrl(item.sourceEvidence.url), key = S.hash({url, expected, quote:item.sourceEvidence.quote || ''}),F=require('./posting-formats.cjs');
   const context=S.read(path.resolve(__dirname,'../..'),'reference/COMPANY_SITE_CONTEXT.json',{companies:[]}),company=context.companies.find(c=>[c.company,...c.aliases||[]].some(n=>employer(n)===employer(expected.company)));
   expected={...expected,companyAliases:[...expected.companyAliases||[],...company?[company.company,...company.aliases||[]]:[]]};
   const cache = path.join(privateDir, 'sources', key + '.json');
-  if (fs.existsSync(cache)) {
+  if (!independentFresh&&fs.existsSync(cache)) {
     const c = JSON.parse(fs.readFileSync(cache, 'utf8'));
     if (Number.isFinite(Date.parse(c.observedAt)) && now >= Date.parse(c.observedAt) && S.hash(c.raw) === c.sourceSha256 && (!c.companyRaw||S.hash(c.companyRaw)===c.companySourceSha256)) {
       const facts=c.format==='LINKEDIN_GUEST'?inspectLinkedIn(c.raw,c.route,c.finalUrl,expected,item.sourceEvidence.quote,now):c.format==='ATS_API'?inspectJobs([F.apiPosting(c.route,JSON.parse(c.raw),c.companyRaw?JSON.parse(c.companyRaw):c.boardCompany)],expected,item.sourceEvidence.quote,now):inspect(c.raw,expected,item.sourceEvidence.quote,now);

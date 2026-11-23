@@ -1,4 +1,5 @@
 'use strict';
+const Hermes=require('./hermes-returns.cjs');
 const S = require('./store.cjs'), {normalizeCell:cell} = require('../source-intake/writer-cell');
 const Source = require('./source.cjs');
 const Outcome = require('../writer-outcome.cjs');
@@ -57,11 +58,18 @@ async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
   if (!jobs.length || jobs.length > MAX_ENRICHMENT_BATCH || new Set(jobs.map(j => j.primaryId)).size !== jobs.length) throw Error('Invalid transaction size or duplicate job');
   deps.checkLock();
   const snapshot = await deps.snapshot(); healthy(snapshot.status);
-  const accepted=[],fences=fenceIndex(root,state);
+  const accepted=[],fences=fenceIndex(root,state);let hermesFences;
   for (const job of jobs) {
    try {
     const inspection=state.items[job.itemKey];
     if(inspection?.taskKey&&require('../helper-routing/shared.cjs').providerFor(inspection.taskKey)){const batch=S.read(root,inspection.batch),item=batch.items.find(i=>(i.primaryId||i.key)===inspection.itemKey);if(!item)throw Error('SHARED_SOURCE_RETURN_REQUIRED');require('../helper-routing/shared.cjs').assertCurrent(root,item,batch);}
+    if(Hermes.privatePath(inspection?.batch)){
+      if((hermesFences||=Hermes.standingFence(root)).has(job.primaryId))throw Error('ORIGINAL_TRANSACTION_FENCE');
+      const b=Hermes.read(root,privateDir,inspection.batch),i=b.items.find(x=>x.primaryId===job.primaryId);
+      Hermes.validate(b,S.read(root,Hermes.PARTITION));
+      if(!i||S.hash(i)!==inspection.version)throw Error('HERMES_IMMUTABLE_SOURCE_RETURN_REQUIRED');
+      if(Object.keys(job.fields).some(k=>Source.known(snapshot.rows.find(r=>r.PRIMARY_ID===job.primaryId)?.p?.[k])))throw Error('HERMES_BLANK_ONLY');
+    }
     if(Date.parse(state.items[job.itemKey]?.retryAfter)>Date.now())throw Error('WRITER_RETRY_BACKOFF');
     const rows = snapshot.rows.filter(r => r.PRIMARY_ID === job.primaryId);
     if (rows.length !== 1 || protectedRow(rows[0]) || !same(rows[0], job.identity) || fences.has(job.primaryId)) throw Error('CANONICAL_IDENTITY_OR_TRANSACTION_FENCE');
@@ -84,7 +92,7 @@ async function submit({root, privateDir, state, jobs, runId, deps, onInvalid}) {
   S.immutable(privateDir, requestId + '-payload.json', payload);
   const tx = {requestId, ids:jobs.map(j => j.primaryId), itemKeys:jobs.map(j => j.itemKey), status:'POST_IN_FLIGHT_UNKNOWN',
     at:new Date().toISOString(), payloadSha256:S.hash(payload), requests:requests.map((r,n) => ({requestId:r.ruling.requestId, primaryId:r.ruling.primaryId,
-      identity:jobs[n].identity, fields:r.ruling.fields, sourceSha256:jobs[n].sourceSha256}))};
+      identity:jobs[n].identity, ...(Hermes.privatePath(state.items[jobs[n].itemKey]?.batch)?{evidenceProvider:'Hermes'}:{}), fields:r.ruling.fields, sourceSha256:jobs[n].sourceSha256}))};
   // The public checkpoint and item fences reach disk before the one POST.
   state.transactions[requestId] = tx;
   for (const j of jobs) Object.assign(state.items[j.itemKey], {status:'POST_IN_FLIGHT_UNKNOWN', transactionId:requestId});

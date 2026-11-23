@@ -1,4 +1,5 @@
 'use strict';
+const Hermes=require('./hermes-returns.cjs');
 const fs = require('node:fs'), path = require('node:path'), cp = require('node:child_process'), vm = require('node:vm');
 const S = require('./store.cjs'), C = require('./collect.cjs'), Source = require('./source.cjs'), T = require('./transactions.cjs');
 const R = require('../source-intake/writer-reader'), Lock = require('../automation-run-lock.cjs');
@@ -18,7 +19,7 @@ function publicReport(state, coverage, at) {
     canonicalSource:state.canonicalSource||null, coverage, noProcessingCap:true, savingsMeasured:false};
 }
 async function inspectReturns({root, privateDir, state, snapshot, apply, sourceVerify = Source.verify, now = Date.now(), select = () => true}) {
-  let fences;
+  let fences,hermesFences;
   const cache = new Map(),discovery=require('../source-intake/discovery-inputs').index(root);
   for (const item of Object.values(state.items)) {
     if (!select(item)) continue;
@@ -29,8 +30,12 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     if (terminal(item.status) || item.transactionId || T.rejectedUnchanged(item,snapshot.status?.build?.commit) || retryHeld&&!sourceOnly) continue;
     if (state.batches[item.batch]?.status !== 'VALIDATED') continue;
     if (/OUTCOME/.test(item.taskKey)) { exception(state,item,'PRIVATE_MAIL_SOURCE_AND_EVENT_RECONCILIATION_REQUIRED','CODE'); continue; }
-    if (!cache.has(item.batch)) cache.set(item.batch,S.read(root,item.batch));
-    const batch = cache.get(item.batch);let evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
+    if (!cache.has(item.batch)){
+      try{cache.set(item.batch,Hermes.read(root,privateDir,item.batch));}
+      catch(e){if(!Hermes.privatePath(item.batch))throw e;exception(state,item,'HERMES_PRIVATE_RETURN_UNAVAILABLE','CODE');continue;}
+    }
+    const batch = cache.get(item.batch),hermes=Hermes.privatePath(item.batch);let evidence = batch.items.find(i => (i.key || i.primaryId) === item.itemKey);
+    if (hermes&&(!evidence||S.hash(evidence)!==item.version)) {exception(state,item,'HERMES_IMMUTABLE_SOURCE_RETURN_REQUIRED','CODE');continue;}
     if (!evidence) { exception(state,item,'SOURCE_BOUND_ITEM_MISSING','CODE'); continue; }
     const returned=evidence; // the helper's item as delivered; a reviewed source replaces only the evidence below
     try{evidence=require('../routine-handoffs/exception-work.cjs').evidence(root,item,evidence);}catch(e){exception(state,item,e.message,'AI');continue;}
@@ -47,6 +52,10 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
       if (rows.length !== 1) { exception(state,item,'EXACT_LIVE_IDENTITY_REQUIRED','AI'); continue; }
       row = rows[0];
       if (T.protectedRow(row)) { item.status='PROTECTED_SKIP'; delete state.exceptions[item.key]; continue; }
+      if(hermes){
+        try{if((hermesFences||=Hermes.standingFence(root)).has(row.PRIMARY_ID)){exception(state,item,'ORIGINAL_TRANSACTION_FENCE','CODE');continue;}}
+        catch(e){exception(state,item,e.message,'CODE');continue;}
+      }
       if ((fences ||= T.fenceIndex(root,state)).has(row.PRIMARY_ID)) { exception(state,item,'ORIGINAL_TRANSACTION_FENCE','CODE'); continue; }
       expected = T.identity(row);
       if (!T.same(row,evidence.sourceEvidence)) { exception(state,item,'CONFLICTING_SOURCE_IDENTITY','AI'); continue; }
@@ -64,13 +73,19 @@ async function inspectReturns({root, privateDir, state, snapshot, apply, sourceV
     }
     try {
       const options={item:evidence,expected,privateDir,root,discovery,now,requireRoleText:enrichment,validateClaims:enrichment,sourceUrls:row?require('../enrich-ats-pay/lib.js').ATS_URL_KEYS.map(k=>row.p?.[k]).filter(v=>typeof v==='string'&&/^https:\/\/\S+$/.test(v)):[initiatingUrl].filter(Boolean)};
-      const captured=Source.capturedSource(options);
+      if(hermes){
+        const url=Hermes.trustedUrl(evidence.sourceEvidence.url,options.sourceUrls);
+        if(!url)throw Error('HERMES_CANONICAL_SOURCE_ROUTE_REQUIRED');
+        options.sourceUrls=[url];options.independentFresh=true;
+      }
+      const captured=hermes?null:Source.capturedSource(options);
       if(!captured&&retryHeld)continue;
       if(!captured&&sourceBlocked){exception(state,item,'WORKING_SOURCE_ROUTE_REQUIRED','CODE');continue;}
       item.attempts++;item.sourceParserVersion=Source.PARSER_VERSION;item.sourceRetryVersion=Source.RETRY_VERSION;
       const source=captured||await sourceVerify(options);
       if (enrichment) {
         const meta={},fields=Source.enrichmentFields(source,row,meta);
+        if(hermes){Hermes.blanks(fields,row,evidence,Source);delete meta.replace;}
         if (!Object.keys(fields).length) { if(source.sourceCaptured){exception(state,item,'CAPTURED_EVIDENCE_MISSING_REQUESTED_FIELDS','CODE');continue;}item.status='NO_MISSING_SUPPORTED_FIELDS'; delete state.exceptions[item.key]; continue; }
         item.prepared={primaryId:row.PRIMARY_ID,itemKey:item.key,identity:expected,fields,sourceSha256:source.sourceSha256,...(meta.replace?{replace:meta.replace}:{})};
         item.status='READY_ENRICHMENT';
@@ -152,12 +167,13 @@ async function processReturnedEvidence({root,privateDir,state,snapshot,apply,run
 async function main(mode='inventory', options={}) {
   if (!['inventory','preview','apply'].includes(mode)) throw Error('Use inventory, preview or apply');
   const apply=mode==='apply', root=ROOT, state=C.empty(), direct=require('./direct-returns.cjs');
-  const {returnsOnly, batches}=direct.options(options), select=returnsOnly?direct.selector(root,batches):()=>true;
+  const {returnsOnly,batches}=direct.options(options);
   Object.assign(state,S.read(root,STATE,state));
   if(state.schema!=='forge.programmed-coordinator.v1'||!state.batches||!state.items||!state.transactions||!state.exceptions)throw Error('INVALID_DURABLE_COORDINATOR_STATE');
   const commit=cp.execFileSync('git',['rev-parse','HEAD'],{cwd:root,encoding:'utf8'}).trim();
   const runId=process.env.FORGE_COORDINATOR_HELD_RUN_ID || 'FORGE-CODE-CHATGPT-'+new Date().toISOString().replace(/[^0-9TZ]/g,'');
   const privateDir=process.env.FORGE_PRIVATE_WORK_DIR, lock=process.env.FORGE_PRODUCTION_LOCK;
+  const select=returnsOnly?direct.selector(root,batches,privateDir):()=>true;
   let owned=false, deps, stage='initialization';
   if(apply) {
     if (!lock || !privateDir) throw Error('Shared production lock and private work directory required');
@@ -179,7 +195,11 @@ async function main(mode='inventory', options={}) {
       routine=returnsOnly?direct.capture({root,privateDir,commit,runId,apply}):(await require('../routine-handoffs/run.cjs').run({root,privateDir,commit,runId,apply})).report;
     }
     if(apply&&!returnsOnly)require('../routine-handoffs/return-repair.cjs').repair(root,commit,{apply:true});
-    const collected=C.collect({root,state,commit});
+    if(apply&&!batches.length){
+      const ingress=Hermes.capture({root,privateDir,routing:C.hermesRouting});
+      if(routine)routine.hermes=ingress;
+    }
+    const collected=C.collect({root,privateDir,state,commit});
     if(returnsOnly)direct.checkSelected(state,batches);
     if(mode!=='inventory') {
       if(!privateDir || !path.isAbsolute(privateDir) || path.resolve(privateDir).toLowerCase()===root.toLowerCase() || path.resolve(privateDir).toLowerCase().startsWith(root.toLowerCase()+path.sep)) throw Error('Private output must be outside the public checkout');

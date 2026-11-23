@@ -1,4 +1,5 @@
 'use strict';
+const Hermes=require('./hermes-returns.cjs');
 // A processing scope, not another Writer or permission to trust helper output.
 const path=require('node:path'),S=require('./store.cjs'),Reports=require('../routine-handoffs/reports.cjs');
 const FILE='state/DIRECT_RETURN_TRANSPORT.json';
@@ -17,10 +18,11 @@ function args(argv){
  }
  return options(value);
 }
-function selector(root,batches=[]){
+function selector(root,batches=[],privateDir){
  const selected=new Set(batches),cache=new Map();
  return item=>{
   if(!item||selected.size&&!selected.has(item.batch))return false;
+  if(Hermes.privatePath(item.batch))return !!privateDir;
   if(!cache.has(item.batch)){try{cache.set(item.batch,S.read(root,item.batch,null));}catch{cache.set(item.batch,null);}}
   const b=cache.get(item.batch);
   return !!b&&SCHEMAS.has(b.schema)&&b.taskKey===item.taskKey;
@@ -29,7 +31,7 @@ function selector(root,batches=[]){
 function intakeKeys(root,state,select){
  const keys=new Set(),cache=new Map();
  for(const item of Object.values(state.items)){
-  if(!select(item)||state.batches[item.batch]?.status!=='VALIDATED')continue;
+  if(!select(item)||Hermes.privatePath(item.batch)||state.batches[item.batch]?.status!=='VALIDATED')continue;
   if(!cache.has(item.batch))cache.set(item.batch,S.read(root,item.batch));
   const batch=cache.get(item.batch),source=batch.items.find(i=>(i.key||i.primaryId)===item.itemKey);
   const enrichment=batch.schema==='forge.shared-helper-batch.v1'?source?.kind==='ENRICHMENT':/ENRICHMENT/.test(item.taskKey);
