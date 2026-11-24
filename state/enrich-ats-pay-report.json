@@ -1,10 +1,10 @@
 {
- "at": "2026-11-24T08:20:08.272Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T081437238Z",
+ "at": "2026-11-24T09:01:00.470Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T085311463Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-24T08:14:50.160Z",
+  "readAt": "2026-11-24T08:53:22.590Z",
   "sha256": "4a78728ba039306925a0f01df5aa9149b1369f82db40b498207185473d6d716f",
   "rows": 9946
  },
@@ -35,11 +35,23 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261123T083043585Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-3A7B9DA86294",
+     "V2I-4CB6577CFBD9",
+     "V2I-2B803853F201",
+     "V2I-629B28E3648B",
+     "V2I-F9478B3DEF9F"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 6,
-  "fenced_ids": 39
+  "pending_batches": 5,
+  "fenced_ids": 34
  },
  "anchors": 1467,
  "archive_anchors": 5,
@@ -48,27 +60,39 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 408,
- "skipped_recent": 171,
- "submitted": 0,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 412,
+ "skipped_recent": 170,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
+ "agg_tried": {
+  "linkedin": 4
+ },
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 3
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429",
+   "429",
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -76,17 +100,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 6,
@@ -114,7 +138,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-24T08:14:57.287Z",
+  "profile_as_of": "2026-11-24T08:53:28.345Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12053,8 +12077,10 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 415,
- "nothing_found": 415,
+ "not_attempted": 417,
+ "nothing_found": 419,
+ "attempt_only_skipped": 1,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12064,10 +12090,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 31,
-  "no_overview": 815,
+  "no_overview": 820,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 2521,
+  "fenced": 2516,
   "inactive": 6579,
   "by_label": {},
   "sample": []
@@ -12076,10 +12102,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 573,
- "network_requests": 6,
- "planned": 0,
+ "roles_researched": 578,
+ "network_requests": 12,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12087,10 +12114,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 305,
-  "SOURCE_RESEARCH_REQUIRED": 810,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 27,
-  "EVIDENCE_FOUND": 41,
+  "NOT_YET_ATTEMPTED": 307,
+  "SOURCE_RESEARCH_REQUIRED": 812,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
+  "EVIDENCE_FOUND": 42,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -18870,24 +18897,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-945D41251C45",
-   "company": "Cummins Inc.",
-   "title": "Manufacturing Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T07:16:46.857Z",
-   "retryAt": "2026-11-24T08:16:46.857Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492879182",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A25994AA3001",
    "company": "Anduril",
    "title": "Staff Manufacturing Engineer, Space Vehicle Integration",
@@ -19776,6 +19785,25 @@
    "lastAttemptAt": null,
    "retryAt": null,
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-629B28E3648B",
+   "company": "Essity",
+   "title": "Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-24T08:54:37.862Z",
+   "retryAt": "2026-11-24T10:54:37.862Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491672000",
+     "status": "HTTP_429"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -21168,6 +21196,39 @@
    "id": "V2I-619991CE9CB5",
    "company": "Stantec",
    "title": "Principal / Senior Principal Hydrogeologist",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3A7B9DA86294",
+   "company": "Carrier",
+   "title": "Production Quality Leader - Air Cooled Value Stream",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-24T08:54:40.973Z",
+   "retryAt": "2026-11-24T10:54:40.973Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487860246",
+     "status": "HTTP_429"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4CB6577CFBD9",
+   "company": "Carrier",
+   "title": "Production Quality Leader – Water Cooled Value Stream",
    "needs": [
     "SALARY",
     "DEGREE"
@@ -30515,82 +30576,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-3A7B9DA86294",
-   "company": "Carrier",
-   "title": "Production Quality Leader - Air Cooled Value Stream",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T08:32:34.204Z",
-   "retryAt": "2026-11-23T09:32:34.204Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487860246",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4CB6577CFBD9",
-   "company": "Carrier",
-   "title": "Production Quality Leader – Water Cooled Value Stream",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T08:33:04.383Z",
-   "retryAt": "2026-11-23T09:33:04.383Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4487849682",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2B803853F201",
-   "company": "Crowe",
-   "title": "Performance Improvement Operations Consulting Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T08:33:07.548Z",
-   "retryAt": "2026-11-23T09:33:07.548Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4485644574",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-629B28E3648B",
-   "company": "Essity",
-   "title": "Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T08:33:36.298Z",
-   "retryAt": "2026-11-23T09:33:36.298Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491672000",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-D00717F0C5D7",
    "company": "Anduril",
    "title": "Staff Manufacturing Engineer, Sensors and Avionics",
@@ -32461,6 +32446,20 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-F9478B3DEF9F",
+   "company": "Green Energy Origin (GEO)",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-1AEA91315823",
    "company": "SpaceX",
    "title": "Sr. Manager, IT Systems Engineering",
@@ -32512,25 +32511,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-F9478B3DEF9F",
-   "company": "Green Energy Origin (GEO)",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T08:34:04.650Z",
-   "retryAt": "2026-11-23T09:34:04.650Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491203837",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A3CB8CF3FC1B",
    "company": "Rose BioSolutions",
    "title": "Associate Director of Quality Systems",
@@ -32568,7 +32548,50 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-2B803853F201",
+   "fields": {
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 112000,
+    "SALARY_BASE_HIGH": 181000,
+    "SALARY_MIDPOINT": 146500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-24",
+    "SALARY_SOURCE": "site-estimate:https://www.linkedin.com/jobs/view/4485644574",
+    "SALARY_NOTE": "FORGE-ESTIMATE with site-estimate input; FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-500BC7369245, V2I-5EBC7E632DCD, V2I-DF7A248C7351, V2I-36546C950BCF, V2I-56565F1EB199, V2I-D325BAEA7DEC, V2I-7B31E7C37157]; 7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 13 eligible roles from the same comparables, so LOW; site-labeled THIRD_PARTY_ESTIMATE https://www.linkedin.com/jobs/view/4485644574 observed 2026-11-23T08:33:07.523Z; employer disclosure unverified; no employer salary lookup required; amount excluded: annual USD base range not established; BLS TN 111021 P25-P90 $73K-$231K; site estimate accepted without employer salary lookup, employer disclosure unverified; uncertainty: wide, few or distant comparables",
+    "SALARY_SCORE_POINT": 163750
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "SITE_ESTIMATE_INPUT",
+   "id": "V2I-2B803853F201",
+   "company": "Crowe",
+   "title": "Performance Improvement Operations Consulting Manager",
+   "location": "Nashville, TN",
+   "posting": "https://www.linkedin.com/jobs/view/4485644574/",
+   "est": [
+    112000,
+    181000,
+    "LOW"
+   ],
+   "source": "SITE_ESTIMATE_CONTEXT",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 13 eligible roles from the same comparables, so LOW; site-labeled THIRD_PARTY_ESTIMATE https://www.linkedin.com/jobs/view/4485644574 observed 2026-11-23T08:33:07.523Z; employer disclosure unverified; no employer salary lookup required; amount excluded: annual USD base range not established",
+   "comparables": [
+    "V2I-500BC7369245",
+    "V2I-5EBC7E632DCD",
+    "V2I-DF7A248C7351",
+    "V2I-36546C950BCF",
+    "V2I-56565F1EB199",
+    "V2I-D325BAEA7DEC",
+    "V2I-7B31E7C37157"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
