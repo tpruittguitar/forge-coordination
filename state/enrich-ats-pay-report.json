@@ -1,15 +1,15 @@
 {
- "at": "2026-11-24T19:18:54.109Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T191528582Z",
+ "at": "2026-11-24T19:30:24.459Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T192420443Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-24T19:15:37.014Z",
-  "sha256": "c648d6fe07010d0c817045847ed1e629065934169f413d325bbd6f413e3769b9",
-  "rows": 9965
+  "readAt": "2026-11-24T19:24:31.095Z",
+  "sha256": "c8010dfedd6a7e39c4419ee373434844044ddd57e5e918775e7ba8b85685eb9b",
+  "rows": 9966
  },
- "rows": 9965,
- "eligible": 1196,
+ "rows": 9966,
+ "eligible": 1195,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -43,19 +43,19 @@
   "pending_batches": 4,
   "fenced_ids": 39
  },
- "anchors": 1506,
+ "anchors": 1510,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 17,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 411,
- "skipped_recent": 172,
- "submitted": 0,
+ "estimate_waiting_for_posting": 431,
+ "skipped_recent": 152,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
@@ -67,18 +67,14 @@
  "agg_tried": {
   "linkedin": 1
  },
- "agg_read": {},
- "agg_pay": {},
- "agg_failed": {
+ "agg_read": {
   "linkedin": 1
  },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_pay": {},
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 18,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -111,7 +107,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
+  "targets": 1,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -124,14 +120,14 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-24T19:15:43.866Z",
+  "profile_as_of": "2026-11-24T19:24:36.697Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 23,
+ "ats_candidates": 24,
  "ats_by_kind": {
   "workday": 2,
-  "greenhouse": 20,
+  "greenhouse": 21,
   "lever": 1
  },
  "skipped_closed": 12,
@@ -11875,7 +11871,7 @@
   }
  },
  "salary_review": {
-  "eligible": 1690,
+  "eligible": 1689,
   "due": 209,
   "reviewed": 0,
   "target_reads": 0,
@@ -11892,8 +11888,8 @@
   "degree": 0
  },
  "not_attempted": 418,
- "nothing_found": 419,
- "source_origin_blocks": {},
+ "nothing_found": 418,
+ "attempt_only_skipped": 21,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -11903,7 +11899,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 32,
-  "no_overview": 833,
+  "no_overview": 834,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 2521,
@@ -11915,10 +11911,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 586,
- "network_requests": 7,
- "planned": 0,
+ "roles_researched": 606,
+ "network_requests": 24,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -11926,10 +11923,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 305,
-  "SOURCE_RESEARCH_REQUIRED": 799,
+  "NOT_YET_ATTEMPTED": 304,
+  "SOURCE_RESEARCH_REQUIRED": 798,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 27,
-  "EVIDENCE_FOUND": 47,
+  "EVIDENCE_FOUND": 48,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -11984,6 +11981,19 @@
    "id": "V2I-80CCCC41C6A8",
    "company": "Blue Origin",
    "title": "Sr Director, Launch Recovery",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E836D1414E76",
+   "company": "Terex Corporation",
+   "title": "Director Operations",
    "needs": [
     "SALARY"
    ],
@@ -12487,24 +12497,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-91C63174CB65",
-   "company": "IRP Medical",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-24T19:16:37.765Z",
-   "retryAt": "2026-11-25T11:16:37.765Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-B080DF4FC324",
    "company": "Emerald Technologies",
    "title": "Plant Manager",
@@ -12548,50 +12540,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-8B74BC22199B",
-   "company": "QXO",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:20.313Z",
-   "retryAt": "2026-11-24T19:23:20.313Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B9405D3189E2",
-   "company": "Anduril",
-   "title": "Head of Operations, Intelligence Systems",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:22.070Z",
-   "retryAt": "2026-11-24T19:23:22.070Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5291343007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D60D779FDF27",
-   "company": "kimball homestead",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:22.071Z",
-   "retryAt": "2026-11-24T19:23:22.071Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-AD58DE56BE9B",
    "company": "Western Union",
    "title": "Director, Product Operations – Wallets and Card Issuance",
@@ -12620,6 +12568,24 @@
    "lastAttemptAt": "2026-11-24T18:56:19.847Z",
    "retryAt": "2026-11-24T19:56:19.847Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-91C63174CB65",
+   "company": "IRP Medical",
+   "title": "Director of Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-24T19:16:37.765Z",
+   "retryAt": "2026-11-25T11:16:37.765Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
+     "status": "HTTP_429"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -13396,20 +13362,6 @@
    "id": "V2I-1864B7A2F1FB",
    "company": "Blue Origin",
    "title": "Senior Director, Operations Support",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
-   "lastAttemptAt": null,
-   "retryAt": null,
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E836D1414E76",
-   "company": "Terex Corporation",
-   "title": "Director Operations",
    "needs": [
     "SALARY",
     "DEGREE"
@@ -17588,6 +17540,24 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-D1ED3B2A515C",
+   "company": "Micron Technology",
+   "title": "Senior Engineer/Staff/Principal Engineer, CPIE RAM Detection Strategy",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
+   "lastAttemptAt": "2026-11-10T20:30:54.840Z",
+   "retryAt": "2026-11-11T12:30:54.840Z",
+   "attempts": [
+    {
+     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315861234",
+     "status": "HTTP_403"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-55A7B3BA4E43",
    "company": "Tesla",
    "title": "Quality Manager, Cell Electrode",
@@ -18531,6 +18501,23 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-DA1F4B5C1794",
+   "company": "Howmet Aerospace",
+   "title": "Manufacturing Production Planner - IGT",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
+   "lastAttemptAt": "2026-11-22T19:13:40.836Z",
+   "retryAt": "2026-11-23T11:13:40.836Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-6E8C3632387C",
    "company": "Wave Central",
    "title": "Senior Operations Manager",
@@ -19107,307 +19094,6 @@
    "retryAt": "2026-11-25T07:59:55.774Z",
    "attempts": [],
    "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
-  },
-  {
-   "id": "V2I-BDFD91ABD290",
-   "company": "United States",
-   "title": "Nova Global",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:25.454Z",
-   "retryAt": "2026-11-24T19:23:25.454Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
-     "status": "FULL_POSTING_READ"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A25994AA3001",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Space Vehicle Integration",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:27.093Z",
-   "retryAt": "2026-11-24T19:23:27.093Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303750007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A9A1418340FD",
-   "company": "Teradyne",
-   "title": "Customer Production Support Manager (Global Customer Service) - Austin, TX",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:27.095Z",
-   "retryAt": "2026-11-24T19:23:27.095Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5343D189733D",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Actuators",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:28.700Z",
-   "retryAt": "2026-11-24T19:23:28.700Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5266126007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B9E378384958",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Propulsion",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:30.297Z",
-   "retryAt": "2026-11-24T19:23:30.297Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5250964007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AAACFEA89627",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Manufacturing Automation",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:31.879Z",
-   "retryAt": "2026-11-24T19:23:31.879Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5234657007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BCC33FAB129F",
-   "company": "Anduril",
-   "title": "Staff Robotics Engineer, Manufacturing Automation",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:33.464Z",
-   "retryAt": "2026-11-24T19:23:33.464Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5234655007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9978B4FAA19A",
-   "company": "Anduril",
-   "title": "Staff Mechanical Engineer, Manufacturing Automation",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:35.051Z",
-   "retryAt": "2026-11-24T19:23:35.051Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5234641007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BD9CC97FC7B8",
-   "company": "Anduril",
-   "title": "Staff Automation Engineer, Manufacturing Automation",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:36.645Z",
-   "retryAt": "2026-11-24T19:23:36.645Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5234626007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2DDED6245BC7",
-   "company": "Anduril",
-   "title": "Staff Controls Engineer, Manufacturing Automation",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:38.236Z",
-   "retryAt": "2026-11-24T19:23:38.236Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5234566007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-02B99FB0C4AC",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Fury",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:39.825Z",
-   "retryAt": "2026-11-24T19:23:39.825Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5232410007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A8DEB2B7AEEE",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Thunder",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:41.410Z",
-   "retryAt": "2026-11-24T19:23:41.410Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5219430007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E72EDDA70A83",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Space Systems",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:42.991Z",
-   "retryAt": "2026-11-24T19:23:42.991Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5090409007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7E2937B24249",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Mechanical Actuation Systems",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:44.640Z",
-   "retryAt": "2026-11-24T19:23:44.640Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5082600007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D00717F0C5D7",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Sensors and Avionics",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:46.242Z",
-   "retryAt": "2026-11-24T19:23:46.242Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303733007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BAB82A58D799",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Propulsion & Energetics",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:47.836Z",
-   "retryAt": "2026-11-24T19:23:47.836Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303727007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7126C2E717B3",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Low Observable",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:49.444Z",
-   "retryAt": "2026-11-24T19:23:49.444Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5275363007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
    "id": "V2I-B837D5600C29",
@@ -21850,20 +21536,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-E235F7D2C8A5",
-   "company": "Northrop Grumman",
-   "title": "Chief Staff Integrated Functional Capability Lead (IFCL) (AHT)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
-   "lastAttemptAt": null,
-   "retryAt": null,
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-D16F3372A1CB",
    "company": "TeamHealth",
    "title": "Travel Hospitalist Medical Director",
@@ -23541,25 +23213,6 @@
    "attempts": [
     {
      "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010317919420",
-     "status": "HTTP_403"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D1ED3B2A515C",
-   "company": "Micron Technology",
-   "title": "Senior Engineer/Staff/Principal Engineer, CPIE RAM Detection Strategy",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
-   "lastAttemptAt": "2026-11-10T20:30:54.840Z",
-   "retryAt": "2026-11-11T12:30:54.840Z",
-   "attempts": [
-    {
-     "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010315861234",
      "status": "HTTP_403"
     }
    ],
@@ -29872,24 +29525,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-D9D614DDCA2C",
-   "company": "Coreshell Technologies",
-   "title": "Project Manager, Facilities and Infrastructure",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
-   "lastAttemptAt": "2026-11-22T19:13:40.833Z",
-   "retryAt": "2026-11-23T11:13:40.833Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-39FCA635F92E",
    "company": "Norm Reeves Ford Lincoln",
    "title": "Service Manager - Ford/Lincoln",
@@ -30073,24 +29708,6 @@
    "id": "V2I-10D89791B531",
    "company": "Nidec Motor Corporation",
    "title": "Elevator Assembly",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "ENRICHMENT_WORKER_PARTITION_RESERVED",
-   "lastAttemptAt": "2026-11-22T19:13:40.836Z",
-   "retryAt": "2026-11-23T11:13:40.836Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DA1F4B5C1794",
-   "company": "Howmet Aerospace",
-   "title": "Manufacturing Production Planner - IGT",
    "needs": [
     "SALARY",
     "DEGREE"
@@ -32139,19 +31756,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-A4C73A8D927F",
-   "company": "CPS, Inc.",
-   "title": "Global Quality Assurance Director - Specialty Chemicals",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T18:23:49.582Z",
-   "retryAt": "2026-11-24T19:23:49.582Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-1AEA91315823",
    "company": "SpaceX",
    "title": "Sr. Manager, IT Systems Engineering",
@@ -32240,7 +31844,18 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-B174AB57FC09",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/relativity/jobs/8953967002?gh_jid=8953967002",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
