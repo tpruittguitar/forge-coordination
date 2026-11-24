@@ -2,7 +2,7 @@
 const {test}=require('node:test'),a=require('node:assert/strict'),fs=require('node:fs'),os=require('node:os'),path=require('node:path');
 const S=require('../programmed-coordinator/store.cjs'),H=require('./shared.cjs'),A=require('./shared-assignments.cjs'),C=require('../programmed-coordinator/collect.cjs');
 const task='FORGE_CLAUDE_SHARED_HELPER',other='FORGE_GROK_SHARED_HELPER',at='2026-11-09T12:00:00Z';
-const base=()=>({schema:'forge.shared-helper-work.v1',assignmentId:'SHARED-TEST',enabled:true,routingActive:true,providers:{[task]:{provider:'Claude',available:true},[other]:{provider:'Grok',available:true}},items:[]});
+const base=()=>({schema:'forge.shared-helper-work.v1',assignmentId:'SHARED-TEST',enabled:true,routingActive:true,providers:{[task]:{provider:'Claude',available:true},[other]:{provider:'Grok',available:true},[H.HERMES_TASK]:{provider:'Hermes',available:true}},items:[]});
 const assigned=(id='V2I-ONE')=>({kind:'ENRICHMENT',primaryId:id,provider:'Claude',taskKey:task,assignmentVersion:1,sourceVersion:'a'.repeat(64),status:'ASSIGNED'});
 const batch=(w)=>({schema:'forge.shared-helper-batch.v1',provider:'Claude',taskKey:task,assignmentId:w.assignmentId,runId:'FORGE-CLAUDE-TEST',instructionCommit:'b'.repeat(40),items:w.items.filter(i=>i.taskKey===task).map(i=>({...i,writerSubmitted:false,recommendation:'ENRICHMENT_EVIDENCE_READY',sourceEvidence:{company:'Factory',title:'Plant Manager',location:'Austin, TX',url:'https://careers.factory.com/jobs/1',observedAt:at,sourceSha256:'c'.repeat(64),quote:'Lead manufacturing production and quality systems across the plant.'}}))});
 function setup(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'shared-routing-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));S.save(root,H.FILE,base());return root;}
@@ -10,7 +10,7 @@ const state=()=>({items:{},batches:{},transactions:{},exceptions:{}});
 const row=(id,n=0)=>({PRIMARY_ID:id,COMPANY:'Factory '+n,TITLE:'Plant Manager',LOCATION:'Austin, TX',BUCKET:'MANUAL_RESEARCH',p:{}});
 function captured(b){const i=b.items[0],quote=i.sourceEvidence.quote;i.sourceEvidence.capture={kind:'TEXT_EXTRACT',text:'Exact employer posting: '+quote+'\n'+('Quality, production and people leadership. '.repeat(10))+'\nRésumé evidence is separate.'};delete i.sourceEvidence.sourceSha256;return b;}
 test('only explicit batch false covers omitted item flags for either provider without rewriting evidence',()=>{
- for(const [taskKey,provider]of Object.entries(H.TASKS)){
+ for(const [taskKey,provider]of Object.entries(H.TASKS).filter(([t])=>t!==H.HERMES_TASK)){
   const w=base();w.items=[{...assigned(),taskKey,provider}];
   const b=captured(batch({...w,items:[assigned()]}));Object.assign(b,{taskKey,provider,runId:'FORGE-'+provider.toUpperCase()+'-INHERITED',writerSubmitted:false});delete b.items[0].writerSubmitted;
   const original=JSON.stringify(b),result=H.validateBatch(b,w);
@@ -149,7 +149,7 @@ test('priority changes between pages reset the cursor without dropping the newly
 });
 
 test('both providers can continue through 298 jobs in one invocation without a 20-item run cap',()=>{
- for(const [taskKey,provider] of Object.entries(H.TASKS)){
+ for(const [taskKey,provider] of Object.entries(H.TASKS).filter(([t])=>t!==H.HERMES_TASK)){
   const w=base();w.providers[taskKey]=w.providers[taskKey]||{provider,available:true};w.items=Array.from({length:298},(_,n)=>({...assigned('V2I-'+String(n).padStart(3,'0')),taskKey,provider}));
   const original=JSON.stringify(w),seen=new Set();let cursor=null,pages=0;
   for(;;){

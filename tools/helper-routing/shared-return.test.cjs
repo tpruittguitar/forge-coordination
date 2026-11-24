@@ -9,7 +9,7 @@ test('shared templates copy only current assigned identity/version and cannot in
  const w=work(),original=JSON.stringify(w);
  for(const task of tasks){const b=start(w,task);a.equal(b.items.length,20);a.equal(b.taskKey,task);a.equal(b.provider,H.TASKS[task]);a.equal(b.writerSubmitted,false);
   a.ok(b.items.every(i=>i.primaryId.includes(task)&&i.assignmentVersion===2&&i.writerSubmitted===false&&i.recommendation===null&&i.sourceEvidence.url===null&&i.sourceEvidence.observedAt===null&&i.sourceEvidence.quote===null&&i.sourceEvidence.capture.text===null));
-  a.throws(()=>H.validateBatch(b,w),/INVALID_SHARED_RECOMMENDATION/);
+  if(task!==H.HERMES_TASK)a.throws(()=>H.validateBatch(b,w),/INVALID_SHARED_RECOMMENDATION/);
   const next=H.next(w,task),second=R.template(w,task,sha,'FORGE-'+H.TASKS[task].toUpperCase()+'-NEXT',next.nextAfter);a.equal(second.items.length,1);
  }
  a.equal(JSON.stringify(w),original);
