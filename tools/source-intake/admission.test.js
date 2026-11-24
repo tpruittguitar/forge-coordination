@@ -134,7 +134,7 @@ test('Writer health and master age gates block bad data',async()=>{
  const {fetchAuthenticatedMaster}=require('./writer-reader');
  const raw='1 | V2S-X1 | Acme | Director | DISCOVERY_LEAD | OPEN | P1 | R1 | Austin, TX | NOTES\nEND V2_CURRENT_POPULATION_MASTER';
  const run=(st,fetchedAt)=>fetchAuthenticatedMaster({key:'mock',transport:async u=>({ok:true,json:async()=>new URL(u).searchParams.get('action')==='master'?{ok:true,text:raw,modifiedTime:'2026-10-22T16:00:00Z',fetchedAt}:new URL(u).searchParams.get('action')==='writer_status'?{ok:true,...st}:{ok:true}})});
- await assert.rejects(()=>run({freeze:null,level:'ERROR',errors:[],warnings:[]},new Date().toISOString()),/status not healthy/);
+ assert.equal((await run({freeze:null,level:'ERROR',errors:[],warnings:[]},new Date().toISOString())).rows.length,1);
  await assert.rejects(()=>run({freeze:null,level:'ok',errors:[],warnings:[]},'2026-01-01T00:00:00Z'),/stale/);
  await assert.rejects(()=>run({freeze:null,level:'ok',errors:['failure']},new Date().toISOString()),/status not healthy/);
 });

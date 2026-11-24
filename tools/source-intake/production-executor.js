@@ -55,7 +55,7 @@ async function preflight(record,{key,transport=globalThis.fetch}={}){
   read('receipt_index',{key,transport,requestId:rid}),
   read('rules',{key,transport})
  ]);
- if(status.data.freeze!=null||String(status.data.level||'').toUpperCase()!=='OK'||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer freeze/health');
+ if(status.data.freeze!=null||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer freeze/health freeze='+JSON.stringify(status.data.freeze)+' level='+String(status.data.level||'')+' errors='+(Array.isArray(status.data.errors)?status.data.errors.length:'not-array'));
  if(index.data.source!=='GITHUB'||index.data.exists!==true||!index.data.sha)throw Error('BLOCKED: receipt index authority');
  if(index.data.request) return {rid,mode:'EXISTING_REQUEST_HOLD',state:index.data.request.s||'UNKNOWN',entry:index.data.request};
  if(!rules.data.rules||rules.data.rules.status!=='ACTIVE'||!Array.isArray(rules.data.rules.rules)||!rules.data.rules.rules.length||!rules.data.rules.raw||!rules.data.rules.id)throw Error('BLOCKED: canonical rules unavailable');

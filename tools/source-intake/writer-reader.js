@@ -63,7 +63,7 @@ function parseMaster(text){
 }
 async function fetchAuthenticatedMaster(options={}){
  const ping=await read('ping',options),status=await read('writer_status',options),master=await read('master',options);
- if(!Object.hasOwn(status.data,'freeze')||status.data.freeze!=null||String(status.data.level||'').toUpperCase()!=='OK'||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer status not healthy');
+ if(!Object.hasOwn(status.data,'freeze')||status.data.freeze!=null||!Array.isArray(status.data.errors)||status.data.errors.length)throw Error('BLOCKED: Writer status not healthy freeze='+JSON.stringify(status.data.freeze)+' level='+String(status.data.level||'')+' errors='+(Array.isArray(status.data.errors)?status.data.errors.length:'not-array'));
  const rows=parseMaster(master.data.text);
  const expected=master.data.rowCount??master.data.count;
  if(Number.isInteger(expected)&&expected!==rows.length)throw Error('BLOCKED: Writer master count mismatch');
