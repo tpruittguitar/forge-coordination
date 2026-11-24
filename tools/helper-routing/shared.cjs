@@ -2,13 +2,13 @@
 // One coordinator-owned reservation pool. Helpers never claim or write canonical jobs.
 const path=require('node:path'),S=require('../programmed-coordinator/store.cjs'),HF=require('./helper-fields.cjs');
 const FILE='control/SHARED_HELPER_WORK.json',ROOT=path.resolve(__dirname,'../..');
-const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_SNIFFER_SHARED_HELPER:'Sniffer'};
+const TASKS={FORGE_CLAUDE_SHARED_HELPER:'Claude',FORGE_GROK_SHARED_HELPER:'Grok',FORGE_SNIFFER_SHARED_HELPER:'Sniffer',FORGE_HERMES_SHARED_HELPER:'Hermes'};
 // Explicit API route is intentionally absent from generic auto-allocation/page loops.
 const API_TASK='FORGE_API_GRANT_ENRICHMENT';
 const PILOT_TASK='FORGE_OPENAI_DIRECT_PILOT';
 const providerFor=task=>task===PILOT_TASK?'OpenAI':task===API_TASK?'ChatGPT':TASKS[task];
 // Sniffer took over the retired Grok helper's work (Tim, Nov 18 2026, 1:18 AM ET); older work files have no Sniffer provider yet.
-const SNIFFER_TASK='FORGE_SNIFFER_SHARED_HELPER',OPTIONAL_TASKS=new Set([SNIFFER_TASK]);
+const SNIFFER_TASK='FORGE_SNIFFER_SHARED_HELPER',HERMES_TASK='FORGE_HERMES_SHARED_HELPER',OPTIONAL_TASKS=new Set([SNIFFER_TASK,HERMES_TASK]);
 // Lanes whose enrichment items carry per-field state (seeded, settled from Writer receipts).
 const FIELD_TASKS=new Set(['FORGE_GROK_SHARED_HELPER',SNIFFER_TASK]);
 const MAX_ARTIFACT_ITEMS=20;
@@ -134,4 +134,4 @@ function transfer(w,itemKey,toTask,{checkpoint,terminalRun,reason,transactionPen
  item.taskKey=toTask;item.provider=TASKS[toTask];item.assignmentVersion++;return item;
 }
 if(require.main===module){try{const [command,arg,after]=process.argv.slice(2),w=load();console.log(JSON.stringify(command==='validate'?validateBatch(S.read(process.cwd(),arg),w):next(w,command,arg||null)));}catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={PILOT_TASK,API_TASK,providerFor,SNIFFER_TASK,FIELD_TASKS,FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
+module.exports={PILOT_TASK,API_TASK,providerFor,SNIFFER_TASK,HERMES_TASK,FIELD_TASKS,FILE,TASKS,LANES,MAX_ARTIFACT_ITEMS,ordering,lane,load,validateWork,validateBatch,captureProof,validateRouting,assertCurrent,next,reservedKeys,transfer,key,active};
