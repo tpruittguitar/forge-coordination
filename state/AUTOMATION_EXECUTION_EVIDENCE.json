@@ -1,6 +1,6 @@
 {
   "schema": "forge.automation-evidence.v1",
-  "at": "2026-11-24T18:08:23.786Z",
+  "at": "2026-11-24T18:11:54.817Z",
   "source": "Immutable task-work receipts and native configuration are separate evidence; no Writer/master mutations",
   "emailCoverage": {
     "at": "2026-11-02T00:34:59.611Z",
@@ -168,7 +168,7 @@
   ],
   "intakeAssignmentHealth": {
     "schema": "forge.intake-assignment-health.v1",
-    "at": "2026-11-24T18:08:23.786Z",
+    "at": "2026-11-24T18:11:54.817Z",
     "status": "ACTION_REQUIRED",
     "checkedItems": 625,
     "issueCount": 7,
@@ -263,12 +263,12 @@
     "corroborated": true
   },
   "schedules": {
-    "configurationObservedAt": "2026-11-24T15:43:32.502915Z",
+    "configurationObservedAt": "2026-11-24T18:08:57.625166Z",
     "configurationReadbackScope": "LOCAL_CODEX_ONLY",
     "observationScopes": {
       "LOCAL_CODEX": {
         "status": "READ",
-        "at": "2026-11-24T15:43:32.502915Z"
+        "at": "2026-11-24T18:08:57.625166Z"
       },
       "CLOUD_AUTOMATIONS": {
         "status": "NOT_READ",
@@ -278,41 +278,29 @@
     "configurationDiscrepancies": [
       {
         "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-application-outcome-tracker",
+        "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-application-writer-gofer",
+        "taskKey": "FORGE_APPLICATION_WRITER_GOFER"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
         "nativeId": "forge-email-discovery",
         "taskKey": "FORGE_EMAIL_DISCOVERY"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "pe-stack-health-daily",
+        "taskKey": "PE_STACK_HEALTH_DAILY"
       }
     ],
     "nativeInvocationVerified": false,
     "nativeInvocationStatus": "NOT_OBSERVED",
     "nativeInvocationLimitation": "Task-work receipts are not scheduler invocation or destination-delivery records; no bound native execution-record producer is configured",
     "active": [
-      {
-        "id": "forge-application-outcome-tracker",
-        "lastDueAt": "2026-11-24T16:22:00.000Z",
-        "lastRunAt": "2026-11-16T21:27:21.069Z",
-        "status": "PARTIAL_WITH_PENDING_COORDINATOR_CONSUMPTION",
-        "executionVerified": false,
-        "taskExecutionVerified": false,
-        "nativeInvocationVerified": false,
-        "proofScope": "TASK_WORK_ONLY",
-        "evidenceFiles": [
-          "receipts/FORGE-OUTCOME-CHATGPT-20261116T212438Z_SUMMARY.json",
-          "receipts/FORGE-OUTCOME-CHATGPT-20261116T212438Z_VERIFICATION.json"
-        ]
-      },
-      {
-        "id": "forge-application-writer-gofer",
-        "lastDueAt": "2026-11-24T15:42:00.000Z",
-        "lastRunAt": "2026-11-24T15:43:45.4835104Z",
-        "status": "DEFERRED_GRANT_RUNTIME_UNVERIFIED",
-        "executionVerified": false,
-        "taskExecutionVerified": false,
-        "nativeInvocationVerified": false,
-        "proofScope": "TASK_WORK_ONLY",
-        "evidenceFiles": [
-          "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261124T154238Z_TERMINAL.txt"
-        ]
-      },
       {
         "id": "forge-posting-validation",
         "lastDueAt": "2026-11-24T10:12:00.000Z",
@@ -324,19 +312,6 @@
         "proofScope": "TASK_WORK_ONLY",
         "evidenceFiles": [
           "receipts/AI_REASON_RUN_RECEIPT_FORGE-POSTVAL-CHATGPT-20261116T181535Z_TERMINAL.txt"
-        ]
-      },
-      {
-        "id": "pe-stack-health-daily",
-        "lastDueAt": "2026-11-24T12:45:00.000Z",
-        "lastRunAt": "2026-11-24T12:45:29.8006620Z",
-        "status": "ISSUES_OBSERVED_NO_PRODUCTION_CHANGES",
-        "executionVerified": true,
-        "taskExecutionVerified": true,
-        "nativeInvocationVerified": false,
-        "proofScope": "TASK_WORK_ONLY",
-        "evidenceFiles": [
-          "receipts/HEALTH_AUDIT_20261124_0743ET.json"
         ]
       }
     ],
