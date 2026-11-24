@@ -1,6 +1,6 @@
 {
   "schema": "forge.schedule-readback.v1",
-  "at": "2026-11-24T15:43:32.502915Z",
+  "at": "2026-11-24T18:08:57.625166Z",
   "timezone": "America/New_York",
   "owner": "ChatGPT/Codex until Tim explicitly changes it",
   "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
@@ -21,32 +21,6 @@
       "managed": true
     },
     {
-      "id": "forge-application-outcome-tracker",
-      "name": "FORGE_APPLICATION_OUTCOME_TRACKER",
-      "status": "ACTIVE",
-      "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=22;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER",
-      "provider": "ChatGPT",
-      "nativeUpdatedAt": "1795396621281",
-      "sharedEntry": true,
-      "nativeConfigurationSha256": "b897327b2f3fc3d0092711e7f66d6ba9673b52ebba0342d18b8c332a37b466e4",
-      "managed": true
-    },
-    {
-      "id": "forge-application-writer-gofer",
-      "name": "FORGE_APPLICATION_WRITER_GOFER",
-      "status": "ACTIVE",
-      "rrule": "RRULE:FREQ=HOURLY;BYMINUTE=42;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "taskKey": "FORGE_APPLICATION_WRITER_GOFER",
-      "provider": "ChatGPT",
-      "nativeUpdatedAt": "1795396674140",
-      "sharedEntry": true,
-      "nativeConfigurationSha256": "a5ddef940acbad13556aad273b5f90eb06b5524418ce7b4ce86aef9cb72e5bba",
-      "managed": true
-    },
-    {
       "id": "forge-posting-validation",
       "name": "FORGE_POSTING_FRESHNESS",
       "status": "ACTIVE",
@@ -57,19 +31,6 @@
       "nativeUpdatedAt": "1795396698168",
       "sharedEntry": true,
       "nativeConfigurationSha256": "c880ef5dc04684be16e10ffcb6ab67bdbab95047aafdf9690dcdee67610bc994",
-      "managed": true
-    },
-    {
-      "id": "pe-stack-health-daily",
-      "name": "PE_STACK_HEALTH_DAILY",
-      "status": "ACTIVE",
-      "rrule": "RRULE:FREQ=DAILY;BYHOUR=7;BYMINUTE=45;BYSECOND=0",
-      "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
-      "taskKey": "PE_STACK_HEALTH_DAILY",
-      "provider": "ChatGPT",
-      "nativeUpdatedAt": "1795396653998",
-      "sharedEntry": true,
-      "nativeConfigurationSha256": "ea92952bfe0459cedb343e7df21179d82f646fc62d30c73579a4f5d32fbe0e7a",
       "managed": true
     }
   ],
@@ -140,8 +101,23 @@
   "configurationDiscrepancies": [
     {
       "code": "MISSING_REGISTERED_NATIVE_TASK",
+      "nativeId": "forge-application-outcome-tracker",
+      "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER"
+    },
+    {
+      "code": "MISSING_REGISTERED_NATIVE_TASK",
+      "nativeId": "forge-application-writer-gofer",
+      "taskKey": "FORGE_APPLICATION_WRITER_GOFER"
+    },
+    {
+      "code": "MISSING_REGISTERED_NATIVE_TASK",
       "nativeId": "forge-email-discovery",
       "taskKey": "FORGE_EMAIL_DISCOVERY"
+    },
+    {
+      "code": "MISSING_REGISTERED_NATIVE_TASK",
+      "nativeId": "pe-stack-health-daily",
+      "taskKey": "PE_STACK_HEALTH_DAILY"
     }
   ],
   "configurationInformational": [],
@@ -149,7 +125,7 @@
   "observationScopes": {
     "LOCAL_CODEX": {
       "status": "READ",
-      "at": "2026-11-24T15:43:32.502915Z"
+      "at": "2026-11-24T18:08:57.625166Z"
     },
     "CLOUD_AUTOMATIONS": {
       "status": "NOT_READ",
