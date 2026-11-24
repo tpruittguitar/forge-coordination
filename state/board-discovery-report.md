@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261123T2230Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261124T0013Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,21 +6,21 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (66 read, 1 failed, 41 Workday deferred after a 429) | 90 | 17 | 28 |
+| Employer job boards (66 read, 1 failed, 43 Workday deferred after a 429) | 89 | 17 | 27 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
 
 HiringCafe: did not run. Unique = matching US roles no board or JobSpy result already covered.
 
-Priority companies with no board found: Tesla, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
+Priority companies with no board found: Tesla, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
 
 ## By level
 
 | Level | New | Existing |
 |---|---:|---:|
 | DIRECTOR_PLUS | 11 | 15 |
-| SR_MANAGER | 5 | 7 |
+| SR_MANAGER | 5 | 6 |
 | SR_STAFF | 1 | 6 |
 
 ## New roles
@@ -39,8 +39,8 @@ Priority companies with no board found: Tesla, Ramon.Space, UVify, MatrixSpace, 
 | BOARD:ashby | Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:greenhouse | Tesla | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Chalice Oregon | [Director of Industrialization](https://job-boards.greenhouse.io/panthalassa/jobs/6201451004) | Portland, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
