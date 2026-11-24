@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-24T08:32:04.095Z",
+    "at": "2026-11-24T08:46:23.639Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,7 +277,7 @@
     "current": 692,
     "undated": 0
   },
-  "at": "2026-11-24T08:32:04.095Z",
+  "at": "2026-11-24T08:46:23.639Z",
   "queues": {
     "verification": 0,
     "enrichment": 3104,
@@ -296,8 +296,8 @@
     "readyForReview": "2026-11-22T22:14:35.492Z"
   },
   "reconciliation": {
-    "from": "2026-11-24T08:26:15.000Z",
-    "to": "2026-11-24T08:32:04.095Z",
+    "from": "2026-11-24T08:32:04.095Z",
+    "to": "2026-11-24T08:46:23.639Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -377,7 +377,7 @@
         "last24h": 12,
         "partial": true,
         "coverageHours": 6,
-        "collectionGaps": 3,
+        "collectionGaps": 2,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -391,7 +391,7 @@
         "last24h": 0,
         "partial": true,
         "coverageHours": 6,
-        "collectionGaps": 3,
+        "collectionGaps": 2,
         "available": true,
         "countsAvailable": true,
         "startedAt": "2026-10-31T04:35:30.337Z",
@@ -492,13 +492,13 @@
   "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-24T08:30:33.938Z",
+    "readAt": "2026-11-24T08:44:19.789Z",
     "sha256": "4a78728ba039306925a0f01df5aa9149b1369f82db40b498207185473d6d716f",
     "rows": 9946
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-24T08:30:50.818Z",
+    "at": "2026-11-24T08:44:38.071Z",
     "total": 15626,
     "sourceIdentities": 16700,
     "aliasesMerged": 1074,
@@ -519,8 +519,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-24T08:24:46.268Z",
-      "to": "2026-11-24T08:30:50.818Z",
+      "from": "2026-11-24T08:30:50.818Z",
+      "to": "2026-11-24T08:44:38.071Z",
       "opening": 940,
       "arrivals": 0,
       "admitted": 0,
@@ -558,9 +558,9 @@
           "basis": "Distinct captured candidate identities first observed within 6 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
-          "count": 6,
+          "count": 2,
           "windowHours": 6,
-          "perHour": 1,
+          "perHour": 0.3333333333333333,
           "partial": true,
           "basis": "Distinct canonical master/archive jobs with an exact admission timestamp in 6 hours."
         }
@@ -585,12 +585,12 @@
       },
       "24": {
         "discovery": {
-          "count": 166,
+          "count": 164,
           "windowHours": 24,
-          "perHour": 6.916666666666667,
+          "perHour": 6.833333333333333,
           "partial": true,
           "unit": "candidate identities",
-          "candidateCount": 166,
+          "candidateCount": 164,
           "basis": "Distinct captured candidate identities first observed within 24 elapsed hours; intake is not required. Repeat sources are deduplicated and proven canonical aliases are merged. Unproven cross-source duplicates remain candidates."
         },
         "intake": {
@@ -621,7 +621,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-24T08:30:50.818Z",
+      "at": "2026-11-24T08:44:38.071Z",
       "reviewedSourceIdentities": 16700,
       "pendingCandidates": 940,
       "storedEvidence": 2919,
