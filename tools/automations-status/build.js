@@ -5,8 +5,8 @@
      state/AUTOMATION_SCHEDULE_READBACK.json   native RRULEs (local Codex automations)
      state/AUTOMATION_EXECUTION_EVIDENCE.json  latest run per automation (lastRunAt, status) from the receipts
      state/WRITER_ACTIVITY.json                Writer write counts / problem receipts (receipt-derived)
-   Output: { generated_at, automations:[{ai,name,schedule,last_run_at,result,next_run_at,running,started_at,stale,writer,
-             est_per_run,est_week,runs_per_week}],
+   Output: { generated_at, automations:[{ai,name,schedule,last_run_at,last_run_by,result,next_run_at,running,started_at,stale,writer,
+             est_per_run,est_week,runs_per_week,paused}],
              runs:[{ai,name,start,end,result,writer,expected}] (yesterday..tomorrow, ET), writer_health:{metric:{value,status,source}} }
    est_per_run / est_week are display strings labeled "est." on the office wall (cs-0e5860cc).
    Per-run comes from the latest evidence receipt (duration = runId timestamp to `at`;
@@ -21,6 +21,8 @@ const DEFAULT_RUN_MIN = 10;
 // Box lanes deleted 2026-11-23 (cs-a7e4613b / cs-0170c263). Keep them off the 3D office wall
 // even though they remain in AI_AUTOMATION_TASKS.json.
 const HIDDEN_FROM_WALL = new Set(['FORGE_INTAKE_SCOPE_REVIEW', 'FORGE_INTAKE_SOURCE_RECOVERY', 'FORGE_INTAKE_HELD_RECONCILIATION']);
+// Scheduled but never ran (no receipt). Off the wall only (cs-0af97164); registrations stay in AI_AUTOMATION_TASKS.json.
+const HIDDEN_NEVER_RAN = new Set(['FORGE_CLAUDE_SHARED_HELPER']);
 const THRESHOLDS = { last_write_age_min: [90, 240], writes_per_hour: [1, 0], error_rate: [0.05, 0.2], lock_waits: [1, 3] };
 
 function etOffsetMin(ms) {
@@ -77,6 +79,8 @@ function healthStatus(metric, v) {
 // Lanes have no owner (Tim 2026-11-22): the AI shown is whoever's receipt ran it last.
 const RUNNER = { CHATGPT: 'ChatGPT', CLAUDE: 'Claude', HERMES: 'Hermes', SNIFFER: 'Sniffer' };
 function ranBy(e) { const m = ((e && e.evidenceFiles) || []).join(' ').match(/-(CHATGPT|CLAUDE|HERMES|SNIFFER)-/); return m ? RUNNER[m[1]] : 'Any'; }
+// Last-run provenance for the wall (cs-0af97164): a real runner from the receipt, else blank (the wall shows a dash). Never invent a name.
+function lastRunBy(e, last) { if (!last) return ''; const who = ranBy(e); return who === 'Any' ? '' : who; }
 function writerHealth(wa, evidence, now) {
   const H = {};
   const put = (k, value, source) => { H[k] = { value: value == null ? null : value, status: source ? healthStatus(k, value) : null, source: source || null }; };
@@ -154,18 +158,20 @@ function build(inputs, now) {
   const day0 = etDayStart(now) - DAY, day3 = day0 + 3 * DAY;
   const automations = [], runs = [];
   for (const [key, t] of Object.entries(tasks)) {
-    if (t.retired || HIDDEN_FROM_WALL.has(key)) continue;
+    if (t.retired || HIDDEN_FROM_WALL.has(key) || HIDDEN_NEVER_RAN.has(key)) continue;
     const native = rr.get(key), id = (native && native.id) || t.nativeId || key.toLowerCase().replace(/_/g, '-');
     const sch = parseSchedule((native && native.status === 'ACTIVE' && native.rrule) || t.nativeSchedule || t.scheduleIntent);
     const e = ev.get(id), last = e && Date.parse(e.lastRunAt) ? Date.parse(e.lastRunAt) : null;
     const writer = writerTouching(key, t), stale = isStale(last, sch, now), result = stale && sch ? 'STALE' : e ? mapResult(e.status) : 'EMPTY', nxt = nextRun(sch, now);
     const rec = readListedReceipt(exById.get(id) || e, readReceipt), used = receiptUsage(rec);
-    const rp = runsPerWeek(sch, native);
+    const rp = runsPerWeek(sch, native), paused = rp === 0;
+    // No receipt and no schedule: never-ran / dead registration. Hide from the wall only (cs-0af97164).
+    if (!last && !e && !sch && !paused) continue;
     const est_per_run = formatEst(used.calls, used.minutes);
     const est_week = rp === 0 ? '0' : formatEst(rp != null && used.calls != null ? rp * used.calls : null, rp != null && used.minutes != null ? rp * used.minutes : null);
     automations.push({ ai: ranBy(e), name: key, schedule: (native && native.rrule) || (typeof t.scheduleIntent === 'string' ? t.scheduleIntent : t.nativeSchedule ? JSON.stringify(t.nativeSchedule) : t.scheduleIntent ? JSON.stringify(t.scheduleIntent) : ''),
-      last_run_at: last ? new Date(last).toISOString() : null, result, next_run_at: nxt ? new Date(nxt).toISOString() : null, running: false, started_at: null, stale, writer,
-      est_per_run, est_week, runs_per_week: rp });
+      last_run_at: last ? new Date(last).toISOString() : null, last_run_by: lastRunBy(e, last), result, next_run_at: nxt ? new Date(nxt).toISOString() : null, running: false, started_at: null, stale, writer,
+      est_per_run, est_week, runs_per_week: rp, paused });
     const iv = intervalMs(sch), dur = Math.min(DEFAULT_RUN_MIN * MIN, iv || Infinity);
     for (const t0 of occurrences(sch, day0, day3)) {
       const actual = last != null && Math.abs(last - t0) < Math.min(iv || HOUR, HOUR) / 2 + 15 * MIN;

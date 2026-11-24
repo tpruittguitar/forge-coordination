@@ -102,3 +102,35 @@ test('deleted box intake lanes stay off the office wall even when still listed i
   assert.deepEqual(out.automations.map(a => a.name), ['FORGE_EMAIL_DISCOVERY']);
   assert.ok(out.runs.every(r => r.name === 'FORGE_EMAIL_DISCOVERY'));
 });
+
+test('never-ran rows with no schedule stay off the wall; last_run_by is evidence-only', () => {
+  const evPath = 'receipts/FORGE-CHATGPT-BOX-FORGE-POSTING-VALIDATION-20261116T181810Z.json';
+  const out = B.build({
+    tasks: { tasks: {
+      FORGE_EMAIL_DISCOVERY: { owner: 'ChatGPT' },
+      FORGE_CLAUDE_INTAKE_A: { owner: 'Claude' },
+      FORGE_CLAUDE_SHARED_HELPER: { owner: 'Claude', scheduleIntent: { timezone: 'America/New_York', frequency: 'HOURLY', minute: 25 } },
+      FORGE_CHATGPT_ENRICHMENT_RESEARCH: { owner: 'ChatGPT', nativeSchedule: 'Hourly at minute 12, America/New_York' },
+      FORGE_POSTING_VALIDATION: { owner: 'ChatGPT' },
+      FORGE_AI_USAGE_READER: { owner: 'Any', nativeSchedule: 'Hourly at minute 05, America/New_York' }
+    } },
+    readback: { local: [
+      { id: 'posting', taskKey: 'FORGE_POSTING_VALIDATION', status: 'ACTIVE', rrule: 'RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12' },
+      { id: 'usage', taskKey: 'FORGE_AI_USAGE_READER', status: 'PAUSED', rrule: 'RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5' }
+    ] },
+    evidence: { schedules: { active: [
+      { id: 'posting', lastRunAt: '2026-11-16T18:18:10.672Z', status: 'OK', evidenceFiles: [evPath] }
+    ] } }
+  }, NOW);
+  const names = out.automations.map(a => a.name);
+  assert.deepEqual(names.sort(), ['FORGE_AI_USAGE_READER', 'FORGE_CHATGPT_ENRICHMENT_RESEARCH', 'FORGE_POSTING_VALIDATION']);
+  const posting = out.automations.find(a => a.name === 'FORGE_POSTING_VALIDATION');
+  assert.equal(posting.last_run_by, 'ChatGPT');
+  const enrich = out.automations.find(a => a.name === 'FORGE_CHATGPT_ENRICHMENT_RESEARCH');
+  assert.equal(enrich.last_run_by, '');
+  assert.equal(enrich.paused, false);
+  const paused = out.automations.find(a => a.name === 'FORGE_AI_USAGE_READER');
+  assert.equal(paused.paused, true);
+  assert.equal(paused.runs_per_week, 0);
+  assert.equal(paused.last_run_by, '');
+});
