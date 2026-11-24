@@ -1,10 +1,10 @@
 {
- "at": "2026-11-24T11:48:12.968Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T114355758Z",
+ "at": "2026-11-24T12:05:15.276Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T115518547Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-24T11:44:05.203Z",
+  "readAt": "2026-11-24T11:55:44.157Z",
   "sha256": "8ec9f774f1f44268ee162e9f866588f142c309bdbb3aeb037d72f8575e73bf4d",
   "rows": 9946
  },
@@ -47,28 +47,32 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
+ "degree": 1,
+ "estimates": 1,
  "estimate_waiting_for_posting": 408,
- "skipped_recent": 174,
- "submitted": 0,
+ "skipped_recent": 173,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
+ "agg_tried": {
+  "linkedin": 1
+ },
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -76,11 +80,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
- "boards_failed": 0,
+ "boards_failed": 1,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -101,20 +105,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 27,
+  "saved_reused": 25,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "backoff": 1,
+  "unsupported_routes": 1,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-24T11:44:11.206Z",
+  "profile_as_of": "2026-11-24T11:55:50.832Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12076,10 +12080,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 577,
- "network_requests": 6,
- "planned": 0,
+ "roles_researched": 578,
+ "network_requests": 8,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -12088,9 +12093,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 305,
-  "SOURCE_RESEARCH_REQUIRED": 810,
+  "SOURCE_RESEARCH_REQUIRED": 809,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 19,
-  "EVIDENCE_FOUND": 44,
+  "EVIDENCE_FOUND": 45,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -32350,25 +32355,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-745924EF5CC8",
-   "company": "Blue Origin",
-   "title": "Payload Accommodations Production Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T07:55:18.796Z",
-   "retryAt": "2026-11-24T11:55:18.796Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4490162357",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A4C73A8D927F",
    "company": "CPS, Inc.",
    "title": "Global Quality Assurance Director - Specialty Chemicals",
@@ -32470,7 +32456,55 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-745924EF5CC8",
+   "fields": {
+    "DEGREE_TEXT": "Desired Skills Bachelor's degree in Engineering, Manufacturing, Operations, Business, or a related field.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4490162357",
+    "DEGREE_ASOF": "2026-11-24",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 110000,
+    "SALARY_BASE_HIGH": 204000,
+    "SALARY_MIDPOINT": 157000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-24",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483458752 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4482876519 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4488973775 (as of 2026-11-24); https://jobs.boeing.com/job/wichita/fabrication-manager/185/99082670944 (as of 2026-11-22); https://jobs.ashbyhq.com/Astro-Mechanica/7912f866-9f51-4fdd-96d1-ef1dfd195191 (as of 2026-11-22); https://www.linkedin.com/jobs/view/4477870954 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4484355079 (as of 2026-11-05)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-BFB56157AFC8, V2I-ED092505B8A5, V2I-E9AF54FCE221, V2I-0299652210C2, V2I-02FF975B1DA1, V2I-4034A8A34AFF, V2I-CD2ADB98A4CF]; 7 employer-posted comparable(s), level 1 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24",
+    "SALARY_SCORE_POINT": 180500
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-745924EF5CC8",
+   "company": "Blue Origin",
+   "title": "Payload Accommodations Production Manager",
+   "location": "Merritt Island, FL",
+   "posting": "https://www.linkedin.com/jobs/view/4490162357/",
+   "est": [
+    110000,
+    204000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-BFB56157AFC8",
+    "V2I-ED092505B8A5",
+    "V2I-E9AF54FCE221",
+    "V2I-0299652210C2",
+    "V2I-02FF975B1DA1",
+    "V2I-4034A8A34AFF",
+    "V2I-CD2ADB98A4CF"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
