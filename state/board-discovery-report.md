@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261124T2320Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261124T2330Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (64 read, 1 failed, 43 Workday deferred after a 429) | 92 | 18 | 30 |
+| Employer job boards (64 read, 1 failed, 42 Workday deferred after a 429) | 91 | 18 | 29 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space,
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 12 | 16 |
+| DIRECTOR_PLUS | 12 | 15 |
 | SR_MANAGER | 5 | 6 |
 | SR_STAFF | 1 | 8 |
 
@@ -39,9 +39,9 @@ Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space,
 | BOARD:ashby | Shield AI | [Head of Aircraft Quality (R6146)](https://jobs.ashbyhq.com/shield/0632a8c6-598d-48d4-ab6a-0ceed6284d16) | Seattle, WA, US | QUALITY | DIRECTOR_PLUS | $266K-$398K |
 | BOARD:ashby | Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:greenhouse | Tesla | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Chalice Oregon | [Director of Industrialization](https://job-boards.greenhouse.io/panthalassa/jobs/6201451004) | Portland, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | 3D Systems Corporation | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
