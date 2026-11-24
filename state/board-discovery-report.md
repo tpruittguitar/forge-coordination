@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261124T2023Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261124T2320Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,14 +6,14 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (65 read, 1 failed, 47 Workday deferred after a 429) | 92 | 18 | 29 |
+| Employer job boards (64 read, 1 failed, 43 Workday deferred after a 429) | 92 | 18 | 30 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
 
 HiringCafe: did not run. Unique = matching US roles no board or JobSpy result already covered.
 
-Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
+Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space, UVify, MatrixSpace, PDW, LeoLabs, Ursa Space Systems, Rivian, Ford Motor Company, Hyundai Motor, Mercedes-Benz, Toyota, Kia, Nissan, Lucid, Castelion, X-Bow Systems, Firehawk Aerospace, CesiumAstro, K2 Space, JetZero, Firestorm Labs, Digantara, Open Cosmos, Orbitworks, Advanced Navigation, Arkeus, NewSpace Research and Technologies, Delair, TEKEVER, Raphe Mphibr, Honda, BMW Group, Subaru, Mazda, Volvo Cars, Stellantis, Daimler Truck North America, Volvo Group North America, Traton (Navistar International), PACCAR, Oshkosh Corporation, Overland AI, Forterra, Saildrone, Varda Space Industries, Stoke Space, Joby Aviation, Beta Technologies, 1X, Zipline, Darkhive, Machina Labs, GITAI, Harmattan AI, Fortem Technologies
 
 ## By level
 
@@ -21,7 +21,7 @@ Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space,
 |---|---:|---:|
 | DIRECTOR_PLUS | 12 | 16 |
 | SR_MANAGER | 5 | 6 |
-| SR_STAFF | 1 | 7 |
+| SR_STAFF | 1 | 8 |
 
 ## New roles
 
