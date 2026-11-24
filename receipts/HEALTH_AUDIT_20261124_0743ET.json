@@ -1,0 +1,144 @@
+{
+  "provider": "ChatGPT",
+  "findings": {
+    "github": {
+      "openPRs": {
+        "cockpit": [
+          534
+        ],
+        "coordination": [
+          489,
+          510
+        ]
+      },
+      "coordinationSample": 15,
+      "browserComparison": {
+        "run": 45319093150,
+        "conclusion": "success",
+        "seconds": 2443
+      },
+      "failures": [
+        {
+          "reason": "BLOCKED: Writer status not healthy",
+          "run": 45393428218,
+          "seconds": 114,
+          "workflow": "board-discovery"
+        },
+        {
+          "run": 45319585952,
+          "reason": "Concurrent main publication rejection observed in failed logs",
+          "workflow": "source-intake-auto"
+        }
+      ],
+      "cockpitSample": 10
+    },
+    "explorer": {
+      "endpointAttempt": "https://foreman-cockpit.netlify.app/api/pipeline-health",
+      "result": "HTTP_404_ON_HISTORICAL_DOCUMENTED_HOST",
+      "currentEndpointVerified": false,
+      "pollingVerified": false,
+      "outboxVerified": false,
+      "payloadVerified": false
+    },
+    "reporting": {
+      "schema": "forge.reporting-health.v1",
+      "at": "2026-11-24T12:39:26.542Z",
+      "components": {
+        "activity": {
+          "status": "CURRENT",
+          "at": "2026-11-24T12:39:35.651Z",
+          "lastSuccessAt": "2026-11-24T12:39:35.651Z",
+          "attempts": 1
+        },
+        "flow": {
+          "status": "CURRENT",
+          "at": "2026-11-24T12:29:15.154Z",
+          "lastSuccessAt": "2026-11-24T12:29:15.154Z",
+          "attempts": 1
+        },
+        "intake-queue": {
+          "status": "CURRENT",
+          "at": "2026-11-24T12:29:41.044Z",
+          "lastSuccessAt": "2026-11-24T12:29:41.044Z",
+          "attempts": 1
+        }
+      }
+    },
+    "enrichment": {
+      "pendingBatches": 4,
+      "masterSource": {
+        "kind": "CANONICAL_WRITER_MASTER",
+        "readAt": "2026-11-24T12:12:30.398Z",
+        "sha256": "0aa68e9a54669536128e466162640c97887c79e9e62b8d1f6b7da8a3b0cf33fb",
+        "rows": 9946
+      },
+      "at": "2026-11-24T12:17:46.614Z",
+      "fencedIds": 31,
+      "eligible": 1195
+    },
+    "writer": {
+      "unverified": 0,
+      "abandonedClaim": "ATSCHK_20261124034017.json",
+      "errors": [],
+      "abandonedAt": "2026-11-24T03:50:09.509Z",
+      "recentRuns": [
+        {
+          "finishedAt": "2026-11-24T11:26:41.421Z",
+          "totalMs": 39565,
+          "records": 1,
+          "terminalStatus": "SUCCESS"
+        },
+        {
+          "finishedAt": "2026-11-24T06:16:48.083Z",
+          "totalMs": 43998,
+          "records": 2,
+          "terminalStatus": "SUCCESS"
+        },
+        {
+          "finishedAt": "2026-11-24T04:43:46.797Z",
+          "totalMs": 43946,
+          "records": 1,
+          "terminalStatus": "SUCCESS"
+        }
+      ],
+      "fileQueueIsNotDirectApiThroughput": true,
+      "freeze": null,
+      "processing": 0,
+      "localProductionLockPresent": false,
+      "pending": 0,
+      "observedAt": "2026-11-24T12:44:00.453Z",
+      "triggerInstalled": true,
+      "build": "0222c7f",
+      "holds": 0
+    }
+  },
+  "runId": "PE-HEALTH-CHATGPT-20261124T124304Z",
+  "readOnly": true,
+  "sourceEvidenceSha256": "feeaed5223c8e1d550f8d937c34803c44e16b94cba36b1c22baf956bc8066353",
+  "limitations": [
+    "Current Explorer endpoint and signed-in browser state not verified; historical host 404 is not proof of a current production outage.",
+    "Distributed locks, full log rotation and intake latch state were not independently verified.",
+    "Zero file queue is not zero direct API throughput; no original request replayed."
+  ],
+  "checkedSourceRevisions": {
+    "forgeCoordination": "1f987e197fedb6fbc7d985d4a25cfec37a82ea7d",
+    "sharedInstructions": "1f987e197fedb6fbc7d985d4a25cfec37a82ea7d",
+    "foremanCockpit": "5ca496b1b918a27646459821e4e461330807fcc1"
+  },
+  "at": "2026-11-24T12:45:29.8006620Z",
+  "taskKey": "PE_STACK_HEALTH_DAILY",
+  "checks": {
+    "github": true,
+    "nativeConfiguration": true,
+    "explorer": false,
+    "writer": true
+  },
+  "automationId": "pe-stack-health-daily",
+  "status": "ISSUES_OBSERVED_NO_PRODUCTION_CHANGES",
+  "nextActions": [
+    "Reconcile the abandoned ATSCHK_20261124034017.json original request through existing receipt and exact-row proof before retry.",
+    "Code owner: inspect board-discovery Writer-health gate and source-intake publication contention; preserve request fences.",
+    "Verify current Explorer route and browser outbox/polling through its supported health surface."
+  ],
+  "laneLock": "ACQUIRED"
+}
