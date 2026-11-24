@@ -1,15 +1,15 @@
 {
- "at": "2026-11-24T11:04:29.168Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T105452884Z",
+ "at": "2026-11-24T11:17:57.873Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261124T111055278Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-24T10:55:03.578Z",
-  "sha256": "9e669696d7e0af00572e986b0205dea96d45933d26169f2b1a8c1f82c6600d6a",
+  "readAt": "2026-11-24T11:11:04.355Z",
+  "sha256": "a2432916d399978ceed7d958018bfd073bf8c5945b0b6d52c515cebc279a2825",
   "rows": 9946
  },
  "rows": 9946,
- "eligible": 1198,
+ "eligible": 1196,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -35,44 +35,54 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261123T105601067Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-D00717F0C5D7",
+     "V2I-BAB82A58D799",
+     "V2I-7126C2E717B3"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 5,
-  "fenced_ids": 34
+  "pending_batches": 4,
+  "fenced_ids": 31
  },
  "anchors": 1467,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 3,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 2,
- "estimates": 2,
- "estimate_waiting_for_posting": 408,
- "skipped_recent": 171,
- "submitted": 2,
+ "degree": 0,
+ "estimates": 0,
+ "estimate_waiting_for_posting": 411,
+ "skipped_recent": 170,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 2,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
- "salary_independently_verified": 2,
+ "salary_submitted": 0,
+ "salary_independently_verified": 0,
  "agg_tried": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 1
  },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 2,
+ "source_reads": 4,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -80,17 +90,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 2,
+ "est_comparables": 0,
  "boards_read": 0,
- "boards_failed": 1,
+ "boards_failed": 0,
  "bls": {
-  "OK": 2,
+  "OK": 0,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 0,
  "posting_cache": {
   "saved": 0,
   "hits": 6,
@@ -105,9 +115,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
-  "candidates": 20,
-  "saved_reused": 19,
+  "targets": 0,
+  "candidates": 0,
+  "saved_reused": 0,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -115,10 +125,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 1,
-  "estimates_with_profile_sources": 2,
+  "unsupported_routes": 0,
+  "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-24T10:55:10.920Z",
+  "profile_as_of": "2026-11-24T11:11:11.447Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -12033,16 +12043,16 @@
  ],
  "salary_repair": {
   "skipped_blocked": 1231,
-  "review_skipped_blocked": 202,
+  "review_skipped_blocked": 204,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 866,
-   "products (what they make)": 1326,
+   "work arrangement (remote/hybrid/on-site)": 868,
+   "products (what they make)": 1328,
    "location / geography": 16
   }
  },
  "salary_review": {
-  "eligible": 1708,
-  "due": 202,
+  "eligible": 1710,
+  "due": 204,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -12059,6 +12069,7 @@
  },
  "not_attempted": 415,
  "nothing_found": 415,
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -12068,10 +12079,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 31,
-  "no_overview": 820,
+  "no_overview": 823,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 2516,
+  "fenced": 2513,
   "inactive": 6579,
   "by_label": {},
   "sample": []
@@ -12080,9 +12091,9 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 577,
- "network_requests": 9,
- "planned": 2,
+ "roles_researched": 580,
+ "network_requests": 12,
+ "planned": 3,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
@@ -12094,8 +12105,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 305,
   "SOURCE_RESEARCH_REQUIRED": 810,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 22,
-  "EVIDENCE_FOUND": 43,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 19,
+  "EVIDENCE_FOUND": 44,
   "MODEL_INPUTS_REQUIRED": 6
  },
  "pending": [
@@ -18888,24 +18899,6 @@
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491311566",
      "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-945D41251C45",
-   "company": "Cummins Inc.",
-   "title": "Manufacturing Operations Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T10:04:33.326Z",
-   "retryAt": "2026-11-24T11:04:33.326Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4492879182",
-     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -30520,63 +30513,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-D00717F0C5D7",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Sensors and Avionics",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T10:57:45.937Z",
-   "retryAt": "2026-11-23T11:57:45.937Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303733007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BAB82A58D799",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Propulsion & Energetics",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T10:57:47.539Z",
-   "retryAt": "2026-11-23T11:57:47.539Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5303727007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-7126C2E717B3",
-   "company": "Anduril",
-   "title": "Staff Manufacturing Engineer, Low Observable",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-23T10:57:49.146Z",
-   "retryAt": "2026-11-23T11:57:49.146Z",
-   "attempts": [
-    {
-     "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5275363007?pay_transparency=true",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-B88287D02019",
    "company": "Redwire Space",
    "title": "Facilities & Equipment Manager",
@@ -32480,99 +32416,36 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-629B28E3648B",
+   "id": "V2I-D00717F0C5D7",
    "fields": {
-    "DEGREE_TEXT": "A bachelor's degree in Paper Science, Mechanical, Electrical, Industrial Engineering, or a related discipline is beneficial; significant relevant industry and leadership experience may provide an equivalent foundation.",
+    "DEGREE_TEXT": "Bachelor's degree in Electrical, Mechanical, Manufacturing or Industrial Engineering, or a related technical discipline.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4491672000",
-    "DEGREE_ASOF": "2026-11-24",
-    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
-    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 110000,
-    "SALARY_BASE_HIGH": 165000,
-    "SALARY_MIDPOINT": 137500,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-24",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4491263146 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4485081403 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4491742688 (as of 2026-11-23); https://www.linkedin.com/jobs/view/4481254211 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4477622597 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4464031885 (as of 2026-11-18); https://www.linkedin.com/jobs/view/4481232003 (as of 2026-11-18)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-56565F1EB199, V2I-500BC7369245, V2I-D325BAEA7DEC, V2I-5EBC7E632DCD, V2I-7B31E7C37157, V2I-8A86389C0B05, V2I-DF7A248C7351]; 7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 8 eligible roles from the same comparables, so LOW; BLS AL 111021 P25-P90 $77K-$244K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24",
-    "SALARY_SCORE_POINT": 151250
+    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5303733007?gh_jid=5303733007",
+    "DEGREE_ASOF": "2026-11-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24"
    }
   },
   {
-   "id": "V2I-3A7B9DA86294",
+   "id": "V2I-BAB82A58D799",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Engineering or technical field.",
+    "DEGREE_TEXT": "Bachelor's degree in Aerospace, Mechanical, Chemical, Manufacturing or Industrial Engineering, or a related technical discipline.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4487860246",
-    "DEGREE_ASOF": "2026-11-24",
-    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
-    "SALARY_CONTEXT_KEY": "20afc79df3432dd3008edb4fd01381ec872d19c995d2eb5857cec8927d7c0d45",
-    "SALARY_BASE_LOW": 122000,
-    "SALARY_BASE_HIGH": 214000,
-    "SALARY_MIDPOINT": 168000,
-    "SALARY_BASIS": "FORGE-ESTIMATE",
-    "SALARY_CONF": "LOW",
-    "SALARY_ASOF": "2026-11-24",
-    "SALARY_SOURCE": "comparables: https://jobs.ashbyhq.com/shield/7be2d020-44b9-4958-a59c-975417d933f0 (as of 2026-11-18); https://jobs.ashbyhq.com/shield/9a07f502-d66d-4510-aea5-c8dfa00c0816 (as of 2026-11-18); https://jobs.ashbyhq.com/shield/de8bfd3f-1ff9-41be-92d6-183d6c4ec6a1 (as of 2026-11-18); https://jobs.ashbyhq.com/shield/403b3f43-a48d-4e5b-b22f-521fabd98a0e (as of 2026-11-18); https://jobs.lever.co/shieldai/664414ae-6aa0-4dc1-8e24-e89e7466428b (as of 2026-11-05); https://jobs.lever.co/shieldai/5b35ee50-4357-42dc-87c8-d507ec6d30a5 (as of 2026-11-05); https://shopfloorjobs.com/jobs/agility-robotics-6236085004 (as of 2026-11-05)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-4A25209276FC, V2I-506B0247CFBF, V2I-CF3721490E2C, V2I-E4B8D70AC2A0, V2I-55BDB005DD02, V2I-5AB31DC8CB67, V2I-93475124B41E]; 7 employer-posted comparable(s), level 0 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24",
-    "SALARY_SCORE_POINT": 191000
+    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5303727007?gh_jid=5303727007",
+    "DEGREE_ASOF": "2026-11-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24"
+   }
+  },
+  {
+   "id": "V2I-7126C2E717B3",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in Materials Science, Mechanical Engineering, Chemical Engineering, Manufacturing Engineering, or related technical field, or equivalent practical experience",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5275363007?gh_jid=5275363007",
+    "DEGREE_ASOF": "2026-11-23",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-24"
    }
   }
  ],
- "estimate_samples": [
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-629B28E3648B",
-   "company": "Essity",
-   "title": "Operations Manager",
-   "location": "Cherokee, AL",
-   "posting": "https://www.linkedin.com/jobs/view/4491672000/",
-   "est": [
-    110000,
-    165000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 1 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 8 eligible roles from the same comparables, so LOW",
-   "comparables": [
-    "V2I-56565F1EB199",
-    "V2I-500BC7369245",
-    "V2I-D325BAEA7DEC",
-    "V2I-5EBC7E632DCD",
-    "V2I-7B31E7C37157",
-    "V2I-8A86389C0B05",
-    "V2I-DF7A248C7351"
-   ]
-  },
-  {
-   "basis": "POSTING_READ",
-   "id": "V2I-3A7B9DA86294",
-   "company": "Carrier",
-   "title": "Production Quality Leader - Air Cooled Value Stream",
-   "location": "Charlotte, NC",
-   "posting": "https://www.linkedin.com/jobs/view/4487860246/",
-   "est": [
-    122000,
-    214000,
-    "LOW"
-   ],
-   "source": "COMPARABLES",
-   "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 0 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
-   "comparables": [
-    "V2I-4A25209276FC",
-    "V2I-506B0247CFBF",
-    "V2I-CF3721490E2C",
-    "V2I-E4B8D70AC2A0",
-    "V2I-55BDB005DD02",
-    "V2I-5AB31DC8CB67",
-    "V2I-93475124B41E"
-   ]
-  }
- ],
+ "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
