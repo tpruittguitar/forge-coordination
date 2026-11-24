@@ -1,16 +1,16 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-24T21:33:26.618Z",
- "sourceCommit": "07b35c44365b371f0e7f97f2cfbe24b9aaf7c66d",
+ "builtAt": "2026-11-24T21:51:40.648Z",
+ "sourceCommit": "e1ad76dbc32e96771efe80b60f6ee32ed3e6a8c8",
  "counts": {
-  "total": 202,
+  "total": 203,
   "BLOCKING": 0,
   "ACTION": 198,
-  "WATCH": 4,
+  "WATCH": 5,
   "DECIDE": 0,
   "JOBS": 0,
   "FAILED": 195,
-  "UPKEEP": 7
+  "UPKEEP": 8
  },
  "items": [
   {
@@ -2386,7 +2386,7 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-24T21:33:26.618Z",
+   "at": "2026-11-24T21:51:40.648Z",
    "raisedBy": "CODE"
   },
   {
@@ -2435,6 +2435,18 @@
    "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-TRACKER-CHATGPT-20261124T152307Z_TERMINAL.txt",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-TRACKER-CHATGPT-20261124T152307Z_TERMINAL.txt",
    "at": "2026-11-24T15:23:07Z",
+   "raisedBy": "CHATGPT"
+  },
+  {
+   "id": "lane-overdue:GOFER",
+   "section": "UPKEEP",
+   "level": "WATCH",
+   "title": "GOFER lane has gone quiet (usually reports every 1 h)",
+   "detail": "Last receipt AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261124T154238Z_TERMINAL.txt (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261124T154238Z_TERMINAL.txt",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/AI_REASON_RUN_RECEIPT_FORGE-GOFER-CHATGPT-20261124T154238Z_TERMINAL.txt",
+   "at": "2026-11-24T15:42:38Z",
    "raisedBy": "CHATGPT"
   }
  ]
