@@ -97,8 +97,9 @@ async function main(){
       start = i < 0 ? 0 : i;
     } catch (e) { start = 0; }
   }
-  /* Workday boards belong to the box pass while its last pass is under 4 h old (card 14c6e4a). */
-  const pass=WD.loadPass(path.join(OUT,WD.PASS_FILE)),skipWorkday=!WORKDAY_ONLY&&WD.fresh(pass),budgetMs=WORKDAY_ONLY?WD.BUDGET_MS:CONFIG.boardBudgetMs;
+  /* Workday boards belong to the box pass (cs-c49f2bf8). GitHub never probes Workday; a missing or stale pass is reported, not probed. */
+  const pass=WD.loadPass(path.join(OUT,WD.PASS_FILE)),skipWorkday=!WORKDAY_ONLY,boxPassStale=skipWorkday&&WD.boxPassStale(pass),budgetMs=WORKDAY_ONLY?WD.BUDGET_MS:CONFIG.boardBudgetMs;
+  if(boxPassStale) console.log('Workday box pass stale or missing; GitHub run skipping Workday (cs-c49f2bf8)');
   const rotation=ranked.slice(start,start+cap),recoveries=H.recoveryBoards(health,paused).filter(b=>!(skipWorkday&&b.kind==='workday')).slice(0,Math.min(10,Math.max(1,Math.floor(cap/4))));
   const cooling=new Set(rotation.filter(b=>health.boards[b.key]?.status!=='OK'&&Date.parse(health.boards[b.key]?.retryAt||0)>Date.now()).map(b=>b.key));
   const order=process.env.TRIAL_SKIP_BOARDS?[]:WORKDAY_ONLY?WD.workdayOrder(H.recoveryBoards(health,paused),ranked,health,Date.now(),pass).slice(0,cap):WD.startWorkdayFrom([...new Map([...recoveries,...rotation.filter(b=>!cooling.has(b.key)&&!(skipWorkday&&b.kind==='workday'))].map(b=>[b.key,b])).values()],pass).slice(0,cap);
@@ -188,7 +189,7 @@ async function main(){
   const summary = {
     screening:{atsZeroExcluded:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.decision==='EXCLUDE_ATS_ZERO').length,atsGateUnknown:found.filter(f=>f.status==='NEW'&&f.discoveryReview?.preliminaryScreen?.atsGate?.status==='UNKNOWN').length,canonicalWrites:0},
     at, run: 'FORGE-SOURCE-TRIAL-' + at.replace(/[-:]/g, '').slice(0, 13) + 'Z', master_rows: rows.length, master, archive, identityHeld: found.filter(f => f.status === 'IDENTITY_HOLD').length, seconds: Math.round((Date.now() - T0) / 1000),
-    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, workday_deferred: workdayDeferred.length, workday_only: WORKDAY_ONLY, workday_skipped_for_box_pass: skipWorkday, stopped_at_429: stoppedAt429, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
+    boards: { read: boardStats.length, failed: boardStats.filter(s => s.error).length, workday_deferred: workdayDeferred.length, workday_only: WORKDAY_ONLY, workday_skipped_for_box_pass: skipWorkday, workday_box_pass_stale: boxPassStale, stopped_at_429: stoppedAt429, openings: boardStats.reduce((a, s) => a + s.openings, 0), matches: by('BOARD'), new: by('BOARD', 'NEW'), existing: by('BOARD', 'EXISTING') + by('BOARD', 'EXISTING_PROTECTED'), protected: by('BOARD', 'EXISTING_PROTECTED'), cursor_next: cursorNext, cursor_start: start, ranked: ranked.length, health:H.summary(health,paused) },
     jobspy: { ran: js.ran, matches: by('JOBSPY'), new: by('JOBSPY', 'NEW'), existing: by('JOBSPY', 'EXISTING') + by('JOBSPY', 'EXISTING_PROTECTED'), protected: by('JOBSPY', 'EXISTING_PROTECTED'), sites: js.sites, errors: js.errors },
     hiringcafe: { ran: hc.ran, skipped: hc.skipped, returned: hc.returned, matches: hc.matches, unique: hc.unique, new: by('HIRINGCAFE', 'NEW'), existing: by('HIRINGCAFE', 'EXISTING') + by('HIRINGCAFE', 'EXISTING_PROTECTED'), protected: by('HIRINGCAFE', 'EXISTING_PROTECTED'), already_found_by: hc.overlap, errors: hc.errors.length },
     by_family: ['QUALITY', 'MFG_PROD', 'MFG_ENG'].reduce((o, f) => (o[f] = { new: found.filter(x => x.family === f && x.status === 'NEW').length, existing: found.filter(x => x.family === f && ['EXISTING','EXISTING_PROTECTED'].includes(x.status)).length, protected: found.filter(x => x.family === f && x.status === 'EXISTING_PROTECTED').length }, o), {}),
