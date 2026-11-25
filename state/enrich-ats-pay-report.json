@@ -1,10 +1,10 @@
 {
- "at": "2026-11-25T14:50:25.600Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T144714582Z",
+ "at": "2026-11-25T15:01:19.172Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T145708350Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T14:47:24.488Z",
+  "readAt": "2026-11-25T14:57:16.879Z",
   "sha256": "a79d3ffed23fd6261332d2ee680d1c50937bfff57ed59a8573e85b5798b45d3f",
   "rows": 8725
  },
@@ -52,7 +52,7 @@
  "degree": 0,
  "estimates": 0,
  "estimate_waiting_for_posting": 413,
- "skipped_recent": 178,
+ "skipped_recent": 179,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -64,27 +64,19 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 1
- },
+ "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 1
- },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
- "workday_window_active": true,
+ "workday_window_active": false,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -111,7 +103,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
+  "targets": 0,
   "candidates": 0,
   "saved_reused": 0,
   "cache_hits": 0,
@@ -124,7 +116,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-25T14:47:30.113Z",
+  "profile_as_of": "2026-11-25T14:57:22.334Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -3554,8 +3546,7 @@
   "degree": 0
  },
  "not_attempted": 420,
- "nothing_found": 421,
- "source_origin_blocks": {},
+ "nothing_found": 420,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -3577,8 +3568,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 552,
- "network_requests": 7,
+ "roles_researched": 551,
+ "network_requests": 6,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -8960,24 +8951,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-B837D5600C29",
-   "company": "The Goodwin Group",
-   "title": "General Manager",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-25T14:48:20.055Z",
-   "retryAt": "2026-11-26T06:48:20.055Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A610E13ACFC0",
    "company": "RR Donnelley",
    "title": "Plant President",
@@ -9323,6 +9296,24 @@
     {
      "url": "https://boards-api.greenhouse.io/v1/boards/relativity/jobs/8953967002?pay_transparency=true",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B837D5600C29",
+   "company": "The Goodwin Group",
+   "title": "General Manager",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T14:48:20.055Z",
+   "retryAt": "2026-11-26T06:48:20.055Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
