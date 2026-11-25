@@ -1,5 +1,5 @@
 'use strict';
-const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Source=require('../programmed-coordinator/source.cjs'),H=require('./shared.cjs'),F=require('./field-completion.cjs');
+const S=require('../programmed-coordinator/store.cjs'),T=require('../programmed-coordinator/transactions.cjs'),Source=require('../programmed-coordinator/source.cjs'),H=require('./shared.cjs'),F=require('./field-completion.cjs'),M=require('./terminal-membership.cjs'),P=require('./worker-partition.cjs');
 function needs(row){const p=row.p||{},out=[];
  if(!Source.known(p.SALARY_BASE_LOW))out.push('SALARY');
  // A full-posting read that found no degree (NOT_STATED + REQUIREMENTS_REVIEWED=YES) is settled.
@@ -61,8 +61,12 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
    if(remaining)item.remainingFields=remaining;
    item.returnProof=inspection.batch;continue;
   }
-  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length&&!FIELD_TASKS.has(item.taskKey)){item.status='ALREADY_COMPLETE';continue;}}
+  if(item.kind==='ENRICHMENT'){const row=byId.get(item.primaryId);if(row&&M.terminalBucket(row))continue;if(row&&T.protectedRow(row)){item.status='PROTECTED_SKIP';continue;}if(row&&!needs(row).length&&!FIELD_TASKS.has(item.taskKey)){item.status='ALREADY_COMPLETE';continue;}}
  }
+ const term=M.terminalIds(snapshot);
+ if(term.size)work.items=work.items.filter(i=>!term.has(i.primaryId));
+ const partFile=S.read(root,P.FILE,null);
+ const pruned=partFile?M.prunePartitionAndReservation(partFile,work,term,now):{partition:null,dropped:[]};
  settleGrokFields(work,byId,writerReceipts,captured,snapshot.source.readAt,new Date(now).toISOString());
  const reserved=H.reservedKeys(work);for(const k of reserved)occupied.add(k);
  // Tim, Nov 18 2026, 1:18 AM ET: once Sniffer is live, every new shared item goes to Sniffer and none to Claude.
@@ -95,7 +99,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),checkLo
   work.items.push(assignment);assigned.push(H.key(item));for(const k of [H.key(item),...item.aliases||[]])occupied.add(k);
  }
  work.at=new Date(now).toISOString();work.activation='COORDINATOR_ASSIGNMENTS_PUBLISHED';work.canonicalSource=snapshot.source;work.priority={basis:'LARGEST_CURRENT_ELIGIBLE_LANE_FIRST',counts:order.counts,laneOrder:order.lanes,observedAt:work.at};
- H.validateWork(work);if(apply){checkLock();S.save(root,H.FILE,work);require('./shared-pages.cjs').generate(root,{now,checkLock});};
+ H.validateWork(work,pruned.partition?{partition:pruned.partition}:undefined);if(apply){checkLock();if(pruned.dropped.length)P.write(root,pruned.partition);S.save(root,H.FILE,work);require('./shared-pages.cjs').generate(root,{now,checkLock});};
  return{enabled:work.enabled,assigned:assigned.length,pending:work.items.filter(i=>i.status==='ASSIGNED').length,byTask:Object.fromEntries(Object.keys(H.TASKS).filter(t=>work.providers[t]).map(t=>[t,work.items.filter(i=>i.taskKey===t&&i.status==='ASSIGNED').length])),fieldRoles:F.tally(work),canonicalWrites:0,noProcessingCap:true};
 }
 module.exports={needs,existingOwners,replenish,parseReceipts:F.parseReceipts};

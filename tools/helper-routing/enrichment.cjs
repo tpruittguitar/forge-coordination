@@ -1,5 +1,5 @@
 'use strict';
-const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),file=path.resolve(__dirname,'../../control/ENRICHMENT_HELPER_WORK.json');
+const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),file=path.resolve(__dirname,'../../control/ENRICHMENT_HELPER_WORK.json'),M=require('./terminal-membership.cjs');
 const digest=x=>crypto.createHash('sha256').update(JSON.stringify(x)).digest('hex');
 function effectiveWork(w){
  let p;try{p=JSON.parse(fs.readFileSync(path.resolve(__dirname,'../../control/ENRICHMENT_RESEARCH_OWNER.json')));}catch{return w;}
@@ -37,8 +37,11 @@ if(require.main===module){try{const w=load();if(process.argv[2]==='validate')con
 // ChatGPT and the programmed coordinator share the same evidence-first queue. Old external
 // research reservations must not prevent ordinary code from using readable sources.
 function reconcileResearch(w,snapshot,{root=path.resolve(__dirname,'../..'),now=Date.now()}={}){
- w=effectiveWork(w);if(owner(w).provider!=='ChatGPT'||!snapshot.needsById)return w;
- const rows=new Map([...snapshot.rows,...snapshot.archiveRows||[]].map(r=>[r.PRIMARY_ID,r]));
+ w=effectiveWork(w);
+ const rows=new Map([...snapshot.rows||[],...snapshot.archiveRows||[]].map(r=>[r.PRIMARY_ID,r]));
+ const term=M.terminalIds(snapshot);
+ if(term.size)w.items=w.items.filter(i=>!term.has(i.primaryId));
+ if(owner(w).provider!=='ChatGPT'||!snapshot.needsById)return w;
  const SiteEstimate=require('../enrich-ats-pay/site-estimate'),Store=require('../programmed-coordinator/store.cjs'),siteEstimates=SiteEstimate.create({root,ledger:Store.read(root,'state/enrich-ats-pay.json',{}),now:()=>now});
  for(const item of w.items){if(['CONSUMED','RELEASED','PROTECTED_SKIP','ALREADY_COMPLETE'].includes(item.status))continue;const row=rows.get(item.primaryId);if(!row)continue;
   if(!['SCOUT_INTAKE','DISCOVERY_LEAD','MANUAL_RESEARCH','BLOCKED','READY_TO_PURSUE','TIM_DECISION_REQUIRED'].includes(row.BUCKET)||/^YES/i.test(row.p?.ANTI_RESURRECTION||'')||row.p?.DO_NOT_REWORK||row.p?.TIM_DECISION){item.status='PROTECTED_SKIP';continue;}
