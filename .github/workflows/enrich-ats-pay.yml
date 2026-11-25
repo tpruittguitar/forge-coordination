@@ -26,6 +26,11 @@ on:
         required: false
         type: string
         default: '0'
+      grant_smoke:
+        description: 'cs-4c70ac05: one-row $0.01 grant extraction smoke (FORGE_ATS_GRANT_KEY); never on schedule or chained runs'
+        type: boolean
+        required: false
+        default: false
 permissions:
   contents: write
   actions: write   # queue-driven self/next dispatch
@@ -58,6 +63,12 @@ jobs:
           GITHUB_TOKEN: ${{ github.token }}
           ENRICH_FC_DIR: ${{ github.workspace }}/_fc
           ENRICH_PRODUCTS_ONLY: ${{ github.event_name == 'workflow_dispatch' && inputs.products_only && '1' || '' }}
+          # Grant mode only on an explicit dispatch; scheduled and queue-chained runs stay the normal producer.
+          FORGE_ATS_GRANT_ACTIONS: ${{ github.event_name == 'workflow_dispatch' && inputs.grant_smoke && '1' || '' }}
+          FORGE_ATS_GRANT_KEY: ${{ github.event_name == 'workflow_dispatch' && inputs.grant_smoke && secrets.FORGE_ATS_GRANT_KEY || '' }}
+          FORGE_ATS_GRANT_ORG_ID: ${{ vars.FORGE_ATS_GRANT_ORG_ID }}
+          FORGE_ATS_GRANT_PROJECT_ID: ${{ vars.FORGE_ATS_GRANT_PROJECT_ID }}
+          FORGE_ATS_GRANT_MAX_ROWS: '1'
         run: node tools/enrich-ats-pay/run.js
       - name: Preserve report and pending-write evidence
         if: always()

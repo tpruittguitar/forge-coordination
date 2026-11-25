@@ -9,7 +9,7 @@ const Source=require('../programmed-coordinator/source.cjs');
 const SourceBlanks=require('./source-blanks.cjs');
 const {lock}=require('../automation-run-lock.cjs');
 const {execFileSync}=require('node:child_process');
-const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=37470000;
+const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=33470000;
 const {reservationMicrousd}=W.LIMITS;
 const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
 
@@ -136,8 +136,10 @@ function accountDeadline(proof,now){
   return deadline;
 }
 
-function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null,retryOriginalId=null,productId=null}){
+function create({readFunding,openCredential=C.startup,transport=globalThis.fetch,expectedSid,now=Date.now,maxAttempts=SMOKE_LIMIT,retryPriorId=null,retryTargetId=null,retryOriginalId=null,productId=null,actionsAccount=null}){
   if(![SMOKE_LIMIT,BULK_LIMIT].includes(maxAttempts))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
+  if(actionsAccount&&(readFunding||!/^org[-_][A-Za-z0-9_-]+$/.test(actionsAccount.organizationId||'')||!/^proj_[A-Za-z0-9_-]+$/.test(actionsAccount.projectId||'')
+    ||!/^[A-Za-z0-9_-]{4}$/.test(actionsAccount.keySuffix||'')))throw Error('ATS_GRANT_ACTIONS_ACCOUNT_INVALID');
   const id=/^V2[A-Z]-[A-Za-z0-9_-]+$/;
   if(productId&&(maxAttempts!==SMOKE_LIMIT||!id.test(productId)||retryPriorId||retryOriginalId))throw Error('ATS_GRANT_PRODUCT_PROPOSAL_SCOPE');
   if(retryPriorId&&(maxAttempts!==SMOKE_LIMIT||!id.test(retryPriorId)||!id.test(retryTargetId||'')||retryPriorId===retryTargetId))throw Error('ATS_GRANT_SMOKE_RETRY_SCOPE_INVALID');
@@ -235,10 +237,19 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
       let deadline;
       try {
         diagnostic={category:'ACCOUNT_PREFLIGHT'};
-        proof??=await readFunding(); // Single bounded attestation snapshot per run.
-        deadline=accountDeadline(proof,now());
-        const sinceProof=entries.filter(r=>Date.parse(r?.at)>=Date.parse(proof.observedAt)).length;
-        if((sinceProof+1)*reservationMicrousd>proof.grant.availableMicrousd)throw Error('GRANT_HEADROOM_REQUIRED');
+        if(actionsAccount){
+          // Tim 2026-11-25 11:15 ET: Actions run without the operator funding receipt.
+          // Spend stays bounded by SMOKE_CAP/GRANT_CAP on the committed ledger above
+          // and the grant stopAt; the request stays pinned to this org/project.
+          proof??={...actionsAccount};
+          deadline=Date.parse(W.LIMITS.stopAt);
+          if(!(now()<deadline))throw Error('GRANT_ACCOUNT_PROOF_EXPIRED');
+        }else{
+          proof??=await readFunding(); // Single bounded attestation snapshot per run.
+          deadline=accountDeadline(proof,now());
+          const sinceProof=entries.filter(r=>Date.parse(r?.at)>=Date.parse(proof.observedAt)).length;
+          if((sinceProof+1)*reservationMicrousd>proof.grant.availableMicrousd)throw Error('GRANT_HEADROOM_REQUIRED');
+        }
         diagnostic={category:'NATIVE_CREDENTIAL_PREFLIGHT'};
         credential??=openCredential({expectedSid});
       } catch {stopped=true;throw Error('GRANT_FUNDING_OR_HOST_BLOCKED');}
@@ -307,6 +318,21 @@ function create({readFunding,openCredential=C.startup,transport=globalThis.fetch
   };
 }
 
+// GitHub Actions secret, used only through the fixed Responses transport.
+function envCredential(env){
+  let secret=env.FORGE_ATS_GRANT_KEY;
+  if(!/^sk-(?:proj-)?[A-Za-z0-9_-]{20,500}$/.test(secret||''))throw Error('ATS_GRANT_ACTIONS_KEY_REQUIRED');
+  return {suffix:secret.slice(-4),open:()=>Object.freeze({
+    async secureRuntime(use){
+      if(secret===null)throw Error('CREDENTIAL_CLOSED');
+      const result=await use(secret);
+      if(!(result instanceof Response))throw Error('CREDENTIAL_CALLBACK_RESULT');
+      return result;
+    },
+    close(){secret=null;}
+  })};
+}
+
 async function assertGithubOwnerStopped({token,repo,transport=globalThis.fetch}){
   if(!token||repo!=='tpruittguitar/forge-coordination')throw Error('ATS_GRANT_GITHUB_AUTHORITY_REQUIRED');
   const base='https://api.github.com/repos/'+repo+'/actions/workflows/enrich-ats-pay.yml';
@@ -324,10 +350,18 @@ async function assertGithubOwnerStopped({token,repo,transport=globalThis.fetch})
 
 function configured({root,live,writerPostLock,env=process.env}){
   const file=env.FORGE_ATS_GRANT_FUNDING_FILE;
-  if(!file)return null; // the existing Ubuntu producer is unchanged
-  if(process.platform!=='win32'||!live||!writerPostLock||!path.isAbsolute(file))throw Error('ATS_GRANT_RUNTIME_REQUIRED');
-  const privateFile=fs.realpathSync(file),checkout=fs.realpathSync(root);
-  if(privateFile.toLowerCase().startsWith(checkout.toLowerCase()+path.sep))throw Error('ATS_GRANT_FUNDING_MUST_BE_PRIVATE');
+  // Actions mode is explicit: the opt-in flag on a GitHub runner, never a default.
+  const actions=env.FORGE_ATS_GRANT_ACTIONS==='1';
+  if(!actions&&env.FORGE_ATS_GRANT_KEY)throw Error('ATS_GRANT_RUNTIME_REQUIRED');
+  if(!file&&!actions)return null; // the existing Ubuntu producer is unchanged
+  if(actions&&(file||env.GITHUB_ACTIONS!=='true'||!live||!writerPostLock||!path.isAbsolute(env.RUNNER_TEMP||'')))throw Error('ATS_GRANT_RUNTIME_REQUIRED');
+  if(!actions&&(process.platform!=='win32'||!live||!writerPostLock||!path.isAbsolute(file)))throw Error('ATS_GRANT_RUNTIME_REQUIRED');
+  let privateFile=null,key=null;
+  if(actions)key=envCredential(env);
+  else{
+    privateFile=fs.realpathSync(file);const checkout=fs.realpathSync(root);
+    if(privateFile.toLowerCase().startsWith(checkout.toLowerCase()+path.sep))throw Error('ATS_GRANT_FUNDING_MUST_BE_PRIVATE');
+  }
   const configuredLimit=env.FORGE_ATS_GRANT_MAX_ROWS;
   if(configuredLimit!==undefined&&!['1','50'].includes(configuredLimit))throw Error('ATS_GRANT_ROW_LIMIT_INVALID');
   const maxAttempts=configuredLimit===undefined?SMOKE_LIMIT:Number(configuredLimit);
@@ -342,25 +376,30 @@ function configured({root,live,writerPostLock,env=process.env}){
     if(!frozen.has(retryTargetId))throw Error('ATS_GRANT_FROZEN_API_ID_REQUIRED');
     productId=retryTargetId;
   }
-  const expectedSid=env.FORGE_ATS_GRANT_EXPECTED_SID;
-  if(!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
+  const expectedSid=actions?null:env.FORGE_ATS_GRANT_EXPECTED_SID;
+  if(!actions&&!/^S-1-5-21-(?:\d+-){3}\d+$/.test(expectedSid||''))throw Error('ATS_GRANT_NATIVE_ACCOUNT_REQUIRED');
   // Fail closed if the existing authoritative ATS workflow is enabled or still
   // has old runs. The host must be the single designated schedule/ledger owner.
   const github={token:env.GITHUB_TOKEN||env.GH_TOKEN,repo:env.GITHUB_REPOSITORY};
-  const lockPath=privateFile+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
+  // Actions: the workflow concurrency group (enrich-ats-pay, cancel-in-progress
+  // false) is the single owner; the Windows host still fails closed while it is enabled.
+  const ownerStopped=actions?async()=>{}:()=>assertGithubOwnerStopped(github);
+  const lockPath=(actions?path.join(env.RUNNER_TEMP,'forge-ats-grant'):privateFile)+'.ats-run-lock',token='ATSBOT-'+crypto.randomUUID();
   let owned=false;
-  return Object.assign(create({expectedSid,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,productId,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))}),{
+  const account=actions?{actionsAccount:{organizationId:env.FORGE_ATS_GRANT_ORG_ID,projectId:env.FORGE_ATS_GRANT_PROJECT_ID,keySuffix:key.suffix},openCredential:key.open}
+    :{expectedSid,readFunding:async()=>JSON.parse(fs.readFileSync(privateFile,'utf8'))};
+  return Object.assign(create({...account,maxAttempts,retryPriorId,retryTargetId,retryOriginalId,productId}),{
     isEligibleId(pid){return !frozen||frozen.has(pid);},
     get firstPassScope(){return maxAttempts===BULK_LIMIT&&!productId?{partition:API_PARTITION,size:frozen.size}:null;},
     get rowLimit(){return maxAttempts;},
     async acquire(){
-      await assertGithubOwnerStopped(github);
+      await ownerStopped();
       if(!lock(lockPath,'acquire',token).acquired)throw Error('ATS_GRANT_NATIVE_RUN_ALREADY_ACTIVE');
       owned=true;
     },
-    async verifyExclusive(){lock(lockPath,'check',token);await assertGithubOwnerStopped(github);},
+    async verifyExclusive(){lock(lockPath,'check',token);await ownerStopped();},
     release(){if(owned){lock(lockPath,'release',token);owned=false;}}
   });
 }
 function checkpoint(file,ledger){Store.save(path.dirname(file),path.basename(file),ledger);}
-module.exports={completeProductSmoke,frozenApiIds,requireFrozenApiId,create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped};
+module.exports={completeProductSmoke,frozenApiIds,requireFrozenApiId,create,configured,checkpoint,input,resultFields,assertGithubOwnerStopped,envCredential};
