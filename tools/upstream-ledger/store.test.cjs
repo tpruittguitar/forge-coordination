@@ -115,6 +115,45 @@ test('drain preserves fenced items and moves reopened detail fully back to live'
   assert.deepEqual(fs.readdirSync(f.locate(Store.DRAIN_ARCHIVE)), []);
 });
 
+test('drain peels fence.record and bulky discoveryReview from the live file and hydrates them back', t => {
+  const f = fixture(t);
+  const card = {company: 'Factory', title: 'Plant Manager', location: 'Austin, TX', url: 'https://example.test/job'};
+  const fence = {requestIds: ['ORIGINAL-1'], proof: 'state/EMAIL_RECOVERY_QUEUE.json#job', record: {
+    COMPANY: 'Factory', TITLE: 'Plant Manager', evidence: {quotes: ['x'.repeat(200)]}, ROLE_TEXT: 'y'.repeat(200)
+  }};
+  const discoveryReview = {
+    schema: 'forge.discovery-review.v1', observedAt: firstSeen, sourceUrl: card.url, source: 'JOBSPY:linkedin',
+    decision: 'PROGRESS_TO_INTAKE', preliminaryScreen: {schema: 'forge.preliminary-screen.v1', notes: 'z'.repeat(400)},
+    resumeMatch: {schema: 'forge.resume-match.v1', matches: [{term: 'manufacturing'}]},
+    evidenceQuotes: ['exact quote'], basis: 'PROVISIONAL_TITLE_FAMILY_LEVEL_AND_LOCATION', sourceSha256: 'a'.repeat(64)
+  };
+  const pending = entry('p', 'ACTION_REQUIRED', {
+    aliases: ['p'], card, fence, discoveryReview, action: 'RECONCILE_WRITER',
+    taskKey: 'FORGE_INTAKE_HELD_RECONCILIATION', nextAction: 'Reconcile the original Writer request'
+  });
+  const settled = entry('s', 'ACCOUNTED_UPSTREAM', {aliases: ['s'], card, discoveryReview});
+  const original = {schema: 'forge.intake-drain.v1', items: {p: pending, s: settled}};
+  Store.writeDrain(f.root, original);
+  const live = JSON.parse(f.read(Store.DRAIN_PATH));
+  assert.equal(live.items.p.fence.record, undefined);
+  assert.deepEqual(live.items.p.fence.requestIds, fence.requestIds);
+  assert.equal(live.items.p.fence.proof, fence.proof);
+  assert.equal(live.items.p.discoveryReview.preliminaryScreen, undefined);
+  assert.equal(live.items.p.discoveryReview.resumeMatch, undefined);
+  assert.equal(live.items.p.discoveryReview.evidenceQuotes, undefined);
+  assert.equal(live.items.p.discoveryReview.decision, 'PROGRESS_TO_INTAKE');
+  assert.equal(live.items.p.discoveryReview.sourceSha256, discoveryReview.sourceSha256);
+  assert.equal(live.items.p.status, 'ACTION_REQUIRED');
+  assert.equal(live.items.s.discoveryReview, undefined);
+  assert.ok(Buffer.byteLength(f.read(Store.DRAIN_PATH)) < Buffer.byteLength(JSON.stringify(original) + '\n'));
+  assert.deepEqual(Store.readDrain(f.root), original);
+  assert.deepEqual(QueueState.read(f.root, Store.DRAIN_PATH), original);
+  assert.deepEqual(Coordinator.read(f.root, Store.DRAIN_PATH), original);
+  Store.writeDrain(f.root, Store.readDrain(f.root));
+  assert.deepEqual(Store.readDrain(f.root), original);
+  assert.equal(JSON.parse(f.read(Store.DRAIN_PATH)).items.p.fence.record, undefined);
+});
+
 test('uses UTF-8 bytes to limit shards, and removes stale parts', t => {
   const f = fixture(t);
   const entries = Object.fromEntries(['c', 'b', 'a'].map(id => [id, entry(id, 'EXCLUDED', {body: 'é'.repeat(130)})]));
