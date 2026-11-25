@@ -1,5 +1,5 @@
 'use strict';
-// Card 14c6e4a: Workday boards read from the box (TRIAL_WORKDAY_ONLY=1); GitHub runs skip Workday while the box pass is fresh.
+// Card 14c6e4a / cs-c49f2bf8: Workday boards read from the box (TRIAL_WORKDAY_ONLY=1); GitHub runs never probe Workday.
 const test=require('node:test'),assert=require('node:assert'),fs=require('fs'),os=require('os'),path=require('path'),cp=require('child_process');
 const WD=require('./workday-box-pass'),H=require('./board-health');
 const ROOT=path.resolve(__dirname,'../..'),FC=process.env.ENRICH_FC_DIR||path.resolve(ROOT,'../foreman-cockpit');
@@ -40,13 +40,20 @@ test('box pass is fresh under 4 h only; missing or bad record is not fresh',()=>
  assert.equal(WD.fresh({lastPassAt:'2026-11-18T09:59:00Z'},NOW),false);
  assert.equal(WD.fresh(null,NOW),false);assert.equal(WD.fresh({lastPassAt:'x'},NOW),false);
 });
+test('GitHub skips Workday when the box pass is stale or missing, not only when it is fresh',()=>{
+ assert.equal(WD.boxPassStale(null,NOW),true);
+ assert.equal(WD.boxPassStale({lastPassAt:'2026-11-18T09:59:00Z'},NOW),true);
+ assert.equal(WD.boxPassStale({lastPassAt:'x'},NOW),true);
+ assert.equal(WD.boxPassStale({lastPassAt:'2026-11-18T10:30:00Z'},NOW),false);
+ assert.equal(WD.githubSkipWorkday(),true);
+});
 test('health merge keeps the newer attempt per board from either side',()=>{
  const theirs={at:'2026-11-18T13:00:00Z',boards:{'greenhouse:acme':{lastAttemptAt:'2026-11-18T13:00:00Z',status:'OK'},'workday:a':{lastAttemptAt:'2026-11-18T09:00:00Z',status:'TEMPORARY_FAILURE'},'workday:old':{lastAttemptAt:'2026-11-18T09:00:00Z'}}};
  const ours={at:'2026-11-18T12:00:00Z',boards:{'greenhouse:acme':{lastAttemptAt:'2026-11-18T09:00:00Z',status:'TEMPORARY_FAILURE'},'workday:a':{lastAttemptAt:'2026-11-18T12:00:00Z',status:'OK'},'workday:new':{lastAttemptAt:'2026-11-18T12:00:00Z',repairedFrom:'workday:old'}}};
  const m=WD.mergeHealth(theirs,ours);
  assert.equal(m.boards['greenhouse:acme'].status,'OK');assert.equal(m.boards['workday:a'].status,'OK');assert.equal('workday:old' in m.boards,false);assert.equal(m.at,'2026-11-18T13:00:00Z');
 });
-test('runner: box pass reads Workday only and stops at the first 429; GitHub runs skip Workday while the pass is under 4 h old',{skip:!fs.existsSync(path.join(FC,'apps-script/PipelineWorklists.gs'))&&'no foreman-cockpit checkout'},()=>{
+test('runner: box pass reads Workday only and stops at the first 429; GitHub runs skip Workday whether the pass is fresh, stale, or missing',{skip:!fs.existsSync(path.join(FC,'apps-script/PipelineWorklists.gs'))&&'no foreman-cockpit checkout'},()=>{
  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'wd-box-')),out=path.join(dir,'out'),log=path.join(dir,'fetch.log'),cursor=path.join(dir,'cursor.json');
  const row=(n,id,co,url)=>`${n} | ${id} | ${co} | Director of Quality | READY_TO_PURSUE | RESOLVED/PURSUE_CANDIDATE | - | - | Dayton, OH | SOURCE_URL=${url}`;
  fs.writeFileSync(path.join(dir,'master.txt'),[row(1,'V2I-00000000000A','Acme','https://job-boards.greenhouse.io/acme/jobs/111'),row(2,'V2I-00000000000B','Alpha','https://alpha.wd1.myworkdayjobs.com/ext/job/Dayton/Director_R1'),row(3,'V2I-00000000000C','Bravo','https://bravo.wd1.myworkdayjobs.com/ext/job/Dayton/Director_R2'),row(4,'V2I-00000000000D','Charlie','https://charlie.wd1.myworkdayjobs.com/ext/job/Dayton/Director_R3')].join('\n')+'\n');
@@ -66,8 +73,18 @@ test('runner: box pass reads Workday only and stops at the first 429; GitHub run
  assert.equal(second.includes('charlie.wd1.myworkdayjobs.com'),true);assert.equal(pass2.nextDue,null);
  const skipped=run({});
  assert.equal(skipped.includes('myworkdayjobs'),false);assert.equal(skipped.includes('greenhouse.io/v1/boards/acme'),true);
- assert.equal(JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8')).summary.boards.workday_skipped_for_box_pass,true);
+ const skippedReport=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8'));
+ assert.equal(skippedReport.summary.boards.workday_skipped_for_box_pass,true);
+ assert.equal(skippedReport.summary.boards.workday_box_pass_stale,false);
  fs.writeFileSync(path.join(out,WD.PASS_FILE),JSON.stringify({...pass,lastPassAt:new Date(Date.now()-5*3600000).toISOString()}));
- assert.equal(run({}).includes('charlie.wd1.myworkdayjobs.com'),true,'an old box pass hands Workday back to the GitHub run');
+ const stale=run({});
+ assert.equal(stale.includes('myworkdayjobs'),false,'a stale box pass does not hand Workday back to the GitHub run');
+ const staleReport=JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8'));
+ assert.equal(staleReport.summary.boards.workday_skipped_for_box_pass,true);
+ assert.equal(staleReport.summary.boards.workday_box_pass_stale,true);
+ fs.rmSync(path.join(out,WD.PASS_FILE),{force:true});
+ const missing=run({});
+ assert.equal(missing.includes('myworkdayjobs'),false,'a missing box pass does not let GitHub probe Workday');
+ assert.equal(JSON.parse(fs.readFileSync(path.join(out,'board-discovery-report.json'),'utf8')).summary.boards.workday_box_pass_stale,true);
  fs.rmSync(dir,{recursive:true,force:true});
 });
