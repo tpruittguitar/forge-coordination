@@ -23,11 +23,11 @@ test('authoritative controls prove the exact split, keep Hermes reserved, and sk
  data.claude.enabled=true;data.claude.enrichment=[{primaryId:external,task:'FORGE_CLAUDE_ENRICHMENT'}];
  const r=inspect({...data,registry,owner:{...data.owner,workerPartition:owner.workerPartition},partition:record});
  a.equal(r.workerSplitVerified,true);a.equal(r.productionAuthorized,false);
- a.deepEqual(r.partition,{sourceCommit:P.SOURCE,hermes:1582,api:1582,hermesIndependentlyReserved:0,apiIndependentlyReserved:1});
+ a.deepEqual(r.partition,{sourceCommit:P.SOURCE,hermes:P.HERMES_SIZE,api:P.API_SIZE,hermesIndependentlyReserved:0,apiIndependentlyReserved:1});
  a.ok(!r.blockers.includes('AUTHORITATIVE_WORKER_PARTITION_UNAVAILABLE'));
  a.ok(r.blockers.includes('EXISTING_RESERVATION_OVERLAP'));
  const ordinary=P.atsReserved(split),grant=P.atsReserved(split,{grant:true,independent:[external]});
- a.equal(ordinary.size,1582);a.ok(ordinary.has(hermes)&&!ordinary.has(api));a.equal(grant.size,1583);
+ a.equal(ordinary.size,P.HERMES_SIZE);a.ok(ordinary.has(hermes)&&!ordinary.has(api));a.equal(grant.size,P.HERMES_SIZE+1);
  a.ok(grant.has(hermes)&&!grant.has(api)&&grant.has(external));
  record.workers[1].primaryIds[2]='V2I-7E2E8E0559E8';
  a.throws(()=>P.validate(record),/PARTITION_INVALID/);
