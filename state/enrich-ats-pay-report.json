@@ -1,15 +1,15 @@
 {
- "at": "2026-11-25T21:10:57.895Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T210320001Z",
+ "at": "2026-11-25T21:25:50.683Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T211822047Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T21:03:26.262Z",
-  "sha256": "e3336b96a129460868d8073f5ed3e84fbd89edbf4e06fe38758390f606482755",
-  "rows": 7841
+  "readAt": "2026-11-25T21:18:30.092Z",
+  "sha256": "7e6c3b8f62593045492bbc37b3feecf48d71a02f34f9a8777e73dae14dcacb12",
+  "rows": 7845
  },
- "rows": 7841,
- "eligible": 624,
+ "rows": 7845,
+ "eligible": 628,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -36,7 +36,9 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [],
+  "released_applied": [
+   "FORGE-ENRICH_ATS-ATSBOT-20261125T210320001Z-B01"
+  ],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -51,19 +53,19 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 318,
- "skipped_recent": 121,
- "submitted": 0,
+ "estimate_waiting_for_posting": 303,
+ "skipped_recent": 139,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -116,7 +118,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-25T21:03:31.114Z",
+  "profile_as_of": "2026-11-25T21:18:35.311Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1213,12 +1215,13 @@
  },
  "decision_waiting": 4,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 1,
+  "salary": 1,
+  "degree": 1
  },
- "not_attempted": 320,
- "nothing_found": 320,
+ "not_attempted": 305,
+ "nothing_found": 305,
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1228,7 +1231,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 22,
-  "no_overview": 630,
+  "no_overview": 634,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 427,
@@ -1240,12 +1243,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 455,
- "network_requests": 5,
+ "roles_researched": 441,
+ "network_requests": 7,
  "planned": 1,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 1,
- "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1253,10 +1255,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 219,
+  "NOT_YET_ATTEMPTED": 222,
   "SOURCE_RESEARCH_REQUIRED": 367,
+  "EVIDENCE_FOUND": 32,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
-  "EVIDENCE_FOUND": 31,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -1577,6 +1579,34 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-25T20:37:47.239Z",
    "retryAt": "2026-11-25T21:37:47.239Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8632B393428C",
+   "company": "Atkore",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-828FB0F8D593",
+   "company": "Alloy Precision",
+   "title": "Director of Manufacturing Services",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -3947,420 +3977,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-DDCCF2148F82",
-   "company": "Gyro Hut",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.227Z",
-   "retryAt": "2026-11-26T13:04:07.227Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-21DD71101872",
-   "company": "Holland, L.P.",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.228Z",
-   "retryAt": "2026-11-26T13:04:07.228Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-20F6ECE77711",
-   "company": "Blue Cross Blue Shield of Arizona",
-   "title": "Director, Reimbursement Services Medicaid Operations (Hybrid)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.228Z",
-   "retryAt": "2026-11-26T13:04:07.228Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-3EE76396D612",
-   "company": "DoorDash USA",
-   "title": "Senior Manager, Robot Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.229Z",
-   "retryAt": "2026-11-26T13:04:07.229Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F227071080E7",
-   "company": "Cox Automotive",
-   "title": "Director of Operations Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.230Z",
-   "retryAt": "2026-11-26T13:04:07.230Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F49CC98E091D",
-   "company": "Marysville Exempted Village School District",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.230Z",
-   "retryAt": "2026-11-26T13:04:07.230Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AC38EBCF5C6E",
-   "company": "Park Lawn Corporation",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
-   "retryAt": "2026-11-26T13:04:07.231Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-197EF6DE508B",
-   "company": "Long Wave Inc.",
-   "title": "General Manager / Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
-   "retryAt": "2026-11-26T13:04:07.231Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8BE43B9DA609",
-   "company": "The RealReal",
-   "title": "Director, Product Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
-   "retryAt": "2026-11-26T13:04:07.231Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1BAE50D5858E",
-   "company": "thyssenkrupp Dynamic Components Danville LLC",
-   "title": "Head of Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
-   "retryAt": "2026-11-26T13:04:07.232Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-47E5992BEC94",
-   "company": "MAHLE GmbH",
-   "title": "Head of Plant Production Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
-   "retryAt": "2026-11-26T13:04:07.232Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-87D47BBFD15E",
-   "company": "Eli Lilly",
-   "title": "Associate Director - Manufacturing Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
-   "retryAt": "2026-11-26T13:04:07.232Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FF16FA8DC2DE",
-   "company": "TAM Residential LLC",
-   "title": "Vice President of Operations- Beverly Hills, CA",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
-   "retryAt": "2026-11-26T13:04:07.233Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F79276948624",
-   "company": "AFC Industries",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
-   "retryAt": "2026-11-26T13:04:07.233Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6560070C3B06",
-   "company": "Producto",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
-   "retryAt": "2026-11-26T13:04:07.233Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FD6F0050F55A",
-   "company": "Par Health",
-   "title": "Site Quality Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
-   "retryAt": "2026-11-26T13:04:07.234Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-74239157FAA5",
-   "company": "Eli Lilly",
-   "title": "Associate Director - Quality Assurance",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
-   "retryAt": "2026-11-26T13:04:07.234Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-2B9039FA7D6C",
-   "company": "Infoblox",
-   "title": "Senior Manager, Product Operations - Process Excellence",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
-   "retryAt": "2026-11-26T13:04:07.234Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A82F4C5F90B7",
-   "company": "RPI Print, Inc",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
-   "retryAt": "2026-11-26T13:04:07.235Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C7B734C305C9",
-   "company": "Line Quest, LLC",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
-   "retryAt": "2026-11-26T13:04:07.235Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9BA32F55EDE5",
-   "company": "Maven Robotics",
-   "title": "Head of Deployment & Field Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
-   "retryAt": "2026-11-26T13:04:07.235Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5A582505A7BA",
-   "company": "GxPartners",
-   "title": "Global Director, Quality & Regulatory Affairs",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.236Z",
-   "retryAt": "2026-11-26T13:04:07.236Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F9C9C57E148A",
-   "company": "IPEX Inc.",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T21:04:07.236Z",
-   "retryAt": "2026-11-26T13:04:07.236Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-A0B8DC9D12DA",
    "company": "Motorola Solutions",
    "title": "Assistant Director of Quality",
@@ -4626,6 +4242,420 @@
    "lastAttemptAt": "2026-11-25T20:37:49.205Z",
    "retryAt": "2026-11-25T21:37:49.205Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DDCCF2148F82",
+   "company": "Gyro Hut",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.227Z",
+   "retryAt": "2026-11-26T13:04:07.227Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-21DD71101872",
+   "company": "Holland, L.P.",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.228Z",
+   "retryAt": "2026-11-26T13:04:07.228Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-20F6ECE77711",
+   "company": "Blue Cross Blue Shield of Arizona",
+   "title": "Director, Reimbursement Services Medicaid Operations (Hybrid)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.228Z",
+   "retryAt": "2026-11-26T13:04:07.228Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-3EE76396D612",
+   "company": "DoorDash USA",
+   "title": "Senior Manager, Robot Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.229Z",
+   "retryAt": "2026-11-26T13:04:07.229Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F227071080E7",
+   "company": "Cox Automotive",
+   "title": "Director of Operations Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.230Z",
+   "retryAt": "2026-11-26T13:04:07.230Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F49CC98E091D",
+   "company": "Marysville Exempted Village School District",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.230Z",
+   "retryAt": "2026-11-26T13:04:07.230Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC38EBCF5C6E",
+   "company": "Park Lawn Corporation",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
+   "retryAt": "2026-11-26T13:04:07.231Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-197EF6DE508B",
+   "company": "Long Wave Inc.",
+   "title": "General Manager / Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
+   "retryAt": "2026-11-26T13:04:07.231Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8BE43B9DA609",
+   "company": "The RealReal",
+   "title": "Director, Product Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.231Z",
+   "retryAt": "2026-11-26T13:04:07.231Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1BAE50D5858E",
+   "company": "thyssenkrupp Dynamic Components Danville LLC",
+   "title": "Head of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
+   "retryAt": "2026-11-26T13:04:07.232Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-47E5992BEC94",
+   "company": "MAHLE GmbH",
+   "title": "Head of Plant Production Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
+   "retryAt": "2026-11-26T13:04:07.232Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-87D47BBFD15E",
+   "company": "Eli Lilly",
+   "title": "Associate Director - Manufacturing Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.232Z",
+   "retryAt": "2026-11-26T13:04:07.232Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FF16FA8DC2DE",
+   "company": "TAM Residential LLC",
+   "title": "Vice President of Operations- Beverly Hills, CA",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
+   "retryAt": "2026-11-26T13:04:07.233Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F79276948624",
+   "company": "AFC Industries",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
+   "retryAt": "2026-11-26T13:04:07.233Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6560070C3B06",
+   "company": "Producto",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.233Z",
+   "retryAt": "2026-11-26T13:04:07.233Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FD6F0050F55A",
+   "company": "Par Health",
+   "title": "Site Quality Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
+   "retryAt": "2026-11-26T13:04:07.234Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-74239157FAA5",
+   "company": "Eli Lilly",
+   "title": "Associate Director - Quality Assurance",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
+   "retryAt": "2026-11-26T13:04:07.234Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-2B9039FA7D6C",
+   "company": "Infoblox",
+   "title": "Senior Manager, Product Operations - Process Excellence",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.234Z",
+   "retryAt": "2026-11-26T13:04:07.234Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A82F4C5F90B7",
+   "company": "RPI Print, Inc",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
+   "retryAt": "2026-11-26T13:04:07.235Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C7B734C305C9",
+   "company": "Line Quest, LLC",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
+   "retryAt": "2026-11-26T13:04:07.235Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9BA32F55EDE5",
+   "company": "Maven Robotics",
+   "title": "Head of Deployment & Field Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.235Z",
+   "retryAt": "2026-11-26T13:04:07.235Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-5A582505A7BA",
+   "company": "GxPartners",
+   "title": "Global Director, Quality & Regulatory Affairs",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.236Z",
+   "retryAt": "2026-11-26T13:04:07.236Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F9C9C57E148A",
+   "company": "IPEX Inc.",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T21:04:07.236Z",
+   "retryAt": "2026-11-26T13:04:07.236Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -5094,6 +5124,20 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-114B23652A0A",
+   "company": "Ryder",
+   "title": "Director of Continuous Improvement",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -10267,9 +10311,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T05:12:57.999Z",
-   "retryAt": "2026-11-25T21:12:57.999Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-25T21:19:28.856Z",
+   "retryAt": "2026-11-26T13:19:28.856Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10285,9 +10329,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T05:12:57.999Z",
-   "retryAt": "2026-11-25T21:12:57.999Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-25T21:19:28.857Z",
+   "retryAt": "2026-11-26T13:19:28.857Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10303,9 +10347,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T05:12:58.000Z",
-   "retryAt": "2026-11-25T21:12:58.000Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-25T21:19:28.857Z",
+   "retryAt": "2026-11-26T13:19:28.857Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10321,9 +10365,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T05:12:58.000Z",
-   "retryAt": "2026-11-25T21:12:58.000Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-25T21:19:28.858Z",
+   "retryAt": "2026-11-26T13:19:28.858Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10339,9 +10383,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T05:12:58.000Z",
-   "retryAt": "2026-11-25T21:12:58.000Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-25T21:19:28.858Z",
+   "retryAt": "2026-11-26T13:19:28.858Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -11694,13 +11738,21 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-C2646CA2F64A",
+   "id": "V2I-911311D39088",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Mechanical, Aerospace, Manufacturing, Electrical, or Industrial Engineering or equivalent hands-on manufacturing experience",
-    "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://boards.greenhouse.io/andurilindustries/jobs/5252915007?gh_jid=5252915007",
+    "SALARY_BASE_LOW": 176600,
+    "SALARY_BASE_HIGH": 294400,
+    "SALARY_MIDPOINT": 235500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://careers.rich.com/job/Missouri-City-Director-of-Manufacturing-TX-77489/1453842900/",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelors Degree in Business Management, Food Science, Engineering, Science or similar academic disciplines.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://careers.rich.com/job/Missouri-City-Director-of-Manufacturing-TX-77489/1453842900/",
     "DEGREE_ASOF": "2026-11-25",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25"
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 264950
    }
   }
  ],
