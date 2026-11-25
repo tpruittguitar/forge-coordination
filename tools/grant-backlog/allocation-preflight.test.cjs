@@ -18,7 +18,7 @@ test('authoritative controls prove the exact split, keep Hermes reserved, and sk
  const fs=require('node:fs'),path=require('node:path'),P=require('../helper-routing/worker-partition.cjs');
  const root=path.resolve(__dirname,'../..'),json=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
  const data=input(),record=json(P.FILE),registry=json('control/AI_AUTOMATION_TASKS.json'),owner=json('control/ENRICHMENT_RESEARCH_OWNER.json');
- const split=P.load(root),hermes='V2I-7D723DF74DB5',api='V2I-7E2E8E0559E8',external=[...split.api][1];
+ const split=P.load(root),hermes='V2I-7D68816459DB',api='V2I-7F045C7BC2A3',external=[...split.api][1];
  a.equal(registry.tasks[TASK].owner,undefined);a.equal(owner.provider,'ChatGPT');
  data.claude.enabled=true;data.claude.enrichment=[{primaryId:external,task:'FORGE_CLAUDE_ENRICHMENT'}];
  const r=inspect({...data,registry,owner:{...data.owner,workerPartition:owner.workerPartition},partition:record});
@@ -29,6 +29,6 @@ test('authoritative controls prove the exact split, keep Hermes reserved, and sk
  const ordinary=P.atsReserved(split),grant=P.atsReserved(split,{grant:true,independent:[external]});
  a.equal(ordinary.size,P.HERMES_SIZE);a.ok(ordinary.has(hermes)&&!ordinary.has(api));a.equal(grant.size,P.HERMES_SIZE+1);
  a.ok(grant.has(hermes)&&!grant.has(api)&&grant.has(external));
- record.workers[1].primaryIds[2]='V2I-7E2E8E0559E8';
+ record.workers[1].primaryIds[2]='V2I-7F045C7BC2A3';
  a.throws(()=>P.validate(record),/PARTITION_INVALID/);
 });
