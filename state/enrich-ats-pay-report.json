@@ -1,15 +1,15 @@
 {
- "at": "2026-11-25T12:26:44.054Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T121739419Z",
+ "at": "2026-11-25T12:42:56.923Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T123350168Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T12:17:49.634Z",
-  "sha256": "5114d8dfab8dd1fda8f1b45a398698598b808279dccc666ed809775d60d468e9",
-  "rows": 8716
+  "readAt": "2026-11-25T12:34:00.845Z",
+  "sha256": "afdece98a0af84ec4b663abb881f56c86fd1bee9f03c710e1c5e39968c7d9919",
+  "rows": 8719
  },
- "rows": 8716,
- "eligible": 1002,
+ "rows": 8719,
+ "eligible": 1004,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -50,20 +50,20 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 1,
+ "estimates": 2,
  "estimate_waiting_for_posting": 413,
  "skipped_recent": 179,
- "submitted": 1,
+ "submitted": 3,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 3,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
- "salary_independently_verified": 1,
+ "salary_submitted": 3,
+ "salary_independently_verified": 3,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -78,17 +78,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 2,
  "posting_cache": {
   "saved": 0,
   "hits": 6,
@@ -103,9 +103,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 12,
-  "saved_reused": 11,
+  "targets": 2,
+  "candidates": 24,
+  "saved_reused": 22,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -113,10 +113,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 1,
+  "unsupported_routes": 2,
   "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-25T12:17:56.098Z",
+  "profile_as_of": "2026-11-25T12:34:06.593Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -3514,17 +3514,17 @@
  ],
  "salary_repair": {
   "skipped_blocked": 411,
-  "review_skipped_blocked": 137,
+  "review_skipped_blocked": 138,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 366,
-   "products (what they make)": 402,
+   "work arrangement (remote/hybrid/on-site)": 367,
+   "products (what they make)": 403,
    "location / geography": 10,
-   "experience fit": 109
+   "experience fit": 110
   }
  },
  "salary_review": {
-  "eligible": 684,
-  "due": 137,
+  "eligible": 685,
+  "due": 138,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -3535,9 +3535,9 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 1,
+  "salary": 1,
+  "degree": 1
  },
  "not_attempted": 420,
  "nothing_found": 420,
@@ -3550,7 +3550,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 32,
-  "no_overview": 766,
+  "no_overview": 769,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 1383,
@@ -3562,9 +3562,9 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 546,
+ "roles_researched": 549,
  "network_requests": 6,
- "planned": 1,
+ "planned": 3,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
@@ -3576,7 +3576,7 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 285,
   "SOURCE_RESEARCH_REQUIRED": 648,
-  "EVIDENCE_FOUND": 33,
+  "EVIDENCE_FOUND": 35,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 24,
   "MODEL_INPUTS_REQUIRED": 5
  },
@@ -20521,51 +20521,115 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-8ACF563C3E5A",
+   "id": "V2I-BCA39D41434B",
    "fields": {
-    "DEGREE_TEXT": "Preferred Bachelor's degree in related field.",
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 180000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.dayforcehcm.com/en-US/lisina/LISIAerospaceClientCareerSite/jobs/13268",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree (Engineering background preferred) from a four-year college or university.",
     "DEGREE_REQ": "PREFERRED",
-    "DEGREE_EVIDENCE_URL": "https://careers-omnisource.icims.com/jobs/9509/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+    "DEGREE_EVIDENCE_URL": "https://jobs.dayforcehcm.com/en-US/lisina/LISIAerospaceClientCareerSite/jobs/13268",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 190000
+   }
+  },
+  {
+   "id": "V2I-14905C22A922",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://thalle.recruiterbox.com/jobs/fk0za7l?fjb_hash=ezLpq610",
     "DEGREE_ASOF": "2026-11-25",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 135000,
-    "SALARY_BASE_HIGH": 180000,
-    "SALARY_MIDPOINT": 157500,
+    "SALARY_BASE_LOW": 90000,
+    "SALARY_BASE_HIGH": 185000,
+    "SALARY_MIDPOINT": 137500,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-25",
-    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=09b4eac3e05931a6 (as of 2026-11-19); https://www.nh3jobs.com/jobs/mkt_198139 (as of 2026-11-05); https://100hires.com/j/e5i9FKB (as of 2026-11-02); https://www.linkedin.com/jobs/view/4485739608 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4482222273 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4456269794 (as of 2026-10-31); https://www.linkedin.com/jobs/view/4484749505 (as of 2026-10-30)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-0AA83A7D604B, V2I-E88E936F3100, V2I-62808DD65A9C, V2I-DE781358981E, V2I-18EA344207B1, V2I-62CF12460FA4, V2I-5A07B07EC9D4]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://www.governmentjobs.com/careers/collier/jobs/5555698/plant-manager-northeast-water-treatment-plant (as of 2026-11-20); https://www.indeed.com/viewjob?jk=dd38d890a9ef430a (as of 2026-11-15); https://www.linkedin.com/jobs/view/4486344331 (as of 2026-11-04); https://www.linkedin.com/jobs/view/4485020437 (as of 2026-11-04); https://www.linkedin.com/jobs/view/4484608848 (as of 2026-11-03); https://recruiting.paylocity.com/Recruiting/Jobs/Details/4689390/Mac-Medical/Plant-Manager?source=Indeed_Feed (as of 2026-11-25); https://grnh.se/sxdkak6f9us (as of 2026-11-24)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-D2B97757ED6D, V2I-E0C96532DBF6, V2I-B2CD5C313FD4, V2I-F6A91C5E18E1, V2I-A481B920FAA0, V2I-46DB68724515, V2I-1DDD636BEEC6]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
-    "SALARY_SCORE_POINT": 168750
+    "SALARY_SCORE_POINT": 161250
+   }
+  },
+  {
+   "id": "V2I-4E0562A317A4",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree required (Management, Business, or Engineering); MBA or master's degree in Business Management preferred.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.dayforcehcm.com/en-US/androidind/ANDROIDIND/jobs/26598",
+    "DEGREE_ASOF": "2026-11-25",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 128000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 164000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=1d63195fcfa8f7bd (as of 2026-11-24); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23); https://secure6.saashr.com/ta/6182016.jobs?ShowJob=772163008 (as of 2026-11-21); https://secure6.saashr.com/ta/6182016.careers?ShowJob=772163008 (as of 2026-11-21); https://recruiting2.ultipro.com/ATK1000ATKOR/JobBoard/18eec16a-a1ec-458b-82c9-cb3af8866255/OpportunityDetail?opportunityId=77fc7336-b268-4107-b688-aa059d655d13&postingId=908ef650-7661-408f-89b8-375fef2bc477 (as of 2026-11-19); https://3m.wd1.myworkdayjobs.com/en-US/Search/job/US-Texas-Angleton/Plant-Manager--Angleton--TX-_R01173772 (as of 2026-11-18); https://axalta.wd1.myworkdayjobs.com/Axalta/job/US-TX-Houston/Houston-Plant-Manager_2026-19798-1 (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-FDD5DDF1169A, V2I-A86C2E8C1E82, V2I-1D55E7CC8E88, V2I-7C423F4B259A, V2I-4CEB4A4E0B39, V2I-79D627ED220D, V2I-D632B0C9EF00]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 11 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 182000
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-8ACF563C3E5A",
-   "company": "OmniSource, LLC",
-   "title": "Plant Manager",
-   "location": "Winston-Salem, NC, USA",
-   "posting": "https://careers-omnisource.icims.com/jobs/9509/job?iis=Job+Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+   "id": "V2I-14905C22A922",
+   "company": "Thalle Construction Co., Inc.",
+   "title": "Plant Manager – Soil Cement/RCC Plants",
+   "location": "South Bay, FL, USA",
+   "posting": "https://thalle.recruiterbox.com/jobs/fk0za7l?fjb_hash=ezLpq610",
    "est": [
-    135000,
-    180000,
+    90000,
+    185000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-0AA83A7D604B",
-    "V2I-E88E936F3100",
-    "V2I-62808DD65A9C",
-    "V2I-DE781358981E",
-    "V2I-18EA344207B1",
-    "V2I-62CF12460FA4",
-    "V2I-5A07B07EC9D4"
+    "V2I-D2B97757ED6D",
+    "V2I-E0C96532DBF6",
+    "V2I-B2CD5C313FD4",
+    "V2I-F6A91C5E18E1",
+    "V2I-A481B920FAA0",
+    "V2I-46DB68724515",
+    "V2I-1DDD636BEEC6"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-4E0562A317A4",
+   "company": "Voltava",
+   "title": "Plant Manager IV",
+   "location": "Arlington, TX, USA",
+   "posting": "https://jobs.dayforcehcm.com/en-US/androidind/ANDROIDIND/jobs/26598",
+   "est": [
+    128000,
+    200000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 11 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-FDD5DDF1169A",
+    "V2I-A86C2E8C1E82",
+    "V2I-1D55E7CC8E88",
+    "V2I-7C423F4B259A",
+    "V2I-4CEB4A4E0B39",
+    "V2I-79D627ED220D",
+    "V2I-D632B0C9EF00"
    ]
   }
  ],
