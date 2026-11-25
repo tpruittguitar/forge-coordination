@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261124T2330Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261125T0119Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (64 read, 1 failed, 42 Workday deferred after a 429) | 91 | 18 | 29 |
+| Employer job boards (65 read, 1 failed, 42 Workday deferred after a 429) | 90 | 18 | 28 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space,
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 12 | 15 |
+| DIRECTOR_PLUS | 12 | 14 |
 | SR_MANAGER | 5 | 6 |
 | SR_STAFF | 1 | 8 |
 
