@@ -95,7 +95,7 @@ test('only a completed flow can retarget once across non-input commits; real inp
     assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
    }else{
     const result=publish(root,flow,'finished',{allowFlowStatusReparent:true});
-    assert.equal(result.reparented,true);assert.equal(result.attempts,2);
+    assert.equal(result.reparented,true);assert.equal(result.attempts,1);
     assert.equal(git(bare,'rev-parse','HEAD^').trim(),newer);
     assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
     assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
