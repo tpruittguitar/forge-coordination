@@ -58,7 +58,7 @@ test('conflicting location pay stays unresolved and independently parsed degree 
   a.deepEqual(fields,degreeFields());
 });
 function degreeFields(){return {DEGREE_REQ:'REQUIRED',DEGREE_TEXT:degree,DEGREE_EVIDENCE_URL:url,DEGREE_ASOF:'2026-11-22'};}
-test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 reservation ceiling',async()=>{
+test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $33.47 reservation ceiling',async()=>{
   let calls=0;
   const options={now:()=>now,readFunding:async()=>proof(),openCredential:()=>({secureRuntime:fn=>fn('fixture-T123')}),
     transport:async()=>{calls++;return wrapped(payOnly)}};
@@ -67,7 +67,7 @@ test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 
   await a.rejects(bulk.extract(rowArgs(0)),/SMOKE_WRITE_UNVERIFIED/);
   await smoke.extract(rowArgs(0));await smoke.extract(rowArgs(1));
   a.equal(calls,1);
-  a.deepEqual(smoke.accounting,{reportedCostMicrousd:80,unknownAttempts:0,unknownReservedMicrousd:0,cumulativeCapMicrousd:37470000});
+  a.deepEqual(smoke.accounting,{reportedCostMicrousd:80,unknownAttempts:0,unknownReservedMicrousd:0,cumulativeCapMicrousd:33470000});
   const record=Object.values(args.ledger.grantExtractionAttempts)[0];
   a.equal(record.phase,'SMOKE');a.equal(record.status,'FACTS_ACCEPTED');
   await a.rejects(bulk.extract(rowArgs(1)),/SMOKE_WRITE_UNVERIFIED/);
@@ -78,7 +78,7 @@ test('one smoke, verified receipt for bulk, per-pass 50 and a cumulative $37.47 
   const reserve=require('../grant-backlog/worker.cjs').LIMITS.reservationMicrousd;
   a.ok(reserve<=10000);
   const entries=args.ledger.grantExtractionAttempts;
-  for(let j=Object.keys(entries).length;j<Math.floor(37470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
+  for(let j=Object.keys(entries).length;j<Math.floor(33470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
   await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(100)),/ATS_GRANT_CAP_REACHED/);
   a.equal(calls,51);
   a.throws(()=>G.create({maxAttempts:5}),/ATS_GRANT_ROW_LIMIT_INVALID/);
@@ -283,6 +283,6 @@ test('Actions mode keeps the one-row smoke fence and the cumulative ledger cap',
   await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(2)),/ATS_GRANT_SMOKE_WRITE_UNVERIFIED/);a.equal(calls,1);
   const reserve=require('../grant-backlog/worker.cjs').LIMITS.reservationMicrousd,entries=args.ledger.grantExtractionAttempts;
   Object.assign(Object.values(entries)[0],{status:'WRITER_VERIFIED',writerRequestId:'GRANT-WRITER-1'});
-  for(let j=Object.keys(entries).length;j<Math.floor(37470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
+  for(let j=Object.keys(entries).length;j<Math.floor(33470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
   await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(3)),/ATS_GRANT_CAP_REACHED/);a.equal(calls,1);
 });

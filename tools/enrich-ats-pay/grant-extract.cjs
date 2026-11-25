@@ -9,7 +9,7 @@ const Source=require('../programmed-coordinator/source.cjs');
 const SourceBlanks=require('./source-blanks.cjs');
 const {lock}=require('../automation-run-lock.cjs');
 const {execFileSync}=require('node:child_process');
-const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=37470000;
+const SMOKE_LIMIT=1,BULK_LIMIT=50,SMOKE_CAP=10000,GRANT_CAP=33470000;
 const {reservationMicrousd}=W.LIMITS;
 const fingerprint=x=>crypto.createHash('sha256').update(x).digest('hex');
 
