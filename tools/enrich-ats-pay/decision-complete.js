@@ -10,10 +10,14 @@ const coord=v=>String(v??'').trim()!==''&&Number.isFinite(Number(v));
 // Same rule as the foreman-cockpit finalScore used by PROCESS_FLOW since REV rollout.
 function finalScore(p){const raw=String(p.OVERALL_RATING??p.OVERALL??'').trim(),n=Number(raw);return raw!==''&&Number.isFinite(n)&&n>=0&&n<=100&&/^TIM_WEIGHTED_JOB_RATING \S+ rev\d+$/.test(String(p.SCORING_MODEL_REF||''));}
 const FLEX_CLASS=/^(HIGH_FLEX|SOFT_FLEX|NO_FLEX|STRICT)$/;
+// Same rule as Explorer experience(): CODE_FIT / keyword-proxy values are not a researched fit.
+function keywordFit(p,ev){ev=ev||{};const basis=String(p.EXPERIENCE_FIT_BASIS||p.FIT_BASIS||'');
+ return /^CODE_FIT\b/i.test(String(p.SCOPE_FIT_MODEL_REF||''))||/^CODE_FIT/i.test(basis)||ev.source==='KEYWORD_PROXY'||p.evidenceSource==='KEYWORD_PROXY';}
+function researchedFit(p,E){const ev=E.fit(p);return ev&&ev.value!=null&&!keywordFit(p,ev);}
 // Each check: [name, fields it reads, test(row, evidence)].
 const REQUIRED=[
  ['final score',['OVERALL_RATING','SCORING_MODEL_REF'],r=>finalScore(r.p)],
- ['experience fit',['FIT_KEYS (SCOPE_FIT_RAW, ...)'],(r,E)=>E.fit(r.p).value!=null],
+ ['experience fit',['FIT_KEYS (SCOPE_FIT_RAW, ...)'],(r,E)=>researchedFit(r.p,E)],
  ['degree FLEX class',['FLEX_CLASS','TIM_FLEX_CLASS'],r=>FLEX_CLASS.test(String(r.p.TIM_FLEX_CLASS||r.p.FLEX_CLASS||'').trim().toUpperCase())],
  ['degree evidence',['DEGREE_TEXT','DEGREE_REQ'],r=>present(r.p.DEGREE_TEXT)||present(r.p.DEGREE_REQ)],
  ['work arrangement (remote/hybrid/on-site)',['REMOTE_HYBRID','WORK_ARRANGEMENT'],r=>present(r.p.REMOTE_HYBRID)||present(r.p.WORK_ARRANGEMENT)],
@@ -27,4 +31,4 @@ const REQUIRED=[
 ];
 function missingFields(row,evidence){const r={...row,p:row.p||row.payload||{}};return REQUIRED.filter(([,,ok])=>!ok(r,evidence)).map(([name])=>name);}
 function isDecisionComplete(row,evidence){return missingFields(row,evidence).length===0;}
-module.exports={isDecisionComplete,missingFields,finalScore,REQUIRED};
+module.exports={isDecisionComplete,missingFields,finalScore,REQUIRED,researchedFit};
