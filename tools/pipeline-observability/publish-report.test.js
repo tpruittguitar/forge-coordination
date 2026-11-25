@@ -40,6 +40,17 @@ test('workflow commits cheap Writer activity before the history fetch and flow p
  a.ok(y.includes('git fetch --no-tags --shallow-since="36 hours ago" origin main'));
  a.ok(!/fetch-depth:\s*0/.test(y));
 });
+test('history fetch and flow publish still run after a failed activity step, which is not continue-on-error',()=>{
+ const y=fs.readFileSync(p.join(__dirname,'../../.github/workflows/pipeline-observability.yml'),'utf8');
+ const cheap=y.indexOf('Publish cheap Writer activity'),fetch=y.indexOf('Fetch 36 hours of main history for discovery report revisions'),flow=y.indexOf('Publish flow with incremental cursor'),retain=y.indexOf('Retain reporting evidence');
+ a.ok(cheap>=0&&fetch>cheap&&flow>fetch&&retain>flow);
+ const activity=y.slice(cheap,fetch),hist=y.slice(fetch,flow),pub=y.slice(flow,retain);
+ a.ok(!/continue-on-error/.test(activity));
+ a.ok(hist.includes('if: ${{ !cancelled() }}'));
+ a.ok(pub.includes('if: ${{ !cancelled() }}'));
+ a.ok(y.includes('git fetch --no-tags --shallow-since="36 hours ago" origin main'));
+ a.ok(y.includes('publish-report.js flow intake-queue'));
+});
 test('a flow spawn timeout fails the step with a non-zero exit and is not retried',async()=>{
  const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-timeout-'));const prev=process.exitCode,log=console.log;let n=0;
  try{
