@@ -1,15 +1,15 @@
 {
- "at": "2026-11-25T12:10:15.228Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T120600606Z",
+ "at": "2026-11-25T12:26:44.054Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T121739419Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T12:06:09.995Z",
-  "sha256": "365963978ac5d1631b0d0d264c0386a8f1bbfdffb9046bdd2ade0c2a776d77d0",
-  "rows": 8715
+  "readAt": "2026-11-25T12:17:49.634Z",
+  "sha256": "5114d8dfab8dd1fda8f1b45a398698598b808279dccc666ed809775d60d468e9",
+  "rows": 8716
  },
- "rows": 8715,
- "eligible": 1001,
+ "rows": 8716,
+ "eligible": 1002,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -50,20 +50,20 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
+ "estimates": 1,
  "estimate_waiting_for_posting": 413,
  "skipped_recent": 179,
- "submitted": 0,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -78,17 +78,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 6,
@@ -103,9 +103,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 12,
+  "saved_reused": 11,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -113,10 +113,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "unsupported_routes": 1,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-25T12:06:15.761Z",
+  "profile_as_of": "2026-11-25T12:17:56.098Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -3550,7 +3550,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 32,
-  "no_overview": 765,
+  "no_overview": 766,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 1383,
@@ -3562,10 +3562,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 545,
+ "roles_researched": 546,
  "network_requests": 6,
- "planned": 0,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -3575,8 +3576,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 285,
   "SOURCE_RESEARCH_REQUIRED": 648,
+  "EVIDENCE_FOUND": 33,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 24,
-  "EVIDENCE_FOUND": 32,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -20518,7 +20519,55 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-8ACF563C3E5A",
+   "fields": {
+    "DEGREE_TEXT": "Preferred Bachelor's degree in related field.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://careers-omnisource.icims.com/jobs/9509/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+    "DEGREE_ASOF": "2026-11-25",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 135000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 157500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=09b4eac3e05931a6 (as of 2026-11-19); https://www.nh3jobs.com/jobs/mkt_198139 (as of 2026-11-05); https://100hires.com/j/e5i9FKB (as of 2026-11-02); https://www.linkedin.com/jobs/view/4485739608 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4482222273 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4456269794 (as of 2026-10-31); https://www.linkedin.com/jobs/view/4484749505 (as of 2026-10-30)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-0AA83A7D604B, V2I-E88E936F3100, V2I-62808DD65A9C, V2I-DE781358981E, V2I-18EA344207B1, V2I-62CF12460FA4, V2I-5A07B07EC9D4]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 168750
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-8ACF563C3E5A",
+   "company": "OmniSource, LLC",
+   "title": "Plant Manager",
+   "location": "Winston-Salem, NC, USA",
+   "posting": "https://careers-omnisource.icims.com/jobs/9509/job?iis=Job+Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+   "est": [
+    135000,
+    180000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-0AA83A7D604B",
+    "V2I-E88E936F3100",
+    "V2I-62808DD65A9C",
+    "V2I-DE781358981E",
+    "V2I-18EA344207B1",
+    "V2I-62CF12460FA4",
+    "V2I-5A07B07EC9D4"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
