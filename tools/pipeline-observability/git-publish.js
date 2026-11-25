@@ -51,12 +51,13 @@ function reparentFinishedFlow(root,{base,finished,paths,message,retries=4,sleep}
    const commit=run(root,['commit-tree',tree,'-p',latest,'-m',message]).trim();
    try{run(root,['push','origin',commit+':refs/heads/main']);return {changed:true,pushed:true,attempts:attempt,reparented:true,commit};}
    catch(e){
-    if(!/\[rejected\].*(?:fetch first|non-fast-forward)/i.test(String(e.stderr||''))||attempt===retries)throw e;
+    if(!/\[rejected\].*(?:fetch first|non-fast-forward)/i.test(String(e.stderr||'')))throw e;
+    if(attempt===retries)throw Error('Flow reparent failed after '+retries+' attempts',{cause:e});
     if(sleep)sleep(attempt*2000);
    }
   }finally{fs.rmSync(dir,{recursive:true,force:true});}
  }
- throw Error('Flow reparent failed after 4 attempts');
+ throw Error('Flow reparent failed after '+retries+' attempts');
 }
 function present(root,paths){return paths.filter(p=>fs.existsSync(path.join(root,p)));}
 function snapshot(root,paths,dest){
