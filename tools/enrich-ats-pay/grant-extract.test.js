@@ -227,3 +227,62 @@ test('one frozen fresh product proposal uses literal model evidence and existing
  delete capped.grantExtractionAttempts[Object.keys(capped.grantExtractionAttempts).find(k=>capped.grantExtractionAttempts[k].primaryId===target)];
  await a.rejects(make().extract({...options,ledger:capped}),/CAP_REACHED/);a.equal(calls,1);
 });
+
+// cs-4c70ac05 B (Tim 2026-11-25 11:15 ET): GitHub Actions runner, Actions-secret key, no Windows or funding file.
+const fixtureKey='sk-proj-'+'f'.repeat(24)+'T123';
+const actionsEnv=(more={})=>({GITHUB_ACTIONS:'true',FORGE_ATS_GRANT_ACTIONS:'1',FORGE_ATS_GRANT_KEY:fixtureKey,
+  FORGE_ATS_GRANT_ORG_ID:'org-test',FORGE_ATS_GRANT_PROJECT_ID:'proj_test',RUNNER_TEMP:require('node:os').tmpdir(),...more});
+const actionsAccount={organizationId:'org-test',projectId:'proj_test',keySuffix:'T123'};
+test('Actions mode is explicit and a missing or malformed key fails closed before any request',async()=>{
+  const fs=require('node:fs'),os=require('node:os'),path=require('node:path');
+  const root=fs.mkdtempSync(path.join(os.tmpdir(),'grant-actions-'));
+  const go=env=>G.configured({root,live:true,writerPostLock:{},env});
+  a.equal(go({GITHUB_ACTIONS:'true',FORGE_ATS_GRANT_KEY:''}),null); // scheduled/chained runs: normal producer
+  a.throws(()=>go({GITHUB_ACTIONS:'true',FORGE_ATS_GRANT_KEY:fixtureKey}),/ATS_GRANT_RUNTIME_REQUIRED/); // key without opt-in
+  for(const k of [undefined,'','not-a-key'])a.throws(()=>go(actionsEnv({FORGE_ATS_GRANT_KEY:k})),/ATS_GRANT_ACTIONS_KEY_REQUIRED/);
+  a.throws(()=>go(actionsEnv({GITHUB_ACTIONS:undefined})),/ATS_GRANT_RUNTIME_REQUIRED/);
+  a.throws(()=>go(actionsEnv({RUNNER_TEMP:undefined})),/ATS_GRANT_RUNTIME_REQUIRED/);
+  a.throws(()=>go(actionsEnv({FORGE_ATS_GRANT_FUNDING_FILE:path.join(root,'f.json')})),/ATS_GRANT_RUNTIME_REQUIRED/);
+  a.throws(()=>G.configured({root,live:false,writerPostLock:{},env:actionsEnv()}),/ATS_GRANT_RUNTIME_REQUIRED/);
+  a.throws(()=>go(actionsEnv({FORGE_ATS_GRANT_ORG_ID:''})),/ATS_GRANT_ACTIONS_ACCOUNT_INVALID/);
+  a.throws(()=>go(actionsEnv({FORGE_ATS_GRANT_PROJECT_ID:'x'})),/ATS_GRANT_ACTIONS_ACCOUNT_INVALID/);
+  a.throws(()=>go(actionsEnv({FORGE_ATS_GRANT_MAX_ROWS:'5'})),/ATS_GRANT_ROW_LIMIT_INVALID/);
+  a.throws(()=>G.create({actionsAccount,readFunding:async()=>proof()}),/ATS_GRANT_ACTIONS_ACCOUNT_INVALID/);
+  // Valid Actions config: smoke scope, no GitHub owner call (concurrency group is the owner), lock under RUNNER_TEMP.
+  const saved=globalThis.fetch;globalThis.fetch=async()=>{throw Error('must not call network')};
+  try{
+    const g=go(actionsEnv({RUNNER_TEMP:root}));
+    a.equal(g.smoke,true);a.equal(g.rowLimit,1);
+    await g.acquire();a.ok(fs.readdirSync(root).some(f=>f.endsWith('.ats-run-lock')));
+    await g.verifyExclusive();g.release();g.close();
+  }finally{globalThis.fetch=saved;}
+});
+test('Actions key comes only from env, pinned to org/project, with no funding read and no fallback',async()=>{
+  let calls=0;const cred=G.envCredential({FORGE_ATS_GRANT_KEY:fixtureKey});a.equal(cred.suffix,'T123');
+  const g=G.create({now:()=>now,actionsAccount,openCredential:cred.open,transport:async(u,opts)=>{calls++;
+    a.equal(u,'https://api.openai.com/v1/responses');a.equal(opts.headers.Authorization,'Bearer '+fixtureKey);
+    a.equal(opts.headers['OpenAI-Organization'],'org-test');a.equal(opts.headers['OpenAI-Project'],'proj_test');
+    a.match(opts.body,/"model":"gpt-6-luna"/);return wrapped(payOnly);}});
+  const args=c();
+  a.equal((await g.extract(args)).SALARY_BASE_LOW,180000);a.equal(calls,1);
+  const record=Object.values(args.ledger.grantExtractionAttempts)[0];a.equal(record.phase,'SMOKE');a.equal(record.status,'FACTS_ACCEPTED');
+  a.doesNotMatch(JSON.stringify(args.ledger),/sk-proj|ffff/);
+  // A failed request stops the lane; there is no second key, model or retry.
+  let failed=0;const bad=G.create({now:()=>now,actionsAccount,openCredential:cred.open,transport:async()=>{failed++;return new Response('{}',{status:402})}});
+  await a.rejects(bad.extract(c()),/GRANT_RESPONSE_UNVERIFIED/);await a.deepEqual(await bad.extract({...c(),row:{...row,PRIMARY_ID:'V2I-OTHER'}}),{});a.equal(failed,1);
+  // Grant stop date still fails closed without a funding receipt.
+  const late=G.create({now:()=>Date.parse('2026-11-29T00:00:00Z'),actionsAccount,openCredential:cred.open,transport:()=>{throw Error('must not transport')}});
+  await a.rejects(late.extract(c()),/GRANT_FUNDING_OR_HOST_BLOCKED/);
+});
+test('Actions mode keeps the one-row smoke fence and the cumulative ledger cap',async()=>{
+  let calls=0;const options={now:()=>now,actionsAccount,openCredential:G.envCredential({FORGE_ATS_GRANT_KEY:fixtureKey}).open,
+    transport:async()=>{calls++;return wrapped(payOnly)}};
+  const args=c(),rowArgs=j=>({...args,row:{...row,PRIMARY_ID:'V2I-ACT-'+j}});
+  await G.create(options).extract(rowArgs(0));a.equal(calls,1);
+  await a.rejects(G.create(options).extract(rowArgs(1)),/ATS_GRANT_SMOKE_ALREADY_ATTEMPTED/);a.equal(calls,1); // next run, same ledger
+  await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(2)),/ATS_GRANT_SMOKE_WRITE_UNVERIFIED/);a.equal(calls,1);
+  const reserve=require('../grant-backlog/worker.cjs').LIMITS.reservationMicrousd,entries=args.ledger.grantExtractionAttempts;
+  Object.assign(Object.values(entries)[0],{status:'WRITER_VERIFIED',writerRequestId:'GRANT-WRITER-1'});
+  for(let j=Object.keys(entries).length;j<Math.floor(37470000/reserve);j++)entries['spent-'+j]={status:'POSTING_OR_UNKNOWN'};
+  await a.rejects(G.create({...options,maxAttempts:50}).extract(rowArgs(3)),/ATS_GRANT_CAP_REACHED/);a.equal(calls,1);
+});

@@ -697,7 +697,9 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
   };
   if(broadGrant){
     const bulkSource=completeGrantBatch?require('./grant-public-source.cjs'):null;
-    const exactPublic=bulkSource?.make({privateDir:path.join(path.dirname(fs.realpathSync(process.env.FORGE_ATS_GRANT_FUNDING_FILE)),'ats-public-source'),
+    const grantFundingFile=process.env.FORGE_ATS_GRANT_FUNDING_FILE;
+    const privateRoot=grantFundingFile?path.dirname(fs.realpathSync(grantFundingFile)):(process.env.RUNNER_TEMP||require('node:os').tmpdir());
+    const exactPublic=bulkSource?.make({privateDir:path.join(privateRoot,'ats-public-source'),
       providerAllowed:url=>providerAllowed(url)&&!workdayCooling(L.boardOf({SOURCE_URL:url})),
       canStart:()=>runtime.canStart(60000),gapMs:CONFIG.fetchGapMs,wait:sleep});
     if(exactPublic)stats.grant_public_source=exactPublic.stats;
