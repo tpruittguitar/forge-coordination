@@ -110,6 +110,15 @@ test('runner refuses any Writer mode except dry run',async()=>{
  const R=require('./run.cjs');await assert.rejects(R.main({writer:'live'}),/dry run only/);
 });
 
+test('runner accepts store as a master rows JSON file and rejects missing store paths',async()=>{
+ const R=require('./run.cjs');
+ const tmp=fs.mkdtempSync(path.join(os.tmpdir(),'pv2-store-file-'));
+ const rowsPath=path.join(tmp,'master_rows.json');
+ fs.writeFileSync(rowsPath,'[]\n');
+ await R.main({store:rowsPath,engine:'gate',network:'off'});
+ await assert.rejects(R.main({store:path.join(tmp,'missing.json'),engine:'gate',network:'off'}),/--store path not found:/);
+});
+
 const ES=require('./engine-status.cjs');
 
 test('engine status feed validates shape for 19 steps',()=>{
