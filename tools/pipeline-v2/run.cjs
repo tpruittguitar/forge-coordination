@@ -24,12 +24,14 @@ async function context(a){
 }
 async function main(a){
  if(a.writer&&a.writer!=='dry-run')throw Error('Writer is dry run only on card cs-bb7d087b');
- const store=S.open(path.resolve(a.store||'pipeline-v2-store')),ctx=await context(a),which=a.engine||'all',out=[];
+ const storePath=path.resolve(a.store||'pipeline-v2-store');
+ const store=S.open(storePath),ctx=await context(a),which=a.engine||'all',out=[];
  if(which==='all'||which==='discovery'){if(!a.lanes)throw Error('--lanes required');out.push(...D.runDiscovery({store,lanes:S.readJson(a.lanes,{}),ctx}));}
  if(which==='all'||which==='gate')out.push(...await G.runGate({store,ctx}));
  for(const e of ENGINES)if(which==='all'||which===e.id)out.push(await runEngine(e.id,{store,select:e.select,work:e.work,ctx}));
  for(const r of out)console.log(r.step,r.name.padEnd(22),r.lastRun.result.padEnd(10),'in',r.counts.in,'pass',r.counts.pass,'skip',r.counts.skip,'drop',r.counts.drop,'hold',r.counts.hold,'blocked',r.counts.blocked,'wait',r.counts.wait,'fail',r.counts.fail);
  if(a.report)R.write({store,dir:path.resolve(a.report),meta:{lanes:a.lanes,master:a.master,rules:a.rules,scoring:a.scoring,viewer:ctx.viewer.source,ai:ctx.aiReason||(ctx.ai.available?'credit':ctx.ai.reason)}});
+ ES.write(ES.build({statusDir:path.join(storePath,'status')}));
 }
 if(require.main===module)main(args(process.argv.slice(2))).catch(e=>{console.error('pipeline-v2:',e.message);process.exit(1);});
 module.exports={main,args,ENGINES};

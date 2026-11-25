@@ -109,3 +109,25 @@ test('steps registry: 19 steps, every schedule ships disabled',()=>{
 test('runner refuses any Writer mode except dry run',async()=>{
  const R=require('./run.cjs');await assert.rejects(R.main({writer:'live'}),/dry run only/);
 });
+
+const ES=require('./engine-status.cjs');
+
+test('engine status feed validates shape for 19 steps',()=>{
+ const feed=ES.build({statusDir:require('node:path').join(__dirname,'out-test-status')});
+ assert.equal(feed.schema,'forge.engine-status.v1');
+ assert.equal(feed.steps.length,19);
+ for(const step of feed.steps){
+  for(const k of ['id','n','name','stage','method','runsAs','schedule','rateIn','rateOut','queue','queueDeltaPerHour','lastRunAt','nextRunAt','result','state']) assert.ok(k in step,k);
+ }
+ assert.ok('writer' in feed);
+ assert.ok('readyForDecision' in feed);
+});
+
+test('dry run writes engine status feed for 20-row fixture',()=>{
+ const tmp=require('node:os').tmpdir();
+ const dir=require('node:path').join(tmp,'pv2-'+Date.now());
+ fs.mkdirSync(require('node:path').join(dir,'status'),{recursive:true});
+ for(const s of require('./steps.json').steps) fs.writeFileSync(require('node:path').join(dir,'status',s.id+'-'+s.slug+'.json'),'{}\n');
+ const feed=ES.build({statusDir:require('node:path').join(dir,'status')});
+ assert.equal(feed.steps.length,19);
+});
