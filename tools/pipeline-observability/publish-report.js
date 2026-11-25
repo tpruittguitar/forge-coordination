@@ -13,7 +13,7 @@ function isSpawnFailure(result){const err=result&&result.error||'';return !!(res
 function ranIds(opts={}){return opts.only||(opts.components||sections).map(s=>s.id);}
 function isPushReject(err){return /fetch first|non-fast-forward|failed to push some refs|Updates were rejected/i.test(String(err||''));}
 function isRetryable(result){const err=result&&result.error||'';if(isSpawnFailure(result))return false;return isPushReject(err)||/Writer HTTP (404|408|429|5\d\d)|transport|timed? ?out/i.test(err);}
-function fatalError(health,ran){const allow=ran&&ran.length?new Set(Array.isArray(ran)?ran.map(s=>typeof s==='string'?s:s.id):[]):null;return Object.entries(health?.components||{}).find(([id,c])=>c&&c.status==='STALE'&&(!allow||allow.has(id)))?.[1];}
+function fatalError(health,ran){const allow=ran&&ran.length?new Set(Array.isArray(ran)?ran.map(s=>typeof s==='string'?s:s.id):[]):null;return Object.entries(health?.components||{}).find(([id,c])=>c&&c.status==='STALE'&&id!=='intake-queue'&&(!allow||allow.has(id)))?.[1];}
 async function publish({root=process.cwd(),run=(s)=>runSection(s,root),sleep=ms=>new Promise(r=>setTimeout(r,ms)),now=()=>Date.now(),components=sections,only}={}){
  if(only){const want=new Set(only),selected=components.filter(s=>want.has(s.id));if(selected.length!==want.size)throw Error('Unknown publish section');components=selected;}
 

@@ -98,3 +98,39 @@ test('cursor push contention makes retained-old flow a CLI failure and never pub
   a.equal(output.components.flow.status,'STALE');a.equal(process.exitCode,1);a.equal(fs.readFileSync(p.join(root,ledger),'utf8'),prior);
  }finally{console.log=log;process.exitCode=previous;fs.rmSync(root,{recursive:true,force:true});}
 });
+test('a STALE intake-queue keeps last metrics and does not block a CURRENT flow publish',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-intake-stale-'));const prev=process.exitCode,log=console.log;
+ const components=[{id:'flow',paths:['state/flow.json']},{id:'intake-queue',paths:['state/intake.json']}];
+ try{
+  fs.mkdirSync(p.join(root,'state'));process.exitCode=0;console.log=()=>{};
+  const first=await runCli({root,components,only:['flow','intake-queue'],now:()=>1000,run:s=>{
+   if(s.id==='flow'){fs.writeFileSync(p.join(root,'state/flow.json'),'flow-v1');return{ok:true};}
+   fs.writeFileSync(p.join(root,'state/intake.json'),'intake-v1');return{ok:true};
+  }});
+  a.equal(first.components.flow.status,'CURRENT');a.equal(first.components['intake-queue'].status,'CURRENT');a.equal(process.exitCode,0);
+  const lastIntake=first.components['intake-queue'].lastSuccessAt;
+  process.exitCode=0;
+  const second=await runCli({root,components,only:['flow','intake-queue'],sleep:async()=>{},now:()=>2000,run:s=>{
+   if(s.id==='flow'){fs.writeFileSync(p.join(root,'state/flow.json'),'flow-v2');return{ok:true};}
+   fs.writeFileSync(p.join(root,'state/intake.json'),'intake-partial');return{ok:false,error:'state/INTAKE_DRAIN.json: live inventory exceeds the storage limit'};
+  }});
+  a.equal(second.components.flow.status,'CURRENT');
+  a.equal(second.components['intake-queue'].status,'STALE');
+  a.equal(second.components['intake-queue'].lastSuccessAt,lastIntake);
+  a.match(second.components['intake-queue'].error,/storage limit/);
+  a.equal(second.components['intake-queue'].nextAction,'Automatic reporting retry; retain last successful metrics');
+  a.equal(fs.readFileSync(p.join(root,'state/flow.json'),'utf8'),'flow-v2');
+  a.equal(fs.readFileSync(p.join(root,'state/intake.json'),'utf8'),'intake-v1');
+  a.equal(fatalError(second,['flow','intake-queue']),undefined);
+  a.equal(process.exitCode,0);
+ }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
+});
+test('a STALE flow still exits non-zero when intake-queue is also STALE',async()=>{
+ const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-both-stale-'));const prev=process.exitCode,log=console.log;
+ try{
+  process.exitCode=0;console.log=()=>{};
+  const h=await runCli({root,components:[{id:'flow',paths:[]},{id:'intake-queue',paths:[]}],only:['flow','intake-queue'],sleep:async()=>{},now:()=>1000,run:s=>({ok:false,error:s.id==='flow'?'flow failed':'state/INTAKE_DRAIN.json: live inventory exceeds the storage limit'})});
+  a.equal(h.components.flow.status,'STALE');a.equal(h.components['intake-queue'].status,'STALE');
+  a.ok(fatalError(h,['flow','intake-queue']));a.equal(process.exitCode,1);
+ }finally{console.log=log;process.exitCode=prev;fs.rmSync(root,{recursive:true,force:true});}
+});
