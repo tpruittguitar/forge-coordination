@@ -4,8 +4,8 @@ const fs = require('node:fs');
 const path = require('node:path');
 const {createHash} = require('node:crypto');
 
-const TARGET_BYTES = 45_000_000;
-const HARD_BYTES = 50_000_000;
+const TARGET_BYTES = 90_000_000;
+const HARD_BYTES = 95_000_000;
 const MARKER = 'archiveManifestSha256';
 const ledger = {
   file: 'state/UPSTREAM_LEDGER.json', dir: 'state/upstream-ledger-archive', field: 'entries',
