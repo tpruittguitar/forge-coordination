@@ -124,6 +124,23 @@ function day(entry) {
   return '1970-01-01';
 }
 
+const DRAIN_REVIEW_BULK = ['preliminaryScreen', 'resumeMatch', 'evidenceQuotes'];
+function serializableEntries(entry) {
+  return Object.entries(entry).filter(([, value]) =>
+    value !== undefined && typeof value !== 'function' && typeof value !== 'symbol');
+}
+function drainPendingLive(entry) {
+  let live;
+  if (isRecord(entry.fence) && Object.hasOwn(entry.fence, 'record')) {
+    live = {...entry, fence: select(entry.fence, ['requestIds', 'proof'])};
+  }
+  if (isRecord(entry.discoveryReview) && DRAIN_REVIEW_BULK.some(key => Object.hasOwn(entry.discoveryReview, key))) {
+    live = {...(live || entry), discoveryReview: Object.fromEntries(
+      Object.entries(entry.discoveryReview).filter(([key]) => !DRAIN_REVIEW_BULK.includes(key)))};
+  }
+  return live || null;
+}
+
 function split(spec, value, {activePrimaryIds, targetBytes = TARGET_BYTES} = {}) {
   if (!isRecord(value) || (Object.hasOwn(value, spec.field) && !isRecord(value[spec.field])) || Object.hasOwn(value, MARKER)) {
     throw Error(`${spec.file}: expected a full inventory`);
@@ -133,26 +150,38 @@ function split(spec, value, {activePrimaryIds, targetBytes = TARGET_BYTES} = {})
   const files = new Map();
   const byDay = new Map();
   const live = [];
+  const archive = (id, entry, stub, detail) => {
+    if (!Object.keys(detail).length) {
+      live.push([id, entry]);
+      return;
+    }
+    const date = day(entry);
+    if (!byDay.has(date)) byDay.set(date, new Map());
+    byDay.get(date).set(id, {fields: serializableEntries(entry).map(([field]) => field), detail});
+    live.push([id, stub]);
+  };
   for (const [id, entry] of Object.entries(value[spec.field] || {})) {
     if (!isRecord(entry) || !spec.settled(entry, activePrimaryIds)) {
-      live.push([id, entry]);
+      const slim = spec === drain && isRecord(entry) ? drainPendingLive(entry) : null;
+      if (!slim) {
+        live.push([id, entry]);
+        continue;
+      }
+      const detail = {};
+      if (slim.fence !== entry.fence && isRecord(entry.fence)) detail.fence = entry.fence;
+      if (slim.discoveryReview !== entry.discoveryReview && isRecord(entry.discoveryReview)) {
+        detail.discoveryReview = entry.discoveryReview;
+      }
+      archive(id, entry, slim, detail);
       continue;
     }
     const stub = select(entry, spec.stub);
     // Match the legacy JSON writer's omission of transient properties that
     // have no JSON representation. In particular, never index an undefined field.
-    const fields = Object.entries(entry).filter(([, value]) =>
-      value !== undefined && typeof value !== 'function' && typeof value !== 'symbol');
+    const fields = serializableEntries(entry);
     const detail = Object.fromEntries(fields.filter(([field]) => !Object.hasOwn(stub, field)));
     if (spec === drain && isRecord(entry.card)) stub.card = select(entry.card, ['company', 'title', 'location', 'url', 'sourceUrl']);
-    if (!Object.keys(detail).length) {
-      live.push([id, entry]);
-      continue;
-    }
-    const date = day(entry);
-    if (!byDay.has(date)) byDay.set(date, new Map());
-    byDay.get(date).set(id, {fields: fields.map(([field]) => field), detail});
-    live.push([id, stub]);
+    archive(id, entry, stub, detail);
   }
 
   const shards = [];
