@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261125T0258Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261125T0455Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -40,8 +40,8 @@ Priority companies with no board found: Tesla, Slingshot Aerospace, Ramon.Space,
 | BOARD:ashby | Shield AI | [Director, Enterprise Strategy and Operations (R5626)](https://jobs.ashbyhq.com/shield/652205ff-1e7e-47ea-8b1d-fc0de0ada384) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS | $190K-$290K |
 | BOARD:greenhouse | Tesla | [Director / Senior Director, Technical Operations](https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466578008) | San Diego, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010140003) | North Carolina | MFG_PROD | SR_MANAGER |  |
-| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010142003) | Tennessee-Remote, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | Axon | [Sr. Manager, Mission Engineering & Operations](https://job-boards.greenhouse.io/axon/jobs/8010141003) | Columbia, South Carolina, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | Chalice Oregon | [Director of Industrialization](https://job-boards.greenhouse.io/panthalassa/jobs/6201451004) | Portland, OR | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | 3D Systems Corporation | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | 3D Systems Corporation | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Affirm | [Director, Employee Operations Leader](https://job-boards.greenhouse.io/scoutmotors/jobs/5291202007) | Charlotte, North Carolina, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | Affirm | [Director, General Assembly Quality](https://job-boards.greenhouse.io/scoutmotors/jobs/5236062007) | Columbia, South Carolina, United States | QUALITY | DIRECTOR_PLUS |  |
