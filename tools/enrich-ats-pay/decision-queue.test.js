@@ -23,3 +23,15 @@ test('isDecisionComplete needs every scoring and decision input; estimated pay w
  assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,SALARY_BASIS:'EMPLOYER_POSTED'}},E),true);
  assert.deepEqual(C.missingFields({...ok,p:{...ok.p,PRODUCT:''}},E),['products (what they make)']);
 });
+test('CODE_FIT or keyword-proxy fit is not decision-complete; researched SCOPE_FIT_RAW still is',()=>{
+ const ok={COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1'}};
+ assert.equal(C.isDecisionComplete(ok,E),true);
+ assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,SCOPE_FIT_RAW:'100',SCOPE_FIT_MODEL_REF:'CODE_FIT rev1'}},E),false);
+ assert.deepEqual(C.missingFields({...ok,p:{...ok.p,SCOPE_FIT_RAW:'100',SCOPE_FIT_MODEL_REF:'CODE_FIT rev1'}},E),['experience fit']);
+ assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,SCOPE_FIT_RAW:'100',FIT_BASIS:'CODE_FIT rev1: 6/9 resume competencies met'}},E),false);
+ assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,evidenceSource:'KEYWORD_PROXY'}},E),false);
+ assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,SCOPE_FIT_RAW:'72',SCOPE_FIT_MODEL_REF:'grok-scope'}},E),true);
+ const row=(id,p={})=>({PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',BUCKET:'SCOUT_INTAKE',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1',...p}});
+ const ids=D.ids([row('V2I-CODE',{SCOPE_FIT_RAW:'100',SCOPE_FIT_MODEL_REF:'CODE_FIT rev1'}),row('V2I-AI',{SCOPE_FIT_RAW:'72',SCOPE_FIT_MODEL_REF:'grok-scope'})],{lanes:{FORGE_ENRICH_FEASIBILITY:[],FORGE_ENRICH_STRATEGIC:[]}},E);
+ assert.deepEqual([...ids],['V2I-AI']);
+});
