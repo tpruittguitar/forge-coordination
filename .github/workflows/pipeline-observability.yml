@@ -67,8 +67,10 @@ jobs:
           done
           exit 1
       - name: Fetch 36 hours of main history for discovery report revisions
+        if: ${{ !cancelled() }}
         run: git fetch --no-tags --shallow-since="36 hours ago" origin main
       - name: Publish flow with incremental cursor
+        if: ${{ !cancelled() }}
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ACTIVITY_FC_DIR: _fc
