@@ -271,7 +271,7 @@ test('published reservations keep the locked Hermes partition and release the Ch
   a.equal(w.enrichmentPartitionReservations.workers.length,1);
   a.equal(w.enrichmentPartitionReservations.workers[0].provider,'Hermes');
   a.equal((w.enrichmentPartitionReservations.workers[0].taskKey||null),null);
-  a.equal(w.enrichmentPartitionReservations.workers[0].primaryIds.length,1582);
+  a.equal(w.enrichmentPartitionReservations.workers[0].primaryIds.length,P.HERMES_SIZE);
   for(const id of part.hermes){a.ok(reserved.has(id));a.ok(partitionIds.has(id));}
   for(const id of part.api)a.ok(!partitionIds.has(id));
   const chatgptLaneReserved=w.enrichmentPartitionReservations.workers.filter(x=>x.taskKey==='FORGE_CHATGPT_ENRICHMENT_RESEARCH'||x.provider==='ChatGPT').reduce((n,x)=>n+(x.primaryIds||[]).length,0);
