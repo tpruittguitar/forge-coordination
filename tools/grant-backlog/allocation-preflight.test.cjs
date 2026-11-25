@@ -18,7 +18,7 @@ test('authoritative controls prove the exact split, keep Hermes reserved, and sk
  const fs=require('node:fs'),path=require('node:path'),P=require('../helper-routing/worker-partition.cjs');
  const root=path.resolve(__dirname,'../..'),json=file=>JSON.parse(fs.readFileSync(path.join(root,file),'utf8'));
  const data=input(),record=json(P.FILE),registry=json('control/AI_AUTOMATION_TASKS.json'),owner=json('control/ENRICHMENT_RESEARCH_OWNER.json');
- const split=P.load(root),hermes='V2I-7E12B5B75B52',api='V2I-7E2E8E0559E8',external=[...split.api][1];
+ const split=P.load(root),hermes='V2I-7D723DF74DB5',api='V2I-7E2E8E0559E8',external=[...split.api][1];
  a.equal(registry.tasks[TASK].owner,undefined);a.equal(owner.provider,'ChatGPT');
  data.claude.enabled=true;data.claude.enrichment=[{primaryId:external,task:'FORGE_CLAUDE_ENRICHMENT'}];
  const r=inspect({...data,registry,owner:{...data.owner,workerPartition:owner.workerPartition},partition:record});
