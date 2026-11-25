@@ -1,13 +1,4 @@
-Remove DECLINED_BY_TIM jobs from helper work lists and the worker partition, without deleting their master records.
-
-Tim 2026-11-25 (t459s1678, t460u): move declined jobs out of the backlog and keep the declined record. Tim assumed declining already removed them.
-
-Live master at 2026-11-25T17:09:07.068Z had 6069 DECLINED_BY_TIM / RESOLVED/DECLINED_BY_TIM rows (master row count 7838). This change does not call delete_rows and does not edit Writer or cockpit code.
-
-SHARED_HELPER_WORK 1184 -> 391 (removed 793; statuses {'PROTECTED_SKIP': 686, 'RETURNED_PARTIALLY_CONSUMED': 55, 'CONSUMED': 10, 'RETURNED_PENDING_REVIEW': 28, 'ALREADY_COMPLETE': 11, 'ASSIGNED': 3}).
-ENRICHMENT_HELPER_WORK 3145 -> 762 (removed 2383; statuses {'PROTECTED_SKIP': 1943, 'ALREADY_COMPLETE': 399, 'CONSUMED': 20, 'RELEASED': 20, 'ASSIGNED': 1}).
-Partition Hermes 600 -> 369, ChatGPT 573 -> 371; union 1173 -> 740.
-New lock: HERMES_SIZE=369, API_SIZE=371, Hermes last V2I-7D68816459DB, ChatGPT first V2I-7F045C7BC2A3, digest 74dd4ea55221c00ec562ba4e3ce3400ca49d294a6561fca11cd5e8a0cad5d22e.
-SHARED Hermes reservation synced to the 369 partition IDs.
-
-Coordinator already marks many of these items PROTECTED_SKIP and will not re-add protected rows as new candidates, but it never spliced declined items out of the stored lists. This is a data-side cleanup of the current pile. A Writer or coordinator code change to drop membership on decline is described in the five-whys and is not in this commit; it needs Tim's approval first.
+WHAT=Remove DECLINED_BY_TIM jobs from helper work lists and the worker partition, without deleting their master records.
+REPO=forge-coordination
+PR=#553
+DATE=2026-11-25
