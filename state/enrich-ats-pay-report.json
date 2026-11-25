@@ -1,14 +1,14 @@
 {
- "at": "2026-11-25T13:13:44.749Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T130541911Z",
+ "at": "2026-11-25T14:13:27.841Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T140518861Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T13:05:52.093Z",
-  "sha256": "c3290c514c0d677d50a81792752b67079bc0583cf06f8bb8ad147565b970e677",
-  "rows": 8723
+  "readAt": "2026-11-25T14:05:29.614Z",
+  "sha256": "e117d17c5654fd19fe71be0e00c571546fb74fbb7c2a1fdda8ae1973d0fd7b00",
+  "rows": 8724
  },
- "rows": 8723,
+ "rows": 8724,
  "eligible": 1002,
  "never_consider_excluded": 0,
  "never_consider_rules": [
@@ -43,16 +43,16 @@
   "pending_batches": 3,
   "fenced_ids": 36
  },
- "anchors": 1441,
+ "anchors": 1442,
  "archive_anchors": 5,
  "ats_rows": 17,
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 437,
- "skipped_recent": 152,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 434,
+ "skipped_recent": 155,
  "submitted": 1,
  "guard_dropped": 0,
  "writer_ok": 1,
@@ -65,16 +65,22 @@
  "salary_submitted": 1,
  "salary_independently_verified": 1,
  "agg_tried": {
-  "linkedin": 2
+  "linkedin": 3
  },
  "agg_read": {
   "linkedin": 2
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "404"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 19,
+ "source_reads": 20,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -82,11 +88,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
- "boards_read": 0,
+ "est_comparables": 1,
+ "boards_read": 1,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -107,9 +113,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 2,
+  "candidates": 12,
+  "saved_reused": 11,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -117,10 +123,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "unsupported_routes": 1,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-25T13:05:56.726Z",
+  "profile_as_of": "2026-11-25T14:05:35.824Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -3539,13 +3545,14 @@
  },
  "decision_waiting": 9,
  "retained_completion": {
-  "planned": 1,
-  "salary": 1,
-  "degree": 1
+  "planned": 0,
+  "salary": 0,
+  "degree": 0
  },
  "not_attempted": 420,
- "nothing_found": 420,
- "attempt_only_skipped": 27,
+ "nothing_found": 421,
+ "attempt_only_skipped": 23,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -3555,7 +3562,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 32,
-  "no_overview": 773,
+  "no_overview": 774,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 1383,
@@ -3567,8 +3574,8 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 575,
- "network_requests": 25,
+ "roles_researched": 572,
+ "network_requests": 27,
  "planned": 1,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
@@ -3954,6 +3961,63 @@
      "status": "HTTP_429"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-91C63174CB65",
+   "company": "IRP Medical",
+   "title": "Director of Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T13:06:47.335Z",
+   "retryAt": "2026-11-25T14:06:47.335Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4483102437",
+     "status": "FULL_POSTING_READ"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8D5F11EFDC16",
+   "company": "Globe Products Co., Inc.",
+   "title": "Plant Manager- Manufacturing",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T13:06:47.336Z",
+   "retryAt": "2026-11-25T14:06:47.336Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D60D779FDF27",
+   "company": "kimball homestead",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T13:06:47.337Z",
+   "retryAt": "2026-11-25T14:06:47.337Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8B74BC22199B",
+   "company": "QXO",
+   "title": "Plant Manager",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T13:06:47.338Z",
+   "retryAt": "2026-11-25T14:06:47.338Z",
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -8843,13 +8907,13 @@
    "needs": [
     "SALARY"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-24T21:31:03.073Z",
-   "retryAt": "2026-11-25T13:31:03.073Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-25T14:07:26.523Z",
+   "retryAt": "2026-11-26T06:07:26.523Z",
    "attempts": [
     {
      "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491253555",
-     "status": "HTTP_429"
+     "status": "HTTP_404"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -20080,24 +20144,53 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-0C6DE84A4371",
+   "id": "V2I-89A7F453B2DB",
    "fields": {
-    "SALARY_BASE_LOW": 250253,
-    "SALARY_BASE_HIGH": 305864,
-    "SALARY_MIDPOINT": 278059,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.linkedin.com/jobs/view/4492601461",
-    "SALARY_ASOF": "2026-11-25",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree from an accredited institution is required",
+    "DEGREE_TEXT": "Bachelor's Degree or higher in Engineering or Wood Science",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4492601461",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4493032645",
     "DEGREE_ASOF": "2026-11-25",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "2bff140b1b3b25c7018342751179f48b1738189370e6211d2f79ed556d9268ab",
+    "SALARY_BASE_LOW": 130000,
+    "SALARY_BASE_HIGH": 204000,
+    "SALARY_MIDPOINT": 167000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=614ca067f6565465 (as of 2026-11-18); https://recruiting2.ultipro.com/BOI1001BOIS/JobBoard/d37b562e-1487-4cc9-8cc4-d95be5cacd55/OpportunityDetail?opportunityId=6e01e38d-6425-4818-a17f-075a20caa57e&postingId=77cce3a1-9f87-4628-81f7-62ab10eccd98 (as of 2026-11-17); https://jobs.jbsfoodsgroup.com/jobs/18499333-plant-manager-ii?tm_job=82562&tm_event=view&tm_company=12773 (as of 2026-11-20); https://100hires.com/j/rnzDGkd (as of 2026-11-06); https://jobs.carrier.com/job/-/-/29289/103442939632 (as of 2026-11-18); https://recruiting.paylocity.com/Recruiting/Jobs/Details/4614079/EI-Williams-Industries-LLC/Plant-Manager-Metal-Fabrication-Engineered-Manufacturing?source=Indeed_Feed (as of 2026-11-01); https://www.linkedin.com/jobs/view/4481592904 (as of 2026-10-29)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-252D412D6C0D, V2I-65B754B26857, V2I-6CD15EC73CA5, V2I-B220E0B8336A, V2I-B713983B2DC8, V2I-6C24CC2CAB61, V2I-68203AFD623E]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS GA 113051 P25-P90 $99K-$194K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
-    "SALARY_SCORE_POINT": 291961
+    "SALARY_SCORE_POINT": 185500
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-89A7F453B2DB",
+   "company": "Georgia-Pacific LLC",
+   "title": "Plant Manager",
+   "location": "Rome, GA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4493032645",
+   "est": [
+    130000,
+    204000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-252D412D6C0D",
+    "V2I-65B754B26857",
+    "V2I-6CD15EC73CA5",
+    "V2I-B220E0B8336A",
+    "V2I-B713983B2DC8",
+    "V2I-6C24CC2CAB61",
+    "V2I-68203AFD623E"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
