@@ -1,15 +1,15 @@
 {
- "at": "2026-11-25T20:16:52.330Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T201320773Z",
+ "at": "2026-11-25T20:30:19.473Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T202240559Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T20:13:28.772Z",
-  "sha256": "9a7ca179efcffaeb5c1c05fe12040e96bd548801726a6b97c5670ee3b62375aa",
-  "rows": 7839
+  "readAt": "2026-11-25T20:22:47.794Z",
+  "sha256": "e535cbd9a1eaf6bb0c8db1db070c2fc3bdfcf18a45e20d019e96319276289eb3",
+  "rows": 7840
  },
- "rows": 7839,
- "eligible": 623,
+ "rows": 7840,
+ "eligible": 624,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -50,27 +50,31 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
+ "estimates": 1,
  "estimate_waiting_for_posting": 294,
  "skipped_recent": 144,
- "submitted": 0,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
+ "agg_tried": {
+  "linkedin": 1
+ },
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -78,11 +82,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -103,20 +107,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 8,
+  "saved_reused": 4,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
+  "backoff": 2,
+  "unsupported_routes": 2,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-25T20:13:33.901Z",
+  "profile_as_of": "2026-11-25T20:22:52.507Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1228,7 +1232,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 22,
-  "no_overview": 628,
+  "no_overview": 629,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 427,
@@ -1240,10 +1244,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 430,
- "network_requests": 4,
- "planned": 0,
+ "roles_researched": 431,
+ "network_requests": 5,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1253,8 +1258,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 219,
   "SOURCE_RESEARCH_REQUIRED": 367,
+  "EVIDENCE_FOUND": 31,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
-  "EVIDENCE_FOUND": 30,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -11690,7 +11695,55 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-472201F77816",
+   "fields": {
+    "DEGREE_TEXT": "A bachelor's degree in Manufacturing Engineering, Industrial Engineering, Operations Management, Business Administration, or a related field is preferred. Equivalent experience will be considered.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4494167413",
+    "DEGREE_ASOF": "2026-11-25",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 277000,
+    "SALARY_MIDPOINT": 218500,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://careers.graphicpkg.com/job/27187/manufacturing-associate-manager/West-Monroe-LA/Graphic (as of 2026-10-04); https://acibuilds.workbrightats.com/jobs/1342626-229328.html (as of 2026-11-25); https://www.ferrerocareers.com/int/en/jobs/director-kinder-bueno-production-operations (as of 2026-11-25); https://epicorsoftware.wd5.myworkdayjobs.com/en-US/epicorjobs/job/US-Remote/Director-of-Consulting-Services---Manufacturing_JR105896 (as of 2026-11-25); https://jobs.dayforcehcm.com/en-US/lisina/LISIAerospaceClientCareerSite/jobs/13268 (as of 2026-11-25); https://jobs.lever.co/zoox/6a06c4b3-a7f3-4726-a64f-6696c25bb45a (as of 2026-11-24); https://www.indeed.com/viewjob?jk=67e7114ce3e66250 (as of 2026-11-19)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2F-D400EE31A881, V2I-039F335DC079, V2I-3F012EE9339A, V2I-5991F7BBE542, V2I-BCA39D41434B, V2I-4DEA5C7AE5C9, V2I-2833521728BA]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS LA 113051 P25-P90 $104K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 247750
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-472201F77816",
+   "company": "CoreWise Workforce Strategy Partners",
+   "title": "Director of Manufacturing",
+   "location": "Baton Rouge, LA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4494167413",
+   "est": [
+    160000,
+    277000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2F-D400EE31A881",
+    "V2I-039F335DC079",
+    "V2I-3F012EE9339A",
+    "V2I-5991F7BBE542",
+    "V2I-BCA39D41434B",
+    "V2I-4DEA5C7AE5C9",
+    "V2I-2833521728BA"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
