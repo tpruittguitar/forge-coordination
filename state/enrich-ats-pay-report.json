@@ -1,15 +1,15 @@
 {
- "at": "2026-11-25T17:13:17.341Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T170720213Z",
+ "at": "2026-11-25T17:28:00.559Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261125T171953808Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-25T17:07:28.822Z",
-  "sha256": "fbac036b688a1452026a1f6eb4053767ac42e57f6c48ebbe10de7f6f2b08caad",
+  "readAt": "2026-11-25T17:20:01.872Z",
+  "sha256": "11da56220ca0ed47ca8fd354d9e521ea30b88b56aa0466cad0fb0a1e11e3ea32",
   "rows": 7838
  },
  "rows": 7838,
- "eligible": 632,
+ "eligible": 631,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -37,11 +37,27 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
+  "released_not_applied": [
+   {
+    "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261124T171414559Z-B01",
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-100F1238295F",
+     "V2I-EA84A1EA10AF",
+     "V2I-8D1AE5B20CB9",
+     "V2I-D3879DB594A5",
+     "V2I-5A78DBDEB221",
+     "V2I-CEAF4FE8DCD8",
+     "V2I-F6DDB4796944",
+     "V2I-8D7B43B5311A",
+     "V2I-039F335DC079"
+    ]
+   }
+  ],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 2,
-  "fenced_ids": 11
+  "pending_batches": 1,
+  "fenced_ids": 2
  },
  "anchors": 1348,
  "archive_anchors": 5,
@@ -50,31 +66,27 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 1,
- "estimate_waiting_for_posting": 296,
- "skipped_recent": 141,
- "submitted": 1,
+ "estimates": 6,
+ "estimate_waiting_for_posting": 294,
+ "skipped_recent": 143,
+ "submitted": 9,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 9,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
- "salary_independently_verified": 1,
- "agg_tried": {
-  "linkedin": 1
- },
- "agg_read": {
-  "linkedin": 1
- },
+ "salary_submitted": 9,
+ "salary_independently_verified": 9,
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -82,20 +94,20 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 6,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 6,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 1,
+ "est_shared_low": 3,
  "posting_cache": {
   "saved": 0,
-  "hits": 2,
+  "hits": 3,
   "no_pay_hits": 0
  },
  "employer_benchmarks": {
@@ -107,20 +119,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 11,
-  "saved_reused": 10,
-  "cache_hits": 0,
-  "reads": 0,
+  "targets": 6,
+  "candidates": 55,
+  "saved_reused": 44,
+  "cache_hits": 1,
+  "reads": 4,
   "found": 0,
-  "failed": 0,
+  "failed": 4,
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 1,
-  "estimates_with_profile_sources": 1,
+  "unsupported_routes": 6,
+  "estimates_with_profile_sources": 2,
   "samples": [],
-  "profile_as_of": "2026-11-25T17:07:32.923Z",
+  "profile_as_of": "2026-11-25T17:20:07.464Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1196,17 +1208,17 @@
  ],
  "salary_repair": {
   "skipped_blocked": 155,
-  "review_skipped_blocked": 137,
+  "review_skipped_blocked": 138,
   "by_missing": {
-   "work arrangement (remote/hybrid/on-site)": 220,
-   "products (what they make)": 219,
+   "work arrangement (remote/hybrid/on-site)": 221,
+   "products (what they make)": 220,
    "location / geography": 8,
-   "experience fit": 40
+   "experience fit": 41
   }
  },
  "salary_review": {
-  "eligible": 305,
-  "due": 137,
+  "eligible": 306,
+  "due": 138,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -1221,8 +1233,8 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 299,
- "nothing_found": 299,
+ "not_attempted": 297,
+ "nothing_found": 297,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1232,10 +1244,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 22,
-  "no_overview": 618,
+  "no_overview": 627,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 688,
+  "fenced": 679,
   "inactive": 6510,
   "by_label": {},
   "sample": []
@@ -1244,9 +1256,9 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 425,
- "network_requests": 5,
- "planned": 1,
+ "roles_researched": 432,
+ "network_requests": 10,
+ "planned": 9,
  "research_budget_exhausted": false,
  "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
@@ -1258,8 +1270,8 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 219,
   "SOURCE_RESEARCH_REQUIRED": 367,
-  "EVIDENCE_FOUND": 30,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 11,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
+  "EVIDENCE_FOUND": 38,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -3919,132 +3931,6 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-100F1238295F",
-   "company": "Tidal Vision",
-   "title": "Plant Manager, Dutch Harbor",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:15:36.902Z",
-   "retryAt": "2026-11-24T18:15:36.902Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-EA84A1EA10AF",
-   "company": "The Budd Group",
-   "title": "Plant Operations Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:15:36.908Z",
-   "retryAt": "2026-11-24T18:15:36.908Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8D1AE5B20CB9",
-   "company": "DALLAS ONE SOLUTIONS",
-   "title": "Director of Production",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:16:10.352Z",
-   "retryAt": "2026-11-24T18:16:10.352Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D3879DB594A5",
-   "company": "Magnum Venus Products",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:16:38.191Z",
-   "retryAt": "2026-11-24T18:16:38.191Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-5A78DBDEB221",
-   "company": "Mayfran International",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:17:06.375Z",
-   "retryAt": "2026-11-24T18:17:06.375Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CEAF4FE8DCD8",
-   "company": "JE Dunn Construction",
-   "title": "Vice President, Industrial Manufacturing Construction Projects",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:17:10.326Z",
-   "retryAt": "2026-11-24T18:17:10.326Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F6DDB4796944",
-   "company": "Gibraltar Industries, INC",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:17:37.785Z",
-   "retryAt": "2026-11-24T18:17:37.785Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8D7B43B5311A",
-   "company": "Brock Group",
-   "title": "Plant Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:18:06.169Z",
-   "retryAt": "2026-11-24T18:18:06.169Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-039F335DC079",
-   "company": "Atlantic Constructors, Inc.",
-   "title": "Director of Offsite Production - Fabrication",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-24T17:18:06.171Z",
-   "retryAt": "2026-11-24T18:18:06.171Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -11672,42 +11558,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-C05CC25E537F",
-   "company": "Deloitte",
-   "title": "Senior Manager - Physical AI",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
-   "retryAt": "2026-11-26T09:08:14.621Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-90A57DFE66AA",
-   "company": "AtkinsRéalis",
-   "title": "Program Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
-   "retryAt": "2026-11-26T09:08:14.621Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-DC45AA1F9840",
    "company": "GE Aerospace",
    "title": "Sr Manager - Digital Operations",
@@ -11754,6 +11604,42 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-25T16:48:15.106Z",
    "retryAt": "2026-11-25T18:48:15.106Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C05CC25E537F",
+   "company": "Deloitte",
+   "title": "Senior Manager - Physical AI",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
+   "retryAt": "2026-11-26T09:08:14.621Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-90A57DFE66AA",
+   "company": "AtkinsRéalis",
+   "title": "Program Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
+   "retryAt": "2026-11-26T09:08:14.621Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -11810,51 +11696,232 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-7A3EE93BFEC5",
+   "id": "V2I-100F1238295F",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in Engineering, Manufacturing, or a related field – or – equivalent combination of education and 10+ years of relevant industry experience.",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4494117852",
+    "SALARY_BASE_LOW": 130000,
+    "SALARY_BASE_HIGH": 150000,
+    "SALARY_MIDPOINT": 140000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://tidalvision.bamboohr.com/careers/337?source=indeed&src=indeed&postedDate=2026-11-23",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in Business, Food Science, Engineering, Operations Management, or a related field; equivalent industry experience will also be considered.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://tidalvision.bamboohr.com/careers/337?source=indeed&src=indeed&postedDate=2026-11-23",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 145000
+   }
+  },
+  {
+   "id": "V2I-8D1AE5B20CB9",
+   "fields": {
+    "DEGREE_TEXT": "High School Diploma; college degree preferred",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://recruiting2.ultipro.com/INW1000INWM/JobBoard/cc9ad17f-496a-4f1d-baf4-853c110f6ae9/OpportunityDetail?opportunityId=70692aa1-49c7-4e10-b410-926ff37cb0aa&postingId=3720a13e-8c46-4342-bde3-f116212fd032",
     "DEGREE_ASOF": "2026-11-25",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
-    "SALARY_BASE_LOW": 135000,
-    "SALARY_BASE_HIGH": 180000,
-    "SALARY_MIDPOINT": 157500,
+    "SALARY_BASE_LOW": 163000,
+    "SALARY_BASE_HIGH": 277000,
+    "SALARY_MIDPOINT": 220000,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-25",
-    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=09b4eac3e05931a6 (as of 2026-11-19); https://www.nh3jobs.com/jobs/mkt_198139 (as of 2026-11-05); https://100hires.com/j/e5i9FKB (as of 2026-11-02); https://www.linkedin.com/jobs/view/4485739608 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4482222273 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4456269794 (as of 2026-10-31); https://www.linkedin.com/jobs/view/4484749505 (as of 2026-10-30)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-0AA83A7D604B, V2I-E88E936F3100, V2I-62808DD65A9C, V2I-DE781358981E, V2I-18EA344207B1, V2I-62CF12460FA4, V2I-5A07B07EC9D4]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://job-boards.greenhouse.io/oklo/jobs/6185186004 (as of 2026-11-02); https://www.ferrerocareers.com/int/en/jobs/director-kinder-bueno-production-operations (as of 2026-11-25); https://epicorsoftware.wd5.myworkdayjobs.com/en-US/epicorjobs/job/US-Remote/Director-of-Consulting-Services---Manufacturing_JR105896 (as of 2026-11-25); https://jobs.dayforcehcm.com/en-US/lisina/LISIAerospaceClientCareerSite/jobs/13268 (as of 2026-11-25); https://jobs.lever.co/zoox/6a06c4b3-a7f3-4726-a64f-6696c25bb45a (as of 2026-11-24); https://www.indeed.com/viewjob?jk=67e7114ce3e66250 (as of 2026-11-19); https://jobs.lever.co/mammothbiosci/c0fbfa61-2704-4949-8cca-2afe67655342?lever-source=Indeed (as of 2026-11-19)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-6B2EC42428C6, V2I-3F012EE9339A, V2I-5991F7BBE542, V2I-BCA39D41434B, V2I-4DEA5C7AE5C9, V2I-2833521728BA, V2I-6542B7F55865]; 7 employer-posted comparable(s), level 2 MFG any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
-    "SALARY_SCORE_POINT": 168750
+    "SALARY_SCORE_POINT": 248500
+   }
+  },
+  {
+   "id": "V2I-D3879DB594A5",
+   "fields": {
+    "DEGREE_TEXT": "Preferred Skills: Bachelor's degree, engineering experience, or equivalent experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4686203/Magnum-Venus-Products/Plant-Manager?source=Indeed_Feed",
+    "DEGREE_ASOF": "2026-11-24",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 90000,
+    "SALARY_BASE_HIGH": 252000,
+    "SALARY_MIDPOINT": 171000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4486755668 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4492601461 (as of 2026-11-25); https://www.indeed.com/viewjob?jk=54cee1fc0129fec8 (as of 2026-11-25); https://recruiting.paylocity.com/Recruiting/Jobs/Details/4689390/Mac-Medical/Plant-Manager?source=Indeed_Feed (as of 2026-11-25); https://grnh.se/sxdkak6f9us (as of 2026-11-24); https://www.indeed.com/viewjob?jk=a3c1504d3b7f2b20 (as of 2026-11-24); https://www.indeed.com/viewjob?jk=1d63195fcfa8f7bd (as of 2026-11-24)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-9196DC54982D, V2I-0C6DE84A4371, V2I-238D721B1E3E, V2I-46DB68724515, V2I-1DDD636BEEC6, V2I-3DAF23360D1D, V2I-FDD5DDF1169A]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS TN 113051 P25-P90 $92K-$199K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 211500
+   }
+  },
+  {
+   "id": "V2I-5A78DBDEB221",
+   "fields": {
+    "DEGREE_TEXT": "Education and/or Experience:** Master's degree (M.A.) or equivalent; or 10 to 15 years of progressively responsible manufacturing operations experience and/or training; or an equivalent combination of education and experience.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4659517/Mayfran-International-Inc/Plant-Manager?source=Indeed_Feed",
+    "DEGREE_ASOF": "2026-11-24",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 150000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://jobs.smartrecruiters.com/PrecoatMetals/744000162410774-plant-manager (as of 2026-11-19); https://www.indeed.com/viewjob?jk=614ca067f6565465 (as of 2026-11-18); https://100hires.com/j/7RNZNeT (as of 2026-11-04); https://www.linkedin.com/jobs/view/4486049580 (as of 2026-11-04); https://www.linkedin.com/jobs/view/4484160594 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4484561514 (as of 2026-11-01); https://www.linkedin.com/jobs/view/4485227507/ (as of 2026-11-01)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-33376C161EC5, V2I-252D412D6C0D, V2I-061ADD8A4372, V2I-ECCE2910EAA6, V2I-25F43582536B, V2I-135A72F028C4, V2I-C6D50274A829]; 7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW; BLS OH 113051 P25-P90 $89K-$171K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 165000
+   }
+  },
+  {
+   "id": "V2I-CEAF4FE8DCD8",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in construction management, engineering or related field. In lieu of the above requirements, equivalent relevant experience will be considered.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.jedunn.com/job/Dallas-Vice-President%2C-Industrial-Manufacturing-Construction-Projects-TX-75254/1453255300/",
+    "DEGREE_ASOF": "2026-11-24",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 200000,
+    "SALARY_BASE_HIGH": 340000,
+    "SALARY_MIDPOINT": 270000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "comparables: https://exempt-primobrands.icims.com/jobs/40834/job (as of 2026-11-18); https://www.indeed.com/viewjob?jk=d66af8bbe2bd517f (as of 2026-11-24); https://www.indeed.com/viewjob?jk=be4190860f38332f (as of 2026-11-24); https://www.applicantpro.com/openings/dwtusa/jobs/4279977-349170 (as of 2026-11-18); https://jobs.ashbyhq.com/nox-metals/e3447a68-0bd1-4e8e-adf1-9e0ba54a35f8?utm_source=BzGp8NA8gK (as of 2026-11-17); https://www.linkedin.com/jobs/view/4480918556 (as of 2026-11-02); https://www.linkedin.com/jobs/view/4459100849 (as of 2026-11-02)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-A5E2644F102E, V2I-737FE0BF8C3F, V2I-74F4DDF65311, V2I-13D9AA024AD6, V2I-1676F326BAF1, V2I-167B716F4772, V2I-35B3CCDF6542]; 7 employer-posted comparable(s), level 4 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-25",
+    "SALARY_SCORE_POINT": 305000
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-7A3EE93BFEC5",
-   "company": "kreate",
-   "title": "Plant Manager",
-   "location": "Fletcher, NC, USA",
-   "posting": "https://www.linkedin.com/jobs/view/4494117852/",
+   "id": "V2I-8D1AE5B20CB9",
+   "company": "DALLAS ONE SOLUTIONS",
+   "title": "Director of Production",
+   "location": "Carrollton, TX, USA",
+   "posting": "https://recruiting2.ultipro.com/INW1000INWM/JobBoard/cc9ad17f-496a-4f1d-baf4-853c110f6ae9/OpportunityDetail?opportunityId=70692aa1-49c7-4e10-b410-926ff37cb0aa&postingId=3720a13e-8c46-4342-bde3-f116212fd032",
    "est": [
-    135000,
+    163000,
+    277000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-6B2EC42428C6",
+    "V2I-3F012EE9339A",
+    "V2I-5991F7BBE542",
+    "V2I-BCA39D41434B",
+    "V2I-4DEA5C7AE5C9",
+    "V2I-2833521728BA",
+    "V2I-6542B7F55865"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-D3879DB594A5",
+   "company": "Magnum Venus Products",
+   "title": "Plant Manager",
+   "location": "Oak Ridge, TN, USA",
+   "posting": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4686203/Magnum-Venus-Products/Plant-Manager",
+   "est": [
+    90000,
+    252000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-9196DC54982D",
+    "V2I-0C6DE84A4371",
+    "V2I-238D721B1E3E",
+    "V2I-46DB68724515",
+    "V2I-1DDD636BEEC6",
+    "V2I-3DAF23360D1D",
+    "V2I-FDD5DDF1169A"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-5A78DBDEB221",
+   "company": "Mayfran International",
+   "title": "Plant Manager",
+   "location": "Cleveland, OH, USA",
+   "posting": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4659517/Mayfran-International-Inc/Plant-Manager",
+   "est": [
+    120000,
     180000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-0AA83A7D604B",
-    "V2I-E88E936F3100",
-    "V2I-62808DD65A9C",
-    "V2I-DE781358981E",
-    "V2I-18EA344207B1",
-    "V2I-62CF12460FA4",
-    "V2I-5A07B07EC9D4"
+    "V2I-33376C161EC5",
+    "V2I-252D412D6C0D",
+    "V2I-061ADD8A4372",
+    "V2I-ECCE2910EAA6",
+    "V2I-25F43582536B",
+    "V2I-135A72F028C4",
+    "V2I-C6D50274A829"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-CEAF4FE8DCD8",
+   "company": "JE Dunn Construction",
+   "title": "Vice President, Industrial Manufacturing Construction Projects",
+   "location": "Dallas, TX, USA",
+   "posting": "https://jobs.jedunn.com/job/Dallas-Vice-President%2C-Industrial-Manufacturing-Construction-Projects-TX-75254/1453255300/",
+   "est": [
+    200000,
+    340000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 4 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-A5E2644F102E",
+    "V2I-737FE0BF8C3F",
+    "V2I-74F4DDF65311",
+    "V2I-13D9AA024AD6",
+    "V2I-1676F326BAF1",
+    "V2I-167B716F4772",
+    "V2I-35B3CCDF6542"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-F6DDB4796944",
+   "company": "Gibraltar Industries, INC",
+   "title": "Plant Manager",
+   "location": "Grand Prairie, TX, USA",
+   "posting": "https://gibraltar.rec.pro.ukg.net/GIB1002GIBIN/JobBoard/ec03ae70-6d19-4e13-8576-caab2d725c12/OpportunityDetail?opportunityId=24d57bc5-4f20-45f6-a76a-95a38b0ab585&postingId=7b89951b-6224-4365-b027-792fd4a0913b",
+   "est": [
+    128000,
+    200000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-FDD5DDF1169A",
+    "V2I-A86C2E8C1E82",
+    "V2I-1D55E7CC8E88",
+    "V2I-7C423F4B259A",
+    "V2I-4CEB4A4E0B39",
+    "V2I-79D627ED220D",
+    "V2I-D632B0C9EF00"
    ]
   }
  ],
