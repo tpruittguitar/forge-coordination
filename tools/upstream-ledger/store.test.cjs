@@ -153,13 +153,17 @@ test('missing or corrupt parts fail loudly through both local and generic reader
   assert.throws(() => Coordinator.read(f.root, Store.DRAIN_PATH, {items: {}}), /archive file unavailable/);
 });
 
-test('single oversize detail is rejected before touching the inventory', t => {
+test('live inventory around 60 MB saves and validates, and HARD_BYTES is enforced', t => {
   const f = fixture(t);
-  const original = ledger({z: entry('z', 'WAITING')});
-  f.put(Store.LEDGER_PATH, original);
+  const liveBody = 'x'.repeat(60 * 1024 * 1024);
+  const value = ledger({z: entry('z', 'WAITING', {body: liveBody})});
+  Store.writeLedger(f.root, value);
+  assert.deepEqual(Store.readLedger(f.root), value);
+  assert.doesNotThrow(() => Store.loadLedger(f.read));
+
   const oversized = ledger({z: entry('z', 'EXCLUDED', {body: 'x'.repeat(Store.HARD_BYTES)})});
   assert.throws(() => Store.writeLedger(f.root, oversized), /single record exceeds/);
-  assert.deepEqual(Store.readLedger(f.root), original);
+  assert.deepEqual(Store.readLedger(f.root), value);
 });
 
 test('a failed replacement rolls back changed shards and the manifest', t => {
