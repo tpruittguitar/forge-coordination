@@ -1,8 +1,8 @@
 'use strict';
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto');
 const FILE='control/ENRICHMENT_WORKER_PARTITION.json',SOURCE='a1e2b300e063764faac242364e009cd8a3b72987';
-const TASK='FORGE_CHATGPT_ENRICHMENT_RESEARCH',HERMES_SIZE=1034,API_SIZE=995;
-const DIGEST='c4a27099755e9c0548d9d9cb02a67e668f4c804f87f1dd769b1a66238e3fbc50';
+const TASK='FORGE_CHATGPT_ENRICHMENT_RESEARCH',HERMES_SIZE=600,API_SIZE=573;
+const DIGEST='823e3d4ad58c4dba47186ed26267af721b492ab94c9983c2d5cead94a22f1266';
 function validate(x){
   const [h,a]=x?.workers||[];
   if(x?.schema!=='forge.enrichment-worker-partition.v1'||x.sourceCommit!==SOURCE||
@@ -12,7 +12,7 @@ function validate(x){
     throw Error('AUTHORITATIVE_WORKER_PARTITION_INVALID');
   const ids=[...h.primaryIds,...a.primaryIds];
   if(!ids.every((v,i)=>typeof v==='string'&&/^V2I-[0-9A-F]{12}$/.test(v)&&(i===0||ids[i-1]<v))||
-    h.primaryIds.at(-1)!=='V2I-7E12B5B75B52'||a.primaryIds[0]!=='V2I-7E2E8E0559E8'||
+    h.primaryIds.at(-1)!=='V2I-7D723DF74DB5'||a.primaryIds[0]!=='V2I-7E2E8E0559E8'||
     crypto.createHash('sha256').update(ids.join('\n')+'\n').digest('hex')!==DIGEST)
     throw Error('AUTHORITATIVE_WORKER_PARTITION_INVALID');
   return {sourceCommit:SOURCE,hermes:new Set(h.primaryIds),api:new Set(a.primaryIds)};
