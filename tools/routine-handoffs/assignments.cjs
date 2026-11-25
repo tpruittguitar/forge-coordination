@@ -20,7 +20,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
  const discovery=require('../source-intake/discovery-inputs').index(root);
  if(!Number.isFinite(Date.parse(snapshot?.source?.readAt))||now-Date.parse(snapshot.source.readAt)>900000||Date.parse(snapshot.source.readAt)>now+120000)throw Error('FRESH_CANONICAL_ASSIGNMENT_SNAPSHOT_REQUIRED');
  const queue=S.read(root,'state/EMAIL_RECOVERY_QUEUE.json'),legacy=S.read(root,'state/CLAUDE_HELPER_CONSUMPTION.json',{items:[]}),code=S.read(root,'state/CODE_INTAKE_CONSUMPTION.json',{schema:'forge.code-intake-consumption.v1',items:[]});
- const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot,{root,now});
+ const intake=S.read(root,'control/GROK_INTAKE_HELPER_WORK.json'),relevance=S.read(root,'control/CLAUDE_RELEVANCE_WORK.json'),enrich=require('../helper-routing/enrichment.cjs').reconcileResearch(S.read(root,'control/ENRICHMENT_HELPER_WORK.json'),snapshot,{root,now}),terminalPrune=require('../helper-routing/terminal-membership.cjs').applyToRoot(root,snapshot,{apply:false,now,enrichment:enrich});
  const owners=new Map(),addOwner=(k,t)=>{if(owners.has(k)&&owners.get(k)!==t)throw Error('OVERLAPPING_ACTIVE_HELPER_OWNERSHIP');owners.set(k,t);};
  if(intake.enabled&&intake.routingActive&&!require('../helper-routing/current-owner.cjs').retirement(intake.taskKey,intake.assignmentId))for(const k of intake.keys)addOwner(k,intake.taskKey);
  if(relevance.enabled)for(const k of relevance.keys)addOwner(k,relevance.taskKey);
@@ -88,6 +88,7 @@ function replenish({root,state,snapshot,runId,apply=false,now=Date.now(),screenC
   if(canonicalMatches.length)require('../email-recovery/ledger.cjs').save(path.join(root,'state/EMAIL_RECOVERY_QUEUE.json'),queue);
   S.save(root,'state/CODE_INTAKE_CONSUMPTION.json',code);
   for(const [file,w]of [['control/GROK_INTAKE_HELPER_WORK.json',intake],['control/CLAUDE_RELEVANCE_WORK.json',relevance],['control/ENRICHMENT_HELPER_WORK.json',enrich]])S.save(root,file,w);
+  require('../helper-routing/terminal-membership.cjs').applyToRoot(root,snapshot,{apply:true,now,enrichment:enrich});
   S.save(root,'state/HELPER_HANDOFFS.json',progress({root,state}));
  }
  return result;

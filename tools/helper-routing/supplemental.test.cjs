@@ -21,7 +21,7 @@ test('ChatGPT owns current enrichment work; exact historical Grok evidence is re
 test('ChatGPT research only releases fields independently present in the canonical snapshot',()=>{
  const w={...work,provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',items:Array.from({length:4},(_,n)=>({...work.items[0],owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',primaryId:'V2I-'+n,missingFields:['SALARY','DEGREE']}))};
  const r=E.reconcileResearch(w,{rows:w.items.map((i,n)=>({PRIMARY_ID:i.primaryId,BUCKET:n===3?'APPLIED':'SCOUT_INTAKE',p:{}})),archiveRows:[],source:{kind:'CANONICAL_WRITER_MASTER'},needsById:{'V2I-0':[],'V2I-1':['DEGREE']}});
- a.equal(r.items[0].status,'ALREADY_COMPLETE');a.equal(r.items[1].status,'ASSIGNED');a.equal(r.items[2].status,'ASSIGNED');a.equal(r.items[3].status,'PROTECTED_SKIP');a.match(r.items[0].researchCompletion.meaning,/no new research/);
+ a.equal(r.items.length,3);a.equal(r.items[0].status,'ALREADY_COMPLETE');a.equal(r.items[1].status,'ASSIGNED');a.equal(r.items[2].status,'ASSIGNED');a.deepEqual(r.items.map(i=>i.primaryId),['V2I-0','V2I-1','V2I-2']);a.match(r.items[0].researchCompletion.meaning,/no new research/);
 });
 test('completed and protected assignment statuses never invalidate immutable sibling evidence or reclaim eligibility',()=>{
  const b={schema:'forge.enrichment-helper-batch.v1',provider:'Grok',taskKey:'FORGE_GROK_ENRICHMENT',assignmentId:work.assignmentId,runId:'GROK-HISTORY',instructionCommit:'a'.repeat(40),items:['V2I-ONE','V2I-TWO'].map(primaryId=>({primaryId,writerSubmitted:false,sourceEvidence:{},recommendation:'ENRICHMENT_EVIDENCE_READY'}))};

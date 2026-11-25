@@ -26,7 +26,7 @@ function captureProof(e){
  if(Object.hasOwn(e,'sourceSha256')&&e.sourceSha256!==sha256)throw Error('SHARED_CAPTURE_HASH_MISMATCH');
  return{kind:c.kind,sha256,bytes:Buffer.byteLength(c.text,'utf8'),basis:'SUBMITTED_TEXT_ONLY',independentlyVerified:false};
 }
-function validateWork(w){
+function validateWork(w,opts){
  require('../programmed-coordinator/pilot-public.cjs').validate(w);
  if(w?.schema!=='forge.shared-helper-work.v1'||typeof w.enabled!=='boolean'||typeof w.routingActive!=='boolean'||!proof(w.assignmentId)||!Array.isArray(w.items)||!w.providers)throw Error('INVALID_SHARED_HELPER_WORK');
  const seen=new Set();
@@ -41,7 +41,7 @@ function validateWork(w){
  if(Object.hasOwn(w,'enrichmentPartitionReservations')){
   const r=w.enrichmentPartitionReservations,P=require('./worker-partition.cjs');
   if(r.schema!=='forge.enrichment-partition-reservations.v1'||r.sourcePath!==P.FILE||r.sourceCommit!==P.SOURCE||!Array.isArray(r.workers)||r.workers.length!==1)throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
-  const [h]=r.workers,part=P.load(ROOT);
+  const [h]=r.workers,part=opts?.partition?P.validate(opts.partition):P.load(ROOT);
   if(h?.provider!=='Hermes'||!Array.isArray(h.primaryIds)||h.primaryIds.length!==part.hermes.size||h.primaryIds.some(id=>!part.hermes.has(id)))throw Error('INVALID_ENRICHMENT_PARTITION_RESERVATIONS');
  }
  return w;

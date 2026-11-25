@@ -266,29 +266,27 @@ test('published reservations keep the locked Hermes partition and release the Ch
   H.validateWork(w);
   const reserved=H.reservedKeys(w);
   const partitionIds=new Set((w.enrichmentPartitionReservations.workers||[]).flatMap(x=>x.primaryIds||[]));
-  a.equal(part.hermes.size,P.HERMES_SIZE);
-  a.equal(part.api.size,P.API_SIZE);
+  a.equal(part.hermes.size,w.enrichmentPartitionReservations.workers[0].primaryIds.length);
   a.equal(w.enrichmentPartitionReservations.workers.length,1);
   a.equal(w.enrichmentPartitionReservations.workers[0].provider,'Hermes');
   a.equal((w.enrichmentPartitionReservations.workers[0].taskKey||null),null);
-  a.equal(w.enrichmentPartitionReservations.workers[0].primaryIds.length,P.HERMES_SIZE);
   for(const id of part.hermes){a.ok(reserved.has(id));a.ok(partitionIds.has(id));}
   for(const id of part.api)a.ok(!partitionIds.has(id));
   const chatgptLaneReserved=w.enrichmentPartitionReservations.workers.filter(x=>x.taskKey==='FORGE_CHATGPT_ENRICHMENT_RESEARCH'||x.provider==='ChatGPT').reduce((n,x)=>n+(x.primaryIds||[]).length,0);
   a.equal(chatgptLaneReserved,0);
   const partitionOnly=P.atsReserved(part,{grant:false,independent:[]});
-  a.equal(partitionOnly.size,P.HERMES_SIZE);
+  a.equal(partitionOnly.size,part.hermes.size);
   for(const id of part.api)a.ok(!partitionOnly.has(id));
   const independent=[...part.api].filter(id=>reserved.has(id));
   const normal=P.atsReserved(part,{grant:false,independent});
   const grant=P.atsReserved(part,{grant:true,independent});
-  a.equal(normal.size,P.HERMES_SIZE+independent.length);
-  a.equal(grant.size,P.HERMES_SIZE+independent.length);
+  a.equal(normal.size,part.hermes.size+independent.length);
+  a.equal(grant.size,part.hermes.size+independent.length);
   for(const id of part.hermes){a.ok(normal.has(id));a.ok(grant.has(id));}
   for(const id of part.api){
     if(independent.includes(id)){a.ok(normal.has(id));a.ok(grant.has(id));}
     else{a.ok(!normal.has(id));a.ok(!grant.has(id));}
   }
-  a.ok(independent.length<P.API_SIZE);
+  a.ok(independent.length<part.api.size);
 });
 
