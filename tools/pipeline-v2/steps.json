@@ -1,0 +1,27 @@
+{
+  "schema": "forge.pipeline-v2.steps.v1",
+  "card": "cs-bb7d087b",
+  "brief": "https://cursor.com/canvas/store-1b4f4a75-6249-4418-bccc-1cb653f649a5/9d9532e2-f979-4c6f-a2b7-2d721313afb6",
+  "note": "Every schedule ships disabled. Enabling one needs Tim's yes through President. The old flow keeps running untouched.",
+  "steps": [
+    {"id": "01", "slug": "jobspy", "name": "JobSpy", "stage": "Discovery", "method": "Script", "engine": "discovery:jobspy", "lane": "JOBSPY", "schedule": {"cron": null, "enabled": false, "basis": "existing source-trial.yml run; adapter only"}, "retry": {"max": 3}},
+    {"id": "02", "slug": "hiringcafe", "name": "HiringCafe", "stage": "Discovery", "method": "Script", "engine": "discovery:hiringcafe", "lane": "HIRINGCAFE", "schedule": {"cron": null, "enabled": false, "basis": "existing source-trial.yml run; adapter only"}, "retry": {"max": 3}},
+    {"id": "03", "slug": "career-boards", "name": "Career boards", "stage": "Discovery", "method": "Script", "engine": "discovery:boards", "lane": "BOARD", "schedule": {"cron": null, "enabled": false, "basis": "existing board-discovery.yml run; adapter only"}, "retry": {"max": 3}},
+    {"id": "04", "slug": "email", "name": "Email", "stage": "Discovery", "method": "Script + light AI", "engine": "discovery:email", "lane": "EMAIL", "schedule": {"cron": null, "enabled": false, "basis": "Gmail script is phase 3"}, "retry": {"max": 3}},
+    {"id": "05", "slug": "web-search", "name": "Web search", "stage": "Discovery", "method": "AI", "engine": "discovery:web", "lane": "WEB", "schedule": {"cron": null, "enabled": false, "basis": "scheduled web search is phase 3"}, "retry": {"max": 3}},
+    {"id": "06", "slug": "required-fields", "name": "5 required fields", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "07", "slug": "description-fetch", "name": "Description fetch", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "08", "slug": "duplicate", "name": "Duplicate check", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "09", "slug": "declined", "name": "Declined check", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "10", "slug": "scope", "name": "Scope screen", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "11", "slug": "onsite-default", "name": "Onsite default", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "12", "slug": "coordinates", "name": "Coordinates", "stage": "Intake", "method": "Script", "engine": "intake-gate", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "13", "slug": "posted-pay", "name": "Posted pay", "stage": "Enrichment", "method": "Script", "engine": "engine:13", "schedule": {"cron": "*/15 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "14", "slug": "degree-buried-pay", "name": "Degree and buried pay", "stage": "Enrichment", "method": "AI cheap", "engine": "engine:14", "schedule": {"cron": "5,35 * * * *", "enabled": false}, "retry": {"max": 3}, "ai": {"model": "gpt-5.4-nano"}},
+    {"id": "15", "slug": "experience-fit", "name": "Experience fit", "stage": "Enrichment", "method": "AI highest", "engine": "engine:15", "schedule": {"cron": "10 * * * *", "enabled": false, "basis": "paced to intake output"}, "retry": {"max": 3}, "ai": {"model": "gpt-5.4-mini"}},
+    {"id": "16", "slug": "product-source", "name": "Product and source", "stage": "Enrichment", "method": "AI high", "engine": "engine:16", "schedule": {"cron": "20 * * * *", "enabled": false}, "retry": {"max": 3}, "ai": {"model": "gpt-5.4-mini"}},
+    {"id": "17", "slug": "pay-basis", "name": "Pay basis", "stage": "Enrichment", "method": "Script", "engine": "engine:17", "schedule": {"cron": "25,55 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "18", "slug": "degree-flex", "name": "Degree flexibility", "stage": "Enrichment", "method": "Script", "engine": "engine:18", "schedule": {"cron": "30 * * * *", "enabled": false}, "retry": {"max": 3}},
+    {"id": "19", "slug": "final-score", "name": "Final score", "stage": "Enrichment", "method": "Script", "engine": "engine:19", "schedule": {"cron": "45 * * * *", "enabled": false, "basis": "runs last"}, "retry": {"max": 3}}
+  ]
+}
