@@ -1,6 +1,6 @@
 {
   "schema": "forge.reporting-health.v1",
-  "at": "2026-11-25T00:16:01.897Z",
+  "at": "2026-11-25T00:22:07.382Z",
   "components": {
     "activity": {
       "status": "CURRENT",
@@ -10,15 +10,19 @@
     },
     "flow": {
       "status": "CURRENT",
-      "at": "2026-11-24T21:28:06.864Z",
-      "lastSuccessAt": "2026-11-24T21:28:06.864Z",
+      "at": "2026-11-25T00:25:08.679Z",
+      "lastSuccessAt": "2026-11-25T00:25:08.679Z",
       "attempts": 1
     },
     "intake-queue": {
-      "status": "CURRENT",
-      "at": "2026-11-24T21:28:24.752Z",
+      "status": "STALE",
+      "at": "2026-11-25T00:25:35.208Z",
       "lastSuccessAt": "2026-11-24T21:28:24.752Z",
-      "attempts": 1
+      "failureSince": "2026-11-25T00:25:35.208Z",
+      "error": "state/INTAKE_DRAIN.json: live inventory exceeds the storage limit\n",
+      "attempts": 1,
+      "owner": "CODE",
+      "nextAction": "Automatic reporting retry; retain last successful metrics"
     }
   }
 }
