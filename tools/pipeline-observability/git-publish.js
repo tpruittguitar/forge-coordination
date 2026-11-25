@@ -19,38 +19,45 @@ const Store=require('../upstream-ledger/store.cjs');
 const {LEDGER_PATH,LEDGER_ARCHIVE,DRAIN_PATH,DRAIN_ARCHIVE}=Store;
 const INVENTORIES=[[LEDGER_PATH,LEDGER_ARCHIVE],[DRAIN_PATH,DRAIN_ARCHIVE]];
 const COMPLETE_FLOW=[LEDGER_PATH,LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues',DRAIN_PATH,DRAIN_ARCHIVE,'state/UPSTREAM_COLLECT_CURSOR.json'];
-function reparentFinishedFlow(root,{base,finished,paths,message}){
- run(root,['fetch','--no-tags','origin','refs/heads/main']);
- const latest=run(root,['rev-parse','FETCH_HEAD']).trim();
- if(latest===base||latest===finished)throw Error('Flow reparent requires a strictly newer canonical main');
- run(root,['merge-base','--is-ancestor',base,latest]);
- const commits=run(root,['rev-list','--first-parent','--reverse','--max-count=65',base+'..'+latest]).trim().split(/\s+/);
- if(commits.length>64||run(root,['rev-parse',commits[0]+'^']).trim()!==base)throw Error('Flow input history is not a bounded linear continuation');
- const names=(from,to)=>run(root,['diff','--name-only','--no-renames','-z',from,to]).split('\0').filter(Boolean);
- for(const c of commits){
-  const changed=names(c+'^',c);
-  if(!changed.length||changed.some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
- }
- // Verify exact input parity across the whole span, in addition to the per-commit check.
- if(names(base,latest).some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
- const delta=names(base,finished);
- if(!delta.length||delta.some(f=>!paths.some(p=>f===p||f.startsWith(p+'/'))))throw Error('Finished flow contains an out-of-scope publication');
- run(root,['diff','--quiet',base,latest,'--',...delta]);
- const dir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-flow-reparent-')),env={GIT_INDEX_FILE:path.join(dir,'index')};
- try{
-  run(root,['read-tree',latest],env);
-  for(const file of delta){
-   const entries=run(root,['ls-tree','-z',finished,'--',file]);
-   if(!entries){run(root,['update-index','--force-remove','--',file],env);continue;}
-   const match=/^(100644|100755) blob ([a-f0-9]{40})\t([^\0]+)\0$/.exec(entries);
-   if(!match||match[3]!==file)throw Error('Finished flow path is not an exact regular Git blob');
-   run(root,['update-index','--add','--cacheinfo',match[1],match[2],file],env);
+function reparentFinishedFlow(root,{base,finished,paths,message,retries=4,sleep}){
+ for(let attempt=1;attempt<=retries;attempt++){
+  run(root,['fetch','--no-tags','origin','refs/heads/main']);
+  const latest=run(root,['rev-parse','FETCH_HEAD']).trim();
+  if(latest===base||latest===finished)throw Error('Flow reparent requires a strictly newer canonical main');
+  run(root,['merge-base','--is-ancestor',base,latest]);
+  const commits=run(root,['rev-list','--first-parent','--reverse','--max-count=65',base+'..'+latest]).trim().split(/\s+/);
+  if(commits.length>64||run(root,['rev-parse',commits[0]+'^']).trim()!==base)throw Error('Flow input history is not a bounded linear continuation');
+  const names=(from,to)=>run(root,['diff','--name-only','--no-renames','-z',from,to]).split('\0').filter(Boolean);
+  for(const c of commits){
+   const changed=names(c+'^',c);
+   if(!changed.length||changed.some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
   }
-  const tree=run(root,['write-tree'],env).trim();
-  const commit=run(root,['commit-tree',tree,'-p',latest,'-m',message]).trim();
-  run(root,['push','origin',commit+':refs/heads/main']);
-  return {changed:true,pushed:true,attempts:2,reparented:true,commit};
- }finally{fs.rmSync(dir,{recursive:true,force:true});}
+  // Verify exact input parity across the whole span, in addition to the per-commit check.
+  if(names(base,latest).some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
+  const delta=names(base,finished);
+  if(!delta.length||delta.some(f=>!paths.some(p=>f===p||f.startsWith(p+'/'))))throw Error('Finished flow contains an out-of-scope publication');
+  run(root,['diff','--quiet',base,latest,'--',...delta]);
+  const dir=fs.mkdtempSync(path.join(os.tmpdir(),'forge-flow-reparent-')),env={GIT_INDEX_FILE:path.join(dir,'index')};
+  try{
+   run(root,['read-tree',latest],env);
+   for(const file of delta){
+    const entries=run(root,['ls-tree','-z',finished,'--',file]);
+    if(!entries){run(root,['update-index','--force-remove','--',file],env);continue;}
+    const match=/^(100644|100755) blob ([a-f0-9]{40})\t([^\0]+)\0$/.exec(entries);
+    if(!match||match[3]!==file)throw Error('Finished flow path is not an exact regular Git blob');
+    run(root,['update-index','--add','--cacheinfo',match[1],match[2],file],env);
+   }
+   const tree=run(root,['write-tree'],env).trim();
+   const commit=run(root,['commit-tree',tree,'-p',latest,'-m',message]).trim();
+   try{run(root,['push','origin',commit+':refs/heads/main']);return {changed:true,pushed:true,attempts:attempt,reparented:true,commit};}
+   catch(e){
+    if(!/\[rejected\].*(?:fetch first|non-fast-forward)/i.test(String(e.stderr||'')))throw e;
+    if(attempt===retries)throw Error('Flow reparent failed after '+retries+' attempts',{cause:e});
+    if(sleep)sleep(attempt*2000);
+   }
+  }finally{fs.rmSync(dir,{recursive:true,force:true});}
+ }
+ throw Error('Flow reparent failed after '+retries+' attempts');
 }
 function present(root,paths){return paths.filter(p=>fs.existsSync(path.join(root,p)));}
 function snapshot(root,paths,dest){
@@ -86,7 +93,7 @@ function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,r
    if(!allowFlowStatusReparent||!changed||!/\[rejected\].*(?:fetch first|non-fast-forward)/i.test(String(e.stderr||'')))throw e;
    const finished=run(root,['rev-parse','HEAD']).trim();
    if(run(root,['rev-parse',finished+'^']).trim()!==base)throw Error('Finished flow is not a direct child of build input');
-   return reparentFinishedFlow(root,{base,finished,paths:relativePaths,message});
+   return reparentFinishedFlow(root,{base,finished,paths:relativePaths,message,retries,sleep});
   }
  }
  const backup=fs.mkdtempSync(path.join(os.tmpdir(),'git-publish-'));

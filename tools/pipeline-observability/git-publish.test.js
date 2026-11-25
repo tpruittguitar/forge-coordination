@@ -95,7 +95,7 @@ test('only a completed flow can retarget once across non-input commits; real inp
     assert.equal(git(bare,'rev-parse','HEAD').trim(),newer);
    }else{
     const result=publish(root,flow,'finished',{allowFlowStatusReparent:true});
-    assert.equal(result.reparented,true);assert.equal(result.attempts,2);
+    assert.equal(result.reparented,true);assert.equal(result.attempts,1);
     assert.equal(git(bare,'rev-parse','HEAD^').trim(),newer);
     assert.equal(git(bare,'show','HEAD:'+usage),'fresh usage');
     assert.equal(git(bare,'show','HEAD:'+display),'fresh display');
@@ -151,4 +151,57 @@ test('publication stages each inventory, its manifest and shards as one group',(
   assert.throws(()=>git(root,'cat-file','-e','HEAD:'+Store.DRAIN_ARCHIVE+'/manifest.json'));
   assert.equal(JSON.parse(git(root,'show','HEAD:'+Store.DRAIN_PATH)).items.one.detail.history[0],'old');
  }finally{fs.rmSync(base,{recursive:true,force:true});}
+});
+
+// Forces the reparent push (<sha>:refs/heads/main) to lose a real race RACE_MAX times: before each such push,
+// a shim moves origin main with a non-input commit, so git returns a genuine "[rejected] (fetch first)".
+function raceFlow(raceMax,opts){
+ const flow=['state/UPSTREAM_LEDGER.json','state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues','state/upstream-ledger-archive','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/UPSTREAM_COLLECT_CURSOR.json'];
+ const ledger=flow[0],usage='usage/AI_USAGE_READINGS.jsonl';
+ const {base,root,bare}=repo(),race=path.join(base,'race'),bin=path.join(base,'bin'),count=path.join(base,'count');
+ const put=(dir,file,body)=>{const p=path.join(dir,file);fs.mkdirSync(path.dirname(p),{recursive:true});fs.writeFileSync(p,body);};
+ const realGit=execFileSync('sh',['-c','command -v git'],{encoding:'utf8'}).trim();
+ fs.mkdirSync(bin);
+ fs.writeFileSync(path.join(bin,'git'),`#!/bin/sh
+if [ "$1" = push ]; then case "$3" in *:refs/heads/main)
+ n=$(cat "$RACE_COUNT" 2>/dev/null || echo 0)
+ if [ "$n" -lt "$RACE_MAX" ]; then echo $((n+1)) > "$RACE_COUNT"
+  ( cd "$RACE_DIR" && "$REAL_GIT" fetch -q origin && "$REAL_GIT" reset -q --hard origin/main && echo "race $n" > usage/race.txt && "$REAL_GIT" add -A && "$REAL_GIT" -c user.name=t -c user.email=t@t commit -qm "race $n" && "$REAL_GIT" push -q origin HEAD:main ) >/dev/null 2>&1
+ fi;; esac; fi
+exec "$REAL_GIT" "$@"
+`,{mode:0o755});
+ const saved={PATH:process.env.PATH};
+ try{
+  put(root,ledger,JSON.stringify('old ledger'));put(root,'state/waiting-queues/intake-0001.json','old page');git(root,'add','state');git(root,'commit','-m','flow base');git(root,'push','-q','origin','HEAD:main');
+  git(base,'clone','-q',bare,race);git(race,'config','user.name','test');git(race,'config','user.email','test@example.test');
+  put(race,usage,'fresh usage');git(race,'add','-A');git(race,'commit','-m','new main');git(race,'push','-q','origin','HEAD:main');
+  put(root,ledger,JSON.stringify('fresh ledger'));fs.rmSync(path.join(root,'state/waiting-queues/intake-0001.json'));put(root,'state/waiting-queues/intake-0002.json','new page');
+  Object.assign(process.env,{PATH:bin+path.delimiter+saved.PATH,REAL_GIT:realGit,RACE_DIR:race,RACE_COUNT:count,RACE_MAX:String(raceMax)});
+  let result,error;
+  try{result=publish(root,flow,'finished',{allowFlowStatusReparent:true,retries:4,sleep:()=>{},...opts});}catch(e){error=e;}
+  process.env.PATH=saved.PATH;
+  return {result,error,bare,ledger,usage,races:Number(fs.readFileSync(count,'utf8').trim()),cleanup:()=>fs.rmSync(base,{recursive:true,force:true})};
+ }catch(e){fs.rmSync(base,{recursive:true,force:true});throw e;}
+ finally{process.env.PATH=saved.PATH;for(const k of ['REAL_GIT','RACE_DIR','RACE_COUNT','RACE_MAX'])delete process.env[k];}
+}
+test('flow reparent refetches and retries after the reparent push loses a race',()=>{
+ const r=raceFlow(2);
+ try{
+  assert.equal(r.error,undefined);
+  assert.equal(r.races,2);assert.equal(r.result.reparented,true);assert.equal(r.result.attempts,3);
+  assert.equal(git(r.bare,'log','-1','--pretty=%s','HEAD^').trim(),'race 1');
+  assert.equal(git(r.bare,'show','HEAD:'+r.usage),'fresh usage');
+  assert.equal(git(r.bare,'show','HEAD:usage/race.txt'),'race 1\n');
+  assert.equal(JSON.parse(git(r.bare,'show','HEAD:'+r.ledger)),'fresh ledger');
+  assert.equal(git(r.bare,'show','HEAD:state/waiting-queues/intake-0002.json'),'new page');
+ }finally{r.cleanup();}
+});
+test('flow reparent gives up after 4 rejected attempts and leaves origin at the racing commit',()=>{
+ const r=raceFlow(99);
+ try{
+  assert.match(String(r.error&&r.error.message),/after 4 attempts/);
+  assert.equal(r.races,4);
+  assert.equal(git(r.bare,'log','-1','--pretty=%s').trim(),'race 3');
+  assert.equal(JSON.parse(git(r.bare,'show','HEAD:'+r.ledger)),'old ledger');
+ }finally{r.cleanup();}
 });
