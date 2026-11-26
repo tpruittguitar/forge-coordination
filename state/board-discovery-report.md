@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261126T0536Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261126T0723Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -31,21 +31,26 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 | BOARD:greenhouse | P1 Anduril | [Director, Manufacturing Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5118136007?gh_jid=5118136007) | Ashville, Ohio, United States | MFG_ENG | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Director of Production, Optics ](https://boards.greenhouse.io/andurilindustries/jobs/5268363007?gh_jid=5268363007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Director of Quality](https://boards.greenhouse.io/andurilindustries/jobs/5131489007?gh_jid=5131489007) | Costa Mesa, California, United States | QUALITY | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | P1 Anduril | [Head of Business Line Operations, Air Dominance & Strike](https://boards.greenhouse.io/andurilindustries/jobs/5198760007?gh_jid=5198760007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Compute & Comms](https://boards.greenhouse.io/andurilindustries/jobs/5213199007?gh_jid=5213199007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | P1 Anduril | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P1 Anduril | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
+| BOARD:greenhouse | P1 Anduril | [Senior Manager, Product Operations](https://boards.greenhouse.io/andurilindustries/jobs/5279956007?gh_jid=5279956007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P1 Anduril | [Sr. Manager, Warehouse Ops Excellence](https://boards.greenhouse.io/andurilindustries/jobs/5268318007?gh_jid=5268318007) | Ashville, Ohio, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P1 Anduril | [Staff Industrial Engineer, Supply Chain Material Flow](https://boards.greenhouse.io/andurilindustries/jobs/5045104007?gh_jid=5045104007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P1 Anduril | [Staff Manufacturing Engineer, Actuators](https://boards.greenhouse.io/andurilindustries/jobs/5009371007?gh_jid=5009371007) | Costa Mesa, California, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P1 Anduril | [Staff Manufacturing Engineer, Barracuda](https://boards.greenhouse.io/andurilindustries/jobs/5261782007?gh_jid=5261782007) | Ashville, Ohio, United States | MFG_ENG | SR_STAFF |  |
 | BOARD:greenhouse | P1 Anduril | [ VP Production, Connected Warfare](https://boards.greenhouse.io/andurilindustries/jobs/5173257007?gh_jid=5173257007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [VP Production, Frontier Systems](https://boards.greenhouse.io/andurilindustries/jobs/5218932007?gh_jid=5218932007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:ashby | P2 Skydio | [Director, NPI Operations Engineering](https://jobs.ashbyhq.com/skydio/b9f12e20-1a67-4196-bb3e-379b2cb1bae6) | San Mateo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Agility Robotics | [Director, Operations Program Management](https://www.agilityrobotics.com/about/job-post?gh_jid=6111228004) | Hybrid- Salem, OR | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior Manager, Manufacturing Engineering](https://job-boards.greenhouse.io/divergent/jobs/5197391008) | Torrance, California, United States | MFG_ENG | SR_MANAGER |  |
 | BOARD:greenhouse | P2 Divergent Technologies | [Senior/Staff Mechanical Engineer, Factory Automation](https://job-boards.greenhouse.io/divergent/jobs/5411614008) | Torrance, California, United States | MFG_PROD | SR_STAFF |  |
 | BOARD:greenhouse | P2 Ursa Major | [Director of Operations](https://ursamajor.com/careers/?gh_jid=4729125005) | Berthoud, Colorado | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 CHAOS Industries | [VP of Business Systems and Operations ](https://job-boards.greenhouse.io/chaosindustries/jobs/5307051007) | El Segundo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Crusoe | [Director, Accounting – Manufacturing](https://jobs.ashbyhq.com/Crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f) | Tulsa, OK - US (1) | MFG_PROD | DIRECTOR_PLUS |  |
