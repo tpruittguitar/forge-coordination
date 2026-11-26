@@ -1,7 +1,7 @@
 {
   "schema": "forge.enrichment-recovery.v1",
-  "at": "2026-11-26T19:13:08.296Z",
-  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T190644281Z",
+  "at": "2026-11-26T19:30:57.098Z",
+  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z",
   "rows": [
     {
       "id": "V2I-AED5F3361C2D",
@@ -51,6 +51,52 @@
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
+      "id": "V2I-D37CE1B401C6",
+      "company": "TASKA Prosthetics",
+      "title": "Head of Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T19:26:19.238Z",
+      "retryAt": "2026-11-26T20:26:19.238Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-0CC7B50F5F47",
+      "company": "SANTA MARIA INDEPENDENT SCHOOL DISTRICT",
+      "title": "Director of Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T19:26:19.489Z",
+      "retryAt": "2026-11-26T20:26:19.489Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-36C215A55CEA",
+      "company": "Turgeon Raine Jewellers",
+      "title": "Director of Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "SOURCE_RESEARCH_REQUIRED",
+      "lastAttemptAt": "2026-11-26T19:26:19.489Z",
+      "retryAt": "2026-11-26T21:26:19.489Z",
+      "attempts": [
+        {
+          "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+        }
+      ],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
       "id": "V2I-71EB9812609B",
       "company": "His Glory",
       "title": "Director of Television Strategy & Operations",
@@ -58,7 +104,7 @@
         "SALARY",
         "DEGREE"
       ],
-      "status": "EVIDENCE_FOUND",
+      "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
       "lastAttemptAt": "2026-11-26T19:07:53.368Z",
       "retryAt": "2026-11-26T20:07:53.368Z",
       "attempts": [],
@@ -72,7 +118,7 @@
         "SALARY",
         "DEGREE"
       ],
-      "status": "EVIDENCE_FOUND",
+      "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
       "lastAttemptAt": "2026-11-26T19:07:52.996Z",
       "retryAt": "2026-11-26T20:07:52.996Z",
       "attempts": [],
@@ -104,7 +150,7 @@
         "SALARY",
         "DEGREE"
       ],
-      "status": "EVIDENCE_FOUND",
+      "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
       "lastAttemptAt": "2026-11-26T19:07:53.001Z",
       "retryAt": "2026-11-26T20:07:53.001Z",
       "attempts": [],
@@ -136,7 +182,7 @@
         "SALARY",
         "DEGREE"
       ],
-      "status": "EVIDENCE_FOUND",
+      "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
       "lastAttemptAt": "2026-11-26T19:07:53.003Z",
       "retryAt": "2026-11-26T20:07:53.003Z",
       "attempts": [],
@@ -11663,6 +11709,60 @@
         }
       ],
       "at": "2026-11-26T19:08:37.091Z",
+      "status": "POSTING_OR_UNCONFIRMED"
+    },
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-B01": {
+      "ids": [
+        "V2I-D37CE1B401C6",
+        "V2I-0CC7B50F5F47"
+      ],
+      "requestIds": [
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-E001",
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-R002"
+      ],
+      "requests": [
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-E001",
+            "primaryId": "V2I-D37CE1B401C6",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "SALARY_BASE_LOW": 125000,
+              "SALARY_BASE_HIGH": 150000,
+              "SALARY_MIDPOINT": 137500,
+              "SALARY_BASIS": "EMPLOYER_POSTED",
+              "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+              "SALARY_ASOF": "2026-11-25",
+              "SALARY_CONF": "HIGH",
+              "DEGREE_TEXT": "NOT_STATED",
+              "DEGREE_REQ": "NOT_STATED",
+              "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+              "DEGREE_ASOF": "2026-11-25",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+              "SALARY_SCORE_POINT": 143750
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-R002",
+            "primaryId": "V2I-0CC7B50F5F47",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "NOT_STATED",
+              "DEGREE_REQ": "NOT_STATED",
+              "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=db80b54fb179b392",
+              "DEGREE_ASOF": "2026-11-26",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+            }
+          }
+        }
+      ],
+      "at": "2026-11-26T19:26:28.129Z",
       "status": "POSTING_OR_UNCONFIRMED"
     }
   },

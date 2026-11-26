@@ -11463,7 +11463,10 @@
   "V2I-BA13F05A1451": "SALARY,DEGREE",
   "V2I-71EB9812609B": "SALARY,DEGREE",
   "V2I-7E4DC96FD1A6": "SALARY,DEGREE",
-  "V2I-BFDE2C73F1F5": "SALARY,DEGREE"
+  "V2I-BFDE2C73F1F5": "SALARY,DEGREE",
+  "V2I-D37CE1B401C6": "SALARY,DEGREE",
+  "V2I-0CC7B50F5F47": "SALARY,DEGREE",
+  "V2I-36C215A55CEA": "SALARY,DEGREE"
  },
  "pendingWrites": {
   "FORGE-ENRICH_ATS-ATSBOT-20261126T031447068Z-B01": {
@@ -11863,6 +11866,60 @@
     }
    ],
    "at": "2026-11-26T19:08:37.091Z",
+   "status": "POSTING_OR_UNCONFIRMED"
+  },
+  "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-B01": {
+   "ids": [
+    "V2I-D37CE1B401C6",
+    "V2I-0CC7B50F5F47"
+   ],
+   "requestIds": [
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-E001",
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-R002"
+   ],
+   "requests": [
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-E001",
+      "primaryId": "V2I-D37CE1B401C6",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 125000,
+       "SALARY_BASE_HIGH": 150000,
+       "SALARY_MIDPOINT": 137500,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+       "SALARY_ASOF": "2026-11-25",
+       "SALARY_CONF": "HIGH",
+       "DEGREE_TEXT": "NOT_STATED",
+       "DEGREE_REQ": "NOT_STATED",
+       "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+       "DEGREE_ASOF": "2026-11-25",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+       "SALARY_SCORE_POINT": 143750
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-R002",
+      "primaryId": "V2I-0CC7B50F5F47",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "DEGREE_TEXT": "NOT_STATED",
+       "DEGREE_REQ": "NOT_STATED",
+       "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=db80b54fb179b392",
+       "DEGREE_ASOF": "2026-11-26",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+      }
+     }
+    }
+   ],
+   "at": "2026-11-26T19:26:28.129Z",
    "status": "POSTING_OR_UNCONFIRMED"
   }
  },
@@ -82227,6 +82284,34 @@
    "fingerprint": "217ee9551065c07f8ffa54537f0f4da18fb1e55e3f2562b134cd268382da04d0",
    "lastAttemptAt": "2026-11-26T19:07:53.369Z",
    "retryAt": "2026-11-26T21:07:53.369Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "failures": 1,
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ]
+  },
+  "V2I-D37CE1B401C6": {
+   "fingerprint": "35b9edf7d9f26e2a9fbfdf5fa46738891f36b3a7587164a6233564c90dcb1f4d",
+   "lastAttemptAt": "2026-11-26T19:26:19.238Z",
+   "retryAt": "2026-11-26T20:26:19.238Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-0CC7B50F5F47": {
+   "fingerprint": "56dd07c061e8324f033f8a67ea40277ec4a31c86b4448c09e78499e14012eeb9",
+   "lastAttemptAt": "2026-11-26T19:26:19.489Z",
+   "retryAt": "2026-11-26T20:26:19.489Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-36C215A55CEA": {
+   "fingerprint": "c6c781a1921767a6f0fab2549bb4304c0c5b0b3a8307330e68880a00ca6d3b12",
+   "lastAttemptAt": "2026-11-26T19:26:19.489Z",
+   "retryAt": "2026-11-26T21:26:19.489Z",
    "status": "SOURCE_RESEARCH_REQUIRED",
    "failures": 1,
    "attempts": [
