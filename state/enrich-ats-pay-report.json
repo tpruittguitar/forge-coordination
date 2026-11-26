@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T03:07:52.962Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T030459779Z",
+ "at": "2026-11-26T03:23:44.663Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T031447068Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T03:05:08.094Z",
-  "sha256": "4a748a378a33c7540ae976aba3cf1970d93b12a3ea5062a952431d79d8ae6198",
-  "rows": 7857
+  "readAt": "2026-11-26T03:14:58.333Z",
+  "sha256": "cedfab593caffd69c779bc02205ec5f7bfecf19ebfd31822dc5b76147e1bb2c6",
+  "rows": 7860
  },
- "rows": 7857,
- "eligible": 630,
+ "rows": 7860,
+ "eligible": 633,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -51,7 +51,7 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 300,
+ "estimate_waiting_for_posting": 301,
  "skipped_recent": 146,
  "submitted": 0,
  "guard_dropped": 0,
@@ -62,7 +62,7 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 2,
  "salary_independently_verified": 0,
  "agg_tried": {},
  "agg_read": {},
@@ -116,7 +116,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T03:05:13.470Z",
+  "profile_as_of": "2026-11-26T03:15:02.946Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1221,12 +1221,12 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 2,
+  "salary": 2,
+  "degree": 2
  },
- "not_attempted": 303,
- "nothing_found": 303,
+ "not_attempted": 304,
+ "nothing_found": 304,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1236,7 +1236,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 645,
+  "no_overview": 648,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 429,
@@ -1248,10 +1248,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 438,
+ "roles_researched": 441,
  "network_requests": 3,
- "planned": 0,
+ "planned": 2,
  "research_budget_exhausted": false,
+ "writer_unconfirmed": 2,
+ "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1259,9 +1261,9 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 225,
+  "NOT_YET_ATTEMPTED": 226,
   "SOURCE_RESEARCH_REQUIRED": 367,
-  "EVIDENCE_FOUND": 33,
+  "EVIDENCE_FOUND": 35,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -5167,6 +5169,20 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F92212CB6EC0",
+   "company": "Segula Technologies",
+   "title": "Machine Operator (Aerospace Manufacturing / CNC & Conventional Machining)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -11797,7 +11813,44 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-20EE6A7BD4FB",
+   "fields": {
+    "SALARY_BASE_LOW": 165000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 182500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://careers.cargill.com/en/job/-/-/23251/103587047104",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://careers.cargill.com/en/job/-/-/23251/103587047104",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 191250
+   }
+  },
+  {
+   "id": "V2I-F02CAE9C545B",
+   "fields": {
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 170000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree required Engineering, Business, Supply Chain",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 175000
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
