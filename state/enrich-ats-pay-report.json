@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T18:40:59.937Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T183622665Z",
+ "at": "2026-11-26T18:56:25.851Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T184842995Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T18:36:29.560Z",
-  "sha256": "73692853008dc7a89b20104df012ab21addc1b42de4dd4e111517ea7b9684f23",
-  "rows": 7964
+  "readAt": "2026-11-26T18:48:50.548Z",
+  "sha256": "5a2f78000dfe6d5ad6d633feb5dcbda41597ddde9f102da93c16d3a71fd4caa6",
+  "rows": 7967
  },
- "rows": 7964,
- "eligible": 672,
+ "rows": 7967,
+ "eligible": 675,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -45,38 +45,38 @@
  },
  "anchors": 1390,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 325,
+ "estimate_waiting_for_posting": 328,
  "skipped_recent": 152,
- "submitted": 0,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
- "workday_window_active": true,
+ "workday_window_active": false,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -116,7 +116,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T18:36:36.488Z",
+  "profile_as_of": "2026-11-26T18:48:55.558Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1210,12 +1210,18 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 1,
+  "salary": 1,
+  "degree": 1
  },
- "not_attempted": 328,
- "nothing_found": 328,
+ "not_attempted": 329,
+ "nothing_found": 329,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
  "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
@@ -1226,7 +1232,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 739,
+  "no_overview": 742,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 439,
@@ -1238,10 +1244,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 497,
- "network_requests": 4,
- "planned": 0,
+ "roles_researched": 500,
+ "network_requests": 5,
+ "planned": 2,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1249,10 +1256,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 250,
+  "NOT_YET_ATTEMPTED": 251,
   "SOURCE_RESEARCH_REQUIRED": 369,
+  "EVIDENCE_FOUND": 40,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 10,
-  "EVIDENCE_FOUND": 38,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -5018,24 +5025,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-AA5FB7D1B4A8",
-   "company": "Hospital Sisters Health System",
-   "title": "Executive Director-Mission Outreach Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T17:43:42.530Z",
-   "retryAt": "2026-11-26T18:43:42.530Z",
-   "attempts": [
-    {
-     "url": "https://hshs.wd1.myworkdayjobs.com/wday/cxs/hshs/hshscareers/job/Springfield-IL/Executive-Director-Mission-Outreach-Operations_R1040371",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-04C14FC741B9",
    "company": "Thomson Reuters",
    "title": "GTM Planning & Operations Director",
@@ -5213,6 +5202,19 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T17:58:48.375Z",
    "retryAt": "2026-11-26T18:58:48.375Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FC10735187D4",
+   "company": "Visa",
+   "title": "Senior Manager - Data Center Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T18:37:27.709Z",
+   "retryAt": "2026-11-26T19:37:27.709Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -5664,6 +5666,20 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-92DCD460C80C",
+   "company": "MUVIQ",
+   "title": "General Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -12387,7 +12403,36 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-D40AE462FF09",
+   "fields": {
+    "SALARY_BASE_LOW": 72000,
+    "SALARY_BASE_HIGH": 85000,
+    "SALARY_MIDPOINT": 78500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.appone.com/applinkportal.asp?r_id=7230098&AdCode=Indeed27979",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in operations management, industrial engineering, engineering or business, or equivalent experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.appone.com/applinkportal.asp?r_id=7230098&AdCode=Indeed27979",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 81750
+   }
+  },
+  {
+   "id": "V2I-84ADA6E86625",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=0575a1b8f199802c",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
