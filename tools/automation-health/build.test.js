@@ -46,3 +46,27 @@ test('JSON TERMINAL receipts are ordered by their JSON at, and a valid zero-writ
  put('AI_REASON_RUN_RECEIPT_'+gofer.runId+'_TERMINAL.txt',{...gofer,runId:'FORGE-GOFER-CHATGPT-20261116T000000Z'});
  assert.equal(build(root,now).executions.find(x=>x.id==='forge-application-writer-gofer').executionVerified,false);
 });
+test('JSON posting-validation receipts named by ET minute outrank older AI_REASON terminals and prove a zero-write run',()=>{
+ const root=fixture(),now=Date.parse('2026-11-26T13:40:00Z'),put=(n,v)=>fs.writeFileSync(path.join(root,'receipts',n),typeof v==='string'?v:JSON.stringify(v,null,2)),pv=()=>build(root,now).executions.find(x=>x.id==='forge-posting-validation');
+ fs.writeFileSync(path.join(root,'state/AUTOMATION_SCHEDULE_READBACK.json'),JSON.stringify({local:[{id:'forge-posting-validation',status:'ACTIVE',rrule:'RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0'}]}));
+ const old={runId:'FORGE-POSTVAL-CHATGPT-20261116T181535Z',taskKey:'FORGE_POSTING_VALIDATION',provider:'ChatGPT',at:'2026-11-16T18:18:00.000Z',instructionSha:'b'.repeat(40),status:'SOURCE_CHECKS_SAVED',SUBMITTED:0,WRITTEN:0,VERIFIED:0,writerSubmitted:false,noReplay:true};
+ put('AI_REASON_RUN_RECEIPT_'+old.runId+'_TERMINAL.txt',old);
+ const et={runId:'FORGE-POSTVAL-CHATGPT-20261126T100755Z',taskKey:'FORGE_POSTING_VALIDATION',provider:'ChatGPT',at:'2026-11-26T10:09:52.3656332Z',instructionCommit:'c'.repeat(40),ROWS_EVALUATED:0,WRITTEN:0,VERIFIED:0,STOP_REASON:'GRANT_ONLY_POSTING_RUNTIME_AND_PRIVATE_FUNDING_PROOF_UNVERIFIED'},name='FORGE-POSTVAL-CHATGPT-20261126-0507ET.txt';
+ put(name,et);
+ let e=pv(),out=build(root,now);
+ assert.equal(e.at,et.at);assert.equal(e.status,et.STOP_REASON);assert.equal(e.executionVerified,true);assert.deepEqual(e.evidenceFiles,['receipts/'+name]);assert.equal(out.schedules.active[0].taskExecutionVerified,true);
+ // Checkpoints, starts, details and skips are never terminals, even when newer.
+ for(const n of ['FORGE-POSTVAL-CHATGPT-20261126-1307ET_CHECKPOINT.txt','FORGE-POSTVAL-CHATGPT-20261126-1307ET_START.txt','FORGE-POSTVAL-CHATGPT-20261126-1307ET_TERMINAL_DETAIL.txt','FORGE-POSTVAL-CHATGPT-20261126-1307ET-SKIP.txt','GOFER_POSTVAL_HANDOFF_20261126-1307ET.txt','AI_REASON_RUN_RECEIPT_FORGE_POSTING_VALIDATION_20261126-1307ET.txt'])put(n,{...et,at:'2026-11-26T18:09:00Z'});
+ e=pv();assert.equal(e.at,et.at);assert.deepEqual(e.evidenceFiles,['receipts/'+name]);
+ // Writes still need write proof.
+ put(name,{...et,WRITTEN:2});assert.equal(pv().executionVerified,false);
+ put(name,{...et,submitted:1});assert.equal(pv().executionVerified,false);
+ put(name,{...et,writerSubmitted:true});assert.equal(pv().executionVerified,false);
+ // The runId must bind to the filename's ET minute and provider.
+ put(name,{...et,runId:'FORGE-POSTVAL-CHATGPT-20261126T110755Z'});assert.equal(pv().executionVerified,false);
+ put(name,{...et,runId:'FORGE-POSTVAL-CLAUDE-20261126T100755Z'});assert.equal(pv().executionVerified,false);
+ put(name,{...et,WRITTEN:undefined,VERIFIED:undefined});assert.equal(pv().executionVerified,false);
+ put(name,{...et,provider:'Unknown'});assert.equal(pv().executionVerified,false);
+ // A matching write proof still verifies a run that wrote.
+ put(name,{...et,WRITTEN:2,VERIFIED:2});put(et.runId+'-B01_VERIFIED.json',{proofs:[{receiptState:'COMPLETE'}]});assert.equal(pv().executionVerified,true);
+});
