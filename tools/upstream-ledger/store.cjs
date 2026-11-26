@@ -30,6 +30,13 @@ const drain = {
     'primaryId', 'sourceVersion', 'action', 'taskKey', 'owner'],
   settled(item) { return item.status === 'ACCOUNTED_UPSTREAM' && !item.fence; }
 };
+const recovery = {
+  file: 'state/EMAIL_RECOVERY_QUEUE.json', dir: 'state/email-recovery-archive', field: 'jobs',
+  schema: 'forge.email-recovery',
+  stub: ['key', 'jobId', 'title', 'company', 'location', 'url', 'observedAt', 'status', 'sourceEmails',
+    'submissions', 'submission', 'disposition'],
+  settled() { return false; }
+};
 const shardName = /^\d{4}-\d{2}-\d{2}(?:-(?:0[2-9]|[1-9]\d+))?\.json$/;
 const sha256 = raw => createHash('sha256').update(raw).digest('hex');
 const json = value => JSON.stringify(value) + '\n';
@@ -113,7 +120,7 @@ function readLocal(spec, root, fallback, proof = false) {
 }
 
 function day(entry) {
-  for (const date of [entry.firstSeen, entry.createdAt]) {
+  for (const date of [entry.firstSeen, entry.createdAt, entry.observedAt]) {
     if (typeof date === 'string' && Number.isFinite(Date.parse(date))) {
       const utc = new Date(date).toISOString().slice(0, 10);
       if (/^\d{4}-\d{2}-\d{2}$/.test(utc)) return utc;
@@ -124,22 +131,47 @@ function day(entry) {
   return '1970-01-01';
 }
 
-const DRAIN_REVIEW_BULK = ['preliminaryScreen', 'resumeMatch', 'evidenceQuotes'];
+const REVIEW_BULK = ['preliminaryScreen', 'resumeMatch', 'evidenceQuotes'];
+const RECOVERY_BULK = ['evidence', 'preliminaryScreen', 'claudeHelperEvidence', 'sourcePayEvidence', 'description'];
 function serializableEntries(entry) {
   return Object.entries(entry).filter(([, value]) =>
     value !== undefined && typeof value !== 'function' && typeof value !== 'symbol');
+}
+function peelDiscoveryReview(entry, live) {
+  if (isRecord(entry.discoveryReview) && REVIEW_BULK.some(key => Object.hasOwn(entry.discoveryReview, key))) {
+    return {...(live || entry), discoveryReview: Object.fromEntries(
+      Object.entries(entry.discoveryReview).filter(([key]) => !REVIEW_BULK.includes(key)))};
+  }
+  return live;
 }
 function drainPendingLive(entry) {
   let live;
   if (isRecord(entry.fence) && Object.hasOwn(entry.fence, 'record')) {
     live = {...entry, fence: select(entry.fence, ['requestIds', 'proof'])};
   }
-  if (isRecord(entry.discoveryReview) && DRAIN_REVIEW_BULK.some(key => Object.hasOwn(entry.discoveryReview, key))) {
-    live = {...(live || entry), discoveryReview: Object.fromEntries(
-      Object.entries(entry.discoveryReview).filter(([key]) => !DRAIN_REVIEW_BULK.includes(key)))};
-  }
-  return live || null;
+  return peelDiscoveryReview(entry, live) || null;
 }
+function ledgerPendingLive(entry) {
+  let live;
+  if (Object.hasOwn(entry, 'preliminaryScreen')) {
+    live = {...entry};
+    delete live.preliminaryScreen;
+  }
+  return peelDiscoveryReview(entry, live) || null;
+}
+function recoveryPendingLive(entry) {
+  let live;
+  for (const key of RECOVERY_BULK) {
+    if (Object.hasOwn(entry, key)) {
+      live = live || {...entry};
+      delete live[key];
+    }
+  }
+  return peelDiscoveryReview(entry, live) || null;
+}
+drain.peel = drainPendingLive;
+ledger.peel = ledgerPendingLive;
+recovery.peel = recoveryPendingLive;
 
 function split(spec, value, {activePrimaryIds, targetBytes = TARGET_BYTES} = {}) {
   if (!isRecord(value) || (Object.hasOwn(value, spec.field) && !isRecord(value[spec.field])) || Object.hasOwn(value, MARKER)) {
@@ -162,16 +194,12 @@ function split(spec, value, {activePrimaryIds, targetBytes = TARGET_BYTES} = {})
   };
   for (const [id, entry] of Object.entries(value[spec.field] || {})) {
     if (!isRecord(entry) || !spec.settled(entry, activePrimaryIds)) {
-      const slim = spec === drain && isRecord(entry) ? drainPendingLive(entry) : null;
+      const slim = spec.peel && isRecord(entry) ? spec.peel(entry) : null;
       if (!slim) {
         live.push([id, entry]);
         continue;
       }
-      const detail = {};
-      if (slim.fence !== entry.fence && isRecord(entry.fence)) detail.fence = entry.fence;
-      if (slim.discoveryReview !== entry.discoveryReview && isRecord(entry.discoveryReview)) {
-        detail.discoveryReview = entry.discoveryReview;
-      }
+      const detail = Object.fromEntries(serializableEntries(entry).filter(([field, value]) => slim[field] !== value));
       archive(id, entry, slim, detail);
       continue;
     }
@@ -293,16 +321,22 @@ function writeLedger(root, value, options = {}) {
 }
 
 module.exports = {
-  LEDGER_PATH: ledger.file, LEDGER_ARCHIVE: ledger.dir, DRAIN_PATH: drain.file, DRAIN_ARCHIVE: drain.dir, HARD_BYTES,
+  LEDGER_PATH: ledger.file, LEDGER_ARCHIVE: ledger.dir, DRAIN_PATH: drain.file, DRAIN_ARCHIVE: drain.dir,
+  RECOVERY_PATH: recovery.file, RECOVERY_ARCHIVE: recovery.dir, HARD_BYTES,
   readLedger: (root, fallback) => readLocal(ledger, root, fallback).value,
   readDrain: (root, fallback) => readLocal(drain, root, fallback).value,
+  readRecovery: (root, fallback) => readLocal(recovery, root, fallback).value,
   readLedgerSource: (root, fallback) => readLocal(ledger, root, fallback, true),
   loadLedger: read => load(ledger, read),
   loadDrain: read => load(drain, read),
+  loadRecovery: read => load(recovery, read),
   hydrateDrain: (read, value) => hydrate(drain, read, value).value,
+  hydrateRecovery: (read, value) => hydrate(recovery, read, value).value,
   splitLedger: (value, options) => split(ledger, value, options),
   splitDrain: (value, options) => split(drain, value, options),
+  splitRecovery: (value, options) => split(recovery, value, options),
   writeLedger,
   writeDrain: (root, value, options) => write(drain, root, value, options),
+  writeRecovery: (root, value, options) => write(recovery, root, value, options),
   activeIds
 };
