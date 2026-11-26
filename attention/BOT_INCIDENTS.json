@@ -1,12 +1,12 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-26T16:09:26.436Z",
- "sourceCommit": "1a0eb0e8f1a2ddd681e097ddbe7860e29b729a52",
+ "builtAt": "2026-11-26T16:17:35.764Z",
+ "sourceCommit": "5d1f96e50388d5f059998f045369455f6c745d2a",
  "counts": {
   "total": 206,
   "BLOCKING": 0,
-  "ACTION": 201,
-  "WATCH": 5,
+  "ACTION": 202,
+  "WATCH": 4,
   "DECIDE": 0,
   "JOBS": 0,
   "FAILED": 198,
@@ -2414,6 +2414,18 @@
    "raisedBy": "CHATGPT"
   },
   {
+   "id": "lane-overdue:CODE",
+   "section": "UPKEEP",
+   "level": "ACTION",
+   "title": "CODE lane has gone quiet (usually reports every 1.1 h)",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
+   "at": "2026-11-26T04:10:23Z",
+   "raisedBy": "CHATGPT"
+  },
+  {
    "id": "intake-assignment-health",
    "section": "UPKEEP",
    "level": "ACTION",
@@ -2422,7 +2434,7 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-26T16:09:26.436Z",
+   "at": "2026-11-26T16:17:35.764Z",
    "raisedBy": "CODE"
   },
   {
@@ -2460,18 +2472,6 @@
    "sourceUrl": "https://github.com/tpruittguitar/foreman-cockpit/pull/534",
    "at": "2026-11-23T06:10:48Z",
    "raisedBy": ""
-  },
-  {
-   "id": "lane-overdue:CODE",
-   "section": "UPKEEP",
-   "level": "WATCH",
-   "title": "CODE lane has gone quiet (usually reports every 1.1 h)",
-   "detail": "Last receipt FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
-   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
-   "source": "receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
-   "at": "2026-11-26T04:10:23Z",
-   "raisedBy": "CHATGPT"
   },
   {
    "id": "run-unfinished:POSTVAL|CHATGPT",
