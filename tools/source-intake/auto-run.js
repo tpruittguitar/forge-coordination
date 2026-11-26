@@ -32,7 +32,7 @@ const strip=h=>String(h).replace(/<script[\s\S]*?<\/script>|<style[\s\S]*?<\/sty
 function discoveryNotes(r){const audit=r.discoveryReview,reason=r.selectionReason||Drain.selection(r);return [r.drainReview?'review='+r.drainReview:audit?.sourceSha256?'discoverySHA='+audit.sourceSha256:'',audit?.resumeMatch?.resumeTextSha256?'resumeSHA='+audit.resumeMatch.resumeTextSha256:'',reason,audit?.scopeHits?.length?'ATS hits='+audit.scopeHits.join(', '):'',audit?.sourceSha256?'sourceSHA='+audit.sourceSha256:'',r.scopeReason?'Role review='+r.scopeReason:''].filter(Boolean).join(' | ').slice(0,400);}
 const roleText=t=>String(t).slice(0,4000); // the Writer caps ROLE_TEXT at 4000 characters
 function screenReason(r,config){const s=Relevance.evaluate(r,config);return s.outcome==='ADMIT'?null:s.outcome;}
-function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,originIndex,heldKeys=new Set(),dismissedKeys=new Set()}){
+function pick(report,{max,sent,generation=null,blockedIdentities=new Set(),blockedRecords=[],config=Relevance.load(),reviewed=new Map(),screenContext,discoveryEvidence,capturedInputs,originIndex,heldKeys=new Set(),dismissedKeys=new Set()}){
  const per={},out=[];
  for(const r of Relevance.rank(report.new_roles||[],config)){
   if(dismissedKeys.has(Upstream.key(r.url))||heldKeys.has(Upstream.key(r.url)))continue;
@@ -65,6 +65,10 @@ function pick(report,{max,sent,blockedIdentities=new Set(),blockedRecords=[],con
   Object.assign(record,require('../source-trial/posted-pay').fields(r));
   if(record.SALARY_BASE_LOW)record.INITIAL_UNKNOWN_FIELDS=['DEGREE','FLEX'];
   if(blockedIdentities.has(identityKey(record))||blockedRecords.some(original=>require('../source-trial/job-identity').fenceApplies({...r,...record},original)))continue; // a changed URL cannot bypass an uncertain prior write
+  // A role whose original request is COMPLETE but whose row is gone from master and archive comes in as new (request-generation.js).
+  const g=generation?generation(record,r):1;
+  if(g===null)continue; // generations exhausted: never reuse a COMPLETE request ID
+  if(g>1)record.REQUEST_GENERATION=g;
   if(sent.has(requestId(record))||sent.has(requestId({...record,COMPANY:r.company})))continue;
   per[k]=(per[k]||0)+1;out.push({r,record});
  }
@@ -84,7 +88,7 @@ function partitionExisting(roles,{master,archive,sent=new Set(),blockedIdentitie
   if(found.status!=='PRESENT'||!found.primaryId){remaining.push(role);continue;}
   existing.push({key:Upstream.key(role.url),source:role,primaryId:found.primaryId,basis:found.basis,canonicalReadAt:{master:master.writerReadAt,archive:archive.writerReadAt},rowSha256:found.rows.map(row=>sha(row.RAW_ROW||JSON.stringify(row))),status:'EXISTING_NO_WRITE',writerSubmissions:0,writeCompletionClaimed:false});
  }
- return {remaining,existing,held};
+ return {remaining,existing,held,identityIndex:index};
 }
 // The posting must load and name the employer. Posting text is not EMPLOYER_PRIMARY_BUSINESS.
 async function evidence(url,company,fetcher=globalThis.fetch){
@@ -204,9 +208,13 @@ async function pass(argv,started){
  const [master,archive]=await Promise.all([fetchAuthenticatedMaster({key}),fetchAuthenticatedArchive({key})]);
  const config=Relevance.guarded(Relevance.load(),master.rows),represented=partitionExisting(report.new_roles,{master,archive,sent,blockedIdentities,blockedRecords,writerFences:[...[...Drain.writerFences('.')].map(([key,f])=>({key,...f})),...Drain.fences('.').map(record=>({record}))]});
  report.new_roles=represented.remaining;
+ // Replay index (public forge-writer-state, the same read recovery uses). Unavailable = no new generations this pass.
+ let generation=null;
+ try{const {requests}=(await require('../writer-verify/recovery').loadIndex({token:process.env.GITHUB_TOKEN||process.env.GH_TOKEN})).index;generation=require('./request-generation').forPick({identityIndex:represented.identityIndex,requests});}
+ catch(e){console.error('REQUEST_GENERATION_INDEX_UNAVAILABLE: '+e.message+'; rediscovered deleted roles keep their original request IDs this pass');}
  const discoveryEvidence=require('../source-trial/evidence-store').index('.');
  const originIndex=require('./discovery-origin').index('.');
- const picked=pick(report,{max:report.new_roles.length,originIndex,sent,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
+ const picked=pick(report,{max:report.new_roles.length,originIndex,sent,generation,blockedIdentities,blockedRecords,config,reviewed:reviewed.proofs,screenContext,discoveryEvidence,capturedInputs,heldKeys,dismissedKeys:require('../manual-backlog/decisions.cjs').dismissedKeys('.')}),candidates=[];
  for(const {r,record} of picked){
   if(candidates.length>=(rules?.maxBatch||25))break;
   let candidate=await prepareCandidate(r,record,{discoveryEvidence,capturedInputs,rulesHash,reportRun:report.summary?.run});
@@ -216,7 +224,7 @@ async function pass(argv,started){
   if(candidate)candidates.push(candidate);else if(catchUp&&!dry){CatchUp.defer(catchUp,r);CatchUp.save('.',catchUp);}
  }
  const run='FORGE-AUTO-'+new Date().toISOString().replace(/[-:]/g,'').replace(/\.\d+Z$/,'Z');
- console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,candidates:candidates.length,workdayBoxPass:{...box.stat,inQueue:report.new_roles.filter(r=>box.keys.has(CatchUp.id(r))).length,picked:picked.filter(({r})=>box.keys.has(CatchUp.id(r))).length,candidates:box.stat.candidates||0}}));
+ console.log(JSON.stringify({run,carriedForward:carried.length,newRoles:(report.new_roles||[]).length,existingNoWrite:represented.existing.length,identityHeld:represented.held.length,filtered:picked.length,newGenerationRequests:picked.filter(({record})=>record.REQUEST_GENERATION).length,candidates:candidates.length,workdayBoxPass:{...box.stat,inQueue:report.new_roles.filter(r=>box.keys.has(CatchUp.id(r))).length,picked:picked.filter(({r})=>box.keys.has(CatchUp.id(r))).length,candidates:box.stat.candidates||0}}));
  if(dry){fs.writeFileSync('/tmp/auto-candidates.json',JSON.stringify(candidates,null,1));return}
  fs.mkdirSync(DIR,{recursive:true});
  const statePath=path.join(DIR,run+'.json');
