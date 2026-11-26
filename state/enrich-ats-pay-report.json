@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T17:35:19.266Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T172604004Z",
+ "at": "2026-11-26T17:49:39.669Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T174232733Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T17:26:12.286Z",
-  "sha256": "7fb7f1bb474566a48ebf5dc7bfb696ba0b9dfe25ace6cb1e7c2c81be2f464c80",
-  "rows": 7956
+  "readAt": "2026-11-26T17:42:40.291Z",
+  "sha256": "8a983f5da0d7a9f714b938832cdab73c2ebe00647b58591609710354c11c8530",
+  "rows": 7960
  },
- "rows": 7956,
- "eligible": 670,
+ "rows": 7960,
+ "eligible": 672,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -43,27 +43,27 @@
   "pending_batches": 3,
   "fenced_ids": 8
  },
- "anchors": 1387,
+ "anchors": 1388,
  "archive_anchors": 5,
  "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 1,
- "estimate_waiting_for_posting": 378,
- "skipped_recent": 94,
- "submitted": 2,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 325,
+ "skipped_recent": 152,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 2,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
- "salary_independently_verified": 2,
+ "salary_submitted": 3,
+ "salary_independently_verified": 0,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -78,17 +78,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 1,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 1,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
- "bls_queries": 0,
- "est_shared_low": 0,
+ "bls_queries": 1,
+ "est_shared_low": 2,
  "posting_cache": {
   "saved": 0,
   "hits": 10,
@@ -103,9 +103,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 10,
-  "saved_reused": 9,
+  "targets": 2,
+  "candidates": 20,
+  "saved_reused": 18,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -113,10 +113,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 1,
+  "unsupported_routes": 2,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T17:26:18.565Z",
+  "profile_as_of": "2026-11-26T17:42:45.494Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1188,18 +1188,18 @@
  ],
  "salary_repair": {
   "skipped_blocked": 154,
-  "review_skipped_blocked": 180,
+  "review_skipped_blocked": 181,
   "by_missing": {
-   "experience fit": 244,
-   "work arrangement (remote/hybrid/on-site)": 264,
-   "products (what they make)": 262,
-   "final score": 56,
+   "experience fit": 245,
+   "work arrangement (remote/hybrid/on-site)": 265,
+   "products (what they make)": 263,
+   "final score": 57,
    "location / geography": 8
   }
  },
  "salary_review": {
-  "eligible": 344,
-  "due": 180,
+  "eligible": 345,
+  "due": 181,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -1214,8 +1214,15 @@
   "salary": 1,
   "degree": 1
  },
- "not_attempted": 384,
- "nothing_found": 385,
+ "not_attempted": 327,
+ "nothing_found": 327,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1225,7 +1232,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 733,
+  "no_overview": 737,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 437,
@@ -1237,11 +1244,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 551,
- "network_requests": 5,
- "planned": 2,
+ "roles_researched": 496,
+ "network_requests": 6,
+ "planned": 3,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
+ "writer_unconfirmed": 3,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1249,9 +1257,9 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 248,
+  "NOT_YET_ATTEMPTED": 249,
   "SOURCE_RESEARCH_REQUIRED": 370,
-  "EVIDENCE_FOUND": 39,
+  "EVIDENCE_FOUND": 40,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 8,
   "MODEL_INPUTS_REQUIRED": 5
  },
@@ -1495,49 +1503,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-B080DF4FC324",
-   "company": "Emerald Technologies",
-   "title": "Plant Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "MODEL_INPUTS_REQUIRED",
-   "lastAttemptAt": "2026-11-26T17:27:08.707Z",
-   "retryAt": "2026-11-27T09:27:08.707Z",
-   "attempts": [],
-   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
-  },
-  {
-   "id": "V2I-ED09A8C302EB",
-   "company": "Harvard Bioscience",
-   "title": "Senior Vice President Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "MODEL_INPUTS_REQUIRED",
-   "lastAttemptAt": "2026-11-26T17:27:08.709Z",
-   "retryAt": "2026-11-27T09:27:08.709Z",
-   "attempts": [],
-   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
-  },
-  {
-   "id": "V2I-B40ECB369090",
-   "company": "Rider Solution",
-   "title": "Director of Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:08.709Z",
-   "retryAt": "2026-11-27T09:27:08.709Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-D60D779FDF27",
    "company": "kimball homestead",
    "title": "Director of Operations",
@@ -1577,22 +1542,60 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-4DDBDF396EE0",
-   "company": "University of Nevada, Reno",
-   "title": "Director, Faculty Practice Operations",
+   "id": "V2I-B080DF4FC324",
+   "company": "Emerald Technologies",
+   "title": "Plant Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:08.707Z",
+   "retryAt": "2026-11-27T09:27:08.707Z",
+   "attempts": [],
+   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+  },
+  {
+   "id": "V2I-ED09A8C302EB",
+   "company": "Harvard Bioscience",
+   "title": "Senior Vice President Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:08.709Z",
+   "retryAt": "2026-11-27T09:27:08.709Z",
+   "attempts": [],
+   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
+  },
+  {
+   "id": "V2I-B40ECB369090",
+   "company": "Rider Solution",
+   "title": "Director of Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:08.709Z",
+   "retryAt": "2026-11-27T09:27:08.709Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B5EDE8803391",
+   "company": "GlobalMed Logistix, LLC",
+   "title": "Director of Operations",
    "needs": [
     "SALARY",
     "DEGREE"
    ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-26T17:27:10.549Z",
-   "retryAt": "2026-11-26T19:27:10.549Z",
-   "attempts": [
-    {
-     "url": "https://nshe.wd1.myworkdayjobs.com/wday/cxs/nshe/UNR-external/job/University-of-Nevada-Reno---Main-Campus/Director--Faculty-Practice-Operations_R0154443-1",
-     "status": "NO_EXACT_COMPLETE_POSTING"
-    }
-   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -4265,186 +4268,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-B59412F8CCF1",
-   "company": "Fanatics Collectibles",
-   "title": "Vice President, Operations Robotics & Automation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.314Z",
-   "retryAt": "2026-11-27T09:27:33.314Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8FC6B8973A84",
-   "company": "Team Air Distributing , LLC",
-   "title": "Regional Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.315Z",
-   "retryAt": "2026-11-27T09:27:33.315Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-95526AA6BD0D",
-   "company": "Stable Manufacturing Company",
-   "title": "Assistant Plant Director (Automotive)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.315Z",
-   "retryAt": "2026-11-27T09:27:33.315Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-844470D5F87B",
-   "company": "Atrium",
-   "title": "Quality Director",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.317Z",
-   "retryAt": "2026-11-27T09:27:33.317Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9B83F8047203",
-   "company": "Advantic Building Group",
-   "title": "Director of Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.317Z",
-   "retryAt": "2026-11-27T09:27:33.317Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D41A79F9B629",
-   "company": "Vudoo Gun Works",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.318Z",
-   "retryAt": "2026-11-27T09:27:33.318Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-83077F02506B",
-   "company": "Alaska Airlines",
-   "title": "Director, Quality & Reliability Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.318Z",
-   "retryAt": "2026-11-27T09:27:33.318Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C10610B0905A",
-   "company": "Overhead Door Corporation",
-   "title": "Director, Manufacturing Human Resources",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.319Z",
-   "retryAt": "2026-11-27T09:27:33.319Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B0A7B6ACD5C8",
-   "company": "Kintara",
-   "title": "Head of Field Operations, Integrated Facilities Services",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.319Z",
-   "retryAt": "2026-11-27T09:27:33.319Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D6A80DE24EAE",
-   "company": "Micro-Tronics",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.320Z",
-   "retryAt": "2026-11-27T09:27:33.320Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-20EE6A7BD4FB",
    "company": "Cargill",
    "title": "NA Regional Talent Acquisition Director - Manufacturing and Supply Chain M/F/D",
@@ -5009,24 +4832,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-AA5FB7D1B4A8",
-   "company": "Hospital Sisters Health System",
-   "title": "Executive Director-Mission Outreach Operations",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T16:40:41.533Z",
-   "retryAt": "2026-11-26T17:40:41.533Z",
-   "attempts": [
-    {
-     "url": "https://hshs.wd1.myworkdayjobs.com/wday/cxs/hshs/hshscareers/job/Springfield-IL/Executive-Director-Mission-Outreach-Operations_R1040371",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-2F09BDE72CD9",
    "company": "Methodist Health System",
    "title": "Director Quality Services",
@@ -5180,6 +4985,205 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-4DDBDF396EE0",
+   "company": "University of Nevada, Reno",
+   "title": "Director, Faculty Practice Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:10.549Z",
+   "retryAt": "2026-11-26T19:27:10.549Z",
+   "attempts": [
+    {
+     "url": "https://nshe.wd1.myworkdayjobs.com/wday/cxs/nshe/UNR-external/job/University-of-Nevada-Reno---Main-Campus/Director--Faculty-Practice-Operations_R0154443-1",
+     "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B59412F8CCF1",
+   "company": "Fanatics Collectibles",
+   "title": "Vice President, Operations Robotics & Automation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.314Z",
+   "retryAt": "2026-11-27T09:27:33.314Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8FC6B8973A84",
+   "company": "Team Air Distributing , LLC",
+   "title": "Regional Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.315Z",
+   "retryAt": "2026-11-27T09:27:33.315Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-95526AA6BD0D",
+   "company": "Stable Manufacturing Company",
+   "title": "Assistant Plant Director (Automotive)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.315Z",
+   "retryAt": "2026-11-27T09:27:33.315Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9B83F8047203",
+   "company": "Advantic Building Group",
+   "title": "Director of Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.317Z",
+   "retryAt": "2026-11-27T09:27:33.317Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-844470D5F87B",
+   "company": "Atrium",
+   "title": "Quality Director",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.317Z",
+   "retryAt": "2026-11-27T09:27:33.317Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-83077F02506B",
+   "company": "Alaska Airlines",
+   "title": "Director, Quality & Reliability Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.318Z",
+   "retryAt": "2026-11-27T09:27:33.318Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D41A79F9B629",
+   "company": "Vudoo Gun Works",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.318Z",
+   "retryAt": "2026-11-27T09:27:33.318Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C10610B0905A",
+   "company": "Overhead Door Corporation",
+   "title": "Director, Manufacturing Human Resources",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.319Z",
+   "retryAt": "2026-11-27T09:27:33.319Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B0A7B6ACD5C8",
+   "company": "Kintara",
+   "title": "Head of Field Operations, Integrated Facilities Services",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.319Z",
+   "retryAt": "2026-11-27T09:27:33.319Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D6A80DE24EAE",
+   "company": "Micro-Tronics",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.320Z",
+   "retryAt": "2026-11-27T09:27:33.320Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-3E300502C27E",
    "company": "(R) Ladders",
    "title": "Senior Director, Service Manager",
@@ -5291,19 +5295,6 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A610E13ACFC0",
-   "company": "RR Donnelley",
-   "title": "Plant President",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "MODEL_INPUTS_REQUIRED",
-   "lastAttemptAt": "2026-11-26T17:27:33.342Z",
-   "retryAt": "2026-11-27T09:27:33.342Z",
-   "attempts": [],
-   "next": "Retain the site estimate as input; wait for independent comparable or BLS model support. Do not research employer pay solely because the site estimate is present."
   },
   {
    "id": "V2I-BDFD91ABD290",
@@ -5628,6 +5619,19 @@
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A610E13ACFC0",
+   "company": "RR Donnelley",
+   "title": "Plant President",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.342Z",
+   "retryAt": "2026-11-27T09:27:33.342Z",
+   "attempts": [],
+   "next": "Retain the site estimate; retry independent model inputs after backoff. Employer salary lookup is not required."
   },
   {
    "id": "V2I-AFFE2F62EE28",
@@ -10849,294 +10853,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-5D8DD3171B93",
-   "company": "OFI",
-   "title": "Sr. Quality and Food Safety Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.499Z",
-   "retryAt": "2026-11-27T09:27:33.499Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F8634E01F1AA",
-   "company": "MIRATECH Corporation",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.499Z",
-   "retryAt": "2026-11-27T09:27:33.499Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-BF0DBB5BE0EA",
-   "company": "Schneider Electric",
-   "title": "Head of Product Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
-   "retryAt": "2026-11-27T09:27:33.500Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9D1E0DF18E86",
-   "company": "Atlas Energy Solutions",
-   "title": "Power Category Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
-   "retryAt": "2026-11-27T09:27:33.500Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DD773156A2FC",
-   "company": "Darigold, Inc.",
-   "title": "Sr Quality Assurance Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
-   "retryAt": "2026-11-27T09:27:33.500Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6D44F1D476F8",
-   "company": "TotalEnergies",
-   "title": "Director, Project Development (New Projects)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.501Z",
-   "retryAt": "2026-11-27T09:27:33.501Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9AEE5B13A1FC",
-   "company": "Treehouse",
-   "title": "VP, Revenue",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.501Z",
-   "retryAt": "2026-11-27T09:27:33.501Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B0117468E8D6",
-   "company": "Sunrun",
-   "title": "Material Handler",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
-   "retryAt": "2026-11-27T09:27:33.502Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-856620E93A69",
-   "company": "Fagron",
-   "title": "Director of Validation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
-   "retryAt": "2026-11-27T09:27:33.502Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-246A59F3EA1D",
-   "company": "OnQGlobal Inc",
-   "title": "Owners Rep Project Manager/Mechanical SME",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
-   "retryAt": "2026-11-27T09:27:33.502Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4DB61ECDEF86",
-   "company": "American Auto Auction Group LLC",
-   "title": "Senior Manager, Pricing Strategy & Optimization",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.503Z",
-   "retryAt": "2026-11-27T09:27:33.503Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9E5B3AD88ADC",
-   "company": "HI-LEX CONTROLS INC",
-   "title": "VP Supply Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.503Z",
-   "retryAt": "2026-11-27T09:27:33.503Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E807B04B472B",
-   "company": "Blue Current",
-   "title": "Sr Manager, Equipment and Process Scaleup",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
-   "retryAt": "2026-11-27T09:27:33.504Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8E6D20EAAFC0",
-   "company": "Blue Shield of California",
-   "title": "Senior Manager, Platforms System Analysis",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
-   "retryAt": "2026-11-27T09:27:33.504Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-1E1ED6EEAE53",
-   "company": "Blue Shield of California",
-   "title": "Sr. Manager, Pharmacist (Pharmacy Affordability Strategy)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
-   "retryAt": "2026-11-27T09:27:33.504Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-0C3ABC2668A4",
-   "company": "voestalpine Roll Forming Corporation",
-   "title": "Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.505Z",
-   "retryAt": "2026-11-27T09:27:33.505Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-05E0727A3E4B",
    "company": "Endurance Energy",
    "title": "Senior/Principal Drilling Engineer",
@@ -11147,492 +10863,6 @@
    "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-26T01:17:56.351Z",
    "retryAt": "2026-11-26T17:17:56.351Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F48DDD6E6664",
-   "company": "Arcfield",
-   "title": "Senior Manager – Mechanical & Opto-Mechanical Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.505Z",
-   "retryAt": "2026-11-27T09:27:33.505Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-11FD100BD596",
-   "company": "Fagron",
-   "title": "Compliance Manager - Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.506Z",
-   "retryAt": "2026-11-27T09:27:33.506Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-66CC1D3CE191",
-   "company": "Satsuma Pharmaceuticals",
-   "title": "Quality Assurance Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.506Z",
-   "retryAt": "2026-11-27T09:27:33.506Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-6C494E3B048A",
-   "company": "Fluidra",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
-   "retryAt": "2026-11-27T09:27:33.507Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-829E5377A0BF",
-   "company": "Western Magnetics Company",
-   "title": "Head of Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
-   "retryAt": "2026-11-27T09:27:33.507Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-EA823C6F530D",
-   "company": "ITW",
-   "title": "Production Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
-   "retryAt": "2026-11-27T09:27:33.507Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B707A6F42BBA",
-   "company": "International Motors, LLC",
-   "title": "Manufacturing Engineering Manager - Night Shift",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.508Z",
-   "retryAt": "2026-11-27T09:27:33.508Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-4246D1F4AABE",
-   "company": "Great Plains Mfg",
-   "title": "Assembler - 1st Shift - Lucas, KS",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.508Z",
-   "retryAt": "2026-11-27T09:27:33.508Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-818A677E368B",
-   "company": "Cover Technologies",
-   "title": "Staff Manufacturing Engineer",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
-   "retryAt": "2026-11-27T09:27:33.509Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-847EC4FB6252",
-   "company": "EH Energy",
-   "title": "Senior Technical Program Manager, Gigafactory Construction",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
-   "retryAt": "2026-11-27T09:27:33.509Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DE3BAD0A4B55",
-   "company": "TAE Power Solutions",
-   "title": "Manager, PMO",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
-   "retryAt": "2026-11-27T09:27:33.509Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E78F9485138A",
-   "company": "Invio Automation",
-   "title": "Senior Manager for Automotive Automation Solutions & Simulation",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.510Z",
-   "retryAt": "2026-11-27T09:27:33.510Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-9FE6668133E1",
-   "company": "DCD Vehicle Corp",
-   "title": "Service Manager – Golf Carts & LSVs (Mandarin Preffered)",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.510Z",
-   "retryAt": "2026-11-27T09:27:33.510Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-F9924D41EFAF",
-   "company": "Atalys",
-   "title": "Quality Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
-   "retryAt": "2026-11-27T09:27:33.511Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D68640363276",
-   "company": "Polytainers, Inc.",
-   "title": "Operations - Technical Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
-   "retryAt": "2026-11-27T09:27:33.511Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A69D2C8E52B1",
-   "company": "Standex",
-   "title": "Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
-   "retryAt": "2026-11-27T09:27:33.511Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D70D49B36B7E",
-   "company": "Howmet Aerospace",
-   "title": "Maintenance Reliability Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.512Z",
-   "retryAt": "2026-11-27T09:27:33.512Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DDCFB7BA49A1",
-   "company": "International Motors, LLC",
-   "title": "Manufacturing Quality Liaison I",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.512Z",
-   "retryAt": "2026-11-27T09:27:33.512Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-AC3F606CD7C1",
-   "company": "ReGenerate - Albany Green Energy",
-   "title": "Auxiliary Operator-Biomass Power Plant",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
-   "retryAt": "2026-11-27T09:27:33.513Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E36AA4D004AA",
-   "company": "Parallel Systems",
-   "title": "VP, Commercial Program Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
-   "retryAt": "2026-11-27T09:27:33.513Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-CFAAC4C9C24C",
-   "company": "Sonnen Inc",
-   "title": "Director - Dragonfly VPP Business Development",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
-   "retryAt": "2026-11-27T09:27:33.513Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D38CE15765F0",
-   "company": "The PAC Group",
-   "title": "Process Installation Project Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.514Z",
-   "retryAt": "2026-11-27T09:27:33.514Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-B697FE2E3F55",
-   "company": "BLUE OPS INC",
-   "title": "Sr. Manager, Customer Service & Field Quality",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.514Z",
-   "retryAt": "2026-11-27T09:27:33.514Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-DFCA2E3D2053",
-   "company": "Jabil Circuit",
-   "title": "Global Customer Quality Engineering Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
-   "retryAt": "2026-11-27T09:27:33.515Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-C1F4AFFDA617",
-   "company": "Blue Shield of California",
-   "title": "Program Manager, Consultant - Project Management",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
-   "retryAt": "2026-11-27T09:27:33.515Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-D72FB1D1F62C",
-   "company": "ABB Robotics LLC",
-   "title": "Local Business Line Manager Service Robotics",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
-   "retryAt": "2026-11-27T09:27:33.515Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-A4667F01D064",
-   "company": "Rivian",
-   "title": "Regional Service Operations Manager",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T17:27:33.516Z",
-   "retryAt": "2026-11-27T09:27:33.516Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -12304,6 +11534,780 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-5D8DD3171B93",
+   "company": "OFI",
+   "title": "Sr. Quality and Food Safety Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.499Z",
+   "retryAt": "2026-11-27T09:27:33.499Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F8634E01F1AA",
+   "company": "MIRATECH Corporation",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.499Z",
+   "retryAt": "2026-11-27T09:27:33.499Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-BF0DBB5BE0EA",
+   "company": "Schneider Electric",
+   "title": "Head of Product Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
+   "retryAt": "2026-11-27T09:27:33.500Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9D1E0DF18E86",
+   "company": "Atlas Energy Solutions",
+   "title": "Power Category Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
+   "retryAt": "2026-11-27T09:27:33.500Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DD773156A2FC",
+   "company": "Darigold, Inc.",
+   "title": "Sr Quality Assurance Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.500Z",
+   "retryAt": "2026-11-27T09:27:33.500Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6D44F1D476F8",
+   "company": "TotalEnergies",
+   "title": "Director, Project Development (New Projects)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.501Z",
+   "retryAt": "2026-11-27T09:27:33.501Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9AEE5B13A1FC",
+   "company": "Treehouse",
+   "title": "VP, Revenue",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.501Z",
+   "retryAt": "2026-11-27T09:27:33.501Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B0117468E8D6",
+   "company": "Sunrun",
+   "title": "Material Handler",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
+   "retryAt": "2026-11-27T09:27:33.502Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-856620E93A69",
+   "company": "Fagron",
+   "title": "Director of Validation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
+   "retryAt": "2026-11-27T09:27:33.502Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-246A59F3EA1D",
+   "company": "OnQGlobal Inc",
+   "title": "Owners Rep Project Manager/Mechanical SME",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.502Z",
+   "retryAt": "2026-11-27T09:27:33.502Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4DB61ECDEF86",
+   "company": "American Auto Auction Group LLC",
+   "title": "Senior Manager, Pricing Strategy & Optimization",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.503Z",
+   "retryAt": "2026-11-27T09:27:33.503Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9E5B3AD88ADC",
+   "company": "HI-LEX CONTROLS INC",
+   "title": "VP Supply Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.503Z",
+   "retryAt": "2026-11-27T09:27:33.503Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E807B04B472B",
+   "company": "Blue Current",
+   "title": "Sr Manager, Equipment and Process Scaleup",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
+   "retryAt": "2026-11-27T09:27:33.504Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-8E6D20EAAFC0",
+   "company": "Blue Shield of California",
+   "title": "Senior Manager, Platforms System Analysis",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
+   "retryAt": "2026-11-27T09:27:33.504Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-1E1ED6EEAE53",
+   "company": "Blue Shield of California",
+   "title": "Sr. Manager, Pharmacist (Pharmacy Affordability Strategy)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.504Z",
+   "retryAt": "2026-11-27T09:27:33.504Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0C3ABC2668A4",
+   "company": "voestalpine Roll Forming Corporation",
+   "title": "Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.505Z",
+   "retryAt": "2026-11-27T09:27:33.505Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F48DDD6E6664",
+   "company": "Arcfield",
+   "title": "Senior Manager – Mechanical & Opto-Mechanical Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.505Z",
+   "retryAt": "2026-11-27T09:27:33.505Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-11FD100BD596",
+   "company": "Fagron",
+   "title": "Compliance Manager - Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.506Z",
+   "retryAt": "2026-11-27T09:27:33.506Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-66CC1D3CE191",
+   "company": "Satsuma Pharmaceuticals",
+   "title": "Quality Assurance Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.506Z",
+   "retryAt": "2026-11-27T09:27:33.506Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-6C494E3B048A",
+   "company": "Fluidra",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
+   "retryAt": "2026-11-27T09:27:33.507Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-829E5377A0BF",
+   "company": "Western Magnetics Company",
+   "title": "Head of Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
+   "retryAt": "2026-11-27T09:27:33.507Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EA823C6F530D",
+   "company": "ITW",
+   "title": "Production Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.507Z",
+   "retryAt": "2026-11-27T09:27:33.507Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B707A6F42BBA",
+   "company": "International Motors, LLC",
+   "title": "Manufacturing Engineering Manager - Night Shift",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.508Z",
+   "retryAt": "2026-11-27T09:27:33.508Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4246D1F4AABE",
+   "company": "Great Plains Mfg",
+   "title": "Assembler - 1st Shift - Lucas, KS",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.508Z",
+   "retryAt": "2026-11-27T09:27:33.508Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-818A677E368B",
+   "company": "Cover Technologies",
+   "title": "Staff Manufacturing Engineer",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
+   "retryAt": "2026-11-27T09:27:33.509Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-847EC4FB6252",
+   "company": "EH Energy",
+   "title": "Senior Technical Program Manager, Gigafactory Construction",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
+   "retryAt": "2026-11-27T09:27:33.509Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DE3BAD0A4B55",
+   "company": "TAE Power Solutions",
+   "title": "Manager, PMO",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.509Z",
+   "retryAt": "2026-11-27T09:27:33.509Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E78F9485138A",
+   "company": "Invio Automation",
+   "title": "Senior Manager for Automotive Automation Solutions & Simulation",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.510Z",
+   "retryAt": "2026-11-27T09:27:33.510Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-9FE6668133E1",
+   "company": "DCD Vehicle Corp",
+   "title": "Service Manager – Golf Carts & LSVs (Mandarin Preffered)",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.510Z",
+   "retryAt": "2026-11-27T09:27:33.510Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-F9924D41EFAF",
+   "company": "Atalys",
+   "title": "Quality Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
+   "retryAt": "2026-11-27T09:27:33.511Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D68640363276",
+   "company": "Polytainers, Inc.",
+   "title": "Operations - Technical Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
+   "retryAt": "2026-11-27T09:27:33.511Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A69D2C8E52B1",
+   "company": "Standex",
+   "title": "Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.511Z",
+   "retryAt": "2026-11-27T09:27:33.511Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D70D49B36B7E",
+   "company": "Howmet Aerospace",
+   "title": "Maintenance Reliability Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.512Z",
+   "retryAt": "2026-11-27T09:27:33.512Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DDCFB7BA49A1",
+   "company": "International Motors, LLC",
+   "title": "Manufacturing Quality Liaison I",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.512Z",
+   "retryAt": "2026-11-27T09:27:33.512Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-AC3F606CD7C1",
+   "company": "ReGenerate - Albany Green Energy",
+   "title": "Auxiliary Operator-Biomass Power Plant",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
+   "retryAt": "2026-11-27T09:27:33.513Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-E36AA4D004AA",
+   "company": "Parallel Systems",
+   "title": "VP, Commercial Program Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
+   "retryAt": "2026-11-27T09:27:33.513Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-CFAAC4C9C24C",
+   "company": "Sonnen Inc",
+   "title": "Director - Dragonfly VPP Business Development",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.513Z",
+   "retryAt": "2026-11-27T09:27:33.513Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D38CE15765F0",
+   "company": "The PAC Group",
+   "title": "Process Installation Project Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.514Z",
+   "retryAt": "2026-11-27T09:27:33.514Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B697FE2E3F55",
+   "company": "BLUE OPS INC",
+   "title": "Sr. Manager, Customer Service & Field Quality",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.514Z",
+   "retryAt": "2026-11-27T09:27:33.514Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-DFCA2E3D2053",
+   "company": "Jabil Circuit",
+   "title": "Global Customer Quality Engineering Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
+   "retryAt": "2026-11-27T09:27:33.515Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-C1F4AFFDA617",
+   "company": "Blue Shield of California",
+   "title": "Program Manager, Consultant - Project Management",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
+   "retryAt": "2026-11-27T09:27:33.515Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-D72FB1D1F62C",
+   "company": "ABB Robotics LLC",
+   "title": "Local Business Line Manager Service Robotics",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.515Z",
+   "retryAt": "2026-11-27T09:27:33.515Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-A4667F01D064",
+   "company": "Rivian",
+   "title": "Regional Service Operations Manager",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T17:27:33.516Z",
+   "retryAt": "2026-11-27T09:27:33.516Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-A4C73A8D927F",
    "company": "CPS, Inc.",
    "title": "Global Quality Assurance Director - Specialty Chemicals",
@@ -12338,7 +12342,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RUN_BUDGET_OR_NO_READER",
+   "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T17:27:33.528Z",
    "retryAt": "2026-11-27T09:27:33.528Z",
    "attempts": [
@@ -12352,29 +12356,29 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-726CAC3F5119",
+   "id": "V2I-6D8AA7EB6578",
    "fields": {
-    "SALARY_BASE_LOW": 120640,
-    "SALARY_BASE_HIGH": 180960,
-    "SALARY_MIDPOINT": 150800,
+    "SALARY_BASE_LOW": 120000,
+    "SALARY_BASE_HIGH": 140000,
+    "SALARY_MIDPOINT": 130000,
     "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://pm.healthcaresource.com/CS/morrishospital/#/job/6915?source=Indeed",
-    "SALARY_ASOF": "2026-11-25",
+    "SALARY_SOURCE": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4685424/Agile-Occupational-Medicine-LLC/Regional-Operations-Director?source=Indeed_Feed",
+    "SALARY_ASOF": "2026-11-24",
     "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree in business, healthcare, or related field required, Master's preferred.",
+    "DEGREE_TEXT": "Bachelor's degree in Business, Healthcare Management, or related field required",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://pm.healthcaresource.com/CS/morrishospital/#/job/6915?source=Indeed",
-    "DEGREE_ASOF": "2026-11-25",
+    "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4685424/Agile-Occupational-Medicine-LLC/Regional-Operations-Director?source=Indeed_Feed",
+    "DEGREE_ASOF": "2026-11-24",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
-    "SALARY_SCORE_POINT": 165880
+    "SALARY_SCORE_POINT": 135000
    }
   },
   {
-   "id": "V2I-B2311AF07F59",
+   "id": "V2I-A9BEED1F054B",
    "fields": {
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://olivia.paradox.ai/co/DavesHotChicken/Job?job_id=PDX_DHC_C4A690B7-8085-4931-8556-22CE6E180021_24467592&posting_type=1&source=indeed",
+    "DEGREE_TEXT": "A Bachelor's degree in healthcare, behavioral health, business administration, or a related field is **required**.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4669370/HEARTVIEW-FOUNDATION/Director-of-Operations?source=Indeed_Feed",
     "DEGREE_ASOF": "2026-11-24",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
@@ -12384,21 +12388,42 @@
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-26",
-    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=ee132a2f77f89b8a (as of 2026-11-17); https://www.indeed.com/viewjob?jk=15a96e06f0e39ae1 (as of 2026-11-16); https://comcast.wd115.myworkdayjobs.com/Comcast_Careers/job/PA---Philadelphia-1701-John-F-Kennedy-Blvd/Director--Business-Ops---Analytics---Talent-Operations--Governance---Enablement_R446676-1 (as of 2026-11-26); https://jobs.ashbyhq.com/endurance-energy/88343338-32eb-41de-a3be-640405b3bc32?utm_source=zZLEaO71E6 (as of 2026-11-26); https://firstadvantage.wd5.myworkdayjobs.com/FirstAdvantage/job/US_Remote/Director--Contract-Operations_R10559-1 (as of 2026-11-25); https://careers-ptsolutions.icims.com/jobs/19844/job (as of 2026-11-24); https://100hires.com/j/Af4hKR7 (as of 2026-11-23)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-9C1F7637FC17, V2I-BB4AB3259BE1, V2I-D33DBC7A6A8A, V2I-DA28D5E07F68, V2I-04CDC0E9CEE5, V2I-E426B605493A, V2I-167D48EF6B58]; 7 employer-posted comparable(s), level 2 OPS same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS MO 111021 P25-P90 $55K-$189K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://comcast.wd115.myworkdayjobs.com/Comcast_Careers/job/PA---Philadelphia-1701-John-F-Kennedy-Blvd/Director--Business-Ops---Analytics---Talent-Operations--Governance---Enablement_R446676-1 (as of 2026-11-26); https://jobs.ashbyhq.com/endurance-energy/88343338-32eb-41de-a3be-640405b3bc32?utm_source=zZLEaO71E6 (as of 2026-11-26); https://firstadvantage.wd5.myworkdayjobs.com/FirstAdvantage/job/US_Remote/Director--Contract-Operations_R10559-1 (as of 2026-11-25); https://pm.healthcaresource.com/CS/morrishospital/ (as of 2026-11-25); https://careers-ptsolutions.icims.com/jobs/19844/job (as of 2026-11-24); https://100hires.com/j/Af4hKR7 (as of 2026-11-23); https://www.indeed.com/viewjob?jk=ed2be368797e05f5 (as of 2026-11-23)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-D33DBC7A6A8A, V2I-DA28D5E07F68, V2I-04CDC0E9CEE5, V2I-726CAC3F5119, V2I-E426B605493A, V2I-167D48EF6B58, V2I-B9B3564FA6B8]; 7 employer-posted comparable(s), level 2 OPS same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW; BLS ND 111021 P25-P90 $69K-$185K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
     "SALARY_SCORE_POINT": 218500
+   }
+  },
+  {
+   "id": "V2I-FF0D1A7668F4",
+   "fields": {
+    "DEGREE_TEXT": "Exceptional candidates with a Master's degree will also be considered.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://radiomedixinc.applytojob.com/apply/9Tr3WKqjta/Director-Of-Preclinical-Operations?source=INDE&~",
+    "DEGREE_ASOF": "2026-11-25",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 140000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 170000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://taskus.wd1.myworkdayjobs.com/en-US/Careers/job/Director-of-Operations_R_2611_14458 (as of 2026-11-22); https://www.indeed.com/viewjob?jk=8748d6a1e9a56064 (as of 2026-11-20); https://careers.gmr.net/gmr/jobs/62994/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-20); https://jobs.rapidhire.ukg.net/jetrord/3c4d1156-b6bf-479b-ad67-201d734aad1e?utm_source=Indeed (as of 2026-11-19); https://jobs.dsv.com/job/Fort-Worth-Director%2C-Operations-TX-76140/1456596033/ (as of 2026-11-18); https://www.indeed.com/viewjob?jk=1acd34f2364e72c0 (as of 2026-11-17); https://www.linkedin.com/jobs/view/4481361688 (as of 2026-11-03)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-017393355359, V2I-954806CA62FF, V2I-DE7AA6BD9AC3, V2I-AE785F2C2783, V2I-302FF0033CC8, V2I-575317883972, V2I-4751C3D6EA81]; 7 employer-posted comparable(s), level 2 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS TX 111021 P25-P90 $64K-$265K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 185000
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-B2311AF07F59",
-   "company": "Dave's Hot Chicken",
-   "title": "Director of Operations - Restaurants",
-   "location": "Wentzville, MO, USA",
-   "posting": "https://olivia.paradox.ai/co/DavesHotChicken/Job?job_id=PDX_DHC_C4A690B7-8085-4931-8556-22CE6E180021_24467592&posting_type=1",
+   "id": "V2I-A9BEED1F054B",
+   "company": "Heartview Foundation",
+   "title": "Director of Operations",
+   "location": "Bismarck, ND, USA",
+   "posting": "https://recruiting.paylocity.com/Recruiting/Jobs/Details/4669370/HEARTVIEW-FOUNDATION/Director-of-Operations",
    "est": [
     130000,
     248000,
@@ -12406,15 +12431,40 @@
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 OPS same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "basis_detail": "7 employer-posted comparable(s), level 2 OPS same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 7 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-9C1F7637FC17",
-    "V2I-BB4AB3259BE1",
     "V2I-D33DBC7A6A8A",
     "V2I-DA28D5E07F68",
     "V2I-04CDC0E9CEE5",
+    "V2I-726CAC3F5119",
     "V2I-E426B605493A",
-    "V2I-167D48EF6B58"
+    "V2I-167D48EF6B58",
+    "V2I-B9B3564FA6B8"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-FF0D1A7668F4",
+   "company": "Radiomedix, Inc.",
+   "title": "Director of Preclinical Operations",
+   "location": "Houston, TX, USA",
+   "posting": "https://radiomedixinc.applytojob.com/apply/9Tr3WKqjta/Director-Of-Preclinical-Operations?%7E=",
+   "est": [
+    140000,
+    200000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 OPS same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-017393355359",
+    "V2I-954806CA62FF",
+    "V2I-DE7AA6BD9AC3",
+    "V2I-AE785F2C2783",
+    "V2I-302FF0033CC8",
+    "V2I-575317883972",
+    "V2I-4751C3D6EA81"
    ]
   }
  ],
