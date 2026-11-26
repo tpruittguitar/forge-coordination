@@ -9,7 +9,8 @@ function compact(root, check) {
   const read = file => fs.readFileSync(path.join(root, file), 'utf8');
   const inventories = [
     [Store.LEDGER_PATH, 'entries', Store.loadLedger, Store.writeLedger, Store.splitLedger],
-    [Store.DRAIN_PATH, 'items', Store.loadDrain, Store.writeDrain, Store.splitDrain]
+    [Store.DRAIN_PATH, 'items', Store.loadDrain, Store.writeDrain, Store.splitDrain],
+    [Store.RECOVERY_PATH, 'jobs', Store.loadRecovery, Store.writeRecovery, Store.splitRecovery]
   ];
   let index;
   try { index = JSON.parse(read('state/PIPELINE_WAITING_QUEUES.json')); }
@@ -17,6 +18,7 @@ function compact(root, check) {
   const options = {activePrimaryIds: Store.activeIds(index)};
 
   for (const [file, field, load, write, split] of inventories) {
+    if (file === Store.RECOVERY_PATH && !fs.existsSync(path.join(root, file))) continue;
     const original = load(read).value;
     if (!original?.[field] || Array.isArray(original[field])) throw Error(file + ': inventory is missing');
     if (check) {

@@ -154,6 +154,68 @@ test('drain peels fence.record and bulky discoveryReview from the live file and 
   assert.equal(JSON.parse(f.read(Store.DRAIN_PATH)).items.p.fence.record, undefined);
 });
 
+test('ledger peels preliminaryScreen and bulky discoveryReview from pending live entries and hydrates them back', t => {
+  const f = fixture(t);
+  const discoveryReview = {
+    schema: 'forge.discovery-review.v1', observedAt: firstSeen, sourceUrl: 'https://example.test/job',
+    decision: 'PROGRESS_TO_INTAKE', preliminaryScreen: {schema: 'forge.preliminary-screen.v1', notes: 'z'.repeat(200)},
+    resumeMatch: {schema: 'forge.resume-match.v1', matches: [{term: 'manufacturing'}]},
+    evidenceQuotes: ['exact quote'], sourceSha256: 'a'.repeat(64)
+  };
+  const waiting = entry('w', 'WAITING', {
+    preliminaryScreen: {schema: 'forge.preliminary-screen.v1', ats: {hits: 2}, notes: 'p'.repeat(200)},
+    discoveryReview
+  });
+  const settled = entry('s', 'EXCLUDED', {discoveryReview, preliminaryScreen: {schema: 'forge.preliminary-screen.v1'}});
+  const original = ledger({w: waiting, s: settled});
+  Store.writeLedger(f.root, original, {activePrimaryIds: new Set()});
+  const live = JSON.parse(f.read(Store.LEDGER_PATH));
+  assert.equal(live.entries.w.preliminaryScreen, undefined);
+  assert.equal(live.entries.w.discoveryReview.preliminaryScreen, undefined);
+  assert.equal(live.entries.w.discoveryReview.resumeMatch, undefined);
+  assert.equal(live.entries.w.discoveryReview.evidenceQuotes, undefined);
+  assert.equal(live.entries.w.discoveryReview.sourceSha256, discoveryReview.sourceSha256);
+  assert.equal(live.entries.w.status, 'WAITING');
+  assert.equal(live.entries.s.discoveryReview, undefined);
+  assert.equal(live.entries.s.preliminaryScreen, undefined);
+  assert.deepEqual(Store.readLedger(f.root), original);
+  assert.deepEqual(Coordinator.read(f.root, Store.LEDGER_PATH), original);
+  Store.writeLedger(f.root, Store.readLedger(f.root), {activePrimaryIds: new Set()});
+  assert.deepEqual(Store.readLedger(f.root), original);
+  assert.equal(JSON.parse(f.read(Store.LEDGER_PATH)).entries.w.preliminaryScreen, undefined);
+});
+
+test('recovery peels bulky job fields into a new archive and hydrates them back', t => {
+  const f = fixture(t);
+  const evidence = [{gmailId: 'ab'.repeat(8), at: firstSeen, page: 'https://www.linkedin.com/jobs/search/?start=0', cardHash: 'c'.repeat(64), paragraphs: ['VP Manufacturing', 'Factory', 'Austin, TX', 'x'.repeat(400)]}];
+  const pending = {
+    key: 'linkedin:1', jobId: '1', title: 'Plant Manager', company: 'Factory', location: 'Austin, TX',
+    url: 'https://www.linkedin.com/jobs/view/1/', observedAt: firstSeen, status: 'UNSCREENED',
+    sourceEmails: ['ab'.repeat(8)], evidence, preliminaryScreen: {schema: 'forge.preliminary-screen.v1', notes: 'n'.repeat(200)},
+    description: 'd'.repeat(200), claudeHelperEvidence: {notes: 'h'.repeat(100)}, sourcePayEvidence: [{quote: '$120,000'}],
+    discoveryReview: {schema: 'forge.discovery-review.v1', decision: 'PROGRESS_TO_INTAKE', resumeMatch: {matches: [1]}, sourceSha256: 'a'.repeat(64)},
+    submissions: [{requestId: 'ORIGINAL-1'}]
+  };
+  const original = {schema: 'forge.email-recovery.v1', at: '2026-11-23T23:15:00.407Z', sources: {}, jobs: {['linkedin:1']: pending}};
+  Store.writeRecovery(f.root, original);
+  const live = JSON.parse(f.read(Store.RECOVERY_PATH));
+  assert.equal(live.jobs['linkedin:1'].evidence, undefined);
+  assert.equal(live.jobs['linkedin:1'].preliminaryScreen, undefined);
+  assert.equal(live.jobs['linkedin:1'].description, undefined);
+  assert.equal(live.jobs['linkedin:1'].claudeHelperEvidence, undefined);
+  assert.equal(live.jobs['linkedin:1'].sourcePayEvidence, undefined);
+  assert.equal(live.jobs['linkedin:1'].discoveryReview.resumeMatch, undefined);
+  assert.equal(live.jobs['linkedin:1'].discoveryReview.decision, 'PROGRESS_TO_INTAKE');
+  assert.deepEqual(live.jobs['linkedin:1'].submissions, pending.submissions);
+  assert.equal(live.jobs['linkedin:1'].status, 'UNSCREENED');
+  assert.ok(fs.existsSync(f.locate(Store.RECOVERY_ARCHIVE + '/manifest.json')));
+  assert.deepEqual(Store.readRecovery(f.root), original);
+  assert.deepEqual(Coordinator.read(f.root, Store.RECOVERY_PATH), original);
+  Store.writeRecovery(f.root, Store.readRecovery(f.root));
+  assert.deepEqual(Store.readRecovery(f.root), original);
+  assert.equal(JSON.parse(f.read(Store.RECOVERY_PATH)).jobs['linkedin:1'].evidence, undefined);
+});
+
 test('uses UTF-8 bytes to limit shards, and removes stale parts', t => {
   const f = fixture(t);
   const entries = Object.fromEntries(['c', 'b', 'a'].map(id => [id, entry(id, 'EXCLUDED', {body: 'é'.repeat(130)})]));
