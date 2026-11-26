@@ -261,19 +261,11 @@
   "V2I-A5440324859F": "2026-11-14T10:10:08.040Z",
   "V2I-5AF359235915": "2026-11-19T18:14:41.452Z",
   "V2I-4AB76A5B4963": "2026-11-14T10:47:45.522Z",
-  "V2I-2A1BC3B411FE": "2026-11-12T08:05:04.527Z",
   "V2I-2DA1117A4CCD": "2026-11-14T10:47:45.522Z",
   "V2I-BBCD6E8DA5DA": "2026-11-14T10:10:08.040Z",
-  "V2I-7C7EDAFDEB70": "2026-11-12T08:05:04.527Z",
   "V2I-0E1B4F8AF04F": "2026-11-14T10:10:08.040Z",
-  "V2I-2D3BB21D1AD5": "2026-11-12T08:05:04.527Z",
   "V2I-7A081AF7F4BB": "2026-11-14T10:10:08.040Z",
   "V2I-C847C8C19605": "2026-11-14T10:10:08.040Z",
-  "V2I-1B9DDE0916FC": "2026-11-12T08:05:04.527Z",
-  "V2I-327FD1703E18": "2026-11-12T08:05:04.527Z",
-  "V2I-9A8C76DC169C": "2026-11-12T08:05:04.527Z",
-  "V2I-9D034B1F5B18": "2026-11-12T08:05:04.527Z",
-  "V2I-397C4E30F909": "2026-11-12T08:05:04.527Z",
   "V2I-59A3473C4DBD": "2026-11-12T08:40:04.412Z",
   "V2I-FF87532A8BFD": "2026-11-18T13:44:50.380Z",
   "V2I-B6D3F4B2289C": "2026-11-12T08:40:04.412Z",
@@ -11859,7 +11851,9 @@
   "V2I-9577534BA0C3": "SALARY,DEGREE",
   "V2I-5304FFD330B5": "SALARY,DEGREE",
   "V2I-419C2AA4072B": "SALARY,DEGREE",
-  "V2I-00BF172B13BF": "SALARY,DEGREE"
+  "V2I-00BF172B13BF": "SALARY,DEGREE",
+  "V2I-5341C5133B32": "SALARY,DEGREE",
+  "V2I-E22A14AB689E": "SALARY,DEGREE"
  },
  "pendingWrites": {
   "FORGE-ENRICH_ATS-ATSBOT-20261126T031447068Z-B01": {
@@ -11922,6 +11916,64 @@
     }
    ],
    "at": "2026-11-26T03:17:05.391Z",
+   "status": "POSTING_OR_UNCONFIRMED"
+  },
+  "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-B01": {
+   "ids": [
+    "V2I-5341C5133B32",
+    "V2I-E22A14AB689E"
+   ],
+   "requestIds": [
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-E001",
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-R002"
+   ],
+   "requests": [
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-E001",
+      "primaryId": "V2I-5341C5133B32",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 180000,
+       "SALARY_BASE_HIGH": 230000,
+       "SALARY_MIDPOINT": 205000,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://jobs.ashbyhq.com/xona-space/a57ee491-68d0-4454-bc4b-b8678e277b15?utm_source=KPOy4Ay2Jq",
+       "SALARY_ASOF": "2026-11-26",
+       "SALARY_CONF": "HIGH",
+       "DEGREE_TEXT": "Bachelor's degree in engineering, materials science, physics or a related technical field, or equivalent quality leadership experience in complex hardware.",
+       "DEGREE_REQ": "PREFERRED",
+       "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/xona-space/a57ee491-68d0-4454-bc4b-b8678e277b15?utm_source=KPOy4Ay2Jq",
+       "DEGREE_ASOF": "2026-11-26",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+       "SALARY_SCORE_POINT": 217500
+      }
+     }
+    },
+    {
+     "action": "ruling",
+     "ruling": {
+      "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-R002",
+      "primaryId": "V2I-E22A14AB689E",
+      "kind": "ENRICH",
+      "actor": "ATSBOT",
+      "fields": {
+       "SALARY_BASE_LOW": 155000,
+       "SALARY_BASE_HIGH": 410000,
+       "SALARY_MIDPOINT": 282500,
+       "SALARY_BASIS": "EMPLOYER_POSTED",
+       "SALARY_SOURCE": "https://jobs-us.pwc.com/us/en/job/775932WD/Business-Application-Consulting-Program-Risk-Quality-Director",
+       "SALARY_ASOF": "2026-11-25",
+       "SALARY_CONF": "HIGH",
+       "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+       "SALARY_SCORE_POINT": 346250
+      }
+     }
+    }
+   ],
+   "at": "2026-11-26T08:11:09.966Z",
    "status": "POSTING_OR_UNCONFIRMED"
   }
  },
@@ -81695,6 +81747,22 @@
      "status": "HTTP_429"
     }
    ]
+  },
+  "V2I-5341C5133B32": {
+   "fingerprint": "70424733da63b5c453770492c534f1213e54c51cc7a00a417e3897cab64817f9",
+   "lastAttemptAt": "2026-11-26T08:11:00.455Z",
+   "retryAt": "2026-11-26T09:11:00.455Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
+  },
+  "V2I-E22A14AB689E": {
+   "fingerprint": "1bc4a3361b15481b080734b4d69b6a1cfe0eb757196c818e5ae08d15edfb76f7",
+   "lastAttemptAt": "2026-11-26T08:11:00.815Z",
+   "retryAt": "2026-11-26T09:11:00.815Z",
+   "status": "EVIDENCE_FOUND",
+   "failures": 1,
+   "attempts": []
   }
  },
  "postingEvidence": {

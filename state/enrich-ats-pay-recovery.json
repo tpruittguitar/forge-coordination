@@ -1,7 +1,7 @@
 {
   "schema": "forge.enrichment-recovery.v1",
-  "at": "2026-11-26T07:58:12.693Z",
-  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T075658804Z",
+  "at": "2026-11-26T08:15:44.342Z",
+  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z",
   "rows": [
     {
       "id": "V2I-AED5F3361C2D",
@@ -48,6 +48,34 @@
           "status": "HTTP_403"
         }
       ],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-5341C5133B32",
+      "company": "Xona Space Systems",
+      "title": "Senior Manager, US Quality Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T08:11:00.455Z",
+      "retryAt": "2026-11-26T09:11:00.455Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-E22A14AB689E",
+      "company": "PwC",
+      "title": "Business Application Consulting - Program Risk & Quality Director",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T08:11:00.815Z",
+      "retryAt": "2026-11-26T09:11:00.815Z",
+      "attempts": [],
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
@@ -10795,6 +10823,64 @@
         }
       ],
       "at": "2026-11-26T03:17:05.391Z",
+      "status": "POSTING_OR_UNCONFIRMED"
+    },
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-B01": {
+      "ids": [
+        "V2I-5341C5133B32",
+        "V2I-E22A14AB689E"
+      ],
+      "requestIds": [
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-E001",
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-R002"
+      ],
+      "requests": [
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-E001",
+            "primaryId": "V2I-5341C5133B32",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "SALARY_BASE_LOW": 180000,
+              "SALARY_BASE_HIGH": 230000,
+              "SALARY_MIDPOINT": 205000,
+              "SALARY_BASIS": "EMPLOYER_POSTED",
+              "SALARY_SOURCE": "https://jobs.ashbyhq.com/xona-space/a57ee491-68d0-4454-bc4b-b8678e277b15?utm_source=KPOy4Ay2Jq",
+              "SALARY_ASOF": "2026-11-26",
+              "SALARY_CONF": "HIGH",
+              "DEGREE_TEXT": "Bachelor's degree in engineering, materials science, physics or a related technical field, or equivalent quality leadership experience in complex hardware.",
+              "DEGREE_REQ": "PREFERRED",
+              "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/xona-space/a57ee491-68d0-4454-bc4b-b8678e277b15?utm_source=KPOy4Ay2Jq",
+              "DEGREE_ASOF": "2026-11-26",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+              "SALARY_SCORE_POINT": 217500
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T080956352Z-R002",
+            "primaryId": "V2I-E22A14AB689E",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "SALARY_BASE_LOW": 155000,
+              "SALARY_BASE_HIGH": 410000,
+              "SALARY_MIDPOINT": 282500,
+              "SALARY_BASIS": "EMPLOYER_POSTED",
+              "SALARY_SOURCE": "https://jobs-us.pwc.com/us/en/job/775932WD/Business-Application-Consulting-Program-Risk-Quality-Director",
+              "SALARY_ASOF": "2026-11-25",
+              "SALARY_CONF": "HIGH",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+              "SALARY_SCORE_POINT": 346250
+            }
+          }
+        }
+      ],
+      "at": "2026-11-26T08:11:09.966Z",
       "status": "POSTING_OR_UNCONFIRMED"
     }
   },
