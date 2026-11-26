@@ -73,7 +73,8 @@ test('scoped preparation preserves unrelated plan records, pending originals and
  out=P.prepare({...f,onlyKeys:new Set()});a.equal(out.items.length,2);for(const item of old)a.deepEqual(out.items.find(i=>i.key===item.key),item);
 });
 test('scoped apply under the shared lock preserves unrelated persisted plans, source items and pending originals',t=>{
- const f=fixture('Claims Director'),read=file=>JSON.parse(fs.readFileSync(p.join(f.root,file),'utf8'));
+ const Store=require('../programmed-coordinator/store.cjs');
+ const f=fixture('Claims Director'),read=file=>file==='state/EMAIL_RECOVERY_QUEUE.json'?Store.read(f.root,file):JSON.parse(fs.readFileSync(p.join(f.root,file),'utf8'));
  const unrelatedPlan={key:'unrelated',status:'READY',record:{TITLE:'Leave unchanged'},screen:{rank:1},sourceProof:'original-evidence'};
  const pendingPlan={key:'pending',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'ORIGINAL',record:{TITLE:'Original'},screen:{rank:99},fence:{requestIds:['ORIGINAL'],proof:'receipts/ORIGINAL_CHECKPOINT.json'}};
  const unrelatedSource={key:'unrelated',provider:'Claude',status:'TITLE_SCOPE_REVIEW',batch:'receipts/unchanged-source.json',sourceEvidence:{company:'Other factory',title:'Other director',location:'Boston, MA'},relevanceScreen:{outcome:'ADMIT',screenedAt:'2026-01-01T00:00:00Z'}};

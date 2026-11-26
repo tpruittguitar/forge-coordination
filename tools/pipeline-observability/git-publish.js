@@ -11,13 +11,13 @@ const FLOW_INPUTS=['tools','.github/workflows/pipeline-observability.yml','polic
  'control/AI_AUTOMATION_TASKS.json','control/CHATGPT_OWNER_CUTOVER.json','control/CLAUDE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json','control/ENRICHMENT_HELPER_WORK.json','control/ENRICHMENT_RESEARCH_OWNER.json','control/ENRICHMENT_WORKER_PARTITION.json','control/GROK_INTAKE_HELPER_WORK.json','control/RELEVANCE_SCREEN.json','control/RESUME_MATCH_PROFILE.json','control/RESUME_MATCH_VARIANTS.json','control/SHARED_HELPER_WORK.json','control/claude-relevance','control/grok-intake','control/shared-helper-pages',
  'receipts/manual-backlog','receipts/INTAKE_DRAIN','receipts/auto-intake','receipts/live-backlog','receipts/CHATGPT_HELPERS',
  'reference/COMPANY_SITE_CONTEXT.json','reference/EXCLUSION_BUSINESS_EVIDENCE.json','reference/EXCLUSION_ROLE_EVIDENCE.json','reference/EXCLUSION_TITLE_RULES.json',
- 'state/CLAUDE_HELPER_CONSUMPTION.json','state/CODE_INTAKE_CONSUMPTION.json','state/DISCOVERY_SCREEN_REPORT.json','state/EMAIL_RECOVERY_QUEUE.json','state/ENRICHMENT_FLOW.json','state/ENRICHMENT_OUTCOMES.json','state/HELPER_HANDOFFS.json','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/PIPELINE_WAITING_QUEUES.json','state/PROCESS_COMPLETIONS.json','state/PROGRAMMED_COORDINATOR.json','state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/REPORTING_HEALTH.json','state/UPSTREAM_COLLECT_CURSOR.json','state/UPSTREAM_FLOW.json','state/UPSTREAM_LEDGER.json','state/upstream-ledger-archive','state/board-discovery-report.json','state/discovery-evidence','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay.json','state/source-trial-report.json','state/targeted-posting-lookup.json','state/waiting-queues'];
+ 'state/CLAUDE_HELPER_CONSUMPTION.json','state/CODE_INTAKE_CONSUMPTION.json','state/DISCOVERY_SCREEN_REPORT.json','state/EMAIL_RECOVERY_QUEUE.json','state/email-recovery-archive','state/ENRICHMENT_FLOW.json','state/ENRICHMENT_OUTCOMES.json','state/HELPER_HANDOFFS.json','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/PIPELINE_WAITING_QUEUES.json','state/PROCESS_COMPLETIONS.json','state/PROGRAMMED_COORDINATOR.json','state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/REPORTING_HEALTH.json','state/UPSTREAM_COLLECT_CURSOR.json','state/UPSTREAM_FLOW.json','state/UPSTREAM_LEDGER.json','state/upstream-ledger-archive','state/board-discovery-report.json','state/discovery-evidence','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay.json','state/source-trial-report.json','state/targeted-posting-lookup.json','state/waiting-queues'];
 // Top-level receipts read by name pattern (upstream-flow.js email files; transactions/writer-outcome/handoff receipts).
 const FLOW_INPUT_PATTERNS=[/^receipts\/EMAIL_(?:CANDIDATE_LEDGER|EVAL|PENDING)[^/]*\.json$/,/^receipts\/[^/]+_(?:CHECKPOINT|VERIFIED|NOT_ACCEPTED|HANDOFFS)\.json$/];
 const isFlowInput=p=>FLOW_INPUTS.some(x=>p===x||p.startsWith(x+'/'))||FLOW_INPUT_PATTERNS.some(r=>r.test(p));
 const Store=require('../upstream-ledger/store.cjs');
-const {LEDGER_PATH,LEDGER_ARCHIVE,DRAIN_PATH,DRAIN_ARCHIVE}=Store;
-const INVENTORIES=[[LEDGER_PATH,LEDGER_ARCHIVE],[DRAIN_PATH,DRAIN_ARCHIVE]];
+const {LEDGER_PATH,LEDGER_ARCHIVE,DRAIN_PATH,DRAIN_ARCHIVE,RECOVERY_PATH,RECOVERY_ARCHIVE}=Store;
+const INVENTORIES=[[LEDGER_PATH,LEDGER_ARCHIVE],[DRAIN_PATH,DRAIN_ARCHIVE],[RECOVERY_PATH,RECOVERY_ARCHIVE]];
 const COMPLETE_FLOW=[LEDGER_PATH,LEDGER_ARCHIVE,'state/UPSTREAM_FLOW.json','state/ENRICHMENT_FLOW.json','state/PIPELINE_WAITING_QUEUES.json','state/waiting-queues',DRAIN_PATH,DRAIN_ARCHIVE,'state/UPSTREAM_COLLECT_CURSOR.json'];
 function reparentFinishedFlow(root,{base,finished,paths,message,retries=4,sleep}){
  for(let attempt=1;attempt<=retries;attempt++){
@@ -83,7 +83,8 @@ function publish(root,paths,message=DEFAULT_MESSAGE,{retries=4,sleep,push=true,r
  const sourceBound=inventories.length>0||relativePaths.some(p=>p==='state/UPSTREAM_FLOW.json'||p==='state/UPSTREAM_COLLECT_CURSOR.json'||p==='state/PIPELINE_WAITING_QUEUES.json'||p==='state/waiting-queues'||p.startsWith('state/waiting-queues/'));
  if(allowFlowStatusReparent&&(!sourceBound||ref!=='HEAD:main'||!COMPLETE_FLOW.every(p=>relativePaths.includes(p))))throw Error('Status-only reparent requires the complete flow and canonical main');
  if(sourceBound){
-  for(const [file] of inventories)(file===LEDGER_PATH?Store.readLedger:Store.readDrain)(root,null);
+  const readers={};readers[LEDGER_PATH]=Store.readLedger;readers[DRAIN_PATH]=Store.readDrain;readers[RECOVERY_PATH]=Store.readRecovery;
+  for(const [file] of inventories)readers[file](root,null);
   relativePaths=[...new Set([...relativePaths,...inventories.flat()])];
   const base=allowFlowStatusReparent?run(root,['rev-parse','HEAD']).trim():null;
   const changed=commitListed(root,relativePaths,message);
