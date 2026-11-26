@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T03:23:44.663Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T031447068Z",
+ "at": "2026-11-26T03:39:36.645Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T033108893Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T03:14:58.333Z",
-  "sha256": "cedfab593caffd69c779bc02205ec5f7bfecf19ebfd31822dc5b76147e1bb2c6",
-  "rows": 7860
+  "readAt": "2026-11-26T03:31:17.194Z",
+  "sha256": "bd151652c08718d8695933d74735aa6569d638d36697fbb655cecf5de4091245",
+  "rows": 7862
  },
- "rows": 7860,
- "eligible": 633,
+ "rows": 7862,
+ "eligible": 635,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -40,8 +40,8 @@
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
-  "pending_batches": 0,
-  "fenced_ids": 0
+  "pending_batches": 1,
+  "fenced_ids": 2
  },
  "anchors": 1359,
  "archive_anchors": 5,
@@ -50,20 +50,20 @@
  "ats_failed": 0,
  "posted_pay": 0,
  "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 301,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 302,
  "skipped_recent": 146,
- "submitted": 0,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 2,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -78,17 +78,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 5,
@@ -103,9 +103,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 11,
+  "saved_reused": 10,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -113,10 +113,10 @@
   "no_pay_read": 0,
   "pay_unresolved": 0,
   "backoff": 0,
-  "unsupported_routes": 0,
+  "unsupported_routes": 1,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T03:15:02.946Z",
+  "profile_as_of": "2026-11-26T03:31:22.144Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1221,12 +1221,12 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 2,
-  "salary": 2,
-  "degree": 2
+  "planned": 0,
+  "salary": 0,
+  "degree": 0
  },
- "not_attempted": 304,
- "nothing_found": 304,
+ "not_attempted": 305,
+ "nothing_found": 305,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1239,7 +1239,7 @@
   "no_overview": 648,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 429,
+  "fenced": 431,
   "inactive": 6762,
   "by_label": {},
   "sample": []
@@ -1249,11 +1249,10 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 441,
- "network_requests": 3,
- "planned": 2,
+ "network_requests": 4,
+ "planned": 1,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 2,
- "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1261,9 +1260,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 226,
+  "NOT_YET_ATTEMPTED": 227,
   "SOURCE_RESEARCH_REQUIRED": 367,
-  "EVIDENCE_FOUND": 35,
+  "EVIDENCE_FOUND": 34,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -1584,6 +1584,20 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T02:44:46.004Z",
    "retryAt": "2026-11-26T03:44:46.004Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-4EDF5E75344A",
+   "company": "Timberlab",
+   "title": "Senior Director, Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -4700,6 +4714,20 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T02:56:28.562Z",
    "retryAt": "2026-11-26T03:56:28.562Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-20EE6A7BD4FB",
+   "company": "Cargill",
+   "title": "NA Regional Talent Acquisition Director - Manufacturing and Supply Chain M/F/D",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-26T03:15:40.102Z",
+   "retryAt": "2026-11-26T04:15:40.102Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -11767,6 +11795,20 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-F02CAE9C545B",
+   "company": "Ryder System",
+   "title": "Director of Continuous Improvement",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
+   "lastAttemptAt": "2026-11-26T03:15:40.268Z",
+   "retryAt": "2026-11-26T04:15:40.268Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-A4C73A8D927F",
    "company": "CPS, Inc.",
    "title": "Global Quality Assurance Director - Specialty Chemicals",
@@ -11815,42 +11857,53 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-20EE6A7BD4FB",
+   "id": "V2I-D2B9DBD94C66",
    "fields": {
-    "SALARY_BASE_LOW": 165000,
-    "SALARY_BASE_HIGH": 200000,
-    "SALARY_MIDPOINT": 182500,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://careers.cargill.com/en/job/-/-/23251/103587047104",
-    "SALARY_ASOF": "2026-11-26",
-    "SALARY_CONF": "HIGH",
     "DEGREE_TEXT": "NOT_STATED",
     "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://careers.cargill.com/en/job/-/-/23251/103587047104",
+    "DEGREE_EVIDENCE_URL": "https://www.applicantpro.com/openings/mcallen/jobs/4288491-992610",
     "DEGREE_ASOF": "2026-11-26",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
-    "SALARY_SCORE_POINT": 191250
-   }
-  },
-  {
-   "id": "V2I-F02CAE9C545B",
-   "fields": {
-    "SALARY_BASE_LOW": 160000,
-    "SALARY_BASE_HIGH": 180000,
-    "SALARY_MIDPOINT": 170000,
-    "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 128000,
+    "SALARY_BASE_HIGH": 200000,
+    "SALARY_MIDPOINT": 164000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-26",
-    "SALARY_CONF": "HIGH",
-    "DEGREE_TEXT": "Bachelor's degree required Engineering, Business, Supply Chain",
-    "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
-    "DEGREE_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=1d63195fcfa8f7bd (as of 2026-11-24); https://www.linkedin.com/jobs/view/4490157073 (as of 2026-11-23); https://secure6.saashr.com/ta/6182016.jobs?ShowJob=772163008 (as of 2026-11-21); https://secure6.saashr.com/ta/6182016.careers?ShowJob=772163008 (as of 2026-11-21); https://recruiting2.ultipro.com/ATK1000ATKOR/JobBoard/18eec16a-a1ec-458b-82c9-cb3af8866255/OpportunityDetail?opportunityId=77fc7336-b268-4107-b688-aa059d655d13&postingId=908ef650-7661-408f-89b8-375fef2bc477 (as of 2026-11-19); https://3m.wd1.myworkdayjobs.com/en-US/Search/job/US-Texas-Angleton/Plant-Manager--Angleton--TX-_R01173772 (as of 2026-11-18); https://axalta.wd1.myworkdayjobs.com/Axalta/job/US-TX-Houston/Houston-Plant-Manager_2026-19798-1 (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-FDD5DDF1169A, V2I-A86C2E8C1E82, V2I-1D55E7CC8E88, V2I-7C423F4B259A, V2I-4CEB4A4E0B39, V2I-79D627ED220D, V2I-D632B0C9EF00]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW; BLS TX 113051 P25-P90 $98K-$208K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
-    "SALARY_SCORE_POINT": 175000
+    "SALARY_SCORE_POINT": 182000
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-D2B9DBD94C66",
+   "company": "City of McAllen",
+   "title": "Water Plant-Water Plant Manager",
+   "location": "McAllen, TX, USA",
+   "posting": "https://www.applicantpro.com/openings/mcallen/jobs/4288491-992610",
+   "est": [
+    128000,
+    200000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-FDD5DDF1169A",
+    "V2I-A86C2E8C1E82",
+    "V2I-1D55E7CC8E88",
+    "V2I-7C423F4B259A",
+    "V2I-4CEB4A4E0B39",
+    "V2I-79D627ED220D",
+    "V2I-D632B0C9EF00"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
