@@ -18,6 +18,7 @@ function sides(raw){
 }
 function read(root,file,fallback){
  if(file===Store.LEDGER_PATH)return Store.readLedger(root,fallback);
+ if(file===Store.RECOVERY_PATH)return Store.readRecovery(root,fallback);
  const readFile=name=>fs.readFileSync(path.join(root,name),'utf8');
  let raw;try{raw=readFile(file);}catch(e){
   if(e.code==='ENOENT'&&file===Store.DRAIN_PATH)return Store.readDrain(root,fallback);

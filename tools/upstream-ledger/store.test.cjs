@@ -211,6 +211,7 @@ test('recovery peels bulky job fields into a new archive and hydrates them back'
   assert.ok(fs.existsSync(f.locate(Store.RECOVERY_ARCHIVE + '/manifest.json')));
   assert.deepEqual(Store.readRecovery(f.root), original);
   assert.deepEqual(Coordinator.read(f.root, Store.RECOVERY_PATH), original);
+  assert.deepEqual(QueueState.read(f.root, Store.RECOVERY_PATH), original);
   Store.writeRecovery(f.root, Store.readRecovery(f.root));
   assert.deepEqual(Store.readRecovery(f.root), original);
   assert.equal(JSON.parse(f.read(Store.RECOVERY_PATH)).jobs['linkedin:1'].evidence, undefined);
