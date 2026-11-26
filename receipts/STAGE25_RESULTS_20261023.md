@@ -19,19 +19,15 @@ Source run FORGE-STAGE25-20261023, mode STAGE. Before snapshot 2026-10-23T05:24:
 | 6 | Anduril Industries | Sr. Manager, Manufacturing Test Engineering (Intelligence Systems) | Ashville, Ohio, United States | V2I-663C7AE85AB9 | FORGE-SOURCE-5C2CADFA77D8E00735F9C99D |
 | 7 | Carrier | Sr. Manager, Quality Data Intelligence & Project Management | CAN05: CCS-Charlotte, 5900 Northwoods Business Parkway, Charlotte, NC, 28269 USA | V2I-432C1D29B876 | FORGE-SOURCE-B70201F43521F83FE1D87A60 |
 | 8 | Innodyne Systems | Director of Quality | Bloomfield, CT, USA | V2I-E198665EE62E | FORGE-SOURCE-E096EA49848D249A431E9108 |
-| 9 | FEAM Aero | Director of Quality - MIA | Miami, FL, USA | V2I-2EFED90E9C5A | FORGE-SOURCE-7176E28B76C2398BBD96E2BD |
 | 10 | Prometheus Energetics | Director of Quality | Bloomington, IN, USA | V2I-F51E11D2C7FF | FORGE-SOURCE-AD06DA64A46F67AC05AAAA42 |
 | 11 | XP Power | Director of Quality | High Bridge, NJ, USA | V2I-E63411E51E63 | FORGE-SOURCE-BC426E8E2629056BCB782E8D |
 | 12 | HexArmor | Vice President of Manufacturing, Compliance & Integration | Grand Rapids, MI, USA | V2I-E1F7D1C88E6A | FORGE-SOURCE-1B14F8A9ECF7706B747005EF |
 | 13 | Northrop Grumman | Manufacturing Operations Director | Salt Lake City, UT, USA | V2I-3673CBC7020E | FORGE-SOURCE-42226728C3FEA85383FC2DA5 |
 | 14 | Mott Corporation | Director of Manufacturing, High Purity | Farmington, CT, USA | V2I-296DDFC5D0DB | FORGE-SOURCE-86338F0F9644905BC5F66889 |
-| 15 | ASTEC | Director, Manufacturing | Parsons, KS, USA | V2I-97A1A7F59437 | FORGE-SOURCE-C1AE30E589B5B2391F452293 |
-| 16 | Revolution Sustainable Solutions, LLC | Plant Manager | Mesquite, TX, USA | V2I-23382AE2ED40 | FORGE-SOURCE-6D4205AB0EB8FDF6AD3D0BB2 |
 | 17 | Safe Fleet | FRC Plant Manager | Nesconset, NY, USA | V2I-3A789FBF6C16 | FORGE-SOURCE-CBDD56FF37B0857044AB2476 |
 | 18 | Quikrete | Plant Manager | Peachland, NC, USA | V2I-10C5D4518D38 | FORGE-SOURCE-76184B72C1057BD704AE0317 |
 | 19 | IPEX by Aliaxis | Plant Manager - Extrusion | Pineville, NC, USA | V2I-839CC95D57CB | FORGE-SOURCE-5C272CFA2C2CCBAADFD5B331 |
 | 20 | CHEP | Plant Manager | Pendergrass, GA, USA | V2I-962B8A81CF60 | FORGE-SOURCE-69E9E697FE3F9E03E76BF050 |
-| 21 | ERock | Plant Manager, Manufacturing Operations | Houston, TX, USA | V2I-7F56B1A9A86E | FORGE-SOURCE-6D61066043F2A4A1BCE7AEE0 |
 | 22 | Ash Grove Cement Company | Plant Manager | Louisville, NE, USA | V2I-B184841C3989 | FORGE-SOURCE-EB5D906C36686D019E5BC9C8 |
 | 23 | CRH | Plant Manager | Kennedale, TX, USA | V2I-FD595F57D5C5 | FORGE-SOURCE-643F768F2D3AB03AB56B7290 |
 | 24 | Resource Label Group | Plant Manager | Minneapolis, MN, USA | V2I-2665BCE4101D | FORGE-SOURCE-74730EE0BDCBD04AE3ED9831 |

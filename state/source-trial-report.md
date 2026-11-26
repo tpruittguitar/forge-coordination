@@ -32,17 +32,14 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | HIRINGCAFE | P2 Hadrian | [Sr. Director, Additive Manufacturing Systems Engineering](https://hiringcafe.com/job/sr-director-additive-manufacturing-systems-engineering-hadrian-4237w7nx2mtfyguo) | Torrance, California, United States | MFG_PROD | DIRECTOR_PLUS | $300K-$350K |
 | JOBSPY:linkedin | Qcells EPC | [SVP, Environment, Safety, Health & Quality (ESHQ)](https://www.linkedin.com/jobs/view/4494990280) | Houston, TX, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Piston Automotive | [Vice President of Operations, Piston Interiors](https://www.linkedin.com/jobs/view/4494976310) | Pontiac, MI, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Power Integrations | [VP, Global Product & Quality Excellence](https://www.linkedin.com/jobs/view/4476925830) | San Jose, CA, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | LeonaBio | [Vice President, Quality](https://www.linkedin.com/jobs/view/4495215435) | Bothell, WA, USA | QUALITY | DIRECTOR_PLUS | $320K-$350K |
 | JOBSPY:linkedin | Weber & Company | [Vice President of Quality](https://www.linkedin.com/jobs/view/4490745194) | Massachusetts, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Archer | [VP, Quality](https://www.linkedin.com/jobs/view/4494782609) | USA | QUALITY | DIRECTOR_PLUS | $190K-$260K |
 | JOBSPY:linkedin | MOBIS Corporate Center of America | [Chief Quality Officer](https://www.linkedin.com/jobs/view/4484732219) | West Point, GA, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | nVent | [Vice President, Quality](https://www.linkedin.com/jobs/view/4486454856) | St Louis Park, MN, USA | QUALITY | DIRECTOR_PLUS | $242K-$359K |
 | JOBSPY:linkedin | Jobgether | [Vice President Quality Control](https://www.linkedin.com/jobs/view/4494318830) | USA | QUALITY | DIRECTOR_PLUS | $272K-$325K |
 | JOBSPY:linkedin | Tal Healthcare | [Vice President of Quality Management, RN](https://www.linkedin.com/jobs/view/4493029869) | Yonkers, NY, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Daubert Chemical Company | [VP Operations](https://www.linkedin.com/jobs/view/4494125045) | Forest View, IL, USA | MFG_PROD | DIRECTOR_PLUS | $209K-$235K |
 | JOBSPY:linkedin | Novax Recruitment Group | [Vice President of Quality](https://www.linkedin.com/jobs/view/4492583555) | Pennsylvania, USA | QUALITY | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | FCH | [Vice President of Quality](https://www.linkedin.com/jobs/view/4481612411) | West Chester, OH, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | JBAndrews | [Head of Quality Assurance](https://www.linkedin.com/jobs/view/4491910627) | Texas, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | SEDIVER | [Vice President of Operations](https://www.linkedin.com/jobs/view/4492566637) | West Memphis, AR, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Hunter Shore Group | [Vice President of Quality](https://www.linkedin.com/jobs/view/4492711354) | New Jersey, USA | QUALITY | DIRECTOR_PLUS |  |
@@ -62,18 +59,14 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | Michael Page | [Director of Operations - Industrial - Durham, North Carolina](https://www.linkedin.com/jobs/view/4493909117) | Durham, NC, USA | MFG_PROD | DIRECTOR_PLUS | $140K-$170K |
 | JOBSPY:linkedin | SkyWater Technology | [Director of Integrated Fab Manufacturing](https://www.linkedin.com/jobs/view/4492857495) | Bloomington, MN, USA | MFG_PROD | DIRECTOR_PLUS | $159K-$239K |
 | JOBSPY:linkedin | Alliance Machine Systems International, LLC | [Director of Manufacturing](https://www.linkedin.com/jobs/view/4477410773) | Spokane, WA, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Judge Direct Placement | [Director of Manufacturing](https://www.linkedin.com/jobs/view/4483243121) | Columbia, MO, USA | MFG_PROD | DIRECTOR_PLUS | $175K-$215K |
 | JOBSPY:linkedin | AMETEK | [Director of Operations](https://www.linkedin.com/jobs/view/4493209777) | Garden City, NY, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Merck | [Director, Operations - Drug Product (Biologics)](https://www.linkedin.com/jobs/view/4458529009) | Wilmington, DE, USA | MFG_PROD | DIRECTOR_PLUS | $173K-$273K |
-| JOBSPY:linkedin | Universal Air Filter | [Plant Manager](https://www.linkedin.com/jobs/view/4494043331) | Sauget, IL, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | CMC | [Plant Manager - Recycling](https://www.linkedin.com/jobs/view/4492831991) | Rockwood, TN, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Mauser Packaging Solutions | [Plant Manager](https://www.linkedin.com/jobs/view/4487020186) | Charlotte, NC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Ash Grove Cement Company | [Plant Manager](https://www.linkedin.com/jobs/view/4491933641) | Midlothian, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Arcosa Inc. | [Manufacturing Ops Mgr / Plant Manager](https://www.linkedin.com/jobs/view/4448324137) | Houston, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | CRH | [Plant Manager](https://www.linkedin.com/jobs/view/4492479682) | Midlothian, TX, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Legrand | [Director, Advanced Manufacturing Engineering](https://www.linkedin.com/jobs/view/4493929625) | West Hartford, CT, USA | MFG_ENG | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Structural Concepts Corporation | [Director of Manufacturing Engineering](https://www.linkedin.com/jobs/view/4493451394) | Norton Shores, MI, USA | MFG_ENG | DIRECTOR_PLUS |  |
-| JOBSPY:linkedin | Skydio | [Director, NPI Operations Engineering](https://www.linkedin.com/jobs/view/4486893493) | San Mateo, CA, USA | MFG_PROD | DIRECTOR_PLUS | $230K-$303K |
 | JOBSPY:linkedin | Skydio | [Director, NPI Operations Engineering](https://www.linkedin.com/jobs/view/4486894332) | Hayward, CA, USA | MFG_PROD | DIRECTOR_PLUS | $230K-$303K |
 | JOBSPY:linkedin | Nobel Biocare | [Director of Advanced Manufacturing Engineering](https://www.linkedin.com/jobs/view/4492659573) | Mahwah, NJ, USA | MFG_ENG | DIRECTOR_PLUS |  |
 | JOBSPY:linkedin | Blue Origin | [Director of Manufacturing, Operations & Assembly](https://www.linkedin.com/jobs/view/4487850720) | Huntsville, AL, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -89,11 +82,8 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:linkedin | CVS Health | [Senior Manager, Site Reliability Engineering & Operations](https://www.linkedin.com/jobs/view/4493957279) | Nashville, TN, USA | MFG_PROD | SR_MANAGER | $107K-$213K |
 | JOBSPY:linkedin | Rivian | [Sr. Manager, Manufacturing Engineering - Workplace Integration (General Assembly)](https://www.linkedin.com/jobs/view/4494313416) | Plymouth, MI, USA | MFG_ENG | SR_MANAGER |  |
 | JOBSPY:linkedin | Catalent | [Senior Manager - Biomanufacturing, Manufacturing Technical Operations](https://www.linkedin.com/jobs/view/4494441683) | Madison, WI, USA | MFG_PROD | SR_MANAGER |  |
-| JOBSPY:linkedin | SANY America | [Senior Manager – Reman & Refurb Operations](https://www.linkedin.com/jobs/view/4488876881) | Peachtree City, GA, USA | MFG_PROD | SR_MANAGER |  |
 | JOBSPY:linkedin | Thermo Fisher Scientific | [Sr. Manager Manufacturing Engineer](https://www.linkedin.com/jobs/view/4492311350) | Ridgefield, NJ, USA | MFG_ENG | SR_MANAGER | $155K-$233K |
 | JOBSPY:linkedin | Stored Energy Systems LLC (SENS) | [Senior Manager, Manufacturing Engineering](https://www.linkedin.com/jobs/view/4492592824) | Longmont, CO, USA | MFG_ENG | SR_MANAGER | $120K-$175K |
-| JOBSPY:linkedin | Varda Space Industries | [Principal Manufacturing Engineer (Propulsion)](https://www.linkedin.com/jobs/view/4483743364) | El Segundo, CA, USA | MFG_ENG | SR_STAFF |  |
-| JOBSPY:linkedin | Varda Space Industries | [Principal Manufacturing Engineer (Payloads)](https://www.linkedin.com/jobs/view/4475767302) | El Segundo, CA, USA | MFG_ENG | SR_STAFF |  |
 | JOBSPY:linkedin | Airtech Vacuum | [Director, NPI Program Management & Manufacturing Launch](https://www.linkedin.com/jobs/view/4494960827) | Benton Harbor, MI, USA | MFG_PROD | DIRECTOR_PLUS | $159K-$238K |
 | JOBSPY:linkedin | Airtech Vacuum | [Director, NPI Program Management & Manufacturing Launch](https://www.linkedin.com/jobs/view/4494974232) | Linthicum Heights, MD, USA | MFG_PROD | DIRECTOR_PLUS | $159K-$238K |
 | JOBSPY:linkedin | Bevi | [Director, New Product Development Engineering](https://www.linkedin.com/jobs/view/4492196247) | Boston, MA, USA | MFG_PROD | DIRECTOR_PLUS |  |
@@ -132,7 +122,6 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | Eaton | [Global Director, Operations & Supply Chain - Data Center Solutions](https://career41.sapsf.com/career?company=eatoncorpo&career_ns=job_listing&career_job_req_id=78277&lang=en_US&jobPipeline=Indeed) | Remote, USA | MFG_PROD | DIRECTOR_PLUS | $182K-$266K |
 | JOBSPY:indeed | Science Systems and Applications, Inc. | [Director of Operations](https://workforcenow.adp.com/mascsr/default/mdf/recruitment/recruitment.html?cid=a40f480a-47ae-461b-bf11-ceedb843d226&ccId=19000101_000001&jobId=493944&source=IN&lang=en_US) | Linthicum Heights, MD, USA | MFG_PROD | DIRECTOR_PLUS | $220K-$235K |
 | JOBSPY:indeed | Karman Space & Defense | [Director of Production Planning](https://grnh.se/hy9xtb8m9us) | Salt Lake City, UT, USA | MFG_PROD | DIRECTOR_PLUS | $158K-$237K |
-| JOBSPY:indeed | Nephron nitrile | [Director of Manufacturing](https://apply.clearcompany.com/nephronnitrile?jobId=66463641-d06c-5c41-2280-829330bcc88a&source=JB-1014) | Columbia, SC, USA | MFG_PROD | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | The Hershey Company | [Director, Hershey Lean System & Manufacturing Transformation](https://career4.successfactors.com/career?career%5fns=job%5flisting&company=Hersheys&navBarLevel=JOB%5fSEARCH&rcm%5fsite%5flocale=en%5fUS&career_job_req_id=131209) | Hershey, PA, USA | MFG_PROD | DIRECTOR_PLUS | $166K-$208K |
 | JOBSPY:indeed | Delta Galil | [Director of Production](https://www.comeet.com/jobs/deltagalil/78.000/director-of-production/B9.579?coref=1.11.p63_ED14) | Secaucus, NJ, USA | MFG_PROD | DIRECTOR_PLUS | $150K-$170K |
 | JOBSPY:indeed | The Honickman Companies | [Director of Operations (PCNY - Queens)](https://jobs.dayforcehcm.com/en-US/hongrp/CANDIDATEPORTAL/jobs/3947) | Queens, NY, USA | MFG_PROD | DIRECTOR_PLUS | $190K-$215K |
@@ -176,7 +165,6 @@ Priority companies with no board found: Machina Labs, GITAI, Harmattan AI, Forte
 | JOBSPY:indeed | TGA Management & Investment | [Director of Operations](https://www.indeed.com/viewjob?jk=6e676e12ad61cabf) | Los Angeles, CA, USA | MFG_PROD | DIRECTOR_PLUS | $220K-$260K |
 | JOBSPY:indeed | Humana | [Director, Quality Engineering, Primary Care](https://click.appcast.io/t/pGXYE7pqXQvUPAxQGMj9xOd0A9FIxhKPMH_M41AQfzg=) | Dallas, TX, USA | QUALITY | DIRECTOR_PLUS | $157K-$215K |
 | JOBSPY:indeed | Taco Bell | [Director of Operations](https://apply.jobappnetwork.com/clients/12663/posting/35C8AB03-C145-4AF9-8959-3CA4D2EBB61A/en?src=Indeed_Organic_Jobs&dt=1126&utm_source=Indeed_Organic_Jobs&utm_medium=Organic&utm_campaign=Indeed_Organic_Jobs) | White City, OR, USA | MFG_PROD | DIRECTOR_PLUS | $100K-$152K |
-| JOBSPY:indeed | Avel eCare | [Director of Quality](https://ht-jobs.net/b7k0act?s=in) | Remote, USA | QUALITY | DIRECTOR_PLUS |  |
 | JOBSPY:indeed | Abbott | [Director, Operational Excellence](https://www.jobs.abbott/us/en/job/ABLAUS31167988ENUSEXTERNAL/Director-Operational-Excellence?utm_source=indeed&utm_medium=phenom-feeds) | Madison, WI, USA | MFG_PROD | DIRECTOR_PLUS | $149K-$299K |
 | JOBSPY:indeed | Tandem Foods | [Senior Director of Operations](https://recruiting.adp.com/srccsh/public/RTI.home?r=5001239502106&c=2223339&d=ExternalCareerSite&rb=INDEED&idUnique=5001239502106) | Pittsburgh, PA, USA | MFG_PROD | DIRECTOR_PLUS | $202K-$277K |
 | JOBSPY:indeed | MacAllister Machinery Company, Inc. | [Director - Corporate Continuous Improvement](https://macallistercareers.ttcportals.com/jobs/18503099-director-corporate-continuous-improvement?tm_job=2026-1885&tm_event=view&tm_company=14633) | Indianapolis, IN, USA | MFG_PROD | DIRECTOR_PLUS |  |
