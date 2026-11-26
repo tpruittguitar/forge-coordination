@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T20:48:31.834Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T204449729Z",
+ "at": "2026-11-26T21:03:07.981Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T205544614Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T20:44:58.821Z",
-  "sha256": "48ba1e2d61f9800ecccb3ccad9d79f325f30bc76261facd6e9b3ba2ba6846bf8",
-  "rows": 7984
+  "readAt": "2026-11-26T20:55:53.578Z",
+  "sha256": "3c592bcea80b23c575a883c5fabf0e420cb22e1c12b2cb3a036d8fce0449d872",
+  "rows": 7987
  },
- "rows": 7984,
- "eligible": 685,
+ "rows": 7987,
+ "eligible": 688,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -49,10 +49,10 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 327,
- "skipped_recent": 156,
+ "degree": 1,
+ "estimates": 1,
+ "estimate_waiting_for_posting": 328,
+ "skipped_recent": 158,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,15 +62,19 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 1,
  "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "agg_tried": {
+  "linkedin": 1
+ },
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 1,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -78,11 +82,11 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
@@ -103,9 +107,9 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 1,
+  "saved_reused": 1,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
@@ -116,7 +120,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T20:45:04.936Z",
+  "profile_as_of": "2026-11-26T20:55:58.472Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1214,9 +1218,8 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 329,
- "nothing_found": 329,
- "attempt_only_skipped": 2,
+ "not_attempted": 331,
+ "nothing_found": 331,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1226,7 +1229,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 752,
+  "no_overview": 755,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 446,
@@ -1238,10 +1241,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 503,
- "network_requests": 4,
- "planned": 0,
+ "roles_researched": 504,
+ "network_requests": 5,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_unconfirmed": 1,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1249,10 +1254,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 251,
+  "NOT_YET_ATTEMPTED": 253,
   "SOURCE_RESEARCH_REQUIRED": 372,
+  "EVIDENCE_FOUND": 41,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 17,
-  "EVIDENCE_FOUND": 40,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -1573,6 +1578,34 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T20:27:46.631Z",
    "retryAt": "2026-11-26T21:27:46.631Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-EFA18B241EEF",
+   "company": "Humana",
+   "title": "Director, Quality Engineering, Primary Care",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-048AC7B6A8E3",
+   "company": "Ascend Advanced Therapies FL, Inc.",
+   "title": "Senior Manager, Quality Assurance Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -5364,6 +5397,32 @@
    "status": "RETRY_BACKOFF",
    "lastAttemptAt": "2026-11-26T20:27:50.097Z",
    "retryAt": "2026-11-26T21:27:50.097Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-FC10735187D4",
+   "company": "Visa",
+   "title": "Senior Manager - Data Center Operations",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T20:45:44.934Z",
+   "retryAt": "2026-11-26T21:45:44.934Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-0CC7B50F5F47",
+   "company": "SANTA MARIA INDEPENDENT SCHOOL DISTRICT",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T20:45:44.935Z",
+   "retryAt": "2026-11-26T21:45:44.935Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -12571,7 +12630,55 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-E9F5B7959E40",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4476925830",
+    "DEGREE_ASOF": "2026-11-26",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 272000,
+    "SALARY_BASE_HIGH": 350000,
+    "SALARY_MIDPOINT": 311000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4483567639 (as of 2026-11-01); https://uscareers-fujifilm.icims.com/jobs/39262/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-21); https://job-boards.greenhouse.io/treelinebiosciences/jobs/6230210004 (as of 2026-11-05); https://www.linkedin.com/jobs/view/4487517489 (as of 2026-11-05); https://jobs.baxter.com/en/job/deerfield/vp-global-quality-and-regulatory-excellence/152/102637319472 (as of 2026-11-04); https://www.linkedin.com/jobs/view/4480205571 (as of 2026-11-03); https://www.linkedin.com/jobs/view/4486422220 (as of 2026-11-03)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-E2A4B7249CB4, V2I-61D7A3CC0D46, V2I-0BDA9CD1B708, V2I-7EFC07AD3A2A, V2I-C3DDBC9526C6, V2I-1C6249E61595, V2I-24A3A2EA3314]; 7 employer-posted comparable(s), level 4 QUALITY any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; BLS CA 113051 P25-P90 $102K-$222K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 330500
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-E9F5B7959E40",
+   "company": "Power Integrations",
+   "title": "VP, Global Product & Quality Excellence",
+   "location": "San Jose, CA, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4476925830",
+   "est": [
+    272000,
+    350000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 4 QUALITY any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts",
+   "comparables": [
+    "V2I-E2A4B7249CB4",
+    "V2I-61D7A3CC0D46",
+    "V2I-0BDA9CD1B708",
+    "V2I-7EFC07AD3A2A",
+    "V2I-C3DDBC9526C6",
+    "V2I-1C6249E61595",
+    "V2I-24A3A2EA3314"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
