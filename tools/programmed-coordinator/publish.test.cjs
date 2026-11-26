@@ -14,6 +14,17 @@ test('real concurrent timestamp conflict publishes both commits and newest obser
 test('clean committed checkout retries a previously unpublished receipt',t=>{const f=fixture(t);save(f.local,'receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json',{runId:'retained'});commit(f.local,'retained after failed push');a.equal(g(f.local,'status','--porcelain'),'');publish(f.local);a.equal(JSON.parse(g(f.local,'show','origin/main:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'retained');});
 test('push race retries fetch/rebase and preserves concurrent work',t=>{const f=fixture(t);save(f.local,'state/PROGRAMMED_COORDINATOR_REPORT.json',{runId:'new'});let races=0;const r=publish(f.local,{beforePush(n){if(n===0){save(f.bot,'independent.json',{race:true});commit(f.bot,'push race');g(f.bot,'push','origin','main');races++;}}});a.equal(races,1);a.equal(r.attempts,2);a.equal(JSON.parse(g(f.local,'show','origin/main:independent.json')).race,true);});
 for(const extra of [{policyCommit:'new-policy'},{disabledRules:['real-policy-change']}])test('semantic guard conflict aborts the rebase and keeps the local commit: '+JSON.stringify(extra),t=>{const f=fixture(t);race(f,extra);a.throws(()=>publish(f.local),/Semantic guard conflict/);aborted(f.local);a.equal(JSON.parse(g(f.local,'show','HEAD:receipts/FORGE-CODE-CHATGPT-TEST_TERMINAL.json')).runId,'test');});
+
+test('enrichment worker partition is allowed and retained checkout stays clean',t=>{
+ const f=fixture(t);
+ const file='control/ENRICHMENT_WORKER_PARTITION.json';
+ a.equal(require('./publish.cjs').allowed(file),true);
+ save(f.local,file,{partition:'alpha'});
+ commit(f.local,'partition retained change');
+ a.equal(require('./publish.cjs').retainedSafe(f.local).safe,true);
+ a.equal(publish(f.local).published,true);
+});
+
 test('unknown changes cannot be accidentally published',t=>{const f=fixture(t);save(f.local,'unexpected.json',{unsafe:true});a.throws(()=>publish(f.local),/Unexpected changed/);});
 
 test('exception accounting publishes new immutable reviews and rejects changes to existing reviews',t=>{
