@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261126T0954Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261126T1051Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (65 read, 0 failed) | 148 | 41 | 55 |
+| Employer job boards (65 read, 0 failed) | 148 | 38 | 58 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -21,7 +21,7 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 |---|---:|---:|
 | DIRECTOR_PLUS | 25 | 20 |
 | SR_MANAGER | 9 | 9 |
-| SR_STAFF | 7 | 26 |
+| SR_STAFF | 4 | 29 |
 
 ## New roles
 
@@ -53,9 +53,6 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 | BOARD:lever | P2 CesiumAstro | [Senior Manager, Supplier Quality](https://jobs.lever.co/CesiumAstro/7ef913f0-2710-4019-86b5-589f9315da1d) | El Segundo, CA | QUALITY | SR_MANAGER | $164K-$201K |
 | BOARD:lever | P2 CesiumAstro | [Senior Manager, Supplier Quality](https://jobs.lever.co/CesiumAstro/984cdf0e-5554-4423-a37b-06056ca50768) | Melbourne, FL | QUALITY | SR_MANAGER |  |
 | BOARD:lever | P2 CesiumAstro | [Senior Manager, Supplier Quality](https://jobs.lever.co/CesiumAstro/f3973457-9513-437e-804e-3ca8010ad311) | Westminster, CO | QUALITY | SR_MANAGER | $157K-$192K |
-| BOARD:lever | P2 CesiumAstro | [Senior Staff Assembly, Integration & Test (AIT) Engineer - $15K Sign On Bonus](https://jobs.lever.co/CesiumAstro/87307229-d0d5-4fd7-bb55-705f972e94b2) | Westminster, CO | MFG_PROD | SR_STAFF | $184K-$225K |
-| BOARD:lever | P2 CesiumAstro | [Staff Quality Engineer](https://jobs.lever.co/CesiumAstro/0c929d95-b253-4586-abe5-da1ccec8fc25) | Austin, TX | QUALITY | SR_STAFF |  |
-| BOARD:lever | P2 CesiumAstro | [Staff Quality Engineer](https://jobs.lever.co/CesiumAstro/7e5943a1-db63-4412-9a8c-79badeb3a9aa) | Westminster, CO | QUALITY | SR_STAFF | $136K-$167K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 CHAOS Industries | [VP of Business Systems and Operations ](https://job-boards.greenhouse.io/chaosindustries/jobs/5307051007) | El Segundo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
