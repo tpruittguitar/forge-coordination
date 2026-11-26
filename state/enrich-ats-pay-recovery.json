@@ -1,7 +1,7 @@
 {
   "schema": "forge.enrichment-recovery.v1",
-  "at": "2026-11-26T14:39:19.557Z",
-  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T143422207Z",
+  "at": "2026-11-26T14:53:51.484Z",
+  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z",
   "rows": [
     {
       "id": "V2I-AED5F3361C2D",
@@ -51,16 +51,44 @@
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
-      "id": "V2I-E426B605493A",
-      "company": "PT Solutions Physical Therapy",
-      "title": "Director District of Operations (Physical Therapist)",
+      "id": "V2I-FB5391F880D5",
+      "company": "Jacobs",
+      "title": "Executive Director of Operations - California",
       "needs": [
         "SALARY",
         "DEGREE"
       ],
       "status": "EVIDENCE_FOUND",
-      "lastAttemptAt": "2026-11-26T14:35:14.821Z",
-      "retryAt": "2026-11-26T15:35:14.821Z",
+      "lastAttemptAt": "2026-11-26T14:49:22.597Z",
+      "retryAt": "2026-11-26T15:49:22.597Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-2007F81507CE",
+      "company": "Crowley Maritime Corporation",
+      "title": "Director, Terminal Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T14:49:22.791Z",
+      "retryAt": "2026-11-26T15:49:22.791Z",
+      "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-37F053A97771",
+      "company": "California State Polytechnic University Pomona",
+      "title": "Director, Farm Operations",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T14:49:22.792Z",
+      "retryAt": "2026-11-26T15:49:22.792Z",
       "attempts": [],
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
@@ -3666,8 +3694,8 @@
         "DEGREE"
       ],
       "status": "SOURCE_RESEARCH_REQUIRED",
-      "lastAttemptAt": "2026-11-26T10:11:42.518Z",
-      "retryAt": "2026-11-26T14:11:42.518Z",
+      "lastAttemptAt": "2026-11-26T14:49:24.551Z",
+      "retryAt": "2026-11-26T22:49:24.551Z",
       "attempts": [
         {
           "url": "https://austalusa.wd1.myworkdayjobs.com/wday/cxs/austalusa/austal/job/Quality-Trades-Support_R0012184",
@@ -11101,6 +11129,78 @@
         }
       ],
       "at": "2026-11-26T13:16:11.875Z",
+      "status": "POSTING_OR_UNCONFIRMED"
+    },
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-B01": {
+      "ids": [
+        "V2I-FB5391F880D5",
+        "V2I-2007F81507CE",
+        "V2I-37F053A97771"
+      ],
+      "requestIds": [
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-E001",
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-R002",
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-R003"
+      ],
+      "requests": [
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-E001",
+            "primaryId": "V2I-FB5391F880D5",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "SALARY_BASE_LOW": 300000,
+              "SALARY_BASE_HIGH": 390000,
+              "SALARY_MIDPOINT": 345000,
+              "SALARY_BASIS": "EMPLOYER_POSTED",
+              "SALARY_SOURCE": "https://careers.jacobs.com/en_US/careers/JobDetail/Executive-Director-of-Operations-California/48246",
+              "SALARY_ASOF": "2026-11-25",
+              "SALARY_CONF": "HIGH",
+              "DEGREE_TEXT": "Bachelor's or advanced degree in related field",
+              "DEGREE_REQ": "REQUIRED",
+              "DEGREE_EVIDENCE_URL": "https://careers.jacobs.com/en_US/careers/JobDetail/Executive-Director-of-Operations-California/48246",
+              "DEGREE_ASOF": "2026-11-25",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+              "SALARY_SCORE_POINT": 367500
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-R002",
+            "primaryId": "V2I-2007F81507CE",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "Bachelor's degree in logistics, business administration, transportation or related field; or a combination of post-high school and equal experience may be substituted for education.",
+              "DEGREE_REQ": "REQUIRED",
+              "DEGREE_EVIDENCE_URL": "https://careers.crowley.com/jobs/10115/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+              "DEGREE_ASOF": "2026-11-25",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T144837332Z-R003",
+            "primaryId": "V2I-37F053A97771",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "Bachelor's Degree - Required fields include: agricultural science, agricultural management, agribusiness, agricultural business, agricultural economics, business administration, finance, or a closely related field is required.",
+              "DEGREE_REQ": "REQUIRED",
+              "DEGREE_EVIDENCE_URL": "https://careers.cpp.edu/en-us/job/564177/director-farm-operations",
+              "DEGREE_ASOF": "2026-11-24",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+            }
+          }
+        }
+      ],
+      "at": "2026-11-26T14:49:32.561Z",
       "status": "POSTING_OR_UNCONFIRMED"
     }
   },
