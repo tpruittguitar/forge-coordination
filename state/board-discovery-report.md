@@ -1,4 +1,4 @@
-# Forge source trial FORGE-SOURCE-TRIAL-20261126T1537Z
+# Forge source trial FORGE-SOURCE-TRIAL-20261126T1724Z
 
 Read-only (REV-164). NEW is provisional; protected application states are not rediscoveries. Nothing was sent to the Writer.
 
@@ -6,7 +6,7 @@ Terminal archive: 782 rows read; archived roles count as protected, never NEW.
 
 | Source | Matching US roles | New | Already in master |
 |---|---|---|---|
-| Employer job boards (65 read, 0 failed) | 148 | 38 | 58 |
+| Employer job boards (67 read, 0 failed) | 149 | 37 | 60 |
 | HiringCafe (0 returned; 0 already found by no other source) | 0 (0 unique) | 0 | 0 |
 
 JobSpy errors: JobSpy did not run
@@ -19,7 +19,7 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 
 | Level | New | Existing |
 |---|---:|---:|
-| DIRECTOR_PLUS | 25 | 20 |
+| DIRECTOR_PLUS | 24 | 22 |
 | SR_MANAGER | 9 | 9 |
 | SR_STAFF | 4 | 29 |
 
@@ -34,8 +34,8 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 | BOARD:greenhouse | P1 Anduril | [Head of Business Line Operations, Air Dominance & Strike](https://boards.greenhouse.io/andurilindustries/jobs/5198760007?gh_jid=5198760007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Compute & Comms](https://boards.greenhouse.io/andurilindustries/jobs/5213199007?gh_jid=5213199007) | Costa Mesa, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Imaging](https://boards.greenhouse.io/andurilindustries/jobs/5260766007?gh_jid=5260766007) | Waltham, Massachusetts, United States | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | P1 Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5273710007?gh_jid=5273710007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
+| BOARD:greenhouse | P1 Anduril | [Head of Production, Maritime](https://boards.greenhouse.io/andurilindustries/jobs/5248269007?gh_jid=5248269007) | Santa Ana, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P1 Anduril | [Senior Manager, Growth Operations](https://boards.greenhouse.io/andurilindustries/jobs/5242311007?gh_jid=5242311007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P1 Anduril | [Senior Manager,  Manufacturing Safety Engineering](https://boards.greenhouse.io/andurilindustries/jobs/5260514007?gh_jid=5260514007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
 | BOARD:greenhouse | P1 Anduril | [Senior Manager, Product Operations](https://boards.greenhouse.io/andurilindustries/jobs/5279956007?gh_jid=5279956007) | Costa Mesa, California, United States | MFG_PROD | SR_MANAGER |  |
@@ -54,7 +54,6 @@ Priority companies with no board found: Tesla, True Anomaly, Slingshot Aerospace
 | BOARD:lever | P2 CesiumAstro | [Senior Manager, Supplier Quality](https://jobs.lever.co/CesiumAstro/984cdf0e-5554-4423-a37b-06056ca50768) | Melbourne, FL | QUALITY | SR_MANAGER |  |
 | BOARD:lever | P2 CesiumAstro | [Senior Manager, Supplier Quality](https://jobs.lever.co/CesiumAstro/f3973457-9513-437e-804e-3ca8010ad311) | Westminster, CO | QUALITY | SR_MANAGER | $157K-$192K |
 | BOARD:ashby | P3 Bedrock Robotics | [Head of Bedrock Operations Center  ](https://jobs.ashbyhq.com/bedrock-robotics/a69075ce-4e0d-4c52-86b4-537b6956dc27) | San Francisco, CA | MFG_PROD | DIRECTOR_PLUS |  |
-| BOARD:greenhouse | P3 CHAOS Industries | [VP of Business Systems and Operations ](https://job-boards.greenhouse.io/chaosindustries/jobs/5307051007) | El Segundo, California, United States | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:greenhouse | P3 Relativity Space | [Director, Supplier Industrialization Engineering](https://boards.greenhouse.io/relativity/jobs/8393649002?gh_jid=8393649002) | Long Beach, California | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Crusoe | [Director, Accounting – Manufacturing](https://jobs.ashbyhq.com/Crusoe/89c7e4b0-b5a0-4fec-b243-8554e3652b8f) | Tulsa, OK - US (1) | MFG_PROD | DIRECTOR_PLUS |  |
 | BOARD:ashby | Shield AI | [Director, Ops Analysis (R5036)](https://jobs.ashbyhq.com/shield/37451b51-45a6-4eff-bd46-cac71fb31c4b) | Arlington, VA, US | MFG_PROD | DIRECTOR_PLUS |  |
