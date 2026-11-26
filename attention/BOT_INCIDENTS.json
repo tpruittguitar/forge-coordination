@@ -1,7 +1,7 @@
 {
  "schema": "forge.bot-incidents.v1",
- "builtAt": "2026-11-26T10:07:40.534Z",
- "sourceCommit": "bf13bb42406a45c193bf9c3d7dfc970dd7843816",
+ "builtAt": "2026-11-26T10:12:22.272Z",
+ "sourceCommit": "fc12c4328e5b356d65da3e852cc9f821791b971e",
  "counts": {
   "total": 204,
   "BLOCKING": 0,
@@ -9,8 +9,8 @@
   "WATCH": 4,
   "DECIDE": 0,
   "JOBS": 0,
-  "FAILED": 197,
-  "UPKEEP": 7
+  "FAILED": 196,
+  "UPKEEP": 8
  },
  "items": [
   {
@@ -2410,7 +2410,7 @@
    "action": "Code: reconcile only affected assignments against original requests and current ownership; preserve uncertain-write fences. This is not a reason to block unrelated code PRs.",
    "source": "control/GROK_INTAKE_HELPER_WORK.json",
    "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/control/GROK_INTAKE_HELPER_WORK.json",
-   "at": "2026-11-26T10:07:40.534Z",
+   "at": "2026-11-26T10:12:22.272Z",
    "raisedBy": "CODE"
   },
   {
@@ -2450,15 +2450,15 @@
    "raisedBy": ""
   },
   {
-   "id": "run-unfinished:POSTVAL|CHATGPT",
-   "section": "FAILED",
+   "id": "lane-overdue:CODE",
+   "section": "UPKEEP",
    "level": "WATCH",
-   "title": "POSTVAL · CHATGPT — run never wrote a terminal receipt",
-   "detail": "Last receipt phase: unknown. Work from that run may be incomplete or unrecorded.",
-   "action": "Owner lane: write the terminal receipt or rerun; check whether its Writer requests landed.",
-   "source": "receipts/FORGE-POSTVAL-CHATGPT-20261125-2114ET.txt",
-   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-POSTVAL-CHATGPT-20261125-2114ET.txt",
-   "at": "2026-11-25T21:14:00-05:00",
+   "title": "CODE lane has gone quiet (usually reports every 1.1 h)",
+   "detail": "Last receipt FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json (CHATGPT, status unstated). The scheduled task may be paused, out of usage, or failing before it writes a receipt. If this lane was retired on purpose, tell Claude so it can be dismissed.",
+   "action": "Check the lane's scheduled task and its AI usage; restart it if stopped.",
+   "source": "receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
+   "sourceUrl": "https://github.com/tpruittguitar/forge-coordination/blob/main/receipts/FORGE-CODE-CHATGPT-20261126T041023407Z_TERMINAL.json",
+   "at": "2026-11-26T04:10:23Z",
    "raisedBy": "CHATGPT"
   }
  ]
