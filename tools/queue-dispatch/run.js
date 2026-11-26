@@ -49,6 +49,7 @@ function main() {
       '-f', 'parent_run_id=' + parent,
       '-f', 'depth=' + String(decision.nextDepth)
     ];
+    if (skipSelfDispatch(target, repo, parent)) continue;
     console.log('gh ' + args.join(' '));
     try {
       execFileSync('gh', args, { stdio: ['ignore', 'inherit', 'pipe'] });
@@ -66,8 +67,38 @@ function isDisabledError(text) {
   return /disabled workflow/i.test(String(text || ''));
 }
 
+// A newer workflow_dispatch makes GitHub cancel a run already pending in the source-intake-auto
+// concurrency group, so a self-dispatch while another run is queued only churns (cs-59c4d9d5).
+const ACTIVE_RUN_STATUSES = new Set(['queued', 'in_progress', 'pending', 'waiting', 'requested']);
+
+function otherActiveRuns(runs, selfRunId) {
+  return (Array.isArray(runs) ? runs : []).filter((run) => run && ACTIVE_RUN_STATUSES.has(String(run.status))
+    && String(run.databaseId) !== String(selfRunId || ''));
+}
+
+function listRuns(workflow, repo) {
+  const out = execFileSync('gh', ['run', 'list', '--workflow', workflow, '--repo', repo, '--limit', '20',
+    '--json', 'databaseId,status'], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] });
+  return JSON.parse(out);
+}
+
+function skipSelfDispatch(target, repo, selfRunId, list = listRuns) {
+  if (target.workflow !== 'source-intake-auto.yml' || target.reason !== 'self') return false;
+  let active;
+  try {
+    active = otherActiveRuns(list(target.workflow, repo), selfRunId);
+  } catch (err) {
+    // Fail open: without a run list, dispatch exactly as before.
+    console.log('could not list ' + target.workflow + ' runs; dispatching as before');
+    return false;
+  }
+  if (!active.length) return false;
+  console.log('skipped ' + target.workflow + ': run ' + active.map((run) => run.databaseId).join(', ') + ' already queued or running');
+  return true;
+}
+
 if (require.main === module) {
   main();
 }
 
-module.exports = { main, isDisabledError };
+module.exports = { main, isDisabledError, otherActiveRuns, skipSelfDispatch };
