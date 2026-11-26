@@ -637,7 +637,7 @@ async function loadModule(name) { const src = await fcFile('apps-script/' + name
       }catch{} // Unsupported/failed sources retain the original estimate, never erase it.
     }
     // Card 4c64076: a row with no saved posting read gets one retry of its own aggregator page (LinkedIn etc.) inside the same
-    // review read cap. Before this, a failed first read left the estimate final forever (MATHESON V2I-2B28826AE3AE; 112 rows).
+    // review read cap. Before this, a failed first read left the estimate final forever (112 rows).
     const reviewAgg=!exact&&!skipSalaryLookup?L.aggregatorFor(r.p):null;
     if(reviewAgg&&!postingCache.find(r,[reviewAgg.page])&&attempts<2&&review.target_reads<(CONFIG.maxSalaryReviewReads??6)&&Date.now()<reviewDeadline&&Date.now()-T0<CONFIG.maxRunMs&&providerAllowed(reviewAgg.fetch)){
       attempts++;review.target_reads++;review.aggregator_reads=(review.aggregator_reads||0)+1;
