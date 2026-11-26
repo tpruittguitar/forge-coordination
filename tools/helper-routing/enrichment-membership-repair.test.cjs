@@ -4,17 +4,17 @@ const R=require('./enrichment-membership-repair.cjs'),E=require('./enrichment.cj
 function fixture(){
  const items=R.IDS.map((primaryId,index)=>({primaryId,provider:'ChatGPT',owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status:'ASSIGNED',company:'Example '+index,title:'Manufacturing Director',location:'Town, ST',missingFields:['SALARY'],sourceUrls:['https://example.com/job/'+index],priorAttempts:[],canonicalObservedAt:'2026-11-10T21:39:04.816Z',rowSha256:'a'.repeat(64),sourceReport:'CANONICAL_WRITER_MASTER',researchProvenance:{schema:'forge.enrichment-research-provenance.v1',canonicalSourceSha256:'b'.repeat(64),recoveryRun:null,sourceFingerprint:'c'.repeat(64),retryAt:null}}));
  const protectedItems=['PROTECTED_SKIP','CONSUMED','RETURNED_PENDING_REVIEW','RETURNED_PARTIALLY_CONSUMED','ALREADY_COMPLETE'].map((status,n)=>({primaryId:'V2I-OTHER'+n,owner:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',status,requestId:'original-'+n,unknownFuture:{preserve:true},coordinatorConsumption:{proof:'old-proof'}}));
- return {schema:'forge.enrichment-helper-work.v1',assignmentId:'GROK-ENRICH-20261101-V1',provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',enabled:true,routingActive:true,unknownRoot:{preserve:'all'},items:[...protectedItems,...items,...items.map(i=>({...i,canonicalObservedAt:'2026-11-10T21:41:34.612Z'}))]};
+ return {schema:'forge.enrichment-helper-work.v1',assignmentId:'GROK-ENRICH-20261101-V1',provider:'ChatGPT',taskKey:'FORGE_CHATGPT_ENRICHMENT_RESEARCH',enabled:true,routingActive:true,unknownRoot:{preserve:'all'},items:[...items,...protectedItems,...items.map(i=>({...i,canonicalObservedAt:'2026-11-10T21:41:34.612Z'}))]};
 }
 function prepared(work=fixture()){const raw=JSON.stringify(work,null,2)+'\n';return {raw,expectedBlobSha:R.blob(raw)};}
 function temporary(t){const root=fs.mkdtempSync(path.join(os.tmpdir(),'forge-membership-'));t.after(()=>fs.rmSync(root,{recursive:true,force:true}));return root;}
 test('pure repair preserves all other membership, original states and both duplicate observations',()=>{
  const original=fixture(),before=structuredClone(original),p=R.plan(...(()=>{const x=prepared(original);return[x.raw,x];})());
- a.deepEqual(original,before);a.equal(p.beforeEntries,13);a.equal(p.afterEntries,9);a.equal(p.uniqueIds,9);
- a.deepEqual(p.work,{...original,items:original.items.slice(0,9)});a.deepEqual(p.observations.map(o=>o.removed),original.items.slice(9));
- a.deepEqual(p.observations.map(o=>o.kept),original.items.slice(5,9));E.validateWork(p.work);a.deepEqual(E.researchIds(p.work),new Set());
+ a.deepEqual(original,before);a.equal(p.beforeEntries,9);a.equal(p.afterEntries,7);a.equal(p.uniqueIds,7);
+ a.deepEqual(p.work,{...original,items:original.items.slice(0,7)});a.deepEqual(p.observations.map(o=>o.removed),original.items.slice(7));
+ a.deepEqual(p.observations.map(o=>o.kept),original.items.slice(0,2));E.validateWork(p.work);a.deepEqual(E.researchIds(p.work),new Set());
  a.equal(p.canonicalWrites,0);a.equal(p.writerSubmissions,0);a.equal(p.canonicalCompletion,false);a.equal(R.blob(p.output),p.afterBlobSha);
- a.throws(()=>E.validateWork(original),/overlapping/);a.throws(()=>R.plan(p.output,{expectedBlobSha:p.afterBlobSha}),/EXACT_FOUR/);
+ a.throws(()=>E.validateWork(original),/overlapping/);a.throws(()=>R.plan(p.output,{expectedBlobSha:p.afterBlobSha}),/EXACT_DUPLICATE_GROUPS/);
 });
 test('requires the concrete current content blob and known ownership',()=>{
  const x=prepared();for(const expectedBlobSha of [null,'a'.repeat(40),'not-a-sha'])a.throws(()=>R.plan(x.raw,{expectedBlobSha}),/EXACT_MEMBERSHIP_BLOB/);
@@ -23,16 +23,16 @@ test('requires the concrete current content blob and known ownership',()=>{
 test('all semantic disagreement, unknown duplicate fields, pending work and protected duplicates stay untouched',()=>{
  const changes=[i=>i.company='other',i=>i.rowSha256='f'.repeat(64),i=>i.status='PROTECTED_SKIP',i=>i.status='RETURNED_PENDING_REVIEW',i=>i.priorAttempts.push({requestId:'unknown'}),i=>i.pendingOriginal=true,i=>i.missingFields.push('DEGREE'),i=>i.canonicalObservedAt='bad',i=>i.researchProvenance.retryAt='2026-11-12T00:00:00Z',i=>i.researchProvenance.unknown='preserve'];
  for(const change of changes){const w=fixture();change(w.items.at(-1));const p=prepared(w),before=p.raw;a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED|DIVERGENT/);a.equal(p.raw,before);}
- const unknownBoth=fixture();unknownBoth.items[5].unknown=unknownBoth.items[9].unknown='even equal';let p=prepared(unknownBoth);a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED/);
- for(const change of [w=>w.items.pop(),w=>w.items.push(structuredClone(w.items.at(-1))),w=>w.items.push({...w.items[5],primaryId:'V2I-OTHER0'})]){const w=fixture();change(w);p=prepared(w);a.throws(()=>R.plan(p.raw,p),/EXACT_/);}
+ const unknownBoth=fixture();unknownBoth.items[0].unknown=unknownBoth.items[2].unknown='even equal';let p=prepared(unknownBoth);a.throws(()=>R.plan(p.raw,p),/UNSUPPORTED/);
+ for(const change of [w=>w.items.pop(),w=>w.items.push(structuredClone(w.items.at(-1))),w=>w.items.push({...w.items[0],primaryId:'V2I-OTHER0'})]){const w=fixture();change(w);p=prepared(w);a.throws(()=>R.plan(p.raw,p),/EXACT_/);}
 });
 test('write is opt-in, lock-checked, hash-bound, audited before mutation and leaves unrelated files intact',t=>{
  const root=temporary(t),work=fixture(),x=prepared(work),runId='FORGE-MEMBERSHIP-CHATGPT-TEST';S.save(root,R.FILE,work);
  S.save(root,'state/PROGRAMMED_COORDINATOR.json',{transactions:{UNKNOWN:{status:'POST_IN_FLIGHT'}}});S.save(root,'control/SHARED_HELPER_WORK.json',{grokCohort:322});
  const untouched=['state/PROGRAMMED_COORDINATOR.json','control/SHARED_HELPER_WORK.json'].map(f=>[f,fs.readFileSync(path.join(root,f),'utf8')]);
  a.throws(()=>R.writeRepair(root,{...x,runId}),/LOCK_AND_RUN/);let checks=0;
- const result=R.writeRepair(root,{...x,runId,checkLock(){checks++;}});a.equal(checks,3);a.equal(result.published,false);a.equal(result.afterEntries,9);
- const audit=S.read(root,result.auditFile);a.equal(audit.beforeBlobSha,x.expectedBlobSha);a.deepEqual(audit.observations.map(o=>o.removed),work.items.slice(9));
+ const result=R.writeRepair(root,{...x,runId,checkLock(){checks++;}});a.equal(checks,3);a.equal(result.published,false);a.equal(result.afterEntries,7);
+ const audit=S.read(root,result.auditFile);a.equal(audit.beforeBlobSha,x.expectedBlobSha);a.deepEqual(audit.observations.map(o=>o.removed),work.items.slice(7));
  a.equal(R.blob(fs.readFileSync(path.join(root,R.FILE))),result.afterBlobSha);for(const[f,raw]of untouched)a.equal(fs.readFileSync(path.join(root,f),'utf8'),raw);
  a.throws(()=>R.writeRepair(root,{...x,runId,checkLock(){}}),/EXACT_MEMBERSHIP_BLOB/);
 });
@@ -65,7 +65,7 @@ function applyHarness(t,{publishError,retainedError,saveError}={}){
 }
 for(const [stage,options]of [['save',{saveError:'SAVE_FAILED'}],['publication',{publishError:'PUSH_FAILED'}]])test('apply keeps the shared lock and immutable observations after '+stage+' uncertainty',t=>{
  const h=applyHarness(t,options);a.throws(h.apply,/preserve checkout and shared lock/);a.equal(fs.existsSync(h.lockFile),true);a.equal(h.events.includes('release'),false);
- const audit=S.read(h.root,R.AUDITS+'/FORGE-MEMBERSHIP-CHATGPT-APPLY.json');a.equal(audit.observations.length,4);a.equal(audit.canonicalWrites,0);
+ const audit=S.read(h.root,R.AUDITS+'/FORGE-MEMBERSHIP-CHATGPT-APPLY.json');a.equal(audit.observations.length,2);a.equal(audit.canonicalWrites,0);
 });
 test('apply releases only after confirmed publication, or before any mutation',t=>{
  const success=applyHarness(t);a.equal(success.apply().published,true);a.equal(fs.existsSync(success.lockFile),false);a.equal(success.events.at(-1),'release');
@@ -80,5 +80,5 @@ test('approved Git blob and audit bytes survive a real CRLF-configured checkout'
  const before=new Map([R.FILE,auditFile].map(f=>[f,fs.readFileSync(path.join(root,f))]));g('add','.');g('commit','-m','LF-bound inputs');
  for(const file of before.keys())fs.unlinkSync(path.join(root,file));g('checkout','--',...before.keys());
  for(const[file,raw]of before){a.deepEqual(fs.readFileSync(path.join(root,file)),raw);a.equal(R.blob(raw),g('rev-parse','HEAD:'+file));}
- const planned=R.plan(fs.readFileSync(path.join(root,R.FILE),'utf8'),{expectedBlobSha:g('rev-parse','HEAD:'+R.FILE)});a.equal(planned.afterEntries,9);
+ const planned=R.plan(fs.readFileSync(path.join(root,R.FILE),'utf8'),{expectedBlobSha:g('rev-parse','HEAD:'+R.FILE)});a.equal(planned.afterEntries,7);
 });
