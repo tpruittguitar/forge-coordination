@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T19:33:10.003Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z",
+ "at": "2026-11-26T19:50:47.857Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T194230608Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T19:25:33.479Z",
-  "sha256": "96e3602eeb541015a4c0ee2eca3ba0b50b313a3d7eb86f13c46a51157e278adc",
-  "rows": 7976
+  "readAt": "2026-11-26T19:42:38.571Z",
+  "sha256": "ca64b76e960095c2cc999720258c391b6222336e018a68ce8f9f7e107e3abb9d",
+  "rows": 7979
  },
- "rows": 7976,
- "eligible": 683,
+ "rows": 7979,
+ "eligible": 685,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -36,23 +36,25 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [],
+  "released_applied": [
+   "FORGE-ENRICH_ATS-ATSBOT-20261126T192520768Z-B01"
+  ],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
   "pending_batches": 5,
   "fenced_ids": 14
  },
- "anchors": 1391,
+ "anchors": 1392,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
+ "degree": 1,
+ "estimates": 1,
  "estimate_waiting_for_posting": 328,
- "skipped_recent": 156,
+ "skipped_recent": 155,
  "submitted": 0,
  "guard_dropped": 0,
  "writer_ok": 0,
@@ -62,15 +64,19 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 1,
+ "salary_submitted": 3,
  "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "agg_tried": {
+  "linkedin": 1
+ },
+ "agg_read": {
+  "linkedin": 1
+ },
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -78,17 +84,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 1,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 1,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 1,
  "posting_cache": {
   "saved": 0,
   "hits": 10,
@@ -103,20 +109,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 1,
+  "candidates": 7,
+  "saved_reused": 6,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
+  "backoff": 1,
   "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-26T19:25:39.102Z",
+  "profile_as_of": "2026-11-26T19:42:43.788Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1210,12 +1216,19 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 1,
-  "salary": 1,
-  "degree": 1
+  "planned": 2,
+  "salary": 2,
+  "degree": 2
  },
- "not_attempted": 330,
+ "not_attempted": 329,
  "nothing_found": 330,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
+ "attempt_only_skipped": 2,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1225,7 +1238,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 747,
+  "no_overview": 750,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 443,
@@ -1237,12 +1250,12 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 500,
- "network_requests": 4,
- "planned": 2,
+ "roles_researched": 503,
+ "network_requests": 8,
+ "planned": 3,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 2,
- "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
+ "writer_unconfirmed": 3,
+ "writer_error": "The operation was aborted due to timeout; receipt NO_ENTRY",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1252,7 +1265,7 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 251,
   "SOURCE_RESEARCH_REQUIRED": 372,
-  "EVIDENCE_FOUND": 41,
+  "EVIDENCE_FOUND": 43,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 14,
   "MODEL_INPUTS_REQUIRED": 5
  },
@@ -1575,24 +1588,6 @@
    "lastAttemptAt": "2026-11-26T19:07:53.367Z",
    "retryAt": "2026-11-26T20:07:53.367Z",
    "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-36C215A55CEA",
-   "company": "Turgeon Raine Jewellers",
-   "title": "Director of Operations",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "RUN_BUDGET_OR_NO_READER",
-   "lastAttemptAt": "2026-11-26T19:26:19.489Z",
-   "retryAt": "2026-11-26T21:26:19.489Z",
-   "attempts": [
-    {
-     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
-    }
-   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -4845,13 +4840,13 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T17:27:10.549Z",
-   "retryAt": "2026-11-26T19:27:10.549Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-26T19:43:34.189Z",
+   "retryAt": "2026-11-26T23:43:34.189Z",
    "attempts": [
     {
      "url": "https://nshe.wd1.myworkdayjobs.com/wday/cxs/nshe/UNR-external/job/University-of-Nevada-Reno---Main-Campus/Director--Faculty-Practice-Operations_R0154443-1",
-     "status": "NO_EXACT_COMPLETE_POSTING"
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -5061,19 +5056,6 @@
    "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
    "lastAttemptAt": "2026-11-26T17:58:44.531Z",
    "retryAt": "2026-11-26T18:58:44.531Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-FC10735187D4",
-   "company": "Visa",
-   "title": "Senior Manager - Data Center Operations",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T18:37:27.709Z",
-   "retryAt": "2026-11-26T19:37:27.709Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -5351,6 +5333,24 @@
    "lastAttemptAt": "2026-11-26T19:07:56.738Z",
    "retryAt": "2026-11-26T20:07:56.738Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-36C215A55CEA",
+   "company": "Turgeon Raine Jewellers",
+   "title": "Director of Operations",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T19:26:19.489Z",
+   "retryAt": "2026-11-26T21:26:19.489Z",
+   "attempts": [
+    {
+     "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -12540,34 +12540,89 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-D37CE1B401C6",
+   "id": "V2I-F2251B82AA06",
    "fields": {
-    "SALARY_BASE_LOW": 125000,
-    "SALARY_BASE_HIGH": 150000,
-    "SALARY_MIDPOINT": 137500,
+    "SALARY_BASE_LOW": 172000,
+    "SALARY_BASE_HIGH": 344000,
+    "SALARY_MIDPOINT": 258000,
     "SALARY_BASIS": "EMPLOYER_POSTED",
-    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+    "SALARY_SOURCE": "https://www.jobs.abbott/us/en/job/ABLAUS31168039ENUSEXTERNAL/Site-Lab-Operations-Director?utm_source=indeed&utm_medium=phenom-feeds",
+    "SALARY_ASOF": "2026-11-24",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "PREFERRED QUALIFICATIONS: Master's Degree, preferably science related.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.jobs.abbott/us/en/job/ABLAUS31168039ENUSEXTERNAL/Site-Lab-Operations-Director?utm_source=indeed&utm_medium=phenom-feeds",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 301000
+   }
+  },
+  {
+   "id": "V2I-D63AEA8C8DF0",
+   "fields": {
+    "SALARY_BASE_LOW": 100000,
+    "SALARY_BASE_HIGH": 120000,
+    "SALARY_MIDPOINT": 110000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.indeed.com/viewjob?jk=e41bfce76578fc8a",
     "SALARY_ASOF": "2026-11-25",
     "SALARY_CONF": "HIGH",
     "DEGREE_TEXT": "NOT_STATED",
     "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=e354bdb74378299d",
+    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=e41bfce76578fc8a",
     "DEGREE_ASOF": "2026-11-25",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
-    "SALARY_SCORE_POINT": 143750
+    "SALARY_SCORE_POINT": 115000
    }
   },
   {
-   "id": "V2I-0CC7B50F5F47",
+   "id": "V2I-C6A45641CAD6",
    "fields": {
-    "DEGREE_TEXT": "NOT_STATED",
-    "DEGREE_REQ": "NOT_STATED",
-    "DEGREE_EVIDENCE_URL": "https://www.indeed.com/viewjob?jk=db80b54fb179b392",
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Operations Management, Manufacturing, or a related discipline, or equivalent substantial manufacturing leadership experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4485632240",
     "DEGREE_ASOF": "2026-11-26",
-    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 144000,
+    "SALARY_BASE_HIGH": 236000,
+    "SALARY_MIDPOINT": 190000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://jobs.boeing.com/job/berkeley/testbeds-maintenance-and-operations-senior-manager/185/103782681952 (as of 2026-11-26); https://visa.wd5.myworkdayjobs.com/Visa/job/US---Denver-CO/Senior-Manager---Data-Center-Operations_REF089585W-1 (as of 2026-11-25); https://jobs.ashbyhq.com/Crusoe/0dde69d9-38ec-4b3d-a761-a4c5535eb81d (as of 2026-11-20); https://www.linkedin.com/jobs/view/4438425365 (as of 2026-11-18); https://jobs.carrier.com/job/-/-/29289/103264503152 (as of 2026-11-18); https://grnh.se/64nz24lb9us (as of 2026-11-17); https://job-boards.greenhouse.io/arspharmaceuticalsoperationsinc/jobs/5466593008 (as of 2026-11-05)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-3A71FA31EAF7, V2I-FC10735187D4, V2I-E62A4E90DC8C, V2I-9231EDE0F177, V2I-FD41C43B8A09, V2I-B7F950E13DFB, V2I-0AFB051914CC]; 7 employer-posted comparable(s), level 1.5 OPS any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW; BLS SC 111021 P25-P90 $75K-$219K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 213000
    }
   }
  ],
- "estimate_samples": [],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-C6A45641CAD6",
+   "company": "AESC US",
+   "title": "Sr. Manager Operations",
+   "location": "Columbia, South Carolina Metropolitan Area",
+   "posting": "https://www.linkedin.com/jobs/view/4485632240",
+   "est": [
+    144000,
+    236000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 OPS any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 6 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-3A71FA31EAF7",
+    "V2I-FC10735187D4",
+    "V2I-E62A4E90DC8C",
+    "V2I-9231EDE0F177",
+    "V2I-FD41C43B8A09",
+    "V2I-B7F950E13DFB",
+    "V2I-0AFB051914CC"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
