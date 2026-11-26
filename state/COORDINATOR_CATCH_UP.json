@@ -1,9 +1,9 @@
 {
   "schema": "forge.coordinator-catch-up.v1",
-  "at": "2026-11-24T00:08:09.622Z",
-  "runId": "FORGE-CODE-CHATGPT-20261123T232023555Z",
+  "at": "2026-11-26T02:43:12.431Z",
+  "runId": "FORGE-CODE-CHATGPT-20261126T011524127Z",
   "scope": "Persisted visible alert cards and coordinator intake plan; unseen historical coverage is unproven",
-  "status": "WAITING_RECONCILIATION",
+  "status": "ACTIVE",
   "verifiedPrimaryIds": [
     "V2E-910A90DFD99F",
     "V2F-111AE22AE911",
@@ -519,6 +519,7 @@
     "V2I-4BD9A2201385",
     "V2I-4BE4B094899E",
     "V2I-4BE592E7B4D7",
+    "V2I-4BEBBFEE5462",
     "V2I-4BF554570AC8",
     "V2I-4C55BC6514FC",
     "V2I-4CB6577CFBD9",
@@ -1656,32 +1657,33 @@
     "V2I-FF626C116358"
   ],
   "intake": {
-    "ready": 0,
-    "reviewCards": 1078,
+    "ready": 100,
+    "reviewCards": 1097,
     "pendingOriginalRequests": 28,
     "pendingCards": 2489,
     "statusCounts": {
       "HELD_WRITER_IDENTITY": 678,
-      "HOLD_SOURCE_IDENTITY": 1168,
-      "SOURCE_REVALIDATION_REQUIRED": 400,
-      "ORIGINAL_WRITER_FENCE": 919,
+      "HOLD_SOURCE_IDENTITY": 1261,
+      "SOURCE_REVALIDATION_REQUIRED": 419,
+      "ORIGINAL_WRITER_FENCE": 975,
       "POST_IN_FLIGHT_UNKNOWN": 2489,
+      "READY": 100,
       "REUSE_DURABLE_DISPOSITION": 5,
-      "EXCLUDED_BY_WRITER": 4,
+      "EXISTING_CANONICAL": 1,
       "CLOSED_FUNCTION_MISMATCH": 124,
       "EXCLUDED": 6
     },
-    "verifiedDistinctJobs": 1649,
-    "newVerifiedSincePrevious": 3
+    "verifiedDistinctJobs": 1650,
+    "newVerifiedSincePrevious": 1
   },
   "alerts": {
-    "awaitingCapture": 269,
-    "awaitingEvaluation": 754,
+    "awaitingCapture": 277,
+    "awaitingEvaluation": 773,
     "visibleCardsDispositioned": 60
   },
   "ai": {
-    "actionRequired": 2707
+    "actionRequired": 1890
   },
-  "nextAction": "Keep original requests fenced; Gofer/AI reconciles exceptions. Resume changed evidence and due retries.",
+  "nextAction": "Next five-minute coordinator pass drains independent READY jobs",
   "noProcessingCap": true
 }
