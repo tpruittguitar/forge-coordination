@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T11:49:37.741Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T114459606Z",
+ "at": "2026-11-26T12:02:57.461Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T115743589Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T11:45:08.987Z",
-  "sha256": "a3027b0d2a6075c39f71ce491a9404dbc4b0a2c8d96d1daf662cc35b21dd729f",
-  "rows": 7918
+  "readAt": "2026-11-26T11:57:53.085Z",
+  "sha256": "7e8c88e847b26c332422c660d5e50f9ac4b62917098fcaa838661ca408ab831c",
+  "rows": 7921
  },
- "rows": 7918,
- "eligible": 650,
+ "rows": 7921,
+ "eligible": 653,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -49,28 +49,38 @@
  "ats_read": 0,
  "ats_failed": 0,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 314,
+ "degree": 2,
+ "estimates": 2,
+ "estimate_waiting_for_posting": 315,
  "skipped_recent": 150,
- "submitted": 0,
+ "submitted": 2,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 2,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
- "agg_tried": {},
- "agg_read": {},
+ "salary_submitted": 2,
+ "salary_independently_verified": 2,
+ "agg_tried": {
+  "linkedin": 3
+ },
+ "agg_read": {
+  "linkedin": 2
+ },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 0,
+ "source_reads": 3,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -78,17 +88,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 2,
  "boards_read": 0,
  "boards_failed": 0,
  "bls": {
-  "OK": 0,
+  "OK": 2,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 2,
  "posting_cache": {
   "saved": 0,
   "hits": 7,
@@ -103,20 +113,20 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 0,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 2,
+  "candidates": 13,
+  "saved_reused": 8,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "backoff": 2,
+  "unsupported_routes": 3,
+  "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-26T11:45:15.792Z",
+  "profile_as_of": "2026-11-26T11:57:58.016Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1215,7 +1225,8 @@
   "degree": 0
  },
  "not_attempted": 317,
- "nothing_found": 317,
+ "nothing_found": 318,
+ "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1225,7 +1236,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 701,
+  "no_overview": 704,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 431,
@@ -1237,10 +1248,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 474,
- "network_requests": 4,
- "planned": 0,
+ "roles_researched": 477,
+ "network_requests": 7,
+ "planned": 2,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1249,9 +1261,9 @@
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 240,
-  "SOURCE_RESEARCH_REQUIRED": 366,
+  "SOURCE_RESEARCH_REQUIRED": 367,
+  "EVIDENCE_FOUND": 39,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
-  "EVIDENCE_FOUND": 37,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -1573,6 +1585,25 @@
    "lastAttemptAt": "2026-11-26T11:17:52.848Z",
    "retryAt": "2026-11-26T12:17:52.848Z",
    "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-42745B1B501E",
+   "company": "Oracle",
+   "title": "Senior Manager of Manufacturing Product & Test Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-26T11:59:05.922Z",
+   "retryAt": "2026-11-26T13:59:05.922Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449834248",
+     "status": "HTTP_429"
+    }
+   ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -12069,7 +12100,101 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-56CA02C962DC",
+   "fields": {
+    "DEGREE_TEXT": "Bachelor's degree in Engineering, Manufacturing, Operations, Supply Chain, Business, or a related field, or equivalent relevant experience.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4476952361",
+    "DEGREE_ASOF": "2026-11-26",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 130000,
+    "SALARY_BASE_HIGH": 202000,
+    "SALARY_MIDPOINT": 166000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://careers.straumann.com/global/en/job/STGRGLOBAL22548EXTERNALENGLOBAL/Senior-Manager-Production?utm_source=indeed&utm_medium=phenom-feeds (as of 2026-11-25); https://jobs.ashbyhq.com/shield/47c6a7d6-74e9-4b91-9bef-9690abc03786 (as of 2026-11-23); https://evotecgroup.wd3.myworkdayjobs.com/en-US/Evotec_Career_Site/job/Redmond/Senior-Manager--Manufacturing-Operations_JOBID-15338 (as of 2026-11-20); https://jsrglobal.wd1.myworkdayjobs.com/en-US/KBI_Biopharma/job/USA---CO---Boulder/Manager-Senior-Manager--Manufacturing-Investigations_R00009003 (as of 2026-11-20); https://careers.altria.com/job/Senior-Manager-Manufacturing-Training/3772-en_US (as of 2026-11-19); https://grnh.se/lkfx8hah9us (as of 2026-11-19); https://100hires.com/j/rQni3fT (as of 2026-11-18)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-7C6BE814E34C, V2I-32537E2168C3, V2I-4091C336A649, V2I-50A902F939E8, V2I-1CB8E5896C79, V2I-D72D291842B6, V2I-C3CC8006C810]; 7 employer-posted comparable(s), level 1.5 MFG same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS NV 113051 P25-P90 $87K-$187K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 184000
+   }
+  },
+  {
+   "id": "V2I-E3D3E3043A69",
+   "fields": {
+    "DEGREE_TEXT": "A bachelor's degree in engineering, manufacturing, operations, business, or a related field is preferred.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://www.linkedin.com/jobs/view/4458661304",
+    "DEGREE_ASOF": "2026-11-26",
+    "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+    "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+    "SALARY_BASE_LOW": 163000,
+    "SALARY_BASE_HIGH": 277000,
+    "SALARY_MIDPOINT": 220000,
+    "SALARY_BASIS": "FORGE-ESTIMATE",
+    "SALARY_CONF": "LOW",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_SOURCE": "comparables: https://www.indeed.com/viewjob?jk=5089e76b37f7a035 (as of 2026-11-25); https://www.linkedin.com/jobs/view/4483852093 (as of 2026-10-31); https://acibuilds.workbrightats.com/jobs/1342626-229328.html (as of 2026-11-25); https://www.amazon.jobs/jobs/10604229/director-pxt--amazon-leo-production-operations?cmpid=DA_INAD200785B (as of 2026-11-25); https://www.ferrerocareers.com/int/en/jobs/director-kinder-bueno-production-operations (as of 2026-11-25); https://epicorsoftware.wd5.myworkdayjobs.com/en-US/epicorjobs/job/US-Remote/Director-of-Consulting-Services---Manufacturing_JR105896 (as of 2026-11-25); https://careers.rich.com/job/Missouri-City-Director-of-Manufacturing-TX-77489/1453842900/ (as of 2026-11-25)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-E65164F01DE6, V2I-BC3126A7A42C, V2I-039F335DC079, V2I-3D3BF07EAD09, V2I-3F012EE9339A, V2I-5991F7BBE542, V2I-911311D39088]; 7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW; BLS FL 113051 P25-P90 $86K-$213K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 248500
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-56CA02C962DC",
+   "company": "Hyve Solutions",
+   "title": "Senior Manager, Manufacturing",
+   "location": "Las Vegas, NV, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4476952361",
+   "est": [
+    130000,
+    202000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 1.5 MFG same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-7C6BE814E34C",
+    "V2I-32537E2168C3",
+    "V2I-4091C336A649",
+    "V2I-50A902F939E8",
+    "V2I-1CB8E5896C79",
+    "V2I-D72D291842B6",
+    "V2I-C3CC8006C810"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-E3D3E3043A69",
+   "company": "Unusual Machines",
+   "title": "Director of Production - Headset and Battery",
+   "location": "Orlando, FL, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4458661304",
+   "est": [
+    163000,
+    277000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 MFG same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-E65164F01DE6",
+    "V2I-BC3126A7A42C",
+    "V2I-039F335DC079",
+    "V2I-3D3BF07EAD09",
+    "V2I-3F012EE9339A",
+    "V2I-5991F7BBE542",
+    "V2I-911311D39088"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
