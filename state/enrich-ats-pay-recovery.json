@@ -1,7 +1,7 @@
 {
   "schema": "forge.enrichment-recovery.v1",
-  "at": "2026-11-26T06:57:16.905Z",
-  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T065100721Z",
+  "at": "2026-11-26T07:14:23.864Z",
+  "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z",
   "rows": [
     {
       "id": "V2I-AED5F3361C2D",
@@ -51,17 +51,36 @@
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
-      "id": "V2I-5836B170A893",
-      "company": "Triangle Springs",
-      "title": "Director, Risk Management and Quality",
+      "id": "V2I-8CB452A28041",
+      "company": "Ohio Health Rehabilitation Hospital",
+      "title": "Director of Quality Management - Inpatient Rehab",
       "needs": [
         "SALARY",
         "DEGREE"
       ],
       "status": "EVIDENCE_FOUND",
-      "lastAttemptAt": "2026-11-26T06:52:17.912Z",
-      "retryAt": "2026-11-26T07:52:17.912Z",
+      "lastAttemptAt": "2026-11-26T07:09:46.928Z",
+      "retryAt": "2026-11-26T08:09:46.928Z",
       "attempts": [],
+      "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+    },
+    {
+      "id": "V2I-8CE4AEF224E0",
+      "company": "Impact Advisors",
+      "title": "Strategy & Operations - Director and Service Line Leader - Quality",
+      "needs": [
+        "SALARY",
+        "DEGREE"
+      ],
+      "status": "EVIDENCE_FOUND",
+      "lastAttemptAt": "2026-11-26T07:09:31.049Z",
+      "retryAt": "2026-11-26T08:09:31.049Z",
+      "attempts": [
+        {
+          "url": "https://impactadvisors.wd501.myworkdayjobs.com/wday/cxs/impactadvisors/impactadvisors/job/US-Remote/Strategy---Operations---Director-and-Service-Line-Leader---Quality_R101716",
+          "status": "HTTP_429"
+        }
+      ],
       "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
     },
     {
@@ -10744,6 +10763,63 @@
         }
       ],
       "at": "2026-11-26T03:17:05.391Z",
+      "status": "POSTING_OR_UNCONFIRMED"
+    },
+    "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z-B01": {
+      "ids": [
+        "V2I-8CE4AEF224E0",
+        "V2I-8CB452A28041"
+      ],
+      "requestIds": [
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z-R001",
+        "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z-R002"
+      ],
+      "requests": [
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z-R001",
+            "primaryId": "V2I-8CE4AEF224E0",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "Education:** Bachelor's degree in healthcare administration, public health, nursing, business, or a related field required; master's degree preferred.",
+              "DEGREE_REQ": "REQUIRED",
+              "DEGREE_EVIDENCE_URL": "https://impactadvisors.wd501.myworkdayjobs.com/en-US/impactadvisors/job/US-Remote/Strategy---Operations---Director-and-Service-Line-Leader---Quality_R101716",
+              "DEGREE_ASOF": "2026-11-25",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+            }
+          }
+        },
+        {
+          "action": "ruling",
+          "ruling": {
+            "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z-R002",
+            "primaryId": "V2I-8CB452A28041",
+            "kind": "ENRICH",
+            "actor": "ATSBOT",
+            "fields": {
+              "DEGREE_TEXT": "NOT_STATED",
+              "DEGREE_REQ": "NOT_STATED",
+              "DEGREE_EVIDENCE_URL": "https://jobs-selectmedicalcorp.icims.com/jobs/392535/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
+              "DEGREE_ASOF": "2026-11-26",
+              "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
+              "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
+              "SALARY_BASE_LOW": 130000,
+              "SALARY_BASE_HIGH": 209000,
+              "SALARY_MIDPOINT": 169500,
+              "SALARY_BASIS": "FORGE-ESTIMATE",
+              "SALARY_CONF": "LOW",
+              "SALARY_ASOF": "2026-11-26",
+              "SALARY_SOURCE": "comparables: https://talent.com/view?id=646777057785808244 (as of 2026-11-22); https://www.linkedin.com/jobs/view/4432117729 (as of 2026-10-31); https://externalcareers-ohsu.icims.com/jobs/44063/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-26); https://careers.gehealthcare.com/global/en/job/GEVGHLGLOBALR4050038EXTERNALENGLOBAL/Director-Central-Quality-Audit-Pharmacovigilance?utm_source=indeed&utm_medium=phenom-feeds (as of 2026-11-26); https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~ (as of 2026-11-22); https://communityhealthplanofimperialvalley.applytojob.com/apply/SC1SyxyGRD/Health-Plan-Quality-Director?source=INDE&~ (as of 2026-11-21); https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed (as of 2026-11-21)",
+              "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-01969D64081E, V2I-3C893FCCECAC, V2I-4BD139CDAFFD, V2I-527A1E8BE361, V2I-6C89D85095A9, V2I-5AA8CF6F2738, V2I-6A05D2BC85C5]; 7 employer-posted comparable(s), level 2 QUALITY same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS OH 113051 P25-P90 $89K-$171K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+              "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+              "SALARY_SCORE_POINT": 189250
+            }
+          }
+        }
+      ],
+      "at": "2026-11-26T07:09:55.634Z",
       "status": "POSTING_OR_UNCONFIRMED"
     }
   },

@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T06:59:16.419Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T065100721Z",
+ "at": "2026-11-26T07:16:29.766Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T070834086Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T06:51:07.881Z",
-  "sha256": "232314c08a4f01b130a2c9f0d30667e0acf0c9d66713793aa2d8710d28cbf076",
-  "rows": 7887
+  "readAt": "2026-11-26T07:08:45.500Z",
+  "sha256": "4beb4d6ca561b1661cf31f9dd6a09e8a84298428f4dc43534979aa5a1d257e2e",
+  "rows": 7889
  },
- "rows": 7887,
- "eligible": 641,
+ "rows": 7889,
+ "eligible": 642,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -45,17 +45,17 @@
  },
  "anchors": 1365,
  "archive_anchors": 5,
- "ats_rows": 0,
+ "ats_rows": 1,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 1,
  "posted_pay": 0,
  "degree": 0,
  "estimates": 1,
- "estimate_waiting_for_posting": 308,
- "skipped_recent": 144,
- "submitted": 1,
+ "estimate_waiting_for_posting": 309,
+ "skipped_recent": 146,
+ "submitted": 0,
  "guard_dropped": 0,
- "writer_ok": 1,
+ "writer_ok": 0,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
@@ -63,13 +63,9 @@
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
  "salary_submitted": 1,
- "salary_independently_verified": 1,
- "agg_tried": {
-  "linkedin": 1
- },
- "agg_read": {
-  "linkedin": 1
- },
+ "salary_independently_verified": 0,
+ "agg_tried": {},
+ "agg_read": {},
  "agg_pay": {},
  "agg_failed": {},
  "agg_errors": {},
@@ -107,7 +103,7 @@
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 2,
+  "targets": 1,
   "candidates": 22,
   "saved_reused": 18,
   "cache_hits": 0,
@@ -120,12 +116,13 @@
   "unsupported_routes": 3,
   "estimates_with_profile_sources": 1,
   "samples": [],
-  "profile_as_of": "2026-11-26T06:51:13.841Z",
+  "profile_as_of": "2026-11-26T07:08:51.036Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 19,
+ "ats_candidates": 20,
  "ats_by_kind": {
+  "workday": 1,
   "greenhouse": 18,
   "lever": 1
  },
@@ -1191,18 +1188,18 @@
  ],
  "salary_repair": {
   "skipped_blocked": 154,
-  "review_skipped_blocked": 160,
+  "review_skipped_blocked": 161,
   "by_missing": {
-   "experience fit": 224,
-   "work arrangement (remote/hybrid/on-site)": 244,
-   "products (what they make)": 242,
-   "final score": 36,
+   "experience fit": 225,
+   "work arrangement (remote/hybrid/on-site)": 245,
+   "products (what they make)": 243,
+   "final score": 37,
    "location / geography": 8
   }
  },
  "salary_review": {
-  "eligible": 324,
-  "due": 160,
+  "eligible": 325,
+  "due": 161,
   "reviewed": 0,
   "target_reads": 0,
   "posted_planned": 0,
@@ -1219,7 +1216,12 @@
  },
  "not_attempted": 311,
  "nothing_found": 311,
- "attempt_only_skipped": 2,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429"
+  ]
+ },
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1229,7 +1231,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 670,
+  "no_overview": 672,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 431,
@@ -1243,9 +1245,10 @@
  "salary_estimates_prepared": 0,
  "roles_researched": 458,
  "network_requests": 5,
- "planned": 1,
+ "planned": 2,
  "research_budget_exhausted": false,
- "writer_reply_lost": 1,
+ "writer_unconfirmed": 2,
+ "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1255,7 +1258,7 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 234,
   "SOURCE_RESEARCH_REQUIRED": 365,
-  "EVIDENCE_FOUND": 35,
+  "EVIDENCE_FOUND": 36,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
   "MODEL_INPUTS_REQUIRED": 5
  },
@@ -4777,6 +4780,19 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
+   "id": "V2I-E81AFEE34FFF",
+   "company": "Content Critical Solutions, Inc.",
+   "title": "Plant Manager",
+   "needs": [
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T06:52:18.068Z",
+   "retryAt": "2026-11-26T07:52:18.068Z",
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
    "id": "V2I-3E300502C27E",
    "company": "(R) Ladders",
    "title": "Senior Director, Service Manager",
@@ -5204,6 +5220,24 @@
     {
      "url": "https://boards-api.greenhouse.io/v1/boards/andurilindustries/jobs/5275363007?pay_transparency=true",
      "status": "NO_EXACT_COMPLETE_POSTING"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-B837D5600C29",
+   "company": "The Goodwin Group",
+   "title": "General Manager",
+   "needs": [
+    "SALARY"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T06:52:21.347Z",
+   "retryAt": "2026-11-26T07:52:21.347Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4491094431",
+     "status": "FULL_POSTING_READ"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -11898,48 +11932,58 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-5836B170A893",
+   "id": "V2I-8CE4AEF224E0",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in counseling, Social Work, Nursing, or related clinical field from an accredited school required.",
+    "DEGREE_TEXT": "Education:** Bachelor's degree in healthcare administration, public health, nursing, business, or a related field required; master's degree preferred.",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://ibnjjb.fa.ocs.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/364112",
+    "DEGREE_EVIDENCE_URL": "https://impactadvisors.wd501.myworkdayjobs.com/en-US/impactadvisors/job/US-Remote/Strategy---Operations---Director-and-Service-Line-Leader---Quality_R101716",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
+   }
+  },
+  {
+   "id": "V2I-8CB452A28041",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://jobs-selectmedicalcorp.icims.com/jobs/392535/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
     "DEGREE_ASOF": "2026-11-26",
     "SALARY_MODEL_VERSION": "pay-sample-match-v6a",
     "SALARY_CONTEXT_KEY": "44136fa355b3678a1146ad16f7e8649e94fb4fc21fe77e8310c060f61caaff8a",
     "SALARY_BASE_LOW": 130000,
-    "SALARY_BASE_HIGH": 214000,
-    "SALARY_MIDPOINT": 172000,
+    "SALARY_BASE_HIGH": 209000,
+    "SALARY_MIDPOINT": 169500,
     "SALARY_BASIS": "FORGE-ESTIMATE",
     "SALARY_CONF": "LOW",
     "SALARY_ASOF": "2026-11-26",
-    "SALARY_SOURCE": "comparables: https://www.linkedin.com/jobs/view/4484114416 (as of 2026-11-03); https://externalcareers-ohsu.icims.com/jobs/44063/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-26); https://careers.gehealthcare.com/global/en/job/GEVGHLGLOBALR4050038EXTERNALENGLOBAL/Director-Central-Quality-Audit-Pharmacovigilance?utm_source=indeed&utm_medium=phenom-feeds (as of 2026-11-26); https://talent.com/view?id=646777057785808244 (as of 2026-11-22); https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~ (as of 2026-11-22); https://communityhealthplanofimperialvalley.applytojob.com/apply/SC1SyxyGRD/Health-Plan-Quality-Director?source=INDE&~ (as of 2026-11-21); https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed (as of 2026-11-21)",
-    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-421144E1D25D, V2I-4BD139CDAFFD, V2I-527A1E8BE361, V2I-01969D64081E, V2I-6C89D85095A9, V2I-5AA8CF6F2738, V2I-6A05D2BC85C5]; 7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW; BLS NC 113051 P25-P90 $97K-$206K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
+    "SALARY_SOURCE": "comparables: https://talent.com/view?id=646777057785808244 (as of 2026-11-22); https://www.linkedin.com/jobs/view/4432117729 (as of 2026-10-31); https://externalcareers-ohsu.icims.com/jobs/44063/job?utm_source=indeed_integration&iis=Job%20Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f (as of 2026-11-26); https://careers.gehealthcare.com/global/en/job/GEVGHLGLOBALR4050038EXTERNALENGLOBAL/Director-Central-Quality-Audit-Pharmacovigilance?utm_source=indeed&utm_medium=phenom-feeds (as of 2026-11-26); https://cogiticcorporation.applytojob.com/apply/sPNAo8Afyh/Director-Of-Quality?source=INDE&~ (as of 2026-11-22); https://communityhealthplanofimperialvalley.applytojob.com/apply/SC1SyxyGRD/Health-Plan-Quality-Director?source=INDE&~ (as of 2026-11-21); https://careers.marriott.com/director-of-quality-training/job/PDX_MI_0839D419-8FB5-4BFF-B703-6739680E90E9_22130970?utm_medium=jobboard&utm_source=indeed (as of 2026-11-21)",
+    "SALARY_NOTE": "FORGE-ESTIMATE from 7 employer-posted comparable(s) [V2I-01969D64081E, V2I-3C893FCCECAC, V2I-4BD139CDAFFD, V2I-527A1E8BE361, V2I-6C89D85095A9, V2I-5AA8CF6F2738, V2I-6A05D2BC85C5]; 7 employer-posted comparable(s), level 2 QUALITY same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW; BLS OH 113051 P25-P90 $89K-$171K; this posting read, no pay stated; uncertainty: wide, few or distant comparables",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
-    "SALARY_SCORE_POINT": 193000
+    "SALARY_SCORE_POINT": 189250
    }
   }
  ],
  "estimate_samples": [
   {
    "basis": "POSTING_READ",
-   "id": "V2I-5836B170A893",
-   "company": "Triangle Springs",
-   "title": "Director, Risk Management and Quality",
-   "location": "Raleigh, NC, USA",
-   "posting": "https://ibnjjb.fa.ocs.oraclecloud.com:443/hcmUI/CandidateExperience/en/job/364112",
+   "id": "V2I-8CB452A28041",
+   "company": "Ohio Health Rehabilitation Hospital",
+   "title": "Director of Quality Management - Inpatient Rehab",
+   "location": "Dublin, OH, USA",
+   "posting": "https://jobs-selectmedicalcorp.icims.com/jobs/392535/job?iis=Job+Board&iisn=Indeed&indeed-apply-token=73a2d2b2a8d6d5c0a62696875eaebd669103652d3f0c2cd5445d3e66b1592b0f",
    "est": [
     130000,
-    214000,
+    209000,
     "LOW"
    ],
    "source": "COMPARABLES",
    "bls": "OK",
-   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region MW; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 5 eligible roles from the same comparables, so LOW",
    "comparables": [
-    "V2I-421144E1D25D",
+    "V2I-01969D64081E",
+    "V2I-3C893FCCECAC",
     "V2I-4BD139CDAFFD",
     "V2I-527A1E8BE361",
-    "V2I-01969D64081E",
     "V2I-6C89D85095A9",
     "V2I-5AA8CF6F2738",
     "V2I-6A05D2BC85C5"
