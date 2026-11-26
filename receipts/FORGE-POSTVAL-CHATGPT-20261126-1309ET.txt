@@ -1,0 +1,173 @@
+{
+  "runId": "FORGE-POSTVAL-CHATGPT-20261126T180901Z",
+  "taskKey": "FORGE_POSTING_VALIDATION",
+  "provider": "ChatGPT",
+  "at": "2026-11-26T18:10:07.1756629Z",
+  "instructionCommit": "e3e9e855ebdace5af73c268a54c20667c6c39171",
+  "entryVersion": "2026-10-18.1",
+  "releaseId": "17c3fabb0742d32141d9",
+  "packetSha256": "73392337ecb00483ce4054aa1ac3dc6bf73309147ac598dc5056f6d3701f5055",
+  "packetVerified": true,
+  "ROWS_EVALUATED": 0,
+  "LIVE": 0,
+  "CLOSED": 0,
+  "UNCONFIRMED": 0,
+  "WRITTEN": 0,
+  "VERIFIED": 0,
+  "HELD": 0,
+  "FAILED": 0,
+  "TINYFISH_FETCHES": 0,
+  "BACKLOG_REMAINING": "NOT_EVALUATED",
+  "STOP_REASON": "GRANT_ONLY_POSTING_RUNTIME_AND_PRIVATE_FUNDING_PROOF_UNVERIFIED",
+  "BATCHES_COMPLETED_THIS_RUN": 0,
+  "REQUEST_IDS": [],
+  "fundingMode": "DEFERRED_NO_MODEL_INVOCATION",
+  "credit": {
+    "at": "2026-11-26T18:00:58.831Z",
+    "weeklyUsedPct": 17,
+    "verified_left_usd": 27.1,
+    "expires": "2026-11-30",
+    "rowAt": "2026-11-26T18:00:58.268Z"
+  },
+  "pendingWorkPreserved": true,
+  "originalRequestsReplayed": 0,
+  "nextAction": "Resume posting interpretation when the supported grant-only lane runtime and private funding proof are verified. Preserve original requests and frozen assignments.",
+  "rulesBlobSha": "0f16fffc9cfdecfdfca6eef1d20de782e4b6fc67",
+  "nativeScope": "LOCAL_CODEX",
+  "laneLock": "ACQUIRED",
+  "nativeConfigurationObservation": {
+    "schema": "forge.schedule-readback.v1",
+    "at": "2026-11-26T18:09:56.822964Z",
+    "timezone": "America/New_York",
+    "owner": "ChatGPT/Codex until Tim explicitly changes it",
+    "authorization": "Tim 2026-10-28: all Pipeline Explorer automations; adjust schedules to prevent interference",
+    "executionVerified": false,
+    "note": "Fresh native configuration readback only. Per-task execution and current source coverage are independently materialized from proof receipts in state/AUTOMATION_EXECUTION_EVIDENCE.json; the GUI validates that evidence separately.",
+    "local": [
+      {
+        "id": "forge-ai-usage-reader",
+        "name": "FORGE_AI_USAGE_READER",
+        "status": "PAUSED",
+        "rrule": "RRULE:FREQ=DAILY;BYHOUR=2,8,14,20;BYMINUTE=5;BYSECOND=0",
+        "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+        "taskKey": "FORGE_AI_USAGE_READER",
+        "provider": "ChatGPT",
+        "nativeUpdatedAt": "1793778225938",
+        "sharedEntry": true,
+        "nativeConfigurationSha256": "39d7a142a1040f4d3709cdbf09d89ca561cf835eda9309c77a8cfee4691518d9",
+        "managed": true
+      },
+      {
+        "id": "forge-posting-validation",
+        "name": "FORGE_POSTING_FRESHNESS",
+        "status": "ACTIVE",
+        "rrule": "RRULE:FREQ=DAILY;BYHOUR=5,13,21;BYMINUTE=12;BYSECOND=0",
+        "target_thread_id": "01a184da-4336-7221-8a99-5e405f1af7ad",
+        "taskKey": "FORGE_POSTING_VALIDATION",
+        "provider": "ChatGPT",
+        "nativeUpdatedAt": "1795396698168",
+        "sharedEntry": true,
+        "nativeConfigurationSha256": "c880ef5dc04684be16e10ffcb6ab67bdbab95047aafdf9690dcdee67610bc994",
+        "managed": true
+      }
+    ],
+    "githubScheduleCommit": "abec07fe23b344fd64de061632b7a0325ec26838",
+    "runtimeRelease": "8c3556be433bd9736585",
+    "priorReadbackAt": "2026-10-31T00:45:23.063Z",
+    "configurationReadbackSource": "Current local Codex automation TOMLs; shared entry launcher verified",
+    "observationMethod": "Enumerated all local automation.toml files; configuration only",
+    "historicalExternalReadback": {
+      "at": "2026-10-31T00:45:23.063Z",
+      "observations": {
+        "ChatGPT cloud temporary rotation": "PAUSED, browser verified",
+        "ChatGPT cloud temporary email coverage": "PAUSED, browser verified",
+        "Grok daily stack health": "PAUSED, browser verified",
+        "Grok stale rotation check": "PAUSED, browser verified",
+        "Claude active tasks": "None matched Source=All, Status=Active; 49 hidden"
+      },
+      "note": "Historical observations only; not refreshed by local TOML readback. Current external tasks are listed separately."
+    },
+    "external": [
+      {
+        "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
+        "provider": "Claude",
+        "home": "Claude Code cloud scheduled tasks",
+        "id": "trig_01Bv6sqH17RCX6Duz4Z9U99f",
+        "schedule": "Hourly :08 UTC (same minute in America/New_York)",
+        "status": "ACTIVE",
+        "sharedEntry": true,
+        "promptChanged": true,
+        "observedAt": "2026-11-02T01:55:05.135Z",
+        "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof"
+      },
+      {
+        "taskKey": "FORGE_GROK_INTAKE_HELPER",
+        "provider": "Grok",
+        "home": "Grok native Automations",
+        "id": "5a0ab07b-d2f9-4944-8d9f-2322cf9ef9af",
+        "schedule": "Hourly :15",
+        "status": "ACTIVE",
+        "sharedEntry": true,
+        "observedAt": "2026-11-02T01:55:05.135Z",
+        "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof"
+      },
+      {
+        "taskKey": "FORGE_GROK_ENRICHMENT",
+        "provider": "Grok",
+        "home": "Grok native Automations",
+        "id": "198b1c25-7cb1-4174-964b-300fabd1f2ac",
+        "schedule": "Hourly :35",
+        "status": "ACTIVE",
+        "sharedEntry": true,
+        "observedAt": "2026-11-02T01:55:05.135Z",
+        "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof"
+      },
+      {
+        "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER",
+        "provider": "Grok",
+        "home": "Grok native Automations",
+        "id": "ddf89204-c40d-488f-afbd-5441d0811183",
+        "schedule": "Hourly :45",
+        "status": "ACTIVE",
+        "sharedEntry": true,
+        "observedAt": "2026-11-02T01:55:05.135Z",
+        "observationMethod": "Signed-in Chrome native task configuration UI; configuration is not execution proof"
+      }
+    ],
+    "configurationReadbackScope": "LOCAL_CODEX_ONLY",
+    "configurationDiscrepancies": [
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-application-outcome-tracker",
+        "taskKey": "FORGE_APPLICATION_OUTCOME_TRACKER"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-application-writer-gofer",
+        "taskKey": "FORGE_APPLICATION_WRITER_GOFER"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "forge-email-discovery",
+        "taskKey": "FORGE_EMAIL_DISCOVERY"
+      },
+      {
+        "code": "MISSING_REGISTERED_NATIVE_TASK",
+        "nativeId": "pe-stack-health-daily",
+        "taskKey": "PE_STACK_HEALTH_DAILY"
+      }
+    ],
+    "configurationInformational": [],
+    "configurationAligned": false,
+    "observationScopes": {
+      "LOCAL_CODEX": {
+        "status": "READ",
+        "at": "2026-11-26T18:09:56.822964Z"
+      },
+      "CLOUD_AUTOMATIONS": {
+        "status": "NOT_READ",
+        "reason": "Local files cannot establish cloud task configuration"
+      }
+    }
+  }
+}
