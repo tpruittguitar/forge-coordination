@@ -24,7 +24,17 @@ const ENDPOINT='https://script.google.com/macros/s/AKfycbwShspSkto70NeFWjgTuyIf-
 const SWITCH='https://api.github.com/repos/tpruittguitar/forge-coordination/contents/control/SOURCE_INTAKE_RELEASE.json?ref=main';
 const KINDS=new Set(['NEW','EXISTING_MATCH','PROTECTED_NOOP']);
 const INSERT=new Set(['SCOUT_INTAKE_WRITTEN','DISCOVERY_LEAD_WRITTEN']);
-function requestId(record){return 'FORGE-SOURCE-'+stableId(record)}
+// Request generation (Tim 2026-11-25: a deleted job that is rediscovered comes in as new). delete_rows leaves no tombstone,
+// so a COMPLETE replay-index entry can outlive its row. auto-run sets REQUEST_GENERATION 2..9 only when fresh authenticated
+// master AND archive snapshots both lack the role (request-generation.js); the id then gets a -G<n> suffix. Never sent to the Writer.
+const MAX_REQUEST_GENERATION=9;
+const validGeneration=g=>g===undefined||Number.isInteger(g)&&g>=2&&g<=MAX_REQUEST_GENERATION;
+function requestId(record){
+ const g=record?.REQUEST_GENERATION;
+ if(!validGeneration(g))throw Error('BLOCKED: invalid request generation');
+ return 'FORGE-SOURCE-'+stableId(record)+(g===undefined?'':'-G'+g);
+}
+const writerRecord=record=>{const {REQUEST_GENERATION,...rest}=record;return rest};
 const sha=s=>crypto.createHash('sha256').update(s).digest('hex');
 const validPid=x=>/^V2[A-Z]-[A-Za-z0-9_-]+$/.test(x||'');
 const norm=x=>String(x??'').trim().toLowerCase();
@@ -82,7 +92,7 @@ const WRITER_BUSY_BACKOFF_MS=[30000,60000,120000];
 const writerBusy=(response,result,rid)=>response.ok&&Outcome.classify(result,{requestId:rid}).code==='WRITER_BUSY';
 const runStage=(records,opts={})=>runIntake(records,{...opts,expectedMode:'STAGE'});
 // Per-candidate executor entry contract. auto-run applies the same check before batching (run #303).
-const reviewedCandidate=(x,auto)=>x&&x.record&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&((x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false)||(auto&&Captured.validate(x)));
+const reviewedCandidate=(x,auto)=>x&&x.record&&validGeneration(x.record.REQUEST_GENERATION)&&typeof x.record.COMPANY==='string'&&x.record.COMPANY.trim()&&typeof x.record.TITLE==='string'&&x.record.TITLE.trim()&&typeof x.record.LOCATION==='string'&&x.record.LOCATION.trim()&&/^https:\/\/[^\s/]+\//i.test(x.record.SOURCE_URL||'')&&((x.evidenceVerified===true&&x.evidenceSource==='INDEPENDENT_VERIFIED'&&/^https:\/\/[^\s/]+\//i.test(x.evidenceUrl||'')&&typeof x.primaryBusiness==='string'&&x.primaryBusiness.trim()&&x.reviewedNeverConsider===false)||(auto&&Captured.validate(x)));
 async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null,transport=globalThis.fetch,switchTransport=globalThis.fetch,sourceRunId,priorResults={},recorder,refreshReview,expectedMode='STAGE',sleep=ms=>new Promise(r=>setTimeout(r,ms))}={}){
  if(!['STAGE','AUTO'].includes(expectedMode))throw Error('BLOCKED: expected release mode must be STAGE or AUTO');
  const auto=expectedMode==='AUTO';
@@ -177,7 +187,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
   let business=review.primaryBusiness||'';
   if(captured&&business===review.discoveryEvidence.card.description)business='';
   if(captured&&!business)unknownFields=[...new Set([...(Array.isArray(unknownFields)?unknownFields:String(unknownFields).split(',').map(x=>x.trim()).filter(Boolean)),'EMPLOYER_PRIMARY_BUSINESS'])];
-  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...record,INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:business,...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
+  const body={action:'intake',key,requestId:rid,run:{SCOUT_RUN_ID:sourceRunId+'-C'+(i+1),GROSS_FOUND:1,RUN_STARTED_AT_ET:candidate.discoveredAtEt||'UNKNOWN'},records:[{...writerRecord(record),INITIAL_UNKNOWN_FIELDS:unknownFields,EMPLOYER_PRIMARY_BUSINESS:business,...(captured?{SOURCE_PROVIDER:review.discoveryEvidence.card.source}:{})}]};
   let response,result;
   for(let busy=0;;busy++){
   // Shared Writer POST lock: never overlap another Writer poster (enrich-ats-pay). Acquired before the intent is recorded,
@@ -310,4 +320,4 @@ async function inspectReceipt(record,{key=process.env.FORGE_WRITER_KEY,transport
  const back=(await read('row_readback',{key,transport,requestId:rid,primaryIds:a})).data;
  return {requestId:rid,status:'PENDING_INDEPENDENT_VERIFICATION',index,response,primaryIds:a,readback:back,verified:false};
 }
-module.exports={reviewedCandidate,requestId,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
+module.exports={reviewedCandidate,requestId,MAX_REQUEST_GENERATION,releaseRules,fetchRelease,preflight,classifyWriterResponse,runStage,runIntake,verifyAcceptedCase,verifyNoopCase,inspectReceipt};
