@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T09:01:29.576Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T085617665Z",
+ "at": "2026-11-26T10:16:47.749Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T100915657Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T08:56:27.257Z",
-  "sha256": "9bb18d12dc8202694bb67d6661c0842dd01c3a22dc63f77302d54fe64841ecd9",
-  "rows": 7897
+  "readAt": "2026-11-26T10:09:23.903Z",
+  "sha256": "24456aea186a86660eb659ffae524eb17f1afe2dd27892b43200cb1b1746d746",
+  "rows": 7907
  },
- "rows": 7897,
- "eligible": 645,
+ "rows": 7907,
+ "eligible": 655,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -45,36 +45,42 @@
  },
  "anchors": 1367,
  "archive_anchors": 5,
- "ats_rows": 18,
+ "ats_rows": 20,
  "ats_read": 0,
- "ats_failed": 0,
+ "ats_failed": 2,
  "posted_pay": 0,
- "degree": 0,
- "estimates": 0,
- "estimate_waiting_for_posting": 334,
- "skipped_recent": 121,
- "submitted": 0,
+ "degree": 1,
+ "estimates": 4,
+ "estimate_waiting_for_posting": 338,
+ "skipped_recent": 115,
+ "submitted": 10,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 10,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 10,
+ "salary_independently_verified": 10,
  "agg_tried": {
-  "linkedin": 2
+  "linkedin": 4
  },
  "agg_read": {
-  "linkedin": 2
+  "linkedin": 3
  },
  "agg_pay": {},
- "agg_failed": {},
- "agg_errors": {},
+ "agg_failed": {
+  "linkedin": 1
+ },
+ "agg_errors": {
+  "linkedin": [
+   "429"
+  ]
+ },
  "agg_wall": {},
- "source_reads": 20,
+ "source_reads": 24,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -82,17 +88,17 @@
  "workday_board_window_skips": 0,
  "workday_window_active": false,
  "est_same_employer": 0,
- "est_comparables": 0,
+ "est_comparables": 4,
  "boards_read": 0,
- "boards_failed": 0,
+ "boards_failed": 1,
  "bls": {
-  "OK": 0,
+  "OK": 4,
   "ABOVE": 0,
   "BELOW": 0,
   "NO_BLS": 0
  },
  "bls_queries": 0,
- "est_shared_low": 0,
+ "est_shared_low": 4,
  "posting_cache": {
   "saved": 0,
   "hits": 5,
@@ -100,34 +106,34 @@
  },
  "employer_benchmarks": {
   "saved": 0,
-  "discoveryReads": 0,
+  "discoveryReads": 1,
   "postingReads": 0,
   "found": 0,
   "blocked": 0
  },
  "pay_source_search": {
   "enabled": true,
-  "targets": 1,
-  "candidates": 0,
-  "saved_reused": 0,
+  "targets": 5,
+  "candidates": 62,
+  "saved_reused": 52,
   "cache_hits": 0,
   "reads": 0,
   "found": 0,
   "failed": 0,
   "no_pay_read": 0,
   "pay_unresolved": 0,
-  "backoff": 0,
-  "unsupported_routes": 0,
-  "estimates_with_profile_sources": 0,
+  "backoff": 2,
+  "unsupported_routes": 8,
+  "estimates_with_profile_sources": 4,
   "samples": [],
-  "profile_as_of": "2026-11-26T08:56:33.512Z",
+  "profile_as_of": "2026-11-26T10:09:30.087Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 21,
+ "ats_candidates": 23,
  "ats_by_kind": {
+  "workday": 4,
   "greenhouse": 18,
-  "workday": 2,
   "lever": 1
  },
  "skipped_closed": 0,
@@ -1214,13 +1220,20 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 6,
+  "salary": 6,
+  "degree": 6
  },
- "not_attempted": 313,
- "nothing_found": 313,
- "attempt_only_skipped": 28,
+ "not_attempted": 315,
+ "nothing_found": 316,
+ "attempt_only_skipped": 31,
+ "source_origin_blocks": {},
+ "ats_errors": {
+  "workday": [
+   "429",
+   "429"
+  ]
+ },
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1230,7 +1243,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 680,
+  "no_overview": 690,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 431,
@@ -1242,21 +1255,22 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 488,
- "network_requests": 24,
- "planned": 0,
+ "roles_researched": 504,
+ "network_requests": 30,
+ "planned": 10,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
-  "roles": 298,
+  "roles": 299,
   "nonblocking": true
  },
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 236,
   "SOURCE_RESEARCH_REQUIRED": 366,
+  "EVIDENCE_FOUND": 46,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 2,
-  "EVIDENCE_FOUND": 36,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -4692,50 +4706,6 @@
    "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
    "lastAttemptAt": "2026-11-26T03:15:40.102Z",
    "retryAt": "2026-11-26T04:15:40.102Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E81AFEE34FFF",
-   "company": "Content Critical Solutions, Inc.",
-   "title": "Plant Manager",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T07:57:39.297Z",
-   "retryAt": "2026-11-26T08:57:39.297Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-8CE4AEF224E0",
-   "company": "Impact Advisors",
-   "title": "Strategy & Operations - Director and Service Line Leader - Quality",
-   "needs": [
-    "SALARY"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T08:38:02.941Z",
-   "retryAt": "2026-11-26T09:38:02.941Z",
-   "attempts": [
-    {
-     "url": "https://impactadvisors.wd501.myworkdayjobs.com/wday/cxs/impactadvisors/impactadvisors/job/US-Remote/Strategy---Operations---Director-and-Service-Line-Leader---Quality_R101716",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-E22A14AB689E",
-   "company": "PwC",
-   "title": "Business Application Consulting - Program Risk & Quality Director",
-   "needs": [
-    "DEGREE"
-   ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T08:38:02.950Z",
-   "retryAt": "2026-11-26T09:38:02.950Z",
    "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
@@ -10096,9 +10066,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
-   "retryAt": "2026-11-26T09:08:14.621Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-26T10:11:40.984Z",
+   "retryAt": "2026-11-27T02:11:40.984Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -10114,9 +10084,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-25T17:08:14.621Z",
-   "retryAt": "2026-11-26T09:08:14.621Z",
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": "2026-11-26T10:11:40.984Z",
+   "retryAt": "2026-11-27T02:11:40.984Z",
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
@@ -11442,9 +11412,9 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
-   "lastAttemptAt": "2026-11-26T07:57:44.171Z",
-   "retryAt": "2026-11-26T09:57:44.171Z",
+   "status": "SOURCE_RESEARCH_REQUIRED",
+   "lastAttemptAt": "2026-11-26T10:11:42.518Z",
+   "retryAt": "2026-11-26T14:11:42.518Z",
    "attempts": [
     {
      "url": "https://austalusa.wd1.myworkdayjobs.com/wday/cxs/austalusa/austal/job/Quality-Trades-Support_R0012184",
@@ -11541,7 +11511,199 @@
   }
  ],
  "product_sample": [],
- "sample": [],
- "estimate_samples": [],
+ "sample": [
+  {
+   "id": "V2I-D708B5B1165A",
+   "fields": {
+    "SALARY_BASE_LOW": 218850,
+    "SALARY_BASE_HIGH": 327800,
+    "SALARY_MIDPOINT": 273325,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://marvell.wd1.myworkdayjobs.com/en-US/MarvellCareers/job/Santa-Clara-CA/Senior-Director--Architecture---Quality---Connectivity-Firmware_2605485",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "BS or MS in Electrical Engineering, Computer Engineering, Computer Science or a related field.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://marvell.wd1.myworkdayjobs.com/en-US/MarvellCareers/job/Santa-Clara-CA/Senior-Director--Architecture---Quality---Connectivity-Firmware_2605485",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 300563
+   }
+  },
+  {
+   "id": "V2I-C0D7E8B0009A",
+   "fields": {
+    "SALARY_BASE_LOW": 148200,
+    "SALARY_BASE_HIGH": 222268.8,
+    "SALARY_MIDPOINT": 185234,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.governmentjobs.com/careers/lametro/jobs/5558768/senior-director-quality-management-transit",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's Degree in Engineering, Construction, Architecture, or a related field; Master's Degree in a related field preferred",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://www.governmentjobs.com/careers/lametro/jobs/5558768/senior-director-quality-management-transit",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 203752
+   }
+  },
+  {
+   "id": "V2I-18731CAECB9E",
+   "fields": {
+    "SALARY_BASE_LOW": 95000,
+    "SALARY_BASE_HIGH": 105000,
+    "SALARY_MIDPOINT": 100000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://www.governmentjobs.com/careers/colorado/jobs/5561501/senior-manager-weatherization-quality-technical-services",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://www.governmentjobs.com/careers/colorado/jobs/5561501/senior-manager-weatherization-quality-technical-services",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 102500
+   }
+  },
+  {
+   "id": "V2I-942B48596AA1",
+   "fields": {
+    "SALARY_BASE_LOW": 90000,
+    "SALARY_BASE_HIGH": 104000,
+    "SALARY_MIDPOINT": 97000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://secure7.saashr.com/ta/6148957.careers?ShowJob=654791400",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in Finance, Accounting, Business Administration, Project Management, Operations, or a related field required.",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://secure7.saashr.com/ta/6148957.careers?ShowJob=654791400",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 100500
+   }
+  },
+  {
+   "id": "V2I-AA11F4543E13",
+   "fields": {
+    "SALARY_BASE_LOW": 150000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 165000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.qualdoc.com/job/2390-quality-director-confidential-do-not-post-virginia-beach-va?utm_source=indeed-boostie-feed&utm_medium=job-feed&source=Indeed",
+    "SALARY_ASOF": "2026-11-25",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "BS in Electrical, Mechanical, Industrial, or Manufacturing Engineering",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.qualdoc.com/job/2390-quality-director-confidential-do-not-post-virginia-beach-va?utm_source=indeed-boostie-feed&utm_medium=job-feed&source=Indeed",
+    "DEGREE_ASOF": "2026-11-25",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 172500
+   }
+  }
+ ],
+ "estimate_samples": [
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-2F09BDE72CD9",
+   "company": "Methodist Health System",
+   "title": "Director Quality Services",
+   "location": "Richardson, TX, USA",
+   "posting": "https://methodisthealthsystem.wd1.myworkdayjobs.com/MHS_Careers/job/Richardson-Texas/Director-Quality-Services_JR1000040174",
+   "est": [
+    142000,
+    228000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 4 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-E22A14AB689E",
+    "V2I-4D61304CB0DC",
+    "V2I-4698FC3EA95B",
+    "V2I-A196D7711281",
+    "V2I-308A8C264244",
+    "V2I-4BD139CDAFFD",
+    "V2I-527A1E8BE361"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-5A4265B00A8E",
+   "company": "JBAndrews",
+   "title": "Head of Quality Assurance",
+   "location": "Texas, USA",
+   "posting": "https://www.linkedin.com/jobs/view/4491910627",
+   "est": [
+    136000,
+    261000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 3 QUALITY any region; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-0F0B3F957D80",
+    "V2I-423903443340",
+    "V2I-7007C65063B7",
+    "V2I-C524EC179F39",
+    "V2I-F0C0B03EC83A",
+    "V2I-52D56F52A1E3",
+    "V2I-B79C469378AD"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-3F1E555A00DC",
+   "company": "Snoqualmie Valley Health",
+   "title": "Director of Quality, Risk, and Compliance",
+   "location": "Snoqualmie, WA, USA",
+   "posting": "https://pm.healthcaresource.com/CS/snoqualmiehospital/",
+   "est": [
+    142000,
+    214000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 2 QUALITY same region W; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 3 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-C2D696A21D4D",
+    "V2I-4BD139CDAFFD",
+    "V2I-527A1E8BE361",
+    "V2I-E22A14AB689E",
+    "V2I-01969D64081E",
+    "V2I-6C89D85095A9",
+    "V2I-5AA8CF6F2738"
+   ]
+  },
+  {
+   "basis": "POSTING_READ",
+   "id": "V2I-A413F01A6A6B",
+   "company": "Lockheed Martin",
+   "title": "Multifunctional Quality Dir - L7",
+   "location": "Huntsville, AL",
+   "posting": "https://www.linkedin.com/jobs/view/4488983227/",
+   "est": [
+    120000,
+    214000,
+    "LOW"
+   ],
+   "source": "COMPARABLES",
+   "bls": "OK",
+   "basis_detail": "7 employer-posted comparable(s), level 0 QUALITY same region S; context model pay-sample-match-v6a; 7 distinct postings; peer tier; upper endpoint = weighted upper quartile, same-employer ceiling retained; known industry, company-size band and scope mismatches excluded, missing facts at 0.75, no pay multiplier; 0 with 3+ comparable context facts; range shared by 8 eligible roles from the same comparables, so LOW",
+   "comparables": [
+    "V2I-4A25209276FC",
+    "V2I-506B0247CFBF",
+    "V2I-CF3721490E2C",
+    "V2I-E4B8D70AC2A0",
+    "V2I-559D6A8F1B2A",
+    "V2I-55BDB005DD02",
+    "V2I-5AB31DC8CB67"
+   ]
+  }
+ ],
  "ats_unconfirmed_rows": []
 }
