@@ -1,15 +1,15 @@
 {
- "at": "2026-11-26T16:30:31.658Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T162257459Z",
+ "at": "2026-11-26T16:47:27.813Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T163938320Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T16:23:08.302Z",
-  "sha256": "ada43c97e1d2dc8fa48a480baae02fb0648af1071d301d7fe52d7703c219e258",
-  "rows": 7948
+  "readAt": "2026-11-26T16:39:44.749Z",
+  "sha256": "42e5e8dd5465477407c1be757a7c62157a361fb4644c4df3d88fc23aa82c83fb",
+  "rows": 7952
  },
- "rows": 7948,
- "eligible": 666,
+ "rows": 7952,
+ "eligible": 670,
  "never_consider_excluded": 0,
  "never_consider_rules": [
   "NC-001",
@@ -37,7 +37,7 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [
-   "FORGE-ENRICH_ATS-ATSBOT-20261126T160815481Z-B01"
+   "FORGE-ENRICH_ATS-ATSBOT-20261126T162257459Z-B01"
   ],
   "released_not_applied": [],
   "drift_rows": 0,
@@ -47,13 +47,13 @@
  },
  "anchors": 1384,
  "archive_anchors": 5,
- "ats_rows": 1,
- "ats_read": 0,
+ "ats_rows": 2,
+ "ats_read": 1,
  "ats_failed": 1,
  "posted_pay": 0,
- "degree": 0,
+ "degree": 1,
  "estimates": 0,
- "estimate_waiting_for_posting": 323,
+ "estimate_waiting_for_posting": 324,
  "skipped_recent": 151,
  "submitted": 0,
  "guard_dropped": 0,
@@ -64,7 +64,7 @@
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
+ "salary_submitted": 3,
  "salary_independently_verified": 0,
  "agg_tried": {},
  "agg_read": {},
@@ -72,7 +72,7 @@
  "agg_failed": {},
  "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 2,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
@@ -92,8 +92,8 @@
  "bls_queries": 0,
  "est_shared_low": 0,
  "posting_cache": {
-  "saved": 0,
-  "hits": 7,
+  "saved": 1,
+  "hits": 8,
   "no_pay_hits": 1
  },
  "employer_benchmarks": {
@@ -118,14 +118,15 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T16:23:13.707Z",
+  "profile_as_of": "2026-11-26T16:39:50.680Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
- "ats_candidates": 23,
+ "ats_candidates": 26,
  "ats_by_kind": {
+  "ashby": 2,
+  "greenhouse": 19,
   "workday": 4,
-  "greenhouse": 18,
   "lever": 1
  },
  "skipped_closed": 0,
@@ -1212,18 +1213,20 @@
  },
  "decision_waiting": 0,
  "retained_completion": {
-  "planned": 0,
-  "salary": 0,
-  "degree": 0
+  "planned": 3,
+  "salary": 3,
+  "degree": 3
  },
  "not_attempted": 325,
  "nothing_found": 325,
+ "ats_need_salary": 1,
  "source_origin_blocks": {},
  "ats_errors": {
   "workday": [
    "429"
   ]
  },
+ "attempt_only_skipped": 1,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1233,7 +1236,7 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 725,
+  "no_overview": 729,
   "no_single_label": 0,
   "deferred": 0,
   "fenced": 437,
@@ -1245,11 +1248,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 489,
- "network_requests": 7,
- "planned": 1,
+ "roles_researched": 493,
+ "network_requests": 8,
+ "planned": 4,
  "research_budget_exhausted": false,
- "writer_unconfirmed": 1,
+ "writer_unconfirmed": 4,
  "writer_error": "The operation was aborted due to timeout; receipt COMPLETE_READBACK_UNCONFIRMED",
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
@@ -1260,7 +1263,7 @@
  "recovery_statuses": {
   "NOT_YET_ATTEMPTED": 248,
   "SOURCE_RESEARCH_REQUIRED": 369,
-  "EVIDENCE_FOUND": 36,
+  "EVIDENCE_FOUND": 40,
   "WRITER_REQUEST_PENDING_NO_REPLAY": 8,
   "MODEL_INPUTS_REQUIRED": 5
  },
@@ -12311,11 +12314,65 @@
  "product_sample": [],
  "sample": [
   {
-   "id": "V2I-AA5FB7D1B4A8",
+   "id": "V2I-DA28D5E07F68",
    "fields": {
-    "DEGREE_TEXT": "Bachelor's degree in business or a related field is required.",
+    "SALARY_BASE_LOW": 225000,
+    "SALARY_BASE_HIGH": 275000,
+    "SALARY_MIDPOINT": 250000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.ashbyhq.com/endurance-energy/88343338-32eb-41de-a3be-640405b3bc32?utm_source=zZLEaO71E6",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree in naval architecture, ocean, mechanical, or structural engineering, or a related engineering discipline",
     "DEGREE_REQ": "REQUIRED",
-    "DEGREE_EVIDENCE_URL": "https://hshs.wd1.myworkdayjobs.com/hshscareers/job/Springfield-IL/Executive-Director-Mission-Outreach-Operations_R1040371",
+    "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/endurance-energy/88343338-32eb-41de-a3be-640405b3bc32?utm_source=zZLEaO71E6",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 262500
+   }
+  },
+  {
+   "id": "V2I-0260C0AEC129",
+   "fields": {
+    "SALARY_BASE_LOW": 220000,
+    "SALARY_BASE_HIGH": 260000,
+    "SALARY_MIDPOINT": 240000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.ashbyhq.com/charge-robotics/d7c1adb9-9ed5-4111-be69-e7fa34e985a3?utm_source=nKkx0bkbZg",
+    "SALARY_ASOF": "2026-11-24",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "A degree in construction management, engineering or a related field, or equivalent experience leading field work.",
+    "DEGREE_REQ": "PREFERRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.ashbyhq.com/charge-robotics/d7c1adb9-9ed5-4111-be69-e7fa34e985a3?utm_source=nKkx0bkbZg",
+    "DEGREE_ASOF": "2026-11-24",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 250000
+   }
+  },
+  {
+   "id": "V2I-3A71FA31EAF7",
+   "fields": {
+    "SALARY_BASE_LOW": 175000,
+    "SALARY_BASE_HIGH": 236000,
+    "SALARY_MIDPOINT": 205500,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://jobs.boeing.com/job/berkeley/testbeds-maintenance-and-operations-senior-manager/185/103782681952",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor of Science degree or higher from an accredited course of study",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://jobs.boeing.com/job/berkeley/testbeds-maintenance-and-operations-senior-manager/185/103782681952",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26",
+    "SALARY_SCORE_POINT": 220750
+   }
+  },
+  {
+   "id": "V2I-D97A24C04381",
+   "fields": {
+    "DEGREE_TEXT": "NOT_STATED",
+    "DEGREE_REQ": "NOT_STATED",
+    "DEGREE_EVIDENCE_URL": "https://job-boards.greenhouse.io/chaosindustries/jobs/5307051007",
     "DEGREE_ASOF": "2026-11-26",
     "FEASIBILITY_ATTEMPT_ASOF": "2026-11-26"
    }
