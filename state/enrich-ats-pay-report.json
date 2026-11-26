@@ -1,10 +1,10 @@
 {
- "at": "2026-11-26T14:10:16.419Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T140712043Z",
+ "at": "2026-11-26T14:25:06.998Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261126T142037848Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-26T14:07:21.179Z",
+  "readAt": "2026-11-26T14:20:45.399Z",
   "sha256": "38edef083f9183d34fc73d4c6b6c026da1e99edd3455ab18d83beb0520bf5bf9",
   "rows": 7932
  },
@@ -36,9 +36,7 @@
  ],
  "never_consider_by_rule": {},
  "fence": {
-  "released_applied": [
-   "FORGE-ENRICH_ATS-ATSBOT-20261126T135009230Z-B01"
-  ],
+  "released_applied": [],
   "released_not_applied": [],
   "drift_rows": 0,
   "proof_errors": [],
@@ -66,27 +64,19 @@
  "prepared_sources_validated": 0,
  "salary_submitted": 0,
  "salary_independently_verified": 0,
- "agg_tried": {
-  "linkedin": 1
- },
+ "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
- "agg_failed": {
-  "linkedin": 1
- },
- "agg_errors": {
-  "linkedin": [
-   "429"
-  ]
- },
+ "agg_failed": {},
+ "agg_errors": {},
  "agg_wall": {},
- "source_reads": 1,
+ "source_reads": 0,
  "source_retries": 0,
  "source_duplicate_skips": 0,
  "source_origin_skips": 0,
  "workday_cooling_skips": 0,
  "workday_board_window_skips": 0,
- "workday_window_active": false,
+ "workday_window_active": true,
  "est_same_employer": 0,
  "est_comparables": 0,
  "boards_read": 0,
@@ -126,7 +116,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-26T14:07:27.641Z",
+  "profile_as_of": "2026-11-26T14:20:52.298Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1224,9 +1214,8 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 319,
+ "not_attempted": 320,
  "nothing_found": 320,
- "source_origin_blocks": {},
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1249,7 +1238,7 @@
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
  "roles_researched": 481,
- "network_requests": 7,
+ "network_requests": 4,
  "planned": 0,
  "research_budget_exhausted": false,
  "salary_model_version": "pay-sample-match-v6a",
@@ -4366,25 +4355,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-42745B1B501E",
-   "company": "Oracle",
-   "title": "Senior Manager of Manufacturing Product & Test Engineering",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "SOURCE_RESEARCH_REQUIRED",
-   "lastAttemptAt": "2026-11-26T14:08:12.840Z",
-   "retryAt": "2026-11-26T18:08:12.840Z",
-   "attempts": [
-    {
-     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449834248",
-     "status": "HTTP_429"
-    }
-   ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-29DE2366E795",
    "company": "Onboard Systems",
    "title": "Director of Quality",
@@ -5009,6 +4979,25 @@
    "attempts": [
     {
      "status": "NO_SUPPORTED_READER_FOR_SAVED_SOURCE"
+    }
+   ],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-42745B1B501E",
+   "company": "Oracle",
+   "title": "Senior Manager of Manufacturing Product & Test Engineering",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RETRY_BACKOFF",
+   "lastAttemptAt": "2026-11-26T14:08:12.840Z",
+   "retryAt": "2026-11-26T18:08:12.840Z",
+   "attempts": [
+    {
+     "url": "https://www.linkedin.com/jobs-guest/jobs/api/jobPosting/4449834248",
+     "status": "HTTP_429"
     }
    ],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
@@ -11586,7 +11575,7 @@
     "SALARY",
     "DEGREE"
    ],
-   "status": "RETRY_BACKOFF",
+   "status": "RUN_BUDGET_OR_NO_READER",
    "lastAttemptAt": "2026-11-26T10:11:42.518Z",
    "retryAt": "2026-11-26T14:11:42.518Z",
    "attempts": [
