@@ -12,3 +12,19 @@ test('unverified jobs can finish enrichment and enter review only with final sco
 test('unknown, missing or unproven scores are not final; zero is a valid final score',()=>{for(const p of [{},{OVERALL_RATING:'UNKNOWN',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING x rev26'},{OVERALL_RATING:'70'},{OVERALL_RATING:'101',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING x rev26'}])assert.equal(F.finalScore(p),false);assert.equal(F.finalScore({OVERALL_RATING:'0',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING x rev26'}),true);});
 test('a scored row missing any scoring or decision input stays in enrichment (reverts #431)',()=>{const W={build:()=>({lanes:{FORGE_ENRICH_FEASIBILITY:[],FORGE_ENRICH_STRATEGIC:[]}})},base={BUCKET:'SCOUT_INTAKE',COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Cleveland, TN',line:''},score={DATE_ADDED:'2026-10-30',OVERALL_RATING:'72',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING 2026-10-14.1 rev26'};const rows=[{...base,PRIMARY_ID:'nofit',p:{...score,...FULL,SCOPE_FIT_RAW:''}},{...base,PRIMARY_ID:'noproduct',p:{...score,...FULL,PRODUCT:'UNKNOWN'}},{...base,PRIMARY_ID:'nopay',p:{...score,...FULL,SALARY_BASE_LOW:'',SALARY_BASE_HIGH:''}},{...base,PRIMARY_ID:'complete',p:{...score,...FULL}}];const c=F.classify(rows,W,REAL_E,t);assert.equal(c.queues.enrichment,3);assert.equal(c.queues.readyForReview,1);assert.equal(c.states.nofit.enrichment,false);assert.equal(c.states.complete.enrichment,true);});
 test('flow ready-for-review count equals the decision queue exactly',()=>{const D=require('../enrich-ats-pay/decision-queue'),built={lanes:{FORGE_ENRICH_FEASIBILITY:[{PRIMARY_ID:'lane'}],FORGE_ENRICH_STRATEGIC:[]}},W={build:()=>built},base={COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Cleveland, TN',line:''},score={DATE_ADDED:'2026-10-30',OVERALL_RATING:'72',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING 2026-10-14.1 rev26',...FULL};const rows=[{...base,PRIMARY_ID:'ok',BUCKET:'SCOUT_INTAKE',p:{...score}},{...base,PRIMARY_ID:'tim',BUCKET:'TIM_DECISION_REQUIRED',p:{...score,PRODUCT:''}},{...base,PRIMARY_ID:'lane',BUCKET:'SCOUT_INTAKE',p:{...score}},{...base,PRIMARY_ID:'closed',BUCKET:'SCOUT_INTAKE',p:{...score,LIVENESS:'CLOSED'}},{...base,PRIMARY_ID:'tim2',BUCKET:'TIM_DECISION_REQUIRED',p:{...score}}];const c=F.classify(rows,W,REAL_E,t),ids=D.ids(rows,built,REAL_E);assert.deepEqual([...ids].sort(),['ok','tim2']);assert.equal(c.queues.readyForReview,ids.size);assert.deepEqual(Object.keys(c.states).filter(id=>c.states[id].enrichment).sort(),[...ids].sort());});
+
+test('COMPLETE Writer writes are reconciled separately from decision-ready transitions',()=>{
+ const hours=3600000,now=t+40*hours,to=new Date(now-hours).toISOString(),from=new Date(now-37*hours).toISOString();
+ const activity={schema:'forge.writer-activity.v1',ok:true,publishedAt:to,rates36:{hours:36,from,to,enrichment:{count:112,perHour:112/36,partial:true}}};
+ const waiting=current(false,false),prior=F.observe(null,waiting,t),state=F.observe(prior,waiting,now);
+ const report=F.summary(state,waiting,now,activity);
+ assert.equal(report.completion.enrichment.count,0);
+ for(const h of [6,12,24,36]){
+  assert.equal(report.completionByWindow[h].enrichment.count,0);
+  assert.match(report.completionByWindow[h].enrichment.basis,/decision-ready/);
+ }
+ assert.deepEqual(report.enrichmentWriterActivity36,{...activity.rates36.enrichment,windowHours:36,from,to,source:'state/WRITER_ACTIVITY.json',basis:'Distinct jobs with COMPLETE enrichment Writer writes, not transitions to decision-ready enrichment.'});
+ assert.equal(state.events.length,0);
+ assert.equal(F.summary(state,waiting,now).enrichmentWriterActivity36,null);
+ assert.equal(F.summary(state,waiting,now,{...activity,publishedAt:'invalid'}).enrichmentWriterActivity36,null);
+});
