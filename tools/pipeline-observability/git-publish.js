@@ -7,11 +7,13 @@ function run(root,args,env){return execFileSync('git',args,{cwd:root,encoding:'u
 // code and workflow that run them. A commit touching any of these between build and push forces a
 // rebuild from fresh main; every other commit (evidence, verify, other reference/state files,
 // status displays, usage readings) is unrelated to the flow and is safely reparented over.
+// In particular, enrich-ats-pay{,-recovery}.json are worker bookkeeping, not inputs to
+// these builders. Process completions come from authenticated Writer observations.
 const FLOW_INPUTS=['tools','.github/workflows/pipeline-observability.yml','policy/current','lanes/FORGE_API_GRANT_ENRICHMENT.txt','README.md',
  'control/AI_AUTOMATION_TASKS.json','control/CHATGPT_OWNER_CUTOVER.json','control/CLAUDE_HELPER_WORK.json','control/CLAUDE_RELEVANCE_WORK.json','control/ENRICHMENT_HELPER_WORK.json','control/ENRICHMENT_RESEARCH_OWNER.json','control/ENRICHMENT_WORKER_PARTITION.json','control/GROK_INTAKE_HELPER_WORK.json','control/RELEVANCE_SCREEN.json','control/RESUME_MATCH_PROFILE.json','control/RESUME_MATCH_VARIANTS.json','control/SHARED_HELPER_WORK.json','control/claude-relevance','control/grok-intake','control/shared-helper-pages',
  'receipts/manual-backlog','receipts/INTAKE_DRAIN','receipts/auto-intake','receipts/live-backlog','receipts/CHATGPT_HELPERS',
  'reference/COMPANY_SITE_CONTEXT.json','reference/EXCLUSION_BUSINESS_EVIDENCE.json','reference/EXCLUSION_ROLE_EVIDENCE.json','reference/EXCLUSION_TITLE_RULES.json',
- 'state/CLAUDE_HELPER_CONSUMPTION.json','state/CODE_INTAKE_CONSUMPTION.json','state/DISCOVERY_SCREEN_REPORT.json','state/EMAIL_RECOVERY_QUEUE.json','state/email-recovery-archive','state/ENRICHMENT_FLOW.json','state/ENRICHMENT_OUTCOMES.json','state/HELPER_HANDOFFS.json','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/PIPELINE_WAITING_QUEUES.json','state/PROCESS_COMPLETIONS.json','state/PROGRAMMED_COORDINATOR.json','state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/REPORTING_HEALTH.json','state/UPSTREAM_COLLECT_CURSOR.json','state/UPSTREAM_FLOW.json','state/UPSTREAM_LEDGER.json','state/upstream-ledger-archive','state/board-discovery-report.json','state/discovery-evidence','state/enrich-ats-pay-recovery.json','state/enrich-ats-pay.json','state/source-trial-report.json','state/targeted-posting-lookup.json','state/waiting-queues'];
+ 'state/CLAUDE_HELPER_CONSUMPTION.json','state/CODE_INTAKE_CONSUMPTION.json','state/DISCOVERY_SCREEN_REPORT.json','state/EMAIL_RECOVERY_QUEUE.json','state/email-recovery-archive','state/ENRICHMENT_FLOW.json','state/ENRICHMENT_OUTCOMES.json','state/HELPER_HANDOFFS.json','state/INTAKE_DRAIN.json','state/intake-drain-archive','state/PIPELINE_WAITING_QUEUES.json','state/PROCESS_COMPLETIONS.json','state/PROGRAMMED_COORDINATOR.json','state/RELEVANCE_INTAKE_PLAN.json','state/RELEVANCE_SCREEN_GUARD.json','state/REPORTING_HEALTH.json','state/UPSTREAM_COLLECT_CURSOR.json','state/UPSTREAM_FLOW.json','state/UPSTREAM_LEDGER.json','state/upstream-ledger-archive','state/board-discovery-report.json','state/discovery-evidence','state/source-trial-report.json','state/targeted-posting-lookup.json','state/waiting-queues'];
 // Top-level receipts read by name pattern (upstream-flow.js email files; transactions/writer-outcome/handoff receipts).
 const FLOW_INPUT_PATTERNS=[/^receipts\/EMAIL_(?:CANDIDATE_LEDGER|EVAL|PENDING)[^/]*\.json$/,/^receipts\/[^/]+_(?:CHECKPOINT|VERIFIED|NOT_ACCEPTED|HANDOFFS)\.json$/];
 const isFlowInput=p=>FLOW_INPUTS.some(x=>p===x||p.startsWith(x+'/'))||FLOW_INPUT_PATTERNS.some(r=>r.test(p));
@@ -28,12 +30,13 @@ function reparentFinishedFlow(root,{base,finished,paths,message,retries=4,sleep}
   const commits=run(root,['rev-list','--first-parent','--reverse','--max-count=65',base+'..'+latest]).trim().split(/\s+/);
   if(commits.length>64||run(root,['rev-parse',commits[0]+'^']).trim()!==base)throw Error('Flow input history is not a bounded linear continuation');
   const names=(from,to)=>run(root,['diff','--name-only','--no-renames','-z',from,to]).split('\0').filter(Boolean);
+  const relevant=p=>isFlowInput(p)||paths.some(out=>p===out||p.startsWith(out+'/')||out.startsWith(p+'/'));
   for(const c of commits){
    const changed=names(c+'^',c);
-   if(!changed.length||changed.some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
+   if(!changed.length||changed.some(relevant))throw Error('Flow inputs changed: rebuild from fresh main');
   }
   // Verify exact input parity across the whole span, in addition to the per-commit check.
-  if(names(base,latest).some(isFlowInput))throw Error('Flow inputs changed: rebuild from fresh main');
+  if(names(base,latest).some(relevant))throw Error('Flow inputs changed: rebuild from fresh main');
   const delta=names(base,finished);
   if(!delta.length||delta.some(f=>!paths.some(p=>f===p||f.startsWith(p+'/'))))throw Error('Finished flow contains an out-of-scope publication');
   run(root,['diff','--quiet',base,latest,'--',...delta]);

@@ -172,11 +172,14 @@ test('collect stops at a deadline after at least one new version and the next ru
   const report=p.join(root,'state/board-discovery-report.json');
   const write=(n)=>{fs.writeFileSync(report,JSON.stringify({summary:{at:new Date(now-n*60000).toISOString()},new_roles:[{company:'Acme',title:'Role '+n,location:'Austin',url:'https://example.test/'+n}]}));git('add','.');git('commit','-m','v'+n);};
   write(3);write(2);write(1);
-  let t=1000;const first=U.collect(root,null,{persistCursor:true,deadline:1500,now:()=>t,onProgress:()=>{t=2000;}});
-  assert.equal(first.incomplete,true);assert.equal(first.records.length,1);assert.equal(first.reportHistory.commits.length,1);
-  assert.ok(fs.existsSync(p.join(root,U.CURSOR_FILE)));
-  const resumed=U.collect(root,null,{persistCursor:true}),fresh=U.collect(root,null,{ignoreCursor:true});
+  let ticks=0,checkpoints=0;const first=U.collect(root,null,{persistCursor:true,batchCursor:true,deadline:1500,now:()=>++ticks===1?1000:2000,onProgress:()=>{checkpoints++;}});
+  assert.equal(first.incomplete,true);assert.equal(first.records.length,2);assert.equal(first.reportHistory.commits.length,2);
+  assert.equal(checkpoints,1);
+  const checkpoint=fs.readFileSync(p.join(root,U.CURSOR_FILE),'utf8');
+  assert.equal(JSON.parse(checkpoint).records.length,2);
+  const resumed=U.collect(root,null,{persistCursor:true,batchCursor:true}),fresh=U.collect(root,null,{ignoreCursor:true});
   assert.equal(resumed.incomplete,false);assert.equal(resumed.records.length,3);assert.equal(fresh.records.length,3);
+  assert.equal(fs.readFileSync(p.join(root,U.CURSOR_FILE),'utf8'),checkpoint,'a complete batch does not rewrite the cursor');
   assert.deepEqual(resumed.records.map(r=>r.sourceProof).sort(),fresh.records.map(r=>r.sourceProof).sort());
  }finally{fs.rmSync(root,{recursive:true,force:true});}
 });

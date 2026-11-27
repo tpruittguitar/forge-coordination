@@ -53,17 +53,13 @@ jobs:
           git config user.name forge-activity-bot
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
+            # Rebuild on contention instead of replaying an older reporting health snapshot.
+            git fetch --no-tags origin main
+            git reset --hard FETCH_HEAD
             node tools/pipeline-observability/publish-report.js activity
-            node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/REPORTING_HEALTH.json && exit 0
+            node tools/pipeline-observability/git-publish.js --no-push --message "ACTIVITY-BOT: publish compact verified receipt activity" state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/REPORTING_HEALTH.json
+            git push origin HEAD:main && exit 0
             sleep $((attempt * 2 + RANDOM % 3))
-            git fetch origin main
-            # Reuse the completed report when other bots changed unrelated paths.
-            # Conflicting policy/queue changes require a rebuild, never choosing a side.
-            if git -c core.editor=true rebase origin/main; then
-              node tools/pipeline-observability/git-publish.js --message "ACTIVITY-BOT: publish compact verified receipt activity" state/WRITER_ACTIVITY.json state/WRITER_ACTIVITY_DETAILS.json state/REPORTING_HEALTH.json && exit 0
-            fi
-            git rebase --abort 2>/dev/null || true
-            git reset --hard origin/main
           done
           exit 1
       - name: Publish flow with incremental cursor
@@ -71,14 +67,13 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ github.token }}
           ACTIVITY_FC_DIR: _fc
-          UPSTREAM_FLOW_COMMIT_CURSOR: '1'
         run: |
           set -euo pipefail
           git config user.name forge-activity-bot
           git config user.email forge-activity-bot@users.noreply.github.com
           for attempt in 1 2 3 4; do
-            # Every build, including the first, starts at canonical main. A rejected
-            # cursor or a real flow input change must rebuild; only proven status-only drift may retarget.
+            # Every build, including the first, starts at canonical main. The cursor
+            # is published with the reports. Real input or output changes require a rebuild.
             # A fixed time window cannot guarantee overlap with the saved discovery
             # history. Fetch ancestry without downloading unrelated historical blobs.
             if [[ $(git rev-parse --is-shallow-repository) == true ]]; then
