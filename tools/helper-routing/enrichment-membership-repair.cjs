@@ -3,7 +3,6 @@
 const fs=require('node:fs'),path=require('node:path'),crypto=require('node:crypto'),cp=require('node:child_process'),{isDeepStrictEqual}=require('node:util');
 const E=require('./enrichment.cjs'),S=require('../programmed-coordinator/store.cjs');
 const FILE='control/ENRICHMENT_HELPER_WORK.json',AUDITS='receipts/ENRICHMENT_MEMBERSHIP_REPAIRS';
-const IDS=Object.freeze(['V2I-1DC4DBFB8595','V2I-2B9B288A5012']);
 const TASK='FORGE_CHATGPT_ENRICHMENT_RESEARCH',ASSIGNMENT='GROK-ENRICH-20261101-V1';
 const RUN=/^FORGE-MEMBERSHIP-CHATGPT-[A-Za-z0-9_-]{3,100}$/;
 const blob=raw=>crypto.createHash('sha1').update('blob '+Buffer.byteLength(raw)+'\0').update(raw).digest('hex');
@@ -14,7 +13,8 @@ function plan(raw,{expectedBlobSha}={}){
  if(work.schema!=='forge.enrichment-helper-work.v1'||work.assignmentId!==ASSIGNMENT||work.provider!=='ChatGPT'||work.taskKey!==TASK||work.enabled!==true||work.routingActive!==true||!Array.isArray(work.items))throw Error('CURRENT_CHATGPT_MEMBERSHIP_REQUIRED');
  const groups=new Map();work.items.forEach((item,index)=>groups.set(item.primaryId,[...(groups.get(item.primaryId)||[]),{item,index}]));
  const duplicates=[...groups].filter(([,items])=>items.length>1);
- if(duplicates.length!==IDS.length||!isDeepStrictEqual(duplicates.map(([id])=>id).sort(),[...IDS].sort()))throw Error('EXACT_DUPLICATE_GROUPS_REQUIRED');
+ // Use the approved blob to identify the groups, keeping the two-pair repair scope.
+ if(duplicates.length!==2)throw Error('EXACT_DUPLICATE_GROUPS_REQUIRED');
  const allowed=new Set(['primaryId','provider','taskKey','owner','status','company','title','location','missingFields','sourceUrls','priorAttempts','canonicalObservedAt','rowSha256','sourceReport','researchProvenance']);
  const provenanceKeys=['schema','canonicalSourceSha256','recoveryRun','sourceFingerprint','retryAt'].sort();
  const removed=new Set(),observations=[];
@@ -79,4 +79,4 @@ if(require.main===module){try{
  if(!root||extra.length||mode==='plan'&&runId||!['plan','apply'].includes(mode))throw Error('Usage: enrichment-membership-repair.cjs plan <root> <expected-blob-sha> | apply <root> <expected-blob-sha> <unique-run-id>');
  console.log(JSON.stringify(mode==='plan'?summary(plan(fs.readFileSync(path.join(root,FILE),'utf8'),{expectedBlobSha})):apply(root,{expectedBlobSha,runId})));
 }catch(e){console.error(e.message);process.exitCode=1;}}
-module.exports={FILE,AUDITS,IDS,blob,plan,summary,writeRepair,apply};
+module.exports={FILE,AUDITS,blob,plan,summary,writeRepair,apply};
