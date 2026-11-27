@@ -6,7 +6,7 @@ function fixture(){
   const root=fs.mkdtempSync(path.join(os.tmpdir(),'chatgpt-box-prompt-'));
   const lanes={schema:'forge.chatgpt-box-lanes.v1',commonEntry:'control/FORGE_SHARED_AUTOMATION_ENTRY.txt',lanes:{
     FORGE_EMAIL_DISCOVERY:{enabled:true,procedure:'lanes/CHATGPT_INTAKE_INSPECTION.txt',model:'gpt-5.4-mini',timeoutMinutes:25,runner:'grant'},
-    FORGE_APPLICATION_WRITER_GOFER:{enabled:true,procedure:'runtime:current',focus:'fill missing discovery and intake data'},
+    FORGE_APPLICATION_WRITER_GOFER:{enabled:true,procedure:'runtime:current',focus:'gap-fill missing fields on existing discovery/intake/enrichment rows only (no broad discovery)'},
     FORGE_APPLICATION_OUTCOME_TRACKER:{enabled:false,hold:'TIMMAY ACTIVE',procedure:'lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt',model:'sonnet',timeoutMinutes:25}
   }};
   fs.mkdirSync(path.join(root,'tools/chatgpt-box-runner'),{recursive:true});
@@ -59,7 +59,7 @@ test('prompt carries the $1.00 floor, expiry and high reasoning, never the $20 d
 test('runtime:current lanes read the pinned release and carry the lane focus',()=>{
   const r=buildPrompt(fixture(),'FORGE_APPLICATION_WRITER_GOFER',{});
   a.match(r.prompt,/GOFER RELEASE PROCEDURE/);
-  a.match(r.prompt,/FOCUS: fill missing discovery and intake data/);
+  a.match(r.prompt,/FOCUS: gap-fill missing fields on existing discovery\/intake\/enrichment rows only \(no broad discovery\)/);
 });
 
 test('checked-in lanes run on the grant runner with existing procedures and live registry routes',()=>{
