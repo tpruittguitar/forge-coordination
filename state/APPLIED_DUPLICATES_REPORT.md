@@ -1,12 +1,12 @@
 # Applied-duplicate dry run
 
-Generated 2026-11-26T17:10:11.796Z from CANONICAL_WRITER_MASTER.
+Generated 2026-11-27T01:51:24.835Z from CANONICAL_WRITER_MASTER.
 
-Of 1200 jobs waiting on Tim, 78 match a role he already applied to, was rejected from, or declined:
+Of 1247 jobs waiting on Tim, 78 match a role he already applied to, was rejected from, or declined:
 - **Closed as duplicates (same posting): 0**
 - Kept, labeled with the earlier application (new posting, different site, or possible repeat): 78
 
-Writer: 0 closed, 1 labeled, 0 already done, 0 deferred to the next run, 0 failed.
+Writer: 0 closed, 0 labeled, 0 already done, 0 deferred to the next run, 0 failed.
 
 Not covered: applications that exist only as an email and were never recorded in the master. Those need the email lane.
 
@@ -45,7 +45,6 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 | 52 | The Lignum Group | Director of Operations | You declined 2026-11-14 · different site | Different worksite: California, United States vs earlier Maryland, United States | V2I-AA589391D1DB → V2I-BA5A23AA0C95 |
 | 51 | Amphenol | Director of Operations | You declined 2026-10-26 · different site | Different worksite: Cary, NC, USA vs earlier Yocumtown, PA | V2I-730DB190A82C → V2I-9251C1168511 |
 | 51 | Arena Family of Companies | Director of Quality (Aerospace & Defense) | You declined 2026-10-26 · possible repeat | Posting first seen 2026-11-17, 22 days after 2026-10-26; no posting identity to compare | V2I-6BA0AEF4F8FD → V2I-4D814A27A330 |
-| 49 | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
 | 46 | Select Specialty Hospital | Director of Quality Management | You declined 2026-11-14 · different site | Different worksite: Cincinnati, OH, USA vs earlier Milwaukee, WI, USA | V2I-5BBDD42C22F3 → V2I-0D3C693B80EF |
 | 45 | CIRCOR International, Inc. | Director of Quality | You declined 2026-10-23 · possible repeat | Posting first seen 2026-11-01, 9 days after 2026-10-23; no posting identity to compare | V2I-40226DB46F8D → V2I-C951E3E43140 |
 | 42 | Teledyne | Manufacturing Engineering Manager | You declined 2026-11-01 · different site | Different worksite: Miamisburg, OH, United States vs earlier Oak Ridge, TN | V2I-8B83F40E0A48 → V2I-9061815B8B3C |
@@ -81,6 +80,7 @@ Still active. Tim's normal Apply or Decline settles them; nothing waits on him.
 |  | Honeywell | Director of Cyber Operational Excellence | Applied 2026-09-09 · Rejected 2026-10-30 · possible repost | Posting first seen 2026-11-05, after rejection 2026-10-30 | V2I-1BE46DB40F2B → V2E-6920E7E88F4B |
 |  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Operations/Distribution Manager [Management Consultant] | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-CF00D8D451C9 → V2I-34008EB1178B |
 |  | (R) DB&A - DeWolff, Boberg & Associates, Inc | Distribution Manager/Operations Manager (Management Consultant) | You declined 2026-11-23 · possible repeat | Posting first seen 2026-11-11, -12 days after 2026-11-23; no posting identity to compare | V2I-7E466EC95DCA → V2I-34008EB1178B |
+|  | L3Harris | Senior Manager, Quality Management | You declined 2026-11-02 · different site | Different worksite: Camden, AR, USA vs earlier Mason, OH | V2I-9ACC1D022B83 → V2I-7BAB613B2728 |
 |  | SHIELD | Senior Staff Engineer, Advanced Manufacturing | Applied 2026-10-21 · Rejected 2026-10-21 · possible repost | Posting first seen 2026-11-23, after rejection 2026-10-21 | V2I-E2BA8F959FCD → V2E-A0570E2656B3 |
 |  | Tesla | Associate Production Control Manager, Megapack | You declined 2026-11-05 · different site | Different worksite: Brookshire, TX vs earlier Lathrop, CA | V2I-794058A141F7 → V2I-61C5639005B6 |
 |  | Shield | Staff Engineer, Advanced Manufacturing (R6311) | You declined 2026-11-07 · possible repeat | Posting first seen 2026-11-23, 16 days after 2026-11-07; no posting identity to compare | V2I-7EF66485727C → V2I-4AD7F3DCA5B8 |
