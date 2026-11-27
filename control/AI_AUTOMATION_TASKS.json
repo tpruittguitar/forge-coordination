@@ -2,198 +2,31 @@
  "schema": "forge.ai-automation-tasks.v1",
  "authorizedProviders": ["ChatGPT", "Claude", "Hermes", "Sniffer", "President", "Grokbot President"],
  "formerProviders": ["Grok"],
- "runLock": {
-  "branch": "run-locks",
-  "staleAfterMinutes": 90
- },
- "laneKeys": {
-  "FORGE_INTAKE_A": "FORGE_CLAUDE_INTAKE_A",
-  "FORGE_INTAKE_B": "FORGE_CLAUDE_INTAKE_B",
-  "FORGE_ENRICHMENT_SUPPLEMENTAL": "FORGE_CLAUDE_ENRICHMENT",
-  "FORGE_ENRICHMENT_RESEARCH": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
-  "FORGE_RELEVANCE_REVIEW": "FORGE_CLAUDE_RELEVANCE_REVIEW",
-  "FORGE_SHARED_HELPER": "FORGE_CLAUDE_SHARED_HELPER",
-  "FORGE_SHARED_HELPER_RESEARCH": "FORGE_SNIFFER_SHARED_HELPER"
- },
+ "runLock": {"branch": "run-locks", "staleAfterMinutes": 90},
+ "laneKeys": {"FORGE_INTAKE_A": "FORGE_CLAUDE_INTAKE_A", "FORGE_INTAKE_B": "FORGE_CLAUDE_INTAKE_B", "FORGE_ENRICHMENT_SUPPLEMENTAL": "FORGE_CLAUDE_ENRICHMENT", "FORGE_ENRICHMENT_RESEARCH": "FORGE_CHATGPT_ENRICHMENT_RESEARCH", "FORGE_RELEVANCE_REVIEW": "FORGE_CLAUDE_RELEVANCE_REVIEW", "FORGE_SHARED_HELPER": "FORGE_CLAUDE_SHARED_HELPER", "FORGE_SHARED_HELPER_RESEARCH": "FORGE_SNIFFER_SHARED_HELPER"},
  "common": "policy/current/AI_AUTOMATION_COMMON.txt",
  "claudeBoxLanes": "control/CLAUDE_BOX_LANES.json",
+ "grant": {"card": "cs-92f6a3b0", "pool": "OpenAI API credits", "reasoningEffort": "high", "floorUsd": 1, "expires": "2026-11-30T23:59-05:00", "paidFallback": false, "callLog": "/workspace/usage-display/ask_grant_calls.jsonl", "runner": "tools/chatgpt-box-runner (lanes.json, crontab.txt)", "except": "retired tasks; FORGE_SNIFFER_SHARED_HELPER (Tim 2026-11-18 free research only)", "authorizedBy": "Tim 2026-11-26: all AI automations on OpenAI API credits, highest reasoning, high frequency"},
  "tasks": {
-  "FORGE_EMAIL_DISCOVERY": {
-   "route": "utility",
-   "taskKey": "FORGE_EMAIL_DISCOVERY",
-   "procedure": "lanes/CHATGPT_INTAKE_INSPECTION.txt",
-   "role": "INSPECTION_AND_WRITER_COORDINATION",
-   "previousRuntimeTask": "FORGE_EMAIL_DISCOVERY",
-   "authorizedBy": "Tim 2026-11-01: shift ChatGPT intake to inspection and Writer coordination"
-  },
-  "FORGE_POSTING_VALIDATION": {
-   "route": "runtime",
-   "taskKey": "FORGE_POSTING_VALIDATION"
-  },
-  "FORGE_APPLICATION_WRITER_GOFER": {
-   "route": "runtime",
-   "taskKey": "FORGE_APPLICATION_WRITER_GOFER"
-  },
-  "FORGE_APPLICATION_OUTCOME_TRACKER": {
-   "route": "utility",
-   "procedure": "lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt"
-  },
-  "FORGE_AI_USAGE_READER": {
-   "route": "utility",
-   "procedure": "lanes/CLAUDE_AI_USAGE_READER.txt",
-   "nativeSchedule": "Hourly at minute 05, America/New_York"
-  },
-  "PE_STACK_HEALTH_DAILY": {
-   "route": "utility",
-   "procedure": "lanes/CHATGPT_STACK_HEALTH_DAILY.txt"
-  },
-  "FORGE_CLAUDE_INTAKE_A": {
-   "executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE",
-   "route": "utility",
-   "taskKey": "FORGE_CLAUDE_INTAKE_A",
-   "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/CLAUDE_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01"
-  },
-  "FORGE_CLAUDE_INTAKE_B": {
-   "executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE",
-   "route": "utility",
-   "taskKey": "FORGE_CLAUDE_INTAKE_B",
-   "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/CLAUDE_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01"
-  },
-  "FORGE_CLAUDE_ENRICHMENT": {
-   "executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE",
-   "route": "utility",
-   "taskKey": "FORGE_CLAUDE_ENRICHMENT",
-   "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_ENRICHMENT.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/CLAUDE_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01"
-  },
-  "FORGE_GROK_ENRICHMENT": {
-   "route": "utility",
-   "taskKey": "FORGE_GROK_ENRICHMENT",
-   "procedure": "lanes/GROK_FORGE_SUPPLEMENTAL_ENRICHMENT.txt",
-   "supplemental": true,
-   "executionMode": "EVIDENCE_ONLY",
-   "workAssignments": "control/ENRICHMENT_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01: add an enrichment helper for Grok; usage reset",
-   "retired": true,
-   "executeVia": "FORGE_APPLICATION_WRITER_GOFER",
-   "replacedBy": "FORGE_CHATGPT_ENRICHMENT_RESEARCH"
-  },
-  "FORGE_GROK_APPLICATION_OUTCOME_HELPER": {
-   "route": "utility",
-   "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER",
-   "procedure": "lanes/GROK_APPLICATION_OUTCOME_HELPER.txt",
-   "supplemental": true,
-   "executionMode": "EVIDENCE_ONLY",
-   "workAssignments": "control/OUTCOME_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01: let Grok help check recruiter replies and application/rejection responses",
-   "retired": true,
-   "executeVia": "FORGE_APPLICATION_OUTCOME_TRACKER"
-  },
-  "FORGE_CLAUDE_RELEVANCE_REVIEW": {
-   "route": "utility",
-   "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW",
-   "procedure": "lanes/CLAUDE_RELEVANCE_REVIEW.txt",
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "supplemental": true,
-   "workAssignments": "control/CLAUDE_RELEVANCE_WORK.json",
-   "authorizedBy": "Tim 2026-11-04 temporary coverage while Claude hibernates; review handback Sunday 2026-11-08, no automatic reassignment",
-   "coverageReviewDate": "2026-11-08"
-  },
-  "FORGE_GROK_INTAKE_HELPER": {
-   "route": "utility",
-   "taskKey": "FORGE_GROK_INTAKE_HELPER",
-   "procedure": "lanes/GROK_FORGE_INTAKE_HELPER.txt",
-   "executionMode": "EVIDENCE_ONLY",
-   "supplemental": true,
-   "workAssignments": "control/GROK_INTAKE_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-01: publish and activate intake routing and scheduled runs",
-   "retired": true,
-   "executeVia": "FORGE_APPLICATION_WRITER_GOFER"
-  },
-  "FORGE_INTAKE_SCOPE_REVIEW": {
-   "route": "utility",
-   "taskKey": "FORGE_INTAKE_SCOPE_REVIEW",
-   "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "state/INTAKE_DRAIN.json",
-   "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"
-  },
-  "FORGE_INTAKE_SOURCE_RECOVERY": {
-   "route": "utility",
-   "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY",
-   "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "state/INTAKE_DRAIN.json",
-   "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"
-  },
-  "FORGE_INTAKE_HELD_RECONCILIATION": {
-   "route": "utility",
-   "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
-   "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "state/INTAKE_DRAIN.json",
-   "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"
-  },
-  "FORGE_CHATGPT_ENRICHMENT_RESEARCH": {
-   "route": "utility",
-   "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH",
-   "procedure": "lanes/CHATGPT_ENRICHMENT_RESEARCH.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/ENRICHMENT_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-05: It is ChatGPT now; implement coordination and evidence-first processing",
-   "nativeId": "Automation_cab39075ca2881918fd910cac45e285d",
-   "nativeSchedule": "Hourly at minute 12, America/New_York",
-   "nativeEnabledVerifiedAt": "2026-11-06T03:37:17.700821Z",
-   "workerPartition": "control/ENRICHMENT_WORKER_PARTITION.json",
-   "nativeBinding": "control/NATIVE_AUTOMATION_BINDINGS.json#FORGE_CHATGPT_ENRICHMENT_RESEARCH"
-  },
-  "FORGE_CLAUDE_SHARED_HELPER": {
-   "executionHold": "SHARED_ASSIGNMENT_TRANSPORT_UNAVAILABLE",
-   "route": "utility",
-   "taskKey": "FORGE_CLAUDE_SHARED_HELPER",
-   "procedure": "lanes/FORGE_SHARED_HELPER.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/SHARED_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-09: create common helper routes and coordinated schedules",
-   "scheduleIntent": {
-    "timezone": "America/New_York",
-    "frequency": "HOURLY",
-    "minute": 25,
-    "status": "REQUIRES_NATIVE_READBACK"
-   },
-   "common": "policy/current/SHARED_HELPER_COMMON.txt"
-  },
-  "FORGE_GROK_SHARED_HELPER": {
-   "route": "utility",
-   "taskKey": "FORGE_GROK_SHARED_HELPER",
-   "procedure": "lanes/FORGE_SHARED_HELPER.txt",
-   "supplemental": true,
-   "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER",
-   "workAssignments": "control/SHARED_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-09: create common helper routes and coordinated schedules",
-   "retired": true,
-   "common": "policy/current/SHARED_HELPER_COMMON.txt"
-  },
-  "FORGE_SNIFFER_SHARED_HELPER": {
-   "route": "utility",
-   "taskKey": "FORGE_SNIFFER_SHARED_HELPER",
-   "procedure": "lanes/FORGE_SHARED_HELPER.txt",
-   "executionMode": "EVIDENCE_ONLY",
-   "workAssignments": "control/SHARED_HELPER_WORK.json",
-   "authorizedBy": "Tim 2026-11-18 01:18 ET: free research only, no Writer"
-  }
+  "FORGE_EMAIL_DISCOVERY": {"route": "utility", "taskKey": "FORGE_EMAIL_DISCOVERY", "procedure": "lanes/CHATGPT_INTAKE_INSPECTION.txt", "role": "INSPECTION_AND_WRITER_COORDINATION", "previousRuntimeTask": "FORGE_EMAIL_DISCOVERY", "authorizedBy": "Tim 2026-11-01: shift ChatGPT intake to inspection and Writer coordination"},
+  "FORGE_POSTING_VALIDATION": {"route": "runtime", "taskKey": "FORGE_POSTING_VALIDATION"},
+  "FORGE_APPLICATION_WRITER_GOFER": {"route": "runtime", "taskKey": "FORGE_APPLICATION_WRITER_GOFER"},
+  "FORGE_APPLICATION_OUTCOME_TRACKER": {"route": "utility", "procedure": "lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt"},
+  "FORGE_AI_USAGE_READER": {"route": "utility", "procedure": "lanes/CLAUDE_AI_USAGE_READER.txt", "nativeSchedule": "Hourly at minute 05, America/New_York"},
+  "PE_STACK_HEALTH_DAILY": {"route": "utility", "procedure": "lanes/CHATGPT_STACK_HEALTH_DAILY.txt"},
+  "FORGE_CLAUDE_INTAKE_A": {"executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE", "route": "utility", "taskKey": "FORGE_CLAUDE_INTAKE_A", "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/CLAUDE_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01"},
+  "FORGE_CLAUDE_INTAKE_B": {"executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE", "route": "utility", "taskKey": "FORGE_CLAUDE_INTAKE_B", "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/CLAUDE_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01"},
+  "FORGE_CLAUDE_ENRICHMENT": {"executionHold": "RESERVATION_TRANSPORT_UNAVAILABLE", "route": "utility", "taskKey": "FORGE_CLAUDE_ENRICHMENT", "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_ENRICHMENT.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/CLAUDE_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01"},
+  "FORGE_GROK_ENRICHMENT": {"route": "utility", "taskKey": "FORGE_GROK_ENRICHMENT", "procedure": "lanes/GROK_FORGE_SUPPLEMENTAL_ENRICHMENT.txt", "supplemental": true, "executionMode": "EVIDENCE_ONLY", "workAssignments": "control/ENRICHMENT_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01: add an enrichment helper for Grok; usage reset", "retired": true, "executeVia": "FORGE_APPLICATION_WRITER_GOFER", "replacedBy": "FORGE_CHATGPT_ENRICHMENT_RESEARCH"},
+  "FORGE_GROK_APPLICATION_OUTCOME_HELPER": {"route": "utility", "taskKey": "FORGE_GROK_APPLICATION_OUTCOME_HELPER", "procedure": "lanes/GROK_APPLICATION_OUTCOME_HELPER.txt", "supplemental": true, "executionMode": "EVIDENCE_ONLY", "workAssignments": "control/OUTCOME_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01: let Grok help check recruiter replies and application/rejection responses", "retired": true, "executeVia": "FORGE_APPLICATION_OUTCOME_TRACKER"},
+  "FORGE_CLAUDE_RELEVANCE_REVIEW": {"route": "utility", "taskKey": "FORGE_CLAUDE_RELEVANCE_REVIEW", "procedure": "lanes/CLAUDE_RELEVANCE_REVIEW.txt", "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "supplemental": true, "workAssignments": "control/CLAUDE_RELEVANCE_WORK.json", "authorizedBy": "Tim 2026-11-04 temporary coverage while Claude hibernates; review handback Sunday 2026-11-08, no automatic reassignment", "coverageReviewDate": "2026-11-08"},
+  "FORGE_GROK_INTAKE_HELPER": {"route": "utility", "taskKey": "FORGE_GROK_INTAKE_HELPER", "procedure": "lanes/GROK_FORGE_INTAKE_HELPER.txt", "executionMode": "EVIDENCE_ONLY", "supplemental": true, "workAssignments": "control/GROK_INTAKE_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-01: publish and activate intake routing and scheduled runs", "retired": true, "executeVia": "FORGE_APPLICATION_WRITER_GOFER"},
+  "FORGE_INTAKE_SCOPE_REVIEW": {"route": "utility", "taskKey": "FORGE_INTAKE_SCOPE_REVIEW", "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt", "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "state/INTAKE_DRAIN.json", "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"},
+  "FORGE_INTAKE_SOURCE_RECOVERY": {"route": "utility", "taskKey": "FORGE_INTAKE_SOURCE_RECOVERY", "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt", "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "state/INTAKE_DRAIN.json", "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"},
+  "FORGE_INTAKE_HELD_RECONCILIATION": {"route": "utility", "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION", "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt", "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "state/INTAKE_DRAIN.json", "authorizedBy": "Tim 2026-11-05: create code/AI automation to resolve and process the complete intake backlog; audit discovery selection and reuse ATS evidence"},
+  "FORGE_CHATGPT_ENRICHMENT_RESEARCH": {"route": "utility", "taskKey": "FORGE_CHATGPT_ENRICHMENT_RESEARCH", "procedure": "lanes/CHATGPT_ENRICHMENT_RESEARCH.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/ENRICHMENT_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-05: It is ChatGPT now; implement coordination and evidence-first processing", "nativeId": "Automation_cab39075ca2881918fd910cac45e285d", "nativeSchedule": "Hourly at minute 12, America/New_York", "nativeEnabledVerifiedAt": "2026-11-06T03:37:17.700821Z", "workerPartition": "control/ENRICHMENT_WORKER_PARTITION.json", "nativeBinding": "control/NATIVE_AUTOMATION_BINDINGS.json#FORGE_CHATGPT_ENRICHMENT_RESEARCH"},
+  "FORGE_CLAUDE_SHARED_HELPER": {"executionHold": "SHARED_ASSIGNMENT_TRANSPORT_UNAVAILABLE", "route": "utility", "taskKey": "FORGE_CLAUDE_SHARED_HELPER", "procedure": "lanes/FORGE_SHARED_HELPER.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/SHARED_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-09: create common helper routes and coordinated schedules", "scheduleIntent": {"timezone": "America/New_York", "frequency": "HOURLY", "minute": 25, "status": "REQUIRES_NATIVE_READBACK"}, "common": "policy/current/SHARED_HELPER_COMMON.txt"},
+  "FORGE_GROK_SHARED_HELPER": {"route": "utility", "taskKey": "FORGE_GROK_SHARED_HELPER", "procedure": "lanes/FORGE_SHARED_HELPER.txt", "supplemental": true, "executionMode": "WRITE_THROUGH_SUPPORTED_WRITER", "workAssignments": "control/SHARED_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-09: create common helper routes and coordinated schedules", "retired": true, "common": "policy/current/SHARED_HELPER_COMMON.txt"},
+  "FORGE_SNIFFER_SHARED_HELPER": {"route": "utility", "taskKey": "FORGE_SNIFFER_SHARED_HELPER", "procedure": "lanes/FORGE_SHARED_HELPER.txt", "executionMode": "EVIDENCE_ONLY", "workAssignments": "control/SHARED_HELPER_WORK.json", "authorizedBy": "Tim 2026-11-18 01:18 ET: free research only, no Writer"}
  }
 }

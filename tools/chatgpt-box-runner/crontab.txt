@@ -1,7 +1,21 @@
 # ChatGPT box lanes. Times are America/New_York. Fields: minute hour day-of-month month day-of-week TASK_KEY
 # Supported: numbers, lists (a,b), ranges (a-b), * and */n. Missed windows are never run (no catch-up).
-# Only lanes whose live TIMMAY/cloud/Actions copies were verified off are listed.
-# HELD FORGE_APPLICATION_OUTCOME_TRACKER 22 * * * * — TIMMAY Codex ACTIVE at 9:11 PM ET Nov 22.
-# HELD FORGE_CHATGPT_ENRICHMENT_RESEARCH 12 * * * * — cloud binding enabled Nov 6; cloud not freshly read.
-# HELD drain lanes (scope, source recovery, held reconciliation) — no published cadence; cloud not freshly read.
-2 * * * * FORGE_EMAIL_DISCOVERY
+# Source of truth for box cadence (cs-92f6a3b0, Tim 2026-11-26 10:20 PM ET): every enabled
+# discovery/intake/gofer/enrichment/relevance lane runs every 20 minutes on staggered minutes
+# on OpenAI API credits (runner=grant, gpt-5.4-mini, reasoning_effort high), $1.00 floor,
+# refused after Nov 30 23:59 ET, no paid fallback. Live executor is credit-agent.py.
+# Timeout 25 min; flock -n skips overlap if a prior run is still held. Outcome and posting validation stay hourly.
+# 19-squares work is gap-filling missing fields on EXISTING rows only (scope/source/held-reconciliation/enrichment research). No broad discovery.
+0,20,40 * * * * FORGE_EMAIL_DISCOVERY
+3,23,43 * * * * FORGE_APPLICATION_WRITER_GOFER
+6,26,46 * * * * FORGE_CHATGPT_ENRICHMENT_RESEARCH
+9,29,49 * * * * FORGE_CLAUDE_RELEVANCE_REVIEW
+12,32,52 * * * * FORGE_INTAKE_HELD_RECONCILIATION
+15,35,55 * * * * FORGE_INTAKE_SCOPE_REVIEW
+18,38,58 * * * * FORGE_INTAKE_SOURCE_RECOVERY
+19 * * * * FORGE_APPLICATION_OUTCOME_TRACKER
+54 * * * * FORGE_POSTING_VALIDATION
+# HELD until control/AI_AUTOMATION_TASKS.json clears executionHold RESERVATION_TRANSPORT_UNAVAILABLE:
+# HELD 1,21,41 * * * * FORGE_CLAUDE_ENRICHMENT
+# HELD 4 * * * * FORGE_CLAUDE_INTAKE_A
+# HELD 7 * * * * FORGE_CLAUDE_INTAKE_B

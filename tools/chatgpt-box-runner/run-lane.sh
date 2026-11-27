@@ -1,9 +1,11 @@
 #!/usr/bin/env bash
 # run-lane.sh <TASK_KEY>
 # One ChatGPT box lane run: flock (skip if busy), fresh clone of forge-coordination
-# main, headless claude -p (or a documented grant/codex runner) with a prompt built
-# from the published shared entry + procedure + this task's registry entry at that
-# SHA. Never uses Grok, Cursor or paid fallback. Missed windows are not caught up.
+# main, the OpenAI API credit (grant) runner by default (claude/codex remain documented
+# runners) with a prompt built from the published shared entry + procedure + this
+# task's registry entry at that SHA. Never uses Grok, Cursor or paid fallback.
+# Missed windows are not caught up. cs-92f6a3b0 (Tim 2026-11-26): grant calls use
+# reasoning_effort high, stop at the hard $1.00 floor and after Nov 30 23:59 ET.
 # This script never force-dispatches, never prints secrets and never touches a
 # TIMMAY production lock path that does not exist on this host.
 set -uo pipefail
@@ -24,9 +26,11 @@ exec 9>"$HOME_DIR/locks/$TASK_KEY.lock"
 if ! flock -n 9; then log "SKIPPED_BUSY $TASK_KEY (previous run still holds the lane lock; no catch-up)"; exit 0; fi
 
 CREDIT_FILE=${OPENAI_CREDIT_FILE:-/workspace/usage-display/openai_credit.json}
+GRANT_FLOOR_USD=1.00
+GRANT_EXPIRES_ET=202611302359
 if [ -f "$CREDIT_FILE" ]; then
-  if python3 -c "import json,sys; v=float(json.load(open(sys.argv[1])).get('est_left_usd') or 0); sys.exit(0 if v<20 else 1)" "$CREDIT_FILE"; then
-    log "BLOCKED CREDIT_FLOOR OpenAI grant estimate is below \$20; model work deferred, no paid fallback"; exit 0
+  if python3 -c "import json,sys; v=float(json.load(open(sys.argv[1])).get('est_left_usd') or 0); sys.exit(0 if v<=float(sys.argv[2]) else 1)" "$CREDIT_FILE" "$GRANT_FLOOR_USD"; then
+    log "BLOCKED CREDIT_FLOOR OpenAI grant estimate is at or below the hard \$$GRANT_FLOOR_USD floor; model work deferred, no paid fallback"; exit 0
   fi
 fi
 
@@ -54,7 +58,8 @@ if ! git "${GIT_AUTH[@]}" clone -q --depth 1 --filter=blob:none --sparse --singl
   log "BLOCKED CLONE_FAILED $REPO@$REF"; exit 1
 fi
 cd "$WORK/repo" || exit 1
-git sparse-checkout set control lanes policy tools/chatgpt-box-runner tools/automation-run-lock.cjs runtime >> "$LOG" 2>&1 || true
+git sparse-checkout set control lanes policy tools/chatgpt-box-runner tools/automation-run-lock.cjs runtime \
+  tools/research-preflight tools/helper-routing tools/intake-drain tools/change-register tools/source-trial tools/routine-handoffs >> "$LOG" 2>&1 || true
 git config credential.helper ''
 git config --add credential.helper '!gh auth git-credential'
 git config user.name tpruittguitar
@@ -108,6 +113,11 @@ case "$RUNNER" in
     rc=$?
     ;;
   grant)
+    if [ "$(TZ=America/New_York date +%Y%m%d%H%M)" -gt "$GRANT_EXPIRES_ET" ]; then
+      log "BLOCKED GRANT_EXPIRED OpenAI grant ended Nov 30 23:59 ET; no paid fallback"; exit 0
+    fi
+    # Calls log to /workspace/usage-display/ask_grant_calls.jsonl (ask_grant.py contract).
+    OPENAI_REASONING_EFFORT=high ASK_GRANT_MODEL="$MODEL" \
     timeout --kill-after=60s "${TIMEOUT_MIN}m" python3 /home/box/tools/ask_grant.py \
       --card "${CHATGPT_LANE_CARD:-cs-bdec2136}" --max-out 4000 "$PROMPT" >> "$LOG" 2>&1
     rc=$?
