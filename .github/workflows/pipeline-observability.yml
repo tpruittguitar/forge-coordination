@@ -89,6 +89,12 @@ jobs:
             sleep $((attempt * 2 + RANDOM % 3))
           done
           exit 1
+      - name: Refresh structured jobs snapshot
+        if: ${{ !cancelled() }}
+        continue-on-error: true # snapshot failures must not affect observability publication
+        env:
+          FORGE_WRITER_KEY: ${{ secrets.FORGE_WRITER_KEY }}
+        run: node tools/pipeline-observability/refresh-structured-snapshot.js
       - name: Retain reporting evidence
         if: always()
         uses: actions/upload-artifact@v4
