@@ -1,0 +1,24 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:7a8b59b959669a1149a607c6",
+  "sourceVersion": "331b99c551f670cdbfa75c865410b6dd41a99e169849645eaf73cc07ef894515",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261126T215204Z-B006",
+  "observedAt": "2026-11-26T22:18:36.416Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original Writer request is already represented in preserved evidence; presence does not prove write completion. Reconcile independently and do not replay.",
+  "nextAction": "Job already represented; reconcile the original Writer request independently. Never replay or infer write completion from presence.",
+  "attempts": [
+    {
+      "source": "node tools/intake-drain/queue.cjs next FORGE_INTAKE_HELD_RECONCILIATION",
+      "result": "ACTION_REQUIRED RECONCILE_WRITER; review absent=true; company=undefined; title=undefined"
+    },
+    {
+      "source": "receipts/auto-intake/FORGE-AUTO-20261105T152144Z.json",
+      "result": "requestIds=FORGE-SOURCE-67E5DE0E38335DF88D1B3320; original fence preserved"
+    }
+  ],
+  "retryCondition": "Original Writer request must be independently reconciled against preserved evidence; do not infer completion from presence."
+}

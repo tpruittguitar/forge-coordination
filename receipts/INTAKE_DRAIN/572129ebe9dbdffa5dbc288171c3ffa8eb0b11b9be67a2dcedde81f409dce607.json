@@ -1,0 +1,24 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "linkedin:4469615679",
+  "sourceVersion": "69cce4d877b9986d11d539cfbe248e9b524964fb5110a347e086c20b06d263d2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261127T033553Z-446961",
+  "observedAt": "2026-11-27T03:35:53Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original Writer request fence on state/RELEVANCE_INTAKE_PLAN.json remains unresolved; the intake row is still ACTION_REQUIRED and no independent COMPLETE/request_result evidence was revalidated in this run.",
+  "nextAction": "Use the original-request reconciliation path for the fence-bound run ID; do not replay or infer write completion.",
+  "attempts": [
+    {
+      "ref": "state/INTAKE_DRAIN.json#linkedin:4469615679",
+      "result": "ACTION_REQUIRED / RECONCILE_WRITER"
+    },
+    {
+      "ref": "state/RELEVANCE_INTAKE_PLAN.json",
+      "result": "fence proof present; no independent original-request result"
+    }
+  ],
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation."
+}

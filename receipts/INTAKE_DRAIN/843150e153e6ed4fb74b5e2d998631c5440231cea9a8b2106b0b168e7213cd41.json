@@ -1,0 +1,28 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "url:8fe061442867b2322ad8f0f7",
+  "sourceVersion": "98c48887e8b3be4debd3c60929a02396d4fb0c205b2bb0e436d5f6ba9b6c1bf7",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261127T033553Z-8fe061",
+  "observedAt": "2026-11-27T03:35:53Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original Writer request fence remains unresolved even though the row is already represented in the upstream ledger; no independent exact-effect proof for the original request was revalidated in this run.",
+  "nextAction": "Use the original-request reconciliation path for the fence-bound run ID; do not replay or infer write completion.",
+  "attempts": [
+    {
+      "ref": "state/INTAKE_DRAIN.json#url:8fe061442867b2322ad8f0f7",
+      "result": "ACTION_REQUIRED / RECONCILE_WRITER"
+    },
+    {
+      "ref": "state/UPSTREAM_LEDGER.json#groups[\"pid:V2I-C58E89ADA3D1\"]",
+      "result": "PRESENT current representation observed"
+    },
+    {
+      "ref": "state/board-discovery-report.json",
+      "result": "saved source-recovery proof present"
+    }
+  ],
+  "retryCondition": "Coordinator independently accounts this supported existing match and resolves any separate original-request evidence obligation."
+}

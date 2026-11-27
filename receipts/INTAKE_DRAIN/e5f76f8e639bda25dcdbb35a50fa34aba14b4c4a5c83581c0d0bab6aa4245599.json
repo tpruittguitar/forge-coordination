@@ -1,0 +1,24 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-122FDE7C9A32",
+  "sourceVersion": "0bb96d1b31b3545ab8ce0498dd47ff07fa4adbcb506881747a15ee213d3fd786",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261126T215204Z-B003",
+  "observedAt": "2026-11-26T22:18:36.416Z",
+  "writerSubmitted": false,
+  "outcome": "RECONCILIATION_REQUIRED",
+  "reason": "Original Writer request remains fenced; discovery dismissal does not cancel or complete it. Reconcile independently and do not replay.",
+  "nextAction": "Reconcile original Writer request; discovery dismissal does not cancel or complete it. Never replay.",
+  "attempts": [
+    {
+      "source": "node tools/intake-drain/queue.cjs next FORGE_INTAKE_HELD_RECONCILIATION",
+      "result": "ACTION_REQUIRED RECONCILE_WRITER; review absent=true; company=undefined; title=undefined"
+    },
+    {
+      "source": "state/EMAIL_RECOVERY_QUEUE.json#linkedin:4477362238",
+      "result": "requestIds=FORGE-RELEVANCE-CHATGPT-20261101-LIVE-B001; original fence preserved"
+    }
+  ],
+  "retryCondition": "Original Writer request must be independently reconciled against preserved fence evidence; do not replay."
+}

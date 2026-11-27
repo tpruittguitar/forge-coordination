@@ -1,0 +1,33 @@
+{
+  "schema": "forge.intake-drain-review.v1",
+  "key": "pid:V2I-35BBD6EFA02A",
+  "sourceVersion": "1df573ed39215ecc5867ab6117a40006f95fe32916159c91321d8f84978086c2",
+  "provider": "ChatGPT",
+  "taskKey": "FORGE_INTAKE_HELD_RECONCILIATION",
+  "runId": "FORGE-DRAIN-20261126T095324Z-001",
+  "observedAt": "2026-11-26T09:53:24Z",
+  "writerSubmitted": false,
+  "reason": "Original saved alert card shows a manufacturing plant manager role with exact source identity; held reconciliation remains required for the bound writer request.",
+  "nextAction": "Reconcile the original Writer request through the existing fence evidence; do not replay or infer completion.",
+  "attempts": [
+    {
+      "source": "tools/intake-drain/queue.cjs next FORGE_INTAKE_HELD_RECONCILIATION",
+      "result": "returned held reconciliation item with exact saved card and fence evidence"
+    }
+  ],
+  "outcome": "RECONCILIATION_REQUIRED",
+  "retryCondition": "Wait for original-request fence resolution or new authoritative receipt evidence.",
+  "sourceEvidence": {
+    "company": "Danuser Machine Company",
+    "title": "Manufacturing Plant Manager",
+    "location": "Fulton, MO",
+    "url": "https://www.glassdoor.com/partner/jobListing.htm?jobListingId=1010262919196",
+    "quote": "Manufacturing Plant Manager — Danuser Machine Company — Fulton, MO"
+  },
+  "fence": {
+    "requestIds": [
+      "FORGE-CODE-CHATGPT-20261106T050024071Z-B001"
+    ],
+    "proof": "state/EMAIL_RECOVERY_QUEUE.json#url:8dab696f97f6aa7964e3b1da"
+  }
+}
