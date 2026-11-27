@@ -105,4 +105,4 @@ function level(title) {
   if (/\b(senior manager|sr\.? manager)\b/i.test(t)) return 'SR_MANAGER';
   return 'DIRECTOR_PLUS';
 }
-module.exports = { discoverySeed, level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, slugMatches, boardCompany, parsePriority, tierRank };
+module.exports = { LEADER_RE, discoverySeed, level, family, usPlace, normTitle, normUrl, identityKey, atsId, masterIndex, novelty, boardFromCareers, slugGuesses, slugMatches, boardCompany, parsePriority, tierRank };

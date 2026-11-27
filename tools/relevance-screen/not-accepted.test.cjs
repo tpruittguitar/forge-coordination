@@ -14,7 +14,7 @@ function explicit(f,code='WRITER_BUSY'){
 for(const code of ['WRITER_BUSY','WRITE_FENCE'])test('explicit '+code+' releases only original request; fresh reads and durable proof precede release',async t=>{
  const f=fixture(t);explicit(f,code);f.deps.source=async()=>{throw Error('structured proof must not require source lookup');};let checks=0;
  const plan=S.read(f.root,'state/RELEVANCE_INTAKE_PLAN.json'),state=I.load(f.root),queue=S.read(f.root,'state/EMAIL_RECOVERY_QUEUE.json');
- const pending={key:'other',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'OTHER'},eligible={key:'ready',status:'READY'};plan.items.push(pending,eligible);state.items.push({...pending,provider:'CODE'},{...eligible,provider:'CODE'});queue.jobs.other={...pending,submission:{requestId:'OTHER'},submissions:[{requestId:'OTHER'}]};
+ const pending={key:'other',status:'POST_IN_FLIGHT_UNKNOWN',requestId:'OTHER'},eligible={key:'ready',status:'READY',record:{TITLE:'Director'}};plan.items.push(pending,eligible);state.items.push({...pending,provider:'CODE'},{...eligible,provider:'CODE'});queue.jobs.other={...pending,submission:{requestId:'OTHER'},submissions:[{requestId:'OTHER'}]};
  S.save(f.root,'state/RELEVANCE_INTAKE_PLAN.json',plan);I.save(f.root,state);S.save(f.root,'state/EMAIL_RECOVERY_QUEUE.json',queue);
  f.deps.result=async()=>{checks++;return{ok:true,found:false,requestId:f.requestId};};f.deps.index=async()=>{checks++;return{ok:true,exists:true,request:null,sha:'b'.repeat(40)};};
  f.deps.checkLock=()=>{a.equal(checks,2);a.equal(I.load(f.root).items[0].status,'POST_IN_FLIGHT_UNKNOWN');};
