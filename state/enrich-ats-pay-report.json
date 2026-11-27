@@ -1,10 +1,10 @@
 {
- "at": "2026-11-27T03:27:37.286Z",
- "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T032328641Z",
+ "at": "2026-11-27T03:41:06.747Z",
+ "run": "FORGE-ENRICH_ATS-ATSBOT-20261127T033543230Z",
  "dry": false,
  "masterSource": {
   "kind": "CANONICAL_WRITER_MASTER",
-  "readAt": "2026-11-27T03:23:41.418Z",
+  "readAt": "2026-11-27T03:35:50.273Z",
   "sha256": "12346d7e0c9339e41c8da54f9d28fb59dfb90ce32358c008f12c0412d0b236c4",
   "rows": 8000
  },
@@ -37,17 +37,20 @@
  "never_consider_by_rule": {},
  "fence": {
   "released_applied": [],
-  "released_not_applied": [],
-  "drift_rows": 0,
-  "proof_errors": [
+  "released_not_applied": [
    {
-    "where": "proof",
     "requestId": "FORGE-ENRICH_ATS-ATSBOT-20261126T031447068Z-B01",
-    "message": "fetch failed"
+    "reason": "NO_RECEIPT",
+    "ids": [
+     "V2I-20EE6A7BD4FB",
+     "V2I-F02CAE9C545B"
+    ]
    }
   ],
-  "pending_batches": 6,
-  "fenced_ids": 17
+  "drift_rows": 0,
+  "proof_errors": [],
+  "pending_batches": 5,
+  "fenced_ids": 15
  },
  "anchors": 1396,
  "archive_anchors": 5,
@@ -57,19 +60,19 @@
  "posted_pay": 0,
  "degree": 0,
  "estimates": 0,
- "estimate_waiting_for_posting": 332,
+ "estimate_waiting_for_posting": 333,
  "skipped_recent": 157,
- "submitted": 0,
+ "submitted": 1,
  "guard_dropped": 0,
- "writer_ok": 0,
+ "writer_ok": 1,
  "writer_failed": 0,
  "writer_not_written": 0,
  "remainder": 0,
  "prepared_revalidation_required": 0,
  "source_only_artifacts_validated": 0,
  "prepared_sources_validated": 0,
- "salary_submitted": 0,
- "salary_independently_verified": 0,
+ "salary_submitted": 1,
+ "salary_independently_verified": 1,
  "agg_tried": {},
  "agg_read": {},
  "agg_pay": {},
@@ -122,7 +125,7 @@
   "unsupported_routes": 0,
   "estimates_with_profile_sources": 0,
   "samples": [],
-  "profile_as_of": "2026-11-27T03:23:47.649Z",
+  "profile_as_of": "2026-11-27T03:35:55.241Z",
   "profile_rebuilt": true,
   "profile_refresh_status": "COMPLETE_CANONICAL_SNAPSHOT"
  },
@@ -1226,8 +1229,8 @@
   "salary": 0,
   "degree": 0
  },
- "not_attempted": 335,
- "nothing_found": 335,
+ "not_attempted": 336,
+ "nothing_found": 336,
  "products_planned": 0,
  "code_fit": {
   "disabled": "Tim Nov 23 2026: keywords never used for fit (cs-b90e0bf4)"
@@ -1237,10 +1240,10 @@
   "merged": 0,
   "added": 0,
   "has_business": 21,
-  "no_overview": 764,
+  "no_overview": 766,
   "no_single_label": 0,
   "deferred": 0,
-  "fenced": 443,
+  "fenced": 441,
   "inactive": 6772,
   "by_label": {},
   "sample": []
@@ -1249,10 +1252,11 @@
  "preparation_only": false,
  "prepared_reused": 0,
  "salary_estimates_prepared": 0,
- "roles_researched": 509,
+ "roles_researched": 511,
  "network_requests": 6,
- "planned": 0,
+ "planned": 1,
  "research_budget_exhausted": false,
+ "writer_reply_lost": 1,
  "salary_model_version": "pay-sample-match-v6a",
  "salary_context": {
   "companies": 15,
@@ -1260,10 +1264,10 @@
   "nonblocking": true
  },
  "recovery_statuses": {
-  "NOT_YET_ATTEMPTED": 256,
+  "NOT_YET_ATTEMPTED": 257,
   "SOURCE_RESEARCH_REQUIRED": 372,
-  "WRITER_REQUEST_PENDING_NO_REPLAY": 17,
-  "EVIDENCE_FOUND": 40,
+  "WRITER_REQUEST_PENDING_NO_REPLAY": 15,
+  "EVIDENCE_FOUND": 41,
   "MODEL_INPUTS_REQUIRED": 5
  },
  "pending": [
@@ -1941,6 +1945,20 @@
    "id": "V2I-4EDF5E75344A",
    "company": "Timberlab",
    "title": "Senior Director, Manufacturing",
+   "needs": [
+    "SALARY",
+    "DEGREE"
+   ],
+   "status": "RUN_BUDGET_OR_NO_READER",
+   "lastAttemptAt": null,
+   "retryAt": null,
+   "attempts": [],
+   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
+  },
+  {
+   "id": "V2I-20EE6A7BD4FB",
+   "company": "Cargill",
+   "title": "NA Regional Talent Acquisition Director - Manufacturing and Supply Chain M/F/D",
    "needs": [
     "SALARY",
     "DEGREE"
@@ -4338,20 +4356,6 @@
      "status": "NO_EXACT_COMPLETE_POSTING"
     }
    ],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
-   "id": "V2I-20EE6A7BD4FB",
-   "company": "Cargill",
-   "title": "NA Regional Talent Acquisition Director - Manufacturing and Supply Chain M/F/D",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T03:15:40.102Z",
-   "retryAt": "2026-11-26T04:15:40.102Z",
-   "attempts": [],
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
@@ -11176,20 +11180,6 @@
    "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
   },
   {
-   "id": "V2I-F02CAE9C545B",
-   "company": "Ryder System",
-   "title": "Director of Continuous Improvement",
-   "needs": [
-    "SALARY",
-    "DEGREE"
-   ],
-   "status": "WRITER_REQUEST_PENDING_NO_REPLAY",
-   "lastAttemptAt": "2026-11-26T03:15:40.268Z",
-   "retryAt": "2026-11-26T04:15:40.268Z",
-   "attempts": [],
-   "next": "Reuse saved posting evidence; try untried exact URLs, then targeted employer research. Never infer absent degree from an unreadable page."
-  },
-  {
    "id": "V2I-DC45AA1F9840",
    "company": "GE Aerospace",
    "title": "Sr Manager - Digital Operations",
@@ -12678,7 +12668,26 @@
   }
  ],
  "product_sample": [],
- "sample": [],
+ "sample": [
+  {
+   "id": "V2I-F02CAE9C545B",
+   "fields": {
+    "SALARY_BASE_LOW": 160000,
+    "SALARY_BASE_HIGH": 180000,
+    "SALARY_MIDPOINT": 170000,
+    "SALARY_BASIS": "EMPLOYER_POSTED",
+    "SALARY_SOURCE": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
+    "SALARY_ASOF": "2026-11-26",
+    "SALARY_CONF": "HIGH",
+    "DEGREE_TEXT": "Bachelor's degree required Engineering, Business, Supply Chain",
+    "DEGREE_REQ": "REQUIRED",
+    "DEGREE_EVIDENCE_URL": "https://rr.jobsyn.org/D0552550420645D3821E426843E601F21554",
+    "DEGREE_ASOF": "2026-11-26",
+    "FEASIBILITY_ATTEMPT_ASOF": "2026-11-27",
+    "SALARY_SCORE_POINT": 175000
+   }
+  }
+ ],
  "estimate_samples": [],
  "ats_unconfirmed_rows": []
 }
