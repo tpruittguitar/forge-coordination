@@ -48,11 +48,12 @@ function reconcileIntakeBatch({cases:allCases,before,after,archiveBefore,archive
  // so every inserted case must appear in the master but the inserted set may be larger. Otherwise exactly as STAGE.
  const autoMode=mode==='AUTO';
  if(autoMode)mode='STAGE';
- const casesInput=autoMode&&Array.isArray(allCases)?allCases.filter(x=>x.accounting?.status!=='SKIPPED'):allCases;
+ // STAGE also excludes local seniority skips, but still requires an exact insert set.
+ const casesInput=mode==='STAGE'&&Array.isArray(allCases)?allCases.filter(x=>x.accounting?.status!=='SKIPPED'||(!autoMode&&x.accounting.reason!=='OUT_OF_SCOPE:NOT_LEADERSHIP_LEVEL')):allCases;
  if(autoMode&&Array.isArray(allCases)&&!casesInput.length&&before&&after)return {status:'NOTHING_INSERTED',mode:'AUTO',cases:allCases.length,skipped:allCases.length,verified:false,scaleUpAllowed:false};
  const canary=mode==='CANARY';
  if(mode!=='CANARY'&&mode!=='STAGE')return hold('UNKNOWN_RELEASE_MODE');
- if(!Array.isArray(casesInput)||(canary?casesInput.length!==5:(casesInput.length<1||casesInput.length>200)))return hold(canary?'FIVE_CASES_REQUIRED':'STAGE_CASE_COUNT');
+ if(!Array.isArray(casesInput)||(canary?casesInput.length!==5:(allCases.length<1||allCases.length>200)))return hold(canary?'FIVE_CASES_REQUIRED':'STAGE_CASE_COUNT');
  if(!before||!after||before.authenticated!==true||after.authenticated!==true||
     before.source!=='WRITER'||after.source!=='WRITER'||!Array.isArray(before.rows)||!Array.isArray(after.rows))
    return hold('INDEPENDENT_WRITER_SNAPSHOTS_REQUIRED');

@@ -1,4 +1,5 @@
 'use strict';
+const {LEADER_RE}=require('../source-trial/lib');
 /* Production Writer executor; never enabled by default, never automatically retries writes except after a request-bound
  * WRITER_BUSY refusal that proves no mutation (up to 3 retries after 30 s, 60 s and 120 s).
  * Writer intake response contract (foreman-cockpit apps-script/Code.gs applyIntakeToMaster_/intakeResponse_):
@@ -173,6 +174,7 @@ async function runIntake(records,{key=process.env.FORGE_WRITER_KEY,postLock=null
    outcomes.push({requestId:rid,status:'RESUMED_ACCOUNTED',accounting,writerResult:prior});
    continue;
   }
+  if(!LEADER_RE.test(record.TITLE)){outcomes.push(skipped(rid,'OUT_OF_SCOPE:NOT_LEADERSHIP_LEVEL'));continue;}
   // Prior review must be bound to the exact canonical rules fetched from Writer now.
   // A caller-provided industry label or boolean alone cannot authorize intake.
   let review=candidate;

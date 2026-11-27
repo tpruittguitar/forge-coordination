@@ -18,3 +18,8 @@ test('unreconciled request lists do not count as attempts',()=>{
  const prior=recovered();delete prior[0].state.reconciliation;
  assert(!knownRequestIds(prior).has(id));assert.equal(pick({new_roles:[role]},{max:25,sent:knownRequestIds(prior)}).length,1);
 });
+test('bound local seniority skips are not submitted again on the next AUTO pass',()=>{
+ const reason='OUT_OF_SCOPE:NOT_LEADERSHIP_LEVEL',state={requestIds:[id,'UNTOUCHED'],results:{},outcomes:[{requestId:id,status:'SKIPPED',reason},{requestId:'UNBOUND',status:'SKIPPED',reason}]};
+ assert.deepEqual([...knownRequestIds([{state}])],[id]);
+ assert.deepEqual(state.results,{});
+});

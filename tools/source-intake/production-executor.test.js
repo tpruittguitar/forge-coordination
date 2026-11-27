@@ -123,9 +123,9 @@ test('complete index is required before request_result and row readback',async()
 // ---- QA remediation regressions (archive guard, verified resume, archive-aware reconciliation) ----
 const RULES_RAW='RULES v1';
 const RULES_HASH=require('node:crypto').createHash('sha256').update(RULES_RAW).digest('hex');
-const ARCHIVE_TEXT='V2_TERMINAL_ARCHIVE\n1 | V2A-9 | Co0 | Dir | ARCHIVE | REJECTED | P | R0 | TX | N';
+const ARCHIVE_TEXT='V2_TERMINAL_ARCHIVE\n1 | V2A-9 | Co0 | Director | ARCHIVE | REJECTED | P | R0 | TX | N';
 const ENABLED=async()=>({ok:true,json:async()=>({enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'})});
-const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Dir',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
+const canary=order=>order.map((kind,i)=>({record:{COMPANY:'Co'+i,TITLE:'Director',LOCATION:'TX',SOURCE_URL:'https://example.com/'+i},
  evidenceVerified:true,evidenceSource:'INDEPENDENT_VERIFIED',evidenceUrl:'https://example.com/about',primaryBusiness:'Industrial automation',
  reviewedNeverConsider:false,expectedOutcome:kind,protectedPrimaryId:'V2A-9',rulesHash:RULES_HASH,businessEvidenceApproved:true}));
 // Response shapes follow foreman-cockpit Code.gs applyIntakeToMaster_/intakeResponse_ (see production-executor.js header).
@@ -209,7 +209,7 @@ test('resume accounts a verified COMPLETE case without re-POSTing and advances t
  const rows=canary(['NEW','NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW']);
  const rid=requestId(rows[0].record),items=[{pid:'V2I-100',op:'INSERT'}],log=[];
  const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
-  readback:{[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
+  readback:{[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Director | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
  const priorResults={[rid]:insertResponse(rid,'V2I-100')};
  const err=await runStage(rows,opts(writer,{priorResults})).catch(e=>e);
  assert.match(err.message,/HOLD: Writer accepted/);
@@ -223,7 +223,7 @@ test('resume holds without captured Writer result, on pending state, or on recei
  const rows=canary(['NEW','PROTECTED_NOOP','EXISTING_MATCH','NEW','NEW']);
  const rid=requestId(rows[0].record),items=[{pid:'V2I-100',op:'INSERT'}];
  const prior={[rid]:{results:[{result:'SCOUT_INTAKE_WRITTEN',PRIMARY_ID:'V2I-100'}]}};
- const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Director | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
  const cases=[
   [{index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},readback:rb},{},/existing or uncertain request/],
   [{index:{[rid]:{s:'PENDING',items}}},prior,/existing or uncertain request/]
@@ -248,7 +248,7 @@ test('protected no-op resume re-verifies from the captured response without re-P
  assert.equal(log.indexOf('POST'),log.lastIndexOf('POST'),'only case 2 is posted');
  assert.equal(err.outcomes[0].accounting.status,'EXISTING_NOOP_PENDING_INDEPENDENT_COUNTS');
  assert.equal(log.filter(x=>x==='POST').length,1);
- const resurrected={[rid]:{rows:[{primaryId:'V2A-9',found:true,matches:1,line:'1 | V2A-9 | Co0 | Dir | S | OPEN | P | R0 | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const resurrected={[rid]:{rows:[{primaryId:'V2A-9',found:true,matches:1,line:'1 | V2A-9 | Co0 | Director | S | OPEN | P | R0 | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
  const log2=[];
  await assert.rejects(()=>runStage(rows,opts(mockWriter({...base,readback:resurrected},log2),{priorResults})),/PROTECTED_ROLE_IN_MASTER_OR_UNPROVEN/);
  assert.ok(!log2.includes('POST'));
@@ -281,7 +281,7 @@ test('accounting rejects a receipt bound to a different request ID',()=>{
 test('an indexed transaction for a no-op canary case is never accepted on resume',async()=>{
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record),items=[{pid:'V2I-5',op:'INSERT'}];
  const writer=mockWriter({index:{[rid]:{s:'COMPLETE',items}},result:{[rid]:durable(rid,items)},
-  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}});
+  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Director | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}});
  await assert.rejects(()=>runStage(rows,opts(writer,{priorResults:{[rid]:noopResponse(rid,'V2I-5')}})),/UNEXPECTED_ROW_WRITE|EXISTING_IDENTITY_UNCERTAIN/);
 });
 test('kill switch is read from the GitHub contents API on main, not the raw CDN',async()=>{
@@ -334,7 +334,7 @@ test('kill switch turned off between cases stops the next case; it cannot recall
  const rows=canary(['EXISTING_MATCH','NEW','PROTECTED_NOOP','NEW','NEW']),rid=requestId(rows[0].record);let reads=0;
  const sw=async()=>({ok:true,json:async()=>(++reads===1?{enabled:true,mode:'STAGE',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1',approvedBy:'Tim'}:{enabled:false,mode:'DISABLED',maxBatch:25,revision:'SOURCE_INTAKE_STAGE_V1'})});
  const log=[];const writer=mockWriter({post:{[rid]:noopResponse(rid,'V2I-5')},result:{[rid]:{found:true,source:'receipts',requestId:rid}},
-  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Dir | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
+  readback:{[rid]:{rows:[{primaryId:'V2I-5',found:true,matches:1,line:'1 | V2I-5 | Co0 | Director | S | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}}},log);
  const err=await runStage(rows,opts(writer,{switchTransport:sw})).catch(e=>e);
  assert.match(err.message,/release switch not enabled/);
  assert.equal(log.filter(x=>x==='POST').length,1,'case 1 was already posted and is accounted; case 2 never posts');
@@ -428,7 +428,7 @@ test('resume binds to the captured Writer PRIMARY_ID when the receipt carries no
  const rid=requestId(rows[0].record),log=[];
  const bare={s:'COMPLETE',at:'t',snapshotHash:'h',w:'W1'};
  const result={[rid]:{found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry:{...bare}}};
- const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Dir | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
+ const rb={[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line:'1 | V2I-100 | Co0 | Director | SCOUT_INTAKE | OPEN | P | R | TX | N'}],master:{endMarkerPresent:true},requested:1,found:1}};
  const priorResults={[rid]:insertResponse(rid,'V2I-100')};
  const err=await runStage(rows,opts(mockWriter({index:{[rid]:bare},result,readback:rb},log),{priorResults})).catch(e=>e);
  assert.equal(err.outcomes[0].status,'RESUMED_ACCOUNTED');
@@ -441,7 +441,7 @@ test('captured-ID binding still holds on a bad capture, a wrong row, or a one-si
  const rid=requestId(rows[0].record),bare={s:'COMPLETE',at:'t',snapshotHash:'h',w:'W1'};
  const result=(entry)=>({[rid]:{found:true,source:'index',requestId:rid,status:'COMPLETE',durable:true,entry}});
  const rb=line=>({[rid]:{rows:[{primaryId:'V2I-100',found:true,matches:1,line}],master:{endMarkerPresent:true},requested:1,found:1}});
- const good='1 | V2I-100 | Co0 | Dir | S | OPEN | P | R | TX | N';
+ const good='1 | V2I-100 | Co0 | Director | S | OPEN | P | R | TX | N';
  const twoIds={...insertResponse(rid,'V2I-100'),receipt:{REQUEST_ID:rid,NEW_PRIMARY_IDS:['V2I-100','V2I-101']}};
  const otherRid={...insertResponse(rid,'V2I-100'),receipt:{REQUEST_ID:'FORGE-SOURCE-OTHER',NEW_PRIMARY_IDS:['V2I-100']}};
  const cases=[
@@ -544,4 +544,24 @@ test('the shared Writer POST lock is held during the POST and released afterward
  const postLock={acquire:async()=>{held=true;return{ok:true,release:async()=>{if(held)releases++;held=false;return true}}}};
  await runIntake(rows,opts(transport,{postLock,switchTransport:autoSwitch(),expectedMode:'AUTO'})).catch(e=>e);
  assert.equal(postedWhileHeld,true);assert.equal(held,false);assert.equal(releases,1);
+});
+for(const [expectedMode,switchTransport] of [['STAGE',stageSwitch()],['AUTO',autoSwitch()]]){
+ test(expectedMode+' skips non-leadership intake but submits a leadership title',async()=>{
+  const rows=newOnly(2),log=[];
+  rows[0].record.TITLE='Manufacturing Manager';
+  rows[1].record.TITLE='Head of Manufacturing';
+  const rid=requestId(rows[1].record);
+  const result=await runIntake(rows,opts(mockWriter({post:{[rid]:excludedResponse(rid)}},log),{expectedMode,switchTransport})).catch(e=>e.outcomes);
+  assert.equal(result[0].status,'SKIPPED');
+  assert.equal(result[0].reason,'OUT_OF_SCOPE:NOT_LEADERSHIP_LEVEL');
+  assert.equal(log.filter(x=>x==='POST').length,1);
+ });
+}
+test('STAGE reconciles a local seniority skip without relaxing the exact insert check',()=>{
+ const snapshot=rows=>({source:'WRITER',authenticated:true,rows});
+ const cases=[{expectedOutcome:'NEW',accounting:{status:'SKIPPED',reason:'OUT_OF_SCOPE:NOT_LEADERSHIP_LEVEL'}}];
+ const args={cases,mode:'STAGE',before:snapshot([]),after:snapshot([]),archiveBefore:snapshot([]),archiveAfter:snapshot([])};
+ const {reconcileIntakeBatch}=require('./intake-accounting');
+ assert.deepEqual(reconcileIntakeBatch(args).insertedIds,[]);
+ assert.equal(reconcileIntakeBatch({...args,after:snapshot([{PRIMARY_ID:'unexpected'}])}).reason,'INSERTED_ID_SET_MISMATCH');
 });
