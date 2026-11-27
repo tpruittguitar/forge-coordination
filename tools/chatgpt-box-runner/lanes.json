@@ -22,7 +22,7 @@
   },
   "lanes": {
     "FORGE_EMAIL_DISCOVERY": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "0,20,40 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -30,10 +30,16 @@
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_INTAKE_INSPECTION.txt",
-      "cockpit": false
+      "cockpit": false,
+      "card": "FORGE_EMAIL_DISCOVERY",
+      "stateFiles": [
+        "lanes/CHATGPT_INTAKE_INSPECTION.txt"
+      ],
+      "enableReason": "Fresh TIMMAY Codex readback lists this task MISSING_REGISTERED_NATIVE_TASK; it is not a CLOUD_AUTOMATIONS binding; no GitHub Actions workflow and no box scheduler were running it.",
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_APPLICATION_WRITER_GOFER": {
-      "enabled": true,
+      "enabled": false,
       "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery. Stay inside the procedure's preflight, evidence and Writer rules. (Tim 2026-11-26 / President 10:14 PM ET)",
       "schedule": "3,23,43 * * * *",
       "timezone": "America/New_York",
@@ -42,22 +48,31 @@
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "runtime:current",
-      "cockpit": false
+      "cockpit": false,
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_CHATGPT_ENRICHMENT_RESEARCH": {
       "enabled": true,
-      "schedule": "6,26,46 * * * *",
+      "schedule": "6 */2 * * *",
       "timezone": "America/New_York",
-      "runner": "grant",
+      "runner": "codex",
       "model": "gpt-5.4-mini",
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_ENRICHMENT_RESEARCH.txt",
       "cockpit": true,
-      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery."
+      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery.",
+      "card": "cs-7a534ad2",
+      "stateFiles": [
+        "lanes/CHATGPT_ENRICHMENT_RESEARCH.txt",
+        "apps-script/",
+        "tools/pipeline-observability/",
+        "tools/source-intake/"
+      ],
+      "pool": "chatgpt-plan (cs-7a534ad2, Tim 2026-11-27 12:25 AM ET: even hours 6 */2 * * * on Codex CLI, alternating with Hermes odd hours; zero OpenAI API spend)"
     },
     "FORGE_CLAUDE_RELEVANCE_REVIEW": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "9,29,49 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -65,10 +80,11 @@
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "lanes/CLAUDE_RELEVANCE_REVIEW.txt",
-      "cockpit": false
+      "cockpit": false,
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_INTAKE_HELD_RECONCILIATION": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "12,32,52 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -77,10 +93,14 @@
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
       "cockpit": false,
-      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery."
+      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery.",
+      "card": "cs-56ff4de5",
+      "priority": 1,
+      "enableReason": "Tim approved cs-56ff4de5 (Nov 25, 7:40 PM & 8:05 PM ET: ChatGPT runs held cleanup every 2 hours at :52 even hours) after cs-52703d0e purge landed on main at 70e077d26 (Nov 26, 1:38 AM ET). No replay, no manual dispatch, uncertain writes fenced.",
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_APPLICATION_OUTCOME_TRACKER": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "19 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -88,10 +108,20 @@
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_APPLICATION_OUTCOME_TRACKER.txt",
-      "cockpit": false
+      "cockpit": false,
+      "card": "cs-d7df8942",
+      "stateFiles": [
+        "state/PROGRAMMED_COORDINATOR.json",
+        "state/AI_EXCEPTION_WORK.json",
+        "state/APPLICATION_TRACKER_CURSOR.json",
+        "state/APPLICATION_TRACKER_EVENTS.json",
+        "state/APPLICATION_TRACKER_EXCEPTIONS.json",
+        "state/APPLICATION_OUTCOMES.json"
+      ],
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_INTAKE_SCOPE_REVIEW": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "15,35,55 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -100,10 +130,11 @@
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
       "cockpit": false,
-      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery."
+      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery.",
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_INTAKE_SOURCE_RECOVERY": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "18,38,58 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -112,10 +143,11 @@
       "timeoutMinutes": 25,
       "procedure": "lanes/CHATGPT_INTAKE_DRAIN.txt",
       "cockpit": false,
-      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery."
+      "focus": "Gap-fill missing fields on EXISTING discovery/intake/enrichment rows only (the 19 squares). No broad discovery.",
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_POSTING_VALIDATION": {
-      "enabled": true,
+      "enabled": false,
       "schedule": "54 * * * *",
       "timezone": "America/New_York",
       "runner": "grant",
@@ -123,7 +155,8 @@
       "reasoningEffort": "high",
       "timeoutMinutes": 25,
       "procedure": "runtime:current",
-      "cockpit": false
+      "cockpit": false,
+      "pool": "openai-api-credit (grant runner via credit-agent.py; refuses at $1.00 floor / Nov 30 23:59 ET expiry, no ChatGPT-plan fallback)"
     },
     "FORGE_CLAUDE_ENRICHMENT": {
       "enabled": false,
@@ -161,5 +194,7 @@
       "procedure": "lanes/CLAUDE_FORGE_SUPPLEMENTAL_INTAKE.txt",
       "cockpit": false
     }
-  }
+  },
+  "defaultRunner": "grant",
+  "pool": "openai-api-credit (cs-3711bc5f / cs-92f6a3b0: ChatGPT-plan path disabled; live runner is credit-agent.py)"
 }

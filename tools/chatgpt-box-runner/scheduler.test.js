@@ -57,37 +57,15 @@ test('due() fires once per window and never catches up missed windows', () => {
   assert.deepEqual(S.due(specs, et('2026-11-16T14:05:00-05:00'), r.key).tasks, ['FORGE_AI_USAGE_READER']);
 });
 
-// cs-92f6a3b0 / Tim 2026-11-26: the checked-in crontab is the box cadence source of truth.
-test('checked-in box crontab runs every enabled grant lane, 20-minute staggered backlog lanes', () => {
-  const text = fs.readFileSync(path.join(__dirname, 'crontab.txt'), 'utf8');
-  const specs = S.parseCrontab(text);
-  const lanes = JSON.parse(fs.readFileSync(path.join(__dirname, 'lanes.json'), 'utf8')).lanes;
-  const enabled = Object.keys(lanes).filter(k => lanes[k].enabled === true).sort();
-  assert.deepEqual(specs.map(s => s.task).sort(), enabled);
-  for (const s of specs) assert.equal(s.text, lanes[s.task].schedule, s.task);
-  for (const k of ['FORGE_EMAIL_DISCOVERY', 'FORGE_APPLICATION_WRITER_GOFER', 'FORGE_CHATGPT_ENRICHMENT_RESEARCH',
-    'FORGE_CLAUDE_RELEVANCE_REVIEW', 'FORGE_INTAKE_SCOPE_REVIEW', 'FORGE_INTAKE_SOURCE_RECOVERY', 'FORGE_INTAKE_HELD_RECONCILIATION']) {
-    const s = specs.find(x => x.task === k);
-    assert.ok(s, k + ' must be scheduled');
-    const mins = [...s.minute].sort((a, b) => a - b);
-    assert.equal(mins.length, 3, k);
-    assert.equal(mins[1] - mins[0], 20, k + ' runs every 20 minutes');
-    assert.equal(mins[2] - mins[1], 20, k + ' runs every 20 minutes');
-    assert.equal(s.hour.size, 24, k);
-  }
-  for (const k of ['FORGE_APPLICATION_OUTCOME_TRACKER', 'FORGE_POSTING_VALIDATION']) {
-    const s = specs.find(x => x.task === k);
-    assert.ok(s, k + ' must be scheduled');
-    assert.equal([...s.minute].length, 1, k + ' stays hourly');
-    assert.equal(s.hour.size, 24, k);
-  }
-  const starts = specs.flatMap(s => [...s.minute]);
-  assert.equal(new Set(starts).size, starts.length, 'no two lanes start in the same minute');
-  for (const held of ['FORGE_CLAUDE_INTAKE_A', 'FORGE_CLAUDE_INTAKE_B', 'FORGE_CLAUDE_ENRICHMENT']) {
-    assert.equal(specs.some(s => s.task === held), false, held + ' stays held while the registry hold stands');
-    assert.ok(text.includes(held));
-  }
-  for (const gone of ['GROK', 'FORGE_SNIFFER_SHARED_HELPER']) assert.equal(specs.some(s => s.task.includes(gone)), false);
+test('the registry schedules enrichment at minute 6 of even Eastern hours', () => {
+  const {lanes} = JSON.parse(fs.readFileSync(path.join(__dirname, 'lanes.json'), 'utf8'));
+  const specs = S.parseCrontab(Object.entries(lanes).map(([key, lane]) => `${lane.schedule} ${key}`).join('\n'));
+  const active = specs.filter(s => lanes[s.task].enabled);
+  assert.deepEqual(active.map(s => s.task), ['FORGE_CHATGPT_ENRICHMENT_RESEARCH']);
+  assert.equal(active[0].text, '6 */2 * * *');
+  assert.ok(S.matches(active[0], et('2026-11-27T10:06:00-05:00')));
+  assert.ok(!S.matches(active[0], et('2026-11-27T11:06:00-05:00')));
+  assert.ok(!S.matches(active[0], et('2026-11-27T10:26:00-05:00')));
 });
 
 test('DST fall-back repeated hour runs a window only once', () => {

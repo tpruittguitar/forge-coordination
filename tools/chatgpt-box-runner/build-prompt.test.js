@@ -62,18 +62,22 @@ test('runtime:current lanes read the pinned release and carry the lane focus',()
   a.match(r.prompt,/FOCUS: gap-fill missing fields on existing discovery\/intake\/enrichment rows only \(no broad discovery\)/);
 });
 
-test('checked-in lanes run on the grant runner with existing procedures and live registry routes',()=>{
+test('only enrichment runs on Codex and every mapped lane has a live registry route and procedure',()=>{
   const root=path.resolve(__dirname,'../..');
   const m=JSON.parse(fs.readFileSync(path.join(__dirname,'lanes.json'),'utf8'));
   const reg=JSON.parse(fs.readFileSync(path.join(root,'control/AI_AUTOMATION_TASKS.json'),'utf8'));
   a.equal(m.grant.floorUsd,1); a.equal(m.grant.expiresET,'2026-11-30T23:59'); a.equal(m.grant.reasoningEffort,'high'); a.equal(m.grant.paidFallback,false);
-  a.ok(m.lanes.FORGE_APPLICATION_WRITER_GOFER.enabled);
+  const active = 'FORGE_CHATGPT_ENRICHMENT_RESEARCH';
+  a.ok(m.lanes[active], active);
+  a.match(m.lanes[active].pool, /chatgpt-plan.*zero OpenAI API spend/);
   a.equal(reg.tasks.FORGE_APPLICATION_WRITER_GOFER.route,'runtime');
   for(const [k,l] of Object.entries(m.lanes)){
-    a.equal(l.runner,'grant',k); a.equal(l.model,'gpt-5.4-mini',k); a.equal(l.reasoningEffort,'high',k);
+    a.equal(l.runner,k===active?'codex':'grant',k); a.equal(l.model,'gpt-5.4-mini',k); a.equal(l.reasoningEffort,'high',k);
     a.equal(l.timezone,'America/New_York',k); a.ok(l.timeoutMinutes<=25,k);
     const t=reg.tasks[k]; a.ok(t&&!t.retired,k+' is a live registry task');
-    a.equal(l.enabled,!t.executionHold,k+' is enabled exactly when the registry has no hold');
+    a.equal(l.enabled,k===active,k);
+    if(l.enabled) a.ok(!t.executionHold,k+' must not have a registry hold');
+    else a.throws(()=>buildPrompt(root,k,{}),/held lane/);
     a.ok(fs.existsSync(path.join(root,require('./build-prompt.js').procedurePath(root,k,l.procedure))),k+' procedure exists');
   }
 });
