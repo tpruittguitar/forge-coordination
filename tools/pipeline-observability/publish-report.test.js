@@ -27,29 +27,20 @@ test('unknown publish section is rejected and an omitted only list still runs ev
  a.deepEqual(ran,['activity','flow']);
  await a.rejects(()=>publish({components:[{id:'activity',paths:[]}],only:['nope'],run:()=>({ok:true})}),/Unknown publish section/);
 });
-test('workflow commits cheap Writer activity before the history fetch and flow publish, without changing checkout depth or triggers',()=>{
+test('workflow publishes cheap activity before fetching full discovery history, without changing checkout depth or triggers',()=>{
  const y=fs.readFileSync(p.join(__dirname,'../../.github/workflows/pipeline-observability.yml'),'utf8');
- const cheap=y.indexOf('Publish cheap Writer activity'),fetch=y.indexOf('Fetch 36 hours of main history for discovery report revisions'),flow=y.indexOf('Publish flow with incremental cursor');
- a.ok(cheap>=0&&fetch>cheap&&flow>fetch);
- a.ok(y.includes('publish-report.js activity'));
- a.ok(y.includes('publish-report.js flow intake-queue'));
- a.ok(y.includes("UPSTREAM_FLOW_COMMIT_CURSOR: '1'"));
+ const cheap=y.indexOf('Publish cheap Writer activity'),flow=y.indexOf('Publish flow with incremental cursor'),retain=y.indexOf('Retain reporting evidence');
+ a.ok(cheap>=0&&flow>cheap&&retain>flow);
+ const activity=y.slice(cheap,flow),pub=y.slice(flow,retain);
+ a.ok(activity.includes('publish-report.js activity'));
+ a.ok(!/continue-on-error|--unshallow/.test(activity));
+ a.ok(pub.includes('if: ${{ !cancelled() }}'));
+ a.ok(pub.includes("UPSTREAM_FLOW_COMMIT_CURSOR: '1'"));
  a.ok(y.includes("cron: '7,17,27,37,47,57 * * * *'"));
  a.ok(y.includes('workflow_dispatch: {}'));
  a.match(y,/fetch-depth:\s*1/);
- a.ok(y.includes('git fetch --no-tags --shallow-since="36 hours ago" origin main'));
- a.ok(!/fetch-depth:\s*0/.test(y));
-});
-test('history fetch and flow publish still run after a failed activity step, which is not continue-on-error',()=>{
- const y=fs.readFileSync(p.join(__dirname,'../../.github/workflows/pipeline-observability.yml'),'utf8');
- const cheap=y.indexOf('Publish cheap Writer activity'),fetch=y.indexOf('Fetch 36 hours of main history for discovery report revisions'),flow=y.indexOf('Publish flow with incremental cursor'),retain=y.indexOf('Retain reporting evidence');
- a.ok(cheap>=0&&fetch>cheap&&flow>fetch&&retain>flow);
- const activity=y.slice(cheap,fetch),hist=y.slice(fetch,flow),pub=y.slice(flow,retain);
- a.ok(!/continue-on-error/.test(activity));
- a.ok(hist.includes('if: ${{ !cancelled() }}'));
- a.ok(pub.includes('if: ${{ !cancelled() }}'));
- a.ok(y.includes('git fetch --no-tags --shallow-since="36 hours ago" origin main'));
- a.ok(y.includes('publish-report.js flow intake-queue'));
+ a.doesNotMatch(y,/fetch-depth:\s*0|--shallow-since/);
+ a.match(pub,/for attempt in 1 2 3 4; do[\s\S]*if \[\[ \$\(git rev-parse --is-shallow-repository\) == true \]\]; then\s+git fetch --no-tags --unshallow --filter=blob:none origin main\s+else\s+git fetch --no-tags origin main\s+fi\s+git reset --hard FETCH_HEAD\s+if node tools\/pipeline-observability\/publish-report\.js flow intake-queue/);
 });
 test('a flow spawn timeout fails the step with a non-zero exit and is not retried',async()=>{
  const root=fs.mkdtempSync(p.join(os.tmpdir(),'report-timeout-'));const prev=process.exitCode,log=console.log;let n=0;
