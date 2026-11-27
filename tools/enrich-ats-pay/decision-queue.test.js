@@ -9,19 +9,27 @@ test('real Waiting on Me identities receive priority even when no row has TIM_DE
 });
 test('TIM_DECISION_REQUIRED rows no longer bypass the completeness gate',()=>{
  const row=(id,p={})=>({PRIMARY_ID:id,COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',BUCKET:'TIM_DECISION_REQUIRED',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1',...p}});
- const rows=[row('T-COMPLETE'),row('T-NOPRODUCT',{PRODUCT:''}),row('T-NOSCORE',{OVERALL_RATING:''}),row('T-LANE'),row('T-CLOSED',{LIVENESS:'CLOSED'}),row('T-DNR',{DO_NOT_REWORK:'YES'})];
+ const rows=[row('T-COMPLETE'),row('T-NOPRODUCT',{PRODUCT:undefined,PRODUCT_REFERENCE:undefined}),row('T-NOSCORE',{OVERALL_RATING:''}),row('T-LANE'),row('T-CLOSED',{LIVENESS:'CLOSED'}),row('T-DNR',{DO_NOT_REWORK:'YES'})];
  const ids=D.ids(rows,{lanes:{FORGE_ENRICH_FEASIBILITY:[{PRIMARY_ID:'T-LANE'}],FORGE_ENRICH_STRATEGIC:[]}},E);
- assert.deepEqual([...ids],['T-COMPLETE']);
+ assert.deepEqual([...ids],['T-COMPLETE','T-NOPRODUCT']);
 });
 test('isDecisionComplete needs every scoring and decision input; estimated pay with basis and source counts',()=>{
  const ok={COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1'}};
  assert.equal(C.isDecisionComplete(ok,E),true);
- const gaps={SCOPE_FIT_RAW:'',FLEX_CLASS:'UNKNOWN',DEGREE_TEXT:'',REMOTE_HYBRID:'UNKNOWN',SALARY_BASE_LOW:'',SALARY_BASE_HIGH:'',SALARY_BASIS:'',SALARY_SOURCE:'',LATITUDE:'',PRODUCT:'UNKNOWN',PRODUCT_REFERENCE:'',OVERALL_RATING:'',SCORING_MODEL_REF:'v1'};
+ const gaps={SCOPE_FIT_RAW:'',FLEX_CLASS:'UNKNOWN',DEGREE_TEXT:'',REMOTE_HYBRID:'UNKNOWN',SALARY_BASE_LOW:'',SALARY_BASE_HIGH:'',SALARY_BASIS:'',SALARY_SOURCE:'',OVERALL_RATING:'',SCORING_MODEL_REF:'v1'};
  for(const [k,v] of Object.entries(gaps)){const r={...ok,p:{...ok.p,[k]:v}};if(k==='DEGREE_TEXT')r.p.DEGREE_REQ='';assert.equal(C.isDecisionComplete(r,E),false,k);}
- for(const k of ['COMPANY','TITLE','LOCATION'])assert.equal(C.isDecisionComplete({...ok,[k]:''},E),false,k);
+ for(const k of ['COMPANY','TITLE'])assert.equal(C.isDecisionComplete({...ok,[k]:''},E),false,k);
  assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,LATITUDE:'',LONGITUDE:'',REMOTE_HYBRID:'Remote'}},E),true,'remote needs no coordinates');
  assert.equal(C.isDecisionComplete({...ok,p:{...ok.p,SALARY_BASIS:'EMPLOYER_POSTED'}},E),true);
- assert.deepEqual(C.missingFields({...ok,p:{...ok.p,PRODUCT:''}},E),['products (what they make)']);
+});
+test('products are display-only and either location text or finite coordinates is enough',()=>{
+ const ok={COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1'}};
+ const {PRODUCT,PRODUCT_REFERENCE,...noProducts}=ok.p;
+ assert.equal(C.isDecisionComplete({...ok,p:noProducts},E),true);
+ const {LATITUDE,LONGITUDE,...noCoords}=ok.p;
+ assert.equal(C.isDecisionComplete({...ok,p:noCoords},E),true);
+ assert.equal(C.isDecisionComplete({...ok,LOCATION:''},E),true);
+ assert.deepEqual(C.missingFields({...ok,LOCATION:'',p:noCoords},E),['location / geography']);
 });
 test('CODE_FIT or keyword-proxy fit is not decision-complete; researched SCOPE_FIT_RAW still is',()=>{
  const ok={COMPANY:'Acme',TITLE:'Director of Quality',LOCATION:'Dayton, OH',p:{...FULL,OVERALL_RATING:'80',SCORING_MODEL_REF:'TIM_WEIGHTED_JOB_RATING v1 rev1'}};

@@ -1,7 +1,7 @@
 'use strict';
 // Card 8176bbb (Tim, Nov 18 2026): salary repairs and active estimate reviews spend Writer slots
 // only on rows whose pay or degree is the last gap before the #433 decision gate. A row still missing
-// another decision input (products, fit, work arrangement, ...) is skipped this run and stays queued:
+// another decision input (fit, work arrangement, ...) is skipped this run and stays queued:
 // the repair and review queues are rebuilt from the master every run, so nothing is dropped.
 // Uses decision-complete.js's own field check; no second copy of the rules.
 const {missingFields}=require('./decision-complete');
