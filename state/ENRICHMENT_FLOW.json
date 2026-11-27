@@ -3,7 +3,7 @@
   "model": "four-stage-v2",
   "quality": {
     "schema": "forge.enrichment-quality.v1",
-    "at": "2026-11-27T23:11:53.815Z",
+    "at": "2026-11-27T23:25:33.586Z",
     "trackingStartedAt": "2026-11-01T21:56:09.457Z",
     "windowDays": 30,
     "timezone": "America/New_York",
@@ -277,17 +277,17 @@
     "current": 499,
     "undated": 0
   },
-  "at": "2026-11-27T23:11:53.815Z",
+  "at": "2026-11-27T23:25:33.586Z",
   "queues": {
     "verification": 0,
     "enrichment": 1217,
     "readyForReview": 0,
-    "blockedClosed": 30
+    "blockedClosed": 17
   },
   "needsEnrichment": 1217,
   "population": {
-    "total": 1247,
-    "accounted": 1247,
+    "total": 1234,
+    "accounted": 1234,
     "reconciled": true
   },
   "oldestWaiting": {
@@ -296,8 +296,8 @@
     "readyForReview": null
   },
   "reconciliation": {
-    "from": "2026-11-27T23:02:56.978Z",
-    "to": "2026-11-27T23:11:53.815Z",
+    "from": "2026-11-27T23:11:53.815Z",
+    "to": "2026-11-27T23:25:33.586Z",
     "stages": {
       "verification": {
         "opening": 0,
@@ -330,9 +330,9 @@
         "opening": 30,
         "entered": 0,
         "completed": 0,
-        "otherExits": 0,
-        "closing": 30,
-        "delta": 0,
+        "otherExits": 13,
+        "closing": 17,
+        "delta": -13,
         "reconciled": true
       }
     }
@@ -494,21 +494,21 @@
     "perHour": 2.5,
     "partial": false,
     "windowHours": 36,
-    "from": "2026-11-26T11:05:24.909Z",
-    "to": "2026-11-27T23:05:24.909Z",
+    "from": "2026-11-26T11:15:09.307Z",
+    "to": "2026-11-27T23:15:09.307Z",
     "source": "state/WRITER_ACTIVITY.json",
     "basis": "Distinct jobs with COMPLETE enrichment Writer writes, not transitions to decision-ready enrichment."
   },
-  "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location coordinates, employer, title, products with reference) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
+  "criteria": "Main flow: discovery, intake, enrichment and user decisions. Posting freshness is background maintenance. Enrichment: every scoring and decision input (fit, degree FLEX and evidence, work arrangement, pay range with basis and source, location text or coordinates, employer, title) plus a Writer-calculated final score with model provenance, the same gate as the decision queue; posting freshness is independent background maintenance. Review queue: open and undecided, not a recommendation to apply. Closed postings are separate exits from processing. No canonical bucket changes.",
   "masterSource": {
     "kind": "CANONICAL_WRITER_MASTER",
-    "readAt": "2026-11-27T23:09:35.315Z",
-    "sha256": "ba257c3a7b3899d24d40d1ab71ddd91cf33b6cc5ab85a2f76b2c45ff7cbd67a9",
+    "readAt": "2026-11-27T23:23:44.769Z",
+    "sha256": "bd8b82c0c642f47203e29c26b31606891450d3561f30a421369e8f958798bfa4",
     "rows": 8000
   },
   "upstream": {
     "schema": "forge.upstream-flow.v1",
-    "at": "2026-11-27T23:09:48.128Z",
+    "at": "2026-11-27T23:23:55.281Z",
     "total": 13964,
     "sourceIdentities": 14941,
     "aliasesMerged": 977,
@@ -529,8 +529,8 @@
     },
     "reconciled": true,
     "reconciliation": {
-      "from": "2026-11-27T23:01:28.619Z",
-      "to": "2026-11-27T23:09:48.128Z",
+      "from": "2026-11-27T23:09:48.128Z",
+      "to": "2026-11-27T23:23:55.281Z",
       "opening": 1226,
       "arrivals": 0,
       "admitted": 0,
@@ -631,7 +631,7 @@
       }
     },
     "screening": {
-      "at": "2026-11-27T23:09:48.128Z",
+      "at": "2026-11-27T23:23:55.281Z",
       "reviewedSourceIdentities": 14941,
       "pendingCandidates": 1226,
       "storedEvidence": 3281,
