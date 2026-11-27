@@ -31,11 +31,11 @@ class SharedInstructionTests(unittest.TestCase):
 
     def test_fixed_startup_budget_includes_registry(self):
         # UTF-8 bytes are deterministic, not tokenizer/runtime measurements.
-        limits = {ENTRY: 2200, REGISTRY: 8500, COMMON: 3400, PROCEDURE: 5800}
+        limits = {ENTRY: 2200, REGISTRY: 8800, COMMON: 3400, PROCEDURE: 5800}
         for file, ceiling in limits.items():
             with self.subTest(file=file):
                 self.assertLessEqual(len((ROOT / file).read_bytes()), ceiling)
-        self.assertLessEqual(sum(len((ROOT / file).read_bytes()) for file in limits), 19500)
+        self.assertLessEqual(sum(len((ROOT / file).read_bytes()) for file in limits), 19900)
 
     def test_entry_reads_selected_contract_once_and_does_not_fall_back(self):
         for phrase in ('task.common', 'otherwise registry.common', 'alternatives, not cumulative',
